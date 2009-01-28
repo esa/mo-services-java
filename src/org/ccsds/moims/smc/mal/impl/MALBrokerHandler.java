@@ -55,7 +55,13 @@ public class MALBrokerHandler
       {
         MALIdentifier id = (MALIdentifier) lst.get(idx);
 
-        keys.add(id.getIdentifierValue());
+        String val = null;
+        if (null != id)
+        {
+          val = id.getIdentifierValue();
+        }
+        
+        keys.add(val);
       }
     }
 
@@ -515,7 +521,7 @@ public class MALBrokerHandler
 
       if (lst != null)
       {
-        getEntry(msg.getHeader()).addSubscription(msg.getHeader().getUriFrom().getURIValue(), lst);
+        getEntry(msg.getHeader(), true).addSubscription(msg.getHeader().getUriFrom().getURIValue(), lst);
       }
     }
   }
@@ -526,9 +532,12 @@ public class MALBrokerHandler
 
     if ((null != hdr) && (updateList != null))
     {
-      SubscriptionSource ent = getEntry(hdr);
+      SubscriptionSource ent = getEntry(hdr, true);
 
-      ent.populateNotifyList(hdr, lst, updateList);
+      if (null != ent)
+      {
+        ent.populateNotifyList(hdr, lst, updateList);
+      }
     }
 
     return lst;
@@ -542,14 +551,17 @@ public class MALBrokerHandler
 
       if ((lst != null) && (0 < lst.size()))
       {
-        SubscriptionSource ent = getEntry(msg.getHeader());
-        ent.removeSubscriptions(msg.getHeader().getUriFrom().getURIValue(), lst);
+        SubscriptionSource ent = getEntry(msg.getHeader(), false);
 
-        if (ent.notActive())
+        if (null != ent)
         {
-          entryMap.remove(ent.sig);
-        }
+          ent.removeSubscriptions(msg.getHeader().getUriFrom().getURIValue(), lst);
 
+          if (ent.notActive())
+          {
+            entryMap.remove(ent.sig);
+          }
+        }
       }
     }
   }
@@ -558,7 +570,7 @@ public class MALBrokerHandler
   {
     if (null != hdr)
     {
-      SubscriptionSource ent = getEntry(hdr);
+      SubscriptionSource ent = getEntry(hdr, false);
 
       if (null != ent)
       {
@@ -573,12 +585,12 @@ public class MALBrokerHandler
     }
   }
 
-  private SubscriptionSource getEntry(MALMessageHeader hdr)
+  private SubscriptionSource getEntry(MALMessageHeader hdr, boolean create)
   {
     String sig = makeSig(hdr);
     SubscriptionSource ent = entryMap.get(sig);
 
-    if (null == ent)
+    if ((null == ent) && (create))
     {
       ent = new SubscriptionSource(hdr);
       entryMap.put(sig, ent);

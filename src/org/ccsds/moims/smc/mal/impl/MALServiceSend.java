@@ -1,6 +1,5 @@
 package org.ccsds.moims.smc.mal.impl;
 
-import java.util.Hashtable;
 import org.ccsds.moims.smc.mal.api.MALInvokeOperation;
 import org.ccsds.moims.smc.mal.api.MALOperation;
 import org.ccsds.moims.smc.mal.api.MALProgressOperation;
@@ -25,7 +24,7 @@ import org.ccsds.moims.smc.mal.api.structures.MALURI;
 import org.ccsds.moims.smc.mal.api.structures.MALUpdateList;
 import org.ccsds.moims.smc.mal.api.transport.MALEndPoint;
 import org.ccsds.moims.smc.mal.api.transport.MALMessage;
-import org.ccsds.moims.smc.mal.api.transport.MALMessageListener;
+import org.ccsds.moims.smc.mal.impl.profile.MALProfiler;
 import org.ccsds.moims.smc.mal.impl.transport.MALTransportSingleton;
 
 /**
@@ -71,6 +70,7 @@ public class MALServiceSend
       details.endpoint.sendMessage(msg, details.qosProps);
 
       MALMessage rtn = maps.waitForResponse(transId);
+      MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
 
       handlePossibleReturnError(rtn);
     }
@@ -93,6 +93,7 @@ public class MALServiceSend
       details.endpoint.sendMessage(msg, details.qosProps);
 
       MALMessage rtn = maps.waitForResponse(transId);
+      MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
 
       handlePossibleReturnError(rtn);
 
@@ -149,6 +150,7 @@ public class MALServiceSend
       details.endpoint.sendMessage(msg, details.qosProps);
 
       MALMessage rtn = maps.waitForResponse(transId);
+      MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
 
       handlePossibleReturnError(rtn);
     }
@@ -171,6 +173,7 @@ public class MALServiceSend
       details.endpoint.sendMessage(msg, details.qosProps);
 
       MALMessage rtn = maps.waitForResponse(transId);
+      MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
 
       handlePossibleReturnError(rtn);
 
@@ -249,19 +252,26 @@ public class MALServiceSend
   public void returnNotify(MALMessageDetails details, MALPubSubOperation operation, MALUpdateList updateList) throws MALException
   {
     MALMessageHeader hdr = createHeader(details, operation, null, MALPubSubOperation.PUBLISH_STAGE);
+    MALProfiler.instance.sendMALTransferObject(details, hdr);
 
     returnNotify(hdr, updateList);
   }
 
   public void returnNotify(MALMessageHeader hdr, MALUpdateList updateList) throws MALException
   {
+    MALProfiler.instance.sendMarkMALBrokerStarting(hdr);
     java.util.List<MALBrokerHandler.BrokerMessage> msgList = brokerHandler.createNotify(hdr, updateList);
+    MALProfiler.instance.sendMarkMALBrokerFinished(hdr);
 
     for (MALBrokerHandler.BrokerMessage brokerMessage : msgList)
     {
       // send it out
+      MALProfiler.instance.sendMALTransferObject(hdr, brokerMessage.header);
       returnSingleNotify(brokerMessage.header, brokerMessage.updates);
+      MALProfiler.instance.sendMALTransferObject(brokerMessage.header, hdr);
     }
+
+    MALProfiler.instance.sendMALRemoveObject(hdr);
   }
 
   void returnSingleNotify(MALMessageHeader header, MALSubscriptionUpdateList updateList)
@@ -271,6 +281,7 @@ public class MALServiceSend
       MALEndPoint endpoint = MALTransportSingleton.instance(header.getUriTo(), null).createEndPoint(null, null);
       MALMessage msg = endpoint.createMessage(header, updateList);
 
+      MALProfiler.instance.sendMALAddObject(header, msg);
       endpoint.sendMessage(msg, null);
     }
     catch (MALException ex)

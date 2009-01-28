@@ -16,6 +16,7 @@ import org.ccsds.moims.smc.mal.api.structures.MALException;
 import org.ccsds.moims.smc.mal.api.structures.MALIdentifier;
 import org.ccsds.moims.smc.mal.api.structures.MALIdentifierList;
 import org.ccsds.moims.smc.mal.api.structures.MALSessionType;
+import org.ccsds.moims.smc.mal.impl.profile.MALProfiler;
 
 /**
  *
@@ -36,8 +37,10 @@ public class MALBrokerPublisher implements MALPublisher
 
   public void publish(MALUpdateList updateList, MALDomainIdentifier domain, MALIdentifier networkZone, MALSessionType sessionType, MALIdentifier sessionName, MALQoSLevel publishQos, Hashtable publishQosProps, MALInteger publishPriority) throws MALException
   {
+    MALProfiler.instance.sendMarkMALReception(domain);
     MALMessageDetails details = new MALMessageDetails(parent.getEndpoint(), null, null, operation.getService(), null, domain, networkZone, sessionType, sessionName, publishQos, publishQosProps, publishPriority);
 
+    MALProfiler.instance.sendMALTransferObject(domain, details);
     handler.returnNotify(details, operation, updateList);
   }
 

@@ -30,6 +30,7 @@ import org.ccsds.moims.smc.mal.impl.patterns.ProgressInteractionImpl;
 import org.ccsds.moims.smc.mal.impl.patterns.RequestInteractionImpl;
 import org.ccsds.moims.smc.mal.impl.patterns.SendInteractionImpl;
 import org.ccsds.moims.smc.mal.impl.patterns.SubmitInteractionImpl;
+import org.ccsds.moims.smc.mal.impl.profile.MALProfiler;
 
 /**
  * @version 1.0
@@ -50,6 +51,7 @@ public class MALServiceReceive implements MALMessageListener
 
   public void onMessage(MALMessage msg, Hashtable qosProperties)
   {
+    MALProfiler.instance.rcvMarkMALMessageReception(msg);
     onMessage(msg, qosProperties, null);
   }
 
@@ -334,6 +336,7 @@ public class MALServiceReceive implements MALMessageListener
 
       try
       {
+        MALProfiler.instance.rcvMarkServiceMessageReception(msg);
         rcv.notifyReceived(operation, msg.getHeader(), (MALSubscriptionUpdateList) msg.getBody());
       }
       catch (MALException ex)
