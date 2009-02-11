@@ -1,5 +1,6 @@
 package org.ccsds.moims.smc.mal.impl;
 
+import org.ccsds.moims.smc.mal.impl.broker.MALBroker;
 import org.ccsds.moims.smc.mal.api.MALInvokeOperation;
 import org.ccsds.moims.smc.mal.api.MALOperation;
 import org.ccsds.moims.smc.mal.api.MALProgressOperation;
@@ -24,6 +25,7 @@ import org.ccsds.moims.smc.mal.api.structures.MALURI;
 import org.ccsds.moims.smc.mal.api.structures.MALUpdateList;
 import org.ccsds.moims.smc.mal.api.transport.MALEndPoint;
 import org.ccsds.moims.smc.mal.api.transport.MALMessage;
+import org.ccsds.moims.smc.mal.impl.broker.MALBrokerMessage;
 import org.ccsds.moims.smc.mal.impl.profile.MALProfiler;
 import org.ccsds.moims.smc.mal.impl.transport.MALTransportSingleton;
 
@@ -35,9 +37,9 @@ public class MALServiceSend
 {
   private final MALServiceMaps maps;
   private final MALServiceReceive receiveHandler;
-  private final MALBrokerHandler brokerHandler;
+  private final MALBroker brokerHandler;
 
-  public MALServiceSend(MALServiceMaps maps, MALServiceReceive receiveHandler, MALBrokerHandler brokerHandler)
+  public MALServiceSend(MALServiceMaps maps, MALServiceReceive receiveHandler, MALBroker brokerHandler)
   {
     this.maps = maps;
     this.receiveHandler = receiveHandler;
@@ -260,10 +262,10 @@ public class MALServiceSend
   public void returnNotify(MALMessageHeader hdr, MALUpdateList updateList) throws MALException
   {
     MALProfiler.instance.sendMarkMALBrokerStarting(hdr);
-    java.util.List<MALBrokerHandler.BrokerMessage> msgList = brokerHandler.createNotify(hdr, updateList);
+    java.util.List<MALBrokerMessage> msgList = brokerHandler.createNotify(hdr, updateList);
     MALProfiler.instance.sendMarkMALBrokerFinished(hdr);
 
-    for (MALBrokerHandler.BrokerMessage brokerMessage : msgList)
+    for (MALBrokerMessage brokerMessage : msgList)
     {
       // send it out
       MALProfiler.instance.sendMALTransferObject(hdr, brokerMessage.header);

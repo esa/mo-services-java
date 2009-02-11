@@ -6,10 +6,9 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-package org.ccsds.moims.smc.mal.impl;
+package org.ccsds.moims.smc.mal.impl.broker;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import org.ccsds.moims.smc.mal.api.MALPubSubOperation;
 import org.ccsds.moims.smc.mal.api.structures.MALDomainIdentifier;
@@ -24,7 +23,6 @@ import org.ccsds.moims.smc.mal.api.structures.MALOctet;
 import org.ccsds.moims.smc.mal.api.structures.MALSessionType;
 import org.ccsds.moims.smc.mal.api.structures.MALSubscription;
 import org.ccsds.moims.smc.mal.api.structures.MALSubscriptionUpdate;
-import org.ccsds.moims.smc.mal.api.structures.MALSubscriptionUpdateList;
 import org.ccsds.moims.smc.mal.api.structures.MALURI;
 import org.ccsds.moims.smc.mal.api.structures.MALUpdate;
 import org.ccsds.moims.smc.mal.api.structures.MALUpdateList;
@@ -36,99 +34,17 @@ import org.ccsds.moims.smc.mal.impl.util.StructureHelper;
  *
  * @author cooper_sf
  */
-public class MALBrokerHandler
+public class MALSimpleBrokerHandler implements MALBroker
 {
-  public static final class BrokerMessage
-  {
-    public final MALMessageHeader header = new MALMessageHeader();
-    public final MALSubscriptionUpdateList updates = new MALSubscriptionUpdateList();
-  }
-
-  private static final class SubscriptionKey implements Comparable
-  {
-    public static final String ALL_ID = "*";
-    private final List<String> keys = new LinkedList<String>();
-
-    public SubscriptionKey(MALIdentifierList lst)
-    {
-      for (int idx = 0; idx < lst.size(); idx++)
-      {
-        MALIdentifier id = (MALIdentifier) lst.get(idx);
-
-        String val = null;
-        if (null != id)
-        {
-          val = id.getIdentifierValue();
-        }
-        
-        keys.add(val);
-      }
-    }
-
-    public int compareTo(Object o)
-    {
-      SubscriptionKey rhs = (SubscriptionKey) o;
-
-      for (int i = 0; (i < keys.size()) && (i < rhs.keys.size()); i++)
-      {
-        if (!keys.get(i).equals(rhs.keys.get(i)))
-        {
-          return keys.get(i).compareTo(rhs.keys.get(i));
-        }
-      }
-
-      return keys.size() - rhs.keys.size();
-    }
-
-    public boolean matches(SubscriptionKey rhs)
-    {
-      boolean matched = true;
-
-      for (int i = 0; (i < keys.size()) && (i < rhs.keys.size()); ++i)
-      {
-        String keyPart = keys.get(i);
-        String rhsPart = rhs.keys.get(i);
-
-        if ((null == keyPart) || (null == rhsPart))
-        {
-          if ((null == keyPart) && (null == rhsPart))
-          {
-            matched = false;
-            break;
-          }
-        }
-        else
-        {
-          if (ALL_ID.equals(keyPart) || ALL_ID.equals(rhsPart))
-          {
-            // TODO: Not a correct implementation of wildcard matching, this
-            //        currently assumes that wildcards are only allowed at the end.
-            break;
-          }
-          else
-          {
-            if (!keyPart.equals(rhsPart))
-            {
-              matched = false;
-              break;
-            }
-          }
-        }
-      }
-
-      return matched;
-    }
-  }
-
   /**
    * A SubscriptionDetails is keyed on subscription Id
    */
   private static class SubscriptionDetails
   {
     private final String subscriptionId;
-    private java.util.Set<SubscriptionKey> required = new java.util.TreeSet<SubscriptionKey>();
-    private java.util.Set<SubscriptionKey> onAll = new java.util.TreeSet<SubscriptionKey>();
-    private java.util.Set<SubscriptionKey> onChange = new java.util.TreeSet<SubscriptionKey>();
+    private java.util.Set<MALSubscriptionKey> required = new java.util.TreeSet<MALSubscriptionKey>();
+    private java.util.Set<MALSubscriptionKey> onAll = new java.util.TreeSet<MALSubscriptionKey>();
+    private java.util.Set<MALSubscriptionKey> onChange = new java.util.TreeSet<MALSubscriptionKey>();
 
     public SubscriptionDetails(String subscriptionId)
     {
@@ -162,7 +78,7 @@ public class MALBrokerHandler
         for (int i = 0; i < keyList.size(); i++)
         {
           MALIdentifierList id = (MALIdentifierList) keyList.get(i);
-          SubscriptionKey key = new SubscriptionKey(id);
+          MALSubscriptionKey key = new MALSubscriptionKey(id);
 
           required.add(key);
           if (bOnChange)
@@ -202,7 +118,7 @@ public class MALBrokerHandler
 
     private void populateNotifyList(MALUpdateList lst, MALUpdate update)
     {
-      SubscriptionKey key = new SubscriptionKey(update.getKey());
+      MALSubscriptionKey key = new MALSubscriptionKey(update.getKey());
 
       boolean updateRequired = matchedUpdate(key, onAll);
 
@@ -218,11 +134,11 @@ public class MALBrokerHandler
       }
     }
 
-    private static boolean matchedUpdate(SubscriptionKey key, java.util.Set<SubscriptionKey> searchSet)
+    private static boolean matchedUpdate(MALSubscriptionKey key, java.util.Set<MALSubscriptionKey> searchSet)
     {
       boolean matched = false;
 
-      for (SubscriptionKey subscriptionKey : searchSet)
+      for (MALSubscriptionKey subscriptionKey : searchSet)
       {
         if (subscriptionKey.matches(key))
         {
@@ -234,7 +150,7 @@ public class MALBrokerHandler
       return matched;
     }
 
-    private void appendIds(java.util.Set<SubscriptionKey> new_set)
+    private void appendIds(java.util.Set<MALSubscriptionKey> new_set)
     {
       new_set.addAll(required);
     }
@@ -246,7 +162,7 @@ public class MALBrokerHandler
   private static class ConsumerDetails
   {
     private final String consumerId;
-    private java.util.Set<SubscriptionKey> required = new java.util.TreeSet<SubscriptionKey>();
+    private java.util.Set<MALSubscriptionKey> required = new java.util.TreeSet<MALSubscriptionKey>();
     private final java.util.Map<String, SubscriptionDetails> details = new java.util.TreeMap<String, SubscriptionDetails>();
 
     public ConsumerDetails(String consumerId)
@@ -266,7 +182,7 @@ public class MALBrokerHandler
       return required.isEmpty();
     }
 
-    public java.util.Set<SubscriptionKey> addSubscription(MALSubscription subscription)
+    public java.util.Set<MALSubscriptionKey> addSubscription(MALSubscription subscription)
     {
       String subId = subscription.getSubscriptionId().getIdentifierValue();
       SubscriptionDetails sub = details.get(subId);
@@ -283,12 +199,12 @@ public class MALBrokerHandler
       return required;
     }
 
-    public void populateNotifyList(MALMessageHeader srcHdr, MALIdentifier transId, java.util.List<BrokerMessage> lst, MALUpdateList updateList)
+    public void populateNotifyList(MALMessageHeader srcHdr, MALIdentifier transId, java.util.List<MALBrokerMessage> lst, MALUpdateList updateList)
     {
       java.util.Set<Map.Entry<String, SubscriptionDetails>> values = details.entrySet();
       java.util.Iterator<Map.Entry<String, SubscriptionDetails>> it = values.iterator();
 
-      BrokerMessage msg = new BrokerMessage();
+      MALBrokerMessage msg = new MALBrokerMessage();
 
       while (it.hasNext())
       {
@@ -343,7 +259,7 @@ public class MALBrokerHandler
       required.clear();
     }
 
-    public void appendIds(java.util.Set<SubscriptionKey> new_set)
+    public void appendIds(java.util.Set<MALSubscriptionKey> new_set)
     {
       new_set.addAll(required);
     }
@@ -375,7 +291,7 @@ public class MALBrokerHandler
     private final MALIdentifier operation;
     private final MALOctet version;
     private final String sig;
-    private final java.util.Set<SubscriptionKey> required = new java.util.TreeSet<SubscriptionKey>();
+    private final java.util.Set<MALSubscriptionKey> required = new java.util.TreeSet<MALSubscriptionKey>();
     private final java.util.Map<String, ConsumerDetails> details = new java.util.TreeMap<String, ConsumerDetails>();
 
     public SubscriptionSource(MALMessageHeader hdr)
@@ -414,17 +330,17 @@ public class MALBrokerHandler
     {
       ConsumerDetails det = getDetails(consumer);
 
-      java.util.Set<SubscriptionKey> retVal = det.addSubscription(subscription);
+      java.util.Set<MALSubscriptionKey> retVal = det.addSubscription(subscription);
 
       required.addAll(retVal);
     }
 
-    public void populateNotifyList(MALMessageHeader srcHdr, java.util.List<BrokerMessage> lst, MALUpdateList updateList)
+    public void populateNotifyList(MALMessageHeader srcHdr, java.util.List<MALBrokerMessage> lst, MALUpdateList updateList)
     {
       java.util.Set<Map.Entry<String, ConsumerDetails>> values = details.entrySet();
       java.util.Iterator<Map.Entry<String, ConsumerDetails>> it = values.iterator();
 
-      java.util.List<BrokerMessage> localLst = new LinkedList<BrokerMessage>();
+      java.util.List<MALBrokerMessage> localLst = new LinkedList<MALBrokerMessage>();
       while (it.hasNext())
       {
         it.next().getValue().populateNotifyList(srcHdr, transactionId, localLst, updateList);
@@ -495,7 +411,7 @@ public class MALBrokerHandler
   private final java.util.Map<String, SubscriptionSource> entryMap = new java.util.TreeMap<String, SubscriptionSource>();
 
   /** Creates a new instance of MALBrokerHandler */
-  public MALBrokerHandler()
+  public MALSimpleBrokerHandler()
   {
   }
 
@@ -526,9 +442,9 @@ public class MALBrokerHandler
     }
   }
 
-  public synchronized java.util.List<BrokerMessage> createNotify(MALMessageHeader hdr, MALUpdateList updateList)
+  public synchronized java.util.List<MALBrokerMessage> createNotify(MALMessageHeader hdr, MALUpdateList updateList)
   {
-    java.util.List<BrokerMessage> lst = new java.util.LinkedList<BrokerMessage>();
+    java.util.List<MALBrokerMessage> lst = new java.util.LinkedList<MALBrokerMessage>();
 
     if ((null != hdr) && (updateList != null))
     {

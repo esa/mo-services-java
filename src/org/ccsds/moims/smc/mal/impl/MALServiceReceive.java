@@ -1,5 +1,6 @@
 package org.ccsds.moims.smc.mal.impl;
 
+import org.ccsds.moims.smc.mal.impl.broker.MALBroker;
 import java.util.Hashtable;
 import org.ccsds.moims.smc.mal.api.MALFactory;
 import org.ccsds.moims.smc.mal.api.MALInvokeOperation;
@@ -40,9 +41,9 @@ public class MALServiceReceive implements MALMessageListener
 {
   private final MALImpl impl;
   private final MALServiceMaps maps;
-  private final MALBrokerHandler brokerHandler;
+  private final MALBroker brokerHandler;
 
-  public MALServiceReceive(MALImpl impl, MALServiceMaps maps, MALBrokerHandler brokerHandler)
+  public MALServiceReceive(MALImpl impl, MALServiceMaps maps, MALBroker brokerHandler)
   {
     this.impl = impl;
     this.maps = maps;
