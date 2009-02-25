@@ -1,5 +1,6 @@
 package org.ccsds.moims.smc.mal.impl;
 
+import java.util.Vector;
 import org.ccsds.moims.smc.mal.impl.broker.MALBroker;
 import org.ccsds.moims.smc.mal.api.MALInvokeOperation;
 import org.ccsds.moims.smc.mal.api.MALOperation;
@@ -14,12 +15,12 @@ import org.ccsds.moims.smc.mal.api.structures.MALElement;
 import org.ccsds.moims.smc.mal.api.structures.MALException;
 import org.ccsds.moims.smc.mal.api.structures.MALIdentifier;
 import org.ccsds.moims.smc.mal.api.structures.MALIdentifierList;
+import org.ccsds.moims.smc.mal.api.structures.MALInteractionType;
 import org.ccsds.moims.smc.mal.api.structures.MALMessageHeader;
 import org.ccsds.moims.smc.mal.api.structures.MALOctet;
 import org.ccsds.moims.smc.mal.api.structures.MALPair;
 import org.ccsds.moims.smc.mal.api.structures.MALString;
 import org.ccsds.moims.smc.mal.api.structures.MALSubscription;
-import org.ccsds.moims.smc.mal.api.structures.MALSubscriptionUpdateList;
 import org.ccsds.moims.smc.mal.api.structures.MALTime;
 import org.ccsds.moims.smc.mal.api.structures.MALURI;
 import org.ccsds.moims.smc.mal.api.structures.MALUpdateList;
@@ -163,6 +164,21 @@ public class MALServiceSend
     }
   }
 
+  public void publish(MALMessageDetails details, MALPubSubOperation op, MALUpdateList updateList) throws MALException
+  {
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, null, MALPubSubOperation.PUBLISH_STAGE), updateList);
+
+    try
+    {
+      details.endpoint.sendMessage(msg, details.qosProps);
+    }
+    catch (MALException ex)
+    {
+      System.out.println("Error with publish : " + msg.getHeader().getUriTo());
+      throw ex;
+    }
+  }
+
   public void deregister(MALMessageDetails details, MALPubSubOperation op, MALIdentifierList unsubscription) throws MALException
   {
     MALIdentifier transId = maps.getTransactionId();
@@ -254,49 +270,67 @@ public class MALServiceSend
   public void returnNotify(MALMessageDetails details, MALPubSubOperation operation, MALUpdateList updateList) throws MALException
   {
     MALMessageHeader hdr = createHeader(details, operation, null, MALPubSubOperation.PUBLISH_STAGE);
-    MALProfiler.instance.sendMALTransferObject(details, hdr);
 
-    returnNotify(hdr, updateList);
+    if (MALTransportSingleton.instance(details.endpoint.getURI(), null).isSupportedInteractionType(MALInteractionType.PUBSUB))
+    {
+      MALMessage msg = details.endpoint.createMessage(hdr, updateList);
+
+      MALProfiler.instance.sendMALAddObject(details, msg);
+      details.endpoint.sendMessage(msg, null);
+    }
+    else
+    {
+      MALProfiler.instance.sendMALTransferObject(details, hdr);
+      returnNotify(details.endpoint, hdr, updateList);
+    }
   }
 
-  public void returnNotify(MALMessageHeader hdr, MALUpdateList updateList) throws MALException
+  public void returnNotify(MALEndPoint endpoint, MALMessageHeader hdr, MALUpdateList updateList) throws MALException
   {
     MALProfiler.instance.sendMarkMALBrokerStarting(hdr);
     java.util.List<MALBrokerMessage> msgList = brokerHandler.createNotify(hdr, updateList);
     MALProfiler.instance.sendMarkMALBrokerFinished(hdr);
 
+    java.util.List<MALMessage> transMsgs = new Vector<MALMessage>(msgList.size());
     for (MALBrokerMessage brokerMessage : msgList)
     {
-      // send it out
-      MALProfiler.instance.sendMALTransferObject(hdr, brokerMessage.header);
-      returnSingleNotify(brokerMessage.header, brokerMessage.updates);
-      MALProfiler.instance.sendMALTransferObject(brokerMessage.header, hdr);
+      try
+      {
+        if (null == endpoint)
+        {
+          endpoint = MALTransportSingleton.instance(brokerMessage.header.getUriTo(), null).createEndPoint(null, null);
+        }
+
+        MALMessage msg = endpoint.createMessage(brokerMessage.header, brokerMessage.updates);
+
+        transMsgs.add(msg);
+
+        MALProfiler.instance.sendMALAddObject(hdr, msg);
+      }
+      catch (MALException ex)
+      {
+        // with the exception being thrown we assume that there is a problem with this consumer so remove
+        //  them from the observe manager
+        System.out.println("Error with notify consumer, removing from list : " + brokerMessage.header.getUriTo());
+        brokerHandler.report();
+        brokerHandler.removeLostConsumer(brokerMessage.header);
+        brokerHandler.report();
+
+      // TODO: notify local provider
+      }
     }
 
-    MALProfiler.instance.sendMALRemoveObject(hdr);
-  }
-
-  void returnSingleNotify(MALMessageHeader header, MALSubscriptionUpdateList updateList)
-  {
+    // send it out
     try
     {
-      MALEndPoint endpoint = MALTransportSingleton.instance(header.getUriTo(), null).createEndPoint(null, null);
-      MALMessage msg = endpoint.createMessage(header, updateList);
-
-      MALProfiler.instance.sendMALAddObject(header, msg);
-      endpoint.sendMessage(msg, null);
+      endpoint.sendMessages(transMsgs, null);
     }
     catch (MALException ex)
     {
-      // with the exception being thrown we assume that there is a problem with this consumer so remove
-      //  them from the observe manager
-      System.out.println("Error with notify consumer, removing from list : " + header.getUriTo());
-      brokerHandler.report();
-      brokerHandler.removeLostConsumer(header);
-      brokerHandler.report();
-
-    // TODO: notify local provider
+      // TODO: notify local provider
     }
+
+    MALProfiler.instance.sendMALRemoveObject(hdr);
   }
 
   void handlePossibleReturnError(MALMessage rtn) throws MALException
@@ -317,7 +351,15 @@ public class MALServiceSend
     MALMessageHeader hdr = new MALMessageHeader();
 
     hdr.setUriFrom(details.endpoint.getURI());
-    hdr.setUriTo(details.uriTo);
+
+    if (op.getInteractionType() == MALInteractionType.PUBSUB)
+    {
+      hdr.setUriTo(details.brokerUri);
+    }
+    else
+    {
+      hdr.setUriTo(details.uriTo);
+    }
     hdr.setAuthenticationId(details.authenticationId);
     hdr.setTimeStamp(new MALTime(new java.util.Date().getTime()));
     hdr.setQoSLevel(details.qosLevel);

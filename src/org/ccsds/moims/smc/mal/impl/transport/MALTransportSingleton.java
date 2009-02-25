@@ -25,6 +25,13 @@ public final class MALTransportSingleton
   /** The default protocol to be used by the provider */
   private static String s_strDefaultProtocol = "rmi://";
 
+  public static void init()
+  {
+    if (null != System.getProperty("org.ccsds.moims.smc.mal.transport.default.protocol"))
+    {
+      defaultHandler(System.getProperty("org.ccsds.moims.smc.mal.transport.default.protocol"));
+    }
+  }
   /*
   public static ProtocolReceiver getProtocolReceiver(final MALURI uri)
   {

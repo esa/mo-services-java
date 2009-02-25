@@ -40,9 +40,12 @@ public class MALProviderImpl extends MALClose implements MALProvider, MALMessage
   private final MALInteger priorityLevelNumber;
   private final Hashtable defaultQoSProperties;
   private final boolean isPublisher;
+  private final boolean isLocalBroker;
   private final MALURI sharedBrokerUri;
   private final MALURI localUri;
+  private final MALURI localBrokerUri;
   private final MALEndPoint endpoint;
+  private final MALEndPoint localBrokerEndpoint;
 
   public MALProviderImpl(MALClose parent, MALServiceSend sendHandler, MALServiceReceive receiveHandler, MALServiceMaps maps, MALString localName, MALString protocol, MALService service, MALBlob authenticationId, MALInteractionHandler handler, MALQoSLevel[] expectedQos, MALInteger priorityLevelNumber, Hashtable defaultQoSProperties, MALBoolean isPublisher, MALURI sharedBrokerUri) throws MALException
   {
@@ -61,14 +64,41 @@ public class MALProviderImpl extends MALClose implements MALProvider, MALMessage
     this.isPublisher = isPublisher.getBooleanValue();
     this.sharedBrokerUri = sharedBrokerUri;
 
-    this.endpoint = MALTransportSingleton.instance(protocol, defaultQoSProperties).createEndPoint(localName, service);
-    this.localUri = this.endpoint.getURI();
-
-    this.endpoint.setMessageListener(this);
+    if (null != service)
+    {
+      this.endpoint = MALTransportSingleton.instance(protocol, defaultQoSProperties).createEndPoint(localName, null);
+      this.localUri = this.endpoint.getURI();
+      this.endpoint.setMessageListener(this);
+    }
+    else
+    {
+      this.endpoint = null;
+      this.localUri = null;
+    }
 
     if (isPublisher())
     {
       this.handler.malInitialize(this);
+
+      if (null == this.sharedBrokerUri)
+      {
+        this.localBrokerEndpoint = MALTransportSingleton.instance(protocol, defaultQoSProperties).createEndPoint(localName, service);
+        this.localBrokerUri = this.localBrokerEndpoint.getURI();
+        this.localBrokerEndpoint.setMessageListener(this);
+        this.isLocalBroker = true;
+      }
+      else
+      {
+        this.localBrokerEndpoint = null;
+        this.localBrokerUri = null;
+        this.isLocalBroker = false;
+      }
+    }
+    else
+    {
+      this.localBrokerEndpoint = null;
+      this.localBrokerUri = null;
+      this.isLocalBroker = false;
     }
   }
 
@@ -97,7 +127,7 @@ public class MALProviderImpl extends MALClose implements MALProvider, MALMessage
       }
       else
       {
-        return this.localUri;
+        return this.localBrokerUri;
       }
     }
 
@@ -122,8 +152,18 @@ public class MALProviderImpl extends MALClose implements MALProvider, MALMessage
     this.handler.malFinalize(this);
   }
 
-  public MALEndPoint getEndpoint()
+  public boolean isLocalBroker()
   {
+    return isLocalBroker;
+  }
+
+  public MALEndPoint getPublishEndpoint()
+  {
+    if (null != localBrokerEndpoint)
+    {
+      return localBrokerEndpoint;
+    }
+
     return endpoint;
   }
 }

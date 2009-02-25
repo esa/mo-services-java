@@ -43,7 +43,7 @@ public class MALConsumerImpl extends MALClose implements MALConsumer
   {
     super(parent);
     this.impl = impl;
-    this.details = new MALMessageDetails(MALTransportSingleton.instance(uriTo, null).createEndPoint(null, service), uriTo, brokerUri, service, authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, qosProps, priority);
+    this.details = new MALMessageDetails(MALTransportSingleton.instance(uriTo, null).createEndPoint(null, null), uriTo, brokerUri, service, authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, qosProps, priority);
   }
 
   public void send(MALSendOperation op, MALElement requestBody) throws MALException

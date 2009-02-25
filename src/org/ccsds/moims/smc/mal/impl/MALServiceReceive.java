@@ -314,7 +314,7 @@ public class MALServiceReceive implements MALMessageListener
     {
       try
       {
-        impl.getSendingInterface().returnNotify(msg.getHeader(), (MALUpdateList) msg.getBody());
+        impl.getSendingInterface().returnNotify(null, msg.getHeader(), (MALUpdateList) msg.getBody());
       }
       catch (MALException ex)
       {

@@ -38,10 +38,21 @@ public class MALBrokerPublisher implements MALPublisher
   public void publish(MALUpdateList updateList, MALDomainIdentifier domain, MALIdentifier networkZone, MALSessionType sessionType, MALIdentifier sessionName, MALQoSLevel publishQos, Hashtable publishQosProps, MALInteger publishPriority) throws MALException
   {
     MALProfiler.instance.sendMarkMALReception(domain);
-    MALMessageDetails details = new MALMessageDetails(parent.getEndpoint(), null, null, operation.getService(), null, domain, networkZone, sessionType, sessionName, publishQos, publishQosProps, publishPriority);
 
-    MALProfiler.instance.sendMALTransferObject(domain, details);
-    handler.returnNotify(details, operation, updateList);
+    if (parent.isLocalBroker())
+    {
+      MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), null, null, operation.getService(), null, domain, networkZone, sessionType, sessionName, publishQos, publishQosProps, publishPriority);
+
+      MALProfiler.instance.sendMALTransferObject(domain, details);
+      handler.returnNotify(details, operation, updateList);
+    }
+    else
+    {
+      MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), null, parent.getBrokerURI(), operation.getService(), null, domain, networkZone, sessionType, sessionName, publishQos, publishQosProps, publishPriority);
+
+      MALProfiler.instance.sendMALTransferObject(domain, details);
+      handler.publish(details, operation, updateList);
+    }
   }
 
   public void publish(MALException exception, MALQoSLevel publishQos, Hashtable publishQosProps, MALInteger publishPriority) throws MALException
