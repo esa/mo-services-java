@@ -110,8 +110,12 @@ class ConsumerDetails
   {
     for (int i = 0; i < subscriptions.size(); i++)
     {
-      MALIdentifier subId = (MALIdentifier) subscriptions.get(i);
-      details.remove(subId.getIdentifierValue()).removeSubscription(published);
+      String subId = ((MALIdentifier) subscriptions.get(i)).getIdentifierValue();
+
+      if ((null != subId) && details.containsKey(subId))
+      {
+        details.remove(subId).removeSubscription(published);
+      }
     }
 
   //updateIds();

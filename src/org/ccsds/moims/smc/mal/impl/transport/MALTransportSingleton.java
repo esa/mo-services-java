@@ -12,6 +12,7 @@ import org.ccsds.moims.smc.mal.api.structures.MALString;
 import org.ccsds.moims.smc.mal.api.structures.MALURI;
 import org.ccsds.moims.smc.mal.api.transport.MALTransport;
 import org.ccsds.moims.smc.mal.api.transport.MALTransportFactory;
+import org.ccsds.moims.smc.mal.impl.util.MALQueuedClose;
 
 /**
  *
@@ -32,52 +33,7 @@ public final class MALTransportSingleton
       defaultHandler(System.getProperty("org.ccsds.moims.smc.mal.transport.default.protocol"));
     }
   }
-  /*
-  public static ProtocolReceiver getProtocolReceiver(final MALURI uri)
-  {
-  if (m_receiverMap.containsKey(uri.getValue()))
-  {
-  return (ProtocolReceiver)m_receiverMap.get(uri.getValue());
-  }
 
-  return null;
-  }
-   */
-  /**
-   *  Registers a Provider service with Common.
-   *  Uses the passed in uri to determine what protocol to be used.
-   *  @param ouriTo The Provider uri
-   *  @param obj The Skeleton to receive calls
-   *  @return MALString The uri that identifies the provider
-   */
-  /*
-  public static MALURI register(final MALURI hintUri, final MALString oId, final ProtocolReceiver recv)
-  {
-  MALURI uri = null;
-
-  if ((null != hintUri) && (null != hintUri.getValue()))
-  {
-  uri = instance(hintUri.getValue()).getReceiveURI(oId);
-  }
-
-  if (null == uri)
-  {
-  uri = instance(s_strDefaultProtocol).getReceiveURI(oId);
-  }
-
-  if (null != uri)
-  {
-  m_receiverMap.put(oId.getValue(), recv);
-  }
-
-  return uri;
-  }
-  
-  public static MALString getId(final MALURI uri)
-  {
-  return instance(uri).getId(uri);
-  }
-   */
   /**
    *  Sets the default communication protocl to be used by this provider.
    *  @param strProtocol Protocol to be used by this provider.
@@ -94,6 +50,8 @@ public final class MALTransportSingleton
    */
   public static MALTransport instance(final MALURI dstUri, Hashtable properties) throws MALException
   {
+    init();
+
     if ((null != dstUri) && (null != dstUri.getURIValue()))
     {
       return instance(dstUri.getURIValue(), properties);
@@ -104,6 +62,8 @@ public final class MALTransportSingleton
 
   public static MALTransport instance(final MALString dstUri, Hashtable properties) throws MALException
   {
+    init();
+
     if (null != dstUri)
     {
       return instance(dstUri.getStringValue(), properties);

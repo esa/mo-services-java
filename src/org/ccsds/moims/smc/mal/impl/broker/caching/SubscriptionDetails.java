@@ -70,6 +70,15 @@ class SubscriptionDetails
 
         required.add(key);
 
+        if (bOnlyOnChange)
+        {
+          onChange.add(key);
+        }
+        else
+        {
+          onAll.add(key);
+        }
+
         for (Map.Entry<MALSubscriptionKey, PublishedEntry> subKey : published.entrySet())
         {
           if (subKey.getKey().matches(key))
@@ -77,12 +86,10 @@ class SubscriptionDetails
             if (bOnlyOnChange)
             {
               subKey.getValue().onChange.add(this);
-              onChange.add(key);
             }
             else
             {
               subKey.getValue().onAll.add(this);
-              onAll.add(key);
             }
           }
         }

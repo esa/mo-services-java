@@ -275,7 +275,7 @@ public class MALServiceSend
     {
       MALMessage msg = details.endpoint.createMessage(hdr, updateList);
 
-      MALProfiler.instance.sendMALAddObject(details, msg);
+      MALProfiler.instance.sendMALTransferObject(details, msg);
       details.endpoint.sendMessage(msg, null);
     }
     else
