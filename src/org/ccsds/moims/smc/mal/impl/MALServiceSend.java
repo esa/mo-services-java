@@ -291,43 +291,46 @@ public class MALServiceSend
     java.util.List<MALBrokerMessage> msgList = brokerHandler.createNotify(hdr, updateList);
     MALProfiler.instance.sendMarkMALBrokerFinished(hdr);
 
-    java.util.List<MALMessage> transMsgs = new Vector<MALMessage>(msgList.size());
-    for (MALBrokerMessage brokerMessage : msgList)
+    if (!msgList.isEmpty())
     {
+      java.util.List<MALMessage> transMsgs = new Vector<MALMessage>(msgList.size());
+      for (MALBrokerMessage brokerMessage : msgList)
+      {
+        try
+        {
+          if (null == endpoint)
+          {
+            endpoint = MALTransportSingleton.instance(brokerMessage.header.getUriTo(), null).createEndPoint(null, null);
+          }
+
+          MALMessage msg = endpoint.createMessage(brokerMessage.header, brokerMessage.updates);
+
+          transMsgs.add(msg);
+
+          MALProfiler.instance.sendMALAddObject(hdr, msg);
+        }
+        catch (MALException ex)
+        {
+          // with the exception being thrown we assume that there is a problem with this consumer so remove
+          //  them from the observe manager
+          System.out.println("Error with notify consumer, removing from list : " + brokerMessage.header.getUriTo());
+          brokerHandler.report();
+          brokerHandler.removeLostConsumer(brokerMessage.header);
+          brokerHandler.report();
+
+        // TODO: notify local provider
+        }
+      }
+
+      // send it out
       try
       {
-        if (null == endpoint)
-        {
-          endpoint = MALTransportSingleton.instance(brokerMessage.header.getUriTo(), null).createEndPoint(null, null);
-        }
-
-        MALMessage msg = endpoint.createMessage(brokerMessage.header, brokerMessage.updates);
-
-        transMsgs.add(msg);
-
-        MALProfiler.instance.sendMALAddObject(hdr, msg);
+        endpoint.sendMessages(transMsgs, null);
       }
       catch (MALException ex)
       {
-        // with the exception being thrown we assume that there is a problem with this consumer so remove
-        //  them from the observe manager
-        System.out.println("Error with notify consumer, removing from list : " + brokerMessage.header.getUriTo());
-        brokerHandler.report();
-        brokerHandler.removeLostConsumer(brokerMessage.header);
-        brokerHandler.report();
-
-      // TODO: notify local provider
+        // TODO: notify local provider
       }
-    }
-
-    // send it out
-    try
-    {
-      endpoint.sendMessages(transMsgs, null);
-    }
-    catch (MALException ex)
-    {
-      // TODO: notify local provider
     }
 
     MALProfiler.instance.sendMALRemoveObject(hdr);
