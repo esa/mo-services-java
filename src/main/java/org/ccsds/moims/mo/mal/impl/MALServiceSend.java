@@ -340,9 +340,9 @@ public class MALServiceSend
   {
     if ((null != rtn) && (rtn.getHeader().getIsError()))
     {
-      if (rtn.getBody() instanceof MALException)
+      if (rtn.getBody() instanceof StandardError)
       {
-        throw (MALException) rtn.getBody();
+        throw new MALException((StandardError)rtn.getBody());
       }
 
       throw new MALException(new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Return message marked as error but did not contain a MALException")));

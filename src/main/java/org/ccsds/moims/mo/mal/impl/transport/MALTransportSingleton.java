@@ -26,6 +26,9 @@ public final class MALTransportSingleton
 
   public static void init()
   {
+    String propName = MALTransportFactory.FACTORY_PROP_NAME_PREFIX + ".rmi";
+    System.setProperty(propName, "org.ccsds.moims.mo.mal.test.transport.rmi.RMITransportFactoryImpl");
+
     if (null != System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol"))
     {
       defaultHandler(System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol"));
@@ -95,7 +98,7 @@ public final class MALTransportSingleton
       MALTransportFactory ohandler = handlerMap.get(strProtocol);
       if (null == ohandler)
       {
-        ohandler = MALTransportFactory.newInstance(new String(strProtocol));
+        ohandler = MALTransportFactory.newInstance(strProtocol);
 
         if (null != ohandler)
         {
