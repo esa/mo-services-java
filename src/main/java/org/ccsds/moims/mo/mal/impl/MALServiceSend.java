@@ -36,12 +36,14 @@ import org.ccsds.moims.mo.mal.structures.Union;
  */
 public class MALServiceSend
 {
+  private final MALImpl impl;
   private final MALServiceMaps maps;
   private final MALServiceReceive receiveHandler;
   private final MALBroker brokerHandler;
 
-  public MALServiceSend(MALServiceMaps maps, MALServiceReceive receiveHandler, MALBroker brokerHandler)
+  public MALServiceSend(MALImpl impl, MALServiceMaps maps, MALServiceReceive receiveHandler, MALBroker brokerHandler)
   {
+    this.impl = impl;
     this.maps = maps;
     this.receiveHandler = receiveHandler;
     this.brokerHandler = brokerHandler;
@@ -52,6 +54,8 @@ public class MALServiceSend
     try
     {
       MALMessage msg = details.endpoint.createMessage(createHeader(details, op, null, (byte) 0), requestBody, details.qosProps);
+
+      msg = impl.getSecurityManager().check(msg);
 
       details.endpoint.sendMessage(msg);
     }
@@ -70,6 +74,9 @@ public class MALServiceSend
     try
     {
       details.endpoint.setMessageListener(receiveHandler);
+
+      msg = impl.getSecurityManager().check(msg);
+
       details.endpoint.sendMessage(msg);
 
       MALMessage rtn = maps.waitForResponse(transId);
@@ -93,6 +100,9 @@ public class MALServiceSend
     try
     {
       details.endpoint.setMessageListener(receiveHandler);
+
+      msg = impl.getSecurityManager().check(msg);
+
       details.endpoint.sendMessage(msg);
 
       MALMessage rtn = maps.waitForResponse(transId);

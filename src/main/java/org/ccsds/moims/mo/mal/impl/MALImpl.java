@@ -6,12 +6,16 @@ package org.ccsds.moims.mo.mal.impl;
 
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import java.util.Hashtable;
+import javax.crypto.SecretKey;
 import org.ccsds.moims.mo.mal.MAL;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.broker.MALBroker;
 import org.ccsds.moims.mo.mal.impl.broker.MALSimpleBrokerHandler;
+import org.ccsds.moims.mo.mal.security.MALSecurityManager;
+import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
  *
@@ -19,19 +23,29 @@ import org.ccsds.moims.mo.mal.impl.broker.MALSimpleBrokerHandler;
  */
 public class MALImpl extends MALClose implements MAL
 {
+  private final MALSecurityManager securityManager;
   private final MALServiceMaps maps;
   private final MALBroker brokerHandler;
   private final MALServiceReceive receiver;
   private final MALServiceSend sender;
 
-  public MALImpl(Hashtable properties)
+  public MALImpl(MALSecurityManagerFactory securityFactory, Hashtable properties) throws MALException
   {
     super(null);
+
+    if (null != securityFactory)
+    {
+      securityManager = securityFactory.createSecurityManager(properties);
+    }
+    else
+    {
+      securityManager = new NullSecurityManager();
+    }
 
     maps = new MALServiceMaps();
     brokerHandler = createBroker();
     receiver = new MALServiceReceive(this, maps, brokerHandler);
-    sender = new MALServiceSend(maps, receiver, brokerHandler);
+    sender = new MALServiceSend(this, maps, receiver, brokerHandler);
   }
 
   @Override
@@ -69,6 +83,11 @@ public class MALImpl extends MALClose implements MAL
     return maps;
   }
 
+  public MALSecurityManager getSecurityManager()
+  {
+    return securityManager;
+  }
+
   private MALBroker createBroker()
   {
     String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class", "org.ccsds.moims.mo.mal.impl.broker.MALSimpleBrokerHandler");
@@ -88,5 +107,14 @@ public class MALImpl extends MALClose implements MAL
     }
 
     return broker;
+  }
+
+  private static final class NullSecurityManager implements MALSecurityManager
+  {
+    @Override
+    public MALMessage check(MALMessage msg) throws MALException
+    {
+      return msg;
+    }
   }
 }

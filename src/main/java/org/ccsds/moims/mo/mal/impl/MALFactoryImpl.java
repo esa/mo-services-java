@@ -11,6 +11,7 @@ import org.ccsds.moims.mo.mal.MALFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
+import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
 
 /**
  *
@@ -18,9 +19,13 @@ import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
  */
 public class MALFactoryImpl extends MALFactory
 {
-  public MALFactoryImpl()
+  private final MALSecurityManagerFactory securityFactory;
+  
+  public MALFactoryImpl() throws MALException
   {
     init();
+    
+    securityFactory = MALSecurityManagerFactory.newInstance();
   }
 
   public void init()
@@ -38,6 +43,6 @@ public class MALFactoryImpl extends MALFactory
   @Override
   public MAL createMAL(Hashtable properties) throws MALException
   {
-    return new MALImpl(properties);
+    return new MALImpl(securityFactory, properties);
   }
 }

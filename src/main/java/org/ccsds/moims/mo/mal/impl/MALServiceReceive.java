@@ -62,6 +62,17 @@ public class MALServiceReceive implements MALMessageListener
   public void onMessage(MALMessage msg)
   {
     MALProfiler.instance.rcvMarkMALMessageReception(msg);
+
+    try
+    {
+      msg = impl.getSecurityManager().check(msg);
+    }
+    catch (MALException ex)
+    {
+      //todo
+      ex.printStackTrace();
+    }
+
     onMessage(msg, null, null);
   }
 
