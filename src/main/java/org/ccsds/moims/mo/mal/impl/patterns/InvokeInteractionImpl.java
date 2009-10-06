@@ -7,6 +7,7 @@ package org.ccsds.moims.mo.mal.impl.patterns;
 import org.ccsds.moims.mo.mal.provider.MALInvoke;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
@@ -25,6 +26,12 @@ public class InvokeInteractionImpl extends RequestInteractionImpl implements MAL
   @Override
   public void sendAcknowledgement(Element result) throws MALException
   {
-    impl.getSendingInterface().returnResponse(internalTransId, msg, result);
+    impl.getSendingInterface().returnResponse(internalTransId, msg, MALInvokeOperation.INVOKE_ACK_STAGE, result);
+  }
+
+  @Override
+  public void sendResponse(Element result) throws MALException
+  {
+    impl.getSendingInterface().returnResponse(internalTransId, msg, MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
   }
 }

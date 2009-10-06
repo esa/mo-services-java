@@ -67,7 +67,7 @@ public class MALServiceSend
 
   public void submit(MALMessageDetails details, MALSubmitOperation op, Element requestBody) throws MALException
   {
-    Identifier transId = maps.getTransactionId();
+    Identifier transId = maps.createTransaction(op, true, MALSubmitOperation._SUBMIT_STAGE, null);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALSubmitOperation.SUBMIT_STAGE), requestBody, details.qosProps);
 
@@ -93,7 +93,7 @@ public class MALServiceSend
 
   public Element request(MALMessageDetails details, MALRequestOperation op, Element requestBody) throws MALException
   {
-    Identifier transId = maps.getTransactionId();
+    Identifier transId = maps.createTransaction(op, true, MALRequestOperation._REQUEST_STAGE, null);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALRequestOperation.REQUEST_STAGE), requestBody, details.qosProps);
 
@@ -121,37 +121,63 @@ public class MALServiceSend
 
   public Element invoke(MALMessageDetails details, MALInvokeOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
-  /*
-  MALInteger transId = maps.getTransactionId();
-  MALString urlFrom = ProtocolFactory.register(urlTo, new MALString("CS"), CommonService.getReceiveInterface());
+    Identifier transId = maps.createTransaction(op, true, MALInvokeOperation._INVOKE_STAGE, listener);
 
-  ProtocolMessage msg = ProtocolFactory.instance(urlTo).createProtocolMessage(urlTo, urlFrom, transId, MessageType.INVOKE, serviceId, methodId, urlNotify, arg);
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALInvokeOperation.INVOKE_STAGE), requestBody, details.qosProps);
 
-  try
-  {
-  ProtocolFactory.instance(urlTo).sendMessage(msg);
+    try
+    {
+      details.endpoint.setMessageListener(receiveHandler);
 
-  ProtocolMessage rtn = maps.waitForResponse(transId);
+      msg = impl.getSecurityManager().check(msg);
 
-  handlePossibleReturnError(rtn);
-  }
-  catch (ProtocolException ex)
-  {
-  System.out.println("Error with consumer : "  + msg.getToURL());
-  throw new org.ccsds.moims.common.api.lang.MALSystemException();
-  }
-   */
+      details.endpoint.sendMessage(msg);
+
+      MALMessage ack = maps.waitForResponse(transId);
+      MALProfiler.instance.rcvMarkServiceMessageReception(ack);
+
+      handlePossibleReturnError(ack);
+
+      return ack.getBody();
+    }
+    catch (MALException ex)
+    {
+      System.out.println("Error with consumer : " + msg.getHeader().getURIto());
+      throw ex;
+    }
   }
 
   public Element progress(MALMessageDetails details, MALProgressOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    Identifier transId = maps.createTransaction(op, true, MALProgressOperation._PROGRESS_STAGE, listener);
+
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALProgressOperation.PROGRESS_STAGE), requestBody, details.qosProps);
+
+    try
+    {
+      details.endpoint.setMessageListener(receiveHandler);
+
+      msg = impl.getSecurityManager().check(msg);
+
+      details.endpoint.sendMessage(msg);
+
+      MALMessage ack = maps.waitForResponse(transId);
+      MALProfiler.instance.rcvMarkServiceMessageReception(ack);
+
+      handlePossibleReturnError(ack);
+
+      return ack.getBody();
+    }
+    catch (MALException ex)
+    {
+      System.out.println("Error with consumer : " + msg.getHeader().getURIto());
+      throw ex;
+    }
   }
 
   public void register(MALMessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener list) throws MALException
   {
-    Identifier transId = maps.getTransactionId();
+    Identifier transId = maps.createTransaction(op, true, MALPubSubOperation._REGISTER_STAGE, null);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.REGISTER_STAGE), subscription, details.qosProps);
 
@@ -191,7 +217,7 @@ public class MALServiceSend
 
   public void deregister(MALMessageDetails details, MALPubSubOperation op, IdentifierList unsubscription) throws MALException
   {
-    Identifier transId = maps.getTransactionId();
+    Identifier transId = maps.createTransaction(op, true, MALPubSubOperation._DEREGISTER_STAGE, null);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.DEREGISTER_STAGE), unsubscription, details.qosProps);
 
@@ -214,32 +240,133 @@ public class MALServiceSend
     }
   }
 
-  public void submitAsync(MALMessageDetails details, MALSubmitOperation op, Element requestBody, MALInteractionListener listener)
+  public void submitAsync(MALMessageDetails details, MALSubmitOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    Identifier transId = maps.createTransaction(op, false, MALSubmitOperation._SUBMIT_STAGE, listener);
+
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALSubmitOperation.SUBMIT_STAGE), requestBody, details.qosProps);
+
+    try
+    {
+      details.endpoint.setMessageListener(receiveHandler);
+
+      msg = impl.getSecurityManager().check(msg);
+
+      details.endpoint.sendMessage(msg);
+    }
+    catch (MALException ex)
+    {
+      System.out.println("Error with consumer : " + msg.getHeader().getURIto());
+      throw ex;
+    }
   }
 
-  public void requestAsync(MALMessageDetails details, MALSubmitOperation op, Element requestBody, MALInteractionListener listener)
+  public void requestAsync(MALMessageDetails details, MALRequestOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    Identifier transId = maps.createTransaction(op, false, MALRequestOperation._REQUEST_STAGE, null);
+
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALRequestOperation.REQUEST_STAGE), requestBody, details.qosProps);
+
+    try
+    {
+      details.endpoint.setMessageListener(receiveHandler);
+
+      msg = impl.getSecurityManager().check(msg);
+
+      details.endpoint.sendMessage(msg);
+    }
+    catch (MALException ex)
+    {
+      System.out.println("Error with consumer : " + msg.getHeader().getURIto());
+      throw ex;
+    }
   }
 
-  public void invokeAsync(MALMessageDetails details, MALSubmitOperation op, Element requestBody, MALInteractionListener listener)
+  public void invokeAsync(MALMessageDetails details, MALInvokeOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    Identifier transId = maps.createTransaction(op, false, MALInvokeOperation._INVOKE_STAGE, listener);
+
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALInvokeOperation.INVOKE_STAGE), requestBody, details.qosProps);
+
+    try
+    {
+      details.endpoint.setMessageListener(receiveHandler);
+
+      msg = impl.getSecurityManager().check(msg);
+
+      details.endpoint.sendMessage(msg);
+    }
+    catch (MALException ex)
+    {
+      System.out.println("Error with consumer : " + msg.getHeader().getURIto());
+      throw ex;
+    }
   }
 
-  public void registerAsync(MALMessageDetails details, MALSubmitOperation op, Element requestBody, MALInteractionListener listener)
+  public void progressAsync(MALMessageDetails details, MALProgressOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    Identifier transId = maps.createTransaction(op, false, MALProgressOperation._PROGRESS_STAGE, listener);
+
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALProgressOperation.PROGRESS_STAGE), requestBody, details.qosProps);
+
+    try
+    {
+      details.endpoint.setMessageListener(receiveHandler);
+
+      msg = impl.getSecurityManager().check(msg);
+
+      details.endpoint.sendMessage(msg);
+    }
+    catch (MALException ex)
+    {
+      System.out.println("Error with consumer : " + msg.getHeader().getURIto());
+      throw ex;
+    }
   }
 
-  public void deregisterAsync(MALMessageDetails details, MALSubmitOperation op, Element requestBody, MALInteractionListener listener)
+  public void registerAsync(MALMessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    Identifier transId = maps.createTransaction(op, false, MALPubSubOperation._REGISTER_STAGE, listener);
+
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.REGISTER_STAGE), subscription, details.qosProps);
+
+    try
+    {
+      details.endpoint.setMessageListener(receiveHandler);
+
+      msg = impl.getSecurityManager().check(msg);
+
+      details.endpoint.sendMessage(msg);
+    }
+    catch (MALException ex)
+    {
+      System.out.println("Error with consumer : " + msg.getHeader().getURIto());
+      throw ex;
+    }
   }
 
-  public void returnResponse(Identifier internalTransId, MALMessage sourceMessage, Element rspn)
+  public void deregisterAsync(MALMessageDetails details, MALPubSubOperation op, IdentifierList unsubscription, MALInteractionListener listener) throws MALException
+  {
+    Identifier transId = maps.createTransaction(op, false, MALPubSubOperation._DEREGISTER_STAGE, null);
+
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.DEREGISTER_STAGE), unsubscription, details.qosProps);
+
+    try
+    {
+      details.endpoint.setMessageListener(receiveHandler);
+
+      msg = impl.getSecurityManager().check(msg);
+
+      details.endpoint.sendMessage(msg);
+    }
+    catch (MALException ex)
+    {
+      System.out.println("Error with consumer : " + msg.getHeader().getURIto());
+      throw ex;
+    }
+  }
+
+  public void returnResponse(Identifier internalTransId, MALMessage sourceMessage, Byte rspnInteractionStage, Element rspn)
   {
     Pair details = maps.resolveTransactionSource(internalTransId);
     URI uriTo = (URI) details.getFirst();
@@ -248,7 +375,7 @@ public class MALServiceSend
     try
     {
       MALEndPoint endpoint = MALTransportSingleton.instance(uriTo, null).createEndPoint(null, null, null);
-      MALMessage msg = endpoint.createMessage(createReturnHeader(sourceMessage, false), rspn, null);
+      MALMessage msg = endpoint.createMessage(createReturnHeader(sourceMessage, rspnInteractionStage, false), rspn, null);
 
       endpoint.sendMessage(msg);
     }
@@ -258,7 +385,7 @@ public class MALServiceSend
     }
   }
 
-  public void returnError(Identifier internalTransId, MALMessage sourceMessage, StandardError error)
+  public void returnError(Identifier internalTransId, MALMessage sourceMessage, Byte rspnInteractionStage, StandardError error)
   {
     Pair details = maps.resolveTransactionSource(internalTransId);
     URI uriTo = (URI) details.getFirst();
@@ -267,7 +394,7 @@ public class MALServiceSend
     try
     {
       MALEndPoint endpoint = MALTransportSingleton.instance(uriTo, null).createEndPoint(null, null, null);
-      MALMessage msg = endpoint.createMessage(createReturnHeader(sourceMessage, true), error, null);
+      MALMessage msg = endpoint.createMessage(createReturnHeader(sourceMessage, rspnInteractionStage, true), error, null);
 
       endpoint.sendMessage(msg);
     }
@@ -393,7 +520,12 @@ public class MALServiceSend
     return hdr;
   }
 
-  MessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError)
+//  MessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError)
+//  {
+//    return createReturnHeader(sourceMessage, new Byte((byte)(sourceMessage.getHeader().getInteractionStage().byteValue() + 1)), isError);
+//  }
+
+  MessageHeader createReturnHeader(MALMessage sourceMessage, Byte interactionStage, boolean isError)
   {
     MessageHeader hdr = new MessageHeader();
     MessageHeader srcHdr = sourceMessage.getHeader();
@@ -409,7 +541,7 @@ public class MALServiceSend
     hdr.setSession(srcHdr.getSession());
     hdr.setSessionName(srcHdr.getSessionName());
     hdr.setInteractionType(srcHdr.getInteractionType());
-    hdr.setInteractionStage(new Byte((byte)(srcHdr.getInteractionStage().byteValue() + 1)));
+    hdr.setInteractionStage(interactionStage);
     hdr.setTransactionId(srcHdr.getTransactionId());
     hdr.setArea(srcHdr.getArea());
     hdr.setService(srcHdr.getService());

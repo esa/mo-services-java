@@ -102,7 +102,7 @@ public class MALServiceReceive implements MALMessageListener
           }
           case MALSubmitOperation._SUBMIT_ACK_STAGE:
           {
-            maps.signalResponse(msg);
+            maps.handleStage(msg);
             break;
           }
           default:
@@ -123,7 +123,7 @@ public class MALServiceReceive implements MALMessageListener
           }
           case MALRequestOperation._REQUEST_RESPONSE_STAGE:
           {
-            maps.signalResponse(msg);
+            maps.handleStage(msg);
             break;
           }
           default:
@@ -143,12 +143,10 @@ public class MALServiceReceive implements MALMessageListener
             break;
           }
           case MALInvokeOperation._INVOKE_ACK_STAGE:
-          {
-            throw new UnsupportedOperationException("Not supported yet.");
-          }
           case MALInvokeOperation._INVOKE_RESPONSE_STAGE:
           {
-            throw new UnsupportedOperationException("Not supported yet.");
+            maps.handleStage(msg);
+            break;
           }
           default:
           {
@@ -167,16 +165,11 @@ public class MALServiceReceive implements MALMessageListener
             break;
           }
           case MALProgressOperation._PROGRESS_ACK_STAGE:
-          {
-            throw new UnsupportedOperationException("Not supported yet.");
-          }
           case MALProgressOperation._PROGRESS_UPDATE_STAGE:
-          {
-            throw new UnsupportedOperationException("Not supported yet.");
-          }
           case MALProgressOperation._PROGRESS_RESPONSE_STAGE:
           {
-            throw new UnsupportedOperationException("Not supported yet.");
+            maps.handleStage(msg);
+            break;
           }
           default:
           {
@@ -196,7 +189,7 @@ public class MALServiceReceive implements MALMessageListener
           }
           case MALPubSubOperation._REGISTER_ACK_STAGE:
           {
-            maps.signalResponse(msg);
+            maps.handleStage(msg);
             break;
           }
           case MALPubSubOperation._PUBLISH_STAGE:
@@ -216,7 +209,7 @@ public class MALServiceReceive implements MALMessageListener
           }
           case MALPubSubOperation._DEREGISTER_ACK_STAGE:
           {
-            maps.signalResponse(msg);
+            maps.handleStage(msg);
             break;
           }
           default:
@@ -257,7 +250,7 @@ public class MALServiceReceive implements MALMessageListener
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(transId, msg, ex.getStandardError());
+      impl.getSendingInterface().returnError(transId, msg, MALSubmitOperation.SUBMIT_ACK_STAGE, ex.getStandardError());
     }
   }
 
@@ -272,7 +265,7 @@ public class MALServiceReceive implements MALMessageListener
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(transId, msg, ex.getStandardError());
+      impl.getSendingInterface().returnError(transId, msg, MALRequestOperation.REQUEST_RESPONSE_STAGE, ex.getStandardError());
     }
   }
 
@@ -287,7 +280,7 @@ public class MALServiceReceive implements MALMessageListener
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(transId, msg, ex.getStandardError());
+      impl.getSendingInterface().returnError(transId, msg, MALInvokeOperation.INVOKE_ACK_STAGE, ex.getStandardError());
     }
   }
 
@@ -302,7 +295,7 @@ public class MALServiceReceive implements MALMessageListener
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(transId, msg, ex.getStandardError());
+      impl.getSendingInterface().returnError(transId, msg, MALProgressOperation.PROGRESS_ACK_STAGE, ex.getStandardError());
     }
   }
 
@@ -318,14 +311,14 @@ public class MALServiceReceive implements MALMessageListener
       brokerHandler.report();
 
       // because we don't pass this upwards, we have to generate the ack
-      impl.getSendingInterface().returnResponse(transId, msg, null);
+      impl.getSendingInterface().returnResponse(transId, msg, MALPubSubOperation.REGISTER_ACK_STAGE, null);
 
     // inform subscribed listeners
 
     }
     else
     {
-      impl.getSendingInterface().returnError(transId, msg, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of register message must be of type Subscription")));
+      impl.getSendingInterface().returnError(transId, msg, MALPubSubOperation.REGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of register message must be of type Subscription")));
     }
   }
 
@@ -377,14 +370,14 @@ public class MALServiceReceive implements MALMessageListener
       brokerHandler.report();
 
       // because we don't pass this upwards, we have to generate the ack
-      impl.getSendingInterface().returnResponse(transId, msg, null);
+      impl.getSendingInterface().returnResponse(transId, msg, MALPubSubOperation.DEREGISTER_ACK_STAGE, null);
 
     // inform subscribed listeners
 
     }
     else
     {
-      impl.getSendingInterface().returnError(transId, msg, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of deregister message must be of type IdentifierList")));
+      impl.getSendingInterface().returnError(transId, msg, MALPubSubOperation.DEREGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of deregister message must be of type IdentifierList")));
     }
   }
 }

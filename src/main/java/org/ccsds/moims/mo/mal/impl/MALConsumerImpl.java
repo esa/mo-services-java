@@ -95,30 +95,30 @@ public class MALConsumerImpl extends MALClose implements MALConsumer
   @Override
   public void asyncRequest(MALRequestOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    impl.getSendingInterface().requestAsync(details, op, requestBody, listener);
   }
 
   @Override
   public void asyncInvoke(MALInvokeOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    impl.getSendingInterface().invokeAsync(details, op, requestBody, listener);
   }
 
   @Override
   public void asyncProgress(MALProgressOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    impl.getSendingInterface().progressAsync(details, op, requestBody, listener);
   }
 
   @Override
   public void asyncRegister(MALPubSubOperation op, Subscription subscription, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    impl.getSendingInterface().registerAsync(details, op, subscription, listener);
   }
 
   @Override
   public void asyncDeregister(MALPubSubOperation op, IdentifierList unsubscription, MALInteractionListener listener) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    impl.getSendingInterface().deregisterAsync(details, op, unsubscription, listener);
   }
 }

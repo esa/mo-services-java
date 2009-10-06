@@ -7,6 +7,7 @@ package org.ccsds.moims.mo.mal.impl.patterns;
 import org.ccsds.moims.mo.mal.provider.MALProgress;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -24,9 +25,21 @@ public class ProgressInteractionImpl extends InvokeInteractionImpl implements MA
   }
 
   @Override
+  public void sendAcknowledgement(Element result) throws MALException
+  {
+    impl.getSendingInterface().returnResponse(internalTransId, msg, MALProgressOperation.PROGRESS_ACK_STAGE, result);
+  }
+
+  @Override
   public void sendUpdate(Element update) throws MALException
   {
-    impl.getSendingInterface().returnResponse(internalTransId, msg, update);
+    impl.getSendingInterface().returnResponse(internalTransId, msg, MALProgressOperation.PROGRESS_UPDATE_STAGE, update);
+  }
+
+  @Override
+  public void sendResponse(Element result) throws MALException
+  {
+    impl.getSendingInterface().returnResponse(internalTransId, msg, MALProgressOperation.PROGRESS_RESPONSE_STAGE, result);
   }
 
   @Override

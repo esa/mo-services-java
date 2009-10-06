@@ -8,6 +8,7 @@ package org.ccsds.moims.mo.mal.impl.patterns;
 import org.ccsds.moims.mo.mal.provider.MALRequest;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
@@ -27,7 +28,7 @@ public class RequestInteractionImpl extends BaseInteractionImpl implements MALRe
   @Override
   public void sendResponse(Element result) throws MALException
   {
-    impl.getSendingInterface().returnResponse(internalTransId, msg, result);
+    impl.getSendingInterface().returnResponse(internalTransId, msg, MALRequestOperation.REQUEST_RESPONSE_STAGE, result);
   }
 
   @Override
