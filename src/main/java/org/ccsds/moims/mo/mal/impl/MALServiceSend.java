@@ -37,14 +37,16 @@ import org.ccsds.moims.mo.mal.structures.Union;
 public class MALServiceSend
 {
   private final MALImpl impl;
-  private final MALServiceMaps maps;
+  private final MALInteractionMap imap;
+  private final MALPubSubMap pmap;
   private final MALServiceReceive receiveHandler;
   private final MALBroker brokerHandler;
 
-  public MALServiceSend(MALImpl impl, MALServiceMaps maps, MALServiceReceive receiveHandler, MALBroker brokerHandler)
+  public MALServiceSend(MALImpl impl, MALInteractionMap imap, MALPubSubMap pmap, MALServiceReceive receiveHandler, MALBroker brokerHandler)
   {
     this.impl = impl;
-    this.maps = maps;
+    this.imap = imap;
+    this.pmap = pmap;
     this.receiveHandler = receiveHandler;
     this.brokerHandler = brokerHandler;
   }
@@ -67,7 +69,7 @@ public class MALServiceSend
 
   public void submit(MALMessageDetails details, MALSubmitOperation op, Element requestBody) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, true, MALSubmitOperation._SUBMIT_STAGE, null);
+    Identifier transId = imap.createTransaction(op, true, MALSubmitOperation._SUBMIT_STAGE, null);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALSubmitOperation.SUBMIT_STAGE), requestBody, details.qosProps);
 
@@ -79,7 +81,7 @@ public class MALServiceSend
 
       details.endpoint.sendMessage(msg);
 
-      MALMessage rtn = maps.waitForResponse(transId);
+      MALMessage rtn = imap.waitForResponse(transId);
       MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
 
       handlePossibleReturnError(rtn);
@@ -93,7 +95,7 @@ public class MALServiceSend
 
   public Element request(MALMessageDetails details, MALRequestOperation op, Element requestBody) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, true, MALRequestOperation._REQUEST_STAGE, null);
+    Identifier transId = imap.createTransaction(op, true, MALRequestOperation._REQUEST_STAGE, null);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALRequestOperation.REQUEST_STAGE), requestBody, details.qosProps);
 
@@ -105,7 +107,7 @@ public class MALServiceSend
 
       details.endpoint.sendMessage(msg);
 
-      MALMessage rtn = maps.waitForResponse(transId);
+      MALMessage rtn = imap.waitForResponse(transId);
       MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
 
       handlePossibleReturnError(rtn);
@@ -121,7 +123,7 @@ public class MALServiceSend
 
   public Element invoke(MALMessageDetails details, MALInvokeOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, true, MALInvokeOperation._INVOKE_STAGE, listener);
+    Identifier transId = imap.createTransaction(op, true, MALInvokeOperation._INVOKE_STAGE, listener);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALInvokeOperation.INVOKE_STAGE), requestBody, details.qosProps);
 
@@ -133,7 +135,7 @@ public class MALServiceSend
 
       details.endpoint.sendMessage(msg);
 
-      MALMessage ack = maps.waitForResponse(transId);
+      MALMessage ack = imap.waitForResponse(transId);
       MALProfiler.instance.rcvMarkServiceMessageReception(ack);
 
       handlePossibleReturnError(ack);
@@ -149,7 +151,7 @@ public class MALServiceSend
 
   public Element progress(MALMessageDetails details, MALProgressOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, true, MALProgressOperation._PROGRESS_STAGE, listener);
+    Identifier transId = imap.createTransaction(op, true, MALProgressOperation._PROGRESS_STAGE, listener);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALProgressOperation.PROGRESS_STAGE), requestBody, details.qosProps);
 
@@ -161,7 +163,7 @@ public class MALServiceSend
 
       details.endpoint.sendMessage(msg);
 
-      MALMessage ack = maps.waitForResponse(transId);
+      MALMessage ack = imap.waitForResponse(transId);
       MALProfiler.instance.rcvMarkServiceMessageReception(ack);
 
       handlePossibleReturnError(ack);
@@ -177,18 +179,18 @@ public class MALServiceSend
 
   public void register(MALMessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener list) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, true, MALPubSubOperation._REGISTER_STAGE, null);
+    Identifier transId = imap.createTransaction(op, true, MALPubSubOperation._REGISTER_STAGE, null);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.REGISTER_STAGE), subscription, details.qosProps);
 
     try
     {
-      maps.registerNotifyListener(details, op, subscription, list);
+      pmap.registerNotifyListener(details, op, subscription, list);
 
       details.endpoint.setMessageListener(receiveHandler);
       details.endpoint.sendMessage(msg);
 
-      MALMessage rtn = maps.waitForResponse(transId);
+      MALMessage rtn = imap.waitForResponse(transId);
       MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
 
       handlePossibleReturnError(rtn);
@@ -217,7 +219,7 @@ public class MALServiceSend
 
   public void deregister(MALMessageDetails details, MALPubSubOperation op, IdentifierList unsubscription) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, true, MALPubSubOperation._DEREGISTER_STAGE, null);
+    Identifier transId = imap.createTransaction(op, true, MALPubSubOperation._DEREGISTER_STAGE, null);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.DEREGISTER_STAGE), unsubscription, details.qosProps);
 
@@ -226,12 +228,12 @@ public class MALServiceSend
       details.endpoint.setMessageListener(receiveHandler);
       details.endpoint.sendMessage(msg);
 
-      MALMessage rtn = maps.waitForResponse(transId);
+      MALMessage rtn = imap.waitForResponse(transId);
       MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
 
       handlePossibleReturnError(rtn);
 
-      maps.deregisterNotifyListener(details, op, unsubscription);
+      pmap.deregisterNotifyListener(details, op, unsubscription);
     }
     catch (MALException ex)
     {
@@ -242,7 +244,7 @@ public class MALServiceSend
 
   public void submitAsync(MALMessageDetails details, MALSubmitOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, false, MALSubmitOperation._SUBMIT_STAGE, listener);
+    Identifier transId = imap.createTransaction(op, false, MALSubmitOperation._SUBMIT_STAGE, listener);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALSubmitOperation.SUBMIT_STAGE), requestBody, details.qosProps);
 
@@ -263,7 +265,7 @@ public class MALServiceSend
 
   public void requestAsync(MALMessageDetails details, MALRequestOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, false, MALRequestOperation._REQUEST_STAGE, null);
+    Identifier transId = imap.createTransaction(op, false, MALRequestOperation._REQUEST_STAGE, null);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALRequestOperation.REQUEST_STAGE), requestBody, details.qosProps);
 
@@ -284,7 +286,7 @@ public class MALServiceSend
 
   public void invokeAsync(MALMessageDetails details, MALInvokeOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, false, MALInvokeOperation._INVOKE_STAGE, listener);
+    Identifier transId = imap.createTransaction(op, false, MALInvokeOperation._INVOKE_STAGE, listener);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALInvokeOperation.INVOKE_STAGE), requestBody, details.qosProps);
 
@@ -305,7 +307,7 @@ public class MALServiceSend
 
   public void progressAsync(MALMessageDetails details, MALProgressOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, false, MALProgressOperation._PROGRESS_STAGE, listener);
+    Identifier transId = imap.createTransaction(op, false, MALProgressOperation._PROGRESS_STAGE, listener);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALProgressOperation.PROGRESS_STAGE), requestBody, details.qosProps);
 
@@ -326,7 +328,7 @@ public class MALServiceSend
 
   public void registerAsync(MALMessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, false, MALPubSubOperation._REGISTER_STAGE, listener);
+    Identifier transId = imap.createTransaction(op, false, MALPubSubOperation._REGISTER_STAGE, listener);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.REGISTER_STAGE), subscription, details.qosProps);
 
@@ -347,7 +349,7 @@ public class MALServiceSend
 
   public void deregisterAsync(MALMessageDetails details, MALPubSubOperation op, IdentifierList unsubscription, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = maps.createTransaction(op, false, MALPubSubOperation._DEREGISTER_STAGE, null);
+    Identifier transId = imap.createTransaction(op, false, MALPubSubOperation._DEREGISTER_STAGE, null);
 
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.DEREGISTER_STAGE), unsubscription, details.qosProps);
 
@@ -368,9 +370,17 @@ public class MALServiceSend
 
   public void returnResponse(Identifier internalTransId, MALMessage sourceMessage, Byte rspnInteractionStage, Element rspn)
   {
-    Pair details = maps.resolveTransactionSource(internalTransId);
-    URI uriTo = (URI) details.getFirst();
-    Identifier transId = (Identifier) details.getSecond();
+    URI uriTo = null;
+
+    Pair details = imap.resolveTransactionSource(internalTransId);
+    if (null != details)
+    {
+      uriTo = (URI) details.getFirst();
+    }
+    else
+    {
+      uriTo = sourceMessage.getHeader().getURIfrom();
+    }
 
     try
     {
@@ -387,9 +397,17 @@ public class MALServiceSend
 
   public void returnError(Identifier internalTransId, MALMessage sourceMessage, Byte rspnInteractionStage, StandardError error)
   {
-    Pair details = maps.resolveTransactionSource(internalTransId);
-    URI uriTo = (URI) details.getFirst();
-    Identifier transId = (Identifier) details.getSecond();
+    URI uriTo = null;
+
+    Pair details = imap.resolveTransactionSource(internalTransId);
+    if (null != details)
+    {
+      uriTo = (URI) details.getFirst();
+    }
+    else
+    {
+      uriTo = sourceMessage.getHeader().getURIfrom();
+    }
 
     try
     {

@@ -24,7 +24,8 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 public class MALImpl extends MALClose implements MAL
 {
   private final MALSecurityManager securityManager;
-  private final MALServiceMaps maps;
+  private final MALInteractionMap imap;
+  private final MALPubSubMap pmap;
   private final MALBroker brokerHandler;
   private final MALServiceReceive receiver;
   private final MALServiceSend sender;
@@ -42,10 +43,11 @@ public class MALImpl extends MALClose implements MAL
       securityManager = new NullSecurityManager();
     }
 
-    maps = new MALServiceMaps();
+    imap = new MALInteractionMap();
+    pmap = new MALPubSubMap();
     brokerHandler = createBroker();
-    receiver = new MALServiceReceive(this, maps, brokerHandler);
-    sender = new MALServiceSend(this, maps, receiver, brokerHandler);
+    receiver = new MALServiceReceive(this, imap, pmap, brokerHandler);
+    sender = new MALServiceSend(this, imap, pmap, receiver, brokerHandler);
   }
 
   @Override
@@ -78,9 +80,9 @@ public class MALImpl extends MALClose implements MAL
     return receiver;
   }
 
-  public MALServiceMaps getMaps()
+  public MALInteractionMap getMaps()
   {
-    return maps;
+    return imap;
   }
 
   public MALSecurityManager getSecurityManager()

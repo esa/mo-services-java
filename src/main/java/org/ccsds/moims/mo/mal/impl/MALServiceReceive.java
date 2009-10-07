@@ -42,13 +42,15 @@ import org.ccsds.moims.mo.mal.structures.Union;
 public class MALServiceReceive implements MALMessageListener
 {
   private final MALImpl impl;
-  private final MALServiceMaps maps;
+  private final MALInteractionMap imap;
+  private final MALPubSubMap pmap;
   private final MALBroker brokerHandler;
 
-  public MALServiceReceive(MALImpl impl, MALServiceMaps maps, MALBroker brokerHandler)
+  public MALServiceReceive(MALImpl impl, MALInteractionMap imap, MALPubSubMap pmap, MALBroker brokerHandler)
   {
     this.impl = impl;
-    this.maps = maps;
+    this.imap = imap;
+    this.pmap = pmap;
     this.brokerHandler = brokerHandler;
   }
 
@@ -63,16 +65,6 @@ public class MALServiceReceive implements MALMessageListener
   {
     MALProfiler.instance.rcvMarkMALMessageReception(msg);
 
-    try
-    {
-      msg = impl.getSecurityManager().check(msg);
-    }
-    catch (MALException ex)
-    {
-      //todo
-      ex.printStackTrace();
-    }
-
     onMessage(msg, null, null);
   }
 
@@ -84,145 +76,157 @@ public class MALServiceReceive implements MALMessageListener
 
   public void onMessage(MALMessage msg, Hashtable qosProperties, MALInteractionHandler handler)
   {
-    switch (msg.getHeader().getInteractionType().getOrdinal())
+    try
     {
-      case InteractionType._SEND_INDEX:
+      msg = impl.getSecurityManager().check(msg);
+
+      switch (msg.getHeader().getInteractionType().getOrdinal())
       {
-        internalHandleSend(msg, handler);
-        break;
-      }
-      case InteractionType._SUBMIT_INDEX:
-      {
-        switch (msg.getHeader().getInteractionStage().intValue())
+        case InteractionType._SEND_INDEX:
         {
-          case MALSubmitOperation._SUBMIT_STAGE:
-          {
-            internalHandleSubmit(msg, handler);
-            break;
-          }
-          case MALSubmitOperation._SUBMIT_ACK_STAGE:
-          {
-            maps.handleStage(msg);
-            break;
-          }
-          default:
-          {
-            throw new UnsupportedOperationException("Not supported yet.");
-          }
+          internalHandleSend(msg, handler);
+          break;
         }
-        break;
-      }
-      case InteractionType._REQUEST_INDEX:
-      {
-        switch (msg.getHeader().getInteractionStage().intValue())
+        case InteractionType._SUBMIT_INDEX:
         {
-          case MALRequestOperation._REQUEST_STAGE:
+          switch (msg.getHeader().getInteractionStage().intValue())
           {
-            internalHandleRequest(msg, handler);
-            break;
+            case MALSubmitOperation._SUBMIT_STAGE:
+            {
+              internalHandleSubmit(msg, handler);
+              break;
+            }
+            case MALSubmitOperation._SUBMIT_ACK_STAGE:
+            {
+              imap.handleStage(msg);
+              break;
+            }
+            default:
+            {
+              throw new UnsupportedOperationException("Not supported yet.");
+            }
           }
-          case MALRequestOperation._REQUEST_RESPONSE_STAGE:
-          {
-            maps.handleStage(msg);
-            break;
-          }
-          default:
-          {
-            throw new UnsupportedOperationException("Not supported yet.");
-          }
+          break;
         }
-        break;
-      }
-      case InteractionType._INVOKE_INDEX:
-      {
-        switch (msg.getHeader().getInteractionStage().intValue())
+        case InteractionType._REQUEST_INDEX:
         {
-          case MALInvokeOperation._INVOKE_STAGE:
+          switch (msg.getHeader().getInteractionStage().intValue())
           {
-            internalHandleInvoke(msg, handler);
-            break;
+            case MALRequestOperation._REQUEST_STAGE:
+            {
+              internalHandleRequest(msg, handler);
+              break;
+            }
+            case MALRequestOperation._REQUEST_RESPONSE_STAGE:
+            {
+              imap.handleStage(msg);
+              break;
+            }
+            default:
+            {
+              throw new UnsupportedOperationException("Not supported yet.");
+            }
           }
-          case MALInvokeOperation._INVOKE_ACK_STAGE:
-          case MALInvokeOperation._INVOKE_RESPONSE_STAGE:
-          {
-            maps.handleStage(msg);
-            break;
-          }
-          default:
-          {
-            throw new UnsupportedOperationException("Not supported yet.");
-          }
+          break;
         }
-        break;
-      }
-      case InteractionType._PROGRESS_INDEX:
-      {
-        switch (msg.getHeader().getInteractionStage().intValue())
+        case InteractionType._INVOKE_INDEX:
         {
-          case MALProgressOperation._PROGRESS_STAGE:
+          switch (msg.getHeader().getInteractionStage().intValue())
           {
-            internalHandleProgress(msg, handler);
-            break;
+            case MALInvokeOperation._INVOKE_STAGE:
+            {
+              internalHandleInvoke(msg, handler);
+              break;
+            }
+            case MALInvokeOperation._INVOKE_ACK_STAGE:
+            case MALInvokeOperation._INVOKE_RESPONSE_STAGE:
+            {
+              imap.handleStage(msg);
+              break;
+            }
+            default:
+            {
+              throw new UnsupportedOperationException("Not supported yet.");
+            }
           }
-          case MALProgressOperation._PROGRESS_ACK_STAGE:
-          case MALProgressOperation._PROGRESS_UPDATE_STAGE:
-          case MALProgressOperation._PROGRESS_RESPONSE_STAGE:
-          {
-            maps.handleStage(msg);
-            break;
-          }
-          default:
-          {
-            throw new UnsupportedOperationException("Not supported yet.");
-          }
+          break;
         }
-        break;
-      }
-      case InteractionType._PUBSUB_INDEX:
-      {
-        switch (msg.getHeader().getInteractionStage().intValue())
+        case InteractionType._PROGRESS_INDEX:
         {
-          case MALPubSubOperation._REGISTER_STAGE:
+          switch (msg.getHeader().getInteractionStage().intValue())
           {
-            internalHandleRegister(msg);
-            break;
+            case MALProgressOperation._PROGRESS_STAGE:
+            {
+              internalHandleProgress(msg, handler);
+              break;
+            }
+            case MALProgressOperation._PROGRESS_ACK_STAGE:
+            case MALProgressOperation._PROGRESS_UPDATE_STAGE:
+            case MALProgressOperation._PROGRESS_RESPONSE_STAGE:
+            {
+              imap.handleStage(msg);
+              break;
+            }
+            default:
+            {
+              throw new UnsupportedOperationException("Not supported yet.");
+            }
           }
-          case MALPubSubOperation._REGISTER_ACK_STAGE:
-          {
-            maps.handleStage(msg);
-            break;
-          }
-          case MALPubSubOperation._PUBLISH_STAGE:
-          {
-            internalHandlePublish(msg);
-            break;
-          }
-          case MALPubSubOperation._NOTIFY_STAGE:
-          {
-            internalHandleNotify(msg);
-            break;
-          }
-          case MALPubSubOperation._DEREGISTER_STAGE:
-          {
-            internalHandleDeregister(msg);
-            break;
-          }
-          case MALPubSubOperation._DEREGISTER_ACK_STAGE:
-          {
-            maps.handleStage(msg);
-            break;
-          }
-          default:
-          {
-            throw new UnsupportedOperationException("Not supported yet.");
-          }
+          break;
         }
-        break;
+        case InteractionType._PUBSUB_INDEX:
+        {
+          switch (msg.getHeader().getInteractionStage().intValue())
+          {
+            case MALPubSubOperation._REGISTER_STAGE:
+            {
+              internalHandleRegister(msg);
+              break;
+            }
+            case MALPubSubOperation._REGISTER_ACK_STAGE:
+            {
+              imap.handleStage(msg);
+              break;
+            }
+            case MALPubSubOperation._PUBLISH_STAGE:
+            {
+              internalHandlePublish(msg);
+              break;
+            }
+            case MALPubSubOperation._NOTIFY_STAGE:
+            {
+              internalHandleNotify(msg);
+              break;
+            }
+            case MALPubSubOperation._DEREGISTER_STAGE:
+            {
+              internalHandleDeregister(msg);
+              break;
+            }
+            case MALPubSubOperation._DEREGISTER_ACK_STAGE:
+            {
+              imap.handleStage(msg);
+              break;
+            }
+            default:
+            {
+              throw new UnsupportedOperationException("Not supported yet.");
+            }
+          }
+          break;
+        }
+        default:
+        {
+          throw new UnsupportedOperationException("Not supported yet.");
+        }
       }
-      default:
-      {
-        throw new UnsupportedOperationException("Not supported yet.");
-      }
+    }
+    catch (MALException ex)
+    {
+      //todo
+      ex.printStackTrace();
+
+      impl.getSendingInterface().returnError(msg.getHeader().getTransactionId(), msg, msg.getHeader().getInteractionStage(), ex.getStandardError());
     }
   }
 
@@ -241,7 +245,7 @@ public class MALServiceReceive implements MALMessageListener
 
   void internalHandleSubmit(MALMessage msg, MALInteractionHandler handler)
   {
-    Identifier transId = maps.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
+    Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
 
     try
     {
@@ -256,7 +260,7 @@ public class MALServiceReceive implements MALMessageListener
 
   void internalHandleRequest(MALMessage msg, MALInteractionHandler handler)
   {
-    Identifier transId = maps.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
+    Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
 
     try
     {
@@ -271,7 +275,7 @@ public class MALServiceReceive implements MALMessageListener
 
   void internalHandleInvoke(MALMessage msg, MALInteractionHandler handler)
   {
-    Identifier transId = maps.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
+    Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
 
     try
     {
@@ -286,7 +290,7 @@ public class MALServiceReceive implements MALMessageListener
 
   void internalHandleProgress(MALMessage msg, MALInteractionHandler handler)
   {
-    Identifier transId = maps.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
+    Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
 
     try
     {
@@ -301,7 +305,7 @@ public class MALServiceReceive implements MALMessageListener
 
   void internalHandleRegister(MALMessage msg)
   {
-    Identifier transId = maps.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
+    Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
 
     if (msg.getBody() instanceof Subscription)
     {
@@ -313,7 +317,7 @@ public class MALServiceReceive implements MALMessageListener
       // because we don't pass this upwards, we have to generate the ack
       impl.getSendingInterface().returnResponse(transId, msg, MALPubSubOperation.REGISTER_ACK_STAGE, null);
 
-    // inform subscribed listeners
+      // inform subscribed listeners
 
     }
     else
@@ -336,7 +340,7 @@ public class MALServiceReceive implements MALMessageListener
 
   void internalHandleNotify(MALMessage msg)
   {
-    MALInteractionListener rcv = maps.getNotifyListener(msg.getHeader().getURIto());
+    MALInteractionListener rcv = pmap.getNotifyListener(msg.getHeader().getURIto());
 
     if (null != rcv)
     {
@@ -360,7 +364,7 @@ public class MALServiceReceive implements MALMessageListener
 
   void internalHandleDeregister(MALMessage msg)
   {
-    Identifier transId = maps.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
+    Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
 
     if (msg.getBody() instanceof IdentifierList)
     {
@@ -372,7 +376,7 @@ public class MALServiceReceive implements MALMessageListener
       // because we don't pass this upwards, we have to generate the ack
       impl.getSendingInterface().returnResponse(transId, msg, MALPubSubOperation.DEREGISTER_ACK_STAGE, null);
 
-    // inform subscribed listeners
+      // inform subscribed listeners
 
     }
     else

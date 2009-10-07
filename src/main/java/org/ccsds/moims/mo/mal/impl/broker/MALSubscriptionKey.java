@@ -1,6 +1,7 @@
 package org.ccsds.moims.mo.mal.impl.broker;
 
 import org.ccsds.moims.mo.mal.structures.EntityKey;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 
 public final class MALSubscriptionKey implements Comparable
 {
@@ -14,10 +15,10 @@ public final class MALSubscriptionKey implements Comparable
   {
     super();
 
-    key1 = lst.getFirstSubKey().getValue();
-    key2 = lst.getSecondSubKey().getValue();
-    key3 = lst.getThirdSubKey().getValue();
-    key4 = lst.getFourthSubKey().getValue();
+    key1 = getIdValue(lst.getFirstSubKey());
+    key2 = getIdValue(lst.getSecondSubKey());
+    key3 = getIdValue(lst.getThirdSubKey());
+    key4 = getIdValue(lst.getFourthSubKey());
   }
 
   @Override
@@ -109,5 +110,15 @@ public final class MALSubscriptionKey implements Comparable
     }
 
     return false;
+  }
+
+  private static String getIdValue(Identifier id)
+  {
+    if ((null != id) && (null != id.getValue()))
+    {
+      return id.getValue();
+    }
+
+    return null;
   }
 }

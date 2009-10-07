@@ -9,10 +9,8 @@ import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.Pair;
-import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
@@ -20,65 +18,18 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  * @version 1.0
  * @created 17-Aug-2006 10:24:12
  */
-public class MALServiceMaps
+public class MALInteractionMap
 {
-  private volatile int transId = 0;
   private final java.util.Map<String, InternalOperationHandler> transMap = new java.util.TreeMap<String, InternalOperationHandler>();
   private final java.util.Map<String, Pair> resolveMap = new java.util.TreeMap<String, Pair>();
-//  private final java.util.Map<String, MALMessage> resultMap = new java.util.TreeMap<String, MALMessage>();
-//  private final java.util.Map<String, OperationHandler> listenerMap = new java.util.TreeMap<String, OperationHandler>();
-  private final java.util.Map<String, MALInteractionListener> notifyMap = new java.util.TreeMap<String, MALInteractionListener>();
 
-  public MALServiceMaps()
+  public MALInteractionMap()
   {
-  }
-
-  public void registerNotifyListener(MALMessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener list)
-  {
-    //TODO: Not correct currently as register can be called multiple times legally by the same consumer to modify their subscription
-    final String id = details.endpoint.getURI().getValue();
-
-    synchronized (notifyMap)
-    {
-      if (false == notifyMap.containsKey(id))
-      {
-        notifyMap.put(id, list);
-      }
-    }
-  }
-
-  public MALInteractionListener getNotifyListener(URI uri)
-  {
-    final String id = uri.getValue();
-
-    synchronized (notifyMap)
-    {
-      if (notifyMap.containsKey(id))
-      {
-        return notifyMap.get(id);
-      }
-    }
-
-    return null;
-  }
-
-  public void deregisterNotifyListener(MALMessageDetails details, MALPubSubOperation op, IdentifierList unsubscription)
-  {
-    //TODO: Not correct currently as deregister can be called multiple times legally by the same consumer to modify their subscription
-    final String id = details.endpoint.getURI().getValue();
-
-    synchronized (notifyMap)
-    {
-      if (notifyMap.containsKey(id))
-      {
-        notifyMap.remove(id);
-      }
-    }
   }
 
   public Identifier createTransaction(MALOperation operation, boolean syncOperation, byte syncStage, MALInteractionListener listener)
   {
-    final Identifier oTransId = new Identifier(Integer.toString(transId++));
+    final Identifier oTransId = MALTransactionStore.getTransactionId();
 
     synchronized (transMap)
     {
@@ -88,23 +39,6 @@ public class MALServiceMaps
     return oTransId;
   }
 
-//  public void registerInteractionListener(Identifier _transId, MALOperation op, MALInteractionListener listener)
-//  {
-//    final String id = _transId.getValue();
-//
-//    synchronized (transMap)
-//    {
-//      if (transMap.containsKey(id))
-//      {
-//        listenerMap.put(id, new OperationHandler(op, listener));
-//      }
-//      else
-//      {
-//        System.out.println("**** No key found in service maps to register interaction listener ! " + id);
-//      }
-//    }
-//  }
-//
   public MALMessage waitForResponse(Identifier _transId)
   {
     InternalOperationHandler handler = null;
@@ -192,9 +126,10 @@ public class MALServiceMaps
     }
   }
 
+
   public Identifier addTransactionSource(URI urlFrom, Identifier transactionId)
   {
-    final Identifier oTransId = new Identifier(Integer.toString(transId++));
+    final Identifier oTransId = MALTransactionStore.getTransactionId();
 
     synchronized (resolveMap)
     {

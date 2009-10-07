@@ -45,7 +45,7 @@ public class MALProviderImpl extends MALClose implements MALProvider, MALMessage
   private final MALEndPoint endpoint;
   private final MALEndPoint localBrokerEndpoint;
 
-  public MALProviderImpl(MALClose parent, MALServiceSend sendHandler, MALServiceReceive receiveHandler, MALServiceMaps maps, String localName, String protocol, MALService service, Blob authenticationId, MALInteractionHandler handler, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties, Boolean isPublisher, URI sharedBrokerUri) throws MALException
+  public MALProviderImpl(MALClose parent, MALServiceSend sendHandler, MALServiceReceive receiveHandler, MALInteractionMap maps, String localName, String protocol, MALService service, Blob authenticationId, MALInteractionHandler handler, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties, Boolean isPublisher, URI sharedBrokerUri) throws MALException
   {
     super(parent);
 
