@@ -493,7 +493,7 @@ public class MALServiceSend
 
   void handlePossibleReturnError(MALMessage rtn) throws MALException
   {
-    if ((null != rtn) && (rtn.getHeader().getIsError()))
+    if ((null != rtn) && (rtn.getHeader().isError()))
     {
       if (rtn.getBody() instanceof StandardError)
       {

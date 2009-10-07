@@ -73,7 +73,7 @@ public class MALSimpleBrokerHandler implements MALBroker
       {
         EntityRequest rqst = (EntityRequest) lst.get(idx);
         EntityKeyList keyList = rqst.getEntityKeys();
-        boolean bOnChange = rqst.getOnlyOnChange();
+        boolean bOnChange = rqst.isOnlyOnChange();
 
         for (int i = 0; i < keyList.size(); i++)
         {
@@ -235,7 +235,7 @@ public class MALSimpleBrokerHandler implements MALBroker
         msg.header.setService(srcHdr.getService());
         msg.header.setOperation(srcHdr.getOperation());
         msg.header.setVersion(srcHdr.getVersion());
-        msg.header.setIsError(srcHdr.getIsError());
+        msg.header.setIsError(srcHdr.isError());
 
         lst.add(msg);
       }
@@ -415,6 +415,7 @@ public class MALSimpleBrokerHandler implements MALBroker
   {
   }
 
+  @Override
   public synchronized void report()
   {
     java.util.Collection<SubscriptionSource> values = entryMap.values();
@@ -429,6 +430,7 @@ public class MALSimpleBrokerHandler implements MALBroker
     System.out.println("END REPORT");
   }
 
+  @Override
   public synchronized void addConsumer(MALMessage msg)
   {
     if (null != msg)
@@ -442,6 +444,7 @@ public class MALSimpleBrokerHandler implements MALBroker
     }
   }
 
+  @Override
   public synchronized java.util.List<MALBrokerMessage> createNotify(MessageHeader hdr, UpdateList updateList)
   {
     java.util.List<MALBrokerMessage> lst = new java.util.LinkedList<MALBrokerMessage>();
@@ -459,6 +462,7 @@ public class MALSimpleBrokerHandler implements MALBroker
     return lst;
   }
 
+  @Override
   public synchronized void removeConsumer(MALMessage msg)
   {
     if (null != msg)
@@ -482,6 +486,7 @@ public class MALSimpleBrokerHandler implements MALBroker
     }
   }
 
+  @Override
   public synchronized void removeLostConsumer(MessageHeader hdr)
   {
     if (null != hdr)

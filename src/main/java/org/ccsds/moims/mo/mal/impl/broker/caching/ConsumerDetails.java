@@ -94,7 +94,7 @@ class ConsumerDetails
       notifyMessage.header.setService(srcHdr.getService());
       notifyMessage.header.setOperation(srcHdr.getOperation());
       notifyMessage.header.setVersion(srcHdr.getVersion());
-      notifyMessage.header.setIsError(srcHdr.getIsError());
+      notifyMessage.header.setIsError(srcHdr.isError());
 
       lst.add(notifyMessage);
 

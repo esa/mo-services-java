@@ -61,7 +61,7 @@ class SubscriptionDetails
     {
       EntityRequest rqst = (EntityRequest) lst.get(idx);
       EntityKeyList keyList = rqst.getEntityKeys();
-      boolean bOnlyOnChange = rqst.getOnlyOnChange();
+      boolean bOnlyOnChange = rqst.isOnlyOnChange();
 
       for (int i = 0; i < keyList.size(); i++)
       {
