@@ -448,7 +448,8 @@ public class MALServiceSend
 
     if (!msgList.isEmpty())
     {
-      java.util.List<MALMessage> transMsgs = new Vector<MALMessage>(msgList.size());
+      MALMessage[] transMsgs = new MALMessage[msgList.size()];
+      int i = 0;
       for (MALBrokerMessage brokerMessage : msgList)
       {
         try
@@ -460,7 +461,7 @@ public class MALServiceSend
 
           MALMessage msg = endpoint.createMessage(brokerMessage.header, brokerMessage.updates, null);
 
-          transMsgs.add(msg);
+          transMsgs[i++] = msg;
 
           MALProfiler.instance.sendMALAddObject(hdr, msg);
         }
@@ -480,7 +481,7 @@ public class MALServiceSend
       // send it out
       try
       {
-        endpoint.sendMessages((MALMessage[])transMsgs.toArray());
+        endpoint.sendMessages(transMsgs);
       }
       catch (MALException ex)
       {
