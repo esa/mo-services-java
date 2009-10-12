@@ -36,12 +36,17 @@ public class MALConsumerImpl extends MALClose implements MALConsumer
   private final MALImpl impl;
   private final MALMessageDetails details;
 
-
   public MALConsumerImpl(MALImpl impl, MALConsumerManagerImpl parent, URI uriTo, URI brokerUri, MALService service, Blob authenticationId, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qosLevel, Hashtable qosProps, Integer priority) throws MALException
   {
     super(parent);
     this.impl = impl;
     this.details = new MALMessageDetails(MALTransportSingleton.instance(uriTo, null).createEndPoint(null, null, qosProps), uriTo, brokerUri, service, authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, qosProps, priority);
+  }
+
+  @Override
+  public URI getURI()
+  {
+    return details.endpoint.getURI();
   }
 
   @Override
