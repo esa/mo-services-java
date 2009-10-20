@@ -7,6 +7,7 @@ package org.ccsds.moims.mo.mal.impl;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import java.util.Hashtable;
 import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.provider.MALBroker;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
@@ -47,6 +48,18 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
 
   @Override
   public void deleteProvider(String localName) throws MALException
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public MALBroker createBroker(String localName, String protocol, MALService service, Blob authenticationId, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties) throws MALException
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public void deleteBroker(String localName) throws MALException
   {
     throw new UnsupportedOperationException("Not supported yet.");
   }
