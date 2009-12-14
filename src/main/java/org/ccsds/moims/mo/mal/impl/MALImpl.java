@@ -4,15 +4,19 @@
  */
 package org.ccsds.moims.mo.mal.impl;
 
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerManagerImpl;
+import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import java.util.Hashtable;
-import javax.crypto.SecretKey;
+import java.util.Map;
+import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MAL;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.impl.broker.MALBroker;
-import org.ccsds.moims.mo.mal.impl.broker.MALSimpleBrokerHandler;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerHandler;
+import org.ccsds.moims.mo.mal.impl.broker.simple.SimpleBrokerHandler;
 import org.ccsds.moims.mo.mal.security.MALSecurityManager;
 import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -24,9 +28,9 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 public class MALImpl extends MALClose implements MAL
 {
   private final MALSecurityManager securityManager;
-  private final MALInteractionMap imap;
-  private final MALPubSubMap pmap;
-  private final MALBroker brokerHandler;
+  private final MALInteractionMap imap = new MALInteractionMap();
+  private final MALPubSubMap pmap = new MALPubSubMap();
+  private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new TreeMap<String, MALBrokerBindingImpl>();
   private final MALServiceReceive receiver;
   private final MALServiceSend sender;
 
@@ -43,11 +47,8 @@ public class MALImpl extends MALClose implements MAL
       securityManager = new NullSecurityManager();
     }
 
-    imap = new MALInteractionMap();
-    pmap = new MALPubSubMap();
-    brokerHandler = createBroker();
-    receiver = new MALServiceReceive(this, imap, pmap, brokerHandler);
-    sender = new MALServiceSend(this, imap, pmap, receiver, brokerHandler);
+    receiver = new MALServiceReceive(this, imap, pmap, brokerBindingMap);
+    sender = new MALServiceSend(this, imap, pmap, receiver);
   }
 
   @Override
@@ -60,6 +61,12 @@ public class MALImpl extends MALClose implements MAL
   public MALProviderManager createProviderManager() throws MALException
   {
     return (MALProviderManager) addChild(new MALProviderManagerImpl(this));
+  }
+
+  @Override
+  public MALBrokerManager createBrokerManager() throws MALException
+  {
+    return (MALBrokerManager) addChild(new MALBrokerManagerImpl(this, brokerBindingMap));
   }
 
   @Override
@@ -90,22 +97,22 @@ public class MALImpl extends MALClose implements MAL
     return securityManager;
   }
 
-  private MALBroker createBroker()
+  public MALBrokerHandler createBroker()
   {
     String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class", "org.ccsds.moims.mo.mal.impl.broker.MALSimpleBrokerHandler");
 
-    MALBroker broker = null;
+    MALBrokerHandler broker = null;
     try
     {
       Class cls = ClassLoader.getSystemClassLoader().loadClass(clsName);
 
-      broker = (MALBroker) cls.newInstance();
-      System.out.println("MAL Broker implementation: " + cls.getSimpleName());
+      broker = (MALBrokerHandler) cls.newInstance();
+      System.out.println("INFO: Creating internal MAL Broker handler: " + cls.getSimpleName());
     }
     catch (Exception ex)
     {
-      broker = new MALSimpleBrokerHandler();
-      System.out.println("MAL Broker implementation: MALSimpleBrokerHandler");
+      broker = new SimpleBrokerHandler();
+      System.out.println("INFO: Creating internal MAL Broker handler: SimpleBrokerHandler");
     }
 
     return broker;

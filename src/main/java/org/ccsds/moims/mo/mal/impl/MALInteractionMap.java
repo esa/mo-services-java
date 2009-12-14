@@ -8,9 +8,14 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
+import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.Pair;
+import org.ccsds.moims.mo.mal.structures.StandardError;
+import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
@@ -39,6 +44,18 @@ public class MALInteractionMap
     return oTransId;
   }
 
+  public Identifier createTransaction(MALOperation operation, boolean syncOperation, byte syncStage, MALPublishInteractionListener listener)
+  {
+    final Identifier oTransId = MALTransactionStore.getTransactionId();
+
+    synchronized (transMap)
+    {
+      transMap.put(oTransId.getValue(), new InternalOperationHandler(operation, syncOperation, syncStage, new MALInteractionListenerPublishAdapter(listener)));
+    }
+
+    return oTransId;
+  }
+
   public MALMessage waitForResponse(Identifier _transId)
   {
     InternalOperationHandler handler = null;
@@ -52,7 +69,7 @@ public class MALInteractionMap
       }
       else
       {
-        System.out.println("**** No key found in service maps to wait for response! " + id);
+        System.out.println("ERROR: **** No key found in service maps to wait for response! " + id);
       }
     }
 
@@ -84,7 +101,7 @@ public class MALInteractionMap
       {
         if (handler.finished())
         {
-          System.out.println("**** A Removing handler from service maps: " + id);
+          System.out.println("INFO: A Removing handler from service maps: " + id);
           transMap.remove(id);
         }
       }
@@ -106,7 +123,7 @@ public class MALInteractionMap
       }
       else
       {
-        System.out.println("**** No key found in service maps to get listener! " + id);
+        System.out.println("ERROR: **** No key found in service maps to get listener! " + id);
       }
     }
 
@@ -119,13 +136,12 @@ public class MALInteractionMap
       {
         synchronized (transMap)
         {
-          System.out.println("**** B Removing handler from service maps: " + id);
+          System.out.println("INFO: B Removing handler from service maps: " + id);
           transMap.remove(id);
         }
       }
     }
   }
-
 
   public Identifier addTransactionSource(URI urlFrom, Identifier transactionId)
   {
@@ -196,9 +212,15 @@ public class MALInteractionMap
         }
         case InteractionType._PUBSUB_INDEX:
         {
-          if ((stage == MALPubSubOperation._REGISTER_STAGE) || (stage == MALPubSubOperation._DEREGISTER_STAGE))
+          switch (stage)
           {
-            receivedResponse = true;
+            case MALPubSubOperation._REGISTER_STAGE:
+            case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
+            case MALPubSubOperation._DEREGISTER_STAGE:
+            case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
+            {
+              receivedResponse = true;
+            }
           }
           break;
         }
@@ -253,7 +275,7 @@ public class MALInteractionMap
               else
               {
                 receivedResponse = true;
-                listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+                listener.responseReceived(operation, msg.getHeader(), msg.getBody());
               }
             }
             break;
@@ -320,7 +342,9 @@ public class MALInteractionMap
             switch (interactionStage)
             {
               case MALPubSubOperation._REGISTER_ACK_STAGE:
+              case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
               case MALPubSubOperation._DEREGISTER_ACK_STAGE:
+              case MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE:
               {
                 if (syncOperation)
                 {
@@ -329,7 +353,14 @@ public class MALInteractionMap
                 else
                 {
                   receivedAck = true;
-                  listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+                  if(msg.getHeader().isError())
+                  {
+                    listener.errorReceived(operation, msg.getHeader(), (StandardError)msg.getBody());
+                  }
+                  else
+                  {
+                    listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+                  }
                 }
                 break;
               }
@@ -371,6 +402,43 @@ public class MALInteractionMap
     public boolean finished()
     {
       return receivedResponse && receivedAck;
+    }
+  }
+
+  private final static class MALInteractionListenerPublishAdapter implements MALInteractionListener
+  {
+    private final MALPublishInteractionListener delegate;
+
+    public MALInteractionListenerPublishAdapter(MALPublishInteractionListener delegate)
+    {
+      this.delegate = delegate;
+    }
+
+    @Override
+    public void acknowledgementReceived(MALOperation op, MessageHeader msgHeader, Element result) throws MALException
+    {
+      delegate.acknowledgementReceived(msgHeader);
+    }
+
+    @Override
+    public void errorReceived(MALOperation op, MessageHeader msgHeader, StandardError error) throws MALException
+    {
+      delegate.errorReceived(msgHeader, error);
+    }
+
+    @Override
+    public void notifyReceived(MALOperation op, MessageHeader msgHeader, SubscriptionUpdate subscriptionUpdate) throws MALException
+    {
+    }
+
+    @Override
+    public void responseReceived(MALOperation op, MessageHeader msgHeader, Element result) throws MALException
+    {
+    }
+
+    @Override
+    public void updateReceived(MALOperation op, MessageHeader msgHeader, Element update) throws MALException
+    {
     }
   }
 }

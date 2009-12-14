@@ -12,6 +12,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
 
 /**
  *
@@ -19,27 +20,27 @@ import org.ccsds.moims.mo.mal.impl.MALImpl;
  */
 public class ProgressInteractionImpl extends InvokeInteractionImpl implements MALProgress
 {
-  public ProgressInteractionImpl(MALImpl impl, Identifier internalTransId, MALMessage msg)
+  public ProgressInteractionImpl(MALImpl impl, MALServiceComponentImpl handler, Identifier internalTransId, MALMessage msg)
   {
-    super(impl, internalTransId, msg);
+    super(impl, handler, internalTransId, msg);
   }
 
   @Override
   public void sendAcknowledgement(Element result) throws MALException
   {
-    impl.getSendingInterface().returnResponse(internalTransId, msg, MALProgressOperation.PROGRESS_ACK_STAGE, result);
+    impl.getSendingInterface().returnResponse(handler, internalTransId, msg.getHeader(), MALProgressOperation.PROGRESS_ACK_STAGE, result);
   }
 
   @Override
   public void sendUpdate(Element update) throws MALException
   {
-    impl.getSendingInterface().returnResponse(internalTransId, msg, MALProgressOperation.PROGRESS_UPDATE_STAGE, update);
+    impl.getSendingInterface().returnResponse(handler, internalTransId, msg.getHeader(), MALProgressOperation.PROGRESS_UPDATE_STAGE, update);
   }
 
   @Override
   public void sendResponse(Element result) throws MALException
   {
-    impl.getSendingInterface().returnResponse(internalTransId, msg, MALProgressOperation.PROGRESS_RESPONSE_STAGE, result);
+    impl.getSendingInterface().returnResponse(handler, internalTransId, msg.getHeader(), MALProgressOperation.PROGRESS_RESPONSE_STAGE, result);
   }
 
   @Override

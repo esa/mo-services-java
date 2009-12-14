@@ -1,7 +1,8 @@
 package org.ccsds.moims.mo.mal.impl;
 
-import org.ccsds.moims.mo.mal.impl.broker.MALBroker;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALFactory;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MALOperation;
@@ -11,18 +12,15 @@ import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
-import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALInvoke;
 import org.ccsds.moims.mo.mal.provider.MALProgress;
 import org.ccsds.moims.mo.mal.provider.MALRequest;
 import org.ccsds.moims.mo.mal.provider.MALSubmit;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.UpdateList;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageListener;
 import org.ccsds.moims.mo.mal.impl.patterns.InvokeInteractionImpl;
@@ -31,9 +29,16 @@ import org.ccsds.moims.mo.mal.impl.patterns.RequestInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.SendInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.SubmitInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.profile.MALProfiler;
+import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.EntityKeyList;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.StandardError;
+import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
+import org.ccsds.moims.mo.mal.structures.SubscriptionUpdateList;
 import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.structures.UpdateList;
+import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 
 /**
  * @version 1.0
@@ -43,21 +48,25 @@ public class MALServiceReceive implements MALMessageListener
 {
   private final MALImpl impl;
   private final MALInteractionMap imap;
+  private final Map<String, MALServiceComponentImpl> providerMap = new TreeMap<String, MALServiceComponentImpl>();
+  private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
   private final MALPubSubMap pmap;
-  private final MALBroker brokerHandler;
 
-  public MALServiceReceive(MALImpl impl, MALInteractionMap imap, MALPubSubMap pmap, MALBroker brokerHandler)
+  public MALServiceReceive(MALImpl impl, MALInteractionMap imap, MALPubSubMap pmap, Map<String, MALBrokerBindingImpl> brokerBindingMap)
   {
     this.impl = impl;
     this.imap = imap;
     this.pmap = pmap;
-    this.brokerHandler = brokerHandler;
+    this.brokerBindingMap = brokerBindingMap;
   }
 
   @Override
   public void onMessages(MALMessage[] msgList)
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    for (int i = 0; i < msgList.length; i++)
+    {
+      onMessage(msgList[i]);
+    }
   }
 
   @Override
@@ -65,20 +74,26 @@ public class MALServiceReceive implements MALMessageListener
   {
     MALProfiler.instance.rcvMarkMALMessageReception(msg);
 
-    onMessage(msg, null, null);
+    MALServiceComponentImpl handler = providerMap.get(msg.getHeader().getURIto().getValue());
+
+    internalHandleMessage(msg, msg.getQoSProperties(), handler);
   }
 
   @Override
   public void onInternalError(StandardError err)
   {
+    System.out.println("INFO: MAL Receiving ERROR!");
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
-  public void onMessage(MALMessage msg, Hashtable qosProperties, MALInteractionHandler handler)
+  public void internalHandleMessage(MALMessage msg, Hashtable qosProperties, MALServiceComponentImpl handler)
   {
     try
     {
       msg = impl.getSecurityManager().check(msg);
+
+      System.out.println("INFO: MAL Receiving message");
+      System.out.flush();
 
       switch (msg.getHeader().getInteractionType().getOrdinal())
       {
@@ -178,14 +193,22 @@ public class MALServiceReceive implements MALMessageListener
         {
           switch (msg.getHeader().getInteractionStage().intValue())
           {
+            case MALPubSubOperation._REGISTER_ACK_STAGE:
+            case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
+            case MALPubSubOperation._DEREGISTER_ACK_STAGE:
+            case MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE:
+            {
+              imap.handleStage(msg);
+              break;
+            }
             case MALPubSubOperation._REGISTER_STAGE:
             {
               internalHandleRegister(msg);
               break;
             }
-            case MALPubSubOperation._REGISTER_ACK_STAGE:
+            case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
             {
-              imap.handleStage(msg);
+              internalHandlePublishRegister(msg);
               break;
             }
             case MALPubSubOperation._PUBLISH_STAGE:
@@ -203,9 +226,9 @@ public class MALServiceReceive implements MALMessageListener
               internalHandleDeregister(msg);
               break;
             }
-            case MALPubSubOperation._DEREGISTER_ACK_STAGE:
+            case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
             {
-              imap.handleStage(msg);
+              internalHandlePublishDeregister(msg);
               break;
             }
             default:
@@ -226,162 +249,288 @@ public class MALServiceReceive implements MALMessageListener
       //todo
       ex.printStackTrace();
 
-      impl.getSendingInterface().returnError(msg.getHeader().getTransactionId(), msg, msg.getHeader().getInteractionStage(), ex.getStandardError());
+      impl.getSendingInterface().returnErrorAndCalculateStage(handler, msg.getHeader().getTransactionId(), msg.getHeader(), ex.getStandardError());
     }
   }
 
-  void internalHandleSend(MALMessage msg, MALInteractionHandler handler)
+  void addMessageHandler(MALEndPoint endpoint, MALServiceComponentImpl handler)
+  {
+    String uri = endpoint.getURI().getValue();
+    if (providerMap.containsKey(uri))
+    {
+      System.out.println("ERROR: URI key reused in provider map: " + uri);
+    }
+
+    providerMap.put(uri, handler);
+  }
+
+  void internalHandleSend(MALMessage msg, MALServiceComponentImpl handler)
   {
     try
     {
       MALInteraction interaction = new SendInteractionImpl(impl, msg);
-      handler.handleSend(interaction, msg.getBody());
+      handler.getHandler().handleSend(interaction, msg.getBody());
     }
     catch (MALException ex)
     {
-      System.out.println("Error generated during reception of SEND pattern, dropping: " + ex);
+      System.out.println("ERROR: Error generated during reception of SEND pattern, dropping: " + ex);
     }
   }
 
-  void internalHandleSubmit(MALMessage msg, MALInteractionHandler handler)
+  void internalHandleSubmit(MALMessage msg, MALServiceComponentImpl handler)
   {
     Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
 
     try
     {
-      MALSubmit interaction = new SubmitInteractionImpl(impl, transId, msg);
-      handler.handleSubmit(interaction, msg.getBody());
+      MALSubmit interaction = new SubmitInteractionImpl(impl, handler, transId, msg);
+      handler.getHandler().handleSubmit(interaction, msg.getBody());
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(transId, msg, MALSubmitOperation.SUBMIT_ACK_STAGE, ex.getStandardError());
+      impl.getSendingInterface().returnError(handler, transId, msg.getHeader(), MALSubmitOperation.SUBMIT_ACK_STAGE, ex.getStandardError());
     }
   }
 
-  void internalHandleRequest(MALMessage msg, MALInteractionHandler handler)
+  void internalHandleRequest(MALMessage msg, MALServiceComponentImpl handler)
   {
     Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
 
     try
     {
-      MALRequest interaction = new RequestInteractionImpl(impl, transId, msg);
-      handler.handleRequest(interaction, msg.getBody());
+      MALRequest interaction = new RequestInteractionImpl(impl, handler, transId, msg);
+      handler.getHandler().handleRequest(interaction, msg.getBody());
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(transId, msg, MALRequestOperation.REQUEST_RESPONSE_STAGE, ex.getStandardError());
+      impl.getSendingInterface().returnError(handler, transId, msg.getHeader(), MALRequestOperation.REQUEST_RESPONSE_STAGE, ex.getStandardError());
     }
   }
 
-  void internalHandleInvoke(MALMessage msg, MALInteractionHandler handler)
+  void internalHandleInvoke(MALMessage msg, MALServiceComponentImpl handler)
   {
     Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
 
     try
     {
-      MALInvoke interaction = new InvokeInteractionImpl(impl, transId, msg);
-      handler.handleInvoke(interaction, msg.getBody());
+      MALInvoke interaction = new InvokeInteractionImpl(impl, handler, transId, msg);
+      handler.getHandler().handleInvoke(interaction, msg.getBody());
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(transId, msg, MALInvokeOperation.INVOKE_ACK_STAGE, ex.getStandardError());
+      impl.getSendingInterface().returnError(handler, transId, msg.getHeader(), MALInvokeOperation.INVOKE_ACK_STAGE, ex.getStandardError());
     }
   }
 
-  void internalHandleProgress(MALMessage msg, MALInteractionHandler handler)
+  void internalHandleProgress(MALMessage msg, MALServiceComponentImpl handler)
   {
     Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
 
     try
     {
-      MALProgress interaction = new ProgressInteractionImpl(impl, transId, msg);
-      handler.handleProgress(interaction, msg.getBody());
+      MALProgress interaction = new ProgressInteractionImpl(impl, handler, transId, msg);
+      handler.getHandler().handleProgress(interaction, msg.getBody());
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(transId, msg, MALProgressOperation.PROGRESS_ACK_STAGE, ex.getStandardError());
+      impl.getSendingInterface().returnError(handler, transId, msg.getHeader(), MALProgressOperation.PROGRESS_ACK_STAGE, ex.getStandardError());
     }
   }
 
-  void internalHandleRegister(MALMessage msg)
+  private void internalHandleRegister(MALMessage msg)
   {
     Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
+
+    // find relevant broker
+    MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURIto().getValue());
 
     if (msg.getBody() instanceof Subscription)
     {
       // update register list
-      brokerHandler.report();
-      brokerHandler.addConsumer(msg);
-      brokerHandler.report();
+      brokerHandler.getParent().addConsumer(msg.getHeader(), (Subscription) msg.getBody(), brokerHandler);
 
       // because we don't pass this upwards, we have to generate the ack
-      impl.getSendingInterface().returnResponse(transId, msg, MALPubSubOperation.REGISTER_ACK_STAGE, null);
+      impl.getSendingInterface().returnResponse(brokerHandler, transId, msg.getHeader(), MALPubSubOperation.REGISTER_ACK_STAGE, null);
 
       // inform subscribed listeners
 
     }
     else
     {
-      impl.getSendingInterface().returnError(transId, msg, MALPubSubOperation.REGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of register message must be of type Subscription")));
+      impl.getSendingInterface().returnError(brokerHandler, transId, msg.getHeader(), MALPubSubOperation.REGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of register message must be of type Subscription")));
     }
   }
 
-  void internalHandlePublish(MALMessage msg)
-  {
-    if (msg.getBody() instanceof UpdateList)
-    {
-      impl.getSendingInterface().returnNotify(null, msg.getHeader(), (UpdateList) msg.getBody());
-    }
-    else
-    {
-      System.out.println("Error generated during reception of PUBLISH message, dropping");
-    }
-  }
-
-  void internalHandleNotify(MALMessage msg)
-  {
-    MALInteractionListener rcv = pmap.getNotifyListener(msg.getHeader().getURIto());
-
-    if (null != rcv)
-    {
-      MALOperation operation = MALFactory.lookupOperation(msg.getHeader().getArea(), msg.getHeader().getService(), msg.getHeader().getOperation());
-
-      try
-      {
-        MALProfiler.instance.rcvMarkServiceMessageReception(msg);
-        rcv.notifyReceived(operation, msg.getHeader(), (SubscriptionUpdate) msg.getBody());
-      }
-      catch (MALException ex)
-      {
-        System.out.println("Error generated during handling of NOTIFY message, dropping: " + ex);
-      }
-    }
-    else
-    {
-      System.out.println("Unknown notify consumer requested: " + msg.getHeader().getURIto());
-    }
-  }
-
-  void internalHandleDeregister(MALMessage msg)
+  private void internalHandlePublishRegister(MALMessage msg)
   {
     Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
+
+    // find relevant broker
+    MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURIto().getValue());
+
+    if (msg.getBody() instanceof EntityKeyList)
+    {
+      // update register list
+      brokerHandler.getParent().addProvider(msg.getHeader(), (EntityKeyList) msg.getBody());
+
+      // because we don't pass this upwards, we have to generate the ack
+      impl.getSendingInterface().returnResponse(brokerHandler, transId, msg.getHeader(), MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, null);
+
+      // inform subscribed listeners
+
+    }
+    else
+    {
+      impl.getSendingInterface().returnError(brokerHandler, transId, msg.getHeader(), MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of publish register message must be of type EntityKeyList")));
+    }
+  }
+
+  private void internalHandlePublish(MALMessage msg)
+  {
+    if ((null != msg) && (msg.getHeader().isError()))
+    {
+      if (msg.getBody() instanceof StandardError)
+      {
+        try
+        {
+          MALPublishInteractionListener list = pmap.getPublishListener(msg.getHeader().getURIto(), msg.getHeader().getSessionName());
+
+          if (null != list)
+          {
+            list.errorReceived(msg.getHeader(), (StandardError) msg.getBody());
+          }
+          else
+          {
+            System.out.println("ERROR: Unknown publisher for PUBLISH error: " + msg.getHeader().getURIto());
+          }
+        }
+        catch (MALException ex)
+        {
+          ex.printStackTrace();
+        }
+      }
+    }
+    else
+    {
+      if (msg.getBody() instanceof UpdateList)
+      {
+        // find relevant broker
+        MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURIto().getValue());
+
+        try
+        {
+          brokerHandler.getParent().handlePublish(msg.getHeader(), (UpdateList) msg.getBody());
+        }
+        catch (MALException ex)
+        {
+          impl.getSendingInterface().returnError(brokerHandler, msg.getHeader().getTransactionId(), msg.getHeader(), MALPubSubOperation.PUBLISH_STAGE, ex.getStandardError());
+        }
+      }
+      else
+      {
+        System.out.println("ERROR: Unexpected body type for PUBLISH: " + msg.getHeader().getURIto());
+        //impl.getSendingInterface().returnError(transId, msg.getHeader(), MALPubSubOperation.PUBLISH_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of publish message must be of type UpdateList")));
+      }
+    }
+  }
+
+  private void internalHandleNotify(MALMessage msg)
+  {
+    MALOperation operation = MALFactory.lookupOperation(msg.getHeader().getArea(), msg.getHeader().getService(), msg.getHeader().getOperation());
+
+    if ((null != msg) && (msg.getHeader().isError()))
+    {
+      if (msg.getBody() instanceof StandardError)
+      {
+        Map<String, MALInteractionListener> lists = pmap.getNotifyListenersAndRemove(msg.getHeader().getURIto());
+
+        if (null != lists)
+        {
+          StandardError err = (StandardError) msg.getBody();
+          for (Map.Entry<String, MALInteractionListener> e : lists.entrySet())
+          {
+            try
+            {
+              e.getValue().errorReceived(operation, msg.getHeader(), err);
+            }
+            catch (MALException ex)
+            {
+              ex.printStackTrace();
+            }
+          }
+        }
+        else
+        {
+          System.out.println("ERROR: Unknown notify consumer requested: " + msg.getHeader().getURIto());
+        }
+      }
+    }
+    else
+    {
+      SubscriptionUpdateList subs = (SubscriptionUpdateList) msg.getBody();
+      for (int i = 0; i < subs.size(); i++)
+      {
+        SubscriptionUpdate update = subs.get(i);
+        MALInteractionListener rcv = pmap.getNotifyListener(msg.getHeader().getURIto(), update.getSubscriptionId());
+
+        if (null != rcv)
+        {
+          try
+          {
+            MALProfiler.instance.rcvMarkServiceMessageReception(msg);
+            rcv.notifyReceived(operation, msg.getHeader(), update);
+          }
+          catch (MALException ex)
+          {
+            System.out.println("ERROR: Error generated during handling of NOTIFY message, dropping: " + ex);
+          }
+        }
+        else
+        {
+          System.out.println("ERROR: Unknown notify consumer requested: " + msg.getHeader().getURIto());
+        }
+      }
+    }
+  }
+
+  private void internalHandleDeregister(MALMessage msg)
+  {
+    Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
+
+    // find relevant broker
+    MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURIto().getValue());
 
     if (msg.getBody() instanceof IdentifierList)
     {
       // update register list
-      brokerHandler.report();
-      brokerHandler.removeConsumer(msg);
-      brokerHandler.report();
+      brokerHandler.getParent().removeConsumer(msg.getHeader(), (IdentifierList) msg.getBody());
 
       // because we don't pass this upwards, we have to generate the ack
-      impl.getSendingInterface().returnResponse(transId, msg, MALPubSubOperation.DEREGISTER_ACK_STAGE, null);
+      impl.getSendingInterface().returnResponse(brokerHandler, transId, msg.getHeader(), MALPubSubOperation.DEREGISTER_ACK_STAGE, null);
 
       // inform subscribed listeners
 
     }
     else
     {
-      impl.getSendingInterface().returnError(transId, msg, MALPubSubOperation.DEREGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of deregister message must be of type IdentifierList")));
+      impl.getSendingInterface().returnError(brokerHandler, transId, msg.getHeader(), MALPubSubOperation.DEREGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of deregister message must be of type IdentifierList")));
     }
+  }
+
+  private void internalHandlePublishDeregister(MALMessage msg)
+  {
+    Identifier transId = imap.addTransactionSource(msg.getHeader().getURIfrom(), msg.getHeader().getTransactionId());
+
+    // find relevant broker
+    MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURIto().getValue());
+
+    // update register list
+    brokerHandler.getParent().removeProvider(msg.getHeader());
+
+    // because we don't pass this upwards, we have to generate the ack
+    impl.getSendingInterface().returnResponse(brokerHandler, transId, msg.getHeader(), MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, null);
+
+    // inform subscribed listeners
+
   }
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -17,19 +18,21 @@ import org.ccsds.moims.mo.mal.impl.broker.MALBrokerMessage;
 import org.ccsds.moims.mo.mal.impl.broker.MALSubscriptionKey;
 
 /**
- * A SubscriptionDetails is keyed on subscription Id
+ * A CachingSubscriptionDetails is keyed on subscription Id
  */
-class ConsumerDetails
+class CachingConsumerDetails
 {
   private final String consumerId;
+  private final MALBrokerBindingImpl binding;
   //private Set<MALSubscriptionKey> required = new TreeSet<MALSubscriptionKey>();
-  private final Map<String, SubscriptionDetails> details = new TreeMap<String, SubscriptionDetails>();
+  private final Map<String, CachingSubscriptionDetails> details = new TreeMap<String, CachingSubscriptionDetails>();
   private MALBrokerMessage notifyMessage = null;
 
-  public ConsumerDetails(String consumerId)
+  public CachingConsumerDetails(String consumerId, MALBrokerBindingImpl binding)
   {
     super();
     this.consumerId = consumerId;
+    this.binding = binding;
   }
 
   public void report()
@@ -47,11 +50,11 @@ class ConsumerDetails
   public void addSubscription(Map<MALSubscriptionKey, PublishedEntry> published, Subscription subscription)
   {
     String subId = subscription.getSubscriptionId().getValue();
-    SubscriptionDetails sub = details.get(subId);
+    CachingSubscriptionDetails sub = details.get(subId);
 
     if (null == sub)
     {
-      sub = new SubscriptionDetails(this, subId);
+      sub = new CachingSubscriptionDetails(this, subId);
       details.put(subId, sub);
     }
 
@@ -67,10 +70,10 @@ class ConsumerDetails
   {
     if (null == notifyMessage)
     {
-      notifyMessage = new MALBrokerMessage();
+      notifyMessage = new MALBrokerMessage(binding);
     }
 
-    notifyMessage.updates.add(subUpdate);
+//    notifyMessage.updates.add(subUpdate);
   }
 
   public void getNotifyMessage(MessageHeader srcHdr, Identifier transId, List<MALBrokerMessage> lst)
@@ -78,28 +81,29 @@ class ConsumerDetails
     if (null != notifyMessage)
     {
       // update the details in the header
-      notifyMessage.header.setURIto(new URI(consumerId));
-      notifyMessage.header.setAuthenticationId(srcHdr.getAuthenticationId());
-      notifyMessage.header.setTimestamp(srcHdr.getTimestamp());
-      notifyMessage.header.setQoSlevel(srcHdr.getQoSlevel());
-      notifyMessage.header.setPriority(srcHdr.getPriority());
-      notifyMessage.header.setDomain(srcHdr.getDomain());
-      notifyMessage.header.setNetworkZone(srcHdr.getNetworkZone());
-      notifyMessage.header.setSession(srcHdr.getSession());
-      notifyMessage.header.setSessionName(srcHdr.getSessionName());
-      notifyMessage.header.setInteractionType(InteractionType.PUBSUB);
-      notifyMessage.header.setInteractionStage(MALPubSubOperation.NOTIFY_STAGE);
-      notifyMessage.header.setTransactionId(transId);
-      notifyMessage.header.setArea(srcHdr.getArea());
-      notifyMessage.header.setService(srcHdr.getService());
-      notifyMessage.header.setOperation(srcHdr.getOperation());
-      notifyMessage.header.setVersion(srcHdr.getVersion());
-      notifyMessage.header.setIsError(srcHdr.isError());
+//      notifyMessage.header.setURIto(new URI(consumerId));
+//      notifyMessage.header.setURIfrom(binding.getURI());
+//      notifyMessage.header.setAuthenticationId(srcHdr.getAuthenticationId());
+//      notifyMessage.header.setTimestamp(srcHdr.getTimestamp());
+//      notifyMessage.header.setQoSlevel(srcHdr.getQoSlevel());
+//      notifyMessage.header.setPriority(srcHdr.getPriority());
+//      notifyMessage.header.setDomain(srcHdr.getDomain());
+//      notifyMessage.header.setNetworkZone(srcHdr.getNetworkZone());
+//      notifyMessage.header.setSession(srcHdr.getSession());
+//      notifyMessage.header.setSessionName(srcHdr.getSessionName());
+//      notifyMessage.header.setInteractionType(InteractionType.PUBSUB);
+//      notifyMessage.header.setInteractionStage(MALPubSubOperation.NOTIFY_STAGE);
+//      notifyMessage.header.setTransactionId(transId);
+//      notifyMessage.header.setArea(srcHdr.getArea());
+//      notifyMessage.header.setService(srcHdr.getService());
+//      notifyMessage.header.setOperation(srcHdr.getOperation());
+//      notifyMessage.header.setVersion(srcHdr.getVersion());
+//      notifyMessage.header.setIsError(srcHdr.isError());
 
       lst.add(notifyMessage);
 
       notifyMessage = null;
-      for (SubscriptionDetails sub : details.values())
+      for (CachingSubscriptionDetails sub : details.values())
       {
         sub.clearNotify();
       }
@@ -123,7 +127,7 @@ class ConsumerDetails
 
   public void removeAllSubscriptions(Map<MALSubscriptionKey, PublishedEntry> published)
   {
-    for (Iterator<SubscriptionDetails> it = details.values().iterator(); it.hasNext();)
+    for (Iterator<CachingSubscriptionDetails> it = details.values().iterator(); it.hasNext();)
     {
       it.next().removeSubscription(published);
     }
@@ -134,8 +138,8 @@ class ConsumerDetails
 
   public void appendSubscriptions(PublishedEntry publishedEntry, MALSubscriptionKey key)
   {
-    Set<Map.Entry<String, SubscriptionDetails>> values = details.entrySet();
-    for (Map.Entry<String, SubscriptionDetails> entry : values)
+    Set<Map.Entry<String, CachingSubscriptionDetails>> values = details.entrySet();
+    for (Map.Entry<String, CachingSubscriptionDetails> entry : values)
     {
       entry.getValue().appendSubscription(publishedEntry, key);
     }
@@ -149,8 +153,8 @@ class ConsumerDetails
 //  private void updateIds()
 //  {
 //    required.clear();
-//    Set<Map.Entry<String, SubscriptionDetails>> values = details.entrySet();
-//    for (Map.Entry<String, SubscriptionDetails> entry : values)
+//    Set<Map.Entry<String, CachingSubscriptionDetails>> values = details.entrySet();
+//    for (Map.Entry<String, CachingSubscriptionDetails> entry : values)
 //    {
 //      entry.getValue().appendIds(required);
 //    }

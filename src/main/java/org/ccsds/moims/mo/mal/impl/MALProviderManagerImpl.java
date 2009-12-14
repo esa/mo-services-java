@@ -4,10 +4,12 @@
  */
 package org.ccsds.moims.mo.mal.impl;
 
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerImpl;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
 import org.ccsds.moims.mo.mal.MALService;
-import org.ccsds.moims.mo.mal.provider.MALBroker;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
@@ -23,6 +25,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 public class MALProviderManagerImpl extends MALClose implements MALProviderManager
 {
   private final MALImpl impl;
+  private final List<MALBrokerImpl> brokerList = new LinkedList();
 
   public MALProviderManagerImpl(MALImpl impl)
   {
@@ -43,24 +46,11 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
           Boolean isPublisher,
           URI sharedBrokerUri) throws MALException
   {
-    return (MALProvider) addChild(new MALProviderImpl(this, impl.getSendingInterface(), impl.getReceivingInterface(), impl.getMaps(), localName, protocol, service, authenticationId, handler, expectedQos, priorityLevelNumber, defaultQoSProperties, isPublisher, sharedBrokerUri));
+    return (MALProvider) addChild(new MALProviderImpl(this, impl, impl.getSendingInterface(), impl.getReceivingInterface(), impl.getMaps(), localName, protocol, service, authenticationId, handler, expectedQos, priorityLevelNumber, defaultQoSProperties, isPublisher, sharedBrokerUri));
   }
 
   @Override
   public void deleteProvider(String localName) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
-  public MALBroker createBroker(String localName, String protocol, MALService service, Blob authenticationId, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties) throws MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
-  public void deleteBroker(String localName) throws MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
   }
 }

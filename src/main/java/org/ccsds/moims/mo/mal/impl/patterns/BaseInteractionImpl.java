@@ -12,6 +12,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
 
 /**
  *
@@ -20,13 +21,15 @@ import org.ccsds.moims.mo.mal.impl.MALImpl;
 public abstract class BaseInteractionImpl implements MALInteraction
 {
   protected final MALImpl impl;
+  protected final MALServiceComponentImpl handler;
   protected final Identifier internalTransId;
   protected final MALMessage msg;
   protected final MALOperation operation;
 
-  public BaseInteractionImpl(MALImpl impl, Identifier internalTransId, MALMessage msg)
+  public BaseInteractionImpl(MALImpl impl, MALServiceComponentImpl handler, Identifier internalTransId, MALMessage msg)
   {
     this.impl = impl;
+    this.handler = handler;
     this.internalTransId = internalTransId;
     this.msg = msg;
     this.operation = MALFactory.lookupOperation(msg.getHeader().getArea(), msg.getHeader().getService(), msg.getHeader().getOperation());

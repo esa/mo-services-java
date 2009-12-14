@@ -14,18 +14,18 @@ import org.ccsds.moims.mo.mal.structures.Update;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
 
 /**
- * A SubscriptionDetails is keyed on subscription Id
+ * A CachingSubscriptionDetails is keyed on subscription Id
  */
-class SubscriptionDetails
+class CachingSubscriptionDetails
 {
-  private final ConsumerDetails parent;
+  private final CachingConsumerDetails parent;
   private final String subscriptionId;
   private final Set<MALSubscriptionKey> required = new TreeSet<MALSubscriptionKey>();
   private final Set<MALSubscriptionKey> onAll = new TreeSet<MALSubscriptionKey>();
   private final Set<MALSubscriptionKey> onChange = new TreeSet<MALSubscriptionKey>();
   private SubscriptionUpdate notifySubscriptionUpdate = null;
 
-  public SubscriptionDetails(ConsumerDetails parent, String subscriptionId)
+  public CachingSubscriptionDetails(CachingConsumerDetails parent, String subscriptionId)
   {
     super();
     this.parent = parent;
@@ -39,7 +39,7 @@ class SubscriptionDetails
     System.out.println("      END Subscription ( " + subscriptionId + " )");
   }
 
-  public ConsumerDetails getParent()
+  public CachingConsumerDetails getParent()
   {
     return parent;
   }

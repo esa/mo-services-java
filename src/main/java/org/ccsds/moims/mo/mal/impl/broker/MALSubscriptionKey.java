@@ -104,12 +104,7 @@ public final class MALSubscriptionKey implements Comparable
       return false;
     }
 
-    if (myKeyPart.equals(theirKeyPart))
-    {
-      return true;
-    }
-
-    return false;
+    return myKeyPart.equals(theirKeyPart);
   }
 
   private static String getIdValue(Identifier id)
@@ -120,5 +115,21 @@ public final class MALSubscriptionKey implements Comparable
     }
 
     return null;
+  }
+
+  @Override
+  public String toString()
+  {
+    StringBuffer buf = new StringBuffer();
+    buf.append('[');
+    buf.append(this.key1);
+    buf.append('.');
+    buf.append(this.key2);
+    buf.append('.');
+    buf.append(this.key3);
+    buf.append('.');
+    buf.append(this.key4);
+    buf.append(']');
+    return buf.toString();
   }
 }

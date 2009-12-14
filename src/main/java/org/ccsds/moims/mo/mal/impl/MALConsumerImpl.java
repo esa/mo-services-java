@@ -19,6 +19,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -26,6 +27,11 @@ import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.StandardError;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
  *
@@ -40,7 +46,9 @@ public class MALConsumerImpl extends MALClose implements MALConsumer
   {
     super(parent);
     this.impl = impl;
-    this.details = new MALMessageDetails(MALTransportSingleton.instance(uriTo, null).createEndPoint(null, null, qosProps), uriTo, brokerUri, service, authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, qosProps, priority);
+    MALTransport trans = MALTransportSingleton.instance(uriTo, null);
+    MALEndPoint ep = trans.createEndPoint(null, null, qosProps);
+    this.details = new MALMessageDetails(ep, ep.getURI(), uriTo, brokerUri, service, authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, qosProps, priority);
   }
 
   @Override

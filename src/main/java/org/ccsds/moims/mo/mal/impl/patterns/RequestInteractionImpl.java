@@ -12,6 +12,7 @@ import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 
 /**
@@ -20,15 +21,15 @@ import org.ccsds.moims.mo.mal.structures.StandardError;
  */
 public class RequestInteractionImpl extends BaseInteractionImpl implements MALRequest
 {
-  public RequestInteractionImpl(MALImpl impl, Identifier internalTransId, MALMessage msg)
+  public RequestInteractionImpl(MALImpl impl, MALServiceComponentImpl handler, Identifier internalTransId, MALMessage msg)
   {
-    super(impl, internalTransId, msg);
+    super(impl, handler, internalTransId, msg);
   }
 
   @Override
   public void sendResponse(Element result) throws MALException
   {
-    impl.getSendingInterface().returnResponse(internalTransId, msg, MALRequestOperation.REQUEST_RESPONSE_STAGE, result);
+    impl.getSendingInterface().returnResponse(handler, internalTransId, msg.getHeader(), MALRequestOperation.REQUEST_RESPONSE_STAGE, result);
   }
 
   @Override

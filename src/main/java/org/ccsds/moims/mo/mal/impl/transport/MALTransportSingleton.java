@@ -8,6 +8,8 @@ package org.ccsds.moims.mo.mal.impl.transport;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
@@ -26,8 +28,8 @@ public final class MALTransportSingleton
 
   public static void init()
   {
-    String propName = MALTransportFactory.FACTORY_PROP_NAME_PREFIX + ".rmi";
-    System.setProperty(propName, "org.ccsds.moims.mo.mal.test.transport.rmi.RMITransportFactoryImpl");
+//    String propName = MALTransportFactory.FACTORY_PROP_NAME_PREFIX + ".rmi";
+//    System.setProperty(propName, "org.ccsds.moims.mo.mal.test.transport.rmi.RMITransportFactoryImpl");
 
     if (null != System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol"))
     {
@@ -73,6 +75,33 @@ public final class MALTransportSingleton
     return _instance(s_strDefaultProtocol, null);
   }
 
+  public static boolean isSameTransport(final URI dstUri, MALTransport transport)
+  {
+    init();
+
+    if ((null != dstUri) && (null != dstUri.getValue()))
+    {
+      return isSameTransport(dstUri.getValue(), transport);
+    }
+
+    return false;
+  }
+
+  public static boolean isSameTransport(final String dstUri, MALTransport transport)
+  {
+    init();
+
+    if (null != dstUri)
+    {
+      // lookup for existing transport
+      MALTransport _transport = transportMap.get(getProtocol(dstUri));
+
+      return transport == _transport;
+    }
+
+    return false;
+  }
+
   /**
    *   Creates an instance of the proctocl handler.
    *   @param dstUri The Uri location of the provider.
@@ -81,13 +110,7 @@ public final class MALTransportSingleton
   public static MALTransport _instance(final String dstUri, Hashtable properties) throws MALException
   {
     // get protocol from uri
-    String strProtocol = dstUri;
-
-    int iPro = dstUri.indexOf("://");
-    if (-1 != iPro)
-    {
-      strProtocol = dstUri.substring(0, iPro);
-    }
+    String strProtocol = getProtocol(dstUri);
 
     // lookup for existing transport
     MALTransport transport = transportMap.get(strProtocol);
@@ -111,6 +134,20 @@ public final class MALTransportSingleton
       if (null != transport)
       {
         transportMap.put(strProtocol, transport);
+
+        // check QoS support
+        transport.isSupportedQoSLevel(QoSLevel.BESTEFFORT);
+        transport.isSupportedQoSLevel(QoSLevel.ASSURED);
+        transport.isSupportedQoSLevel(QoSLevel.TIMELY);
+        transport.isSupportedQoSLevel(QoSLevel.QUEUED);
+
+        // check IP support
+        transport.isSupportedInteractionType(InteractionType.SEND);
+        transport.isSupportedInteractionType(InteractionType.SUBMIT);
+        transport.isSupportedInteractionType(InteractionType.REQUEST);
+        transport.isSupportedInteractionType(InteractionType.INVOKE);
+        transport.isSupportedInteractionType(InteractionType.PROGRESS);
+        transport.isSupportedInteractionType(InteractionType.PUBSUB);
       }
     }
 
@@ -136,5 +173,17 @@ public final class MALTransportSingleton
       transportMap.clear();
       handlerMap.clear();
     }
+  }
+
+  private static String getProtocol(String dstUri)
+  {
+    // get protocol from uri
+    int iPro = dstUri.indexOf("://");
+    if (-1 != iPro)
+    {
+      dstUri = dstUri.substring(0, iPro);
+    }
+
+    return dstUri;
   }
 }

@@ -11,6 +11,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
 
 /**
  *
@@ -18,15 +19,15 @@ import org.ccsds.moims.mo.mal.impl.MALImpl;
  */
 public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSubmit
 {
-  public SubmitInteractionImpl(MALImpl impl, Identifier internalTransId, MALMessage msg)
+  public SubmitInteractionImpl(MALImpl impl, MALServiceComponentImpl handler, Identifier internalTransId, MALMessage msg)
   {
-    super(impl, internalTransId, msg);
+    super(impl, handler, internalTransId, msg);
   }
 
   @Override
   public void sendAcknowledgement() throws MALException
   {
-    impl.getSendingInterface().returnResponse(internalTransId, msg, MALSubmitOperation.SUBMIT_ACK_STAGE, null);
+    impl.getSendingInterface().returnResponse(handler, internalTransId, msg.getHeader(), MALSubmitOperation.SUBMIT_ACK_STAGE, null);
   }
 
   @Override

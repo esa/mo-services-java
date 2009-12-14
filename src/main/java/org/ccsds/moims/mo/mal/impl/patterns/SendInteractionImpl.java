@@ -16,6 +16,6 @@ public class SendInteractionImpl extends BaseInteractionImpl implements MALInter
 {
   public SendInteractionImpl(MALImpl impl, MALMessage msg)
   {
-    super(impl, null, msg);
+    super(impl, null, null, msg);
   }
 }
