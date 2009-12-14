@@ -17,6 +17,7 @@ import org.ccsds.moims.mo.mal.impl.profile.MALProfiler;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
@@ -77,6 +78,12 @@ public class MALBrokerImpl extends MALClose implements MALBroker, MALBrokerHandl
   public void addProvider(MessageHeader hdr, EntityKeyList body)
   {
     delegate.addProvider(hdr, body);
+  }
+
+  @Override
+  public QoSLevel getProviderQoSLevel(MessageHeader hdr)
+  {
+    return delegate.getProviderQoSLevel(hdr);
   }
 
   @Override

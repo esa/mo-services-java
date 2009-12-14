@@ -14,6 +14,7 @@ import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.Update;
@@ -71,15 +72,29 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
     report();
     ProviderDetails details = providerMap.get(hdr.getURIfrom().getValue());
 
-    if (null == details);
+    if (null == details)
     {
-      details = new ProviderDetails(hdr.getURIfrom().getValue());
+      details = new ProviderDetails(hdr.getURIfrom().getValue(), hdr.getQoSlevel());
       providerMap.put(hdr.getURIfrom().getValue(), details);
+      System.out.println("New publisher registering: " + hdr);
     }
 
     details.setKeyList(l);
 
     report();
+  }
+
+  @Override
+  public QoSLevel getProviderQoSLevel(MessageHeader hdr)
+  {
+    ProviderDetails details = providerMap.get(hdr.getURIfrom().getValue());
+
+    if (null != details)
+    {
+      return details.getQosLevel();
+    }
+
+    return null;
   }
 
   @Override
@@ -199,11 +214,18 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
   protected static final class ProviderDetails
   {
     private final String uri;
+    private final QoSLevel qosLevel;
     private final Set<MALSubscriptionKey> keySet = new TreeSet<MALSubscriptionKey>();
 
-    public ProviderDetails(String uri)
+    public ProviderDetails(String uri, QoSLevel qosLevel)
     {
       this.uri = uri;
+      this.qosLevel = qosLevel;
+    }
+
+    public QoSLevel getQosLevel()
+    {
+      return qosLevel;
     }
 
     public void report()

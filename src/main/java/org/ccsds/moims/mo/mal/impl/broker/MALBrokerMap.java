@@ -13,6 +13,7 @@ import org.ccsds.moims.mo.mal.impl.MALImpl;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
 
@@ -40,6 +41,12 @@ public class MALBrokerMap implements MALBrokerHandler
   public void addProvider(MessageHeader hdr, EntityKeyList body)
   {
     getHandler(hdr).addProvider(hdr, body);
+  }
+
+  @Override
+  public QoSLevel getProviderQoSLevel(MessageHeader hdr)
+  {
+    return getHandler(hdr).getProviderQoSLevel(hdr);
   }
 
   @Override
