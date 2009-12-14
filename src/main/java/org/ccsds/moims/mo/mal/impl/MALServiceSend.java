@@ -609,12 +609,6 @@ public class MALServiceSend
 
       MALMessage msg = endpoint.createMessage(createReturnHeader(msgReceiver, srcHdr, rspnInteractionStage, true), error, null);
 
-      if(MALPubSubOperation.PUBLISH_STAGE.byteValue() == rspnInteractionStage.byteValue())
-      {
-        System.out.println("RTNERROR: " + msg.getHeader().toString());
-        Thread.dumpStack();
-      }
-      
       endpoint.sendMessage(msg);
     }
     catch (MALException ex)
