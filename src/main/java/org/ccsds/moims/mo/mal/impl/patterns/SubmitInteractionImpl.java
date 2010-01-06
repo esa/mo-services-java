@@ -33,6 +33,6 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
   @Override
   public void sendError(StandardError error) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    impl.getSendingInterface().returnError(handler, internalTransId, msg.getHeader(), MALSubmitOperation.SUBMIT_ACK_STAGE, error);
   }
 }

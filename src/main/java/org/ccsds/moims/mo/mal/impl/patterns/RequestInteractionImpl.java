@@ -35,6 +35,6 @@ public class RequestInteractionImpl extends BaseInteractionImpl implements MALRe
   @Override
   public void sendError(StandardError error) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    impl.getSendingInterface().returnError(handler, internalTransId, msg.getHeader(), MALRequestOperation.REQUEST_RESPONSE_STAGE, error);
   }
 }

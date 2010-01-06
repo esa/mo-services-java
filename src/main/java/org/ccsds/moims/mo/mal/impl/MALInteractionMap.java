@@ -259,7 +259,14 @@ public class MALInteractionMap
               else
               {
                 receivedAck = true;
-                listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+                if (msg.getHeader().isError())
+                {
+                  listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+                }
+                else
+                {
+                  listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+                }
               }
             }
             break;
@@ -275,7 +282,14 @@ public class MALInteractionMap
               else
               {
                 receivedResponse = true;
-                listener.responseReceived(operation, msg.getHeader(), msg.getBody());
+                if (msg.getHeader().isError())
+                {
+                  listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+                }
+                else
+                {
+                  listener.responseReceived(operation, msg.getHeader(), msg.getBody());
+                }
               }
             }
             break;
@@ -293,14 +307,29 @@ public class MALInteractionMap
                 else
                 {
                   receivedAck = true;
-                  listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+                  if (msg.getHeader().isError())
+                  {
+                    receivedResponse = true;
+                    listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+                  }
+                  else
+                  {
+                    listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+                  }
                 }
                 break;
               }
               case MALInvokeOperation._INVOKE_RESPONSE_STAGE:
               {
                 receivedResponse = true;
-                listener.responseReceived(operation, msg.getHeader(), msg.getBody());
+                if (msg.getHeader().isError())
+                {
+                  listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+                }
+                else
+                {
+                  listener.responseReceived(operation, msg.getHeader(), msg.getBody());
+                }
                 break;
               }
             }
@@ -319,19 +348,43 @@ public class MALInteractionMap
                 else
                 {
                   receivedAck = true;
-                  listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+                  if (msg.getHeader().isError())
+                  {
+                    receivedResponse = true;
+                    listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+                  }
+                  else
+                  {
+                    listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+                  }
                 }
                 break;
               }
               case MALProgressOperation._PROGRESS_UPDATE_STAGE:
               {
-                listener.updateReceived(operation, msg.getHeader(), msg.getBody());
+                if (msg.getHeader().isError())
+                {
+                  receivedResponse = true;
+                  listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+                }
+                else
+                {
+                  listener.updateReceived(operation, msg.getHeader(), msg.getBody());
+                }
                 break;
               }
               case MALProgressOperation._PROGRESS_RESPONSE_STAGE:
               {
                 receivedResponse = true;
-                listener.responseReceived(operation, msg.getHeader(), msg.getBody());
+                if (msg.getHeader().isError())
+                {
+                  receivedAck = true;
+                  listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+                }
+                else
+                {
+                  listener.responseReceived(operation, msg.getHeader(), msg.getBody());
+                }
                 break;
               }
             }
@@ -353,9 +406,9 @@ public class MALInteractionMap
                 else
                 {
                   receivedAck = true;
-                  if(msg.getHeader().isError())
+                  if (msg.getHeader().isError())
                   {
-                    listener.errorReceived(operation, msg.getHeader(), (StandardError)msg.getBody());
+                    listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
                   }
                   else
                   {

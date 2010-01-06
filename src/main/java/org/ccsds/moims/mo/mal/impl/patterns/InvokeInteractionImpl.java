@@ -12,13 +12,16 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
 import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
+import org.ccsds.moims.mo.mal.structures.StandardError;
 
 /**
  *
  * @author cooper_sf
  */
-public class InvokeInteractionImpl extends RequestInteractionImpl implements MALInvoke
+public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInvoke
 {
+  private boolean ackSent = false;
+  
   public InvokeInteractionImpl(MALImpl impl, MALServiceComponentImpl handler, Identifier internalTransId, MALMessage msg)
   {
     super(impl, handler, internalTransId, msg);
@@ -27,6 +30,7 @@ public class InvokeInteractionImpl extends RequestInteractionImpl implements MAL
   @Override
   public void sendAcknowledgement(Element result) throws MALException
   {
+    ackSent = true;
     impl.getSendingInterface().returnResponse(handler, internalTransId, msg.getHeader(), MALInvokeOperation.INVOKE_ACK_STAGE, result);
   }
 
@@ -34,5 +38,18 @@ public class InvokeInteractionImpl extends RequestInteractionImpl implements MAL
   public void sendResponse(Element result) throws MALException
   {
     impl.getSendingInterface().returnResponse(handler, internalTransId, msg.getHeader(), MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
+  }
+
+  @Override
+  public void sendError(StandardError error) throws MALException
+  {
+    Byte stage = MALInvokeOperation.INVOKE_ACK_STAGE;
+
+    if (ackSent)
+    {
+      stage = MALInvokeOperation.INVOKE_RESPONSE_STAGE;
+    }
+
+    impl.getSendingInterface().returnError(handler, internalTransId, msg.getHeader(), stage, error);
   }
 }

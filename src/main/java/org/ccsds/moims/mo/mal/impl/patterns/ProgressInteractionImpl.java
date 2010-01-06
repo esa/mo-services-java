@@ -18,8 +18,10 @@ import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
  *
  * @author cooper_sf
  */
-public class ProgressInteractionImpl extends InvokeInteractionImpl implements MALProgress
+public class ProgressInteractionImpl extends BaseInteractionImpl implements MALProgress
 {
+  private boolean ackSent = false;
+
   public ProgressInteractionImpl(MALImpl impl, MALServiceComponentImpl handler, Identifier internalTransId, MALMessage msg)
   {
     super(impl, handler, internalTransId, msg);
@@ -28,6 +30,7 @@ public class ProgressInteractionImpl extends InvokeInteractionImpl implements MA
   @Override
   public void sendAcknowledgement(Element result) throws MALException
   {
+    ackSent = true;
     impl.getSendingInterface().returnResponse(handler, internalTransId, msg.getHeader(), MALProgressOperation.PROGRESS_ACK_STAGE, result);
   }
 
@@ -44,8 +47,21 @@ public class ProgressInteractionImpl extends InvokeInteractionImpl implements MA
   }
 
   @Override
+  public void sendError(StandardError error) throws MALException
+  {
+    Byte stage = MALProgressOperation.PROGRESS_ACK_STAGE;
+
+    if (ackSent)
+    {
+      stage = MALProgressOperation.PROGRESS_RESPONSE_STAGE;
+    }
+
+    impl.getSendingInterface().returnError(handler, internalTransId, msg.getHeader(), stage, error);
+  }
+
+  @Override
   public void sendUpdateError(StandardError error) throws MALException
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    impl.getSendingInterface().returnError(handler, internalTransId, msg.getHeader(), MALProgressOperation.PROGRESS_UPDATE_STAGE, error);
   }
 }
