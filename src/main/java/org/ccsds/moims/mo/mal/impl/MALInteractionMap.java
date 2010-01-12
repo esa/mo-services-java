@@ -1,6 +1,7 @@
 package org.ccsds.moims.mo.mal.impl;
 
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
@@ -36,9 +37,36 @@ public class MALInteractionMap
   {
     final Identifier oTransId = MALTransactionStore.getTransactionId();
 
+    InternalOperationHandler handler = null;
+
+    if (InteractionType._SUBMIT_INDEX == operation.getInteractionType().getOrdinal())
+    {
+      handler = new SubmitOperationHandler(operation, syncOperation, syncStage, listener);
+    }
+    else if (InteractionType._REQUEST_INDEX == operation.getInteractionType().getOrdinal())
+    {
+      handler = new RequestOperationHandler(operation, syncOperation, syncStage, listener);
+    }
+    else if (InteractionType._INVOKE_INDEX == operation.getInteractionType().getOrdinal())
+    {
+      handler = new InvokeOperationHandler(operation, syncOperation, syncStage, listener);
+    }
+    else if (InteractionType._PROGRESS_INDEX == operation.getInteractionType().getOrdinal())
+    {
+      handler = new ProgressOperationHandler(operation, syncOperation, syncStage, listener);
+    }
+    else if (InteractionType._PUBSUB_INDEX == operation.getInteractionType().getOrdinal())
+    {
+      handler = new PubSubOperationHandler(operation, syncOperation, syncStage, listener);
+    }
+    else
+    {
+      throw new UnsupportedOperationException("Pattern not supported");
+    }
+
     synchronized (transMap)
     {
-      transMap.put(oTransId.getValue(), new InternalOperationHandler(operation, syncOperation, syncStage, listener));
+      transMap.put(oTransId.getValue(), handler);
     }
 
     return oTransId;
@@ -50,7 +78,7 @@ public class MALInteractionMap
 
     synchronized (transMap)
     {
-      transMap.put(oTransId.getValue(), new InternalOperationHandler(operation, syncOperation, syncStage, new MALInteractionListenerPublishAdapter(listener)));
+      transMap.put(oTransId.getValue(), new PubSubOperationHandler(operation, syncOperation, syncStage, new MALInteractionListenerPublishAdapter(listener)));
     }
 
     return oTransId;
@@ -110,7 +138,7 @@ public class MALInteractionMap
     return retVal;
   }
 
-  public void handleStage(MALMessage msg)
+  public void handleStage(MALMessage msg) throws MALException
   {
     final String id = msg.getHeader().getTransactionId().getValue();
     InternalOperationHandler handler = null;
@@ -168,7 +196,7 @@ public class MALInteractionMap
     return null;
   }
 
-  private static final class InternalOperationHandler
+  private static abstract class InternalOperationHandler
   {
     private static final class BooleanLock
     {
@@ -188,46 +216,16 @@ public class MALInteractionMap
     public final boolean syncOperation;
     public final MALInteractionListener listener;
     public final BooleanLock lock = new BooleanLock();
-    private MALMessage result = null;
-    private boolean receivedAck = false;
-    private boolean receivedResponse = false;
+    protected MALMessage result = null;
 
     public InternalOperationHandler(MALOperation operation, boolean syncOperation, byte stage, MALInteractionListener listener)
     {
       this.operation = operation;
       this.syncOperation = syncOperation;
       this.listener = listener;
-
-      switch (operation.getInteractionType().getOrdinal())
-      {
-        case InteractionType._SUBMIT_INDEX:
-        {
-          receivedResponse = true;
-          break;
-        }
-        case InteractionType._REQUEST_INDEX:
-        {
-          receivedAck = true;
-          break;
-        }
-        case InteractionType._PUBSUB_INDEX:
-        {
-          switch (stage)
-          {
-            case MALPubSubOperation._REGISTER_STAGE:
-            case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-            case MALPubSubOperation._DEREGISTER_STAGE:
-            case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
-            {
-              receivedResponse = true;
-            }
-          }
-          break;
-        }
-      }
     }
 
-    private void signalResponse(MALMessage msg)
+    protected void signalResponse(MALMessage msg)
     {
       result = msg;
 
@@ -239,222 +237,336 @@ public class MALInteractionMap
       }
     }
 
-    public void handleStage(MALMessage msg)
+    public abstract void handleStage(MALMessage msg) throws MALException;
+
+    public abstract MALMessage getResult();
+
+    public abstract boolean finished();
+  }
+
+  private static class SubmitOperationHandler extends InternalOperationHandler
+  {
+    protected boolean receivedInitialStage = false;
+    protected boolean takenFinalStage = false;
+    protected final int interactionType;
+    protected final int interactionStage;
+
+    public SubmitOperationHandler(MALOperation operation, boolean syncOperation, byte stage, MALInteractionListener listener)
     {
-      final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
-      final int interactionStage = msg.getHeader().getInteractionStage().intValue();
+      super(operation, syncOperation, stage, listener);
 
-      try
-      {
-        switch (interactionType)
-        {
-          case InteractionType._SUBMIT_INDEX:
-          {
-            if (interactionStage == MALSubmitOperation._SUBMIT_ACK_STAGE)
-            {
-              if (syncOperation)
-              {
-                signalResponse(msg);
-              }
-              else
-              {
-                receivedAck = true;
-                if (msg.getHeader().isError())
-                {
-                  listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
-                }
-                else
-                {
-                  listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
-                }
-              }
-            }
-            break;
-          }
-          case InteractionType._REQUEST_INDEX:
-          {
-            if (interactionStage == MALRequestOperation._REQUEST_RESPONSE_STAGE)
-            {
-              if (syncOperation)
-              {
-                signalResponse(msg);
-              }
-              else
-              {
-                receivedResponse = true;
-                if (msg.getHeader().isError())
-                {
-                  listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
-                }
-                else
-                {
-                  listener.responseReceived(operation, msg.getHeader(), msg.getBody());
-                }
-              }
-            }
-            break;
-          }
-          case InteractionType._INVOKE_INDEX:
-          {
-            switch (interactionStage)
-            {
-              case MALInvokeOperation._INVOKE_ACK_STAGE:
-              {
-                if (syncOperation)
-                {
-                  signalResponse(msg);
-                }
-                else
-                {
-                  receivedAck = true;
-                  if (msg.getHeader().isError())
-                  {
-                    receivedResponse = true;
-                    listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
-                  }
-                  else
-                  {
-                    listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
-                  }
-                }
-                break;
-              }
-              case MALInvokeOperation._INVOKE_RESPONSE_STAGE:
-              {
-                receivedResponse = true;
-                if (msg.getHeader().isError())
-                {
-                  listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
-                }
-                else
-                {
-                  listener.responseReceived(operation, msg.getHeader(), msg.getBody());
-                }
-                break;
-              }
-            }
-            break;
-          }
-          case InteractionType._PROGRESS_INDEX:
-          {
-            switch (interactionStage)
-            {
-              case MALProgressOperation._PROGRESS_ACK_STAGE:
-              {
-                if (syncOperation)
-                {
-                  signalResponse(msg);
-                }
-                else
-                {
-                  receivedAck = true;
-                  if (msg.getHeader().isError())
-                  {
-                    receivedResponse = true;
-                    listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
-                  }
-                  else
-                  {
-                    listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
-                  }
-                }
-                break;
-              }
-              case MALProgressOperation._PROGRESS_UPDATE_STAGE:
-              {
-                if (msg.getHeader().isError())
-                {
-                  receivedResponse = true;
-                  listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
-                }
-                else
-                {
-                  listener.updateReceived(operation, msg.getHeader(), msg.getBody());
-                }
-                break;
-              }
-              case MALProgressOperation._PROGRESS_RESPONSE_STAGE:
-              {
-                receivedResponse = true;
-                if (msg.getHeader().isError())
-                {
-                  receivedAck = true;
-                  listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
-                }
-                else
-                {
-                  listener.responseReceived(operation, msg.getHeader(), msg.getBody());
-                }
-                break;
-              }
-            }
-            break;
-          }
-          case InteractionType._PUBSUB_INDEX:
-          {
-            switch (interactionStage)
-            {
-              case MALPubSubOperation._REGISTER_ACK_STAGE:
-              case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
-              case MALPubSubOperation._DEREGISTER_ACK_STAGE:
-              case MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE:
-              {
-                if (syncOperation)
-                {
-                  signalResponse(msg);
-                }
-                else
-                {
-                  receivedAck = true;
-                  if (msg.getHeader().isError())
-                  {
-                    listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
-                  }
-                  else
-                  {
-                    listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
-                  }
-                }
-                break;
-              }
-            }
-            break;
-          }
-        }
-      }
-      catch (MALException ex)
-      {
-        // nothing we can do with this
-        ex.printStackTrace();
-      }
-
+      this.interactionType = InteractionType._SUBMIT_INDEX;
+      this.interactionStage = MALSubmitOperation._SUBMIT_ACK_STAGE;
     }
 
-    public MALMessage getResult()
+    public SubmitOperationHandler(MALOperation operation, int interactionType, int interactionStage, boolean syncOperation, byte stage, MALInteractionListener listener)
     {
-      switch (operation.getInteractionType().getOrdinal())
+      super(operation, syncOperation, stage, listener);
+
+      this.interactionType = interactionType;
+      this.interactionStage = interactionStage;
+    }
+
+    @Override
+    public synchronized void handleStage(MALMessage msg) throws MALException
+    {
+      if (!receivedInitialStage)
       {
-        case InteractionType._SUBMIT_INDEX:
-        case InteractionType._INVOKE_INDEX:
-        case InteractionType._PROGRESS_INDEX:
-        case InteractionType._PUBSUB_INDEX:
+        try
         {
-          receivedAck = true;
-          break;
+          if ((interactionType == msg.getHeader().getInteractionType().getOrdinal()) && checkStage(msg.getHeader().getInteractionStage().intValue()))
+          {
+            receivedInitialStage = true;
+            if (syncOperation)
+            {
+              signalResponse(msg);
+            }
+            else
+            {
+              takenFinalStage = true;
+              if (msg.getHeader().isError())
+              {
+                listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+              }
+              else
+              {
+                informListener(msg);
+              }
+            }
+          }
         }
-        case InteractionType._REQUEST_INDEX:
+        catch (MALException ex)
         {
-          receivedResponse = true;
-          break;
+          // nothing we can do with this
+          ex.printStackTrace();
         }
       }
+      else
+      {
+        throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+      }
+    }
+
+    @Override
+    public synchronized MALMessage getResult()
+    {
+      takenFinalStage = true;
 
       return result;
     }
 
+    @Override
     public boolean finished()
     {
-      return receivedResponse && receivedAck;
+      return takenFinalStage;
+    }
+
+    protected boolean checkStage(int stage)
+    {
+      return (interactionStage == stage);
+    }
+
+    protected void informListener(MALMessage msg) throws MALException
+    {
+      listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+    }
+  }
+
+  private static final class RequestOperationHandler extends SubmitOperationHandler
+  {
+    public RequestOperationHandler(MALOperation operation, boolean syncOperation, byte stage, MALInteractionListener listener)
+    {
+      super(operation, InteractionType._REQUEST_INDEX, MALRequestOperation._REQUEST_RESPONSE_STAGE, syncOperation, stage, listener);
+    }
+
+    @Override
+    protected void informListener(MALMessage msg) throws MALException
+    {
+      listener.responseReceived(operation, msg.getHeader(), msg.getBody());
+    }
+  }
+
+  private static final class InvokeOperationHandler extends InternalOperationHandler
+  {
+    private boolean receivedAck = false;
+    private boolean receivedResponse = false;
+    private boolean takenAck = false;
+
+    public InvokeOperationHandler(MALOperation operation, boolean syncOperation, byte stage, MALInteractionListener listener)
+    {
+      super(operation, syncOperation, stage, listener);
+    }
+
+    @Override
+    public synchronized void handleStage(MALMessage msg) throws MALException
+    {
+      final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
+      final int interactionStage = msg.getHeader().getInteractionStage().intValue();
+
+      if (!receivedAck)
+      {
+        if ((interactionType == InteractionType._INVOKE_INDEX) && (interactionStage == MALInvokeOperation._INVOKE_ACK_STAGE))
+        {
+          try
+          {
+            receivedAck = true;
+            if (syncOperation)
+            {
+              signalResponse(msg);
+            }
+            else
+            {
+              takenAck = true;
+              if (msg.getHeader().isError())
+              {
+                receivedResponse = true;
+                listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+              }
+              else
+              {
+                listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+              }
+            }
+          }
+          catch (MALException ex)
+          {
+            // nothing we can do with this
+            ex.printStackTrace();
+          }
+        }
+        else
+        {
+          throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+        }
+      }
+      else if ((!receivedResponse) && (interactionType == InteractionType._INVOKE_INDEX) && (interactionStage == MALInvokeOperation._INVOKE_RESPONSE_STAGE))
+      {
+        try
+        {
+          receivedResponse = true;
+          if (msg.getHeader().isError())
+          {
+            listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+          }
+          else
+          {
+            listener.responseReceived(operation, msg.getHeader(), msg.getBody());
+          }
+        }
+        catch (MALException ex)
+        {
+          // nothing we can do with this
+          ex.printStackTrace();
+        }
+      }
+      else
+      {
+        throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+      }
+    }
+
+    @Override
+    public synchronized MALMessage getResult()
+    {
+      takenAck = true;
+
+      return result;
+    }
+
+    @Override
+    public boolean finished()
+    {
+      return receivedResponse;
+    }
+  }
+
+  private static final class ProgressOperationHandler extends InternalOperationHandler
+  {
+    private boolean receivedAck = false;
+    private boolean receivedResponse = false;
+
+    public ProgressOperationHandler(MALOperation operation, boolean syncOperation, byte stage, MALInteractionListener listener)
+    {
+      super(operation, syncOperation, stage, listener);
+    }
+
+    @Override
+    public synchronized void handleStage(MALMessage msg) throws MALException
+    {
+      final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
+      final int interactionStage = msg.getHeader().getInteractionStage().intValue();
+
+      if (!receivedAck)
+      {
+        if ((interactionType == InteractionType._PROGRESS_INDEX) && (interactionStage == MALProgressOperation._PROGRESS_ACK_STAGE))
+        {
+          try
+          {
+            receivedAck = true;
+            if (syncOperation)
+            {
+              signalResponse(msg);
+            }
+            else
+            {
+              if (msg.getHeader().isError())
+              {
+                receivedResponse = true;
+                listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+              }
+              else
+              {
+                listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+              }
+            }
+          }
+          catch (MALException ex)
+          {
+            // nothing we can do with this
+            ex.printStackTrace();
+          }
+        }
+        else
+        {
+          throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+        }
+      }
+      else if ((!receivedResponse) && (interactionType == InteractionType._PROGRESS_INDEX) && ((interactionStage == MALProgressOperation._PROGRESS_UPDATE_STAGE) || (interactionStage == MALProgressOperation._PROGRESS_RESPONSE_STAGE)))
+      {
+        try
+        {
+          if (interactionStage == MALProgressOperation._PROGRESS_UPDATE_STAGE)
+          {
+            if (msg.getHeader().isError())
+            {
+              receivedResponse = true;
+              listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+            }
+            else
+            {
+              listener.updateReceived(operation, msg.getHeader(), msg.getBody());
+            }
+          }
+          else
+          {
+            receivedResponse = true;
+            if (msg.getHeader().isError())
+            {
+              listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+            }
+            else
+            {
+              listener.responseReceived(operation, msg.getHeader(), msg.getBody());
+            }
+          }
+        }
+        catch (MALException ex)
+        {
+          // nothing we can do with this
+          ex.printStackTrace();
+        }
+      }
+      else
+      {
+        throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+      }
+    }
+
+    @Override
+    public synchronized MALMessage getResult()
+    {
+      return result;
+    }
+
+    @Override
+    public boolean finished()
+    {
+      return receivedResponse;
+    }
+  }
+
+  private static final class PubSubOperationHandler extends SubmitOperationHandler
+  {
+    public PubSubOperationHandler(MALOperation operation, boolean syncOperation, byte stage, MALInteractionListener listener)
+    {
+      super(operation, InteractionType._PUBSUB_INDEX, 0, syncOperation, stage, listener);
+    }
+
+    @Override
+    protected boolean checkStage(int stage)
+    {
+      switch (stage)
+      {
+        case MALPubSubOperation._REGISTER_ACK_STAGE:
+        case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
+        case MALPubSubOperation._DEREGISTER_ACK_STAGE:
+        case MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE:
+        {
+          return true;
+        }
+      }
+
+      return false;
     }
   }
 
