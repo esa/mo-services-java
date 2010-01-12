@@ -563,7 +563,7 @@ public class MALServiceSend
 
     if (0 > rspnInteractionStage)
     {
-      System.out.println("ERROR: Unable to return error");
+      System.out.println("ERROR: Unable to return error, already a return message (" + error + ")");
     }
     else
     {

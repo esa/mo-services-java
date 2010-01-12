@@ -303,6 +303,7 @@ public class MALInteractionMap
       }
       else
       {
+        System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
         throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
       }
     }
@@ -396,6 +397,7 @@ public class MALInteractionMap
         }
         else
         {
+          System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
           throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
         }
       }
@@ -421,6 +423,7 @@ public class MALInteractionMap
       }
       else
       {
+        System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
         throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
       }
     }
@@ -488,6 +491,7 @@ public class MALInteractionMap
         }
         else
         {
+          System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
           throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
         }
       }
@@ -528,6 +532,7 @@ public class MALInteractionMap
       }
       else
       {
+        System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
         throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
       }
     }

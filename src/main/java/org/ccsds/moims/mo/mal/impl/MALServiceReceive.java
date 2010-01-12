@@ -246,9 +246,6 @@ public class MALServiceReceive implements MALMessageListener
     }
     catch (MALException ex)
     {
-      //todo
-      ex.printStackTrace();
-
       impl.getSendingInterface().returnErrorAndCalculateStage(handler, msg.getHeader().getTransactionId(), msg.getHeader(), ex.getStandardError());
     }
   }
