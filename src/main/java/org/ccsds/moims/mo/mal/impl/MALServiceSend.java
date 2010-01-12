@@ -472,17 +472,7 @@ public class MALServiceSend
 
   public void returnResponse(MALServiceComponentImpl msgReceiver, Identifier internalTransId, MessageHeader srcHdr, Byte rspnInteractionStage, Element rspn)
   {
-    URI uriTo = null;
-
     Pair details = imap.resolveTransactionSource(internalTransId);
-    if (null != details)
-    {
-      uriTo = (URI) details.getFirst();
-    }
-    else
-    {
-      uriTo = srcHdr.getURIfrom();
-    }
 
     try
     {
