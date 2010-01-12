@@ -104,7 +104,7 @@ class SimpleConsumerDetails
         msg.header.setService(srcHdr.getService());
         msg.header.setOperation(srcHdr.getOperation());
         msg.header.setVersion(srcHdr.getVersion());
-        msg.header.setIsError(srcHdr.isError());
+        msg.header.setError(srcHdr.isError());
 
       }
       

@@ -672,7 +672,7 @@ public class MALServiceSend
     hdr.setService(op.getService().getName());
     hdr.setOperation(op.getName());
     hdr.setVersion(op.getService().getVersion());
-    hdr.setIsError(new Boolean(false));
+    hdr.setError(new Boolean(false));
 
     return hdr;
   }
@@ -703,7 +703,7 @@ public class MALServiceSend
     hdr.setService(srcHdr.getService());
     hdr.setOperation(srcHdr.getOperation());
     hdr.setVersion(srcHdr.getVersion());
-    hdr.setIsError(new Boolean(isError));
+    hdr.setError(new Boolean(isError));
 
     return hdr;
   }
