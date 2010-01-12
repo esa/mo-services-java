@@ -37,7 +37,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
   }
 
   @Override
-  public synchronized MALBroker createMALBroker(MALService service) throws MALException
+  public synchronized MALBroker createBroker(MALService service) throws MALException
   {
     String key = service.getName().getValue();
     MALBrokerImpl retVal = brokers.get(key);
@@ -60,7 +60,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
     MALBrokerImpl tparent = (MALBrokerImpl) optionalMALBroker;
     if (null == optionalMALBroker)
     {
-      tparent = (MALBrokerImpl) createMALBroker(service);
+      tparent = (MALBrokerImpl) createBroker(service);
 
       retVal = MALTransportSingleton.instance(protocol, qosProperties).createBroker(localName, service, authenticationId, expectedQos, priorityLevelNumber, qosProperties);
 
