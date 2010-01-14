@@ -26,6 +26,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  */
 public class MALInteractionMap
 {
+  private static volatile int transId = 0;
   private final java.util.Map<String, InternalOperationHandler> transMap = new java.util.TreeMap<String, InternalOperationHandler>();
   private final java.util.Map<String, Pair> resolveMap = new java.util.TreeMap<String, Pair>();
 
@@ -35,7 +36,7 @@ public class MALInteractionMap
 
   public Identifier createTransaction(MALOperation operation, boolean syncOperation, byte syncStage, MALInteractionListener listener)
   {
-    final Identifier oTransId = MALTransactionStore.getTransactionId();
+    final Identifier oTransId = getTransactionId();
 
     InternalOperationHandler handler = null;
 
@@ -74,7 +75,7 @@ public class MALInteractionMap
 
   public Identifier createTransaction(MALOperation operation, boolean syncOperation, byte syncStage, MALPublishInteractionListener listener)
   {
-    final Identifier oTransId = MALTransactionStore.getTransactionId();
+    final Identifier oTransId = getTransactionId();
 
     synchronized (transMap)
     {
@@ -173,7 +174,7 @@ public class MALInteractionMap
 
   public Identifier addTransactionSource(URI urlFrom, Identifier transactionId)
   {
-    final Identifier oTransId = MALTransactionStore.getTransactionId();
+    final Identifier oTransId = getTransactionId();
 
     synchronized (resolveMap)
     {
@@ -194,6 +195,11 @@ public class MALInteractionMap
     }
 
     return null;
+  }
+
+  private static synchronized Identifier getTransactionId()
+  {
+    return new Identifier(Integer.toString(transId++));
   }
 
   private static abstract class InternalOperationHandler

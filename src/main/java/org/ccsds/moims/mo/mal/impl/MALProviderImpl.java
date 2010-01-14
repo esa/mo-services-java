@@ -125,11 +125,6 @@ public class MALProviderImpl extends MALServiceComponentImpl implements MALProvi
     this.handler.malFinalize(this);
   }
 
-  public boolean isLocalBroker()
-  {
-    return isLocalBroker && localBrokerBinding.isMALLevelBroker();
-  }
-
   public MALEndPoint getPublishEndpoint()
   {
     return brokerEndpoint;

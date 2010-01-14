@@ -99,7 +99,7 @@ public class MALImpl extends MALClose implements MAL
 
   public MALBrokerHandler createBroker()
   {
-    String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class", "org.ccsds.moims.mo.mal.impl.broker.MALSimpleBrokerHandler");
+    String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class", SimpleBrokerHandler.class.getName());
 
     MALBrokerHandler broker = null;
     try
