@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.impl.profile.MALProfiler;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
@@ -21,8 +22,8 @@ import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
-
 
 /**
  *
@@ -75,9 +76,19 @@ public class MALBrokerPublisher implements MALPublisher
 
     MALProfiler.instance.sendMALTransferObject(domain, details);
 
-    System.out.println("INFO: Publisher using transaction Id of: " + transId);
-      
-    handler.publish(details, getTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue()), operation, updateList);
+    Identifier tid = getTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue());
+
+    if (null != tid)
+    {
+      System.out.println("INFO: Publisher using transaction Id of: " + tid);
+
+      handler.publish(details, tid, operation, updateList);
+    }
+    else
+    {
+      // this means that we haven't successfully registered, need to throw an exception
+      throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+    }
   }
 
   @Override
