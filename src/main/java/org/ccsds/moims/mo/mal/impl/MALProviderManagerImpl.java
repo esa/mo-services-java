@@ -25,7 +25,6 @@ import org.ccsds.moims.mo.mal.structures.URI;
 public class MALProviderManagerImpl extends MALClose implements MALProviderManager
 {
   private final MALImpl impl;
-  private final List<MALBrokerImpl> brokerList = new LinkedList();
 
   public MALProviderManagerImpl(MALImpl impl)
   {

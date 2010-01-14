@@ -26,6 +26,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.profile.MALProfiler;
 import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.Union;
@@ -472,8 +473,6 @@ public class MALServiceSend
 
   public void returnResponse(MALServiceComponentImpl msgReceiver, Identifier internalTransId, MessageHeader srcHdr, Byte rspnInteractionStage, Element rspn)
   {
-    Pair details = imap.resolveTransactionSource(internalTransId);
-
     try
     {
       MALEndPoint endpoint = msgReceiver.getEndpoint();
@@ -581,10 +580,14 @@ public class MALServiceSend
     try
     {
       MALEndPoint endpoint = null;
+      URI uriFrom = null;
+      Blob authId = null;
 
       if (null != msgReceiver)
       {
         endpoint = msgReceiver.getEndpoint();
+        uriFrom = msgReceiver.getURI();
+        authId = msgReceiver.authenticationId;
       }
       else
       {
@@ -601,6 +604,7 @@ public class MALServiceSend
         }
 
         endpoint = MALTransportSingleton.instance(uriTo, null).createEndPoint(null, null, null);
+        uriFrom = endpoint.getURI();
       }
 
       if (null == level)
@@ -608,7 +612,7 @@ public class MALServiceSend
         level = srcHdr.getQoSlevel();
       }
 
-      MALMessage msg = endpoint.createMessage(createReturnHeader(msgReceiver, srcHdr, level, rspnInteractionStage, true), error, null);
+      MALMessage msg = endpoint.createMessage(createReturnHeader(uriFrom, authId, srcHdr, level, rspnInteractionStage, true), error, null);
 
       if(MALPubSubOperation.PUBLISH_STAGE.byteValue() == rspnInteractionStage.byteValue())
       {
@@ -672,23 +676,23 @@ public class MALServiceSend
     hdr.setService(op.getService().getName());
     hdr.setOperation(op.getName());
     hdr.setVersion(op.getService().getVersion());
-    hdr.setError(new Boolean(false));
+    hdr.setError(Boolean.FALSE);
 
     return hdr;
   }
 
   MessageHeader createReturnHeader(MALServiceComponentImpl msgSource, MessageHeader srcHdr, Byte interactionStage, boolean isError)
   {
-    return createReturnHeader(msgSource, srcHdr, srcHdr.getQoSlevel(), interactionStage, isError);
+    return createReturnHeader(msgSource.getURI(), msgSource.authenticationId, srcHdr, srcHdr.getQoSlevel(), interactionStage, isError);
   }
 
-  MessageHeader createReturnHeader(MALServiceComponentImpl msgSource, MessageHeader srcHdr, QoSLevel level, Byte interactionStage, boolean isError)
+  MessageHeader createReturnHeader(URI uriFrom, Blob authId, MessageHeader srcHdr, QoSLevel level, Byte interactionStage, boolean isError)
   {
     MessageHeader hdr = new MessageHeader();
 
-    hdr.setURIfrom(msgSource.getURI());
+    hdr.setURIfrom(uriFrom);
     hdr.setURIto(srcHdr.getURIfrom());
-    hdr.setAuthenticationId(msgSource.authenticationId);
+    hdr.setAuthenticationId(authId);
     hdr.setTimestamp(new Time(new java.util.Date().getTime()));
     hdr.setQoSlevel(level);
     hdr.setPriority(srcHdr.getPriority());
@@ -703,7 +707,7 @@ public class MALServiceSend
     hdr.setService(srcHdr.getService());
     hdr.setOperation(srcHdr.getOperation());
     hdr.setVersion(srcHdr.getVersion());
-    hdr.setError(new Boolean(isError));
+    hdr.setError(Boolean.valueOf(isError));
 
     return hdr;
   }

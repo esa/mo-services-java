@@ -44,7 +44,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
 
     if (null == retVal)
     {
-      retVal = new MALBrokerImpl(retVal, impl, service);
+      retVal = new MALBrokerImpl(this, impl, service);
       brokers.put(key, retVal);
       addChild(retVal);
     }

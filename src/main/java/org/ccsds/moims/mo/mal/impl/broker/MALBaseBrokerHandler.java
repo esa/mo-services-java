@@ -111,7 +111,7 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
 
     java.util.List<MALBrokerMessage> lst = new java.util.LinkedList<MALBrokerMessage>();
 
-    if ((null != hdr) && (updateList != null))
+    if (updateList != null)
     {
       System.out.println("INFO: Checking BaseBrokerHandler");
       SubscriptionSource ent = getEntry(hdr, true);

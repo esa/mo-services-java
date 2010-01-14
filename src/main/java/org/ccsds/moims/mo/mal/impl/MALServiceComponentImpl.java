@@ -47,9 +47,23 @@ public abstract class MALServiceComponentImpl extends MALClose
     this.protocol = protocol;
     this.service = service;
     this.authenticationId = authenticationId;
-    this.expectedQos = expectedQos;
+    if(null != expectedQos)
+    {
+      this.expectedQos = java.util.Arrays.copyOf(expectedQos, expectedQos.length);
+    }
+    else
+    {
+      this.expectedQos = null;
+    }
     this.priorityLevelNumber = priorityLevelNumber;
-    this.defaultQoSProperties = defaultQoSProperties;
+    if(null != defaultQoSProperties)
+    {
+      this.defaultQoSProperties = (Hashtable)defaultQoSProperties.clone();
+    }
+    else
+    {
+      this.defaultQoSProperties = null;
+    }
 
     if (null != service)
     {

@@ -28,7 +28,6 @@ import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
 public class MALProviderImpl extends MALServiceComponentImpl implements MALProvider
 {
   private final boolean isPublisher;
-  private final boolean isLocalBroker;
   private final Map<Integer, MALPublisher> publishers = new TreeMap<Integer, MALPublisher>();
   private final URI sharedBrokerUri;
   private final MALBrokerBinding localBrokerBinding;
@@ -51,14 +50,12 @@ public class MALProviderImpl extends MALServiceComponentImpl implements MALProvi
         this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(null, localName + "InternalBroker", protocol, service, authenticationId, expectedQos, priorityLevelNumber, defaultQoSProperties);
         this.localBrokerBinding.activate();
         this.localBrokerUri = this.localBrokerBinding.getURI();
-        this.isLocalBroker = true;
         this.brokerEndpoint = ((MALBrokerBindingImpl)localBrokerBinding).endpoint;
       }
       else
       {
         this.localBrokerBinding = null;
         this.localBrokerUri = null;
-        this.isLocalBroker = false;
         
         if (MALTransportSingleton.isSameTransport(sharedBrokerUri, transport))
         {
@@ -74,7 +71,6 @@ public class MALProviderImpl extends MALServiceComponentImpl implements MALProvi
     {
       this.localBrokerBinding = null;
       this.localBrokerUri = null;
-      this.isLocalBroker = false;
       this.brokerEndpoint = null;
     }
   }

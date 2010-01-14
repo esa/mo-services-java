@@ -104,6 +104,13 @@ public class BrokerKey implements Comparable
   }
 
   @Override
+  public int hashCode()
+  {
+    assert false : "hashCode not designed";
+    return 42; // any arbitrary constant will do
+  }
+
+  @Override
   public int compareTo(Object o)
   {
     BrokerKey other = (BrokerKey) o;

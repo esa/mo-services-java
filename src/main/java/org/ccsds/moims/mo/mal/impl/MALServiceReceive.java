@@ -384,7 +384,7 @@ public class MALServiceReceive implements MALMessageListener
 
   private void internalHandlePublish(MALMessage msg)
   {
-    if ((null != msg) && (msg.getHeader().isError()))
+    if (msg.getHeader().isError())
     {
       if (msg.getBody() instanceof StandardError)
       {
@@ -435,7 +435,7 @@ public class MALServiceReceive implements MALMessageListener
   {
     MALOperation operation = MALFactory.lookupOperation(msg.getHeader().getArea(), msg.getHeader().getService(), msg.getHeader().getOperation());
 
-    if ((null != msg) && (msg.getHeader().isError()))
+    if (msg.getHeader().isError())
     {
       if (msg.getBody() instanceof StandardError)
       {

@@ -222,7 +222,7 @@ public class MALInteractionMap
     public final boolean syncOperation;
     public final MALInteractionListener listener;
     public final BooleanLock lock = new BooleanLock();
-    protected MALMessage result = null;
+    private MALMessage result = null;
 
     public InternalOperationHandler(MALOperation operation, boolean syncOperation, byte stage, MALInteractionListener listener)
     {
@@ -245,7 +245,10 @@ public class MALInteractionMap
 
     public abstract void handleStage(MALMessage msg) throws MALException;
 
-    public abstract MALMessage getResult();
+    public MALMessage getResult()
+    {
+      return result;
+    }
 
     public abstract boolean finished();
   }
@@ -319,7 +322,7 @@ public class MALInteractionMap
     {
       takenFinalStage = true;
 
-      return result;
+      return super.getResult();
     }
 
     @Override
@@ -357,7 +360,6 @@ public class MALInteractionMap
   {
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
-    private boolean takenAck = false;
 
     public InvokeOperationHandler(MALOperation operation, boolean syncOperation, byte stage, MALInteractionListener listener)
     {
@@ -383,7 +385,6 @@ public class MALInteractionMap
             }
             else
             {
-              takenAck = true;
               if (msg.getHeader().isError())
               {
                 receivedResponse = true;
@@ -432,14 +433,6 @@ public class MALInteractionMap
         System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
         throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
       }
-    }
-
-    @Override
-    public synchronized MALMessage getResult()
-    {
-      takenAck = true;
-
-      return result;
     }
 
     @Override
@@ -541,12 +534,6 @@ public class MALInteractionMap
         System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
         throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
       }
-    }
-
-    @Override
-    public synchronized MALMessage getResult()
-    {
-      return result;
     }
 
     @Override

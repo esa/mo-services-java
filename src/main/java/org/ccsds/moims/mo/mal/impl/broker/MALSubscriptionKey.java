@@ -22,6 +22,48 @@ public final class MALSubscriptionKey implements Comparable
   }
 
   @Override
+  public boolean equals(Object obj)
+  {
+    if (obj == null)
+    {
+      return false;
+    }
+    if (getClass() != obj.getClass())
+    {
+      return false;
+    }
+    final MALSubscriptionKey other = (MALSubscriptionKey) obj;
+    if ((this.key1 == null) ? (other.key1 != null) : !this.key1.equals(other.key1))
+    {
+      return false;
+    }
+    if ((this.key2 == null) ? (other.key2 != null) : !this.key2.equals(other.key2))
+    {
+      return false;
+    }
+    if ((this.key3 == null) ? (other.key3 != null) : !this.key3.equals(other.key3))
+    {
+      return false;
+    }
+    if ((this.key4 == null) ? (other.key4 != null) : !this.key4.equals(other.key4))
+    {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    int hash = 7;
+    hash = 47 * hash + (this.key1 != null ? this.key1.hashCode() : 0);
+    hash = 47 * hash + (this.key2 != null ? this.key2.hashCode() : 0);
+    hash = 47 * hash + (this.key3 != null ? this.key3.hashCode() : 0);
+    hash = 47 * hash + (this.key4 != null ? this.key4.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
   public int compareTo(Object o)
   {
     MALSubscriptionKey rhs = (MALSubscriptionKey) o;

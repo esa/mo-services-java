@@ -119,7 +119,7 @@ class SimpleSubscriptionSource extends SubscriptionSource
     SimpleConsumerDetails retVal = (SimpleConsumerDetails) details.get(consumer);
     if (null == retVal)
     {
-      retVal = new SimpleConsumerDetails(this, consumer, binding);
+      retVal = new SimpleConsumerDetails(consumer, binding);
       details.put(consumer, retVal);
     }
     return retVal;

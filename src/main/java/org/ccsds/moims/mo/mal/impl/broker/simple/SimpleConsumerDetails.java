@@ -1,7 +1,6 @@
 package org.ccsds.moims.mo.mal.impl.broker.simple;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +15,6 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
 
@@ -25,15 +23,13 @@ import org.ccsds.moims.mo.mal.structures.UpdateList;
  */
 class SimpleConsumerDetails
 {
-  private final SimpleSubscriptionSource parent;
   private final String consumerId;
   private final MALBrokerBindingImpl binding;
   private Set<MALSubscriptionKey> required = new TreeSet<MALSubscriptionKey>();
   private final Map<String, SimpleSubscriptionDetails> details = new TreeMap<String, SimpleSubscriptionDetails>();
 
-  public SimpleConsumerDetails(SimpleSubscriptionSource parent, String consumerId, MALBrokerBindingImpl binding)
+  public SimpleConsumerDetails(String consumerId, MALBrokerBindingImpl binding)
   {
-    this.parent = parent;
     this.consumerId = consumerId;
     this.binding = binding;
   }

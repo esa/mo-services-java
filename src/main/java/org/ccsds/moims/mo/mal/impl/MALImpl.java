@@ -109,7 +109,20 @@ public class MALImpl extends MALClose implements MAL
       broker = (MALBrokerHandler) cls.newInstance();
       System.out.println("INFO: Creating internal MAL Broker handler: " + cls.getSimpleName());
     }
-    catch (Exception ex)
+    catch (ClassNotFoundException ex)
+    {
+      System.out.println("WARN: Unable to find MAL Broker handler class: " + clsName);
+    }
+    catch (InstantiationException ex)
+    {
+      System.out.println("WARN: Unable to instantiate MAL Broker handler: " + clsName);
+    }
+    catch (IllegalAccessException ex)
+    {
+      System.out.println("WARN: IllegalAccessException when instantiating MAL Broker handler class: " + clsName);
+    }
+
+    if (null == broker)
     {
       broker = new SimpleBrokerHandler();
       System.out.println("INFO: Creating internal MAL Broker handler: SimpleBrokerHandler");

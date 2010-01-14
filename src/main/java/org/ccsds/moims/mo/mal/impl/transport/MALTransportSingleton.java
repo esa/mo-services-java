@@ -8,8 +8,10 @@ package org.ccsds.moims.mo.mal.impl.transport;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
@@ -126,6 +128,10 @@ public final class MALTransportSingleton
         if (null != ohandler)
         {
           handlerMap.put(strProtocol, ohandler);
+        }
+        else
+        {
+          throw new MALException(new StandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
         }
       }
 
