@@ -22,7 +22,6 @@ import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
 
 /**
@@ -89,12 +88,6 @@ public class MALBrokerPublisher implements MALPublisher
       // this means that we haven't successfully registered, need to throw an exception
       throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
     }
-  }
-
-  @Override
-  public void publish(StandardError error, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Hashtable remotePublisherQosProps, Integer remotePublisherPriority) throws MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override

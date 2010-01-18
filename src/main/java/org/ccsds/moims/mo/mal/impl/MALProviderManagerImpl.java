@@ -49,7 +49,7 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
   }
 
   @Override
-  public void deleteProvider(String localName) throws MALException
+  public void deleteProvider(String protocol, String localName) throws MALException
   {
   }
 }
