@@ -78,8 +78,6 @@ public class MALServiceSend
 
     try
     {
-      details.endpoint.setMessageListener(receiveHandler);
-
       msg = impl.getSecurityManager().check(msg);
 
       details.endpoint.sendMessage(msg);
@@ -104,8 +102,6 @@ public class MALServiceSend
 
     try
     {
-      details.endpoint.setMessageListener(receiveHandler);
-
       msg = impl.getSecurityManager().check(msg);
 
       details.endpoint.sendMessage(msg);
@@ -132,8 +128,6 @@ public class MALServiceSend
 
     try
     {
-      details.endpoint.setMessageListener(receiveHandler);
-
       msg = impl.getSecurityManager().check(msg);
 
       details.endpoint.sendMessage(msg);
@@ -160,8 +154,6 @@ public class MALServiceSend
 
     try
     {
-      details.endpoint.setMessageListener(receiveHandler);
-
       msg = impl.getSecurityManager().check(msg);
 
       details.endpoint.sendMessage(msg);
@@ -190,7 +182,6 @@ public class MALServiceSend
     {
       pmap.registerNotifyListener(details, op, subscription, list);
 
-      details.endpoint.setMessageListener(receiveHandler);
       details.endpoint.sendMessage(msg);
 
       MALMessage rtn = imap.waitForResponse(transId);
@@ -215,7 +206,6 @@ public class MALServiceSend
     {
       pmap.registerPublishListener(details, listener);
 
-      details.endpoint.setMessageListener(receiveHandler);
       details.endpoint.sendMessage(msg);
 
       MALMessage rtn = imap.waitForResponse(transId);
@@ -255,7 +245,6 @@ public class MALServiceSend
 
     try
     {
-      details.endpoint.setMessageListener(receiveHandler);
       details.endpoint.sendMessage(msg);
 
       MALMessage rtn = imap.waitForResponse(transId);
@@ -280,7 +269,6 @@ public class MALServiceSend
 
     try
     {
-      details.endpoint.setMessageListener(receiveHandler);
       details.endpoint.sendMessage(msg);
 
       MALMessage rtn = imap.waitForResponse(transId);
@@ -305,8 +293,6 @@ public class MALServiceSend
 
     try
     {
-      details.endpoint.setMessageListener(receiveHandler);
-
       msg = impl.getSecurityManager().check(msg);
 
       details.endpoint.sendMessage(msg);
@@ -326,8 +312,6 @@ public class MALServiceSend
 
     try
     {
-      details.endpoint.setMessageListener(receiveHandler);
-
       msg = impl.getSecurityManager().check(msg);
 
       details.endpoint.sendMessage(msg);
@@ -347,8 +331,6 @@ public class MALServiceSend
 
     try
     {
-      details.endpoint.setMessageListener(receiveHandler);
-
       msg = impl.getSecurityManager().check(msg);
 
       details.endpoint.sendMessage(msg);
@@ -368,8 +350,6 @@ public class MALServiceSend
 
     try
     {
-      details.endpoint.setMessageListener(receiveHandler);
-
       msg = impl.getSecurityManager().check(msg);
 
       details.endpoint.sendMessage(msg);
@@ -391,11 +371,13 @@ public class MALServiceSend
     {
       pmap.registerPublishListener(details, listener);
 
-      details.endpoint.setMessageListener(receiveHandler);
-
+      Logging.logMessage("publishRegisterAsync : A");
+      Logging.logMessage("publishRegisterAsync : B");
       msg = impl.getSecurityManager().check(msg);
 
+      Logging.logMessage("publishRegisterAsync : C");
       details.endpoint.sendMessage(msg);
+      Logging.logMessage("publishRegisterAsync : D");
     }
     catch (MALException ex)
     {
@@ -415,8 +397,6 @@ public class MALServiceSend
     try
     {
       pmap.registerNotifyListener(details, op, subscription, listener);
-
-      details.endpoint.setMessageListener(receiveHandler);
 
       msg = impl.getSecurityManager().check(msg);
 
@@ -439,8 +419,6 @@ public class MALServiceSend
     {
       pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details.sessionName);
 
-      details.endpoint.setMessageListener(receiveHandler);
-
       msg = impl.getSecurityManager().check(msg);
 
       details.endpoint.sendMessage(msg);
@@ -460,8 +438,6 @@ public class MALServiceSend
 
     try
     {
-      details.endpoint.setMessageListener(receiveHandler);
-
       msg = impl.getSecurityManager().check(msg);
 
       details.endpoint.sendMessage(msg);
@@ -610,6 +586,7 @@ public class MALServiceSend
         MALService service = MALFactory.lookupOperation(srcHdr.getArea(), srcHdr.getService(), srcHdr.getOperation()).getService();
         endpoint = MALTransportSingleton.instance(uriTo, impl.getInitialProperties()).createEndPoint(null, service, null);
         uriFrom = endpoint.getURI();
+        endpoint.setMessageListener(receiveHandler);
       }
 
       if (null == level)

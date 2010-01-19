@@ -64,6 +64,7 @@ public class MALProviderImpl extends MALServiceComponentImpl implements MALProvi
         else
         {
           this.brokerEndpoint = MALTransportSingleton.instance(sharedBrokerUri, impl.getInitialProperties()).createEndPoint(null, service, defaultQoSProperties);
+          this.brokerEndpoint.setMessageListener(receiveHandler);
         }
       }
     }

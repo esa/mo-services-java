@@ -48,6 +48,7 @@ public class MALConsumerImpl extends MALClose implements MALConsumer
     this.impl = impl;
     MALTransport trans = MALTransportSingleton.instance(uriTo, impl.getInitialProperties());
     MALEndPoint ep = trans.createEndPoint(null, service, qosProps);
+    ep.setMessageListener(impl.getReceivingInterface());
     this.details = new MALMessageDetails(ep, ep.getURI(), uriTo, brokerUri, service, authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, qosProps, priority);
   }
 

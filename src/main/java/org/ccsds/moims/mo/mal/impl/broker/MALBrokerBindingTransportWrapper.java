@@ -7,6 +7,7 @@ package org.ccsds.moims.mo.mal.impl.broker;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.impl.MALImpl;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -22,12 +23,13 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALInt
   private final MALBrokerBinding transportDelegate;
   private final MALEndPoint endpoint;
 
-  public MALBrokerBindingTransportWrapper(MALClose parent, MALTransport transport, String localName, MALService service, MALBrokerBinding transportDelegate) throws MALException
+  public MALBrokerBindingTransportWrapper(MALClose parent, MALImpl impl, MALTransport transport, String localName, MALService service, MALBrokerBinding transportDelegate) throws MALException
   {
     super(parent);
 
     this.transportDelegate = transportDelegate;
     this.endpoint = transport.createEndPoint(null, service, null);
+    this.endpoint.setMessageListener(impl.getReceivingInterface());
   }
 
   @Override

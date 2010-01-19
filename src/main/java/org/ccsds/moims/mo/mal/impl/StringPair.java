@@ -53,4 +53,10 @@ public class StringPair implements Comparable
     hash = 79 * hash + (this.second != null ? this.second.hashCode() : 0);
     return hash;
   }
+
+  @Override
+  public String toString()
+  {
+    return "(" + this.first + " : " + this.second + ")";
+  }
 }
