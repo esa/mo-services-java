@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerMessage;
 import org.ccsds.moims.mo.mal.impl.broker.MALSubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.EntityRequest;
@@ -39,21 +40,21 @@ class SimpleSubscriptionDetails
 
   public void report()
   {
-    System.out.println("      START Subscription ( " + subscriptionId + " )");
-    System.out.println("      Required: " + String.valueOf(required.size()));
+    Logging.logMessage("      START Subscription ( " + subscriptionId + " )");
+    Logging.logMessage("      Required: " + String.valueOf(required.size()));
     for (MALSubscriptionKey key : required)
     {
-      System.out.println("              : Rqd : " + key);
+      Logging.logMessage("              : Rqd : " + key);
     }
     for (MALSubscriptionKey key : onAll)
     {
-      System.out.println("              : All : " + key);
+      Logging.logMessage("              : All : " + key);
     }
     for (MALSubscriptionKey key : onChange)
     {
-      System.out.println("              : Chg : " + key);
+      Logging.logMessage("              : Chg : " + key);
     }
-    System.out.println("      END Subscription ( " + subscriptionId + " )");
+    Logging.logMessage("      END Subscription ( " + subscriptionId + " )");
   }
 
   public boolean notActive()
@@ -90,7 +91,7 @@ class SimpleSubscriptionDetails
 
   public MALBrokerMessage.NotifyMessage populateNotifyList(UpdateList updateList)
   {
-    System.out.println("INFO: Checking SimSubDetails");
+    Logging.logMessage("INFO: Checking SimSubDetails");
     UpdateList sendList = new UpdateList();
     for (int i = 0; i < updateList.size(); ++i)
     {
@@ -116,7 +117,7 @@ class SimpleSubscriptionDetails
   private void populateNotifyList(UpdateList lst, Update update)
   {
     MALSubscriptionKey key = new MALSubscriptionKey(update.getKey());
-    System.out.println("INFO: Checking " + key);
+    Logging.logMessage("INFO: Checking " + key);
     boolean updateRequired = matchedUpdate(key, onAll);
     if (!updateRequired && (update.getUpdateType().getOrdinal() != UpdateType._UPDATE_INDEX))
     {
@@ -134,14 +135,14 @@ class SimpleSubscriptionDetails
     boolean matched = false;
     for (MALSubscriptionKey subscriptionKey : searchSet)
     {
-      System.out.println("INFO: Checking " + key + " against " + subscriptionKey);
+      Logging.logMessage("INFO: Checking " + key + " against " + subscriptionKey);
       if (subscriptionKey.matches(key))
       {
-        System.out.println("    : Matched");
+        Logging.logMessage("    : Matched");
         matched = true;
         break;
       }
-      System.out.println("    : No match");
+      Logging.logMessage("    : No match");
     }
     return matched;
   }

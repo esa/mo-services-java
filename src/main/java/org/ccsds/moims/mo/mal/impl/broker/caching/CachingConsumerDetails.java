@@ -5,17 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerMessage;
 import org.ccsds.moims.mo.mal.impl.broker.MALSubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 
 /**
  * A CachingSubscriptionDetails is keyed on subscription Id
@@ -37,9 +35,9 @@ class CachingConsumerDetails
 
   public void report()
   {
-    System.out.println("    START Consumer ( " + consumerId + " )");
-    System.out.println("    Subscription count: " + String.valueOf(details.size()));
-    System.out.println("    END Consumer ( " + consumerId + " )");
+    Logging.logMessage("    START Consumer ( " + consumerId + " )");
+    Logging.logMessage("    Subscription count: " + String.valueOf(details.size()));
+    Logging.logMessage("    END Consumer ( " + consumerId + " )");
   }
 
   public boolean notActive()

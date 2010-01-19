@@ -9,10 +9,9 @@ import java.util.Hashtable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
-import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
  *
@@ -30,7 +29,7 @@ public class MALBrokerBindingImpl extends MALServiceComponentImpl implements MAL
 
     brokerMap.put(getURI().getValue(), this);
 
-    System.out.println("INFO: Creating internal MAL Broker for service: " + service.getName() + " on protocol: " + protocol + " with URI: " + this.localUri);
+    Logging.logMessage("INFO: Creating internal MAL Broker for service: " + service.getName() + " on protocol: " + protocol + " with URI: " + this.localUri);
   }
 
   @Override

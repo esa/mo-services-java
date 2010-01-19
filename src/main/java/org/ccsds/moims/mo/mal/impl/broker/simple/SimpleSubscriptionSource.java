@@ -12,6 +12,7 @@ import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerMessage;
 import org.ccsds.moims.mo.mal.impl.broker.MALSubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionSource;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -42,13 +43,13 @@ class SimpleSubscriptionSource extends SubscriptionSource
   {
     Set values = details.entrySet();
     Iterator it = values.iterator();
-    System.out.println("  START Source ( " + signature + " )");
-    System.out.println("  Required: " + String.valueOf(required.size()));
+    Logging.logMessage("  START Source ( " + signature + " )");
+    Logging.logMessage("  Required: " + String.valueOf(required.size()));
     while (it.hasNext())
     {
       ((SimpleConsumerDetails) ((Entry) it.next()).getValue()).report();
     }
-    System.out.println("  END Source ( " + signature + " )");
+    Logging.logMessage("  END Source ( " + signature + " )");
   }
 
   @Override
@@ -62,7 +63,7 @@ class SimpleSubscriptionSource extends SubscriptionSource
   @Override
   public void populateNotifyList(MessageHeader srcHdr, List<MALBrokerMessage> lst, UpdateList updateList)
   {
-    System.out.println("INFO: Checking SimSubSource");
+    Logging.logMessage("INFO: Checking SimSubSource");
     Set<Map.Entry<String, SimpleConsumerDetails>> values = details.entrySet();
     Iterator<Map.Entry<String, SimpleConsumerDetails>> it = values.iterator();
     List<MALBrokerMessage> localLst = new LinkedList<MALBrokerMessage>();

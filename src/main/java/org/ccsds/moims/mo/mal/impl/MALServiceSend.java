@@ -28,6 +28,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.profile.MALProfiler;
 import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -65,7 +66,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + details.uriTo);
+      Logging.logMessage("ERROR: Error with consumer : " + details.uriTo);
     }
   }
 
@@ -90,7 +91,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -118,7 +119,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -146,7 +147,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -174,7 +175,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -199,7 +200,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -224,7 +225,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
 
@@ -241,7 +242,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with publish : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with publish : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -266,7 +267,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -291,7 +292,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -312,7 +313,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -333,7 +334,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -354,7 +355,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -375,7 +376,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -398,7 +399,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
 
@@ -423,7 +424,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -446,7 +447,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -469,7 +470,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
   }
@@ -485,7 +486,7 @@ public class MALServiceSend
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error returning response to consumer : " + srcHdr.getURIfrom());
+      Logging.logMessage("ERROR: Error returning response to consumer : " + srcHdr.getURIfrom());
     }
   }
 
@@ -565,7 +566,7 @@ public class MALServiceSend
 
     if (0 > rspnInteractionStage)
     {
-      System.out.println("ERROR: Unable to return error, already a return message (" + error + ")");
+      Logging.logMessage("ERROR: Unable to return error, already a return message (" + error + ")");
     }
     else
     {
@@ -620,14 +621,14 @@ public class MALServiceSend
 
       if(MALPubSubOperation.PUBLISH_STAGE.byteValue() == rspnInteractionStage.byteValue())
       {
-        System.out.println("RTNERROR: " + msg.getHeader().toString());
+        Logging.logMessage("RTNERROR: " + msg.getHeader().toString());
       }
       
       endpoint.sendMessage(msg);
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error returning exception to consumer : " + srcHdr.getURIfrom());
+      Logging.logMessage("ERROR: Error returning exception to consumer : " + srcHdr.getURIfrom());
     }
   }
 

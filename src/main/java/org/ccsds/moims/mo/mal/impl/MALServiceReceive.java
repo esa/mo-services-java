@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.impl.patterns.RequestInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.SendInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.SubmitInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.profile.MALProfiler;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -82,7 +83,7 @@ public class MALServiceReceive implements MALMessageListener
   @Override
   public void onInternalError(StandardError err)
   {
-    System.out.println("INFO: MAL Receiving ERROR!");
+    Logging.logMessage("INFO: MAL Receiving ERROR!");
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
@@ -92,8 +93,7 @@ public class MALServiceReceive implements MALMessageListener
     {
       msg = impl.getSecurityManager().check(msg);
 
-      System.out.println("INFO: MAL Receiving message");
-      System.out.flush();
+      Logging.logMessage("INFO: MAL Receiving message");
 
       switch (msg.getHeader().getInteractionType().getOrdinal())
       {
@@ -255,7 +255,7 @@ public class MALServiceReceive implements MALMessageListener
     String uri = endpoint.getURI().getValue();
     if (providerMap.containsKey(uri))
     {
-      System.out.println("ERROR: URI key reused in provider map: " + uri);
+      Logging.logMessage("ERROR: URI key reused in provider map: " + uri);
     }
 
     providerMap.put(uri, handler);
@@ -270,7 +270,7 @@ public class MALServiceReceive implements MALMessageListener
     }
     catch (MALException ex)
     {
-      System.out.println("ERROR: Error generated during reception of SEND pattern, dropping: " + ex);
+      Logging.logMessage("ERROR: Error generated during reception of SEND pattern, dropping: " + ex);
     }
   }
 
@@ -398,7 +398,7 @@ public class MALServiceReceive implements MALMessageListener
           }
           else
           {
-            System.out.println("ERROR: Unknown publisher for PUBLISH error: " + msg.getHeader().getURIto());
+            Logging.logMessage("ERROR: Unknown publisher for PUBLISH error: " + msg.getHeader().getURIto());
           }
         }
         catch (MALException ex)
@@ -425,7 +425,7 @@ public class MALServiceReceive implements MALMessageListener
       }
       else
       {
-        System.out.println("ERROR: Unexpected body type for PUBLISH: " + msg.getHeader().getURIto());
+        Logging.logMessage("ERROR: Unexpected body type for PUBLISH: " + msg.getHeader().getURIto());
         //impl.getSendingInterface().returnError(transId, msg.getHeader(), MALPubSubOperation.PUBLISH_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of publish message must be of type UpdateList")));
       }
     }
@@ -458,7 +458,7 @@ public class MALServiceReceive implements MALMessageListener
         }
         else
         {
-          System.out.println("ERROR: Unknown notify consumer requested: " + msg.getHeader().getURIto());
+          Logging.logMessage("ERROR: Unknown notify consumer requested: " + msg.getHeader().getURIto());
         }
       }
     }
@@ -479,12 +479,12 @@ public class MALServiceReceive implements MALMessageListener
           }
           catch (MALException ex)
           {
-            System.out.println("ERROR: Error generated during handling of NOTIFY message, dropping: " + ex);
+            Logging.logMessage("ERROR: Error generated during handling of NOTIFY message, dropping: " + ex);
           }
         }
         else
         {
-          System.out.println("ERROR: Unknown notify consumer requested: " + msg.getHeader().getURIto());
+          Logging.logMessage("ERROR: Unknown notify consumer requested: " + msg.getHeader().getURIto());
         }
       }
     }

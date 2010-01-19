@@ -9,6 +9,7 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -98,7 +99,7 @@ public class MALInteractionMap
       }
       else
       {
-        System.out.println("ERROR: **** No key found in service maps to wait for response! " + id);
+        Logging.logMessage("ERROR: **** No key found in service maps to wait for response! " + id);
       }
     }
 
@@ -130,7 +131,7 @@ public class MALInteractionMap
       {
         if (handler.finished())
         {
-          System.out.println("INFO: A Removing handler from service maps: " + id);
+          Logging.logMessage("INFO: A Removing handler from service maps: " + id);
           transMap.remove(id);
         }
       }
@@ -152,7 +153,7 @@ public class MALInteractionMap
       }
       else
       {
-        System.out.println("ERROR: **** No key found in service maps to get listener! " + id);
+        Logging.logMessage("ERROR: **** No key found in service maps to get listener! " + id);
       }
     }
 
@@ -165,7 +166,7 @@ public class MALInteractionMap
       {
         synchronized (transMap)
         {
-          System.out.println("INFO: B Removing handler from service maps: " + id);
+          Logging.logMessage("INFO: B Removing handler from service maps: " + id);
           transMap.remove(id);
         }
       }
@@ -312,7 +313,7 @@ public class MALInteractionMap
       }
       else
       {
-        System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+        Logging.logMessage("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
         throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
       }
     }
@@ -404,7 +405,7 @@ public class MALInteractionMap
         }
         else
         {
-          System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+          Logging.logMessage("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
           throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
         }
       }
@@ -430,7 +431,7 @@ public class MALInteractionMap
       }
       else
       {
-        System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+        Logging.logMessage("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
         throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
       }
     }
@@ -490,7 +491,7 @@ public class MALInteractionMap
         }
         else
         {
-          System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+          Logging.logMessage("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
           throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
         }
       }
@@ -531,7 +532,7 @@ public class MALInteractionMap
       }
       else
       {
-        System.out.println("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+        Logging.logMessage("ERROR: Unexpected transition IP(" + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
         throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
       }
     }

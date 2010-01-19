@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -35,7 +36,7 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
 
   public synchronized void report()
   {
-    System.out.println("START REPORT");
+    Logging.logMessage("START REPORT");
 
     java.util.Collection<ProviderDetails> pvalues = providerMap.values();
     for (ProviderDetails subscriptionSource : pvalues)
@@ -49,7 +50,7 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
       subscriptionSource.report();
     }
 
-    System.out.println("END REPORT");
+    Logging.logMessage("END REPORT");
   }
 
   @Override
@@ -76,7 +77,7 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
     {
       details = new ProviderDetails(hdr.getURIfrom().getValue(), hdr.getQoSlevel());
       providerMap.put(hdr.getURIfrom().getValue(), details);
-      System.out.println("New publisher registering: " + hdr);
+      Logging.logMessage("New publisher registering: " + hdr);
     }
 
     details.setKeyList(l);
@@ -113,7 +114,7 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
 
     if (updateList != null)
     {
-      System.out.println("INFO: Checking BaseBrokerHandler");
+      Logging.logMessage("INFO: Checking BaseBrokerHandler");
       SubscriptionSource ent = getEntry(hdr, true);
 
       if (null != ent)
@@ -230,12 +231,12 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
 
     public void report()
     {
-      System.out.println("  START Provider ( " + uri + " )");
+      Logging.logMessage("  START Provider ( " + uri + " )");
       for (MALSubscriptionKey key : keySet)
       {
-        System.out.println("  Allowed: " + key);
+        Logging.logMessage("  Allowed: " + key);
       }
-      System.out.println("  END Provider ( " + uri + " )");
+      Logging.logMessage("  END Provider ( " + uri + " )");
     }
 
     public void setKeyList(EntityKeyList l)

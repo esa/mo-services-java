@@ -11,6 +11,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.impl.profile.MALProfiler;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublisher;
 import org.ccsds.moims.mo.mal.provider.MALSubscriberEventListener;
@@ -79,7 +80,7 @@ public class MALBrokerPublisher implements MALPublisher
 
     if (null != tid)
     {
-      System.out.println("INFO: Publisher using transaction Id of: " + tid);
+      Logging.logMessage("INFO: Publisher using transaction Id of: " + tid);
 
       handler.publish(details, tid, operation, updateList);
     }
@@ -148,8 +149,7 @@ public class MALBrokerPublisher implements MALPublisher
 
     if (!transId.containsKey(key))
     {
-      System.out.println("INFO: Publisher setting transaction Id to: " + id);
-      System.out.flush();
+      Logging.logMessage("INFO: Publisher setting transaction Id to: " + id);
       transId.put(key, id);
     }
   }
@@ -161,8 +161,7 @@ public class MALBrokerPublisher implements MALPublisher
     Identifier id = transId.get(key);
     if (null != id)
     {
-      System.out.println("INFO: Publisher removing transaction Id of: " + id);
-      System.out.flush();
+      Logging.logMessage("INFO: Publisher removing transaction Id of: " + id);
       transId.remove(key);
     }
   }

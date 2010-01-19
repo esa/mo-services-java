@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -40,13 +41,13 @@ class CachingSubscriptionSource extends SubscriptionSource
   {
     Set values = details.entrySet();
     Iterator it = values.iterator();
-    System.out.println("  START Source ( " + signature + " )");
-    System.out.println("  Required: " + String.valueOf(published.size()));
+    Logging.logMessage("  START Source ( " + signature + " )");
+    Logging.logMessage("  Required: " + String.valueOf(published.size()));
     while (it.hasNext())
     {
       ((CachingConsumerDetails) ((Entry) it.next()).getValue()).report();
     }
-    System.out.println("  END Source ( " + signature + " )");
+    Logging.logMessage("  END Source ( " + signature + " )");
   }
 
   @Override

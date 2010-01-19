@@ -17,6 +17,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.impl.broker.simple.SimpleBrokerHandler;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.security.MALSecurityManager;
 import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -115,25 +116,25 @@ public class MALImpl extends MALClose implements MAL
       Class cls = ClassLoader.getSystemClassLoader().loadClass(clsName);
 
       broker = (MALBrokerHandler) cls.newInstance();
-      System.out.println("INFO: Creating internal MAL Broker handler: " + cls.getSimpleName());
+      Logging.logMessage("INFO: Creating internal MAL Broker handler: " + cls.getSimpleName());
     }
     catch (ClassNotFoundException ex)
     {
-      System.out.println("WARN: Unable to find MAL Broker handler class: " + clsName);
+      Logging.logMessage("WARN: Unable to find MAL Broker handler class: " + clsName);
     }
     catch (InstantiationException ex)
     {
-      System.out.println("WARN: Unable to instantiate MAL Broker handler: " + clsName);
+      Logging.logMessage("WARN: Unable to instantiate MAL Broker handler: " + clsName);
     }
     catch (IllegalAccessException ex)
     {
-      System.out.println("WARN: IllegalAccessException when instantiating MAL Broker handler class: " + clsName);
+      Logging.logMessage("WARN: IllegalAccessException when instantiating MAL Broker handler class: " + clsName);
     }
 
     if (null == broker)
     {
       broker = new SimpleBrokerHandler();
-      System.out.println("INFO: Creating internal MAL Broker handler: SimpleBrokerHandler");
+      Logging.logMessage("INFO: Creating internal MAL Broker handler: SimpleBrokerHandler");
     }
 
     return broker;

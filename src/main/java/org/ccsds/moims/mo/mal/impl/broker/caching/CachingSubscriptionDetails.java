@@ -9,6 +9,7 @@ import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
 import org.ccsds.moims.mo.mal.impl.broker.MALSubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.Update;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
@@ -34,9 +35,9 @@ class CachingSubscriptionDetails
 
   public void report()
   {
-    System.out.println("      START Subscription ( " + subscriptionId + " )");
-    System.out.println("      Required: " + String.valueOf(required.size()));
-    System.out.println("      END Subscription ( " + subscriptionId + " )");
+    Logging.logMessage("      START Subscription ( " + subscriptionId + " )");
+    Logging.logMessage("      Required: " + String.valueOf(required.size()));
+    Logging.logMessage("      END Subscription ( " + subscriptionId + " )");
   }
 
   public CachingConsumerDetails getParent()

@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -34,7 +35,7 @@ public class MALPubSubMap
       {
         publisherMap.put(id, listener);
 
-        System.out.println("INFO: Adding publisher: " + id);
+        Logging.logMessage("INFO: Adding publisher: " + id);
       }
     }
   }
@@ -51,7 +52,7 @@ public class MALPubSubMap
 
     if(null != list)
     {
-      System.out.println("INFO: Getting publisher: " + id);
+      Logging.logMessage("INFO: Getting publisher: " + id);
     }
 
     return list;
@@ -69,7 +70,7 @@ public class MALPubSubMap
 
     if(null != list)
     {
-      System.out.println("INFO: Removing publisher: " + id);
+      Logging.logMessage("INFO: Removing publisher: " + id);
     }
 
     return list;

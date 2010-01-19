@@ -10,6 +10,7 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerMessage;
 import org.ccsds.moims.mo.mal.impl.broker.MALSubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -36,14 +37,14 @@ class SimpleConsumerDetails
 
   public void report()
   {
-    System.out.println("    START Consumer ( " + consumerId + " )");
-    System.out.println("    Required: " + String.valueOf(required.size()));
+    Logging.logMessage("    START Consumer ( " + consumerId + " )");
+    Logging.logMessage("    Required: " + String.valueOf(required.size()));
     Set<Map.Entry<String, SimpleSubscriptionDetails>> values = details.entrySet();
     for (Map.Entry<String, SimpleSubscriptionDetails> entry : values)
     {
       entry.getValue().report();
     }
-    System.out.println("    END Consumer ( " + consumerId + " )");
+    Logging.logMessage("    END Consumer ( " + consumerId + " )");
   }
 
   public boolean notActive()
@@ -67,7 +68,7 @@ class SimpleConsumerDetails
 
   public void populateNotifyList(MessageHeader srcHdr, Identifier transId, List<MALBrokerMessage> lst, UpdateList updateList)
   {
-    System.out.println("INFO: Checking SimComDetails");
+    Logging.logMessage("INFO: Checking SimComDetails");
     Set<Map.Entry<String, SimpleSubscriptionDetails>> values = details.entrySet();
     Iterator<Map.Entry<String, SimpleSubscriptionDetails>> it = values.iterator();
     MALBrokerMessage bmsg = new MALBrokerMessage(binding);

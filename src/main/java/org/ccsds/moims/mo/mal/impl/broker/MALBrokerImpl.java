@@ -15,6 +15,7 @@ import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.profile.MALProfiler;
+import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
@@ -138,7 +139,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker, MALBrokerHandl
           {
             // with the exception being thrown we assume that there is a problem with this consumer so remove
             //  them from the observe manager
-            System.out.println("ERROR: Error with notify consumer, removing from list : " + notifyMessage.header.getURIto());
+            Logging.logMessage("ERROR: Error with notify consumer, removing from list : " + notifyMessage.header.getURIto());
             delegate.removeLostConsumer(notifyMessage.header);
 
             // TODO: notify local provider
