@@ -45,7 +45,7 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
           Boolean isPublisher,
           URI sharedBrokerUri) throws MALException
   {
-    return (MALProvider) addChild(new MALProviderImpl(this, impl, impl.getSendingInterface(), impl.getReceivingInterface(), impl.getMaps(), localName, protocol, service, authenticationId, handler, expectedQos, priorityLevelNumber, defaultQoSProperties, isPublisher, sharedBrokerUri));
+    return (MALProvider) addChild(new MALProviderImpl(this, impl, localName, protocol, service, authenticationId, handler, expectedQos, priorityLevelNumber, defaultQoSProperties, isPublisher, sharedBrokerUri));
   }
 
   @Override

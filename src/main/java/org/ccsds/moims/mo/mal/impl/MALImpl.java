@@ -27,6 +27,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  */
 public class MALImpl extends MALClose implements MAL
 {
+  private final Hashtable initialProperties;
   private final MALSecurityManager securityManager;
   private final MALInteractionMap imap = new MALInteractionMap();
   private final MALPubSubMap pmap = new MALPubSubMap();
@@ -38,9 +39,11 @@ public class MALImpl extends MALClose implements MAL
   {
     super(null);
 
+    initialProperties = (null == properties) ? null : ((Hashtable)properties.clone());
+
     if (null != securityFactory)
     {
-      securityManager = securityFactory.createSecurityManager(properties);
+      securityManager = securityFactory.createSecurityManager(initialProperties);
     }
     else
     {
@@ -75,6 +78,11 @@ public class MALImpl extends MALClose implements MAL
     super.close();
 
     org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton.close();
+  }
+
+  public Hashtable getInitialProperties()
+  {
+    return initialProperties;
   }
 
   public MALServiceSend getSendingInterface()

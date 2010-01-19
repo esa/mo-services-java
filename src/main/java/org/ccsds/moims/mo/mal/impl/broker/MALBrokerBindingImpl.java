@@ -18,13 +18,13 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  *
  * @author cooper_sf
  */
-public class MALBrokerBindingImpl extends MALServiceComponentImpl implements MALBrokerBinding
+public class MALBrokerBindingImpl extends MALServiceComponentImpl implements MALInternalBrokerBinding
 {
   private final MALBrokerImpl brokerImpl;
 
   public MALBrokerBindingImpl(MALBrokerImpl parent, MALImpl impl, Map<String, MALBrokerBindingImpl> brokerMap, String localName, boolean supportMultipleProtocols, String protocol, MALService service, Blob authenticationId, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable qosProperties) throws MALException
   {
-    super(parent, impl.getSendingInterface(), impl.getReceivingInterface(), impl.getMaps(), localName, protocol, service, authenticationId, expectedQos, priorityLevelNumber, qosProperties, null);
+    super(parent, impl, localName, protocol, service, authenticationId, expectedQos, priorityLevelNumber, qosProperties, null);
 
     this.brokerImpl = parent;
 

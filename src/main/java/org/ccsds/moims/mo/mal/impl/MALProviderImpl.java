@@ -4,7 +4,6 @@
  */
 package org.ccsds.moims.mo.mal.impl;
 
-import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.TreeMap;
@@ -19,6 +18,7 @@ import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.impl.broker.MALInternalBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
 
 /**
@@ -34,9 +34,9 @@ public class MALProviderImpl extends MALServiceComponentImpl implements MALProvi
   private final URI localBrokerUri;
   private final MALEndPoint brokerEndpoint;
 
-  public MALProviderImpl(MALProviderManagerImpl parent, MALImpl impl, MALServiceSend sendHandler, MALServiceReceive receiveHandler, MALInteractionMap maps, String localName, String protocol, MALService service, Blob authenticationId, MALInteractionHandler handler, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties, Boolean isPublisher, URI sharedBrokerUri) throws MALException
+  public MALProviderImpl(MALProviderManagerImpl parent, MALImpl impl, String localName, String protocol, MALService service, Blob authenticationId, MALInteractionHandler handler, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties, Boolean isPublisher, URI sharedBrokerUri) throws MALException
   {
-    super(parent, sendHandler, receiveHandler, maps, localName, protocol, service, authenticationId, expectedQos, priorityLevelNumber, defaultQoSProperties, handler);
+    super(parent, impl, localName, protocol, service, authenticationId, expectedQos, priorityLevelNumber, defaultQoSProperties, handler);
 
     this.isPublisher = isPublisher;
     this.sharedBrokerUri = sharedBrokerUri;
@@ -50,7 +50,7 @@ public class MALProviderImpl extends MALServiceComponentImpl implements MALProvi
         this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(null, localName + "InternalBroker", protocol, service, authenticationId, expectedQos, priorityLevelNumber, defaultQoSProperties);
         this.localBrokerBinding.activate();
         this.localBrokerUri = this.localBrokerBinding.getURI();
-        this.brokerEndpoint = ((MALBrokerBindingImpl)localBrokerBinding).endpoint;
+        this.brokerEndpoint = ((MALInternalBrokerBinding)localBrokerBinding).getEndpoint();
       }
       else
       {
@@ -63,7 +63,7 @@ public class MALProviderImpl extends MALServiceComponentImpl implements MALProvi
         }
         else
         {
-          this.brokerEndpoint = MALTransportSingleton.instance(sharedBrokerUri, null).createEndPoint(null, null, defaultQoSProperties);
+          this.brokerEndpoint = MALTransportSingleton.instance(sharedBrokerUri, impl.getInitialProperties()).createEndPoint(null, service, defaultQoSProperties);
         }
       }
     }

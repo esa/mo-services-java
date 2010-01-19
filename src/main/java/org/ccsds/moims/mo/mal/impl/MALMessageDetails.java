@@ -47,7 +47,7 @@ public final class MALMessageDetails
     this.sessionType = sessionType;
     this.sessionName = sessionName;
     this.qosLevel = qosLevel;
-    this.qosProps = qosProps;
+    this.qosProps = (null == qosProps) ? new Hashtable() : qosProps;
     this.priority = priority;
   }
 }

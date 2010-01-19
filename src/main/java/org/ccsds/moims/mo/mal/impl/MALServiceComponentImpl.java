@@ -36,12 +36,12 @@ public abstract class MALServiceComponentImpl extends MALClose
   protected final MALTransport transport;
   protected final MALEndPoint endpoint;
 
-  public MALServiceComponentImpl(MALClose parent, MALServiceSend sendHandler, MALServiceReceive receiveHandler, MALInteractionMap maps, String localName, String protocol, MALService service, Blob authenticationId, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties, MALInteractionHandler handler) throws MALException
+  public MALServiceComponentImpl(MALClose parent, MALImpl impl, String localName, String protocol, MALService service, Blob authenticationId, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties, MALInteractionHandler handler) throws MALException
   {
     super(parent);
 
-    this.sendHandler = sendHandler;
-    this.receiveHandler = receiveHandler;
+    this.sendHandler = impl.getSendingInterface();
+    this.receiveHandler = impl.getReceivingInterface();
     this.handler = handler;
     this.localName = localName;
     this.protocol = protocol;
@@ -67,7 +67,7 @@ public abstract class MALServiceComponentImpl extends MALClose
 
     if (null != service)
     {
-      this.transport = MALTransportSingleton.instance(protocol, defaultQoSProperties);
+      this.transport = MALTransportSingleton.instance(protocol, impl.getInitialProperties());
       this.endpoint = transport.createEndPoint(localName, service, defaultQoSProperties);
       this.localUri = this.endpoint.getURI();
       receiveHandler.addMessageHandler(this.endpoint, this);

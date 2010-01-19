@@ -1,5 +1,6 @@
 package org.ccsds.moims.mo.mal.impl;
 
+import java.util.Hashtable;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
@@ -10,7 +11,9 @@ import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALFactory;
 import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -476,7 +479,7 @@ public class MALServiceSend
     try
     {
       MALEndPoint endpoint = msgReceiver.getEndpoint();
-      MALMessage msg = endpoint.createMessage(createReturnHeader(msgReceiver, srcHdr, rspnInteractionStage, false), rspn, null);
+      MALMessage msg = endpoint.createMessage(createReturnHeader(msgReceiver, srcHdr, rspnInteractionStage, false), rspn, new Hashtable());
 
       endpoint.sendMessage(msg);
     }
@@ -603,7 +606,8 @@ public class MALServiceSend
           uriTo = srcHdr.getURIfrom();
         }
 
-        endpoint = MALTransportSingleton.instance(uriTo, null).createEndPoint(null, null, null);
+        MALService service = MALFactory.lookupOperation(srcHdr.getArea(), srcHdr.getService(), srcHdr.getOperation()).getService();
+        endpoint = MALTransportSingleton.instance(uriTo, impl.getInitialProperties()).createEndPoint(null, service, null);
         uriFrom = endpoint.getURI();
       }
 
@@ -612,7 +616,7 @@ public class MALServiceSend
         level = srcHdr.getQoSlevel();
       }
 
-      MALMessage msg = endpoint.createMessage(createReturnHeader(uriFrom, authId, srcHdr, level, rspnInteractionStage, true), error, null);
+      MALMessage msg = endpoint.createMessage(createReturnHeader(uriFrom, authId, srcHdr, level, rspnInteractionStage, true), error, new Hashtable());
 
       if(MALPubSubOperation.PUBLISH_STAGE.byteValue() == rspnInteractionStage.byteValue())
       {

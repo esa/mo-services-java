@@ -4,6 +4,7 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -126,7 +127,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker, MALBrokerHandl
         {
           try
           {
-            MALMessage msg = endpoint.createMessage(notifyMessage.header, notifyMessage.updates, null);
+            MALMessage msg = endpoint.createMessage(notifyMessage.header, notifyMessage.updates, new Hashtable());
 
             MALProfiler.instance.sendMALAddObject(hdr, msg);
 
