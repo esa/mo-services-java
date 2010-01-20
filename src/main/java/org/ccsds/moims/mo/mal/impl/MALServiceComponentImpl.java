@@ -35,6 +35,8 @@ public abstract class MALServiceComponentImpl extends MALClose
   protected final URI localUri;
   protected final MALTransport transport;
   protected final MALEndPoint endpoint;
+  protected final EndPointAdapter endpointAdapter;
+  protected final Address msgAddress;
 
   public MALServiceComponentImpl(MALClose parent, MALImpl impl, String localName, String protocol, MALService service, Blob authenticationId, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties, MALInteractionHandler handler) throws MALException
   {
@@ -47,7 +49,7 @@ public abstract class MALServiceComponentImpl extends MALClose
     this.protocol = protocol;
     this.service = service;
     this.authenticationId = authenticationId;
-    if(null != expectedQos)
+    if (null != expectedQos)
     {
       this.expectedQos = java.util.Arrays.copyOf(expectedQos, expectedQos.length);
     }
@@ -56,9 +58,9 @@ public abstract class MALServiceComponentImpl extends MALClose
       this.expectedQos = null;
     }
     this.priorityLevelNumber = priorityLevelNumber;
-    if(null != defaultQoSProperties)
+    if (null != defaultQoSProperties)
     {
-      this.defaultQoSProperties = (Hashtable)defaultQoSProperties.clone();
+      this.defaultQoSProperties = (Hashtable) defaultQoSProperties.clone();
     }
     else
     {
@@ -70,13 +72,16 @@ public abstract class MALServiceComponentImpl extends MALClose
       this.transport = MALTransportSingleton.instance(protocol, impl.getInitialProperties());
       this.endpoint = transport.createEndPoint(localName, service, defaultQoSProperties);
       this.localUri = this.endpoint.getURI();
-      receiveHandler.addMessageHandler(this.endpoint, this);
-      this.endpoint.setMessageListener(receiveHandler);
+      this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
+      this.endpointAdapter = new EndPointAdapter(receiveHandler, this.msgAddress);
+      this.endpoint.setMessageListener(endpointAdapter);
     }
     else
     {
       this.transport = null;
       this.endpoint = null;
+      this.endpointAdapter = null;
+      this.msgAddress = null;
       this.localUri = null;
     }
   }
@@ -94,6 +99,11 @@ public abstract class MALServiceComponentImpl extends MALClose
   public MALEndPoint getEndpoint()
   {
     return endpoint;
+  }
+
+  public Address getMsgAddress()
+  {
+    return msgAddress;
   }
 
   @Override

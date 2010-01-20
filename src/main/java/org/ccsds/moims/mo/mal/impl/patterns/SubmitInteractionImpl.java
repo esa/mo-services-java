@@ -7,11 +7,11 @@ package org.ccsds.moims.mo.mal.impl.patterns;
 import org.ccsds.moims.mo.mal.provider.MALSubmit;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
+import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
-import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
 
 /**
  *
@@ -19,20 +19,20 @@ import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
  */
 public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSubmit
 {
-  public SubmitInteractionImpl(MALImpl impl, MALServiceComponentImpl handler, Identifier internalTransId, MALMessage msg)
+  public SubmitInteractionImpl(MALImpl impl, Address address, Identifier internalTransId, MALMessage msg)
   {
-    super(impl, handler, internalTransId, msg);
+    super(impl, address, internalTransId, msg);
   }
 
   @Override
   public void sendAcknowledgement() throws MALException
   {
-    impl.getSendingInterface().returnResponse(handler, internalTransId, msg.getHeader(), MALSubmitOperation.SUBMIT_ACK_STAGE, null);
+    sender.returnResponse(address, internalTransId, msg.getHeader(), MALSubmitOperation.SUBMIT_ACK_STAGE, null);
   }
 
   @Override
   public void sendError(StandardError error) throws MALException
   {
-    impl.getSendingInterface().returnError(handler, internalTransId, msg.getHeader(), MALSubmitOperation.SUBMIT_ACK_STAGE, error);
+    sender.returnError(address, internalTransId, msg.getHeader(), MALSubmitOperation.SUBMIT_ACK_STAGE, error);
   }
 }

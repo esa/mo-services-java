@@ -6,27 +6,22 @@ import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
-import org.ccsds.moims.mo.mal.MALSendOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALFactory;
 import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
-import org.ccsds.moims.mo.mal.structures.Pair;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
-import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -43,39 +38,12 @@ public class MALServiceSend
   private final MALImpl impl;
   private final MALInteractionMap imap;
   private final MALPubSubMap pmap;
-  private final MALServiceReceive receiveHandler;
 
   public MALServiceSend(MALImpl impl, MALInteractionMap imap, MALPubSubMap pmap, MALServiceReceive receiveHandler)
   {
     this.impl = impl;
     this.imap = imap;
     this.pmap = pmap;
-    this.receiveHandler = receiveHandler;
-  }
-
-  public void send(MALMessageDetails details, MALSendOperation op, Element requestBody) throws MALException
-  {
-    onewayInteraction(details, null, op, Byte.valueOf((byte)0), requestBody);
-  }
-
-  public void submit(MALMessageDetails details, MALSubmitOperation op, Element requestBody) throws MALException
-  {
-    synchronousInteraction(details, op, MALSubmitOperation.SUBMIT_STAGE, (MALInteractionListener) null, requestBody);
-  }
-
-  public Element request(MALMessageDetails details, MALRequestOperation op, Element requestBody) throws MALException
-  {
-    return synchronousInteraction(details, op, MALRequestOperation.REQUEST_STAGE, (MALInteractionListener) null, requestBody);
-  }
-
-  public Element invoke(MALMessageDetails details, MALInvokeOperation op, Element requestBody, MALInteractionListener listener) throws MALException
-  {
-    return synchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
-  }
-
-  public Element progress(MALMessageDetails details, MALProgressOperation op, Element requestBody, MALInteractionListener listener) throws MALException
-  {
-    return synchronousInteraction(details, op, MALProgressOperation._PROGRESS_STAGE, listener, requestBody);
   }
 
   public void register(MALMessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener list) throws MALException
@@ -107,26 +75,6 @@ public class MALServiceSend
     pmap.deregisterNotifyListener(details, op, unsubscription);
   }
 
-  public void submitAsync(MALMessageDetails details, MALSubmitOperation op, Element requestBody, MALInteractionListener listener) throws MALException
-  {
-    asynchronousInteraction(details, op, MALSubmitOperation.SUBMIT_STAGE, listener, requestBody);
-  }
-
-  public void requestAsync(MALMessageDetails details, MALRequestOperation op, Element requestBody, MALInteractionListener listener) throws MALException
-  {
-    asynchronousInteraction(details, op, MALRequestOperation.REQUEST_STAGE, listener, requestBody);
-  }
-
-  public void invokeAsync(MALMessageDetails details, MALInvokeOperation op, Element requestBody, MALInteractionListener listener) throws MALException
-  {
-    asynchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
-  }
-
-  public void progressAsync(MALMessageDetails details, MALProgressOperation op, Element requestBody, MALInteractionListener listener) throws MALException
-  {
-    asynchronousInteraction(details, op, MALProgressOperation.PROGRESS_STAGE, listener, requestBody);
-  }
-
   public Identifier publishRegisterAsync(MALMessageDetails details, MALPubSubOperation op, EntityKeyList entityKeys, MALPublishInteractionListener listener) throws MALException
   {
     pmap.registerPublishListener(details, listener);
@@ -151,12 +99,12 @@ public class MALServiceSend
     pmap.deregisterNotifyListener(details, op, unsubscription);
   }
 
-  public void returnResponse(MALServiceComponentImpl msgReceiver, Identifier internalTransId, MessageHeader srcHdr, Byte rspnInteractionStage, Element rspn)
+  public void returnResponse(Address msgAddress, Identifier internalTransId, MessageHeader srcHdr, Byte rspnInteractionStage, Element rspn)
   {
     try
     {
-      MALEndPoint endpoint = msgReceiver.getEndpoint();
-      MALMessage msg = endpoint.createMessage(createReturnHeader(msgReceiver, srcHdr, rspnInteractionStage, false), rspn, new Hashtable());
+      MALEndPoint endpoint = msgAddress.endpoint;
+      MALMessage msg = endpoint.createMessage(createReturnHeader(msgAddress.uri, msgAddress.authenticationId, srcHdr, srcHdr.getQoSlevel(), rspnInteractionStage, false), rspn, new Hashtable());
 
       endpoint.sendMessage(msg);
     }
@@ -166,7 +114,7 @@ public class MALServiceSend
     }
   }
 
-  public void returnErrorAndCalculateStage(MALServiceComponentImpl msgReceiver, Identifier internalTransId, MessageHeader srcHdr, StandardError error)
+  public void returnErrorAndCalculateStage(Address msgAddress, Identifier internalTransId, MessageHeader srcHdr, StandardError error)
   {
     Byte rspnInteractionStage = -1;
     final int srcInteractionStage = srcHdr.getInteractionStage().intValue();
@@ -246,62 +194,27 @@ public class MALServiceSend
     }
     else
     {
-      returnError(msgReceiver, internalTransId, srcHdr, rspnInteractionStage, error);
+      returnError(msgAddress, internalTransId, srcHdr, rspnInteractionStage, error);
     }
   }
 
-  public void returnError(MALServiceComponentImpl msgReceiver, Identifier internalTransId, MessageHeader srcHdr, Byte rspnInteractionStage, StandardError error)
+  public void returnError(Address msgAddress, Identifier internalTransId, MessageHeader srcHdr, Byte rspnInteractionStage, StandardError error)
   {
-    returnError(msgReceiver, internalTransId, srcHdr, srcHdr.getQoSlevel(), rspnInteractionStage, error);
+    returnError(msgAddress, internalTransId, srcHdr, srcHdr.getQoSlevel(), rspnInteractionStage, error);
   }
 
-  public void returnError(MALServiceComponentImpl msgReceiver, Identifier internalTransId, MessageHeader srcHdr, QoSLevel level, Byte rspnInteractionStage, StandardError error)
+  public void returnError(Address msgAddress, Identifier internalTransId, MessageHeader srcHdr, QoSLevel level, Byte rspnInteractionStage, StandardError error)
   {
     try
     {
-      MALEndPoint endpoint = null;
-      URI uriFrom = null;
-      Blob authId = null;
-
-      if (null != msgReceiver)
-      {
-        endpoint = msgReceiver.getEndpoint();
-        uriFrom = msgReceiver.getURI();
-        authId = msgReceiver.authenticationId;
-      }
-      else
-      {
-        URI uriTo = null;
-
-        Pair details = imap.resolveTransactionSource(internalTransId);
-        if (null != details)
-        {
-          uriTo = (URI) details.getFirst();
-        }
-        else
-        {
-          uriTo = srcHdr.getURIfrom();
-        }
-
-        MALService service = MALFactory.lookupOperation(srcHdr.getArea(), srcHdr.getService(), srcHdr.getOperation()).getService();
-        endpoint = MALTransportSingleton.instance(uriTo, impl.getInitialProperties()).createEndPoint(null, service, null);
-        uriFrom = endpoint.getURI();
-        endpoint.setMessageListener(receiveHandler);
-      }
-
       if (null == level)
       {
         level = srcHdr.getQoSlevel();
       }
 
-      MALMessage msg = endpoint.createMessage(createReturnHeader(uriFrom, authId, srcHdr, level, rspnInteractionStage, true), error, new Hashtable());
+      MALMessage msg = msgAddress.endpoint.createMessage(createReturnHeader(msgAddress.uri, msgAddress.authenticationId, srcHdr, level, rspnInteractionStage, true), error, new Hashtable());
 
-      if (MALPubSubOperation.PUBLISH_STAGE.byteValue() == rspnInteractionStage.byteValue())
-      {
-        Logging.logMessage("RTNERROR: " + msg.getHeader().toString());
-      }
-
-      endpoint.sendMessage(msg);
+      msgAddress.endpoint.sendMessage(msg);
     }
     catch (MALException ex)
     {
@@ -309,7 +222,7 @@ public class MALServiceSend
     }
   }
 
-  private void onewayInteraction(MALMessageDetails details, Identifier transId, MALOperation op, Byte stage, Element msgBody) throws MALException
+  public void onewayInteraction(MALMessageDetails details, Identifier transId, MALOperation op, Byte stage, Element msgBody) throws MALException
   {
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, stage), msgBody, details.qosProps);
 
@@ -326,14 +239,14 @@ public class MALServiceSend
     }
   }
 
-  private Element synchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALInteractionListener listener, Element msgBody) throws MALException
+  public Element synchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALInteractionListener listener, Element msgBody) throws MALException
   {
     Identifier transId = imap.createTransaction(op, true, syncStage, listener);
 
     return synchronousInteraction(transId, details, op, syncStage, msgBody);
   }
 
-  private Element synchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALPublishInteractionListener listener, Element msgBody) throws MALException
+  public Element synchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALPublishInteractionListener listener, Element msgBody) throws MALException
   {
     Identifier transId = imap.createTransaction(op, true, syncStage, listener);
 
@@ -349,7 +262,7 @@ public class MALServiceSend
     }
   }
 
-  private Element synchronousInteraction(Identifier transId, MALMessageDetails details, MALOperation op, Byte syncStage, Element msgBody) throws MALException
+  public Element synchronousInteraction(Identifier transId, MALMessageDetails details, MALOperation op, Byte syncStage, Element msgBody) throws MALException
   {
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, syncStage), msgBody, details.qosProps);
 
@@ -372,14 +285,14 @@ public class MALServiceSend
     }
   }
 
-  private void asynchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALInteractionListener listener, Element msgBody) throws MALException
+  public void asynchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALInteractionListener listener, Element msgBody) throws MALException
   {
     Identifier transId = imap.createTransaction(op, false, syncStage, listener);
 
     asynchronousInteraction(transId, details, op, syncStage, msgBody);
   }
 
-  private Element asynchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALPublishInteractionListener listener, Element msgBody) throws MALException
+  public Element asynchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALPublishInteractionListener listener, Element msgBody) throws MALException
   {
     Identifier transId = imap.createTransaction(op, false, syncStage, listener);
 
@@ -395,7 +308,7 @@ public class MALServiceSend
     }
   }
 
-  private void asynchronousInteraction(Identifier transId, MALMessageDetails details, MALOperation op, Byte syncStage, Element msgBody) throws MALException
+  public void asynchronousInteraction(Identifier transId, MALMessageDetails details, MALOperation op, Byte syncStage, Element msgBody) throws MALException
   {
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, syncStage), msgBody, details.qosProps);
 
@@ -464,11 +377,6 @@ public class MALServiceSend
     hdr.setError(Boolean.FALSE);
 
     return hdr;
-  }
-
-  MessageHeader createReturnHeader(MALServiceComponentImpl msgSource, MessageHeader srcHdr, Byte interactionStage, boolean isError)
-  {
-    return createReturnHeader(msgSource.getURI(), msgSource.authenticationId, srcHdr, srcHdr.getQoSlevel(), interactionStage, isError);
   }
 
   MessageHeader createReturnHeader(URI uriFrom, Blob authId, MessageHeader srcHdr, QoSLevel level, Byte interactionStage, boolean isError)

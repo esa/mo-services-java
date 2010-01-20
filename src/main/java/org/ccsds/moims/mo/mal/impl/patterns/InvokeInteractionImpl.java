@@ -8,10 +8,10 @@ import org.ccsds.moims.mo.mal.provider.MALInvoke;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
+import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
-import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 
 /**
@@ -22,22 +22,22 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
 {
   private boolean ackSent = false;
   
-  public InvokeInteractionImpl(MALImpl impl, MALServiceComponentImpl handler, Identifier internalTransId, MALMessage msg)
+  public InvokeInteractionImpl(MALImpl impl, Address address, Identifier internalTransId, MALMessage msg)
   {
-    super(impl, handler, internalTransId, msg);
+    super(impl, address, internalTransId, msg);
   }
 
   @Override
   public void sendAcknowledgement(Element result) throws MALException
   {
     ackSent = true;
-    impl.getSendingInterface().returnResponse(handler, internalTransId, msg.getHeader(), MALInvokeOperation.INVOKE_ACK_STAGE, result);
+    sender.returnResponse(address, internalTransId, msg.getHeader(), MALInvokeOperation.INVOKE_ACK_STAGE, result);
   }
 
   @Override
   public void sendResponse(Element result) throws MALException
   {
-    impl.getSendingInterface().returnResponse(handler, internalTransId, msg.getHeader(), MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
+    sender.returnResponse(address, internalTransId, msg.getHeader(), MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
   }
 
   @Override
@@ -50,6 +50,6 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
       stage = MALInvokeOperation.INVOKE_RESPONSE_STAGE;
     }
 
-    impl.getSendingInterface().returnError(handler, internalTransId, msg.getHeader(), stage, error);
+    sender.returnError(address, internalTransId, msg.getHeader(), stage, error);
   }
 }

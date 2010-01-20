@@ -305,6 +305,11 @@ public class MALInteractionMap
               }
             }
           }
+          else
+          {
+            Logging.logMessage("ERROR: Unexpected transition IP(" + InteractionType.fromInt(msg.getHeader().getInteractionType().getOrdinal()) + ") Stage(" + msg.getHeader().getInteractionStage().intValue() + ")");
+            throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+          }
         }
         catch (MALException ex)
         {

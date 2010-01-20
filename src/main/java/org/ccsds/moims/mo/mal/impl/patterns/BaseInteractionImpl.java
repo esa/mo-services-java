@@ -7,13 +7,14 @@ package org.ccsds.moims.mo.mal.impl.patterns;
 import java.util.HashMap;
 import org.ccsds.moims.mo.mal.MALFactory;
 import org.ccsds.moims.mo.mal.MALOperation;
+import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
-import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
+import org.ccsds.moims.mo.mal.impl.MALServiceSend;
 
 /**
  *
@@ -21,17 +22,17 @@ import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
  */
 public abstract class BaseInteractionImpl implements MALInteraction
 {
-  protected final MALImpl impl;
-  protected final MALServiceComponentImpl handler;
+  protected final MALServiceSend sender;
+  protected final Address address;
   protected final Identifier internalTransId;
   protected final MALMessage msg;
   protected final MALOperation operation;
   protected final HashMap qosProperties = new HashMap();
 
-  public BaseInteractionImpl(MALImpl impl, MALServiceComponentImpl handler, Identifier internalTransId, MALMessage msg)
+  public BaseInteractionImpl(MALImpl impl, Address address, Identifier internalTransId, MALMessage msg)
   {
-    this.impl = impl;
-    this.handler = handler;
+    this.sender = impl.getSendingInterface();
+    this.address = address;
     this.internalTransId = internalTransId;
     this.msg = msg;
     this.operation = MALFactory.lookupOperation(msg.getHeader().getArea(), msg.getHeader().getService(), msg.getHeader().getOperation());
