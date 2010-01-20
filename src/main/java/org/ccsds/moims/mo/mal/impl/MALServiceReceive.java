@@ -92,6 +92,7 @@ public class MALServiceReceive implements MALMessageListener
     try
     {
       msg = impl.getSecurityManager().check(msg);
+      final int stage = msg.getHeader().getInteractionStage().intValue();
 
       Logging.logMessage("INFO: MAL Receiving message");
 
@@ -104,7 +105,7 @@ public class MALServiceReceive implements MALMessageListener
         }
         case InteractionType._SUBMIT_INDEX:
         {
-          switch (msg.getHeader().getInteractionStage().intValue())
+          switch (stage)
           {
             case MALSubmitOperation._SUBMIT_STAGE:
             {
@@ -118,14 +119,14 @@ public class MALServiceReceive implements MALMessageListener
             }
             default:
             {
-              throw new UnsupportedOperationException("Not supported yet.");
+              throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, new Union("Received unexpected stage of " + stage)));
             }
           }
           break;
         }
         case InteractionType._REQUEST_INDEX:
         {
-          switch (msg.getHeader().getInteractionStage().intValue())
+          switch (stage)
           {
             case MALRequestOperation._REQUEST_STAGE:
             {
@@ -139,14 +140,14 @@ public class MALServiceReceive implements MALMessageListener
             }
             default:
             {
-              throw new UnsupportedOperationException("Not supported yet.");
+              throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, new Union("Received unexpected stage of " + stage)));
             }
           }
           break;
         }
         case InteractionType._INVOKE_INDEX:
         {
-          switch (msg.getHeader().getInteractionStage().intValue())
+          switch (stage)
           {
             case MALInvokeOperation._INVOKE_STAGE:
             {
@@ -161,14 +162,14 @@ public class MALServiceReceive implements MALMessageListener
             }
             default:
             {
-              throw new UnsupportedOperationException("Not supported yet.");
+              throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, new Union("Received unexpected stage of " + stage)));
             }
           }
           break;
         }
         case InteractionType._PROGRESS_INDEX:
         {
-          switch (msg.getHeader().getInteractionStage().intValue())
+          switch (stage)
           {
             case MALProgressOperation._PROGRESS_STAGE:
             {
@@ -184,14 +185,14 @@ public class MALServiceReceive implements MALMessageListener
             }
             default:
             {
-              throw new UnsupportedOperationException("Not supported yet.");
+              throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, new Union("Received unexpected stage of " + stage)));
             }
           }
           break;
         }
         case InteractionType._PUBSUB_INDEX:
         {
-          switch (msg.getHeader().getInteractionStage().intValue())
+          switch (stage)
           {
             case MALPubSubOperation._REGISTER_ACK_STAGE:
             case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
@@ -233,14 +234,14 @@ public class MALServiceReceive implements MALMessageListener
             }
             default:
             {
-              throw new UnsupportedOperationException("Not supported yet.");
+              throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, new Union("Received unexpected stage of " + stage)));
             }
           }
           break;
         }
         default:
         {
-          throw new UnsupportedOperationException("Not supported yet.");
+          throw new MALException(new StandardError(MALHelper.INTERNAL_ERROR_NUMBER, new Union("Received unexpected interaction of " + msg.getHeader().getInteractionType().getOrdinal())));
         }
       }
     }

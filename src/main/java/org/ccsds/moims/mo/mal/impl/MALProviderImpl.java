@@ -115,6 +115,17 @@ public class MALProviderImpl extends MALServiceComponentImpl implements MALProvi
   }
 
   @Override
+  public Blob getBrokerAuthenticationId()
+  {
+    if (isPublisher() && (null == sharedBrokerUri))
+    {
+      return this.localBrokerBinding.getAuthenticationId();
+    }
+
+    return null;
+  }
+
+  @Override
   public void close() throws MALException
   {
     super.close();

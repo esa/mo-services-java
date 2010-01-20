@@ -19,6 +19,7 @@ import org.ccsds.moims.mo.mal.structures.Pair;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
@@ -35,7 +36,7 @@ public class MALInteractionMap
   {
   }
 
-  public Identifier createTransaction(MALOperation operation, boolean syncOperation, byte syncStage, MALInteractionListener listener)
+  public Identifier createTransaction(MALOperation operation, boolean syncOperation, byte syncStage, MALInteractionListener listener) throws MALException
   {
     final Identifier oTransId = getTransactionId();
 
@@ -63,7 +64,7 @@ public class MALInteractionMap
     }
     else
     {
-      throw new UnsupportedOperationException("Pattern not supported");
+      throw new MALException(new StandardError(MALHelper.INTERNAL_ERROR_NUMBER, new Union("Pattern not supported")));
     }
 
     synchronized (transMap)

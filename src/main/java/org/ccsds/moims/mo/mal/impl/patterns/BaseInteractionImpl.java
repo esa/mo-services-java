@@ -4,6 +4,7 @@
  */
 package org.ccsds.moims.mo.mal.impl.patterns;
 
+import java.util.HashMap;
 import org.ccsds.moims.mo.mal.MALFactory;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
@@ -25,6 +26,7 @@ public abstract class BaseInteractionImpl implements MALInteraction
   protected final Identifier internalTransId;
   protected final MALMessage msg;
   protected final MALOperation operation;
+  protected final HashMap qosProperties = new HashMap();
 
   public BaseInteractionImpl(MALImpl impl, MALServiceComponentImpl handler, Identifier internalTransId, MALMessage msg)
   {
@@ -50,12 +52,12 @@ public abstract class BaseInteractionImpl implements MALInteraction
   @Override
   public Element getQoSProperty(String name)
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    return (Element)qosProperties.get(name);
   }
 
   @Override
   public void setQoSProperty(String name, Element value)
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    qosProperties.put(name, value);
   }
 }
