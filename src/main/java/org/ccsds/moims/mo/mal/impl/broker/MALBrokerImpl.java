@@ -14,7 +14,6 @@ import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
-import org.ccsds.moims.mo.mal.impl.profile.MALProfiler;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -114,9 +113,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker, MALBrokerHandl
 
   public void handlePublish(MessageHeader hdr, UpdateList updateList) throws MALException
   {
-    MALProfiler.instance.sendMarkMALBrokerStarting(hdr);
     java.util.List<MALBrokerMessage> msgList = delegate.createNotify(hdr, updateList);
-    MALProfiler.instance.sendMarkMALBrokerFinished(hdr);
 
     if (!msgList.isEmpty())
     {
@@ -129,8 +126,6 @@ public class MALBrokerImpl extends MALClose implements MALBroker, MALBrokerHandl
           try
           {
             MALMessage msg = endpoint.createMessage(notifyMessage.header, notifyMessage.updates, new Hashtable());
-
-            MALProfiler.instance.sendMALAddObject(hdr, msg);
 
             // send it out
             endpoint.sendMessage(msg);
@@ -147,7 +142,5 @@ public class MALBrokerImpl extends MALClose implements MALBroker, MALBrokerHandl
         }
       }
     }
-
-    MALProfiler.instance.sendMALRemoveObject(hdr);
   }
 }

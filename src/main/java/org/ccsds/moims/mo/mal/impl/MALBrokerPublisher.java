@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.impl.profile.MALProfiler;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublisher;
@@ -46,11 +45,7 @@ public class MALBrokerPublisher implements MALPublisher
   @Override
   public void register(EntityKeyList entityKeys, MALPublishInteractionListener listener, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Hashtable remotePublisherQosProps, Integer remotePublisherPriority) throws MALException
   {
-    MALProfiler.instance.sendMarkMALReception(domain);
-
     MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.authenticationId, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
-
-    MALProfiler.instance.sendMALTransferObject(domain, details);
 
     setTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue(), handler.publishRegister(details, operation, entityKeys, listener));
   }
@@ -58,11 +53,7 @@ public class MALBrokerPublisher implements MALPublisher
   @Override
   public void asyncRegister(EntityKeyList entityKeys, MALPublishInteractionListener listener, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Hashtable remotePublisherQosProps, Integer remotePublisherPriority) throws MALException
   {
-    MALProfiler.instance.sendMarkMALReception(domain);
-
     MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.authenticationId, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
-
-    MALProfiler.instance.sendMALTransferObject(domain, details);
 
     setTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue(), handler.publishRegisterAsync(details, operation, entityKeys, listener));
   }
@@ -70,11 +61,7 @@ public class MALBrokerPublisher implements MALPublisher
   @Override
   public void publish(UpdateList updateList, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel publishQos, Hashtable publishQosProps, Integer publishPriority) throws MALException
   {
-    MALProfiler.instance.sendMarkMALReception(domain);
-
     MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.authenticationId, domain, networkZone, sessionType, sessionName, publishQos, publishQosProps, publishPriority);
-
-    MALProfiler.instance.sendMALTransferObject(domain, details);
 
     Identifier tid = getTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue());
 
@@ -106,11 +93,7 @@ public class MALBrokerPublisher implements MALPublisher
   @Override
   public void deregister(DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Hashtable remotePublisherQosProps, Integer remotePublisherPriority) throws MALException
   {
-    MALProfiler.instance.sendMarkMALReception(domain);
-
     MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.authenticationId, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
-
-    MALProfiler.instance.sendMALTransferObject(domain, details);
 
     handler.publishDeregister(details, operation);
 
@@ -120,11 +103,7 @@ public class MALBrokerPublisher implements MALPublisher
   @Override
   public void asyncDeregister(MALPublishInteractionListener listener, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Hashtable remotePublisherQosProps, Integer remotePublisherPriority) throws MALException
   {
-    MALProfiler.instance.sendMarkMALReception(domain);
-
     MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.authenticationId, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
-
-    MALProfiler.instance.sendMALTransferObject(domain, details);
 
     handler.publishDeregisterAsync(details, operation, listener);
 
