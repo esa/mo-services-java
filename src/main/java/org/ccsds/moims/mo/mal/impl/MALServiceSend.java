@@ -26,7 +26,6 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
-import org.ccsds.moims.mo.mal.impl.profile.MALProfiler;
 import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
@@ -54,401 +53,102 @@ public class MALServiceSend
     this.receiveHandler = receiveHandler;
   }
 
-  public void send(MALMessageDetails details, MALSendOperation op, Element requestBody)
+  public void send(MALMessageDetails details, MALSendOperation op, Element requestBody) throws MALException
   {
-    try
-    {
-      MALMessage msg = details.endpoint.createMessage(createHeader(details, op, null, (byte) 0), requestBody, details.qosProps);
-
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + details.uriTo);
-    }
+    onewayInteraction(details, null, op, Byte.valueOf((byte)0), requestBody);
   }
 
   public void submit(MALMessageDetails details, MALSubmitOperation op, Element requestBody) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, true, MALSubmitOperation._SUBMIT_STAGE, (MALInteractionListener) null);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALSubmitOperation.SUBMIT_STAGE), requestBody, details.qosProps);
-
-    try
-    {
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-
-      MALMessage rtn = imap.waitForResponse(transId);
-      MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
-
-      handlePossibleReturnError(rtn);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    synchronousInteraction(details, op, MALSubmitOperation.SUBMIT_STAGE, (MALInteractionListener) null, requestBody);
   }
 
   public Element request(MALMessageDetails details, MALRequestOperation op, Element requestBody) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, true, MALRequestOperation._REQUEST_STAGE, (MALInteractionListener) null);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALRequestOperation.REQUEST_STAGE), requestBody, details.qosProps);
-
-    try
-    {
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-
-      MALMessage rtn = imap.waitForResponse(transId);
-      MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
-
-      handlePossibleReturnError(rtn);
-
-      return rtn.getBody();
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    return synchronousInteraction(details, op, MALRequestOperation.REQUEST_STAGE, (MALInteractionListener) null, requestBody);
   }
 
   public Element invoke(MALMessageDetails details, MALInvokeOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, true, MALInvokeOperation._INVOKE_STAGE, listener);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALInvokeOperation.INVOKE_STAGE), requestBody, details.qosProps);
-
-    try
-    {
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-
-      MALMessage ack = imap.waitForResponse(transId);
-      MALProfiler.instance.rcvMarkServiceMessageReception(ack);
-
-      handlePossibleReturnError(ack);
-
-      return ack.getBody();
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    return synchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
   }
 
   public Element progress(MALMessageDetails details, MALProgressOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, true, MALProgressOperation._PROGRESS_STAGE, listener);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALProgressOperation.PROGRESS_STAGE), requestBody, details.qosProps);
-
-    try
-    {
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-
-      MALMessage ack = imap.waitForResponse(transId);
-      MALProfiler.instance.rcvMarkServiceMessageReception(ack);
-
-      handlePossibleReturnError(ack);
-
-      return ack.getBody();
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    return synchronousInteraction(details, op, MALProgressOperation._PROGRESS_STAGE, listener, requestBody);
   }
 
   public void register(MALMessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener list) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, true, MALPubSubOperation._REGISTER_STAGE, (MALPublishInteractionListener) null);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.REGISTER_STAGE), subscription, details.qosProps);
-
-    try
-    {
-      pmap.registerNotifyListener(details, op, subscription, list);
-
-      details.endpoint.sendMessage(msg);
-
-      MALMessage rtn = imap.waitForResponse(transId);
-      MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
-
-      handlePossibleReturnError(rtn);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    pmap.registerNotifyListener(details, op, subscription, list);
+    synchronousInteraction(details, op, MALPubSubOperation.REGISTER_STAGE, (MALPublishInteractionListener) null, subscription);
   }
 
   public Identifier publishRegister(MALMessageDetails details, MALPubSubOperation op, EntityKeyList entityKeys, MALPublishInteractionListener listener) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, true, MALPubSubOperation._PUBLISH_REGISTER_STAGE, (MALPublishInteractionListener) null);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE), entityKeys, details.qosProps);
-
-    try
-    {
-      pmap.registerPublishListener(details, listener);
-
-      details.endpoint.sendMessage(msg);
-
-      MALMessage rtn = imap.waitForResponse(transId);
-      MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
-
-      handlePossibleReturnError(rtn);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
-
-    return transId;
+    pmap.registerPublishListener(details, listener);
+    return (Identifier) synchronousInteraction(details, op, MALPubSubOperation.PUBLISH_REGISTER_STAGE, (MALPublishInteractionListener) null, entityKeys);
   }
 
   public void publish(MALMessageDetails details, Identifier transId, MALPubSubOperation op, UpdateList updateList) throws MALException
   {
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.PUBLISH_STAGE), updateList, details.qosProps);
-
-    try
-    {
-      details.endpoint.sendMessage(msg);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with publish : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    onewayInteraction(details, transId, op, MALPubSubOperation.PUBLISH_STAGE, updateList);
   }
 
   public void publishDeregister(MALMessageDetails details, MALPubSubOperation op) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, true, MALPubSubOperation._PUBLISH_DEREGISTER_STAGE, (MALPublishInteractionListener) null);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE), null, details.qosProps);
-
-    try
-    {
-      details.endpoint.sendMessage(msg);
-
-      MALMessage rtn = imap.waitForResponse(transId);
-      MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
-
-      handlePossibleReturnError(rtn);
-
-      pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details.sessionName);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    synchronousInteraction(details, op, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, (MALPublishInteractionListener) null, null);
+    pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details.sessionName);
   }
 
   public void deregister(MALMessageDetails details, MALPubSubOperation op, IdentifierList unsubscription) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, true, MALPubSubOperation._DEREGISTER_STAGE, (MALPublishInteractionListener) null);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.DEREGISTER_STAGE), unsubscription, details.qosProps);
-
-    try
-    {
-      details.endpoint.sendMessage(msg);
-
-      MALMessage rtn = imap.waitForResponse(transId);
-      MALProfiler.instance.rcvMarkServiceMessageReception(rtn);
-
-      handlePossibleReturnError(rtn);
-
-      pmap.deregisterNotifyListener(details, op, unsubscription);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    synchronousInteraction(details, op, MALPubSubOperation.DEREGISTER_STAGE, (MALPublishInteractionListener) null, unsubscription);
+    pmap.deregisterNotifyListener(details, op, unsubscription);
   }
 
   public void submitAsync(MALMessageDetails details, MALSubmitOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, false, MALSubmitOperation._SUBMIT_STAGE, listener);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALSubmitOperation.SUBMIT_STAGE), requestBody, details.qosProps);
-
-    try
-    {
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    asynchronousInteraction(details, op, MALSubmitOperation.SUBMIT_STAGE, listener, requestBody);
   }
 
   public void requestAsync(MALMessageDetails details, MALRequestOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, false, MALRequestOperation._REQUEST_STAGE, listener);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALRequestOperation.REQUEST_STAGE), requestBody, details.qosProps);
-
-    try
-    {
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    asynchronousInteraction(details, op, MALRequestOperation.REQUEST_STAGE, listener, requestBody);
   }
 
   public void invokeAsync(MALMessageDetails details, MALInvokeOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, false, MALInvokeOperation._INVOKE_STAGE, listener);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALInvokeOperation.INVOKE_STAGE), requestBody, details.qosProps);
-
-    try
-    {
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    asynchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
   }
 
   public void progressAsync(MALMessageDetails details, MALProgressOperation op, Element requestBody, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, false, MALProgressOperation._PROGRESS_STAGE, listener);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALProgressOperation.PROGRESS_STAGE), requestBody, details.qosProps);
-
-    try
-    {
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    asynchronousInteraction(details, op, MALProgressOperation.PROGRESS_STAGE, listener, requestBody);
   }
 
   public Identifier publishRegisterAsync(MALMessageDetails details, MALPubSubOperation op, EntityKeyList entityKeys, MALPublishInteractionListener listener) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, false, MALPubSubOperation._PUBLISH_REGISTER_STAGE, listener);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE), entityKeys, details.qosProps);
-
-    try
-    {
-      pmap.registerPublishListener(details, listener);
-
-      Logging.logMessage("publishRegisterAsync : A");
-      Logging.logMessage("publishRegisterAsync : B");
-      msg = impl.getSecurityManager().check(msg);
-
-      Logging.logMessage("publishRegisterAsync : C");
-      details.endpoint.sendMessage(msg);
-      Logging.logMessage("publishRegisterAsync : D");
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
-
-    return transId;
+    pmap.registerPublishListener(details, listener);
+    return (Identifier) asynchronousInteraction(details, op, MALPubSubOperation.PUBLISH_REGISTER_STAGE, listener, entityKeys);
   }
 
   public void registerAsync(MALMessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, false, MALPubSubOperation._REGISTER_STAGE, listener);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.REGISTER_STAGE), subscription, details.qosProps);
-
-    try
-    {
-      pmap.registerNotifyListener(details, op, subscription, listener);
-
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    pmap.registerNotifyListener(details, op, subscription, listener);
+    asynchronousInteraction(details, op, MALPubSubOperation.REGISTER_STAGE, listener, subscription);
   }
 
   public void publishDeregisterAsync(MALMessageDetails details, MALPubSubOperation op, MALPublishInteractionListener listener) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, false, MALPubSubOperation._PUBLISH_DEREGISTER_STAGE, listener);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE), null, details.qosProps);
-
-    try
-    {
-      pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details.sessionName);
-
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details.sessionName);
+    asynchronousInteraction(details, op, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, listener, null);
   }
 
   public void deregisterAsync(MALMessageDetails details, MALPubSubOperation op, IdentifierList unsubscription, MALInteractionListener listener) throws MALException
   {
-    Identifier transId = imap.createTransaction(op, false, MALPubSubOperation._DEREGISTER_STAGE, listener);
-
-    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, MALPubSubOperation.DEREGISTER_STAGE), unsubscription, details.qosProps);
-
-    try
-    {
-      msg = impl.getSecurityManager().check(msg);
-
-      details.endpoint.sendMessage(msg);
-
-      pmap.deregisterNotifyListener(details, op, unsubscription);
-    }
-    catch (MALException ex)
-    {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
-      throw ex;
-    }
+    asynchronousInteraction(details, op, MALPubSubOperation.DEREGISTER_STAGE, listener, unsubscription);
+    pmap.deregisterNotifyListener(details, op, unsubscription);
   }
 
   public void returnResponse(MALServiceComponentImpl msgReceiver, Identifier internalTransId, MessageHeader srcHdr, Byte rspnInteractionStage, Element rspn)
@@ -596,11 +296,11 @@ public class MALServiceSend
 
       MALMessage msg = endpoint.createMessage(createReturnHeader(uriFrom, authId, srcHdr, level, rspnInteractionStage, true), error, new Hashtable());
 
-      if(MALPubSubOperation.PUBLISH_STAGE.byteValue() == rspnInteractionStage.byteValue())
+      if (MALPubSubOperation.PUBLISH_STAGE.byteValue() == rspnInteractionStage.byteValue())
       {
         Logging.logMessage("RTNERROR: " + msg.getHeader().toString());
       }
-      
+
       endpoint.sendMessage(msg);
     }
     catch (MALException ex)
@@ -609,7 +309,110 @@ public class MALServiceSend
     }
   }
 
-  void handlePossibleReturnError(MALMessage rtn) throws MALException
+  private void onewayInteraction(MALMessageDetails details, Identifier transId, MALOperation op, Byte stage, Element msgBody) throws MALException
+  {
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, stage), msgBody, details.qosProps);
+
+    try
+    {
+      msg = impl.getSecurityManager().check(msg);
+
+      details.endpoint.sendMessage(msg);
+    }
+    catch (MALException ex)
+    {
+      Logging.logMessage("ERROR: Error with one way send : " + msg.getHeader().getURIto());
+      throw ex;
+    }
+  }
+
+  private Element synchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALInteractionListener listener, Element msgBody) throws MALException
+  {
+    Identifier transId = imap.createTransaction(op, true, syncStage, listener);
+
+    return synchronousInteraction(transId, details, op, syncStage, msgBody);
+  }
+
+  private Element synchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALPublishInteractionListener listener, Element msgBody) throws MALException
+  {
+    Identifier transId = imap.createTransaction(op, true, syncStage, listener);
+
+    Element rv = synchronousInteraction(transId, details, op, syncStage, msgBody);
+
+    if (MALPubSubOperation._PUBLISH_REGISTER_STAGE == syncStage)
+    {
+      return transId;
+    }
+    else
+    {
+      return rv;
+    }
+  }
+
+  private Element synchronousInteraction(Identifier transId, MALMessageDetails details, MALOperation op, Byte syncStage, Element msgBody) throws MALException
+  {
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, syncStage), msgBody, details.qosProps);
+
+    try
+    {
+      msg = impl.getSecurityManager().check(msg);
+
+      details.endpoint.sendMessage(msg);
+
+      MALMessage rtn = imap.waitForResponse(transId);
+
+      handlePossibleReturnError(rtn);
+
+      return rtn.getBody();
+    }
+    catch (MALException ex)
+    {
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      throw ex;
+    }
+  }
+
+  private void asynchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALInteractionListener listener, Element msgBody) throws MALException
+  {
+    Identifier transId = imap.createTransaction(op, false, syncStage, listener);
+
+    asynchronousInteraction(transId, details, op, syncStage, msgBody);
+  }
+
+  private Element asynchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALPublishInteractionListener listener, Element msgBody) throws MALException
+  {
+    Identifier transId = imap.createTransaction(op, false, syncStage, listener);
+
+    asynchronousInteraction(transId, details, op, syncStage, msgBody);
+
+    if (MALPubSubOperation._PUBLISH_REGISTER_STAGE == syncStage)
+    {
+      return transId;
+    }
+    else
+    {
+      return null;
+    }
+  }
+
+  private void asynchronousInteraction(Identifier transId, MALMessageDetails details, MALOperation op, Byte syncStage, Element msgBody) throws MALException
+  {
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, syncStage), msgBody, details.qosProps);
+
+    try
+    {
+      msg = impl.getSecurityManager().check(msg);
+
+      details.endpoint.sendMessage(msg);
+    }
+    catch (MALException ex)
+    {
+      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
+      throw ex;
+    }
+  }
+
+  private void handlePossibleReturnError(MALMessage rtn) throws MALException
   {
     if ((null != rtn) && (rtn.getHeader().isError()))
     {
