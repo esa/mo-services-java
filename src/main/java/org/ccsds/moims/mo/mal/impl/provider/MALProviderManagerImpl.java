@@ -2,13 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.ccsds.moims.mo.mal.impl;
+package org.ccsds.moims.mo.mal.impl.provider;
 
-import org.ccsds.moims.mo.mal.impl.broker.MALBrokerImpl;
+import org.ccsds.moims.mo.mal.impl.*;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;

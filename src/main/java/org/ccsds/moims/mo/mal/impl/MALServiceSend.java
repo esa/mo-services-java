@@ -24,6 +24,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.security.MALSecurityManager;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.StandardError;
@@ -35,65 +36,65 @@ import org.ccsds.moims.mo.mal.structures.Union;
  */
 public class MALServiceSend
 {
-  private final MALImpl impl;
+  private final MALSecurityManager securityManager;
   private final MALInteractionMap imap;
   private final MALPubSubMap pmap;
 
-  public MALServiceSend(MALImpl impl, MALInteractionMap imap, MALPubSubMap pmap, MALServiceReceive receiveHandler)
+  public MALServiceSend(MALSecurityManager securityManager, MALInteractionMap imap, MALPubSubMap pmap)
   {
-    this.impl = impl;
+    this.securityManager = securityManager;
     this.imap = imap;
     this.pmap = pmap;
   }
 
-  public void register(MALMessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener list) throws MALException
+  public void register(MessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener list) throws MALException
   {
     pmap.registerNotifyListener(details, op, subscription, list);
     synchronousInteraction(details, op, MALPubSubOperation.REGISTER_STAGE, (MALPublishInteractionListener) null, subscription);
   }
 
-  public Identifier publishRegister(MALMessageDetails details, MALPubSubOperation op, EntityKeyList entityKeys, MALPublishInteractionListener listener) throws MALException
+  public Identifier publishRegister(MessageDetails details, MALPubSubOperation op, EntityKeyList entityKeys, MALPublishInteractionListener listener) throws MALException
   {
     pmap.registerPublishListener(details, listener);
     return (Identifier) synchronousInteraction(details, op, MALPubSubOperation.PUBLISH_REGISTER_STAGE, (MALPublishInteractionListener) null, entityKeys);
   }
 
-  public void publish(MALMessageDetails details, Identifier transId, MALPubSubOperation op, UpdateList updateList) throws MALException
+  public void publish(MessageDetails details, Identifier transId, MALPubSubOperation op, UpdateList updateList) throws MALException
   {
     onewayInteraction(details, transId, op, MALPubSubOperation.PUBLISH_STAGE, updateList);
   }
 
-  public void publishDeregister(MALMessageDetails details, MALPubSubOperation op) throws MALException
+  public void publishDeregister(MessageDetails details, MALPubSubOperation op) throws MALException
   {
     synchronousInteraction(details, op, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, (MALPublishInteractionListener) null, null);
     pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details.sessionName);
   }
 
-  public void deregister(MALMessageDetails details, MALPubSubOperation op, IdentifierList unsubscription) throws MALException
+  public void deregister(MessageDetails details, MALPubSubOperation op, IdentifierList unsubscription) throws MALException
   {
     synchronousInteraction(details, op, MALPubSubOperation.DEREGISTER_STAGE, (MALPublishInteractionListener) null, unsubscription);
     pmap.deregisterNotifyListener(details, op, unsubscription);
   }
 
-  public Identifier publishRegisterAsync(MALMessageDetails details, MALPubSubOperation op, EntityKeyList entityKeys, MALPublishInteractionListener listener) throws MALException
+  public Identifier publishRegisterAsync(MessageDetails details, MALPubSubOperation op, EntityKeyList entityKeys, MALPublishInteractionListener listener) throws MALException
   {
     pmap.registerPublishListener(details, listener);
     return (Identifier) asynchronousInteraction(details, op, MALPubSubOperation.PUBLISH_REGISTER_STAGE, listener, entityKeys);
   }
 
-  public void registerAsync(MALMessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener listener) throws MALException
+  public void registerAsync(MessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener listener) throws MALException
   {
     pmap.registerNotifyListener(details, op, subscription, listener);
     asynchronousInteraction(details, op, MALPubSubOperation.REGISTER_STAGE, listener, subscription);
   }
 
-  public void publishDeregisterAsync(MALMessageDetails details, MALPubSubOperation op, MALPublishInteractionListener listener) throws MALException
+  public void publishDeregisterAsync(MessageDetails details, MALPubSubOperation op, MALPublishInteractionListener listener) throws MALException
   {
     pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details.sessionName);
     asynchronousInteraction(details, op, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, listener, null);
   }
 
-  public void deregisterAsync(MALMessageDetails details, MALPubSubOperation op, IdentifierList unsubscription, MALInteractionListener listener) throws MALException
+  public void deregisterAsync(MessageDetails details, MALPubSubOperation op, IdentifierList unsubscription, MALInteractionListener listener) throws MALException
   {
     asynchronousInteraction(details, op, MALPubSubOperation.DEREGISTER_STAGE, listener, unsubscription);
     pmap.deregisterNotifyListener(details, op, unsubscription);
@@ -222,13 +223,13 @@ public class MALServiceSend
     }
   }
 
-  public void onewayInteraction(MALMessageDetails details, Identifier transId, MALOperation op, Byte stage, Element msgBody) throws MALException
+  public void onewayInteraction(MessageDetails details, Identifier transId, MALOperation op, Byte stage, Element msgBody) throws MALException
   {
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, stage), msgBody, details.qosProps);
 
     try
     {
-      msg = impl.getSecurityManager().check(msg);
+      msg = securityManager.check(msg);
 
       details.endpoint.sendMessage(msg);
     }
@@ -239,14 +240,14 @@ public class MALServiceSend
     }
   }
 
-  public Element synchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALInteractionListener listener, Element msgBody) throws MALException
+  public Element synchronousInteraction(MessageDetails details, MALOperation op, Byte syncStage, MALInteractionListener listener, Element msgBody) throws MALException
   {
     Identifier transId = imap.createTransaction(op, true, syncStage, listener);
 
     return synchronousInteraction(transId, details, op, syncStage, msgBody);
   }
 
-  public Element synchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALPublishInteractionListener listener, Element msgBody) throws MALException
+  public Element synchronousInteraction(MessageDetails details, MALOperation op, Byte syncStage, MALPublishInteractionListener listener, Element msgBody) throws MALException
   {
     Identifier transId = imap.createTransaction(op, true, syncStage, listener);
 
@@ -262,13 +263,13 @@ public class MALServiceSend
     }
   }
 
-  public Element synchronousInteraction(Identifier transId, MALMessageDetails details, MALOperation op, Byte syncStage, Element msgBody) throws MALException
+  public Element synchronousInteraction(Identifier transId, MessageDetails details, MALOperation op, Byte syncStage, Element msgBody) throws MALException
   {
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, syncStage), msgBody, details.qosProps);
 
     try
     {
-      msg = impl.getSecurityManager().check(msg);
+      msg = securityManager.check(msg);
 
       details.endpoint.sendMessage(msg);
 
@@ -285,14 +286,14 @@ public class MALServiceSend
     }
   }
 
-  public void asynchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALInteractionListener listener, Element msgBody) throws MALException
+  public void asynchronousInteraction(MessageDetails details, MALOperation op, Byte syncStage, MALInteractionListener listener, Element msgBody) throws MALException
   {
     Identifier transId = imap.createTransaction(op, false, syncStage, listener);
 
     asynchronousInteraction(transId, details, op, syncStage, msgBody);
   }
 
-  public Element asynchronousInteraction(MALMessageDetails details, MALOperation op, Byte syncStage, MALPublishInteractionListener listener, Element msgBody) throws MALException
+  public Element asynchronousInteraction(MessageDetails details, MALOperation op, Byte syncStage, MALPublishInteractionListener listener, Element msgBody) throws MALException
   {
     Identifier transId = imap.createTransaction(op, false, syncStage, listener);
 
@@ -308,13 +309,13 @@ public class MALServiceSend
     }
   }
 
-  public void asynchronousInteraction(Identifier transId, MALMessageDetails details, MALOperation op, Byte syncStage, Element msgBody) throws MALException
+  public void asynchronousInteraction(Identifier transId, MessageDetails details, MALOperation op, Byte syncStage, Element msgBody) throws MALException
   {
     MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, syncStage), msgBody, details.qosProps);
 
     try
     {
-      msg = impl.getSecurityManager().check(msg);
+      msg = securityManager.check(msg);
 
       details.endpoint.sendMessage(msg);
     }
@@ -338,7 +339,7 @@ public class MALServiceSend
     }
   }
 
-  public static MessageHeader createHeader(MALMessageDetails details, MALOperation op, Identifier transactionId, Byte interactionStage)
+  public static MessageHeader createHeader(MessageDetails details, MALOperation op, Identifier transactionId, Byte interactionStage)
   {
     MessageHeader hdr = new MessageHeader();
 

@@ -6,26 +6,26 @@ import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.URI;
 
-public class BrokerKey implements Comparable
+public class AddressKey implements Comparable
 {
-  private final String brokerUri;
+  private final String uri;
   private final String domain;
   private final String networkZone;
   private final int session;
   private final String sessionName;
 
-  public BrokerKey(URI brokerUri, DomainIdentifier domain, String networkZone, SessionType session, String sessionName)
+  public AddressKey(URI uri, DomainIdentifier domain, String networkZone, SessionType session, String sessionName)
   {
-    this.brokerUri = brokerUri.getValue();
+    this.uri = uri.getValue();
     this.domain = StructureHelper.domainToString(domain);
     this.networkZone = networkZone;
     this.session = session.getOrdinal();
     this.sessionName = sessionName;
   }
 
-  public BrokerKey(MessageHeader hdr)
+  public AddressKey(MessageHeader hdr)
   {
-    this.brokerUri = hdr.getURIto().getValue();
+    this.uri = hdr.getURIto().getValue();
     this.domain = StructureHelper.domainToString(hdr.getDomain());
     this.networkZone = hdr.getNetworkZone().getValue();
     this.session = hdr.getSession().getOrdinal();
@@ -35,19 +35,19 @@ public class BrokerKey implements Comparable
   @Override
   public boolean equals(Object obj)
   {
-    if (obj instanceof BrokerKey)
+    if (obj instanceof AddressKey)
     {
-      BrokerKey other = (BrokerKey) obj;
-      if (brokerUri == null)
+      AddressKey other = (AddressKey) obj;
+      if (uri == null)
       {
-        if (other.brokerUri != null)
+        if (other.uri != null)
         {
           return false;
         }
       }
       else
       {
-        if (!brokerUri.equals(other.brokerUri))
+        if (!uri.equals(other.uri))
         {
           return false;
         }
@@ -113,9 +113,9 @@ public class BrokerKey implements Comparable
   @Override
   public int compareTo(Object o)
   {
-    BrokerKey other = (BrokerKey) o;
+    AddressKey other = (AddressKey) o;
 
-    if (brokerUri.equals(other.brokerUri))
+    if (uri.equals(other.uri))
     {
       if (domain.equals(other.domain))
       {
@@ -149,7 +149,7 @@ public class BrokerKey implements Comparable
     }
     else
     {
-      return brokerUri.compareTo(other.brokerUri);
+      return uri.compareTo(other.uri);
     }
   }
 }

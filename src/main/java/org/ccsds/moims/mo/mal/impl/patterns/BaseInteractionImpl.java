@@ -29,9 +29,9 @@ public abstract class BaseInteractionImpl implements MALInteraction
   protected final MALOperation operation;
   protected final HashMap qosProperties = new HashMap();
 
-  public BaseInteractionImpl(MALImpl impl, Address address, Identifier internalTransId, MALMessage msg)
+  public BaseInteractionImpl(MALServiceSend sender, Address address, Identifier internalTransId, MALMessage msg)
   {
-    this.sender = impl.getSendingInterface();
+    this.sender = sender;
     this.address = address;
     this.internalTransId = internalTransId;
     this.msg = msg;

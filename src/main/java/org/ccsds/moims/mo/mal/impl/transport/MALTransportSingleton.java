@@ -24,28 +24,24 @@ public final class MALTransportSingleton
   /** Map of protocol handlers currently used by the application */
   private static final java.util.Map<String, MALTransportFactory> handlerMap = new java.util.TreeMap<String, MALTransportFactory>();
   private static final java.util.Map<String, MALTransport> transportMap = new java.util.TreeMap<String, MALTransport>();
-  //private static final java.util.Map m_receiverMap = new java.util.TreeMap();
   /** The default protocol to be used by the provider */
-  private static String s_strDefaultProtocol = "rmi://";
+  private static String s_strDefaultProtocol = null;
 
   public static void init()
   {
-//    String propName = MALTransportFactory.FACTORY_PROP_NAME_PREFIX + ".rmi";
-//    System.setProperty(propName, "org.ccsds.moims.mo.mal.test.transport.rmi.RMITransportFactoryImpl");
-
-    if (null != System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol"))
+    synchronized (transportMap)
     {
-      defaultHandler(System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol"));
-    }
-  }
+      if (null == s_strDefaultProtocol)
+      {
+        String dp = System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol");
+        if (null == dp)
+        {
+          dp = "rmi://";
+        }
 
-  /**
-   *  Sets the default communication protocl to be used by this provider.
-   *  @param strProtocol Protocol to be used by this provider.
-   */
-  public static void defaultHandler(final String strProtocol)
-  {
-    s_strDefaultProtocol = strProtocol;
+        s_strDefaultProtocol = dp;
+      }
+    }
   }
 
   /**
@@ -96,7 +92,12 @@ public final class MALTransportSingleton
     if (null != dstUri)
     {
       // lookup for existing transport
-      MALTransport _transport = transportMap.get(getProtocol(dstUri));
+      MALTransport _transport = null;
+
+      synchronized (transportMap)
+      {
+        _transport = transportMap.get(getProtocol(dstUri));
+      }
 
       return transport == _transport;
     }
@@ -109,13 +110,18 @@ public final class MALTransportSingleton
    *   @param dstUri The Uri location of the provider.
    *   @return ProtocolHandler The Protocol.
    */
-  public static MALTransport _instance(final String dstUri, Hashtable properties) throws MALException
+  private static MALTransport _instance(final String dstUri, Hashtable properties) throws MALException
   {
     // get protocol from uri
     String strProtocol = getProtocol(dstUri);
 
     // lookup for existing transport
-    MALTransport transport = transportMap.get(strProtocol);
+    MALTransport transport = null;
+
+    synchronized (transportMap)
+    {
+      transport = transportMap.get(strProtocol);
+    }
 
     if (null == transport)
     {
@@ -139,7 +145,10 @@ public final class MALTransportSingleton
 
       if (null != transport)
       {
-        transportMap.put(strProtocol, transport);
+        synchronized (transportMap)
+        {
+          transportMap.put(strProtocol, transport);
+        }
 
         // check QoS support
         transport.isSupportedQoSLevel(QoSLevel.BESTEFFORT);

@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.ccsds.moims.mo.mal.impl;
+package org.ccsds.moims.mo.mal.impl.consumer;
 
+import org.ccsds.moims.mo.mal.impl.*;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import java.util.Hashtable;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
@@ -36,7 +37,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 public class MALConsumerImpl extends MALClose implements MALConsumer
 {
   private final MALServiceSend sender;
-  private final MALMessageDetails details;
+  private final MessageDetails details;
   private final Address address;
 
   public MALConsumerImpl(MALImpl impl, MALConsumerManagerImpl parent, URI uriTo, URI brokerUri, MALService service, Blob authenticationId, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qosLevel, Hashtable qosProps, Integer priority) throws MALException
@@ -47,7 +48,7 @@ public class MALConsumerImpl extends MALClose implements MALConsumer
     MALEndPoint ep = trans.createEndPoint(null, service, qosProps);
     address = new Address(ep, ep.getURI(), authenticationId, new DummyHandler());
     ep.setMessageListener(new EndPointAdapter(impl.getReceivingInterface(), address));
-    this.details = new MALMessageDetails(ep, ep.getURI(), uriTo, brokerUri, service, authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, qosProps, priority);
+    this.details = new MessageDetails(ep, ep.getURI(), uriTo, brokerUri, service, authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, qosProps, priority);
   }
 
   @Override

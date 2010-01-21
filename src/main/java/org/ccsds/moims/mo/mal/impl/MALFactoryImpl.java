@@ -30,8 +30,8 @@ public class MALFactoryImpl extends MALFactory
 
   public void init()
   {
-    String configFile = System.getProperty("ccsds.properties", "org/ccsds/moims/smc/ccsds.properties");
-    java.util.Properties props = StructureHelper.loadProperties(configFile, "ccsds.properties");
+    String configFile = System.getProperty("org.ccsds.moims.mo.mal.properties", "org/ccsds/moims/mo/mal.properties");
+    java.util.Properties props = StructureHelper.loadProperties(configFile, "org.ccsds.moims.mo.mal.properties");
 
     java.util.Properties sysProps = System.getProperties();
     sysProps.putAll(props);

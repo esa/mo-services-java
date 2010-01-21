@@ -18,7 +18,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndPoint;
  *
  * @author cooper_sf
  */
-public final class MALMessageDetails
+public final class MessageDetails
 {
   public final MALEndPoint endpoint;
   public final URI uriFrom;
@@ -34,7 +34,7 @@ public final class MALMessageDetails
   public final Hashtable qosProps;
   public final int priority;
 
-  public MALMessageDetails(MALEndPoint endpoint, URI uriFrom, URI uriTo, URI brokerUri, MALService service, Blob authenticationId, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qosLevel, Hashtable qosProps, int priority)
+  public MessageDetails(MALEndPoint endpoint, URI uriFrom, URI uriTo, URI brokerUri, MALService service, Blob authenticationId, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qosLevel, Hashtable qosProps, int priority)
   {
     this.endpoint = endpoint;
     this.uriFrom = uriFrom;

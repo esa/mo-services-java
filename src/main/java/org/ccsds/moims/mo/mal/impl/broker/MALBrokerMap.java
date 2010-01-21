@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.impl.BrokerKey;
+import org.ccsds.moims.mo.mal.impl.AddressKey;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -24,7 +24,7 @@ import org.ccsds.moims.mo.mal.structures.UpdateList;
 public class MALBrokerMap implements MALBrokerHandler
 {
   private final MALImpl impl;
-  private final Map<BrokerKey, MALBrokerHandler> brokerMap = new TreeMap<BrokerKey, MALBrokerHandler>();
+  private final Map<AddressKey, MALBrokerHandler> brokerMap = new TreeMap<AddressKey, MALBrokerHandler>();
 
   public MALBrokerMap(MALImpl impl)
   {
@@ -75,7 +75,7 @@ public class MALBrokerMap implements MALBrokerHandler
   
   private MALBrokerHandler getHandler(MessageHeader hdr)
   {
-    BrokerKey key = new BrokerKey(hdr);
+    AddressKey key = new AddressKey(hdr);
 
     MALBrokerHandler rv = brokerMap.get(key);
 

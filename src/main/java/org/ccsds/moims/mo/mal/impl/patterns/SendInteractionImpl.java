@@ -4,9 +4,9 @@
  */
 package org.ccsds.moims.mo.mal.impl.patterns;
 
+import org.ccsds.moims.mo.mal.impl.MALServiceSend;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
-import org.ccsds.moims.mo.mal.impl.MALImpl;
 
 /**
  *
@@ -14,8 +14,8 @@ import org.ccsds.moims.mo.mal.impl.MALImpl;
  */
 public class SendInteractionImpl extends BaseInteractionImpl implements MALInteraction
 {
-  public SendInteractionImpl(MALImpl impl, MALMessage msg)
+  public SendInteractionImpl(MALServiceSend sender, MALMessage msg)
   {
-    super(impl, null, null, msg);
+    super(sender, null, null, msg);
   }
 }

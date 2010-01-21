@@ -9,10 +9,10 @@ import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.impl.Address;
+import org.ccsds.moims.mo.mal.impl.MALServiceSend;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
-import org.ccsds.moims.mo.mal.impl.MALImpl;
 
 /**
  *
@@ -22,9 +22,9 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
 {
   private boolean ackSent = false;
 
-  public ProgressInteractionImpl(MALImpl impl, Address address, Identifier internalTransId, MALMessage msg)
+  public ProgressInteractionImpl(MALServiceSend sender, Address address, Identifier internalTransId, MALMessage msg)
   {
-    super(impl, address, internalTransId, msg);
+    super(sender, address, internalTransId, msg);
   }
 
   @Override

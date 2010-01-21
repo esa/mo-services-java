@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.ccsds.moims.mo.mal.impl;
+package org.ccsds.moims.mo.mal.impl.provider;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -18,6 +18,8 @@ import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
 import org.ccsds.moims.mo.mal.impl.broker.MALInternalBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
 
@@ -89,7 +91,7 @@ public class MALProviderImpl extends MALServiceComponentImpl implements MALProvi
 
     if (null == pub)
     {
-      pub = new MALBrokerPublisher(this, sendHandler, op);
+      pub = new MALPublisherImpl(this, sendHandler, op);
       publishers.put(op.getNumber(), pub);
     }
 

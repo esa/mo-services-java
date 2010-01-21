@@ -27,6 +27,7 @@ import org.ccsds.moims.mo.mal.impl.patterns.SendInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.SubmitInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.security.MALSecurityManager;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.StandardError;
@@ -42,14 +43,16 @@ import org.ccsds.moims.mo.mal.structures.UpdateList;
  */
 public class MALServiceReceive
 {
-  private final MALImpl impl;
+  private final MALServiceSend sender;
+  private final MALSecurityManager securityManager;
   private final MALInteractionMap imap;
   private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
   private final MALPubSubMap pmap;
 
-  public MALServiceReceive(MALImpl impl, MALInteractionMap imap, MALPubSubMap pmap, Map<String, MALBrokerBindingImpl> brokerBindingMap)
+  public MALServiceReceive(MALServiceSend sender, MALSecurityManager securityManager, MALInteractionMap imap, MALPubSubMap pmap, Map<String, MALBrokerBindingImpl> brokerBindingMap)
   {
-    this.impl = impl;
+    this.sender = sender;
+    this.securityManager = securityManager;
     this.imap = imap;
     this.pmap = pmap;
     this.brokerBindingMap = brokerBindingMap;
@@ -59,7 +62,7 @@ public class MALServiceReceive
   {
     try
     {
-      msg = impl.getSecurityManager().check(msg);
+      msg = securityManager.check(msg);
       final int stage = msg.getHeader().getInteractionStage().intValue();
 
       Logging.logMessage("INFO: MAL Receiving message");
@@ -207,15 +210,11 @@ public class MALServiceReceive
           }
           break;
         }
-        default:
-        {
-          throw new MALException(new StandardError(MALHelper.INTERNAL_ERROR_NUMBER, new Union("Received unexpected interaction of " + msg.getHeader().getInteractionType().getOrdinal())));
-        }
       }
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnErrorAndCalculateStage(address, msg.getHeader().getTransactionId(), msg.getHeader(), ex.getStandardError());
+      sender.returnErrorAndCalculateStage(address, msg.getHeader().getTransactionId(), msg.getHeader(), ex.getStandardError());
     }
   }
 
@@ -223,7 +222,7 @@ public class MALServiceReceive
   {
     try
     {
-      MALInteraction interaction = new SendInteractionImpl(impl, msg);
+      MALInteraction interaction = new SendInteractionImpl(sender, msg);
       address.handler.handleSend(interaction, msg.getBody());
     }
     catch (MALException ex)
@@ -238,12 +237,12 @@ public class MALServiceReceive
 
     try
     {
-      MALSubmit interaction = new SubmitInteractionImpl(impl, address, transId, msg);
+      MALSubmit interaction = new SubmitInteractionImpl(sender, address, transId, msg);
       address.handler.handleSubmit(interaction, msg.getBody());
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(address, transId, msg.getHeader(), MALSubmitOperation.SUBMIT_ACK_STAGE, ex.getStandardError());
+      sender.returnError(address, transId, msg.getHeader(), MALSubmitOperation.SUBMIT_ACK_STAGE, ex.getStandardError());
     }
   }
 
@@ -253,12 +252,12 @@ public class MALServiceReceive
 
     try
     {
-      MALRequest interaction = new RequestInteractionImpl(impl, address, transId, msg);
+      MALRequest interaction = new RequestInteractionImpl(sender, address, transId, msg);
       address.handler.handleRequest(interaction, msg.getBody());
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(address, transId, msg.getHeader(), MALRequestOperation.REQUEST_RESPONSE_STAGE, ex.getStandardError());
+      sender.returnError(address, transId, msg.getHeader(), MALRequestOperation.REQUEST_RESPONSE_STAGE, ex.getStandardError());
     }
   }
 
@@ -268,12 +267,12 @@ public class MALServiceReceive
 
     try
     {
-      MALInvoke interaction = new InvokeInteractionImpl(impl, address, transId, msg);
+      MALInvoke interaction = new InvokeInteractionImpl(sender, address, transId, msg);
       address.handler.handleInvoke(interaction, msg.getBody());
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(address, transId, msg.getHeader(), MALInvokeOperation.INVOKE_ACK_STAGE, ex.getStandardError());
+      sender.returnError(address, transId, msg.getHeader(), MALInvokeOperation.INVOKE_ACK_STAGE, ex.getStandardError());
     }
   }
 
@@ -283,12 +282,12 @@ public class MALServiceReceive
 
     try
     {
-      MALProgress interaction = new ProgressInteractionImpl(impl, address, transId, msg);
+      MALProgress interaction = new ProgressInteractionImpl(sender, address, transId, msg);
       address.handler.handleProgress(interaction, msg.getBody());
     }
     catch (MALException ex)
     {
-      impl.getSendingInterface().returnError(address, transId, msg.getHeader(), MALProgressOperation.PROGRESS_ACK_STAGE, ex.getStandardError());
+      sender.returnError(address, transId, msg.getHeader(), MALProgressOperation.PROGRESS_ACK_STAGE, ex.getStandardError());
     }
   }
 
@@ -305,14 +304,14 @@ public class MALServiceReceive
       brokerHandler.getParent().addConsumer(msg.getHeader(), (Subscription) msg.getBody(), brokerHandler);
 
       // because we don't pass this upwards, we have to generate the ack
-      impl.getSendingInterface().returnResponse(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.REGISTER_ACK_STAGE, null);
+      sender.returnResponse(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.REGISTER_ACK_STAGE, null);
 
       // inform subscribed listeners
-
+      // ToDo
     }
     else
     {
-      impl.getSendingInterface().returnError(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.REGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of register message must be of type Subscription")));
+      sender.returnError(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.REGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of register message must be of type Subscription")));
     }
   }
 
@@ -329,14 +328,11 @@ public class MALServiceReceive
       brokerHandler.getParent().addProvider(msg.getHeader(), (EntityKeyList) msg.getBody());
 
       // because we don't pass this upwards, we have to generate the ack
-      impl.getSendingInterface().returnResponse(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, null);
-
-      // inform subscribed listeners
-
+      sender.returnResponse(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, null);
     }
     else
     {
-      impl.getSendingInterface().returnError(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of publish register message must be of type EntityKeyList")));
+      sender.returnError(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of publish register message must be of type EntityKeyList")));
     }
   }
 
@@ -378,7 +374,7 @@ public class MALServiceReceive
         }
         catch (MALException ex)
         {
-          impl.getSendingInterface().returnError(brokerHandler.getMsgAddress(), msg.getHeader().getTransactionId(), msg.getHeader(), brokerHandler.getParent().getProviderQoSLevel(msg.getHeader()), MALPubSubOperation.PUBLISH_STAGE, ex.getStandardError());
+          sender.returnError(brokerHandler.getMsgAddress(), msg.getHeader().getTransactionId(), msg.getHeader(), brokerHandler.getParent().getProviderQoSLevel(msg.getHeader()), MALPubSubOperation.PUBLISH_STAGE, ex.getStandardError());
         }
       }
       else
@@ -460,14 +456,14 @@ public class MALServiceReceive
       brokerHandler.getParent().removeConsumer(msg.getHeader(), (IdentifierList) msg.getBody());
 
       // because we don't pass this upwards, we have to generate the ack
-      impl.getSendingInterface().returnResponse(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.DEREGISTER_ACK_STAGE, null);
+      sender.returnResponse(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.DEREGISTER_ACK_STAGE, null);
 
       // inform subscribed listeners
-
+      // ToDo
     }
     else
     {
-      impl.getSendingInterface().returnError(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.DEREGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of deregister message must be of type IdentifierList")));
+      sender.returnError(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.DEREGISTER_ACK_STAGE, new StandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union("Body of deregister message must be of type IdentifierList")));
     }
   }
 
@@ -482,9 +478,6 @@ public class MALServiceReceive
     brokerHandler.getParent().removeProvider(msg.getHeader());
 
     // because we don't pass this upwards, we have to generate the ack
-    impl.getSendingInterface().returnResponse(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, null);
-
-    // inform subscribed listeners
-
+    sender.returnResponse(brokerHandler.getMsgAddress(), transId, msg.getHeader(), MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, null);
   }
 }

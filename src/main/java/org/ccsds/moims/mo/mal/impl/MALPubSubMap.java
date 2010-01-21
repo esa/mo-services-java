@@ -25,7 +25,7 @@ public class MALPubSubMap
   {
   }
 
-  public void registerPublishListener(MALMessageDetails details, MALPublishInteractionListener listener)
+  public void registerPublishListener(MessageDetails details, MALPublishInteractionListener listener)
   {
     final StringPair id = new StringPair(details.uriFrom.getValue(), details.sessionName.getValue());
 
@@ -76,7 +76,7 @@ public class MALPubSubMap
     return list;
   }
 
-  public void registerNotifyListener(MALMessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener list)
+  public void registerNotifyListener(MessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener list)
   {
     final String uri = details.endpoint.getURI().getValue();
     final String subId = subscription.getSubscriptionId().getValue();
@@ -134,7 +134,7 @@ public class MALPubSubMap
     }
   }
 
-  public void deregisterNotifyListener(MALMessageDetails details, MALPubSubOperation op, IdentifierList unsubscription)
+  public void deregisterNotifyListener(MessageDetails details, MALPubSubOperation op, IdentifierList unsubscription)
   {
     synchronized (notifyMap)
     {

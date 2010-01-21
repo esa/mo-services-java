@@ -10,9 +10,9 @@ import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.impl.Address;
+import org.ccsds.moims.mo.mal.impl.MALServiceSend;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
-import org.ccsds.moims.mo.mal.impl.MALImpl;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 
 /**
@@ -21,9 +21,9 @@ import org.ccsds.moims.mo.mal.structures.StandardError;
  */
 public class RequestInteractionImpl extends BaseInteractionImpl implements MALRequest
 {
-  public RequestInteractionImpl(MALImpl impl, Address address, Identifier internalTransId, MALMessage msg)
+  public RequestInteractionImpl(MALServiceSend sender, Address address, Identifier internalTransId, MALMessage msg)
   {
-    super(impl, address, internalTransId, msg);
+    super(sender, address, internalTransId, msg);
   }
 
   @Override

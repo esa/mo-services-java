@@ -4,6 +4,8 @@
  */
 package org.ccsds.moims.mo.mal.impl;
 
+import org.ccsds.moims.mo.mal.impl.provider.MALProviderManagerImpl;
+import org.ccsds.moims.mo.mal.impl.consumer.MALConsumerManagerImpl;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerManagerImpl;
 import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
@@ -51,8 +53,8 @@ public class MALImpl extends MALClose implements MAL
       securityManager = new NullSecurityManager();
     }
 
-    receiver = new MALServiceReceive(this, imap, pmap, brokerBindingMap);
-    sender = new MALServiceSend(this, imap, pmap, receiver);
+    sender = new MALServiceSend(securityManager, imap, pmap);
+    receiver = new MALServiceReceive(sender, securityManager, imap, pmap, brokerBindingMap);
   }
 
   @Override
@@ -96,7 +98,7 @@ public class MALImpl extends MALClose implements MAL
     return receiver;
   }
 
-  public MALInteractionMap getMaps()
+  public MALInteractionMap getInteractionMap()
   {
     return imap;
   }

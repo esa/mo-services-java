@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.ccsds.moims.mo.mal.impl;
+package org.ccsds.moims.mo.mal.impl.consumer;
 
+import org.ccsds.moims.mo.mal.impl.*;
+import org.ccsds.moims.mo.mal.impl.consumer.MALConsumerImpl;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import java.util.Hashtable;
 import org.ccsds.moims.mo.mal.MALService;

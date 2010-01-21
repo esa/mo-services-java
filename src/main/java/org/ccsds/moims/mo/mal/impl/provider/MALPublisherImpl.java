@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.ccsds.moims.mo.mal.impl;
+package org.ccsds.moims.mo.mal.impl.provider;
 
+import org.ccsds.moims.mo.mal.impl.*;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.TreeMap;
@@ -28,14 +29,14 @@ import org.ccsds.moims.mo.mal.structures.UpdateList;
  *
  * @author cooper_sf
  */
-public class MALBrokerPublisher implements MALPublisher
+public class MALPublisherImpl implements MALPublisher
 {
   private final MALProviderImpl parent;
   private final MALServiceSend handler;
   private final MALPubSubOperation operation;
-  private Map<BrokerKey, Identifier> transId = new TreeMap<BrokerKey, Identifier>();
+  private Map<AddressKey, Identifier> transId = new TreeMap<AddressKey, Identifier>();
 
-  public MALBrokerPublisher(MALProviderImpl parent, MALServiceSend handler, MALPubSubOperation operation)
+  public MALPublisherImpl(MALProviderImpl parent, MALServiceSend handler, MALPubSubOperation operation)
   {
     this.parent = parent;
     this.handler = handler;
@@ -45,7 +46,7 @@ public class MALBrokerPublisher implements MALPublisher
   @Override
   public void register(EntityKeyList entityKeys, MALPublishInteractionListener listener, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Hashtable remotePublisherQosProps, Integer remotePublisherPriority) throws MALException
   {
-    MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.authenticationId, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
+    MessageDetails details = new MessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.getAuthenticationId(), domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
 
     setTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue(), handler.publishRegister(details, operation, entityKeys, listener));
   }
@@ -53,7 +54,7 @@ public class MALBrokerPublisher implements MALPublisher
   @Override
   public void asyncRegister(EntityKeyList entityKeys, MALPublishInteractionListener listener, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Hashtable remotePublisherQosProps, Integer remotePublisherPriority) throws MALException
   {
-    MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.authenticationId, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
+    MessageDetails details = new MessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.getAuthenticationId(), domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
 
     setTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue(), handler.publishRegisterAsync(details, operation, entityKeys, listener));
   }
@@ -61,7 +62,7 @@ public class MALBrokerPublisher implements MALPublisher
   @Override
   public void publish(UpdateList updateList, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel publishQos, Hashtable publishQosProps, Integer publishPriority) throws MALException
   {
-    MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.authenticationId, domain, networkZone, sessionType, sessionName, publishQos, publishQosProps, publishPriority);
+    MessageDetails details = new MessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.getAuthenticationId(), domain, networkZone, sessionType, sessionName, publishQos, publishQosProps, publishPriority);
 
     Identifier tid = getTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue());
 
@@ -91,26 +92,6 @@ public class MALBrokerPublisher implements MALPublisher
   }
 
   @Override
-  public void deregister(DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Hashtable remotePublisherQosProps, Integer remotePublisherPriority) throws MALException
-  {
-    MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.authenticationId, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
-
-    handler.publishDeregister(details, operation);
-
-    clearTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue());
-  }
-
-  @Override
-  public void asyncDeregister(MALPublishInteractionListener listener, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Hashtable remotePublisherQosProps, Integer remotePublisherPriority) throws MALException
-  {
-    MALMessageDetails details = new MALMessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.authenticationId, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
-
-    handler.publishDeregisterAsync(details, operation, listener);
-
-    clearTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue());
-  }
-
-  @Override
   public boolean isListened(EntityKey entityKey) throws MALException
   {
     throw new UnsupportedOperationException("Not supported yet.");
@@ -122,9 +103,29 @@ public class MALBrokerPublisher implements MALPublisher
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
+  @Override
+  public void deregister(DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Hashtable remotePublisherQosProps, Integer remotePublisherPriority) throws MALException
+  {
+    MessageDetails details = new MessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.getAuthenticationId(), domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
+
+    handler.publishDeregister(details, operation);
+
+    clearTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue());
+  }
+
+  @Override
+  public void asyncDeregister(MALPublishInteractionListener listener, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Hashtable remotePublisherQosProps, Integer remotePublisherPriority) throws MALException
+  {
+    MessageDetails details = new MessageDetails(parent.getPublishEndpoint(), parent.getURI(), null, parent.getBrokerURI(), operation.getService(), parent.getAuthenticationId(), domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
+
+    handler.publishDeregisterAsync(details, operation, listener);
+
+    clearTransId(parent.getPublishEndpoint().getURI(), domain, networkZone.getValue(), sessionType, sessionName.getValue());
+  }
+
   private synchronized void setTransId(URI brokerUri, DomainIdentifier domain, String networkZone, SessionType session, String sessionName, Identifier id)
   {
-    BrokerKey key = new BrokerKey(brokerUri, domain, networkZone, session, sessionName);
+    AddressKey key = new AddressKey(brokerUri, domain, networkZone, session, sessionName);
 
     if (!transId.containsKey(key))
     {
@@ -135,7 +136,7 @@ public class MALBrokerPublisher implements MALPublisher
 
   private synchronized void clearTransId(URI brokerUri, DomainIdentifier domain, String networkZone, SessionType session, String sessionName)
   {
-    BrokerKey key = new BrokerKey(brokerUri, domain, networkZone, session, sessionName);
+    AddressKey key = new AddressKey(brokerUri, domain, networkZone, session, sessionName);
 
     Identifier id = transId.get(key);
     if (null != id)
@@ -147,6 +148,6 @@ public class MALBrokerPublisher implements MALPublisher
 
   private synchronized Identifier getTransId(URI brokerUri, DomainIdentifier domain, String networkZone, SessionType session, String sessionName)
   {
-    return transId.get(new BrokerKey(brokerUri, domain, networkZone, session, sessionName));
+    return transId.get(new AddressKey(brokerUri, domain, networkZone, session, sessionName));
   }
 }

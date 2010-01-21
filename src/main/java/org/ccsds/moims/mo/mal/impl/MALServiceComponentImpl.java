@@ -101,6 +101,11 @@ public abstract class MALServiceComponentImpl extends MALClose
     return endpoint;
   }
 
+  public Blob getAuthenticationId()
+  {
+    return authenticationId;
+  }
+
   public Address getMsgAddress()
   {
     return msgAddress;
