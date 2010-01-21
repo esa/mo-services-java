@@ -11,8 +11,8 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
-import org.ccsds.moims.mo.mal.impl.broker.MALBrokerMessage;
-import org.ccsds.moims.mo.mal.impl.broker.MALSubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
+import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 
 /**
@@ -22,9 +22,9 @@ class CachingConsumerDetails
 {
   private final String consumerId;
   private final MALBrokerBindingImpl binding;
-  //private Set<MALSubscriptionKey> required = new TreeSet<MALSubscriptionKey>();
+  //private Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
   private final Map<String, CachingSubscriptionDetails> details = new TreeMap<String, CachingSubscriptionDetails>();
-  private MALBrokerMessage notifyMessage = null;
+  private BrokerMessage notifyMessage = null;
 
   public CachingConsumerDetails(String consumerId, MALBrokerBindingImpl binding)
   {
@@ -45,7 +45,7 @@ class CachingConsumerDetails
     return details.isEmpty();
   }
 
-  public void addSubscription(Map<MALSubscriptionKey, PublishedEntry> published, Subscription subscription)
+  public void addSubscription(Map<SubscriptionKey, PublishedEntry> published, Subscription subscription)
   {
     String subId = subscription.getSubscriptionId().getValue();
     CachingSubscriptionDetails sub = details.get(subId);
@@ -68,13 +68,13 @@ class CachingConsumerDetails
   {
     if (null == notifyMessage)
     {
-      notifyMessage = new MALBrokerMessage(binding);
+      notifyMessage = new BrokerMessage(binding);
     }
 
 //    notifyMessage.updates.add(subUpdate);
   }
 
-  public void getNotifyMessage(MessageHeader srcHdr, Identifier transId, List<MALBrokerMessage> lst)
+  public void getNotifyMessage(MessageHeader srcHdr, Identifier transId, List<BrokerMessage> lst)
   {
     if (null != notifyMessage)
     {
@@ -108,7 +108,7 @@ class CachingConsumerDetails
     }
   }
 
-  public void removeSubscriptions(IdentifierList subscriptions, Map<MALSubscriptionKey, PublishedEntry> published)
+  public void removeSubscriptions(IdentifierList subscriptions, Map<SubscriptionKey, PublishedEntry> published)
   {
     for (int i = 0; i < subscriptions.size(); i++)
     {
@@ -123,7 +123,7 @@ class CachingConsumerDetails
   //updateIds();
   }
 
-  public void removeAllSubscriptions(Map<MALSubscriptionKey, PublishedEntry> published)
+  public void removeAllSubscriptions(Map<SubscriptionKey, PublishedEntry> published)
   {
     for (Iterator<CachingSubscriptionDetails> it = details.values().iterator(); it.hasNext();)
     {
@@ -134,7 +134,7 @@ class CachingConsumerDetails
   //required.clear();
   }
 
-  public void appendSubscriptions(PublishedEntry publishedEntry, MALSubscriptionKey key)
+  public void appendSubscriptions(PublishedEntry publishedEntry, SubscriptionKey key)
   {
     Set<Map.Entry<String, CachingSubscriptionDetails>> values = details.entrySet();
     for (Map.Entry<String, CachingSubscriptionDetails> entry : values)
@@ -143,7 +143,7 @@ class CachingConsumerDetails
     }
   }
 
-//  public void appendIds(Set<MALSubscriptionKey> new_set)
+//  public void appendIds(Set<SubscriptionKey> new_set)
 //  {
 //    new_set.addAll(required);
 //  }

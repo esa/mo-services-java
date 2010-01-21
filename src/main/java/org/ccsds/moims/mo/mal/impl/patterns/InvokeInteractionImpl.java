@@ -9,7 +9,7 @@ import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.impl.Address;
-import org.ccsds.moims.mo.mal.impl.MALServiceSend;
+import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.structures.StandardError;
@@ -22,7 +22,7 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
 {
   private boolean ackSent = false;
   
-  public InvokeInteractionImpl(MALServiceSend sender, Address address, Identifier internalTransId, MALMessage msg)
+  public InvokeInteractionImpl(MessageSend sender, Address address, Identifier internalTransId, MALMessage msg)
   {
     super(sender, address, internalTransId, msg);
   }

@@ -21,12 +21,12 @@ import org.ccsds.moims.mo.mal.structures.UpdateList;
  *
  * @author cooper_sf
  */
-public class MALBrokerMap implements MALBrokerHandler
+public class BrokerMap implements BrokerHandler
 {
   private final MALImpl impl;
-  private final Map<AddressKey, MALBrokerHandler> brokerMap = new TreeMap<AddressKey, MALBrokerHandler>();
+  private final Map<AddressKey, BrokerHandler> brokerMap = new TreeMap<AddressKey, BrokerHandler>();
 
-  public MALBrokerMap(MALImpl impl)
+  public BrokerMap(MALImpl impl)
   {
     this.impl = impl;
   }
@@ -50,7 +50,7 @@ public class MALBrokerMap implements MALBrokerHandler
   }
 
   @Override
-  public List<MALBrokerMessage> createNotify(MessageHeader hdr, UpdateList updateList) throws MALException
+  public List<BrokerMessage> createNotify(MessageHeader hdr, UpdateList updateList) throws MALException
   {
     return getHandler(hdr).createNotify(hdr, updateList);
   }
@@ -73,11 +73,11 @@ public class MALBrokerMap implements MALBrokerHandler
     getHandler(hdr).removeProvider(hdr);
   }
   
-  private MALBrokerHandler getHandler(MessageHeader hdr)
+  private BrokerHandler getHandler(MessageHeader hdr)
   {
     AddressKey key = new AddressKey(hdr);
 
-    MALBrokerHandler rv = brokerMap.get(key);
+    BrokerHandler rv = brokerMap.get(key);
 
     if (null == rv)
     {

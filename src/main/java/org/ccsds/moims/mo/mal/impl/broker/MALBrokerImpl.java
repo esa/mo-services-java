@@ -28,17 +28,17 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  *
  * @author cooper_sf
  */
-public class MALBrokerImpl extends MALClose implements MALBroker, MALBrokerHandler
+public class MALBrokerImpl extends MALClose implements MALBroker, BrokerHandler
 {
   private final Map<String, MALBrokerBindingImpl> bindingMap = new TreeMap<String, MALBrokerBindingImpl>();
   private final MALBrokerBindingImpl[] bindings = new MALBrokerBindingImpl[0];
-  private final MALBrokerHandler delegate;
+  private final BrokerHandler delegate;
 
   public MALBrokerImpl(MALClose parent, MALImpl impl, MALService service) throws MALException
   {
     super(parent);
 
-    delegate = new MALBrokerMap(impl);
+    delegate = new BrokerMap(impl);
   }
 
   @Override
@@ -106,22 +106,22 @@ public class MALBrokerImpl extends MALClose implements MALBroker, MALBrokerHandl
   }
 
   @Override
-  public List<MALBrokerMessage> createNotify(MessageHeader hdr, UpdateList updateList) throws MALException
+  public List<BrokerMessage> createNotify(MessageHeader hdr, UpdateList updateList) throws MALException
   {
     return delegate.createNotify(hdr, updateList);
   }
 
   public void handlePublish(MessageHeader hdr, UpdateList updateList) throws MALException
   {
-    java.util.List<MALBrokerMessage> msgList = delegate.createNotify(hdr, updateList);
+    java.util.List<BrokerMessage> msgList = delegate.createNotify(hdr, updateList);
 
     if (!msgList.isEmpty())
     {
-      for (MALBrokerMessage brokerMessage : msgList)
+      for (BrokerMessage brokerMessage : msgList)
       {
         MALEndPoint endpoint = brokerMessage.binding.getEndpoint();
 
-        for (MALBrokerMessage.NotifyMessage notifyMessage : brokerMessage.msgs)
+        for (BrokerMessage.NotifyMessage notifyMessage : brokerMessage.msgs)
         {
           try
           {

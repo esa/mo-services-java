@@ -25,12 +25,12 @@ import org.ccsds.moims.mo.mal.structures.UpdateList;
  *
  * @author cooper_sf
  */
-public abstract class MALBaseBrokerHandler implements MALBrokerHandler
+public abstract class BaseBrokerHandler implements BrokerHandler
 {
   private final Map<String, ProviderDetails> providerMap = new TreeMap<String, ProviderDetails>();
   private final Map<String, SubscriptionSource> consumerMap = new TreeMap<String, SubscriptionSource>();
 
-  public MALBaseBrokerHandler()
+  public BaseBrokerHandler()
   {
   }
 
@@ -99,7 +99,7 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
   }
 
   @Override
-  public synchronized java.util.List<MALBrokerMessage> createNotify(MessageHeader hdr, UpdateList updateList) throws MALException
+  public synchronized java.util.List<BrokerMessage> createNotify(MessageHeader hdr, UpdateList updateList) throws MALException
   {
     ProviderDetails details = providerMap.get(hdr.getURIfrom().getValue());
 
@@ -110,7 +110,7 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
 
     details.checkPublish(updateList);
 
-    java.util.List<MALBrokerMessage> lst = new java.util.LinkedList<MALBrokerMessage>();
+    java.util.List<BrokerMessage> lst = new java.util.LinkedList<BrokerMessage>();
 
     if (updateList != null)
     {
@@ -216,7 +216,7 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
   {
     private final String uri;
     private final QoSLevel qosLevel;
-    private final Set<MALSubscriptionKey> keySet = new TreeSet<MALSubscriptionKey>();
+    private final Set<SubscriptionKey> keySet = new TreeSet<SubscriptionKey>();
 
     public ProviderDetails(String uri, QoSLevel qosLevel)
     {
@@ -232,7 +232,7 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
     public void report()
     {
       Logging.logMessage("  START Provider ( " + uri + " )");
-      for (MALSubscriptionKey key : keySet)
+      for (SubscriptionKey key : keySet)
       {
         Logging.logMessage("  Allowed: " + key);
       }
@@ -245,7 +245,7 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
 
       for (int i = 0; i < l.size(); i++)
       {
-        keySet.add(new MALSubscriptionKey(l.get(i)));
+        keySet.add(new SubscriptionKey(l.get(i)));
       }
     }
 
@@ -257,10 +257,10 @@ public abstract class MALBaseBrokerHandler implements MALBrokerHandler
       {
         Update update = (Update) updateList.get(i);
 
-        MALSubscriptionKey publishKey = new MALSubscriptionKey(update.getKey());
+        SubscriptionKey publishKey = new SubscriptionKey(update.getKey());
 
         boolean matched = false;
-        for (MALSubscriptionKey key : keySet)
+        for (SubscriptionKey key : keySet)
         {
           if (key.matches(publishKey))
           {

@@ -1,5 +1,5 @@
 /*
- * MALTransportSingleton.java
+ * TransportSingleton.java
  *
  * Created on 23 February 2006, 09:36
  */
@@ -19,7 +19,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 /**
  *
  */
-public final class MALTransportSingleton
+public final class TransportSingleton
 {
   /** Map of protocol handlers currently used by the application */
   private static final java.util.Map<String, MALTransportFactory> handlerMap = new java.util.TreeMap<String, MALTransportFactory>();

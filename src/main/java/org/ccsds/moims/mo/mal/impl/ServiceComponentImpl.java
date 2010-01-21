@@ -12,7 +12,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
-import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
+import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
@@ -20,10 +20,10 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
  *
  * @author cooper_sf
  */
-public abstract class MALServiceComponentImpl extends MALClose
+public abstract class ServiceComponentImpl extends MALClose
 {
-  protected final MALServiceSend sendHandler;
-  protected final MALServiceReceive receiveHandler;
+  protected final MessageSend sendHandler;
+  protected final MessageReceive receiveHandler;
   protected final MALInteractionHandler handler;
   protected final String localName;
   protected final String protocol;
@@ -38,7 +38,7 @@ public abstract class MALServiceComponentImpl extends MALClose
   protected final EndPointAdapter endpointAdapter;
   protected final Address msgAddress;
 
-  public MALServiceComponentImpl(MALClose parent, MALImpl impl, String localName, String protocol, MALService service, Blob authenticationId, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties, MALInteractionHandler handler) throws MALException
+  public ServiceComponentImpl(MALClose parent, MALImpl impl, String localName, String protocol, MALService service, Blob authenticationId, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties, MALInteractionHandler handler) throws MALException
   {
     super(parent);
 
@@ -69,7 +69,7 @@ public abstract class MALServiceComponentImpl extends MALClose
 
     if (null != service)
     {
-      this.transport = MALTransportSingleton.instance(protocol, impl.getInitialProperties());
+      this.transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
       this.endpoint = transport.createEndPoint(localName, service, defaultQoSProperties);
       this.localUri = this.endpoint.getURI();
       this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);

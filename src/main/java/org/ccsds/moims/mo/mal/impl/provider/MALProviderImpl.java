@@ -19,15 +19,15 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
-import org.ccsds.moims.mo.mal.impl.MALServiceComponentImpl;
+import org.ccsds.moims.mo.mal.impl.ServiceComponentImpl;
 import org.ccsds.moims.mo.mal.impl.broker.MALInternalBrokerBinding;
-import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
+import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 
 /**
  *
  * @author cooper_sf
  */
-public class MALProviderImpl extends MALServiceComponentImpl implements MALProvider
+public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 {
   private final boolean isPublisher;
   private final Map<Integer, MALPublisher> publishers = new TreeMap<Integer, MALPublisher>();
@@ -59,13 +59,13 @@ public class MALProviderImpl extends MALServiceComponentImpl implements MALProvi
         this.localBrokerBinding = null;
         this.localBrokerUri = null;
         
-        if (MALTransportSingleton.isSameTransport(sharedBrokerUri, transport))
+        if (TransportSingleton.isSameTransport(sharedBrokerUri, transport))
         {
           this.brokerEndpoint = endpoint;
         }
         else
         {
-          this.brokerEndpoint = MALTransportSingleton.instance(sharedBrokerUri, impl.getInitialProperties()).createEndPoint(null, service, defaultQoSProperties);
+          this.brokerEndpoint = TransportSingleton.instance(sharedBrokerUri, impl.getInitialProperties()).createEndPoint(null, service, defaultQoSProperties);
           this.brokerEndpoint.setMessageListener(endpointAdapter);
         }
       }

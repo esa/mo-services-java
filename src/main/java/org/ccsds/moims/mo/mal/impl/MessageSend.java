@@ -34,13 +34,13 @@ import org.ccsds.moims.mo.mal.structures.Union;
  * @version 1.0
  * @created 17-Aug-2006 10:24:12
  */
-public class MALServiceSend
+public class MessageSend
 {
   private final MALSecurityManager securityManager;
-  private final MALInteractionMap imap;
-  private final MALPubSubMap pmap;
+  private final InteractionMap imap;
+  private final PubSubMap pmap;
 
-  public MALServiceSend(MALSecurityManager securityManager, MALInteractionMap imap, MALPubSubMap pmap)
+  public MessageSend(MALSecurityManager securityManager, InteractionMap imap, PubSubMap pmap)
   {
     this.securityManager = securityManager;
     this.imap = imap;

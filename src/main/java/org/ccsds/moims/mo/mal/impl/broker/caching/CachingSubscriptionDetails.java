@@ -8,7 +8,7 @@ import org.ccsds.moims.mo.mal.structures.EntityRequest;
 import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
-import org.ccsds.moims.mo.mal.impl.broker.MALSubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.Update;
@@ -21,9 +21,9 @@ class CachingSubscriptionDetails
 {
   private final CachingConsumerDetails parent;
   private final String subscriptionId;
-  private final Set<MALSubscriptionKey> required = new TreeSet<MALSubscriptionKey>();
-  private final Set<MALSubscriptionKey> onAll = new TreeSet<MALSubscriptionKey>();
-  private final Set<MALSubscriptionKey> onChange = new TreeSet<MALSubscriptionKey>();
+  private final Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
+  private final Set<SubscriptionKey> onAll = new TreeSet<SubscriptionKey>();
+  private final Set<SubscriptionKey> onChange = new TreeSet<SubscriptionKey>();
   private SubscriptionUpdate notifySubscriptionUpdate = null;
 
   public CachingSubscriptionDetails(CachingConsumerDetails parent, String subscriptionId)
@@ -50,7 +50,7 @@ class CachingSubscriptionDetails
     return required.isEmpty();
   }
 
-  public void setIds(Map<MALSubscriptionKey, PublishedEntry> published, EntityRequestList lst)
+  public void setIds(Map<SubscriptionKey, PublishedEntry> published, EntityRequestList lst)
   {
     required.clear();
     onAll.clear();
@@ -67,7 +67,7 @@ class CachingSubscriptionDetails
       for (int i = 0; i < keyList.size(); i++)
       {
         EntityKey id = (EntityKey) keyList.get(i);
-        MALSubscriptionKey key = new MALSubscriptionKey(id);
+        SubscriptionKey key = new SubscriptionKey(id);
 
         required.add(key);
 
@@ -80,7 +80,7 @@ class CachingSubscriptionDetails
           onAll.add(key);
         }
 
-        for (Map.Entry<MALSubscriptionKey, PublishedEntry> subKey : published.entrySet())
+        for (Map.Entry<SubscriptionKey, PublishedEntry> subKey : published.entrySet())
         {
           if (subKey.getKey().matches(key))
           {
@@ -98,7 +98,7 @@ class CachingSubscriptionDetails
     }
   }
 
-  public void appendSubscription(PublishedEntry publishedEntry, MALSubscriptionKey key)
+  public void appendSubscription(PublishedEntry publishedEntry, SubscriptionKey key)
   {
     if (matchedUpdate(key, onChange))
     {
@@ -129,7 +129,7 @@ class CachingSubscriptionDetails
     notifySubscriptionUpdate = null;
   }
 
-  public void removeSubscription(Map<MALSubscriptionKey, PublishedEntry> published)
+  public void removeSubscription(Map<SubscriptionKey, PublishedEntry> published)
   {
     for (PublishedEntry ent : published.values())
     {
@@ -138,11 +138,11 @@ class CachingSubscriptionDetails
     }
   }
 
-  private static boolean matchedUpdate(MALSubscriptionKey key, java.util.Set<MALSubscriptionKey> searchSet)
+  private static boolean matchedUpdate(SubscriptionKey key, java.util.Set<SubscriptionKey> searchSet)
   {
     boolean matched = false;
 
-    for (MALSubscriptionKey subscriptionKey : searchSet)
+    for (SubscriptionKey subscriptionKey : searchSet)
     {
       if (subscriptionKey.matches(key))
       {

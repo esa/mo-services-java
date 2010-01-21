@@ -3,7 +3,7 @@ package org.ccsds.moims.mo.mal.impl.broker;
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 
-public final class MALSubscriptionKey implements Comparable
+public final class SubscriptionKey implements Comparable
 {
   public static final String ALL_ID = "*";
   private final String key1;
@@ -11,7 +11,7 @@ public final class MALSubscriptionKey implements Comparable
   private final String key3;
   private final String key4;
 
-  public MALSubscriptionKey(EntityKey lst)
+  public SubscriptionKey(EntityKey lst)
   {
     super();
 
@@ -32,7 +32,7 @@ public final class MALSubscriptionKey implements Comparable
     {
       return false;
     }
-    final MALSubscriptionKey other = (MALSubscriptionKey) obj;
+    final SubscriptionKey other = (SubscriptionKey) obj;
     if ((this.key1 == null) ? (other.key1 != null) : !this.key1.equals(other.key1))
     {
       return false;
@@ -66,7 +66,7 @@ public final class MALSubscriptionKey implements Comparable
   @Override
   public int compareTo(Object o)
   {
-    MALSubscriptionKey rhs = (MALSubscriptionKey) o;
+    SubscriptionKey rhs = (SubscriptionKey) o;
     int rv = compareSubkey(this.key1, rhs.key1);
     if (0 == rv)
     {
@@ -84,7 +84,7 @@ public final class MALSubscriptionKey implements Comparable
     return rv;
   }
 
-  public boolean matches(MALSubscriptionKey rhs)
+  public boolean matches(SubscriptionKey rhs)
   {
     boolean matched = matchedSubkey(key1, rhs.key1);
 

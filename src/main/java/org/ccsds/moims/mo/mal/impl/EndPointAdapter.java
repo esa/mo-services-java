@@ -7,10 +7,10 @@ import org.ccsds.moims.mo.mal.transport.MALMessageListener;
 
 public final class EndPointAdapter implements MALMessageListener
 {
-  private final MALServiceReceive rcv;
+  private final MessageReceive rcv;
   private final Address address;
 
-  public EndPointAdapter(MALServiceReceive rcv, Address address)
+  public EndPointAdapter(MessageReceive rcv, Address address)
   {
     super();
     this.rcv = rcv;

@@ -9,7 +9,7 @@ import java.util.Hashtable;
 import org.ccsds.moims.mo.mal.MAL;
 import org.ccsds.moims.mo.mal.MALFactory;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
+import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
 
@@ -37,7 +37,7 @@ public class MALFactoryImpl extends MALFactory
     sysProps.putAll(props);
     System.setProperties(sysProps);
 
-    MALTransportSingleton.init();
+    TransportSingleton.init();
   }
 
   @Override

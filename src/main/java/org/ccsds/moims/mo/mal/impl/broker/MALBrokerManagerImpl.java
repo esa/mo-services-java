@@ -13,7 +13,7 @@ import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
-import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
+import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -63,7 +63,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
     {
       tparent = (MALBrokerImpl) createBroker(service);
 
-      MALTransport transport = MALTransportSingleton.instance(protocol, impl.getInitialProperties());
+      MALTransport transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
       retVal = transport.createBroker(localName, service, authenticationId, expectedQos, priorityLevelNumber, qosProperties);
 
       if (null != retVal)

@@ -5,12 +5,12 @@ import java.util.List;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdateList;
 
-public final class MALBrokerMessage
+public final class BrokerMessage
 {
   public final MALBrokerBindingImpl binding;
   public final List<NotifyMessage> msgs = new LinkedList<NotifyMessage>();
 
-  public MALBrokerMessage(MALBrokerBindingImpl binding)
+  public BrokerMessage(MALBrokerBindingImpl binding)
   {
     this.binding = binding;
   }

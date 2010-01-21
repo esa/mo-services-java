@@ -32,11 +32,11 @@ import org.ccsds.moims.mo.mal.structures.UpdateList;
 public class MALPublisherImpl implements MALPublisher
 {
   private final MALProviderImpl parent;
-  private final MALServiceSend handler;
+  private final MessageSend handler;
   private final MALPubSubOperation operation;
   private Map<AddressKey, Identifier> transId = new TreeMap<AddressKey, Identifier>();
 
-  public MALPublisherImpl(MALProviderImpl parent, MALServiceSend handler, MALPubSubOperation operation)
+  public MALPublisherImpl(MALProviderImpl parent, MessageSend handler, MALPubSubOperation operation)
   {
     this.parent = parent;
     this.handler = handler;

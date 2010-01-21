@@ -8,8 +8,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
-import org.ccsds.moims.mo.mal.impl.broker.MALBrokerMessage;
-import org.ccsds.moims.mo.mal.impl.broker.MALSubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
+import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -26,7 +26,7 @@ class SimpleConsumerDetails
 {
   private final String consumerId;
   private final MALBrokerBindingImpl binding;
-  private Set<MALSubscriptionKey> required = new TreeSet<MALSubscriptionKey>();
+  private Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
   private final Map<String, SimpleSubscriptionDetails> details = new TreeMap<String, SimpleSubscriptionDetails>();
 
   public SimpleConsumerDetails(String consumerId, MALBrokerBindingImpl binding)
@@ -52,7 +52,7 @@ class SimpleConsumerDetails
     return required.isEmpty();
   }
 
-  public Set<MALSubscriptionKey> addSubscription(MessageHeader srcHdr, Subscription subscription)
+  public Set<SubscriptionKey> addSubscription(MessageHeader srcHdr, Subscription subscription)
   {
     String subId = subscription.getSubscriptionId().getValue();
     SimpleSubscriptionDetails sub = details.get(subId);
@@ -66,15 +66,15 @@ class SimpleConsumerDetails
     return required;
   }
 
-  public void populateNotifyList(MessageHeader srcHdr, Identifier transId, List<MALBrokerMessage> lst, UpdateList updateList)
+  public void populateNotifyList(MessageHeader srcHdr, Identifier transId, List<BrokerMessage> lst, UpdateList updateList)
   {
     Logging.logMessage("INFO: Checking SimComDetails");
     Set<Map.Entry<String, SimpleSubscriptionDetails>> values = details.entrySet();
     Iterator<Map.Entry<String, SimpleSubscriptionDetails>> it = values.iterator();
-    MALBrokerMessage bmsg = new MALBrokerMessage(binding);
+    BrokerMessage bmsg = new BrokerMessage(binding);
     while (it.hasNext())
     {
-      MALBrokerMessage.NotifyMessage subUpdate = it.next().getValue().populateNotifyList(updateList);
+      BrokerMessage.NotifyMessage subUpdate = it.next().getValue().populateNotifyList(updateList);
       if (null != subUpdate)
       {
         bmsg.msgs.add(subUpdate);
@@ -82,9 +82,9 @@ class SimpleConsumerDetails
     }
     if (!bmsg.msgs.isEmpty())
     {
-      for (Iterator<MALBrokerMessage.NotifyMessage> it1 = bmsg.msgs.iterator(); it1.hasNext();)
+      for (Iterator<BrokerMessage.NotifyMessage> it1 = bmsg.msgs.iterator(); it1.hasNext();)
       {
-        MALBrokerMessage.NotifyMessage msg = it1.next();
+        BrokerMessage.NotifyMessage msg = it1.next();
 
         // update the details in the header
         msg.header.setURIto(new URI(consumerId));
@@ -125,7 +125,7 @@ class SimpleConsumerDetails
     required.clear();
   }
 
-  public void appendIds(Set<MALSubscriptionKey> new_set)
+  public void appendIds(Set<SubscriptionKey> new_set)
   {
     new_set.addAll(required);
   }

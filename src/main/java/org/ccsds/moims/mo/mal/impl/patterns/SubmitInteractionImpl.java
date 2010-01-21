@@ -8,7 +8,7 @@ import org.ccsds.moims.mo.mal.provider.MALSubmit;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.impl.Address;
-import org.ccsds.moims.mo.mal.impl.MALServiceSend;
+import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -19,7 +19,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  */
 public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSubmit
 {
-  public SubmitInteractionImpl(MALServiceSend sender, Address address, Identifier internalTransId, MALMessage msg)
+  public SubmitInteractionImpl(MessageSend sender, Address address, Identifier internalTransId, MALMessage msg)
   {
     super(sender, address, internalTransId, msg);
   }

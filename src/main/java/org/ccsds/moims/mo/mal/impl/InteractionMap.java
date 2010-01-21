@@ -26,13 +26,13 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  * @version 1.0
  * @created 17-Aug-2006 10:24:12
  */
-public class MALInteractionMap
+public class InteractionMap
 {
   private static volatile int transId = 0;
   private final java.util.Map<String, InternalOperationHandler> transMap = new java.util.TreeMap<String, InternalOperationHandler>();
   private final java.util.Map<String, Pair> resolveMap = new java.util.TreeMap<String, Pair>();
 
-  public MALInteractionMap()
+  public InteractionMap()
   {
   }
 
@@ -81,7 +81,7 @@ public class MALInteractionMap
 
     synchronized (transMap)
     {
-      transMap.put(oTransId.getValue(), new PubSubOperationHandler(operation, syncOperation, syncStage, new MALInteractionListenerPublishAdapter(listener)));
+      transMap.put(oTransId.getValue(), new PubSubOperationHandler(operation, syncOperation, syncStage, new InteractionListenerPublishAdapter(listener)));
     }
 
     return oTransId;
@@ -575,11 +575,11 @@ public class MALInteractionMap
     }
   }
 
-  private final static class MALInteractionListenerPublishAdapter implements MALInteractionListener
+  private final static class InteractionListenerPublishAdapter implements MALInteractionListener
   {
     private final MALPublishInteractionListener delegate;
 
-    public MALInteractionListenerPublishAdapter(MALPublishInteractionListener delegate)
+    public InteractionListenerPublishAdapter(MALPublishInteractionListener delegate)
     {
       this.delegate = delegate;
     }

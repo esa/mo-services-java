@@ -17,7 +17,7 @@ import org.ccsds.moims.mo.mal.structures.QoSLevel;
  *
  * @author cooper_sf
  */
-public class MALBrokerBindingImpl extends MALServiceComponentImpl implements MALInternalBrokerBinding
+public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInternalBrokerBinding
 {
   private final MALBrokerImpl brokerImpl;
 

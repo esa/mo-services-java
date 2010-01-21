@@ -9,8 +9,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
-import org.ccsds.moims.mo.mal.impl.broker.MALBrokerMessage;
-import org.ccsds.moims.mo.mal.impl.broker.MALSubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
+import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionSource;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -24,7 +24,7 @@ import org.ccsds.moims.mo.mal.structures.UpdateList;
  */
 class SimpleSubscriptionSource extends SubscriptionSource
 {
-  private final Set<MALSubscriptionKey> required = new TreeSet<MALSubscriptionKey>();
+  private final Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
   private final Map<String, SimpleConsumerDetails> details = new TreeMap<String, SimpleConsumerDetails>();
 
   public SimpleSubscriptionSource(MessageHeader hdr)
@@ -56,17 +56,17 @@ class SimpleSubscriptionSource extends SubscriptionSource
   public void addSubscription(MessageHeader srcHdr, String consumer, Subscription subscription, MALBrokerBindingImpl binding)
   {
     SimpleConsumerDetails det = getDetails(consumer, binding);
-    Set<MALSubscriptionKey> retVal = det.addSubscription(srcHdr, subscription);
+    Set<SubscriptionKey> retVal = det.addSubscription(srcHdr, subscription);
     required.addAll(retVal);
   }
 
   @Override
-  public void populateNotifyList(MessageHeader srcHdr, List<MALBrokerMessage> lst, UpdateList updateList)
+  public void populateNotifyList(MessageHeader srcHdr, List<BrokerMessage> lst, UpdateList updateList)
   {
     Logging.logMessage("INFO: Checking SimSubSource");
     Set<Map.Entry<String, SimpleConsumerDetails>> values = details.entrySet();
     Iterator<Map.Entry<String, SimpleConsumerDetails>> it = values.iterator();
-    List<MALBrokerMessage> localLst = new LinkedList<MALBrokerMessage>();
+    List<BrokerMessage> localLst = new LinkedList<BrokerMessage>();
     while (it.hasNext())
     {
       it.next().getValue().populateNotifyList(srcHdr, transactionId, localLst, updateList);

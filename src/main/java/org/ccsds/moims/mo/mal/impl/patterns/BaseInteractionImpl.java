@@ -14,7 +14,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MALImpl;
-import org.ccsds.moims.mo.mal.impl.MALServiceSend;
+import org.ccsds.moims.mo.mal.impl.MessageSend;
 
 /**
  *
@@ -22,14 +22,14 @@ import org.ccsds.moims.mo.mal.impl.MALServiceSend;
  */
 public abstract class BaseInteractionImpl implements MALInteraction
 {
-  protected final MALServiceSend sender;
+  protected final MessageSend sender;
   protected final Address address;
   protected final Identifier internalTransId;
   protected final MALMessage msg;
   protected final MALOperation operation;
   protected final HashMap qosProperties = new HashMap();
 
-  public BaseInteractionImpl(MALServiceSend sender, Address address, Identifier internalTransId, MALMessage msg)
+  public BaseInteractionImpl(MessageSend sender, Address address, Identifier internalTransId, MALMessage msg)
   {
     this.sender = sender;
     this.address = address;

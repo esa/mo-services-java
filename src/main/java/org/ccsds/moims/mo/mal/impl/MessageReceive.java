@@ -41,15 +41,15 @@ import org.ccsds.moims.mo.mal.structures.UpdateList;
  * @version 1.0
  * @created 17-Aug-2006 10:24:12
  */
-public class MALServiceReceive
+public class MessageReceive
 {
-  private final MALServiceSend sender;
+  private final MessageSend sender;
   private final MALSecurityManager securityManager;
-  private final MALInteractionMap imap;
+  private final InteractionMap imap;
   private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
-  private final MALPubSubMap pmap;
+  private final PubSubMap pmap;
 
-  public MALServiceReceive(MALServiceSend sender, MALSecurityManager securityManager, MALInteractionMap imap, MALPubSubMap pmap, Map<String, MALBrokerBindingImpl> brokerBindingMap)
+  public MessageReceive(MessageSend sender, MALSecurityManager securityManager, InteractionMap imap, PubSubMap pmap, Map<String, MALBrokerBindingImpl> brokerBindingMap)
   {
     this.sender = sender;
     this.securityManager = securityManager;

@@ -15,13 +15,13 @@ import org.ccsds.moims.mo.mal.structures.URI;
  * @version 1.0
  * @created 17-Aug-2006 10:24:12
  */
-public class MALPubSubMap
+public class PubSubMap
 {
   private final java.util.Map<StringPair, MALPublishInteractionListener> publisherMap = new java.util.TreeMap<StringPair, MALPublishInteractionListener>();
   private final java.util.Map<String, Map<String, MALInteractionListener>> errorMap = new java.util.TreeMap<String, Map<String, MALInteractionListener>>();
   private final java.util.Map<StringPair, MALInteractionListener> notifyMap = new java.util.TreeMap<StringPair, MALInteractionListener>();
 
-  public MALPubSubMap()
+  public PubSubMap()
   {
   }
 

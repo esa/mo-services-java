@@ -26,7 +26,7 @@ import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.impl.transport.MALTransportSingleton;
+import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
@@ -36,7 +36,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
  */
 public class MALConsumerImpl extends MALClose implements MALConsumer
 {
-  private final MALServiceSend sender;
+  private final MessageSend sender;
   private final MessageDetails details;
   private final Address address;
 
@@ -44,7 +44,7 @@ public class MALConsumerImpl extends MALClose implements MALConsumer
   {
     super(parent);
     this.sender = impl.getSendingInterface();
-    MALTransport trans = MALTransportSingleton.instance(uriTo, impl.getInitialProperties());
+    MALTransport trans = TransportSingleton.instance(uriTo, impl.getInitialProperties());
     MALEndPoint ep = trans.createEndPoint(null, service, qosProps);
     address = new Address(ep, ep.getURI(), authenticationId, new DummyHandler());
     ep.setMessageListener(new EndPointAdapter(impl.getReceivingInterface(), address));

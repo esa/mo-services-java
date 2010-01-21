@@ -16,7 +16,7 @@ import org.ccsds.moims.mo.mal.structures.UpdateList;
  *
  * @author cooper_sf
  */
-public interface MALBrokerHandler
+public interface BrokerHandler
 {
   void addConsumer(MessageHeader hdr, Subscription body, MALBrokerBindingImpl binding);
 
@@ -24,7 +24,7 @@ public interface MALBrokerHandler
 
   QoSLevel getProviderQoSLevel(MessageHeader hdr);
 
-  java.util.List<MALBrokerMessage> createNotify(MessageHeader hdr, UpdateList updateList) throws MALException;
+  java.util.List<BrokerMessage> createNotify(MessageHeader hdr, UpdateList updateList) throws MALException;
 
   void removeConsumer(MessageHeader hdr, IdentifierList ids);
 

@@ -2,8 +2,8 @@ package org.ccsds.moims.mo.mal.impl.broker.simple;
 
 import java.util.Set;
 import java.util.TreeSet;
-import org.ccsds.moims.mo.mal.impl.broker.MALBrokerMessage;
-import org.ccsds.moims.mo.mal.impl.broker.MALSubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
+import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
@@ -26,9 +26,9 @@ class SimpleSubscriptionDetails
   private final Identifier transactionId;
   private final QoSLevel qos;
   private final Integer priority;
-  private Set<MALSubscriptionKey> required = new TreeSet<MALSubscriptionKey>();
-  private Set<MALSubscriptionKey> onAll = new TreeSet<MALSubscriptionKey>();
-  private Set<MALSubscriptionKey> onChange = new TreeSet<MALSubscriptionKey>();
+  private Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
+  private Set<SubscriptionKey> onAll = new TreeSet<SubscriptionKey>();
+  private Set<SubscriptionKey> onChange = new TreeSet<SubscriptionKey>();
 
   public SimpleSubscriptionDetails(MessageHeader srcHdr, String subscriptionId)
   {
@@ -42,15 +42,15 @@ class SimpleSubscriptionDetails
   {
     Logging.logMessage("      START Subscription ( " + subscriptionId + " )");
     Logging.logMessage("      Required: " + String.valueOf(required.size()));
-    for (MALSubscriptionKey key : required)
+    for (SubscriptionKey key : required)
     {
       Logging.logMessage("              : Rqd : " + key);
     }
-    for (MALSubscriptionKey key : onAll)
+    for (SubscriptionKey key : onAll)
     {
       Logging.logMessage("              : All : " + key);
     }
-    for (MALSubscriptionKey key : onChange)
+    for (SubscriptionKey key : onChange)
     {
       Logging.logMessage("              : Chg : " + key);
     }
@@ -75,7 +75,7 @@ class SimpleSubscriptionDetails
       for (int i = 0; i < keyList.size(); i++)
       {
         EntityKey id = (EntityKey) keyList.get(i);
-        MALSubscriptionKey key = new MALSubscriptionKey(id);
+        SubscriptionKey key = new SubscriptionKey(id);
         required.add(key);
         if (bOnChange)
         {
@@ -89,7 +89,7 @@ class SimpleSubscriptionDetails
     }
   }
 
-  public MALBrokerMessage.NotifyMessage populateNotifyList(UpdateList updateList)
+  public BrokerMessage.NotifyMessage populateNotifyList(UpdateList updateList)
   {
     Logging.logMessage("INFO: Checking SimSubDetails");
     UpdateList sendList = new UpdateList();
@@ -98,10 +98,10 @@ class SimpleSubscriptionDetails
       Update update = (Update) updateList.get(i);
       populateNotifyList(sendList, update);
     }
-    MALBrokerMessage.NotifyMessage retVal = null;
+    BrokerMessage.NotifyMessage retVal = null;
     if (false == sendList.isEmpty())
     {
-      retVal = new MALBrokerMessage.NotifyMessage();
+      retVal = new BrokerMessage.NotifyMessage();
       SubscriptionUpdate update = new SubscriptionUpdate();
       update.setSubscriptionId(new Identifier(subscriptionId));
       update.setUpdateList(sendList);
@@ -116,7 +116,7 @@ class SimpleSubscriptionDetails
 
   private void populateNotifyList(UpdateList lst, Update update)
   {
-    MALSubscriptionKey key = new MALSubscriptionKey(update.getKey());
+    SubscriptionKey key = new SubscriptionKey(update.getKey());
     Logging.logMessage("INFO: Checking " + key);
     boolean updateRequired = matchedUpdate(key, onAll);
     if (!updateRequired && (update.getUpdateType().getOrdinal() != UpdateType._UPDATE_INDEX))
@@ -130,10 +130,10 @@ class SimpleSubscriptionDetails
     }
   }
 
-  private static boolean matchedUpdate(MALSubscriptionKey key, Set<MALSubscriptionKey> searchSet)
+  private static boolean matchedUpdate(SubscriptionKey key, Set<SubscriptionKey> searchSet)
   {
     boolean matched = false;
-    for (MALSubscriptionKey subscriptionKey : searchSet)
+    for (SubscriptionKey subscriptionKey : searchSet)
     {
       Logging.logMessage("INFO: Checking " + key + " against " + subscriptionKey);
       if (subscriptionKey.matches(key))
@@ -147,7 +147,7 @@ class SimpleSubscriptionDetails
     return matched;
   }
 
-  protected void appendIds(Set<MALSubscriptionKey> new_set)
+  protected void appendIds(Set<SubscriptionKey> new_set)
   {
     new_set.addAll(required);
   }

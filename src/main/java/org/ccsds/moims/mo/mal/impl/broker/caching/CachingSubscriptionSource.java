@@ -22,7 +22,7 @@ import org.ccsds.moims.mo.mal.structures.UpdateType;
  */
 class CachingSubscriptionSource extends SubscriptionSource
 {
-  private final Map<MALSubscriptionKey, PublishedEntry> published = new TreeMap<MALSubscriptionKey, PublishedEntry>();
+  private final Map<SubscriptionKey, PublishedEntry> published = new TreeMap<SubscriptionKey, PublishedEntry>();
   private final Map<String, CachingConsumerDetails> details = new TreeMap<String, CachingConsumerDetails>();
 
   public CachingSubscriptionSource(MessageHeader hdr)
@@ -58,13 +58,13 @@ class CachingSubscriptionSource extends SubscriptionSource
   }
 
   @Override
-  public void populateNotifyList(MessageHeader srcHdr, List<MALBrokerMessage> lst, UpdateList updateList)
+  public void populateNotifyList(MessageHeader srcHdr, List<BrokerMessage> lst, UpdateList updateList)
   {
     int length = updateList.size();
     for (int i = 0; i < length; ++i)
     {
       Update update = (Update) updateList.get(i);
-      MALSubscriptionKey key = new MALSubscriptionKey(update.getKey());
+      SubscriptionKey key = new SubscriptionKey(update.getKey());
       boolean onlyForAll = update.getUpdateType().equals(UpdateType.UPDATE);
 
       PublishedEntry publishedEntry = published.get(key);
@@ -95,7 +95,7 @@ class CachingSubscriptionSource extends SubscriptionSource
     }
   }
 
-//  public void populateNotifyListx(MALMessageHeader srcHdr, List<MALBrokerMessage> lst, MALUpdateList updateList)
+//  public void populateNotifyListx(MALMessageHeader srcHdr, List<BrokerMessage> lst, MALUpdateList updateList)
 //  {
 //    Map<Integer, Map.Entry<CachingSubscriptionDetails, Vector<MALUpdate>>> subsList = new TreeMap<Integer, Map.Entry<CachingSubscriptionDetails, Vector<MALUpdate>>>();
 //
@@ -103,7 +103,7 @@ class CachingSubscriptionSource extends SubscriptionSource
 //    for (int i = 0; i < length; ++i)
 //    {
 //      MALUpdate update = (MALUpdate) updateList.get(i);
-//      MALSubscriptionKey key = new MALSubscriptionKey(update.getKey());
+//      SubscriptionKey key = new SubscriptionKey(update.getKey());
 //      Vector<CachingSubscriptionDetails> clients = published.get(key);
 //
 //      if (null == clients)
@@ -126,7 +126,7 @@ class CachingSubscriptionSource extends SubscriptionSource
 //      }
 //    }
 //
-//    Map<Integer, MALBrokerMessage> localLst = new TreeMap<Integer, MALBrokerMessage>();
+//    Map<Integer, BrokerMessage> localLst = new TreeMap<Integer, BrokerMessage>();
 //    for (Map.Entry<CachingSubscriptionDetails, Vector<MALUpdate>> entry : subsList.values())
 //    {
 //      entry.getKey().populateNotify(srcHdr, transactionId, localLst, entry.getValue());
@@ -172,7 +172,7 @@ class CachingSubscriptionSource extends SubscriptionSource
 //        entry.getValue().appendIds(required);
 //      }
 //    }
-  private PublishedEntry populatePublishedMap(MALSubscriptionKey key)
+  private PublishedEntry populatePublishedMap(SubscriptionKey key)
   {
     PublishedEntry publishedEntry = new PublishedEntry();
 

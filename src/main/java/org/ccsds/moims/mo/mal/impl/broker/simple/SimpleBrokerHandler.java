@@ -8,7 +8,7 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker.simple;
 
-import org.ccsds.moims.mo.mal.impl.broker.MALBaseBrokerHandler;
+import org.ccsds.moims.mo.mal.impl.broker.BaseBrokerHandler;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionSource;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 
@@ -16,7 +16,7 @@ import org.ccsds.moims.mo.mal.structures.MessageHeader;
  *
  * @author cooper_sf
  */
-public class SimpleBrokerHandler extends MALBaseBrokerHandler
+public class SimpleBrokerHandler extends BaseBrokerHandler
 {
   /** Creates a new instance of MALBrokerHandler */
   public SimpleBrokerHandler()

@@ -44,7 +44,7 @@ public abstract class SubscriptionSource
     this.service = hdr.getService();
     this.operation = hdr.getOperation();
     this.version = hdr.getVersion();
-    this.signature = MALBaseBrokerHandler.makeSig(hdr);
+    this.signature = BaseBrokerHandler.makeSig(hdr);
   }
 
   public String getSignature()
@@ -68,7 +68,7 @@ public abstract class SubscriptionSource
 
   public abstract void addSubscription(MessageHeader srcHdr, String consumer, Subscription subscription, MALBrokerBindingImpl binding);
 
-  public abstract void populateNotifyList(MessageHeader srcHdr, List<MALBrokerMessage> lst, UpdateList updateList);
+  public abstract void populateNotifyList(MessageHeader srcHdr, List<BrokerMessage> lst, UpdateList updateList);
   
   public abstract void removeSubscriptions(String consumer, IdentifierList subscriptions);
 
