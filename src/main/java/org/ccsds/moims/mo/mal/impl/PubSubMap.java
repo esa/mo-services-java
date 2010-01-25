@@ -31,12 +31,9 @@ public class PubSubMap
 
     synchronized (publisherMap)
     {
-      //if (false == publisherMap.containsKey(id))
-      {
-        publisherMap.put(id, listener);
+      publisherMap.put(id, listener);
 
-        Logging.logMessage("INFO: Adding publisher: " + id);
-      }
+      Logging.logMessage("INFO: Adding publisher: " + id);
     }
   }
 
@@ -50,7 +47,7 @@ public class PubSubMap
       list = publisherMap.get(id);
     }
 
-    if(null != list)
+    if (null != list)
     {
       Logging.logMessage("INFO: Getting publisher: " + id);
     }
@@ -68,7 +65,7 @@ public class PubSubMap
       list = publisherMap.remove(id);
     }
 
-    if(null != list)
+    if (null != list)
     {
       Logging.logMessage("INFO: Removing publisher: " + id);
     }
@@ -84,19 +81,16 @@ public class PubSubMap
 
     synchronized (notifyMap)
     {
-      //if (false == notifyMap.containsKey(id))
+      notifyMap.put(id, list);
+      Map<String, MALInteractionListener> ent = errorMap.get(uri);
+
+      if (null == ent)
       {
-        notifyMap.put(id, list);
-        Map<String, MALInteractionListener> ent = errorMap.get(uri);
-
-        if (null == ent)
-        {
-          ent = new TreeMap<String, MALInteractionListener>();
-          errorMap.put(uri, ent);
-        }
-
-        ent.put(subId, list);
+        ent = new TreeMap<String, MALInteractionListener>();
+        errorMap.put(uri, ent);
       }
+
+      ent.put(subId, list);
     }
   }
 

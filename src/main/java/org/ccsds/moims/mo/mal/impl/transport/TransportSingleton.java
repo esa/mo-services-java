@@ -193,7 +193,7 @@ public final class TransportSingleton
   private static String getProtocol(String dstUri)
   {
     // get protocol from uri
-    int iPro = dstUri.indexOf("://");
+    int iPro = dstUri.indexOf(':');
     if (-1 != iPro)
     {
       dstUri = dstUri.substring(0, iPro);
