@@ -1,3 +1,13 @@
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
+ */
 package org.ccsds.moims.mo.mal.impl;
 
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
@@ -6,14 +16,26 @@ import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.URI;
 
+/**
+ * Comparable URI based address.
+ */
 public class AddressKey implements Comparable
 {
+  private static final int HASH_MAGIC_NUMBER = 42;
   private final String uri;
   private final String domain;
   private final String networkZone;
   private final int session;
   private final String sessionName;
 
+  /**
+   * Constructor.
+   * @param uri URI.
+   * @param domain Domain.
+   * @param networkZone Network zone.
+   * @param session Session type.
+   * @param sessionName Session name.
+   */
   public AddressKey(URI uri, DomainIdentifier domain, String networkZone, SessionType session, String sessionName)
   {
     this.uri = uri.getValue();
@@ -23,6 +45,10 @@ public class AddressKey implements Comparable
     this.sessionName = sessionName;
   }
 
+  /**
+   * Constructor.
+   * @param hdr Source message.
+   */
   public AddressKey(MessageHeader hdr)
   {
     this.uri = hdr.getURIto().getValue();
@@ -107,7 +133,7 @@ public class AddressKey implements Comparable
   public int hashCode()
   {
     assert false : "hashCode not designed";
-    return 42; // any arbitrary constant will do
+    return HASH_MAGIC_NUMBER; // any arbitrary constant will do
   }
 
   @Override

@@ -1,6 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
  */
 package org.ccsds.moims.mo.mal.impl;
 
@@ -16,7 +22,6 @@ import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 
 /**
  *
- * @author cooper_sf
  */
 public final class MessageDetails
 {
@@ -34,7 +39,35 @@ public final class MessageDetails
   public final Hashtable qosProps;
   public final int priority;
 
-  public MessageDetails(MALEndPoint endpoint, URI uriFrom, URI uriTo, URI brokerUri, MALService service, Blob authenticationId, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qosLevel, Hashtable qosProps, int priority)
+  /**
+   * Constructor.
+   * @param endpoint Endpoint.
+   * @param uriFrom URIFrom.
+   * @param uriTo URITo.
+   * @param brokerUri BrokerURI.
+   * @param service Service.
+   * @param authenticationId Authentication Identifier.
+   * @param domain Domain.
+   * @param networkZone Network Zone.
+   * @param sessionType Session type.
+   * @param sessionName Session name.
+   * @param qosLevel QOS Level.
+   * @param qosProps QOS properties.
+   * @param priority Priority.
+   */
+  public MessageDetails(MALEndPoint endpoint,
+          URI uriFrom,
+          URI uriTo,
+          URI brokerUri,
+          MALService service,
+          Blob authenticationId,
+          DomainIdentifier domain,
+          Identifier networkZone,
+          SessionType sessionType,
+          Identifier sessionName,
+          QoSLevel qosLevel,
+          Hashtable qosProps,
+          int priority)
   {
     this.endpoint = endpoint;
     this.uriFrom = uriFrom;

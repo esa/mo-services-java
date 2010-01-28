@@ -1,13 +1,17 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
@@ -18,23 +22,24 @@ import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.Update;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
 
 /**
- *
- * @author cooper_sf
+ * The base class for MAL level broker logic implementations.
  */
-public abstract class BaseBrokerHandler implements BrokerHandler
+public abstract class BaseBrokerHandler
 {
   private final Map<String, ProviderDetails> providerMap = new TreeMap<String, ProviderDetails>();
   private final Map<String, SubscriptionSource> consumerMap = new TreeMap<String, SubscriptionSource>();
 
+  /**
+   * Constructor.
+   */
   public BaseBrokerHandler()
   {
   }
 
-  public synchronized void report()
+  private synchronized void report()
   {
     Logging.logMessage("START REPORT");
 
@@ -53,7 +58,12 @@ public abstract class BaseBrokerHandler implements BrokerHandler
     Logging.logMessage("END REPORT");
   }
 
-  @Override
+  /**
+   * Adds a consumer to this Broker.
+   * @param hdr Message header.
+   * @param lst Subscription list.
+   * @param binding Source binding.
+   */
   public synchronized void addConsumer(MessageHeader hdr, Subscription lst, MALBrokerBindingImpl binding)
   {
     report();
@@ -67,8 +77,12 @@ public abstract class BaseBrokerHandler implements BrokerHandler
     report();
   }
 
-  @Override
-  public synchronized void addProvider(MessageHeader hdr, EntityKeyList l)
+  /**
+   * Add a provider to this broker.
+   * @param hdr Source message.
+   * @param providerKeyList List of keys from the provider.
+   */
+  public synchronized void addProvider(MessageHeader hdr, EntityKeyList providerKeyList)
   {
     report();
     ProviderDetails details = providerMap.get(hdr.getURIfrom().getValue());
@@ -80,12 +94,16 @@ public abstract class BaseBrokerHandler implements BrokerHandler
       Logging.logMessage("New publisher registering: " + hdr);
     }
 
-    details.setKeyList(l);
+    details.setKeyList(providerKeyList);
 
     report();
   }
 
-  @Override
+  /**
+   * Returns the QoS level used by the provider.
+   * @param hdr Message source.
+   * @return QoSLevel used.
+   */
   public QoSLevel getProviderQoSLevel(MessageHeader hdr)
   {
     ProviderDetails details = providerMap.get(hdr.getURIfrom().getValue());
@@ -98,8 +116,15 @@ public abstract class BaseBrokerHandler implements BrokerHandler
     return null;
   }
 
-  @Override
-  public synchronized java.util.List<BrokerMessage> createNotify(MessageHeader hdr, UpdateList updateList) throws MALException
+  /**
+   * Creates a set of Notify messages based on an update list.
+   * @param hdr Source update header.
+   * @param updateList Update list.
+   * @return List of notify messages.
+   * @throws MALException on Error.
+   */
+  public synchronized java.util.List<BrokerMessage> createNotify(MessageHeader hdr,
+          UpdateList updateList) throws MALException
   {
     ProviderDetails details = providerMap.get(hdr.getURIfrom().getValue());
 
@@ -126,7 +151,10 @@ public abstract class BaseBrokerHandler implements BrokerHandler
     return lst;
   }
 
-  @Override
+  /**
+   * Removes a provider from this broker.
+   * @param hdr Source message.
+   */
   public synchronized void removeProvider(MessageHeader hdr)
   {
     report();
@@ -134,7 +162,11 @@ public abstract class BaseBrokerHandler implements BrokerHandler
     report();
   }
 
-  @Override
+  /**
+   * Removes a consumer from this broker.
+   * @param hdr Source message.
+   * @param lst Subscription identifiers to remove.
+   */
   public void removeConsumer(MessageHeader hdr, IdentifierList lst)
   {
     report();
@@ -146,7 +178,7 @@ public abstract class BaseBrokerHandler implements BrokerHandler
         if (null != ent)
         {
           ent.removeSubscriptions(hdr.getURIfrom().getValue(), lst);
-          if (ent.notActive())
+          if (!ent.active())
           {
             consumerMap.remove(ent.getSignature());
           }
@@ -156,7 +188,10 @@ public abstract class BaseBrokerHandler implements BrokerHandler
     report();
   }
 
-  @Override
+  /**
+   * Removes a consumer that we have lost contact with.
+   * @param hdr Source header.
+   */
   public synchronized void removeLostConsumer(MessageHeader hdr)
   {
     report();
@@ -166,7 +201,7 @@ public abstract class BaseBrokerHandler implements BrokerHandler
       if (null != ent)
       {
         ent.removeAllSubscriptions(hdr.getURIto().getValue());
-        if (ent.notActive())
+        if (!ent.active())
         {
           consumerMap.remove(ent.getSignature());
         }
@@ -175,7 +210,7 @@ public abstract class BaseBrokerHandler implements BrokerHandler
     report();
   }
 
-  protected SubscriptionSource getEntry(MessageHeader hdr, boolean create)
+  private SubscriptionSource getEntry(MessageHeader hdr, boolean create)
   {
     String sig = makeSig(hdr);
     SubscriptionSource ent = consumerMap.get(sig);
@@ -189,8 +224,18 @@ public abstract class BaseBrokerHandler implements BrokerHandler
     return ent;
   }
 
+  /**
+   * Creates a broker implementation specific subscription source.
+   * @param hdr Source message header.
+   * @return The new subscription source object.
+   */
   protected abstract SubscriptionSource createEntry(MessageHeader hdr);
 
+  /**
+   * Creates a unique signature for a broker based on the message header.
+   * @param hdr Source message.
+   * @return Broker subscription signature.
+   */
   public static String makeSig(MessageHeader hdr)
   {
     StringBuffer buf = new StringBuffer();
@@ -210,74 +255,5 @@ public abstract class BaseBrokerHandler implements BrokerHandler
     buf.append(hdr.getVersion());
 
     return buf.toString();
-  }
-
-  protected static final class ProviderDetails
-  {
-    private final String uri;
-    private final QoSLevel qosLevel;
-    private final Set<SubscriptionKey> keySet = new TreeSet<SubscriptionKey>();
-
-    public ProviderDetails(String uri, QoSLevel qosLevel)
-    {
-      this.uri = uri;
-      this.qosLevel = qosLevel;
-    }
-
-    public QoSLevel getQosLevel()
-    {
-      return qosLevel;
-    }
-
-    public void report()
-    {
-      Logging.logMessage("  START Provider ( " + uri + " )");
-      for (SubscriptionKey key : keySet)
-      {
-        Logging.logMessage("  Allowed: " + key);
-      }
-      Logging.logMessage("  END Provider ( " + uri + " )");
-    }
-
-    public void setKeyList(EntityKeyList l)
-    {
-      keySet.clear();
-
-      for (int i = 0; i < l.size(); i++)
-      {
-        keySet.add(new SubscriptionKey(l.get(i)));
-      }
-    }
-
-    public void checkPublish(UpdateList updateList) throws MALException
-    {
-      EntityKeyList lst = new EntityKeyList();
-
-      for (int i = 0; i < updateList.size(); i++)
-      {
-        Update update = (Update) updateList.get(i);
-
-        SubscriptionKey publishKey = new SubscriptionKey(update.getKey());
-
-        boolean matched = false;
-        for (SubscriptionKey key : keySet)
-        {
-          if (key.matches(publishKey))
-          {
-            matched = true;
-            break;
-          }
-        }
-        if (!matched)
-        {
-          lst.add(update.getKey());
-        }
-      }
-
-      if (0 < lst.size())
-      {
-        throw new MALException(new StandardError(MALHelper.UNKNOWN_ERROR_NUMBER, lst));
-      }
-    }
   }
 }

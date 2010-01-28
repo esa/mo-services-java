@@ -1,6 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
@@ -18,8 +24,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
- *
- * @author cooper_sf
+ * Wrapper class for Transport level broker bindings.
  */
 public class MALBrokerBindingTransportWrapper extends MALClose implements MALInternalBrokerBinding
 {
@@ -27,7 +32,11 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALInt
   private final MALEndPoint endpoint;
   private final Address address;
 
-  public MALBrokerBindingTransportWrapper(MALClose parent, MALImpl impl, MALTransport transport, String localName, MALService service, MALBrokerBinding transportDelegate) throws MALException
+  MALBrokerBindingTransportWrapper(MALClose parent,
+          MALImpl impl,
+          MALTransport transport,
+          MALService service,
+          MALBrokerBinding transportDelegate) throws MALException
   {
     super(parent);
 

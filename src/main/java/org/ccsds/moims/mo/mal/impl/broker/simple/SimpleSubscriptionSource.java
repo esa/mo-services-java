@@ -1,3 +1,13 @@
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
+ */
 package org.ccsds.moims.mo.mal.impl.broker.simple;
 
 import java.util.Iterator;
@@ -33,9 +43,9 @@ class SimpleSubscriptionSource extends SubscriptionSource
   }
 
   @Override
-  public boolean notActive()
+  public boolean active()
   {
-    return required.isEmpty();
+    return !required.isEmpty();
   }
 
   @Override
@@ -53,7 +63,10 @@ class SimpleSubscriptionSource extends SubscriptionSource
   }
 
   @Override
-  public void addSubscription(MessageHeader srcHdr, String consumer, Subscription subscription, MALBrokerBindingImpl binding)
+  public void addSubscription(MessageHeader srcHdr,
+          String consumer,
+          Subscription subscription,
+          MALBrokerBindingImpl binding)
   {
     SimpleConsumerDetails det = getDetails(consumer, binding);
     Set<SubscriptionKey> retVal = det.addSubscription(srcHdr, subscription);

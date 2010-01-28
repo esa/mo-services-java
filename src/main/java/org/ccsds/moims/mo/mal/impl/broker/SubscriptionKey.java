@@ -1,16 +1,37 @@
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
+ */
 package org.ccsds.moims.mo.mal.impl.broker;
 
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 
+/**
+ * Simple class that represents a MAL subscription key.
+ */
 public final class SubscriptionKey implements Comparable
 {
+  /**
+   * Match all constant.
+   */
   public static final String ALL_ID = "*";
+  private static final int HASH_MAGIC_NUMBER = 47;
   private final String key1;
   private final String key2;
   private final String key3;
   private final String key4;
 
+  /**
+   * Constructor.
+   * @param lst Entity key.
+   */
   public SubscriptionKey(EntityKey lst)
   {
     super();
@@ -56,10 +77,10 @@ public final class SubscriptionKey implements Comparable
   public int hashCode()
   {
     int hash = 7;
-    hash = 47 * hash + (this.key1 != null ? this.key1.hashCode() : 0);
-    hash = 47 * hash + (this.key2 != null ? this.key2.hashCode() : 0);
-    hash = 47 * hash + (this.key3 != null ? this.key3.hashCode() : 0);
-    hash = 47 * hash + (this.key4 != null ? this.key4.hashCode() : 0);
+    hash = HASH_MAGIC_NUMBER * hash + (this.key1 != null ? this.key1.hashCode() : 0);
+    hash = HASH_MAGIC_NUMBER * hash + (this.key2 != null ? this.key2.hashCode() : 0);
+    hash = HASH_MAGIC_NUMBER * hash + (this.key3 != null ? this.key3.hashCode() : 0);
+    hash = HASH_MAGIC_NUMBER * hash + (this.key4 != null ? this.key4.hashCode() : 0);
     return hash;
   }
 
@@ -84,6 +105,11 @@ public final class SubscriptionKey implements Comparable
     return rv;
   }
 
+  /**
+   * Returns true if this key matches supplied argument taking into account wildcards.
+   * @param rhs Key to match against.
+   * @return True if matches.
+   */
   public boolean matches(SubscriptionKey rhs)
   {
     boolean matched = matchedSubkey(key1, rhs.key1);

@@ -1,3 +1,13 @@
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
+ */
 package org.ccsds.moims.mo.mal.impl;
 
 import java.util.Map;
@@ -12,20 +22,21 @@ import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
- * @version 1.0
- * @created 17-Aug-2006 10:24:12
  */
-public class PubSubMap
+class PubSubMap
 {
-  private final java.util.Map<StringPair, MALPublishInteractionListener> publisherMap = new java.util.TreeMap<StringPair, MALPublishInteractionListener>();
-  private final java.util.Map<String, Map<String, MALInteractionListener>> errorMap = new java.util.TreeMap<String, Map<String, MALInteractionListener>>();
-  private final java.util.Map<StringPair, MALInteractionListener> notifyMap = new java.util.TreeMap<StringPair, MALInteractionListener>();
+  private final java.util.Map<StringPair, MALPublishInteractionListener> publisherMap
+          = new java.util.TreeMap<StringPair, MALPublishInteractionListener>();
+  private final java.util.Map<String, Map<String, MALInteractionListener>> errorMap
+          = new java.util.TreeMap<String, Map<String, MALInteractionListener>>();
+  private final java.util.Map<StringPair, MALInteractionListener> notifyMap
+          = new java.util.TreeMap<StringPair, MALInteractionListener>();
 
-  public PubSubMap()
+  PubSubMap()
   {
   }
 
-  public void registerPublishListener(MessageDetails details, MALPublishInteractionListener listener)
+  void registerPublishListener(MessageDetails details, MALPublishInteractionListener listener)
   {
     final StringPair id = new StringPair(details.uriFrom.getValue(), details.sessionName.getValue());
 
@@ -37,7 +48,7 @@ public class PubSubMap
     }
   }
 
-  public MALPublishInteractionListener getPublishListener(URI uri, Identifier sessionName)
+  MALPublishInteractionListener getPublishListener(URI uri, Identifier sessionName)
   {
     final StringPair id = new StringPair(uri.getValue(), sessionName.getValue());
     MALPublishInteractionListener list = null;
@@ -55,7 +66,7 @@ public class PubSubMap
     return list;
   }
 
-  public MALPublishInteractionListener getPublishListenerAndRemove(URI uri, Identifier sessionName)
+  MALPublishInteractionListener getPublishListenerAndRemove(URI uri, Identifier sessionName)
   {
     final StringPair id = new StringPair(uri.getValue(), sessionName.getValue());
     MALPublishInteractionListener list = null;
@@ -73,7 +84,10 @@ public class PubSubMap
     return list;
   }
 
-  public void registerNotifyListener(MessageDetails details, MALPubSubOperation op, Subscription subscription, MALInteractionListener list)
+  void registerNotifyListener(MessageDetails details,
+          MALPubSubOperation op,
+          Subscription subscription,
+          MALInteractionListener list)
   {
     final String uri = details.endpoint.getURI().getValue();
     final String subId = subscription.getSubscriptionId().getValue();
@@ -94,7 +108,7 @@ public class PubSubMap
     }
   }
 
-  public MALInteractionListener getNotifyListener(URI uri, Identifier subscription)
+  MALInteractionListener getNotifyListener(URI uri, Identifier subscription)
   {
     final StringPair id = new StringPair(uri.getValue(), subscription.getValue());
 
@@ -109,7 +123,7 @@ public class PubSubMap
     return null;
   }
 
-  public Map<String, MALInteractionListener> getNotifyListenersAndRemove(URI uriValue)
+  Map<String, MALInteractionListener> getNotifyListenersAndRemove(URI uriValue)
   {
     synchronized (notifyMap)
     {
@@ -128,7 +142,7 @@ public class PubSubMap
     }
   }
 
-  public void deregisterNotifyListener(MessageDetails details, MALPubSubOperation op, IdentifierList unsubscription)
+  void deregisterNotifyListener(MessageDetails details, MALPubSubOperation op, IdentifierList unsubscription)
   {
     synchronized (notifyMap)
     {

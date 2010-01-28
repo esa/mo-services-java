@@ -1,18 +1,35 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
  */
 package org.ccsds.moims.mo.mal.impl;
 
 /**
- *
- * @author cooper_sf
+ * Small comparable string pair class.
  */
 public class StringPair implements Comparable
 {
+  /**
+   * First string component, MSB.
+   */
   public final String first;
+  /**
+   * Second string component, LSB.
+   */
   public final String second;
+  private static final int HASH_MAGIC_NUMBER = 79;
 
+  /**
+   * Constructor.
+   * @param first First string part.
+   * @param second Second string part.
+   */
   public StringPair(String first, String second)
   {
     this.first = first;
@@ -49,8 +66,8 @@ public class StringPair implements Comparable
   public int hashCode()
   {
     int hash = 3;
-    hash = 79 * hash + (this.first != null ? this.first.hashCode() : 0);
-    hash = 79 * hash + (this.second != null ? this.second.hashCode() : 0);
+    hash = HASH_MAGIC_NUMBER * hash + (this.first != null ? this.first.hashCode() : 0);
+    hash = HASH_MAGIC_NUMBER * hash + (this.second != null ? this.second.hashCode() : 0);
     return hash;
   }
 

@@ -1,3 +1,13 @@
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
+ */
 package org.ccsds.moims.mo.mal.impl.broker.caching;
 
 import java.util.Iterator;
@@ -125,7 +135,7 @@ class CachingConsumerDetails
 
   public void removeAllSubscriptions(Map<SubscriptionKey, PublishedEntry> published)
   {
-    for (Iterator<CachingSubscriptionDetails> it = details.values().iterator(); it.hasNext();)
+    for (Iterator<CachingSubscriptionDetails> it = details.values().iterator(); it.hasNext(); )
     {
       it.next().removeSubscription(published);
     }

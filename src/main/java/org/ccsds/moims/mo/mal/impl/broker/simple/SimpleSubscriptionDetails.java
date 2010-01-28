@@ -1,3 +1,13 @@
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
+ */
 package org.ccsds.moims.mo.mal.impl.broker.simple;
 
 import java.util.Set;
@@ -30,7 +40,7 @@ class SimpleSubscriptionDetails
   private Set<SubscriptionKey> onAll = new TreeSet<SubscriptionKey>();
   private Set<SubscriptionKey> onChange = new TreeSet<SubscriptionKey>();
 
-  public SimpleSubscriptionDetails(MessageHeader srcHdr, String subscriptionId)
+  SimpleSubscriptionDetails(MessageHeader srcHdr, String subscriptionId)
   {
     this.subscriptionId = subscriptionId;
     this.transactionId = srcHdr.getTransactionId();
@@ -38,7 +48,7 @@ class SimpleSubscriptionDetails
     this.priority = srcHdr.getPriority();
   }
 
-  public void report()
+  void report()
   {
     Logging.logMessage("      START Subscription ( " + subscriptionId + " )");
     Logging.logMessage("      Required: " + String.valueOf(required.size()));
@@ -57,12 +67,12 @@ class SimpleSubscriptionDetails
     Logging.logMessage("      END Subscription ( " + subscriptionId + " )");
   }
 
-  public boolean notActive()
+  boolean notActive()
   {
     return required.isEmpty();
   }
 
-  public void setIds(EntityRequestList lst)
+  void setIds(EntityRequestList lst)
   {
     required.clear();
     onAll.clear();
@@ -89,17 +99,19 @@ class SimpleSubscriptionDetails
     }
   }
 
-  public BrokerMessage.NotifyMessage populateNotifyList(UpdateList updateList)
+  BrokerMessage.NotifyMessage populateNotifyList(UpdateList updateList)
   {
     Logging.logMessage("INFO: Checking SimSubDetails");
+
     UpdateList sendList = new UpdateList();
     for (int i = 0; i < updateList.size(); ++i)
     {
       Update update = (Update) updateList.get(i);
       populateNotifyList(sendList, update);
     }
+
     BrokerMessage.NotifyMessage retVal = null;
-    if (false == sendList.isEmpty())
+    if (!sendList.isEmpty())
     {
       retVal = new BrokerMessage.NotifyMessage();
       SubscriptionUpdate update = new SubscriptionUpdate();
@@ -111,6 +123,7 @@ class SimpleSubscriptionDetails
       retVal.header.setQoSlevel(qos);
       retVal.header.setTransactionId(transactionId);
     }
+
     return retVal;
   }
 
@@ -119,10 +132,12 @@ class SimpleSubscriptionDetails
     SubscriptionKey key = new SubscriptionKey(update.getKey());
     Logging.logMessage("INFO: Checking " + key);
     boolean updateRequired = matchedUpdate(key, onAll);
+
     if (!updateRequired && (update.getUpdateType().getOrdinal() != UpdateType._UPDATE_INDEX))
     {
       updateRequired = matchedUpdate(key, onChange);
     }
+
     if (updateRequired)
     {
       // add update for this consumer/subscription
@@ -147,8 +162,8 @@ class SimpleSubscriptionDetails
     return matched;
   }
 
-  protected void appendIds(Set<SubscriptionKey> new_set)
+  void appendIds(Set<SubscriptionKey> subSet)
   {
-    new_set.addAll(required);
+    subSet.addAll(required);
   }
 }

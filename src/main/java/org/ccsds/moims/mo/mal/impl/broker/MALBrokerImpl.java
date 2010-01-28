@@ -1,19 +1,24 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.ccsds.moims.mo.mal.impl.*;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.impl.AddressKey;
+import org.ccsds.moims.mo.mal.impl.broker.simple.SimpleBrokerHandler;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -25,20 +30,16 @@ import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- *
- * @author cooper_sf
+ * Implementation of the MALBroker interface.
  */
-public class MALBrokerImpl extends MALClose implements MALBroker, BrokerHandler
+public class MALBrokerImpl extends MALClose implements MALBroker
 {
-  private final Map<String, MALBrokerBindingImpl> bindingMap = new TreeMap<String, MALBrokerBindingImpl>();
   private final MALBrokerBindingImpl[] bindings = new MALBrokerBindingImpl[0];
-  private final BrokerHandler delegate;
+  private final Map<AddressKey, BaseBrokerHandler> brokerMap = new TreeMap<AddressKey, BaseBrokerHandler>();
 
-  public MALBrokerImpl(MALClose parent, MALImpl impl, MALService service) throws MALException
+  MALBrokerImpl(MALClose parent) throws MALException
   {
     super(parent);
-
-    delegate = new BrokerMap(impl);
   }
 
   @Override
@@ -56,64 +57,74 @@ public class MALBrokerImpl extends MALClose implements MALBroker, BrokerHandler
     }
   }
 
-  protected synchronized void addBinding(MALBrokerBindingImpl binding)
-  {
-    MALBrokerBindingImpl[] nbindings = new MALBrokerBindingImpl[bindings.length + 1];
-
-    for (int i = 0; i < bindings.length; i++)
-    {
-      nbindings[i] = bindings[i];
-    }
-
-    nbindings[bindings.length] = binding;
-    bindingMap.put(binding.getURI().getValue(), binding);
-  }
-
-  @Override
+  /**
+   * Adds a consumer to this broker.
+   * @param hdr Source message.
+   * @param body Consumer subscription.
+   * @param binding Broker binding.
+   */
   public void addConsumer(MessageHeader hdr, Subscription body, MALBrokerBindingImpl binding)
   {
-    delegate.addConsumer(hdr, body, binding);
+    getHandler(hdr).addConsumer(hdr, body, binding);
   }
 
-  @Override
+  /**
+   * Adds a provider to this broker.
+   * @param hdr Source message.
+   * @param body Provider entity key list.
+   */
   public void addProvider(MessageHeader hdr, EntityKeyList body)
   {
-    delegate.addProvider(hdr, body);
+    getHandler(hdr).addProvider(hdr, body);
   }
 
-  @Override
+  /**
+   * Returns the QoS level used for a provider.
+   * @param hdr Source message.
+   * @return The QoSLevel.
+   */
   public QoSLevel getProviderQoSLevel(MessageHeader hdr)
   {
-    return delegate.getProviderQoSLevel(hdr);
+    return getHandler(hdr).getProviderQoSLevel(hdr);
   }
 
-  @Override
+  /**
+   * Removes a consumer from this broker for a setr of suscriptions.
+   * @param hdr Source Message.
+   * @param ids Subcription ids to remove.
+   */
   public void removeConsumer(MessageHeader hdr, IdentifierList ids)
   {
-    delegate.removeConsumer(hdr, ids);
+    getHandler(hdr).removeConsumer(hdr, ids);
   }
 
-  @Override
+  /**
+   * Removes a consumer that we have lost contact with.
+   * @param hdr Source message.
+   */
   public void removeLostConsumer(MessageHeader hdr)
   {
-    delegate.removeLostConsumer(hdr);
+    getHandler(hdr).removeLostConsumer(hdr);
   }
 
-  @Override
+  /**
+   * Removes a provider from this Broker.
+   * @param hdr Source Message.
+   */
   public void removeProvider(MessageHeader hdr)
   {
-    delegate.removeProvider(hdr);
+    getHandler(hdr).removeProvider(hdr);
   }
 
-  @Override
-  public List<BrokerMessage> createNotify(MessageHeader hdr, UpdateList updateList) throws MALException
-  {
-    return delegate.createNotify(hdr, updateList);
-  }
-
+  /**
+   * Publishes a set of updates.
+   * @param hdr Source Message.
+   * @param updateList The update list.
+   * @throws MALException On error.
+   */
   public void handlePublish(MessageHeader hdr, UpdateList updateList) throws MALException
   {
-    java.util.List<BrokerMessage> msgList = delegate.createNotify(hdr, updateList);
+    java.util.List<BrokerMessage> msgList = getHandler(hdr).createNotify(hdr, updateList);
 
     if (!msgList.isEmpty())
     {
@@ -134,13 +145,63 @@ public class MALBrokerImpl extends MALClose implements MALBroker, BrokerHandler
           {
             // with the exception being thrown we assume that there is a problem with this consumer so remove
             //  them from the observe manager
-            Logging.logMessage("ERROR: Error with notify consumer, removing from list : " + notifyMessage.header.getURIto());
-            delegate.removeLostConsumer(notifyMessage.header);
+            Logging.logMessage("ERROR: Error with notify consumer, removing from list : "
+                    + notifyMessage.header.getURIto());
+            removeLostConsumer(notifyMessage.header);
 
             // TODO: notify local provider
           }
         }
       }
     }
+  }
+
+  private BaseBrokerHandler getHandler(MessageHeader hdr)
+  {
+    AddressKey key = new AddressKey(hdr);
+
+    BaseBrokerHandler rv = brokerMap.get(key);
+
+    if (null == rv)
+    {
+      rv = createBrokerHandler();
+      brokerMap.put(key, rv);
+    }
+
+    return rv;
+  }
+
+  private BaseBrokerHandler createBrokerHandler()
+  {
+    String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class", SimpleBrokerHandler.class.getName());
+
+    BaseBrokerHandler broker = null;
+    try
+    {
+      Class cls = ClassLoader.getSystemClassLoader().loadClass(clsName);
+
+      broker = (BaseBrokerHandler) cls.newInstance();
+      Logging.logMessage("INFO: Creating internal MAL Broker handler: " + cls.getSimpleName());
+    }
+    catch (ClassNotFoundException ex)
+    {
+      Logging.logMessage("WARN: Unable to find MAL Broker handler class: " + clsName);
+    }
+    catch (InstantiationException ex)
+    {
+      Logging.logMessage("WARN: Unable to instantiate MAL Broker handler: " + clsName);
+    }
+    catch (IllegalAccessException ex)
+    {
+      Logging.logMessage("WARN: IllegalAccessException when instantiating MAL Broker handler class: " + clsName);
+    }
+
+    if (null == broker)
+    {
+      broker = new SimpleBrokerHandler();
+      Logging.logMessage("INFO: Creating internal MAL Broker handler: SimpleBrokerHandler");
+    }
+
+    return broker;
   }
 }

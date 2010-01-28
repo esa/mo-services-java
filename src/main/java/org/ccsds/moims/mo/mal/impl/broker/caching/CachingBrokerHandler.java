@@ -1,10 +1,12 @@
-/*
- * CachingBrokerHandler.java
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
  *
- * Created on 21 August 2006, 15:52
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ * ----------------------------------------------------------------------------
  */
 package org.ccsds.moims.mo.mal.impl.broker.caching;
 
@@ -13,8 +15,8 @@ import org.ccsds.moims.mo.mal.impl.broker.SubscriptionSource;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 
 /**
- *
- * @author cooper_sf
+ * The caching broker maintains lists of who desired what published updates, so when an update arrives the costly
+ *  searching and key matching is already performed.
  */
 public class CachingBrokerHandler extends BaseBrokerHandler
 {

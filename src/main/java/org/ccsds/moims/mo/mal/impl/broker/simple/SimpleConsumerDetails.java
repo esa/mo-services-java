@@ -1,3 +1,13 @@
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
+ */
 package org.ccsds.moims.mo.mal.impl.broker.simple;
 
 import java.util.Iterator;
@@ -20,7 +30,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
 
 /**
- * A SimpleSubscriptionDetails is keyed on subscription Id
+ * A SimpleConsumerDetails is keyed on subscription Id
  */
 class SimpleConsumerDetails
 {
@@ -29,13 +39,13 @@ class SimpleConsumerDetails
   private Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
   private final Map<String, SimpleSubscriptionDetails> details = new TreeMap<String, SimpleSubscriptionDetails>();
 
-  public SimpleConsumerDetails(String consumerId, MALBrokerBindingImpl binding)
+  SimpleConsumerDetails(String consumerId, MALBrokerBindingImpl binding)
   {
     this.consumerId = consumerId;
     this.binding = binding;
   }
 
-  public void report()
+  void report()
   {
     Logging.logMessage("    START Consumer ( " + consumerId + " )");
     Logging.logMessage("    Required: " + String.valueOf(required.size()));
@@ -47,12 +57,12 @@ class SimpleConsumerDetails
     Logging.logMessage("    END Consumer ( " + consumerId + " )");
   }
 
-  public boolean notActive()
+  boolean notActive()
   {
     return required.isEmpty();
   }
 
-  public Set<SubscriptionKey> addSubscription(MessageHeader srcHdr, Subscription subscription)
+  Set<SubscriptionKey> addSubscription(MessageHeader srcHdr, Subscription subscription)
   {
     String subId = subscription.getSubscriptionId().getValue();
     SimpleSubscriptionDetails sub = details.get(subId);
@@ -66,7 +76,7 @@ class SimpleConsumerDetails
     return required;
   }
 
-  public void populateNotifyList(MessageHeader srcHdr, Identifier transId, List<BrokerMessage> lst, UpdateList updateList)
+  void populateNotifyList(MessageHeader srcHdr, Identifier transId, List<BrokerMessage> lst, UpdateList updateList)
   {
     Logging.logMessage("INFO: Checking SimComDetails");
     Set<Map.Entry<String, SimpleSubscriptionDetails>> values = details.entrySet();
@@ -82,7 +92,7 @@ class SimpleConsumerDetails
     }
     if (!bmsg.msgs.isEmpty())
     {
-      for (Iterator<BrokerMessage.NotifyMessage> it1 = bmsg.msgs.iterator(); it1.hasNext();)
+      for (Iterator<BrokerMessage.NotifyMessage> it1 = bmsg.msgs.iterator(); it1.hasNext(); )
       {
         BrokerMessage.NotifyMessage msg = it1.next();
 
@@ -102,14 +112,13 @@ class SimpleConsumerDetails
         msg.header.setOperation(srcHdr.getOperation());
         msg.header.setVersion(srcHdr.getVersion());
         msg.header.setError(srcHdr.isError());
-
       }
       
       lst.add(bmsg);
     }
   }
 
-  public void removeSubscriptions(IdentifierList subscriptions)
+  void removeSubscriptions(IdentifierList subscriptions)
   {
     for (int i = 0; i < subscriptions.size(); i++)
     {
@@ -119,18 +128,18 @@ class SimpleConsumerDetails
     updateIds();
   }
 
-  public void removeAllSubscriptions()
+  void removeAllSubscriptions()
   {
     details.clear();
     required.clear();
   }
 
-  public void appendIds(Set<SubscriptionKey> new_set)
+  void appendIds(Set<SubscriptionKey> subSet)
   {
-    new_set.addAll(required);
+    subSet.addAll(required);
   }
 
-  protected void updateIds()
+  void updateIds()
   {
     required.clear();
     Set<Map.Entry<String, SimpleSubscriptionDetails>> values = details.entrySet();

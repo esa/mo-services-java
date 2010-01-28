@@ -1,6 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
  */
 package org.ccsds.moims.mo.mal.impl;
 
@@ -17,8 +23,7 @@ import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
- *
- * @author cooper_sf
+ * Base class that is used by service providers, both providers and Brokers.
  */
 public abstract class ServiceComponentImpl extends MALClose
 {
@@ -38,7 +43,30 @@ public abstract class ServiceComponentImpl extends MALClose
   protected final EndPointAdapter endpointAdapter;
   protected final Address msgAddress;
 
-  public ServiceComponentImpl(MALClose parent, MALImpl impl, String localName, String protocol, MALService service, Blob authenticationId, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties, MALInteractionHandler handler) throws MALException
+  /**
+   * Constructor.
+   * @param parent Parent object.
+   * @param impl MAL impl.
+   * @param localName Local name of this component.
+   * @param protocol The protocol to use.
+   * @param service The service.
+   * @param authenticationId Athentication identifier.
+   * @param expectedQos Expected QoS.
+   * @param priorityLevelNumber Number of priority levels.
+   * @param defaultQoSProperties Default QOS properties.
+   * @param handler Service interaction handler.
+   * @throws MALException on error.
+   */
+  public ServiceComponentImpl(MALClose parent,
+          MALImpl impl,
+          String localName,
+          String protocol,
+          MALService service,
+          Blob authenticationId,
+          QoSLevel[] expectedQos,
+          int priorityLevelNumber,
+          Hashtable defaultQoSProperties,
+          MALInteractionHandler handler) throws MALException
   {
     super(parent);
 
@@ -86,26 +114,46 @@ public abstract class ServiceComponentImpl extends MALClose
     }
   }
 
+  /**
+   * Returns the URI of this component.
+   * @return the URI.
+   */
   public URI getURI()
   {
     return this.localUri;
   }
 
+  /**
+   * Returns the interaction handler for messages received by this component.
+   * @return the interaction handler.
+   */
   public MALInteractionHandler getHandler()
   {
     return handler;
   }
 
+  /**
+   * Returns the Endpoint for sending messages from this component.
+   * @return the Endpoint.
+   */
   public MALEndPoint getEndpoint()
   {
     return endpoint;
   }
 
+  /**
+   * Returns the authentication identifier used by this component.
+   * @return the Authentication Id.
+   */
   public Blob getAuthenticationId()
   {
     return authenticationId;
   }
 
+  /**
+   * Returns the Address structure used by this component.
+   * @return the Address structure.
+   */
   public Address getMsgAddress()
   {
     return msgAddress;

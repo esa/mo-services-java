@@ -1,6 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
  */
 package org.ccsds.moims.mo.mal.impl;
 
@@ -10,8 +16,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 
 /**
- *
- * @author cooper_sf
+ * Simple class for holding details about and endpoint and its details.
  */
 public final class Address
 {
@@ -20,6 +25,13 @@ public final class Address
   public final Blob authenticationId;
   public final MALInteractionHandler handler;
 
+  /**
+   * Constructor.
+   * @param endpoint Endpoint.
+   * @param uri URI.
+   * @param authenticationId Authentication identifier.
+   * @param handler Interaction handler.
+   */
   public Address(MALEndPoint endpoint, URI uri, Blob authenticationId, MALInteractionHandler handler)
   {
     this.endpoint = endpoint;

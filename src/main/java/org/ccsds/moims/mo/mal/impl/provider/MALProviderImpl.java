@@ -1,6 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
  */
 package org.ccsds.moims.mo.mal.impl.provider;
 
@@ -24,10 +30,9 @@ import org.ccsds.moims.mo.mal.impl.broker.MALInternalBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 
 /**
- *
- * @author cooper_sf
+ * MALProvider implementation.
  */
-public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
+class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 {
   private final boolean isPublisher;
   private final Map<Integer, MALPublisher> publishers = new TreeMap<Integer, MALPublisher>();
@@ -36,9 +41,29 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
   private final URI localBrokerUri;
   private final MALEndPoint brokerEndpoint;
 
-  public MALProviderImpl(MALProviderManagerImpl parent, MALImpl impl, String localName, String protocol, MALService service, Blob authenticationId, MALInteractionHandler handler, QoSLevel[] expectedQos, int priorityLevelNumber, Hashtable defaultQoSProperties, Boolean isPublisher, URI sharedBrokerUri) throws MALException
+  MALProviderImpl(MALProviderManagerImpl parent,
+          MALImpl impl,
+          String localName,
+          String protocol,
+          MALService service,
+          Blob authenticationId,
+          MALInteractionHandler handler,
+          QoSLevel[] expectedQos,
+          int priorityLevelNumber,
+          Hashtable defaultQoSProperties,
+          Boolean isPublisher,
+          URI sharedBrokerUri) throws MALException
   {
-    super(parent, impl, localName, protocol, service, authenticationId, expectedQos, priorityLevelNumber, defaultQoSProperties, handler);
+    super(parent,
+            impl,
+            localName,
+            protocol,
+            service,
+            authenticationId,
+            expectedQos,
+            priorityLevelNumber,
+            defaultQoSProperties,
+            handler);
 
     this.isPublisher = isPublisher;
     this.sharedBrokerUri = sharedBrokerUri;
@@ -49,10 +74,17 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
       if (null == this.sharedBrokerUri)
       {
-        this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(null, localName + "InternalBroker", protocol, service, authenticationId, expectedQos, priorityLevelNumber, defaultQoSProperties);
+        this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(null,
+                localName + "InternalBroker",
+                protocol,
+                service,
+                authenticationId,
+                expectedQos,
+                priorityLevelNumber,
+                defaultQoSProperties);
         this.localBrokerBinding.activate();
         this.localBrokerUri = this.localBrokerBinding.getURI();
-        this.brokerEndpoint = ((MALInternalBrokerBinding)localBrokerBinding).getEndpoint();
+        this.brokerEndpoint = ((MALInternalBrokerBinding) localBrokerBinding).getEndpoint();
       }
       else
       {
@@ -65,7 +97,8 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
         }
         else
         {
-          this.brokerEndpoint = TransportSingleton.instance(sharedBrokerUri, impl.getInitialProperties()).createEndPoint(null, service, defaultQoSProperties);
+          this.brokerEndpoint = TransportSingleton.instance(sharedBrokerUri, impl.getInitialProperties())
+                  .createEndPoint(null, service, defaultQoSProperties);
           this.brokerEndpoint.setMessageListener(endpointAdapter);
         }
       }
@@ -78,12 +111,21 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     }
   }
 
+  /**
+   * Check to see if this Provider is also a publisher.
+   * @return True if a publisher.
+   */
   @Override
   public boolean isPublisher()
   {
     return isPublisher;
   }
 
+  /**
+   * Access the internal MALPublisher interface.
+   * @param op The operation that is to be published.
+   * @return The internal MALPublisher
+   */
   @Override
   public synchronized MALPublisher getPublisher(MALPubSubOperation op)
   {
@@ -98,6 +140,10 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     return pub;
   }
 
+  /**
+   * Returns the URI of the Broker being used.
+   * @return The URI of the Broker or null if not a publisher.
+   */
   @Override
   public URI getBrokerURI()
   {
@@ -116,6 +162,10 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     return null;
   }
 
+  /**
+   * Returns the authentication identifier of the Broker if its a private broker.
+   * @return The authentication identifier of the private broker or null.
+   */
   @Override
   public Blob getBrokerAuthenticationId()
   {
@@ -127,6 +177,10 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     return null;
   }
 
+  /**
+   * Closes this Provider and the private broker if it has been created.
+   * @throws MALException On error.
+   */
   @Override
   public void close() throws MALException
   {
@@ -135,7 +189,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     this.handler.malFinalize(this);
   }
 
-  public MALEndPoint getPublishEndpoint()
+  MALEndPoint getPublishEndpoint()
   {
     return brokerEndpoint;
   }

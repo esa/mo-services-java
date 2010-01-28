@@ -1,14 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
  */
 package org.ccsds.moims.mo.mal.impl;
 
-import org.ccsds.moims.mo.mal.impl.provider.MALProviderManagerImpl;
-import org.ccsds.moims.mo.mal.impl.consumer.MALConsumerManagerImpl;
-import org.ccsds.moims.mo.mal.impl.broker.MALBrokerManagerImpl;
-import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
-import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,17 +17,18 @@ import org.ccsds.moims.mo.mal.MAL;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
-import org.ccsds.moims.mo.mal.impl.broker.BrokerHandler;
-import org.ccsds.moims.mo.mal.impl.broker.simple.SimpleBrokerHandler;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerManagerImpl;
+import org.ccsds.moims.mo.mal.impl.consumer.MALConsumerManagerImpl;
+import org.ccsds.moims.mo.mal.impl.provider.MALProviderManagerImpl;
+import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.security.MALSecurityManager;
 import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- *
- * @author cooper_sf
+ * Implementation of the MAL.
  */
 public class MALImpl extends MALClose implements MAL
 {
@@ -38,11 +40,17 @@ public class MALImpl extends MALClose implements MAL
   private final MessageReceive receiver;
   private final MessageSend sender;
 
+  /**
+   * Constructor.
+   * @param securityFactory The security factory.
+   * @param properties initial qos properties.
+   * @throws MALException on error.
+   */
   public MALImpl(MALSecurityManagerFactory securityFactory, Hashtable properties) throws MALException
   {
     super(null);
 
-    initialProperties = (null == properties) ? null : ((Hashtable)properties.clone());
+    initialProperties = (null == properties) ? null : ((Hashtable) properties.clone());
 
     if (null != securityFactory)
     {
@@ -83,63 +91,40 @@ public class MALImpl extends MALClose implements MAL
     org.ccsds.moims.mo.mal.impl.transport.TransportSingleton.close();
   }
 
+  /**
+   * Returns the qos properties used in the creation of this MAL.
+   * @return the QOS properties.
+   */
   public Hashtable getInitialProperties()
   {
     return initialProperties;
   }
 
+  /**
+   * Returns the sending class.
+   * @return The sender.
+   */
   public MessageSend getSendingInterface()
   {
     return sender;
   }
 
+  /**
+   * Returns the receiving class.
+   * @return The receiver.
+   */
   public MessageReceive getReceivingInterface()
   {
     return receiver;
   }
 
-  public InteractionMap getInteractionMap()
-  {
-    return imap;
-  }
-
+  /**
+   * Returns the active security manager.
+   * @return the security manager.
+   */
   public MALSecurityManager getSecurityManager()
   {
     return securityManager;
-  }
-
-  public BrokerHandler createBroker()
-  {
-    String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class", SimpleBrokerHandler.class.getName());
-
-    BrokerHandler broker = null;
-    try
-    {
-      Class cls = ClassLoader.getSystemClassLoader().loadClass(clsName);
-
-      broker = (BrokerHandler) cls.newInstance();
-      Logging.logMessage("INFO: Creating internal MAL Broker handler: " + cls.getSimpleName());
-    }
-    catch (ClassNotFoundException ex)
-    {
-      Logging.logMessage("WARN: Unable to find MAL Broker handler class: " + clsName);
-    }
-    catch (InstantiationException ex)
-    {
-      Logging.logMessage("WARN: Unable to instantiate MAL Broker handler: " + clsName);
-    }
-    catch (IllegalAccessException ex)
-    {
-      Logging.logMessage("WARN: IllegalAccessException when instantiating MAL Broker handler class: " + clsName);
-    }
-
-    if (null == broker)
-    {
-      broker = new SimpleBrokerHandler();
-      Logging.logMessage("INFO: Creating internal MAL Broker handler: SimpleBrokerHandler");
-    }
-
-    return broker;
   }
 
   private static final class NullSecurityManager implements MALSecurityManager

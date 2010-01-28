@@ -1,6 +1,15 @@
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
+ */
 package org.ccsds.moims.mo.mal.impl.broker.caching;
 
-import org.ccsds.moims.mo.mal.impl.broker.*;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +17,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
+import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
+import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.broker.SubscriptionSource;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
@@ -31,9 +44,9 @@ class CachingSubscriptionSource extends SubscriptionSource
   }
 
   @Override
-  public boolean notActive()
+  public boolean active()
   {
-    return false;
+    return true;
   }
 
   @Override
@@ -51,7 +64,10 @@ class CachingSubscriptionSource extends SubscriptionSource
   }
 
   @Override
-  public void addSubscription(MessageHeader srcHdr, String consumer, Subscription subscription, MALBrokerBindingImpl binding)
+  public void addSubscription(MessageHeader srcHdr,
+          String consumer,
+          Subscription subscription,
+          MALBrokerBindingImpl binding)
   {
     CachingConsumerDetails det = getDetails(consumer, binding);
     det.addSubscription(published, subscription);
@@ -95,49 +111,6 @@ class CachingSubscriptionSource extends SubscriptionSource
     }
   }
 
-//  public void populateNotifyListx(MALMessageHeader srcHdr, List<BrokerMessage> lst, MALUpdateList updateList)
-//  {
-//    Map<Integer, Map.Entry<CachingSubscriptionDetails, Vector<MALUpdate>>> subsList = new TreeMap<Integer, Map.Entry<CachingSubscriptionDetails, Vector<MALUpdate>>>();
-//
-//    int length = updateList.size();
-//    for (int i = 0; i < length; ++i)
-//    {
-//      MALUpdate update = (MALUpdate) updateList.get(i);
-//      SubscriptionKey key = new SubscriptionKey(update.getKey());
-//      Vector<CachingSubscriptionDetails> clients = published.get(key);
-//
-//      if (null == clients)
-//      {
-//        clients = populatePublishedMap(key);
-//      }
-//
-//      for (CachingSubscriptionDetails subscriptionDetails : clients)
-//      {
-//        if (subscriptionDetails.requiresUpdate(key, update))
-//        {
-//          Map.Entry<CachingSubscriptionDetails, Vector<MALUpdate>> subsUpdates = subsList.get(subscriptionDetails.hashCode());
-//          if (null == subsUpdates)
-//          {
-//            subsUpdates = new TreeMap.SimpleEntry<CachingSubscriptionDetails, Vector<MALUpdate>>(subscriptionDetails, new Vector<MALUpdate>());
-//            subsList.put(subscriptionDetails.hashCode(), subsUpdates);
-//          }
-//          subsUpdates.getValue().add(update);
-//        }
-//      }
-//    }
-//
-//    Map<Integer, BrokerMessage> localLst = new TreeMap<Integer, BrokerMessage>();
-//    for (Map.Entry<CachingSubscriptionDetails, Vector<MALUpdate>> entry : subsList.values())
-//    {
-//      entry.getKey().populateNotify(srcHdr, transactionId, localLst, entry.getValue());
-//    }
-//
-//    // zip through list and insert our details
-//    if (!localLst.isEmpty())
-//    {
-//      lst.addAll(localLst.values());
-//    }
-//  }
   @Override
   public void removeSubscriptions(String consumer, IdentifierList subscriptions)
   {
@@ -162,16 +135,6 @@ class CachingSubscriptionSource extends SubscriptionSource
     }
   }
 
-//    protected void updateIds()
-//    {
-//      required.clear();
-//
-//      java.util.Set<Map.Entry<String, CachingConsumerDetails>> values = details.entrySet();
-//      for (Map.Entry<String, CachingConsumerDetails> entry : values)
-//      {
-//        entry.getValue().appendIds(required);
-//      }
-//    }
   private PublishedEntry populatePublishedMap(SubscriptionKey key)
   {
     PublishedEntry publishedEntry = new PublishedEntry();

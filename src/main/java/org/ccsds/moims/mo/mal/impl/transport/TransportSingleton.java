@@ -1,12 +1,19 @@
-/*
- * TransportSingleton.java
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
  *
- * Created on 23 February 2006, 09:36
+ * ----------------------------------------------------------------------------
  */
 package org.ccsds.moims.mo.mal.impl.transport;
 
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -17,21 +24,26 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
 /**
- *
+ * The Transport singleton class stores Transport factories and Transport objects
+ * to speed creation of Transport objects.
  */
 public final class TransportSingleton
 {
-  /** Map of protocol handlers currently used by the application */
-  private static final java.util.Map<String, MALTransportFactory> handlerMap = new java.util.TreeMap<String, MALTransportFactory>();
-  private static final java.util.Map<String, MALTransport> transportMap = new java.util.TreeMap<String, MALTransport>();
+  /** Map of transport factories currently used by the application */
+  private static final Map<String, MALTransportFactory> FACTORY_MAP = new TreeMap<String, MALTransportFactory>();
+  /** Map of transport handlers currently used by the application */
+  private static final Map<String, MALTransport> TRANSPORT_MAP = new TreeMap<String, MALTransport>();
   /** The default protocol to be used by the provider */
-  private static String s_strDefaultProtocol = null;
+  private static String defaultProtocol = null;
 
+  /**
+   * Initialises the transport singleton.
+   */
   public static void init()
   {
-    synchronized (transportMap)
+    synchronized (TRANSPORT_MAP)
     {
-      if (null == s_strDefaultProtocol)
+      if (null == defaultProtocol)
       {
         String dp = System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol");
         if (null == dp)
@@ -39,15 +51,17 @@ public final class TransportSingleton
           dp = "rmi://";
         }
 
-        s_strDefaultProtocol = dp;
+        defaultProtocol = dp;
       }
     }
   }
 
   /**
-   *   Creates an instance of the proctocl handler.
-   *   @param dstUri The Uri location of the provider.
-   *   @return ProtocolHandler The Protocol.
+   * Creates an instance of a Tranport.
+   * @param dstUri The Uri.
+   * @param properties QoS properties.
+   * @return The transport handler.
+   * @throws MALException on error.
    */
   public static MALTransport instance(final URI dstUri, Hashtable properties) throws MALException
   {
@@ -55,24 +69,37 @@ public final class TransportSingleton
 
     if ((null != dstUri) && (null != dstUri.getValue()))
     {
-      return _instance(dstUri.getValue(), properties);
+      return internalInstance(dstUri.getValue(), properties);
     }
 
-    return _instance(s_strDefaultProtocol, null);
+    return internalInstance(defaultProtocol, null);
   }
 
+  /**
+   * Creates an instance of a Tranport.
+   * @param dstUri The Uri.
+   * @param properties QoS properties.
+   * @return The transport handler.
+   * @throws MALException on error.
+   */
   public static MALTransport instance(final String dstUri, Hashtable properties) throws MALException
   {
     init();
 
     if (null != dstUri)
     {
-      return _instance(dstUri, properties);
+      return internalInstance(dstUri, properties);
     }
 
-    return _instance(s_strDefaultProtocol, null);
+    return internalInstance(defaultProtocol, null);
   }
 
+  /**
+   * Check to see if a supplied URI would use the supplied Transport.
+   * @param dstUri The Uri.
+   * @param transport The Transport to check.
+   * @return Returns true if dstUri would create the same transport.
+   */
   public static boolean isSameTransport(final URI dstUri, MALTransport transport)
   {
     init();
@@ -85,6 +112,12 @@ public final class TransportSingleton
     return false;
   }
 
+  /**
+   * Check to see if a supplied URI would use the supplied Transport.
+   * @param dstUri The Uri.
+   * @param transport The Transport to check.
+   * @return Returns true if dstUri would create the same transport.
+   */
   public static boolean isSameTransport(final String dstUri, MALTransport transport)
   {
     init();
@@ -92,25 +125,27 @@ public final class TransportSingleton
     if (null != dstUri)
     {
       // lookup for existing transport
-      MALTransport _transport = null;
+      MALTransport existingTransport = null;
 
-      synchronized (transportMap)
+      synchronized (TRANSPORT_MAP)
       {
-        _transport = transportMap.get(getProtocol(dstUri));
+        existingTransport = TRANSPORT_MAP.get(getProtocol(dstUri));
       }
 
-      return transport == _transport;
+      return transport == existingTransport;
     }
 
     return false;
   }
 
   /**
-   *   Creates an instance of the proctocl handler.
-   *   @param dstUri The Uri location of the provider.
-   *   @return ProtocolHandler The Protocol.
+   * Creates an instance of a Tranport.
+   * @param dstUri The Uri.
+   * @param properties QoS properties.
+   * @return  The transport handler.
+   * @throws MALException on error.
    */
-  private static MALTransport _instance(final String dstUri, Hashtable properties) throws MALException
+  private static MALTransport internalInstance(final String dstUri, Hashtable properties) throws MALException
   {
     // get protocol from uri
     String strProtocol = getProtocol(dstUri);
@@ -118,22 +153,22 @@ public final class TransportSingleton
     // lookup for existing transport
     MALTransport transport = null;
 
-    synchronized (transportMap)
+    synchronized (TRANSPORT_MAP)
     {
-      transport = transportMap.get(strProtocol);
+      transport = TRANSPORT_MAP.get(strProtocol);
     }
 
     if (null == transport)
     {
       // lookup for existing handler else create new one and add to map
-      MALTransportFactory ohandler = handlerMap.get(strProtocol);
+      MALTransportFactory ohandler = FACTORY_MAP.get(strProtocol);
       if (null == ohandler)
       {
         ohandler = MALTransportFactory.newInstance(strProtocol);
 
         if (null != ohandler)
         {
-          handlerMap.put(strProtocol, ohandler);
+          FACTORY_MAP.put(strProtocol, ohandler);
         }
         else
         {
@@ -145,9 +180,9 @@ public final class TransportSingleton
 
       if (null != transport)
       {
-        synchronized (transportMap)
+        synchronized (TRANSPORT_MAP)
         {
-          transportMap.put(strProtocol, transport);
+          TRANSPORT_MAP.put(strProtocol, transport);
         }
 
         // check QoS support
@@ -169,11 +204,14 @@ public final class TransportSingleton
     return transport;
   }
 
+  /**
+   * Closes the singleton and closes any open transports.
+   */
   public static void close()
   {
-    synchronized (transportMap)
+    synchronized (TRANSPORT_MAP)
     {
-      for (Entry<String, MALTransport> obj : transportMap.entrySet())
+      for (Entry<String, MALTransport> obj : TRANSPORT_MAP.entrySet())
       {
         try
         {
@@ -185,8 +223,8 @@ public final class TransportSingleton
         }
       }
 
-      transportMap.clear();
-      handlerMap.clear();
+      TRANSPORT_MAP.clear();
+      FACTORY_MAP.clear();
     }
   }
 

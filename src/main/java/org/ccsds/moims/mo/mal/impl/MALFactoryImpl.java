@@ -1,8 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* ----------------------------------------------------------------------------
+ * (C) 2010      European Space Agency
+ *               European Space Operations Centre
+ *               Darmstadt Germany
+ * ----------------------------------------------------------------------------
+ * System       : CCSDS MO MAL Implementation
+ * Author       : cooper_sf
+ *
+ * ----------------------------------------------------------------------------
  */
-
 package org.ccsds.moims.mo.mal.impl;
 
 import java.util.Hashtable;
@@ -14,13 +19,16 @@ import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
 
 /**
- *
- * @author cooper_sf
+ * Implementation of the MALFactory abstract class.
  */
 public class MALFactoryImpl extends MALFactory
 {
   private final MALSecurityManagerFactory securityFactory;
   
+  /**
+   * Constrcutor.
+   * @throws MALException On error.
+   */
   public MALFactoryImpl() throws MALException
   {
     init();
@@ -28,7 +36,7 @@ public class MALFactoryImpl extends MALFactory
     securityFactory = MALSecurityManagerFactory.newInstance();
   }
 
-  public void init()
+  private void init()
   {
     String configFile = System.getProperty("org.ccsds.moims.mo.mal.properties", "org/ccsds/moims/mo/mal.properties");
     java.util.Properties props = StructureHelper.loadProperties(configFile, "org.ccsds.moims.mo.mal.properties");
