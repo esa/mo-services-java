@@ -10,13 +10,13 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker.caching;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Vector;
 import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
@@ -52,10 +52,16 @@ class CachingSubscriptionSource extends SubscriptionSource
   @Override
   public void report()
   {
-    Set values = details.entrySet();
-    Iterator it = values.iterator();
     Logging.logMessage("  START Source ( " + signature + " )");
-    Logging.logMessage("  Required: " + String.valueOf(published.size()));
+    Logging.logMessage("  Expecting: " + String.valueOf(published.size()));
+    Iterator pit = published.entrySet().iterator();
+    while (pit.hasNext())
+    {
+      Entry e = ((Entry) pit.next());
+      Logging.logMessage("           : " + ((SubscriptionKey) e.getKey()));
+      ((PublishedEntry) e.getValue()).report();
+    }
+    Iterator it = details.entrySet().iterator();
     while (it.hasNext())
     {
       ((CachingConsumerDetails) ((Entry) it.next()).getValue()).report();
@@ -70,34 +76,27 @@ class CachingSubscriptionSource extends SubscriptionSource
           MALBrokerBindingImpl binding)
   {
     CachingConsumerDetails det = getDetails(consumer, binding);
-    det.addSubscription(published, subscription);
+    det.addSubscription(srcHdr, published, subscription);
   }
 
   @Override
   public void populateNotifyList(MessageHeader srcHdr, List<BrokerMessage> lst, UpdateList updateList)
   {
+    Logging.logMessage("INFO: Checking CacheSubSource");
     int length = updateList.size();
     for (int i = 0; i < length; ++i)
     {
       Update update = (Update) updateList.get(i);
       SubscriptionKey key = new SubscriptionKey(update.getKey());
-      boolean onlyForAll = update.getUpdateType().equals(UpdateType.UPDATE);
-
+  
       PublishedEntry publishedEntry = published.get(key);
       if (null == publishedEntry)
       {
         publishedEntry = populatePublishedMap(key);
       }
 
-      Vector<CachingSubscriptionDetails> subsList = null;
-      if (onlyForAll)
-      {
-        subsList = publishedEntry.onAll;
-      }
-      else
-      {
-        subsList = publishedEntry.onChange;
-      }
+      Collection<CachingSubscriptionDetails> subsList
+              = publishedEntry.getDetailSet(!update.getUpdateType().equals(UpdateType.UPDATE));
 
       for (CachingSubscriptionDetails subscriptionDetails : subsList)
       {
@@ -107,7 +106,7 @@ class CachingSubscriptionSource extends SubscriptionSource
 
     for (CachingConsumerDetails entry : details.values())
     {
-      entry.getNotifyMessage(srcHdr, transactionId, lst);
+      entry.getNotifyMessage(srcHdr, lst);
     }
   }
 

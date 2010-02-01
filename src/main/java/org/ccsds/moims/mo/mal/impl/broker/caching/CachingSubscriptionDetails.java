@@ -43,10 +43,27 @@ class CachingSubscriptionDetails
     this.subscriptionId = subscriptionId;
   }
 
+  public String getSubscriptionId()
+  {
+    return subscriptionId;
+  }
+
   public void report()
   {
     Logging.logMessage("      START Subscription ( " + subscriptionId + " )");
     Logging.logMessage("      Required: " + String.valueOf(required.size()));
+    for (SubscriptionKey key : required)
+    {
+      Logging.logMessage("              : Rqd : " + key);
+    }
+    for (SubscriptionKey key : onAll)
+    {
+      Logging.logMessage("              : All : " + key);
+    }
+    for (SubscriptionKey key : onChange)
+    {
+      Logging.logMessage("              : Chg : " + key);
+    }
     Logging.logMessage("      END Subscription ( " + subscriptionId + " )");
   }
 
@@ -88,6 +105,7 @@ class CachingSubscriptionDetails
         else
         {
           onAll.add(key);
+          onChange.add(key);
         }
 
         for (Map.Entry<SubscriptionKey, PublishedEntry> subKey : published.entrySet())
@@ -96,11 +114,12 @@ class CachingSubscriptionDetails
           {
             if (bOnlyOnChange)
             {
-              subKey.getValue().onChange.add(this);
+              subKey.getValue().addToOnChange(parent.getConsumerId(), subscriptionId, this);
             }
             else
             {
-              subKey.getValue().onAll.add(this);
+              subKey.getValue().addToOnAll(parent.getConsumerId(), subscriptionId, this);
+              subKey.getValue().addToOnChange(parent.getConsumerId(), subscriptionId, this);
             }
           }
         }
@@ -112,19 +131,22 @@ class CachingSubscriptionDetails
   {
     if (matchedUpdate(key, onChange))
     {
-      publishedEntry.onChange.add(this);
+      publishedEntry.addToOnChange(parent.getConsumerId(), subscriptionId, this);
     }
     else
     {
       if (matchedUpdate(key, onAll))
       {
-        publishedEntry.onAll.add(this);
+        publishedEntry.addToOnAll(parent.getConsumerId(), subscriptionId, this);
+        publishedEntry.addToOnChange(parent.getConsumerId(), subscriptionId, this);
       }
     }
   }
 
   public void populateNotify(Update update)
   {
+    Logging.logMessage("INFO: Checking CacheSubDetails");
+
     if (null == notifySubscriptionUpdate)
     {
       notifySubscriptionUpdate = new SubscriptionUpdate(new Identifier(subscriptionId), new UpdateList());
@@ -143,8 +165,7 @@ class CachingSubscriptionDetails
   {
     for (PublishedEntry ent : published.values())
     {
-      ent.onAll.remove(this);
-      ent.onChange.remove(this);
+      ent.remove(parent.getConsumerId(), this.subscriptionId);
     }
   }
 
