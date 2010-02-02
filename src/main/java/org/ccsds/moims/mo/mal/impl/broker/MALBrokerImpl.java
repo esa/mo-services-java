@@ -178,7 +178,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker
     BaseBrokerHandler broker = null;
     try
     {
-      Class cls = ClassLoader.getSystemClassLoader().loadClass(clsName);
+      Class cls = Thread.currentThread().getContextClassLoader().loadClass(clsName);
 
       broker = (BaseBrokerHandler) cls.newInstance();
       Logging.logMessage("INFO: Creating internal MAL Broker handler: " + cls.getSimpleName());
