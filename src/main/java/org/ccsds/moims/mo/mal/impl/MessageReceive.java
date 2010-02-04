@@ -40,6 +40,7 @@ import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.security.MALSecurityManager;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
@@ -459,15 +460,14 @@ public class MessageReceive
 
   private void internalHandleNotify(MALMessage msg)
   {
-    MALOperation operation = MALFactory.lookupOperation(msg.getHeader().getArea(),
-            msg.getHeader().getService(),
-            msg.getHeader().getOperation());
+    final MessageHeader hdr = msg.getHeader();
+    MALOperation operation = MALFactory.lookupOperation(hdr.getArea(), hdr.getService(), hdr.getOperation());
 
-    if (msg.getHeader().isError())
+    if (hdr.isError())
     {
       if (msg.getBody() instanceof StandardError)
       {
-        Map<String, MALInteractionListener> lists = pmap.getNotifyListenersAndRemove(msg.getHeader().getURIto());
+        Map<String, MALInteractionListener> lists = pmap.getNotifyListenersAndRemove(hdr.getURIto());
 
         if (null != lists)
         {
@@ -476,7 +476,7 @@ public class MessageReceive
           {
             try
             {
-              e.getValue().errorReceived(operation, msg.getHeader(), err);
+              e.getValue().errorReceived(operation, hdr, err);
             }
             catch (MALException ex)
             {
@@ -486,7 +486,7 @@ public class MessageReceive
         }
         else
         {
-          Logging.logMessage("ERROR: Unknown notify consumer requested: " + msg.getHeader().getURIto());
+          Logging.logMessage("ERROR: Unknown notify consumer requested: " + hdr.getURIto());
         }
       }
     }
@@ -496,13 +496,13 @@ public class MessageReceive
       for (int i = 0; i < subs.size(); i++)
       {
         SubscriptionUpdate update = subs.get(i);
-        MALInteractionListener rcv = pmap.getNotifyListener(msg.getHeader().getURIto(), update.getSubscriptionId());
+        MALInteractionListener rcv = pmap.getNotifyListener(hdr.getURIto(), update.getSubscriptionId());
 
         if (null != rcv)
         {
           try
           {
-            rcv.notifyReceived(operation, msg.getHeader(), update);
+            rcv.notifyReceived(operation, hdr, update);
           }
           catch (MALException ex)
           {
@@ -511,7 +511,7 @@ public class MessageReceive
         }
         else
         {
-          Logging.logMessage("ERROR: Unknown notify consumer requested: " + msg.getHeader().getURIto());
+          Logging.logMessage("ERROR: Unknown notify consumer requested: " + hdr.getURIto());
         }
       }
     }

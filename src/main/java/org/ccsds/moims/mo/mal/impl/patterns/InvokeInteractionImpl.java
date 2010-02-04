@@ -34,7 +34,10 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
    * @param internalTransId Internal transaction identifier.
    * @param msg The source message.
    */
-  public InvokeInteractionImpl(MessageSend sender, Address address, Identifier internalTransId, MALMessage msg)
+  public InvokeInteractionImpl(MessageSend sender,
+          Address address,
+          Identifier internalTransId,
+          MALMessage msg) throws MALException
   {
     super(sender, address, internalTransId, msg);
   }

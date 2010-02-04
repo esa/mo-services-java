@@ -31,7 +31,10 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
    * @param internalTransId Internal transaction identifier.
    * @param msg The source message.
    */
-  public SubmitInteractionImpl(MessageSend sender, Address address, Identifier internalTransId, MALMessage msg)
+  public SubmitInteractionImpl(MessageSend sender,
+          Address address,
+          Identifier internalTransId,
+          MALMessage msg) throws MALException
   {
     super(sender, address, internalTransId, msg);
   }

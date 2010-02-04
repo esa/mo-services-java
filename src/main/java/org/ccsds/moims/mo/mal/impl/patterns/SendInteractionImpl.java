@@ -10,6 +10,7 @@
  */
 package org.ccsds.moims.mo.mal.impl.patterns;
 
+import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -24,7 +25,7 @@ public class SendInteractionImpl extends BaseInteractionImpl implements MALInter
    * @param sender Used to return the messages.
    * @param msg The source message.
    */
-  public SendInteractionImpl(MessageSend sender, MALMessage msg)
+  public SendInteractionImpl(MessageSend sender, MALMessage msg) throws MALException
   {
     super(sender, null, null, msg);
   }

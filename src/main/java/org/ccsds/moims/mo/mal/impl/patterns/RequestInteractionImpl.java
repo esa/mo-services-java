@@ -32,7 +32,10 @@ public class RequestInteractionImpl extends BaseInteractionImpl implements MALRe
    * @param internalTransId Internal transaction identifier.
    * @param msg The source message.
    */
-  public RequestInteractionImpl(MessageSend sender, Address address, Identifier internalTransId, MALMessage msg)
+  public RequestInteractionImpl(MessageSend sender,
+          Address address,
+          Identifier internalTransId,
+          MALMessage msg) throws MALException
   {
     super(sender, address, internalTransId, msg);
   }

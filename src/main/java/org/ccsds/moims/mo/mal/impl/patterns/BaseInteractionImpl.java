@@ -13,6 +13,7 @@ package org.ccsds.moims.mo.mal.impl.patterns;
 import java.util.HashMap;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALFactory;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
@@ -22,6 +23,7 @@ import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.structures.StandardError;
+import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
  * Base class for interactions.
@@ -35,7 +37,7 @@ public abstract class BaseInteractionImpl implements MALInteraction
   private final MALOperation operation;
   private final HashMap qosProperties = new HashMap();
 
-  BaseInteractionImpl(MessageSend sender, Address address, Identifier internalTransId, MALMessage msg)
+  BaseInteractionImpl(MessageSend sender, Address address, Identifier internalTransId, MALMessage msg) throws MALException
   {
     this.sender = sender;
     this.address = address;
@@ -44,6 +46,13 @@ public abstract class BaseInteractionImpl implements MALInteraction
     this.operation = MALFactory.lookupOperation(msg.getHeader().getArea(),
             msg.getHeader().getService(),
             msg.getHeader().getOperation());
+
+    if (null == this.operation)
+    {
+      throw new MALException(new StandardError(MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER,
+              new Union(msg.getHeader().getArea()
+              + "::" + msg.getHeader().getService() + "::" + msg.getHeader().getOperation())));
+    }
   }
 
   @Override

@@ -34,7 +34,10 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    * @param internalTransId Internal transaction identifier.
    * @param msg The source message.
    */
-  public ProgressInteractionImpl(MessageSend sender, Address address, Identifier internalTransId, MALMessage msg)
+  public ProgressInteractionImpl(MessageSend sender,
+          Address address,
+          Identifier internalTransId,
+          MALMessage msg) throws MALException
   {
     super(sender, address, internalTransId, msg);
   }
