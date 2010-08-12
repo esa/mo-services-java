@@ -22,9 +22,7 @@ import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublisher;
-import org.ccsds.moims.mo.mal.provider.MALSubscriberEventListener;
 import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -195,51 +193,6 @@ class MALPublisherImpl implements MALPublisher
       // this means that we haven't successfully registered, need to throw an exception
       throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
     }
-  }
-
-  /**
-   *
-   * @param keys
-   * @throws MALException
-   */
-  @Override
-  public void addPublishedEntityKeys(EntityKey[] keys) throws MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  /**
-   *
-   * @param keys
-   * @throws MALException
-   */
-  @Override
-  public void removePublishedEntityKeys(EntityKey[] keys) throws MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  /**
-   *
-   * @param entityKey
-   * @return
-   * @throws MALException
-   */
-  @Override
-  public boolean isListened(EntityKey entityKey) throws MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  /**
-   *
-   * @param listener
-   * @throws MALException
-   */
-  @Override
-  public void setSubscriberEventListener(MALSubscriberEventListener listener) throws MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   /**
