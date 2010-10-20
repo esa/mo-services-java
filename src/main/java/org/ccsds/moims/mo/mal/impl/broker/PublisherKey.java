@@ -10,87 +10,32 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
-import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
-import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
 import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.MessageHeader;
 
 /**
- * Simple class that represents a MAL subscription.
+ * Simple class that represents a MAL update key.
  */
-public final class SubscriptionKey implements Comparable
+public final class PublisherKey implements Comparable
 {
   /**
    * Match all constant.
    */
   public static final String ALL_ID = "*";
   private static final int HASH_MAGIC_NUMBER = 47;
-  private final String domain;
-  private final boolean andSubDomains;
-  private final String area;
-  private final String service;
-  private final String operation;
-  private final String key1;
-  private final String key2;
-  private final String key3;
-  private final String key4;
+  protected final String key1;
+  protected final String key2;
+  protected final String key3;
+  protected final String key4;
 
   /**
    * Constructor.
    * @param lst Entity key.
    */
-  public SubscriptionKey(MessageHeader hdr, EntityRequest rqst, EntityKey lst)
+  public PublisherKey(EntityKey lst)
   {
     super();
 
-    String tmpDomain = "";
-    boolean tmpAndSubDomains = false;
-
-    DomainIdentifier mdomain = hdr.getDomain();
-    DomainIdentifier sdomain = rqst.getSubDomain();
-    if ((null != mdomain) || (null != sdomain))
-    {
-      StringBuilder buf = new StringBuilder();
-      if ((null != mdomain) && (0 < mdomain.size()))
-      {
-        buf.append(StructureHelper.domainToString(mdomain));
-      }
-
-      if ((null != sdomain) && (0 < sdomain.size()))
-      {
-        int i = 0;
-        int e = sdomain.size();
-        while (i < e)
-        {
-          String id = String.valueOf((Identifier) sdomain.get(i));
-          if (!ALL_ID.equals(id))
-          {
-            if (0 < buf.length())
-            {
-              buf.append('.');
-            }
-
-            buf.append(id);
-          }
-          else
-          {
-            tmpAndSubDomains = true;
-          }
-
-          ++i;
-        }
-      }
-
-      tmpDomain = buf.toString();
-    }
-
-    this.domain = tmpDomain;
-    this.andSubDomains = tmpAndSubDomains;
-    this.area = getIdValueOrWildcard(hdr.getArea(), rqst.isAllAreas());
-    this.service = getIdValueOrWildcard(hdr.getService(), rqst.isAllServices());
-    this.operation = getIdValueOrWildcard(hdr.getOperation(), rqst.isAllOperations());
     this.key1 = getIdValue(lst.getFirstSubKey());
     this.key2 = getIdValue(lst.getSecondSubKey());
     this.key3 = getIdValue(lst.getThirdSubKey());
@@ -108,7 +53,7 @@ public final class SubscriptionKey implements Comparable
     {
       return false;
     }
-    final SubscriptionKey other = (SubscriptionKey) obj;
+    final PublisherKey other = (PublisherKey) obj;
     if ((this.key1 == null) ? (other.key1 != null) : !this.key1.equals(other.key1))
     {
       return false;
@@ -142,7 +87,7 @@ public final class SubscriptionKey implements Comparable
   @Override
   public int compareTo(Object o)
   {
-    SubscriptionKey rhs = (SubscriptionKey) o;
+    PublisherKey rhs = (PublisherKey) o;
     int rv = compareSubkey(this.key1, rhs.key1);
     if (0 == rv)
     {
@@ -165,48 +110,29 @@ public final class SubscriptionKey implements Comparable
    * @param rhs Key to match against.
    * @return True if matches.
    */
-  public boolean matches(UpdateKey rhs)
+  public boolean matches(EntityKey rhs)
   {
-    boolean matched = rhs.domain.startsWith(this.domain);
-
-    if (matched)
+    if (null != rhs)
     {
-      if ((this.domain.length() < rhs.domain.length()))
-      {
-        matched = this.andSubDomains;
-      }
+      boolean matched = matchedSubkey(key1, getIdValue(rhs.getFirstSubKey()));
 
       if (matched)
       {
-        matched = matchedSubkey(area, rhs.area);
+        matched = matchedSubkey(key2, getIdValue(rhs.getSecondSubKey()));
         if (matched)
         {
-          matched = matchedSubkey(service, rhs.service);
+          matched = matchedSubkey(key3, getIdValue(rhs.getThirdSubKey()));
           if (matched)
           {
-            matched = matchedSubkey(operation, rhs.operation);
-            if (matched)
-            {
-              matched = matchedSubkey(key1, rhs.key1);
-              if (matched)
-              {
-                matched = matchedSubkey(key2, rhs.key2);
-                if (matched)
-                {
-                  matched = matchedSubkey(key3, rhs.key3);
-                  if (matched)
-                  {
-                    matched = matchedSubkey(key4, rhs.key4);
-                  }
-                }
-              }
-            }
+            matched = matchedSubkey(key4, getIdValue(rhs.getFourthSubKey()));
           }
         }
       }
+
+      return matched;
     }
 
-    return matched;
+    return false;
   }
 
   private int compareSubkey(String myKeyPart, String theirKeyPart)
@@ -254,16 +180,6 @@ public final class SubscriptionKey implements Comparable
     return myKeyPart.equals(theirKeyPart);
   }
 
-  private static String getIdValueOrWildcard(Identifier id, boolean isWildcard)
-  {
-    if (isWildcard)
-    {
-      return ALL_ID;
-    }
-
-    return getIdValue(id);
-  }
-
   private static String getIdValue(Identifier id)
   {
     if ((null != id) && (null != id.getValue()))
@@ -279,18 +195,6 @@ public final class SubscriptionKey implements Comparable
   {
     StringBuilder buf = new StringBuilder();
     buf.append('[');
-    buf.append(this.domain);
-    if(this.andSubDomains)
-    {
-      buf.append(".*");
-    }
-    buf.append(':');
-    buf.append(this.area);
-    buf.append(':');
-    buf.append(this.service);
-    buf.append(':');
-    buf.append(this.operation);
-    buf.append(':');
     buf.append(this.key1);
     buf.append('.');
     buf.append(this.key2);

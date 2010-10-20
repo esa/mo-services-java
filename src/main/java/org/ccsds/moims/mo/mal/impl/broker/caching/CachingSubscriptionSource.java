@@ -10,7 +10,6 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker.caching;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -25,20 +24,17 @@ import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.Update;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
-import org.ccsds.moims.mo.mal.structures.UpdateType;
 
 /**
- * A CachingSubscriptionSource is keyed on Area, Service and Operation,
- * it contains one to many CachingConsumerDetails.
+ * A CachingSubscriptionSource is currently broken.
  */
 class CachingSubscriptionSource extends SubscriptionSource
 {
   private final Map<SubscriptionKey, PublishedEntry> published = new TreeMap<SubscriptionKey, PublishedEntry>();
   private final Map<String, CachingConsumerDetails> details = new TreeMap<String, CachingConsumerDetails>();
 
-  public CachingSubscriptionSource(MessageHeader hdr)
+  public CachingSubscriptionSource(MessageHeader hdr, MALBrokerBindingImpl binding)
   {
     super(hdr);
   }
@@ -52,6 +48,7 @@ class CachingSubscriptionSource extends SubscriptionSource
   @Override
   public void report()
   {
+    /**
     Logging.logMessage("  START Source ( " + signature + " )");
     Logging.logMessage("  Expecting: " + String.valueOf(published.size()));
     Iterator pit = published.entrySet().iterator();
@@ -67,22 +64,29 @@ class CachingSubscriptionSource extends SubscriptionSource
       ((CachingConsumerDetails) ((Entry) it.next()).getValue()).report();
     }
     Logging.logMessage("  END Source ( " + signature + " )");
+     **/
   }
 
   @Override
-  public void addSubscription(MessageHeader srcHdr,
-          String consumer,
-          Subscription subscription,
-          MALBrokerBindingImpl binding)
+  public String getSignature()
   {
+    return "";
+  }
+
+  @Override
+  public void addSubscription(MessageHeader srcHdr, Subscription subscription)
+  {
+    /**
     CachingConsumerDetails det = getDetails(consumer, binding);
     det.addSubscription(srcHdr, published, subscription);
+     **/
   }
 
   @Override
   public void populateNotifyList(MessageHeader srcHdr, List<BrokerMessage> lst, UpdateList updateList)
   {
     Logging.logMessage("INFO: Checking CacheSubSource");
+    /**
     int length = updateList.size();
     for (int i = 0; i < length; ++i)
     {
@@ -108,11 +112,13 @@ class CachingSubscriptionSource extends SubscriptionSource
     {
       entry.getNotifyMessage(srcHdr, lst);
     }
+     **/
   }
 
   @Override
-  public void removeSubscriptions(String consumer, IdentifierList subscriptions)
+  public void removeSubscriptions(IdentifierList subscriptions)
   {
+    /**
     CachingConsumerDetails det = getDetails(consumer, null);
     // when a consumer deregisters we need to remove the deregistered Subscriptions from the published map
     det.removeSubscriptions(subscriptions, published);
@@ -120,11 +126,13 @@ class CachingSubscriptionSource extends SubscriptionSource
     {
       details.remove(consumer);
     }
+     **/
   }
 
   @Override
-  public void removeAllSubscriptions(String consumer)
+  public void removeAllSubscriptions()
   {
+    /**
     CachingConsumerDetails det = getDetails(consumer, null);
     // when a copnsumer deregisters we need to remove the deregistered Subscriptions from the published map
     det.removeAllSubscriptions(published);
@@ -132,6 +140,7 @@ class CachingSubscriptionSource extends SubscriptionSource
     {
       details.remove(consumer);
     }
+     **/
   }
 
   private PublishedEntry populatePublishedMap(SubscriptionKey key)

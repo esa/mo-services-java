@@ -35,7 +35,6 @@ public abstract class SubscriptionSource
   protected final Identifier service;
   protected final Identifier operation;
   protected final Byte version;
-  protected final String signature;
 
   /**
    * Constructor.
@@ -53,20 +52,16 @@ public abstract class SubscriptionSource
     this.service = hdr.getService();
     this.operation = hdr.getOperation();
     this.version = hdr.getVersion();
-    this.signature = BaseBrokerHandler.makeSig(hdr);
   }
 
   /**
    * Returns the signature for this source.
    * @return signature.
    */
-  public String getSignature()
-  {
-    return signature;
-  }
+  public abstract String getSignature();
 
   /**
-   * Determins if this source is active.
+   * Determines if this source is active.
    * @return true if this source is active.
    */
   public abstract boolean active();
@@ -79,14 +74,9 @@ public abstract class SubscriptionSource
   /**
    * Adds a subscription to this source.
    * @param srcHdr Source message.
-   * @param consumer consumer signature.
    * @param subscription New subscription.
-   * @param binding Broker binding.
    */
-  public abstract void addSubscription(MessageHeader srcHdr,
-          String consumer,
-          Subscription subscription,
-          MALBrokerBindingImpl binding);
+  public abstract void addSubscription(MessageHeader srcHdr, Subscription subscription);
 
   /**
    * Adds messages to the list of notify messages to be sent out.
@@ -98,14 +88,12 @@ public abstract class SubscriptionSource
   
   /**
    * Removes a subscription.
-   * @param consumer Consumer identifier.
    * @param subscriptions List of subscription identifiers to remove.
    */
-  public abstract void removeSubscriptions(String consumer, IdentifierList subscriptions);
+  public abstract void removeSubscriptions(IdentifierList subscriptions);
 
   /**
    * Removes all subscriptions for a consumer.
-   * @param consumer Consumer identifier.
    */
-  public abstract void removeAllSubscriptions(String consumer);
+  public abstract void removeAllSubscriptions();
 }

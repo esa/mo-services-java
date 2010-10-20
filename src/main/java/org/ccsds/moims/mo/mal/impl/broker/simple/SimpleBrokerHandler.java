@@ -11,6 +11,7 @@
 package org.ccsds.moims.mo.mal.impl.broker.simple;
 
 import org.ccsds.moims.mo.mal.impl.broker.BaseBrokerHandler;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionSource;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 
@@ -25,8 +26,8 @@ public class SimpleBrokerHandler extends BaseBrokerHandler
   }
 
   @Override
-  protected SubscriptionSource createEntry(MessageHeader hdr)
+  protected SubscriptionSource createEntry(MessageHeader hdr, MALBrokerBindingImpl binding)
   {
-    return new SimpleSubscriptionSource(hdr);
+    return new SimpleSubscriptionSource(hdr, binding);
   }
 }

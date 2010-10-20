@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.broker.UpdateKey;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
@@ -72,7 +73,7 @@ class SimpleSubscriptionDetails
     return required.isEmpty();
   }
 
-  void setIds(EntityRequestList lst)
+  void setIds(MessageHeader srcHdr, EntityRequestList lst)
   {
     required.clear();
     onAll.clear();
@@ -85,7 +86,7 @@ class SimpleSubscriptionDetails
       for (int i = 0; i < keyList.size(); i++)
       {
         EntityKey id = (EntityKey) keyList.get(i);
-        SubscriptionKey key = new SubscriptionKey(id);
+        SubscriptionKey key = new SubscriptionKey(srcHdr, rqst, id);
         required.add(key);
         if (bOnChange)
         {
@@ -99,7 +100,7 @@ class SimpleSubscriptionDetails
     }
   }
 
-  BrokerMessage.NotifyMessage populateNotifyList(UpdateList updateList)
+  BrokerMessage.NotifyMessage populateNotifyList(MessageHeader srcHdr, String srcDomainId, UpdateList updateList)
   {
     Logging.logMessage("INFO: Checking SimSubDetails");
 
@@ -107,7 +108,7 @@ class SimpleSubscriptionDetails
     for (int i = 0; i < updateList.size(); ++i)
     {
       Update update = (Update) updateList.get(i);
-      populateNotifyList(sendList, update);
+      populateNotifyList(srcHdr, srcDomainId, sendList, update);
     }
 
     BrokerMessage.NotifyMessage retVal = null;
@@ -127,9 +128,9 @@ class SimpleSubscriptionDetails
     return retVal;
   }
 
-  private void populateNotifyList(UpdateList lst, Update update)
+  private void populateNotifyList(MessageHeader srcHdr, String srcDomainId, UpdateList lst, Update update)
   {
-    SubscriptionKey key = new SubscriptionKey(update.getKey());
+    UpdateKey key = new UpdateKey(srcHdr, srcDomainId, update.getKey());
     Logging.logMessage("INFO: Checking " + key);
     boolean updateRequired = matchedUpdate(key, onAll);
 
@@ -145,7 +146,7 @@ class SimpleSubscriptionDetails
     }
   }
 
-  private static boolean matchedUpdate(SubscriptionKey key, Set<SubscriptionKey> searchSet)
+  private static boolean matchedUpdate(UpdateKey key, Set<SubscriptionKey> searchSet)
   {
     boolean matched = false;
     for (SubscriptionKey subscriptionKey : searchSet)

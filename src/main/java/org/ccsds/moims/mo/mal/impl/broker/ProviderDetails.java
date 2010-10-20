@@ -15,7 +15,11 @@ import java.util.TreeSet;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
+import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
+import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
+import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
+import org.ccsds.moims.mo.mal.structures.MessageHeader;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.Update;
@@ -25,7 +29,8 @@ final class ProviderDetails
 {
   private final String uri;
   private final QoSLevel qosLevel;
-  private final Set<SubscriptionKey> keySet = new TreeSet<SubscriptionKey>();
+  private final Set<PublisherKey> keySet = new TreeSet<PublisherKey>();
+  private DomainIdentifier domain = null;
 
   ProviderDetails(String uri, QoSLevel qosLevel)
   {
@@ -42,46 +47,57 @@ final class ProviderDetails
   void report()
   {
     Logging.logMessage("  START Provider ( " + uri + " )");
-    for (SubscriptionKey key : keySet)
+    Logging.logMessage("    Domain: " + StructureHelper.domainToString(domain));
+    for (PublisherKey key : keySet)
     {
-      Logging.logMessage("  Allowed: " + key);
+      Logging.logMessage("   Allowed: " + key);
     }
     Logging.logMessage("  END Provider ( " + uri + " )");
   }
 
-  void setKeyList(EntityKeyList l)
+  void setKeyList(MessageHeader hdr, EntityKeyList l)
   {
+    domain = hdr.getDomain();
     keySet.clear();
     for (int i = 0; i < l.size(); i++)
     {
-      keySet.add(new SubscriptionKey(l.get(i)));
+      keySet.add(new PublisherKey(l.get(i)));
     }
   }
 
-  void checkPublish(UpdateList updateList) throws MALException
+  void checkPublish(MessageHeader hdr, UpdateList updateList) throws MALException
   {
-    EntityKeyList lst = new EntityKeyList();
-    for (int i = 0; i < updateList.size(); i++)
+    if (StructureHelper.isSubDomainOf(domain, hdr.getDomain()))
     {
-      Update update = (Update) updateList.get(i);
-      SubscriptionKey publishKey = new SubscriptionKey(update.getKey());
-      boolean matched = false;
-      for (SubscriptionKey key : keySet)
+      EntityKeyList lst = new EntityKeyList();
+      for (int i = 0; i < updateList.size(); i++)
       {
-        if (key.matches(publishKey))
+        Update update = (Update) updateList.get(i);
+        EntityKey updateKey = update.getKey();
+        boolean matched = false;
+        for (PublisherKey key : keySet)
         {
-          matched = true;
-          break;
+          if (key.matches(updateKey))
+          {
+            matched = true;
+            break;
+          }
+        }
+        if (!matched)
+        {
+          lst.add(updateKey);
         }
       }
-      if (!matched)
+      if (0 < lst.size())
       {
-        lst.add(update.getKey());
+        Logging.logMessage("ERR : Provider not allowed to publish some keys");
+        throw new MALException(new StandardError(MALHelper.UNKNOWN_ERROR_NUMBER, lst));
       }
     }
-    if (0 < lst.size())
+    else
     {
-      throw new MALException(new StandardError(MALHelper.UNKNOWN_ERROR_NUMBER, lst));
+      Logging.logMessage("ERR : Provider not allowed to publish to the domain");
+      throw new MALException(new StandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null));
     }
   }
 }

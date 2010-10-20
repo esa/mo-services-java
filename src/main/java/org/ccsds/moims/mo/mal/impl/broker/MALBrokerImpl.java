@@ -17,7 +17,6 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
-import org.ccsds.moims.mo.mal.impl.AddressKey;
 import org.ccsds.moims.mo.mal.impl.broker.simple.SimpleBrokerHandler;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
@@ -35,7 +34,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 public class MALBrokerImpl extends MALClose implements MALBroker
 {
   private final MALBrokerBindingImpl[] bindings = new MALBrokerBindingImpl[0];
-  private final Map<AddressKey, BaseBrokerHandler> brokerMap = new TreeMap<AddressKey, BaseBrokerHandler>();
+  private final Map<BrokerKey, BaseBrokerHandler> brokerMap = new TreeMap<BrokerKey, BaseBrokerHandler>();
 
   MALBrokerImpl(MALClose parent) throws MALException
   {
@@ -89,9 +88,9 @@ public class MALBrokerImpl extends MALClose implements MALBroker
   }
 
   /**
-   * Removes a consumer from this broker for a setr of suscriptions.
+   * Removes a consumer from this broker for a set of subscriptions.
    * @param hdr Source Message.
-   * @param ids Subcription ids to remove.
+   * @param ids Subscription ids to remove.
    */
   public void removeConsumer(MessageHeader hdr, IdentifierList ids)
   {
@@ -158,7 +157,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker
 
   private BaseBrokerHandler getHandler(MessageHeader hdr)
   {
-    AddressKey key = new AddressKey(hdr);
+    BrokerKey key = new BrokerKey(hdr);
 
     BaseBrokerHandler rv = brokerMap.get(key);
 

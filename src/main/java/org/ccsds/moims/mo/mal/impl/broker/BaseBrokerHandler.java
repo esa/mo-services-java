@@ -10,10 +10,13 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.impl.StringPair;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
@@ -29,7 +32,7 @@ import org.ccsds.moims.mo.mal.structures.UpdateList;
  */
 public abstract class BaseBrokerHandler
 {
-  private final Map<String, ProviderDetails> providerMap = new TreeMap<String, ProviderDetails>();
+  private final Map<StringPair, ProviderDetails> providerMap = new TreeMap<StringPair, ProviderDetails>();
   private final Map<String, SubscriptionSource> consumerMap = new TreeMap<String, SubscriptionSource>();
 
   /**
@@ -71,7 +74,7 @@ public abstract class BaseBrokerHandler
     {
       if (lst != null)
       {
-        getEntry(hdr, true).addSubscription(hdr, hdr.getURIfrom().getValue(), lst, binding);
+        getEntry(hdr, true, binding).addSubscription(hdr, lst);
       }
     }
     report();
@@ -85,16 +88,16 @@ public abstract class BaseBrokerHandler
   public synchronized void addProvider(MessageHeader hdr, EntityKeyList providerKeyList)
   {
     report();
-    ProviderDetails details = providerMap.get(hdr.getURIfrom().getValue());
+    ProviderDetails details = providerMap.get(new StringPair(hdr.getURIfrom().getValue(), StructureHelper.domainToString(hdr.getDomain())));
 
     if (null == details)
     {
       details = new ProviderDetails(hdr.getURIfrom().getValue(), hdr.getQoSlevel());
-      providerMap.put(hdr.getURIfrom().getValue(), details);
+      providerMap.put(new StringPair(hdr.getURIfrom().getValue(), StructureHelper.domainToString(hdr.getDomain())), details);
       Logging.logMessage("New publisher registering: " + hdr);
     }
 
-    details.setKeyList(providerKeyList);
+    details.setKeyList(hdr, providerKeyList);
 
     report();
   }
@@ -106,7 +109,7 @@ public abstract class BaseBrokerHandler
    */
   public QoSLevel getProviderQoSLevel(MessageHeader hdr)
   {
-    ProviderDetails details = providerMap.get(hdr.getURIfrom().getValue());
+    ProviderDetails details = providerMap.get(new StringPair(hdr.getURIfrom().getValue(), StructureHelper.domainToString(hdr.getDomain())));
 
     if (null != details)
     {
@@ -126,25 +129,26 @@ public abstract class BaseBrokerHandler
   public synchronized java.util.List<BrokerMessage> createNotify(MessageHeader hdr,
           UpdateList updateList) throws MALException
   {
-    ProviderDetails details = providerMap.get(hdr.getURIfrom().getValue());
+    Logging.logMessage("INFO: Checking BaseBrokerHandler");
+    ProviderDetails details = providerMap.get(new StringPair(hdr.getURIfrom().getValue(), StructureHelper.domainToString(hdr.getDomain())));
 
     if (null == details)
     {
+      Logging.logMessage("ERR : Provider not known");
       throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
     }
 
-    details.checkPublish(updateList);
+    details.checkPublish(hdr, updateList);
 
     java.util.List<BrokerMessage> lst = new java.util.LinkedList<BrokerMessage>();
 
     if (updateList != null)
     {
-      Logging.logMessage("INFO: Checking BaseBrokerHandler");
-      SubscriptionSource ent = getEntry(hdr, true);
-
-      if (null != ent)
+      Set<Map.Entry<String, SubscriptionSource>> values = consumerMap.entrySet();
+      Iterator<Map.Entry<String, SubscriptionSource>> it = values.iterator();
+      while (it.hasNext())
       {
-        ent.populateNotifyList(hdr, lst, updateList);
+        it.next().getValue().populateNotifyList(hdr, lst, updateList);
       }
     }
 
@@ -158,7 +162,7 @@ public abstract class BaseBrokerHandler
   public synchronized void removeProvider(MessageHeader hdr)
   {
     report();
-    providerMap.remove(hdr.getURIfrom().getValue());
+    providerMap.remove(new StringPair(hdr.getURIfrom().getValue(), StructureHelper.domainToString(hdr.getDomain())));
     report();
   }
 
@@ -174,10 +178,10 @@ public abstract class BaseBrokerHandler
     {
       if ((lst != null) && (0 < lst.size()))
       {
-        SubscriptionSource ent = getEntry(hdr, false);
+        SubscriptionSource ent = getEntry(hdr, false, null);
         if (null != ent)
         {
-          ent.removeSubscriptions(hdr.getURIfrom().getValue(), lst);
+          ent.removeSubscriptions(lst);
           if (!ent.active())
           {
             consumerMap.remove(ent.getSignature());
@@ -197,10 +201,10 @@ public abstract class BaseBrokerHandler
     report();
     if (null != hdr)
     {
-      SubscriptionSource ent = getEntry(hdr, false);
+      SubscriptionSource ent = getEntry(hdr, false, null);
       if (null != ent)
       {
-        ent.removeAllSubscriptions(hdr.getURIto().getValue());
+        ent.removeAllSubscriptions();
         if (!ent.active())
         {
           consumerMap.remove(ent.getSignature());
@@ -210,14 +214,14 @@ public abstract class BaseBrokerHandler
     report();
   }
 
-  private SubscriptionSource getEntry(MessageHeader hdr, boolean create)
+  private SubscriptionSource getEntry(MessageHeader hdr, boolean create, MALBrokerBindingImpl binding)
   {
-    String sig = makeSig(hdr);
+    String sig = hdr.getURIfrom().getValue();
     SubscriptionSource ent = consumerMap.get(sig);
 
     if ((null == ent) && (create))
     {
-      ent = createEntry(hdr);
+      ent = createEntry(hdr, binding);
       consumerMap.put(sig, ent);
     }
 
@@ -229,31 +233,5 @@ public abstract class BaseBrokerHandler
    * @param hdr Source message header.
    * @return The new subscription source object.
    */
-  protected abstract SubscriptionSource createEntry(MessageHeader hdr);
-
-  /**
-   * Creates a unique signature for a broker based on the message header.
-   * @param hdr Source message.
-   * @return Broker subscription signature.
-   */
-  public static String makeSig(MessageHeader hdr)
-  {
-    StringBuffer buf = new StringBuffer();
-
-    buf.append(StructureHelper.domainToString(hdr.getDomain()));
-    buf.append("::");
-    buf.append(hdr.getNetworkZone());
-    buf.append("::");
-    buf.append(hdr.getSession());
-    buf.append("::");
-    buf.append(hdr.getArea());
-    buf.append("::");
-    buf.append(hdr.getService());
-    buf.append("::");
-    buf.append(hdr.getOperation());
-    buf.append("::");
-    buf.append(hdr.getVersion());
-
-    return buf.toString();
-  }
+  protected abstract SubscriptionSource createEntry(MessageHeader hdr, MALBrokerBindingImpl binding);
 }

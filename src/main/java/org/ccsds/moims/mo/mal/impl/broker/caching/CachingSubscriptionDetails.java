@@ -83,6 +83,7 @@ class CachingSubscriptionDetails
     onAll.clear();
     onChange.clear();
 
+    /**
     int count = lst.size();
 
     for (int idx = 0; idx < count; idx++)
@@ -125,6 +126,7 @@ class CachingSubscriptionDetails
         }
       }
     }
+     **/
   }
 
   public void appendSubscription(PublishedEntry publishedEntry, SubscriptionKey key)
@@ -173,6 +175,7 @@ class CachingSubscriptionDetails
   {
     boolean matched = false;
 
+    /**
     for (SubscriptionKey subscriptionKey : searchSet)
     {
       if (subscriptionKey.matches(key))
@@ -181,6 +184,7 @@ class CachingSubscriptionDetails
         break;
       }
     }
+    **/
 
     return matched;
   }

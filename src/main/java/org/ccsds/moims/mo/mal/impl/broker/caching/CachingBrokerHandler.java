@@ -11,6 +11,7 @@
 package org.ccsds.moims.mo.mal.impl.broker.caching;
 
 import org.ccsds.moims.mo.mal.impl.broker.BaseBrokerHandler;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionSource;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
 
@@ -26,8 +27,8 @@ public class CachingBrokerHandler extends BaseBrokerHandler
   }
 
   @Override
-  protected SubscriptionSource createEntry(MessageHeader hdr)
+  protected SubscriptionSource createEntry(MessageHeader hdr, MALBrokerBindingImpl binding)
   {
-    return new CachingSubscriptionSource(hdr);
+    return new CachingSubscriptionSource(hdr, binding);
   }
 }
