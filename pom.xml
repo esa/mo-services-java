@@ -74,12 +74,6 @@
       <artifactId>ESA_MAL_API</artifactId>
       <version>${esa.api.version}</version>
       <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.ccsds.moims.mo</groupId>
-          <artifactId>ESAMOStubGenerator</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.ccsds.moims.mo</groupId>

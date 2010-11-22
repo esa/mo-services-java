@@ -20,14 +20,14 @@ import org.ccsds.moims.mo.mal.structures.MessageHeader;
 public final class UpdateKey implements Comparable
 {
   private static final int HASH_MAGIC_NUMBER = 47;
-  protected final String domain;
-  protected final String area;
-  protected final String service;
-  protected final String operation;
-  protected final String key1;
-  protected final String key2;
-  protected final String key3;
-  protected final String key4;
+  public final String domain;
+  public final String area;
+  public final String service;
+  public final String operation;
+  public final String key1;
+  public final String key2;
+  public final String key3;
+  public final String key4;
 
   /**
    * Constructor.

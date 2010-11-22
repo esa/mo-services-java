@@ -363,7 +363,7 @@ class InteractionMap
     }
 
     @Override
-    public boolean finished()
+    public synchronized boolean finished()
     {
       return takenFinalStage;
     }
@@ -488,7 +488,7 @@ class InteractionMap
     }
 
     @Override
-    public boolean finished()
+    public synchronized boolean finished()
     {
       return receivedResponse;
     }
@@ -597,7 +597,7 @@ class InteractionMap
     }
 
     @Override
-    public boolean finished()
+    public synchronized boolean finished()
     {
       return receivedResponse;
     }

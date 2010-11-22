@@ -23,10 +23,10 @@ public final class PublisherKey implements Comparable
    */
   public static final String ALL_ID = "*";
   private static final int HASH_MAGIC_NUMBER = 47;
-  protected final String key1;
-  protected final String key2;
-  protected final String key3;
-  protected final String key4;
+  public final String key1;
+  public final String key2;
+  public final String key3;
+  public final String key4;
 
   /**
    * Constructor.

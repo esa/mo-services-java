@@ -294,10 +294,10 @@ public class MessageSend
           }
           case MALPubSubOperation._PUBLISH_STAGE:
           {
-            rspnInteractionStage = MALPubSubOperation.PUBLISH_STAGE;
+            //rspnInteractionStage = MALPubSubOperation.PUBLISH_STAGE;
             throw new UnsupportedOperationException("Not supported yet.");
             //break;
-            }
+          }
           case MALPubSubOperation._DEREGISTER_STAGE:
           {
             rspnInteractionStage = MALPubSubOperation.DEREGISTER_ACK_STAGE;
@@ -308,8 +308,16 @@ public class MessageSend
             rspnInteractionStage = MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE;
             break;
           }
+          default:
+          {
+            // no op
+          }
         }
         break;
+      }
+      default:
+      {
+        // no op
       }
     }
 
@@ -454,8 +462,7 @@ public class MessageSend
           Byte syncStage,
           Element msgBody) throws MALException
   {
-    MALMessage msg
-            = details.endpoint.createMessage(createHeader(details, op, transId, syncStage), msgBody, details.qosProps);
+    MALMessage msg = details.endpoint.createMessage(createHeader(details, op, transId, syncStage), msgBody, details.qosProps);
 
     try
     {
