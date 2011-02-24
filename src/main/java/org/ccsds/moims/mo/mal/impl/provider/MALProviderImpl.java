@@ -24,7 +24,7 @@ import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
-import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.ServiceComponentImpl;
 import org.ccsds.moims.mo.mal.impl.broker.MALInternalBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
@@ -42,7 +42,7 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
   private final MALEndPoint brokerEndpoint;
 
   MALProviderImpl(MALProviderManagerImpl parent,
-          MALImpl impl,
+          MALContextImpl impl,
           String localName,
           String protocol,
           MALService service,
@@ -77,7 +77,6 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
         this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(null,
                 localName + "InternalBroker",
                 protocol,
-                service,
                 authenticationId,
                 expectedQos,
                 priorityLevelNumber,
@@ -97,9 +96,8 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
         }
         else
         {
-          this.brokerEndpoint = TransportSingleton.instance(sharedBrokerUri, impl.getInitialProperties())
-                  .createEndPoint(null, service, defaultQoSProperties);
-          this.brokerEndpoint.setMessageListener(endpointAdapter);
+          this.brokerEndpoint = TransportSingleton.instance(sharedBrokerUri, impl.getInitialProperties()).createEndPoint(localName, defaultQoSProperties);
+          this.brokerEndpoint.setMessageListener(this.receiveHandler);
         }
       }
     }

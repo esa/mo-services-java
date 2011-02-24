@@ -3,7 +3,7 @@
  *               European Space Operations Centre
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
- * System       : CCSDS MO MAL Implementation
+ * System       : CCSDS MO MALContext Implementation
  * Author       : cooper_sf
  *
  * ----------------------------------------------------------------------------
@@ -13,7 +13,7 @@ package org.ccsds.moims.mo.mal.impl;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.TreeMap;
-import org.ccsds.moims.mo.mal.MAL;
+import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.MALException;
@@ -28,9 +28,9 @@ import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * Implementation of the MAL.
+ * Implementation of the MALContext.
  */
-public class MALImpl extends MALClose implements MAL
+public class MALContextImpl extends MALClose implements MALContext
 {
   private final Hashtable initialProperties;
   private final MALSecurityManager securityManager;
@@ -46,7 +46,7 @@ public class MALImpl extends MALClose implements MAL
    * @param properties initial qos properties.
    * @throws MALException on error.
    */
-  public MALImpl(MALSecurityManagerFactory securityFactory, Hashtable properties) throws MALException
+  public MALContextImpl(MALSecurityManagerFactory securityFactory, Hashtable properties) throws MALException
   {
     super(null);
 
@@ -92,7 +92,7 @@ public class MALImpl extends MALClose implements MAL
   }
 
   /**
-   * Returns the qos properties used in the creation of this MAL.
+   * Returns the qos properties used in the creation of this MALContext.
    * @return the QOS properties.
    */
   public Hashtable getInitialProperties()

@@ -11,12 +11,10 @@
 package org.ccsds.moims.mo.mal.impl.broker;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.impl.DummyHandler;
-import org.ccsds.moims.mo.mal.impl.EndPointAdapter;
-import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -33,17 +31,17 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALInt
   private final Address address;
 
   MALBrokerBindingTransportWrapper(MALClose parent,
-          MALImpl impl,
+          MALContextImpl impl,
           MALTransport transport,
-          MALService service,
+          String localName,
           MALBrokerBinding transportDelegate) throws MALException
   {
     super(parent);
 
     this.transportDelegate = transportDelegate;
-    this.endpoint = transport.createEndPoint(null, service, null);
+    this.endpoint = transport.createEndPoint(localName, null);
     this.address = new Address(endpoint, getURI(), getAuthenticationId(), new DummyHandler());
-    this.endpoint.setMessageListener(new EndPointAdapter(impl.getReceivingInterface(), this.address));
+    this.endpoint.setMessageListener(impl.getReceivingInterface());
   }
 
   @Override
@@ -80,5 +78,13 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALInt
   public MALEndPoint getEndpoint()
   {
     return endpoint;
+  }
+  /**
+   * Returns the Address structure used by this component.
+   * @return the Address structure.
+   */
+  public Address getMsgAddress()
+  {
+    return address;
   }
 }

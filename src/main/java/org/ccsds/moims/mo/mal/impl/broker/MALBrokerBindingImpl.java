@@ -13,7 +13,7 @@ package org.ccsds.moims.mo.mal.impl.broker;
 import java.util.Hashtable;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
-import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.ServiceComponentImpl;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -27,10 +27,9 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInt
   private final MALBrokerImpl brokerImpl;
 
   MALBrokerBindingImpl(MALBrokerImpl parent,
-          MALImpl impl,
+          MALContextImpl impl,
           String localName,
           String protocol,
-          MALService service,
           Blob authenticationId,
           QoSLevel[] expectedQos,
           int priorityLevelNumber,
@@ -40,7 +39,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInt
             impl,
             localName,
             protocol,
-            service,
+            null,
             authenticationId,
             expectedQos,
             priorityLevelNumber,
@@ -49,8 +48,8 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInt
 
     this.brokerImpl = parent;
 
-    Logging.logMessage("INFO: Creating internal MAL Broker for service: "
-            + service.getName() + " on protocol: " + protocol + " with URI: " + this.localUri);
+    Logging.logMessage("INFO: Creating internal MAL Broker for localName: "
+            + localName + " on protocol: " + protocol + " with URI: " + this.localUri);
   }
 
   @Override

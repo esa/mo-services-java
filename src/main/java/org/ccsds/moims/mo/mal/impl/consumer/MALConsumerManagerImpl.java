@@ -17,7 +17,7 @@ import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -29,13 +29,13 @@ import org.ccsds.moims.mo.mal.structures.URI;
  */
 public class MALConsumerManagerImpl extends MALClose implements MALConsumerManager
 {
-  private final MALImpl impl;
+  private final MALContextImpl impl;
 
   /**
    * Constructor.
    * @param impl MAL implemenation.
    */
-  public MALConsumerManagerImpl(MALImpl impl)
+  public MALConsumerManagerImpl(MALContextImpl impl)
   {
     super(impl);
 
@@ -59,7 +59,9 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
    * @return
    * @throws MALException
    */
-  public MALConsumer createConsumer(URI uriTo,
+  public MALConsumer createConsumer(
+          String localName,
+          URI uriTo,
           URI brokerUri,
           MALService service,
           Blob authenticationId,
@@ -73,6 +75,7 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
   {
     return (MALConsumer) addChild(new MALConsumerImpl(impl,
             this,
+            localName,
             uriTo,
             brokerUri,
             service,
@@ -84,5 +87,9 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
             qosLevel,
             qosProps,
             priority));
+  }
+
+  public void deleteConsumer(String localName) throws MALException
+  {
   }
 }

@@ -3,7 +3,7 @@
  *               European Space Operations Centre
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
- * System       : CCSDS MO MAL Implementation
+ * System       : CCSDS MO MALContext Implementation
  * Author       : cooper_sf
  *
  * ----------------------------------------------------------------------------
@@ -11,17 +11,17 @@
 package org.ccsds.moims.mo.mal.impl;
 
 import java.util.Hashtable;
-import org.ccsds.moims.mo.mal.MAL;
-import org.ccsds.moims.mo.mal.MALFactory;
+import org.ccsds.moims.mo.mal.MALContext;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
 
 /**
- * Implementation of the MALFactory abstract class.
+ * Implementation of the MALContextFactory abstract class.
  */
-public class MALFactoryImpl extends MALFactory
+public class MALContextFactoryImpl extends MALContextFactory
 {
   private final MALSecurityManagerFactory securityFactory;
   
@@ -29,7 +29,7 @@ public class MALFactoryImpl extends MALFactory
    * Constrcutor.
    * @throws MALException On error.
    */
-  public MALFactoryImpl() throws MALException
+  public MALContextFactoryImpl() throws MALException
   {
     init();
     
@@ -49,8 +49,8 @@ public class MALFactoryImpl extends MALFactory
   }
 
   @Override
-  public MAL createMAL(Hashtable properties) throws MALException
+  public MALContext createMALContext(Hashtable properties) throws MALException
   {
-    return new MALImpl(securityFactory, properties);
+    return new MALContextImpl(securityFactory, properties);
   }
 }

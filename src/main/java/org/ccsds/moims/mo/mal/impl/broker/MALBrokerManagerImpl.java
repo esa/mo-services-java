@@ -14,11 +14,10 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
-import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -30,7 +29,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
  */
 public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
 {
-  private final MALImpl impl;
+  private final MALContextImpl impl;
   private final Map<String, MALBrokerImpl> brokers = new TreeMap();
   private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
 
@@ -39,7 +38,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
    * @param impl MAL implementation.
    * @param brokerBindingMap Broker binding map.
    */
-  public MALBrokerManagerImpl(MALImpl impl, Map<String, MALBrokerBindingImpl> brokerBindingMap)
+  public MALBrokerManagerImpl(MALContextImpl impl, Map<String, MALBrokerBindingImpl> brokerBindingMap)
   {
     super(impl);
 
@@ -48,17 +47,10 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
   }
 
   @Override
-  public synchronized MALBroker createBroker(MALService service) throws MALException
+  public synchronized MALBroker createBroker() throws MALException
   {
-    String key = service.getName().getValue();
-    MALBrokerImpl retVal = brokers.get(key);
-
-    if (null == retVal)
-    {
-      retVal = new MALBrokerImpl(this);
-      brokers.put(key, retVal);
-      addChild(retVal);
-    }
+    MALBrokerImpl retVal = new MALBrokerImpl(this);
+    addChild(retVal);
 
     return retVal;
   }
@@ -67,7 +59,6 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
   public synchronized MALBrokerBinding createBrokerBinding(MALBroker optionalMALBroker,
           String localName,
           String protocol,
-          MALService service,
           Blob authenticationId,
           QoSLevel[] expectedQos,
           int priorityLevelNumber,
@@ -78,11 +69,10 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
     MALBrokerImpl tparent = (MALBrokerImpl) optionalMALBroker;
     if (null == optionalMALBroker)
     {
-      tparent = (MALBrokerImpl) createBroker(service);
+      tparent = (MALBrokerImpl) createBroker();
 
       MALTransport transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
       retVal = transport.createBroker(localName,
-              service,
               authenticationId,
               expectedQos,
               priorityLevelNumber,
@@ -90,7 +80,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
 
       if (null != retVal)
       {
-        retVal = new MALBrokerBindingTransportWrapper(tparent, impl, transport, service, retVal);
+        retVal = new MALBrokerBindingTransportWrapper(tparent, impl, transport, localName, retVal);
       }
     }
 
@@ -100,7 +90,6 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
               impl,
               localName,
               protocol,
-              service,
               authenticationId,
               expectedQos,
               priorityLevelNumber,

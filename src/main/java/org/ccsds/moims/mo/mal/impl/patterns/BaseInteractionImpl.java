@@ -12,7 +12,7 @@ package org.ccsds.moims.mo.mal.impl.patterns;
 
 import java.util.HashMap;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALFactory;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.impl.Address;
@@ -43,7 +43,7 @@ public abstract class BaseInteractionImpl implements MALInteraction
     this.address = address;
     this.internalTransId = internalTransId;
     this.msg = msg;
-    this.operation = MALFactory.lookupOperation(msg.getHeader().getArea(),
+    this.operation = MALContextFactory.lookupOperation(msg.getHeader().getArea(),
             msg.getHeader().getService(),
             msg.getHeader().getOperation());
 

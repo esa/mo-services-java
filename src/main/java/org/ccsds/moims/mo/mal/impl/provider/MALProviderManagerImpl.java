@@ -18,7 +18,7 @@ import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.URI;
 
@@ -27,13 +27,13 @@ import org.ccsds.moims.mo.mal.structures.URI;
  */
 public class MALProviderManagerImpl extends MALClose implements MALProviderManager
 {
-  private final MALImpl impl;
+  private final MALContextImpl impl;
 
   /**
    * Creates a provider manager.
    * @param impl The MAL implementation.
    */
-  public MALProviderManagerImpl(MALImpl impl)
+  public MALProviderManagerImpl(MALContextImpl impl)
   {
     super(impl);
     this.impl = impl;
@@ -83,12 +83,12 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
 
   /**
    * Deletes an existing provider.
-   * @param protocol Protocol of the provider.
    * @param localName Local name used during creation.
+   * @param protocol Protocol of the provider.
    * @throws MALException on error.
    */
   @Override
-  public void deleteProvider(String protocol, String localName) throws MALException
+  public void deleteProvider(String localName, String protocol) throws MALException
   {
   }
 }

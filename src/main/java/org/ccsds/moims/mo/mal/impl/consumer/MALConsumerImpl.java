@@ -24,10 +24,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.impl.Address;
-import org.ccsds.moims.mo.mal.impl.DummyHandler;
-import org.ccsds.moims.mo.mal.impl.EndPointAdapter;
-import org.ccsds.moims.mo.mal.impl.MALImpl;
+import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.MessageDetails;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -48,10 +45,11 @@ class MALConsumerImpl extends MALClose implements MALConsumer
 {
   private final MessageSend sender;
   private final MessageDetails details;
-  private final Address address;
+  //private final Address address;
 
-  MALConsumerImpl(MALImpl impl,
+  MALConsumerImpl(MALContextImpl impl,
           MALConsumerManagerImpl parent,
+          String localName,
           URI uriTo,
           URI brokerUri,
           MALService service,
@@ -67,9 +65,9 @@ class MALConsumerImpl extends MALClose implements MALConsumer
     super(parent);
     this.sender = impl.getSendingInterface();
     MALTransport trans = TransportSingleton.instance(uriTo, impl.getInitialProperties());
-    MALEndPoint ep = trans.createEndPoint(null, service, qosProps);
-    address = new Address(ep, ep.getURI(), authenticationId, new DummyHandler());
-    ep.setMessageListener(new EndPointAdapter(impl.getReceivingInterface(), address));
+    MALEndPoint ep = trans.createEndPoint(localName, qosProps);
+    //address = new Address(ep, ep.getURI(), authenticationId, new DummyHandler());
+    ep.setMessageListener(impl.getReceivingInterface());
     this.details = new MessageDetails(ep,
             ep.getURI(),
             uriTo,

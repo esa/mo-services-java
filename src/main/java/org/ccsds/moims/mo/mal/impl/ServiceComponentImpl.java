@@ -40,7 +40,7 @@ public abstract class ServiceComponentImpl extends MALClose
   protected final URI localUri;
   protected final MALTransport transport;
   protected final MALEndPoint endpoint;
-  protected final EndPointAdapter endpointAdapter;
+  //protected final EndPointAdapter endpointAdapter;
   protected final Address msgAddress;
 
   /**
@@ -58,7 +58,7 @@ public abstract class ServiceComponentImpl extends MALClose
    * @throws MALException on error.
    */
   public ServiceComponentImpl(MALClose parent,
-          MALImpl impl,
+          MALContextImpl impl,
           String localName,
           String protocol,
           MALService service,
@@ -95,23 +95,13 @@ public abstract class ServiceComponentImpl extends MALClose
       this.defaultQoSProperties = null;
     }
 
-    if (null != service)
-    {
-      this.transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
-      this.endpoint = transport.createEndPoint(localName, service, defaultQoSProperties);
-      this.localUri = this.endpoint.getURI();
-      this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
-      this.endpointAdapter = new EndPointAdapter(receiveHandler, this.msgAddress);
-      this.endpoint.setMessageListener(endpointAdapter);
-    }
-    else
-    {
-      this.transport = null;
-      this.endpoint = null;
-      this.endpointAdapter = null;
-      this.msgAddress = null;
-      this.localUri = null;
-    }
+    this.transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
+    this.endpoint = transport.createEndPoint(localName, defaultQoSProperties);
+    this.localUri = this.endpoint.getURI();
+    this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
+    this.receiveHandler.registerProviderEndpoint(localName, service, this.msgAddress);
+    //this.endpointAdapter = new EndPointAdapter(receiveHandler, this.msgAddress);
+    this.endpoint.setMessageListener(this.receiveHandler);
   }
 
   /**

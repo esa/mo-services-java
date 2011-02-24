@@ -11,7 +11,8 @@
 package org.ccsds.moims.mo.mal.impl;
 
 import java.util.Map;
-import org.ccsds.moims.mo.mal.MALFactory;
+import java.util.TreeMap;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
@@ -26,6 +27,7 @@ import org.ccsds.moims.mo.mal.provider.MALRequest;
 import org.ccsds.moims.mo.mal.provider.MALSubmit;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -36,8 +38,10 @@ import org.ccsds.moims.mo.mal.impl.patterns.RequestInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.SendInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.SubmitInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
+import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.security.MALSecurityManager;
+import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
@@ -45,18 +49,22 @@ import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdateList;
+import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
+import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALMessageListener;
 
 /**
  * This class is the main class for handling received messages.
  */
-public class MessageReceive
+public class MessageReceive implements MALMessageListener
 {
   private final MessageSend sender;
   private final MALSecurityManager securityManager;
   private final InteractionMap imap;
   private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
+  private final Map<EndPointPair, Address> providerEndpointMap = new TreeMap();
   private final PubSubMap pmap;
 
   MessageReceive(MessageSend sender,
@@ -72,13 +80,41 @@ public class MessageReceive
     this.brokerBindingMap = brokerBindingMap;
   }
 
+  public void registerProviderEndpoint(String localName, MALService service, Address address)
+  {
+    EndPointPair key = new EndPointPair(localName, service);
+
+    if (!providerEndpointMap.containsKey(key))
+    {
+      providerEndpointMap.put(key, address);
+    }
+  }
+
+  @Override
+  public void onInternalError(MALEndPoint callingEndpoint, StandardError err)
+  {
+    Logging.logMessage("INFO: MAL Receiving ERROR!");
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public void onMessages(MALEndPoint callingEndpoint, MALMessage[] msgList)
+  {
+    for (int i = 0; i < msgList.length; i++)
+    {
+      onMessage(callingEndpoint, msgList[i]);
+    }
+  }
+
   /**
    * Entry point for this class, determines what to do with the received message.
    * @param msg The message.
-   * @param address The address details for the receiver.
    */
-  public void handleMessage(MALMessage msg, Address address)
+  @Override
+  public void onMessage(MALEndPoint callingEndpoint, MALMessage msg)
   {
+    Address address = null;
+
     try
     {
       msg = securityManager.check(msg);
@@ -90,6 +126,7 @@ public class MessageReceive
       {
         case InteractionType._SEND_INDEX:
         {
+          address = lookupAddress(callingEndpoint, msg);
           internalHandleSend(msg, address);
           break;
         }
@@ -99,6 +136,7 @@ public class MessageReceive
           {
             case MALSubmitOperation._SUBMIT_STAGE:
             {
+              address = lookupAddress(callingEndpoint, msg);
               internalHandleSubmit(msg, address);
               break;
             }
@@ -121,6 +159,7 @@ public class MessageReceive
           {
             case MALRequestOperation._REQUEST_STAGE:
             {
+              address = lookupAddress(callingEndpoint, msg);
               internalHandleRequest(msg, address);
               break;
             }
@@ -143,6 +182,7 @@ public class MessageReceive
           {
             case MALInvokeOperation._INVOKE_STAGE:
             {
+              address = lookupAddress(callingEndpoint, msg);
               internalHandleInvoke(msg, address);
               break;
             }
@@ -166,6 +206,7 @@ public class MessageReceive
           {
             case MALProgressOperation._PROGRESS_STAGE:
             {
+              address = lookupAddress(callingEndpoint, msg);
               internalHandleProgress(msg, address);
               break;
             }
@@ -238,6 +279,12 @@ public class MessageReceive
     }
     catch (MALException ex)
     {
+      // try to determine address info if null
+      if (null == address)
+      {
+        address = lookupAddress(callingEndpoint, msg);
+      }
+
       sender.returnErrorAndCalculateStage(address,
               msg.getHeader().getTransactionId(),
               msg.getHeader(),
@@ -405,8 +452,7 @@ public class MessageReceive
       {
         try
         {
-          MALPublishInteractionListener list
-                  = pmap.getPublishListener(msg.getHeader().getURIto(), msg.getHeader().getSessionName());
+          MALPublishInteractionListener list = pmap.getPublishListener(msg.getHeader().getURIto(), msg.getHeader().getSessionName());
 
           if (null != list)
           {
@@ -461,7 +507,7 @@ public class MessageReceive
   private void internalHandleNotify(MALMessage msg)
   {
     final MessageHeader hdr = msg.getHeader();
-    MALOperation operation = MALFactory.lookupOperation(hdr.getArea(), hdr.getService(), hdr.getOperation());
+    MALOperation operation = MALContextFactory.lookupOperation(hdr.getArea(), hdr.getService(), hdr.getOperation());
 
     if (hdr.isError())
     {
@@ -566,5 +612,52 @@ public class MessageReceive
             msg.getHeader(),
             MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE,
             null);
+  }
+
+  private Address lookupAddress(MALEndPoint callingEndpoint, MALMessage msg)
+  {
+    EndPointPair key = new EndPointPair(callingEndpoint.getLocalName(), msg.getHeader().getService().getValue());
+    Address rv = providerEndpointMap.get(key);
+
+    return rv;
+  }
+
+  private static class EndPointPair implements Comparable
+  {
+    private final String first;
+    private final String second;
+
+    public EndPointPair(String localName, MALService service)
+    {
+      first = localName;
+      if (null != service)
+      {
+        second = service.getName().getValue();
+      }
+      else
+      {
+        second = null;
+      }
+    }
+
+    public EndPointPair(String localName, String service)
+    {
+      first = localName;
+      second = service;
+    }
+
+    public int compareTo(Object other)
+    {
+      EndPointPair otherPair = (EndPointPair) other;
+
+      int irv = this.first.compareTo(otherPair.first);
+
+      if (0 == irv)
+      {
+        irv = this.second.compareTo(otherPair.second);
+      }
+
+      return irv;
+    }
   }
 }
