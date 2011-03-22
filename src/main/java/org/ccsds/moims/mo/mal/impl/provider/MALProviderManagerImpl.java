@@ -21,6 +21,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 
 /**
  * Implementation of the MALProviderManager interface.
@@ -82,13 +83,42 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
   }
 
   /**
-   * Deletes an existing provider.
-   * @param localName Local name used during creation.
-   * @param protocol Protocol of the provider.
-   * @throws MALException on error.
+   *
+   * @param endPoint
+   * @param protocol
+   * @param service
+   * @param authenticationId
+   * @param handler
+   * @param expectedQos
+   * @param priorityLevelNumber
+   * @param defaultQoSProperties
+   * @param isPublisher
+   * @param sharedBrokerUri
+   * @return
+   * @throws MALException
    */
   @Override
-  public void deleteProvider(String localName, String protocol) throws MALException
+  public MALProvider createProvider(
+          MALEndPoint endPoint,
+          MALService service,
+          Blob authenticationId,
+          MALInteractionHandler handler,
+          QoSLevel[] expectedQos,
+          int priorityLevelNumber,
+          Hashtable defaultQoSProperties,
+          Boolean isPublisher,
+          URI sharedBrokerUri) throws MALException
   {
+    return (MALProvider) addChild(new MALProviderImpl(this,
+            impl,
+            endPoint,
+            service,
+            authenticationId,
+            handler,
+            expectedQos,
+            priorityLevelNumber,
+            defaultQoSProperties,
+            isPublisher,
+            sharedBrokerUri));
   }
 }

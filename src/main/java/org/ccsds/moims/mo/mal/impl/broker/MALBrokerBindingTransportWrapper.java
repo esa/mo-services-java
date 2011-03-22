@@ -45,9 +45,9 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALInt
   }
 
   @Override
-  public void activate() throws MALException
+  public void startMessageDelivery() throws MALException
   {
-    transportDelegate.activate();
+    transportDelegate.startMessageDelivery();
   }
 
   @Override

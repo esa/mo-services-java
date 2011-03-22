@@ -31,7 +31,6 @@ public abstract class ServiceComponentImpl extends MALClose
   protected final MessageReceive receiveHandler;
   protected final MALInteractionHandler handler;
   protected final String localName;
-  protected final String protocol;
   protected final MALService service;
   protected final Blob authenticationId;
   protected final QoSLevel[] expectedQos;
@@ -40,7 +39,6 @@ public abstract class ServiceComponentImpl extends MALClose
   protected final URI localUri;
   protected final MALTransport transport;
   protected final MALEndPoint endpoint;
-  //protected final EndPointAdapter endpointAdapter;
   protected final Address msgAddress;
 
   /**
@@ -74,7 +72,6 @@ public abstract class ServiceComponentImpl extends MALClose
     this.receiveHandler = impl.getReceivingInterface();
     this.handler = handler;
     this.localName = localName;
-    this.protocol = protocol;
     this.service = service;
     this.authenticationId = authenticationId;
     if (null != expectedQos)
@@ -100,7 +97,65 @@ public abstract class ServiceComponentImpl extends MALClose
     this.localUri = this.endpoint.getURI();
     this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
     this.receiveHandler.registerProviderEndpoint(localName, service, this.msgAddress);
-    //this.endpointAdapter = new EndPointAdapter(receiveHandler, this.msgAddress);
+    this.endpoint.setMessageListener(this.receiveHandler);
+    this.endpoint.startMessageDelivery();
+  }
+
+  /**
+   * Constructor.
+   * @param parent Parent object.
+   * @param impl MAL impl.
+   * @param localName Local name of this component.
+   * @param protocol The protocol to use.
+   * @param service The service.
+   * @param authenticationId Athentication identifier.
+   * @param expectedQos Expected QoS.
+   * @param priorityLevelNumber Number of priority levels.
+   * @param defaultQoSProperties Default QOS properties.
+   * @param handler Service interaction handler.
+   * @throws MALException on error.
+   */
+  public ServiceComponentImpl(MALClose parent,
+          MALContextImpl impl,
+          MALEndPoint endPoint,
+          MALService service,
+          Blob authenticationId,
+          QoSLevel[] expectedQos,
+          int priorityLevelNumber,
+          Hashtable defaultQoSProperties,
+          MALInteractionHandler handler) throws MALException
+  {
+    super(parent);
+
+    this.sendHandler = impl.getSendingInterface();
+    this.receiveHandler = impl.getReceivingInterface();
+    this.handler = handler;
+    this.localName = endPoint.getLocalName();
+    this.service = service;
+    this.authenticationId = authenticationId;
+    if (null != expectedQos)
+    {
+      this.expectedQos = java.util.Arrays.copyOf(expectedQos, expectedQos.length);
+    }
+    else
+    {
+      this.expectedQos = null;
+    }
+    this.priorityLevelNumber = priorityLevelNumber;
+    if (null != defaultQoSProperties)
+    {
+      this.defaultQoSProperties = (Hashtable) defaultQoSProperties.clone();
+    }
+    else
+    {
+      this.defaultQoSProperties = null;
+    }
+
+    this.endpoint = endPoint;
+    this.transport = TransportSingleton.instance(endpoint.getURI(), impl.getInitialProperties());
+    this.localUri = this.endpoint.getURI();
+    this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
+    this.receiveHandler.registerProviderEndpoint(localName, service, this.msgAddress);
     this.endpoint.setMessageListener(this.receiveHandler);
   }
 

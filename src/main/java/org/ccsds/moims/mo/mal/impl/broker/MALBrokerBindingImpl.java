@@ -12,12 +12,12 @@ package org.ccsds.moims.mo.mal.impl.broker;
 
 import java.util.Hashtable;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.ServiceComponentImpl;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 
 /**
  * Implementation ofo MALBrokerBinding for MAL level brokers.
@@ -52,6 +52,31 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInt
             + localName + " on protocol: " + protocol + " with URI: " + this.localUri);
   }
 
+
+  MALBrokerBindingImpl(MALBrokerImpl parent,
+          MALContextImpl impl,
+          MALEndPoint endPoint,
+          Blob authenticationId,
+          QoSLevel[] expectedQos,
+          int priorityLevelNumber,
+          Hashtable qosProperties) throws MALException
+  {
+    super(parent,
+            impl,
+            endPoint,
+            null,
+            authenticationId,
+            expectedQos,
+            priorityLevelNumber,
+            qosProperties,
+            null);
+
+    this.brokerImpl = parent;
+
+    Logging.logMessage("INFO: Creating internal MAL Broker for localName: "
+            + localName + " with URI: " + this.localUri);
+  }
+
   @Override
   public boolean isMALLevelBroker()
   {
@@ -59,9 +84,9 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInt
   }
 
   @Override
-  public void activate() throws MALException
+  public void startMessageDelivery() throws MALException
   {
-    // no op
+    this.endpoint.startMessageDelivery();
   }
 
   @Override

@@ -23,6 +23,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 
 /**
  * Implements the MALConsumerManager interface.
@@ -76,6 +77,24 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
     return (MALConsumer) addChild(new MALConsumerImpl(impl,
             this,
             localName,
+            uriTo,
+            brokerUri,
+            service,
+            authenticationId,
+            domain,
+            networkZone,
+            sessionType,
+            sessionName,
+            qosLevel,
+            qosProps,
+            priority));
+  }
+
+  public MALConsumer createConsumer(MALEndPoint endPoint, URI uriTo, URI brokerUri, MALService service, Blob authenticationId, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qosLevel, Hashtable qosProps, Integer priority) throws MALException
+  {
+    return (MALConsumer) addChild(new MALConsumerImpl(impl,
+            this,
+            endPoint,
             uriTo,
             brokerUri,
             service,

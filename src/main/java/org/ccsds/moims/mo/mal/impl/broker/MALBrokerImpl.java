@@ -52,7 +52,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker
   {
     for (int i = 0; i < bindings.length; i++)
     {
-      bindings[i].activate();
+      bindings[i].startMessageDelivery();
     }
   }
 

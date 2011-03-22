@@ -68,7 +68,7 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     this.isPublisher = isPublisher;
     this.sharedBrokerUri = sharedBrokerUri;
 
-    if (isPublisher())
+    if (this.isPublisher)
     {
       this.handler.malInitialize(this);
 
@@ -81,7 +81,7 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 expectedQos,
                 priorityLevelNumber,
                 defaultQoSProperties);
-        this.localBrokerBinding.activate();
+        this.localBrokerBinding.startMessageDelivery();
         this.localBrokerUri = this.localBrokerBinding.getURI();
         this.brokerEndpoint = ((MALInternalBrokerBinding) localBrokerBinding).getEndpoint();
       }
@@ -90,6 +90,71 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
         this.localBrokerBinding = null;
         this.localBrokerUri = null;
         
+        if (TransportSingleton.isSameTransport(sharedBrokerUri, transport))
+        {
+          this.brokerEndpoint = endpoint;
+        }
+        else
+        {
+          this.brokerEndpoint = TransportSingleton.instance(sharedBrokerUri, impl.getInitialProperties()).createEndPoint(localName, defaultQoSProperties);
+          this.brokerEndpoint.setMessageListener(this.receiveHandler);
+        }
+      }
+    }
+    else
+    {
+      this.localBrokerBinding = null;
+      this.localBrokerUri = null;
+      this.brokerEndpoint = null;
+    }
+  }
+
+  MALProviderImpl(MALProviderManagerImpl parent,
+          MALContextImpl impl,
+          MALEndPoint endPoint,
+          MALService service,
+          Blob authenticationId,
+          MALInteractionHandler handler,
+          QoSLevel[] expectedQos,
+          int priorityLevelNumber,
+          Hashtable defaultQoSProperties,
+          Boolean isPublisher,
+          URI sharedBrokerUri) throws MALException
+  {
+    super(parent,
+            impl,
+            endPoint,
+            service,
+            authenticationId,
+            expectedQos,
+            priorityLevelNumber,
+            defaultQoSProperties,
+            handler);
+
+    this.isPublisher = isPublisher;
+    this.sharedBrokerUri = sharedBrokerUri;
+
+    if (this.isPublisher)
+    {
+      this.handler.malInitialize(this);
+
+      if (null == this.sharedBrokerUri)
+      {
+        this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(null,
+                endPoint,
+                authenticationId,
+                expectedQos,
+                priorityLevelNumber,
+                defaultQoSProperties);
+        this.localBrokerBinding.startMessageDelivery();
+        this.localBrokerUri = this.localBrokerBinding.getURI();
+        this.brokerEndpoint = ((MALInternalBrokerBinding) localBrokerBinding).getEndpoint();
+      }
+      else
+      {
+        this.localBrokerBinding = null;
+        this.localBrokerUri = null;
+
         if (TransportSingleton.isSameTransport(sharedBrokerUri, transport))
         {
           this.brokerEndpoint = endpoint;

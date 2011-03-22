@@ -22,6 +22,7 @@ import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
@@ -100,8 +101,58 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
     return retVal;
   }
 
-  @Override
-  public synchronized void deleteBrokerBinding(String localName, String protocol) throws MALException
+
+  /**
+   *
+   * @param optionalMALBroker
+   * @param endPoint
+   * @param authenticationId
+   * @param expectedQos
+   * @param priorityLevelNumber
+   * @param qosProperties
+   * @return
+   * @throws MALException
+   */
+  public MALBrokerBinding createBrokerBinding(
+          MALBroker optionalMALBroker,
+          MALEndPoint endPoint,
+          Blob authenticationId,
+          QoSLevel[] expectedQos,
+          int priorityLevelNumber,
+          Hashtable qosProperties) throws MALException
   {
+    MALBrokerBinding retVal = null;
+
+    MALBrokerImpl tparent = (MALBrokerImpl) optionalMALBroker;
+    if (null == optionalMALBroker)
+    {
+      tparent = (MALBrokerImpl) createBroker();
+
+      MALTransport transport = TransportSingleton.instance(endPoint.getURI(), impl.getInitialProperties());
+      retVal = transport.createBroker(endPoint.getLocalName(),
+              authenticationId,
+              expectedQos,
+              priorityLevelNumber,
+              qosProperties);
+
+      if (null != retVal)
+      {
+        retVal = new MALBrokerBindingTransportWrapper(tparent, impl, transport, endPoint.getLocalName(), retVal);
+      }
+    }
+
+    if (null == retVal)
+    {
+      retVal = new MALBrokerBindingImpl(tparent,
+              impl,
+              endPoint,
+              authenticationId,
+              expectedQos,
+              priorityLevelNumber,
+              qosProperties);
+      brokerBindingMap.put(retVal.getURI().getValue(), (MALBrokerBindingImpl) retVal);
+    }
+
+    return retVal;
   }
 }

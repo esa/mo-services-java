@@ -22,10 +22,13 @@ import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerManagerImpl;
 import org.ccsds.moims.mo.mal.impl.consumer.MALConsumerManagerImpl;
 import org.ccsds.moims.mo.mal.impl.provider.MALProviderManagerImpl;
+import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.security.MALSecurityManager;
 import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
+import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
  * Implementation of the MALContext.
@@ -81,6 +84,18 @@ public class MALContextImpl extends MALClose implements MALContext
   public MALBrokerManager createBrokerManager() throws MALException
   {
     return (MALBrokerManager) addChild(new MALBrokerManagerImpl(this, brokerBindingMap));
+  }
+
+  @Override
+  public MALTransport getTransport(URI uri) throws MALException
+  {
+    return TransportSingleton.instance(uri, initialProperties);
+  }
+
+  @Override
+  public MALTransport getTransport(String protocol) throws MALException
+  {
+    return TransportSingleton.instance(protocol, initialProperties);
   }
 
   @Override

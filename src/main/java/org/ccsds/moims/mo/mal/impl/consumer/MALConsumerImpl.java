@@ -45,7 +45,6 @@ class MALConsumerImpl extends MALClose implements MALConsumer
 {
   private final MessageSend sender;
   private final MessageDetails details;
-  //private final Address address;
 
   MALConsumerImpl(MALContextImpl impl,
           MALConsumerManagerImpl parent,
@@ -66,10 +65,44 @@ class MALConsumerImpl extends MALClose implements MALConsumer
     this.sender = impl.getSendingInterface();
     MALTransport trans = TransportSingleton.instance(uriTo, impl.getInitialProperties());
     MALEndPoint ep = trans.createEndPoint(localName, qosProps);
-    //address = new Address(ep, ep.getURI(), authenticationId, new DummyHandler());
     ep.setMessageListener(impl.getReceivingInterface());
     this.details = new MessageDetails(ep,
             ep.getURI(),
+            uriTo,
+            brokerUri,
+            service,
+            authenticationId,
+            domain,
+            networkZone,
+            sessionType,
+            sessionName,
+            qosLevel,
+            qosProps,
+            priority);
+
+    ep.startMessageDelivery();
+  }
+
+  MALConsumerImpl(MALContextImpl impl,
+          MALConsumerManagerImpl parent,
+          MALEndPoint endPoint,
+          URI uriTo,
+          URI brokerUri,
+          MALService service,
+          Blob authenticationId,
+          DomainIdentifier domain,
+          Identifier networkZone,
+          SessionType sessionType,
+          Identifier sessionName,
+          QoSLevel qosLevel,
+          Hashtable qosProps,
+          Integer priority) throws MALException
+  {
+    super(parent);
+    this.sender = impl.getSendingInterface();
+    endPoint.setMessageListener(impl.getReceivingInterface());
+    this.details = new MessageDetails(endPoint,
+            endPoint.getURI(),
             uriTo,
             brokerUri,
             service,
