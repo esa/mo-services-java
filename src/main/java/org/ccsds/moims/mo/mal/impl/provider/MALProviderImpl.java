@@ -140,7 +140,7 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
       if (null == this.sharedBrokerUri)
       {
-        this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(null,
+        this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(impl.createBrokerManager().createBroker(),
                 endPoint,
                 authenticationId,
                 expectedQos,

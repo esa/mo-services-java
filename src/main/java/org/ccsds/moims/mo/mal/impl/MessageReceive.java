@@ -38,10 +38,8 @@ import org.ccsds.moims.mo.mal.impl.patterns.RequestInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.SendInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.SubmitInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
-import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.security.MALSecurityManager;
-import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
@@ -49,7 +47,6 @@ import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
 import org.ccsds.moims.mo.mal.structures.SubscriptionUpdateList;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateList;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
@@ -654,7 +651,19 @@ public class MessageReceive implements MALMessageListener
 
       if (0 == irv)
       {
-        irv = this.second.compareTo(otherPair.second);
+        if (null != this.second)
+        {
+          return this.second.compareTo(otherPair.second);
+        }
+        else
+        {
+          if (null == otherPair.second)
+          {
+            return 0;
+          }
+
+          return -1;
+        }
       }
 
       return irv;
