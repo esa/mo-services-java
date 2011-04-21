@@ -35,8 +35,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 class InteractionMap
 {
   private static volatile int transId = 0;
-  private final java.util.Map<String, InternalOperationHandler> transMap
-          = new java.util.TreeMap<String, InternalOperationHandler>();
+  private final java.util.Map<String, InternalOperationHandler> transMap = new java.util.TreeMap<String, InternalOperationHandler>();
   private final java.util.Map<String, Pair> resolveMap = new java.util.TreeMap<String, Pair>();
 
   InteractionMap()
@@ -234,7 +233,6 @@ class InteractionMap
         lock = true;
       }
     }
-    
     protected final MALOperation operation;
     protected final boolean syncOperation;
     protected final MALInteractionListener listener;
@@ -415,41 +413,38 @@ class InteractionMap
     }
 
     @Override
-    public synchronized void handleStage(MALMessage msg) throws MALException
+    public void handleStage(MALMessage msg) throws MALException
     {
       final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
       final int interactionStage = msg.getHeader().getInteractionStage().intValue();
 
-      if (!receivedAck)
+      boolean isAckStage = false;
+
+      synchronized (this)
       {
-        if ((interactionType == InteractionType._INVOKE_INDEX)
-                && (interactionStage == MALInvokeOperation._INVOKE_ACK_STAGE))
+        if (!receivedAck)
         {
-          try
+          if ((interactionType == InteractionType._INVOKE_INDEX)
+                  && (interactionStage == MALInvokeOperation._INVOKE_ACK_STAGE))
           {
+            isAckStage = true;
             receivedAck = true;
-            if (syncOperation)
+            if (!syncOperation && msg.getHeader().isError())
             {
-              signalResponse(msg);
-            }
-            else
-            {
-              if (msg.getHeader().isError())
-              {
-                receivedResponse = true;
-                listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
-              }
-              else
-              {
-                listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
-              }
+              receivedResponse = true;
             }
           }
-          catch (MALException ex)
+          else
           {
-            // nothing we can do with this
-            ex.printStackTrace();
+            Logging.logMessage("ERROR: Unexpected transition IP("
+                    + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+            throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
           }
+        }
+        else if ((!receivedResponse) && (interactionType == InteractionType._INVOKE_INDEX)
+                && (interactionStage == MALInvokeOperation._INVOKE_RESPONSE_STAGE))
+        {
+          receivedResponse = true;
         }
         else
         {
@@ -458,12 +453,37 @@ class InteractionMap
           throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
         }
       }
-      else if ((!receivedResponse) && (interactionType == InteractionType._INVOKE_INDEX)
-              && (interactionStage == MALInvokeOperation._INVOKE_RESPONSE_STAGE))
+
+      if (isAckStage)
+      {
+        if (syncOperation)
+        {
+          signalResponse(msg);
+        }
+        else
+        {
+          try
+          {
+            if (msg.getHeader().isError())
+            {
+              listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+            }
+            else
+            {
+              listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+            }
+          }
+          catch (MALException ex)
+          {
+            // nothing we can do with this
+            ex.printStackTrace();
+          }
+        }
+      }
+      else
       {
         try
         {
-          receivedResponse = true;
           if (msg.getHeader().isError())
           {
             listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
@@ -478,12 +498,6 @@ class InteractionMap
           // nothing we can do with this
           ex.printStackTrace();
         }
-      }
-      else
-      {
-        Logging.logMessage("ERROR: Unexpected transition IP("
-                + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
-        throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
       }
     }
 
@@ -508,40 +522,48 @@ class InteractionMap
     }
 
     @Override
-    public synchronized void handleStage(MALMessage msg) throws MALException
+    public void handleStage(MALMessage msg) throws MALException
     {
       final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
       final int interactionStage = msg.getHeader().getInteractionStage().intValue();
 
-      if (!receivedAck)
+      boolean isAckStage = false;
+
+      synchronized (this)
       {
-        if ((interactionType == InteractionType._PROGRESS_INDEX)
-                && (interactionStage == MALProgressOperation._PROGRESS_ACK_STAGE))
+        if (!receivedAck)
         {
-          try
+          if ((interactionType == InteractionType._PROGRESS_INDEX)
+                  && (interactionStage == MALProgressOperation._PROGRESS_ACK_STAGE))
           {
+            isAckStage = true;
             receivedAck = true;
-            if (syncOperation)
+            if (msg.getHeader().isError())
             {
-              signalResponse(msg);
-            }
-            else
-            {
-              if (msg.getHeader().isError())
-              {
-                receivedResponse = true;
-                listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
-              }
-              else
-              {
-                listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
-              }
+              receivedResponse = true;
             }
           }
-          catch (MALException ex)
+          else
           {
-            // nothing we can do with this
-            ex.printStackTrace();
+            Logging.logMessage("ERROR: Unexpected transition IP("
+                    + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+            throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+          }
+        }
+        else if ((!receivedResponse) && (interactionType == InteractionType._PROGRESS_INDEX)
+                && ((interactionStage == MALProgressOperation._PROGRESS_UPDATE_STAGE)
+                || (interactionStage == MALProgressOperation._PROGRESS_RESPONSE_STAGE)))
+        {
+          if (interactionStage == MALProgressOperation._PROGRESS_UPDATE_STAGE)
+          {
+            if (msg.getHeader().isError())
+            {
+              receivedResponse = true;
+            }
+          }
+          else
+          {
+            receivedResponse = true;
           }
         }
         else
@@ -551,9 +573,34 @@ class InteractionMap
           throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
         }
       }
-      else if ((!receivedResponse) && (interactionType == InteractionType._PROGRESS_INDEX)
-              && ((interactionStage == MALProgressOperation._PROGRESS_UPDATE_STAGE)
-              || (interactionStage == MALProgressOperation._PROGRESS_RESPONSE_STAGE)))
+
+      if (isAckStage)
+      {
+        try
+        {
+          if (syncOperation)
+          {
+            signalResponse(msg);
+          }
+          else
+          {
+            if (msg.getHeader().isError())
+            {
+              listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
+            }
+            else
+            {
+              listener.acknowledgementReceived(operation, msg.getHeader(), msg.getBody());
+            }
+          }
+        }
+        catch (MALException ex)
+        {
+          // nothing we can do with this
+          ex.printStackTrace();
+        }
+      }
+      else
       {
         try
         {
@@ -561,7 +608,6 @@ class InteractionMap
           {
             if (msg.getHeader().isError())
             {
-              receivedResponse = true;
               listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
             }
             else
@@ -571,7 +617,6 @@ class InteractionMap
           }
           else
           {
-            receivedResponse = true;
             if (msg.getHeader().isError())
             {
               listener.errorReceived(operation, msg.getHeader(), (StandardError) msg.getBody());
@@ -587,12 +632,6 @@ class InteractionMap
           // nothing we can do with this
           ex.printStackTrace();
         }
-      }
-      else
-      {
-        Logging.logMessage("ERROR: Unexpected transition IP("
-                + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
-        throw new MALException(new StandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
       }
     }
 
