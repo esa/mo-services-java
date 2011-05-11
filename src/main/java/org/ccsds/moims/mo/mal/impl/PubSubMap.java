@@ -104,6 +104,7 @@ class PubSubMap
         errorMap.put(uri, ent);
       }
 
+      Logging.logMessage("INFO: PubSubMap(" + this + "), adding notify handler: " + uri + " : " + subId + " : " + list);
       ent.put(subId, list);
     }
   }
@@ -112,14 +113,17 @@ class PubSubMap
   {
     final StringPair id = new StringPair(uri.getValue(), subscription.getValue());
 
+    Logging.logMessage("INFO: PubSubMap(" + this + "), looking for notify handler: " + uri + " : " + subscription);
     synchronized (notifyMap)
     {
       if (notifyMap.containsKey(id))
       {
+        Logging.logMessage("INFO: PubSubMap(" + this + "), found notify handler: " + uri + " : " + subscription);
         return notifyMap.get(id);
       }
     }
 
+    Logging.logMessage("INFO: PubSubMap(" + this + "), failed to find notify handler: " + uri + " : " + subscription);
     return null;
   }
 
@@ -134,6 +138,7 @@ class PubSubMap
       {
         for (Map.Entry<String, MALInteractionListener> e : ent.entrySet())
         {
+          Logging.logMessage("INFO: PubSubMap(" + this + "), removing notify handler: " + uri + " : *");
           notifyMap.remove(new StringPair(uri, e.getKey()));
         }
       }
@@ -155,6 +160,7 @@ class PubSubMap
 
         if (notifyMap.containsKey(id))
         {
+          Logging.logMessage("INFO: PubSubMap(" + this + "), removing notify handler: " + uri + " : " + unsubId);
           notifyMap.remove(id);
 
           Map<String, MALInteractionListener> ent = errorMap.get(uri);
