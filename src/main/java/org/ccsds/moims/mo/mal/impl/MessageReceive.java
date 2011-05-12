@@ -39,7 +39,7 @@ import org.ccsds.moims.mo.mal.impl.patterns.SendInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.SubmitInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
-import org.ccsds.moims.mo.mal.security.MALSecurityManager;
+import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.MessageHeader;
@@ -58,14 +58,14 @@ import org.ccsds.moims.mo.mal.transport.MALMessageListener;
 public class MessageReceive implements MALMessageListener
 {
   private final MessageSend sender;
-  private final MALSecurityManager securityManager;
+  private final MALAccessControl securityManager;
   private final InteractionMap imap;
   private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
   private final Map<EndPointPair, Address> providerEndpointMap = new TreeMap();
   private final PubSubMap pmap;
 
   MessageReceive(MessageSend sender,
-          MALSecurityManager securityManager,
+          MALAccessControl securityManager,
           InteractionMap imap,
           PubSubMap pmap,
           Map<String, MALBrokerBindingImpl> brokerBindingMap)

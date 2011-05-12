@@ -16,14 +16,14 @@ import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
-import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
+import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControlFactory;
 
 /**
  * Implementation of the MALContextFactory abstract class.
  */
 public class MALContextFactoryImpl extends MALContextFactory
 {
-  private final MALSecurityManagerFactory securityFactory;
+  private final MALAccessControlFactory securityFactory;
   
   /**
    * Constrcutor.
@@ -33,7 +33,7 @@ public class MALContextFactoryImpl extends MALContextFactory
   {
     init();
     
-    securityFactory = MALSecurityManagerFactory.newInstance();
+    securityFactory = MALAccessControlFactory.newInstance();
   }
 
   private void init()

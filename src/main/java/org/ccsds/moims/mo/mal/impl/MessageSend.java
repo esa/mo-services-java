@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
-import org.ccsds.moims.mo.mal.security.MALSecurityManager;
+import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.StandardError;
@@ -44,11 +44,11 @@ import org.ccsds.moims.mo.mal.structures.Union;
  */
 public class MessageSend
 {
-  private final MALSecurityManager securityManager;
+  private final MALAccessControl securityManager;
   private final InteractionMap imap;
   private final PubSubMap pmap;
 
-  MessageSend(MALSecurityManager securityManager, InteractionMap imap, PubSubMap pmap)
+  MessageSend(MALAccessControl securityManager, InteractionMap imap, PubSubMap pmap)
   {
     this.securityManager = securityManager;
     this.imap = imap;

@@ -24,8 +24,8 @@ import org.ccsds.moims.mo.mal.impl.consumer.MALConsumerManagerImpl;
 import org.ccsds.moims.mo.mal.impl.provider.MALProviderManagerImpl;
 import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
-import org.ccsds.moims.mo.mal.security.MALSecurityManager;
-import org.ccsds.moims.mo.mal.security.MALSecurityManagerFactory;
+import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
+import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControlFactory;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
@@ -36,7 +36,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 public class MALContextImpl extends MALClose implements MALContext
 {
   private final Hashtable initialProperties;
-  private final MALSecurityManager securityManager;
+  private final MALAccessControl securityManager;
   private final InteractionMap imap = new InteractionMap();
   private final PubSubMap pmap = new PubSubMap();
   private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new TreeMap<String, MALBrokerBindingImpl>();
@@ -49,7 +49,7 @@ public class MALContextImpl extends MALClose implements MALContext
    * @param properties initial qos properties.
    * @throws MALException on error.
    */
-  public MALContextImpl(MALSecurityManagerFactory securityFactory, Hashtable properties) throws MALException
+  public MALContextImpl(MALAccessControlFactory securityFactory, Hashtable properties) throws MALException
   {
     super(null);
 
@@ -57,7 +57,7 @@ public class MALContextImpl extends MALClose implements MALContext
 
     if (null != securityFactory)
     {
-      securityManager = securityFactory.createSecurityManager(initialProperties);
+      securityManager = securityFactory.createAccessControl(initialProperties);
     }
     else
     {
@@ -137,12 +137,12 @@ public class MALContextImpl extends MALClose implements MALContext
    * Returns the active security manager.
    * @return the security manager.
    */
-  public MALSecurityManager getSecurityManager()
+  public MALAccessControl getSecurityManager()
   {
     return securityManager;
   }
 
-  private static final class NullSecurityManager implements MALSecurityManager
+  private static final class NullSecurityManager implements MALAccessControl
   {
     @Override
     public MALMessage check(MALMessage msg) throws MALException
