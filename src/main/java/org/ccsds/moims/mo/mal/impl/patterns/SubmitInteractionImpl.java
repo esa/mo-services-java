@@ -44,9 +44,9 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
    *
    * @throws MALException
    */
-  public void sendAcknowledgement() throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement() throws MALException
   {
-    returnResponse(MALSubmitOperation.SUBMIT_ACK_STAGE, null);
+    return returnResponse(MALSubmitOperation.SUBMIT_ACK_STAGE, null);
   }
 
   @Override
@@ -55,8 +55,8 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
    * @param error
    * @throws MALException
    */
-  public void sendError(StandardError error) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(StandardError error) throws MALException
   {
-    returnError(MALSubmitOperation.SUBMIT_ACK_STAGE, error);
+    return returnError(MALSubmitOperation.SUBMIT_ACK_STAGE, error);
   }
 }

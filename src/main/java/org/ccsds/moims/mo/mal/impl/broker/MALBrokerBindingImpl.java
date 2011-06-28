@@ -47,6 +47,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInt
             null);
 
     this.brokerImpl = parent;
+    this.endpoint.startMessageDelivery();
 
     Logging.logMessage("INFO: Creating internal MAL Broker for localName: "
             + localName + " on protocol: " + protocol + " with URI: " + this.localUri);
@@ -75,18 +76,6 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInt
 
     Logging.logMessage("INFO: Creating internal MAL Broker for localName: "
             + localName + " with URI: " + this.localUri);
-  }
-
-  @Override
-  public boolean isMALLevelBroker()
-  {
-    return true;
-  }
-
-  @Override
-  public void startMessageDelivery() throws MALException
-  {
-    this.endpoint.startMessageDelivery();
   }
 
   @Override

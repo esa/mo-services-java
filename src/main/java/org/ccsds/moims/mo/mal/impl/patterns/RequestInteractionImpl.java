@@ -46,9 +46,9 @@ public class RequestInteractionImpl extends BaseInteractionImpl implements MALRe
    * @param result
    * @throws MALException
    */
-  public void sendResponse(Element result) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(Element result) throws MALException
   {
-    returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, result);
+    return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, result);
   }
 
   @Override
@@ -57,8 +57,8 @@ public class RequestInteractionImpl extends BaseInteractionImpl implements MALRe
    * @param error
    * @throws MALException
    */
-  public void sendError(StandardError error) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(StandardError error) throws MALException
   {
-    returnError(MALRequestOperation.REQUEST_RESPONSE_STAGE, error);
+    return returnError(MALRequestOperation.REQUEST_RESPONSE_STAGE, error);
   }
 }

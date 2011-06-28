@@ -108,7 +108,7 @@ class MALPublisherImpl implements MALPublisher
    * @throws MALException
    */
   @Override
-  public void asyncRegister(EntityKeyList entityKeys,
+  public org.ccsds.moims.mo.mal.transport.MALMessage asyncRegister(EntityKeyList entityKeys,
           MALPublishInteractionListener listener,
           DomainIdentifier domain,
           Identifier networkZone,
@@ -132,12 +132,16 @@ class MALPublisherImpl implements MALPublisher
             remotePublisherQosProps,
             remotePublisherPriority);
 
+    org.ccsds.moims.mo.mal.transport.MALMessage msg = handler.publishRegisterAsync(details, operation, entityKeys, listener);
+
     setTransId(parent.getPublishEndpoint().getURI(),
             domain,
             networkZone.getValue(),
             sessionType,
             sessionName.getValue(),
-            handler.publishRegisterAsync(details, operation, entityKeys, listener));
+            msg.getHeader().getTransactionId());
+
+    return msg;
   }
 
   /**
@@ -153,7 +157,7 @@ class MALPublisherImpl implements MALPublisher
    * @throws MALException
    */
   @Override
-  public void publish(UpdateList updateList,
+  public org.ccsds.moims.mo.mal.transport.MALMessage publish(UpdateList updateList,
           DomainIdentifier domain,
           Identifier networkZone,
           SessionType sessionType,
@@ -186,7 +190,7 @@ class MALPublisherImpl implements MALPublisher
     {
       Logging.logMessage("INFO: Publisher using transaction Id of: " + tid);
 
-      handler.onewayInteraction(details, tid, operation, MALPubSubOperation.PUBLISH_STAGE, updateList);
+      return handler.onewayInteraction(details, tid, operation, MALPubSubOperation.PUBLISH_STAGE, updateList);
     }
     else
     {
@@ -251,7 +255,7 @@ class MALPublisherImpl implements MALPublisher
    * @throws MALException
    */
   @Override
-  public void asyncDeregister(MALPublishInteractionListener listener,
+  public org.ccsds.moims.mo.mal.transport.MALMessage asyncDeregister(MALPublishInteractionListener listener,
           DomainIdentifier domain,
           Identifier networkZone,
           SessionType sessionType,
@@ -274,13 +278,15 @@ class MALPublisherImpl implements MALPublisher
             remotePublisherQosProps,
             remotePublisherPriority);
 
-    handler.publishDeregisterAsync(details, operation, listener);
+    org.ccsds.moims.mo.mal.transport.MALMessage msg = handler.publishDeregisterAsync(details, operation, listener);
 
     clearTransId(parent.getPublishEndpoint().getURI(),
             domain,
             networkZone.getValue(),
             sessionType,
             sessionName.getValue());
+    
+    return msg;
   }
 
   private synchronized void setTransId(URI brokerUri,

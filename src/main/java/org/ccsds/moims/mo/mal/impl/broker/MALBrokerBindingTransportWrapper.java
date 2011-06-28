@@ -42,12 +42,7 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALInt
     this.endpoint = transport.createEndPoint(localName, null);
     this.address = new Address(endpoint, getURI(), getAuthenticationId(), new DummyHandler());
     this.endpoint.setMessageListener(impl.getReceivingInterface());
-  }
-
-  @Override
-  public void startMessageDelivery() throws MALException
-  {
-    transportDelegate.startMessageDelivery();
+    this.endpoint.startMessageDelivery();
   }
 
   @Override
@@ -66,12 +61,6 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALInt
   public URI getURI()
   {
     return transportDelegate.getURI();
-  }
-
-  @Override
-  public boolean isMALLevelBroker()
-  {
-    return transportDelegate.isMALLevelBroker();
   }
 
   @Override

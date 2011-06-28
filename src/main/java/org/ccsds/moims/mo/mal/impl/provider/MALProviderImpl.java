@@ -81,7 +81,6 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 expectedQos,
                 priorityLevelNumber,
                 defaultQoSProperties);
-        this.localBrokerBinding.startMessageDelivery();
         this.localBrokerUri = this.localBrokerBinding.getURI();
         this.brokerEndpoint = ((MALInternalBrokerBinding) localBrokerBinding).getEndpoint();
       }
@@ -146,7 +145,6 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 expectedQos,
                 priorityLevelNumber,
                 defaultQoSProperties);
-        this.localBrokerBinding.startMessageDelivery();
         this.localBrokerUri = this.localBrokerBinding.getURI();
         this.brokerEndpoint = ((MALInternalBrokerBinding) localBrokerBinding).getEndpoint();
       }

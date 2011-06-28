@@ -103,9 +103,9 @@ public abstract class BaseInteractionImpl implements MALInteraction
    * @param result Message body.
    * @throws MALException On error.
    */
-  protected void returnResponse(Byte stage, Element result) throws MALException
+  protected org.ccsds.moims.mo.mal.transport.MALMessage returnResponse(Byte stage, Element result) throws MALException
   {
-    sender.returnResponse(address, internalTransId, msg.getHeader(), stage, result);
+    return sender.returnResponse(address, internalTransId, msg.getHeader(), stage, result);
   }
   
   /**
@@ -114,8 +114,8 @@ public abstract class BaseInteractionImpl implements MALInteraction
    * @param error The error to send.
    * @throws MALException On error.
    */
-  protected void returnError(Byte stage, StandardError error) throws MALException
+  protected org.ccsds.moims.mo.mal.transport.MALMessage returnError(Byte stage, StandardError error) throws MALException
   {
-    sender.returnError(address, internalTransId, msg.getHeader(), stage, error);
+    return sender.returnError(address, internalTransId, msg.getHeader(), stage, error);
   }
 }

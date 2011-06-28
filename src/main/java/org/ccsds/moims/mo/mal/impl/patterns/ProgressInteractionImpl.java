@@ -48,10 +48,10 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    * @param result
    * @throws MALException
    */
-  public void sendAcknowledgement(Element result) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement(Element result) throws MALException
   {
     ackSent = true;
-    returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, result);
+    return returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, result);
   }
 
   @Override
@@ -60,9 +60,9 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    * @param update
    * @throws MALException
    */
-  public void sendUpdate(Element update) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendUpdate(Element update) throws MALException
   {
-    returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, update);
+    return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, update);
   }
 
   @Override
@@ -71,9 +71,9 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    * @param result
    * @throws MALException
    */
-  public void sendResponse(Element result) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(Element result) throws MALException
   {
-    returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, result);
+    return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, result);
   }
 
   @Override
@@ -82,7 +82,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    * @param error
    * @throws MALException
    */
-  public void sendError(StandardError error) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(StandardError error) throws MALException
   {
     Byte stage = MALProgressOperation.PROGRESS_ACK_STAGE;
 
@@ -91,7 +91,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
       stage = MALProgressOperation.PROGRESS_RESPONSE_STAGE;
     }
 
-    returnError(stage, error);
+    return returnError(stage, error);
   }
 
   @Override
@@ -100,8 +100,8 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    * @param error
    * @throws MALException
    */
-  public void sendUpdateError(StandardError error) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendUpdateError(StandardError error) throws MALException
   {
-    returnError(MALProgressOperation.PROGRESS_UPDATE_STAGE, error);
+    return returnError(MALProgressOperation.PROGRESS_UPDATE_STAGE, error);
   }
 }

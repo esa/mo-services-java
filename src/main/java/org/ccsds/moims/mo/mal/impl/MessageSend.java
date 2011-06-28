@@ -142,13 +142,13 @@ public class MessageSend
    * @return Publish transaction identifier.
    * @throws MALException on error.
    */
-  public Identifier publishRegisterAsync(MessageDetails details,
+  public org.ccsds.moims.mo.mal.transport.MALMessage publishRegisterAsync(MessageDetails details,
           MALPubSubOperation op,
           EntityKeyList entityKeys,
           MALPublishInteractionListener listener) throws MALException
   {
     pmap.registerPublishListener(details, listener);
-    return (Identifier) asynchronousInteraction(details,
+    return asynchronousInteraction(details,
             op,
             MALPubSubOperation.PUBLISH_REGISTER_STAGE,
             listener,
@@ -163,13 +163,13 @@ public class MessageSend
    * @param listener Response callback interface.
    * @throws MALException on error.
    */
-  public void registerAsync(MessageDetails details,
+  public org.ccsds.moims.mo.mal.transport.MALMessage registerAsync(MessageDetails details,
           MALPubSubOperation op,
           Subscription subscription,
           MALInteractionListener listener) throws MALException
   {
     pmap.registerNotifyListener(details, op, subscription, listener);
-    asynchronousInteraction(details, op, MALPubSubOperation.REGISTER_STAGE, listener, subscription);
+    return asynchronousInteraction(details, op, MALPubSubOperation.REGISTER_STAGE, listener, subscription);
   }
 
   /**
@@ -179,12 +179,12 @@ public class MessageSend
    * @param listener Response callback interface.
    * @throws MALException on error.
    */
-  public void publishDeregisterAsync(MessageDetails details,
+  public org.ccsds.moims.mo.mal.transport.MALMessage publishDeregisterAsync(MessageDetails details,
           MALPubSubOperation op,
           MALPublishInteractionListener listener) throws MALException
   {
     pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details.sessionName);
-    asynchronousInteraction(details, op, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, listener, null);
+    return asynchronousInteraction(details, op, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, listener, null);
   }
 
   /**
@@ -195,13 +195,15 @@ public class MessageSend
    * @param listener Response callback interface.
    * @throws MALException on error.
    */
-  public void deregisterAsync(MessageDetails details,
+  public org.ccsds.moims.mo.mal.transport.MALMessage deregisterAsync(MessageDetails details,
           MALPubSubOperation op,
           IdentifierList unsubscription,
           MALInteractionListener listener) throws MALException
   {
-    asynchronousInteraction(details, op, MALPubSubOperation.DEREGISTER_STAGE, listener, unsubscription);
+    org.ccsds.moims.mo.mal.transport.MALMessage msg = asynchronousInteraction(details, op, MALPubSubOperation.DEREGISTER_STAGE, listener, unsubscription);
     pmap.deregisterNotifyListener(details, op, unsubscription);
+
+    return msg;
   }
 
   /**
@@ -212,16 +214,18 @@ public class MessageSend
    * @param rspnInteractionStage Interaction stage to use on the response.
    * @param rspn Response message body.
    */
-  public void returnResponse(Address msgAddress,
+  public org.ccsds.moims.mo.mal.transport.MALMessage returnResponse(Address msgAddress,
           Identifier internalTransId,
           MessageHeader srcHdr,
           Byte rspnInteractionStage,
           Element rspn)
   {
+    MALMessage msg = null;
+
     try
     {
       MALEndPoint endpoint = msgAddress.endpoint;
-      MALMessage msg = endpoint.createMessage(createReturnHeader(msgAddress.uri,
+      msg = endpoint.createMessage(createReturnHeader(msgAddress.uri,
               msgAddress.authenticationId,
               srcHdr,
               srcHdr.getQoSlevel(),
@@ -234,6 +238,8 @@ public class MessageSend
     {
       Logging.logMessage("ERROR: Error returning response to consumer : " + srcHdr.getURIfrom());
     }
+
+    return msg;
   }
 
   void returnErrorAndCalculateStage(Address msgAddress,
@@ -339,22 +345,24 @@ public class MessageSend
    * @param rspnInteractionStage Interaction stage to use on the response.
    * @param error Response message error.
    */
-  public void returnError(Address msgAddress,
+  public org.ccsds.moims.mo.mal.transport.MALMessage returnError(Address msgAddress,
           Identifier internalTransId,
           MessageHeader srcHdr,
           Byte rspnInteractionStage,
           StandardError error)
   {
-    returnError(msgAddress, internalTransId, srcHdr, srcHdr.getQoSlevel(), rspnInteractionStage, error);
+    return returnError(msgAddress, internalTransId, srcHdr, srcHdr.getQoSlevel(), rspnInteractionStage, error);
   }
 
-  void returnError(Address msgAddress,
+  org.ccsds.moims.mo.mal.transport.MALMessage returnError(Address msgAddress,
           Identifier internalTransId,
           MessageHeader srcHdr,
           QoSLevel level,
           Byte rspnInteractionStage,
           StandardError error)
   {
+    MALMessage msg = null;
+
     try
     {
       if (null == level)
@@ -362,7 +370,7 @@ public class MessageSend
         level = srcHdr.getQoSlevel();
       }
 
-      MALMessage msg = msgAddress.endpoint.createMessage(createReturnHeader(msgAddress.uri,
+      msg = msgAddress.endpoint.createMessage(createReturnHeader(msgAddress.uri,
               msgAddress.authenticationId, srcHdr, level, rspnInteractionStage, true), error, new Hashtable());
 
       msgAddress.endpoint.sendMessage(msg);
@@ -371,6 +379,8 @@ public class MessageSend
     {
       Logging.logMessage("ERROR: Error returning exception to consumer : " + srcHdr.getURIfrom());
     }
+
+    return msg;
   }
 
   /**
@@ -382,7 +392,7 @@ public class MessageSend
    * @param msgBody The message body.
    * @throws MALException on Error.
    */
-  public void onewayInteraction(MessageDetails details,
+  public org.ccsds.moims.mo.mal.transport.MALMessage onewayInteraction(MessageDetails details,
           Identifier transId,
           MALOperation op,
           Byte stage,
@@ -402,6 +412,8 @@ public class MessageSend
       Logging.logMessage("ERROR: Error with one way send : " + msg.getHeader().getURIto());
       throw ex;
     }
+
+    return msg;
   }
 
   /**
@@ -492,7 +504,7 @@ public class MessageSend
    * @param msgBody The message body.
    * @throws MALException on Error.
    */
-  public void asynchronousInteraction(MessageDetails details,
+  public org.ccsds.moims.mo.mal.transport.MALMessage asynchronousInteraction(MessageDetails details,
           MALOperation op,
           Byte initialStage,
           MALInteractionListener listener,
@@ -500,7 +512,7 @@ public class MessageSend
   {
     Identifier transId = imap.createTransaction(op, false, initialStage, listener);
 
-    asynchronousInteraction(transId, details, op, initialStage, msgBody);
+    return asynchronousInteraction(transId, details, op, initialStage, msgBody);
   }
 
   /**
@@ -513,7 +525,7 @@ public class MessageSend
    * @return The transaction identifier is this is a PUBLISH REGISTER message, else null.
    * @throws MALException on Error.
    */
-  public Element asynchronousInteraction(MessageDetails details,
+  public org.ccsds.moims.mo.mal.transport.MALMessage asynchronousInteraction(MessageDetails details,
           MALOperation op,
           Byte initialStage,
           MALPublishInteractionListener listener,
@@ -521,19 +533,10 @@ public class MessageSend
   {
     Identifier transId = imap.createTransaction(op, false, initialStage, listener);
 
-    asynchronousInteraction(transId, details, op, initialStage, msgBody);
-
-    if (MALPubSubOperation._PUBLISH_REGISTER_STAGE == initialStage)
-    {
-      return transId;
-    }
-    else
-    {
-      return null;
-    }
+    return asynchronousInteraction(transId, details, op, initialStage, msgBody);
   }
 
-  private void asynchronousInteraction(Identifier transId,
+  private org.ccsds.moims.mo.mal.transport.MALMessage asynchronousInteraction(Identifier transId,
           MessageDetails details,
           MALOperation op,
           Byte initialStage,
@@ -554,6 +557,8 @@ public class MessageSend
       Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURIto());
       throw ex;
     }
+
+    return msg;
   }
 
   private void handlePossibleReturnError(MALMessage rtn) throws MALException

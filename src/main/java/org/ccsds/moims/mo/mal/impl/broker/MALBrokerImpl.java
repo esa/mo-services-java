@@ -33,7 +33,6 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  */
 public class MALBrokerImpl extends MALClose implements MALBroker
 {
-  private final MALBrokerBindingImpl[] bindings = new MALBrokerBindingImpl[0];
   private final Map<BrokerKey, BaseBrokerHandler> brokerMap = new TreeMap<BrokerKey, BaseBrokerHandler>();
 
   MALBrokerImpl(MALClose parent) throws MALException
@@ -44,16 +43,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker
   @Override
   public MALBrokerBinding[] getBindings()
   {
-    return bindings;
-  }
-
-  @Override
-  public synchronized void activate() throws MALException
-  {
-    for (int i = 0; i < bindings.length; i++)
-    {
-      bindings[i].startMessageDelivery();
-    }
+    return new MALBrokerBinding[0];
   }
 
   /**

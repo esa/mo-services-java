@@ -48,10 +48,10 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
    * @param result
    * @throws MALException
    */
-  public void sendAcknowledgement(Element result) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement(Element result) throws MALException
   {
     ackSent = true;
-    returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, result);
+    return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, result);
   }
 
   @Override
@@ -60,9 +60,9 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
    * @param result
    * @throws MALException
    */
-  public void sendResponse(Element result) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(Element result) throws MALException
   {
-    returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
+    return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
   }
 
   @Override
@@ -71,7 +71,7 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
    * @param error
    * @throws MALException
    */
-  public void sendError(StandardError error) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(StandardError error) throws MALException
   {
     Byte stage = MALInvokeOperation.INVOKE_ACK_STAGE;
 
@@ -80,6 +80,6 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
       stage = MALInvokeOperation.INVOKE_RESPONSE_STAGE;
     }
 
-    returnError(stage, error);
+    return returnError(stage, error);
   }
 }

@@ -123,9 +123,9 @@ class MALConsumerImpl extends MALClose implements MALConsumer
   }
 
   @Override
-  public void send(MALSendOperation op, Element requestBody) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage send(MALSendOperation op, Element requestBody) throws MALException
   {
-    sender.onewayInteraction(details, null, op, Byte.valueOf((byte) 0), requestBody);
+    return sender.onewayInteraction(details, null, op, Byte.valueOf((byte) 0), requestBody);
   }
 
   @Override
@@ -179,50 +179,50 @@ class MALConsumerImpl extends MALClose implements MALConsumer
   }
 
   @Override
-  public void asyncSubmit(MALSubmitOperation op,
+  public org.ccsds.moims.mo.mal.transport.MALMessage asyncSubmit(MALSubmitOperation op,
           Element requestBody,
           MALInteractionListener listener) throws MALException
   {
-    sender.asynchronousInteraction(details, op, MALSubmitOperation.SUBMIT_STAGE, listener, requestBody);
+    return sender.asynchronousInteraction(details, op, MALSubmitOperation.SUBMIT_STAGE, listener, requestBody);
   }
 
   @Override
-  public void asyncRequest(MALRequestOperation op,
+  public org.ccsds.moims.mo.mal.transport.MALMessage asyncRequest(MALRequestOperation op,
           Element requestBody,
           MALInteractionListener listener) throws MALException
   {
-    sender.asynchronousInteraction(details, op, MALRequestOperation.REQUEST_STAGE, listener, requestBody);
+    return sender.asynchronousInteraction(details, op, MALRequestOperation.REQUEST_STAGE, listener, requestBody);
   }
 
   @Override
-  public void asyncInvoke(MALInvokeOperation op,
+  public org.ccsds.moims.mo.mal.transport.MALMessage asyncInvoke(MALInvokeOperation op,
           Element requestBody,
           MALInteractionListener listener) throws MALException
   {
-    sender.asynchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
+    return sender.asynchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
   }
 
   @Override
-  public void asyncProgress(MALProgressOperation op,
+  public org.ccsds.moims.mo.mal.transport.MALMessage asyncProgress(MALProgressOperation op,
           Element requestBody,
           MALInteractionListener listener) throws MALException
   {
-    sender.asynchronousInteraction(details, op, MALProgressOperation.PROGRESS_STAGE, listener, requestBody);
+    return sender.asynchronousInteraction(details, op, MALProgressOperation.PROGRESS_STAGE, listener, requestBody);
   }
 
   @Override
-  public void asyncRegister(MALPubSubOperation op,
+  public org.ccsds.moims.mo.mal.transport.MALMessage asyncRegister(MALPubSubOperation op,
           Subscription subscription,
           MALInteractionListener listener) throws MALException
   {
-    sender.registerAsync(details, op, subscription, listener);
+    return sender.registerAsync(details, op, subscription, listener);
   }
 
   @Override
-  public void asyncDeregister(MALPubSubOperation op,
+  public org.ccsds.moims.mo.mal.transport.MALMessage asyncDeregister(MALPubSubOperation op,
           IdentifierList unsubscription,
           MALInteractionListener listener) throws MALException
   {
-    sender.deregisterAsync(details, op, unsubscription, listener);
+    return sender.deregisterAsync(details, op, unsubscription, listener);
   }
 }
