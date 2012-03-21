@@ -12,6 +12,7 @@ package org.ccsds.moims.mo.mal.impl.provider;
 
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import java.util.Hashtable;
+import java.util.Map;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
@@ -20,6 +21,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 
@@ -63,8 +65,8 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
           Blob authenticationId,
           MALInteractionHandler handler,
           QoSLevel[] expectedQos,
-          int priorityLevelNumber,
-          Hashtable defaultQoSProperties,
+          UInteger priorityLevelNumber,
+          Map defaultQoSProperties,
           Boolean isPublisher,
           URI sharedBrokerUri) throws MALException
   {
@@ -104,8 +106,8 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
           Blob authenticationId,
           MALInteractionHandler handler,
           QoSLevel[] expectedQos,
-          int priorityLevelNumber,
-          Hashtable defaultQoSProperties,
+          UInteger priorityLevelNumber,
+          Map defaultQoSProperties,
           Boolean isPublisher,
           URI sharedBrokerUri) throws MALException
   {

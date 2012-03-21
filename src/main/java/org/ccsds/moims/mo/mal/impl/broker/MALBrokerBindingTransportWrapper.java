@@ -10,15 +10,19 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
+import java.util.List;
+import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.impl.DummyHandler;
 import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
@@ -68,12 +72,29 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALInt
   {
     return endpoint;
   }
+
   /**
    * Returns the Address structure used by this component.
+   *
    * @return the Address structure.
    */
   public Address getMsgAddress()
   {
     return address;
+  }
+
+  public MALMessage sendNotify(UShort area, UShort service, UShort operation, UOctet version, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, Identifier subscriptionId, UpdateHeaderList updateHeaderList, List... updateList) throws IllegalArgumentException, MALInteractionException, MALException
+  {
+    return transportDelegate.sendNotify(area, service, operation, version, subscriber, transactionId, domainId, networkZone, sessionType, sessionName, notifyQos, notifyQosProps, notifyPriority, subscriptionId, updateHeaderList, updateList);
+  }
+
+  public MALMessage sendNotifyError(UShort area, UShort service, UShort operation, UOctet version, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  {
+    return transportDelegate.sendNotifyError(area, service, operation, version, subscriber, transactionId, domainId, networkZone, sessionType, sessionName, notifyQos, notifyQosProps, notifyPriority, error);
+  }
+
+  public MALMessage sendPublishError(UShort area, UShort service, UShort operation, UOctet version, URI publisher, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  {
+    return transportDelegate.sendPublishError(area, service, operation, version, publisher, transactionId, domainId, networkZone, sessionType, sessionName, qos, qosProps, priority, error);
   }
 }

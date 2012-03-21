@@ -10,19 +10,14 @@
  */
 package org.ccsds.moims.mo.mal.impl.consumer;
 
-import java.util.Hashtable;
+import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SessionType;
-import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 
 /**
@@ -66,13 +61,13 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
           URI brokerUri,
           MALService service,
           Blob authenticationId,
-          DomainIdentifier domain,
+          IdentifierList domain,
           Identifier networkZone,
           SessionType sessionType,
           Identifier sessionName,
           QoSLevel qosLevel,
-          Hashtable qosProps,
-          Integer priority) throws MALException
+          Map qosProps,
+          UInteger priority) throws MALException
   {
     return (MALConsumer) addChild(new MALConsumerImpl(impl,
             this,
@@ -90,7 +85,7 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
             priority));
   }
 
-  public MALConsumer createConsumer(MALEndPoint endPoint, URI uriTo, URI brokerUri, MALService service, Blob authenticationId, DomainIdentifier domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qosLevel, Hashtable qosProps, Integer priority) throws MALException
+  public MALConsumer createConsumer(MALEndPoint endPoint, URI uriTo, URI brokerUri, MALService service, Blob authenticationId, IdentifierList domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qosLevel, Map qosProps, UInteger priority) throws IllegalArgumentException, MALException
   {
     return (MALConsumer) addChild(new MALConsumerImpl(impl,
             this,

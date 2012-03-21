@@ -10,15 +10,15 @@
  */
 package org.ccsds.moims.mo.mal.impl.patterns;
 
-import org.ccsds.moims.mo.mal.provider.MALInvoke;
-import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
-import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.provider.MALInvoke;
+import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
-import org.ccsds.moims.mo.mal.structures.StandardError;
 
 /**
  * Invoke interaction class.
@@ -36,8 +36,8 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
    */
   public InvokeInteractionImpl(MessageSend sender,
           Address address,
-          Identifier internalTransId,
-          MALMessage msg) throws MALException
+          Long internalTransId,
+          MALMessage msg) throws MALInteractionException
   {
     super(sender, address, internalTransId, msg);
   }
@@ -48,7 +48,7 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
    * @param result
    * @throws MALException
    */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement(Element result) throws MALException
+  public MALMessage sendAcknowledgement(Object... result) throws MALInteractionException, MALException
   {
     ackSent = true;
     return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, result);
@@ -60,7 +60,7 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
    * @param result
    * @throws MALException
    */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(Element result) throws MALException
+  public MALMessage sendResponse(Object... result) throws MALInteractionException, MALException
   {
     return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
   }
@@ -71,9 +71,9 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
    * @param error
    * @throws MALException
    */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(StandardError error) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error) throws MALException
   {
-    Byte stage = MALInvokeOperation.INVOKE_ACK_STAGE;
+    UOctet stage = MALInvokeOperation.INVOKE_ACK_STAGE;
 
     if (ackSent)
     {

@@ -10,14 +10,14 @@
  */
 package org.ccsds.moims.mo.mal.impl.patterns;
 
-import org.ccsds.moims.mo.mal.provider.MALProgress;
-import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.StandardError;
+import org.ccsds.moims.mo.mal.provider.MALProgress;
+import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
@@ -36,8 +36,8 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    */
   public ProgressInteractionImpl(MessageSend sender,
           Address address,
-          Identifier internalTransId,
-          MALMessage msg) throws MALException
+          Long internalTransId,
+          MALMessage msg) throws MALInteractionException
   {
     super(sender, address, internalTransId, msg);
   }
@@ -48,7 +48,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    * @param result
    * @throws MALException
    */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement(Element result) throws MALException
+  public MALMessage sendAcknowledgement(Object... result) throws MALInteractionException, MALException
   {
     ackSent = true;
     return returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, result);
@@ -60,7 +60,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    * @param update
    * @throws MALException
    */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendUpdate(Element update) throws MALException
+  public MALMessage sendUpdate(Object... update) throws MALException
   {
     return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, update);
   }
@@ -71,7 +71,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    * @param result
    * @throws MALException
    */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(Element result) throws MALException
+  public MALMessage sendResponse(Object... result) throws MALInteractionException, MALException
   {
     return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, result);
   }
@@ -82,9 +82,9 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    * @param error
    * @throws MALException
    */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(StandardError error) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error) throws MALException
   {
-    Byte stage = MALProgressOperation.PROGRESS_ACK_STAGE;
+    UOctet stage = MALProgressOperation.PROGRESS_ACK_STAGE;
 
     if (ackSent)
     {
@@ -100,7 +100,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    * @param error
    * @throws MALException
    */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendUpdateError(StandardError error) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendUpdateError(MALStandardError error) throws MALException
   {
     return returnError(MALProgressOperation.PROGRESS_UPDATE_STAGE, error);
   }

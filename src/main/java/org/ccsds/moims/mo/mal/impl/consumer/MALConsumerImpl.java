@@ -10,32 +10,19 @@
  */
 package org.ccsds.moims.mo.mal.impl.consumer;
 
-import java.util.Hashtable;
-import org.ccsds.moims.mo.mal.MALInvokeOperation;
-import org.ccsds.moims.mo.mal.MALProgressOperation;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.MALRequestOperation;
-import org.ccsds.moims.mo.mal.MALSendOperation;
-import org.ccsds.moims.mo.mal.MALService;
-import org.ccsds.moims.mo.mal.MALSubmitOperation;
+import java.util.Map;
+import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
-import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.MessageDetails;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SessionType;
-import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
+import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
@@ -53,13 +40,13 @@ class MALConsumerImpl extends MALClose implements MALConsumer
           URI brokerUri,
           MALService service,
           Blob authenticationId,
-          DomainIdentifier domain,
+          IdentifierList domain,
           Identifier networkZone,
           SessionType sessionType,
           Identifier sessionName,
           QoSLevel qosLevel,
-          Hashtable qosProps,
-          Integer priority) throws MALException
+          Map qosProps,
+          UInteger priority) throws MALException
   {
     super(parent);
     this.sender = impl.getSendingInterface();
@@ -90,13 +77,13 @@ class MALConsumerImpl extends MALClose implements MALConsumer
           URI brokerUri,
           MALService service,
           Blob authenticationId,
-          DomainIdentifier domain,
+          IdentifierList domain,
           Identifier networkZone,
           SessionType sessionType,
           Identifier sessionName,
           QoSLevel qosLevel,
-          Hashtable qosProps,
-          Integer priority) throws MALException
+          Map qosProps,
+          UInteger priority) throws MALException
   {
     super(parent);
     this.sender = impl.getSendingInterface();
@@ -123,13 +110,15 @@ class MALConsumerImpl extends MALClose implements MALConsumer
   }
 
   @Override
-  public org.ccsds.moims.mo.mal.transport.MALMessage send(MALSendOperation op, Element requestBody) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage send(MALSendOperation op, Object... requestBody)
+          throws java.lang.IllegalArgumentException, MALInteractionException, MALException
   {
-    return sender.onewayInteraction(details, null, op, Byte.valueOf((byte) 0), requestBody);
+    return sender.onewayInteraction(details, null, op, new UOctet((short) 0), requestBody);
   }
 
   @Override
-  public void submit(MALSubmitOperation op, Element requestBody) throws MALException
+  public void submit(MALSubmitOperation op, Object... requestBody)
+          throws java.lang.IllegalArgumentException, MALInteractionException, MALException
   {
     sender.synchronousInteraction(details,
             op,
@@ -139,7 +128,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer
   }
 
   @Override
-  public Element request(MALRequestOperation op, Element requestBody) throws MALException
+  public MALMessageBody request(MALRequestOperation op, Object... requestBody)
+          throws IllegalArgumentException, MALInteractionException, MALException
   {
     return sender.synchronousInteraction(details,
             op,
@@ -149,63 +139,64 @@ class MALConsumerImpl extends MALClose implements MALConsumer
   }
 
   @Override
-  public Element invoke(MALInvokeOperation op,
-          Element requestBody,
-          MALInteractionListener listener) throws MALException
+  public MALMessageBody invoke(MALInvokeOperation op,
+          MALInteractionListener listener,
+          Object... requestBody) throws IllegalArgumentException, MALInteractionException, MALException
   {
     return sender.synchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
   }
 
   @Override
-  public Element progress(MALProgressOperation op,
-          Element requestBody,
-          MALInteractionListener listener) throws MALException
+  public MALMessageBody progress(MALProgressOperation op,
+          MALInteractionListener listener,
+          Object... requestBody) throws IllegalArgumentException, MALInteractionException, MALException
   {
-    return sender.synchronousInteraction(details, op, MALProgressOperation._PROGRESS_STAGE, listener, requestBody);
+    return sender.synchronousInteraction(details, op, MALProgressOperation.PROGRESS_STAGE, listener, requestBody);
   }
 
   @Override
   public void register(MALPubSubOperation op,
           Subscription subscription,
-          MALInteractionListener listener) throws MALException
+          MALInteractionListener listener) throws java.lang.IllegalArgumentException, MALInteractionException, MALException
   {
     sender.register(details, op, subscription, listener);
   }
 
   @Override
-  public void deregister(MALPubSubOperation op, IdentifierList unsubscription) throws MALException
+  public void deregister(MALPubSubOperation op, IdentifierList unsubscription)
+          throws java.lang.IllegalArgumentException, MALInteractionException, MALException
   {
     sender.deregister(details, op, unsubscription);
   }
 
   @Override
-  public org.ccsds.moims.mo.mal.transport.MALMessage asyncSubmit(MALSubmitOperation op,
-          Element requestBody,
-          MALInteractionListener listener) throws MALException
+  public MALMessage asyncSubmit(MALSubmitOperation op,
+          MALInteractionListener listener,
+          Object... requestBody) throws IllegalArgumentException, MALInteractionException, MALException
   {
     return sender.asynchronousInteraction(details, op, MALSubmitOperation.SUBMIT_STAGE, listener, requestBody);
   }
 
   @Override
-  public org.ccsds.moims.mo.mal.transport.MALMessage asyncRequest(MALRequestOperation op,
-          Element requestBody,
-          MALInteractionListener listener) throws MALException
+  public MALMessage asyncRequest(MALRequestOperation op,
+          MALInteractionListener listener,
+          Object... requestBody) throws IllegalArgumentException, MALInteractionException, MALException
   {
     return sender.asynchronousInteraction(details, op, MALRequestOperation.REQUEST_STAGE, listener, requestBody);
   }
 
   @Override
-  public org.ccsds.moims.mo.mal.transport.MALMessage asyncInvoke(MALInvokeOperation op,
-          Element requestBody,
-          MALInteractionListener listener) throws MALException
+  public MALMessage asyncInvoke(MALInvokeOperation op,
+          MALInteractionListener listener,
+          Object... requestBody) throws IllegalArgumentException, MALInteractionException, MALException
   {
     return sender.asynchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
   }
 
   @Override
-  public org.ccsds.moims.mo.mal.transport.MALMessage asyncProgress(MALProgressOperation op,
-          Element requestBody,
-          MALInteractionListener listener) throws MALException
+  public MALMessage asyncProgress(MALProgressOperation op,
+          MALInteractionListener listener,
+          Object... requestBody) throws IllegalArgumentException, MALInteractionException, MALException
   {
     return sender.asynchronousInteraction(details, op, MALProgressOperation.PROGRESS_STAGE, listener, requestBody);
   }
@@ -213,7 +204,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer
   @Override
   public org.ccsds.moims.mo.mal.transport.MALMessage asyncRegister(MALPubSubOperation op,
           Subscription subscription,
-          MALInteractionListener listener) throws MALException
+          MALInteractionListener listener) throws java.lang.IllegalArgumentException, MALInteractionException, MALException
   {
     return sender.registerAsync(details, op, subscription, listener);
   }
@@ -221,8 +212,17 @@ class MALConsumerImpl extends MALClose implements MALConsumer
   @Override
   public org.ccsds.moims.mo.mal.transport.MALMessage asyncDeregister(MALPubSubOperation op,
           IdentifierList unsubscription,
-          MALInteractionListener listener) throws MALException
+          MALInteractionListener listener) throws java.lang.IllegalArgumentException, MALInteractionException, MALException
   {
     return sender.deregisterAsync(details, op, unsubscription, listener);
+  }
+
+  public void continueInteraction(MALOperation op,
+          UOctet lastInteractionStage,
+          Time initiationTimestamp,
+          Long transactionId,
+          MALInteractionListener listener) throws IllegalArgumentException, MALException
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 }

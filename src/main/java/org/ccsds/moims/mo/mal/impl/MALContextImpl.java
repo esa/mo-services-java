@@ -10,22 +10,22 @@
  */
 package org.ccsds.moims.mo.mal.impl;
 
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALContext;
-import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
-import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
+import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControlFactory;
+import org.ccsds.moims.mo.mal.accesscontrol.MALCheckErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
+import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerManagerImpl;
 import org.ccsds.moims.mo.mal.impl.consumer.MALConsumerManagerImpl;
 import org.ccsds.moims.mo.mal.impl.provider.MALProviderManagerImpl;
 import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
-import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
-import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControlFactory;
+import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
@@ -35,7 +35,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
  */
 public class MALContextImpl extends MALClose implements MALContext
 {
-  private final Hashtable initialProperties;
+  private final Map initialProperties;
   private final MALAccessControl securityManager;
   private final InteractionMap imap = new InteractionMap();
   private final PubSubMap pmap = new PubSubMap();
@@ -49,11 +49,11 @@ public class MALContextImpl extends MALClose implements MALContext
    * @param properties initial qos properties.
    * @throws MALException on error.
    */
-  public MALContextImpl(MALAccessControlFactory securityFactory, Hashtable properties) throws MALException
+  public MALContextImpl(MALAccessControlFactory securityFactory, Map properties) throws MALException
   {
     super(null);
 
-    initialProperties = (null == properties) ? null : ((Hashtable) properties.clone());
+    initialProperties = (null == properties) ? null : properties;
 
     if (null != securityFactory)
     {
@@ -110,7 +110,7 @@ public class MALContextImpl extends MALClose implements MALContext
    * Returns the qos properties used in the creation of this MALContext.
    * @return the QOS properties.
    */
-  public Hashtable getInitialProperties()
+  public Map getInitialProperties()
   {
     return initialProperties;
   }
@@ -145,7 +145,7 @@ public class MALContextImpl extends MALClose implements MALContext
   private static final class NullSecurityManager implements MALAccessControl
   {
     @Override
-    public MALMessage check(MALMessage msg) throws MALException
+    public MALMessage check(MALMessage msg) throws IllegalArgumentException, MALCheckErrorException
     {
       return msg;
     }

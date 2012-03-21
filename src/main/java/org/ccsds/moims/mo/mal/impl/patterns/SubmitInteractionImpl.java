@@ -10,13 +10,13 @@
  */
 package org.ccsds.moims.mo.mal.impl.patterns;
 
-import org.ccsds.moims.mo.mal.provider.MALSubmit;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.StandardError;
+import org.ccsds.moims.mo.mal.provider.MALSubmit;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
@@ -33,8 +33,8 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
    */
   public SubmitInteractionImpl(MessageSend sender,
           Address address,
-          Identifier internalTransId,
-          MALMessage msg) throws MALException
+          Long internalTransId,
+          MALMessage msg) throws MALInteractionException
   {
     super(sender, address, internalTransId, msg);
   }
@@ -46,7 +46,7 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
    */
   public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement() throws MALException
   {
-    return returnResponse(MALSubmitOperation.SUBMIT_ACK_STAGE, null);
+    return returnResponse(MALSubmitOperation.SUBMIT_ACK_STAGE, (Object) null);
   }
 
   @Override
@@ -55,7 +55,7 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
    * @param error
    * @throws MALException
    */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(StandardError error) throws MALException
+  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error) throws MALException
   {
     return returnError(MALSubmitOperation.SUBMIT_ACK_STAGE, error);
   }

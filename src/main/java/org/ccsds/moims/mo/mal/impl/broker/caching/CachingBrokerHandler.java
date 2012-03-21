@@ -13,7 +13,7 @@ package org.ccsds.moims.mo.mal.impl.broker.caching;
 import org.ccsds.moims.mo.mal.impl.broker.BaseBrokerHandler;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionSource;
-import org.ccsds.moims.mo.mal.structures.MessageHeader;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * The caching broker maintains lists of who desired what published updates, so when an update arrives the costly
@@ -27,8 +27,8 @@ public class CachingBrokerHandler extends BaseBrokerHandler
   }
 
   @Override
-  protected SubscriptionSource createEntry(MessageHeader hdr, MALBrokerBindingImpl binding)
+  protected SubscriptionSource createEntry(MALMessageHeader hdr, MALBrokerBindingImpl binding)
   {
-    return new CachingSubscriptionSource(hdr, binding);
+    return null;//new CachingSubscriptionSource(hdr, binding);
   }
 }

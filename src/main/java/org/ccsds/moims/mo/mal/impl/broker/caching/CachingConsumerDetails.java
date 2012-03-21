@@ -19,10 +19,10 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.MessageHeader;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
 import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
+import org.ccsds.moims.mo.mal.impl.NotifyMessage;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -39,7 +39,7 @@ class CachingConsumerDetails
   private final MALBrokerBindingImpl binding;
   private final Map<String, CachingSubscriptionDetails> details = new TreeMap<String, CachingSubscriptionDetails>();
   private BrokerMessage brokerMessage = null;
-  private BrokerMessage.NotifyMessage notifyMessage = null;
+  private NotifyMessage notifyMessage = null;
   private Identifier transactionId;
   private QoSLevel qos;
   private Integer priority;
@@ -73,7 +73,7 @@ class CachingConsumerDetails
     return details.isEmpty();
   }
 
-  public void addSubscription(MessageHeader srcHdr,
+  public void addSubscription(MALMessageHeader srcHdr,
           Map<SubscriptionKey,
           PublishedEntry> published,
           Subscription subscription)
@@ -85,9 +85,9 @@ class CachingConsumerDetails
     {
       if (details.isEmpty())
       {
-        this.transactionId = srcHdr.getTransactionId();
-        this.qos = srcHdr.getQoSlevel();
-        this.priority = srcHdr.getPriority();
+//        this.transactionId = srcHdr.getTransactionId();
+//        this.qos = srcHdr.getQoSlevel();
+//        this.priority = srcHdr.getPriority();
       }
       sub = new CachingSubscriptionDetails(this, subId);
       details.put(subId, sub);
@@ -97,43 +97,43 @@ class CachingConsumerDetails
     sub.setIds(published, subscription.getEntities());
   }
 
-  public void populateNotifyList(SubscriptionUpdate subUpdate)
+  public void populateNotifyList()//SubscriptionUpdate subUpdate)
   {
     Logging.logMessage("INFO: Checking CacheConDetails");
 
     if (null == brokerMessage)
     {
       brokerMessage = new BrokerMessage(binding);
-      notifyMessage = new BrokerMessage.NotifyMessage();
+      notifyMessage = new NotifyMessage();
       brokerMessage.msgs.add(notifyMessage);
     }
 
-    notifyMessage.updates.add(subUpdate);
+//    notifyMessage.updates.add(subUpdate);
   }
 
-  public void getNotifyMessage(MessageHeader srcHdr, List<BrokerMessage> lst)
+  public void getNotifyMessage(MALMessageHeader srcHdr, List<BrokerMessage> lst)
   {
     if (null != brokerMessage)
     {
       // update the details in the header
-      notifyMessage.header.setURIto(new URI(consumerId));
-      notifyMessage.header.setURIfrom(binding.getURI());
-      notifyMessage.header.setAuthenticationId(binding.getAuthenticationId());
-      notifyMessage.header.setTimestamp(srcHdr.getTimestamp());
-      notifyMessage.header.setQoSlevel(qos);
-      notifyMessage.header.setPriority(priority);
-      notifyMessage.header.setDomain(srcHdr.getDomain());
-      notifyMessage.header.setNetworkZone(srcHdr.getNetworkZone());
-      notifyMessage.header.setSession(srcHdr.getSession());
-      notifyMessage.header.setSessionName(srcHdr.getSessionName());
-      notifyMessage.header.setInteractionType(InteractionType.PUBSUB);
-      notifyMessage.header.setInteractionStage(MALPubSubOperation.NOTIFY_STAGE);
-      notifyMessage.header.setTransactionId(transactionId);
-      notifyMessage.header.setArea(srcHdr.getArea());
-      notifyMessage.header.setService(srcHdr.getService());
-      notifyMessage.header.setOperation(srcHdr.getOperation());
-      notifyMessage.header.setVersion(srcHdr.getVersion());
-      notifyMessage.header.setError(srcHdr.isError());
+//      notifyMessage.header.setURIto(new URI(consumerId));
+//      notifyMessage.header.setURIfrom(binding.getURI());
+//      notifyMessage.header.setAuthenticationId(binding.getAuthenticationId());
+//      notifyMessage.header.setTimestamp(srcHdr.getTimestamp());
+//      notifyMessage.header.setQoSlevel(qos);
+//      notifyMessage.header.setPriority(priority);
+//      notifyMessage.header.setDomain(srcHdr.getDomain());
+//      notifyMessage.header.setNetworkZone(srcHdr.getNetworkZone());
+//      notifyMessage.header.setSession(srcHdr.getSession());
+//      notifyMessage.header.setSessionName(srcHdr.getSessionName());
+//      notifyMessage.header.setInteractionType(InteractionType.PUBSUB);
+//      notifyMessage.header.setInteractionStage(MALPubSubOperation.NOTIFY_STAGE);
+//      notifyMessage.header.setTransactionId(transactionId);
+//      notifyMessage.header.setArea(srcHdr.getArea());
+//      notifyMessage.header.setService(srcHdr.getService());
+//      notifyMessage.header.setOperation(srcHdr.getOperation());
+//      notifyMessage.header.setVersion(srcHdr.getVersion());
+//      notifyMessage.header.setError(srcHdr.isError());
 
       lst.add(brokerMessage);
 

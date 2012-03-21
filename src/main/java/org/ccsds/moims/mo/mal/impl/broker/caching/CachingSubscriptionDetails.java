@@ -13,16 +13,9 @@ package org.ccsds.moims.mo.mal.impl.broker.caching;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
 import org.ccsds.moims.mo.mal.structures.EntityRequestList;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.Update;
-import org.ccsds.moims.mo.mal.structures.UpdateList;
 
 /**
  * A CachingSubscriptionDetails is keyed on subscription Id
@@ -34,7 +27,7 @@ class CachingSubscriptionDetails
   private final Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
   private final Set<SubscriptionKey> onAll = new TreeSet<SubscriptionKey>();
   private final Set<SubscriptionKey> onChange = new TreeSet<SubscriptionKey>();
-  private SubscriptionUpdate notifySubscriptionUpdate = null;
+  //private SubscriptionUpdate notifySubscriptionUpdate = null;
 
   public CachingSubscriptionDetails(CachingConsumerDetails parent, String subscriptionId)
   {
@@ -145,22 +138,22 @@ class CachingSubscriptionDetails
     }
   }
 
-  public void populateNotify(Update update)
+  public void populateNotify()//Update update)
   {
-    Logging.logMessage("INFO: Checking CacheSubDetails");
-
-    if (null == notifySubscriptionUpdate)
-    {
-      notifySubscriptionUpdate = new SubscriptionUpdate(new Identifier(subscriptionId), new UpdateList());
-      parent.populateNotifyList(notifySubscriptionUpdate);
-    }
-
-    notifySubscriptionUpdate.getUpdateList().add(update);
+//    Logging.logMessage("INFO: Checking CacheSubDetails");
+//
+//    if (null == notifySubscriptionUpdate)
+//    {
+//      notifySubscriptionUpdate = new SubscriptionUpdate(new Identifier(subscriptionId), new UpdateList());
+//      parent.populateNotifyList(notifySubscriptionUpdate);
+//    }
+//
+//    notifySubscriptionUpdate.getUpdateList().add(update);
   }
 
   public void clearNotify()
   {
-    notifySubscriptionUpdate = null;
+//    notifySubscriptionUpdate = null;
   }
 
   public void removeSubscription(Map<SubscriptionKey, PublishedEntry> published)

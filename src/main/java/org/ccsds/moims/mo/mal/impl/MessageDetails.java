@@ -10,14 +10,10 @@
  */
 package org.ccsds.moims.mo.mal.impl;
 
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 import org.ccsds.moims.mo.mal.MALService;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SessionType;
-import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 
 /**
@@ -31,13 +27,13 @@ public final class MessageDetails
   public final URI brokerUri;
   public final MALService service;
   public Blob authenticationId;
-  public final DomainIdentifier domain;
+  public final IdentifierList domain;
   public final Identifier networkZone;
   public final SessionType sessionType;
   public final Identifier sessionName;
   public final QoSLevel qosLevel;
-  public final Hashtable qosProps;
-  public final int priority;
+  public final Map qosProps;
+  public final UInteger priority;
 
   /**
    * Constructor.
@@ -61,13 +57,13 @@ public final class MessageDetails
           URI brokerUri,
           MALService service,
           Blob authenticationId,
-          DomainIdentifier domain,
+          IdentifierList domain,
           Identifier networkZone,
           SessionType sessionType,
           Identifier sessionName,
           QoSLevel qosLevel,
-          Hashtable qosProps,
-          int priority)
+          Map qosProps,
+          UInteger priority)
   {
     this.endpoint = endpoint;
     this.uriFrom = uriFrom;
@@ -80,7 +76,7 @@ public final class MessageDetails
     this.sessionType = sessionType;
     this.sessionName = sessionName;
     this.qosLevel = qosLevel;
-    this.qosProps = (null == qosProps) ? new Hashtable() : qosProps;
+    this.qosProps = (null == qosProps) ? new HashMap() : qosProps;
     this.priority = priority;
   }
 }

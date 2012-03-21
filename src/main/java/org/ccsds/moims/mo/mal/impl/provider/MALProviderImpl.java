@@ -10,24 +10,21 @@
  */
 package org.ccsds.moims.mo.mal.impl.provider;
 
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.TreeMap;
+import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALService;
-import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
-import org.ccsds.moims.mo.mal.provider.MALProvider;
-import org.ccsds.moims.mo.mal.provider.MALPublisher;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.ServiceComponentImpl;
 import org.ccsds.moims.mo.mal.impl.broker.MALInternalBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
+import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
+import org.ccsds.moims.mo.mal.provider.MALProvider;
+import org.ccsds.moims.mo.mal.provider.MALPublisher;
+import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.transport.MALEndPoint;
 
 /**
  * MALProvider implementation.
@@ -35,7 +32,7 @@ import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 {
   private final boolean isPublisher;
-  private final Map<Integer, MALPublisher> publishers = new TreeMap<Integer, MALPublisher>();
+  private final Map<String, MALPublisher> publishers = new TreeMap<String, MALPublisher>();
   private final URI sharedBrokerUri;
   private final MALBrokerBinding localBrokerBinding;
   private final URI localBrokerUri;
@@ -49,8 +46,8 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
           Blob authenticationId,
           MALInteractionHandler handler,
           QoSLevel[] expectedQos,
-          int priorityLevelNumber,
-          Hashtable defaultQoSProperties,
+          UInteger priorityLevelNumber,
+          Map defaultQoSProperties,
           Boolean isPublisher,
           URI sharedBrokerUri) throws MALException
   {
@@ -115,8 +112,8 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
           Blob authenticationId,
           MALInteractionHandler handler,
           QoSLevel[] expectedQos,
-          int priorityLevelNumber,
-          Hashtable defaultQoSProperties,
+          UInteger priorityLevelNumber,
+          Map defaultQoSProperties,
           Boolean isPublisher,
           URI sharedBrokerUri) throws MALException
   {
@@ -182,20 +179,26 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     return isPublisher;
   }
 
+  public MALService getService()
+  {
+    return service;
+  }
+
   /**
    * Access the internal MALPublisher interface.
    * @param op The operation that is to be published.
    * @return The internal MALPublisher
    */
   @Override
-  public synchronized MALPublisher getPublisher(MALPubSubOperation op)
+  public synchronized MALPublisher createPublisher(MALPubSubOperation op, IdentifierList domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Map remotePublisherQosProps, UInteger remotePublisherPriority) throws IllegalArgumentException, MALException
   {
-    MALPublisher pub = publishers.get(op.getNumber());
+    String key = createPublisherKey(op, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherPriority);
+    MALPublisher pub = publishers.get(key);
 
     if (null == pub)
     {
-      pub = new MALPublisherImpl(this, sendHandler, op);
-      publishers.put(op.getNumber(), pub);
+      pub = new MALPublisherImpl(this, sendHandler, op, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
+      publishers.put(key, pub);
     }
 
     return pub;
@@ -253,5 +256,18 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
   MALEndPoint getPublishEndpoint()
   {
     return brokerEndpoint;
+  }
+  
+  String createPublisherKey(MALPubSubOperation op, IdentifierList domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, UInteger remotePublisherPriority)
+  {
+    StringBuilder buf = new StringBuilder();
+    buf.append(op.getNumber());
+    buf.append(domain);
+    buf.append(networkZone);
+    buf.append(sessionType);
+    buf.append(sessionName);
+    buf.append(remotePublisherQos);
+    buf.append(remotePublisherPriority);
+    return buf.toString();
   }
 }

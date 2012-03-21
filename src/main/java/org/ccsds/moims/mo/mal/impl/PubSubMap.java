@@ -65,6 +65,37 @@ class PubSubMap
 
     return list;
   }
+  
+  void listPublishListeners()
+  {
+    synchronized (publisherMap)
+    {
+      Logging.logMessage("INFO: Starting dump of publisher map");
+      for (StringPair e : publisherMap.keySet())
+      {
+        Logging.logMessage("INFO:   " + e);
+      }
+      Logging.logMessage("INFO: End of dump of publisher map");
+    }
+    synchronized (errorMap)
+    {
+      Logging.logMessage("INFO: Starting dump of error map");
+      for (String e : errorMap.keySet())
+      {
+        Logging.logMessage("INFO:   " + e);
+      }
+      Logging.logMessage("INFO: End of dump of error map");
+    }
+    synchronized (notifyMap)
+    {
+      Logging.logMessage("INFO: Starting dump of notify map");
+      for (StringPair e : notifyMap.keySet())
+      {
+        Logging.logMessage("INFO:   " + e);
+      }
+      Logging.logMessage("INFO: End of dump of notify map");
+    }
+  }
 
   MALPublishInteractionListener getPublishListenerAndRemove(URI uri, Identifier sessionName)
   {

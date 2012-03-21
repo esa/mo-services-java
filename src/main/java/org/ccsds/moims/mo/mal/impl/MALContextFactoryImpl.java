@@ -10,13 +10,13 @@
  */
 package org.ccsds.moims.mo.mal.impl;
 
-import java.util.Hashtable;
+import java.util.Map;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControlFactory;
 import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
-import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControlFactory;
 
 /**
  * Implementation of the MALContextFactory abstract class.
@@ -26,14 +26,14 @@ public class MALContextFactoryImpl extends MALContextFactory
   private final MALAccessControlFactory securityFactory;
   
   /**
-   * Constrcutor.
+   * Constructor.
    * @throws MALException On error.
    */
   public MALContextFactoryImpl() throws MALException
   {
     init();
     
-    securityFactory = MALAccessControlFactory.newInstance();
+    securityFactory = MALAccessControlFactory.newFactory();
   }
 
   private void init()
@@ -49,7 +49,7 @@ public class MALContextFactoryImpl extends MALContextFactory
   }
 
   @Override
-  public MALContext createMALContext(Hashtable properties) throws MALException
+  public MALContext createMALContext(Map properties) throws MALException
   {
     return new MALContextImpl(securityFactory, properties);
   }

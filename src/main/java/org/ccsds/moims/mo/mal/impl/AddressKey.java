@@ -11,10 +11,10 @@
 package org.ccsds.moims.mo.mal.impl;
 
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
-import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
-import org.ccsds.moims.mo.mal.structures.MessageHeader;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Comparable URI based address.
@@ -36,7 +36,7 @@ public class AddressKey implements Comparable
    * @param session Session type.
    * @param sessionName Session name.
    */
-  public AddressKey(URI uri, DomainIdentifier domain, String networkZone, SessionType session, String sessionName)
+  public AddressKey(URI uri, IdentifierList domain, String networkZone, SessionType session, String sessionName)
   {
     this.uri = uri.getValue();
     this.domain = StructureHelper.domainToString(domain);
@@ -49,9 +49,9 @@ public class AddressKey implements Comparable
    * Constructor.
    * @param hdr Source message.
    */
-  public AddressKey(MessageHeader hdr)
+  public AddressKey(MALMessageHeader hdr)
   {
-    this.uri = hdr.getURIto().getValue();
+    this.uri = hdr.getURITo().getValue();
     this.domain = StructureHelper.domainToString(hdr.getDomain());
     this.networkZone = hdr.getNetworkZone().getValue();
     this.session = hdr.getSession().getOrdinal();

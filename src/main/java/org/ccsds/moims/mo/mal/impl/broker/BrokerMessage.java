@@ -10,10 +10,13 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
+import org.ccsds.moims.mo.mal.impl.NotifyMessage;
 import java.util.LinkedList;
 import java.util.List;
-import org.ccsds.moims.mo.mal.structures.MessageHeader;
-import org.ccsds.moims.mo.mal.structures.SubscriptionUpdateList;
+import org.ccsds.moims.mo.mal.impl.MessageDetails;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
 
 /**
  * Container class that holds a set of notify messages from a single broker binding.
@@ -31,25 +34,11 @@ public final class BrokerMessage
 
   /**
    * Constructor.
+   *
    * @param binding Binding to associate.
    */
   public BrokerMessage(MALBrokerBindingImpl binding)
   {
     this.binding = binding;
-  }
-
-  /**
-   * A single notify message.
-   */
-  public static final class NotifyMessage
-  {
-    /**
-     * Message header.
-     */
-    public final MessageHeader header = new MessageHeader();
-    /**
-     * Subscription update.
-     */
-    public final SubscriptionUpdateList updates = new SubscriptionUpdateList();
   }
 }

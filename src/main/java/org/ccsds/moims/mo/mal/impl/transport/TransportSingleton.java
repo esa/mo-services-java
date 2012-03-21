@@ -10,15 +10,13 @@
  */
 package org.ccsds.moims.mo.mal.impl.transport;
 
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.StandardError;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
@@ -63,7 +61,7 @@ public final class TransportSingleton
    * @return The transport handler.
    * @throws MALException on error.
    */
-  public static MALTransport instance(final URI dstUri, Hashtable properties) throws MALException
+  public static MALTransport instance(final URI dstUri, Map properties) throws MALException
   {
     init();
 
@@ -76,13 +74,13 @@ public final class TransportSingleton
   }
 
   /**
-   * Creates an instance of a Tranport.
+   * Creates an instance of a Transport.
    * @param dstUri The Uri.
    * @param properties QoS properties.
    * @return The transport handler.
    * @throws MALException on error.
    */
-  public static MALTransport instance(final String dstUri, Hashtable properties) throws MALException
+  public static MALTransport instance(final String dstUri, Map properties) throws MALException
   {
     init();
 
@@ -125,7 +123,7 @@ public final class TransportSingleton
     if (null != dstUri)
     {
       // lookup for existing transport
-      MALTransport existingTransport = null;
+      MALTransport existingTransport;
 
       synchronized (TRANSPORT_MAP)
       {
@@ -145,13 +143,13 @@ public final class TransportSingleton
    * @return  The transport handler.
    * @throws MALException on error.
    */
-  private static MALTransport internalInstance(final String dstUri, Hashtable properties) throws MALException
+  private static MALTransport internalInstance(final String dstUri, Map properties) throws MALException
   {
     // get protocol from uri
     String strProtocol = getProtocol(dstUri);
 
     // lookup for existing transport
-    MALTransport transport = null;
+    MALTransport transport;
 
     synchronized (TRANSPORT_MAP)
     {
@@ -164,7 +162,7 @@ public final class TransportSingleton
       MALTransportFactory ohandler = FACTORY_MAP.get(strProtocol);
       if (null == ohandler)
       {
-        ohandler = MALTransportFactory.newInstance(strProtocol);
+        ohandler = MALTransportFactory.newFactory(strProtocol);
 
         if (null != ohandler)
         {
@@ -172,7 +170,7 @@ public final class TransportSingleton
         }
         else
         {
-          throw new MALException(new StandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
+          throw new MALException("DESTINATION_UNKNOWN_ERROR_NUMBER");
         }
       }
 

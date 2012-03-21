@@ -12,7 +12,8 @@ package org.ccsds.moims.mo.mal.impl.broker;
 
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.MessageHeader;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Simple class that represents a MAL update key.
@@ -21,30 +22,31 @@ public final class UpdateKey implements Comparable
 {
   private static final int HASH_MAGIC_NUMBER = 47;
   public final String domain;
-  public final String area;
-  public final String service;
-  public final String operation;
+  public final UShort area;
+  public final UShort service;
+  public final UShort operation;
   public final String key1;
-  public final String key2;
-  public final String key3;
-  public final String key4;
+  public final Integer key2;
+  public final Integer key3;
+  public final Integer key4;
 
   /**
    * Constructor.
+   *
    * @param lst Entity key.
    */
-  public UpdateKey(MessageHeader srcHdr, String domainId, EntityKey lst)
+  public UpdateKey(MALMessageHeader srcHdr, String domainId, EntityKey lst)
   {
     super();
 
     this.domain = domainId;
-    this.area = getIdValue(srcHdr.getArea());
-    this.service = getIdValue(srcHdr.getService());
-    this.operation = getIdValue(srcHdr.getOperation());
+    this.area = srcHdr.getServiceArea();
+    this.service = srcHdr.getService();
+    this.operation = srcHdr.getOperation();
     this.key1 = getIdValue(lst.getFirstSubKey());
-    this.key2 = getIdValue(lst.getSecondSubKey());
-    this.key3 = getIdValue(lst.getThirdSubKey());
-    this.key4 = getIdValue(lst.getFourthSubKey());
+    this.key2 = lst.getSecondSubKey();
+    this.key3 = lst.getThirdSubKey();
+    this.key4 = lst.getFourthSubKey();
   }
 
   @Override
@@ -112,6 +114,31 @@ public final class UpdateKey implements Comparable
   }
 
   private int compareSubkey(String myKeyPart, String theirKeyPart)
+  {
+    if ((null == myKeyPart) || (null == theirKeyPart))
+    {
+      if ((null != myKeyPart) || (null != theirKeyPart))
+      {
+        if (null == myKeyPart)
+        {
+          return -1;
+        }
+
+        return 1;
+      }
+    }
+    else
+    {
+      if (!myKeyPart.equals(theirKeyPart))
+      {
+        return myKeyPart.compareTo(theirKeyPart);
+      }
+    }
+
+    return 0;
+  }
+
+  private int compareSubkey(Integer myKeyPart, Integer theirKeyPart)
   {
     if ((null == myKeyPart) || (null == theirKeyPart))
     {

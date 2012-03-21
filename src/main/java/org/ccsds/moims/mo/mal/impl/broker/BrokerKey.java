@@ -10,9 +10,8 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
-import org.ccsds.moims.mo.mal.structures.MessageHeader;
-import org.ccsds.moims.mo.mal.structures.SessionType;
-import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.impl.MessageDetails;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Comparable URI based address.
@@ -28,11 +27,22 @@ public class BrokerKey implements Comparable
    * Constructor.
    * @param hdr Source message.
    */
-  public BrokerKey(MessageHeader hdr)
+  public BrokerKey(MALMessageHeader hdr)
   {
-    this.uri = hdr.getURIto().getValue();
+    this.uri = hdr.getURITo().getValue();
     this.session = hdr.getSession().getOrdinal();
     this.sessionName = hdr.getSessionName().getValue();
+  }
+
+  /**
+   * Constructor.
+   * @param hdr Source message.
+   */
+  public BrokerKey(MessageDetails details)
+  {
+    this.uri = details.uriTo.getValue();
+    this.session = details.sessionType.getOrdinal();
+    this.sessionName = details.sessionName.getValue();
   }
 
   @Override

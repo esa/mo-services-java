@@ -11,11 +11,8 @@
 package org.ccsds.moims.mo.mal.impl.broker;
 
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
-import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.MessageHeader;
+import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Simple class that represents a MAL subscription.
@@ -26,30 +23,32 @@ public final class SubscriptionKey implements Comparable
    * Match all constant.
    */
   public static final String ALL_ID = "*";
+  public static final Integer ALL_NUMBER = 0;
+  public static final UShort ALL_SHORT = new UShort(ALL_NUMBER);
   private static final int HASH_MAGIC_NUMBER = 47;
   private final String domain;
   private final boolean andSubDomains;
-  private final String area;
-  private final String service;
-  private final String operation;
+  private final UShort area;
+  private final UShort service;
+  private final UShort operation;
   private final String key1;
-  private final String key2;
-  private final String key3;
-  private final String key4;
+  private final Integer key2;
+  private final Integer key3;
+  private final Integer key4;
 
   /**
    * Constructor.
    * @param lst Entity key.
    */
-  public SubscriptionKey(MessageHeader hdr, EntityRequest rqst, EntityKey lst)
+  public SubscriptionKey(MALMessageHeader hdr, EntityRequest rqst, EntityKey lst)
   {
     super();
 
     String tmpDomain = "";
     boolean tmpAndSubDomains = false;
 
-    DomainIdentifier mdomain = hdr.getDomain();
-    DomainIdentifier sdomain = rqst.getSubDomain();
+    IdentifierList mdomain = hdr.getDomain();
+    IdentifierList sdomain = rqst.getSubDomain();
     if ((null != mdomain) || (null != sdomain))
     {
       StringBuilder buf = new StringBuilder();
@@ -88,13 +87,13 @@ public final class SubscriptionKey implements Comparable
 
     this.domain = tmpDomain;
     this.andSubDomains = tmpAndSubDomains;
-    this.area = getIdValueOrWildcard(hdr.getArea(), rqst.isAllAreas());
-    this.service = getIdValueOrWildcard(hdr.getService(), rqst.isAllServices());
-    this.operation = getIdValueOrWildcard(hdr.getOperation(), rqst.isAllOperations());
+    this.area = getIdValueOrWildcard(hdr.getServiceArea(), rqst.getAllAreas());
+    this.service = getIdValueOrWildcard(hdr.getService(), rqst.getAllServices());
+    this.operation = getIdValueOrWildcard(hdr.getOperation(), rqst.getAllOperations());
     this.key1 = getIdValue(lst.getFirstSubKey());
-    this.key2 = getIdValue(lst.getSecondSubKey());
-    this.key3 = getIdValue(lst.getThirdSubKey());
-    this.key4 = getIdValue(lst.getFourthSubKey());
+    this.key2 = lst.getSecondSubKey();
+    this.key3 = lst.getThirdSubKey();
+    this.key4 = lst.getFourthSubKey();
   }
 
   @Override
@@ -209,7 +208,7 @@ public final class SubscriptionKey implements Comparable
     return matched;
   }
 
-  private int compareSubkey(String myKeyPart, String theirKeyPart)
+  protected static int compareSubkey(String myKeyPart, String theirKeyPart)
   {
     if ((null == myKeyPart) || (null == theirKeyPart))
     {
@@ -234,7 +233,32 @@ public final class SubscriptionKey implements Comparable
     return 0;
   }
 
-  private boolean matchedSubkey(String myKeyPart, String theirKeyPart)
+  protected static int compareSubkey(Integer myKeyPart, Integer theirKeyPart)
+  {
+    if ((null == myKeyPart) || (null == theirKeyPart))
+    {
+      if ((null != myKeyPart) || (null != theirKeyPart))
+      {
+        if (null == myKeyPart)
+        {
+          return -1;
+        }
+
+        return 1;
+      }
+    }
+    else
+    {
+      if (!myKeyPart.equals(theirKeyPart))
+      {
+        return myKeyPart.compareTo(theirKeyPart);
+      }
+    }
+
+    return 0;
+  }
+
+  protected static boolean matchedSubkey(String myKeyPart, String theirKeyPart)
   {
     if (ALL_ID.equals(myKeyPart) || ALL_ID.equals(theirKeyPart))
     {
@@ -254,17 +278,57 @@ public final class SubscriptionKey implements Comparable
     return myKeyPart.equals(theirKeyPart);
   }
 
-  private static String getIdValueOrWildcard(Identifier id, boolean isWildcard)
+  protected static boolean matchedSubkey(Integer myKeyPart, Integer theirKeyPart)
+  {
+    if (ALL_NUMBER.equals(myKeyPart) || ALL_NUMBER.equals(theirKeyPart))
+    {
+      return true;
+    }
+
+    if ((null == myKeyPart) || (null == theirKeyPart))
+    {
+      if ((null == myKeyPart) && (null == theirKeyPart))
+      {
+        return true;
+      }
+
+      return false;
+    }
+
+    return myKeyPart.equals(theirKeyPart);
+  }
+
+  protected static boolean matchedSubkey(UShort myKeyPart, UShort theirKeyPart)
+  {
+    if (ALL_SHORT.equals(myKeyPart) || ALL_SHORT.equals(theirKeyPart))
+    {
+      return true;
+    }
+
+    if ((null == myKeyPart) || (null == theirKeyPart))
+    {
+      if ((null == myKeyPart) && (null == theirKeyPart))
+      {
+        return true;
+      }
+
+      return false;
+    }
+
+    return myKeyPart.equals(theirKeyPart);
+  }
+
+  protected static UShort getIdValueOrWildcard(UShort id, boolean isWildcard)
   {
     if (isWildcard)
     {
-      return ALL_ID;
+      return ALL_SHORT;
     }
 
-    return getIdValue(id);
+    return id;
   }
 
-  private static String getIdValue(Identifier id)
+  protected static String getIdValue(Identifier id)
   {
     if ((null != id) && (null != id.getValue()))
     {

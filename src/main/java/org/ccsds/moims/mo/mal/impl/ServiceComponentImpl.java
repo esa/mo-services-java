@@ -10,16 +10,17 @@
  */
 package org.ccsds.moims.mo.mal.impl;
 
-import org.ccsds.moims.mo.mal.impl.util.MALClose;
-import java.util.Hashtable;
-import org.ccsds.moims.mo.mal.MALService;
-import org.ccsds.moims.mo.mal.structures.Blob;
+import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
+import org.ccsds.moims.mo.mal.impl.util.MALClose;
+import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
+import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndPoint;
-import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
-import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
@@ -34,8 +35,8 @@ public abstract class ServiceComponentImpl extends MALClose
   protected final MALService service;
   protected final Blob authenticationId;
   protected final QoSLevel[] expectedQos;
-  protected final Integer priorityLevelNumber;
-  protected final Hashtable defaultQoSProperties;
+  protected final UInteger priorityLevelNumber;
+  protected final Map defaultQoSProperties;
   protected final URI localUri;
   protected final MALTransport transport;
   protected final MALEndPoint endpoint;
@@ -62,8 +63,8 @@ public abstract class ServiceComponentImpl extends MALClose
           MALService service,
           Blob authenticationId,
           QoSLevel[] expectedQos,
-          int priorityLevelNumber,
-          Hashtable defaultQoSProperties,
+          UInteger priorityLevelNumber,
+          Map defaultQoSProperties,
           MALInteractionHandler handler) throws MALException
   {
     super(parent);
@@ -85,7 +86,7 @@ public abstract class ServiceComponentImpl extends MALClose
     this.priorityLevelNumber = priorityLevelNumber;
     if (null != defaultQoSProperties)
     {
-      this.defaultQoSProperties = (Hashtable) defaultQoSProperties.clone();
+      this.defaultQoSProperties = defaultQoSProperties;
     }
     else
     {
@@ -121,8 +122,8 @@ public abstract class ServiceComponentImpl extends MALClose
           MALService service,
           Blob authenticationId,
           QoSLevel[] expectedQos,
-          int priorityLevelNumber,
-          Hashtable defaultQoSProperties,
+          UInteger priorityLevelNumber,
+          Map defaultQoSProperties,
           MALInteractionHandler handler) throws MALException
   {
     super(parent);
@@ -144,7 +145,7 @@ public abstract class ServiceComponentImpl extends MALClose
     this.priorityLevelNumber = priorityLevelNumber;
     if (null != defaultQoSProperties)
     {
-      this.defaultQoSProperties = (Hashtable) defaultQoSProperties.clone();
+      this.defaultQoSProperties = defaultQoSProperties;
     }
     else
     {

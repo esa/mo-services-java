@@ -11,47 +11,50 @@
 package org.ccsds.moims.mo.mal.impl.broker;
 
 import java.util.List;
-import org.ccsds.moims.mo.mal.structures.DomainIdentifier;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.MessageHeader;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SessionType;
-import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.UpdateList;
+import org.ccsds.moims.mo.mal.MALContextFactory;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.impl.MessageDetails;
+import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 
 /**
  * Base class for subscription sources.
  */
 public abstract class SubscriptionSource
 {
-  protected final QoSLevel qosLevel;
-  protected final Integer priority;
-  protected final Identifier transactionId;
-  protected final DomainIdentifier domain;
-  protected final Identifier networkZone;
-  protected final SessionType session;
-  protected final Identifier area;
-  protected final Identifier service;
-  protected final Identifier operation;
-  protected final Byte version;
+  protected final Long transactionId;
+  protected final UShort area;
+  protected final UShort service;
+  protected final UShort operation;
+  protected final UOctet version;
+  protected final MessageDetails msgDetails;
 
   /**
    * Constructor.
    * @param hdr Source message.
    */
-  public SubscriptionSource(MessageHeader hdr)
+  public SubscriptionSource(MALMessageHeader hdr, URI uriTo, MALBrokerBindingImpl binding)
   {
-    this.qosLevel = hdr.getQoSlevel();
-    this.priority = hdr.getPriority();
+    this.msgDetails = new MessageDetails(binding.getEndpoint(),
+            binding.getURI(),
+            uriTo,
+            uriTo,
+            MALContextFactory.lookupArea(hdr.getServiceArea()).getServiceByNumberAndVersion(hdr.getService(), hdr.getServiceVersion()),
+            binding.getAuthenticationId(),
+            hdr.getDomain(),
+            hdr.getNetworkZone(),
+            hdr.getSession(),
+            hdr.getSessionName(),
+            hdr.getQoSlevel(),
+            null,
+            hdr.getPriority());
+    
     this.transactionId = hdr.getTransactionId();
-    this.domain = hdr.getDomain();
-    this.networkZone = hdr.getNetworkZone();
-    this.session = hdr.getSession();
-    this.area = hdr.getArea();
+    this.area = hdr.getServiceArea();
     this.service = hdr.getService();
     this.operation = hdr.getOperation();
-    this.version = hdr.getVersion();
+    this.version = hdr.getServiceVersion();
   }
 
   /**
@@ -76,7 +79,7 @@ public abstract class SubscriptionSource
    * @param srcHdr Source message.
    * @param subscription New subscription.
    */
-  public abstract void addSubscription(MessageHeader srcHdr, Subscription subscription);
+  public abstract void addSubscription(MALMessageHeader srcHdr, Subscription subscription);
 
   /**
    * Adds messages to the list of notify messages to be sent out.
@@ -84,7 +87,7 @@ public abstract class SubscriptionSource
    * @param lst List of broker messages.
    * @param updateList update list.
    */
-  public abstract void populateNotifyList(MessageHeader srcHdr, List<BrokerMessage> lst, UpdateList updateList);
+  public abstract void populateNotifyList(MALMessageHeader srcHdr, List<BrokerMessage> lst, UpdateHeaderList updateHeaderList, MALPublishBody publishBody) throws MALException;
   
   /**
    * Removes a subscription.

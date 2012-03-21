@@ -10,23 +10,18 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker.simple;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
+import org.ccsds.moims.mo.mal.impl.NotifyMessage;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.broker.UpdateKey;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.EntityRequestList;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.MessageHeader;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SubscriptionUpdate;
-import org.ccsds.moims.mo.mal.structures.Update;
-import org.ccsds.moims.mo.mal.structures.UpdateList;
-import org.ccsds.moims.mo.mal.structures.UpdateType;
+import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 
 /**
  * A SimpleSubscriptionDetails is keyed on subscription Id
@@ -34,14 +29,14 @@ import org.ccsds.moims.mo.mal.structures.UpdateType;
 class SimpleSubscriptionDetails
 {
   private final String subscriptionId;
-  private final Identifier transactionId;
+  private final Long transactionId;
   private final QoSLevel qos;
-  private final Integer priority;
+  private final UInteger priority;
   private Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
   private Set<SubscriptionKey> onAll = new TreeSet<SubscriptionKey>();
   private Set<SubscriptionKey> onChange = new TreeSet<SubscriptionKey>();
 
-  SimpleSubscriptionDetails(MessageHeader srcHdr, String subscriptionId)
+  SimpleSubscriptionDetails(MALMessageHeader srcHdr, String subscriptionId)
   {
     this.subscriptionId = subscriptionId;
     this.transactionId = srcHdr.getTransactionId();
@@ -51,21 +46,21 @@ class SimpleSubscriptionDetails
 
   void report()
   {
-    Logging.logMessage("      START Subscription ( " + subscriptionId + " )");
-    Logging.logMessage("      Required: " + String.valueOf(required.size()));
+    Logging.logMessage("    START Subscription ( " + subscriptionId + " )");
+    Logging.logMessage("     Required: " + String.valueOf(required.size()));
     for (SubscriptionKey key : required)
     {
-      Logging.logMessage("              : Rqd : " + key);
+      Logging.logMessage("            : Rqd : " + key);
     }
     for (SubscriptionKey key : onAll)
     {
-      Logging.logMessage("              : All : " + key);
+      Logging.logMessage("            : All : " + key);
     }
     for (SubscriptionKey key : onChange)
     {
-      Logging.logMessage("              : Chg : " + key);
+      Logging.logMessage("            : Chg : " + key);
     }
-    Logging.logMessage("      END Subscription ( " + subscriptionId + " )");
+    Logging.logMessage("    END Subscription ( " + subscriptionId + " )");
   }
 
   boolean notActive()
@@ -73,7 +68,7 @@ class SimpleSubscriptionDetails
     return required.isEmpty();
   }
 
-  void setIds(MessageHeader srcHdr, EntityRequestList lst)
+  void setIds(MALMessageHeader srcHdr, EntityRequestList lst)
   {
     required.clear();
     onAll.clear();
@@ -82,7 +77,7 @@ class SimpleSubscriptionDetails
     {
       EntityRequest rqst = (EntityRequest) lst.get(idx);
       EntityKeyList keyList = rqst.getEntityKeys();
-      boolean bOnChange = rqst.isOnlyOnChange();
+      boolean bOnChange = rqst.getOnlyOnChange();
       for (int i = 0; i < keyList.size(); i++)
       {
         EntityKey id = (EntityKey) keyList.get(i);
@@ -100,41 +95,46 @@ class SimpleSubscriptionDetails
     }
   }
 
-  BrokerMessage.NotifyMessage populateNotifyList(MessageHeader srcHdr, String srcDomainId, UpdateList updateList)
+  NotifyMessage populateNotifyList(MALMessageHeader srcHdr, String srcDomainId, UpdateHeaderList updateHeaderList, MALPublishBody publishBody) throws MALException
   {
     Logging.logMessage("INFO: Checking SimSubDetails");
 
-    UpdateList sendList = new UpdateList();
-    for (int i = 0; i < updateList.size(); ++i)
+    UpdateHeaderList notifyHeaders = new UpdateHeaderList();
+
+    List[] updateLists = publishBody.getUpdateLists((List[]) null);
+    Object[] notifyLists = new Object[updateLists.length+2];
+    for (int i = 2; i < notifyLists.length; i++)
     {
-      Update update = (Update) updateList.get(i);
-      populateNotifyList(srcHdr, srcDomainId, sendList, update);
+      notifyLists[i] = (List)((Element)updateLists[i-2]).createElement();
+    }
+    for (int i = 0; i < updateHeaderList.size(); ++i)
+    {
+      populateNotifyList(srcHdr, srcDomainId, updateHeaderList.get(i), updateLists, i, notifyHeaders, notifyLists);
     }
 
-    BrokerMessage.NotifyMessage retVal = null;
-    if (!sendList.isEmpty())
+    NotifyMessage retVal = null;
+    if (!notifyHeaders.isEmpty())
     {
-      retVal = new BrokerMessage.NotifyMessage();
-      SubscriptionUpdate update = new SubscriptionUpdate();
-      update.setSubscriptionId(new Identifier(subscriptionId));
-      update.setUpdateList(sendList);
-      retVal.updates.add(update);
+      retVal = new NotifyMessage();
+      notifyLists[0] = new Identifier(subscriptionId);
+      notifyLists[1] = notifyHeaders;
+      retVal.updates = notifyLists;
 
-      retVal.header.setPriority(priority);
-      retVal.header.setQoSlevel(qos);
-      retVal.header.setTransactionId(transactionId);
+      //retVal.header.setPriority(priority);
+      //retVal.header.setQoSlevel(qos);
+      //retVal.header.setTransactionId(transactionId);
     }
 
     return retVal;
   }
 
-  private void populateNotifyList(MessageHeader srcHdr, String srcDomainId, UpdateList lst, Update update)
+  private void populateNotifyList(MALMessageHeader srcHdr, String srcDomainId, UpdateHeader updateHeader, List[] updateLists, int index, UpdateHeaderList notifyHeaders, Object[] notifyLists) throws MALException
   {
-    UpdateKey key = new UpdateKey(srcHdr, srcDomainId, update.getKey());
+    UpdateKey key = new UpdateKey(srcHdr, srcDomainId, updateHeader.getKey());
     Logging.logMessage("INFO: Checking " + key);
     boolean updateRequired = matchedUpdate(key, onAll);
 
-    if (!updateRequired && (update.getUpdateType().getOrdinal() != UpdateType._UPDATE_INDEX))
+    if (!updateRequired && (updateHeader.getUpdateType().getOrdinal() != UpdateType._UPDATE_INDEX))
     {
       updateRequired = matchedUpdate(key, onChange);
     }
@@ -142,7 +142,12 @@ class SimpleSubscriptionDetails
     if (updateRequired)
     {
       // add update for this consumer/subscription
-      lst.add(update);
+      notifyHeaders.add(updateHeader);
+      
+      for (int i = 2; i < notifyLists.length; i++)
+      {
+        ((List)notifyLists[i]).add(updateLists[i-2].get(index));
+      }
     }
   }
 

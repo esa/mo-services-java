@@ -11,7 +11,6 @@
 package org.ccsds.moims.mo.mal.impl.broker;
 
 import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.Identifier;
 
 /**
  * Simple class that represents a MAL update key.
@@ -24,9 +23,9 @@ public final class PublisherKey implements Comparable
   public static final String ALL_ID = "*";
   private static final int HASH_MAGIC_NUMBER = 47;
   public final String key1;
-  public final String key2;
-  public final String key3;
-  public final String key4;
+  public final Integer key2;
+  public final Integer key3;
+  public final Integer key4;
 
   /**
    * Constructor.
@@ -36,10 +35,10 @@ public final class PublisherKey implements Comparable
   {
     super();
 
-    this.key1 = getIdValue(lst.getFirstSubKey());
-    this.key2 = getIdValue(lst.getSecondSubKey());
-    this.key3 = getIdValue(lst.getThirdSubKey());
-    this.key4 = getIdValue(lst.getFourthSubKey());
+    this.key1 = SubscriptionKey.getIdValue(lst.getFirstSubKey());
+    this.key2 = lst.getSecondSubKey();
+    this.key3 = lst.getThirdSubKey();
+    this.key4 = lst.getFourthSubKey();
   }
 
   @Override
@@ -88,16 +87,16 @@ public final class PublisherKey implements Comparable
   public int compareTo(Object o)
   {
     PublisherKey rhs = (PublisherKey) o;
-    int rv = compareSubkey(this.key1, rhs.key1);
+    int rv = SubscriptionKey.compareSubkey(this.key1, rhs.key1);
     if (0 == rv)
     {
-      rv = compareSubkey(this.key2, rhs.key2);
+      rv = SubscriptionKey.compareSubkey(this.key2, rhs.key2);
       if (0 == rv)
       {
-        rv = compareSubkey(this.key3, rhs.key3);
+        rv = SubscriptionKey.compareSubkey(this.key3, rhs.key3);
         if (0 == rv)
         {
-          rv = compareSubkey(this.key4, rhs.key4);
+          rv = SubscriptionKey.compareSubkey(this.key4, rhs.key4);
         }
       }
     }
@@ -114,17 +113,17 @@ public final class PublisherKey implements Comparable
   {
     if (null != rhs)
     {
-      boolean matched = matchedSubkey(key1, getIdValue(rhs.getFirstSubKey()));
+      boolean matched = SubscriptionKey.matchedSubkey(key1, SubscriptionKey.getIdValue(rhs.getFirstSubKey()));
 
       if (matched)
       {
-        matched = matchedSubkey(key2, getIdValue(rhs.getSecondSubKey()));
+        matched = SubscriptionKey.matchedSubkey(key2, rhs.getSecondSubKey());
         if (matched)
         {
-          matched = matchedSubkey(key3, getIdValue(rhs.getThirdSubKey()));
+          matched = SubscriptionKey.matchedSubkey(key3, rhs.getThirdSubKey());
           if (matched)
           {
-            matched = matchedSubkey(key4, getIdValue(rhs.getFourthSubKey()));
+            matched = SubscriptionKey.matchedSubkey(key4, rhs.getFourthSubKey());
           }
         }
       }
@@ -133,61 +132,6 @@ public final class PublisherKey implements Comparable
     }
 
     return false;
-  }
-
-  private int compareSubkey(String myKeyPart, String theirKeyPart)
-  {
-    if ((null == myKeyPart) || (null == theirKeyPart))
-    {
-      if ((null != myKeyPart) || (null != theirKeyPart))
-      {
-        if (null == myKeyPart)
-        {
-          return -1;
-        }
-
-        return 1;
-      }
-    }
-    else
-    {
-      if (!myKeyPart.equals(theirKeyPart))
-      {
-        return myKeyPart.compareTo(theirKeyPart);
-      }
-    }
-
-    return 0;
-  }
-
-  private boolean matchedSubkey(String myKeyPart, String theirKeyPart)
-  {
-    if (ALL_ID.equals(myKeyPart) || ALL_ID.equals(theirKeyPart))
-    {
-      return true;
-    }
-
-    if ((null == myKeyPart) || (null == theirKeyPart))
-    {
-      if ((null == myKeyPart) && (null == theirKeyPart))
-      {
-        return true;
-      }
-
-      return false;
-    }
-
-    return myKeyPart.equals(theirKeyPart);
-  }
-
-  private static String getIdValue(Identifier id)
-  {
-    if ((null != id) && (null != id.getValue()))
-    {
-      return id.getValue();
-    }
-
-    return null;
   }
 
   @Override
