@@ -19,7 +19,10 @@ import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.*;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.*;
-import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
@@ -438,7 +441,7 @@ public class MessageReceive implements MALMessageListener
       {
         try
         {
-          MALPublishInteractionListener list = pmap.getPublishListener(msg.getHeader().getURITo(), msg.getHeader().getSessionName());
+          MALPublishInteractionListener list = pmap.getPublishListener(msg.getHeader().getURITo(), msg.getHeader());
 
           if (null != list)
           {
@@ -591,14 +594,22 @@ public class MessageReceive implements MALMessageListener
     // find relevant broker
     MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
 
+    // get the correct qos for the dergister
+    QoSLevel lvl = brokerHandler.getBrokerImpl().getProviderQoSLevel(msg.getHeader());
+    if(null == lvl)
+    {
+      lvl = msg.getHeader().getQoSlevel();
+    }
+    
     // update register list
     MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
     brokerHandler.getBrokerImpl().handlePublishDeregister(interaction);
-
+    
     // because we don't pass this upwards, we have to generate the ack
     sender.returnResponse(brokerHandler.getMsgAddress(),
             transId,
             msg.getHeader(),
+            lvl,
             MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, (Object) null);
   }
 

@@ -20,6 +20,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  */
@@ -38,20 +39,20 @@ class PubSubMap
 
   void registerPublishListener(MessageDetails details, MALPublishInteractionListener listener)
   {
-    final StringPair id = new StringPair(details.uriFrom.getValue(), details.sessionName.getValue());
+    final StringPair id = new StringPair(details.uriFrom.getValue(), createProviderKey(details));
 
     synchronized (publisherMap)
     {
-      publisherMap.put(id, listener);
+        publisherMap.put(id, listener);
 
-      Logging.logMessage("INFO: Adding publisher: " + id);
+        Logging.logMessage("INFO: Adding publisher: " + id);
     }
   }
 
-  MALPublishInteractionListener getPublishListener(URI uri, Identifier sessionName)
+  MALPublishInteractionListener getPublishListener(URI uri, MALMessageHeader mshHdr)
   {
-    final StringPair id = new StringPair(uri.getValue(), sessionName.getValue());
-    MALPublishInteractionListener list = null;
+    final StringPair id = new StringPair(uri.getValue(), createProviderKey(mshHdr));
+    MALPublishInteractionListener list;
 
     synchronized (publisherMap)
     {
@@ -97,10 +98,10 @@ class PubSubMap
     }
   }
 
-  MALPublishInteractionListener getPublishListenerAndRemove(URI uri, Identifier sessionName)
+  MALPublishInteractionListener getPublishListenerAndRemove(URI uri, MessageDetails details)
   {
-    final StringPair id = new StringPair(uri.getValue(), sessionName.getValue());
-    MALPublishInteractionListener list = null;
+    final StringPair id = new StringPair(uri.getValue(), createProviderKey(details));
+    MALPublishInteractionListener list;
 
     synchronized (publisherMap)
     {
@@ -207,5 +208,35 @@ class PubSubMap
         }
       }
     }
+  }
+  
+  private static String createProviderKey(MessageDetails details)
+  {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(details.sessionType);
+    buf.append(':');
+    buf.append(details.sessionName);
+    buf.append(':');
+    buf.append(details.networkZone);
+    buf.append(':');
+    buf.append(details.domain);
+    
+    return buf.toString();
+  }
+  
+  private static String createProviderKey(MALMessageHeader details)
+  {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(details.getSession());
+    buf.append(':');
+    buf.append(details.getSessionName());
+    buf.append(':');
+    buf.append(details.getNetworkZone());
+    buf.append(':');
+    buf.append(details.getDomain());
+    
+    return buf.toString();
   }
 }

@@ -101,7 +101,7 @@ public class MessageSend
             MALPubSubOperation.PUBLISH_DEREGISTER_STAGE,
             (LongHolder)null,
             (MALPublishInteractionListener) null, (Object[]) null);
-    pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details.sessionName);
+    pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details);
   }
 
   /**
@@ -178,7 +178,7 @@ public class MessageSend
           MALPubSubOperation op,
           MALPublishInteractionListener listener) throws MALInteractionException, MALException
   {
-    pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details.sessionName);
+    pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details);
     return asynchronousInteraction(details, op, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, listener, (Object[]) null);
   }
 

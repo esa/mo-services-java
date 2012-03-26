@@ -14,11 +14,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import org.ccsds.moims.mo.mal.*;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.impl.MessageDetails;
 import org.ccsds.moims.mo.mal.impl.StringPair;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
-import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
@@ -84,12 +86,12 @@ public abstract class BaseBrokerHandler
   public synchronized void addProvider(MALMessageHeader hdr, EntityKeyList providerKeyList)
   {
     report();
-    ProviderDetails details = providerMap.get(new StringPair(hdr.getURIFrom().getValue(), StructureHelper.domainToString(hdr.getDomain())));
+    ProviderDetails details = providerMap.get(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr)));
 
     if (null == details)
     {
       details = new ProviderDetails(hdr.getURIFrom().getValue(), hdr.getQoSlevel());
-      providerMap.put(new StringPair(hdr.getURIFrom().getValue(), StructureHelper.domainToString(hdr.getDomain())), details);
+      providerMap.put(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr)), details);
       Logging.logMessage("New publisher registering: " + hdr);
     }
 
@@ -105,10 +107,11 @@ public abstract class BaseBrokerHandler
    */
   public QoSLevel getProviderQoSLevel(MALMessageHeader hdr)
   {
-    ProviderDetails details = providerMap.get(new StringPair(hdr.getURIFrom().getValue(), StructureHelper.domainToString(hdr.getDomain())));
+    ProviderDetails details = providerMap.get(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr)));
 
     if (null != details)
     {
+      Logging.logMessage("Getting publisher QoS details: " + hdr);
       return details.getQosLevel();
     }
 
@@ -126,7 +129,7 @@ public abstract class BaseBrokerHandler
           MALPublishBody publishBody) throws MALInteractionException, MALException
   {
     Logging.logMessage("INFO: Checking BaseBrokerHandler");
-    ProviderDetails details = providerMap.get(new StringPair(hdr.getURIFrom().getValue(), StructureHelper.domainToString(hdr.getDomain())));
+    ProviderDetails details = providerMap.get(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr)));
 
     if (null == details)
     {
@@ -159,7 +162,10 @@ public abstract class BaseBrokerHandler
   public synchronized void removeProvider(MALMessageHeader hdr)
   {
     report();
-    providerMap.remove(new StringPair(hdr.getURIFrom().getValue(), StructureHelper.domainToString(hdr.getDomain())));
+    if (null != providerMap.remove(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr))))
+    {
+      Logging.logMessage("Removing publisher details: " + hdr);
+    }
     report();
   }
 
@@ -211,16 +217,18 @@ public abstract class BaseBrokerHandler
     report();
   }
   
-  private String createProviderKey(MALPubSubOperation op, IdentifierList domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, UInteger remotePublisherPriority)
+  private static String createProviderKey(MALMessageHeader details)
   {
     StringBuilder buf = new StringBuilder();
-    buf.append(op.getNumber());
-    buf.append(domain);
-    buf.append(networkZone);
-    buf.append(sessionType);
-    buf.append(sessionName);
-    buf.append(remotePublisherQos);
-    buf.append(remotePublisherPriority);
+    
+    buf.append(details.getSession());
+    buf.append(':');
+    buf.append(details.getSessionName());
+    buf.append(':');
+    buf.append(details.getNetworkZone());
+    buf.append(':');
+    buf.append(details.getDomain());
+    
     return buf.toString();
   }
 

@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -55,7 +54,7 @@ public final class TransportSingleton
   }
 
   /**
-   * Creates an instance of a Tranport.
+   * Creates an instance of a Transport.
    * @param dstUri The Uri.
    * @param properties QoS properties.
    * @return The transport handler.
