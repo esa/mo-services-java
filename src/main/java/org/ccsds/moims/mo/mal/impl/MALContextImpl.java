@@ -53,7 +53,7 @@ public class MALContextImpl extends MALClose implements MALContext
   {
     super(null);
 
-    initialProperties = (null == properties) ? null : properties;
+    initialProperties = properties;
 
     if (null != securityFactory)
     {

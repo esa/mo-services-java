@@ -10,24 +10,16 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker.caching;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
+import java.util.*;
 import org.ccsds.moims.mo.mal.impl.NotifyMessage;
+import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
-import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * A CachingSubscriptionDetails is keyed on consumer Id
@@ -40,9 +32,9 @@ class CachingConsumerDetails
   private final Map<String, CachingSubscriptionDetails> details = new TreeMap<String, CachingSubscriptionDetails>();
   private BrokerMessage brokerMessage = null;
   private NotifyMessage notifyMessage = null;
-  private Identifier transactionId;
-  private QoSLevel qos;
-  private Integer priority;
+//  private Identifier transactionId;
+//  private QoSLevel qos;
+//  private Integer priority;
 
   public CachingConsumerDetails(String consumerId, MALBrokerBindingImpl binding)
   {
@@ -83,7 +75,7 @@ class CachingConsumerDetails
 
     if (null == sub)
     {
-      if (details.isEmpty())
+//      if (details.isEmpty())
       {
 //        this.transactionId = srcHdr.getTransactionId();
 //        this.qos = srcHdr.getQoSlevel();

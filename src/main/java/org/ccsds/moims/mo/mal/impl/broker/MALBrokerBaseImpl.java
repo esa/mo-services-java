@@ -43,7 +43,7 @@ public abstract class MALBrokerBaseImpl extends MALClose implements MALBroker, M
   @Override
   public MALBrokerBinding[] getBindings()
   {
-    return (MALBrokerBinding[])bindings.toArray();
+    return bindings.toArray(new MALBrokerBinding[bindings.size()]);
   }
 
   public abstract QoSLevel getProviderQoSLevel(MALMessageHeader hdr);

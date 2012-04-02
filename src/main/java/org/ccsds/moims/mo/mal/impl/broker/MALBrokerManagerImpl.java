@@ -11,7 +11,6 @@
 package org.ccsds.moims.mo.mal.impl.broker;
 
 import java.util.Map;
-import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
@@ -32,7 +31,6 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
 {
   private final MALContextImpl impl;
-  private final Map<String, MALBrokerImpl> brokers = new TreeMap();
   private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
 
   /**

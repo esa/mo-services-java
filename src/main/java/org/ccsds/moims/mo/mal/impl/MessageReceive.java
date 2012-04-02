@@ -677,5 +677,37 @@ public class MessageReceive implements MALMessageListener
 
       return irv;
     }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (obj == null)
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass())
+      {
+        return false;
+      }
+      final EndPointPair other = (EndPointPair) obj;
+      if ((this.first == null) ? (other.first != null) : !this.first.equals(other.first))
+      {
+        return false;
+      }
+      if ((this.second == null) ? (other.second != null) : !this.second.equals(other.second))
+      {
+        return false;
+      }
+      return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+      int hash = 5;
+      hash = 71 * hash + (this.first != null ? this.first.hashCode() : 0);
+      hash = 71 * hash + (this.second != null ? this.second.hashCode() : 0);
+      return hash;
+    }
   }
 }

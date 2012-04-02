@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
 import org.ccsds.moims.mo.mal.impl.NotifyMessage;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.broker.UpdateKey;
@@ -29,9 +28,6 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 class SimpleSubscriptionDetails
 {
   private final String subscriptionId;
-  private final Long transactionId;
-  private final QoSLevel qos;
-  private final UInteger priority;
   private Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
   private Set<SubscriptionKey> onAll = new TreeSet<SubscriptionKey>();
   private Set<SubscriptionKey> onChange = new TreeSet<SubscriptionKey>();
@@ -39,9 +35,6 @@ class SimpleSubscriptionDetails
   SimpleSubscriptionDetails(MALMessageHeader srcHdr, String subscriptionId)
   {
     this.subscriptionId = subscriptionId;
-    this.transactionId = srcHdr.getTransactionId();
-    this.qos = srcHdr.getQoSlevel();
-    this.priority = srcHdr.getPriority();
   }
 
   void report()

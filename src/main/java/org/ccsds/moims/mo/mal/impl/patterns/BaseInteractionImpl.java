@@ -40,7 +40,7 @@ public abstract class BaseInteractionImpl implements MALInteraction
     this.address = address;
     this.internalTransId = internalTransId;
     this.msg = msg;
-    this.operation = MALContextFactory.lookupArea(msg.getHeader().getServiceArea()).getServiceByNumberAndVersion(msg.getHeader().getService(), msg.getHeader().getServiceVersion()).getOperationByNumber(msg.getHeader().getOperation().getValue());
+    this.operation = MALContextFactory.lookupArea(msg.getHeader().getServiceArea()).getServiceByNumberAndVersion(msg.getHeader().getService(), msg.getHeader().getServiceVersion()).getOperationByNumber(msg.getHeader().getOperation());
 
     if (null == this.operation)
     {

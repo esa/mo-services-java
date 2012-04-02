@@ -251,10 +251,20 @@ public class MessageSend
 
       endpoint.sendMessage(msg);
     }
-    catch (Exception ex)
+    catch (MALException ex)
     {
+      Logging.logMessage("ERROR: Error returning response to consumer : " + srcHdr.getURIFrom() + " : " + ex.toString());
       ex.printStackTrace();
-      Logging.logMessage("ERROR: Error returning response to consumer : " + srcHdr.getURIFrom());
+    }
+    catch (MALTransmitErrorException ex)
+    {
+      Logging.logMessage("ERROR: Error returning response to consumer : " + srcHdr.getURIFrom() + " : " + ex.toString());
+      ex.printStackTrace();
+    }
+    catch (RuntimeException ex)
+    {
+      Logging.logMessage("ERROR: Error returning response to consumer : " + srcHdr.getURIFrom() + " : " + ex.toString());
+      ex.printStackTrace();
     }
 
     return msg;
@@ -437,10 +447,20 @@ public class MessageSend
 
       msgAddress.endpoint.sendMessage(msg);
     }
-    catch (Exception ex)
+    catch (MALException ex)
     {
+      Logging.logMessage("ERROR: Error returning error to consumer : " + srcHdr.getURIFrom() + " : " + ex.toString());
       ex.printStackTrace();
-      Logging.logMessage("ERROR: Error returning exception to consumer : " + srcHdr.getURIFrom());
+    }
+    catch (MALTransmitErrorException ex)
+    {
+      Logging.logMessage("ERROR: Error returning error to consumer : " + srcHdr.getURIFrom() + " : " + ex.toString());
+      ex.printStackTrace();
+    }
+    catch (RuntimeException ex)
+    {
+      Logging.logMessage("ERROR: Error returning error to consumer : " + srcHdr.getURIFrom() + " : " + ex.toString());
+      ex.printStackTrace();
     }
 
     return msg;
@@ -543,7 +563,7 @@ public class MessageSend
 
     MALMessageBody rv = synchronousInteraction(transId, details, op, syncStage, msgBody);
 
-    if (MALPubSubOperation.PUBLISH_REGISTER_STAGE == syncStage)
+    if (MALPubSubOperation.PUBLISH_REGISTER_STAGE.equals(syncStage))
     {
       transactionHolder.value = transId;
     }
