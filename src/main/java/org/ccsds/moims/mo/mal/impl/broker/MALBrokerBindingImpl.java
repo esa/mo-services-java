@@ -12,10 +12,7 @@ package org.ccsds.moims.mo.mal.impl.broker;
 
 import java.util.List;
 import java.util.Map;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.ServiceComponentImpl;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
@@ -124,6 +121,38 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInt
     return msg;
   }
 
+  public MALMessage sendNotify(MALOperation op, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, Identifier subscriptionId, UpdateHeaderList updateHeaderList, List... updateList) throws IllegalArgumentException, MALInteractionException, MALException
+  {
+    Object[] body = new Object[2 + updateList.length];
+    body[0] = subscriptionId;
+    body[1] = updateHeaderList;
+    int i = 2;
+    for (Object object : updateList)
+    {
+      body[i++] = object;
+    }
+
+    MALMessage msg = endpoint.createMessage(authenticationId,
+            subscriber,
+            new Time(new java.util.Date().getTime()),
+            notifyQos,
+            notifyPriority,
+            domainId,
+            networkZone,
+            sessionType,
+            sessionName,
+            transactionId,
+            Boolean.FALSE,
+            op,
+            MALPubSubOperation.NOTIFY_STAGE,
+            notifyQosProps,
+            body);
+    
+    endpoint.sendMessage(msg);
+    
+    return msg;
+  }
+
   public MALMessage sendNotifyError(UShort area, UShort service, UShort operation, UOctet version, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
   {
     MALMessage msg = endpoint.createMessage(authenticationId,
@@ -151,6 +180,29 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInt
     return msg;
   }
 
+  public MALMessage sendNotifyError(MALOperation op, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  {
+    MALMessage msg = endpoint.createMessage(authenticationId,
+            subscriber,
+            new Time(new java.util.Date().getTime()),
+            notifyQos,
+            notifyPriority,
+            domainId,
+            networkZone,
+            sessionType,
+            sessionName,
+            transactionId,
+            Boolean.TRUE,
+            op,
+            MALPubSubOperation.NOTIFY_STAGE,
+            notifyQosProps,
+            error);
+    
+    endpoint.sendMessage(msg);
+    
+    return msg;
+  }
+
   public MALMessage sendPublishError(UShort area, UShort service, UShort operation, UOctet version, URI publisher, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
   {
     MALMessage msg = endpoint.createMessage(authenticationId,
@@ -170,6 +222,29 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInt
             operation,
             version,
             Boolean.TRUE,
+            qosProps,
+            error);
+    
+    endpoint.sendMessage(msg);
+    
+    return msg;
+  }
+
+  public MALMessage sendPublishError(MALOperation op, URI publisher, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  {
+    MALMessage msg = endpoint.createMessage(authenticationId,
+            publisher,
+            new Time(new java.util.Date().getTime()),
+            qos,
+            priority,
+            domainId,
+            networkZone,
+            sessionType,
+            sessionName,
+            transactionId,
+            Boolean.TRUE,
+            op,
+            MALPubSubOperation.PUBLISH_STAGE,
             qosProps,
             error);
     
