@@ -101,7 +101,7 @@ class MALPublisherImpl implements MALPublisher
             remotePublisherQosProps,
             remotePublisherPriority);
 
-    setTransId(parent.getPublishEndpoint().getURI(),
+    setTransId(parent.getBrokerURI(),
             domain,
             networkZone.getValue(),
             sessionType,
@@ -141,7 +141,7 @@ class MALPublisherImpl implements MALPublisher
 
     org.ccsds.moims.mo.mal.transport.MALMessage msg = handler.publishRegisterAsync(details, operation, entityKeys, listener);
 
-    setTransId(parent.getPublishEndpoint().getURI(),
+    setTransId(parent.getBrokerURI(),
             domain,
             networkZone.getValue(),
             sessionType,
@@ -180,7 +180,7 @@ class MALPublisherImpl implements MALPublisher
             remotePublisherQosProps,
             remotePublisherPriority);
 
-    Long tid = getTransId(parent.getPublishEndpoint().getURI(),
+    Long tid = getTransId(parent.getBrokerURI(),
             domain,
             networkZone.getValue(),
             sessionType,
@@ -233,7 +233,7 @@ class MALPublisherImpl implements MALPublisher
 
     handler.publishDeregister(details, operation);
 
-    clearTransId(parent.getPublishEndpoint().getURI(),
+    clearTransId(parent.getBrokerURI(),
             domain,
             networkZone.getValue(),
             sessionType,
@@ -271,7 +271,7 @@ class MALPublisherImpl implements MALPublisher
 
     org.ccsds.moims.mo.mal.transport.MALMessage msg = handler.publishDeregisterAsync(details, operation, listener);
 
-    clearTransId(parent.getPublishEndpoint().getURI(),
+    clearTransId(parent.getBrokerURI(),
             domain,
             networkZone.getValue(),
             sessionType,

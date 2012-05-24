@@ -90,7 +90,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
 
       if (null != retVal)
       {
-        retVal = new MALBrokerBindingTransportWrapper(tparent, impl, transport, localName, retVal);
+        retVal = new MALBrokerBindingTransportWrapper(tparent, retVal);
       }
     }
 
@@ -145,7 +145,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
 
       if (null != retVal)
       {
-        retVal = new MALBrokerBindingTransportWrapper(tparent, impl, transport, endPoint.getLocalName(), retVal);
+        retVal = new MALBrokerBindingTransportWrapper(tparent, retVal);
       }
     }
 

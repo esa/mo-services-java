@@ -18,9 +18,9 @@ import org.ccsds.moims.mo.mal.transport.MALEndPoint;
  */
 public interface MALInternalBrokerBinding extends MALBrokerBinding
 {
-  /**
-   * Get the Endpoint.
-   * @return the endpoint.
-   */
-  MALEndPoint getEndpoint();
+//  /**
+//   * Get the Endpoint.
+//   * @return the endpoint.
+//   */
+//  MALEndPoint getEndpoint();
 }

@@ -18,8 +18,6 @@ import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.ServiceComponentImpl;
-import org.ccsds.moims.mo.mal.impl.broker.MALInternalBrokerBinding;
-import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALPublisher;
@@ -36,7 +34,7 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
   private final URI sharedBrokerUri;
   private final MALBrokerBinding localBrokerBinding;
   private final URI localBrokerUri;
-  private final MALEndPoint brokerEndpoint;
+//  private final MALEndPoint brokerEndpoint;
 
   MALProviderImpl(MALProviderManagerImpl parent,
           MALContextImpl impl,
@@ -79,29 +77,17 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 priorityLevelNumber,
                 defaultQoSProperties);
         this.localBrokerUri = this.localBrokerBinding.getURI();
-        this.brokerEndpoint = ((MALInternalBrokerBinding) localBrokerBinding).getEndpoint();
       }
       else
       {
         this.localBrokerBinding = null;
         this.localBrokerUri = null;
-        
-        if (TransportSingleton.isSameTransport(sharedBrokerUri, transport))
-        {
-          this.brokerEndpoint = endpoint;
-        }
-        else
-        {
-          this.brokerEndpoint = TransportSingleton.instance(sharedBrokerUri, impl.getInitialProperties()).createEndPoint(localName, defaultQoSProperties);
-          this.brokerEndpoint.setMessageListener(this.receiveHandler);
-        }
       }
     }
     else
     {
       this.localBrokerBinding = null;
       this.localBrokerUri = null;
-      this.brokerEndpoint = null;
     }
   }
 
@@ -143,29 +129,17 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 priorityLevelNumber,
                 defaultQoSProperties);
         this.localBrokerUri = this.localBrokerBinding.getURI();
-        this.brokerEndpoint = ((MALInternalBrokerBinding) localBrokerBinding).getEndpoint();
       }
       else
       {
         this.localBrokerBinding = null;
         this.localBrokerUri = null;
-
-        if (TransportSingleton.isSameTransport(sharedBrokerUri, transport))
-        {
-          this.brokerEndpoint = endpoint;
-        }
-        else
-        {
-          this.brokerEndpoint = TransportSingleton.instance(sharedBrokerUri, impl.getInitialProperties()).createEndPoint(localName, defaultQoSProperties);
-          this.brokerEndpoint.setMessageListener(this.receiveHandler);
-        }
       }
     }
     else
     {
       this.localBrokerBinding = null;
       this.localBrokerUri = null;
-      this.brokerEndpoint = null;
     }
   }
 
@@ -251,11 +225,6 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     super.close();
 
     this.handler.malFinalize(this);
-  }
-
-  MALEndPoint getPublishEndpoint()
-  {
-    return brokerEndpoint;
   }
   
   String createPublisherKey(MALPubSubOperation op, IdentifierList domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, UInteger remotePublisherPriority)

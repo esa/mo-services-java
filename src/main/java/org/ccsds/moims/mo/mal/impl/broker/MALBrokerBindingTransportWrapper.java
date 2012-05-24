@@ -32,22 +32,13 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 public class MALBrokerBindingTransportWrapper extends MALClose implements MALInternalBrokerBinding
 {
   private final MALBrokerBinding transportDelegate;
-  private final MALEndPoint endpoint;
-  private final Address address;
 
   MALBrokerBindingTransportWrapper(MALClose parent,
-          MALContextImpl impl,
-          MALTransport transport,
-          String localName,
           MALBrokerBinding transportDelegate) throws MALException
   {
     super(parent);
 
     this.transportDelegate = transportDelegate;
-    this.endpoint = transport.createEndPoint(localName, null);
-    this.address = new Address(endpoint, transportDelegate.getURI(), transportDelegate.getAuthenticationId(), new DummyHandler());
-    this.endpoint.setMessageListener(impl.getReceivingInterface());
-    this.endpoint.startMessageDelivery();
   }
 
   @Override
@@ -66,22 +57,6 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALInt
   public URI getURI()
   {
     return transportDelegate.getURI();
-  }
-
-  @Override
-  public MALEndPoint getEndpoint()
-  {
-    return endpoint;
-  }
-
-  /**
-   * Returns the Address structure used by this component.
-   *
-   * @return the Address structure.
-   */
-  public Address getMsgAddress()
-  {
-    return address;
   }
 
   public MALMessage sendNotify(UShort area, UShort service, UShort operation, UOctet version, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, Identifier subscriptionId, UpdateHeaderList updateHeaderList, List... updateList) throws IllegalArgumentException, MALInteractionException, MALException
