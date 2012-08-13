@@ -61,14 +61,14 @@ public class MessageReceive implements MALMessageListener
   }
 
   @Override
-  public void onInternalError(MALEndPoint callingEndpoint, Throwable err)
+  public void onInternalError(MALEndpoint callingEndpoint, Throwable err)
   {
     Logging.logMessage("INFO: MAL Receiving ERROR!");
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override
-  public void onMessages(MALEndPoint callingEndpoint, MALMessage[] msgList)
+  public void onMessages(MALEndpoint callingEndpoint, MALMessage[] msgList)
   {
     for (int i = 0; i < msgList.length; i++)
     {
@@ -82,7 +82,7 @@ public class MessageReceive implements MALMessageListener
    * @param msg The message.
    */
   @Override
-  public void onMessage(MALEndPoint callingEndpoint, MALMessage msg)
+  public void onMessage(MALEndpoint callingEndpoint, MALMessage msg)
   {
     Address address = null;
 
@@ -613,7 +613,7 @@ public class MessageReceive implements MALMessageListener
             MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, (Object) null);
   }
 
-  private Address lookupAddress(MALEndPoint callingEndpoint, MALMessage msg)
+  private Address lookupAddress(MALEndpoint callingEndpoint, MALMessage msg)
   {
     EndPointPair key = new EndPointPair(callingEndpoint.getLocalName(), msg.getHeader().getService());
     Address rv = providerEndpointMap.get(key);

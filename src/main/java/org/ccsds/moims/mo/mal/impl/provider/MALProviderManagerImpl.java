@@ -23,7 +23,7 @@ import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
 /**
  * Implementation of the MALProviderManager interface.
@@ -101,7 +101,7 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
    */
   @Override
   public MALProvider createProvider(
-          MALEndPoint endPoint,
+          MALEndpoint endPoint,
           MALService service,
           Blob authenticationId,
           MALInteractionHandler handler,

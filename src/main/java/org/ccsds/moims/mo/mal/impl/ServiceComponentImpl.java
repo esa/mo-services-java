@@ -20,7 +20,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
@@ -39,7 +39,7 @@ public abstract class ServiceComponentImpl extends MALClose
   protected final Map defaultQoSProperties;
   protected final URI localUri;
   protected final MALTransport transport;
-  protected final MALEndPoint endpoint;
+  protected final MALEndpoint endpoint;
   protected final Address msgAddress;
 
   /**
@@ -94,7 +94,7 @@ public abstract class ServiceComponentImpl extends MALClose
     }
 
     this.transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
-    this.endpoint = transport.createEndPoint(localName, defaultQoSProperties);
+    this.endpoint = transport.createEndpoint(localName, defaultQoSProperties);
     this.localUri = this.endpoint.getURI();
     this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
     this.receiveHandler.registerProviderEndpoint(localName, service, this.msgAddress);
@@ -118,7 +118,7 @@ public abstract class ServiceComponentImpl extends MALClose
    */
   public ServiceComponentImpl(MALClose parent,
           MALContextImpl impl,
-          MALEndPoint endPoint,
+          MALEndpoint endPoint,
           MALService service,
           Blob authenticationId,
           QoSLevel[] expectedQos,
@@ -182,7 +182,7 @@ public abstract class ServiceComponentImpl extends MALClose
    * Returns the Endpoint for sending messages from this component.
    * @return the Endpoint.
    */
-  public MALEndPoint getEndpoint()
+  public MALEndpoint getEndpoint()
   {
     return endpoint;
   }

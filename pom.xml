@@ -45,14 +45,14 @@
   <repositories>
     <repository>
       <id>central</id>
-      <url>http://vm-bri-ccsds0.scisys.co.uk/artifactory/repo/</url>
+      <url>http://62.193.192.27/artifactory/repo/</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
     </repository>
     <repository>
       <id>snapshots</id>
-      <url>http://vm-bri-ccsds0.scisys.co.uk/artifactory/repo/</url>
+      <url>http://62.193.192.27/artifactory/repo/</url>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -61,14 +61,14 @@
   <pluginRepositories>
     <pluginRepository>
       <id>central</id>
-      <url>http://vm-bri-ccsds0.scisys.co.uk/artifactory/plugins-releases</url>
+      <url>http://62.193.192.27/artifactory/plugins-releases</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
     </pluginRepository>
     <pluginRepository>
       <id>snapshots</id>
-      <url>http://vm-bri-ccsds0.scisys.co.uk/artifactory/plugins-snapshots</url>
+      <url>http://62.193.192.27/artifactory/plugins-snapshots</url>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -78,12 +78,12 @@
     <repository>
       <id>cvs.scisys.co.uk</id>
       <name>cvs.scisys.co.uk</name>
-      <url>http://vm-bri-ccsds0.scisys.co.uk/artifactory/libs-releases-local-esa</url>
+      <url>http://62.193.192.27/artifactory/libs-releases-local-esa</url>
     </repository>
     <snapshotRepository>
       <id>cvs.scisys.co.uk</id>
       <name>cvs.scisys.co.uk</name>
-      <url>http://vm-bri-ccsds0.scisys.co.uk/artifactory/libs-snapshots-local-esa</url>
+      <url>http://62.193.192.27/artifactory/libs-snapshots-local-esa</url>
     </snapshotRepository>
   </distributionManagement>
   <dependencies>

@@ -17,7 +17,7 @@ import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.ServiceComponentImpl;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
@@ -57,7 +57,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALInt
 
   MALBrokerBindingImpl(MALBrokerImpl parent,
           MALContextImpl impl,
-          MALEndPoint endPoint,
+          MALEndpoint endPoint,
           Blob authenticationId,
           QoSLevel[] expectedQos,
           UInteger priorityLevelNumber,

@@ -22,7 +22,7 @@ import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
@@ -123,7 +123,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
    */
   public MALBrokerBinding createBrokerBinding(
           MALBroker optionalMALBroker,
-          MALEndPoint endPoint,
+          MALEndpoint endPoint,
           Blob authenticationId,
           QoSLevel[] expectedQos,
           UInteger priorityLevelNumber,

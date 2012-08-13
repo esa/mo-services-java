@@ -22,7 +22,7 @@ import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALPublisher;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
 /**
  * MALProvider implementation.
@@ -34,7 +34,7 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
   private final URI sharedBrokerUri;
   private final MALBrokerBinding localBrokerBinding;
   private final URI localBrokerUri;
-//  private final MALEndPoint brokerEndpoint;
+//  private final MALEndpoint brokerEndpoint;
 
   MALProviderImpl(MALProviderManagerImpl parent,
           MALContextImpl impl,
@@ -93,7 +93,7 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
   MALProviderImpl(MALProviderManagerImpl parent,
           MALContextImpl impl,
-          MALEndPoint endPoint,
+          MALEndpoint endPoint,
           MALService service,
           Blob authenticationId,
           MALInteractionHandler handler,

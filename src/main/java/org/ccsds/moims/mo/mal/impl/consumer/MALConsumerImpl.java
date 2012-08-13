@@ -20,7 +20,7 @@ import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.impl.transport.TransportSingleton;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
@@ -51,7 +51,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer
     super(parent);
     this.sender = impl.getSendingInterface();
     MALTransport trans = TransportSingleton.instance(uriTo, impl.getInitialProperties());
-    MALEndPoint ep = trans.createEndPoint(localName, qosProps);
+    MALEndpoint ep = trans.createEndpoint(localName, qosProps);
     ep.setMessageListener(impl.getReceivingInterface());
     this.details = new MessageDetails(ep,
             ep.getURI(),
@@ -72,7 +72,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer
 
   MALConsumerImpl(MALContextImpl impl,
           MALConsumerManagerImpl parent,
-          MALEndPoint endPoint,
+          MALEndpoint endPoint,
           URI uriTo,
           URI brokerUri,
           MALService service,

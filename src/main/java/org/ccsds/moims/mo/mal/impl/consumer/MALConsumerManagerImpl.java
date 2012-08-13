@@ -18,7 +18,7 @@ import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
 /**
  * Implements the MALConsumerManager interface.
@@ -85,7 +85,7 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
             priority));
   }
 
-  public MALConsumer createConsumer(MALEndPoint endPoint, URI uriTo, URI brokerUri, MALService service, Blob authenticationId, IdentifierList domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qosLevel, Map qosProps, UInteger priority) throws IllegalArgumentException, MALException
+  public MALConsumer createConsumer(MALEndpoint endPoint, URI uriTo, URI brokerUri, MALService service, Blob authenticationId, IdentifierList domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qosLevel, Map qosProps, UInteger priority) throws IllegalArgumentException, MALException
   {
     return (MALConsumer) addChild(new MALConsumerImpl(impl,
             this,

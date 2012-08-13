@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.transport.MALEndPoint;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
 /**
  *
  */
 public final class MessageDetails
 {
-  public final MALEndPoint endpoint;
+  public final MALEndpoint endpoint;
   public final URI uriFrom;
   public final URI uriTo;
   public final URI brokerUri;
@@ -51,7 +51,7 @@ public final class MessageDetails
    * @param qosProps QOS properties.
    * @param priority Priority.
    */
-  public MessageDetails(MALEndPoint endpoint,
+  public MessageDetails(MALEndpoint endpoint,
           URI uriFrom,
           URI uriTo,
           URI brokerUri,

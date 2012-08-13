@@ -241,7 +241,7 @@ public class MessageSend
 
     try
     {
-      MALEndPoint endpoint = msgAddress.endpoint;
+      MALEndpoint endpoint = msgAddress.endpoint;
       msg = createReturnMessage(endpoint, msgAddress.uri,
               msgAddress.authenticationId,
               srcHdr,
@@ -750,7 +750,7 @@ public class MessageSend
             body);
   }
 
-  MALMessage createReturnMessage(MALEndPoint endPoint, URI uriFrom,
+  MALMessage createReturnMessage(MALEndpoint endPoint, URI uriFrom,
           Blob authId,
           MALMessageHeader srcHdr,
           QoSLevel level,
