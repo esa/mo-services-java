@@ -91,6 +91,11 @@ public abstract class BaseInteractionImpl implements MALInteraction
   {
     qosProperties.put(name, value);
   }
+
+  public Map getQoSProperties()
+  {
+    return qosProperties;
+  }
   
   /**
    * Returns a response to the consumer.
