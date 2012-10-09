@@ -1,0 +1,3 @@
+.*/nbactions.xml
+syntax: regexp
+.*/target
