@@ -12,13 +12,12 @@ package org.ccsds.moims.mo.mal.impl.patterns;
 
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
-import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
  * Send interaction class.
  */
-public class SendInteractionImpl extends BaseInteractionImpl implements MALInteraction
+public class SendInteractionImpl extends BaseInteractionImpl
 {
   /**
    * Constructor.

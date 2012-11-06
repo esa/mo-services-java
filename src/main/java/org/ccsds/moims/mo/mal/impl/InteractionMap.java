@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -21,47 +21,53 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.*;
 
+/**
+ * The interaction map is the central class responsible for maintaining the state of interactions for a MAL instance.
+ * New transactions are added using the creatTransaction methods. Synchronous consumer interactions are handled by 
+ * calling waitForResponse, and any message received is 'handled' using the handleStage method.
+ * 
+ * When a new interaction is created, an internal (to this class) interaction handler class is created which is responsible for ensuring
+ * the correct stages are received in the correct order.
+ */
 class InteractionMap
 {
   private static volatile long transId = 0;
-  private final java.util.Map<Long, InternalOperationHandler> transMap = new java.util.TreeMap<Long, InternalOperationHandler>();
-  private final java.util.Map<Long, Map.Entry> resolveMap = new java.util.TreeMap<Long, Map.Entry>();
+  private final Map<Long, InternalOperationHandler> transMap =
+          new TreeMap<Long, InternalOperationHandler>();
+  private final Map<Long, Map.Entry> resolveMap = new TreeMap<Long, Map.Entry>();
 
-  InteractionMap()
-  {
-  }
-
-  Long createTransaction(MALOperation operation,
-          boolean syncOperation,
-          MALInteractionListener listener) throws MALInteractionException
+  Long createTransaction(final int interactionType,
+          final boolean syncOperation,
+          final MALInteractionListener listener) throws MALInteractionException
   {
     final Long oTransId = getTransactionId();
 
     InternalOperationHandler handler = null;
 
-    if (InteractionType._SUBMIT_INDEX == operation.getInteractionType().getOrdinal())
+    if (InteractionType._SUBMIT_INDEX == interactionType)
     {
-      handler = new SubmitOperationHandler(operation, syncOperation, listener);
+      handler = new SubmitOperationHandler(syncOperation, listener);
     }
-    else if (InteractionType._REQUEST_INDEX == operation.getInteractionType().getOrdinal())
+    else if (InteractionType._REQUEST_INDEX == interactionType)
     {
-      handler = new RequestOperationHandler(operation, syncOperation, listener);
+      handler = new RequestOperationHandler(syncOperation, listener);
     }
-    else if (InteractionType._INVOKE_INDEX == operation.getInteractionType().getOrdinal())
+    else if (InteractionType._INVOKE_INDEX == interactionType)
     {
-      handler = new InvokeOperationHandler(operation, syncOperation, listener);
+      handler = new InvokeOperationHandler(syncOperation, listener);
     }
-    else if (InteractionType._PROGRESS_INDEX == operation.getInteractionType().getOrdinal())
+    else if (InteractionType._PROGRESS_INDEX == interactionType)
     {
-      handler = new ProgressOperationHandler(operation, syncOperation, listener);
+      handler = new ProgressOperationHandler(syncOperation, listener);
     }
-    else if (InteractionType._PUBSUB_INDEX == operation.getInteractionType().getOrdinal())
+    else if (InteractionType._PUBSUB_INDEX == interactionType)
     {
-      handler = new PubSubOperationHandler(operation, syncOperation, listener);
+      handler = new PubSubOperationHandler(syncOperation, listener);
     }
     else
     {
-      throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, new Union("Pattern not supported")));
+      throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
+              new Union("Pattern not supported")));
     }
 
     synchronized (transMap)
@@ -72,16 +78,14 @@ class InteractionMap
     return oTransId;
   }
 
-  Long createTransaction(MALOperation operation,
-          boolean syncOperation,
-          MALPublishInteractionListener listener)
+  Long createTransaction(final boolean syncOperation, final MALPublishInteractionListener listener)
   {
     final Long oTransId = getTransactionId();
 
     synchronized (transMap)
     {
-      transMap.put(oTransId, new PubSubOperationHandler(operation,
-              syncOperation, new InteractionListenerPublishAdapter(listener)));
+      transMap.put(oTransId,
+              new PubSubOperationHandler(syncOperation, new InteractionListenerPublishAdapter(listener)));
     }
 
     return oTransId;
@@ -116,7 +120,7 @@ class InteractionMap
           {
             handler.lock.wait();
           }
-          catch (Exception ex)
+          catch (InterruptedException ex)
           {
             ex.printStackTrace();
           }
@@ -140,7 +144,7 @@ class InteractionMap
     return retVal;
   }
 
-  void handleStage(MALMessage msg) throws MALInteractionException
+  void handleStage(final MALMessage msg) throws MALInteractionException
   {
     final Long id = msg.getHeader().getTransactionId();
     InternalOperationHandler handler = null;
@@ -173,23 +177,34 @@ class InteractionMap
     }
   }
 
-  Long addTransactionSource(URI urlFrom, Long transactionId)
+  Long addTransactionSource(final URI urlFrom, final Long transactionId)
   {
-    final Long oTransId = getTransactionId();
+    final Long internalTransactionId = getTransactionId();
 
     synchronized (resolveMap)
     {
-      resolveMap.put(oTransId, new TreeMap.SimpleEntry(urlFrom, transactionId));
+      resolveMap.put(internalTransactionId, new TreeMap.SimpleEntry(urlFrom, transactionId));
     }
 
-    return oTransId;
+    return internalTransactionId;
   }
 
-  Map.Entry resolveTransactionSource(Long transactionId)
+  Map.Entry resolveTransactionSource(final Long internalTransactionId)
   {
     synchronized (resolveMap)
     {
-      return resolveMap.get(transactionId);
+      return resolveMap.get(internalTransactionId);
+    }
+  }
+
+  void removeTransactionSource(final Long internalTransactionId)
+  {
+    synchronized (resolveMap)
+    {
+      if (null == resolveMap.remove(internalTransactionId))
+      {
+        Logging.logMessage("WARNING: **** No key found in service maps for received interaction of " + internalTransactionId);
+      }
     }
   }
 
@@ -214,22 +229,18 @@ class InteractionMap
         lock = true;
       }
     }
-    protected final MALOperation operation;
     protected final boolean syncOperation;
     protected final MALInteractionListener listener;
     protected final BooleanLock lock = new BooleanLock();
     private MALMessage result = null;
 
-    public InternalOperationHandler(MALOperation operation,
-            boolean syncOperation,
-            MALInteractionListener listener)
+    public InternalOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
-      this.operation = operation;
       this.syncOperation = syncOperation;
       this.listener = listener;
     }
 
-    protected void signalResponse(MALMessage msg)
+    protected void signalResponse(final MALMessage msg)
     {
       result = msg;
 
@@ -241,7 +252,7 @@ class InteractionMap
       }
     }
 
-    public abstract void handleStage(MALMessage msg) throws MALInteractionException;
+    public abstract void handleStage(final MALMessage msg) throws MALInteractionException;
 
     public MALMessage getResult()
     {
@@ -249,6 +260,13 @@ class InteractionMap
     }
 
     public abstract boolean finished();
+
+    protected static void logUnexpectedTransitionError(final int interactionType, final int interactionStage)
+    {
+      Logging.logMessage("ERROR: Unexpected transition IP("
+              + InteractionType.fromInt(interactionType)
+              + ") Stage(" + interactionStage + ")");
+    }
   }
 
   private static class SubmitOperationHandler extends InternalOperationHandler
@@ -258,30 +276,27 @@ class InteractionMap
     protected final int interactionType;
     protected final int interactionStage;
 
-    public SubmitOperationHandler(MALOperation operation,
-            boolean syncOperation,
-            MALInteractionListener listener)
+    public SubmitOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
-      super(operation, syncOperation, listener);
+      super(syncOperation, listener);
 
       this.interactionType = InteractionType._SUBMIT_INDEX;
       this.interactionStage = MALSubmitOperation._SUBMIT_ACK_STAGE;
     }
 
-    public SubmitOperationHandler(MALOperation operation,
-            int interactionType,
-            int interactionStage,
-            boolean syncOperation,
-            MALInteractionListener listener)
+    public SubmitOperationHandler(final int interactionType,
+            final int interactionStage,
+            final boolean syncOperation,
+            final MALInteractionListener listener)
     {
-      super(operation, syncOperation, listener);
+      super(syncOperation, listener);
 
       this.interactionType = interactionType;
       this.interactionStage = interactionStage;
     }
 
     @Override
-    public synchronized void handleStage(MALMessage msg) throws MALInteractionException
+    public synchronized void handleStage(final MALMessage msg) throws MALInteractionException
     {
       if (!receivedInitialStage)
       {
@@ -303,9 +318,8 @@ class InteractionMap
           }
           else
           {
-            Logging.logMessage("ERROR: Unexpected transition IP("
-                    + InteractionType.fromInt(msg.getHeader().getInteractionType().getOrdinal())
-                    + ") Stage(" + msg.getHeader().getInteractionStage() + ")");
+            logUnexpectedTransitionError(msg.getHeader().getInteractionType().getOrdinal(),
+                    msg.getHeader().getInteractionStage().getValue());
             throw new MALInteractionException(new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
           }
         }
@@ -317,8 +331,7 @@ class InteractionMap
       }
       else
       {
-        Logging.logMessage("ERROR: Unexpected transition IP("
-                + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+        logUnexpectedTransitionError(interactionType, interactionStage);
         throw new MALInteractionException(new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
       }
     }
@@ -337,12 +350,12 @@ class InteractionMap
       return takenFinalStage;
     }
 
-    protected boolean checkStage(int stage)
+    protected boolean checkStage(final int stage)
     {
       return (interactionStage == stage);
     }
 
-    protected void informListener(MALMessage msg) throws MALException
+    protected void informListener(final MALMessage msg) throws MALException
     {
       if (msg.getHeader().getIsErrorMessage())
       {
@@ -357,19 +370,16 @@ class InteractionMap
 
   private static final class RequestOperationHandler extends SubmitOperationHandler
   {
-    public RequestOperationHandler(MALOperation operation,
-            boolean syncOperation,
-            MALInteractionListener listener)
+    public RequestOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
-      super(operation,
-              InteractionType._REQUEST_INDEX,
+      super(InteractionType._REQUEST_INDEX,
               MALRequestOperation._REQUEST_RESPONSE_STAGE,
               syncOperation,
               listener);
     }
 
     @Override
-    protected void informListener(MALMessage msg) throws MALException
+    protected void informListener(final MALMessage msg) throws MALException
     {
       if (msg.getHeader().getIsErrorMessage())
       {
@@ -387,15 +397,13 @@ class InteractionMap
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
 
-    public InvokeOperationHandler(MALOperation operation,
-            boolean syncOperation,
-            MALInteractionListener listener)
+    public InvokeOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
-      super(operation, syncOperation, listener);
+      super(syncOperation, listener);
     }
 
     @Override
-    public void handleStage(MALMessage msg) throws MALInteractionException
+    public void handleStage(final MALMessage msg) throws MALInteractionException
     {
       final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
       final int interactionStage = msg.getHeader().getInteractionStage().getValue();
@@ -418,8 +426,7 @@ class InteractionMap
           }
           else
           {
-            Logging.logMessage("ERROR: Unexpected transition IP("
-                    + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+            logUnexpectedTransitionError(interactionType, interactionStage);
             throw new MALInteractionException(new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
           }
         }
@@ -430,8 +437,7 @@ class InteractionMap
         }
         else
         {
-          Logging.logMessage("ERROR: Unexpected transition IP("
-                  + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+          logUnexpectedTransitionError(interactionType, interactionStage);
           throw new MALInteractionException(new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
         }
       }
@@ -495,15 +501,13 @@ class InteractionMap
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
 
-    public ProgressOperationHandler(MALOperation operation,
-            boolean syncOperation,
-            MALInteractionListener listener)
+    public ProgressOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
-      super(operation, syncOperation, listener);
+      super(syncOperation, listener);
     }
 
     @Override
-    public void handleStage(MALMessage msg) throws MALInteractionException
+    public void handleStage(final MALMessage msg) throws MALInteractionException
     {
       final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
       final int interactionStage = msg.getHeader().getInteractionStage().getValue();
@@ -526,8 +530,7 @@ class InteractionMap
           }
           else
           {
-            Logging.logMessage("ERROR: Unexpected transition IP("
-                    + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+            logUnexpectedTransitionError(interactionType, interactionStage);
             throw new MALInteractionException(new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
           }
         }
@@ -549,8 +552,7 @@ class InteractionMap
         }
         else
         {
-          Logging.logMessage("ERROR: Unexpected transition IP("
-                  + InteractionType.fromInt(interactionType) + ") Stage(" + interactionStage + ")");
+          logUnexpectedTransitionError(interactionType, interactionStage);
           throw new MALInteractionException(new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
         }
       }
@@ -589,7 +591,8 @@ class InteractionMap
           {
             if (msg.getHeader().getIsErrorMessage())
             {
-              listener.progressUpdateErrorReceived(msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());
+              listener.progressUpdateErrorReceived(msg.getHeader(),
+                      (MALErrorBody) msg.getBody(), msg.getQoSProperties());
             }
             else
             {
@@ -600,7 +603,8 @@ class InteractionMap
           {
             if (msg.getHeader().getIsErrorMessage())
             {
-              listener.progressResponseErrorReceived(msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());
+              listener.progressResponseErrorReceived(msg.getHeader(),
+                      (MALErrorBody) msg.getBody(), msg.getQoSProperties());
             }
             else
             {
@@ -625,15 +629,13 @@ class InteractionMap
 
   private static final class PubSubOperationHandler extends SubmitOperationHandler
   {
-    public PubSubOperationHandler(MALOperation operation,
-            boolean syncOperation,
-            MALInteractionListener listener)
+    public PubSubOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
-      super(operation, InteractionType._PUBSUB_INDEX, 0, syncOperation, listener);
+      super(InteractionType._PUBSUB_INDEX, 0, syncOperation, listener);
     }
 
     @Override
-    protected boolean checkStage(int stage)
+    protected boolean checkStage(final int stage)
     {
       switch (stage)
       {
@@ -641,16 +643,14 @@ class InteractionMap
         case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
         case MALPubSubOperation._DEREGISTER_ACK_STAGE:
         case MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE:
-        {
           return true;
-        }
+        default:
+          return true;
       }
-
-      return false;
     }
 
     @Override
-    protected void informListener(MALMessage msg) throws MALException
+    protected void informListener(final MALMessage msg) throws MALException
     {
       if (msg.getHeader().getIsErrorMessage())
       {
@@ -675,87 +675,122 @@ class InteractionMap
   {
     private final MALPublishInteractionListener delegate;
 
-    public InteractionListenerPublishAdapter(MALPublishInteractionListener delegate)
+    public InteractionListenerPublishAdapter(final MALPublishInteractionListener delegate)
     {
       this.delegate = delegate;
     }
 
-    public void registerAckReceived(MALMessageHeader header, Map qosProperties) throws MALException
+    public void registerAckReceived(final MALMessageHeader header, final Map qosProperties)
+            throws MALException
     {
       delegate.publishRegisterAckReceived(header, qosProperties);
     }
 
-    public void registerErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
+    public void registerErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
+            throws MALException
     {
       delegate.publishRegisterErrorReceived(header, body, qosProperties);
     }
 
-    public void deregisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException
+    public void deregisterAckReceived(final MALMessageHeader header, final Map qosProperties)
+            throws MALException
     {
       delegate.publishDeregisterAckReceived(header, qosProperties);
     }
 
-    public void invokeAckErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
+    public void invokeAckErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void invokeAckReceived(MALMessageHeader header, MALMessageBody body, Map qosProperties) throws MALException
+    public void invokeAckReceived(final MALMessageHeader header, final MALMessageBody body, final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void invokeResponseErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
+    public void invokeResponseErrorReceived(final MALMessageHeader header,
+            final MALErrorBody body,
+            final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void invokeResponseReceived(MALMessageHeader header, MALMessageBody body, Map qosProperties) throws MALException
+    public void invokeResponseReceived(final MALMessageHeader header,
+            final MALMessageBody body,
+            final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void notifyErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
+    public void notifyErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void notifyReceived(MALMessageHeader header, MALNotifyBody body, Map qosProperties) throws MALException
+    public void notifyReceived(final MALMessageHeader header, final MALNotifyBody body, final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void progressAckErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
+    public void progressAckErrorReceived(final MALMessageHeader header,
+            final MALErrorBody body,
+            final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void progressAckReceived(MALMessageHeader header, MALMessageBody body, Map qosProperties) throws MALException
+    public void progressAckReceived(final MALMessageHeader header, final MALMessageBody body, final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void progressResponseErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
+    public void progressResponseErrorReceived(final MALMessageHeader header,
+            final MALErrorBody body,
+            final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void progressResponseReceived(MALMessageHeader header, MALMessageBody body, Map qosProperties) throws MALException
+    public void progressResponseReceived(final MALMessageHeader header,
+            final MALMessageBody body,
+            final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void progressUpdateErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
+    public void progressUpdateErrorReceived(final MALMessageHeader header,
+            final MALErrorBody body,
+            final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void progressUpdateReceived(MALMessageHeader header, MALMessageBody body, Map qosProperties) throws MALException
+    public void progressUpdateReceived(final MALMessageHeader header,
+            final MALMessageBody body,
+            final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void requestErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
+    public void requestErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void requestResponseReceived(MALMessageHeader header, MALMessageBody body, Map qosProperties) throws MALException
+    public void requestResponseReceived(final MALMessageHeader header,
+            final MALMessageBody body,
+            final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void submitAckReceived(MALMessageHeader header, Map qosProperties) throws MALException
+    public void submitAckReceived(final MALMessageHeader header, final Map qosProperties)
+            throws MALException
     {
     }
 
-    public void submitErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
+    public void submitErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
+            throws MALException
     {
     }
   }

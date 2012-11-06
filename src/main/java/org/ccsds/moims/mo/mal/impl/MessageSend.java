@@ -54,7 +54,7 @@ public class MessageSend
     synchronousInteraction(details,
             op,
             MALPubSubOperation.REGISTER_STAGE,
-            (LongHolder)null,
+            (LongHolder) null,
             (MALPublishInteractionListener) null,
             subscription);
   }
@@ -75,7 +75,7 @@ public class MessageSend
           MALPublishInteractionListener listener) throws MALInteractionException, MALException
   {
     pmap.registerPublishListener(details, listener);
-    
+
     LongHolder transId = new LongHolder();
     synchronousInteraction(details,
             op,
@@ -83,7 +83,7 @@ public class MessageSend
             transId,
             (MALPublishInteractionListener) null,
             entityKeys);
-    
+
     return transId.value;
   }
 
@@ -99,7 +99,7 @@ public class MessageSend
     synchronousInteraction(details,
             op,
             MALPubSubOperation.PUBLISH_DEREGISTER_STAGE,
-            (LongHolder)null,
+            (LongHolder) null,
             (MALPublishInteractionListener) null, (Object[]) null);
     pmap.getPublishListenerAndRemove(details.endpoint.getURI(), details);
   }
@@ -119,7 +119,7 @@ public class MessageSend
     synchronousInteraction(details,
             op,
             MALPubSubOperation.DEREGISTER_STAGE,
-            (LongHolder)null,
+            (LongHolder) null,
             (MALPublishInteractionListener) null,
             unsubscription);
     pmap.deregisterNotifyListener(details, op, unsubscription);
@@ -216,9 +216,11 @@ public class MessageSend
           Long internalTransId,
           MALMessageHeader srcHdr,
           UOctet rspnInteractionStage,
+          final boolean isFinalStage,
+          MALOperation operation,
           Object... rspn)
   {
-    return returnResponse(msgAddress, internalTransId, srcHdr, srcHdr.getQoSlevel(), rspnInteractionStage, rspn);
+    return returnResponse(msgAddress, internalTransId, srcHdr, srcHdr.getQoSlevel(), rspnInteractionStage, isFinalStage, operation, rspn);
   }
 
   /**
@@ -235,6 +237,8 @@ public class MessageSend
           MALMessageHeader srcHdr,
           QoSLevel lvl,
           UOctet rspnInteractionStage,
+          final boolean isFinalStage,
+          MALOperation operation,
           Object... rspn)
   {
     MALMessage msg = null;
@@ -246,9 +250,14 @@ public class MessageSend
               msgAddress.authenticationId,
               srcHdr,
               lvl,
-              rspnInteractionStage,
+              rspnInteractionStage, operation,
               false, new Hashtable(), rspn);
 
+      if (isFinalStage)
+      {
+        imap.removeTransactionSource(internalTransId);
+      }
+      
       endpoint.sendMessage(msg);
     }
     catch (MALException ex)
@@ -276,7 +285,7 @@ public class MessageSend
           MALException error)
   {
     UOctet rspnInteractionStage = _returnErrorAndCalculateStage(msgAddress, internalTransId, srcHdr);
-    
+
     if (0 == rspnInteractionStage.getValue())
     {
       Logging.logMessage("ERROR: Unable to return error, already a return message (" + error + ")");
@@ -293,7 +302,7 @@ public class MessageSend
           MALStandardError error)
   {
     UOctet rspnInteractionStage = _returnErrorAndCalculateStage(msgAddress, internalTransId, srcHdr);
-    
+
     if (0 == rspnInteractionStage.getValue())
     {
       Logging.logMessage("ERROR: Unable to return error, already a return message (" + error + ")");
@@ -443,8 +452,11 @@ public class MessageSend
       }
 
       msg = createReturnMessage(msgAddress.endpoint, msgAddress.uri,
-              msgAddress.authenticationId, srcHdr, level, rspnInteractionStage, true, new Hashtable(), error.getErrorNumber(), error.getExtraInformation());
+              msgAddress.authenticationId, srcHdr, level, rspnInteractionStage, true, new Hashtable(),
+              error.getErrorNumber(), error.getExtraInformation());
 
+      imap.removeTransactionSource(internalTransId);
+      
       msgAddress.endpoint.sendMessage(msg);
     }
     catch (MALException ex)
@@ -483,19 +495,27 @@ public class MessageSend
           Object... msgBody) throws MALInteractionException, MALException
   {
     MALMessage msg = createMessage(details, op, transId, stage, msgBody);
-    
+
     return onewayInteraction(details, msg);
   }
-  
-  public org.ccsds.moims.mo.mal.transport.MALMessage onewayPublish(NotifyMessage notifyMessage)
+
+  public org.ccsds.moims.mo.mal.transport.MALMessage onewayPublish(MessageDetails details,
+          Long transId,
+          IdentifierList domain,
+          Identifier networkZone,
+          UShort area,
+          UShort service,
+          UShort operation,
+          UOctet version,
+          Object[] updates)
           throws MALInteractionException, MALException
   {
-    MALMessage msg = createMessage(notifyMessage.details, notifyMessage.transId, InteractionType.PUBSUB, MALPubSubOperation.NOTIFY_STAGE, notifyMessage.area, notifyMessage.service, notifyMessage.operation, notifyMessage.version, (Object[]) notifyMessage.updates);
-    msg.getHeader().setDomain(notifyMessage.domain);
-    msg.getHeader().setNetworkZone(notifyMessage.networkZone);
-    return onewayInteraction(notifyMessage.details, msg);
+    MALMessage msg = createMessage(details, transId, InteractionType.PUBSUB, MALPubSubOperation.NOTIFY_STAGE, area, service, operation, version, (Object[]) updates);
+    msg.getHeader().setDomain(domain);
+    msg.getHeader().setNetworkZone(networkZone);
+    return onewayInteraction(details, msg);
   }
-  
+
   public org.ccsds.moims.mo.mal.transport.MALMessage onewayInteraction(MessageDetails details,
           MALMessage msg) throws MALInteractionException, MALException
   {
@@ -535,7 +555,7 @@ public class MessageSend
           MALInteractionListener listener,
           Object... msgBody) throws MALInteractionException, MALException
   {
-    Long transId = imap.createTransaction(op, true, listener);
+    Long transId = imap.createTransaction(op.getInteractionType().getOrdinal(), true, listener);
 
     return synchronousInteraction(transId, details, op, syncStage, msgBody);
   }
@@ -552,14 +572,14 @@ public class MessageSend
    * @return The return value.
    * @throws MALException on Error.
    */
-  public MALMessageBody synchronousInteraction(MessageDetails details,
+  private MALMessageBody synchronousInteraction(MessageDetails details,
           MALOperation op,
           UOctet syncStage,
           LongHolder transactionHolder,
           MALPublishInteractionListener listener,
           Object... msgBody) throws MALInteractionException, MALException
   {
-    Long transId = imap.createTransaction(op, true, listener);
+    Long transId = imap.createTransaction(true, listener);
 
     MALMessageBody rv = synchronousInteraction(transId, details, op, syncStage, msgBody);
 
@@ -618,7 +638,7 @@ public class MessageSend
           MALInteractionListener listener,
           Object... msgBody) throws MALInteractionException, MALException
   {
-    Long transId = imap.createTransaction(op, false, listener);
+    Long transId = imap.createTransaction(op.getInteractionType().getOrdinal(), false, listener);
 
     return asynchronousInteraction(transId, details, op, initialStage, msgBody);
   }
@@ -640,7 +660,7 @@ public class MessageSend
           MALPublishInteractionListener listener,
           Object... msgBody) throws MALInteractionException, MALException
   {
-    Long transId = imap.createTransaction(op, false, listener);
+    Long transId = imap.createTransaction(false, listener);
 
     return asynchronousInteraction(transId, details, op, initialStage, msgBody);
   }
@@ -701,17 +721,30 @@ public class MessageSend
           UOctet interactionStage,
           Object... body) throws MALException
   {
-    return createMessage(details,
+    URI to = details.brokerUri;
+
+    if (op.getInteractionType() != InteractionType.PUBSUB)
+    {
+      to = details.uriTo;
+    }
+
+    return details.endpoint.createMessage(details.authenticationId,
+            to,
+            new Time(new java.util.Date().getTime()),
+            details.qosLevel,
+            details.priority,
+            details.domain,
+            details.networkZone,
+            details.sessionType,
+            details.sessionName,
             transactionId,
-            op.getInteractionType(),
+            Boolean.FALSE,
+            op,
             interactionStage,
-            op.getService().getArea().getNumber(),
-            op.getService().getNumber(),
-            op.getNumber(),
-            op.getService().getVersion(),
+            details.qosProps,
             body);
   }
-  
+
   public static MALMessage createMessage(MessageDetails details,
           Long transactionId,
           InteractionType interactionType,
@@ -777,5 +810,36 @@ public class MessageSend
             isError,
             qos,
             rspn);
+  }
+
+  MALMessage createReturnMessage(MALEndpoint endPoint, URI uriFrom,
+          Blob authId,
+          MALMessageHeader srcHdr,
+          QoSLevel level,
+          UOctet interactionStage,
+          MALOperation operation,
+          boolean isError,
+          Map qos, Object... rspn) throws IllegalArgumentException, MALException
+  {
+    return endPoint.createMessage(authId,
+            srcHdr.getURIFrom(),
+            new Time(new java.util.Date().getTime()),
+            level,
+            srcHdr.getPriority(),
+            srcHdr.getDomain(),
+            srcHdr.getNetworkZone(),
+            srcHdr.getSession(),
+            srcHdr.getSessionName(),
+            srcHdr.getTransactionId(),
+            isError,
+            operation,
+            interactionStage,
+            qos,
+            rspn);
+  }
+
+  private static class LongHolder
+  {
+    public Long value = null;
   }
 }

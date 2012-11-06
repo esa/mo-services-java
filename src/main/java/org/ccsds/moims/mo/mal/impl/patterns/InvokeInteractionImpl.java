@@ -51,7 +51,7 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
   public MALMessage sendAcknowledgement(Object... result) throws MALInteractionException, MALException
   {
     ackSent = true;
-    return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, result);
+    return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, false, result);
   }
 
   @Override
@@ -62,7 +62,7 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
    */
   public MALMessage sendResponse(Object... result) throws MALInteractionException, MALException
   {
-    return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
+    return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, true, result);
   }
 
   @Override

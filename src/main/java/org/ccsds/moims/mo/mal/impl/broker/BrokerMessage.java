@@ -10,10 +10,10 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
-import org.ccsds.moims.mo.mal.impl.NotifyMessage;
 import java.util.LinkedList;
 import java.util.List;
 import org.ccsds.moims.mo.mal.impl.MessageDetails;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -40,5 +40,24 @@ public final class BrokerMessage
   public BrokerMessage(MALBrokerBindingImpl binding)
   {
     this.binding = binding;
+  }
+
+  /**
+   * A single notify message.
+   */
+  public static final class NotifyMessage
+  {
+    /**
+     * Message header.
+     */
+    public MessageDetails details;
+    public Long transId;
+    public IdentifierList domain;
+    public Identifier networkZone;
+    public UShort area;
+    public UShort service;
+    public UShort operation;
+    public UOctet version;
+    public Object[] updates;
   }
 }

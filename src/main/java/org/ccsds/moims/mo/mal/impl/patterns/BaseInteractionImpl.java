@@ -92,20 +92,15 @@ public abstract class BaseInteractionImpl implements MALInteraction
     qosProperties.put(name, value);
   }
 
-  public Map getQoSProperties()
-  {
-    return qosProperties;
-  }
-  
   /**
    * Returns a response to the consumer.
    * @param stage Stage to use.
    * @param result Message body.
    * @throws MALException On error.
    */
-  protected org.ccsds.moims.mo.mal.transport.MALMessage returnResponse(UOctet stage, Object... result) throws MALException
+  protected org.ccsds.moims.mo.mal.transport.MALMessage returnResponse(UOctet stage, final boolean isFinalStage, Object... result) throws MALException
   {
-    return sender.returnResponse(address, internalTransId, msg.getHeader(), stage, result);
+    return sender.returnResponse(address, internalTransId, msg.getHeader(), stage, isFinalStage, operation, result);
   }
   
   /**

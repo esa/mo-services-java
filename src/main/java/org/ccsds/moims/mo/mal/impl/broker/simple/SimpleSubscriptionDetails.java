@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.impl.NotifyMessage;
+import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage.NotifyMessage;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.broker.UpdateKey;
 import org.ccsds.moims.mo.mal.impl.util.Logging;

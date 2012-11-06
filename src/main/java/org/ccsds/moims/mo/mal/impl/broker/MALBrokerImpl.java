@@ -10,19 +10,16 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
-import org.ccsds.moims.mo.mal.impl.NotifyMessage;
 import java.util.Map;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.impl.MessageDetails;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.impl.broker.simple.SimpleBrokerHandler;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
-import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.transport.*;
 
@@ -37,12 +34,13 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
   MALBrokerImpl(MALClose parent, MessageSend sender) throws MALException
   {
     super(parent);
-    
+
     this.sender = sender;
   }
 
   /**
    * Adds a consumer to this broker.
+   *
    * @param hdr Source message.
    * @param body Consumer subscription.
    * @param binding Broker binding.
@@ -60,6 +58,7 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
 
   /**
    * Adds a provider to this broker.
+   *
    * @param hdr Source message.
    * @param body Provider entity key list.
    */
@@ -71,6 +70,7 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
 
   /**
    * Returns the QoS level used for a provider.
+   *
    * @param hdr Source message.
    * @return The QoSLevel.
    */
@@ -81,6 +81,7 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
 
   /**
    * Removes a consumer from this broker for a set of subscriptions.
+   *
    * @param hdr Source Message.
    * @param ids Subscription ids to remove.
    */
@@ -92,6 +93,7 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
 
   /**
    * Removes a consumer that we have lost contact with.
+   *
    * @param hdr Source message.
    */
   public void removeLostConsumer(MessageDetails details)
@@ -101,9 +103,9 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
 
   /**
    * Removes a provider from this Broker.
+   *
    * @param hdr Source Message.
    */
-
   public void handlePublishDeregister(MALInteraction interaction) throws MALInteractionException, MALException
   {
     MALMessageHeader hdr = interaction.getMessageHeader();
@@ -112,6 +114,7 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
 
   /**
    * Publishes a set of updates.
+   *
    * @param hdr Source Message.
    * @param updateList The update list.
    * @throws MALException On error.
@@ -125,12 +128,20 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
     {
       for (BrokerMessage brokerMessage : msgList)
       {
-        for (NotifyMessage notifyMessage : brokerMessage.msgs)
+        for (BrokerMessage.NotifyMessage notifyMessage : brokerMessage.msgs)
         {
           try
           {
             // send it out
-            sender.onewayPublish(notifyMessage);
+            sender.onewayPublish(notifyMessage.details,
+                    notifyMessage.transId,
+                    notifyMessage.domain,
+                    notifyMessage.networkZone,
+                    notifyMessage.area,
+                    notifyMessage.service,
+                    notifyMessage.operation,
+                    notifyMessage.version,
+                    notifyMessage.updates);
           }
           catch (MALException ex)
           {

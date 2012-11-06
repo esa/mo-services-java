@@ -14,15 +14,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.*;
-import org.ccsds.moims.mo.mal.impl.AddressKey;
 import org.ccsds.moims.mo.mal.impl.MessageDetails;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
+import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublisher;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Implementation of the MALPublisher interface.
@@ -193,7 +194,7 @@ class MALPublisherImpl implements MALPublisher
       Object[] body = new Object[updateLists.length + 1];
       body[0] = updateHeaderList;
       System.arraycopy(updateLists, 0, body, 1, updateLists.length);
-      
+
       return handler.onewayInteraction(details, tid, operation, MALPubSubOperation.PUBLISH_STAGE, body);
     }
     else
@@ -319,5 +320,168 @@ class MALPublisherImpl implements MALPublisher
           String sessionName)
   {
     return transId.get(new AddressKey(brokerUri, domain, networkZone, session, sessionName));
+  }
+
+  private static class AddressKey implements Comparable
+  {
+    private static final int HASH_MAGIC_NUMBER = 42;
+    private final String uri;
+    private final String domain;
+    private final String networkZone;
+    private final int session;
+    private final String sessionName;
+
+    /**
+     * Constructor.
+     *
+     * @param uri URI.
+     * @param domain Domain.
+     * @param networkZone Network zone.
+     * @param session Session type.
+     * @param sessionName Session name.
+     */
+    public AddressKey(URI uri, IdentifierList domain, String networkZone, SessionType session, String sessionName)
+    {
+      this.uri = uri.getValue();
+      this.domain = StructureHelper.domainToString(domain);
+      this.networkZone = networkZone;
+      this.session = session.getOrdinal();
+      this.sessionName = sessionName;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param hdr Source message.
+     */
+    public AddressKey(MALMessageHeader hdr)
+    {
+      this.uri = hdr.getURITo().getValue();
+      this.domain = StructureHelper.domainToString(hdr.getDomain());
+      this.networkZone = hdr.getNetworkZone().getValue();
+      this.session = hdr.getSession().getOrdinal();
+      this.sessionName = hdr.getSessionName().getValue();
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (obj instanceof AddressKey)
+      {
+        AddressKey other = (AddressKey) obj;
+        if (uri == null)
+        {
+          if (other.uri != null)
+          {
+            return false;
+          }
+        }
+        else
+        {
+          if (!uri.equals(other.uri))
+          {
+            return false;
+          }
+        }
+        if (domain == null)
+        {
+          if (other.domain != null)
+          {
+            return false;
+          }
+        }
+        else
+        {
+          if (!domain.equals(other.domain))
+          {
+            return false;
+          }
+        }
+        if (networkZone == null)
+        {
+          if (other.networkZone != null)
+          {
+            return false;
+          }
+        }
+        else
+        {
+          if (!networkZone.equals(other.networkZone))
+          {
+            return false;
+          }
+        }
+        if (session != other.session)
+        {
+          return false;
+        }
+        if (sessionName == null)
+        {
+          if (other.sessionName != null)
+          {
+            return false;
+          }
+        }
+        else
+        {
+          if (!sessionName.equals(other.sessionName))
+          {
+            return false;
+          }
+        }
+        return true;
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+      assert false : "hashCode not designed";
+      return HASH_MAGIC_NUMBER; // any arbitrary constant will do
+    }
+
+    @Override
+    public int compareTo(Object o)
+    {
+      AddressKey other = (AddressKey) o;
+
+      if (uri.equals(other.uri))
+      {
+        if (domain.equals(other.domain))
+        {
+          if (networkZone.equals(other.networkZone))
+          {
+            if (session == other.session)
+            {
+              if (sessionName.equals(other.sessionName))
+              {
+                return 0;
+              }
+              else
+              {
+                return sessionName.compareTo(other.sessionName);
+              }
+            }
+            else
+            {
+              return session - other.session;
+            }
+          }
+          else
+          {
+            return networkZone.compareTo(other.networkZone);
+          }
+        }
+        else
+        {
+          return domain.compareTo(other.domain);
+        }
+      }
+      else
+      {
+        return uri.compareTo(other.uri);
+      }
+    }
   }
 }

@@ -47,7 +47,7 @@ public class RequestInteractionImpl extends BaseInteractionImpl implements MALRe
    */
   public MALMessage sendResponse(Object... result) throws MALInteractionException, MALException
   {
-    return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, result);
+    return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, true, result);
   }
 
   @Override

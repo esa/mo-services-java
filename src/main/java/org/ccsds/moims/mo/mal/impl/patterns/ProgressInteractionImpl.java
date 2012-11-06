@@ -51,7 +51,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
   public MALMessage sendAcknowledgement(Object... result) throws MALInteractionException, MALException
   {
     ackSent = true;
-    return returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, result);
+    return returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, false, result);
   }
 
   @Override
@@ -62,7 +62,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    */
   public MALMessage sendUpdate(Object... update) throws MALException
   {
-    return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, update);
+    return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, false, update);
   }
 
   @Override
@@ -73,7 +73,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
    */
   public MALMessage sendResponse(Object... result) throws MALInteractionException, MALException
   {
-    return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, result);
+    return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, true, result);
   }
 
   @Override

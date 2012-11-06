@@ -382,7 +382,7 @@ public class MessageReceive implements MALMessageListener
       sender.returnResponse(brokerHandler.getMsgAddress(),
               transId,
               msg.getHeader(),
-              MALPubSubOperation.REGISTER_ACK_STAGE, (Object[]) null);
+              MALPubSubOperation.REGISTER_ACK_STAGE, true, interaction.getOperation(), (Object[]) null);
 
       // inform subscribed listeners
       // ToDo
@@ -414,13 +414,13 @@ public class MessageReceive implements MALMessageListener
       // need to use QOSlevel and priority from original publish register
       QoSLevel lvl = brokerHandler.getBrokerImpl().getProviderQoSLevel(msg.getHeader());
       //UInteger pri = brokerHandler.getBrokerImpl().getPriority();
-      
+
       // because we don't pass this upwards, we have to generate the ack
       sender.returnResponse(brokerHandler.getMsgAddress(),
               transId,
               msg.getHeader(),
               lvl,
-              MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, (Object[]) null);
+              MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, true, interaction.getOperation(), (Object[]) null);
     }
     else
     {
@@ -571,7 +571,7 @@ public class MessageReceive implements MALMessageListener
       sender.returnResponse(brokerHandler.getMsgAddress(),
               transId,
               msg.getHeader(),
-              MALPubSubOperation.DEREGISTER_ACK_STAGE, (Object) null);
+              MALPubSubOperation.DEREGISTER_ACK_STAGE, true, interaction.getOperation(), (Object[]) null);
 
       // inform subscribed listeners
       // ToDo
@@ -596,21 +596,21 @@ public class MessageReceive implements MALMessageListener
 
     // get the correct qos for the dergister
     QoSLevel lvl = brokerHandler.getBrokerImpl().getProviderQoSLevel(msg.getHeader());
-    if(null == lvl)
+    if (null == lvl)
     {
       lvl = msg.getHeader().getQoSlevel();
     }
-    
+
     // update register list
     MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
     brokerHandler.getBrokerImpl().handlePublishDeregister(interaction);
-    
+
     // because we don't pass this upwards, we have to generate the ack
     sender.returnResponse(brokerHandler.getMsgAddress(),
             transId,
             msg.getHeader(),
             lvl,
-            MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, (Object) null);
+            MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, true, interaction.getOperation(), (Object[]) null);
   }
 
   private Address lookupAddress(MALEndpoint callingEndpoint, MALMessage msg)
