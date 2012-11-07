@@ -17,57 +17,50 @@ import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
- * The interaction map is the central class responsible for maintaining the state of interactions for a MAL instance.
- * New transactions are added using the creatTransaction methods. Synchronous consumer interactions are handled by 
+ * The interaction map is responsible for maintaining the state of consumer initiated interactions for a MAL instance.
+ * New transactions are added using the creatTransaction methods. Synchronous consumer interactions are handled by
  * calling waitForResponse, and any message received is 'handled' using the handleStage method.
- * 
- * When a new interaction is created, an internal (to this class) interaction handler class is created which is responsible for ensuring
- * the correct stages are received in the correct order.
+ *
+ * When a new interaction is created, an internal (to this class) interaction handler class is created which is
+ * responsible for ensuring the correct stages are received in the correct order.
  */
-class InteractionMap
+class InteractionConsumerMap
 {
-  private static volatile long transId = 0;
   private final Map<Long, InternalOperationHandler> transMap =
           new TreeMap<Long, InternalOperationHandler>();
-  private final Map<Long, Map.Entry> resolveMap = new TreeMap<Long, Map.Entry>();
 
   Long createTransaction(final int interactionType,
           final boolean syncOperation,
           final MALInteractionListener listener) throws MALInteractionException
   {
-    final Long oTransId = getTransactionId();
+    final Long oTransId = InteractionTransaction.getTransactionId();
 
     InternalOperationHandler handler = null;
 
-    if (InteractionType._SUBMIT_INDEX == interactionType)
+    switch (interactionType)
     {
-      handler = new SubmitOperationHandler(syncOperation, listener);
-    }
-    else if (InteractionType._REQUEST_INDEX == interactionType)
-    {
-      handler = new RequestOperationHandler(syncOperation, listener);
-    }
-    else if (InteractionType._INVOKE_INDEX == interactionType)
-    {
-      handler = new InvokeOperationHandler(syncOperation, listener);
-    }
-    else if (InteractionType._PROGRESS_INDEX == interactionType)
-    {
-      handler = new ProgressOperationHandler(syncOperation, listener);
-    }
-    else if (InteractionType._PUBSUB_INDEX == interactionType)
-    {
-      handler = new PubSubOperationHandler(syncOperation, listener);
-    }
-    else
-    {
-      throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
-              new Union("Pattern not supported")));
+      case InteractionType._SUBMIT_INDEX:
+        handler = new SubmitOperationHandler(syncOperation, listener);
+        break;
+      case InteractionType._REQUEST_INDEX:
+        handler = new RequestOperationHandler(syncOperation, listener);
+        break;
+      case InteractionType._INVOKE_INDEX:
+        handler = new InvokeOperationHandler(syncOperation, listener);
+        break;
+      case InteractionType._PROGRESS_INDEX:
+        handler = new ProgressOperationHandler(syncOperation, listener);
+        break;
+      case InteractionType._PUBSUB_INDEX:
+        handler = new PubSubOperationHandler(syncOperation, listener);
+        break;
+      default:
+        throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
+                new Union("Pattern not supported")));
     }
 
     synchronized (transMap)
@@ -80,7 +73,7 @@ class InteractionMap
 
   Long createTransaction(final boolean syncOperation, final MALPublishInteractionListener listener)
   {
-    final Long oTransId = getTransactionId();
+    final Long oTransId = InteractionTransaction.getTransactionId();
 
     synchronized (transMap)
     {
@@ -175,42 +168,6 @@ class InteractionMap
         }
       }
     }
-  }
-
-  Long addTransactionSource(final URI urlFrom, final Long transactionId)
-  {
-    final Long internalTransactionId = getTransactionId();
-
-    synchronized (resolveMap)
-    {
-      resolveMap.put(internalTransactionId, new TreeMap.SimpleEntry(urlFrom, transactionId));
-    }
-
-    return internalTransactionId;
-  }
-
-  Map.Entry resolveTransactionSource(final Long internalTransactionId)
-  {
-    synchronized (resolveMap)
-    {
-      return resolveMap.get(internalTransactionId);
-    }
-  }
-
-  void removeTransactionSource(final Long internalTransactionId)
-  {
-    synchronized (resolveMap)
-    {
-      if (null == resolveMap.remove(internalTransactionId))
-      {
-        Logging.logMessage("WARNING: **** No key found in service maps for received interaction of " + internalTransactionId);
-      }
-    }
-  }
-
-  static synchronized Long getTransactionId()
-  {
-    return transId++;
   }
 
   private abstract static class InternalOperationHandler

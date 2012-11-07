@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -56,16 +56,16 @@ public abstract class ServiceComponentImpl extends MALClose
    * @param handler Service interaction handler.
    * @throws MALException on error.
    */
-  public ServiceComponentImpl(MALClose parent,
-          MALContextImpl impl,
-          String localName,
-          String protocol,
-          MALService service,
-          Blob authenticationId,
-          QoSLevel[] expectedQos,
-          UInteger priorityLevelNumber,
-          Map defaultQoSProperties,
-          MALInteractionHandler handler) throws MALException
+  public ServiceComponentImpl(final MALClose parent,
+          final MALContextImpl impl,
+          final String localName,
+          final String protocol,
+          final MALService service,
+          final Blob authenticationId,
+          final QoSLevel[] expectedQos,
+          final UInteger priorityLevelNumber,
+          final Map defaultQoSProperties,
+          final MALInteractionHandler handler) throws MALException
   {
     super(parent);
 
@@ -106,25 +106,24 @@ public abstract class ServiceComponentImpl extends MALClose
    * Constructor.
    * @param parent Parent object.
    * @param impl MAL impl.
-   * @param localName Local name of this component.
-   * @param protocol The protocol to use.
+   * @param endPoint The endpoint to use.
    * @param service The service.
-   * @param authenticationId Athentication identifier.
+   * @param authenticationId Authentication identifier.
    * @param expectedQos Expected QoS.
    * @param priorityLevelNumber Number of priority levels.
    * @param defaultQoSProperties Default QOS properties.
    * @param handler Service interaction handler.
    * @throws MALException on error.
    */
-  public ServiceComponentImpl(MALClose parent,
-          MALContextImpl impl,
-          MALEndpoint endPoint,
-          MALService service,
-          Blob authenticationId,
-          QoSLevel[] expectedQos,
-          UInteger priorityLevelNumber,
-          Map defaultQoSProperties,
-          MALInteractionHandler handler) throws MALException
+  public ServiceComponentImpl(final MALClose parent,
+          final MALContextImpl impl,
+          final MALEndpoint endPoint,
+          final MALService service,
+          final Blob authenticationId,
+          final QoSLevel[] expectedQos,
+          final UInteger priorityLevelNumber,
+          final Map defaultQoSProperties,
+          final MALInteractionHandler handler) throws MALException
   {
     super(parent);
 
@@ -203,11 +202,5 @@ public abstract class ServiceComponentImpl extends MALClose
   public Address getMsgAddress()
   {
     return msgAddress;
-  }
-
-  @Override
-  public void close() throws MALException
-  {
-    super.close();
   }
 }

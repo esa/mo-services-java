@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -23,33 +23,31 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
+ * The interaction map is responsible for maintaining the information pertaining to PubSub interactions for a MAL
+ * instance.
  */
-class PubSubMap
+class InteractionPubSubMap
 {
-  private final java.util.Map<StringPair, MALPublishInteractionListener> publisherMap
-          = new java.util.TreeMap<StringPair, MALPublishInteractionListener>();
-  private final java.util.Map<String, Map<String, MALInteractionListener>> errorMap
-          = new java.util.TreeMap<String, Map<String, MALInteractionListener>>();
-  private final java.util.Map<StringPair, MALInteractionListener> notifyMap
-          = new java.util.TreeMap<StringPair, MALInteractionListener>();
+  private final Map<StringPair, MALPublishInteractionListener> publisherMap
+          = new TreeMap<StringPair, MALPublishInteractionListener>();
+  private final Map<String, Map<String, MALInteractionListener>> errorMap
+          = new TreeMap<String, Map<String, MALInteractionListener>>();
+  private final Map<StringPair, MALInteractionListener> notifyMap
+          = new TreeMap<StringPair, MALInteractionListener>();
 
-  PubSubMap()
-  {
-  }
-
-  void registerPublishListener(MessageDetails details, MALPublishInteractionListener listener)
+  void registerPublishListener(final MessageDetails details, final MALPublishInteractionListener listener)
   {
     final StringPair id = new StringPair(details.uriFrom.getValue(), createProviderKey(details));
 
     synchronized (publisherMap)
     {
-        publisherMap.put(id, listener);
+      publisherMap.put(id, listener);
 
-        Logging.logMessage("INFO: Adding publisher: " + id);
+      Logging.logMessage("INFO: Adding publisher: " + id);
     }
   }
 
-  MALPublishInteractionListener getPublishListener(URI uri, MALMessageHeader mshHdr)
+  MALPublishInteractionListener getPublishListener(final URI uri, final MALMessageHeader mshHdr)
   {
     final StringPair id = new StringPair(uri.getValue(), createProviderKey(mshHdr));
     MALPublishInteractionListener list;
@@ -66,7 +64,7 @@ class PubSubMap
 
     return list;
   }
-  
+
   void listPublishListeners()
   {
     synchronized (publisherMap)
@@ -98,7 +96,7 @@ class PubSubMap
     }
   }
 
-  MALPublishInteractionListener getPublishListenerAndRemove(URI uri, MessageDetails details)
+  MALPublishInteractionListener getPublishListenerAndRemove(final URI uri, final MessageDetails details)
   {
     final StringPair id = new StringPair(uri.getValue(), createProviderKey(details));
     MALPublishInteractionListener list;
@@ -116,10 +114,10 @@ class PubSubMap
     return list;
   }
 
-  void registerNotifyListener(MessageDetails details,
-          MALPubSubOperation op,
-          Subscription subscription,
-          MALInteractionListener list)
+  void registerNotifyListener(final MessageDetails details,
+          final MALPubSubOperation op,
+          final Subscription subscription,
+          final MALInteractionListener list)
   {
     final String uri = details.endpoint.getURI().getValue();
     final String subId = subscription.getSubscriptionId().getValue();
@@ -141,7 +139,7 @@ class PubSubMap
     }
   }
 
-  MALInteractionListener getNotifyListener(URI uri, Identifier subscription)
+  MALInteractionListener getNotifyListener(final URI uri, final Identifier subscription)
   {
     final StringPair id = new StringPair(uri.getValue(), subscription.getValue());
 
@@ -159,12 +157,12 @@ class PubSubMap
     return null;
   }
 
-  Map<String, MALInteractionListener> getNotifyListenersAndRemove(URI uriValue)
+  Map<String, MALInteractionListener> getNotifyListenersAndRemove(final URI uriValue)
   {
     synchronized (notifyMap)
     {
-      String uri = uriValue.getValue();
-      Map<String, MALInteractionListener> ent = errorMap.get(uri);
+      final String uri = uriValue.getValue();
+      final Map<String, MALInteractionListener> ent = errorMap.get(uri);
 
       if (null != ent)
       {
@@ -179,7 +177,9 @@ class PubSubMap
     }
   }
 
-  void deregisterNotifyListener(MessageDetails details, MALPubSubOperation op, IdentifierList unsubscription)
+  void deregisterNotifyListener(final MessageDetails details,
+          final MALPubSubOperation op,
+          final IdentifierList unsubscription)
   {
     synchronized (notifyMap)
     {
@@ -195,7 +195,7 @@ class PubSubMap
           Logging.logMessage("INFO: PubSubMap(" + this + "), removing notify handler: " + uri + " : " + unsubId);
           notifyMap.remove(id);
 
-          Map<String, MALInteractionListener> ent = errorMap.get(uri);
+          final Map<String, MALInteractionListener> ent = errorMap.get(uri);
           if (null != ent)
           {
             ent.remove(unsubId);
@@ -209,11 +209,11 @@ class PubSubMap
       }
     }
   }
-  
-  private static String createProviderKey(MessageDetails details)
+
+  private static String createProviderKey(final MessageDetails details)
   {
-    StringBuilder buf = new StringBuilder();
-    
+    final StringBuilder buf = new StringBuilder();
+
     buf.append(details.sessionType);
     buf.append(':');
     buf.append(details.sessionName);
@@ -221,14 +221,14 @@ class PubSubMap
     buf.append(details.networkZone);
     buf.append(':');
     buf.append(details.domain);
-    
+
     return buf.toString();
   }
-  
-  private static String createProviderKey(MALMessageHeader details)
+
+  private static String createProviderKey(final MALMessageHeader details)
   {
-    StringBuilder buf = new StringBuilder();
-    
+    final StringBuilder buf = new StringBuilder();
+
     buf.append(details.getSession());
     buf.append(':');
     buf.append(details.getSessionName());
@@ -236,7 +236,7 @@ class PubSubMap
     buf.append(details.getNetworkZone());
     buf.append(':');
     buf.append(details.getDomain());
-    
+
     return buf.toString();
   }
 }

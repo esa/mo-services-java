@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MALContext Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -37,8 +37,9 @@ public class MALContextImpl extends MALClose implements MALContext
 {
   private final Map initialProperties;
   private final MALAccessControl securityManager;
-  private final InteractionMap imap = new InteractionMap();
-  private final PubSubMap pmap = new PubSubMap();
+  private final InteractionConsumerMap icmap = new InteractionConsumerMap();
+  private final InteractionProviderMap ipmap = new InteractionProviderMap();
+  private final InteractionPubSubMap ipsmap = new InteractionPubSubMap();
   private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new TreeMap<String, MALBrokerBindingImpl>();
   private final MessageReceive receiver;
   private final MessageSend sender;
@@ -49,7 +50,7 @@ public class MALContextImpl extends MALClose implements MALContext
    * @param properties initial qos properties.
    * @throws MALException on error.
    */
-  public MALContextImpl(MALAccessControlFactory securityFactory, Map properties) throws MALException
+  public MALContextImpl(final MALAccessControlFactory securityFactory, final Map properties) throws MALException
   {
     super(null);
 
@@ -64,8 +65,8 @@ public class MALContextImpl extends MALClose implements MALContext
       securityManager = new NullSecurityManager();
     }
 
-    sender = new MessageSend(securityManager, imap, pmap);
-    receiver = new MessageReceive(sender, securityManager, imap, pmap, brokerBindingMap);
+    sender = new MessageSend(securityManager, icmap, ipmap, ipsmap);
+    receiver = new MessageReceive(sender, securityManager, icmap, ipmap, ipsmap, brokerBindingMap);
   }
 
   @Override
@@ -87,13 +88,13 @@ public class MALContextImpl extends MALClose implements MALContext
   }
 
   @Override
-  public MALTransport getTransport(URI uri) throws MALException
+  public MALTransport getTransport(final URI uri) throws MALException
   {
     return TransportSingleton.instance(uri, initialProperties);
   }
 
   @Override
-  public MALTransport getTransport(String protocol) throws MALException
+  public MALTransport getTransport(final String protocol) throws MALException
   {
     return TransportSingleton.instance(protocol, initialProperties);
   }
@@ -145,7 +146,7 @@ public class MALContextImpl extends MALClose implements MALContext
   private static final class NullSecurityManager implements MALAccessControl
   {
     @Override
-    public MALMessage check(MALMessage msg) throws IllegalArgumentException, MALCheckErrorException
+    public MALMessage check(final MALMessage msg) throws IllegalArgumentException, MALCheckErrorException
     {
       return msg;
     }

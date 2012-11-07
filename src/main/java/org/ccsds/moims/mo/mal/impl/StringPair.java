@@ -30,18 +30,18 @@ public class StringPair implements Comparable
    * @param first First string part.
    * @param second Second string part.
    */
-  public StringPair(String first, String second)
+  public StringPair(final String first, final String second)
   {
     this.first = first;
     this.second = second;
   }
 
   @Override
-  public int compareTo(Object o)
+  public int compareTo(final Object o)
   {
-    StringPair p = (StringPair) o;
+    final StringPair p = (StringPair) o;
 
-    int i = first.compareTo(p.first);
+    final int i = first.compareTo(p.first);
     if (0 == i)
     {
       return second.compareTo(p.second);
@@ -51,11 +51,11 @@ public class StringPair implements Comparable
   }
 
   @Override
-  public boolean equals(Object obj)
+  public boolean equals(final Object obj)
   {
     if (obj instanceof StringPair)
     {
-      StringPair p = (StringPair) obj;
+      final StringPair p = (StringPair) obj;
       return first.equals(p.first) && second.equals(p.second);
     }
 

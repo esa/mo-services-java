@@ -100,7 +100,14 @@ public abstract class BaseInteractionImpl implements MALInteraction
    */
   protected org.ccsds.moims.mo.mal.transport.MALMessage returnResponse(UOctet stage, final boolean isFinalStage, Object... result) throws MALException
   {
-    return sender.returnResponse(address, internalTransId, msg.getHeader(), stage, isFinalStage, operation, result);
+    return sender.returnResponse(address,
+            internalTransId,
+            msg.getHeader(),
+            msg.getHeader().getQoSlevel(),
+            stage,
+            isFinalStage,
+            operation,
+            result);
   }
   
   /**
