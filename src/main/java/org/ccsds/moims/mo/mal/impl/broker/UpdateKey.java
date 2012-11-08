@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -19,24 +19,54 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public final class UpdateKey extends ElementKey
 {
-  public final String domain;
-  public final UShort area;
-  public final UShort service;
-  public final UShort operation;
+  /**
+   * The domain of the update.
+   */
+  final String domain;
+  /**
+   * The area of the update.
+   */
+  final UShort area;
+  /**
+   * The service of the update.
+   */
+  final UShort service;
+  /**
+   * The operation of the update.
+   */
+  final UShort operation;
 
   /**
    * Constructor.
    *
-   * @param lst Entity key.
+   * @param srcHdr Update message header.
+   * @param domainId Update domain.
+   * @param key Entity key.
    */
-  public UpdateKey(MALMessageHeader srcHdr, String domainId, EntityKey lst)
+  public UpdateKey(final MALMessageHeader srcHdr, final String domainId, final EntityKey key)
   {
-    super(getIdValue(lst.getFirstSubKey()), lst.getSecondSubKey(), lst.getThirdSubKey(), lst.getFourthSubKey());
+    super(getIdValue(key.getFirstSubKey()), key.getSecondSubKey(), key.getThirdSubKey(), key.getFourthSubKey());
 
     this.domain = domainId;
     this.area = srcHdr.getServiceArea();
     this.service = srcHdr.getService();
     this.operation = srcHdr.getOperation();
+  }
+
+  @Override
+  public boolean equals(final Object obj)
+  {
+    if (!super.equals(obj))
+    {
+      return false;
+    }
+
+    final UpdateKey other = (UpdateKey) obj;
+    if ((this.domain == null) ? (other.domain != null) : !this.domain.equals(other.domain))
+    {
+      return false;
+    }
+    return true;
   }
 
   @Override
@@ -48,7 +78,7 @@ public final class UpdateKey extends ElementKey
   @Override
   public String toString()
   {
-    StringBuilder buf = new StringBuilder();
+    final StringBuilder buf = new StringBuilder();
     buf.append('[');
     buf.append(this.domain);
     buf.append(':');

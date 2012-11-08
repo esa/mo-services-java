@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -39,7 +39,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
    * @param impl MAL implementation.
    * @param brokerBindingMap Broker binding map.
    */
-  public MALBrokerManagerImpl(MALContextImpl impl, Map<String, MALBrokerBindingImpl> brokerBindingMap)
+  public MALBrokerManagerImpl(final MALContextImpl impl, final Map<String, MALBrokerBindingImpl> brokerBindingMap)
   {
     super(impl);
 
@@ -50,29 +50,23 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
   @Override
   public synchronized MALBroker createBroker() throws MALException
   {
-    MALBrokerImpl retVal = new MALBrokerImpl(this, impl.getSendingInterface());
-    addChild(retVal);
-
-    return retVal;
+    return (MALBroker) addChild(new MALBrokerImpl(this, impl.getSendingInterface()));
   }
 
   @Override
-  public MALBroker createBroker(MALBrokerHandler handler) throws IllegalArgumentException, MALException
+  public MALBroker createBroker(final MALBrokerHandler handler) throws IllegalArgumentException, MALException
   {
-    MALBrokerBaseImpl retVal = new MALBrokerDelegateImpl(this, handler);
-    addChild(retVal);
-
-    return retVal;
+    return (MALBroker) addChild(new MALBrokerDelegateImpl(this, handler));
   }
 
   @Override
-  public synchronized MALBrokerBinding createBrokerBinding(MALBroker optionalMALBroker,
-          String localName,
-          String protocol,
-          Blob authenticationId,
-          QoSLevel[] expectedQos,
-          UInteger priorityLevelNumber,
-          Map qosProperties) throws MALException
+  public synchronized MALBrokerBinding createBrokerBinding(final MALBroker optionalMALBroker,
+          final String localName,
+          final String protocol,
+          final Blob authenticationId,
+          final QoSLevel[] expectedQos,
+          final UInteger priorityLevelNumber,
+          final Map qosProperties) throws MALException
   {
     MALBrokerBinding retVal = null;
 
@@ -81,7 +75,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
     {
       tparent = (MALBrokerImpl) createBroker();
 
-      MALTransport transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
+      final MALTransport transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
       retVal = transport.createBroker(localName,
               authenticationId,
               expectedQos,
@@ -110,24 +104,14 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
     return retVal;
   }
 
-  /**
-   *
-   * @param optionalMALBroker
-   * @param endPoint
-   * @param authenticationId
-   * @param expectedQos
-   * @param priorityLevelNumber
-   * @param qosProperties
-   * @return
-   * @throws MALException
-   */
+  @Override
   public MALBrokerBinding createBrokerBinding(
-          MALBroker optionalMALBroker,
-          MALEndpoint endPoint,
-          Blob authenticationId,
-          QoSLevel[] expectedQos,
-          UInteger priorityLevelNumber,
-          Map qosProperties) throws IllegalArgumentException, MALException
+          final MALBroker optionalMALBroker,
+          final MALEndpoint endPoint,
+          final Blob authenticationId,
+          final QoSLevel[] expectedQos,
+          final UInteger priorityLevelNumber,
+          final Map qosProperties) throws IllegalArgumentException, MALException
   {
     MALBrokerBinding retVal = null;
 
@@ -136,7 +120,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager
     {
       tparent = (MALBrokerImpl) createBroker();
 
-      MALTransport transport = TransportSingleton.instance(endPoint.getURI(), impl.getInitialProperties());
+      final MALTransport transport = TransportSingleton.instance(endPoint.getURI(), impl.getInitialProperties());
       retVal = transport.createBroker(endPoint,
               authenticationId,
               expectedQos,

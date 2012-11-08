@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -27,7 +27,7 @@ final class ProviderDetails
   private final Set<PublisherKey> keySet = new TreeSet<PublisherKey>();
   private IdentifierList domain = null;
 
-  ProviderDetails(String uri, QoSLevel qosLevel)
+  ProviderDetails(final String uri, final QoSLevel qosLevel)
   {
     super();
     this.uri = uri;
@@ -50,25 +50,24 @@ final class ProviderDetails
     Logging.logMessage("  END Provider ( " + uri + " )");
   }
 
-  void setKeyList(MALMessageHeader hdr, EntityKeyList l)
+  void setKeyList(final MALMessageHeader hdr, final EntityKeyList l)
   {
     domain = hdr.getDomain();
     keySet.clear();
-    for (int i = 0; i < l.size(); i++)
+    for (EntityKey entityKey : l)
     {
-      keySet.add(new PublisherKey(l.get(i)));
+      keySet.add(new PublisherKey(entityKey));
     }
   }
 
-  void checkPublish(MALMessageHeader hdr, UpdateHeaderList updateList) throws MALInteractionException
+  void checkPublish(final MALMessageHeader hdr, final UpdateHeaderList updateList) throws MALInteractionException
   {
     if (StructureHelper.isSubDomainOf(domain, hdr.getDomain()))
     {
-      EntityKeyList lst = new EntityKeyList();
-      for (int i = 0; i < updateList.size(); i++)
+      final EntityKeyList lst = new EntityKeyList();
+      for (final UpdateHeader update : updateList)
       {
-        UpdateHeader update = (UpdateHeader) updateList.get(i);
-        EntityKey updateKey = update.getKey();
+        final EntityKey updateKey = update.getKey();
         boolean matched = false;
         for (PublisherKey key : keySet)
         {

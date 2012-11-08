@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -20,13 +20,15 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class SimpleBrokerHandler extends BaseBrokerHandler
 {
-  /** Creates a new instance of MALBrokerHandler */
+  /**
+   * Creates a new instance of MALBrokerHandler
+   */
   public SimpleBrokerHandler()
   {
   }
 
   @Override
-  protected SubscriptionSource createEntry(MALMessageHeader hdr, MALBrokerBindingImpl binding)
+  protected SubscriptionSource createEntry(final MALMessageHeader hdr, final MALBrokerBindingImpl binding)
   {
     return new SimpleSubscriptionSource(hdr, binding);
   }

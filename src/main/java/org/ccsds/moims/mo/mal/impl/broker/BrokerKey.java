@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -27,7 +27,7 @@ public class BrokerKey implements Comparable
    * Constructor.
    * @param hdr Source message.
    */
-  public BrokerKey(MALMessageHeader hdr)
+  public BrokerKey(final MALMessageHeader hdr)
   {
     this.uri = hdr.getURITo().getValue();
     this.session = hdr.getSession().getOrdinal();
@@ -36,9 +36,9 @@ public class BrokerKey implements Comparable
 
   /**
    * Constructor.
-   * @param hdr Source message.
+   * @param details Message details to base on.
    */
-  public BrokerKey(MessageDetails details)
+  public BrokerKey(final MessageDetails details)
   {
     this.uri = details.uriTo.getValue();
     this.session = details.sessionType.getOrdinal();
@@ -46,11 +46,11 @@ public class BrokerKey implements Comparable
   }
 
   @Override
-  public boolean equals(Object obj)
+  public boolean equals(final Object obj)
   {
     if (obj instanceof BrokerKey)
     {
-      BrokerKey other = (BrokerKey) obj;
+      final BrokerKey other = (BrokerKey) obj;
       if (uri == null)
       {
         if (other.uri != null)
@@ -96,9 +96,9 @@ public class BrokerKey implements Comparable
   }
 
   @Override
-  public int compareTo(Object o)
+  public int compareTo(final Object o)
   {
-    BrokerKey other = (BrokerKey) o;
+    final BrokerKey other = (BrokerKey) o;
 
     if (uri.equals(other.uri))
     {

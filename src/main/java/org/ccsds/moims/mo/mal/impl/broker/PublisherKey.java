@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -19,11 +19,11 @@ public final class PublisherKey extends ElementKey
 {
   /**
    * Constructor.
-   * @param lst Entity key.
+   * @param key Entity key.
    */
-  public PublisherKey(EntityKey lst)
+  public PublisherKey(final EntityKey key)
   {
-    super(getIdValue(lst.getFirstSubKey()), lst.getSecondSubKey(), lst.getThirdSubKey(), lst.getFourthSubKey());
+    super(getIdValue(key.getFirstSubKey()), key.getSecondSubKey(), key.getThirdSubKey(), key.getFourthSubKey());
   }
 
   /**
@@ -31,7 +31,7 @@ public final class PublisherKey extends ElementKey
    * @param rhs Key to match against.
    * @return True if matches.
    */
-  public boolean matches(EntityKey rhs)
+  public boolean matches(final EntityKey rhs)
   {
     if (null != rhs)
     {
@@ -59,7 +59,7 @@ public final class PublisherKey extends ElementKey
   @Override
   public String toString()
   {
-    StringBuilder buf = new StringBuilder();
+    final StringBuilder buf = new StringBuilder();
     buf.append('[');
     buf.append(this.key1);
     buf.append('.');

@@ -23,7 +23,6 @@ import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
-import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
  * Implementation of the MALConsumer interface. Delegates most of the work to the MessageSend class.

@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -27,20 +27,24 @@ public final class SubscriptionKey extends ElementKey
 
   /**
    * Constructor.
-   * @param lst Entity key.
+   *
+   * @param hdr Subscription message header.
+   * @param rqst The subscription request.
+   * @param key The subscription entity key.
    */
-  public SubscriptionKey(MALMessageHeader hdr, EntityRequest rqst, EntityKey lst)
+  public SubscriptionKey(final MALMessageHeader hdr, final EntityRequest rqst, final EntityKey key)
   {
-    super(getIdValue(lst.getFirstSubKey()), lst.getSecondSubKey(), lst.getThirdSubKey(), lst.getFourthSubKey());
+    super(getIdValue(key.getFirstSubKey()), key.getSecondSubKey(), key.getThirdSubKey(), key.getFourthSubKey());
 
+    // Converts the domain from list form to string form.
     String tmpDomain = "";
     boolean tmpAndSubDomains = false;
 
-    IdentifierList mdomain = hdr.getDomain();
-    IdentifierList sdomain = rqst.getSubDomain();
+    final IdentifierList mdomain = hdr.getDomain();
+    final IdentifierList sdomain = rqst.getSubDomain();
     if ((null != mdomain) || (null != sdomain))
     {
-      StringBuilder buf = new StringBuilder();
+      final StringBuilder buf = new StringBuilder();
       if ((null != mdomain) && (0 < mdomain.size()))
       {
         buf.append(StructureHelper.domainToString(mdomain));
@@ -48,12 +52,14 @@ public final class SubscriptionKey extends ElementKey
 
       if ((null != sdomain) && (0 < sdomain.size()))
       {
-        int i = 0;
-        int e = sdomain.size();
-        while (i < e)
+        for (Identifier identifier : sdomain)
         {
-          String id = String.valueOf((Identifier) sdomain.get(i));
-          if (!ALL_ID.equals(id))
+          final String id = identifier.getValue();
+          if (ALL_ID.equals(id))
+          {
+            tmpAndSubDomains = true;
+          }
+          else
           {
             if (0 < buf.length())
             {
@@ -62,12 +68,6 @@ public final class SubscriptionKey extends ElementKey
 
             buf.append(id);
           }
-          else
-          {
-            tmpAndSubDomains = true;
-          }
-
-          ++i;
         }
       }
 
@@ -83,10 +83,11 @@ public final class SubscriptionKey extends ElementKey
 
   /**
    * Returns true if this key matches supplied argument taking into account wildcards.
+   *
    * @param rhs Key to match against.
    * @return True if matches.
    */
-  public boolean matches(UpdateKey rhs)
+  public boolean matches(final UpdateKey rhs)
   {
     boolean matched = rhs.domain.startsWith(this.domain);
 
@@ -133,10 +134,10 @@ public final class SubscriptionKey extends ElementKey
   @Override
   public String toString()
   {
-    StringBuilder buf = new StringBuilder();
+    final StringBuilder buf = new StringBuilder();
     buf.append('[');
     buf.append(this.domain);
-    if(this.andSubDomains)
+    if (this.andSubDomains)
     {
       buf.append(".*");
     }
@@ -156,5 +157,14 @@ public final class SubscriptionKey extends ElementKey
     buf.append(this.key4);
     buf.append(']');
     return buf.toString();
+  }
+  
+  private static UShort getIdValueOrWildcard(final UShort id, final boolean isWildcard)
+  {
+    if (isWildcard)
+    {
+      return ALL_SHORT;
+    }
+    return id;
   }
 }

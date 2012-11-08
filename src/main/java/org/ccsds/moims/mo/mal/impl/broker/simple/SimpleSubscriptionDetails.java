@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -32,7 +32,7 @@ class SimpleSubscriptionDetails
   private Set<SubscriptionKey> onAll = new TreeSet<SubscriptionKey>();
   private Set<SubscriptionKey> onChange = new TreeSet<SubscriptionKey>();
 
-  SimpleSubscriptionDetails(MALMessageHeader srcHdr, String subscriptionId)
+  SimpleSubscriptionDetails(final String subscriptionId)
   {
     this.subscriptionId = subscriptionId;
   }
@@ -40,7 +40,7 @@ class SimpleSubscriptionDetails
   void report()
   {
     Logging.logMessage("    START Subscription ( " + subscriptionId + " )");
-    Logging.logMessage("     Required: " + String.valueOf(required.size()));
+    Logging.logMessage("     Required: " + required.size());
     for (SubscriptionKey key : required)
     {
       Logging.logMessage("            : Rqd : " + key);
@@ -61,20 +61,19 @@ class SimpleSubscriptionDetails
     return required.isEmpty();
   }
 
-  void setIds(MALMessageHeader srcHdr, EntityRequestList lst)
+  void setIds(final MALMessageHeader srcHdr, final EntityRequestList lst)
   {
     required.clear();
     onAll.clear();
     onChange.clear();
-    for (int idx = 0; idx < lst.size(); idx++)
+    for (EntityRequest rqst : lst)
     {
-      EntityRequest rqst = (EntityRequest) lst.get(idx);
-      EntityKeyList keyList = rqst.getEntityKeys();
-      boolean bOnChange = rqst.getOnlyOnChange();
-      for (int i = 0; i < keyList.size(); i++)
+      final EntityKeyList keyList = rqst.getEntityKeys();
+      final boolean bOnChange = rqst.getOnlyOnChange();
+
+      for (EntityKey id : keyList)
       {
-        EntityKey id = (EntityKey) keyList.get(i);
-        SubscriptionKey key = new SubscriptionKey(srcHdr, rqst, id);
+        final SubscriptionKey key = new SubscriptionKey(srcHdr, rqst, id);
         required.add(key);
         if (bOnChange)
         {
@@ -88,18 +87,22 @@ class SimpleSubscriptionDetails
     }
   }
 
-  NotifyMessage populateNotifyList(MALMessageHeader srcHdr, String srcDomainId, UpdateHeaderList updateHeaderList, MALPublishBody publishBody) throws MALException
+  NotifyMessage populateNotifyList(final MALMessageHeader srcHdr,
+          final String srcDomainId,
+          final UpdateHeaderList updateHeaderList,
+          final MALPublishBody publishBody) throws MALException
   {
     Logging.logMessage("INFO: Checking SimSubDetails");
 
-    UpdateHeaderList notifyHeaders = new UpdateHeaderList();
+    final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
 
-    List[] updateLists = publishBody.getUpdateLists((List[]) null);
-    Object[] notifyLists = new Object[updateLists.length+2];
+    final List[] updateLists = publishBody.getUpdateLists((List[]) null);
+    final Object[] notifyLists = new Object[updateLists.length + 2];
     for (int i = 2; i < notifyLists.length; i++)
     {
-      notifyLists[i] = (List)((Element)updateLists[i-2]).createElement();
+      notifyLists[i] = (List) ((Element) updateLists[i - 2]).createElement();
     }
+
     for (int i = 0; i < updateHeaderList.size(); ++i)
     {
       populateNotifyList(srcHdr, srcDomainId, updateHeaderList.get(i), updateLists, i, notifyHeaders, notifyLists);
@@ -112,18 +115,20 @@ class SimpleSubscriptionDetails
       notifyLists[0] = new Identifier(subscriptionId);
       notifyLists[1] = notifyHeaders;
       retVal.updates = notifyLists;
-
-      //retVal.header.setPriority(priority);
-      //retVal.header.setQoSlevel(qos);
-      //retVal.header.setTransactionId(transactionId);
     }
 
     return retVal;
   }
 
-  private void populateNotifyList(MALMessageHeader srcHdr, String srcDomainId, UpdateHeader updateHeader, List[] updateLists, int index, UpdateHeaderList notifyHeaders, Object[] notifyLists) throws MALException
+  private void populateNotifyList(final MALMessageHeader srcHdr,
+          final String srcDomainId,
+          final UpdateHeader updateHeader,
+          final List[] updateLists,
+          final int index,
+          final UpdateHeaderList notifyHeaders,
+          final Object[] notifyLists) throws MALException
   {
-    UpdateKey key = new UpdateKey(srcHdr, srcDomainId, updateHeader.getKey());
+    final UpdateKey key = new UpdateKey(srcHdr, srcDomainId, updateHeader.getKey());
     Logging.logMessage("INFO: Checking " + key);
     boolean updateRequired = matchedUpdate(key, onAll);
 
@@ -136,15 +141,15 @@ class SimpleSubscriptionDetails
     {
       // add update for this consumer/subscription
       notifyHeaders.add(updateHeader);
-      
+
       for (int i = 2; i < notifyLists.length; i++)
       {
-        ((List)notifyLists[i]).add(updateLists[i-2].get(index));
+        ((List) notifyLists[i]).add(updateLists[i - 2].get(index));
       }
     }
   }
 
-  private static boolean matchedUpdate(UpdateKey key, Set<SubscriptionKey> searchSet)
+  private static boolean matchedUpdate(final UpdateKey key, final Set<SubscriptionKey> searchSet)
   {
     boolean matched = false;
     for (SubscriptionKey subscriptionKey : searchSet)
@@ -161,7 +166,7 @@ class SimpleSubscriptionDetails
     return matched;
   }
 
-  void appendIds(Set<SubscriptionKey> subSet)
+  void appendIds(final Set<SubscriptionKey> subSet)
   {
     subSet.addAll(required);
   }

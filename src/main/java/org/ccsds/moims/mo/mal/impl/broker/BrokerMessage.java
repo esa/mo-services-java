@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -37,13 +37,13 @@ public final class BrokerMessage
    *
    * @param binding Binding to associate.
    */
-  public BrokerMessage(MALBrokerBindingImpl binding)
+  public BrokerMessage(final MALBrokerBindingImpl binding)
   {
     this.binding = binding;
   }
 
   /**
-   * A single notify message.
+   * Simple struct style class that holds a single notify message.
    */
   public static final class NotifyMessage
   {
@@ -51,13 +51,37 @@ public final class BrokerMessage
      * Message header.
      */
     public MessageDetails details;
+    /**
+     * PubSub transaction id.
+     */
     public Long transId;
+    /**
+     * PubSub domain.
+     */
     public IdentifierList domain;
+    /**
+     * PubSub network zone.
+     */
     public Identifier networkZone;
+    /**
+     * PubSub area.
+     */
     public UShort area;
+    /**
+     * PubSub service.
+     */
     public UShort service;
+    /**
+     * PubSub operation.
+     */
     public UShort operation;
+    /**
+     * PubSub version.
+     */
     public UOctet version;
+    /**
+     * PubSub updates.
+     */
     public Object[] updates;
   }
 }

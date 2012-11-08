@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -31,98 +31,76 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
   private final MessageSend sender;
   private final Map<BrokerKey, BaseBrokerHandler> brokerMap = new TreeMap<BrokerKey, BaseBrokerHandler>();
 
-  MALBrokerImpl(MALClose parent, MessageSend sender) throws MALException
+  MALBrokerImpl(final MALClose parent, final MessageSend sender) throws MALException
   {
     super(parent);
 
     this.sender = sender;
   }
 
-  /**
-   * Adds a consumer to this broker.
-   *
-   * @param hdr Source message.
-   * @param body Consumer subscription.
-   * @param binding Broker binding.
-   */
-  public void internalHandleRegister(MALInteraction interaction, MALRegisterBody body, MALBrokerBindingImpl binding) throws MALInteractionException, MALException
+  @Override
+  public void internalHandleRegister(final MALInteraction interaction,
+          final MALRegisterBody body,
+          final MALBrokerBindingImpl binding)
+          throws MALInteractionException, MALException
   {
-    MALMessageHeader hdr = interaction.getMessageHeader();
+    final MALMessageHeader hdr = interaction.getMessageHeader();
     getHandler(new BrokerKey(hdr)).addConsumer(hdr, body.getSubscription(), binding);
   }
 
-  public void handleRegister(MALInteraction interaction, MALRegisterBody body) throws MALInteractionException, MALException
+  @Override
+  public void handleRegister(final MALInteraction interaction, final MALRegisterBody body)
+          throws MALInteractionException, MALException
   {
     throw new UnsupportedOperationException("This should never be called!!!!");
   }
 
-  /**
-   * Adds a provider to this broker.
-   *
-   * @param hdr Source message.
-   * @param body Provider entity key list.
-   */
-  public void handlePublishRegister(MALInteraction interaction, MALPublishRegisterBody body) throws MALInteractionException, MALException
+  @Override
+  public void handlePublishRegister(final MALInteraction interaction, final MALPublishRegisterBody body)
+          throws MALInteractionException, MALException
   {
-    MALMessageHeader hdr = interaction.getMessageHeader();
+    final MALMessageHeader hdr = interaction.getMessageHeader();
     getHandler(new BrokerKey(hdr)).addProvider(hdr, body.getEntityKeyList());
   }
 
-  /**
-   * Returns the QoS level used for a provider.
-   *
-   * @param hdr Source message.
-   * @return The QoSLevel.
-   */
-  public QoSLevel getProviderQoSLevel(MALMessageHeader hdr)
+  @Override
+  public QoSLevel getProviderQoSLevel(final MALMessageHeader hdr)
   {
     return getHandler(new BrokerKey(hdr)).getProviderQoSLevel(hdr);
   }
 
-  /**
-   * Removes a consumer from this broker for a set of subscriptions.
-   *
-   * @param hdr Source Message.
-   * @param ids Subscription ids to remove.
-   */
-  public void handleDeregister(MALInteraction interaction, MALDeregisterBody body) throws MALInteractionException, MALException
+  @Override
+  public void handleDeregister(final MALInteraction interaction, final MALDeregisterBody body)
+          throws MALInteractionException, MALException
   {
-    MALMessageHeader hdr = interaction.getMessageHeader();
+    final MALMessageHeader hdr = interaction.getMessageHeader();
     getHandler(new BrokerKey(hdr)).removeConsumer(hdr, body.getIdentifierList());
   }
 
   /**
    * Removes a consumer that we have lost contact with.
    *
-   * @param hdr Source message.
+   * @param details The details of the lost consumer.
    */
-  public void removeLostConsumer(MessageDetails details)
+  public void removeLostConsumer(final MessageDetails details)
   {
     getHandler(new BrokerKey(details)).removeLostConsumer(details);
   }
 
-  /**
-   * Removes a provider from this Broker.
-   *
-   * @param hdr Source Message.
-   */
-  public void handlePublishDeregister(MALInteraction interaction) throws MALInteractionException, MALException
+  @Override
+  public void handlePublishDeregister(final MALInteraction interaction)
+          throws MALInteractionException, MALException
   {
-    MALMessageHeader hdr = interaction.getMessageHeader();
+    final MALMessageHeader hdr = interaction.getMessageHeader();
     getHandler(new BrokerKey(hdr)).removeProvider(hdr);
   }
 
-  /**
-   * Publishes a set of updates.
-   *
-   * @param hdr Source Message.
-   * @param updateList The update list.
-   * @throws MALException On error.
-   */
-  public void handlePublish(MALInteraction interaction, MALPublishBody body) throws MALInteractionException, MALException
+  @Override
+  public void handlePublish(final MALInteraction interaction, final MALPublishBody body)
+          throws MALInteractionException, MALException
   {
-    MALMessageHeader hdr = interaction.getMessageHeader();
-    java.util.List<BrokerMessage> msgList = getHandler(new BrokerKey(hdr)).createNotify(hdr, body);
+    final MALMessageHeader hdr = interaction.getMessageHeader();
+    final java.util.List<BrokerMessage> msgList = getHandler(new BrokerKey(hdr)).createNotify(hdr, body);
 
     if (!msgList.isEmpty())
     {
@@ -158,7 +136,7 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
     }
   }
 
-  private BaseBrokerHandler getHandler(BrokerKey key)
+  private BaseBrokerHandler getHandler(final BrokerKey key)
   {
     BaseBrokerHandler rv = brokerMap.get(key);
 
@@ -173,12 +151,13 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
 
   private BaseBrokerHandler createBrokerHandler()
   {
-    String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class", SimpleBrokerHandler.class.getName());
+    final String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class",
+            SimpleBrokerHandler.class.getName());
 
     BaseBrokerHandler broker = null;
     try
     {
-      Class cls = Thread.currentThread().getContextClassLoader().loadClass(clsName);
+      final Class cls = Thread.currentThread().getContextClassLoader().loadClass(clsName);
 
       broker = (BaseBrokerHandler) cls.newInstance();
       Logging.logMessage("INFO: Creating internal MAL Broker handler: " + cls.getSimpleName());

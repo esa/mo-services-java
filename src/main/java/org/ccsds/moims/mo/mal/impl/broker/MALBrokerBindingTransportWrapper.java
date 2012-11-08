@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -24,12 +24,12 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Wrapper class for Transport level broker bindings.
  */
-public class MALBrokerBindingTransportWrapper extends MALClose implements MALInternalBrokerBinding
+public class MALBrokerBindingTransportWrapper extends MALClose implements MALBrokerBinding
 {
   private final MALBrokerBinding transportDelegate;
 
-  MALBrokerBindingTransportWrapper(MALClose parent,
-          MALBrokerBinding transportDelegate) throws MALException
+  MALBrokerBindingTransportWrapper(final MALClose parent,
+          final MALBrokerBinding transportDelegate) throws MALException
   {
     super(parent);
 
@@ -54,33 +54,185 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALInt
     return transportDelegate.getURI();
   }
 
-  public MALMessage sendNotify(UShort area, UShort service, UShort operation, UOctet version, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, Identifier subscriptionId, UpdateHeaderList updateHeaderList, List... updateList) throws IllegalArgumentException, MALInteractionException, MALException
+  @Override
+  public MALMessage sendNotify(final UShort area,
+          final UShort service,
+          final UShort operation,
+          final UOctet version,
+          final URI subscriber,
+          final Long transactionId,
+          final IdentifierList domainId,
+          final Identifier networkZone,
+          final SessionType sessionType,
+          final Identifier sessionName,
+          final QoSLevel notifyQos,
+          final Map notifyQosProps,
+          final UInteger notifyPriority,
+          final Identifier subscriptionId,
+          final UpdateHeaderList updateHeaderList,
+          final List... updateList) throws IllegalArgumentException, MALInteractionException, MALException
   {
-    return transportDelegate.sendNotify(area, service, operation, version, subscriber, transactionId, domainId, networkZone, sessionType, sessionName, notifyQos, notifyQosProps, notifyPriority, subscriptionId, updateHeaderList, updateList);
+    return transportDelegate.sendNotify(area,
+            service,
+            operation,
+            version,
+            subscriber,
+            transactionId,
+            domainId,
+            networkZone,
+            sessionType,
+            sessionName,
+            notifyQos,
+            notifyQosProps,
+            notifyPriority,
+            subscriptionId,
+            updateHeaderList,
+            updateList);
   }
 
-  public MALMessage sendNotify(MALOperation op, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, Identifier subscriptionId, UpdateHeaderList updateHeaderList, List... updateList) throws IllegalArgumentException, MALInteractionException, MALException
+  @Override
+  public MALMessage sendNotify(final MALOperation op,
+          final URI subscriber,
+          final Long transactionId,
+          final IdentifierList domainId,
+          final Identifier networkZone,
+          final SessionType sessionType,
+          final Identifier sessionName,
+          final QoSLevel notifyQos,
+          final Map notifyQosProps,
+          final UInteger notifyPriority,
+          final Identifier subscriptionId,
+          final UpdateHeaderList updateHeaderList,
+          final List... updateList) throws IllegalArgumentException, MALInteractionException, MALException
   {
-    return transportDelegate.sendNotify(op, subscriber, transactionId, domainId, networkZone, sessionType, sessionName, notifyQos, notifyQosProps, notifyPriority, subscriptionId, updateHeaderList, updateList);
+    return transportDelegate.sendNotify(op,
+            subscriber,
+            transactionId,
+            domainId,
+            networkZone,
+            sessionType,
+            sessionName,
+            notifyQos,
+            notifyQosProps,
+            notifyPriority,
+            subscriptionId,
+            updateHeaderList,
+            updateList);
   }
 
-  public MALMessage sendNotifyError(UShort area, UShort service, UShort operation, UOctet version, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  @Override
+  public MALMessage sendNotifyError(final UShort area,
+          final UShort service,
+          final UShort operation,
+          final UOctet version,
+          final URI subscriber,
+          final Long transactionId,
+          final IdentifierList domainId,
+          final Identifier networkZone,
+          final SessionType sessionType,
+          final Identifier sessionName,
+          final QoSLevel notifyQos,
+          final Map notifyQosProps,
+          final UInteger notifyPriority,
+          final MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
   {
-    return transportDelegate.sendNotifyError(area, service, operation, version, subscriber, transactionId, domainId, networkZone, sessionType, sessionName, notifyQos, notifyQosProps, notifyPriority, error);
+    return transportDelegate.sendNotifyError(area,
+            service,
+            operation,
+            version,
+            subscriber,
+            transactionId,
+            domainId,
+            networkZone,
+            sessionType,
+            sessionName,
+            notifyQos,
+            notifyQosProps,
+            notifyPriority,
+            error);
   }
 
-  public MALMessage sendNotifyError(MALOperation op, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  @Override
+  public MALMessage sendNotifyError(final MALOperation op,
+          final URI subscriber,
+          final Long transactionId,
+          final IdentifierList domainId,
+          final Identifier networkZone,
+          final SessionType sessionType,
+          final Identifier sessionName,
+          final QoSLevel notifyQos,
+          final Map notifyQosProps,
+          final UInteger notifyPriority,
+          final MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
   {
-    return transportDelegate.sendNotifyError(op, subscriber, transactionId, domainId, networkZone, sessionType, sessionName, notifyQos, notifyQosProps, notifyPriority, error);
+    return transportDelegate.sendNotifyError(op,
+            subscriber,
+            transactionId,
+            domainId,
+            networkZone,
+            sessionType,
+            sessionName,
+            notifyQos,
+            notifyQosProps,
+            notifyPriority,
+            error);
   }
 
-  public MALMessage sendPublishError(UShort area, UShort service, UShort operation, UOctet version, URI publisher, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  @Override
+  public MALMessage sendPublishError(final UShort area,
+          final UShort service,
+          final UShort operation,
+          final UOctet version,
+          final URI publisher,
+          final Long transactionId,
+          final IdentifierList domainId,
+          final Identifier networkZone,
+          final SessionType sessionType,
+          final Identifier sessionName,
+          final QoSLevel qos,
+          final Map qosProps,
+          final UInteger priority,
+          final MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
   {
-    return transportDelegate.sendPublishError(area, service, operation, version, publisher, transactionId, domainId, networkZone, sessionType, sessionName, qos, qosProps, priority, error);
+    return transportDelegate.sendPublishError(area,
+            service,
+            operation,
+            version,
+            publisher,
+            transactionId,
+            domainId,
+            networkZone,
+            sessionType,
+            sessionName,
+            qos,
+            qosProps,
+            priority,
+            error);
   }
 
-  public MALMessage sendPublishError(MALOperation op, URI publisher, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  @Override
+  public MALMessage sendPublishError(final MALOperation op,
+          final URI publisher,
+          final Long transactionId,
+          final IdentifierList domainId,
+          final Identifier networkZone,
+          final SessionType sessionType,
+          final Identifier sessionName,
+          final QoSLevel qos,
+          final Map qosProps,
+          final UInteger priority,
+          final MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
   {
-    return transportDelegate.sendPublishError(op, publisher, transactionId, domainId, networkZone, sessionType, sessionName, qos, qosProps, priority, error);
+    return transportDelegate.sendPublishError(op,
+            publisher,
+            transactionId,
+            domainId,
+            networkZone,
+            sessionType,
+            sessionName,
+            qos,
+            qosProps,
+            priority,
+            error);
   }
 }

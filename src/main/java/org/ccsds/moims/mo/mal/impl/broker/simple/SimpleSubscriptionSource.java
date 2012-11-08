@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -36,7 +36,7 @@ class SimpleSubscriptionSource extends SubscriptionSource
   private final MALBrokerBindingImpl binding;
   private final Map<String, SimpleSubscriptionDetails> details = new TreeMap<String, SimpleSubscriptionDetails>();
 
-  public SimpleSubscriptionSource(MALMessageHeader hdr, MALBrokerBindingImpl binding)
+  public SimpleSubscriptionSource(final MALMessageHeader hdr, final MALBrokerBindingImpl binding)
   {
     super(hdr, hdr.getURIFrom(), binding);
     this.signature = hdr.getURIFrom().getValue();
@@ -53,9 +53,8 @@ class SimpleSubscriptionSource extends SubscriptionSource
   public void report()
   {
     Logging.logMessage("  START Consumer ( " + signature + " )");
-    Logging.logMessage("   Required: " + String.valueOf(required.size()));
-    Set<Map.Entry<String, SimpleSubscriptionDetails>> values = details.entrySet();
-    for (Map.Entry<String, SimpleSubscriptionDetails> entry : values)
+    Logging.logMessage("   Required: " + required.size());
+    for (Map.Entry<String, SimpleSubscriptionDetails> entry : details.entrySet())
     {
       entry.getValue().report();
     }
@@ -69,49 +68,45 @@ class SimpleSubscriptionSource extends SubscriptionSource
   }
 
   @Override
-  public void addSubscription(MALMessageHeader srcHdr, Subscription subscription)
+  public void addSubscription(final MALMessageHeader srcHdr, final Subscription subscription)
   {
-    //SimpleConsumerDetails det = getDetails(consumer, binding);
-    //Set<SubscriptionKey> retVal = det.addSubscription(srcHdr, subscription);
-    //required.addAll(retVal);
-
-    String subId = subscription.getSubscriptionId().getValue();
+    final String subId = subscription.getSubscriptionId().getValue();
     SimpleSubscriptionDetails sub = details.get(subId);
     if (null == sub)
     {
-      sub = new SimpleSubscriptionDetails(srcHdr, subId);
+      sub = new SimpleSubscriptionDetails(subId);
       details.put(subId, sub);
     }
     sub.setIds(srcHdr, subscription.getEntities());
+
     updateIds();
   }
 
   @Override
-  public void populateNotifyList(MALMessageHeader srcHdr, List<BrokerMessage> lst, UpdateHeaderList updateHeaderList, MALPublishBody publishBody) throws MALException
+  public void populateNotifyList(final MALMessageHeader srcHdr,
+          final List<BrokerMessage> lst,
+          final UpdateHeaderList updateHeaderList,
+          final MALPublishBody publishBody) throws MALException
   {
     Logging.logMessage("INFO: Checking SimComSource : " + signature);
 
-    String srcDomainId = StructureHelper.domainToString(srcHdr.getDomain());
+    final String srcDomainId = StructureHelper.domainToString(srcHdr.getDomain());
+    final BrokerMessage bmsg = new BrokerMessage(binding);
 
-    List<BrokerMessage> localLst = new LinkedList<BrokerMessage>();
-
-    Set<Map.Entry<String, SimpleSubscriptionDetails>> values = details.entrySet();
-    Iterator<Map.Entry<String, SimpleSubscriptionDetails>> it = values.iterator();
-    BrokerMessage bmsg = new BrokerMessage(binding);
-    while (it.hasNext())
+    for (Map.Entry<String, SimpleSubscriptionDetails> ent : details.entrySet())
     {
-      NotifyMessage subUpdate = it.next().getValue().populateNotifyList(srcHdr, srcDomainId, updateHeaderList, publishBody);
+      final NotifyMessage subUpdate =
+              ent.getValue().populateNotifyList(srcHdr, srcDomainId, updateHeaderList, publishBody);
       if (null != subUpdate)
       {
         bmsg.msgs.add(subUpdate);
       }
     }
+    
     if (!bmsg.msgs.isEmpty())
     {
-      for (Iterator<NotifyMessage> it1 = bmsg.msgs.iterator(); it1.hasNext();)
+      for (NotifyMessage msg : bmsg.msgs)
       {
-        NotifyMessage msg = it1.next();
-
         // update the details in the header
         msg.details = msgDetails;
         msg.transId = transactionId;
@@ -123,24 +118,18 @@ class SimpleSubscriptionSource extends SubscriptionSource
         msg.version = srcHdr.getServiceVersion();
       }
 
-      localLst.add(bmsg);
-    }
-
-    // zip through list and insert our details
-    if (!localLst.isEmpty())
-    {
-      lst.addAll(localLst);
+      lst.add(bmsg);
     }
   }
 
   @Override
-  public void removeSubscriptions(IdentifierList subscriptions)
+  public void removeSubscriptions(final IdentifierList subscriptions)
   {
-    for (int i = 0; i < subscriptions.size(); i++)
+    for (Identifier sub : subscriptions)
     {
-      Identifier sub = (Identifier) subscriptions.get(i);
       details.remove(sub.getValue());
     }
+    
     updateIds();
   }
 
@@ -154,8 +143,8 @@ class SimpleSubscriptionSource extends SubscriptionSource
   private void updateIds()
   {
     required.clear();
-    Set<Map.Entry<String, SimpleSubscriptionDetails>> values = details.entrySet();
-    for (Map.Entry<String, SimpleSubscriptionDetails> entry : values)
+
+    for (Map.Entry<String, SimpleSubscriptionDetails> entry : details.entrySet())
     {
       entry.getValue().appendIds(required);
     }
