@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -30,32 +30,24 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
    * @param address Details of this endpoint.
    * @param internalTransId Internal transaction identifier.
    * @param msg The source message.
+   * @throws MALInteractionException if the received message operation is unknown.
    */
-  public SubmitInteractionImpl(MessageSend sender,
-          Address address,
-          Long internalTransId,
-          MALMessage msg) throws MALInteractionException
+  public SubmitInteractionImpl(final MessageSend sender,
+          final Address address,
+          final Long internalTransId,
+          final MALMessage msg) throws MALInteractionException
   {
     super(sender, address, internalTransId, msg);
   }
 
   @Override
-  /**
-   *
-   * @throws MALException
-   */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement() throws MALException
+  public MALMessage sendAcknowledgement() throws MALException
   {
     return returnResponse(MALSubmitOperation.SUBMIT_ACK_STAGE, true, (Object[]) null);
   }
 
   @Override
-  /**
-   *
-   * @param error
-   * @throws MALException
-   */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error) throws MALException
+  public MALMessage sendError(final MALStandardError error) throws MALException
   {
     return returnError(MALSubmitOperation.SUBMIT_ACK_STAGE, error);
   }

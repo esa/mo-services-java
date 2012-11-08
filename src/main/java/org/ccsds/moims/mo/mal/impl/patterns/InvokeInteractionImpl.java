@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -33,45 +33,31 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
    * @param address Details of this endpoint.
    * @param internalTransId Internal transaction identifier.
    * @param msg The source message.
+   * @throws MALInteractionException if the received message operation is unknown.
    */
-  public InvokeInteractionImpl(MessageSend sender,
-          Address address,
-          Long internalTransId,
-          MALMessage msg) throws MALInteractionException
+  public InvokeInteractionImpl(final MessageSend sender,
+          final Address address,
+          final Long internalTransId,
+          final MALMessage msg) throws MALInteractionException
   {
     super(sender, address, internalTransId, msg);
   }
 
   @Override
-  /**
-   *
-   * @param result
-   * @throws MALException
-   */
-  public MALMessage sendAcknowledgement(Object... result) throws MALInteractionException, MALException
+  public MALMessage sendAcknowledgement(final Object... result) throws MALInteractionException, MALException
   {
     ackSent = true;
     return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, false, result);
   }
 
   @Override
-  /**
-   *
-   * @param result
-   * @throws MALException
-   */
-  public MALMessage sendResponse(Object... result) throws MALInteractionException, MALException
+  public MALMessage sendResponse(final Object... result) throws MALInteractionException, MALException
   {
     return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, true, result);
   }
 
   @Override
-  /**
-   *
-   * @param error
-   * @throws MALException
-   */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error) throws MALException
+  public MALMessage sendError(final MALStandardError error) throws MALException
   {
     UOctet stage = MALInvokeOperation.INVOKE_ACK_STAGE;
 

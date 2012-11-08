@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -29,9 +29,10 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
 
   /**
    * Constructor.
-   * @param impl MAL implemenation.
+   *
+   * @param impl MAL implementation.
    */
-  public MALConsumerManagerImpl(MALContextImpl impl)
+  public MALConsumerManagerImpl(final MALContextImpl impl)
   {
     super(impl);
 
@@ -39,35 +40,18 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
   }
 
   @Override
-  /**
-   *
-   * @param uriTo
-   * @param brokerUri
-   * @param service
-   * @param authenticationId
-   * @param domain
-   * @param networkZone
-   * @param sessionType
-   * @param sessionName
-   * @param qosLevel
-   * @param qosProps
-   * @param priority
-   * @return
-   * @throws MALException
-   */
-  public MALConsumer createConsumer(
-          String localName,
-          URI uriTo,
-          URI brokerUri,
-          MALService service,
-          Blob authenticationId,
-          IdentifierList domain,
-          Identifier networkZone,
-          SessionType sessionType,
-          Identifier sessionName,
-          QoSLevel qosLevel,
-          Map qosProps,
-          UInteger priority) throws MALException
+  public MALConsumer createConsumer(final String localName,
+          final URI uriTo,
+          final URI brokerUri,
+          final MALService service,
+          final Blob authenticationId,
+          final IdentifierList domain,
+          final Identifier networkZone,
+          final SessionType sessionType,
+          final Identifier sessionName,
+          final QoSLevel qosLevel,
+          final Map qosProps,
+          final UInteger priority) throws MALException
   {
     return (MALConsumer) addChild(new MALConsumerImpl(impl,
             this,
@@ -85,7 +69,19 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
             priority));
   }
 
-  public MALConsumer createConsumer(MALEndpoint endPoint, URI uriTo, URI brokerUri, MALService service, Blob authenticationId, IdentifierList domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qosLevel, Map qosProps, UInteger priority) throws IllegalArgumentException, MALException
+  @Override
+  public MALConsumer createConsumer(final MALEndpoint endPoint,
+          final URI uriTo,
+          final URI brokerUri,
+          final MALService service,
+          final Blob authenticationId,
+          final IdentifierList domain,
+          final Identifier networkZone,
+          final SessionType sessionType,
+          final Identifier sessionName,
+          final QoSLevel qosLevel,
+          final Map qosProps,
+          final UInteger priority) throws IllegalArgumentException, MALException
   {
     return (MALConsumer) addChild(new MALConsumerImpl(impl,
             this,
@@ -101,9 +97,5 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
             qosLevel,
             qosProps,
             priority));
-  }
-
-  public void deleteConsumer(String localName) throws MALException
-  {
   }
 }

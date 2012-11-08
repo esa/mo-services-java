@@ -49,7 +49,7 @@ public abstract class ServiceComponentImpl extends MALClose
    * @param localName Local name of this component.
    * @param protocol The protocol to use.
    * @param service The service.
-   * @param authenticationId Athentication identifier.
+   * @param authenticationId Authentication identifier.
    * @param expectedQos Expected QoS.
    * @param priorityLevelNumber Number of priority levels.
    * @param defaultQoSProperties Default QOS properties.

@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -23,8 +23,9 @@ public class SendInteractionImpl extends BaseInteractionImpl
    * Constructor.
    * @param sender Used to return the messages.
    * @param msg The source message.
+   * @throws MALInteractionException if the received message operation is unknown.
    */
-  public SendInteractionImpl(MessageSend sender, MALMessage msg) throws MALInteractionException
+  public SendInteractionImpl(final MessageSend sender, final MALMessage msg) throws MALInteractionException
   {
     super(sender, null, null, msg);
   }

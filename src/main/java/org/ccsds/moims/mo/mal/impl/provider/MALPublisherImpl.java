@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -40,16 +40,18 @@ class MALPublisherImpl implements MALPublisher
   private final QoSLevel remotePublisherQos;
   private final Map remotePublisherQosProps;
   private final UInteger remotePublisherPriority;
-  private Map<AddressKey, Long> transId = new TreeMap<AddressKey, Long>();
+  private final Map<AddressKey, Long> transIdMap = new TreeMap<AddressKey, Long>();
 
-  MALPublisherImpl(MALProviderImpl parent, MessageSend handler, MALPubSubOperation operation,
-          IdentifierList domain,
-          Identifier networkZone,
-          SessionType sessionType,
-          Identifier sessionName,
-          QoSLevel remotePublisherQos,
-          Map remotePublisherQosProps,
-          UInteger remotePublisherPriority)
+  MALPublisherImpl(final MALProviderImpl parent,
+          final MessageSend handler,
+          final MALPubSubOperation operation,
+          final IdentifierList domain,
+          final Identifier networkZone,
+          final SessionType sessionType,
+          final Identifier sessionName,
+          final QoSLevel remotePublisherQos,
+          final Map remotePublisherQosProps,
+          final UInteger remotePublisherPriority)
   {
     this.parent = parent;
     this.handler = handler;
@@ -72,23 +74,11 @@ class MALPublisherImpl implements MALPublisher
     return parent;
   }
 
-  /**
-   *
-   * @param entityKeys
-   * @param listener
-   * @param domain
-   * @param networkZone
-   * @param sessionType
-   * @param sessionName
-   * @param remotePublisherQos
-   * @param remotePublisherQosProps
-   * @param remotePublisherPriority
-   * @throws MALException
-   */
   @Override
-  public void register(EntityKeyList entityKeys, MALPublishInteractionListener listener) throws IllegalArgumentException, MALInteractionException, MALException
+  public void register(final EntityKeyList entityKeys, final MALPublishInteractionListener listener)
+          throws IllegalArgumentException, MALInteractionException, MALException
   {
-    MessageDetails details = new MessageDetails(parent.getEndpoint(),
+    final MessageDetails details = new MessageDetails(parent.getEndpoint(),
             parent.getURI(),
             null,
             parent.getBrokerURI(),
@@ -110,23 +100,11 @@ class MALPublisherImpl implements MALPublisher
             handler.publishRegister(details, operation, entityKeys, listener));
   }
 
-  /**
-   *
-   * @param entityKeys
-   * @param listener
-   * @param domain
-   * @param networkZone
-   * @param sessionType
-   * @param sessionName
-   * @param remotePublisherQos
-   * @param remotePublisherQosProps
-   * @param remotePublisherPriority
-   * @throws MALException
-   */
   @Override
-  public MALMessage asyncRegister(EntityKeyList entityKeys, MALPublishInteractionListener listener) throws IllegalArgumentException, MALInteractionException, MALException
+  public MALMessage asyncRegister(final EntityKeyList entityKeys, final MALPublishInteractionListener listener)
+          throws IllegalArgumentException, MALInteractionException, MALException
   {
-    MessageDetails details = new MessageDetails(parent.getEndpoint(),
+    final MessageDetails details = new MessageDetails(parent.getEndpoint(),
             parent.getURI(),
             null,
             parent.getBrokerURI(),
@@ -140,7 +118,7 @@ class MALPublisherImpl implements MALPublisher
             remotePublisherQosProps,
             remotePublisherPriority);
 
-    org.ccsds.moims.mo.mal.transport.MALMessage msg = handler.publishRegisterAsync(details, operation, entityKeys, listener);
+    final MALMessage msg = handler.publishRegisterAsync(details, operation, entityKeys, listener);
 
     setTransId(parent.getBrokerURI(),
             domain,
@@ -152,22 +130,11 @@ class MALPublisherImpl implements MALPublisher
     return msg;
   }
 
-  /**
-   *
-   * @param updateList
-   * @param domain
-   * @param networkZone
-   * @param sessionType
-   * @param sessionName
-   * @param publishQos
-   * @param publishQosProps
-   * @param publishPriority
-   * @throws MALException
-   */
   @Override
-  public MALMessage publish(UpdateHeaderList updateHeaderList, List... updateLists) throws IllegalArgumentException, MALInteractionException, MALException
+  public MALMessage publish(final UpdateHeaderList updateHeaderList, final List... updateLists)
+          throws IllegalArgumentException, MALInteractionException, MALException
   {
-    MessageDetails details = new MessageDetails(parent.getEndpoint(),
+    final MessageDetails details = new MessageDetails(parent.getEndpoint(),
             parent.getURI(),
             null,
             parent.getBrokerURI(),
@@ -181,7 +148,7 @@ class MALPublisherImpl implements MALPublisher
             remotePublisherQosProps,
             remotePublisherPriority);
 
-    Long tid = getTransId(parent.getBrokerURI(),
+    final Long tid = getTransId(parent.getBrokerURI(),
             domain,
             networkZone.getValue(),
             sessionType,
@@ -191,7 +158,7 @@ class MALPublisherImpl implements MALPublisher
     {
       Logging.logMessage("INFO: Publisher using transaction Id of: " + tid);
 
-      Object[] body = new Object[updateLists.length + 1];
+      final Object[] body = new Object[updateLists.length + 1];
       body[0] = updateHeaderList;
       System.arraycopy(updateLists, 0, body, 1, updateLists.length);
 
@@ -204,21 +171,10 @@ class MALPublisherImpl implements MALPublisher
     }
   }
 
-  /**
-   *
-   * @param domain
-   * @param networkZone
-   * @param sessionType
-   * @param sessionName
-   * @param remotePublisherQos
-   * @param remotePublisherQosProps
-   * @param remotePublisherPriority
-   * @throws MALException
-   */
   @Override
   public void deregister() throws MALInteractionException, MALException
   {
-    MessageDetails details = new MessageDetails(parent.getEndpoint(),
+    final MessageDetails details = new MessageDetails(parent.getEndpoint(),
             parent.getURI(),
             null,
             parent.getBrokerURI(),
@@ -241,22 +197,11 @@ class MALPublisherImpl implements MALPublisher
             sessionName.getValue());
   }
 
-  /**
-   *
-   * @param listener
-   * @param domain
-   * @param networkZone
-   * @param sessionType
-   * @param sessionName
-   * @param remotePublisherQos
-   * @param remotePublisherQosProps
-   * @param remotePublisherPriority
-   * @throws MALException
-   */
   @Override
-  public MALMessage asyncDeregister(MALPublishInteractionListener listener) throws IllegalArgumentException, MALInteractionException, MALException
+  public MALMessage asyncDeregister(final MALPublishInteractionListener listener)
+          throws IllegalArgumentException, MALInteractionException, MALException
   {
-    MessageDetails details = new MessageDetails(parent.getEndpoint(),
+    final MessageDetails details = new MessageDetails(parent.getEndpoint(),
             parent.getURI(),
             null,
             parent.getBrokerURI(),
@@ -270,7 +215,7 @@ class MALPublisherImpl implements MALPublisher
             remotePublisherQosProps,
             remotePublisherPriority);
 
-    org.ccsds.moims.mo.mal.transport.MALMessage msg = handler.publishDeregisterAsync(details, operation, listener);
+    final MALMessage msg = handler.publishDeregisterAsync(details, operation, listener);
 
     clearTransId(parent.getBrokerURI(),
             domain,
@@ -281,45 +226,45 @@ class MALPublisherImpl implements MALPublisher
     return msg;
   }
 
-  private synchronized void setTransId(URI brokerUri,
-          IdentifierList domain,
-          String networkZone,
-          SessionType session,
-          String sessionName,
-          Long id)
+  private synchronized void setTransId(final URI lbrokerUri,
+          final IdentifierList ldomain,
+          final String lnetworkZone,
+          final SessionType lsession,
+          final String lsessionName,
+          final Long lid)
   {
-    AddressKey key = new AddressKey(brokerUri, domain, networkZone, session, sessionName);
+    final AddressKey key = new AddressKey(lbrokerUri, ldomain, lnetworkZone, lsession, lsessionName);
 
-    if (!transId.containsKey(key))
+    if (!transIdMap.containsKey(key))
     {
-      Logging.logMessage("INFO: Publisher setting transaction Id to: " + id);
-      transId.put(key, id);
+      Logging.logMessage("INFO: Publisher setting transaction Id to: " + lid);
+      transIdMap.put(key, lid);
     }
   }
 
-  private synchronized void clearTransId(URI brokerUri,
-          IdentifierList domain,
-          String networkZone,
-          SessionType session,
-          String sessionName)
+  private synchronized void clearTransId(final URI lbrokerUri,
+          final IdentifierList ldomain,
+          final String lnetworkZone,
+          final SessionType lsession,
+          final String lsessionName)
   {
-    AddressKey key = new AddressKey(brokerUri, domain, networkZone, session, sessionName);
+    final AddressKey key = new AddressKey(lbrokerUri, ldomain, lnetworkZone, lsession, lsessionName);
 
-    Long id = transId.get(key);
+    final Long id = transIdMap.get(key);
     if (null != id)
     {
       Logging.logMessage("INFO: Publisher removing transaction Id of: " + id);
-      transId.remove(key);
+      transIdMap.remove(key);
     }
   }
 
-  private synchronized Long getTransId(URI brokerUri,
-          IdentifierList domain,
-          String networkZone,
-          SessionType session,
-          String sessionName)
+  private synchronized Long getTransId(final URI lbrokerUri,
+          final IdentifierList ldomain,
+          final String lnetworkZone,
+          final SessionType lsession,
+          final String lsessionName)
   {
-    return transId.get(new AddressKey(brokerUri, domain, networkZone, session, sessionName));
+    return transIdMap.get(new AddressKey(lbrokerUri, ldomain, lnetworkZone, lsession, lsessionName));
   }
 
   private static class AddressKey implements Comparable
@@ -340,7 +285,11 @@ class MALPublisherImpl implements MALPublisher
      * @param session Session type.
      * @param sessionName Session name.
      */
-    public AddressKey(URI uri, IdentifierList domain, String networkZone, SessionType session, String sessionName)
+    public AddressKey(final URI uri,
+            final IdentifierList domain,
+            final String networkZone,
+            final SessionType session,
+            final String sessionName)
     {
       this.uri = uri.getValue();
       this.domain = StructureHelper.domainToString(domain);
@@ -354,7 +303,7 @@ class MALPublisherImpl implements MALPublisher
      *
      * @param hdr Source message.
      */
-    public AddressKey(MALMessageHeader hdr)
+    public AddressKey(final MALMessageHeader hdr)
     {
       this.uri = hdr.getURITo().getValue();
       this.domain = StructureHelper.domainToString(hdr.getDomain());
@@ -364,11 +313,11 @@ class MALPublisherImpl implements MALPublisher
     }
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
       if (obj instanceof AddressKey)
       {
-        AddressKey other = (AddressKey) obj;
+        final AddressKey other = (AddressKey) obj;
         if (uri == null)
         {
           if (other.uri != null)
@@ -442,9 +391,9 @@ class MALPublisherImpl implements MALPublisher
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(final Object o)
     {
-      AddressKey other = (AddressKey) o;
+      final AddressKey other = (AddressKey) o;
 
       if (uri.equals(other.uri))
       {

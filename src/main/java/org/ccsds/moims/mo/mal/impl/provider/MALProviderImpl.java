@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -34,20 +34,19 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
   private final URI sharedBrokerUri;
   private final MALBrokerBinding localBrokerBinding;
   private final URI localBrokerUri;
-//  private final MALEndpoint brokerEndpoint;
 
-  MALProviderImpl(MALProviderManagerImpl parent,
-          MALContextImpl impl,
-          String localName,
-          String protocol,
-          MALService service,
-          Blob authenticationId,
-          MALInteractionHandler handler,
-          QoSLevel[] expectedQos,
-          UInteger priorityLevelNumber,
-          Map defaultQoSProperties,
-          Boolean isPublisher,
-          URI sharedBrokerUri) throws MALException
+  MALProviderImpl(final MALProviderManagerImpl parent,
+          final MALContextImpl impl,
+          final String localName,
+          final String protocol,
+          final MALService service,
+          final Blob authenticationId,
+          final MALInteractionHandler handler,
+          final QoSLevel[] expectedQos,
+          final UInteger priorityLevelNumber,
+          final Map defaultQoSProperties,
+          final Boolean isPublisher,
+          final URI sharedBrokerUri) throws MALException
   {
     super(parent,
             impl,
@@ -91,17 +90,17 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     }
   }
 
-  MALProviderImpl(MALProviderManagerImpl parent,
-          MALContextImpl impl,
-          MALEndpoint endPoint,
-          MALService service,
-          Blob authenticationId,
-          MALInteractionHandler handler,
-          QoSLevel[] expectedQos,
-          UInteger priorityLevelNumber,
-          Map defaultQoSProperties,
-          Boolean isPublisher,
-          URI sharedBrokerUri) throws MALException
+  MALProviderImpl(final MALProviderManagerImpl parent,
+          final MALContextImpl impl,
+          final MALEndpoint endPoint,
+          final MALService service,
+          final Blob authenticationId,
+          final MALInteractionHandler handler,
+          final QoSLevel[] expectedQos,
+          final UInteger priorityLevelNumber,
+          final Map defaultQoSProperties,
+          final Boolean isPublisher,
+          final URI sharedBrokerUri) throws MALException
   {
     super(parent,
             impl,
@@ -122,7 +121,8 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
       if (null == this.sharedBrokerUri)
       {
-        this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(impl.createBrokerManager().createBroker(),
+        this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(
+                impl.createBrokerManager().createBroker(),
                 endPoint,
                 authenticationId,
                 expectedQos,
@@ -143,45 +143,54 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     }
   }
 
-  /**
-   * Check to see if this Provider is also a publisher.
-   * @return True if a publisher.
-   */
   @Override
   public boolean isPublisher()
   {
     return isPublisher;
   }
 
+  @Override
   public MALService getService()
   {
     return service;
   }
 
-  /**
-   * Access the internal MALPublisher interface.
-   * @param op The operation that is to be published.
-   * @return The internal MALPublisher
-   */
   @Override
-  public synchronized MALPublisher createPublisher(MALPubSubOperation op, IdentifierList domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, Map remotePublisherQosProps, UInteger remotePublisherPriority) throws IllegalArgumentException, MALException
+  public synchronized MALPublisher createPublisher(final MALPubSubOperation op,
+          final IdentifierList domain,
+          final Identifier networkZone,
+          final SessionType sessionType,
+          final Identifier sessionName,
+          final QoSLevel remotePublisherQos,
+          final Map remotePublisherQosProps,
+          final UInteger remotePublisherPriority) throws IllegalArgumentException, MALException
   {
-    String key = createPublisherKey(op, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherPriority);
+    final String key = createPublisherKey(op,
+            domain,
+            networkZone,
+            sessionType,
+            sessionName,
+            remotePublisherQos,
+            remotePublisherPriority);
     MALPublisher pub = publishers.get(key);
 
     if (null == pub)
     {
-      pub = new MALPublisherImpl(this, sendHandler, op, domain, networkZone, sessionType, sessionName, remotePublisherQos, remotePublisherQosProps, remotePublisherPriority);
+      pub = new MALPublisherImpl(this,
+              sendHandler,
+              op, domain,
+              networkZone,
+              sessionType,
+              sessionName,
+              remotePublisherQos,
+              remotePublisherQosProps,
+              remotePublisherPriority);
       publishers.put(key, pub);
     }
 
     return pub;
   }
 
-  /**
-   * Returns the URI of the Broker being used.
-   * @return The URI of the Broker or null if not a publisher.
-   */
   @Override
   public URI getBrokerURI()
   {
@@ -200,10 +209,6 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     return null;
   }
 
-  /**
-   * Returns the authentication identifier of the Broker if its a private broker.
-   * @return The authentication identifier of the private broker or null.
-   */
   @Override
   public Blob getBrokerAuthenticationId()
   {
@@ -215,10 +220,6 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     return null;
   }
 
-  /**
-   * Closes this Provider and the private broker if it has been created.
-   * @throws MALException On error.
-   */
   @Override
   public void close() throws MALException
   {
@@ -226,10 +227,16 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
     this.handler.malFinalize(this);
   }
-  
-  String createPublisherKey(MALPubSubOperation op, IdentifierList domain, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel remotePublisherQos, UInteger remotePublisherPriority)
+
+  String createPublisherKey(final MALPubSubOperation op,
+          final IdentifierList domain,
+          final Identifier networkZone,
+          final SessionType sessionType,
+          final Identifier sessionName,
+          final QoSLevel remotePublisherQos,
+          final UInteger remotePublisherPriority)
   {
-    StringBuilder buf = new StringBuilder();
+    final StringBuilder buf = new StringBuilder();
     buf.append(op.getNumber());
     buf.append(domain);
     buf.append(networkZone);

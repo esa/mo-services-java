@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -30,33 +30,24 @@ public class RequestInteractionImpl extends BaseInteractionImpl implements MALRe
    * @param address Details of this endpoint.
    * @param internalTransId Internal transaction identifier.
    * @param msg The source message.
+   * @throws MALInteractionException if the received message operation is unknown.
    */
-  public RequestInteractionImpl(MessageSend sender,
-          Address address,
-          Long internalTransId,
-          MALMessage msg) throws MALInteractionException
+  public RequestInteractionImpl(final MessageSend sender,
+          final Address address,
+          final Long internalTransId,
+          final MALMessage msg) throws MALInteractionException
   {
     super(sender, address, internalTransId, msg);
   }
 
   @Override
-  /**
-   *
-   * @param result
-   * @throws MALException
-   */
-  public MALMessage sendResponse(Object... result) throws MALInteractionException, MALException
+  public MALMessage sendResponse(final Object... result) throws MALInteractionException, MALException
   {
     return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, true, result);
   }
 
   @Override
-  /**
-   *
-   * @param error
-   * @throws MALException
-   */
-  public org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error) throws MALException
+  public MALMessage sendError(final MALStandardError error) throws MALException
   {
     return returnError(MALRequestOperation.REQUEST_RESPONSE_STAGE, error);
   }

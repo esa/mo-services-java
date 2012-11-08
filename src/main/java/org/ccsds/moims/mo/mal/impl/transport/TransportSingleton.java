@@ -4,7 +4,7 @@
  *               Darmstadt Germany
  * ----------------------------------------------------------------------------
  * System       : CCSDS MO MAL Implementation
- * Author       : cooper_sf
+ * Author       : Sam Cooper
  *
  * ----------------------------------------------------------------------------
  */
@@ -60,7 +60,7 @@ public final class TransportSingleton
    * @return The transport handler.
    * @throws MALException on error.
    */
-  public static MALTransport instance(final URI dstUri, Map properties) throws MALException
+  public static MALTransport instance(final URI dstUri, final Map properties) throws MALException
   {
     init();
 
@@ -79,7 +79,7 @@ public final class TransportSingleton
    * @return The transport handler.
    * @throws MALException on error.
    */
-  public static MALTransport instance(final String dstUri, Map properties) throws MALException
+  public static MALTransport instance(final String dstUri, final Map properties) throws MALException
   {
     init();
 
@@ -97,7 +97,7 @@ public final class TransportSingleton
    * @param transport The Transport to check.
    * @return Returns true if dstUri would create the same transport.
    */
-  public static boolean isSameTransport(final URI dstUri, MALTransport transport)
+  public static boolean isSameTransport(final URI dstUri, final MALTransport transport)
   {
     init();
 
@@ -115,7 +115,7 @@ public final class TransportSingleton
    * @param transport The Transport to check.
    * @return Returns true if dstUri would create the same transport.
    */
-  public static boolean isSameTransport(final String dstUri, MALTransport transport)
+  public static boolean isSameTransport(final String dstUri, final MALTransport transport)
   {
     init();
 
@@ -136,16 +136,16 @@ public final class TransportSingleton
   }
 
   /**
-   * Creates an instance of a Tranport.
+   * Creates an instance of a Transport.
    * @param dstUri The Uri.
    * @param properties QoS properties.
    * @return  The transport handler.
    * @throws MALException on error.
    */
-  private static MALTransport internalInstance(final String dstUri, Map properties) throws MALException
+  private static MALTransport internalInstance(final String dstUri, final Map properties) throws MALException
   {
     // get protocol from uri
-    String strProtocol = getProtocol(dstUri);
+    final String strProtocol = getProtocol(dstUri);
 
     // lookup for existing transport
     MALTransport transport;
@@ -228,7 +228,7 @@ public final class TransportSingleton
   private static String getProtocol(String dstUri)
   {
     // get protocol from uri
-    int iPro = dstUri.indexOf(':');
+    final int iPro = dstUri.indexOf(':');
     if (-1 != iPro)
     {
       dstUri = dstUri.substring(0, iPro);
