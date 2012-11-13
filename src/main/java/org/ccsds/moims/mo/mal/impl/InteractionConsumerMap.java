@@ -221,7 +221,7 @@ class InteractionConsumerMap
     protected static void logUnexpectedTransitionError(final int interactionType, final int interactionStage)
     {
       Logging.logMessage("ERROR: Unexpected transition IP("
-              + InteractionType.fromInt(interactionType)
+              + InteractionType.fromOrdinal(interactionType)
               + ") Stage(" + interactionStage + ")");
     }
   }
