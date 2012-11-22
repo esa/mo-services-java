@@ -13,11 +13,12 @@ package org.ccsds.moims.mo.mal.impl.broker.simple;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage.NotifyMessage;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerImpl;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.broker.UpdateKey;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
@@ -39,21 +40,21 @@ class SimpleSubscriptionDetails
 
   void report()
   {
-    Logging.logMessage("    START Subscription ( " + subscriptionId + " )");
-    Logging.logMessage("     Required: " + required.size());
+    MALBrokerImpl.LOGGER.log(Level.FINE, "    START Subscription ( {0} )", subscriptionId);
+    MALBrokerImpl.LOGGER.log(Level.FINE, "     Required: {0}", required.size());
     for (SubscriptionKey key : required)
     {
-      Logging.logMessage("            : Rqd : " + key);
+      MALBrokerImpl.LOGGER.log(Level.FINE, "            : Rqd : {0}", key);
     }
     for (SubscriptionKey key : onAll)
     {
-      Logging.logMessage("            : All : " + key);
+      MALBrokerImpl.LOGGER.log(Level.FINE, "            : All : {0}", key);
     }
     for (SubscriptionKey key : onChange)
     {
-      Logging.logMessage("            : Chg : " + key);
+      MALBrokerImpl.LOGGER.log(Level.FINE, "            : Chg : {0}", key);
     }
-    Logging.logMessage("    END Subscription ( " + subscriptionId + " )");
+    MALBrokerImpl.LOGGER.log(Level.FINE, "    END Subscription ( {0} )", subscriptionId);
   }
 
   boolean notActive()
@@ -92,7 +93,7 @@ class SimpleSubscriptionDetails
           final UpdateHeaderList updateHeaderList,
           final MALPublishBody publishBody) throws MALException
   {
-    Logging.logMessage("INFO: Checking SimSubDetails");
+    MALBrokerImpl.LOGGER.fine("INFO: Checking SimSubDetails");
 
     final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
 
@@ -129,7 +130,7 @@ class SimpleSubscriptionDetails
           final Object[] notifyLists) throws MALException
   {
     final UpdateKey key = new UpdateKey(srcHdr, srcDomainId, updateHeader.getKey());
-    Logging.logMessage("INFO: Checking " + key);
+    MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0}", key);
     boolean updateRequired = matchedUpdate(key, onAll);
 
     if (!updateRequired && (updateHeader.getUpdateType().getOrdinal() != UpdateType._UPDATE_INDEX))
@@ -154,14 +155,17 @@ class SimpleSubscriptionDetails
     boolean matched = false;
     for (SubscriptionKey subscriptionKey : searchSet)
     {
-      Logging.logMessage("INFO: Checking " + key + " against " + subscriptionKey);
+      MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0} against {1}", new Object[]
+              {
+                key, subscriptionKey
+              });
       if (subscriptionKey.matches(key))
       {
-        Logging.logMessage("    : Matched");
+        MALBrokerImpl.LOGGER.fine("    : Matched");
         matched = true;
         break;
       }
-      Logging.logMessage("    : No match");
+      MALBrokerImpl.LOGGER.fine("    : No match");
     }
     return matched;
   }

@@ -14,13 +14,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.impl.MessageDetails;
 import org.ccsds.moims.mo.mal.impl.StringPair;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
@@ -74,7 +74,7 @@ public abstract class BaseBrokerHandler
     {
       details = new ProviderDetails(hdr.getURIFrom().getValue(), hdr.getQoSlevel());
       providerMap.put(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr)), details);
-      Logging.logMessage("New publisher registering: " + hdr);
+      MALBrokerImpl.LOGGER.log(Level.INFO, "New publisher registering: {0}", hdr);
     }
 
     details.setKeyList(hdr, providerKeyList);
@@ -95,7 +95,7 @@ public abstract class BaseBrokerHandler
 
     if (null != details)
     {
-      Logging.logMessage("Getting publisher QoS details: " + hdr);
+      MALBrokerImpl.LOGGER.log(Level.FINE, "Getting publisher QoS details: {0}", hdr);
       return details.getQosLevel();
     }
 
@@ -114,13 +114,13 @@ public abstract class BaseBrokerHandler
   public synchronized java.util.List<BrokerMessage> createNotify(final MALMessageHeader hdr,
           final MALPublishBody publishBody) throws MALInteractionException, MALException
   {
-    Logging.logMessage("INFO: Checking BaseBrokerHandler");
+    MALBrokerImpl.LOGGER.fine("Checking BaseBrokerHandler");
     final ProviderDetails details =
             providerMap.get(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr)));
 
     if (null == details)
     {
-      Logging.logMessage("ERR : Provider not known");
+      MALBrokerImpl.LOGGER.warning("Provider not known");
       throw new MALInteractionException(new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
     }
 
@@ -150,7 +150,7 @@ public abstract class BaseBrokerHandler
     report();
     if (null != providerMap.remove(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr))))
     {
-      Logging.logMessage("Removing publisher details: " + hdr);
+      MALBrokerImpl.LOGGER.log(Level.INFO, "Removing publisher details: {0}", hdr);
     }
     report();
   }
@@ -213,7 +213,7 @@ public abstract class BaseBrokerHandler
 
   private synchronized void report()
   {
-    Logging.logMessage("START REPORT");
+    MALBrokerImpl.LOGGER.fine("START REPORT");
 
     for (ProviderDetails subscriptionSource : providerMap.values())
     {
@@ -225,7 +225,7 @@ public abstract class BaseBrokerHandler
       subscriptionSource.report();
     }
 
-    Logging.logMessage("END REPORT");
+    MALBrokerImpl.LOGGER.fine("END REPORT");
   }
 
   private static String createProviderKey(final MALMessageHeader details)

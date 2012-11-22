@@ -12,10 +12,10 @@ package org.ccsds.moims.mo.mal.impl;
 
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.*;
@@ -395,21 +395,27 @@ public class MessageSend
     }
     catch (MALException ex)
     {
-      Logging.logMessage("ERROR: Error returning response to consumer : "
-              + srcHdr.getURIFrom() + " : " + ex.toString());
-      ex.printStackTrace();
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+              "Error returning response to consumer : {0} : {1}", new Object[]
+              {
+                srcHdr.getURIFrom(), ex
+              });
     }
     catch (MALTransmitErrorException ex)
     {
-      Logging.logMessage("ERROR: Error returning response to consumer : "
-              + srcHdr.getURIFrom() + " : " + ex.toString());
-      ex.printStackTrace();
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+              "Error returning response to consumer : {0} : {1}", new Object[]
+              {
+                srcHdr.getURIFrom(), ex
+              });
     }
     catch (RuntimeException ex)
     {
-      Logging.logMessage("ERROR: Error returning response to consumer : "
-              + srcHdr.getURIFrom() + " : " + ex.toString());
-      ex.printStackTrace();
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+              "Error returning response to consumer : {0} : {1}", new Object[]
+              {
+                srcHdr.getURIFrom(), ex
+              });
     }
 
     return msg;
@@ -478,7 +484,7 @@ public class MessageSend
     }
     catch (MALException ex)
     {
-      Logging.logMessage("ERROR: Error with one way send : " + msg.getHeader().getURITo());
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Error with one way send : {0}", msg.getHeader().getURITo());
       throw ex;
     }
 
@@ -539,7 +545,7 @@ public class MessageSend
     }
     catch (MALException ex)
     {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURITo());
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Error with consumer : {0}", msg.getHeader().getURITo());
       throw ex;
     }
   }
@@ -564,7 +570,7 @@ public class MessageSend
     }
     catch (MALException ex)
     {
-      Logging.logMessage("ERROR: Error with consumer : " + msg.getHeader().getURITo());
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Error with consumer : {0}", msg.getHeader().getURITo());
       throw ex;
     }
 
@@ -614,18 +620,27 @@ public class MessageSend
     }
     catch (MALException ex)
     {
-      Logging.logMessage("ERROR: Error returning error to consumer : " + srcHdr.getURIFrom() + " : " + ex.toString());
-      ex.printStackTrace();
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+              "Error returning error to consumer : {0} : {1}", new Object[]
+              {
+                srcHdr.getURIFrom(), ex
+              });
     }
     catch (MALTransmitErrorException ex)
     {
-      Logging.logMessage("ERROR: Error returning error to consumer : " + srcHdr.getURIFrom() + " : " + ex.toString());
-      ex.printStackTrace();
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+              "Error returning error to consumer : {0} : {1}", new Object[]
+              {
+                srcHdr.getURIFrom(), ex
+              });
     }
     catch (RuntimeException ex)
     {
-      Logging.logMessage("ERROR: Error returning error to consumer : " + srcHdr.getURIFrom() + " : " + ex.toString());
-      ex.printStackTrace();
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+              "Error returning error to consumer : {0} : {1}", new Object[]
+              {
+                srcHdr.getURIFrom(), ex
+              });
     }
 
     return msg;

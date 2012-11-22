@@ -12,9 +12,9 @@ package org.ccsds.moims.mo.mal.impl;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.Union;
@@ -96,7 +96,7 @@ class InteractionConsumerMap
       }
       else
       {
-        Logging.logMessage("ERROR: **** No key found in service maps to wait for response! " + id);
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING, "No key found in service maps to wait for response! {0}", id);
       }
     }
 
@@ -115,7 +115,7 @@ class InteractionConsumerMap
           }
           catch (InterruptedException ex)
           {
-            ex.printStackTrace();
+            MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Interrupted waiting for handler lock ", ex);
           }
         }
       }
@@ -128,7 +128,7 @@ class InteractionConsumerMap
       {
         if (handler.finished())
         {
-          Logging.logMessage("INFO: A Removing handler from service maps: " + id);
+          MALContextFactoryImpl.LOGGER.log(Level.INFO, "Removing handler from service maps: {0}", id);
           transMap.remove(id);
         }
       }
@@ -150,7 +150,7 @@ class InteractionConsumerMap
       }
       else
       {
-        Logging.logMessage("ERROR: **** No key found in service maps to get listener! " + id);
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING, "No key found in service maps to get listener! {0}", id);
       }
     }
 
@@ -163,7 +163,7 @@ class InteractionConsumerMap
       {
         synchronized (transMap)
         {
-          Logging.logMessage("INFO: B Removing handler from service maps: " + id);
+          MALContextFactoryImpl.LOGGER.log(Level.INFO, "Removing handler from service maps: {0}", id);
           transMap.remove(id);
         }
       }
@@ -220,9 +220,11 @@ class InteractionConsumerMap
 
     protected static void logUnexpectedTransitionError(final int interactionType, final int interactionStage)
     {
-      Logging.logMessage("ERROR: Unexpected transition IP("
-              + InteractionType.fromOrdinal(interactionType)
-              + ") Stage(" + interactionStage + ")");
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+              "Unexpected transition IP({0}) Stage({1})", new Object[]
+              {
+                InteractionType.fromOrdinal(interactionType), interactionStage
+              });
     }
   }
 
@@ -283,7 +285,7 @@ class InteractionConsumerMap
         catch (MALException ex)
         {
           // nothing we can do with this
-          ex.printStackTrace();
+          MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Exception thrown handling stage {0}", ex);
         }
       }
       else
@@ -421,7 +423,7 @@ class InteractionConsumerMap
           catch (MALException ex)
           {
             // nothing we can do with this
-            ex.printStackTrace();
+            MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Exception thrown handling stage {0}", ex);
           }
         }
       }
@@ -441,7 +443,7 @@ class InteractionConsumerMap
         catch (MALException ex)
         {
           // nothing we can do with this
-          ex.printStackTrace();
+          MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Exception thrown handling stage {0}", ex);
         }
       }
     }
@@ -537,7 +539,7 @@ class InteractionConsumerMap
         catch (MALException ex)
         {
           // nothing we can do with this
-          ex.printStackTrace();
+          MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Exception thrown handling stage {0}", ex);
         }
       }
       else
@@ -572,7 +574,7 @@ class InteractionConsumerMap
         catch (MALException ex)
         {
           // nothing we can do with this
-          ex.printStackTrace();
+          MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Exception thrown handling stage {0}", ex);
         }
       }
     }

@@ -13,11 +13,11 @@ package org.ccsds.moims.mo.mal.impl.broker;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.MALContextImpl;
 import org.ccsds.moims.mo.mal.impl.ServiceComponentImpl;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -52,8 +52,11 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
     this.brokerImpl = parent;
     this.endpoint.startMessageDelivery();
 
-    Logging.logMessage("INFO: Creating internal MAL Broker for localName: "
-            + localName + " on protocol: " + protocol + " with URI: " + this.localUri);
+    MALBrokerImpl.LOGGER.log(Level.INFO,
+            "Creating internal MAL Broker for localName: {0} on protocol: {1} with URI: {2}", new Object[]
+            {
+              localName, protocol, this.localUri
+            });
   }
 
   MALBrokerBindingImpl(final MALBrokerImpl parent,
@@ -76,8 +79,11 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
 
     this.brokerImpl = parent;
 
-    Logging.logMessage("INFO: Creating internal MAL Broker for localName: "
-            + localName + " with URI: " + this.localUri);
+    MALBrokerImpl.LOGGER.log(Level.INFO,
+            "Creating internal MAL Broker for localName: {0} with URI: {1}", new Object[]
+            {
+              localName, this.localUri
+            });
   }
 
   @Override

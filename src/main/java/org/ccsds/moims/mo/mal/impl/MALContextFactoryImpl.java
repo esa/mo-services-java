@@ -11,6 +11,7 @@
 package org.ccsds.moims.mo.mal.impl;
 
 import java.util.Map;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
@@ -23,6 +24,10 @@ import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
  */
 public class MALContextFactoryImpl extends MALContextFactory
 {
+  /**
+   * Logger
+   */
+  public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl");
   /**
    * The property that contains the file to load MAL properties from.
    */

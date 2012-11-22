@@ -12,12 +12,13 @@ package org.ccsds.moims.mo.mal.impl.broker;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.impl.MessageDetails;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.impl.broker.simple.SimpleBrokerHandler;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -28,6 +29,10 @@ import org.ccsds.moims.mo.mal.transport.*;
  */
 public class MALBrokerImpl extends MALBrokerBaseImpl
 {
+  /**
+   * Logger
+   */
+  public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl.broker");
   private final MessageSend sender;
   private final Map<BrokerKey, BaseBrokerHandler> brokerMap = new TreeMap<BrokerKey, BaseBrokerHandler>();
 
@@ -125,8 +130,8 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
           {
             // with the exception being thrown we assume that there is a problem with this consumer so remove
             //  them from the observe manager
-            Logging.logMessage("ERROR: Error with notify consumer, removing from list : "
-                    + notifyMessage.details.uriTo);
+            LOGGER.log(Level.WARNING,
+                    "ERROR: Error with notify consumer, removing from list : {0}", notifyMessage.details.uriTo);
             removeLostConsumer(notifyMessage.details);
 
             // TODO: notify local provider
@@ -160,25 +165,25 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
       final Class cls = Thread.currentThread().getContextClassLoader().loadClass(clsName);
 
       broker = (BaseBrokerHandler) cls.newInstance();
-      Logging.logMessage("INFO: Creating internal MAL Broker handler: " + cls.getSimpleName());
+      LOGGER.log(Level.INFO, "Creating internal MAL Broker handler: {0}", cls.getSimpleName());
     }
     catch (ClassNotFoundException ex)
     {
-      Logging.logMessage("WARN: Unable to find MAL Broker handler class: " + clsName);
+      LOGGER.log(Level.WARNING, "Unable to find MAL Broker handler class: {0}", clsName);
     }
     catch (InstantiationException ex)
     {
-      Logging.logMessage("WARN: Unable to instantiate MAL Broker handler: " + clsName);
+      LOGGER.log(Level.WARNING, "Unable to instantiate MAL Broker handler: {0}", clsName);
     }
     catch (IllegalAccessException ex)
     {
-      Logging.logMessage("WARN: IllegalAccessException when instantiating MAL Broker handler class: " + clsName);
+      LOGGER.log(Level.WARNING, "IllegalAccessException when instantiating MAL Broker handler class: {0}", clsName);
     }
 
     if (null == broker)
     {
       broker = new SimpleBrokerHandler();
-      Logging.logMessage("INFO: Creating internal MAL Broker handler: SimpleBrokerHandler");
+      LOGGER.info("Creating internal MAL Broker handler: SimpleBrokerHandler");
     }
 
     return broker;

@@ -13,10 +13,11 @@ package org.ccsds.moims.mo.mal.impl.provider;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.impl.MessageDetails;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
@@ -30,6 +31,10 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 class MALPublisherImpl implements MALPublisher
 {
+  /**
+   * Logger
+   */
+  public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl.provider");
   private final MALProviderImpl parent;
   private final MessageSend handler;
   private final MALPubSubOperation operation;
@@ -156,7 +161,7 @@ class MALPublisherImpl implements MALPublisher
 
     if (null != tid)
     {
-      Logging.logMessage("INFO: Publisher using transaction Id of: " + tid);
+      LOGGER.log(Level.INFO, "Publisher using transaction Id of: {0}", tid);
 
       final Object[] body = new Object[updateLists.length + 1];
       body[0] = updateHeaderList;
@@ -237,7 +242,7 @@ class MALPublisherImpl implements MALPublisher
 
     if (!transIdMap.containsKey(key))
     {
-      Logging.logMessage("INFO: Publisher setting transaction Id to: " + lid);
+      LOGGER.log(Level.INFO, "Publisher setting transaction Id to: {0}", lid);
       transIdMap.put(key, lid);
     }
   }
@@ -253,7 +258,7 @@ class MALPublisherImpl implements MALPublisher
     final Long id = transIdMap.get(key);
     if (null != id)
     {
-      Logging.logMessage("INFO: Publisher removing transaction Id of: " + id);
+      LOGGER.log(Level.INFO, "Publisher removing transaction Id of: {0}", id);
       transIdMap.remove(key);
     }
   }

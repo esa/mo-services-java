@@ -12,10 +12,10 @@ package org.ccsds.moims.mo.mal.impl.broker;
 
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -41,13 +41,13 @@ final class ProviderDetails
 
   void report()
   {
-    Logging.logMessage("  START Provider ( " + uri + " )");
-    Logging.logMessage("    Domain : " + StructureHelper.domainToString(domain));
+    MALBrokerImpl.LOGGER.log(Level.FINE, "  START Provider ( {0} )", uri);
+    MALBrokerImpl.LOGGER.log(Level.FINE, "    Domain : {0}", StructureHelper.domainToString(domain));
     for (PublisherKey key : keySet)
     {
-      Logging.logMessage("    Allowed: " + key);
+      MALBrokerImpl.LOGGER.log(Level.FINE, "    Allowed: {0}", key);
     }
-    Logging.logMessage("  END Provider ( " + uri + " )");
+    MALBrokerImpl.LOGGER.log(Level.FINE, "  END Provider ( {0} )", uri);
   }
 
   void setKeyList(final MALMessageHeader hdr, final EntityKeyList l)
@@ -84,13 +84,13 @@ final class ProviderDetails
       }
       if (0 < lst.size())
       {
-        Logging.logMessage("ERR : Provider not allowed to publish some keys");
+        MALBrokerImpl.LOGGER.warning("Provider not allowed to publish some keys");
         throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, lst));
       }
     }
     else
     {
-      Logging.logMessage("ERR : Provider not allowed to publish to the domain");
+      MALBrokerImpl.LOGGER.warning("Provider not allowed to publish to the domain");
       throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null));
     }
   }

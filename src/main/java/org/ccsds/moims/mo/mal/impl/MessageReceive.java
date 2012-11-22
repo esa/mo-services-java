@@ -12,12 +12,12 @@ package org.ccsds.moims.mo.mal.impl;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.patterns.*;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.*;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -57,7 +57,7 @@ public class MessageReceive implements MALMessageListener
   @Override
   public void onInternalError(final MALEndpoint callingEndpoint, final Throwable err)
   {
-    Logging.logMessage("INFO: MAL Receiving ERROR!");
+    MALContextFactoryImpl.LOGGER.severe("MAL Receiving ERROR!");
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
@@ -86,7 +86,7 @@ public class MessageReceive implements MALMessageListener
       msg = securityManager.check(msg);
       final short stage = msg.getHeader().getInteractionStage().getValue();
 
-      Logging.logMessage("INFO: MAL Receiving message");
+      MALContextFactoryImpl.LOGGER.info("MAL Receiving message");
 
       switch (msg.getHeader().getInteractionType().getOrdinal())
       {
@@ -206,7 +206,7 @@ public class MessageReceive implements MALMessageListener
 
       if (null == rspnInteractionStage)
       {
-        Logging.logMessage("ERROR: Unable to return error, already a return message (" + ex + ")");
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Unable to return error, already a return message ({0})", ex);
       }
       else
       {
@@ -229,7 +229,7 @@ public class MessageReceive implements MALMessageListener
 
       if (null == rspnInteractionStage)
       {
-        Logging.logMessage("ERROR: Unable to return error, already a return message (" + ex + ")");
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Unable to return error, already a return message ({0})", ex);
       }
       else
       {
@@ -247,7 +247,7 @@ public class MessageReceive implements MALMessageListener
       providerEndpointMap.put(key, address);
     }
   }
-  
+
   private void internalHandleSend(final MALMessage msg, final Address address) throws MALInteractionException
   {
     try
@@ -256,7 +256,8 @@ public class MessageReceive implements MALMessageListener
     }
     catch (MALException ex)
     {
-      Logging.logMessage("ERROR: Error generated during reception of SEND pattern, dropping: " + ex);
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+              "Error generated during reception of SEND pattern, dropping: {0}", ex);
     }
   }
 
@@ -422,13 +423,14 @@ public class MessageReceive implements MALMessageListener
           }
           else
           {
-            Logging.logMessage("ERROR: Unknown publisher for PUBLISH error: " + msg.getHeader().getURITo());
+            MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                    "Unknown publisher for PUBLISH error: {0}", msg.getHeader().getURITo());
             ipsmap.listPublishListeners();
           }
         }
         catch (MALException ex)
         {
-          ex.printStackTrace();
+          MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Exception thrown processing publish error: {0}", ex);
         }
       }
     }
@@ -465,7 +467,8 @@ public class MessageReceive implements MALMessageListener
       }
       else
       {
-        Logging.logMessage("ERROR: Unexpected body type for PUBLISH: " + msg.getHeader().getURITo());
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                "Unexpected body type for PUBLISH: {0}", msg.getHeader().getURITo());
         sender.returnError(brokerHandler.getMsgAddress(),
                 msg.getHeader().getTransactionId(),
                 msg.getHeader(),
@@ -495,13 +498,13 @@ public class MessageReceive implements MALMessageListener
           }
           catch (MALException ex)
           {
-            ex.printStackTrace();
+            MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Exception thrown processing notify error: {0}", ex);
           }
         }
       }
       else
       {
-        Logging.logMessage("ERROR: Unknown notify consumer requested: " + hdr.getURITo());
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Unknown notify consumer requested: {0}", hdr.getURITo());
       }
     }
     else
@@ -517,12 +520,13 @@ public class MessageReceive implements MALMessageListener
         }
         catch (MALException ex)
         {
-          Logging.logMessage("ERROR: Error generated during handling of NOTIFY message, dropping: " + ex);
+          MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                  "Error generated during handling of NOTIFY message, dropping: {0}", ex);
         }
       }
       else
       {
-        Logging.logMessage("ERROR: Unknown notify consumer requested: " + hdr.getURITo());
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Unknown notify consumer requested: {0}", hdr.getURITo());
       }
     }
   }
@@ -645,11 +649,11 @@ public class MessageReceive implements MALMessageListener
             rspnInteractionStage = MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE;
             break;
           default:
-            // no op
+          // no op
         }
         break;
       default:
-        // no op
+      // no op
     }
 
     return rspnInteractionStage;

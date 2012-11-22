@@ -12,9 +12,9 @@ package org.ccsds.moims.mo.mal.impl;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -28,12 +28,9 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 class InteractionPubSubMap
 {
-  private final Map<StringPair, MALPublishInteractionListener> publisherMap
-          = new TreeMap<StringPair, MALPublishInteractionListener>();
-  private final Map<String, Map<String, MALInteractionListener>> errorMap
-          = new TreeMap<String, Map<String, MALInteractionListener>>();
-  private final Map<StringPair, MALInteractionListener> notifyMap
-          = new TreeMap<StringPair, MALInteractionListener>();
+  private final Map<StringPair, MALPublishInteractionListener> publisherMap = new TreeMap<StringPair, MALPublishInteractionListener>();
+  private final Map<String, Map<String, MALInteractionListener>> errorMap = new TreeMap<String, Map<String, MALInteractionListener>>();
+  private final Map<StringPair, MALInteractionListener> notifyMap = new TreeMap<StringPair, MALInteractionListener>();
 
   void registerPublishListener(final MessageDetails details, final MALPublishInteractionListener listener)
   {
@@ -43,7 +40,7 @@ class InteractionPubSubMap
     {
       publisherMap.put(id, listener);
 
-      Logging.logMessage("INFO: Adding publisher: " + id);
+      MALContextFactoryImpl.LOGGER.log(Level.INFO, "Adding publisher: {0}", id);
     }
   }
 
@@ -59,7 +56,7 @@ class InteractionPubSubMap
 
     if (null != list)
     {
-      Logging.logMessage("INFO: Getting publisher: " + id);
+      MALContextFactoryImpl.LOGGER.log(Level.FINE, "Getting publisher: {0}", id);
     }
 
     return list;
@@ -69,30 +66,30 @@ class InteractionPubSubMap
   {
     synchronized (publisherMap)
     {
-      Logging.logMessage("INFO: Starting dump of publisher map");
+      MALContextFactoryImpl.LOGGER.fine("Starting dump of publisher map");
       for (StringPair e : publisherMap.keySet())
       {
-        Logging.logMessage("INFO:   " + e);
+        MALContextFactoryImpl.LOGGER.log(Level.FINE, "  {0}", e);
       }
-      Logging.logMessage("INFO: End of dump of publisher map");
+      MALContextFactoryImpl.LOGGER.fine("End of dump of publisher map");
     }
     synchronized (errorMap)
     {
-      Logging.logMessage("INFO: Starting dump of error map");
+      MALContextFactoryImpl.LOGGER.fine("Starting dump of error map");
       for (String e : errorMap.keySet())
       {
-        Logging.logMessage("INFO:   " + e);
+        MALContextFactoryImpl.LOGGER.log(Level.FINE, "  {0}", e);
       }
-      Logging.logMessage("INFO: End of dump of error map");
+      MALContextFactoryImpl.LOGGER.fine("End of dump of error map");
     }
     synchronized (notifyMap)
     {
-      Logging.logMessage("INFO: Starting dump of notify map");
+      MALContextFactoryImpl.LOGGER.fine("Starting dump of notify map");
       for (StringPair e : notifyMap.keySet())
       {
-        Logging.logMessage("INFO:   " + e);
+        MALContextFactoryImpl.LOGGER.log(Level.FINE, "  {0}", e);
       }
-      Logging.logMessage("INFO: End of dump of notify map");
+      MALContextFactoryImpl.LOGGER.fine("End of dump of notify map");
     }
   }
 
@@ -108,7 +105,7 @@ class InteractionPubSubMap
 
     if (null != list)
     {
-      Logging.logMessage("INFO: Removing publisher: " + id);
+      MALContextFactoryImpl.LOGGER.log(Level.INFO, "Removing publisher: {0}", id);
     }
 
     return list;
@@ -134,7 +131,11 @@ class InteractionPubSubMap
         errorMap.put(uri, ent);
       }
 
-      Logging.logMessage("INFO: PubSubMap(" + this + "), adding notify handler: " + uri + " : " + subId + " : " + list);
+      MALContextFactoryImpl.LOGGER.log(Level.INFO,
+              "PubSubMap({0}), adding notify handler: {1} : {2} : {3}", new Object[]
+              {
+                this, uri, subId, list
+              });
       ent.put(subId, list);
     }
   }
@@ -143,17 +144,29 @@ class InteractionPubSubMap
   {
     final StringPair id = new StringPair(uri.getValue(), subscription.getValue());
 
-    Logging.logMessage("INFO: PubSubMap(" + this + "), looking for notify handler: " + uri + " : " + subscription);
+    MALContextFactoryImpl.LOGGER.log(Level.FINE,
+            "PubSubMap({0}), looking for notify handler: {1} : {2}", new Object[]
+            {
+              this, uri, subscription
+            });
     synchronized (notifyMap)
     {
       if (notifyMap.containsKey(id))
       {
-        Logging.logMessage("INFO: PubSubMap(" + this + "), found notify handler: " + uri + " : " + subscription);
+        MALContextFactoryImpl.LOGGER.log(Level.FINE,
+                "PubSubMap({0}), found notify handler: {1} : {2}", new Object[]
+                {
+                  this, uri, subscription
+                });
         return notifyMap.get(id);
       }
     }
 
-    Logging.logMessage("INFO: PubSubMap(" + this + "), failed to find notify handler: " + uri + " : " + subscription);
+    MALContextFactoryImpl.LOGGER.log(Level.FINE,
+            "PubSubMap({0}), failed to find notify handler: {1} : {2}", new Object[]
+            {
+              this, uri, subscription
+            });
     return null;
   }
 
@@ -168,7 +181,11 @@ class InteractionPubSubMap
       {
         for (Map.Entry<String, MALInteractionListener> e : ent.entrySet())
         {
-          Logging.logMessage("INFO: PubSubMap(" + this + "), removing notify handler: " + uri + " : *");
+          MALContextFactoryImpl.LOGGER.log(Level.INFO,
+                  "PubSubMap({0}), removing notify handler: {1} : *", new Object[]
+                  {
+                    this, uri
+                  });
           notifyMap.remove(new StringPair(uri, e.getKey()));
         }
       }
@@ -192,7 +209,11 @@ class InteractionPubSubMap
 
         if (notifyMap.containsKey(id))
         {
-          Logging.logMessage("INFO: PubSubMap(" + this + "), removing notify handler: " + uri + " : " + unsubId);
+          MALContextFactoryImpl.LOGGER.log(Level.INFO,
+                  "PubSubMap({0}), removing notify handler: {1} : {2}", new Object[]
+                  {
+                    this, uri, unsubId
+                  });
           notifyMap.remove(id);
 
           final Map<String, MALInteractionListener> ent = errorMap.get(uri);

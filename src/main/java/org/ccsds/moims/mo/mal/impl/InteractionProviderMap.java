@@ -12,7 +12,7 @@ package org.ccsds.moims.mo.mal.impl;
 
 import java.util.Map;
 import java.util.TreeMap;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
@@ -48,8 +48,8 @@ class InteractionProviderMap
     {
       if (null == resolveMap.remove(internalTransactionId))
       {
-        Logging.logMessage("WARNING: **** No key found in service maps for received interaction of "
-                + internalTransactionId);
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                "No key found in service maps for received interaction of {0}", internalTransactionId);
       }
     }
   }

@@ -11,13 +11,14 @@
 package org.ccsds.moims.mo.mal.impl.broker.simple;
 
 import java.util.*;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
 import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage.NotifyMessage;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerImpl;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionSource;
-import org.ccsds.moims.mo.mal.impl.util.Logging;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -52,13 +53,13 @@ class SimpleSubscriptionSource extends SubscriptionSource
   @Override
   public void report()
   {
-    Logging.logMessage("  START Consumer ( " + signature + " )");
-    Logging.logMessage("   Required: " + required.size());
+    MALBrokerImpl.LOGGER.log(Level.FINE, "  START Consumer ( {0} )", signature);
+    MALBrokerImpl.LOGGER.log(Level.FINE, "   Required: {0}", required.size());
     for (Map.Entry<String, SimpleSubscriptionDetails> entry : details.entrySet())
     {
       entry.getValue().report();
     }
-    Logging.logMessage("  END Consumer ( " + signature + " )");
+    MALBrokerImpl.LOGGER.log(Level.FINE, "  END Consumer ( {0} )", signature);
   }
 
   @Override
@@ -88,7 +89,7 @@ class SimpleSubscriptionSource extends SubscriptionSource
           final UpdateHeaderList updateHeaderList,
           final MALPublishBody publishBody) throws MALException
   {
-    Logging.logMessage("INFO: Checking SimComSource : " + signature);
+    MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signature);
 
     final String srcDomainId = StructureHelper.domainToString(srcHdr.getDomain());
     final BrokerMessage bmsg = new BrokerMessage(binding);
@@ -102,7 +103,7 @@ class SimpleSubscriptionSource extends SubscriptionSource
         bmsg.msgs.add(subUpdate);
       }
     }
-    
+
     if (!bmsg.msgs.isEmpty())
     {
       for (NotifyMessage msg : bmsg.msgs)
@@ -129,7 +130,7 @@ class SimpleSubscriptionSource extends SubscriptionSource
     {
       details.remove(sub.getValue());
     }
-    
+
     updateIds();
   }
 
