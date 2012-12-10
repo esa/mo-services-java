@@ -28,8 +28,10 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 class InteractionPubSubMap
 {
-  private final Map<StringPair, MALPublishInteractionListener> publisherMap = new TreeMap<StringPair, MALPublishInteractionListener>();
-  private final Map<String, Map<String, MALInteractionListener>> errorMap = new TreeMap<String, Map<String, MALInteractionListener>>();
+  private final Map<StringPair, MALPublishInteractionListener> publisherMap
+          = new TreeMap<StringPair, MALPublishInteractionListener>();
+  private final Map<String, Map<String, MALInteractionListener>> errorMap
+          = new TreeMap<String, Map<String, MALInteractionListener>>();
   private final Map<StringPair, MALInteractionListener> notifyMap = new TreeMap<StringPair, MALInteractionListener>();
 
   void registerPublishListener(final MessageDetails details, final MALPublishInteractionListener listener)

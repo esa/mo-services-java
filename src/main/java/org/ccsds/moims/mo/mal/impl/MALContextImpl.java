@@ -100,6 +100,12 @@ public class MALContextImpl extends MALClose implements MALContext
   }
 
   @Override
+  public MALAccessControl getAccessControl() throws MALException
+  {
+    return securityManager;
+  }
+
+  @Override
   public void close() throws MALException
   {
     super.close();

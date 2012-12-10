@@ -17,6 +17,7 @@ import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.provider.MALRequest;
+import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
@@ -44,6 +45,12 @@ public class RequestInteractionImpl extends BaseInteractionImpl implements MALRe
   public MALMessage sendResponse(final Object... result) throws MALInteractionException, MALException
   {
     return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, true, result);
+  }
+
+  @Override
+  public MALMessage sendResponse(final MALEncodedBody body) throws MALInteractionException, MALException
+  {
+    return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, true, body);
   }
 
   @Override

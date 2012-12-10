@@ -116,7 +116,7 @@ class SimpleSubscriptionSource extends SubscriptionSource
         msg.area = srcHdr.getServiceArea();
         msg.service = srcHdr.getService();
         msg.operation = srcHdr.getOperation();
-        msg.version = srcHdr.getServiceVersion();
+        msg.version = srcHdr.getAreaVersion();
       }
 
       lst.add(bmsg);

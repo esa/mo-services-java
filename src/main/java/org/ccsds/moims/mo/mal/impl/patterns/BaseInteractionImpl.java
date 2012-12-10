@@ -19,6 +19,7 @@ import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -43,8 +44,8 @@ public abstract class BaseInteractionImpl implements MALInteraction
     this.address = address;
     this.internalTransId = internalTransId;
     this.msg = msg;
-    this.operation = MALContextFactory.lookupArea(msg.getHeader().getServiceArea())
-            .getServiceByNumberAndVersion(msg.getHeader().getService(), msg.getHeader().getServiceVersion())
+    this.operation = MALContextFactory.lookupArea(msg.getHeader().getServiceArea(), msg.getHeader().getAreaVersion())
+            .getServiceByNumber(msg.getHeader().getService())
             .getOperationByNumber(msg.getHeader().getOperation());
 
     if (null == this.operation)
@@ -68,14 +69,14 @@ public abstract class BaseInteractionImpl implements MALInteraction
   }
 
   @Override
-  public Element getQoSProperty(final String name)
+  public Object getQoSProperty(final String name)
   {
     return (Element) qosProperties.get(name);
   }
 
   @Override
   public void setQoSProperty(final String name,
-          final Element value)
+          final Object value)
   {
     qosProperties.put(name, value);
   }
@@ -101,6 +102,29 @@ public abstract class BaseInteractionImpl implements MALInteraction
             isFinalStage,
             operation,
             result);
+  }
+
+  /**
+   * Returns an encoded response to the consumer.
+   *
+   * @param stage Stage to use.
+   * @param isFinalStage true is this is the final stage of the interaction.
+   * @param body Encoded message body.
+   * @return the sent message.
+   * @throws MALException On error.
+   */
+  protected MALMessage returnResponse(final UOctet stage,
+          final boolean isFinalStage,
+          final MALEncodedBody body) throws MALException
+  {
+    return sender.returnResponse(address,
+            internalTransId,
+            msg.getHeader(),
+            msg.getHeader().getQoSlevel(),
+            stage,
+            isFinalStage,
+            operation,
+            body);
   }
 
   /**

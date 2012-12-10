@@ -18,6 +18,7 @@ import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.provider.MALInvoke;
 import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
@@ -51,9 +52,22 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
   }
 
   @Override
+  public MALMessage sendAcknowledgement(final MALEncodedBody body) throws MALInteractionException, MALException
+  {
+    ackSent = true;
+    return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, false, body);
+  }
+
+  @Override
   public MALMessage sendResponse(final Object... result) throws MALInteractionException, MALException
   {
     return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, true, result);
+  }
+
+  @Override
+  public MALMessage sendResponse(final MALEncodedBody body) throws MALInteractionException, MALException
+  {
+    return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, true, body);
   }
 
   @Override

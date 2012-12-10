@@ -18,6 +18,7 @@ import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.provider.MALProgress;
 import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
@@ -52,15 +53,34 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
   }
 
   @Override
+  public MALMessage sendAcknowledgement(final MALEncodedBody body) throws MALInteractionException, MALException
+  {
+    ackSent = true;
+    return returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, false, body);
+  }
+
+  @Override
   public MALMessage sendUpdate(final Object... update) throws MALException
   {
     return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, false, update);
   }
 
   @Override
+  public MALMessage sendUpdate(final MALEncodedBody body) throws MALInteractionException, MALException
+  {
+    return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, false, body);
+  }
+
+  @Override
   public MALMessage sendResponse(final Object... result) throws MALInteractionException, MALException
   {
     return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, true, result);
+  }
+
+  @Override
+  public MALMessage sendResponse(final MALEncodedBody body) throws MALInteractionException, MALException
+  {
+    return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, true, body);
   }
 
   @Override

@@ -173,7 +173,7 @@ public final class TransportSingleton
         }
       }
 
-      transport = ohandler.createTransport(properties);
+      transport = ohandler.createTransport(null, properties);
 
       if (null != transport)
       {

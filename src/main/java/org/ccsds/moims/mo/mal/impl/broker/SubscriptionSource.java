@@ -61,8 +61,8 @@ public abstract class SubscriptionSource
             binding.getURI(),
             uriTo,
             uriTo,
-            MALContextFactory.lookupArea(hdr.getServiceArea())
-            .getServiceByNumberAndVersion(hdr.getService(), hdr.getServiceVersion()),
+            MALContextFactory.lookupArea(hdr.getServiceArea(), hdr.getAreaVersion())
+            .getServiceByNumber(hdr.getService()),
             binding.getAuthenticationId(),
             hdr.getDomain(),
             hdr.getNetworkZone(),
@@ -76,7 +76,7 @@ public abstract class SubscriptionSource
     this.area = hdr.getServiceArea();
     this.service = hdr.getService();
     this.operation = hdr.getOperation();
-    this.version = hdr.getServiceVersion();
+    this.version = hdr.getAreaVersion();
   }
 
   /**

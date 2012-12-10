@@ -146,11 +146,9 @@ public class MessageSend
           final MALPublishInteractionListener listener) throws MALInteractionException, MALException
   {
     ipsmap.registerPublishListener(details, listener);
-    return initiateAsynchronousInteraction(icmap.createTransaction(false, listener),
-            details,
-            op,
-            MALPubSubOperation.PUBLISH_REGISTER_STAGE,
-            entityKeys);
+    final Long transId = icmap.createTransaction(false, listener);
+    return initiateAsynchronousInteraction(details,
+            createMessage(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE, entityKeys));
   }
 
   /**
@@ -188,11 +186,9 @@ public class MessageSend
           final MALPublishInteractionListener listener) throws MALInteractionException, MALException
   {
     ipsmap.getPublishListenerAndRemove(details.endpoint.getURI(), details);
-    return initiateAsynchronousInteraction(icmap.createTransaction(false, listener),
-            details,
-            op,
-            MALPubSubOperation.PUBLISH_DEREGISTER_STAGE,
-            (Object[]) null);
+    final Long transId = icmap.createTransaction(false, listener);
+    return initiateAsynchronousInteraction(details,
+            createMessage(details, op, transId, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, (Object[]) null));
   }
 
   /**
@@ -238,6 +234,27 @@ public class MessageSend
           final MALOperation op,
           final UOctet stage,
           final Object... msgBody) throws MALInteractionException, MALException
+  {
+    return initiateOnewayInteraction(details, createMessage(details, op, transId, stage, msgBody));
+  }
+
+  /**
+   * Performs a oneway interaction, sends the message and then returns.
+   *
+   * @param details Message details structure.
+   * @param transId The transaction identifier to use.
+   * @param op The operation.
+   * @param stage The interaction stage to use.
+   * @param msgBody The already encoded message body.
+   * @return The sent MAL message.
+   * @throws MALInteractionException if there is a problem during the interaction.
+   * @throws MALException on Error.
+   */
+  public MALMessage onewayInteraction(final MessageDetails details,
+          final Long transId,
+          final MALOperation op,
+          final UOctet stage,
+          final MALEncodedBody msgBody) throws MALInteractionException, MALException
   {
     return initiateOnewayInteraction(details, createMessage(details, op, transId, stage, msgBody));
   }
@@ -310,11 +327,34 @@ public class MessageSend
           final MALInteractionListener listener,
           final Object... msgBody) throws MALInteractionException, MALException
   {
-    return initiateSynchronousInteraction(icmap.createTransaction(op.getInteractionType().getOrdinal(), true, listener),
+    final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), true, listener);
+    return initiateSynchronousInteraction(transId,
             details,
-            op,
-            syncStage,
-            msgBody);
+            createMessage(details, op, transId, syncStage, msgBody));
+  }
+
+  /**
+   * Performs a two way interaction, sends the message and then waits for the specified stage before returning.
+   *
+   * @param details Message details structure.
+   * @param op The operation.
+   * @param syncStage The interaction stage to wait for before returning.
+   * @param listener Interaction listener to use for the reception of other stages.
+   * @param msgBody The already encoded message body.
+   * @return The returned message body.
+   * @throws MALInteractionException if there is a problem during the interaction.
+   * @throws MALException on Error.
+   */
+  public MALMessageBody synchronousInteraction(final MessageDetails details,
+          final MALOperation op,
+          final UOctet syncStage,
+          final MALInteractionListener listener,
+          final MALEncodedBody msgBody) throws MALInteractionException, MALException
+  {
+    final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), true, listener);
+    return initiateSynchronousInteraction(transId,
+            details,
+            createMessage(details, op, transId, syncStage, msgBody));
   }
 
   /**
@@ -335,13 +375,32 @@ public class MessageSend
           final MALInteractionListener listener,
           final Object... msgBody) throws MALInteractionException, MALException
   {
-    return initiateAsynchronousInteraction(icmap.createTransaction(op.getInteractionType().getOrdinal(),
-            false,
-            listener),
-            details,
-            op,
-            initialStage,
-            msgBody);
+    final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), false, listener);
+    
+    return initiateAsynchronousInteraction(details, createMessage(details, op, transId, initialStage, msgBody));
+  }
+
+  /**
+   * Performs a two way interaction, sends the message.
+   *
+   * @param details Message details structure.
+   * @param op The operation.
+   * @param initialStage The initial interaction stage.
+   * @param listener Interaction listener to use for the reception of other stages.
+   * @param msgBody The already encoded message body.
+   * @return The sent MAL message.
+   * @throws MALInteractionException if there is a problem during the interaction.
+   * @throws MALException on Error.
+   */
+  public MALMessage asynchronousInteraction(final MessageDetails details,
+          final MALOperation op,
+          final UOctet initialStage,
+          final MALInteractionListener listener,
+          final MALEncodedBody msgBody) throws MALInteractionException, MALException
+  {
+    final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), false, listener);
+    
+    return initiateAsynchronousInteraction(details, createMessage(details, op, transId, initialStage, msgBody));
   }
 
   /**
@@ -365,6 +424,83 @@ public class MessageSend
           final boolean isFinalStage,
           final MALOperation operation,
           final Object... rspn)
+  {
+    MALMessage msg = null;
+
+    try
+    {
+      msg = msgAddress.endpoint.createMessage(msgAddress.authenticationId,
+              srcHdr.getURIFrom(),
+              new Time(new Date().getTime()),
+              lvl,
+              srcHdr.getPriority(),
+              srcHdr.getDomain(),
+              srcHdr.getNetworkZone(),
+              srcHdr.getSession(),
+              srcHdr.getSessionName(),
+              srcHdr.getTransactionId(),
+              false,
+              operation,
+              rspnInteractionStage,
+              new Hashtable(),
+              rspn);
+
+      if (isFinalStage)
+      {
+        ipmap.removeTransactionSource(internalTransId);
+      }
+
+      msgAddress.endpoint.sendMessage(msg);
+    }
+    catch (MALException ex)
+    {
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+              "Error returning response to consumer : {0} : {1}", new Object[]
+              {
+                srcHdr.getURIFrom(), ex
+              });
+    }
+    catch (MALTransmitErrorException ex)
+    {
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+              "Error returning response to consumer : {0} : {1}", new Object[]
+              {
+                srcHdr.getURIFrom(), ex
+              });
+    }
+    catch (RuntimeException ex)
+    {
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+              "Error returning response to consumer : {0} : {1}", new Object[]
+              {
+                srcHdr.getURIFrom(), ex
+              });
+    }
+
+    return msg;
+  }
+
+  /**
+   * Send return response method.
+   *
+   * @param msgAddress Address structure to use for return message.
+   * @param internalTransId Internal transaction identifier.
+   * @param srcHdr Message header to use as reference for return messages header.
+   * @param lvl The QoS level to use.
+   * @param rspnInteractionStage Interaction stage to use on the response.
+   * @param rspn Response encoded message body.
+   * @param isFinalStage True if this the final stage of the interaction.
+   * @param operation The operation.
+   * @return The sent MAL message.
+   */
+  public MALMessage returnResponse(final Address msgAddress,
+          final Long internalTransId,
+          final MALMessageHeader srcHdr,
+          final QoSLevel lvl,
+          final UOctet rspnInteractionStage,
+          final boolean isFinalStage,
+          final MALOperation operation,
+          final MALEncodedBody rspn)
   {
     MALMessage msg = null;
 
@@ -499,19 +635,15 @@ public class MessageSend
   {
     final Long transId = icmap.createTransaction(true, listener);
 
-    initiateSynchronousInteraction(transId, details, op, syncStage, msgBody);
+    initiateSynchronousInteraction(transId, details, createMessage(details, op, transId, syncStage, msgBody));
 
     return transId;
   }
 
   private MALMessageBody initiateSynchronousInteraction(final Long transId,
           final MessageDetails details,
-          final MALOperation op,
-          final UOctet syncStage,
-          final Object... msgBody) throws MALInteractionException, MALException
+          MALMessage msg) throws MALInteractionException, MALException
   {
-    MALMessage msg = createMessage(details, op, transId, syncStage, msgBody);
-
     try
     {
       msg = securityManager.check(msg);
@@ -550,14 +682,9 @@ public class MessageSend
     }
   }
 
-  private MALMessage initiateAsynchronousInteraction(final Long transId,
-          final MessageDetails details,
-          final MALOperation op,
-          final UOctet initialStage,
-          final Object... msgBody) throws MALInteractionException, MALException
+  private MALMessage initiateAsynchronousInteraction(final MessageDetails details, MALMessage msg)
+          throws MALInteractionException, MALException
   {
-    MALMessage msg = createMessage(details, op, transId, initialStage, msgBody);
-
     try
     {
       msg = securityManager.check(msg);
@@ -608,7 +735,7 @@ public class MessageSend
               srcHdr.getServiceArea(),
               srcHdr.getService(),
               srcHdr.getOperation(),
-              srcHdr.getServiceVersion(),
+              srcHdr.getAreaVersion(),
               true,
               new Hashtable(),
               error.getErrorNumber(), error.getExtraInformation());
@@ -651,6 +778,36 @@ public class MessageSend
           final Long transactionId,
           final UOctet interactionStage,
           final Object... body) throws MALException
+  {
+    URI to = details.brokerUri;
+
+    if (op.getInteractionType() != InteractionType.PUBSUB)
+    {
+      to = details.uriTo;
+    }
+
+    return details.endpoint.createMessage(details.authenticationId,
+            to,
+            new Time(new Date().getTime()),
+            details.qosLevel,
+            details.priority,
+            details.domain,
+            details.networkZone,
+            details.sessionType,
+            details.sessionName,
+            transactionId,
+            Boolean.FALSE,
+            op,
+            interactionStage,
+            details.qosProps,
+            body);
+  }
+
+  private static MALMessage createMessage(final MessageDetails details,
+          final MALOperation op,
+          final Long transactionId,
+          final UOctet interactionStage,
+          final MALEncodedBody body) throws MALException
   {
     URI to = details.brokerUri;
 
