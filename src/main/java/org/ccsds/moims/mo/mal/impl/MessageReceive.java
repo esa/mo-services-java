@@ -62,6 +62,16 @@ public class MessageReceive implements MALMessageListener
   }
 
   @Override
+  public void onTransmitError(MALEndpoint callingEndpoint,
+          MALMessageHeader srcMessageHeader,
+          MALStandardError err,
+          Map qosMap)
+  {
+    MALContextFactoryImpl.LOGGER.severe("MAL Receiving Transmission ERROR!");
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
   public void onMessages(final MALEndpoint callingEndpoint, final MALMessage[] msgList)
   {
     for (int i = 0; i < msgList.length; i++)
