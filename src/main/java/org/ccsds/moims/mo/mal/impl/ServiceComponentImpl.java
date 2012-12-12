@@ -50,7 +50,7 @@ public abstract class ServiceComponentImpl extends MALClose
    * @param protocol The protocol to use.
    * @param service The service.
    * @param authenticationId Authentication identifier.
-   * @param expectedQos Expected QoS.
+   * @param expectedQosA Expected QoS.
    * @param priorityLevelNumber Number of priority levels.
    * @param defaultQoSProperties Default QOS properties.
    * @param handler Service interaction handler.
@@ -62,7 +62,7 @@ public abstract class ServiceComponentImpl extends MALClose
           final String protocol,
           final MALService service,
           final Blob authenticationId,
-          final QoSLevel[] expectedQos,
+          final QoSLevel[] expectedQosA,
           final UInteger priorityLevelNumber,
           final Map defaultQoSProperties,
           final MALInteractionHandler handler) throws MALException
@@ -75,9 +75,9 @@ public abstract class ServiceComponentImpl extends MALClose
     this.localName = localName;
     this.service = service;
     this.authenticationId = authenticationId;
-    if (null != expectedQos)
+    if (null != expectedQosA)
     {
-      this.expectedQos = java.util.Arrays.copyOf(expectedQos, expectedQos.length);
+      this.expectedQos = java.util.Arrays.copyOf(expectedQosA, expectedQosA.length);
     }
     else
     {
@@ -109,7 +109,7 @@ public abstract class ServiceComponentImpl extends MALClose
    * @param endPoint The endpoint to use.
    * @param service The service.
    * @param authenticationId Authentication identifier.
-   * @param expectedQos Expected QoS.
+   * @param expectedQosA Expected QoS.
    * @param priorityLevelNumber Number of priority levels.
    * @param defaultQoSProperties Default QOS properties.
    * @param handler Service interaction handler.
@@ -120,7 +120,7 @@ public abstract class ServiceComponentImpl extends MALClose
           final MALEndpoint endPoint,
           final MALService service,
           final Blob authenticationId,
-          final QoSLevel[] expectedQos,
+          final QoSLevel[] expectedQosA,
           final UInteger priorityLevelNumber,
           final Map defaultQoSProperties,
           final MALInteractionHandler handler) throws MALException
@@ -133,9 +133,9 @@ public abstract class ServiceComponentImpl extends MALClose
     this.localName = endPoint.getLocalName();
     this.service = service;
     this.authenticationId = authenticationId;
-    if (null != expectedQos)
+    if (null != expectedQosA)
     {
-      this.expectedQos = java.util.Arrays.copyOf(expectedQos, expectedQos.length);
+      this.expectedQos = java.util.Arrays.copyOf(expectedQosA, expectedQosA.length);
     }
     else
     {
