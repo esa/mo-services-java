@@ -20,6 +20,7 @@ import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 
 /**
  * Wrapper class for Transport level broker bindings.
@@ -234,5 +235,17 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             qosProps,
             priority,
             error);
+  }
+
+  @Override
+  public void setTransmitErrorListener(final MALTransmitErrorListener listener) throws MALException
+  {
+    transportDelegate.setTransmitErrorListener(listener);
+  }
+
+  @Override
+  public MALTransmitErrorListener getTransmitErrorListener() throws MALException
+  {
+    return transportDelegate.getTransmitErrorListener();
   }
 }

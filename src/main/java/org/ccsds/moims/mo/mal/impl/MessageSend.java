@@ -12,6 +12,7 @@ package org.ccsds.moims.mo.mal.impl;
 
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
@@ -260,53 +261,17 @@ public class MessageSend
   }
 
   /**
-   * Sends a oneway PUBLISH message.
+   * Sends a set of oneway PUBLISH messages.
    *
-   * @param details Message details structure.
-   * @param transId The transaction identifier to use.
-   * @param domain The domain of the message.
-   * @param networkZone The network zone of the message
-   * @param area The area.
-   * @param service the service.
-   * @param operation The operation.
-   * @param version The version.
-   * @param updates The publish updates.
-   * @return The sent MAL message.
+   * @param ep The endpoint to use to send the messages.
+   * @param msgs Set of messages to send.
    * @throws MALInteractionException if there is a problem during the interaction.
    * @throws MALException on internal error.
    */
-  public MALMessage onewayPublish(final MessageDetails details,
-          final Long transId,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final UShort area,
-          final UShort service,
-          final UShort operation,
-          final UOctet version,
-          final Object[] updates)
+  public void onewayMultiPublish(final MALEndpoint ep, final List<MALMessage> msgs)
           throws MALInteractionException, MALException
   {
-    final MALMessage msg = details.endpoint.createMessage(details.authenticationId,
-            details.brokerUri,
-            new Time(new Date().getTime()),
-            details.qosLevel,
-            details.priority,
-            domain,
-            networkZone,
-            details.sessionType,
-            details.sessionName,
-            InteractionType.PUBSUB,
-            MALPubSubOperation.NOTIFY_STAGE,
-            transId,
-            area,
-            service,
-            operation,
-            version,
-            Boolean.FALSE,
-            details.qosProps,
-            (Object[]) updates);
-
-    return initiateOnewayInteraction(details, msg);
+    initiateMultiOnewayInteraction(ep, msgs);
   }
 
   /**
@@ -376,7 +341,7 @@ public class MessageSend
           final Object... msgBody) throws MALInteractionException, MALException
   {
     final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), false, listener);
-    
+
     return initiateAsynchronousInteraction(details, createMessage(details, op, transId, initialStage, msgBody));
   }
 
@@ -399,7 +364,7 @@ public class MessageSend
           final MALEncodedBody msgBody) throws MALInteractionException, MALException
   {
     final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), false, listener);
-    
+
     return initiateAsynchronousInteraction(details, createMessage(details, op, transId, initialStage, msgBody));
   }
 
@@ -625,6 +590,31 @@ public class MessageSend
     }
 
     return msg;
+  }
+
+  private void initiateMultiOnewayInteraction(final MALEndpoint ep, final List<MALMessage> msgs)
+          throws MALInteractionException, MALException
+  {
+    try
+    {
+      for (int i = 0; i < msgs.size(); i++)
+      {
+        MALMessage msg = msgs.get(i);
+        msg = securityManager.check(msg);
+        msgs.set(i, msg);
+      }
+
+      ep.sendMessages(msgs.toArray(new MALMessage[msgs.size()]));
+    }
+    catch (IllegalArgumentException ex)
+    {
+      throw new MALException("ERROR: Error with one way send : IllegalArgumentException : ", ex);
+    }
+    catch (MALException ex)
+    {
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Error with multi one way send : {0}", ep.getURI());
+      throw ex;
+    }
   }
 
   private Long initiateSynchronousInteraction(final MessageDetails details,

@@ -21,6 +21,7 @@ import org.ccsds.moims.mo.mal.impl.ServiceComponentImpl;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 
 /**
  * Implementation of MALBrokerBinding for MAL level brokers.
@@ -28,6 +29,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBrokerBinding
 {
   private final MALBrokerImpl brokerImpl;
+  private MALTransmitErrorListener listener;
 
   MALBrokerBindingImpl(final MALBrokerImpl parent,
           final MALContextImpl impl,
@@ -337,6 +339,18 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
     endpoint.sendMessage(msg);
 
     return msg;
+  }
+
+  @Override
+  public void setTransmitErrorListener(final MALTransmitErrorListener plistener) throws MALException
+  {
+    listener = plistener;
+  }
+
+  @Override
+  public MALTransmitErrorListener getTransmitErrorListener() throws MALException
+  {
+    return listener;
   }
 
   /**

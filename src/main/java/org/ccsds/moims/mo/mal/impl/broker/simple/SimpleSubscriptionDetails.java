@@ -57,11 +57,6 @@ class SimpleSubscriptionDetails
     MALBrokerImpl.LOGGER.log(Level.FINE, "    END Subscription ( {0} )", subscriptionId);
   }
 
-  boolean notActive()
-  {
-    return required.isEmpty();
-  }
-
   void setIds(final MALMessageHeader srcHdr, final EntityRequestList lst)
   {
     required.clear();

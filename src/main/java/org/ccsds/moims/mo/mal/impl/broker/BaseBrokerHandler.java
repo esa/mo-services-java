@@ -19,7 +19,6 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
-import org.ccsds.moims.mo.mal.impl.MessageDetails;
 import org.ccsds.moims.mo.mal.impl.StringPair;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -184,12 +183,12 @@ public abstract class BaseBrokerHandler
    *
    * @param details Details of the lost consumer.
    */
-  public synchronized void removeLostConsumer(final MessageDetails details)
+  public synchronized void removeLostConsumer(final MALMessageHeader details)
   {
     report();
     if (null != details)
     {
-      final SubscriptionSource ent = getEntry(details);
+      final SubscriptionSource ent = getEntry(details, false, null);
       if (null != ent)
       {
         ent.removeAllSubscriptions();
@@ -241,11 +240,6 @@ public abstract class BaseBrokerHandler
     buf.append(details.getDomain());
 
     return buf.toString();
-  }
-
-  private SubscriptionSource getEntry(final MessageDetails details)
-  {
-    return consumerMap.get(details.uriFrom.getValue());
   }
 
   private SubscriptionSource getEntry(final MALMessageHeader hdr,

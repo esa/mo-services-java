@@ -181,8 +181,7 @@ public class MessageReceive implements MALMessageListener
               internalHandlePublishRegister(msg, address);
               break;
             case MALPubSubOperation._PUBLISH_STAGE:
-              address = lookupAddress(callingEndpoint, msg);
-              internalHandlePublish(msg, address);
+              internalHandlePublish(msg);
               break;
             case MALPubSubOperation._NOTIFY_STAGE:
               internalHandleNotify(msg);
@@ -416,7 +415,7 @@ public class MessageReceive implements MALMessageListener
     }
   }
 
-  private void internalHandlePublish(final MALMessage msg, final Address address) throws MALInteractionException
+  private void internalHandlePublish(final MALMessage msg) throws MALInteractionException
   {
     if (msg.getHeader().getIsErrorMessage())
     {
@@ -455,7 +454,8 @@ public class MessageReceive implements MALMessageListener
         {
           final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(),
                   msg.getHeader().getTransactionId());
-          final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
+          final MALInteraction interaction =
+                  new PubSubInteractionImpl(sender, brokerHandler.getMsgAddress(), transId, msg);
           brokerHandler.getBrokerImpl().handlePublish(interaction, (MALPublishBody) msg.getBody());
         }
         catch (MALInteractionException ex)
@@ -671,6 +671,7 @@ public class MessageReceive implements MALMessageListener
 
   private static class EndPointPair implements Comparable
   {
+    private static final int HASH_VALUE = 71;
     private final String first;
     private final Integer second;
 
@@ -753,8 +754,8 @@ public class MessageReceive implements MALMessageListener
     public int hashCode()
     {
       int hash = 5;
-      hash = 71 * hash + (this.first != null ? this.first.hashCode() : 0);
-      hash = 71 * hash + (this.second != null ? this.second.hashCode() : 0);
+      hash = HASH_VALUE * hash + (this.first != null ? this.first.hashCode() : 0);
+      hash = HASH_VALUE * hash + (this.second != null ? this.second.hashCode() : 0);
       return hash;
     }
   }

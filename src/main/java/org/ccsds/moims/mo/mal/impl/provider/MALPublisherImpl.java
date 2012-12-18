@@ -392,7 +392,7 @@ class MALPublisherImpl implements MALPublisher
     public int hashCode()
     {
       assert false : "hashCode not designed";
-      return HASH_MAGIC_NUMBER; // any arbitrary constant will do
+      return HASH_MAGIC_NUMBER;
     }
 
     @Override

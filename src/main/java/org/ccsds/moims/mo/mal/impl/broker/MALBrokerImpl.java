@@ -10,18 +10,23 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.impl.MessageDetails;
+import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.impl.broker.simple.SimpleBrokerHandler;
+import org.ccsds.moims.mo.mal.impl.patterns.PubSubInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
@@ -87,7 +92,7 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
    *
    * @param details The details of the lost consumer.
    */
-  public void removeLostConsumer(final MessageDetails details)
+  public void removeLostConsumer(final MALMessageHeader details)
   {
     getHandler(new BrokerKey(details)).removeLostConsumer(details);
   }
@@ -105,39 +110,39 @@ public class MALBrokerImpl extends MALBrokerBaseImpl
           throws MALInteractionException, MALException
   {
     final MALMessageHeader hdr = interaction.getMessageHeader();
-    final java.util.List<BrokerMessage> msgList = getHandler(new BrokerKey(hdr)).createNotify(hdr, body);
+    final java.util.List<BrokerMessage> notifyList = getHandler(new BrokerKey(hdr)).createNotify(hdr, body);
 
-    if (!msgList.isEmpty())
+    if (!notifyList.isEmpty())
     {
-      for (BrokerMessage brokerMessage : msgList)
+      final java.util.List<MALMessage> msgList = new LinkedList<MALMessage>();
+
+      for (BrokerMessage brokerMessage : notifyList)
       {
         for (BrokerMessage.NotifyMessage notifyMessage : brokerMessage.msgs)
         {
-          try
-          {
-            // send it out
-            sender.onewayPublish(notifyMessage.details,
-                    notifyMessage.transId,
-                    notifyMessage.domain,
-                    notifyMessage.networkZone,
-                    notifyMessage.area,
-                    notifyMessage.service,
-                    notifyMessage.operation,
-                    notifyMessage.version,
-                    notifyMessage.updates);
-          }
-          catch (MALException ex)
-          {
-            // with the exception being thrown we assume that there is a problem with this consumer so remove
-            //  them from the observe manager
-            LOGGER.log(Level.WARNING,
-                    "ERROR: Error with notify consumer, removing from list : {0}", notifyMessage.details.uriTo);
-            removeLostConsumer(notifyMessage.details);
-
-            // TODO: notify local provider
-          }
+          msgList.add(notifyMessage.details.endpoint.createMessage(notifyMessage.details.authenticationId,
+                  notifyMessage.details.brokerUri,
+                  new Time(new Date().getTime()),
+                  notifyMessage.details.qosLevel,
+                  notifyMessage.details.priority,
+                  notifyMessage.domain,
+                  notifyMessage.networkZone,
+                  notifyMessage.details.sessionType,
+                  notifyMessage.details.sessionName,
+                  InteractionType.PUBSUB,
+                  MALPubSubOperation.NOTIFY_STAGE,
+                  notifyMessage.transId,
+                  notifyMessage.area,
+                  notifyMessage.service,
+                  notifyMessage.operation,
+                  notifyMessage.version,
+                  Boolean.FALSE,
+                  notifyMessage.details.qosProps,
+                  (Object[]) notifyMessage.updates));
         }
       }
+
+      sender.onewayMultiPublish(((PubSubInteractionImpl) interaction).getAddress().endpoint, msgList);
     }
   }
 

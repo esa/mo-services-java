@@ -24,7 +24,7 @@ import org.ccsds.moims.mo.mal.transport.*;
  */
 public class MALBrokerDelegateImpl extends MALBrokerBaseImpl
 {
-  final MALBrokerHandler delegate;
+  private final MALBrokerHandler delegate;
 
   /**
    * Constructor.

@@ -24,6 +24,7 @@ import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 
 /**
  * Implementation of the MALConsumer interface. Delegates most of the work to the MessageSend class.
@@ -32,6 +33,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer
 {
   private final MessageSend sender;
   private final MessageDetails details;
+  private MALTransmitErrorListener transmissionListener;
 
   MALConsumerImpl(final MALContextImpl impl,
           final MALConsumerManagerImpl parent,
@@ -323,5 +325,17 @@ class MALConsumerImpl extends MALClose implements MALConsumer
   {
     // ToDo
     throw new UnsupportedOperationException("Not supported yet.");
+  }
+  
+  @Override
+  public void setTransmitErrorListener(final MALTransmitErrorListener plistener) throws MALException
+  {
+    transmissionListener = plistener;
+  }
+
+  @Override
+  public MALTransmitErrorListener getTransmitErrorListener() throws MALException
+  {
+    return transmissionListener;
   }
 }

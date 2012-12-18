@@ -23,6 +23,7 @@ import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALPublisher;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
+import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 
 /**
  * MALProvider implementation.
@@ -34,6 +35,7 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
   private final URI sharedBrokerUri;
   private final MALBrokerBinding localBrokerBinding;
   private final URI localBrokerUri;
+  private MALTransmitErrorListener listener;
 
   MALProviderImpl(final MALProviderManagerImpl parent,
           final MALContextImpl impl,
@@ -218,6 +220,18 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     }
 
     return null;
+  }
+
+  @Override
+  public void setTransmitErrorListener(final MALTransmitErrorListener plistener) throws MALException
+  {
+    listener = plistener;
+  }
+
+  @Override
+  public MALTransmitErrorListener getTransmitErrorListener() throws MALException
+  {
+    return listener;
   }
 
   @Override
