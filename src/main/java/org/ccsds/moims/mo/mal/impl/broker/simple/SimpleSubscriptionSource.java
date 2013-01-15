@@ -37,6 +37,12 @@ class SimpleSubscriptionSource extends SubscriptionSource
   private final MALBrokerBindingImpl binding;
   private final Map<String, SimpleSubscriptionDetails> details = new TreeMap<String, SimpleSubscriptionDetails>();
 
+  /**
+   * Constructor.
+   *
+   * @param hdr The message header of the subscription message.
+   * @param binding The broker binding that received the subscription.
+   */
   public SimpleSubscriptionSource(final MALMessageHeader hdr, final MALBrokerBindingImpl binding)
   {
     super(hdr, hdr.getURIFrom(), binding);

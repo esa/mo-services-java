@@ -176,12 +176,12 @@ class InteractionConsumerMap
     {
       private boolean lock = false;
 
-      public synchronized boolean getLock()
+      protected synchronized boolean getLock()
       {
         return lock;
       }
 
-      public synchronized void setLock()
+      protected synchronized void setLock()
       {
         lock = true;
       }
@@ -191,7 +191,7 @@ class InteractionConsumerMap
     protected final BooleanLock lock = new BooleanLock();
     private MALMessage result = null;
 
-    public InternalOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
+    protected InternalOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
       this.syncOperation = syncOperation;
       this.listener = listener;
@@ -209,14 +209,14 @@ class InteractionConsumerMap
       }
     }
 
-    public abstract void handleStage(final MALMessage msg) throws MALInteractionException;
+    protected abstract void handleStage(final MALMessage msg) throws MALInteractionException;
 
-    public MALMessage getResult()
+    protected MALMessage getResult()
     {
       return result;
     }
 
-    public abstract boolean finished();
+    protected abstract boolean finished();
 
     protected static void logUnexpectedTransitionError(final int interactionType, final int interactionStage)
     {
@@ -235,7 +235,7 @@ class InteractionConsumerMap
     protected final int interactionType;
     protected final int interactionStage;
 
-    public SubmitOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
+    protected SubmitOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
       super(syncOperation, listener);
 
@@ -243,7 +243,7 @@ class InteractionConsumerMap
       this.interactionStage = MALSubmitOperation._SUBMIT_ACK_STAGE;
     }
 
-    public SubmitOperationHandler(final int interactionType,
+    protected SubmitOperationHandler(final int interactionType,
             final int interactionStage,
             final boolean syncOperation,
             final MALInteractionListener listener)
@@ -255,7 +255,7 @@ class InteractionConsumerMap
     }
 
     @Override
-    public synchronized void handleStage(final MALMessage msg) throws MALInteractionException
+    protected synchronized void handleStage(final MALMessage msg) throws MALInteractionException
     {
       if (!receivedInitialStage)
       {
@@ -296,7 +296,7 @@ class InteractionConsumerMap
     }
 
     @Override
-    public synchronized MALMessage getResult()
+    protected synchronized MALMessage getResult()
     {
       takenFinalStage = true;
 
@@ -304,7 +304,7 @@ class InteractionConsumerMap
     }
 
     @Override
-    public synchronized boolean finished()
+    protected synchronized boolean finished()
     {
       return takenFinalStage;
     }
@@ -329,7 +329,7 @@ class InteractionConsumerMap
 
   private static final class RequestOperationHandler extends SubmitOperationHandler
   {
-    public RequestOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
+    protected RequestOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
       super(InteractionType._REQUEST_INDEX,
               MALRequestOperation._REQUEST_RESPONSE_STAGE,
@@ -356,13 +356,13 @@ class InteractionConsumerMap
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
 
-    public InvokeOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
+    protected InvokeOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
       super(syncOperation, listener);
     }
 
     @Override
-    public void handleStage(final MALMessage msg) throws MALInteractionException
+    protected void handleStage(final MALMessage msg) throws MALInteractionException
     {
       final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
       final int interactionStage = msg.getHeader().getInteractionStage().getValue();
@@ -449,7 +449,7 @@ class InteractionConsumerMap
     }
 
     @Override
-    public synchronized boolean finished()
+    protected synchronized boolean finished()
     {
       return receivedResponse;
     }
@@ -460,13 +460,13 @@ class InteractionConsumerMap
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
 
-    public ProgressOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
+    protected ProgressOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
       super(syncOperation, listener);
     }
 
     @Override
-    public void handleStage(final MALMessage msg) throws MALInteractionException
+    protected void handleStage(final MALMessage msg) throws MALInteractionException
     {
       final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
       final int interactionStage = msg.getHeader().getInteractionStage().getValue();
@@ -580,7 +580,7 @@ class InteractionConsumerMap
     }
 
     @Override
-    public synchronized boolean finished()
+    protected synchronized boolean finished()
     {
       return receivedResponse;
     }
@@ -588,7 +588,7 @@ class InteractionConsumerMap
 
   private static final class PubSubOperationHandler extends SubmitOperationHandler
   {
-    public PubSubOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
+    protected PubSubOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
       super(InteractionType._PUBSUB_INDEX, 0, syncOperation, listener);
     }
@@ -634,39 +634,45 @@ class InteractionConsumerMap
   {
     private final MALPublishInteractionListener delegate;
 
-    public InteractionListenerPublishAdapter(final MALPublishInteractionListener delegate)
+    protected InteractionListenerPublishAdapter(final MALPublishInteractionListener delegate)
     {
       this.delegate = delegate;
     }
 
+    @Override
     public void registerAckReceived(final MALMessageHeader header, final Map qosProperties)
             throws MALException
     {
       delegate.publishRegisterAckReceived(header, qosProperties);
     }
 
+    @Override
     public void registerErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
             throws MALException
     {
       delegate.publishRegisterErrorReceived(header, body, qosProperties);
     }
 
+    @Override
     public void deregisterAckReceived(final MALMessageHeader header, final Map qosProperties)
             throws MALException
     {
       delegate.publishDeregisterAckReceived(header, qosProperties);
     }
 
+    @Override
     public void invokeAckErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
             throws MALException
     {
     }
 
+    @Override
     public void invokeAckReceived(final MALMessageHeader header, final MALMessageBody body, final Map qosProperties)
             throws MALException
     {
     }
 
+    @Override
     public void invokeResponseErrorReceived(final MALMessageHeader header,
             final MALErrorBody body,
             final Map qosProperties)
@@ -674,6 +680,7 @@ class InteractionConsumerMap
     {
     }
 
+    @Override
     public void invokeResponseReceived(final MALMessageHeader header,
             final MALMessageBody body,
             final Map qosProperties)
@@ -681,16 +688,19 @@ class InteractionConsumerMap
     {
     }
 
+    @Override
     public void notifyErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
             throws MALException
     {
     }
 
+    @Override
     public void notifyReceived(final MALMessageHeader header, final MALNotifyBody body, final Map qosProperties)
             throws MALException
     {
     }
 
+    @Override
     public void progressAckErrorReceived(final MALMessageHeader header,
             final MALErrorBody body,
             final Map qosProperties)
@@ -698,11 +708,13 @@ class InteractionConsumerMap
     {
     }
 
+    @Override
     public void progressAckReceived(final MALMessageHeader header, final MALMessageBody body, final Map qosProperties)
             throws MALException
     {
     }
 
+    @Override
     public void progressResponseErrorReceived(final MALMessageHeader header,
             final MALErrorBody body,
             final Map qosProperties)
@@ -710,6 +722,7 @@ class InteractionConsumerMap
     {
     }
 
+    @Override
     public void progressResponseReceived(final MALMessageHeader header,
             final MALMessageBody body,
             final Map qosProperties)
@@ -717,6 +730,7 @@ class InteractionConsumerMap
     {
     }
 
+    @Override
     public void progressUpdateErrorReceived(final MALMessageHeader header,
             final MALErrorBody body,
             final Map qosProperties)
@@ -724,6 +738,7 @@ class InteractionConsumerMap
     {
     }
 
+    @Override
     public void progressUpdateReceived(final MALMessageHeader header,
             final MALMessageBody body,
             final Map qosProperties)
@@ -731,11 +746,13 @@ class InteractionConsumerMap
     {
     }
 
+    @Override
     public void requestErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
             throws MALException
     {
     }
 
+    @Override
     public void requestResponseReceived(final MALMessageHeader header,
             final MALMessageBody body,
             final Map qosProperties)
@@ -743,11 +760,13 @@ class InteractionConsumerMap
     {
     }
 
+    @Override
     public void submitAckReceived(final MALMessageHeader header, final Map qosProperties)
             throws MALException
     {
     }
 
+    @Override
     public void submitErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
             throws MALException
     {

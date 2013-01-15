@@ -316,6 +316,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer
     return sender.deregisterAsync(details, op, unsubscription, listener);
   }
 
+  @Override
   public void continueInteraction(final MALOperation op,
           final UOctet lastInteractionStage,
           final Time initiationTimestamp,

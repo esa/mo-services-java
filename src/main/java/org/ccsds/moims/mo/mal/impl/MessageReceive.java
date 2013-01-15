@@ -675,7 +675,7 @@ public class MessageReceive implements MALMessageListener
     private final String first;
     private final Integer second;
 
-    public EndPointPair(final String localName, final MALService service)
+    protected EndPointPair(final String localName, final MALService service)
     {
       first = localName;
       if (null != service)
@@ -688,12 +688,13 @@ public class MessageReceive implements MALMessageListener
       }
     }
 
-    public EndPointPair(final String localName, final UShort service)
+    protected EndPointPair(final String localName, final UShort service)
     {
       first = localName;
       second = service.getValue();
     }
 
+    @Override
     public int compareTo(final Object other)
     {
       final EndPointPair otherPair = (EndPointPair) other;

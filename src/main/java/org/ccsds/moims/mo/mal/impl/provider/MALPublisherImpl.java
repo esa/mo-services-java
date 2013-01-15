@@ -70,10 +70,12 @@ class MALPublisherImpl implements MALPublisher
     this.remotePublisherPriority = remotePublisherPriority;
   }
 
+  @Override
   public void close() throws MALException
   {
   }
 
+  @Override
   public MALProvider getProvider()
   {
     return parent;
