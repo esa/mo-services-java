@@ -10,6 +10,8 @@
  */
 package org.ccsds.moims.mo.mal.impl.transport;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -21,16 +23,22 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
 /**
- * The Transport singleton class stores Transport factories and Transport objects
- * to speed creation of Transport objects.
+ * The Transport singleton class stores Transport factories and Transport objects to speed creation of Transport
+ * objects.
  */
 public final class TransportSingleton
 {
-  /** Map of transport factories currently used by the application */
+  /**
+   * Map of transport factories currently used by the application
+   */
   private static final Map<String, MALTransportFactory> FACTORY_MAP = new TreeMap<String, MALTransportFactory>();
-  /** Map of transport handlers currently used by the application */
+  /**
+   * Map of transport handlers currently used by the application
+   */
   private static final Map<String, MALTransport> TRANSPORT_MAP = new TreeMap<String, MALTransport>();
-  /** The default protocol to be used by the provider */
+  /**
+   * The default protocol to be used by the provider
+   */
   private static String defaultProtocol = null;
 
   /**
@@ -55,6 +63,7 @@ public final class TransportSingleton
 
   /**
    * Creates an instance of a Transport.
+   *
    * @param dstUri The Uri.
    * @param properties QoS properties.
    * @return The transport handler.
@@ -74,6 +83,7 @@ public final class TransportSingleton
 
   /**
    * Creates an instance of a Transport.
+   *
    * @param dstUri The Uri.
    * @param properties QoS properties.
    * @return The transport handler.
@@ -93,6 +103,7 @@ public final class TransportSingleton
 
   /**
    * Check to see if a supplied URI would use the supplied Transport.
+   *
    * @param dstUri The Uri.
    * @param transport The Transport to check.
    * @return Returns true if dstUri would create the same transport.
@@ -111,6 +122,7 @@ public final class TransportSingleton
 
   /**
    * Check to see if a supplied URI would use the supplied Transport.
+   *
    * @param dstUri The Uri.
    * @param transport The Transport to check.
    * @return Returns true if dstUri would create the same transport.
@@ -137,9 +149,10 @@ public final class TransportSingleton
 
   /**
    * Creates an instance of a Transport.
+   *
    * @param dstUri The Uri.
    * @param properties QoS properties.
-   * @return  The transport handler.
+   * @return The transport handler.
    * @throws MALException on error.
    */
   private static MALTransport internalInstance(final String dstUri, final Map properties) throws MALException
@@ -204,8 +217,9 @@ public final class TransportSingleton
   /**
    * Closes the singleton and closes any open transports.
    */
-  public static void close()
+  public static void close() throws MALException
   {
+    StringBuilder exceptionList = new StringBuilder();
     synchronized (TRANSPORT_MAP)
     {
       for (Entry<String, MALTransport> obj : TRANSPORT_MAP.entrySet())
@@ -216,12 +230,20 @@ public final class TransportSingleton
         }
         catch (MALException ex)
         {
-          // TODO
+          // there was a problem, record it and carry on
+          exceptionList.append(" : ");
+          exceptionList.append(ex.getMessage());
         }
       }
 
       TRANSPORT_MAP.clear();
       FACTORY_MAP.clear();
+    }
+
+    if (0 != exceptionList.length())
+    {
+      // now we can throw the exceptions we caught earlier.
+      throw new MALException("Error during closing of transports" + exceptionList);
     }
   }
 
@@ -236,7 +258,7 @@ public final class TransportSingleton
 
     return dstUri;
   }
-  
+
   private TransportSingleton()
   {
     // make default constructor private so cannot instatiate this class as it is a singleton.

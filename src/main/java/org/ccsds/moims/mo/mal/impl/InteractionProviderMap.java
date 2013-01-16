@@ -24,14 +24,14 @@ class InteractionProviderMap
 
   Long addTransactionSource(final URI urlFrom, final Long transactionId)
   {
-    final Long internalTransactionId = InteractionTransaction.getTransactionId();
-
     synchronized (resolveMap)
     {
-      resolveMap.put(internalTransactionId, new TreeMap.SimpleEntry(urlFrom, transactionId));
-    }
+      final Long internalTransactionId = InteractionTransaction.getTransactionId(resolveMap.keySet());
 
-    return internalTransactionId;
+      resolveMap.put(internalTransactionId, new TreeMap.SimpleEntry(urlFrom, transactionId));
+
+      return internalTransactionId;
+    }
   }
 
   Map.Entry resolveTransactionSource(final Long internalTransactionId)

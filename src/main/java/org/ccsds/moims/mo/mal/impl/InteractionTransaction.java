@@ -10,6 +10,8 @@
  */
 package org.ccsds.moims.mo.mal.impl;
 
+import java.util.Set;
+
 /**
  * Singleton class that holds the transaction id counter used by the interaction maps.
  */
@@ -17,8 +19,15 @@ abstract class InteractionTransaction
 {
   private static volatile long transId = 0;
 
-  static synchronized Long getTransactionId()
+  static synchronized Long getTransactionId(Set<Long> keySet)
   {
-    return transId++;
+    long lt = transId++;
+    
+    while(keySet.contains(lt))
+    {
+      lt = transId++;
+    }
+    
+    return lt;
   }
 }

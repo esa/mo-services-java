@@ -369,6 +369,51 @@ public class MessageSend
   }
 
   /**
+   * The method continues an interaction that has been interrupted.
+   *
+   * @param op The operation to continue
+   * @param lastInteractionStage The last stage of the interaction to continue
+   * @param initiationTimestamp Timestamp of the interaction initiation message
+   * @param transactionId Transaction identifier of the interaction to continue
+   * @param listener Listener in charge of receiving the messages from the service provider
+   * @throws java.lang.IllegalArgumentException If the parameters ‘op’ or ‘lastInteractionStage’ or
+   * ‘initiationTimestamp’ or ‘transactionId ‘ or ‘listener’ are NULL
+   * @throws MALException thrown if a non-MAL error occurs during the initiation message sending or if the MALConsumer
+   * is closed.
+   * @throws MALInteractionException if a MAL standard error occurs during the interaction
+   */
+  public void continueInteraction(final MALOperation op,
+          final UOctet lastInteractionStage,
+          final Time initiationTimestamp,
+          final Long transactionId,
+          final MALInteractionListener listener)
+          throws IllegalArgumentException, MALException, MALInteractionException
+  {
+    if (null == op)
+    {
+      throw new IllegalArgumentException("MALOperation argument of continueInteraction mustnot be null");
+    }
+    if (null == lastInteractionStage)
+    {
+      throw new IllegalArgumentException("lastInteractionStage argument of continueInteraction mustnot be null");
+    }
+    if (null == initiationTimestamp)
+    {
+      throw new IllegalArgumentException("initiationTimestamp argument of continueInteraction mustnot be null");
+    }
+    if (null == transactionId)
+    {
+      throw new IllegalArgumentException("transactionId argument of continueInteraction mustnot be null");
+    }
+    if (null == listener)
+    {
+      throw new IllegalArgumentException("listener argument of continueInteraction mustnot be null");
+    }
+    
+    icmap.continueTransaction(op.getInteractionType().getOrdinal(), lastInteractionStage, transactionId, listener);
+  }
+
+  /**
    * Send return response method.
    *
    * @param msgAddress Address structure to use for return message.

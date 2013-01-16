@@ -17,6 +17,7 @@ import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.*;
 
@@ -37,51 +38,91 @@ class InteractionConsumerMap
           final boolean syncOperation,
           final MALInteractionListener listener) throws MALInteractionException
   {
-    final Long oTransId = InteractionTransaction.getTransactionId();
-
-    InternalOperationHandler handler = null;
-
-    switch (interactionType)
-    {
-      case InteractionType._SUBMIT_INDEX:
-        handler = new SubmitOperationHandler(syncOperation, listener);
-        break;
-      case InteractionType._REQUEST_INDEX:
-        handler = new RequestOperationHandler(syncOperation, listener);
-        break;
-      case InteractionType._INVOKE_INDEX:
-        handler = new InvokeOperationHandler(syncOperation, listener);
-        break;
-      case InteractionType._PROGRESS_INDEX:
-        handler = new ProgressOperationHandler(syncOperation, listener);
-        break;
-      case InteractionType._PUBSUB_INDEX:
-        handler = new PubSubOperationHandler(syncOperation, listener);
-        break;
-      default:
-        throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
-                new Union("Pattern not supported")));
-    }
-
     synchronized (transMap)
     {
+      final Long oTransId = InteractionTransaction.getTransactionId(transMap.keySet());
+
+      InternalOperationHandler handler = null;
+
+      switch (interactionType)
+      {
+        case InteractionType._SUBMIT_INDEX:
+          handler = new SubmitOperationHandler(syncOperation, listener);
+          break;
+        case InteractionType._REQUEST_INDEX:
+          handler = new RequestOperationHandler(syncOperation, listener);
+          break;
+        case InteractionType._INVOKE_INDEX:
+          handler = new InvokeOperationHandler(syncOperation, listener);
+          break;
+        case InteractionType._PROGRESS_INDEX:
+          handler = new ProgressOperationHandler(syncOperation, listener);
+          break;
+        case InteractionType._PUBSUB_INDEX:
+          handler = new PubSubOperationHandler(syncOperation, listener);
+          break;
+        default:
+          throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
+                  new Union("Pattern not supported")));
+      }
+
+      transMap.put(oTransId, handler);
+
+      return oTransId;
+    }
+  }
+
+  void continueTransaction(final int interactionType,
+          final UOctet lastInteractionStage,
+          final Long oTransId,
+          final MALInteractionListener listener) throws MALException, MALInteractionException
+  {
+    synchronized (transMap)
+    {
+      if (transMap.containsKey(oTransId))
+      {
+        throw new MALException("Transaction Id already in use and cannot be continued");
+      }
+
+      InternalOperationHandler handler = null;
+
+      switch (interactionType)
+      {
+        case InteractionType._SUBMIT_INDEX:
+          handler = new SubmitOperationHandler(lastInteractionStage, listener);
+          break;
+        case InteractionType._REQUEST_INDEX:
+          handler = new RequestOperationHandler(lastInteractionStage, listener);
+          break;
+        case InteractionType._INVOKE_INDEX:
+          handler = new InvokeOperationHandler(lastInteractionStage, listener);
+          break;
+        case InteractionType._PROGRESS_INDEX:
+          handler = new ProgressOperationHandler(lastInteractionStage, listener);
+          break;
+        case InteractionType._PUBSUB_INDEX:
+          handler = new PubSubOperationHandler(lastInteractionStage, listener);
+          break;
+        default:
+          throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
+                  new Union("Pattern not supported")));
+      }
+
       transMap.put(oTransId, handler);
     }
-
-    return oTransId;
   }
 
   Long createTransaction(final boolean syncOperation, final MALPublishInteractionListener listener)
   {
-    final Long oTransId = InteractionTransaction.getTransactionId();
-
     synchronized (transMap)
     {
+      final Long oTransId = InteractionTransaction.getTransactionId(transMap.keySet());
+
       transMap.put(oTransId,
               new PubSubOperationHandler(syncOperation, new InteractionListenerPublishAdapter(listener)));
-    }
 
-    return oTransId;
+      return oTransId;
+    }
   }
 
   MALMessage waitForResponse(final Long id)
@@ -243,6 +284,14 @@ class InteractionConsumerMap
       this.interactionStage = MALSubmitOperation._SUBMIT_ACK_STAGE;
     }
 
+    protected SubmitOperationHandler(final UOctet lastInteractionStage, final MALInteractionListener listener)
+    {
+      super(false, listener);
+
+      this.interactionType = InteractionType._SUBMIT_INDEX;
+      this.interactionStage = MALSubmitOperation._SUBMIT_ACK_STAGE;
+    }
+
     protected SubmitOperationHandler(final int interactionType,
             final int interactionStage,
             final boolean syncOperation,
@@ -337,6 +386,14 @@ class InteractionConsumerMap
               listener);
     }
 
+    protected RequestOperationHandler(final UOctet lastInteractionStage, final MALInteractionListener listener)
+    {
+      super(InteractionType._REQUEST_INDEX,
+              MALRequestOperation._REQUEST_RESPONSE_STAGE,
+              false,
+              listener);
+    }
+
     @Override
     protected void informListener(final MALMessage msg) throws MALException
     {
@@ -359,6 +416,18 @@ class InteractionConsumerMap
     protected InvokeOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
       super(syncOperation, listener);
+    }
+
+    protected InvokeOperationHandler(final UOctet lastInteractionStage, final MALInteractionListener listener)
+    {
+      super(false, listener);
+
+      final int interactionStage = lastInteractionStage.getValue();
+
+      if (interactionStage == MALInvokeOperation._INVOKE_ACK_STAGE)
+      {
+        receivedAck = true;
+      }
     }
 
     @Override
@@ -463,6 +532,19 @@ class InteractionConsumerMap
     protected ProgressOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
       super(syncOperation, listener);
+    }
+
+    protected ProgressOperationHandler(final UOctet lastInteractionStage, final MALInteractionListener listener)
+    {
+      super(false, listener);
+
+      final int interactionStage = lastInteractionStage.getValue();
+
+      if ((interactionStage == MALProgressOperation._PROGRESS_ACK_STAGE)
+              || (interactionStage == MALProgressOperation._PROGRESS_UPDATE_STAGE))
+      {
+        receivedAck = true;
+      }
     }
 
     @Override
@@ -591,6 +673,11 @@ class InteractionConsumerMap
     protected PubSubOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
       super(InteractionType._PUBSUB_INDEX, 0, syncOperation, listener);
+    }
+
+    protected PubSubOperationHandler(final UOctet lastInteractionStage, final MALInteractionListener listener)
+    {
+      super(InteractionType._PUBSUB_INDEX, 0, false, listener);
     }
 
     @Override

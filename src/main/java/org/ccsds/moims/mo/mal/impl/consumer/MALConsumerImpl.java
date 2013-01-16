@@ -322,10 +322,9 @@ class MALConsumerImpl extends MALClose implements MALConsumer
           final Time initiationTimestamp,
           final Long transactionId,
           final MALInteractionListener listener)
-          throws IllegalArgumentException, MALException
+          throws IllegalArgumentException, MALInteractionException, MALException
   {
-    // ToDo
-    throw new UnsupportedOperationException("Not supported yet.");
+    sender.continueInteraction(op, lastInteractionStage, initiationTimestamp, transactionId, listener);
   }
   
   @Override

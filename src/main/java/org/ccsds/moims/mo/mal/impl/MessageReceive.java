@@ -58,7 +58,6 @@ public class MessageReceive implements MALMessageListener
   public void onInternalError(final MALEndpoint callingEndpoint, final Throwable err)
   {
     MALContextFactoryImpl.LOGGER.severe("MAL Receiving ERROR!");
-    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override
@@ -68,7 +67,6 @@ public class MessageReceive implements MALMessageListener
           final Map qosMap)
   {
     MALContextFactoryImpl.LOGGER.severe("MAL Receiving Transmission ERROR!");
-    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override
@@ -365,9 +363,6 @@ public class MessageReceive implements MALMessageListener
               true,
               interaction.getOperation(),
               (Object[]) null);
-
-      // inform subscribed listeners
-      // ToDo
     }
     else
     {
@@ -563,9 +558,6 @@ public class MessageReceive implements MALMessageListener
               true,
               interaction.getOperation(),
               (Object[]) null);
-
-      // inform subscribed listeners
-      // ToDo
     }
     catch (MALException ex)
     {
