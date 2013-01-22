@@ -465,26 +465,17 @@ public class MessageSend
     catch (MALException ex)
     {
       MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-              "Error returning response to consumer : {0} : {1}", new Object[]
-              {
-                srcHdr.getURIFrom(), ex
-              });
+              "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
     }
     catch (MALTransmitErrorException ex)
     {
       MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-              "Error returning response to consumer : {0} : {1}", new Object[]
-              {
-                srcHdr.getURIFrom(), ex
-              });
+              "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
     }
     catch (RuntimeException ex)
     {
       MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-              "Error returning response to consumer : {0} : {1}", new Object[]
-              {
-                srcHdr.getURIFrom(), ex
-              });
+              "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
     }
 
     return msg;
@@ -542,26 +533,17 @@ public class MessageSend
     catch (MALException ex)
     {
       MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-              "Error returning response to consumer : {0} : {1}", new Object[]
-              {
-                srcHdr.getURIFrom(), ex
-              });
+              "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
     }
     catch (MALTransmitErrorException ex)
     {
       MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-              "Error returning response to consumer : {0} : {1}", new Object[]
-              {
-                srcHdr.getURIFrom(), ex
-              });
+              "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
     }
     catch (RuntimeException ex)
     {
       MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-              "Error returning response to consumer : {0} : {1}", new Object[]
-              {
-                srcHdr.getURIFrom(), ex
-              });
+              "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
     }
 
     return msg;

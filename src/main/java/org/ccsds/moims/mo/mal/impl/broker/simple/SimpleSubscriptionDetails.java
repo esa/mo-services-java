@@ -15,10 +15,10 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage.NotifyMessage;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerImpl;
-import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
-import org.ccsds.moims.mo.mal.impl.broker.UpdateKey;
+import org.ccsds.moims.mo.mal.impl.broker.NotifyMessageSet.NotifyMessage;
+import org.ccsds.moims.mo.mal.impl.broker.key.SubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.broker.key.UpdateKey;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
@@ -93,10 +93,10 @@ class SimpleSubscriptionDetails
     final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
 
     final List[] updateLists = publishBody.getUpdateLists((List[]) null);
-    final Object[] notifyLists = new Object[updateLists.length + 2];
-    for (int i = 2; i < notifyLists.length; i++)
+    final List[] notifyLists = new List[updateLists.length];
+    for (int i = 0; i < notifyLists.length; i++)
     {
-      notifyLists[i] = (List) ((Element) updateLists[i - 2]).createElement();
+      notifyLists[i] = (List) ((Element) updateLists[i]).createElement();
     }
 
     for (int i = 0; i < updateHeaderList.size(); ++i)
@@ -108,9 +108,9 @@ class SimpleSubscriptionDetails
     if (!notifyHeaders.isEmpty())
     {
       retVal = new NotifyMessage();
-      notifyLists[0] = new Identifier(subscriptionId);
-      notifyLists[1] = notifyHeaders;
-      retVal.updates = notifyLists;
+      retVal.subscriptionId = new Identifier(subscriptionId);
+      retVal.updateHeaderList = notifyHeaders;
+      retVal.updateList = notifyLists;
     }
 
     return retVal;
@@ -122,7 +122,7 @@ class SimpleSubscriptionDetails
           final List[] updateLists,
           final int index,
           final UpdateHeaderList notifyHeaders,
-          final Object[] notifyLists) throws MALException
+          final List[] notifyLists) throws MALException
   {
     final UpdateKey key = new UpdateKey(srcHdr, srcDomainId, updateHeader.getKey());
     MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0}", key);
@@ -138,9 +138,9 @@ class SimpleSubscriptionDetails
       // add update for this consumer/subscription
       notifyHeaders.add(updateHeader);
 
-      for (int i = 2; i < notifyLists.length; i++)
+      for (int i = 0; i < notifyLists.length; i++)
       {
-        ((List) notifyLists[i]).add(updateLists[i - 2].get(index));
+        notifyLists[i].add(updateLists[i].get(index));
       }
     }
   }
@@ -154,7 +154,7 @@ class SimpleSubscriptionDetails
               {
                 key, subscriptionKey
               });
-      if (subscriptionKey.matches(key))
+      if (subscriptionKey.matchesWithWildcard(key))
       {
         MALBrokerImpl.LOGGER.fine("    : Matched");
         matched = true;

@@ -16,7 +16,6 @@ import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.impl.Address;
 import org.ccsds.moims.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
-import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
@@ -71,7 +70,7 @@ public abstract class BaseInteractionImpl implements MALInteraction
   @Override
   public Object getQoSProperty(final String name)
   {
-    return (Element) qosProperties.get(name);
+    return qosProperties.get(name);
   }
 
   @Override
@@ -79,6 +78,12 @@ public abstract class BaseInteractionImpl implements MALInteraction
           final Object value)
   {
     qosProperties.put(name, value);
+  }
+
+  @Override
+  public Map<String, Object> getQoSProperties()
+  {
+    return qosProperties;
   }
 
   /**

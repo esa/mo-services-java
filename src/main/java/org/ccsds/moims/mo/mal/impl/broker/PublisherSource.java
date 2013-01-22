@@ -16,18 +16,22 @@ import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.impl.broker.key.PublisherKey;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
-final class ProviderDetails
+/**
+ * Represents a publisher (provider) in a broker, so contains the list of entities it is allowed to publish.
+ */
+public final class PublisherSource
 {
   private final String uri;
   private final QoSLevel qosLevel;
   private final Set<PublisherKey> keySet = new TreeSet<PublisherKey>();
   private IdentifierList domain = null;
 
-  ProviderDetails(final String uri, final QoSLevel qosLevel)
+  PublisherSource(final String uri, final QoSLevel qosLevel)
   {
     super();
     this.uri = uri;
@@ -71,7 +75,7 @@ final class ProviderDetails
         boolean matched = false;
         for (PublisherKey key : keySet)
         {
-          if (key.matches(updateKey))
+          if (key.matchesWithWildcard(updateKey))
           {
             matched = true;
             break;

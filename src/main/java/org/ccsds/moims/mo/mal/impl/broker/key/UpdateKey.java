@@ -8,7 +8,7 @@
  *
  * ----------------------------------------------------------------------------
  */
-package org.ccsds.moims.mo.mal.impl.broker;
+package org.ccsds.moims.mo.mal.impl.broker.key;
 
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -17,24 +17,24 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Simple class that represents a MAL update key.
  */
-public final class UpdateKey extends ElementKey
+public final class UpdateKey extends PublisherKey
 {
   /**
    * The domain of the update.
    */
-  final String domain;
+  private final String domain;
   /**
    * The area of the update.
    */
-  final UShort area;
+  private final UShort area;
   /**
    * The service of the update.
    */
-  final UShort service;
+  private final UShort service;
   /**
    * The operation of the update.
    */
-  final UShort operation;
+  private final UShort operation;
 
   /**
    * Constructor.
@@ -45,7 +45,7 @@ public final class UpdateKey extends ElementKey
    */
   public UpdateKey(final MALMessageHeader srcHdr, final String domainId, final EntityKey key)
   {
-    super(getIdValue(key.getFirstSubKey()), key.getSecondSubKey(), key.getThirdSubKey(), key.getFourthSubKey());
+    super(key);
 
     this.domain = domainId;
     this.area = srcHdr.getServiceArea();
@@ -88,14 +88,48 @@ public final class UpdateKey extends ElementKey
     buf.append(':');
     buf.append(this.operation);
     buf.append(':');
-    buf.append(this.key1);
-    buf.append('.');
-    buf.append(this.key2);
-    buf.append('.');
-    buf.append(this.key3);
-    buf.append('.');
-    buf.append(this.key4);
+    buf.append(super.toString());
     buf.append(']');
     return buf.toString();
+  }
+
+  /**
+   * Returns the domain string.
+   *
+   * @return the domain.
+   */
+  public String getDomain()
+  {
+    return domain;
+  }
+
+  /**
+   * Returns the area number.
+   *
+   * @return the area.
+   */
+  public UShort getArea()
+  {
+    return area;
+  }
+
+  /**
+   * Returns the service number.
+   *
+   * @return the service.
+   */
+  public UShort getService()
+  {
+    return service;
+  }
+
+  /**
+   * Returns the operation number.
+   *
+   * @return the operation.
+   */
+  public UShort getOperation()
+  {
+    return operation;
   }
 }

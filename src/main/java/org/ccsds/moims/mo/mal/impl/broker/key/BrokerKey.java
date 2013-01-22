@@ -8,17 +8,17 @@
  *
  * ----------------------------------------------------------------------------
  */
-package org.ccsds.moims.mo.mal.impl.broker;
+package org.ccsds.moims.mo.mal.impl.broker.key;
 
-import org.ccsds.moims.mo.mal.impl.MessageDetails;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * Comparable URI based address.
+ * Simple class that represents a MAL level broker key. Brokers are separated on the URI of the broker and the session.
+ * This allows a broker to host several contexts separated by session.
  */
 public class BrokerKey implements Comparable
 {
-  private static final int HASH_MAGIC_NUMBER = 42;
+  private static final int HASH_MAGIC_NUMBER = 79;
   private final String uri;
   private final int session;
   private final String sessionName;
@@ -32,17 +32,6 @@ public class BrokerKey implements Comparable
     this.uri = hdr.getURITo().getValue();
     this.session = hdr.getSession().getOrdinal();
     this.sessionName = hdr.getSessionName().getValue();
-  }
-
-  /**
-   * Constructor.
-   * @param details Message details to base on.
-   */
-  public BrokerKey(final MessageDetails details)
-  {
-    this.uri = details.uriTo.getValue();
-    this.session = details.sessionType.getOrdinal();
-    this.sessionName = details.sessionName.getValue();
   }
 
   @Override
@@ -91,8 +80,11 @@ public class BrokerKey implements Comparable
   @Override
   public int hashCode()
   {
-    assert false : "hashCode not designed";
-    return HASH_MAGIC_NUMBER;
+    int hash = 3;
+    hash = HASH_MAGIC_NUMBER * hash + (this.uri != null ? this.uri.hashCode() : 0);
+    hash = HASH_MAGIC_NUMBER * hash + this.session;
+    hash = HASH_MAGIC_NUMBER * hash + (this.sessionName != null ? this.sessionName.hashCode() : 0);
+    return hash;
   }
 
   @Override

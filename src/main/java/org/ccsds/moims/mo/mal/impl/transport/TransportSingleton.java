@@ -10,8 +10,6 @@
  */
 package org.ccsds.moims.mo.mal.impl.transport;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -216,6 +214,7 @@ public final class TransportSingleton
 
   /**
    * Closes the singleton and closes any open transports.
+   * @throws MALException If an error is detected closing the transports.
    */
   public static void close() throws MALException
   {

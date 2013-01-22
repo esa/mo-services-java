@@ -13,6 +13,8 @@ package org.ccsds.moims.mo.mal.impl.broker;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
@@ -29,6 +31,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBrokerBinding
 {
   private final MALBrokerImpl brokerImpl;
+  private final Set<String> subscriberSet = new TreeSet<String>();
   private MALTransmitErrorListener listener;
 
   MALBrokerBindingImpl(final MALBrokerImpl parent,
@@ -86,6 +89,11 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             {
               localName, this.localUri
             });
+  }
+
+  void init()
+  {
+    this.brokerImpl.addBinding(this);
   }
 
   @Override
@@ -358,8 +366,39 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
    *
    * @return The parent broker.
    */
-  public MALBrokerBaseImpl getBrokerImpl()
+  public MALBrokerImpl getBrokerImpl()
   {
     return brokerImpl;
+  }
+
+  /**
+   * Adds a subscriber from this binding.
+   *
+   * @param uriTo The URI of the subscriber.
+   */
+  public void addSubscriber(String uriTo)
+  {
+    subscriberSet.add(uriTo);
+  }
+
+  /**
+   * Removes a subscriber from this binding.
+   *
+   * @param uriTo The URI of the subscriber.
+   */
+  public void removeSubscriber(String uriTo)
+  {
+    subscriberSet.remove(uriTo);
+  }
+
+  /**
+   * Returns true if the uri supplied is known by this binding.
+   *
+   * @param uri URI of the subscriber to search for.
+   * @return True if a subscriber known to this binding.
+   */
+  public boolean hasSubscriber(String uri)
+  {
+    return subscriberSet.contains(uri);
   }
 }

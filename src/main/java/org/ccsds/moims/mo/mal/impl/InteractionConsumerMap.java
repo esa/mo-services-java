@@ -89,10 +89,10 @@ class InteractionConsumerMap
       switch (interactionType)
       {
         case InteractionType._SUBMIT_INDEX:
-          handler = new SubmitOperationHandler(lastInteractionStage, listener);
+          handler = new SubmitOperationHandler(listener);
           break;
         case InteractionType._REQUEST_INDEX:
-          handler = new RequestOperationHandler(lastInteractionStage, listener);
+          handler = new RequestOperationHandler(listener);
           break;
         case InteractionType._INVOKE_INDEX:
           handler = new InvokeOperationHandler(lastInteractionStage, listener);
@@ -101,7 +101,7 @@ class InteractionConsumerMap
           handler = new ProgressOperationHandler(lastInteractionStage, listener);
           break;
         case InteractionType._PUBSUB_INDEX:
-          handler = new PubSubOperationHandler(lastInteractionStage, listener);
+          handler = new PubSubOperationHandler(listener);
           break;
         default:
           throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
@@ -284,7 +284,7 @@ class InteractionConsumerMap
       this.interactionStage = MALSubmitOperation._SUBMIT_ACK_STAGE;
     }
 
-    protected SubmitOperationHandler(final UOctet lastInteractionStage, final MALInteractionListener listener)
+    protected SubmitOperationHandler(final MALInteractionListener listener)
     {
       super(false, listener);
 
@@ -386,7 +386,7 @@ class InteractionConsumerMap
               listener);
     }
 
-    protected RequestOperationHandler(final UOctet lastInteractionStage, final MALInteractionListener listener)
+    protected RequestOperationHandler(final MALInteractionListener listener)
     {
       super(InteractionType._REQUEST_INDEX,
               MALRequestOperation._REQUEST_RESPONSE_STAGE,
@@ -675,7 +675,7 @@ class InteractionConsumerMap
       super(InteractionType._PUBSUB_INDEX, 0, syncOperation, listener);
     }
 
-    protected PubSubOperationHandler(final UOctet lastInteractionStage, final MALInteractionListener listener)
+    protected PubSubOperationHandler(final MALInteractionListener listener)
     {
       super(InteractionType._PUBSUB_INDEX, 0, false, listener);
     }

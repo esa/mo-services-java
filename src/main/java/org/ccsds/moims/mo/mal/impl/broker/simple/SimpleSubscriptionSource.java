@@ -13,12 +13,11 @@ package org.ccsds.moims.mo.mal.impl.broker.simple;
 import java.util.*;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage;
-import org.ccsds.moims.mo.mal.impl.broker.BrokerMessage.NotifyMessage;
-import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
 import org.ccsds.moims.mo.mal.impl.broker.MALBrokerImpl;
-import org.ccsds.moims.mo.mal.impl.broker.SubscriptionKey;
+import org.ccsds.moims.mo.mal.impl.broker.NotifyMessageSet;
+import org.ccsds.moims.mo.mal.impl.broker.NotifyMessageSet.NotifyMessage;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionSource;
+import org.ccsds.moims.mo.mal.impl.broker.key.SubscriptionKey;
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -34,7 +33,6 @@ class SimpleSubscriptionSource extends SubscriptionSource
 {
   private final String signature;
   private final Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
-  private final MALBrokerBindingImpl binding;
   private final Map<String, SimpleSubscriptionDetails> details = new TreeMap<String, SimpleSubscriptionDetails>();
 
   /**
@@ -43,11 +41,10 @@ class SimpleSubscriptionSource extends SubscriptionSource
    * @param hdr The message header of the subscription message.
    * @param binding The broker binding that received the subscription.
    */
-  public SimpleSubscriptionSource(final MALMessageHeader hdr, final MALBrokerBindingImpl binding)
+  public SimpleSubscriptionSource(final MALMessageHeader hdr)
   {
-    super(hdr, hdr.getURIFrom(), binding);
+    super(hdr, hdr.getURIFrom());
     this.signature = hdr.getURIFrom().getValue();
-    this.binding = binding;
   }
 
   @Override
@@ -91,14 +88,14 @@ class SimpleSubscriptionSource extends SubscriptionSource
 
   @Override
   public void populateNotifyList(final MALMessageHeader srcHdr,
-          final List<BrokerMessage> lst,
+          final List<NotifyMessageSet> lst,
           final UpdateHeaderList updateHeaderList,
           final MALPublishBody publishBody) throws MALException
   {
     MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signature);
 
     final String srcDomainId = StructureHelper.domainToString(srcHdr.getDomain());
-    final BrokerMessage bmsg = new BrokerMessage(binding);
+    final List<NotifyMessage> msgs = new LinkedList<NotifyMessage>();
 
     for (Map.Entry<String, SimpleSubscriptionDetails> ent : details.entrySet())
     {
@@ -106,17 +103,18 @@ class SimpleSubscriptionSource extends SubscriptionSource
               ent.getValue().populateNotifyList(srcHdr, srcDomainId, updateHeaderList, publishBody);
       if (null != subUpdate)
       {
-        bmsg.msgs.add(subUpdate);
+        msgs.add(subUpdate);
       }
     }
 
-    if (!bmsg.msgs.isEmpty())
+    if (!msgs.isEmpty())
     {
-      for (NotifyMessage msg : bmsg.msgs)
+      NotifyMessageSet msgSet = new NotifyMessageSet();
+      msgSet.details = getMsgHeaderDetails();
+      msgSet.messages = msgs;
+      for (NotifyMessage msg : msgs)
       {
         // update the details in the header
-        msg.details = msgDetails;
-        msg.transId = transactionId;
         msg.domain = srcHdr.getDomain();
         msg.networkZone = srcHdr.getNetworkZone();
         msg.area = srcHdr.getServiceArea();
@@ -125,7 +123,7 @@ class SimpleSubscriptionSource extends SubscriptionSource
         msg.version = srcHdr.getAreaVersion();
       }
 
-      lst.add(bmsg);
+      lst.add(msgSet);
     }
   }
 
@@ -138,13 +136,6 @@ class SimpleSubscriptionSource extends SubscriptionSource
     }
 
     updateIds();
-  }
-
-  @Override
-  public void removeAllSubscriptions()
-  {
-    details.clear();
-    required.clear();
   }
 
   private void updateIds()

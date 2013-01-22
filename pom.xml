@@ -22,69 +22,7 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>3.0-beta-3</version>
-        <configuration>
-          <reportPlugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-pmd-plugin</artifactId>
-              <version>2.7.1</version>
-              <configuration>
-                <targetJdk>1.5</targetJdk>
-                <rulesets>
-                  <ruleset>/rulesets/basic.xml</ruleset>
-                  <ruleset>/rulesets/braces.xml</ruleset>
-                  <ruleset>/rulesets/clone.xml</ruleset>
-                  <ruleset>/rulesets/coupling.xml</ruleset>
-                  <ruleset>/rulesets/finalizers.xml</ruleset>
-                  <ruleset>/rulesets/imports.xml</ruleset>
-                  <ruleset>/rulesets/optimizations.xml</ruleset>
-                  <ruleset>/rulesets/strictexception.xml</ruleset>
-                  <ruleset>/rulesets/strings.xml</ruleset>
-                  <ruleset>/rulesets/sunsecure.xml</ruleset>
-                  <ruleset>/rulesets/unusedcode.xml</ruleset>
-                  <ruleset>mo_pmd_suppressions.xml</ruleset>
-                </rulesets>
-              </configuration>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-checkstyle-plugin</artifactId>
-              <version>2.9.1</version>
-              <reportSets> 
-                <reportSet> 
-                  <reports> 
-                    <report>checkstyle</report> 
-                  </reports> 
-                </reportSet> 
-              </reportSets> 
-              <configuration>
-                <configLocation>mo_checkstyle.xml</configLocation>
-              </configuration>
-            </plugin>
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>findbugs-maven-plugin</artifactId>
-              <version>2.5.2</version>
-              <configuration>
-                <effort>Max</effort>
-                <threshold>Low</threshold>
-              </configuration>
-            </plugin>
-          </reportPlugins>
-        </configuration>
-      </plugin>
     </plugins>
-    <extensions>
-      <extension>
-        <groupId>esa.esoc</groupId>
-        <artifactId>CCSDS_CHECKSTYLE</artifactId>
-        <version>1.0-SNAPSHOT</version>
-      </extension>
-    </extensions>
   </build>
   <repositories>
     <repository>

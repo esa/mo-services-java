@@ -8,15 +8,16 @@
  *
  * ----------------------------------------------------------------------------
  */
-package org.ccsds.moims.mo.mal.impl.broker;
+package org.ccsds.moims.mo.mal.impl.broker.key;
 
+import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
 /**
- * Simple base class that represents one of the many update keys of a broker.
+ * Simple class that identifies a publisher in a MAL broker.
  */
-public abstract class ElementKey implements Comparable
+public class PublisherKey implements Comparable
 {
   /**
    * Match all string constant.
@@ -37,36 +38,48 @@ public abstract class ElementKey implements Comparable
   /**
    * First sub key.
    */
-  protected final String key1;
+  private final String key1;
   /**
    * Second sub key.
    */
-  protected final Integer key2;
+  private final Integer key2;
   /**
    * Third sub key.
    */
-  protected final Integer key3;
+  private final Integer key3;
   /**
    * Fourth sub key.
    */
-  protected final Integer key4;
+  private final Integer key4;
 
   /**
    * Constructor.
-   * 
-   * @param key1 First sub key.
-   * @param key2 Second sub key.
-   * @param key3 Third sub key.
-   * @param key4 Fourth sub key.
+   * @param key Entity key.
    */
-  public ElementKey(final String key1, final Integer key2, final Integer key3, final Integer key4)
+  public PublisherKey(final EntityKey key)
   {
-    this.key1 = key1;
-    this.key2 = key2;
-    this.key3 = key3;
-    this.key4 = key4;
+    this.key1 = getIdValue(key.getFirstSubKey());
+    this.key2 = key.getSecondSubKey();
+    this.key3 = key.getThirdSubKey();
+    this.key4 = key.getFourthSubKey();
   }
 
+  @Override
+  public String toString()
+  {
+    final StringBuilder buf = new StringBuilder();
+    buf.append('[');
+    buf.append(this.key1);
+    buf.append('.');
+    buf.append(this.key2);
+    buf.append('.');
+    buf.append(this.key3);
+    buf.append('.');
+    buf.append(this.key4);
+    buf.append(']');
+    return buf.toString();
+  }
+  
   @Override
   public boolean equals(final Object obj)
   {
@@ -78,7 +91,7 @@ public abstract class ElementKey implements Comparable
     {
       return false;
     }
-    final ElementKey other = (ElementKey) obj;
+    final PublisherKey other = (PublisherKey) obj;
     if ((this.key1 == null) ? (other.key1 != null) : !this.key1.equals(other.key1))
     {
       return false;
@@ -112,7 +125,7 @@ public abstract class ElementKey implements Comparable
   @Override
   public int compareTo(final Object o)
   {
-    final ElementKey rhs = (ElementKey) o;
+    final PublisherKey rhs = (PublisherKey) o;
     int rv = compareSubkey(this.key1, rhs.key1);
     if (0 == rv)
     {
@@ -127,6 +140,66 @@ public abstract class ElementKey implements Comparable
       }
     }
     return rv;
+  }
+
+  /**
+   * Returns true if this key matches supplied argument taking into account wildcards.
+   * @param rhs Key to match against.
+   * @return True if matches.
+   */
+  public boolean matchesWithWildcard(final EntityKey rhs)
+  {
+    if (null != rhs)
+    {
+      boolean matched = matchedSubkeyWithWildcard(key1, getIdValue(rhs.getFirstSubKey()));
+
+      if (matched)
+      {
+        matched = matchedSubkeyWithWildcard(key2, rhs.getSecondSubKey());
+        if (matched)
+        {
+          matched = matchedSubkeyWithWildcard(key3, rhs.getThirdSubKey());
+          if (matched)
+          {
+            matched = matchedSubkeyWithWildcard(key4, rhs.getFourthSubKey());
+          }
+        }
+      }
+
+      return matched;
+    }
+
+    return false;
+  }
+
+  /**
+   * Returns true if this key matches supplied argument taking into account wildcards.
+   * @param rhs Key to match against.
+   * @return True if matches.
+   */
+  public boolean matchesWithWildcard(final PublisherKey rhs)
+  {
+    if (null != rhs)
+    {
+      boolean matched = matchedSubkeyWithWildcard(key1, rhs.key1);
+
+      if (matched)
+      {
+        matched = matchedSubkeyWithWildcard(key2, rhs.key2);
+        if (matched)
+        {
+          matched = matchedSubkeyWithWildcard(key3, rhs.key3);
+          if (matched)
+          {
+            matched = matchedSubkeyWithWildcard(key4, rhs.key4);
+          }
+        }
+      }
+
+      return matched;
+    }
+
+    return false;
   }
 
   /**
@@ -207,7 +280,7 @@ public abstract class ElementKey implements Comparable
    * @param theirKeyPart The second key part.
    * @return True if they match or one is the wildcard.
    */
-  protected static boolean matchedSubkey(final String myKeyPart, final String theirKeyPart)
+  protected static boolean matchedSubkeyWithWildcard(final String myKeyPart, final String theirKeyPart)
   {
     if (ALL_ID.equals(myKeyPart) || ALL_ID.equals(theirKeyPart))
     {
@@ -232,7 +305,7 @@ public abstract class ElementKey implements Comparable
    * @param theirKeyPart The second key part.
    * @return True if they match or one is the wildcard.
    */
-  protected static boolean matchedSubkey(final Integer myKeyPart, final Integer theirKeyPart)
+  protected static boolean matchedSubkeyWithWildcard(final Integer myKeyPart, final Integer theirKeyPart)
   {
     if (ALL_NUMBER.equals(myKeyPart) || ALL_NUMBER.equals(theirKeyPart))
     {
@@ -257,7 +330,7 @@ public abstract class ElementKey implements Comparable
    * @param theirKeyPart The second key part.
    * @return True if they match or one is the wildcard.
    */
-  protected static boolean matchedSubkey(final UShort myKeyPart, final UShort theirKeyPart)
+  protected static boolean matchedSubkeyWithWildcard(final UShort myKeyPart, final UShort theirKeyPart)
   {
     if (ALL_SHORT.equals(myKeyPart) || ALL_SHORT.equals(theirKeyPart))
     {

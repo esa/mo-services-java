@@ -10,26 +10,29 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker.simple;
 
-import org.ccsds.moims.mo.mal.impl.broker.BaseBrokerHandler;
-import org.ccsds.moims.mo.mal.impl.broker.MALBrokerBindingImpl;
+import org.ccsds.moims.mo.mal.impl.broker.MALBrokerHandlerImpl;
 import org.ccsds.moims.mo.mal.impl.broker.SubscriptionSource;
+import org.ccsds.moims.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * Extends the BaseBrokerHandler for the Simple broker implementation.
+ * Extends the base broker handler for the Simple broker implementation.
  */
-public class SimpleBrokerHandler extends BaseBrokerHandler
+public class SimpleBrokerHandler extends MALBrokerHandlerImpl
 {
   /**
-   * Creates a new instance of MALBrokerHandler
+   * Constructor
+   *
+   * @param parent The parent of this class.
    */
-  public SimpleBrokerHandler()
+  public SimpleBrokerHandler(MALClose parent)
   {
+    super(parent);
   }
 
   @Override
-  protected SubscriptionSource createEntry(final MALMessageHeader hdr, final MALBrokerBindingImpl binding)
+  protected SubscriptionSource createEntry(final MALMessageHeader hdr)
   {
-    return new SimpleSubscriptionSource(hdr, binding);
+    return new SimpleSubscriptionSource(hdr);
   }
 }

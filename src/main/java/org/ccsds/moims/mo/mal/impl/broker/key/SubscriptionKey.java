@@ -8,7 +8,7 @@
  *
  * ----------------------------------------------------------------------------
  */
-package org.ccsds.moims.mo.mal.impl.broker;
+package org.ccsds.moims.mo.mal.impl.broker.key;
 
 import org.ccsds.moims.mo.mal.impl.util.StructureHelper;
 import org.ccsds.moims.mo.mal.structures.*;
@@ -17,7 +17,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Simple class that represents a MAL subscription.
  */
-public final class SubscriptionKey extends ElementKey
+public final class SubscriptionKey extends PublisherKey
 {
   private final String domain;
   private final boolean andSubDomains;
@@ -34,7 +34,7 @@ public final class SubscriptionKey extends ElementKey
    */
   public SubscriptionKey(final MALMessageHeader hdr, final EntityRequest rqst, final EntityKey key)
   {
-    super(getIdValue(key.getFirstSubKey()), key.getSecondSubKey(), key.getThirdSubKey(), key.getFourthSubKey());
+    super(key);
 
     // Converts the domain from list form to string form.
     String tmpDomain = "";
@@ -76,9 +76,60 @@ public final class SubscriptionKey extends ElementKey
 
     this.domain = tmpDomain;
     this.andSubDomains = tmpAndSubDomains;
-    this.area = getIdValueOrWildcard(hdr.getServiceArea(), rqst.getAllAreas());
-    this.service = getIdValueOrWildcard(hdr.getService(), rqst.getAllServices());
-    this.operation = getIdValueOrWildcard(hdr.getOperation(), rqst.getAllOperations());
+    this.area = rqst.getAllAreas() ? ALL_SHORT : hdr.getServiceArea();
+    this.service = rqst.getAllServices() ? ALL_SHORT : hdr.getService();
+    this.operation = rqst.getAllOperations() ? ALL_SHORT : hdr.getOperation();
+  }
+
+  @Override
+  public int hashCode()
+  {
+    int hash = super.hashCode();
+    hash = HASH_MAGIC_NUMBER * hash + (this.domain != null ? this.domain.hashCode() : 0);
+    hash = HASH_MAGIC_NUMBER * hash + (this.andSubDomains ? 1 : 0);
+    hash = HASH_MAGIC_NUMBER * hash + (this.area != null ? this.area.hashCode() : 0);
+    hash = HASH_MAGIC_NUMBER * hash + (this.service != null ? this.service.hashCode() : 0);
+    hash = HASH_MAGIC_NUMBER * hash + (this.operation != null ? this.operation.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (obj == null)
+    {
+      return false;
+    }
+    if (getClass() != obj.getClass())
+    {
+      return false;
+    }
+    final SubscriptionKey other = (SubscriptionKey) obj;
+    if (!super.equals(obj))
+    {
+      return false;
+    }
+    if ((this.domain == null) ? (other.domain != null) : !this.domain.equals(other.domain))
+    {
+      return false;
+    }
+    if (this.andSubDomains != other.andSubDomains)
+    {
+      return false;
+    }
+    if (this.area != other.area && (this.area == null || !this.area.equals(other.area)))
+    {
+      return false;
+    }
+    if (this.service != other.service && (this.service == null || !this.service.equals(other.service)))
+    {
+      return false;
+    }
+    if (this.operation != other.operation && (this.operation == null || !this.operation.equals(other.operation)))
+    {
+      return false;
+    }
+    return true;
   }
 
   /**
@@ -87,41 +138,29 @@ public final class SubscriptionKey extends ElementKey
    * @param rhs Key to match against.
    * @return True if matches.
    */
-  public boolean matches(final UpdateKey rhs)
+  public boolean matchesWithWildcard(final UpdateKey rhs)
   {
-    boolean matched = rhs.domain.startsWith(this.domain);
-
+    boolean matched = super.matchesWithWildcard(rhs);
     if (matched)
     {
-      if ((this.domain.length() < rhs.domain.length()))
-      {
-        matched = this.andSubDomains;
-      }
+      matched = rhs.getDomain().startsWith(this.domain);
 
       if (matched)
       {
-        matched = matchedSubkey(area, rhs.area);
+        if ((this.domain.length() < rhs.getDomain().length()))
+        {
+          matched = this.andSubDomains;
+        }
+
         if (matched)
         {
-          matched = matchedSubkey(service, rhs.service);
+          matched = matchedSubkeyWithWildcard(area, rhs.getArea());
           if (matched)
           {
-            matched = matchedSubkey(operation, rhs.operation);
+            matched = matchedSubkeyWithWildcard(service, rhs.getService());
             if (matched)
             {
-              matched = matchedSubkey(key1, rhs.key1);
-              if (matched)
-              {
-                matched = matchedSubkey(key2, rhs.key2);
-                if (matched)
-                {
-                  matched = matchedSubkey(key3, rhs.key3);
-                  if (matched)
-                  {
-                    matched = matchedSubkey(key4, rhs.key4);
-                  }
-                }
-              }
+              matched = matchedSubkeyWithWildcard(operation, rhs.getOperation());
             }
           }
         }
@@ -148,23 +187,8 @@ public final class SubscriptionKey extends ElementKey
     buf.append(':');
     buf.append(this.operation);
     buf.append(':');
-    buf.append(this.key1);
-    buf.append('.');
-    buf.append(this.key2);
-    buf.append('.');
-    buf.append(this.key3);
-    buf.append('.');
-    buf.append(this.key4);
+    buf.append(super.toString());
     buf.append(']');
     return buf.toString();
-  }
-  
-  private static UShort getIdValueOrWildcard(final UShort id, final boolean isWildcard)
-  {
-    if (isWildcard)
-    {
-      return ALL_SHORT;
-    }
-    return id;
   }
 }

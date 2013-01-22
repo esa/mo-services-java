@@ -10,185 +10,128 @@
  */
 package org.ccsds.moims.mo.mal.impl.broker;
 
-import java.util.Date;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.impl.MessageSend;
+import org.ccsds.moims.mo.mal.broker.MALBroker;
+import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.impl.broker.simple.SimpleBrokerHandler;
-import org.ccsds.moims.mo.mal.impl.patterns.PubSubInteractionImpl;
 import org.ccsds.moims.mo.mal.impl.util.MALClose;
-import org.ccsds.moims.mo.mal.provider.MALInteraction;
-import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
  * Implementation of the MALBroker interface.
  */
-public class MALBrokerImpl extends MALBrokerBaseImpl
+public class MALBrokerImpl extends MALClose implements MALBroker
 {
   /**
    * Logger
    */
   public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl.broker");
-  private final MessageSend sender;
-  private final Map<BrokerKey, BaseBrokerHandler> brokerMap = new TreeMap<BrokerKey, BaseBrokerHandler>();
+  private final MALBrokerHandler handler;
+  private final boolean handlerIsLocalType;
+  private final List<MALBrokerBindingImpl> bindings = new LinkedList<MALBrokerBindingImpl>();
 
-  MALBrokerImpl(final MALClose parent, final MessageSend sender) throws MALException
+  MALBrokerImpl(final MALClose parent) throws MALException
   {
     super(parent);
-
-    this.sender = sender;
+    this.handler = (MALBrokerHandlerImpl) addChild(createBrokerHandler());
+    handlerIsLocalType = true;
   }
 
-  @Override
-  public void internalHandleRegister(final MALInteraction interaction,
-          final MALRegisterBody body,
-          final MALBrokerBindingImpl binding)
-          throws MALInteractionException, MALException
+  MALBrokerImpl(final MALClose parent, MALBrokerHandler handler) throws MALException
   {
-    final MALMessageHeader hdr = interaction.getMessageHeader();
-    getHandler(new BrokerKey(hdr)).addConsumer(hdr, body.getSubscription(), binding);
-  }
-
-  @Override
-  public void handleRegister(final MALInteraction interaction, final MALRegisterBody body)
-          throws MALInteractionException, MALException
-  {
-    throw new UnsupportedOperationException("This should never be called!!!!");
-  }
-
-  @Override
-  public void handlePublishRegister(final MALInteraction interaction, final MALPublishRegisterBody body)
-          throws MALInteractionException, MALException
-  {
-    final MALMessageHeader hdr = interaction.getMessageHeader();
-    getHandler(new BrokerKey(hdr)).addProvider(hdr, body.getEntityKeyList());
-  }
-
-  @Override
-  public QoSLevel getProviderQoSLevel(final MALMessageHeader hdr)
-  {
-    return getHandler(new BrokerKey(hdr)).getProviderQoSLevel(hdr);
-  }
-
-  @Override
-  public void handleDeregister(final MALInteraction interaction, final MALDeregisterBody body)
-          throws MALInteractionException, MALException
-  {
-    final MALMessageHeader hdr = interaction.getMessageHeader();
-    getHandler(new BrokerKey(hdr)).removeConsumer(hdr, body.getIdentifierList());
+    super(parent);
+    this.handler = handler;
+    handlerIsLocalType = false;
   }
 
   /**
-   * Removes a consumer that we have lost contact with.
+   * Returns the broker handler for this broker.
    *
-   * @param details The details of the lost consumer.
+   * @return the handler.
    */
-  public void removeLostConsumer(final MALMessageHeader details)
+  public MALBrokerHandler getHandler()
   {
-    getHandler(new BrokerKey(details)).removeLostConsumer(details);
+    return handler;
   }
 
   @Override
-  public void handlePublishDeregister(final MALInteraction interaction)
-          throws MALInteractionException, MALException
+  public MALBrokerBinding[] getBindings()
   {
-    final MALMessageHeader hdr = interaction.getMessageHeader();
-    getHandler(new BrokerKey(hdr)).removeProvider(hdr);
+    return bindings.toArray(new MALBrokerBinding[bindings.size()]);
   }
 
-  @Override
-  public void handlePublish(final MALInteraction interaction, final MALPublishBody body)
-          throws MALInteractionException, MALException
+  /**
+   * Returns the QoS used when contacting the provider.
+   *
+   * @param hdr The supplied header message.
+   * @return The required QoS level.
+   */
+  public QoSLevel getProviderQoSLevel(final MALMessageHeader hdr)
   {
-    final MALMessageHeader hdr = interaction.getMessageHeader();
-    final java.util.List<BrokerMessage> notifyList = getHandler(new BrokerKey(hdr)).createNotify(hdr, body);
-
-    if (!notifyList.isEmpty())
+    if (handlerIsLocalType)
     {
-      final java.util.List<MALMessage> msgList = new LinkedList<MALMessage>();
-
-      for (BrokerMessage brokerMessage : notifyList)
-      {
-        for (BrokerMessage.NotifyMessage notifyMessage : brokerMessage.msgs)
-        {
-          msgList.add(notifyMessage.details.endpoint.createMessage(notifyMessage.details.authenticationId,
-                  notifyMessage.details.brokerUri,
-                  new Time(new Date().getTime()),
-                  notifyMessage.details.qosLevel,
-                  notifyMessage.details.priority,
-                  notifyMessage.domain,
-                  notifyMessage.networkZone,
-                  notifyMessage.details.sessionType,
-                  notifyMessage.details.sessionName,
-                  InteractionType.PUBSUB,
-                  MALPubSubOperation.NOTIFY_STAGE,
-                  notifyMessage.transId,
-                  notifyMessage.area,
-                  notifyMessage.service,
-                  notifyMessage.operation,
-                  notifyMessage.version,
-                  Boolean.FALSE,
-                  notifyMessage.details.qosProps,
-                  (Object[]) notifyMessage.updates));
-        }
-      }
-
-      sender.onewayMultiPublish(((PubSubInteractionImpl) interaction).getAddress().endpoint, msgList);
-    }
-  }
-
-  private BaseBrokerHandler getHandler(final BrokerKey key)
-  {
-    BaseBrokerHandler rv = brokerMap.get(key);
-
-    if (null == rv)
-    {
-      rv = createBrokerHandler();
-      brokerMap.put(key, rv);
+      return ((MALBrokerHandlerImpl) handler).getProviderQoSLevel(hdr);
     }
 
-    return rv;
+    return QoSLevel.BESTEFFORT;
   }
 
-  private BaseBrokerHandler createBrokerHandler()
+  /**
+   * Adds a binding implementation to this broker.
+   *
+   * @param binding The new binding.
+   */
+  protected void addBinding(MALBrokerBindingImpl binding)
+  {
+    bindings.add(binding);
+    handler.malInitialize(binding);
+  }
+
+  private MALBrokerHandlerImpl createBrokerHandler()
   {
     final String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class",
             SimpleBrokerHandler.class.getName());
 
-    BaseBrokerHandler broker = null;
+    MALBrokerHandlerImpl broker = null;
     try
     {
       final Class cls = Thread.currentThread().getContextClassLoader().loadClass(clsName);
 
-      broker = (BaseBrokerHandler) cls.newInstance();
-      LOGGER.log(Level.INFO, "Creating internal MAL Broker handler: {0}", cls.getSimpleName());
+      broker = (MALBrokerHandlerImpl) cls.getConstructor(MALClose.class).newInstance(this);
+      MALBrokerImpl.LOGGER.log(Level.INFO, "Creating internal MAL Broker handler: {0}", cls.getSimpleName());
     }
     catch (ClassNotFoundException ex)
     {
-      LOGGER.log(Level.WARNING, "Unable to find MAL Broker handler class: {0}", clsName);
+      MALBrokerImpl.LOGGER.log(Level.WARNING, "Unable to find MAL Broker handler class: {0}", clsName);
     }
     catch (InstantiationException ex)
     {
-      LOGGER.log(Level.WARNING, "Unable to instantiate MAL Broker handler: {0}", clsName);
+      MALBrokerImpl.LOGGER.log(Level.WARNING, "Unable to instantiate MAL Broker handler: {0}", clsName);
+    }
+    catch (NoSuchMethodException ex)
+    {
+      MALBrokerImpl.LOGGER.log(Level.WARNING, "Unable to instantiate MAL Broker handler: {0}", clsName);
+    }
+    catch (InvocationTargetException ex)
+    {
+      MALBrokerImpl.LOGGER.log(Level.WARNING, "InvocationTargetExceptionUnable when instantiating MAL Broker handler class: {0}", clsName);
     }
     catch (IllegalAccessException ex)
     {
-      LOGGER.log(Level.WARNING, "IllegalAccessException when instantiating MAL Broker handler class: {0}", clsName);
+      MALBrokerImpl.LOGGER.log(Level.WARNING, "IllegalAccessException when instantiating MAL Broker handler class: {0}", clsName);
     }
 
     if (null == broker)
     {
-      broker = new SimpleBrokerHandler();
-      LOGGER.info("Creating internal MAL Broker handler: SimpleBrokerHandler");
+      broker = new SimpleBrokerHandler(this);
+      MALBrokerImpl.LOGGER.info("Creating internal MAL Broker handler: SimpleBrokerHandler");
     }
 
     return broker;
