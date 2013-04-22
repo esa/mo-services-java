@@ -1,31 +1,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>esa.esoc</groupId>
+  
+  <parent>
+    <groupId>int.esa</groupId>
+    <artifactId>ESA_POM</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  
   <artifactId>CCSDS_APIS</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>ESA CCSDS APIs</name>
+
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <ccsds.specification.version>1.1-SNAPSHOT</ccsds.specification.version>
     <extra.specification.version>1.0-SNAPSHOT</extra.specification.version>
-    <esa.api.version>2.3-SNAPSHOT</esa.api.version>
-    <esa.stubgenerator.version>2.3-SNAPSHOT</esa.stubgenerator.version>
   </properties>
+
   <modules>
     <module>ESA_COM_API</module>
     <module>ESA_MC_API</module>
     <module>ESA_TEST_MAL_API</module>
     <module>ESA_TEST_COM_API</module>
   </modules>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>CCSDS_MAL_API</artifactId>
-      <version>${esa.api.version}</version>
     </dependency>
   </dependencies>
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -35,117 +40,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <encoding>${project.build.sourceEncoding}</encoding>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <configuration>
-            <encoding>${project.build.sourceEncoding}</encoding>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>add-source</id>
-              <phase>generate-sources</phase>
-              <goals>
-                <goal>add-source</goal>
-              </goals>
-              <configuration>
-                <sources>
-                  <source>${project.build.directory}/generated-sources/stub</source>
-                </sources>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>esa.esoc</groupId>
-          <artifactId>CCSDS_MO_StubGenerator</artifactId>
-          <version>${esa.stubgenerator.version}</version>
-          <executions>
-            <execution>
-              <phase>process-sources</phase>
-              <goals>
-                <goal>generate</goal>
-              </goals>
-              <configuration>
-                <xmlDirectory>${project.build.directory}/xml</xmlDirectory>
-                <xmlRefDirectory>${project.build.directory}/xml-ref/xml</xmlRefDirectory>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.1</version>
-          <configuration>
-            <reportPlugins>
-              <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8.1</version>
-              </plugin>
-            </reportPlugins>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-  <repositories>
-    <repository>
-      <id>centralx</id>
-      <url>http://62.193.192.27/artifactory/repo</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>snapshotsx</id>
-      <url>http://62.193.192.27/artifactory/repo</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>centralx</id>
-      <url>http://62.193.192.27/artifactory/plugins-releases</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>snapshotsx</id>
-      <url>http://62.193.192.27/artifactory/plugins-snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
-  <distributionManagement>
-    <repository>
-      <id>cvs.scisys.co.uk</id>
-      <name>cvs.scisys.co.uk</name>
-      <url>http://62.193.192.27/artifactory/libs-releases-local-esa</url>
-    </repository>
-    <snapshotRepository>
-      <id>cvs.scisys.co.uk</id>
-      <name>cvs.scisys.co.uk</name>
-      <url>http://62.193.192.27/artifactory/libs-snapshots-local-esa</url>
-    </snapshotRepository>
-  </distributionManagement>
 </project>
