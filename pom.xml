@@ -1,85 +1,60 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>esa.esoc</groupId>
+  
+  <parent>
+    <groupId>int.esa</groupId>
+    <artifactId>ESA_POM</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  
   <artifactId>CCSDS_MAL_IMPL</artifactId>
   <packaging>jar</packaging>
-  <version>2.3-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
+
   <name>ESA MAL Implementation</name>
-  <url>http://esoc.esa.int</url>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <esa.api.version>2.3-SNAPSHOT</esa.api.version>
-  </properties>
+  <description>The ESA implementation of the CCSDS MAL</description>
+  <url>http://www.esa.int</url>
+  
+  <!--  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>-->
+
+  <!--  <scm>
+    <connection>scm:git:git@github.com:juven/git-demo.git</connection>
+    <developerConnection>scm:git:git@github.com:juven/git-demo.git</developerConnection>
+    <url>git@github.com:juven/git-demo.git</url>
+  </scm>-->
+
+  <developers>
+    <developer>
+      <id>SamCooper</id>
+      <name>Sam Cooper</name>
+      <email>sam.cooper@scisys.co.uk</email>
+    </developer>
+  </developers>
+
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
       </plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <id>centralx</id>
-      <url>http://62.193.192.27/artifactory/repo/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>snapshotsx</id>
-      <url>http://62.193.192.27/artifactory/repo/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>centralx</id>
-      <url>http://62.193.192.27/artifactory/plugins-releases</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>snapshotsx</id>
-      <url>http://62.193.192.27/artifactory/plugins-snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
-  <distributionManagement>
-    <repository>
-      <id>cvs.scisys.co.uk</id>
-      <name>cvs.scisys.co.uk</name>
-      <url>http://62.193.192.27/artifactory/libs-releases-local-esa</url>
-    </repository>
-    <snapshotRepository>
-      <id>cvs.scisys.co.uk</id>
-      <name>cvs.scisys.co.uk</name>
-      <url>http://62.193.192.27/artifactory/libs-snapshots-local-esa</url>
-    </snapshotRepository>
-  </distributionManagement>
+  
   <dependencies>
     <dependency>
-      <groupId>esa.esoc</groupId>
+      <groupId>int.esa</groupId>
       <artifactId>CCSDS_MAL_API</artifactId>
-      <version>${esa.api.version}</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>esa.esoc</groupId>
+      <groupId>int.esa</groupId>
       <artifactId>CCSDS_MAL_UTILS</artifactId>
-      <version>${esa.api.version}</version>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>
