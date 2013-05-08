@@ -76,7 +76,7 @@ public final class TransportSingleton
       return internalInstance(dstUri.getValue(), properties);
     }
 
-    return internalInstance(defaultProtocol, null);
+    return internalInstance(defaultProtocol, properties);
   }
 
   /**
@@ -96,7 +96,7 @@ public final class TransportSingleton
       return internalInstance(dstUri, properties);
     }
 
-    return internalInstance(defaultProtocol, null);
+    return internalInstance(defaultProtocol, properties);
   }
 
   /**
