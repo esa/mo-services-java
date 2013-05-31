@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!--
+    Licensed under the European Space Agency Public License, Version 2.0
+    You may not use this file except in compliance with the License.
+
+    Except as expressly set forth in this License, the Software is provided to
+    You on an "as is" basis and without warranties of any kind, including without
+    limitation merchantability, fitness for a particular purpose, absence of
+    defects or errors, accuracy or non-infringement of intellectual property rights.
+ 
+    See the License for the specific language governing permissions and limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>int.esa</groupId>
+    <artifactId>CCSDS_MO_POM</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>CCSDS_MO_StubGenerator</artifactId>
+  <packaging>maven-plugin</packaging>
+  <version>1.0-SNAPSHOT</version>
+  
+  <name>ESA MO Stub Generator</name>
+  <description>Generates technology bindings for CCSDS MAL service specifications</description>
+  <url>http://github.com/esa/${project.artifactId}</url>
+  
+  <organization>
+    <name>ESA</name>
+    <url>http://www.esa.int</url>
+  </organization>
+  
+  <licenses>
+    <license>
+      <name>The European Space Agency Public License, Version 2.0</name>
+      <url>https://raw.github.com/esa/${project.artifactId}/master/LICENCE.md</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:esa/${project.artifactId}.git</connection>
+    <developerConnection>scm:git:git@github.com:esa/${project.artifactId}.git</developerConnection>
+    <url>https://github.com/esa/${project.artifactId}</url>
+  </scm>
+  
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/esa/${project.artifactId}/issues</url>
+  </issueManagement>
+  
+  <developers>
+    <developer>
+      <id>SamCooper</id>
+      <name>Sam Cooper</name>
+      <email>sam.cooper@scisys.co.uk</email>
+      <url>https://github.com/SamCooper</url>
+    </developer>
+  </developers>
+
+  <properties>
+    <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
+    <ccsds.specification.download.filter>**/*.xsd</ccsds.specification.download.filter>
+    <assembly.mainClass>esa.mo.tools.stubgen.StubGenerator</assembly.mainClass>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>0.9.8</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}</directory>
+        <includes>
+          <include>LICENCE.md</include>
+        </includes>
+      </resource>
+    </resources>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxb2-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>xjc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <packageName>esa.mo.tools.stubgen.xsd</packageName>
+          <schemaDirectory>${project.build.directory}/xsd</schemaDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
