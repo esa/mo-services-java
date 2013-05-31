@@ -21,6 +21,7 @@
   <packaging>pom</packaging>
   <name>ESA MO POM</name>
   <description>ESA top level POM for CCSDS MO based artifacts</description>
+  <url>http://github.com/esa/${project.artifactId}</url>
   
   <organization>
     <name>ESA</name>
