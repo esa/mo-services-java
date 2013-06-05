@@ -1,15 +1,27 @@
 /* ----------------------------------------------------------------------------
- * (C) 2010      European Space Agency
- *               European Space Operations Centre
- *               Darmstadt Germany
+ * Copyright (C) 2013      European Space Agency
+ *                         European Space Operations Centre
+ *                         Darmstadt
+ *                         Germany
  * ----------------------------------------------------------------------------
- * System       : CCSDS MO MAL Implementation
- * Author       : Sam Cooper
+ * System                : CCSDS MO MAL Java Implementation
+ * ----------------------------------------------------------------------------
+ * Licensed under the European Space Agency Public License, Version 2.0
+ * You may not use this file except in compliance with the License.
  *
+ * Except as expressly set forth in this License, the Software is provided to
+ * You on an "as is" basis and without warranties of any kind, including without
+ * limitation merchantability, fitness for a particular purpose, absence of
+ * defects or errors, accuracy or non-infringement of intellectual property rights.
+ * 
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
 package esa.mo.mal.impl.broker;
 
+import esa.mo.mal.impl.MALContextImpl;
+import esa.mo.mal.impl.ServiceComponentImpl;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +30,6 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
-import esa.mo.mal.impl.MALContextImpl;
-import esa.mo.mal.impl.ServiceComponentImpl;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;

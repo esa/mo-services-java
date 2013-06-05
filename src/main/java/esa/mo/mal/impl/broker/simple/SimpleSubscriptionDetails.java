@@ -1,24 +1,34 @@
 /* ----------------------------------------------------------------------------
- * (C) 2010      European Space Agency
- *               European Space Operations Centre
- *               Darmstadt Germany
+ * Copyright (C) 2013      European Space Agency
+ *                         European Space Operations Centre
+ *                         Darmstadt
+ *                         Germany
  * ----------------------------------------------------------------------------
- * System       : CCSDS MO MAL Implementation
- * Author       : Sam Cooper
+ * System                : CCSDS MO MAL Java Implementation
+ * ----------------------------------------------------------------------------
+ * Licensed under the European Space Agency Public License, Version 2.0
+ * You may not use this file except in compliance with the License.
  *
+ * Except as expressly set forth in this License, the Software is provided to
+ * You on an "as is" basis and without warranties of any kind, including without
+ * limitation merchantability, fitness for a particular purpose, absence of
+ * defects or errors, accuracy or non-infringement of intellectual property rights.
+ * 
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
 package esa.mo.mal.impl.broker.simple;
 
+import esa.mo.mal.impl.broker.MALBrokerImpl;
+import esa.mo.mal.impl.broker.NotifyMessageSet.NotifyMessage;
+import esa.mo.mal.impl.broker.key.SubscriptionKey;
+import esa.mo.mal.impl.broker.key.UpdateKey;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
-import esa.mo.mal.impl.broker.MALBrokerImpl;
-import esa.mo.mal.impl.broker.NotifyMessageSet.NotifyMessage;
-import esa.mo.mal.impl.broker.key.SubscriptionKey;
-import esa.mo.mal.impl.broker.key.UpdateKey;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
