@@ -85,11 +85,6 @@
       </dependency>
       <dependency>
         <groupId>int.esa</groupId>
-        <artifactId>CCSDS_MAL_UTILS</artifactId>
-        <version>${esa.api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>int.esa</groupId>
         <artifactId>CCSDS_MAL_ENCODING_STRING</artifactId>
         <version>${esa.string.encoder.version}</version>
       </dependency>
