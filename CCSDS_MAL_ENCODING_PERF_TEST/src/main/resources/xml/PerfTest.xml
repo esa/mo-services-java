@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smc:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:tst="http://www.ccsds.org/schema/PerfTestServiceSchema"
+                   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                   xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
+  <smc:area name="PerfTest" number="11">
+    <smc:service name="PerfTest" number="1" version="1">
+      <smc:capabilitySet number="100">
+        <smc:sendIP name="send" number="100" supportInReplay="false">
+          <smc:messages>
+            <smc:send>
+              <smc:type area="PerfTest" name="xxCompactArchiveReport"/>
+            </smc:send>
+          </smc:messages>
+        </smc:sendIP>
+        <smc:sendIP name="send2" number="101" supportInReplay="false">
+          <smc:messages>
+            <smc:send>
+              <xsd:element name="body0" type="tst:CompactArchiveReport"/>
+            </smc:send>
+          </smc:messages>
+        </smc:sendIP>
+      </smc:capabilitySet>
+    </smc:service>
+    <smc:dataTypes>
+      <smc:composite name="xxCompactArchiveReport" shortFormPart="1"
+                     comment="">
+        <smc:extends>
+          <smc:type name="Composite" area="MAL"/>
+        </smc:extends>
+        <smc:field name="domain" canBeNull="false" comment="The domain for this set of updates.">
+          <smc:type list="true" name="Identifier" area="MAL"/>
+        </smc:field>
+        <smc:field name="networkZone" canBeNull="false"
+                   comment="The network zone for this set of updates.">
+          <smc:type name="Identifier" area="MAL"/>
+        </smc:field>
+        <smc:field name="serviceArea" canBeNull="false"
+                   comment="The service area that this set of updates came from.">
+          <smc:type name="Short" area="MAL"/>
+        </smc:field>
+        <smc:field name="serviceType" canBeNull="false"
+                   comment="The service type that this set of updates came from.">
+          <smc:type name="Short" area="MAL"/>
+        </smc:field>
+        <smc:field name="statusUpdates" canBeNull="false" comment="Set of Status updates.">
+          <smc:type list="true" name="xxCompactStatusUpdate" area="PerfTest"/>
+        </smc:field>
+        <smc:field name="eventUpdates" canBeNull="false" comment="Set of Event updates.">
+          <smc:type list="true" name="xxCompactStatusUpdate" area="PerfTest"/>
+        </smc:field>
+      </smc:composite>
+      <smc:composite name="xxCompactStatus" shortFormPart="2"
+                     comment="The structure holds a single status aspect without the key. The key for this structure is held elsewhere.">
+        <smc:extends>
+          <smc:type name="Composite" area="MAL"/>
+        </smc:extends>
+        <smc:field name="timestamp" canBeNull="false" comment="The timestamp of the update.">
+          <smc:type name="Time" area="MAL"/>
+        </smc:field>
+        <smc:field name="updateType"
+                   comment="Type of update being reported. If set to NULL then is the same as the previous entry in the list.">
+          <smc:type name="UpdateType" area="MAL"/>
+        </smc:field>
+        <smc:field name="updateSource"
+                   comment="Holds all information required to identify the source of an update. Provides traceability of objects back to their triggering source. If this value is the same as the previous entry in the list then it shall be set to NULL. To represent an actual NULL value then it shall contain an ExternalReference with each conatined field set to NULL.">
+          <smc:type name="ExternalReference" area="PerfTest"/>
+        </smc:field>
+        <smc:field name="status" comment="The status update value.">
+          <smc:type name="xxComplexParameterValue" area="PerfTest"/>
+        </smc:field>
+      </smc:composite>
+      <smc:composite name="xxCompactStatusUpdate" shortFormPart="3"
+                     comment="">
+        <smc:extends>
+          <smc:type name="Composite" area="MAL"/>
+        </smc:extends>
+        <smc:field name="key"
+                   comment="The key of the entity. If set to NULL then is the same as the previous entry in the list.">
+          <smc:type name="StatusKey" area="PerfTest"/>
+        </smc:field>
+        <smc:field name="sourceURI"
+                   comment="URI of the source of the update, usually a PUBSUB provider. If set to NULL then is the same as the previous entry in the list.">
+          <smc:type name="URI" area="MAL"/>
+        </smc:field>
+        <smc:field name="updates" canBeNull="false" comment="The set of updates for this entity.">
+          <smc:type list="true" name="xxCompactStatus" area="PerfTest"/>
+        </smc:field>
+      </smc:composite>
+      <smc:composite name="xxParameterValue"
+                     comment="">
+        <smc:field name="rawValue" comment="">
+          <smc:type name="Attribute" area="MAL"/>
+        </smc:field>
+      </smc:composite>
+      <smc:composite name="xxComplexParameterValue" shortFormPart="4"
+                     comment="">
+        <smc:extends>
+          <smc:type name="xxParameterValue" area="PerfTest"/>
+        </smc:extends>
+        <smc:field name="validityState" canBeNull="false" comment="The parameter validity state.">
+          <smc:type name="Validity" area="PerfTest"/>
+        </smc:field>
+        <smc:field name="convertedValue" comment="The parameter converted value.">
+          <smc:type name="Attribute" area="MAL"/>
+        </smc:field>
+      </smc:composite>
+      <smc:enumeration name="Validity" shortFormPart="33"
+                       comment="Validity is an enumeration representing the possible validity states of a Parameter.">
+        <smc:item value="INVALID" nvalue="1"
+                  comment="The validity criteria has been evaluated to FALSE."/>
+        <smc:item value="VALID" nvalue="2"
+                  comment="The validity criteria has been evaluated to TRUE or there is no criteria defined."/>
+        <smc:item value="UNVERIFIED" nvalue="3"
+                  comment="The validity of the validity criteria has been evaluated to FALSE and therefore cannot be used to verify the current value."/>
+        <smc:item value="EXPIRED" nvalue="4"
+                  comment="The parameter has a time out associated which has expired."/>
+      </smc:enumeration>
+      <smc:composite name="StatusKey" shortFormPart="23"
+                     comment="The StatusKey structure holds all information required by the Common Model to identify a status.">
+        <smc:extends>
+          <smc:type name="Composite" area="MAL"/>
+        </smc:extends>
+        <smc:field name="entityId" comment="The identifier of this entity.">
+          <smc:type name="Identifier" area="MAL"/>
+        </smc:field>
+        <smc:field name="definitionId" comment="The identifier of this definition.">
+          <smc:type name="Integer" area="MAL"/>
+        </smc:field>
+        <smc:field name="occurrenceId" comment="The identifier of this occurrence.">
+          <smc:type name="Integer" area="MAL"/>
+        </smc:field>
+        <smc:field name="statusId" comment="The identifier of this status.">
+          <smc:type name="Integer" area="MAL"/>
+        </smc:field>
+      </smc:composite>
+      <smc:composite name="ExternalReference" shortFormPart="27"
+                     comment="This structure holds all the required information to reference an occurrence or definition of another service.">
+        <smc:extends>
+          <smc:type name="Composite" area="MAL"/>
+        </smc:extends>
+        <smc:field name="domain"
+                   comment="The Domain of the referenced entity, NULL if the same as the referring entity.">
+          <smc:type list="true" name="Identifier" area="MAL"/>
+        </smc:field>
+        <smc:field name="networkZone"
+                   comment="The Network Zone of the referenced entity, NULL if the same as the referring entity.">
+          <smc:type name="Identifier" area="MAL"/>
+        </smc:field>
+        <smc:field name="area"
+                   comment="The service area of the referenced entity, NULL if the same as the referring entity.">
+          <smc:type name="Short" area="MAL"/>
+        </smc:field>
+        <smc:field name="service"
+                   comment="The Service of the referenced entity, NULL if the same as the referring entity.">
+          <smc:type name="Short" area="MAL"/>
+        </smc:field>
+        <smc:field name="operation"
+                   comment="The Operation of the referenced entity, NULL if the same as the referring entity or not applicable.">
+          <smc:type name="Short" area="MAL"/>
+        </smc:field>
+        <smc:field name="sourceKey"
+                   comment="The OccurrenceKey of the referenced entity. If a Definition is being referenced then the occurrenceId part shall be set to NULL.">
+          <smc:type name="OccurrenceKey" area="PerfTest"/>
+        </smc:field>
+      </smc:composite>
+      <smc:composite name="OccurrenceKey" shortFormPart="22"
+                     comment="The OccurrenceKey structure holds all information required by the Common Model to identify an occurrence.">
+        <smc:extends>
+          <smc:type name="Composite" area="MAL"/>
+        </smc:extends>
+        <smc:field name="entityId" comment="The identifier of this entity.">
+          <smc:type name="Identifier" area="MAL"/>
+        </smc:field>
+        <smc:field name="definitionId" comment="The identifier of this definition.">
+          <smc:type name="Integer" area="MAL"/>
+        </smc:field>
+        <smc:field name="occurrenceId" comment="The identifier of this occurrence.">
+          <smc:type name="Integer" area="MAL"/>
+        </smc:field>
+      </smc:composite>
+    </smc:dataTypes>
+  </smc:area>
+</smc:specification>
