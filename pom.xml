@@ -63,7 +63,6 @@
   <modules>
     <module>CCSDS_MAL_TRANSPORT_GEN</module>
     <module>CCSDS_MAL_TRANSPORT_RMI</module>
-    <module>CCSDS_MAL_TRANSPORT_FILE</module>
     <module>CCSDS_MAL_ENCODING_STRING</module>
     <module>CCSDS_MAL_ENCODING_BINARY</module>
   </modules>
@@ -84,6 +83,7 @@
         <jdk>[1.7,]</jdk>
       </activation>
       <modules>
+        <module>CCSDS_MAL_TRANSPORT_FILE</module>
         <module>CCSDS_MAL_ENCODING_BINARY_SPLIT</module>
       </modules>  
     </profile>
