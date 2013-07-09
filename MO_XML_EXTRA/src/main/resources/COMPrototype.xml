@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mal:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:mal="http://www.ccsds.org/schema/ServiceSchema"
+                   xmlns:com="http://www.ccsds.org/schema/COMSchema">
+  <mal:area comment="Something about the COM prototype."
+            name="COMPrototype"
+            number="200"
+            version="1">
+<!--
+    <mal:service xsi:type="com:ExtendedServiceType"
+                 comment="For the Event service test a single service provider shall be implemented and deployed that provides this EventTest service and also, as it contains Events, the Event service."
+                 name="EventTest"
+                 number="2"
+                 version="1">
+      <mal:capabilitySet number="100">
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="resetTest" number="100"
+                      supportInReplay="false"
+                      comment="Resets the EventTest service provider."
+                      comUsage="No Event value updates shall be distributed as a result of this operation.">
+          <mal:messages>
+            <mal:submit xsi:type="com:MessageWithCommentType"
+                        comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="triggerEvent" number="101"
+                      supportInReplay="false"
+                      comment="Causes the provider to raise an event typed TestEvent1."
+                      comUsage="No Event value updates shall be distributed as a result of this operation.">
+          <mal:messages>
+            <mal:submit xsi:type="com:MessageWithCommentType"
+                        comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="triggerEventError" number="102"
+                      supportInReplay="false"
+                      comment="Causes the provider to raise an event error typed TestEvent2."
+                      comUsage="">
+          <mal:messages>
+            <mal:submit xsi:type="com:MessageWithCommentType"
+                        comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef xsi:type="com:EventErrorReferenceType" comment="Cannot move any further">
+              <mal:type name="INTERNAL" area="MAL"/>
+              <mal:extraInformation comment="">
+                <mal:type name="TestEvent2" area="COMPrototype" service="EventTest"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="setServiceOccurrenceId" number="103"
+                      supportInReplay="false"
+                      comment="Sets the service occurrence id."
+                      comUsage="">
+          <mal:messages>
+            <mal:submit xsi:type="com:MessageWithCommentType"
+                        comment="">
+              <mal:type name="Identifier" area="MAL"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:composite name="TestEvent1" shortFormPart="2" comment="">
+          <mal:extends>
+            <mal:type name="EventOccurrence" area="COM" service="Event"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="TestEvent2" shortFormPart="3" comment="">
+          <mal:extends>
+            <mal:type name="EventOccurrence" area="COM" service="Event"/>
+          </mal:extends>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:eventsRaised>
+        <com:event name="testEvent1" number="1" entitySpecific="false" comment="The EventTest raises a TestEvent1.">
+          <mal:type name="TestEvent1" area="COMPrototype" service="EventTest"/>
+        </com:event>
+        <com:event name="testEvent2" number="1" entitySpecific="false" comment="The EventTest raises a TestEvent2.">
+          <mal:type name="TestEvent2" area="COMPrototype" service="EventTest"/>
+        </com:event>
+      </com:eventsRaised>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType"
+                 comment="For the COM service test a single service provider shall be implemented and deployed that provides this COMTest service."
+                 name="COMTest"
+                 number="3">
+      <mal:capabilitySet number="100">
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="resetTest" number="100"
+                      supportInReplay="false"
+                      comment="Deletes all the entities and cleans the history."
+                      comUsage="No entity value updates shall be distributed as a result of this operation.">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="setHistoryLevel" number="101"
+                      supportInReplay="false"
+                      comment="Enables the COM history behaviour.">
+          <mal:messages>
+            <mal:submit comment="Enables to configure the history behaviour of the provider.">
+              <mal:type name="HistoryLevel" area="COMPrototype" service="COMTest"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="addTestDefinition" number="102"
+                      supportInReplay="false"
+                      comment="Causes the provider to add a COMTestDefinition in a specific way."
+                      comUsage="Same as the generic COM addDefinition operation.">
+          <mal:messages>
+            <mal:submit comment="Same as the generic COM addDefinition operation.">
+              <mal:type list="true" name="DefinitionHeader" area="COM" service="COM"/>
+              <mal:type list="true" name="COMTestDefinition" area="COMPrototype" service="COMTest"/>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Same as the generic COM addDefinition operation.">
+              <mal:type name="INVALID" area="COM" service="COM"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Same as the generic COM addDefinition operation.">
+              <mal:type name="DUPLICATE" area="COM" service="COM"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Same as the generic COM addDefinition operation.">
+              <mal:type name="REFERENCED" area="COM" service="COM"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="addTestOccurrence" number="103"
+                      supportInReplay="false"
+                      comment="Causes the provider to add a COMTestOccurrence in a specific way."
+                      comUsage="Same as the generic COM addOccurrence operation.">
+          <mal:messages>
+            <mal:submit comment="Same as the generic COM addOccurrence operation.">
+              <mal:type list="true" name="OccurrenceHeader" area="COM" service="COM"/>
+              <mal:type list="true" name="COMTestOccurrence" area="COMPrototype" service="COMTest"/>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Same as the generic COM addOccurrence operation.">
+              <mal:type name="INVALID" area="COM" service="COM"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Same as the generic COM addOccurrence operation.">
+              <mal:type name="DUPLICATE" area="COM" service="COM"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Same as the generic COM addOccurrence operation.">
+              <mal:type name="REFERENCED" area="COM" service="COM"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="triggerPartialDefinitionModification" number="104"
+                      supportInReplay="false"
+                      comment="Causes the provider to publish a set of partial updates, two for each non-deleted definition, according to the sequence: PartialDefinitionUpdate1, PartialDefinitionUpdate2."
+                      comUsage="">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="triggerPartialOccurrenceModification" number="105"
+                      supportInReplay="false"
+                      comment="Causes the provider to publish a set of partial updates, two for each non-deleted occurrence, according to the sequence: PartialOccurrenceUpdate1, PartialOccurrenceUpdate2."
+                      comUsage="">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="triggerStatusModification" number="106"
+                      supportInReplay="false"
+                      comment="Causes the provider to create a status update which type is Modification for the specified status keys."
+                      comUsage="The service-specific status structure shall be archived and distributed using a !-CompleteStatusUpdate-! structure using a !-MAL::UpdateType-! of !-Modification-!">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+              <mal:type list="true" name="StatusKey" area="COM" service="COM"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="triggerStatusDeletion" number="107"
+                      supportInReplay="false"
+                      comment="Causes the provider to create a status update which type is Deletion for the specified status keys."
+                      comUsage="The service-specific status structure shall be archived and distributed using a !-CompleteStatusUpdate-! structure using a !-MAL::UpdateType-! of !-Deletion-!">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+              <mal:type list="true" name="StatusKey" area="COM" service="COM"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="triggerPartialStatusModification" number="108"
+                      supportInReplay="false"
+                      comment="Causes the provider to publish a set of partial updates, two for each specified status, according to the sequence: PartialStatusUpdate1, PartialStatusUpdate2."
+                      comUsage="">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+              <mal:type list="true" name="StatusKey" area="COM" service="COM"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:composite name="COMTestBaseDefinition" comment="">
+          <mal:extends>
+            <mal:type name="Definition" area="COM" service="COM"/>
+          </mal:extends>
+          <mal:field name="valid" canBeNull="false" comment="Enables to test the COM::INVALID error">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="COMTestBaseOccurrence" comment="">
+          <mal:extends>
+            <mal:type name="Occurrence" area="COM" service="COM"/>
+          </mal:extends>
+          <mal:field name="valid" canBeNull="false" comment="Enables to test the COM::INVALID error">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="COMTestBaseStatus" comment="">
+          <mal:extends>
+            <mal:type name="Status" area="COM" service="COM"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="COMTestDefinition" shortFormPart="1"
+                       comment="Holds the base definition information of a COMTest.">
+          <mal:extends>
+            <mal:type name="COMTestBaseDefinition" area="COMPrototype" service="COMTest"/>
+          </mal:extends>
+          <mal:field name="description" canBeNull="true" comment="Enables to modify the definition">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="COMTestOccurrence" shortFormPart="2"
+                       comment="Holds the base occurrence information of a COMTest.">
+          <mal:extends>
+            <mal:type name="COMTestBaseOccurrence" area="COMPrototype" service="COMTest"/>
+          </mal:extends>
+          <mal:field name="description" canBeNull="true" comment="Enables to modify the occurrence">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="COMTestStatus" shortFormPart="3"
+                       comment="Holds the base status information of a COMTest.">
+          <mal:extends>
+            <mal:type name="COMTestBaseStatus" area="COMPrototype" service="COMTest"/>
+          </mal:extends>
+          <mal:field name="key" canBeNull="true" comment="Enables to identify the status">
+            <mal:type name="StatusKey" service="COM" area="COM"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="COMTestDefinitionUpdate" comment="">
+          <mal:extends>
+            <mal:type name="DefinitionUpdate" area="COM" service="COM"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="COMTestOccurrenceUpdate" comment="">
+          <mal:extends>
+            <mal:type name="OccurrenceUpdate" area="COM" service="COM"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="COMTestStatusUpdate" comment="">
+          <mal:extends>
+            <mal:type name="StatusUpdate" area="COM" service="COM"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="COMTestCompleteDefinitionUpdate" shortFormPart="4" comment="">
+          <mal:extends>
+            <mal:type name="Definition" area="COM" service="COM"/>
+          </mal:extends>
+          <mal:field name="definition" canBeNull="true" comment="">
+            <mal:type name="COMTestDefinition" area="COMPrototype" service="COMTest"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="COMTestCompleteOccurrenceUpdate" shortFormPart="5" comment="">
+          <mal:extends>
+            <mal:type name="Occurrence" area="COM" service="COM"/>
+          </mal:extends>
+          <mal:field name="occurrence" canBeNull="true" comment="">
+            <mal:type name="COMTestOccurrence" area="COMPrototype" service="COMTest"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="COMTestCompleteStatusUpdate" shortFormPart="6" comment="">
+          <mal:extends>
+            <mal:type name="Status" area="COM" service="COM"/>
+          </mal:extends>
+          <mal:field name="status" canBeNull="true" comment="">
+            <mal:type name="COMTestStatus" area="COMPrototype" service="COMTest"/>
+          </mal:field>
+        </mal:composite>
+        <mal:enumeration name="HistoryLevel" shortFormPart="7"
+                         comment="Specifies the history behaviour of a COM provider.">
+          <mal:item value="NONE" nvalue="1" comment="No access to the history."/>
+          <mal:item value="KEY" nvalue="2"
+                    comment="Access limited to the archived keys."/>
+          <mal:item value="COMPLETE" nvalue="3"
+                    comment="Complete access to the history."/>
+        </mal:enumeration>
+        <mal:composite name="PartialDefinitionUpdate1" shortFormPart="8"
+                       comment="Represents a partial definition update.">
+          <mal:extends>
+            <mal:type name="COMTestBaseDefinition" area="COMPrototype" service="COMTest"/>
+          </mal:extends>
+          <mal:field name="description" canBeNull="true" comment="Enables to modify the definition">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="PartialDefinitionUpdate2" shortFormPart="9"
+                       comment="Represents a partial definition update.">
+          <mal:extends>
+            <mal:type name="COMTestBaseDefinition" area="COMPrototype" service="COMTest"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="PartialOccurrenceUpdate1" shortFormPart="10"
+                       comment="Represents a partial occurrence update.">
+          <mal:extends>
+            <mal:type name="COMTestBaseOccurrence" area="COMPrototype" service="COMTest"/>
+          </mal:extends>
+          <mal:field name="description" canBeNull="true" comment="Enables to modify the occurrence">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="PartialOccurrenceUpdate2" shortFormPart="11"
+                       comment="Represents a partial occurrence update.">
+          <mal:extends>
+            <mal:type name="COMTestBaseOccurrence" area="COMPrototype" service="COMTest"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="PartialStatusUpdate1" shortFormPart="12"
+                       comment="Represents a partial status update.">
+          <mal:extends>
+            <mal:type name="COMTestBaseStatus" area="COMPrototype" service="COMTest"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="PartialStatusUpdate2" shortFormPart="13"
+                       comment="Represents a partial status update.">
+          <mal:extends>
+            <mal:type name="COMTestBaseStatus" area="COMPrototype" service="COMTest"/>
+          </mal:extends>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:includesDefinition>
+        <com:objectType name="COMTestDefinition" area="COMPrototype" service="COMTest"/>
+        <com:publishType name="COMTestBaseDefinition" area="COMPrototype" service="COMTest"/>
+        <com:entityId specification="COMTest identifier"
+                      comment="The entity identifier is the unique identifier of the COMTest for the domain."/>
+        <com:definitionId specification="Generated by the service provider"/>
+      </com:includesDefinition>
+      <com:includesOccurrence>
+        <com:objectType name="COMTestOccurrence" area="COMPrototype" service="COMTest"/>
+        <com:publishType name="COMTestBaseOccurrence" area="COMPrototype" service="COMTest"/>
+        <com:occurrenceId specification="Generated by the service provider"
+                          comment="A COMTest occurrence is created by the service provider."/>
+      </com:includesOccurrence>
+      <com:includesStatus>
+        <com:objectType name="COMTestStatus" area="COMPrototype" service="COMTest"/>
+        <com:publishType name="COMTestBaseStatus" area="COMPrototype" service="COMTest"/>
+        <com:statusId specification="Generated by the service provider"/>
+      </com:includesStatus>
+    </mal:service>
+-->
+    <mal:service comment=""
+                 name="ActivityTest"
+                 number="4">
+      <mal:capabilitySet number="100">
+        <mal:submitIP name="resetTest" number="100"
+                      supportInReplay="false"
+                      comment="Resets all values back to their default value."
+                      comUsage="No updates shall be distributed as a result of this operation.">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:requestIP name="getTestCounterCurrentValue" number="101"
+                       supportInReplay="false"
+                       comment=""
+                       comUsage="">
+          <mal:messages>
+            <mal:request comment="No message structure is passed.">
+            </mal:request>
+            <mal:response comment="Returns the current value of the test counter.">
+              <mal:type name="Integer" area="MAL"/>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+        <mal:invokeIP name="cancellableOperation" number="102"
+                      supportInReplay="false"
+                      comment="Increments the test counter value by 1 every second until stopped. This operation can only be stopped using the Activity cancel or rollback operations or the resetTest operation, if cancel is used then the counter stops but it rollback is used then the counter is reset to 0."
+                      comUsage="">
+          <mal:messages>
+            <mal:invoke comment="No message structure is passed.">
+            </mal:invoke>
+            <mal:acknowledgement comment="No message structure is passed.">
+            </mal:acknowledgement>
+            <mal:response comment="This operation never completes, it is expected to be stopped using cancel or reset.">
+            </mal:response>
+          </mal:messages>
+        </mal:invokeIP>
+        <mal:invokeIP name="nonCancellableOperation" number="103"
+                      supportInReplay="false"
+                      comment="Increments the test counter value by 1 every second until stopped. This operation can only be stopped using the resetTest operation."
+                      comUsage="">
+          <mal:messages>
+            <mal:invoke comment="No message structure is passed.">
+            </mal:invoke>
+            <mal:acknowledgement comment="No message structure is passed.">
+            </mal:acknowledgement>
+            <mal:response comment="This operation never completes, it is expected to be stopped using resetTest.">
+            </mal:response>
+          </mal:messages>
+        </mal:invokeIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="101">
+        <mal:sendIP name="send" number="200" supportInReplay="false"
+                    comment="">
+          <mal:messages>
+            <mal:send comment="The set of execution stages to process.">
+              <mal:type list="true" area="MAL" name="String"/>
+            </mal:send>
+          </mal:messages>
+               
+        </mal:sendIP>
+        <mal:submitIP name="testSubmit" number="201" supportInReplay="false"
+                      comment="">
+          <mal:messages>
+            <mal:submit comment="The set of execution stages to process.">
+              <mal:type list="true" area="MAL" name="String"/>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Fake error for testing.">
+              <mal:type area="MAL" name="UNKNOWN"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+        <mal:requestIP name="request" number="202" supportInReplay="false"
+                       comment="">
+          <mal:messages>
+            <mal:request comment="The set of execution stages to process.">
+              <mal:type list="true" area="MAL" name="String"/>
+            </mal:request>
+            <mal:response>
+              <mal:type list="true" area="MAL" name="String"/>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Fake error for testing.">
+              <mal:type area="MAL" name="UNKNOWN"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:requestIP>
+        <mal:invokeIP name="invoke" number="203" supportInReplay="false"
+                      comment="">
+          <mal:messages>
+            <mal:invoke comment="The set of execution stages to process.">
+              <mal:type list="true" area="MAL" name="String"/>
+            </mal:invoke>
+            <mal:acknowledgement>
+              <mal:type list="true" area="MAL" name="String"/>
+            </mal:acknowledgement>
+            <mal:response>
+              <mal:type list="true" area="MAL" name="String"/>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Fake error for testing.">
+              <mal:type area="MAL" name="UNKNOWN"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:invokeIP>
+        <mal:progressIP name="progress" number="204" supportInReplay="false"
+                        comment="">
+          <mal:messages>
+            <mal:progress comment="The set of execution stages to process.">
+              <mal:type list="true" area="MAL" name="String"/>
+            </mal:progress>
+            <mal:acknowledgement>
+              <mal:type list="true" area="MAL" name="String"/>
+            </mal:acknowledgement>
+            <mal:update>
+              <mal:type list="true" area="MAL" name="String"/>
+            </mal:update>
+            <mal:response>
+              <mal:type list="true" area="MAL" name="String"/>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Fake error for testing.">
+              <mal:type area="MAL" name="UNKNOWN"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:progressIP>
+      </mal:capabilitySet>
+    </mal:service>
+    <mal:service comment=""
+                 name="ActivityRelayManagement"
+                 number="5">
+      <mal:capabilitySet number="100">
+        <mal:submitIP name="resetTest" number="100"
+                      supportInReplay="false"
+                      comment="Resets all values back to their default value."
+                      comUsage="No updates shall be distributed as a result of this operation.">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP name="createRelay" number="101"
+                      supportInReplay="false"
+                      comment="Create a new relay node that supports the Activity and ActivityTest services."
+                      comUsage="No updates shall be distributed as a result of this operation.">
+          <mal:messages>
+            <mal:submit comment="A pair of two strings, the first holds the relay name, the second holds the name of the node to relay to.">
+              <mal:type name="Pair" area="MAL"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+    </mal:service>
+<!--
+    <mal:service xsi:type="com:ExtendedServiceType"
+                 comment="Definition not used"
+                 name="COMTestNoDefinition"
+                 number="6">
+      <mal:capabilitySet number="100">
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="resetTest" number="100"
+                      supportInReplay="false"
+                      comment="Deletes all the entities and cleans the history."
+                      comUsage="No entity value updates shall be distributed as a result of this operation.">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="addEntity" number="101"
+                      supportInReplay="false"
+                      comment="Enables to add entities in a dynamic way."
+                      comUsage="">
+          <mal:messages>
+            <mal:submit comment="">
+              <mal:type list="true" name="Identifier" area="MAL"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="triggerStatusModification" number="102"
+                      supportInReplay="false"
+                      comment="Causes the provider to create a status update which type is Modification for the specified status keys."
+                      comUsage="The service-specific status structure shall be archived and distributed using a !-CompleteStatusUpdate-! structure using a !-MAL::UpdateType-! of !-Modification-!">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+              <mal:type list="true" name="StatusKey" area="COM" service="COM"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+      </mal:dataTypes>
+      <com:includesOccurrence>
+        <com:objectType name="COMTestOccurrence" area="COMPrototype" service="COMTest"/>
+        <com:publishType name="COMTestBaseOccurrence" area="COMPrototype" service="COMTest"/>
+        <com:occurrenceId specification="Generated by the service provider"
+                          comment="A COMTest occurrence is created by the service provider."/>
+      </com:includesOccurrence>
+      <com:includesStatus>
+        <com:objectType name="COMTestStatus" area="COMPrototype" service="COMTest"/>
+        <com:publishType name="COMTestBaseStatus" area="COMPrototype" service="COMTest"/>
+        <com:statusId specification="Generated by the service provider"/>
+      </com:includesStatus>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType"
+                 comment="Definition not used"
+                 name="COMTestNoOccurrence"
+                 number="7">
+      <mal:capabilitySet number="100">
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="resetTest" number="100"
+                      supportInReplay="false"
+                      comment="Deletes all the entities and cleans the history."
+                      comUsage="No entity value updates shall be distributed as a result of this operation.">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="triggerStatusModification" number="101"
+                      supportInReplay="false"
+                      comment="Causes the provider to create a status update which type is Modification for the specified status keys."
+                      comUsage="The service-specific status structure shall be archived and distributed using a !-CompleteStatusUpdate-! structure using a !-MAL::UpdateType-! of !-Modification-!">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+              <mal:type list="true" name="StatusKey" area="COM" service="COM"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+      </mal:dataTypes>
+      <com:includesDefinition>
+        <com:objectType name="COMTestDefinition" area="COMPrototype" service="COMTest"/>
+        <com:publishType name="COMTestBaseDefinition" area="COMPrototype" service="COMTest"/>
+        <com:entityId specification="COMTest identifier"
+                      comment="The entity identifier is the unique identifier of the COMTest for the domain."/>
+        <com:definitionId specification="Generated by the service provider"/>
+      </com:includesDefinition>
+      <com:includesStatus>
+        <com:objectType name="COMTestStatus" area="COMPrototype" service="COMTest"/>
+        <com:publishType name="COMTestBaseStatus" area="COMPrototype" service="COMTest"/>
+        <com:statusId specification="Generated by the service provider"/>
+      </com:includesStatus>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType"
+                 comment="Definition not used"
+                 name="COMReferenceTest"
+                 number="8">
+      <mal:capabilitySet number="100">
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="resetTest" number="100"
+                      supportInReplay="false"
+                      comment="Deletes all the entities and cleans the history."
+                      comUsage="No entity value updates shall be distributed as a result of this operation.">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:composite name="COMReferenceTestDefinition" shortFormPart="1" comment="">
+          <mal:extends>
+            <mal:type name="Definition" area="COM" service="COM"/>
+          </mal:extends>
+          <mal:field name="definitionReference" canBeNull="true" comment="Enables to test a reference to a COMTestDefinition">
+            <mal:type name="DefinitionKey" area="COM" service="COM"/>
+          </mal:field>
+          <mal:field name="occurrenceReference" canBeNull="true" comment="Enables to test a reference to a COMTestOccurrence">
+            <mal:type name="OccurrenceKey" area="COM" service="COM"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="COMReferenceTestOccurrence" shortFormPart="2" comment="">
+          <mal:extends>
+            <mal:type name="Occurrence" area="COM" service="COM"/>
+          </mal:extends>
+          <mal:field name="definitionReference" canBeNull="true" comment="Enables to test a reference to a COMTestDefinition">
+            <mal:type name="DefinitionKey" area="COM" service="COM"/>
+          </mal:field>
+          <mal:field name="occurrenceReference" canBeNull="true" comment="Enables to test a reference to a COMTestOccurrence">
+            <mal:type name="OccurrenceKey" area="COM" service="COM"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:includesDefinition>
+        <com:objectType name="COMReferenceTestDefinition" area="COMPrototype" service="COMReferenceTest"/>
+        <com:publishType name="COMReferenceTestDefinition" area="COMPrototype" service="COMReferenceTest"/>
+        <com:entityId specification="COMReferenceTest identifier"
+                      comment="The entity identifier is the unique identifier of the COMReferenceTest for the domain."/>
+        <com:definitionId specification="Generated by the service provider"/>
+      </com:includesDefinition>
+      <com:includesOccurrence>
+        <com:objectType name="COMReferenceTestOccurrence" area="COMPrototype" service="COMReferenceTest"/>
+        <com:publishType name="COMReferenceTestOccurrence" area="COMPrototype" service="COMReferenceTest"/>
+        <com:occurrenceId specification="Generated by the service provider"
+                          comment="A COMReferenceTest occurrence is created by the service provider."/>
+      </com:includesOccurrence>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType"
+                 comment="Definition not used"
+                 name="COMSourceTest"
+                 number="9">
+      <mal:capabilitySet number="100">
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="resetTest" number="100"
+                      supportInReplay="false"
+                      comment="Deletes all the entities and cleans the history."
+                      comUsage="No entity value updates shall be distributed as a result of this operation.">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:composite name="COMSourceTestOccurrence" shortFormPart="2" comment="">
+          <mal:extends>
+            <mal:type name="Occurrence" area="COM" service="COM"/>
+          </mal:extends>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:includesOccurrence>
+        <com:objectType name="COMSourceTestOccurrence" area="COMPrototype" service="COMSourceTest"/>
+        <com:publishType name="COMSourceTestOccurrence" area="COMPrototype" service="COMSourceTest"/>
+        <com:occurrenceId specification="Generated by the service provider"
+                          comment="A COMReferenceTest occurrence is created by the service provider."/>
+      </com:includesOccurrence>
+    </mal:service>
+    -->
+  </mal:area>
+</mal:specification>

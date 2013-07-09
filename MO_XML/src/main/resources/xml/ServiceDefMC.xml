@@ -1,0 +1,1425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mal:specification xmlns:com="http://www.ccsds.org/schema/COMSchema"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
+  <mal:area name="MC" number="4" version="1"
+            comment="This section details the M&amp;C services; the structures used by the services are detailed in section 4. Both the services and structures are defined in terms of the MO MAL, which is defined in [2], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in [3].&#xA;To aid comprehension, several tables are included for each service and operation definition. The table formats are briefly described in section 1.6.3.2 and are the same as those used for the specification of the MO COM services in [3]. &#xA;All service specifications in this document are part of the M&amp;C area, which has a short form number of '4'.&#xA;">
+    <mal:service xsi:type="com:ExtendedServiceType" name="Action" number="1"
+                 comment="The action service allows consumers to request the invocation of actions and to subsequently monitor these actions via the COM Activity monitoring pattern. An action is submitted to the provider using the sendAction operation.&#xA;&#xA;The nominal sequence of action submission and monitoring are shown in figure 3-1:&#xA;&lt; insert sequence diag here &gt;&#xA;&#xA;The Action service defines two types of objects, the first type is the Action definition objects that hold the description of an action with the list of required/optional arguments. The second type of objects is the Action objects that hold details of a specific Action instance namely a value for each of the arguments of the action.&#xA;There are also two subsets of definition, and matching action instance, objects. The first is the simple action definition and instance objects, these are expected to be used by service providers that have limited capabilities and define an action as containing just a simple list of arguments. The arguments are just a list MAL attribute types.&#xA;The second subset is the complex actions. The main difference is that the arguments of the complex actions are much more complex, containing a raw and converted representation, units types, and potentially multiple conditional conversions.&#xA;It is a deployment decision which type of actions to use in a specific circumstance, it is also possible to mix the two types with some actions being defined as simple actions and other being defined as complex.&#xA;">
+      <mal:capabilitySet number="1">
+        <mal:submitIP name="sendAction" number="1" supportInReplay="false"
+                      comment="The sendAction operation allows a consumer to send an action to a provider for remote execution.&#xA;">
+          <mal:messages>
+            <mal:submit comment="The first part of the submission shall contain a MAL long that is the object instance identifier of the action definition to be used.&#xA;The second part of the submission shall contain the argument values and related information of the action to be executed.&#xA;The operation shall return once the action has been accepted for execution but before execution starts.&#xA;">
+              <mal:type name="Long" area="MAL"/>
+              <mal:type name="Action" service="Action" area="MC"/>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="The argument list contains one or more invalid arguments.&#xA;">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains the indexes of the erroneous values from the originating list submitted.&#xA;">
+                <mal:type list="true" name="Integer" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="Submitted action is unknown.&#xA;">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+        <mal:requestIP name="preCheckAction" number="2" supportInReplay="false"
+                       comment="The preCheckAction operation allows a consumer to check that an action would be successfully accepted for execution without actually submitting it. It is expected to be provided by local action proxies rather than the remote system to allow for quick local checks before sending the action over long and slow space links.&#xA;">
+          <mal:messages>
+            <mal:request comment="The first part of the submission shall contain a MAL long that is the object instance identifier of the action definition to be used.&#xA;The second part of the submission shall contain the argument values and related information of the action to be executed.&#xA;">
+              <mal:type name="Long" area="MAL"/>
+              <mal:type name="Action" service="Action" area="MC"/>
+            </mal:request>
+            <mal:response comment="The returned Boolean shall be set to TRUE if the action would be accepted successfully; otherwise it shall return FALSE.&#xA;">
+              <mal:type name="Boolean" area="MAL"/>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="The argument list contains one or more invalid arguments.&#xA;">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains the indexes of the erroneous values from the originating list submitted.&#xA;">
+                <mal:type list="true" name="Integer" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="Submitted action is unknown.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="2">
+        <mal:requestIP name="listDefinition" number="3" supportInReplay="true"
+                       comment="The list action definition operation allows a consumer to request the object identifiers of the action definitions for the supported actions of the provider. It is expected to be used in conjunction with the COM archive which holds the actual action definition objects.&#xA;">
+          <mal:messages>
+            <mal:request comment="The request shall contain a list of action names to retrieve the action definition object instance identifiers for.&#xA;The request may contain the wildcard value of '*' to return all supported action definitions.&#xA;">
+              <mal:type list="true" name="Identifier" area="MAL"/>
+            </mal:request>
+            <mal:response comment="The response shall contain a list of matching action definition object identifiers.&#xA;&#xA;">
+              <mal:type list="true" name="Long" area="MAL"/>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="3">
+        <mal:requestIP name="addDefinition" number="4" supportInReplay="false">
+          <mal:messages>
+            <mal:request>
+              <mal:type list="true" name="ActionDefinition" service="Action" area="MC"/>
+            </mal:request>
+            <mal:response>
+              <mal:type list="true" name="Long" area="MAL"/>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+        <mal:submitIP name="updateDefinition" number="5" supportInReplay="false">
+          <mal:messages>
+            <mal:submit>
+              <mal:type list="true" name="Long" area="MAL"/>
+              <mal:type list="true" name="ActionDefinition" service="Action" area="MC"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:submitIP name="deleteDefinition" number="6" supportInReplay="false">
+          <mal:messages>
+            <mal:submit>
+              <mal:type list="true" name="Long" area="MAL"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:composite name="Action"
+                       comment="The Action structure holds the information common to both simple and complex actions.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="stageStartedRequired" canBeNull="false"
+                     comment="If TRUE, then an activity event of type Execution is required for the STARTED stage.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="stageProgressRequired" canBeNull="false"
+                     comment="If TRUE, then activity events of type Execution are required for the PROGRESS stages.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="stageCompletedRequired" canBeNull="false"
+                     comment="If TRUE, then an activity event of type Execution is required for the COMPLETION stage.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ActionDefinition"
+                       comment="The ActionDefinition structure holds the base definition information of an action.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="name" canBeNull="false"
+                     comment="The name of the action. Must not be empty or the wildcard value.&#xA;">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="description" canBeNull="false" comment="The description of the action.&#xA;">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="severity" canBeNull="false" comment="Severity of the action.&#xA;">
+            <mal:type name="Severity" area="MC"/>
+          </mal:field>
+          <mal:field name="progressStepCount" canBeNull="false"
+                     comment="Total number of steps that will be reported if PROGRESS reporting is selected in the sent Action. 0 if PROGRESS reporting is not used.&#xA;">
+            <mal:type name="UShort" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="SimpleActionDefinition" shortFormPart="1"
+                       comment="The SimpleActionDefinition is an action definition that contains a list of argument short name types. Sent actions must be of the SimpleAction type.&#xA;">
+          <mal:extends>
+            <mal:type name="ActionDefinition" service="Action" area="MC"/>
+          </mal:extends>
+          <mal:field name="argumentTypes" canBeNull="false"
+                     comment="Holds the attribute short form parts of the types of the arguments, e.g., for a MAL::String argument it shall hold 15.&#xA;">
+            <mal:type list="true" name="Octet" area="MAL"/>
+          </mal:field>
+          <mal:field name="argumentIds"
+                     comment="Optional list of argument definition identifiers. Allows the provider to verify that the correct arguments are being supplied when using the same field in the action occurrence.">
+            <mal:type list="true" name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ComplexActionDefinition" shortFormPart="2"
+                       comment="The ComplexActionDefinition is an action definition that contains a list of argument definitions. Sent actions must be of the ComplexAction type.&#xA;">
+          <mal:extends>
+            <mal:type name="ActionDefinition" service="Action" area="MC"/>
+          </mal:extends>
+          <mal:field name="arguments" canBeNull="false" comment="The list of argument definitions.">
+            <mal:type list="true" name="ArgumentDefinition" area="MC"/>
+          </mal:field>
+          <mal:field name="argumentIds"
+                     comment="Optional list of argument definition identifiers. Allows the provider to verify that the correct arguments are being supplied when using the same field in the action occurrence.">
+            <mal:type list="true" name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="SimpleAction" shortFormPart="3"
+                       comment="The SimpleAction structure shall be used when injecting an action defined using a SimpleActionDefinition.&#xA;">
+          <mal:extends>
+            <mal:type name="Action" service="Action" area="MC"/>
+          </mal:extends>
+          <mal:field name="argumentValues"
+                     comment="List containing the values of the arguments. The ordering of the list shall match that of the definition. If a value for a particular entry is not being supplied, then its position shall be filled with a NULL value. If no arguments are defined, then the complete list shall be replaced with a NULL.&#xA;">
+            <mal:type list="true" name="AttributeValue" area="MC"/>
+          </mal:field>
+          <mal:field name="argumentIds"
+                     comment="Optional list of argument definition identifiers. Allows the provider to verify that the correct arguments are being supplied.">
+            <mal:type list="true" name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ComplexAction" shortFormPart="4"
+                       comment="The ComplexAction structure shall be used when injecting an action defined using a ComplexActionDefinition.&#xA;">
+          <mal:extends>
+            <mal:type name="Action" service="Action" area="MC"/>
+          </mal:extends>
+          <mal:field name="argumentValues"
+                     comment="List containing the values of the arguments. The ordering of the list shall match that of the definition. If a value for a particular entry is not being supplied, then its position shall be filled with a NULL value. If no arguments are defined, then the complete list shall be replaced with a NULL.&#xA;">
+            <mal:type list="true" name="ArgumentValue" area="MC"/>
+          </mal:field>
+          <mal:field name="argumentIds"
+                     comment="Optional list of argument definition identifiers. Allows the provider to verify that the correct arguments are being supplied.">
+            <mal:type list="true" name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:features>
+        <com:objects comment="The definitions of the actions shall be represented as ActionDefinition COM objects.&#xA;Instances of an action that is sent to a provider using the sendAction operation shall be represented as an action COM object.&#xA;The action object shall use the sendAction interaction transaction identifier for the object instance identifier.&#xA;The action instance object shall use the related link to indicate which action definition object it uses.&#xA;&#xA;">
+          <com:object name="SimpleActionDefinition" number="1">
+            <com:objectType>
+              <mal:type name="SimpleActionDefinition" service="Action" area="MC"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="ComplexActionDefinition" number="2">
+            <com:objectType>
+              <mal:type name="ComplexActionDefinition" service="Action" area="MC"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="SimpleAction" number="3">
+            <com:objectType>
+              <mal:type name="SimpleAction" service="Action" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Action" area="MC"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="ComplexAction" number="4">
+            <com:objectType>
+              <mal:type name="ComplexAction" service="Action" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="2" service="Action" area="MC"/>
+            </com:relatedObject>
+          </com:object>
+        </com:objects>
+        <com:archiveUsage comment="Action definitions should be stored in the COM archive.&#xA;When an action is sent with the sendAction operation, the action object should be stored in the COM archive by the consumer.&#xA;"/>
+        <com:activityUsage comment="The action service shall use the COM Activity service to monitor the transfer and execution of actions.&#xA;The source link of the COM Activity monitoring events shall be the Action object instance identifier.&#xA;In all activity execution events the ActivityExecution.stageCount field shall be set to 2 plus the total number of progress stages.&#xA;In the activity execution event, when notification of an action starting is requested, the ActivityExecution.executionStage field shall be set to 1.&#xA;In the activity execution event, when notification of an action progress is requested, the ActivityExecution.executionStage field shall be set to 1 plus the current progress stage. &#xA;In the activity execution event, when notification of an action completion is requested, the ActivityExecution.executionStage field shall be set to 2 plus the total number of progress stages.&#xA;&#xA;"/>
+      </com:features>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Parameter" number="2"
+                 comment="The parameter service allows the user to subscribe to parameter value updates.&#xA;">
+      <mal:capabilitySet number="1">
+        <mal:pubsubIP name="monitorValue" number="1" supportInReplay="true"
+                      comment="Allows a consumer to subscribe for parameter value updates.&#xA;">
+          <mal:messages>
+            <mal:publishNotify comment="The MAL EntityKey.firstSubKey shall contain the parameter name.&#xA;The MAL EntityKey.secondSubKey shall contain the parameter definition object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the parameter value object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall be NULL.&#xA;The timestamp of the parameter value update shall be taken from the publish message.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then it shall be replaced with a NULL.&#xA;The second part of the publish message shall be the parameter update value.&#xA;">
+              <mal:type name="ObjectId" area="COM"/>
+              <mal:type name="ParameterValue" service="Parameter" area="MC"/>
+            </mal:publishNotify>
+          </mal:messages>
+        </mal:pubsubIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="2">
+        <mal:requestIP name="getValue" number="2" supportInReplay="true"
+                       comment="Returns the latest value for a requested parameter.&#xA;">
+          <mal:messages>
+            <mal:request comment="The request shall include a list of parameter definition object instance identifiers.&#xA;The wildcard value of '0' shall be supported and matches all parameters of the provider.&#xA;If a request parameter is unknown then an UNKNOWN error shall be returned.&#xA;">
+              <mal:type list="true" name="Long" area="MAL"/>
+            </mal:request>
+            <mal:response comment="The response shall contain a list of returned parameter definition instance identifiers and a matching list of parameter values.&#xA;&#xA;">
+              <mal:type list="true" name="Long" area="MAL"/>
+              <mal:type list="true" name="ParameterValue" service="Parameter" area="MC"/>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One or more of the requested parameters is unknown.&#xA;">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+                <mal:type list="true" name="Integer" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="3">
+        <mal:submitIP name="enableGeneration" number="3" supportInReplay="false"
+                      comment="Allows a consumer to control whether updates for specific parameters are generated or not.&#xA;">
+          <mal:messages>
+            <mal:submit comment="The request shall include a list of parameter definition object instance identifiers.&#xA;The wildcard value of '0' shall be supported and matches all parameters of the provider.&#xA;A matching Boolean value shall be provided also, a value of TRUE requests that updates of the parameter will be generated, a value of FALSE requests that updates will not be generated.&#xA;If a requested parameter is unknown then an UNKNOWN error shall be returned.&#xA;The provider should update the parameter definition in the COM archive if the generation enabled value is changed.&#xA;">
+              <mal:type list="true" name="InstanceBooleanPair" area="COM"/>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One or more of the requested parameters is unknown.&#xA;">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+                <mal:type list="true" name="Integer" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="4">
+        <mal:requestIP name="listParameterDefinitions" number="4" supportInReplay="true"
+                       comment="The list parameter definition operation allows a consumer to request the object identifiers of the parameter definitions for the supported parameters of the provider. It is expected to be used in conjunction with the COM archive which holds the actual parameter definition objects.&#xA;">
+          <mal:messages>
+            <mal:request comment="The request shall contain a list of parameter names to retrieve the parameter definition object instance identifiers for.&#xA;The request may contain the wildcard value of '*' to return all supported parameter definitions.&#xA;">
+              <mal:type list="true" name="Identifier" area="MAL"/>
+            </mal:request>
+            <mal:response comment="The response shall contain a list of matching parameter definition object identifiers.&#xA;">
+              <mal:type list="true" name="Long" area="MAL"/>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:enumeration name="Validity" shortFormPart="3"
+                         comment="Validity is an enumeration representing the possible validity states of a parameter.&#xA;">
+          <mal:item value="INVALID" nvalue="1"
+                    comment="The validity expression has been evaluated to FALSE."/>
+          <mal:item value="VALID" nvalue="2"
+                    comment="The validity expression either has been evaluated to TRUE, or there is no expression defined. If the parameter definition contains a conversion, then this has succeeded also.&#xA;"/>
+          <mal:item value="VALID_RAW_ONLY" nvalue="3"
+                    comment="The validity expression either has evaluated to TRUE or there is no validity defined, but the converted value has failed conversion.&#xA;"/>
+          <mal:item value="UNVERIFIED" nvalue="4"
+                    comment="The validity of the validity expression has been evaluated to FALSE and therefore cannot be used to verify the current value."/>
+          <mal:item value="EXPIRED" nvalue="5"
+                    comment="The parameter has a time out associated which has expired."/>
+        </mal:enumeration>
+        <mal:composite name="ParameterDefinition" shortFormPart="1"
+                       comment="The ParameterDefinition structure holds a parameter definition. The conversion field defines the conditions where the relevant conversion is applied. For onboard parameters, the monitoring interval should be a multiple of the minimum sampling interval of that parameter.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="name" canBeNull="false"
+                     comment="The name of the parameter. Must not be empty or the wildcard value.&#xA;">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="description" canBeNull="false"
+                     comment="The description of the parameter. May be empty.&#xA;">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="rawType" canBeNull="false"
+                     comment="Holds the attribute short form part of the raw type of the parameter, e.g., for a MAL::String parameter it shall hold 15.&#xA;">
+            <mal:type name="Octet" area="MAL"/>
+          </mal:field>
+          <mal:field name="rawUnit"
+                     comment="The unit for the raw value. If NULL then raw type has no unit.&#xA;">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="generationEnabled" canBeNull="false"
+                     comment="Controls whether updates for this parameter are to be generated.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="updateInterval" canBeNull="false"
+                     comment="Periodic update interval. No periodic updates to be generated if this is set to '0'.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="validityExpression"
+                     comment="Expression that determines this parameter's validity state. Can be NULL if no validity check is required.&#xA;">
+            <mal:type name="EntityExpression" area="MC"/>
+          </mal:field>
+          <mal:field name="conversion" comment="If present then parameter has a converted type.&#xA;">
+            <mal:type name="ParameterConversion" service="Parameter" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ParameterValue" shortFormPart="2"
+                       comment="This structure holds a specific time-stamped value of the parameter. The type of the value shall match that specified in the parameter definition.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="rawValue" comment="The parameter raw value.">
+            <mal:type name="Attribute" area="MAL"/>
+          </mal:field>
+          <mal:field name="validityState" canBeNull="false" comment="The parameter validity state.">
+            <mal:type name="Validity" service="Parameter" area="MC"/>
+          </mal:field>
+          <mal:field name="checkState"
+                     comment="The parameter check state. May be NULL if the provider does not implement the check service.&#xA;">
+            <mal:type name="CheckState" service="Check" area="MC"/>
+          </mal:field>
+          <mal:field name="convertedValue" comment="The parameter converted value.">
+            <mal:type name="Attribute" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ParameterConversion" shortFormPart="4"
+                       comment="The ParameterConversion structure holds information about the conversions to be applied to a parameter.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="convertedType" canBeNull="false"
+                     comment="Holds the attribute short form part of the converted type of the parameter, e.g., for a MAL::String parameter it shall hold 15.&#xA;">
+            <mal:type name="Octet" area="MAL"/>
+          </mal:field>
+          <mal:field name="convertedUnit"
+                     comment="The converted parameter unit. If NULL then converted type has no unit.&#xA;">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="checkConverted" canBeNull="false"
+                     comment="If checks are associated to this parameter using the check service, if this value is TRUE, then they should check the converted value; otherwise they should check the raw value. This field is ignored if no checks are associated to this parameter.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="conversionConditions" canBeNull="false"
+                     comment="The conversions to be applied.&#xA;">
+            <mal:type list="true" name="ConditionalReference" area="MC"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:features>
+        <com:objects comment="The definitions of the parameters shall be represented as ParameterDefinition COM objects.&#xA;Parameter value updates shall be represented as ParameterValue COM objects.&#xA;The parameter value object shall use the related link to indicate which parameter definition object it uses.&#xA;">
+          <com:object name="ParameterDefinition" number="1">
+            <com:objectType>
+              <mal:type name="ParameterDefinition" service="Parameter" area="MC"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="ParameterValue" number="2">
+            <com:objectType>
+              <mal:type name="ParameterValue" service="Parameter" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Parameter" area="MC"/>
+            </com:relatedObject>
+          </com:object>
+        </com:objects>
+        <com:archiveUsage comment="Parameter definitions should be stored in the COM archive.&#xA;When a parameter value update is published, the parameter value object should be stored in the COM archive.&#xA;"/>
+      </com:features>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Alert" number="3"
+                 comment="The alert service allows a consumer to monitor alerts.&#xA;The alert service uses COM event service to monitor and publish alert events.&#xA;">
+      <mal:capabilitySet number="1">
+        <mal:submitIP name="enableGeneration" number="1" supportInReplay="false"
+                      comment="Allows a consumer to control whether updates for specific alerts are generated or not.&#xA;">
+          <mal:messages>
+            <mal:submit comment="The request shall include a list of alert definition object instance identifiers.&#xA;The wildcard value of '0' shall be supported and matches all alerts of the provider.&#xA;A matching Boolean value shall be provided also, a value of TRUE requests that instances of the alert will be generated, a value of FALSE requests that instances will not be generated.&#xA;If a requested alert is unknown then an UNKNOWN error shall be returned.&#xA;The provider should update the alert definition in the COM archive if the generation enabled value is changed.&#xA;">
+              <mal:type name="InstanceBooleanPair" area="COM"/>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One or more of the requested alerts is unknown.&#xA;">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+                <mal:type list="true" name="Integer" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="2">
+        <mal:requestIP name="listAlertDefinitions" number="2" supportInReplay="true"
+                       comment="The list alert definition operation allows a consumer to request the object identifiers of the alert definitions for the supported alerts of the provider. It is expected to be used in conjunction with the COM archive which holds the actual alert definition objects.&#xA;">
+          <mal:messages>
+            <mal:request comment="The request shall contain a list of alert names to retrieve the alert definition object instance identifiers for.&#xA;The request may contain the wildcard value of '*' to return all supported alert definitions.&#xA;">
+              <mal:type list="true" name="Identifier" area="MAL"/>
+            </mal:request>
+            <mal:response comment="The response shall contain a list of matching alert definition object identifiers.&#xA;">
+              <mal:type list="true" name="Long" area="MAL"/>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:composite name="AlertDefinition" shortFormPart="1"
+                       comment="The AlertDefinition provides the defineition of an alert including any argument definitions.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="name" canBeNull="false"
+                     comment="Alert name. Must not be empty or wildcard value.&#xA;">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="description" canBeNull="false" comment="The description of the alert.&#xA;">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="severity" canBeNull="false" comment="Severity of the alert.&#xA;">
+            <mal:type name="Severity" area="MC"/>
+          </mal:field>
+          <mal:field name="generationEnabled" canBeNull="false"
+                     comment="Controls whether instances of this alert are to be generated.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="arguments" canBeNull="false" comment="The list of argument definitions.">
+            <mal:type list="true" name="ArgumentDefinition" area="MC"/>
+          </mal:field>
+          <mal:field name="argumentIds"
+                     comment="Optional list of argument definition identifiers. Allows the provider to verify that the correct arguments are being supplied.">
+            <mal:type list="true" name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="AlertEvent" shortFormPart="2"
+                       comment="The AlertEvent structure holds an instance of an alert defined using an AlertDefinition.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="argumentValues"
+                     comment="List containing the values of the arguments. The ordering of the list shall match that of the definition. If a value for a particular entry is not being supplied, then its position shall be filled with a NULL value.&#xA;">
+            <mal:type list="true" name="ArgumentValue" area="MC"/>
+          </mal:field>
+          <mal:field name="argumentIds"
+                     comment="Optional list of argument definition identifiers. Allows the provider to verify that the correct arguments are being supplied.">
+            <mal:type list="true" name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:features>
+        <com:objects comment="The definitions of the alerts shall be represented as AlertDefinition COM objects.&#xA;Instances of an alert shall be represented as an AlertEvent COM event.&#xA;The alert event object shall use the related link to indicate which alert definition object it uses.&#xA;">
+          <com:object name="AlertDefinition" number="1">
+            <com:objectType>
+              <mal:type name="AlertDefinition" service="Alert" area="MC"/>
+            </com:objectType>
+          </com:object>
+        </com:objects>
+        <com:events comment="When an alert is generated it shall be represented as a COM event.&#xA;The event shall be published using the COM event service.&#xA;The source link of the alert event shall point to the object that caused the event to be generated.&#xA;">
+          <com:event name="AlertEvent" number="2"
+                     comment="The AlertEvent shall be raised when an enabled alert is published.&#xA;">
+            <com:objectType>
+              <mal:type name="AlertEvent" service="Alert" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Alert" area="MC"/>
+            </com:relatedObject>
+            <com:sourceObject comment="The source of the event shall be the object that triggered the generation of the Alert.&#xA;"/>
+          </com:event>
+        </com:events>
+        <com:archiveUsage comment="Alert definitions should be stored in the COM archive.&#xA;When an alert event is published, the alert event object should be stored in the COM archive by the publisher.&#xA;"/>
+      </com:features>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Check" number="4"
+                 comment="The check service allows the user to monitor and control the checking of parameters against expected check definitions including limit sets.&#xA;The check service allows the consumer to define each check and then link the check to a parameter to be checked.&#xA;Each check link can have a condition included as part of it which determines whether the check should be applied or not; this allows several checks to be associated to a single parameter and applied in different conditions.&#xA;The checks are normally triggered by either a change in the monitored values or implementation-specific mechanisms. However, the service supports the optional ability for consumers to trigger the evaluation of checks using the triggerChecks operation.&#xA;The following figure (3-2) shows the flow chart for determining the status of a check:&#xA;----- Insert check state diagram -----&#xA;Each time a check is evaluated, the above procedure is performed to calculate the check status.&#xA;NOTE - The Reference and Delta checks are compared against another value called a reference value. The reference value can be taken from either another parameter or the parameter being checked, and can be the previous value or a value in the past, specified by using a delta time in the ReferenceValue composite. This does not affect the logic of the flow chart above.&#xA;">
+      <mal:capabilitySet number="1">
+        <mal:progressIP name="getCurrentTransitionList" number="1" supportInReplay="true"
+                        comment="The getCurrentTransitionList operation allows a consumer to obtain the current result of a number of checks filtering on check state.&#xA;">
+          <mal:messages>
+            <mal:progress comment="The supplied CheckResultFilter shall contain a set of object instance identifiers for which the check result is required.&#xA;The CheckResultFilter shall also contain a list of CheckState enumerations of which states to filter on.&#xA;The supplied lists shall be combined to form the complete filter.&#xA;To report all checks, the wildcard values may be used in the CheckResultFilter.&#xA;If a CheckLink object matches any of the supplied filters, and its current state matches any of the supplied CheckState enumerations, then its latest CheckResult value shall be returned.&#xA;&#xA;">
+              <mal:type name="CheckResultFilter" service="Check" area="MC"/>
+            </mal:progress>
+            <mal:acknowledgement/>
+            <mal:update comment="The returned lists shall contain an entry for each matched check returning the current CheckResult for that check combination.&#xA;&#xA;">
+              <mal:type list="true" name="CheckResult" service="Check" area="MC"/>
+            </mal:update>
+            <mal:response comment="One update for each check type matched shall be sent.&#xA;">
+              <mal:type list="true" name="CheckResult" service="Check" area="MC"/>
+            </mal:response>
+          </mal:messages>
+        </mal:progressIP>
+        <mal:progressIP name="getSummaryReport" number="2" supportInReplay="true"
+                        comment="The getSummaryReport operation allows a consumer to obtain the status of a number of checks definitions and the result of any check evaluations linked to them.&#xA;">
+          <mal:messages>
+            <mal:progress comment="The supplied list shall hold one or more check definition object instance indentifiers of which a check report is required.&#xA;An empty list shall report on all definitions.&#xA;">
+              <mal:type list="true" name="ObjectId" area="COM"/>
+            </mal:progress>
+            <mal:acknowledgement/>
+            <mal:update comment="The returned updates and final response shall contain an entry for each requested check definition.&#xA;The first part of the update shall be the check definition object instance identifier.&#xA;The second part shall be a list of check link details and check results associated with that check definition.&#xA;The third part shall be a list of check results associated with that check definition.&#xA;The ordering of the two lists shall match.&#xA;&#xA;">
+              <mal:type name="Long" area="MAL"/>
+              <mal:type list="true" name="CheckSummary" service="Check" area="MC"/>
+              <mal:type list="true" name="CheckResult" service="Check" area="MC"/>
+            </mal:update>
+            <mal:response>
+              <mal:type name="Long" area="MAL"/>
+              <mal:type list="true" name="CheckSummary" service="Check" area="MC"/>
+              <mal:type list="true" name="CheckResult" service="Check" area="MC"/>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One or more of the checks specified in the list do not exist.&#xA;">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+                <mal:type list="true" name="Integer" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:progressIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="2">
+        <mal:pubsubIP name="monitorChecks" number="3" supportInReplay="true"
+                      comment="Allows a consumer to subscribe for check evaluation value updates.&#xA;">
+          <mal:messages>
+            <mal:publishNotify comment="The MAL EntityKey.firstSubKey shall contain the check definition name.&#xA;The MAL EntityKey.secondSubKey shall contain the check definition object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the parameter definition object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall contain the check result object instance identifier.&#xA;The timestamp of the value update shall be taken from the publish message.&#xA;The publish message shall include the object instance identifier of the check link object in the related link of the update.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then it shall be replaced with a NULL.&#xA;The second part of the publish message shall be the check result value.&#xA;">
+              <mal:type name="ObjectDetails" area="COM"/>
+              <mal:type name="CheckResult" service="Check" area="MC"/>
+            </mal:publishNotify>
+          </mal:messages>
+        </mal:pubsubIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="3">
+        <mal:submitIP name="triggerCheck" number="4" supportInReplay="false"
+                      comment="The operation allows a consumer to request the immediate evaluation of a number of checks. Any violations will cause appropriate statuses to be generated.&#xA;">
+          <mal:messages>
+            <mal:submit comment="The submission shall contain two lists of object instance identifiers.&#xA;The first list shall be a list of check definition object instance identifiers to trigger the evaluation of all linked checks.&#xA;The second list shall be a list of check link object instance identifiers to trigger the evaluation of all specified checks.&#xA;The wildcard value of '0' shall be permitted in either list.&#xA;The two lists shall be combined using 'OR' logic, where a check is evaluated if its definitoin is in the first list or it is directly listed in the second list.&#xA;">
+              <mal:type list="true" name="Long" area="MAL"/>
+              <mal:type list="true" name="Long" area="MAL"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="4">
+        <mal:submitIP name="enableCheck" number="5" supportInReplay="false"
+                      comment="Allows a consumer to control whether evalution of a set of check is performed or not.&#xA;">
+          <mal:messages>
+            <mal:submit comment="The request shall include a list of check link instance identifiers.&#xA;The wildcard value of '0' shall be supported and matches all links of the provider.&#xA;A matching Boolean value shall be provided also, a value of TRUE requests that evaluations of the link will be performed, a value of FALSE requests that evaluations will not be performed.&#xA;If a requested link is unknown then an UNKNOWN error shall be returned.&#xA;The provider should update the check link in the COM archive if the evaluation enabled value is changed.&#xA;">
+              <mal:type list="true" name="InstanceBooleanPair" area="COM"/>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One or more of the requested links is unknown.&#xA;">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+                <mal:type list="true" name="Integer" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:enumeration name="CheckState" shortFormPart="9"
+                         comment="The CheckState enumeration holds the possible basic states of a check. The meaning of the NOT_OK value is check specific and detailed in the relevant check type definition.&#xA;">
+          <mal:item value="DISABLED" nvalue="1" comment="The check is disabled."/>
+          <mal:item value="UNCHECKED" nvalue="2"
+                    comment="The check is enabled but has not passed the selection condition expression."/>
+          <mal:item value="INVALID" nvalue="3"
+                    comment="Check is enabled, has passed the selection condition, but the entity being checked is not in a valid state and therefore has not been checked.&#xA;"/>
+          <mal:item value="OK" nvalue="4" comment="All checks are OK."/>
+          <mal:item value="NOT_OK" nvalue="5" comment="All checks are not OK."/>
+        </mal:enumeration>
+        <mal:enumeration name="HiLowCheckState" shortFormPart="10"
+                         comment="The enumeration holds extra information for hi/low checks such as limit or delta checks.&#xA;">
+          <mal:item value="LOW" nvalue="1" comment="Meaning is check specific."/>
+          <mal:item value="HIGH" nvalue="2" comment="Meaning is check specific."/>
+        </mal:enumeration>
+        <mal:composite name="CheckDefinition"
+                       comment="The CheckDefinition structure holds the definition of a check.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="name" canBeNull="false"
+                     comment="The name of the check definition. Must not be empty or the wildcard value.&#xA;">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="description" canBeNull="false"
+                     comment="The description of the check. May be empty.&#xA;">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="checkSeverity" canBeNull="false"
+                     comment="Indicates the seriousness of the violation based on its possible negative consequences.">
+            <mal:type name="Severity" area="MC"/>
+          </mal:field>
+          <mal:field name="maximumReportingInterval" canBeNull="false"
+                     comment="Maximum interval that can elapse between generations of CheckResult updates. If this value expires, then a CheckResult is generated with the same state for the previous and current state. If set to '0', then no maximum reporting interval shall be applied.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="nominalCount" canBeNull="false"
+                     comment="Number of consecutive valid samples passing the check for the check to be OK. Must be greater than zero.">
+            <mal:type name="Integer" area="MAL"/>
+          </mal:field>
+          <mal:field name="violationCount" canBeNull="false"
+                     comment="Number of consecutive valid samples violating the check to be in violation. Must be greater than zero.">
+            <mal:type name="Integer" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="CheckResult"
+                       comment="The CheckStatus structure holds basic information about the check state and the value of the entity at the time of the check. Specific information relevant to a check type is held in a structure that extends this one. The time stamp of the update is the transition time of the check.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="previousState" canBeNull="false"
+                     comment="The previous state of the check. Initially UNCHECKED for the first transition of a check.">
+            <mal:type name="CheckState" service="Check" area="MC"/>
+          </mal:field>
+          <mal:field name="currentState" canBeNull="false" comment="The current state of the check">
+            <mal:type name="CheckState" service="Check" area="MC"/>
+          </mal:field>
+          <mal:field name="checkedValue"
+                     comment="This is the value of the entity at the time of a check state transition, or if it is an update due to the CheckDefinition maximumReportingInterval expiring, then it is the value of the entity when the interval expired.&#xA;">
+            <mal:type name="Attribute" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ConstantCheck" shortFormPart="1"
+                       comment="The ConstantCheck structure holds the constant values to compare against for a consistency check. Changes to this check shall generate ConstantCheckResult updates.&#xA;">
+          <mal:extends>
+            <mal:type name="CheckDefinition" service="Check" area="MC"/>
+          </mal:extends>
+          <mal:field name="operator" canBeNull="false"
+                     comment="The operator to be used to perform the check.">
+            <mal:type name="ExpressionOperator" service="Archive" area="COM"/>
+          </mal:field>
+          <mal:field name="values" canBeNull="false"
+                     comment="The set of constant value to be checked against.&#xA;">
+            <mal:type list="true" name="AttributeValue" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ReferenceCheck" shortFormPart="2"
+                       comment="The ReferenceCheck structure holds the key to another entity to compare against for a consistency check. Changes to this check shall generate ConstantCheckResult updates.&#xA;">
+          <mal:extends>
+            <mal:type name="CheckDefinition" service="Check" area="MC"/>
+          </mal:extends>
+          <mal:field name="operator" canBeNull="false"
+                     comment="The operator to be used to perform the check.">
+            <mal:type name="ExpressionOperator" service="Archive" area="COM"/>
+          </mal:field>
+          <mal:field name="checkReference" canBeNull="false" comment="The value to check against.">
+            <mal:type name="ReferenceValue" service="Check" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="DeltaCheck" shortFormPart="3"
+                       comment="The DeltaCheck defines a delta transition check. It can be time-based or sample-based. Changes to this check shall generate HiLowCheckResult updates.&#xA;">
+          <mal:extends>
+            <mal:type name="CheckDefinition" service="Check" area="MC"/>
+          </mal:extends>
+          <mal:field name="checkReference" canBeNull="false"
+                     comment="The value to compare the current value against.">
+            <mal:type name="ReferenceValue" service="Check" area="MC"/>
+          </mal:field>
+          <mal:field name="violateInRange" canBeNull="false"
+                     comment="If TRUE, then the safe (nonviolating) values lie outside the specified threshold range.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="sampleBased" canBeNull="false"
+                     comment="If TRUE, then the delta values are calculated based on when the value updates; otherwise, the delta value is calculated based on an internally calculated time interval.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="valueDelta" canBeNull="false"
+                     comment="If TRUE, then the thresholds contain value deltas. If FALSE, they contain percentage deltas.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="lowerThreshold"
+                     comment="The lower threshold of the delta value. Must be of the correct type for the entity being checked.">
+            <mal:type name="Attribute" area="MAL"/>
+          </mal:field>
+          <mal:field name="upperThreshold"
+                     comment="The upper threshold of the delta value. Must be of the correct type for the entity being checked.">
+            <mal:type name="Attribute" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="LimitCheck" shortFormPart="4"
+                       comment="The LimitCheck defines a high and low limit check. If ranges overlap, the most severe check shall be applied. It is valid to supply only one limit; the other limit is assumed to be the relevant maximum supported by the type being checked in this case. Changes to this check shall generate HiLowCheckResult updates.&#xA;">
+          <mal:extends>
+            <mal:type name="CheckDefinition" service="Check" area="MC"/>
+          </mal:extends>
+          <mal:field name="violateInRange" canBeNull="false"
+                     comment="If TRUE, then the safe (nonviolating) values lie outside the specified limits range.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="lowerLimit"
+                     comment="The lower limit of the value. Must be of the correct type for the entity being checked.">
+            <mal:type name="Attribute" area="MAL"/>
+          </mal:field>
+          <mal:field name="upperLimit"
+                     comment="The upper limit of the value. Must be of the correct type for the entity being checked.">
+            <mal:type name="Attribute" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="CheckLink" shortFormPart="5"
+                       comment="The CheckLink structure represents the link from a check definition to a check result for a specific parameter.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="checkEnabled" canBeNull="false"
+                     comment="TRUE if the check occurrence is enabled.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="checkInterval" canBeNull="false"
+                     comment="The interval that a check should be applied. If '0', then no periodic checking shall be performed, and a check will be triggered by another implementation specific mechanism.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="condition" comment="Should this check be applied.">
+            <mal:type name="EntityExpression" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="HiLowCheckResult" shortFormPart="6"
+                       comment="The HiLowCheckResult holds the result of either a limit or delta check.&#xA;">
+          <mal:extends>
+            <mal:type name="CheckResult" service="Check" area="MC"/>
+          </mal:extends>
+          <mal:field name="previousErrorState"
+                     comment="When the previous state of the check is NOT_OK, this shall hold the check specific information. NULL otherwise.&#xA;">
+            <mal:type name="HiLowCheckState" service="Check" area="MC"/>
+          </mal:field>
+          <mal:field name="currentErrorState"
+                     comment="When the current state of the check is NOT_OK, this shall hold the check specific information. NULL otherwise.&#xA;">
+            <mal:type name="HiLowCheckState" service="Check" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ConstantCheckResult" shortFormPart="7"
+                       comment="The ConstantCheckResult holds the result of either a constant or reference check.&#xA;">
+          <mal:extends>
+            <mal:type name="CheckResult" service="Check" area="MC"/>
+          </mal:extends>
+          <mal:field name="previousValueUnexpected" canBeNull="false"
+                     comment="When the previous state of the check is NOT_OK, this shall be set to TRUE if the value was unexpected, or FALSE if expected. NULL if previous state is not NOT_OK.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="currentValueUnexpected"
+                     comment="When the current state of the check is NOT_OK, this shall be set to TRUE if the value was unexpected, or FALSE if expected. NULL if current state is not NOT_OK.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ReferenceValue" shortFormPart="8"
+                       comment="The ReferenceValue structure defines a value to compare against. A validCount of '1' and deltaTime of '0' would compare against the previous sample value.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="validCount" canBeNull="false"
+                     comment="Number of valid samples that should be collected to update the reference value.">
+            <mal:type name="Short" area="MAL"/>
+          </mal:field>
+          <mal:field name="deltaTime" canBeNull="false"
+                     comment="Delta time from now into the past from which the reference value should be sampled.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="parameterId"
+                     comment="The parameter to compare against. If NULL, then it should be compared against itself.&#xA;">
+            <mal:type name="ObjectKey" area="COM"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="CheckResultFilter" shortFormPart="11"
+                       comment="The CheckResultFilter structure holds a filter for the current check result transition information.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="checkFilter" canBeNull="false"
+                     comment="The list of check definition instance identifiers to filter on. Empty list means match all.&#xA;">
+            <mal:type list="true" name="Long" area="MAL"/>
+          </mal:field>
+          <mal:field name="parameterFilter" canBeNull="false"
+                     comment="List of parameter instance identifiers to filter on. Empty list means match all.&#xA;">
+            <mal:type list="true" name="Long" area="MAL"/>
+          </mal:field>
+          <mal:field name="stateFilter" canBeNull="false"
+                     comment="The list of required check states to filter on. Empty list means match all.&#xA;">
+            <mal:type list="true" name="CheckState" service="Check" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="CheckSummary" shortFormPart="12"
+                       comment="The CheckSummary structure holds details about a specific check instance and its evaluated result.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="linkId" canBeNull="false"
+                     comment="The object instance identifier of the check link.&#xA;">
+            <mal:type name="Long" area="MAL"/>
+          </mal:field>
+          <mal:field name="parameterId" canBeNull="false"
+                     comment="The object instance key of the parameter definition being checked.&#xA;">
+            <mal:type name="ObjectKey" area="COM"/>
+          </mal:field>
+          <mal:field name="evaluationTime" canBeNull="false"
+                     comment="The time stamp of the check result.&#xA;">
+            <mal:type name="Time" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:features>
+        <com:objects comment="The check definitions shall be represented using two COM objects.&#xA;The CheckDefinition COM object shall be used to identify each check definition.&#xA;The actual check definition details shall be represented as one of the specific check definition COM objects.&#xA;The CheckDefinition object shall use the source link to indicate which actual definition it uses.&#xA;The link between which parameters are being evaluated for each check shall be represented as CheckLink COM objects.&#xA;Check evalutions for a specific parameter and check definition shall be represented as CheckResult COM objects.&#xA;The check link object shall use the related link to indicate which check definition it uses.&#xA;The check link object shall use the source link to indicate which parameter it uses.&#xA;The check result object shall use the related link to indicate which check link object it uses.&#xA;The check result object shall use the source link to indicate what object (if any) caused it to be evaluated.&#xA;">
+          <com:object name="CheckDefinition" number="1">
+            <com:objectType>
+              <mal:type name="Identifier" area="MAL"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="CheckLink" number="2">
+            <com:objectType>
+              <mal:type name="CheckLink" service="Check" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Check" area="MC"/>
+            </com:relatedObject>
+            <com:sourceObject>
+              <com:objectType number="1" service="Parameter" area="MC"/>
+            </com:sourceObject>
+          </com:object>
+          <com:object name="ConstantCheck" number="5">
+            <com:objectType>
+              <mal:type name="ConstantCheck" service="Check" area="MC"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="ReferenceCheck" number="6">
+            <com:objectType>
+              <mal:type name="ReferenceCheck" service="Check" area="MC"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="DeltaCheck" number="7">
+            <com:objectType>
+              <mal:type name="DeltaCheck" service="Check" area="MC"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="LimitCheck" number="8">
+            <com:objectType>
+              <mal:type name="LimitCheck" service="Check" area="MC"/>
+            </com:objectType>
+          </com:object>
+        </com:objects>
+        <com:events comment="When an check is evaluated and its state changes, the change in state shall be represented as a COM event.&#xA;The event shall be published using the COM event service.&#xA;The source link of the event shall point to the check link that was evaluated.&#xA;">
+          <com:event name="HiLowTransition" number="3">
+            <com:objectType>
+              <mal:type name="HiLowCheckResult" service="Check" area="MC"/>
+            </com:objectType>
+            <com:sourceObject comment="The source check link.&#xA;">
+              <com:objectType number="2" service="Check" area="MC"/>
+            </com:sourceObject>
+          </com:event>
+          <com:event name="ConstantTransition" number="4">
+            <com:objectType>
+              <mal:type name="ConstantCheckResult" service="Check" area="MC"/>
+            </com:objectType>
+            <com:sourceObject comment="The source check link.&#xA;">
+              <com:objectType number="2" service="Check" area="MC"/>
+            </com:sourceObject>
+          </com:event>
+        </com:events>
+        <com:archiveUsage comment="Check definition objects should be stored in the COM archive.&#xA;Check link objects should be stored in the COM archive.&#xA;When a check result update is published, the result object should be stored in the COM archive.&#xA;"/>
+      </com:features>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Statistic" number="5"
+                 comment="The statistic service allows the consumer to monitor and control the statistical evaluation (e.g., average) of parameters.&#xA;For the statistics service, the list of possible statistical functions is deployment-dependent, as it will have to be implemented in the service provider.&#xA;The service uses the COM archive to manage the list of parameters being evaluated by a specific statistical function.&#xA;">
+      <mal:capabilitySet number="1">
+        <mal:requestIP name="getStatistics" number="1" supportInReplay="true"
+                       comment="Returns the current value for a requested set of statistic evaluations.&#xA;">
+          <mal:messages>
+            <mal:request comment="The request shall include a list of statistic function object instance identifiers to match.&#xA;The wildcard value of '0' shall be supported and matches all functions of the provider.&#xA;The request shall include a list of parameter object instance keys to match.&#xA;The wildcard value of '0' shall be supported and matches all parameters of the provider.&#xA;&#xA;">
+              <mal:type list="true" name="Long" area="MAL"/>
+              <mal:type list="true" name="ObjectKey" area="COM"/>
+            </mal:request>
+            <mal:response comment="The response shall contain a list of matching statistical evaluation values.&#xA;">
+              <mal:type list="true" name="StatisticParameterReport" service="Statistic" area="MC"/>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+        <mal:requestIP name="resetResult" number="2" supportInReplay="false"
+                       comment="The operation allows a consumer to reset the statistical evaluations so the evaluations restart from the current time, optionally returning the evaluation up to that point. Resetting the evaluation will affect all consumers.&#xA;">
+          <mal:messages>
+            <mal:request comment="The request shall include a list of statistic function object instance identifiers to match.&#xA;The wildcard value of '0' shall be supported and matches all functions of the provider.&#xA;The request shall include a list of parameter object instance keys to match.&#xA;The wildcard value of '0' shall be supported and matches all parameters of the provider.&#xA;&#xA;">
+              <mal:type name="Boolean" area="MAL"/>
+              <mal:type list="true" name="Long" area="MAL"/>
+              <mal:type list="true" name="ObjectKey" area="COM"/>
+            </mal:request>
+            <mal:response comment="If the supplied Boolean is set to TRUE the Response shall contain the latest statistic evaluations before resetting them, otherwise it returns NULL.&#xA;">
+              <mal:type list="true" name="StatisticParameterReport" service="Statistic" area="MC"/>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="2">
+        <mal:pubsubIP name="monitorStatistics" number="3" supportInReplay="true"
+                      comment="Allows a consumer to subscribe for statistical evaluation value updates.&#xA;">
+          <mal:messages>
+            <mal:publishNotify comment="The MAL EntityKey.firstSubKey shall contain the statistical function name.&#xA;The MAL EntityKey.secondSubKey shall contain the statistical function object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the parameter definition object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall contain the statistical value object instance identifier.&#xA;The timestamp of the value update shall be taken from the publish message.&#xA;The publish message shall include the object instance identifier of the statistical link object in the related link of the update.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then it shall be replaced with a NULL.&#xA;The second part of the publish message shall be the statistical update value.&#xA;">
+              <mal:type name="ObjectDetails" area="COM"/>
+              <mal:type name="StatisticValue" service="Statistic" area="MC"/>
+            </mal:publishNotify>
+          </mal:messages>
+        </mal:pubsubIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="3">
+        <mal:submitIP name="enableGeneration" number="4" supportInReplay="false"
+                      comment="Allows a consumer to control whether updates for specific statistical functions are generated or not.&#xA;">
+          <mal:messages>
+            <mal:submit comment="The request shall include a list of statistical link instance identifiers.&#xA;The wildcard value of '0' shall be supported and matches all links of the provider.&#xA;A matching Boolean value shall be provided also, a value of TRUE requests that updates of the link will be generated, a value of FALSE requests that updates will not be generated.&#xA;If a requested link is unknown then an UNKNOWN error shall be returned.&#xA;The provider should update the statisticla link in the COM archive if the generation enabled value is changed.&#xA;">
+              <mal:type name="InstanceBooleanPair" area="COM"/>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One or more of the requested links is unknown.&#xA;">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+                <mal:type list="true" name="Integer" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:composite name="StatisticDetails" shortFormPart="1"
+                       comment="The StatisticDetails structure holds the sampling and collection details.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="samplingInterval" canBeNull="false"
+                     comment="Periodic sampling duration. Interval of time for the periodic sampling of the entity.">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="updateInterval" canBeNull="false"
+                     comment="The interval for periodic updates being generated. If set to '0', then no periodic updates shall be sent. The sampling interval must be smaller than the update interval.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="collectionIntervals" canBeNull="false"
+                     comment="The set of collection intervals of the statistical evaluation. Allows the consumer to define a set of concurrent collection periods for a specific statistic occurrence, e.g., 'Maximum value over one minute, one hour, one day, one month, etc.'. An update shall be generated at the end of each defined collection interval. The start and end times in the StatisticStatus would define the correct collection period for each instance. If an empty list, then the statistical function collection period is defined by other implementation specific means.&#xA;">
+            <mal:type list="true" name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="updateOnReset" canBeNull="false"
+                     comment="If TRUE, the resetting due to resetInterval expiring shall cause an update to be generated.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="StatisticParameterReport" shortFormPart="2"
+                       comment="The StatisticParameterReport structure holds the set of statistical results with the parameter identifier.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="parameterId" canBeNull="false" comment="The parameter identifier.&#xA;">
+            <mal:type name="ObjectKey" area="COM"/>
+          </mal:field>
+          <mal:field name="values" canBeNull="false" comment="A set of statistical evaluations.&#xA;">
+            <mal:type list="true" name="StatisticFunctionValue" service="Statistic" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="StatisticFunctionValue" shortFormPart="3"
+                       comment="The StatisticFunctionValue structure holds the statistical result with the associated function object instance identifier.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="function" canBeNull="false"
+                     comment="Statistical function object instance identifier.&#xA;">
+            <mal:type name="Long" area="MAL"/>
+          </mal:field>
+          <mal:field name="value" canBeNull="false" comment="Statistical evalutation result.&#xA;">
+            <mal:type name="StatisticValue" service="Statistic" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="StatisticValue" shortFormPart="4"
+                       comment="The StatisticValue structure holds the statistical result for a parameter.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="startTime"
+                     comment="Time the statistic calculations started. This value can be NULL if the start time can be derived by other means, e.g., other start times in a set of StatisticValue structures.&#xA;">
+            <mal:type name="Time" area="MAL"/>
+          </mal:field>
+          <mal:field name="endTime"
+                     comment="Time the statistic calculations ended. This value can be NULL if the time can be derived by other means, e.g., other times in a set of StatisticValue structures.&#xA;">
+            <mal:type name="Time" area="MAL"/>
+          </mal:field>
+          <mal:field name="valueTime"
+                     comment="Time the statistic value was reached. The time is only applicable for particular statistic values such as min or max. Shall be NULL if not applicable.">
+            <mal:type name="Time" area="MAL"/>
+          </mal:field>
+          <mal:field name="value" comment="Value of the statistic.">
+            <mal:type name="Attribute" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:features>
+        <com:objects comment="The statistical functions shall be represented as StatisticFunction COM objects.&#xA;For a 'Maximum' statistical function, the object instance identifier of '1' shall be used.&#xA;For a 'Minimum' statistical function, the object instance identifier of '2' shall be used.&#xA;For a 'Mean average' statistical function, the object instance identifier of '3' shall be used.&#xA;For a 'Standard deviation' statistical function, the object instance identifier of '4' shall be used.&#xA;The link between which parameters are being evaluated for each function shall be represented as StatisticLink COM objects.&#xA;Statistic evalutions for a specific parameter and statistic function shall be represented as StatisticValue COM objects.&#xA;The statistic link object shall use the related link to indicate which statistic function it uses.&#xA;The statistic link object shall use the source link to indicate which parameter it uses.&#xA;The statistic value object shall use the related link to indicate which statistic link object it uses.&#xA;The statistic value object shall use the source link to indicate what object (if any) caused it to be evaluated.&#xA;">
+          <com:object name="StatisticFunction" number="1">
+            <com:objectType>
+              <mal:type name="Identifier" area="MAL"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="StatisticLink" number="2">
+            <com:objectType>
+              <mal:type name="StatisticDetails" service="Statistic" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Statistic" area="MC"/>
+            </com:relatedObject>
+            <com:sourceObject>
+              <com:objectType number="1" service="Parameter" area="MC"/>
+            </com:sourceObject>
+          </com:object>
+          <com:object name="StatisticValue" number="3">
+            <com:objectType>
+              <mal:type name="StatisticValue" service="Statistic" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="2" service="Statistic" area="MC"/>
+            </com:relatedObject>
+          </com:object>
+        </com:objects>
+        <com:archiveUsage comment="Statistical function objects should be stored in the COM archive only if they are not one of the standard functions.&#xA;Statistical link objects should be stored in the COM archive.&#xA;When an statistical value update is published, the value object should be stored in the COM archive.&#xA;&#xA;"/>
+      </com:features>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Aggregation" number="6"
+                 comment="The aggregation service allows the user to acquire several parameters in a single request.&#xA;Aggregations can be defined as periodic, filtered, or ad-hoc. Periodic is where they are generated at a specific rate; in this case the periodicity is an aspect of the aggregation rather than the contained parameters. Filtered is where a periodic aggregation is only generated when the change in the value of the filtered parameters exceeds a specified threshold or a timeout is passed. Ad-hoc is when the aggregation generation is triggered by some other deployment-specific mechanism.&#xA;The COM archive is used to hold the definitions of the aggregations.&#xA;When an aggregation is filtered, the status identifier cannot be used for detecting gaps in updates due it being filtered (potentially nonconsecutive updates). In this case an appropriate MAL Quality of Service (QoS) should be used to ensure correct and reliable delivery of the status updates.&#xA;&#xA;">
+      <mal:capabilitySet number="1">
+        <mal:pubsubIP name="monitorValue" number="1" supportInReplay="true"
+                      comment="Allows a consumer to subscribe for aggregation value updates.&#xA;">
+          <mal:messages>
+            <mal:publishNotify comment="The MAL EntityKey.firstSubKey shall contain the aggregation name.&#xA;The MAL EntityKey.secondSubKey shall contain the aggregation definition object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the aggregation value object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall be NULL.&#xA;The timestamp of the aggregation value update shall be taken from the publish message.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then it shall be replaced with a NULL.&#xA;The second part of the publish message shall be the aggregation update value.&#xA;">
+              <mal:type name="ObjectId" area="COM"/>
+              <mal:type name="AggregationValue" service="Aggregation" area="MC"/>
+            </mal:publishNotify>
+          </mal:messages>
+        </mal:pubsubIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="2">
+        <mal:requestIP name="getValue" number="2" supportInReplay="true"
+                       comment="Returns the latest value for a requested aggregation.&#xA;">
+          <mal:messages>
+            <mal:request comment="The request shall include a list of aggregation definition object instance identifiers.&#xA;The wildcard value of '0' shall be supported and matches all aggregations of the provider.&#xA;If a request aggregation is unknown then an UNKNOWN error shall be returned.&#xA;">
+              <mal:type list="true" name="Long" area="MAL"/>
+            </mal:request>
+            <mal:response comment="The response shall contain a list of returned aggregation definition instance identifiers and a matching list of aggregation values.&#xA;">
+              <mal:type list="true" name="Long" area="MAL"/>
+              <mal:type list="true" name="AggregationValue" service="Aggregation" area="MC"/>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One or more of the requested aggregations is unknown.&#xA;">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+                <mal:type list="true" name="Integer" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="3">
+        <mal:submitIP name="enableGeneration" number="3" supportInReplay="false"
+                      comment="Allows a consumer to control whether updates for specific aggregations are generated or not.&#xA;">
+          <mal:messages>
+            <mal:submit comment="The request shall include a list of aggregation definition object instance identifiers.&#xA;The wildcard value of '0' shall be supported and matches all aggregations of the provider.&#xA;A matching Boolean value shall be provided also, a value of TRUE requests that updates of the aggregation will be generated, a value of FALSE requests that updates will not be generated.&#xA;If a requested aggregation is unknown then an UNKNOWN error shall be returned.&#xA;The provider should update the aggregation definition in the COM archive if the generation enabled value is changed.&#xA;">
+              <mal:type list="true" name="InstanceBooleanPair" area="COM"/>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One or more of the requested aggregations is unknown.&#xA;">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+                <mal:type list="true" name="Integer" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+        <mal:submitIP name="enableFilter" number="4" supportInReplay="false"
+                      comment="Allows a consumer to control whether updates for specific aggregations are filtered or not.&#xA;">
+          <mal:messages>
+            <mal:submit comment="The request shall include a list of aggregation definition object instance identifiers.&#xA;The wildcard value of '0' shall be supported and matches all aggregations of the provider.&#xA;A matching Boolean value shall be provided also, a value of TRUE requests that updates of the aggregation will be filtered, a value of FALSE requests that updates will not be filtered.&#xA;If a requested aggregation is unknown then an UNKNOWN error shall be returned.&#xA;The provider should update the aggregation definition in the COM archive if the filtered value is changed.&#xA;">
+              <mal:type list="true" name="InstanceBooleanPair" area="COM"/>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One or more of the requested aggregations is unknown.&#xA;">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+                <mal:type list="true" name="Integer" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="4">
+        <mal:requestIP name="listAggregationDefinitions" number="5" supportInReplay="true"
+                       comment="The list aggregation definition operation allows a consumer to request the object identifiers of the aggregation definitions for the supported aggregations of the provider. It is expected to be used in conjunction with the COM archive which holds the actual aggregation definition objects.&#xA;">
+          <mal:messages>
+            <mal:request comment="The request shall contain a list of aggregation names to retrieve the aggregation definition object instance identifiers for.&#xA;The request may contain the wildcard value of '*' to return all supported aggregation definitions.&#xA;">
+              <mal:type list="true" name="Identifier" area="MAL"/>
+            </mal:request>
+            <mal:response comment="The response shall contain a list of matching parameter definition object identifiers.&#xA;">
+              <mal:type list="true" name="Long" area="MAL"/>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:enumeration name="AggregationCategory" shortFormPart="5"
+                         comment="AggregationCategory is an enumeration definition holding the categories of aggregations.">
+          <mal:item value="GENERAL" nvalue="1" comment="General aggregation."/>
+          <mal:item value="DIAGNOSTIC" nvalue="2" comment="Diagnostic aggregation."/>
+        </mal:enumeration>
+        <mal:enumeration name="ThresholdType" shortFormPart="6"
+                         comment="ThresholdType is an enumeration definition holding the types of filtering thresholds.">
+          <mal:item value="PERCENTAGE" nvalue="1" comment="Threshold value is a percentage.&#xA;"/>
+          <mal:item value="DELTA" nvalue="2" comment="Threshold value is a delta.&#xA;"/>
+        </mal:enumeration>
+        <mal:enumeration name="GenerationMode" shortFormPart="7"
+                         comment="GenerationMode is an enumeration definition holding the reasons for the aggregation to be generated.&#xA;">
+          <mal:item value="ADHOC" nvalue="1"
+                    comment="The status was generated because of an ad-hoc implementation dependent reason."/>
+          <mal:item value="PERIODIC" nvalue="2"
+                    comment="The status was generated because of a periodic update."/>
+          <mal:item value="FILTERED" nvalue="3"
+                    comment="The item is filtered and an entity change exceeded its threshold."/>
+          <mal:item value="FILTERED_TIMEOUT" nvalue="4"
+                    comment="The item is filtered but it exceeded its timeout value."/>
+        </mal:enumeration>
+        <mal:composite name="AggregationDefinition" shortFormPart="1"
+                       comment="The AggregationDefinition defines the structure of an aggregation.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="name" canBeNull="false"
+                     comment="The name of the aggregation. Must not be empty or the wildcard value.&#xA;">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="description" canBeNull="false"
+                     comment="The description of the parameter. May be empty.&#xA;">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="category" canBeNull="false" comment="Category of the aggregation.">
+            <mal:type name="AggregationCategory" service="Aggregation" area="MC"/>
+          </mal:field>
+          <mal:field name="generationEnabled" canBeNull="false"
+                     comment="Controls whether updates for this aggregation are to be generated.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="updateInterval" canBeNull="false"
+                     comment="The interval between periodic updates on this aggregation. If this aggregation is not periodic, this field must be '0'.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="filterEnabled" canBeNull="false"
+                     comment="Controls whether updates for this aggregation are to be filtered.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="filteredTimeout" canBeNull="false"
+                     comment="The maximum duration between filtered updates. If this value is exceeded, then an update is sent regardless of filtered thresholds. Ignored if not filtered.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="parameters" canBeNull="false"
+                     comment="List containing the parameter references which define the aggregation.">
+            <mal:type list="true" name="AggregationReference" service="Aggregation" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="AggregationValue" shortFormPart="2"
+                       comment="The AggregationValue structure holds the values for one or more sets of parameter values. The values must be held in the same order as that defined in the aggregation definition.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="generationMode" canBeNull="false"
+                     comment="Reason for the aggregation being generated.&#xA;">
+            <mal:type name="GenerationMode" service="Aggregation" area="MC"/>
+          </mal:field>
+          <mal:field name="deltaTime"
+                     comment="Optional delta time, from the time stamp of the aggregation, for the first parameter sample. If NULL, then the first sample time is the same as the aggregation time stamp.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="intervalTime"
+                     comment="Optional delta time between samples in a single set. If NULL, then all samples in that set are given the same time.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="setIntervalTime"
+                     comment="Optional delta time between the last sample of a set and the first sample of the next set. If NULL, then the first sample of a set is given the same time as the last sample of the previous set.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="values" canBeNull="false"
+                     comment="List containing values of the parameters which are part of the aggregation. The ordering of the list entries shall match that of the definition of the aggregation. If a value for a particular entity is not being supplied, then its position shall be filled with a NULL value. If there are more values than contained in the definition then it is assumed that the parameters cycle as parameter sets.&#xA;">
+            <mal:type list="true" name="ParameterValue" service="Parameter" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="AggregationReference" shortFormPart="3"
+                       comment="The AggregationReference structure holds the identifier and optional filter for a parameter in an aggregation.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="domain"
+                     comment="The domain of the parameter being referenced, NULL if the same domain as the aggregation.&#xA;">
+            <mal:type list="true" name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="parameter" canBeNull="false"
+                     comment="The object instance identifier of the parameter definition being included in the aggregation.&#xA;">
+            <mal:type name="Long" area="MAL"/>
+          </mal:field>
+          <mal:field name="periodicFilter"
+                     comment="The type of filter to apply for filtered periodic updates when filters are applied. NULL if no filter required.&#xA;">
+            <mal:type name="ThresholdFilter" service="Aggregation" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ThresholdFilter" shortFormPart="4"
+                       comment="The ThresholdFilter structure holds the filter for a parameter.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="thresholdType" canBeNull="false"
+                     comment="The type of filter to apply for filtered periodic updates when filters are applied.">
+            <mal:type name="ThresholdType" service="Aggregation" area="MC"/>
+          </mal:field>
+          <mal:field name="thresholdValue" canBeNull="false" comment="Threshold value to apply.">
+            <mal:type name="Attribute" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:features>
+        <com:objects comment="The definitions of the aggregations shall be represented as AggregationDefinition COM objects.&#xA;Aggregation value updates shall be represented as AggregationValue COM objects.&#xA;The aggregation value object shall use the related link to indicate which aggregation definition object it uses.&#xA;">
+          <com:object name="AggregrationDefinition" number="1">
+            <com:objectType>
+              <mal:type name="AggregationDefinition" service="Aggregation" area="MC"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="AggregationValue" number="2">
+            <com:objectType>
+              <mal:type name="AggregationValue" service="Aggregation" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Aggregation" area="MC"/>
+            </com:relatedObject>
+          </com:object>
+        </com:objects>
+        <com:archiveUsage comment="Aggregation definitions should be stored in the COM archive.&#xA;When an aggregation value update is published, the aggregation value object should be stored in the COM archive.&#xA;"/>
+      </com:features>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Conversion" number="7"
+                 comment="The conversion service provides a set of basic conversion definition types that allows the specification of a conversion between two representations. These conversions are used by the other M&amp;C services (such as Action, Alert, and Parameter) to define conversions from raw field representations to some engineering representation.&#xA;Conversions are associated with other entities such as parameters or action/alert arguments through the configuration of the relevant service (action/alert/parameter).&#xA;The conversion service does not provide any operations directly, but allows consumers to add, remove, and modify conversion definitions via the COM archive.&#xA;">
+      <mal:dataTypes>
+        <mal:composite name="DiscreteConversion" shortFormPart="1"
+                       comment="The DiscreteConversion structure holds a bidirectional conversion between raw and converted values. The first element of the pair is the raw value and the second is the converted value. Both sets of values must be unique.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="mapping" canBeNull="false"
+                     comment="Defines a mapping between raw and converted values as a discrete set of points. The first entry in the pair is the raw value, and the second entry is the converted value.&#xA;">
+            <mal:type list="true" name="Pair" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="LineConversion" shortFormPart="2"
+                       comment="The LineConversion structure is a bi-directional conversion between raw and converted values. It is defined by a series of points between which values are to be interpolated. The extrapolate attribute indicates if values can also be linearly extrapolated beyond the initial and final points.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="extrapolate" canBeNull="false"
+                     comment="Indicates whether or not values can be extrapolated beyond the start and the end of the points.">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="points" canBeNull="false"
+                     comment="Defines the bi-directional conversion. The first attribute of the point is a raw value, and the second attribute is the converted value.&#xA;">
+            <mal:type list="true" name="Pair" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="PolyConversion" shortFormPart="3"
+                       comment="The PolyConversion structure holds only forward (raw to converted) poly-conversions. They are defined by a series of points for the polynomial coefficients.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="points" canBeNull="false"
+                     comment="The first attribute of a point is a MAL::Integer, being the index of the term; the second attribute is either a MAL::Float or a MAL::Double, being the coefficient of the term.&#xA;">
+            <mal:type list="true" name="Pair" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="RangeConversion" shortFormPart="4"
+                       comment="The RangeConversion structure holds a range for a one-way conversion to convert between a continuous range to a discrete value. A range is defined as from this point up to, but not including, the next point.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="points" canBeNull="false"
+                     comment="The first attribute in each pair is the raw range, and the second attribute is the converted value.&#xA;">
+            <mal:type list="true" name="Pair" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:features>
+        <com:objects comment="Each type of conversion shall be represented by a COM object type.&#xA;Other service objects shall reference instances of a conversion using its object identifier.&#xA;">
+          <com:object name="DiscreteConversion" number="1">
+            <com:objectType>
+              <mal:type name="DiscreteConversion" service="Conversion" area="MC"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="LineConversion" number="2">
+            <com:objectType>
+              <mal:type name="LineConversion" service="Conversion" area="MC"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="PolyConversion" number="3">
+            <com:objectType>
+              <mal:type name="PolyConversion" service="Conversion" area="MC"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="RangeConversion" number="4">
+            <com:objectType>
+              <mal:type name="RangeConversion" service="Conversion" area="MC"/>
+            </com:objectType>
+          </com:object>
+        </com:objects>
+        <com:archiveUsage comment="The COM archive shall be used to store conversion definitions.&#xA;Each instance of a conversion definition shall be represented by an object instance held in the COM archive.&#xA;&#xA;"/>
+      </com:features>
+    </mal:service>
+    <mal:dataTypes>
+      <mal:enumeration name="Severity" shortFormPart="6"
+                       comment="The severity enumeration holds the possible values for a severity. Normally, for checks, only the Warning and Critical ranges are used: the colour yellow is associated with Warning, and the colour red is associated with Critical.&#xA;">
+        <mal:item value="INFORMATIONAL" nvalue="1"
+                  comment="Indicates a nominal situation with no consequences.&#xA;"/>
+        <mal:item value="WARNING" nvalue="2"
+                  comment="Indicates unexpected behaviour without directly threatening consequences.&#xA;"/>
+        <mal:item value="ALARM" nvalue="3"
+                  comment="Indicates behaviour of serious concern requiring the attention of an operator, but not necessarily a malfunction.&#xA;"/>
+        <mal:item value="SEVERE" nvalue="4"
+                  comment="Indicates that the monitored item has malfunctioned. Requires operator attention.&#xA;"/>
+        <mal:item value="CRITICAL" nvalue="5"
+                  comment="Indicates behaviour with mission threatening consequences. Requires operator attention.&#xA;"/>
+      </mal:enumeration>
+      <mal:composite name="ArgumentDefinition" shortFormPart="1"
+                     comment="The ArgumentDefinition structure holds a specific instance of an argument definition with a set of associated attributes, such as conversion used, etc. The conversionCondition defines the conditions where the referenced conversion is applied.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="rawType" canBeNull="false"
+                   comment="Holds the attribute short form part of the raw type of the argument, e.g., for a MAL::String argument it shall hold 15.&#xA;">
+          <mal:type name="Octet" area="MAL"/>
+        </mal:field>
+        <mal:field name="rawUnit" comment="The unit for the raw value.">
+          <mal:type name="String" area="MAL"/>
+        </mal:field>
+        <mal:field name="conversionCondition" comment="The conversion applied to the argument.">
+          <mal:type list="true" name="ConditionalReference" area="MC"/>
+        </mal:field>
+        <mal:field name="convertedType"
+                   comment="Holds the attribute short form part of the converted type of the argument, e.g., for a MAL::String argument it shall hold 15. Must not be NULL if a conversion condition is supplied.&#xA;">
+          <mal:type name="Octet" area="MAL"/>
+        </mal:field>
+        <mal:field name="convertedUnit" comment="The converted argument units.">
+          <mal:type name="String" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+      <mal:composite name="ArgumentValue" shortFormPart="2"
+                     comment="The ArgumentValue structure holds a specific value of an argument. It holds either the converted or the raw value.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="isConvertedValue" canBeNull="false"
+                   comment="If TRUE, the supplied argument value is the converted value, otherwise it is the raw value.&#xA;">
+          <mal:type name="Boolean" area="MAL"/>
+        </mal:field>
+        <mal:field name="value" comment="The argument value.">
+          <mal:type name="Attribute" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+      <mal:composite name="ConditionalReference" shortFormPart="3"
+                     comment="The ConditionalReference structure holds a condition expression to be evaluated to determine if another item should be referenced. In the case that no test is required, i.e., the item should always be referenced, then the condition field should be set to NULL.&#xA;">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="condition"
+                   comment="The expression indicates which entities are applicable for this check. If NULL, then the condition shall evaluate to TRUE.&#xA;">
+          <mal:type name="EntityExpression" area="MC"/>
+        </mal:field>
+        <mal:field name="referenceId" canBeNull="false"
+                   comment="Entity that should be referenced if the condition evaluates to TRUE or is NULL.&#xA;">
+          <mal:type name="ObjectId" area="COM"/>
+        </mal:field>
+      </mal:composite>
+      <mal:composite name="EntityExpression" shortFormPart="4"
+                     comment="The EntityExpression structure represents a simple expression between a reference to an entity and a value for that entity.&#xA;">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="referenceId" canBeNull="false"
+                   comment="Identifies the entity to be used in the expression.&#xA;">
+          <mal:type name="ObjectId" area="COM"/>
+        </mal:field>
+        <mal:field name="operator" canBeNull="false" comment="The expression operator.">
+          <mal:type name="ExpressionOperator" service="Archive" area="COM"/>
+        </mal:field>
+        <mal:field name="value" comment="The value to be used in the expression.">
+          <mal:type name="Attribute" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+      <mal:composite name="AttributeValue" shortFormPart="7"
+                     comment="The AttributeValue structure holds an Attribute value. It allows a list of different Attribute types to be created whereas List&lt;Attribute&gt; would require the values to be all of the same type.&#xA;">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="value" canBeNull="false"
+                   comment="The argument value. Must not be NULL. NULL may be represented by having a NULL in place of the complete AttributeValue composite.&#xA;">
+          <mal:type name="Attribute" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+    </mal:dataTypes>
+  </mal:area>
+</mal:specification>

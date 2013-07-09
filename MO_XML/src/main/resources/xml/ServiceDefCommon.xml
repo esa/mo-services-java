@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mal:specification xmlns:com="http://www.ccsds.org/schema/COMSchema"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
+  <mal:area name="Common" number="3" version="1"
+            comment="This section details the Common Services; the structures used by the services are detailed in section 4. The services and structures are defined in terms of the MO Message Abstraction Layer (MAL) which is defined in reference [2], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM which is defined in reference [3]. &#xA;To aid comprehension several tables are included for each service and operation definition. The table formats are the same as those used for the specification of the MO COM Services in reference [3]. The formats are fully described in reference [2] in section 2 and in reference [3] section 2, for COM usage.&#xA;All service specifications in this document are part of the Common Area. This has a short form number of '3'.&#xA;">
+    <mal:service xsi:type="com:ExtendedServiceType" name="Directory" number="1"
+                 comment="The Directory service allows service providers to publish information about their services and consumers to discover services to connect to.&#xA;The service directory is represented as a set of Nodes. Each Node is identified by a Domain, Network and Session identifier, and these are held in the OccurrenceKey of the Node occurrence. Using these key values it is possible to request/monitor and maintain the Node tree using the COM occurrence operations.&#xA;Each Node is either a local Node or an external Node, external Nodes reside in another Directory Service and contain only the address information of that external Directory Service.&#xA;Local Nodes contain information about actual services. As each service is associated to a specific Domain/Network/Session it is therefore located at a specific Node in the Directory Service.&#xA;The local Node occurrence structure contains a list of ServiceDetails structures, each one detailing a particular service and the providers of that service. Each ProviderInformation structure then contains one or more ServiceAddress structures, each of these defines one way to contact that service provider. It is possible for a provider to offer more than one ServiceAddress as it allows the provider to support multiple message transports and encodings. Each service address lists the supported QoS levels and associated QoS properties available for that connection, a service consumer indicates the required QoS level and priority to a service provider by using these values in the initial message.&#xA;For services that have operations based on the publish and subscribe interaction pattern there may be required a separate URI for the broker component. To support this the directory service holds two URIs for each service, the URI of the primary interface and also a secondary one which, if present, is used for publish and subscribe-based operations. It is also possible that a publish and subscribe broker component is shared between more than one provider, known as a shared data source, and in this case the broker should be published as a directory service entry without a primary interface URI. The sharing providers should reference it by naming it in the 'dataName' field in their directory service entry.&#xA;Service provider information is added/removed from the Node using the Directory service publishService/withdrawService operations. It is possible to use the COM modifyOccurrence operation to perform this task but a race condition exist when using this operation for that purpose. The extra Directory service operations remove this race condition by separating the maintenance of Node and service details into two separate activities.&#xA;The lookupService operation provides more flexible searching abilities for Direectory service consumers.">
+      <mal:dataTypes>
+        <mal:composite name="NodeOccurrence"
+                       comment="The NodeOccurrence structure holds all information for the Directory service of a specific Domain/Network/Session.">
+          <mal:field name="sessionType" canBeNull="false"
+                     comment="The session type of this service.">
+            <mal:type name="SessionType" area="MAL"/>
+          </mal:field>
+          <mal:field name="sourceSessionName"
+                     comment="If this is part of a replay session, this field holds the session name of the source session. NULL otherwise">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="LocalNodeOccurrence" shortFormPart="1"
+                       comment="Represents a Node in the local Directory service.">
+          <mal:extends>
+            <mal:type name="NodeOccurrence" service="Directory" area="Common"/>
+          </mal:extends>
+          <mal:field name="services" canBeNull="false"
+                     comment="The list of services at this Node in the directory tree.">
+            <mal:type list="true" name="ServiceDetails" service="Directory" area="Common"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ExternalNodeOccurrence" shortFormPart="2"
+                       comment="Indicated that a Node is contained in an external Directory service.">
+          <mal:extends>
+            <mal:type name="NodeOccurrence" service="Directory" area="Common"/>
+          </mal:extends>
+          <mal:field name="directoryProviders" canBeNull="false"
+                     comment="The information about the providers of the external Directory service that hold the information for this Node.">
+            <mal:type list="true" name="ProviderInformation" service="Directory" area="Common"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ServiceProviderUpdate" shortFormPart="3"
+                       comment="The ServiceProviderUpdate structure holds update information for a LocalNodeOccurrence when a new Service provider is added/removed from a service.">
+          <mal:field name="provider" canBeNull="false"
+                     comment="The information of the provider of the service.">
+            <mal:type name="ServiceDetails" service="Directory" area="Common"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="NodeDetails" shortFormPart="4"
+                       comment="Represents the combination of the occurrence key holding the Domain/Network/Session information and the service details held at that Node.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="nodeKey" canBeNull="false" comment="The key node information.">
+            <mal:type name="OccurrenceKey" service="COM" area="OLDCOM"/>
+          </mal:field>
+          <mal:field name="nodeOccurrence" canBeNull="false" comment="The service provider details.">
+            <mal:type name="LocalNodeOccurrence" service="Directory" area="Common"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ServiceFilter" shortFormPart="5"
+                       comment="The ServiceFilter structure holds all information required by the Directory service for service lookup operation.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="node" comment="The node to query.">
+            <mal:type name="OccurrenceKey" service="COM" area="OLDCOM"/>
+          </mal:field>
+          <mal:field name="area"
+                     comment="The area of this service taken from the Area Identifier of the service specification. Can be NULL.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="service"
+                     comment="The service taken from the Service Identifier of the service specification. Can be NULL.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="version"
+                     comment="The version of this service taken from the Service Version of the service specification. Can be NULL.">
+            <mal:type name="Short" area="MAL"/>
+          </mal:field>
+          <mal:field name="requiredCapabilities"
+                     comment="List of required capabilities. If NULL then matches any.">
+            <mal:type list="true" name="Integer" area="MAL"/>
+          </mal:field>
+          <mal:field name="serviceProviderName"
+                     comment="The required service provider. Can be NULL.">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ServiceDetails" shortFormPart="6"
+                       comment="The ServiceDetails structure holds all information required by the Directory service for a single service.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="area" canBeNull="false"
+                     comment="The area of this service taken from the Area Identifier of the service specification.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="service" canBeNull="false"
+                     comment="The service taken from the Service Identifier of the service specification.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="version" canBeNull="false"
+                     comment="The version of this service taken from the Service Version of the service specification.">
+            <mal:type name="Short" area="MAL"/>
+          </mal:field>
+          <mal:field name="providers" canBeNull="false"
+                     comment="The list of providers of this service.">
+            <mal:type list="true" name="ProviderInformation" service="Directory" area="Common"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ProviderInformation" shortFormPart="7"
+                       comment="The ProviderInformation structure holds all information required by the Directory service about a provider of a service and its capabilities. The structure contains a list of ServiceAddress structures; a service may support more than one transport technology and therefore can be reached using more than one address.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="serviceProviderName" canBeNull="false"
+                     comment="The provider-defined name of the service; allows multiple service providers of the same service type to coexist in the directory service. This value is the unique service provider name.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="supportedCapabilities" canBeNull="false"
+                     comment="The set of capabilities set numbers that this service occurrence supports.">
+            <mal:type list="true" name="Integer" area="MAL"/>
+          </mal:field>
+          <mal:field name="serviceProperties" canBeNull="false"
+                     comment="Allows the passing of deployment specific service properties.">
+            <mal:type list="true" name="NamedValue" area="MAL"/>
+          </mal:field>
+          <mal:field name="serviceAddresses" canBeNull="false"
+                     comment="List of service address for this service provider.">
+            <mal:type list="true" name="ServiceAddress" service="Directory" area="Common"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ServiceAddress" shortFormPart="8"
+                       comment="The ServiceAddress structure holds all information required by the Directory service about a service URI and attributes relating to QoS.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="supportedLevels" canBeNull="false"
+                     comment="The set of possible QoS levels this service can provide.">
+            <mal:type list="true" name="QoSLevel" area="MAL"/>
+          </mal:field>
+          <mal:field name="QoSproperties" canBeNull="false"
+                     comment="Any QoS properties relevant to this address URIs and the specified transport.">
+            <mal:type list="true" name="NamedValue" area="MAL"/>
+          </mal:field>
+          <mal:field name="priorityLevels" canBeNull="false"
+                     comment="Number of QoS priority levels that this provider supports.">
+            <mal:type name="Integer" area="MAL"/>
+          </mal:field>
+          <mal:field name="serviceURI"
+                     comment="The Service URI that identifies the physical location of this service. NULL if represents a shared data provider (Broker).">
+            <mal:type name="URI" area="MAL"/>
+          </mal:field>
+          <mal:field name="dataURI"
+                     comment="The data URI that identifies the physical location of the publish and subscribe interface. NULL if service does not use publish and subscribe operations or if a shared data provider is to be used.">
+            <mal:type name="URI" area="MAL"/>
+          </mal:field>
+          <mal:field name="dataName"
+                     comment="This field is used to identify a shared data provider (broker). NULL if not using a shared data provider.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Interact" number="3"
+                 comment="This service allows a consumer to raise interactions with an operator when it requires operator acknowledgement or an operator decision.&#xA;&lt;&lt; diagram &gt;&gt;&#xA;An interaction service provider implementation is responsible for determining which operators should provide the interaction response and also for managing the situation where several operators attempt to provide a response. For each interaction operation only one response will be returned to the consumer that initiated the interaction; it is the responsibility of the interaction service provider to ensure this is the case and also to inform the failed operators that their interaction response was not used. The interaction between the operator and the Interact service provider is outside the scope, only the interaction between the service consumer and the Interact service provider is covered by the specification.&#xA;The interaction requests can contain a response timeout field that provides the interaction service provider with an upper time in which a response is required, if a response is not received in this time period, then the provider returns a TIMEDOUT error. The consumer must wait for this response, if it has requested a timeout, before assuming no response has been provided.&#xA;NOTE The mapping of responsibilities to roles is an implementation detail. One approach would be to have an always-logged-in default/automatic operator to whom an 'interaction' can be directed in the event that no human operators are available. The default operator can be used to support an automatic control function or automatic alarm system.&#xA;">
+      <mal:capabilitySet number="100"/>
+      <mal:dataTypes>
+        <mal:composite name="InteractOccurrence"
+                       comment="The base Interact service request structure. Holds fields common to all Interact service interactions.">
+          <mal:extends>
+            <mal:type name="InteractionUpdate" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="destination"
+                     comment="Username of operator or role to interact with, set to NULL if for anyone.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="destinationIsRole" canBeNull="false"
+                     comment="True if destination is a role name, value ignored if no destination supplied.">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="responseTimeout"
+                     comment="Duration in which response must be received. NULL if no timeout required.">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="displayMessage" canBeNull="false"
+                     comment="Message to present to operator.">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractResponse"
+                       comment="The base Interact service response structure. Holds fields common to all Interact service responses.">
+          <mal:extends>
+            <mal:type name="InteractionUpdate" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="operator"
+                     comment="The operator usename that is providing the response. May be NULL if not supported by the implementation.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractionUpdate" comment="The base type of all interaction updates."/>
+        <mal:composite name="InteractAcknowledgeOccurrence" shortFormPart="1"
+                       comment="The InteractAcknowledgeOccurrence structure holds the fields required for an interaction acknowledgement.">
+          <mal:extends>
+            <mal:type name="InteractOccurrence" service="Interact" area="Common"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="InteractConfirmOccurrence" shortFormPart="2"
+                       comment="The InteractConfirmOccurrence structure holds the fields required for an interaction confirmation.">
+          <mal:extends>
+            <mal:type name="InteractOccurrence" service="Interact" area="Common"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="InteractChoiceOccurrence" shortFormPart="3"
+                       comment="The InteractChoiceOccurrence structure holds the fields required for an interaction choice query.">
+          <mal:extends>
+            <mal:type name="InteractOccurrence" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="allowedChoices" canBeNull="false"
+                     comment="Set of choices for operator to select from.">
+            <mal:type list="true" name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractValueOccurrence" shortFormPart="4"
+                       comment="The InteractValueOccurrence structure holds the fields required for an interaction value query.">
+          <mal:extends>
+            <mal:type name="InteractOccurrence" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="defaultValues" canBeNull="false"
+                     comment="Default values to provide to operator. Both parts of the Element pairs structure must be populated as it provides the value type required. The first part of the pair shall always be a String that contains the name of the value required.">
+            <mal:type list="true" name="NamedValue" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractAcknowledgeResponse" shortFormPart="5"
+                       comment="The InteractAcknowledgeResponse structure represents a response to an interaction acknowledge query.">
+          <mal:extends>
+            <mal:type name="InteractResponse" service="Interact" area="Common"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="InteractConfirmResponse" shortFormPart="6"
+                       comment="The InteractConfirmResponse structure represents a response to an interaction confirm query.">
+          <mal:extends>
+            <mal:type name="InteractResponse" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="confirmation" canBeNull="false" comment="Response to interaction.">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractChoiceResponse" shortFormPart="7"
+                       comment="The InteractChoiceResponse structure represents a response to a choice interaction query.">
+          <mal:extends>
+            <mal:type name="InteractResponse" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="choice" canBeNull="false"
+                     comment="Index of chosen value from provided list.">
+            <mal:type name="Integer" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractValueResponse" shortFormPart="8"
+                       comment="The InteractValueResponse structure represents a response to a value interaction query.">
+          <mal:extends>
+            <mal:type name="InteractResponse" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="newValues" canBeNull="false"
+                     comment="New values provided by operator. Type of element returned must match that of default value sent in request and must be in the same order.">
+            <mal:type list="true" name="Attribute" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractCancelled" shortFormPart="9"
+                       comment="The InteractCancelled structure is used to notify of an interaction being cancelled. The responding operator credentials shall be held in the UpdateSource of the OccurrenceUpdate if cancelled by an operator.">
+          <mal:extends>
+            <mal:type name="InteractResponse" service="Interact" area="Common"/>
+          </mal:extends>
+        </mal:composite>
+      </mal:dataTypes>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Replay" number="4"
+                 comment="The Replay service allows a consumer to create a replay session based on an existing session. The replay session is a duplicate of the session on which it is based except that it is read only and that it may have its current time controlled.&#xA;As well as specifying the initial retrieval condition, the replay can be controlled in a similar way to a video player (play, pause, fast forward, rewind, single step, etc.). When the end of a replay session is reached, either before the first entry for backwards replay and after the last entry for forwards replay, the state of a replay is automatically switched to STOPPED.&#xA;Access control for a replay session is provided via standard MAL access control. The replay service provider can determine who created a specific replay and can therefore limit further replay operations internally. The specific replay access control policy is a deployment-dependent issue.&#xA;It should be noted that the 'Support in Replay' flag is set to 'No' for all replay operations. This is because these operations are used to control a replay session and cannot be issued inside a replay session.&#xA;">
+      <mal:capabilitySet number="100"/>
+      <mal:dataTypes>
+        <mal:enumeration name="ReplayState" shortFormPart="4"
+                         comment="The ReplayState enumeration represents the possible states of a replay.">
+          <mal:item value="STOPPED" nvalue="1" comment="Replay is stopped."/>
+          <mal:item value="FORWARDS" nvalue="2" comment="Replay is playing forwards."/>
+          <mal:item value="BACKWARDS" nvalue="3" comment="Replay is playing backwards."/>
+        </mal:enumeration>
+        <mal:composite name="ReplayUpdate" comment="">
+          <mal:extends>
+            <mal:type name="Occurrence" service="COM" area="OLDCOM"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="ReplayOccurrence" shortFormPart="1"
+                       comment="The ReplayOccurrence structure contains the replay occurrence details.">
+          <mal:extends>
+            <mal:type name="ReplayUpdate" service="Replay" area="Common"/>
+          </mal:extends>
+          <mal:field name="sourceSessionType" canBeNull="false"
+                     comment="Type of the session used as a source for the replay session (cannot be REPLAY).">
+            <mal:type name="SessionType" area="MAL"/>
+          </mal:field>
+          <mal:field name="sourceSessionName" canBeNull="false"
+                     comment="Identifier of the session used as a source for the replay session.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="initialTime" canBeNull="false"
+                     comment="Initial time of the replay session.">
+            <mal:type name="Time" area="MAL"/>
+          </mal:field>
+          <mal:field name="rate" canBeNull="false" comment="Replay rate for the replay session.">
+            <mal:type name="Float" area="MAL"/>
+          </mal:field>
+          <mal:field name="interval" canBeNull="false"
+                     comment="Replay step interval for the replay session.">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="serviceDetails"
+                     comment="List of DomainOccurrence structures that details the providers of the replay session. Should be NULL on submission.">
+            <mal:type list="true" name="Occurrence" service="COM" area="OLDCOM"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ReplayStatus" shortFormPart="2" comment="">
+          <mal:extends>
+            <mal:type name="Status" service="COM" area="OLDCOM"/>
+          </mal:extends>
+          <mal:field name="state" canBeNull="false" comment="">
+            <mal:type name="ReplayState" service="Replay" area="Common"/>
+          </mal:field>
+          <mal:field name="targetTime" comment="">
+            <mal:type name="Time" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ReplayControlUpdate" shortFormPart="3" comment="">
+          <mal:extends>
+            <mal:type name="ReplayUpdate" service="Replay" area="Common"/>
+          </mal:extends>
+          <mal:field name="state"
+                     comment="Required state for the replay session, if NULL then state is not to be changed.">
+            <mal:type name="ReplayState" service="Replay" area="Common"/>
+          </mal:field>
+          <mal:field name="currentTime"
+                     comment="Required current time for the replay session, if NULL then current time is not to be changed.">
+            <mal:type name="Time" area="MAL"/>
+          </mal:field>
+          <mal:field name="targetTime"
+                     comment="Target time of the replay session, if NULL then no target time is to be set.">
+            <mal:type name="Time" area="MAL"/>
+          </mal:field>
+          <mal:field name="interval"
+                     comment="Required replay interval for the replay session, if NULL then interval is not to be changed.">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="rate"
+                     comment="Required replay rate for the replay session, if NULL then rate is not to be changed.">
+            <mal:type name="Float" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Configuration" number="6"
+                 comment="The Configuration service allows service providers to publish information about their configuration and consumers to manage the configuration of the provider.&#xA;The contents of the configuration of a service is service specific, but the management of these configurations has been standardised in this service. Implementations of this service may also use bespoke methods for configuration upload (such as files) which is outside the scope of this specification; however, the status and management of these uploaded configurations can still be managed with this service.&#xA;Some other services may offer online update/modification of aspects of their definitions and configuration through the definition aspects of the Common Model; this is separate from the facilities provided by this service, which is to allow the management of implementation specific configurations in a standard way.&#xA;The service uses the COM entity to represent the different types of configuration allowed by a component, the different configurations for each of those entities is represented by a COM definition. The different configuration aspects of a service are represented by entity (for example, this could be colour balance or frame rate for a camera service) and the different configurations of those aspects are represented by definition (for example, that could be different frame rate values for the previous example).&#xA;Not all operations are required to be implemented, for example if the possible configurations are fixed in the component and cannot be changed then the COM operations to modify the definition need not be implemented.&#xA;Configurations are activated/deactivated by making one of the definitions the only allowed currently non-deleted definition. For example, COM only permits a single definition to be marked as non-deleted for an entity, for the configuration service this would be the active configuration for that entity.&#xA;The entity and definition identifiers used by this service are not tied to anything else in the MO architecture therefore their meaning is completely service dependent.&#xA;">
+      <mal:capabilitySet number="100"/>
+      <mal:dataTypes>
+        <mal:composite name="ConfigurationDefinition"
+                       comment="The ConfigurationDefinition structure is the base composite that all configurations must extend.">
+          <mal:extends>
+            <mal:type name="ConfigurationUpdate" service="Configuration" area="Common"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="ConfigurationUpdate"
+                       comment="The base type for all configuration updates.">
+          <mal:extends>
+            <mal:type name="Definition" service="COM" area="OLDCOM"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="ConfigurationActivationUpdate" shortFormPart="1"
+                       comment="An update structure that is distributed when the active configuration changes. One is distributed for the newly active configuration and one for the newly not-active configuration.">
+          <mal:extends>
+            <mal:type name="ConfigurationUpdate" service="Configuration" area="Common"/>
+          </mal:extends>
+          <mal:field name="isActive" canBeNull="false"
+                     comment="If TRUE this definition is now active, otherwise it is no longer active.">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+    </mal:service>
+  </mal:area>
+</mal:specification>
