@@ -336,7 +336,7 @@ public class GeneratorDocx extends GeneratorDocument
     docxFile.addCell(1, SERVICE_OVERVIEW_TABLE_WIDTHS, "Service Identifier", HEADER_COLOUR);
     docxFile.addCell(2, SERVICE_OVERVIEW_TABLE_WIDTHS, "Area Number", HEADER_COLOUR);
     docxFile.addCell(3, SERVICE_OVERVIEW_TABLE_WIDTHS, "Service Number", HEADER_COLOUR);
-    docxFile.addCell(4, SERVICE_OVERVIEW_TABLE_WIDTHS, "Service Version", HEADER_COLOUR);
+    docxFile.addCell(4, SERVICE_OVERVIEW_TABLE_WIDTHS, "Area Version", HEADER_COLOUR);
     docxFile.endRow();
     docxFile.startRow();
     docxFile.addCell(0, SERVICE_OVERVIEW_TABLE_WIDTHS, area.getName());
@@ -348,7 +348,7 @@ public class GeneratorDocx extends GeneratorDocument
 
     docxFile.startRow();
     docxFile.addCell(0, SERVICE_OVERVIEW_TABLE_WIDTHS, "Interaction Pattern", HEADER_COLOUR);
-    docxFile.addCell(1, SERVICE_OVERVIEW_TABLE_WIDTHS, "Operation Name", HEADER_COLOUR);
+    docxFile.addCell(1, SERVICE_OVERVIEW_TABLE_WIDTHS, "Operation Identifier", HEADER_COLOUR);
     docxFile.addCell(2, SERVICE_OVERVIEW_TABLE_WIDTHS, "Operation Number", HEADER_COLOUR);
     docxFile.addCell(3, SERVICE_OVERVIEW_TABLE_WIDTHS, "Support in Replay", HEADER_COLOUR);
     docxFile.addCell(4, SERVICE_OVERVIEW_TABLE_WIDTHS, "Capability Set", HEADER_COLOUR);
@@ -393,37 +393,40 @@ public class GeneratorDocx extends GeneratorDocument
         docxFile.addTitle(3, "COM usage");
         docxFile.addNumberedComment(splitString(null, features.getObjects().getComment()));
 
-        docxFile.startTable(SERVICE_COM_TYPES_TABLE_WIDTHS, service.getName() + " Service Object Types");
-
-        docxFile.startRow();
-        docxFile.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Name", HEADER_COLOUR);
-        docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Number", HEADER_COLOUR);
-        docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Payload Type", HEADER_COLOUR);
-        docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Related points to", HEADER_COLOUR);
-        docxFile.endRow();
-
-        List<String> cmts = new LinkedList<String>();
-
-        for (ModelObjectType obj : features.getObjects().getObject())
+        if (!features.getObjects().getObject().isEmpty())
         {
+          docxFile.startTable(SERVICE_COM_TYPES_TABLE_WIDTHS, service.getName() + " Service Object Types");
+
           docxFile.startRow();
-          docxFile.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getName());
-          docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, String.valueOf(obj.getNumber()));
-          docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, TypeUtils.getTypeListViaXSDAny(obj.getObjectType().getAny(), null)), null);
-          if (null != obj.getRelatedObject() && (null != obj.getRelatedObject().getObjectType()))
-          {
-            docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, obj.getRelatedObject().getObjectType()), null);
-          }
-          else
-          {
-            docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Not used");
-          }
+          docxFile.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Name", HEADER_COLOUR);
+          docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Number", HEADER_COLOUR);
+          docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Payload Type", HEADER_COLOUR);
+          docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Related points to", HEADER_COLOUR);
           docxFile.endRow();
+
+          List<String> cmts = new LinkedList<String>();
+
+          for (ModelObjectType obj : features.getObjects().getObject())
+          {
+            docxFile.startRow();
+            docxFile.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getName());
+            docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, String.valueOf(obj.getNumber()));
+            docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, TypeUtils.getTypeListViaXSDAny(obj.getObjectType().getAny(), null)), null);
+            if (null != obj.getRelatedObject() && (null != obj.getRelatedObject().getObjectType()))
+            {
+              docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, obj.getRelatedObject().getObjectType()), null);
+            }
+            else
+            {
+              docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Not used");
+            }
+            docxFile.endRow();
+          }
+
+          docxFile.endTable();
+
+          docxFile.addNumberedComment(cmts);
         }
-
-        docxFile.endTable();
-
-        docxFile.addNumberedComment(cmts);
       }
 
       if (null != features.getEvents())
@@ -463,7 +466,14 @@ public class GeneratorDocx extends GeneratorDocument
             }
             else
             {
-              evntTable.addCell(3, SERVICE_EVENT_TABLE_WIDTHS, "Not specified");
+              if (null != evnt.getRelatedObject().getComment())
+              {
+                evntTable.addCell(3, SERVICE_EVENT_TABLE_WIDTHS, evnt.getRelatedObject().getComment(), null);
+              }
+              else
+              {
+                evntTable.addCell(3, SERVICE_EVENT_TABLE_WIDTHS, "Not specified");
+              }
             }
           }
           else
@@ -478,7 +488,14 @@ public class GeneratorDocx extends GeneratorDocument
             }
             else
             {
-              evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, "Not specified");
+              if (null != evnt.getSourceObject().getComment())
+              {
+                evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, evnt.getSourceObject().getComment(), null);
+              }
+              else
+              {
+                evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, "Not specified");
+              }
             }
           }
           else
@@ -519,7 +536,7 @@ public class GeneratorDocx extends GeneratorDocument
     docxFile.startTable(OPERATION_OVERVIEW_TABLE_WIDTHS);
 
     docxFile.startRow();
-    docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "Operation Name", HEADER_COLOUR);
+    docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "Operation Identifier", HEADER_COLOUR);
     docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, op.getName(), STD_COLOUR, 2);
     docxFile.endRow();
 
@@ -528,48 +545,48 @@ public class GeneratorDocx extends GeneratorDocument
       SendOperationType lop = (SendOperationType) op;
       drawOperationPattern(docxFile, "SEND");
       drawOperationMessageHeader(docxFile);
-      drawOperationMessageDetails(docxFile, area, true, "Send", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSend().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, true, "SEND", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSend().getAny(), null));
     }
     else if (op instanceof SubmitOperationType)
     {
       SubmitOperationType lop = (SubmitOperationType) op;
       drawOperationPattern(docxFile, "SUBMIT");
       drawOperationMessageHeader(docxFile);
-      drawOperationMessageDetails(docxFile, area, true, "Submit", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSubmit().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, true, "SUBMIT", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSubmit().getAny(), null));
     }
     else if (op instanceof RequestOperationType)
     {
       RequestOperationType lop = (RequestOperationType) op;
       drawOperationPattern(docxFile, "REQUEST");
       drawOperationMessageHeader(docxFile);
-      drawOperationMessageDetails(docxFile, area, true, "Request", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getRequest().getAny(), null));
-      drawOperationMessageDetails(docxFile, area, false, "Response", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, true, "REQUEST", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getRequest().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, false, "RESPONSE", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny(), null));
     }
     else if (op instanceof InvokeOperationType)
     {
       InvokeOperationType lop = (InvokeOperationType) op;
       drawOperationPattern(docxFile, "INVOKE");
       drawOperationMessageHeader(docxFile);
-      drawOperationMessageDetails(docxFile, area, true, "Invoke", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getInvoke().getAny(), null));
-      drawOperationMessageDetails(docxFile, area, false, "Ack", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny(), null));
-      drawOperationMessageDetails(docxFile, area, false, "Response", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, true, "INVOKE", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getInvoke().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, false, "ACK", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, false, "RESPONSE", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny(), null));
     }
     else if (op instanceof ProgressOperationType)
     {
       ProgressOperationType lop = (ProgressOperationType) op;
       drawOperationPattern(docxFile, "PROGRESS");
       drawOperationMessageHeader(docxFile);
-      drawOperationMessageDetails(docxFile, area, true, "Progress", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getProgress().getAny(), null));
-      drawOperationMessageDetails(docxFile, area, false, "Ack", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny(), null));
-      drawOperationMessageDetails(docxFile, area, false, "Update", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getUpdate().getAny(), null));
-      drawOperationMessageDetails(docxFile, area, false, "Response", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, true, "PROGRESS", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getProgress().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, false, "ACK", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, false, "UPDATE", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getUpdate().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, false, "RESPONSE", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny(), null));
     }
     else if (op instanceof PubSubOperationType)
     {
       PubSubOperationType lop = (PubSubOperationType) op;
       drawOperationPattern(docxFile, "PUBLISH-SUBSCRIBE");
       drawOperationMessageHeader(docxFile);
-      drawOperationMessageDetails(docxFile, area, false, "Publish/Notify", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny(), null));
+      drawOperationMessageDetails(docxFile, area, false, "PUBLISH/NOTIFY", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny(), null));
     }
 
     docxFile.endTable();
@@ -586,9 +603,9 @@ public class GeneratorDocx extends GeneratorDocument
   private static void drawOperationMessageHeader(DocxBaseWriter docxFile) throws IOException
   {
     docxFile.startRow();
-    docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "IP Sequence", HEADER_COLOUR);
+    docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "Pattern Sequence", HEADER_COLOUR);
     docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, "Message", HEADER_COLOUR);
-    docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "Field Type", HEADER_COLOUR);
+    docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "Body Type", HEADER_COLOUR);
     docxFile.endRow();
   }
 
@@ -756,9 +773,9 @@ public class GeneratorDocx extends GeneratorDocument
           }
 
           v.add(new Object[]
-                  {
-                    err.getName(), pcmts, err.getNumber(), ev
-                  });
+          {
+            err.getName(), pcmts, err.getNumber(), ev
+          });
         }
         else if (object instanceof ErrorReferenceType)
         {
@@ -809,9 +826,9 @@ public class GeneratorDocx extends GeneratorDocument
           }
 
           v.add(new Object[]
-                  {
-                    err.getType().getName(), pcmts, en, ev
-                  });
+          {
+            err.getType().getName(), pcmts, en, ev
+          });
         }
       }
 
