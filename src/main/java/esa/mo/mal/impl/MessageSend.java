@@ -241,11 +241,16 @@ public class MessageSend
    * @throws MALException on Error.
    */
   public MALMessage onewayInteraction(final MessageDetails details,
-          final Long transId,
+          Long transId,
           final MALOperation op,
           final UOctet stage,
           final Object... msgBody) throws MALInteractionException, MALException
   {
+    if (null == transId)
+    {
+      transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), true, null);
+    }
+
     return initiateOnewayInteraction(details, createMessage(details, op, transId, stage, msgBody));
   }
 
@@ -262,11 +267,16 @@ public class MessageSend
    * @throws MALException on Error.
    */
   public MALMessage onewayInteraction(final MessageDetails details,
-          final Long transId,
+          Long transId,
           final MALOperation op,
           final UOctet stage,
           final MALEncodedBody msgBody) throws MALInteractionException, MALException
   {
+    if (null == transId)
+    {
+      transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), true, null);
+    }
+
     return initiateOnewayInteraction(details, createMessage(details, op, transId, stage, msgBody));
   }
 
@@ -419,7 +429,7 @@ public class MessageSend
     {
       throw new IllegalArgumentException("listener argument of continueInteraction mustnot be null");
     }
-    
+
     icmap.continueTransaction(op.getInteractionType().getOrdinal(), lastInteractionStage, transactionId, listener);
   }
 
@@ -776,25 +786,25 @@ public class MessageSend
     {
       MALContextFactoryImpl.LOGGER.log(Level.WARNING,
               "Error returning error to consumer : {0} : {1}", new Object[]
-              {
-                srcHdr.getURIFrom(), ex
-              });
+      {
+        srcHdr.getURIFrom(), ex
+      });
     }
     catch (MALTransmitErrorException ex)
     {
       MALContextFactoryImpl.LOGGER.log(Level.WARNING,
               "Error returning error to consumer : {0} : {1}", new Object[]
-              {
-                srcHdr.getURIFrom(), ex
-              });
+      {
+        srcHdr.getURIFrom(), ex
+      });
     }
     catch (RuntimeException ex)
     {
       MALContextFactoryImpl.LOGGER.log(Level.WARNING,
               "Error returning error to consumer : {0} : {1}", new Object[]
-              {
-                srcHdr.getURIFrom(), ex
-              });
+      {
+        srcHdr.getURIFrom(), ex
+      });
     }
 
     return msg;

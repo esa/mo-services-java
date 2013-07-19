@@ -56,6 +56,9 @@ class InteractionConsumerMap
 
       switch (interactionType)
       {
+        case InteractionType._SEND_INDEX:
+          // do nothing as no handler is required for SEND interaction
+          break;
         case InteractionType._SUBMIT_INDEX:
           handler = new SubmitOperationHandler(syncOperation, listener);
           break;
@@ -76,7 +79,10 @@ class InteractionConsumerMap
                   new Union("Pattern not supported")));
       }
 
-      transMap.put(oTransId, handler);
+      if (null != handler)
+      {
+        transMap.put(oTransId, handler);
+      }
 
       return oTransId;
     }
