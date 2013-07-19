@@ -143,7 +143,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
   }
 
   @Override
-  public MALEncodedBody getBodyElement() throws MALException
+  public MALEncodedBody getEncodedBody() throws MALException
   {
     throw new UnsupportedOperationException("Not supported yet.");
   }

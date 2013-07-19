@@ -27,6 +27,7 @@ import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
+import org.ccsds.moims.mo.mal.structures.Blob;
 
 /**
  * Implementation of the MALElementStreamFactory interface for the String encoding.
@@ -57,7 +58,7 @@ public class StringStreamFactory extends MALElementStreamFactory
   }
 
   @Override
-  public byte[] encodeElement(final Object[] elements, final MALEncodingContext ctx) throws MALException
+  public Blob encode(final Object[] elements, final MALEncodingContext ctx) throws MALException
   {
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     
@@ -70,6 +71,6 @@ public class StringStreamFactory extends MALElementStreamFactory
     
     os.flush();
     
-    return baos.toByteArray();
+    return new Blob(baos.toByteArray());
   }
 }
