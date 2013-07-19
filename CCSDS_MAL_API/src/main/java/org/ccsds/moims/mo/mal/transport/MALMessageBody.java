@@ -60,5 +60,5 @@ public interface MALMessageBody
    * @return The encoded body.
    * @throws MALException If an error occurs
    */
-  MALEncodedBody getBodyElement() throws MALException;
+  MALEncodedBody getEncodedBody() throws MALException;
 }

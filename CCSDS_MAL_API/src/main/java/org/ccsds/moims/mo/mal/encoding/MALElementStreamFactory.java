@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.encoding;
 import java.util.Map;
 import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Blob;
 
 /**
  * The MALElementStreamFactory class creates and configures MALElementInputStream instances and MALElementOutputStream
@@ -173,6 +174,6 @@ public abstract class MALElementStreamFactory
    * @throws java.lang.IllegalArgumentException if the arguments are null.
    * @throws MALException If an encoding error occurs
    */
-  public abstract byte[] encodeElement(Object[] elements, MALEncodingContext ctx)
+  public abstract Blob encode(Object[] elements, MALEncodingContext ctx)
           throws java.lang.IllegalArgumentException, MALException;
 }

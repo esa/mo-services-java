@@ -63,10 +63,10 @@ public interface MALEndpoint
    * @param interactionType Interaction type of the operation
    * @param interactionStage Interaction stage of the interaction
    * @param transactionId Transaction identifier of the interaction, may be null.
-   * @param serviceArea Area number of the service
-   * @param service Service number
-   * @param operation Operation number
-   * @param serviceVersion Service version number
+   * @param serviceAreaNumber Area number of the service
+   * @param serviceNumber Service number
+   * @param operationNumber Operation number
+   * @param areaVersion Area version number
    * @param isErrorMessage Flag indicating if the message conveys an error
    * @param qosProperties QoS properties of the message, may be null.
    * @param body Message body elements
@@ -88,10 +88,10 @@ public interface MALEndpoint
           InteractionType interactionType,
           UOctet interactionStage,
           Long transactionId,
-          UShort serviceArea,
-          UShort service,
-          UShort operation,
-          UOctet serviceVersion,
+          UShort serviceAreaNumber,
+          UShort serviceNumber,
+          UShort operationNumber,
+          UOctet areaVersion,
           Boolean isErrorMessage,
           Map qosProperties,
           Object... body)
@@ -112,10 +112,10 @@ public interface MALEndpoint
    * @param interactionType Interaction type of the operation
    * @param interactionStage Interaction stage of the interaction
    * @param transactionId Transaction identifier of the interaction, may be null.
-   * @param serviceArea Area number of the service
-   * @param service Service number
-   * @param operation Operation number
-   * @param serviceVersion Service version number
+   * @param serviceAreaNumber Area number of the service
+   * @param serviceNumber Service number
+   * @param operationNumber Operation number
+   * @param areaVersion Area version number
    * @param isErrorMessage Flag indicating if the message conveys an error
    * @param qosProperties QoS properties of the message, may be null.
    * @param body The already encoded message body
@@ -137,10 +137,10 @@ public interface MALEndpoint
           InteractionType interactionType,
           UOctet interactionStage,
           Long transactionId,
-          UShort serviceArea,
-          UShort service,
-          UShort operation,
-          UOctet serviceVersion,
+          UShort serviceAreaNumber,
+          UShort serviceNumber,
+          UShort operationNumber,
+          UOctet areaVersion,
           Boolean isErrorMessage,
           Map qosProperties,
           MALEncodedBody body)
