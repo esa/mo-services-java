@@ -162,7 +162,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
     final Identifier subscriptionId = new Identifier("SUB");
     // set up the wildcard subscription
     {
-      final EntityKey entitykey = new EntityKey(new Identifier("*"), 0, 0, 0);
+      final EntityKey entitykey = new EntityKey(new Identifier("*"), 0L, 0L, 0L);
 
       final EntityKeyList entityKeys = new EntityKeyList();
       entityKeys.add(entitykey);
@@ -180,7 +180,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
 
       for (int i = 0; i < (labels.length / 2); i++)
       {
-        final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0, 0, 0);
+        final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
         entityKeys.add(entitykey);
       }
 
@@ -197,7 +197,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
 
       for (int i = 0; i < labels.length; i++)
       {
-        final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0, 0, 0);
+        final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
         entityKeys.add(entitykey);
       }
 

@@ -335,7 +335,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
             QoSLevel.ASSURED,
             iLst,
             eLst,
-            new EntityKey(new Identifier("First"), 2, 3, 4));
+            new EntityKey(new Identifier("First"), 2L, 3L, 4L));
   }
 
   @Override
@@ -361,7 +361,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
       if (!isRegistered)
       {
         final EntityKeyList lst = new EntityKeyList();
-        lst.add(new EntityKey(new Identifier("*"), 0, 0, 0));
+        lst.add(new EntityKey(new Identifier("*"), 0L, 0L, 0L));
         publisher.register(lst, new PublishInteractionListener());
 
         isRegistered = true;
