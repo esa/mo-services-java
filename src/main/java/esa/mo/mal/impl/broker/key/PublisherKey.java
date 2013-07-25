@@ -36,11 +36,11 @@ public class PublisherKey implements Comparable
   /**
    * Match all numeric constant.
    */
-  public static final Integer ALL_NUMBER = 0;
+  public static final Long ALL_NUMBER = 0L;
   /**
    * Match all ushort constant.
    */
-  public static final UShort ALL_SHORT = new UShort(ALL_NUMBER);
+  public static final UShort ALL_SHORT = new UShort(0);
   /**
    * Hash function magic number.
    */
@@ -52,15 +52,15 @@ public class PublisherKey implements Comparable
   /**
    * Second sub key.
    */
-  private final Integer key2;
+  private final Long key2;
   /**
    * Third sub key.
    */
-  private final Integer key3;
+  private final Long key3;
   /**
    * Fourth sub key.
    */
-  private final Integer key4;
+  private final Long key4;
 
   /**
    * Constructor.
@@ -256,12 +256,12 @@ public class PublisherKey implements Comparable
   }
 
   /**
-   * Compares an Integer based sub-key.
+   * Compares an Long based sub-key.
    * @param myKeyPart The first key part.
    * @param theirKeyPart The second key part.
    * @return -1, 0, or 1 based on how the two values compare using normal comparable rules.
    */
-  protected static int compareSubkey(final Integer myKeyPart, final Integer theirKeyPart)
+  protected static int compareSubkey(final Long myKeyPart, final Long theirKeyPart)
   {
     if ((null == myKeyPart) || (null == theirKeyPart))
     {
@@ -310,12 +310,12 @@ public class PublisherKey implements Comparable
   }
 
   /**
-   * Compares two Integer sub-keys taking into account wildcard values.
+   * Compares two Long sub-keys taking into account wildcard values.
    * @param myKeyPart The first key part.
    * @param theirKeyPart The second key part.
    * @return True if they match or one is the wildcard.
    */
-  protected static boolean matchedSubkeyWithWildcard(final Integer myKeyPart, final Integer theirKeyPart)
+  protected static boolean matchedSubkeyWithWildcard(final Long myKeyPart, final Long theirKeyPart)
   {
     if (ALL_NUMBER.equals(myKeyPart) || ALL_NUMBER.equals(theirKeyPart))
     {
