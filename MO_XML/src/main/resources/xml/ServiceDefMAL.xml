@@ -137,14 +137,14 @@
         <mal:field name="firstSubKey" comment="The first sub-key of the key.">
           <mal:type name="Identifier" area="MAL"/>
         </mal:field>
-        <mal:field name="secondSubKey" comment="The second sub-key of the key.">
-          <mal:type name="Integer" area="MAL"/>
+        <mal:field name="secondSubKey" comment="The second sub-key of the key.&#xA;">
+          <mal:type name="Long" area="MAL"/>
         </mal:field>
-        <mal:field name="thirdSubKey" comment="The third sub-key of the key.">
-          <mal:type name="Integer" area="MAL"/>
+        <mal:field name="thirdSubKey" comment="The third sub-key of the key.&#xA;">
+          <mal:type name="Long" area="MAL"/>
         </mal:field>
-        <mal:field name="fourthSubKey" comment="The fourth sub-key of the key.">
-          <mal:type name="Integer" area="MAL"/>
+        <mal:field name="fourthSubKey" comment="The fourth sub-key of the key.&#xA;">
+          <mal:type name="Long" area="MAL"/>
         </mal:field>
       </mal:composite>
       <mal:composite name="UpdateHeader" shortFormPart="26"
