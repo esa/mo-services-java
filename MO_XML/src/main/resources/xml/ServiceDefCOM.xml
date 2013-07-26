@@ -110,7 +110,7 @@
             </mal:errorRef>
             <mal:errorRef comment="One or more of the objects being stored contains a wildcard value in the object identifier fields.&#xA;">
               <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains the indexes of the erroneous values from the originating list submitted.&#xA;">
+              <mal:extraInformation comment="The extra information field contains the indexes of the erroneous values from the originating list supplied.&#xA;">
                 <mal:type list="true" name="Integer" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -130,7 +130,7 @@
           <mal:errors>
             <mal:errorRef comment="One or more of the objects being updated contains a wildcard value in the object identifier fields.&#xA;">
               <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains the indexes of the erroneous values from the originating list submitted.&#xA;">
+              <mal:extraInformation comment="The extra information field contains the indexes of the erroneous values from the originating list supplied.&#xA;">
                 <mal:type list="true" name="Integer" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -284,8 +284,8 @@
         </com:events>
       </com:features>
     </mal:service>
-    <mal:service xsi:type="com:ExtendedServiceType" name="Activity" number="3"
-                 comment="The activity monitoring pattern provides the ability to monitor the progress of activities; an activity is anything that has a measurable period of time (a command, a remote procedure, a schedule etc). It defines an event pattern that supports the monitoring of activities from the initial consumer request, tracking its progress across a transport link, to reception by the provider and execution in that provider.&#xA;&#xA;">
+    <mal:service xsi:type="com:ExtendedServiceType" name="ActivityTracking" number="3"
+                 comment="The activity tracking service provides the ability to monitor the progress of activities; an activity is anything that has a measurable period of time (a command, a remote procedure, a schedule etc). It defines an event pattern that supports the monitoring of activities from the initial consumer request, tracking its progress across a transport link, to reception by the provider and execution in that provider.&#xA;&#xA;">
       <mal:dataTypes>
         <mal:composite name="ActivityTransfer" shortFormPart="1"
                        comment="The structure holds details for a Release, Reception, or Forward event of an activity.&#xA;">
@@ -333,46 +333,46 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
-        <com:objects comment="The activity service may be used for the monitoring of MAL operations.&#xA;If a MAL operation is using the activity service, when the interaction is started, the consumer shall populate and archive an OperationActivity object.&#xA;The OperationActivity object shall use the transaction identifier of the MAL operation for its object instance identifier.&#xA;All events for the interaction shall use the OperationActivity as their source object.&#xA;If a relay node is unable to relay the operation then that relay shall fail the MAL interaction that the consumer initiated as well as generate the correct activity event.&#xA;The executionStage field of the Execution event structure shall be populated from the interaction type enumeration.&#xA;The stageCount field of the Execution event structure shall be populated from the stage count row of Table 2-1.&#xA;">
+        <com:objects comment="The activity tracking service may be used for the monitoring of MAL operations.&#xA;If a MAL operation is using the activity tracking service, when the interaction is started, the consumer shall populate and archive an OperationActivity object.&#xA;The OperationActivity object shall use the transaction identifier of the MAL operation for its object instance identifier.&#xA;All events for the interaction shall use the OperationActivity as their source object.&#xA;If a relay node is unable to relay the operation then that relay shall fail the MAL interaction that the consumer initiated as well as generate the correct activity event.&#xA;The executionStage field of the Execution event structure shall be populated from the interaction type enumeration.&#xA;The stageCount field of the Execution event structure shall be populated from the stage count row of Table 2-1.&#xA;">
           <com:object name="OperationActivity" number="6">
             <com:objectType>
-              <mal:type name="OperationActivity" service="Activity" area="COM"/>
+              <mal:type name="OperationActivity" service="ActivityTracking" area="COM"/>
             </com:objectType>
           </com:object>
         </com:objects>
-        <com:events comment="The activity service shall use the event service for the monitoring of activities being transferred from a consumer to a provider and also for execution in the provider.&#xA;A Release event shall be generated when an activity is released from a consumer.&#xA;A Reception event shall be generated when an activity is received by an intermediate relay.&#xA;A Forward event shall be generated when an activity is released from an intermediate relay.&#xA;An Acceptance event shall be generated when an activity is received by the destination provider.&#xA;Reception and Forward events shall only be used in a multi-hop activity transfer.&#xA;Execution progress of an activity shall be reported using Execution events.&#xA;The Execution event may be reported many times as it is used to report each stage in the execution of the activity.&#xA;&#xA;">
+        <com:events comment="The activity tracking service shall use the event service for the monitoring of activities being transferred from a consumer to a provider and also for execution in the provider.&#xA;A Release event shall be generated when an activity is released from a consumer.&#xA;A Reception event shall be generated when an activity is received by an intermediate relay.&#xA;A Forward event shall be generated when an activity is released from an intermediate relay.&#xA;An Acceptance event shall be generated when an activity is received by the destination provider.&#xA;Reception and Forward events shall only be used in a multi-hop activity transfer.&#xA;Execution progress of an activity shall be reported using Execution events.&#xA;The Execution event may be reported many times as it is used to report each stage in the execution of the activity.&#xA;&#xA;">
           <com:event name="Release" number="1"
                      comment="A Release event is release from source consumer.&#xA;">
             <com:objectType>
-              <mal:type name="ActivityTransfer" service="Activity" area="COM"/>
+              <mal:type name="ActivityTransfer" service="ActivityTracking" area="COM"/>
             </com:objectType>
             <com:sourceObject comment="The activity being monitored is the source of the event.&#xA;"/>
           </com:event>
           <com:event name="Reception" number="2"
                      comment="A Reception event is reception by an intermediate relay.&#xA;">
             <com:objectType>
-              <mal:type name="ActivityTransfer" service="Activity" area="COM"/>
+              <mal:type name="ActivityTransfer" service="ActivityTracking" area="COM"/>
             </com:objectType>
             <com:sourceObject comment="The activity being monitored is the source of the event.&#xA;"/>
           </com:event>
           <com:event name="Forward" number="3"
                      comment="A Forward event is release from an intermediate relay.&#xA;">
             <com:objectType>
-              <mal:type name="ActivityTransfer" service="Activity" area="COM"/>
+              <mal:type name="ActivityTransfer" service="ActivityTracking" area="COM"/>
             </com:objectType>
             <com:sourceObject comment="The activity being monitored is the source of the event.&#xA;"/>
           </com:event>
           <com:event name="Acceptance" number="4"
                      comment="An Acceptance event is reception and acceptance by the destination provider.&#xA;">
             <com:objectType>
-              <mal:type name="ActivityAcceptance" service="Activity" area="COM"/>
+              <mal:type name="ActivityAcceptance" service="ActivityTracking" area="COM"/>
             </com:objectType>
             <com:sourceObject comment="The activity being monitored is the source of the event.&#xA;"/>
           </com:event>
           <com:event name="Execution" number="5"
                      comment="An Execution event is execution progress reporting by the destination provider.&#xA;">
             <com:objectType>
-              <mal:type name="ActivityExecution" service="Activity" area="COM"/>
+              <mal:type name="ActivityExecution" service="ActivityTracking" area="COM"/>
             </com:objectType>
             <com:sourceObject comment="The activity being monitored is the source of the event.&#xA;"/>
           </com:event>
