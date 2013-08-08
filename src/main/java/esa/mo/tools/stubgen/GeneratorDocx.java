@@ -400,7 +400,7 @@ public class GeneratorDocx extends GeneratorDocument
           docxFile.startRow();
           docxFile.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Name", HEADER_COLOUR);
           docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Number", HEADER_COLOUR);
-          docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Payload Type", HEADER_COLOUR);
+          docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Body Type", HEADER_COLOUR);
           docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Related points to", HEADER_COLOUR);
           docxFile.endRow();
 
@@ -440,7 +440,7 @@ public class GeneratorDocx extends GeneratorDocument
         evntTable.startRow();
         evntTable.addCell(0, SERVICE_EVENT_TABLE_WIDTHS, "Event Name", HEADER_COLOUR);
         evntTable.addCell(1, SERVICE_EVENT_TABLE_WIDTHS, "Object Number", HEADER_COLOUR);
-        evntTable.addCell(2, SERVICE_EVENT_TABLE_WIDTHS, "Object Payload Type", HEADER_COLOUR);
+        evntTable.addCell(2, SERVICE_EVENT_TABLE_WIDTHS, "Object Body Type", HEADER_COLOUR);
         evntTable.addCell(3, SERVICE_EVENT_TABLE_WIDTHS, "Related points to", HEADER_COLOUR);
         evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, "Source points to", HEADER_COLOUR);
         evntTable.endRow();
