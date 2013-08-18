@@ -6,6 +6,54 @@
             name="COMPrototype"
             number="200"
             version="1">
+      
+      <mal:service xsi:type="com:ExtendedServiceType"
+                 comment="For the Event service test a single service provider shall be implemented and deployed that provides this EventTest service and also, as it contains Events, the Event service."
+                 name="EventTest"
+                 number="2">
+      <mal:capabilitySet number="100">
+  
+        <mal:submitIP name="resetTest" number="100"
+                      supportInReplay="false"
+                      comment="Resets the EventTest service provider.">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:composite name="ObjectCreation" shortFormPart="1"
+                       comment="Holds object creation details.&#xA;">
+          <mal:field name="success" canBeNull="false"
+                     comment="The success result of the creation.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+        </mal:composite>        
+       </mal:dataTypes>
+           <com:features>
+ <!--
+        <com:objects comment="The activity service may be used for the monitoring of MAL operations.&#xA;If a MAL operation is using the activity service, when the interaction is started, the consumer shall populate and archive an OperationActivity object.&#xA;The OperationActivity object shall use the transaction identifier of the MAL operation for its object instance identifier.&#xA;All events for the interaction shall use the OperationActivity as their source object.&#xA;If a relay node is unable to relay the operation then that relay shall fail the MAL interaction that the consumer initiated as well as generate the correct activity event.&#xA;The executionStage field of the Execution event structure shall be populated from the interaction type enumeration.&#xA;The stageCount field of the Execution event structure shall be populated from the stage count row of Table 2-1.&#xA;">
+          <com:object name="OperationActivity" number="6">
+            <com:objectType>
+              <mal:type name="OperationActivity" service="Activity" area="COM"/>
+            </com:objectType>
+          </com:object>
+        </com:objects>
+    -->    
+        
+        <com:events comment="Set of events used in test.&#xA;&#xA;">
+          <com:event name="TestObjectCreation" number="1"
+                     comment="A Release event is release from source consumer.&#xA;">
+            <com:objectType>
+              <mal:type name="ObjectCreation" service="EventTest" area="COMPrototype"/>
+            </com:objectType>
+            <com:sourceObject comment="The activity being monitored is the source of the event.&#xA;"/>
+          </com:event>
+           </com:events>
+        <com:archiveUsage comment="The events generated as part of the activity monitoring pattern may be persisted in a COM archive.&#xA;If the activity events are being persisted then the objects that represent the activities (such as an OperationActivity object) should also be persisted.&#xA;&#xA;"/>
+      </com:features>
+    </mal:service>
 <!--
     <mal:service xsi:type="com:ExtendedServiceType"
                  comment="For the Event service test a single service provider shall be implemented and deployed that provides this EventTest service and also, as it contains Events, the Event service."
@@ -365,8 +413,7 @@
       <mal:capabilitySet number="100">
         <mal:submitIP name="resetTest" number="100"
                       supportInReplay="false"
-                      comment="Resets all values back to their default value."
-                      comUsage="No updates shall be distributed as a result of this operation.">
+                      comment="Resets all values back to their default value.">
           <mal:messages>
             <mal:submit comment="No message structure is passed.">
             </mal:submit>
@@ -374,8 +421,7 @@
         </mal:submitIP>
         <mal:requestIP name="getTestCounterCurrentValue" number="101"
                        supportInReplay="false"
-                       comment=""
-                       comUsage="">
+                       comment="">
           <mal:messages>
             <mal:request comment="No message structure is passed.">
             </mal:request>
@@ -386,8 +432,7 @@
         </mal:requestIP>
         <mal:invokeIP name="cancellableOperation" number="102"
                       supportInReplay="false"
-                      comment="Increments the test counter value by 1 every second until stopped. This operation can only be stopped using the Activity cancel or rollback operations or the resetTest operation, if cancel is used then the counter stops but it rollback is used then the counter is reset to 0."
-                      comUsage="">
+                      comment="Increments the test counter value by 1 every second until stopped. This operation can only be stopped using the Activity cancel or rollback operations or the resetTest operation, if cancel is used then the counter stops but it rollback is used then the counter is reset to 0.">
           <mal:messages>
             <mal:invoke comment="No message structure is passed.">
             </mal:invoke>
@@ -399,8 +444,7 @@
         </mal:invokeIP>
         <mal:invokeIP name="nonCancellableOperation" number="103"
                       supportInReplay="false"
-                      comment="Increments the test counter value by 1 every second until stopped. This operation can only be stopped using the resetTest operation."
-                      comUsage="">
+                      comment="Increments the test counter value by 1 every second until stopped. This operation can only be stopped using the resetTest operation.">
           <mal:messages>
             <mal:invoke comment="No message structure is passed.">
             </mal:invoke>
@@ -499,8 +543,7 @@
       <mal:capabilitySet number="100">
         <mal:submitIP name="resetTest" number="100"
                       supportInReplay="false"
-                      comment="Resets all values back to their default value."
-                      comUsage="No updates shall be distributed as a result of this operation.">
+                      comment="Resets all values back to their default value.">
           <mal:messages>
             <mal:submit comment="No message structure is passed.">
             </mal:submit>
@@ -508,8 +551,7 @@
         </mal:submitIP>
         <mal:submitIP name="createRelay" number="101"
                       supportInReplay="false"
-                      comment="Create a new relay node that supports the Activity and ActivityTest services."
-                      comUsage="No updates shall be distributed as a result of this operation.">
+                      comment="Create a new relay node that supports the Activity and ActivityTest services.">
           <mal:messages>
             <mal:submit comment="A pair of two strings, the first holds the relay name, the second holds the name of the node to relay to.">
               <mal:type name="Pair" area="MAL"/>
