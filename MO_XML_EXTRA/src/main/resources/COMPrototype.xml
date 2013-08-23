@@ -21,6 +21,14 @@
             </mal:submit>
           </mal:messages>
         </mal:submitIP>
+         <mal:submitIP name="createInstance" number="101"
+                      supportInReplay="false"
+                      comment="Creates an instance of a test object.">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
       </mal:capabilitySet>
       <mal:dataTypes>
         <mal:composite name="ObjectCreation" shortFormPart="1"
@@ -454,6 +462,14 @@
             </mal:response>
           </mal:messages>
         </mal:invokeIP>
+         <mal:submitIP name="close" number="104"
+                      supportInReplay="false"
+                      comment="Closes the service provider">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="101">
         <mal:sendIP name="send" number="200" supportInReplay="false"
@@ -549,7 +565,7 @@
             </mal:submit>
           </mal:messages>
         </mal:submitIP>
-        <mal:submitIP name="createRelay" number="101"
+          <mal:submitIP name="createRelay" number="101"
                       supportInReplay="false"
                       comment="Create a new relay node that supports the Activity and ActivityTest services.">
           <mal:messages>
