@@ -17,18 +17,27 @@
                       supportInReplay="false"
                       comment="Resets the EventTest service provider.">
           <mal:messages>
-            <mal:submit comment="No message structure is passed.">
+            <mal:submit comment="Arg 0 specifies the domain in which events are to be created">
+                <mal:type area="MAL" name="String"/>
             </mal:submit>
           </mal:messages>
         </mal:submitIP>
-         <mal:submitIP name="createInstance" number="101"
-                      supportInReplay="false"
-                      comment="Creates an instance of a test object.">
+        
+              <mal:requestIP name="createinstance" number="101" supportInReplay="false"
+                           comment="Arg 1 - ObjectNumber (identifies object to be created) Arg 2 Domain Arg 3 Description Arg 4 parent Instance ID">
           <mal:messages>
-            <mal:submit comment="No message structure is passed.">
-            </mal:submit>
+            <mal:request>
+              <mal:type area="MAL" name="Short"/>
+              <mal:type area="MAL" name="String"/>
+              <mal:type area="MAL" name="String"/>
+              <mal:type area="MAL" name="Long"/>
+            </mal:request>
+            <mal:response>
+              <mal:type area="MAL" name="Long"/>
+            </mal:response>
           </mal:messages>
-        </mal:submitIP>
+        </mal:requestIP>        
+        
       </mal:capabilitySet>
       <mal:dataTypes>
         <mal:composite name="ObjectCreation" shortFormPart="1"
@@ -37,7 +46,25 @@
                      comment="The success result of the creation.&#xA;">
             <mal:type name="Boolean" area="MAL"/>
           </mal:field>
+            <mal:field name="description" canBeNull="false"
+                     comment="The description field of the created object.&#xA;">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
         </mal:composite>        
+         <mal:composite name="TestObjectA" shortFormPart="10"
+                       comment="Instances of this type created in event test.&#xA;">
+            <mal:field name="description" canBeNull="false"
+                     comment="The description field of the created object.&#xA;">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>        
+        <mal:composite name="TestObjectB" shortFormPart="11"
+                       comment="Instances of this type created in event test.&#xA;">
+            <mal:field name="description" canBeNull="false"
+                     comment="The description field of the created object.&#xA;">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>                
        </mal:dataTypes>
            <com:features>
  <!--
@@ -51,7 +78,7 @@
     -->    
         
         <com:events comment="Set of events used in test.&#xA;&#xA;">
-          <com:event name="TestObjectCreation" number="1"
+          <com:event name="TestObjectCreation" number="3001"
                      comment="A Release event is release from source consumer.&#xA;">
             <com:objectType>
               <mal:type name="ObjectCreation" service="EventTest" area="COMPrototype"/>
