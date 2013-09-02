@@ -24,7 +24,7 @@
         </mal:submitIP>
         
               <mal:requestIP name="createinstance" number="101" supportInReplay="false"
-                           comment="Arg 1 - ObjectNumber (identifies object to be created) Arg 2 Domain Arg 3 Description Arg 4 parent Instance ID">
+                           comment="Arg 1 - ObjectNumber (identifies object to be created) Arg 2 Domain Arg 3 Description Arg 4 parent object No Arg 5 parent Instance domain Arg 6 parent Instance ID">
           <mal:messages>
             <mal:request>
               <mal:type area="MAL" name="Short"/>
@@ -38,6 +38,18 @@
           </mal:messages>
         </mal:requestIP>        
         
+          <mal:submitIP name="deleteInstance" number="102"
+                      supportInReplay="false"
+                      comment="deletes a test object instance.">
+          <mal:messages>
+            <mal:submit comment="Arg 1 - ObjectNumber (identifies object to be created) Arg 2 Domain Arg 3 instance ID">
+                <mal:type area="MAL" name="Short"/>
+                <mal:type area="MAL" name="String"/>
+                <mal:type area="MAL" name="Long"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+        
       </mal:capabilitySet>
       <mal:dataTypes>
         <mal:composite name="ObjectCreation" shortFormPart="1"
@@ -50,7 +62,16 @@
                      comment="The description field of the created object.&#xA;">
             <mal:type name="String" area="MAL"/>
           </mal:field>
+        </mal:composite>     
+        
+        <mal:composite name="ObjectDeletion" shortFormPart="2"
+                       comment="Holds object deletion details.&#xA;">
+          <mal:field name="description" canBeNull="false"
+                     comment="Description field for object to be deleted.&#xA;">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
         </mal:composite>        
+              
          <mal:composite name="TestObjectA" shortFormPart="10"
                        comment="Instances of this type created in event test.&#xA;">
             <mal:field name="description" canBeNull="false"
@@ -85,6 +106,15 @@
             </com:objectType>
             <com:sourceObject comment="The activity being monitored is the source of the event.&#xA;"/>
           </com:event>
+          
+           <com:event name="TestObjectDeletion" number="3002"
+                     comment="Event generated to report deletion of a test object.&#xA;">
+            <com:objectType>
+              <mal:type name="ObjectDeletion" service="EventTest" area="COMPrototype"/>
+            </com:objectType>
+            <com:sourceObject comment="The activity being deleted is the source of the event.&#xA;"/>
+          </com:event>
+          
            </com:events>
         <com:archiveUsage comment="The events generated as part of the activity monitoring pattern may be persisted in a COM archive.&#xA;If the activity events are being persisted then the objects that represent the activities (such as an OperationActivity object) should also be persisted.&#xA;&#xA;"/>
       </com:features>
