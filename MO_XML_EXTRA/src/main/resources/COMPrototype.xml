@@ -24,7 +24,7 @@
         </mal:submitIP>
         
               <mal:requestIP name="createinstance" number="101" supportInReplay="false"
-                           comment="Arg 1 - ObjectNumber (identifies object to be created) Arg 2 Domain Arg 3 Description Arg 4 parent object No Arg 5 parent Instance domain Arg 6 parent Instance ID">
+                           comment="Creates an instance of one of the test objects: TestObject A or Test Object B Arg 1 - ObjectNumber (identifies object to be created) Arg 2 Domain Arg 3 Description Arg 4 parent instanceIdentifier returns object instance identifier. The provider will publish a TestObjectCreation event reporting the deletion">
           <mal:messages>
             <mal:request>
               <mal:type area="MAL" name="Short"/>
@@ -42,7 +42,7 @@
                       supportInReplay="false"
                       comment="deletes a test object instance.">
           <mal:messages>
-            <mal:submit comment="Arg 1 - ObjectNumber (identifies object to be created) Arg 2 Domain Arg 3 instance ID">
+            <mal:submit comment="Deletes an instance of a test object Arg 1 - ObjectNumber Arg 2 Domain Arg 3 instance ID. The provider will publish a TestObjectDeletion event reporting the deletion ">
                 <mal:type area="MAL" name="Short"/>
                 <mal:type area="MAL" name="String"/>
                 <mal:type area="MAL" name="Long"/>
@@ -88,16 +88,7 @@
         </mal:composite>                
        </mal:dataTypes>
            <com:features>
- <!--
-        <com:objects comment="The activity service may be used for the monitoring of MAL operations.&#xA;If a MAL operation is using the activity service, when the interaction is started, the consumer shall populate and archive an OperationActivity object.&#xA;The OperationActivity object shall use the transaction identifier of the MAL operation for its object instance identifier.&#xA;All events for the interaction shall use the OperationActivity as their source object.&#xA;If a relay node is unable to relay the operation then that relay shall fail the MAL interaction that the consumer initiated as well as generate the correct activity event.&#xA;The executionStage field of the Execution event structure shall be populated from the interaction type enumeration.&#xA;The stageCount field of the Execution event structure shall be populated from the stage count row of Table 2-1.&#xA;">
-          <com:object name="OperationActivity" number="6">
-            <com:objectType>
-              <mal:type name="OperationActivity" service="Activity" area="COM"/>
-            </com:objectType>
-          </com:object>
-        </com:objects>
-    -->    
-        
+         
         <com:events comment="Set of events used in test.&#xA;&#xA;">
           <com:event name="TestObjectCreation" number="3001"
                      comment="A Release event is release from source consumer.&#xA;">
