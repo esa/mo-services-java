@@ -50,6 +50,31 @@
           </mal:messages>
         </mal:submitIP>
         
+       <mal:submitIP name="updateInstance" number="103"
+                      supportInReplay="false"
+                      comment="Updates a number of fields on an instance of a test object. The provider will publish a TestObjectUpdate event reporting the updated attributes ">
+          <mal:messages>
+            <mal:submit comment="Arg 1 Instance ID Arg 2 EnumField Arg 3 Duration Field Arg 4 Numeric List Field The provider will publish a TestObjectUpdate event reporting the updated attributes ">
+                <mal:type area="MAL" name="Long"/>
+                <mal:type area="COMPrototype" service="EventTest" name="BasicEnum"/>
+                <mal:type area="MAL" name="Duration"/>
+                <mal:type area="MAL" name="Short" list="true"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>        
+        
+        <mal:submitIP name="updateInstanceComposite" number="104"
+                      supportInReplay="false"
+                      comment="Updates the composite field on a instance of a test object. The provider will publish a TestObjectUpdate event reporting the updated attributes ">
+          <mal:messages>
+            <mal:submit comment="Arg 1 Instance  Id Arg 2 UOctet Field Arg 3 Octet Field Arg 4 Double Field. The provider will publish a TestObjectUpdate event reporting the updated attributes ">
+                 <mal:type area="MAL" name="Long"/>
+                <mal:type area="MAL" name="UOctet"/>
+                <mal:type area="MAL" name="Octet"/>
+                <mal:type area="MAL" name="Double"/>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>                
       </mal:capabilitySet>
       <mal:dataTypes>
         <mal:composite name="ObjectCreation" shortFormPart="1"
@@ -61,8 +86,8 @@
             <mal:field name="description" canBeNull="false"
                      comment="The description field of the created object.&#xA;">
             <mal:type name="String" area="MAL"/>
-          </mal:field>
-        </mal:composite>     
+            </mal:field>
+         </mal:composite>     
         
         <mal:composite name="ObjectDeletion" shortFormPart="2"
                        comment="Holds object deletion details.&#xA;">
@@ -72,20 +97,63 @@
           </mal:field>
         </mal:composite>        
               
-         <mal:composite name="TestObjectA" shortFormPart="10"
-                       comment="Instances of this type created in event test.&#xA;">
+        <mal:composite name="ObjectUpdate" shortFormPart="3"
+                       comment="Holds object update details.&#xA;">
+            <mal:field name="EnumField" canBeNull="true"
+                       comment="Optional field - holds enum value.&#xA;">
+                <mal:type name="BasicEnum" service="EventTest" area="COMPrototype"/>            
+            </mal:field>
+            <mal:field name="DurationField" canBeNull="true"
+                       comment="Optional field - holds duration value.&#xA;">
+                <mal:type name="Duration" area="MAL"/>       
+            </mal:field>   
+            <mal:field name="NumericListField" canBeNull="true"
+                       comment="Optional field - holds one or more numeric (short values).&#xA;">
+                <mal:type name="Short" area="MAL" list="true"/>       
+            </mal:field>    
+             <mal:field name="CompositeField" canBeNull="true"
+                       comment="Optional field - holds a composite containing a number of discrete value.&#xA;">
+                <mal:type name="UpdateComposite" service="EventTest" area="COMPrototype"/>        
+            </mal:field>    
+        </mal:composite>                   
+              
+              
+        <mal:composite name="TestObjectA" shortFormPart="10"
+                        comment="Instances of this type created in event test.&#xA;">
             <mal:field name="description" canBeNull="false"
-                     comment="The description field of the created object.&#xA;">
-            <mal:type name="String" area="MAL"/>
-          </mal:field>
+                       comment="The description field of the created object.&#xA;">
+                <mal:type name="String" area="MAL"/>
+            </mal:field>
+           
         </mal:composite>        
         <mal:composite name="TestObjectB" shortFormPart="11"
                        comment="Instances of this type created in event test.&#xA;">
             <mal:field name="description" canBeNull="false"
-                     comment="The description field of the created object.&#xA;">
-            <mal:type name="String" area="MAL"/>
-          </mal:field>
-        </mal:composite>                
+                       comment="The description field of the created object.&#xA;">
+                <mal:type name="String" area="MAL"/>
+            </mal:field>
+        </mal:composite>     
+        <mal:composite name="UpdateComposite" shortFormPart="12"
+                        comment="Encapsulates a set of fields that can be updated on a test object.&#xA;">
+            <mal:field name="UOctetField" canBeNull="false"
+                       comment="Unsigned octet value.&#xA;">
+                <mal:type name="UOctet" area="MAL"/>
+            </mal:field>
+            <mal:field name="OctetField" canBeNull="false"
+                       comment="octet value.&#xA;">
+                <mal:type name="Octet" area="MAL"/>
+            </mal:field>
+            <mal:field name="DoubleField" canBeNull="false"
+                       comment="double value.&#xA;">
+                <mal:type name="Double" area="MAL"/>
+            </mal:field>
+        </mal:composite> 
+        <mal:enumeration name="BasicEnum" shortFormPart="13">
+            <mal:item value="FIRST" nvalue="1"/>
+            <mal:item value="SECOND" nvalue="2"/>
+            <mal:item value="THIRD" nvalue="3"/>
+            <mal:item value="FOURTH" nvalue="4"/>
+        </mal:enumeration>                   
        </mal:dataTypes>
            <com:features>
          
@@ -95,7 +163,7 @@
             <com:objectType>
               <mal:type name="ObjectCreation" service="EventTest" area="COMPrototype"/>
             </com:objectType>
-            <com:sourceObject comment="The activity being monitored is the source of the event.&#xA;"/>
+            <com:sourceObject comment="The created object is the source of the event.&#xA;"/>
           </com:event>
           
            <com:event name="TestObjectDeletion" number="3002"
@@ -103,11 +171,17 @@
             <com:objectType>
               <mal:type name="ObjectDeletion" service="EventTest" area="COMPrototype"/>
             </com:objectType>
-            <com:sourceObject comment="The activity being deleted is the source of the event.&#xA;"/>
+            <com:sourceObject comment="The deleted object is the source of the event.&#xA;"/>
           </com:event>
-          
+          <com:event name="TestObjectUpdate" number="3003"
+                     comment="Event generated to report update of a test object.&#xA;">
+            <com:objectType>
+              <mal:type name="ObjectUpdate" service="EventTest" area="COMPrototype"/>
+            </com:objectType>
+            <com:sourceObject comment="The updated object is the source of the event.&#xA;"/>
+          </com:event>          
            </com:events>
-        <com:archiveUsage comment="The events generated as part of the activity monitoring pattern may be persisted in a COM archive.&#xA;If the activity events are being persisted then the objects that represent the activities (such as an OperationActivity object) should also be persisted.&#xA;&#xA;"/>
+        <com:archiveUsage comment="Events not currently persisted.&#xA;"/>
       </com:features>
     </mal:service>
 <!--
