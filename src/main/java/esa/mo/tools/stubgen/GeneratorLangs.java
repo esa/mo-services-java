@@ -976,7 +976,7 @@ public abstract class GeneratorLangs extends GeneratorBase
 
     file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-    file.addInterfaceOpenStatement(handlerName, null, "Interface that providers of the " + service.getName() + " service must implement to handle the operatoins of that service.");
+    file.addInterfaceOpenStatement(handlerName, null, "Interface that providers of the " + service.getName() + " service must implement to handle the operations of that service.");
 
     String intHandlerStr = createReturnReference(createElementType(file, StdStrings.MAL, null, PROVIDER_FOLDER, StdStrings.MALINTERACTION)) + " interaction";
     String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
