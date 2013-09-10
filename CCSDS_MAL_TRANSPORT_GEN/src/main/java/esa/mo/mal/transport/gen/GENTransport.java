@@ -140,6 +140,8 @@ public abstract class GENTransport implements MALTransport, GENSender
     {
       this.wrapBodyParts = wrapBodyParts;
     }
+
+    LOGGER.log(Level.INFO, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
   }
 
   /**

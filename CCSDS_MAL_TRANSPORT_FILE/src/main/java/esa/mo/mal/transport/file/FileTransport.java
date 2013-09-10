@@ -261,7 +261,7 @@ public class FileTransport extends GENTransport
       try (java.io.FileOutputStream fos = new FileOutputStream(tmpFile))
       {
         final MALElementOutputStream enc = getStreamFactory().createOutputStream(fos);
-        tmsg.msg.encodeMessage(getStreamFactory(), enc);
+        tmsg.msg.encodeMessage(getStreamFactory(), enc, fos);
 
         enc.flush();
         enc.close();

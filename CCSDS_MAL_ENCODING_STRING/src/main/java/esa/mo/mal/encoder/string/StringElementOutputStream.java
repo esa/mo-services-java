@@ -20,17 +20,17 @@
  */
 package esa.mo.mal.encoder.string;
 
+import esa.mo.mal.encoder.gen.GENElementOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Element;
 
 /**
  * Implements the MALElementOutputStream interface for String encodings.
  */
-public class StringElementOutputStream implements MALElementOutputStream
+public class StringElementOutputStream implements GENElementOutputStream
 {
   private final OutputStream dos;
 

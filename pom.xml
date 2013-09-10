@@ -65,6 +65,7 @@
     <module>CCSDS_MAL_TRANSPORT_RMI</module>
     <module>CCSDS_MAL_ENCODING_STRING</module>
     <module>CCSDS_MAL_ENCODING_BINARY</module>
+    <module>CCSDS_MAL_ENCODING_GEN</module>
   </modules>
 
   <profiles>

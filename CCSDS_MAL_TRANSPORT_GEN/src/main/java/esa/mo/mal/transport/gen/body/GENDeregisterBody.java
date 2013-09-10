@@ -46,16 +46,14 @@ public class GENDeregisterBody extends GENMessageBody implements MALDeregisterBo
    * Constructor.
    *
    * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
-   * @param count The number of message parts.
    * @param encFactory The encoder stream factory to use.
    * @param encBodyElements The input stream that holds the encoded body parts.
    */
   public GENDeregisterBody(final boolean wrappedBodyParts,
-          final int count,
           final MALElementStreamFactory encFactory,
           final MALElementInputStream encBodyElements)
   {
-    super(wrappedBodyParts, count, encFactory, encBodyElements);
+    super(wrappedBodyParts, encFactory, encBodyElements);
   }
 
   @Override

@@ -213,7 +213,7 @@ public class RMITransport extends GENTransport
     {
       final ByteArrayOutputStream baos = new ByteArrayOutputStream();
       final MALElementOutputStream enc = getStreamFactory().createOutputStream(baos);
-      tmsg.msg.encodeMessage(getStreamFactory(), enc);
+      tmsg.msg.encodeMessage(getStreamFactory(), enc, baos);
       buf = baos.toByteArray();
     }
     catch (MALException ex)

@@ -46,16 +46,14 @@ public class GENNotifyBody extends GENPublishBody implements MALNotifyBody
    * Constructor.
    *
    * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
-   * @param count The number of message parts.
    * @param encFactory The encoder stream factory to use.
    * @param encBodyElements The input stream that holds the encoded body parts.
    */
   public GENNotifyBody(final boolean wrappedBodyParts,
-          final int count,
           final MALElementStreamFactory encFactory,
           final MALElementInputStream encBodyElements)
   {
-    super(wrappedBodyParts, count, encFactory, encBodyElements, 1);
+    super(wrappedBodyParts, encFactory, encBodyElements, 1);
   }
 
   @Override

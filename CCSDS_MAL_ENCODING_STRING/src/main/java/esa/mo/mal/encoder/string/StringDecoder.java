@@ -699,6 +699,24 @@ public class StringDecoder implements MALDecoder
     return null;
   }
 
+  /**
+   * Returns the remaining data of the input stream that has not been used for decoding for wrapping in a MALEncodedBody
+   * class.
+   *
+   * @return the unused body data.
+   * @throws MALException if there is an error.
+   */
+  protected byte[] getRemainingEncodedData() throws MALException
+  {
+    preLoadBuffer();
+    while (loadExtraBuffer())
+    {
+      // do nothing, just loading in the complete message
+    }
+
+    return sourceBuffer.buf.substring(sourceBuffer.offset).getBytes(UTF8_CHARSET);
+  }
+
   private String removeFirst() throws MALException
   {
     String rv;
@@ -766,21 +784,21 @@ public class StringDecoder implements MALDecoder
   {
     boolean moreAvailable = false;
 
-    if (null != inputStream)
+    try
     {
-      // need to load in some
-      final byte[] tbuf = new byte[BLOCK_SIZE];
-
-      try
+      if (null != inputStream && (0 != inputStream.available()))
       {
+        // need to load in some
+        final byte[] tbuf = new byte[BLOCK_SIZE];
+
         final int length = inputStream.read(tbuf, 0, tbuf.length);
         sourceBuffer.buf += new String(tbuf, 0, length, UTF8_CHARSET);
         moreAvailable = 0 != inputStream.available();
       }
-      catch (IOException ex)
-      {
-        throw new MALException("Unable to read required amount from source stream", ex);
-      }
+    }
+    catch (IOException ex)
+    {
+      throw new MALException("Unable to read required amount from source stream", ex);
     }
 
     return moreAvailable;

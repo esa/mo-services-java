@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO String encoder
+ * System                : CCSDS MO Generic Encoder Framework
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,46 +18,22 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.string;
+package esa.mo.mal.encoder.gen;
 
-import esa.mo.mal.encoder.gen.GENElementInputStream;
-import java.io.InputStream;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 
 /**
- * Implements the MALElementInputStream interface for String encodings.
+ * Extends the MALElementInputStream interface to enable aware transport access to the encoded data stream.
  */
-public class StringElementInputStream implements GENElementInputStream
+public interface GENElementInputStream extends MALElementInputStream
 {
-  private final StringDecoder dec;
-
   /**
-   * Constructor.
+   * Returns a new byte array containing the remaining encoded data for this stream. Expected to be used for creating an
+   * MAL encoded body object.
    *
-   * @param is Input stream to read from.
+   * @return a byte array containing the remaining encoded data for this stream.
+   * @throws MALException On error.
    */
-  public StringElementInputStream(final InputStream is)
-  {
-    dec = new StringDecoder(is);
-  }
-
-  @Override
-  public Object readElement(final Object element, final MALEncodingContext ctx)
-          throws IllegalArgumentException, MALException
-  {
-    return dec.decodeNullableElement((Element) element);
-  }
-
-  @Override
-  public byte[] getRemainingEncodedData() throws MALException
-  {
-    return dec.getRemainingEncodedData();
-  }
-
-  @Override
-  public void close() throws MALException
-  {
-  }
+  public byte[] getRemainingEncodedData() throws MALException;
 }
