@@ -65,6 +65,7 @@
     <esa.stubgen.xmlDirectory>${project.build.directory}/xml</esa.stubgen.xmlDirectory>
     <esa.stubgen.xmlRefDirectory>${project.build.directory}/xml-ref/xml</esa.stubgen.xmlRefDirectory>
     <esa.api.version>1.0-SNAPSHOT</esa.api.version>
+    <esa.gen.encoder.version>1.0-SNAPSHOT</esa.gen.encoder.version>
     <esa.string.encoder.version>1.0-SNAPSHOT</esa.string.encoder.version>
     <esa.binary.encoder.version>1.0-SNAPSHOT</esa.binary.encoder.version>
     <esa.gen.transport.version>1.0-SNAPSHOT</esa.gen.transport.version>
@@ -82,6 +83,11 @@
         <groupId>int.esa</groupId>
         <artifactId>CCSDS_MAL_IMPL</artifactId>
         <version>${esa.api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>int.esa</groupId>
+        <artifactId>CCSDS_MAL_ENCODING_GEN</artifactId>
+        <version>${esa.gen.encoder.version}</version>
       </dependency>
       <dependency>
         <groupId>int.esa</groupId>
