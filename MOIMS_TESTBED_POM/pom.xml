@@ -66,29 +66,16 @@
     </developer>
   </developers>
   
-  <repositories>
-    <repository>
-      <id>vm-bri-ccsds0</id>
-      <url>http://vm-bri-ccsds0/nexus/content/groups/public/</url>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>vm-bri-ccsds0</id>
-      <url>http://vm-bri-ccsds0/nexus/content/groups/public/</url>
-    </pluginRepository>
-  </pluginRepositories>
-  
   <distributionManagement>
     <repository>
-      <id>vm-bri-ccsds0</id>
-      <name>vm-bri-ccsds0</name>
-      <url>http://vm-bri-ccsds0/nexus/content/repositories/esa-releases</url>
+      <id>maven.scisys.co.uk</id>
+      <name>maven.scisys.co.uk</name>
+      <url>https://maven.scisys.co.uk/content/repositories/ccsdsreleases</url>
     </repository>
     <snapshotRepository>
-      <id>vm-bri-ccsds0</id>
-      <name>vm-bri-ccsds0</name>
-      <url>http://vm-bri-ccsds0/nexus/content/repositories/esa-snapshots</url>
+      <id>maven.scisys.co.uk</id>
+      <name>maven.scisys.co.uk</name>
+      <url>https://maven.scisys.co.uk/content/repositories/ccsdssnapshots</url>
     </snapshotRepository>
   </distributionManagement>
   
