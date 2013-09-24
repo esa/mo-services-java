@@ -311,5 +311,77 @@
         </mal:submitIP>
       </mal:capabilitySet>
     </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="ArchiveTest" number="6"
+                 comment="This service is defined to test the Archive service.">
+      <mal:capabilitySet number="100">    
+        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="reset" number="100"
+                      supportInReplay="false"
+                      comment="Resets all values back to their default value."
+                      comUsage="">
+          <mal:messages>
+            <mal:submit comment="No message structure is passed.">
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:composite name="TestObjectPayload" shortFormPart="1"
+                       comment="Object body to test the Archive service.">
+          <mal:field name="booleanField" canBeNull="true"
+                     comment="">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="integerField" canBeNull="true"
+                     comment="">
+            <mal:type name="Integer" area="MAL"/>
+          </mal:field>
+          <mal:field name="stringField" canBeNull="true"
+                     comment="">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="compositeField"
+                     comment="">
+            <mal:type name="SubComposite" service="ArchiveTest" area="COMPrototype" />
+          </mal:field>
+          <mal:field name="enumeratedField" canBeNull="true"
+                     comment="">
+            <mal:type name="EnumeratedObject" service="ArchiveTest" area="COMPrototype" />
+          </mal:field>
+          <mal:field name="listField" canBeNull="true"
+                     comment="">
+            <mal:type list="true" name="Integer" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="SubComposite" shortFormPart="2"
+                       comment="">
+          <mal:field name="integerField" canBeNull="true"
+                     comment="">
+            <mal:type name="Integer" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:enumeration name="EnumeratedObject" shortFormPart="3"
+                         comment="">
+          <mal:item value="OBJECT1" nvalue="1" comment=""/>
+          <mal:item value="OBJECT2" nvalue="2" comment=""/>
+          <mal:item value="OBJECT3" nvalue="3" comment=""/>
+        </mal:enumeration>
+      </mal:dataTypes>
+      <com:features>
+        <com:objects comment="Object to test the Archive service.">
+          <com:object name="TestObject" number="1">
+            <com:objectType>
+              <mal:type name="TestObjectPayload" service="ArchiveTest" area="COMPrototype"/>
+            </com:objectType>
+          </com:object>
+        </com:objects>
+        <com:objects comment="Object to test the Archive service.">
+          <com:object name="TestObject2" number="2">
+            <com:objectType>
+              <mal:type name="Integer" area="MAL"/>
+            </com:objectType>
+          </com:object>
+        </com:objects>
+      </com:features>
+    </mal:service>
   </mal:area>
 </mal:specification>
