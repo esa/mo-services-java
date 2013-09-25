@@ -314,10 +314,9 @@
     <mal:service xsi:type="com:ExtendedServiceType" name="ArchiveTest" number="6"
                  comment="This service is defined to test the Archive service.">
       <mal:capabilitySet number="100">    
-        <mal:submitIP xsi:type="com:ExtendedSubmitOperationType" name="reset" number="100"
+        <mal:submitIP name="reset" number="100"
                       supportInReplay="false"
-                      comment="Resets all values back to their default value."
-                      comUsage="">
+                      comment="Resets all values back to their default value.">
           <mal:messages>
             <mal:submit comment="No message structure is passed.">
             </mal:submit>
@@ -373,8 +372,6 @@
               <mal:type name="TestObjectPayload" service="ArchiveTest" area="COMPrototype"/>
             </com:objectType>
           </com:object>
-        </com:objects>
-        <com:objects comment="Object to test the Archive service.">
           <com:object name="TestObject2" number="2">
             <com:objectType>
               <mal:type name="Integer" area="MAL"/>
