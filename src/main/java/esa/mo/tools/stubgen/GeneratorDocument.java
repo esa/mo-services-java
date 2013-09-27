@@ -36,14 +36,6 @@ import org.apache.maven.plugin.logging.Log;
 public abstract class GeneratorDocument extends GeneratorBase
 {
   /**
-   * Enumeration of the COM aspects.
-   */
-  public static enum ComAspectEnum
-  {
-    ENTITY, DEFINITION, OCCURRENCE, STATUS
-  };
-
-  /**
    * Constructor.
    *
    * @param logger The logger.

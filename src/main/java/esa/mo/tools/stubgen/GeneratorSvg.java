@@ -33,7 +33,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.AbstractMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -91,19 +90,6 @@ public class GeneratorSvg extends GeneratorDocument
 
           Set<Map.Entry<String, String>> tocMap = new LinkedHashSet();
           SvgBufferWriter serviceBodyBuff = new SvgBufferWriter();
-
-          if (service instanceof ExtendedServiceType)
-          {
-            ExtendedServiceType eService = (ExtendedServiceType) service;
-
-            List<String> cmts = new LinkedList<String>();
-            addCOMUsageComments(cmts, ComAspectEnum.ENTITY, eService);
-            addCOMUsageComments(cmts, ComAspectEnum.DEFINITION, eService);
-            addCOMUsageComments(cmts, ComAspectEnum.OCCURRENCE, eService);
-            addCOMUsageComments(cmts, ComAspectEnum.STATUS, eService);
-
-            serviceBodyBuff.addComment(cmts);
-          }
 
           ServiceSummary summary = createOperationElementList(service);
 
@@ -194,114 +180,6 @@ public class GeneratorSvg extends GeneratorDocument
     }
   }
 
-  private static void addCOMUsageComments(List<String> cmts, ComAspectEnum aspect, ExtendedServiceType service) throws IOException
-  {
-    switch (aspect)
-    {
-      case ENTITY:
-      {
-//        getCOMIdentifier(cmts, aspect, service.getIncludesDefinition());
-//        getCOMIdentifier(cmts, aspect, service.getIncludesOccurrence(), service.getIncludesDefinition());
-//        getCOMIdentifier(cmts, aspect, service.getIncludesStatus(), service.getIncludesOccurrence(), service.getIncludesDefinition());
-      }
-      break;
-
-      case DEFINITION:
-      {
-//        getCOMIdentifier(cmts, aspect, service.getIncludesDefinition());
-//        getCOMIdentifier(cmts, aspect, service.getIncludesOccurrence(), service.getIncludesDefinition());
-//        getCOMIdentifier(cmts, aspect, service.getIncludesStatus(), service.getIncludesOccurrence(), service.getIncludesDefinition());
-      }
-      break;
-
-      case OCCURRENCE:
-      {
-//        getCOMIdentifier(cmts, aspect, service.getIncludesOccurrence());
-//        getCOMIdentifier(cmts, aspect, service.getIncludesStatus(), service.getIncludesOccurrence());
-      }
-      break;
-
-      case STATUS:
-      {
-//        getCOMIdentifier(cmts, aspect, service.getIncludesStatus());
-      }
-      break;
-    }
-  }
-
-//  private static void getCOMIdentifier(List<String> cmts, ComAspectEnum aspect, ModelAspectType... eSets) throws IOException
-//  {
-//    for (int i = 0; i < eSets.length; i++)
-//    {
-//      ModelAspectType eSet = eSets[i];
-//      if (null != eSet)
-//      {
-//        switch (aspect)
-//        {
-//          case ENTITY:
-//          {
-//            if (null != eSet.getEntityId())
-//            {
-//              if (0 == i)
-//              {
-//                cmts.add(eSet.getEntityId().getComment());
-//              }
-//              else
-//              {
-//                return;
-//              }
-//            }
-//          }
-//          break;
-//          case DEFINITION:
-//          {
-//            if (null != eSet.getDefinitionId())
-//            {
-//              if (0 == i)
-//              {
-//                cmts.add(eSet.getDefinitionId().getComment());
-//              }
-//              else
-//              {
-//                return;
-//              }
-//            }
-//          }
-//          break;
-//          case OCCURRENCE:
-//          {
-//            if (null != eSet.getOccurrenceId())
-//            {
-//              if (0 == i)
-//              {
-//                cmts.add(eSet.getOccurrenceId().getComment());
-//              }
-//              else
-//              {
-//                return;
-//              }
-//            }
-//          }
-//          break;
-//          case STATUS:
-//          {
-//            if (null != eSet.getStatusId())
-//            {
-//              if (0 == i)
-//              {
-//                cmts.add(eSet.getStatusId().getComment());
-//              }
-//              else
-//              {
-//                return;
-//              }
-//            }
-//          }
-//          break;
-//        }
-//      }
-//    }
-//  }
   private void drawOperationMessages(SvgBaseWriter svgFile, OperationSummary op) throws IOException
   {
     switch (op.getPattern())
