@@ -325,7 +325,16 @@ public class MessageReceive implements MALMessageListener
 
     try
     {
-      address.handler.handleInvoke(new InvokeInteractionImpl(sender, address, transId, msg), msg.getBody());
+      InvokeInteractionImpl interaction = new InvokeInteractionImpl(sender, address, transId, msg);
+
+      try
+      {
+        address.handler.handleInvoke(interaction, msg.getBody());
+      }
+      catch (MALInteractionException ex)
+      {
+        interaction.sendError(ex.getStandardError());
+      }
     }
     catch (MALException ex)
     {
@@ -343,7 +352,16 @@ public class MessageReceive implements MALMessageListener
 
     try
     {
-      address.handler.handleProgress(new ProgressInteractionImpl(sender, address, transId, msg), msg.getBody());
+      ProgressInteractionImpl interaction = new ProgressInteractionImpl(sender, address, transId, msg);
+
+      try
+      {
+        address.handler.handleProgress(interaction, msg.getBody());
+      }
+      catch (MALInteractionException ex)
+      {
+        interaction.sendError(ex.getStandardError());
+      }
     }
     catch (MALException ex)
     {
@@ -700,7 +718,7 @@ public class MessageReceive implements MALMessageListener
     protected EndPointPair(final String localName, final MALMessage msg)
     {
       first = localName;
-      
+
       if (null != msg)
       {
         second = msg.getHeader().getService().getValue();
