@@ -1219,7 +1219,7 @@ public abstract class GeneratorLangs extends GeneratorBase
 
     if (isDelegate)
     {
-      MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, handlerName + " delegate", "", null, "Creates a delegation skeleton using the supplied delegate.", Arrays.asList("delegate The interation handler used for delegation"), null);
+      MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, handlerName + " delegate", "", null, "Creates a delegation skeleton using the supplied delegate.", Arrays.asList("delegate The interaction handler used for delegation"), null);
       method.addMethodStatement(createMethodCall("this.delegate = delegate"));
       method.addMethodStatement(createMethodCall("delegate.setSkeleton(this)"));
       method.addMethodCloseStatement();
