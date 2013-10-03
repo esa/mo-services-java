@@ -155,8 +155,19 @@
             <mal:item value="FOURTH" nvalue="4"/>
         </mal:enumeration>                   
        </mal:dataTypes>
-           <com:features>
-         
+       <com:features>
+        <com:objects comment="Set of objects to test the Event service.">
+          <com:object name="TestObjectA" number="2001">
+            <com:objectType>
+              <mal:type name="TestObjectA" service="EventTest" area="COMPrototype"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="TestObjectB" number="2002">
+            <com:objectType>
+              <mal:type name="TestObjectB" service="EventTest" area="COMPrototype"/>
+            </com:objectType>
+          </com:object>
+        </com:objects>
         <com:events comment="Set of events used in test.&#xA;&#xA;">
           <com:event name="TestObjectCreation" number="3001"
                      comment="A Release event is release from source consumer.&#xA;">
