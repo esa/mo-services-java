@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -82,13 +83,18 @@ public class GeneratorSvg extends GeneratorDocument
         svgBuff.addTitle(1, "Specification: ", createId(null, null), area.getName(), false);
         svgBuff.addComment(area.getComment());
 
+        Set<Map.Entry<String, String>> svcTocMap = new LinkedHashSet();
+        SvgBufferWriter areaBodyBuff = new SvgBufferWriter();
+        
         // create services
         for (ServiceType service : area.getService())
         {
-          svgBuff.addTitle(2, "Service: ", createId(service, null), service.getName(), false);
-          svgBuff.addComment(service.getComment());
+          areaBodyBuff.addTitle(2, "Service: ", createId(service, null), service.getName(), false);
+          areaBodyBuff.addComment(service.getComment());
 
-          Set<Map.Entry<String, String>> tocMap = new LinkedHashSet();
+          svcTocMap.add(new AbstractMap.SimpleEntry<String, String>(service.getName(), createXlink(null, service.getName(), null)));
+          
+          Set<Map.Entry<String, String>> opTocMap = new LinkedHashSet();
           SvgBufferWriter serviceBodyBuff = new SvgBufferWriter();
 
           ServiceSummary summary = createOperationElementList(service);
@@ -98,16 +104,22 @@ public class GeneratorSvg extends GeneratorDocument
             serviceBodyBuff.addTitle(3, "Operation: ", createId(service, op.getName()), op.getName(), false);
             serviceBodyBuff.addComment(op.getOriginalOp().getComment());
 
-            tocMap.add(new AbstractMap.SimpleEntry<String, String>(op.getName(), createXlink(null, service.getName(), op.getName())));
+            opTocMap.add(new AbstractMap.SimpleEntry<String, String>(op.getName(), createXlink(null, service.getName(), op.getName())));
 
             drawOperationMessages(serviceBodyBuff, op);
           }
 
-          if (!tocMap.isEmpty())
+          if (!opTocMap.isEmpty())
           {
-            svgBuff.addIndex("Operations", tocMap);
-            svgBuff.appendBuffer(serviceBodyBuff.getBuffer());
+            areaBodyBuff.addIndex("Operations", 3, opTocMap);
+            areaBodyBuff.appendBuffer(serviceBodyBuff.getBuffer());
           }
+        }
+
+        if (!svcTocMap.isEmpty())
+        {
+          svgBuff.addIndex("Services", 2, svcTocMap);
+          svgBuff.appendBuffer(areaBodyBuff.getBuffer());
         }
 
         // process data types
@@ -170,7 +182,7 @@ public class GeneratorSvg extends GeneratorDocument
 
         if (!indexMap.isEmpty())
         {
-          svgBuff.addIndex("Index", indexMap.entrySet());
+          svgBuff.addIndex("Index", 1, indexMap.entrySet());
         }
         svgBuff.flush();
 
@@ -324,12 +336,18 @@ public class GeneratorSvg extends GeneratorDocument
 
   private void drawOperationTypes(SvgBaseWriter svgFile, List<TypeInfo> types, String comment) throws IOException
   {
+    TopContainer cnt = new TopContainer();
+    cnt.addOperationTypes(types);
+    cnt.expandType();
+
     svgFile.startDrawing();
     for (TypeInfo e : types)
     {
       drawOperationPart(svgFile, e);
     }
     svgFile.endDrawing();
+
+    cnt.drawElement(svgFile, 1, 0, cnt.getDepth(0));
 
     svgFile.addComment(comment);
   }
@@ -342,11 +360,11 @@ public class GeneratorSvg extends GeneratorDocument
       {
         svgFile.addField("N", StdStrings.INTEGER, createXlink(StdStrings.MAL, null, StdStrings.INTEGER), false, false);
         svgFile.addSpan(1, 1, "Repeated N times");
-        svgFile.addField("Part", type.getSourceType().getName(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getSourceType().getName()), false, true);
+        svgFile.addField("Part", type.getSourceType().getName(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getSourceType().getName()), isAbstract(type.getSourceType()), isEnum(type.getSourceType()));
       }
       else
       {
-        svgFile.addField("Part", type.getActualMalType(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getActualMalType()), false, true);
+        svgFile.addField("Part", type.getActualMalType(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getActualMalType()), isAbstract(type.getSourceType()), isEnum(type.getSourceType()));
       }
     }
   }
@@ -421,6 +439,11 @@ public class GeneratorSvg extends GeneratorDocument
     {
       serviceName += "_";
     }
+    
+    if (null == section)
+    {
+      section = "";
+    }
 
     if ((null != areaName) && (0 < areaName.length()))
     {
@@ -429,6 +452,359 @@ public class GeneratorSvg extends GeneratorDocument
     else
     {
       return "#" + serviceName + section;
+    }
+  }
+
+  private abstract class ContainerElement
+  {
+    protected final Container container;
+    protected final TypeReference typeRef;
+    protected final String name;
+    protected final String type;
+    protected final boolean isList;
+    protected final boolean isOptional;
+    protected boolean expanded = false;
+
+    public ContainerElement(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional)
+    {
+      this.container = container;
+      this.typeRef = typeRef;
+      this.name = name;
+      this.type = type;
+      this.isList = isList;
+      this.isOptional = isOptional;
+    }
+
+    public int getDepth(int parentDepth)
+    {
+      return parentDepth + 1;
+    }
+
+    public int getWidth()
+    {
+      return 1 + (isList ? 1 : 0);
+    }
+
+    public int getSpanDepth()
+    {
+      if (isList)
+      {
+        if (isOptional)
+        {
+          return 2;
+        }
+
+        return 1;
+      }
+      else
+      {
+        if (isOptional)
+        {
+          return 1;
+        }
+      }
+
+      return 0;
+    }
+
+    public void drawElement(SvgBaseWriter svgFile, int xOff, int yOff, int fullDepth) throws IOException
+    {
+      int thisDepth = fullDepth - getDepth(0) + 1;
+      int spanDepth = getSpanDepth();
+      int width = getWidth() - 1;
+
+      if (isList)
+      {
+        int repSpanDepth = spanDepth;
+        
+        int li = getListIndex();
+        svgFile.addSubField("N" + li, StdStrings.INTEGER, createXlink(StdStrings.MAL, null, StdStrings.INTEGER), xOff, yOff, 1, fullDepth, false, false, false);
+        svgFile.addSubField(name, type, createXlink(typeRef.getArea(), typeRef.getService(), typeRef.getName()), xOff + 1, yOff, width, thisDepth, isAbstract(typeRef), isEnum(typeRef), isComposite(typeRef));
+
+        if (isOptional)
+        {
+          svgFile.addSubSpan(xOff, yOff + fullDepth, getWidth(), spanDepth, "Optional");
+          --repSpanDepth;
+        }
+
+        svgFile.addSubSpan(xOff + 1, yOff + fullDepth, width, repSpanDepth, "Repeated N" + li + " times");
+      }
+      else
+      {
+        svgFile.addSubField(name, type, createXlink(typeRef.getArea(), typeRef.getService(), typeRef.getName()), xOff, yOff, getWidth(), thisDepth, isAbstract(typeRef), isEnum(typeRef), isComposite(typeRef));
+
+        if (isOptional)
+        {
+          svgFile.addSubSpan(xOff, yOff + fullDepth, getWidth(), spanDepth, "Optional");
+        }
+      }
+    }
+
+    public abstract void expandType();
+
+    protected int getListIndex()
+    {
+      return container.getListIndex();
+    }
+  }
+
+  private class AbstractElement extends ContainerElement
+  {
+    public AbstractElement(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional)
+    {
+      super(container, typeRef, name, type, isList, isOptional);
+    }
+
+    @Override
+    public void expandType()
+    {
+    }
+
+    @Override
+    public String toString()
+    {
+      return "Abstract{name=" + name + ", type=" + type + '}';
+    }
+  }
+
+  private class ContainerAttribute extends ContainerElement
+  {
+    public ContainerAttribute(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional)
+    {
+      super(container, typeRef, name, type, isList, isOptional);
+      expanded = true;
+    }
+
+    @Override
+    public void expandType()
+    {
+    }
+
+    @Override
+    public String toString()
+    {
+      return "ContainerAttribute{name=" + name + ", type=" + type + '}';
+    }
+  }
+
+  private abstract class Container extends ContainerElement
+  {
+    protected final ArrayList<ContainerElement> elements = new ArrayList();
+
+    public Container(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional)
+    {
+      super(container, typeRef, name, type, isList, isOptional);
+    }
+
+    @Override
+    public int getDepth(int parentDepth)
+    {
+      final int myDepth = super.getDepth(parentDepth);
+      int returnDepth = myDepth;
+
+      for (ContainerElement containerElement : elements)
+      {
+        int childDepth = containerElement.getDepth(myDepth);
+
+        if (childDepth > returnDepth)
+        {
+          returnDepth = childDepth;
+        }
+      }
+
+      return returnDepth;
+    }
+
+    @Override
+    public int getWidth()
+    {
+      int width = isList ? 1 : 0;
+
+      for (ContainerElement containerElement : elements)
+      {
+        width += containerElement.getWidth();
+      }
+
+      return width;
+    }
+
+    @Override
+    public int getSpanDepth()
+    {
+      int returnDepth = 0;
+
+      for (ContainerElement containerElement : elements)
+      {
+        int childDepth = containerElement.getSpanDepth();
+
+        if (childDepth > returnDepth)
+        {
+          returnDepth = childDepth;
+        }
+      }
+
+      return returnDepth + super.getSpanDepth();
+    }
+
+    public void addTypeElement(String eName, TypeReference type, boolean isOptional)
+    {
+      if (isAttributeType(type) || isEnum(type))
+      {
+        addElement(new ContainerAttribute(this, type, eName, type.getName(), type.isList(), isOptional));
+      }
+      else
+      {
+        if (isComposite(type))
+        {
+          addElement(new CompositeContainer(this, type, eName, type.getName(), type.isList(), isOptional, type));
+        }
+        else
+        {
+          addElement(new AbstractElement(this, type, eName, type.getName(), type.isList(), isOptional));
+        }
+      }
+    }
+
+    @Override
+    public void expandType()
+    {
+      if (!expanded)
+      {
+        expanded = true;
+
+        for (ContainerElement containerElement : elements)
+        {
+          containerElement.expandType();
+        }
+      }
+    }
+
+    @Override
+    public void drawElement(SvgBaseWriter svgFile, int xOff, int yOff, int fullDepth) throws IOException
+    {
+      super.drawElement(svgFile, xOff, yOff, fullDepth);
+
+      int i = isList ? 1 : 0;
+
+      for (ContainerElement elem : elements)
+      {
+        if (null != elem)
+        {
+          elem.drawElement(svgFile, xOff + i, yOff + 1, fullDepth - 1);
+          i = i + elem.getWidth();
+        }
+      }
+    }
+
+    private void addElement(ContainerElement ele)
+    {
+      elements.add(ele);
+    }
+  }
+
+  private class TopContainer extends Container
+  {
+    private int listIndex = 1;
+
+    public TopContainer()
+    {
+      super(null, null, "", "", false, false);
+    }
+
+    public void addOperationTypes(List<TypeInfo> types)
+    {
+      for (TypeInfo e : types)
+      {
+        if (null != e)
+        {
+          addTypeElement("Part", e.getSourceType(), false);
+        }
+      }
+    }
+
+    @Override
+    public int getDepth(int parentDepth)
+    {
+      return super.getDepth(parentDepth) - 1;
+    }
+
+    @Override
+    public void drawElement(SvgBaseWriter svgFile, int xOff, int yOff, int fullDepth) throws IOException
+    {
+      svgFile.startDrawing();
+
+      int i = 0;
+
+      for (ContainerElement elem : elements)
+      {
+        if (null != elem)
+        {
+          elem.drawElement(svgFile, xOff + i, yOff, fullDepth);
+          i = i + elem.getWidth();
+        }
+      }
+
+      svgFile.endDrawing();
+    }
+
+    @Override
+    public String toString()
+    {
+      return "TopContainer{name=" + name + ", type=" + type + ", elements=" + elements + '}';
+    }
+
+    @Override
+    protected int getListIndex()
+    {
+      return listIndex++;
+    }
+  }
+
+  private class CompositeContainer extends Container
+  {
+    private final TypeReference tr;
+    private boolean fullyExpanded = false;
+
+    public CompositeContainer(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional, TypeReference tr)
+    {
+      super(container, typeRef, name, type, isList, isOptional);
+      this.tr = tr;
+    }
+
+    @Override
+    public void expandType()
+    {
+      if (!fullyExpanded)
+      {
+        fullyExpanded = true;
+
+        CompositeType composite = getCompositeDetails(tr);
+
+        List<CompositeField> compElements = createCompositeElementsList(null, composite);
+
+        if ((null != composite.getExtends()) && (!StdStrings.COMPOSITE.equals(composite.getExtends().getType().getName())))
+        {
+          TypeReference ltr = composite.getExtends().getType();
+          addTypeElement(ltr.getName(), ltr, false);
+        }
+
+        // create attributes
+        if (!compElements.isEmpty())
+        {
+          for (CompositeField element : compElements)
+          {
+            addTypeElement(element.getFieldName(), element.getTypeReference(), element.isCanBeNull());
+          }
+        }
+
+        super.expandType();
+      }
+    }
+
+    @Override
+    public String toString()
+    {
+      return "CompositeContainer{name=" + name + ", type=" + type + ", elements=" + elements + '}';
     }
   }
 
@@ -476,11 +852,14 @@ public class GeneratorSvg extends GeneratorDocument
     private final Writer file;
     private final StringBuffer tbuffer = new StringBuffer();
     private static final String PARENT_COLOUR = "grey";
-    private static final String FIELD_COLOUR = "yellow";
+    private static final String HEADER_COLOUR = "yellow";
+    private static final String COMPOSITE_COLOUR = "lavender";
+    private static final String FIELD_COLOUR = "lightsteelblue";
     private static final int WIDTH = 160;
     private static final int HALF_TEXT_HEIGHT = 4;
     private static final int PRIMARY_HEIGHT = 30;
     private static final int SECONDARY_HEIGHT = 20;
+    private static final int ROW_HEIGHT = PRIMARY_HEIGHT + SECONDARY_HEIGHT;
     private static final int LINE_HEIGHT = 100;
     private int baseLine = 10;
     private int offsetNextLine = 0;
@@ -507,9 +886,9 @@ public class GeneratorSvg extends GeneratorDocument
     {
       int w = (maxWidth * WIDTH) + 10;
       int h = maxHeight + 10;
-      file.append(addFileStatement(2, "<svg:svg version=\"1.1\" width=\"" + w + "px\" height=\"" + h + "px\">", false));
+      file.append(addFileStatement(2, "<p><svg:svg version=\"1.1\" width=\"" + w + "px\" height=\"" + h + "px\">", false));
       file.append(tbuffer);
-      file.append(addFileStatement(2, "</svg:svg>", false));
+      file.append(addFileStatement(2, "</svg:svg></p>", false));
     }
 
     protected void startNewLine()
@@ -594,6 +973,25 @@ public class GeneratorSvg extends GeneratorDocument
       setMaxHeight(y2);
     }
 
+    protected void addSubSpan(int column, int row, int span, int nesting, String text) throws IOException
+    {
+      int x1 = column * WIDTH;
+      int y1 = (row * (PRIMARY_HEIGHT + SECONDARY_HEIGHT)) + (nesting * 16);
+      int x2 = (column + span) * WIDTH;
+      int y2 = y1 + 10;
+      int ymid = y1 + (y2 - y1) / 2;
+
+      addLine(x1, y1, x1, y2);
+      addLine(x2, y1, x2, y2);
+      addLine(x1, ymid, x2, ymid);
+
+      int len = text.length() * 8;
+      addSubRectangle(x1 + ((x2 - x1) / 2 - (len / 2)), y1, len, y2 - y1, "white");
+      addText(x1, y1, x2 - x1, 4, text, null, false, false);
+
+      setMaxHeight(y2);
+    }
+
     protected void addParent(String type, String linkTo) throws IOException
     {
       addRect(fieldNumber * WIDTH, baseLine, WIDTH, PRIMARY_HEIGHT, PARENT_COLOUR, "EXTENDS", null, false, false);
@@ -615,6 +1013,24 @@ public class GeneratorSvg extends GeneratorDocument
       }
     }
 
+    protected void addSubField(String name, String type, String linkTo, int xOff, int yOff, int spanX, int spanY, boolean isAbstract, boolean isEnum, boolean isComposite) throws IOException
+    {
+      String fieldTypeColour = FIELD_COLOUR;
+      if (isComposite)
+      {
+        fieldTypeColour = COMPOSITE_COLOUR;
+      }
+      addSubRect(xOff * WIDTH, baseLine + (yOff * ROW_HEIGHT), WIDTH * spanX, PRIMARY_HEIGHT, HEADER_COLOUR, name, null, false, false);
+      addSubRect(xOff * WIDTH, baseLine + PRIMARY_HEIGHT + (yOff * ROW_HEIGHT), WIDTH * spanX, (spanY * ROW_HEIGHT) - PRIMARY_HEIGHT, fieldTypeColour, type, linkTo, isAbstract, isEnum);
+
+      ++fieldNumber;
+
+      if (maxWidth < (fieldNumber + spanX))
+      {
+        maxWidth = (fieldNumber + spanX);
+      }
+    }
+
     protected void addLine(int x1, int y1, int x2, int y2) throws IOException
     {
       tbuffer.append(addFileStatement(3, "<svg:line x1=\"" + x1 + "\" y1=\"" + y1 + "\" x2=\"" + x2 + "\" y2=\"" + y2 + "\" stroke=\"navy\" stroke-width=\"1\"/>", false));
@@ -624,6 +1040,21 @@ public class GeneratorSvg extends GeneratorDocument
     {
       tbuffer.append(addFileStatement(3, "<svg:rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + width + "\" height=\"" + height + "\" fill=\"" + colour + "\" stroke=\"navy\" stroke-width=\"2\"/>", false));
       addText(x, y, width, height, text, linkTo, italic, bold);
+
+      setMaxHeight(y + height);
+    }
+
+    protected void addSubRect(int x, int y, int width, int height, String colour, String text, String linkTo, boolean italic, boolean bold) throws IOException
+    {
+      tbuffer.append(addFileStatement(3, "<svg:rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + width + "\" height=\"" + height + "\" fill=\"" + colour + "\" stroke=\"navy\" stroke-width=\"2\"/>", false));
+      addText(x, y, width, 20, text, linkTo, italic, bold);
+
+      setMaxHeight(y + height);
+    }
+
+    protected void addSubRectangle(int x, int y, int width, int height, String colour) throws IOException
+    {
+      tbuffer.append(addFileStatement(3, "<svg:rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + width + "\" height=\"" + height + "\" fill=\"" + colour + "\" stroke=\"navy\" stroke-width=\"0\"/>", false));
 
       setMaxHeight(y + height);
     }
@@ -650,10 +1081,10 @@ public class GeneratorSvg extends GeneratorDocument
       tbuffer.append(addFileStatement(3, "</svg:text>", false));
     }
 
-    protected void addIndex(String title, Set<Map.Entry<String, String>> entries) throws IOException
+    protected void addIndex(String title, int titleLevel, Set<Map.Entry<String, String>> entries) throws IOException
     {
       file.append(addFileStatement(2, "<div>", false));
-      addTitle(1, title, null, "", false);
+      addTitle(titleLevel, title, null, "", false);
       for (Map.Entry<String, String> e : entries)
       {
         file.append(addFileStatement(2, "<p>" + "<a href=\"" + e.getValue() + "\">" + e.getKey() + "</a>" + "</p>", false));

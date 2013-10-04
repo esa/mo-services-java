@@ -520,7 +520,7 @@ public class GeneratorJava extends GeneratorLangs
           encCall = StdStrings.ELEMENT;
         }
 
-        ele = new CompositeField(fqTypeName, fieldName, elementType.isList(), canBeNull, encCall, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, newCall, comment);
+        ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, encCall, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, newCall, comment);
       }
     }
     else
@@ -529,7 +529,7 @@ public class GeneratorJava extends GeneratorLangs
       {
         AttributeTypeDetails details = getAttributeDetails(elementType);
         String fqTypeName = createElementType((LanguageWriter) file, elementType);
-        ele = new CompositeField(details.getTargetType(), fieldName, elementType.isList(), canBeNull, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
+        ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(), canBeNull, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
       }
       else
       {
@@ -538,19 +538,19 @@ public class GeneratorJava extends GeneratorLangs
         {
           EnumerationType typ = getEnum(typeName);
           String firstEle = fqTypeName + "." + typ.getItem().get(0).getValue();
-          ele = new CompositeField(fqTypeName, fieldName, elementType.isList(), canBeNull, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, firstEle, comment);
+          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, firstEle, comment);
         }
         else if (StdStrings.ATTRIBUTE.equals(typeName))
         {
-          ele = new CompositeField(fqTypeName, fieldName, elementType.isList(), canBeNull, StdStrings.ATTRIBUTE, "(" + fqTypeName + ") ", StdStrings.ATTRIBUTE, false, "", comment);
+          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, StdStrings.ATTRIBUTE, "(" + fqTypeName + ") ", StdStrings.ATTRIBUTE, false, "", comment);
         }
         else if (StdStrings.ELEMENT.equals(typeName))
         {
-          ele = new CompositeField(fqTypeName, fieldName, elementType.isList(), canBeNull, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, false, "", comment);
+          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, false, "", comment);
         }
         else
         {
-          ele = new CompositeField(fqTypeName, fieldName, elementType.isList(), canBeNull, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, "new " + fqTypeName + "()", comment);
+          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, "new " + fqTypeName + "()", comment);
         }
       }
     }

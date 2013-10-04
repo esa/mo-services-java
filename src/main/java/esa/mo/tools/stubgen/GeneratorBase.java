@@ -148,11 +148,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation
             {
               standardCapabilityMap.put(cap.getNumber(), cap.getSendIPOrSubmitIPOrRequestIP());
             }
-            
+
             break;
           }
         }
-        
+
         break;
       }
     }
@@ -336,6 +336,62 @@ public abstract class GeneratorBase implements Generator, TypeInformation
       rType = new NativeTypeDetails("<Unknown native type of " + type + ">", false, false, null);
     }
     return rType;
+  }
+
+  public boolean isComposite(TypeReference type)
+  {
+    boolean compType = false;
+    if (compositeTypesMap.containsKey(type.getName()))
+    {
+      compType = true;
+    }
+    return compType;
+  }
+
+  /**
+   * Returns true if the type is a composite.
+   *
+   * @param type the type to look for.
+   * @return true if a composite.
+   */
+  public boolean isComposite(String type)
+  {
+    boolean compType = false;
+    if (compositeTypesMap.containsKey(type))
+    {
+      compType = true;
+    }
+    return compType;
+  }
+
+  /**
+   * Returns composite details if composite type.
+   *
+   * @param type The type to look for.
+   * @return the details if found, otherwise null.
+   */
+  public CompositeType getCompositeDetails(TypeReference type)
+  {
+    if (null != type)
+    {
+      return compositeTypesMap.get(type.getName());
+    }
+    return null;
+  }
+
+  /**
+   * Returns composite details if composite type.
+   *
+   * @param type The type to look for.
+   * @return the details if found, otherwise null.
+   */
+  public CompositeType getCompositeDetails(String type)
+  {
+    if (null != type)
+    {
+      return compositeTypesMap.get(type);
+    }
+    return null;
   }
 
   /**
@@ -577,7 +633,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   protected ServiceSummary createOperationElementList(ServiceType service)
   {
     ServiceSummary summary = new ServiceSummary(StdStrings.COM.equalsIgnoreCase(service.getName()));
-    
+
     // only load operations if this is not the COM service
     if (!summary.isComService())
     {

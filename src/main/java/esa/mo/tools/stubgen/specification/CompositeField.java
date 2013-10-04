@@ -20,12 +20,15 @@
  */
 package esa.mo.tools.stubgen.specification;
 
+import esa.mo.tools.stubgen.xsd.TypeReference;
+
 /**
  * Holds details about a filed of a composite structure.
  */
 public final class CompositeField
 {
   private final String typeName;
+  private final TypeReference typeReference;
   private final String fieldName;
   private final boolean list;
   private final boolean canBeNull;
@@ -40,6 +43,7 @@ public final class CompositeField
    * Constructor.
    *
    * @param typeName The type of the field.
+   * @param typeReference The original type reference of the type
    * @param fieldName The name of the field.
    * @param isList True if the field is a list.
    * @param canBeNull True if the field may be null.
@@ -50,9 +54,10 @@ public final class CompositeField
    * @param newCall The method to create a new instance.
    * @param comment The field comment.
    */
-  public CompositeField(String typeName, String fieldName, boolean isList, boolean canBeNull, String encodeCall, String decodeCast, String decodeCall, boolean decodeNeedsNewCall, String newCall, String comment)
+  public CompositeField(String typeName, TypeReference typeReference, String fieldName, boolean isList, boolean canBeNull, String encodeCall, String decodeCast, String decodeCall, boolean decodeNeedsNewCall, String newCall, String comment)
   {
     this.typeName = typeName;
+    this.typeReference = typeReference;
     this.fieldName = fieldName;
     this.list = isList;
     this.canBeNull = canBeNull;
@@ -72,6 +77,16 @@ public final class CompositeField
   public String getTypeName()
   {
     return typeName;
+  }
+
+  /**
+   * Returns the type reference.
+   *
+   * @return the type reference
+   */
+  public TypeReference getTypeReference()
+  {
+    return typeReference;
   }
 
   /**

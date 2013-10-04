@@ -44,6 +44,25 @@ public abstract class GeneratorDocument extends GeneratorBase
   protected GeneratorDocument(Log logger, GeneratorConfiguration config)
   {
     super(logger, config);
+
+    addAttributeType(StdStrings.BLOB, new AttributeTypeDetails(this, true, "Blob", ""));
+    addAttributeType(StdStrings.BOOLEAN, new AttributeTypeDetails(this, true, "Boolean", ""));
+    addAttributeType(StdStrings.DOUBLE, new AttributeTypeDetails(this, true, "Double", ""));
+    addAttributeType(StdStrings.DURATION, new AttributeTypeDetails(this, true, "Duration", ""));
+    addAttributeType(StdStrings.FLOAT, new AttributeTypeDetails(this, true, "Float", ""));
+    addAttributeType(StdStrings.INTEGER, new AttributeTypeDetails(this, true, "Integer", ""));
+    addAttributeType(StdStrings.IDENTIFIER, new AttributeTypeDetails(this, true, "Identifier", ""));
+    addAttributeType(StdStrings.LONG, new AttributeTypeDetails(this, true, "Long", ""));
+    addAttributeType(StdStrings.OCTET, new AttributeTypeDetails(this, true, "Octet", ""));
+    addAttributeType(StdStrings.SHORT, new AttributeTypeDetails(this, true, "Short", ""));
+    addAttributeType(StdStrings.UINTEGER, new AttributeTypeDetails(this, true, "UInteger", ""));
+    addAttributeType(StdStrings.ULONG, new AttributeTypeDetails(this, true, "ULong", ""));
+    addAttributeType(StdStrings.UOCTET, new AttributeTypeDetails(this, true, "UOctet", ""));
+    addAttributeType(StdStrings.USHORT, new AttributeTypeDetails(this, true, "UShort", ""));
+    addAttributeType(StdStrings.STRING, new AttributeTypeDetails(this, true, "String", ""));
+    addAttributeType(StdStrings.TIME, new AttributeTypeDetails(this, true, "Time", ""));
+    addAttributeType(StdStrings.FINETIME, new AttributeTypeDetails(this, true, "FineTime", ""));
+    addAttributeType(StdStrings.URI, new AttributeTypeDetails(this, true, "URI", ""));
   }
 
   @Override
@@ -54,12 +73,12 @@ public abstract class GeneratorDocument extends GeneratorBase
     if (isAttributeType(elementType))
     {
       AttributeTypeDetails details = getAttributeDetails(elementType);
-      ele = new CompositeField(details.getTargetType(), fieldName, elementType.isList(), canBeNull, StdStrings.MAL, "", "", false, "", comment);
+      ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(), canBeNull, StdStrings.MAL, "", "", false, "", comment);
     }
     else
     {
       String fqTypeName = typeName;
-      ele = new CompositeField(fqTypeName, fieldName, elementType.isList(), canBeNull, elementType.getArea(), "", elementType.getService(), false, "", comment);
+      ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, elementType.getArea(), "", elementType.getService(), false, "", comment);
     }
     return ele;
   }
