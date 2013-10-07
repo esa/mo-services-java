@@ -1788,7 +1788,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     method.addMethodCloseStatement();
 
     method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false, true, fqEnumName, "fromString", "_String s", null, "Returns the enumeration element represented by the supplied string, or null if not matched.", "The matched enumeration element, or null if not matched.", Arrays.asList("s The string to search for."), null);
-    method.addMethodStatement("for (int i = 1; i < _ENUMERATION_NAMES.length; i++)", false);
+    method.addMethodStatement("for (int i = 0; i < _ENUMERATION_NAMES.length; i++)", false);
     method.addMethodStatement("{", false);
     method.addMethodStatement("  if (_ENUMERATION_NAMES[i].equals(s))", false);
     method.addMethodStatement("  {", false);
