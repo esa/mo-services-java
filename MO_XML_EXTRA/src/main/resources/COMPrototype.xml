@@ -377,8 +377,81 @@
               <mal:type name="Integer" area="MAL"/>
             </com:objectType>
           </com:object>
+          <com:object name="TestObject3" number="3">
+            <com:objectType>
+              <mal:type name="EnumeratedObject" service="ArchiveTest" area="COMPrototype" />
+            </com:objectType>
+          </com:object>
+          <com:object name="TestObject4" number="4">
+            <com:objectType>
+              <mal:type name="Blob" area="MAL"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="TestObject5" number="5">
+          </com:object>
+          <com:object name="TestObject6" number="6">
+            <com:objectType>
+              <mal:type name="Identifier" area="MAL"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="TestObject7" number="7">
+            <com:objectType>
+              <mal:type name="Blob" area="MAL"/>
+            </com:objectType>
+          </com:object>                   
         </com:objects>
       </com:features>
     </mal:service>
   </mal:area>
+ <mal:area name="COMPrototype1" number="201" version="1">
+  <mal:service xsi:type="com:ExtendedServiceType" name="Test1" number="1">
+    
+   <com:features>
+    <com:objects comment="Object to test the Archive service.">
+     <com:object name="TestObjectA" number="1">
+       <com:objectType>
+         <mal:type name="TestObjectPayload" service="ArchiveTest" area="COMPrototype"/>
+       </com:objectType>
+     </com:object> 
+     </com:objects>
+      </com:features>
+ </mal:service>
+ <mal:service xsi:type="com:ExtendedServiceType" name="Test2" number="2">
+    
+   <com:features>
+    <com:objects comment="Object to test the Archive service.">
+     <com:object name="TestObjectA" number="2">
+       <com:objectType>
+          <mal:type name="Long" area="MAL"/>
+       </com:objectType>
+     </com:object> 
+     </com:objects>
+      </com:features>
+ </mal:service>
+</mal:area>
+<mal:area name="COMPrototype2" number="202" version="1">
+  <mal:service xsi:type="com:ExtendedServiceType" name="Test1" number="1">
+    
+   <com:features>
+    <com:objects comment="Object to test the Archive service.">
+     <com:object name="TestObjectA" number="1">
+       <com:objectType>
+         <mal:type name="Integer" area="MAL"/>
+       </com:objectType>
+     </com:object> 
+     </com:objects>
+      </com:features>
+ </mal:service>
+ <mal:service xsi:type="com:ExtendedServiceType" name="Test2" number="2" comment="">    
+   <com:features>
+    <com:objects comment="Object to test the Archive service.">
+     <com:object name="TestObjectA" number="1">
+       <com:objectType>
+         <mal:type name="Boolean" area="MAL"/>
+       </com:objectType>
+     </com:object> 
+     </com:objects>
+      </com:features>
+ </mal:service>
+</mal:area>
 </mal:specification>
