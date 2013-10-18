@@ -113,9 +113,9 @@ public class MALProviderSet
             || (provider.getService().getNumber().getValue() != service.getNumber().getValue()))
     {
       throw new MALException("Adding provider of service "
-              + provider.getService()
+              + provider.getService().getName()
               + " to a provider set for service "
-              + service);
+              + service.getName());
     }
 
     providers.add(provider);
