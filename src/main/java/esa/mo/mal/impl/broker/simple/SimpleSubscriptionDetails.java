@@ -103,10 +103,29 @@ class SimpleSubscriptionDetails
     final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
 
     final List[] updateLists = publishBody.getUpdateLists((List[]) null);
-    final List[] notifyLists = new List[updateLists.length];
-    for (int i = 0; i < notifyLists.length; i++)
+    final List[] notifyLists;
+
+    // have to check for the case where the pubsub message does not contain a body
+    if (null == updateLists)
     {
-      notifyLists[i] = (List) ((Element) updateLists[i]).createElement();
+      notifyLists = null;
+    }
+    else
+    {
+      notifyLists = new List[updateLists.length];
+
+      for (int i = 0; i < notifyLists.length; i++)
+      {
+        if (null != updateLists[i])
+        {
+          notifyLists[i] = (List) ((Element) updateLists[i]).createElement();
+        }
+        else
+        {
+          // publishing an empty list
+          notifyLists[i] = null;
+        }
+      }
     }
 
     for (int i = 0; i < updateHeaderList.size(); ++i)
@@ -148,9 +167,15 @@ class SimpleSubscriptionDetails
       // add update for this consumer/subscription
       notifyHeaders.add(updateHeader);
 
-      for (int i = 0; i < notifyLists.length; i++)
+      if (null != notifyLists)
       {
-        notifyLists[i].add(updateLists[i].get(index));
+        for (int i = 0; i < notifyLists.length; i++)
+        {
+          if ((null != notifyLists[i]) && (null != updateLists[i]))
+          {
+            notifyLists[i].add(updateLists[i].get(index));
+          }
+        }
       }
     }
   }
@@ -161,9 +186,9 @@ class SimpleSubscriptionDetails
     for (SubscriptionKey subscriptionKey : searchSet)
     {
       MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0} against {1}", new Object[]
-              {
-                key, subscriptionKey
-              });
+      {
+        key, subscriptionKey
+      });
       if (subscriptionKey.matchesWithWildcard(key))
       {
         MALBrokerImpl.LOGGER.fine("    : Matched");
