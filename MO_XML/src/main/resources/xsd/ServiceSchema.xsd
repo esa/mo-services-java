@@ -113,6 +113,7 @@
     <xsd:attribute name="number" type="mal:ServiceNumber" use="required"/>
     <xsd:attribute name="version" type="mal:VersionNumber" use="required"/>
     <xsd:attribute name="comment" type="xsd:string" use="optional"/>
+    <xsd:attribute name="requirements" type="xsd:string" use="optional"/>
   </xsd:complexType>
 
   <xsd:complexType name="ServiceType">
@@ -135,6 +136,7 @@
     <xsd:attribute name="name" type="xsd:NCName" use="required"/>
     <xsd:attribute name="number" type="mal:ServiceNumber" use="required"/>
     <xsd:attribute name="comment" type="xsd:string" use="optional"/>
+    <xsd:attribute name="requirements" type="xsd:string" use="optional"/>
   </xsd:complexType>
 
   <xsd:complexType name="CapabilitySetType">
