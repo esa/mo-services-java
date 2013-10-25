@@ -424,7 +424,14 @@ public class GeneratorDocx extends GeneratorDocument
             docxFile.startRow();
             docxFile.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getName());
             docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, String.valueOf(obj.getNumber()));
-            docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, TypeUtils.getTypeListViaXSDAny(obj.getObjectType().getAny(), null)), null);
+            if (null != obj.getObjectType() && (null != obj.getObjectType().getAny()))
+            {
+              docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, TypeUtils.getTypeListViaXSDAny(obj.getObjectType().getAny(), null)), null);
+            }
+            else
+            {
+              docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "No body");
+            }
             if (null != obj.getRelatedObject() && (null != obj.getRelatedObject().getObjectType()))
             {
               docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, obj.getRelatedObject().getObjectType()), null);
