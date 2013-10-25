@@ -338,6 +338,12 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     return rType;
   }
 
+  /**
+   * Returns true if the type is a composite.
+   *
+   * @param type the type to look for.
+   * @return true if a composite.
+   */
   public boolean isComposite(TypeReference type)
   {
     boolean compType = false;
@@ -656,20 +662,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   protected Log getLog()
   {
     return logger;
-  }
-
-  private void addStandardCapabilitySet(ServiceSummary summary, Map<String, TypeReference> typeSubs, int[] capSets)
-  {
-    for (int i = 0; i < capSets.length; i++)
-    {
-      int capNum = capSets[i];
-      List<OperationType> operations = standardCapabilityMap.get(capNum);
-
-      for (OperationType op : operations)
-      {
-        createOperationSummary(op, capNum, typeSubs, summary);
-      }
-    }
   }
 
   private OperationSummary createOperationSummary(OperationType op,

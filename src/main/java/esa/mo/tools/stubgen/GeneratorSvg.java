@@ -589,7 +589,7 @@ public class GeneratorSvg extends GeneratorDocument
 
   private abstract class Container extends ContainerElement
   {
-    protected final ArrayList<ContainerElement> elements = new ArrayList();
+    protected final List<ContainerElement> elements = new ArrayList();
 
     public Container(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional)
     {

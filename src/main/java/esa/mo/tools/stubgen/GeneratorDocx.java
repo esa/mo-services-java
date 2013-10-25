@@ -20,6 +20,7 @@
  */
 package esa.mo.tools.stubgen;
 
+import static esa.mo.tools.stubgen.GeneratorDocument.splitString;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
@@ -122,6 +123,12 @@ public class GeneratorDocx extends GeneratorDocument
         docxServiceFile.addTitle(2, "General");
         docxServiceFile.addComment(area.getComment());
 
+        if ((null != area.getRequirements()) && (0 < area.getRequirements().trim().length()))
+        {
+          docxServiceFile.addTitle(2, "Requirements");
+          docxServiceFile.addNumberedComment(splitString(null, area.getRequirements()));
+        }
+
         // create services
         for (ServiceType service : area.getService())
         {
@@ -129,6 +136,12 @@ public class GeneratorDocx extends GeneratorDocument
           docxServiceFile.addTitle(3, "General");
           docxServiceFile.addComment(service.getComment());
           drawServiceTable(docxServiceFile, area, service);
+
+          if ((null != service.getRequirements()) && (0 < service.getRequirements().trim().length()))
+          {
+            docxServiceFile.addTitle(3, "Requirements");
+            docxServiceFile.addNumberedComment(splitString(null, service.getRequirements()));
+          }
 
           if (!StdStrings.COM.equalsIgnoreCase(service.getName()))
           {
