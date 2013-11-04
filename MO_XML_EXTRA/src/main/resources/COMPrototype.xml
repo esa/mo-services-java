@@ -2,7 +2,7 @@
 <mal:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema"
                    xmlns:com="http://www.ccsds.org/schema/COMSchema">
-  <mal:area comment="Something about the COM prototype."
+  <mal:area comment="Contains services required to support testing of the COM service."
             name="COMPrototype"
             number="200"
             version="1">
@@ -414,8 +414,9 @@
       </com:features>
     </mal:service>
   </mal:area>
- <mal:area name="COMPrototype1" number="201" version="1">
-  <mal:service xsi:type="com:ExtendedServiceType" name="Test1" number="1">
+ <mal:area name="COMPrototype1" number="201" version="1" 
+ comment="This area is defined to support tests where it is necessary to accesss objects from a number of areas and services">
+  <mal:service xsi:type="com:ExtendedServiceType" name="Test1" number="1" comment="Just contains a number of test objects">
     
    <com:features>
     <com:objects comment="Object to test the Archive service.">
@@ -427,7 +428,7 @@
      </com:objects>
       </com:features>
  </mal:service>
- <mal:service xsi:type="com:ExtendedServiceType" name="Test2" number="2">
+ <mal:service xsi:type="com:ExtendedServiceType" name="Test2" number="2" comment="Just contains a number of test objects">
     
    <com:features>
     <com:objects comment="Object to test the Archive service.">
@@ -440,8 +441,9 @@
       </com:features>
  </mal:service>
 </mal:area>
-<mal:area name="COMPrototype2" number="202" version="1">
-  <mal:service xsi:type="com:ExtendedServiceType" name="Test1" number="1">
+<mal:area name="COMPrototype2" number="202" version="1"
+comment="This area is defined to support tests where it is necessary to accesss objects from a number of areas and services">
+  <mal:service xsi:type="com:ExtendedServiceType" name="Test1" number="1" comment="Just contains a number of test objects">
     
    <com:features>
     <com:objects comment="Object to test the Archive service.">
@@ -453,7 +455,7 @@
      </com:objects>
       </com:features>
  </mal:service>
- <mal:service xsi:type="com:ExtendedServiceType" name="Test2" number="2" comment="">    
+ <mal:service xsi:type="com:ExtendedServiceType" name="Test2" number="2" comment="Just contains a number of test objects">    
    <com:features>
     <com:objects comment="Object to test the Archive service.">
      <com:object name="TestObjectA" number="1">
