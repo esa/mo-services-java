@@ -76,7 +76,7 @@
     <dependency> 
       <groupId>int.esa</groupId>
       <artifactId>CCSDS_COM_API</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>${esa.api.version}</version>
     </dependency>
   </dependencies>
 
