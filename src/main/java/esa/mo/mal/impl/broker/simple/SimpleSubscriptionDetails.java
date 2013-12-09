@@ -30,6 +30,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.transport.MALEncodedElementList;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 
@@ -118,7 +119,15 @@ class SimpleSubscriptionDetails
       {
         if (null != updateLists[i])
         {
-          notifyLists[i] = (List) ((Element) updateLists[i]).createElement();
+          if (updateLists[i] instanceof MALEncodedElementList)
+          {
+            MALEncodedElementList encodedElementList = (MALEncodedElementList) updateLists[i];
+            notifyLists[i] = new MALEncodedElementList(encodedElementList.getShortForm(), encodedElementList.size());
+          }
+          else
+          {
+            notifyLists[i] = (List) ((Element) updateLists[i]).createElement();
+          }
         }
         else
         {

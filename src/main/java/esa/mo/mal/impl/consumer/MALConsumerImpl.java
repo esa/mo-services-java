@@ -129,14 +129,14 @@ class MALConsumerImpl extends MALClose implements MALConsumer
   public MALMessage send(final MALSendOperation op, final Object... requestBody)
           throws java.lang.IllegalArgumentException, MALInteractionException, MALException
   {
-    return sender.onewayInteraction(details, null, op, new UOctet((short) 0), requestBody);
+    return sender.onewayInteraction(details, null, op, null, requestBody);
   }
 
   @Override
   public MALMessage send(final MALSendOperation op, final MALEncodedBody body)
           throws IllegalArgumentException, MALInteractionException, MALException
   {
-    return sender.onewayInteraction(details, null, op, new UOctet((short) 0), body);
+    return sender.onewayInteraction(details, null, op, null, body);
   }
 
   @Override
@@ -336,7 +336,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer
   {
     sender.continueInteraction(op, lastInteractionStage, initiationTimestamp, transactionId, listener);
   }
-  
+
   @Override
   public void setTransmitErrorListener(final MALTransmitErrorListener plistener) throws MALException
   {
@@ -347,5 +347,14 @@ class MALConsumerImpl extends MALClose implements MALConsumer
   public MALTransmitErrorListener getTransmitErrorListener() throws MALException
   {
     return transmissionListener;
+  }
+
+  @Override
+  protected void thisObjectClose() throws MALException
+  {
+    super.thisObjectClose();
+
+    details.endpoint.stopMessageDelivery();
+    details.endpoint.close();
   }
 }

@@ -106,7 +106,13 @@ public class MessageReceive implements MALMessageListener
     try
     {
       msg = securityManager.check(msg);
-      final short stage = msg.getHeader().getInteractionStage().getValue();
+      
+      short stage = -1;
+      UOctet oStage = msg.getHeader().getInteractionStage();
+      if (null != oStage)
+      {
+        stage = oStage.getValue();
+      }
 
       MALContextFactoryImpl.LOGGER.info("MAL Receiving message");
 
@@ -267,6 +273,16 @@ public class MessageReceive implements MALMessageListener
     if (!providerEndpointMap.containsKey(key))
     {
       providerEndpointMap.put(key, address);
+    }
+  }
+
+  void deregisterProviderEndpoint(final String localName, final MALService service)
+  {
+    final EndPointPair key = new EndPointPair(localName, service);
+
+    if (providerEndpointMap.containsKey(key))
+    {
+      providerEndpointMap.remove(key);
     }
   }
 

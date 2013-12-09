@@ -54,6 +54,7 @@ public abstract class ServiceComponentImpl extends MALClose
 
   /**
    * Constructor.
+   *
    * @param parent Parent object.
    * @param impl MAL impl.
    * @param localName Local name of this component.
@@ -114,6 +115,7 @@ public abstract class ServiceComponentImpl extends MALClose
 
   /**
    * Constructor.
+   *
    * @param parent Parent object.
    * @param impl MAL impl.
    * @param endPoint The endpoint to use.
@@ -171,6 +173,7 @@ public abstract class ServiceComponentImpl extends MALClose
 
   /**
    * Returns the URI of this component.
+   *
    * @return the URI.
    */
   public URI getURI()
@@ -180,6 +183,7 @@ public abstract class ServiceComponentImpl extends MALClose
 
   /**
    * Returns the interaction handler for messages received by this component.
+   *
    * @return the interaction handler.
    */
   public MALInteractionHandler getHandler()
@@ -189,6 +193,7 @@ public abstract class ServiceComponentImpl extends MALClose
 
   /**
    * Returns the Endpoint for sending messages from this component.
+   *
    * @return the Endpoint.
    */
   public MALEndpoint getEndpoint()
@@ -198,6 +203,7 @@ public abstract class ServiceComponentImpl extends MALClose
 
   /**
    * Returns the authentication identifier used by this component.
+   *
    * @return the Authentication Id.
    */
   public Blob getAuthenticationId()
@@ -207,10 +213,21 @@ public abstract class ServiceComponentImpl extends MALClose
 
   /**
    * Returns the Address structure used by this component.
+   *
    * @return the Address structure.
    */
   public Address getMsgAddress()
   {
     return msgAddress;
+  }
+
+  @Override
+  protected void thisObjectClose() throws MALException
+  {
+    super.thisObjectClose();
+
+    this.receiveHandler.deregisterProviderEndpoint(localName, service);
+    endpoint.stopMessageDelivery();
+    endpoint.close();
   }
 }

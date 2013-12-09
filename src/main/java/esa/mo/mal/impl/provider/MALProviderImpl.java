@@ -252,6 +252,17 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     this.handler.malFinalize(this);
   }
 
+  @Override
+  protected void thisObjectClose() throws MALException
+  {
+    super.thisObjectClose();
+
+    if (null != localBrokerBinding)
+    {
+      localBrokerBinding.close();
+    }
+  }
+
   String createPublisherKey(final MALPubSubOperation op,
           final IdentifierList domain,
           final Identifier networkZone,
