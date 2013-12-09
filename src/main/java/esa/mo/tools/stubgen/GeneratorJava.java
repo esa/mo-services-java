@@ -67,7 +67,7 @@ public class GeneratorJava extends GeneratorLangs
    */
   public GeneratorJava(org.apache.maven.plugin.logging.Log logger)
   {
-    super(logger, true, true, false, true, false, "/org/ccsds/moims/mo", "register", "deregister",
+    super(logger, true, true, false, true, false, "/org/ccsds/moims/mo",
             new GeneratorConfiguration("org.ccsds.moims.mo.", "structures", "structures.factory", "body", ".", "(Object[]) null",
             "org.ccsds.moims.mo.mal.MALSendOperation",
             "org.ccsds.moims.mo.mal.MALSubmitOperation",
@@ -148,41 +148,58 @@ public class GeneratorJava extends GeneratorLangs
 
     file.addClassVariable(false, false, StdStrings.PRIVATE, publisherSetType, false, false, false, "publisherSet", (String) null, null);
 
-    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, publisherName, publisherSetType + " publisherSet", "", null, "Creates an instance of this class using the supplied publisher set.", Arrays.asList("publisherSet The set of broker connections to use when registering and publishing."), null);
+    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, publisherName, createCompositeElementsDetails(file, "publisherSet", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false),false, true, "publisherSet The set of broker connections to use when registering and publishing."), false, null, "Creates an instance of this class using the supplied publisher set.", null);
     method.addMethodStatement("this.publisherSet = publisherSet");
     method.addMethodCloseStatement();
 
-    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "register", "org.ccsds.moims.mo.mal.structures.EntityKeyList entityKeys, org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener listener", throwsExceptions,
-            "Registers this provider implementation to the set of broker connections", null, Arrays.asList("entityKeys The entity keys to use in the method", "listener The listener object to use for callback from the publisher"), Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+    CompositeField entKeyList = createCompositeElementsDetails(file, "entityKeys", TypeUtils.createTypeReference(StdStrings.MAL, null, "EntityKey", true), true, true, "entityKeys The entity keys to use in the method");
+    CompositeField psListener = createCompositeElementsDetails(file, "listener", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublishInteractionListener", false), false, true, "listener The listener object to use for callback from the publisher");
+    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "register", StubUtils.concatenateArguments(entKeyList, psListener), throwsExceptions,
+            "Registers this provider implementation to the set of broker connections", null, Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
     method.addMethodStatement("publisherSet.register(entityKeys, listener)");
     method.addMethodCloseStatement();
 
-    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "asyncRegister", "org.ccsds.moims.mo.mal.structures.EntityKeyList entityKeys, org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener listener", throwsExceptions,
-            "Asynchronously registers this provider implementation to the set of broker connections", null, Arrays.asList("entityKeys The entity keys to use in the method", "listener The listener object to use for callback from the publisher"), Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "asyncRegister", StubUtils.concatenateArguments(entKeyList, psListener), throwsExceptions,
+            "Asynchronously registers this provider implementation to the set of broker connections", null, Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
     method.addMethodStatement("publisherSet.asyncRegister(entityKeys, listener)");
     method.addMethodCloseStatement();
 
-    List<String> opArgComments = new LinkedList<String>();
-    opArgComments.add("updateHeaderList The headers of the updates being added");
-    String argList = createRequiredPublisherArgs(op.getUpdateTypes(), true, opArgComments);
-    String argNameList = createRequiredPublisherArgs(op.getUpdateTypes(), false, null);
-    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "publish", "org.ccsds.moims.mo.mal.structures.UpdateHeaderList updateHeaderList" + argList, throwsExceptions,
-            "Publishes updates to the set of registered broker connections", null, opArgComments, Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+    
+    List<CompositeField> argList = new LinkedList();
+    argList.add(createCompositeElementsDetails(file, "updateHeaderList", TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true, "updateHeaderList The headers of the updates being added"));
+    argList.addAll(createOperationArguments(getConfig(), file, op.getUpdateTypes(), true));
+
+    String argNameList = "";
+    
+    if (1 < argList.size())
+    {
+      List<String> strList = new LinkedList<String>();
+      
+      for (int i = 1; i < argList.size(); i++)
+      {
+        strList.add(argList.get(i).getFieldName());
+      }
+      
+      argNameList = StubUtils.concatenateStringArguments(true, strList.toArray(new String[0]));
+    }
+
+    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "publish", argList, throwsExceptions,
+            "Publishes updates to the set of registered broker connections", null, Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
     method.addMethodStatement("publisherSet.publish(updateHeaderList" + argNameList + ")");
     method.addMethodCloseStatement();
 
-    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "deregister", "", throwsInteractionAndMALException,
-            "Deregisters this provider implementation from the set of broker connections", null, null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "deregister", null, throwsInteractionAndMALException,
+            "Deregisters this provider implementation from the set of broker connections", null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
     method.addMethodStatement("publisherSet.deregister()");
     method.addMethodCloseStatement();
 
-    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "asyncDeregister", "org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener listener", throwsExceptions,
-            "Asynchronously deregisters this provider implementation from the set of broker connections", null, Arrays.asList("listener The listener object to use for callback from the publisher"), Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "asyncDeregister", Arrays.asList(psListener), throwsExceptions,
+            "Asynchronously deregisters this provider implementation from the set of broker connections", null, Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
     method.addMethodStatement("publisherSet.asyncDeregister(listener)");
     method.addMethodCloseStatement();
 
-    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "close", "", throwsMALException,
-            "Closes this publisher", null, null, Arrays.asList(throwsMALException + " if there is an implementation exception"));
+    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "close", null, throwsMALException,
+            "Closes this publisher", null, Arrays.asList(throwsMALException + " if there is an implementation exception"));
     method.addMethodStatement("publisherSet.close()");
     method.addMethodCloseStatement();
 
@@ -233,7 +250,7 @@ public class GeneratorJava extends GeneratorLangs
       superTypeReference.setName(StdStrings.ELEMENT);
     }
 
-    CompositeField listSuperElement = createCompositeElementsDetails(file, null, superTypeReference, true, "List element.");
+    CompositeField listSuperElement = createCompositeElementsDetails(file, null, superTypeReference, true, true, "List element.");
 
     file.addInterfaceOpenStatement(listName + "<T extends " + fqSrcTypeName + ">", listSuperElement.getTypeName() + "List<T>", "List class for " + srcTypeName + "." + file.getLineSeparator() + " * @param <T> The type of this list must extend " + srcTypeName);
     file.addInterfaceCloseStatement();
@@ -270,7 +287,6 @@ public class GeneratorJava extends GeneratorLangs
     file.addPackageStatement(area, service, getConfig().getStructureFolder());
 
     String elementType = createElementType(file, StdStrings.MAL, null, StdStrings.ELEMENT);
-    String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
     String fqSrcTypeName = createElementType(file, area, service, srcTypeName);
 
     TypeReference superTypeReference = getCompositeElementSuperType(srcTypeName);
@@ -295,11 +311,11 @@ public class GeneratorJava extends GeneratorLangs
       }
     }
 
-    CompositeField listSuperElement = createCompositeElementsDetails(file, null, superTypeReference, true, "List element.");
+    CompositeField listSuperElement = createCompositeElementsDetails(file, null, superTypeReference, true, true, "List element.");
 
     file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">", listSuperElement.getTypeName() + "List<" + fqSrcTypeName + ">", "List class for " + srcTypeName + ".");
 
-    CompositeField listElement = createCompositeElementsDetails(file, null, srcType, true, "List element.");
+    CompositeField listElement = createCompositeElementsDetails(file, null, srcType, true, true, "List element.");
 
     addTypeShortForm(file, -shortFormPart);
     file.addClassVariable(true, true, StdStrings.PUBLIC, StdStrings.USHORT, true, false, false, "AREA_SHORT_FORM", "(" + area.getNumber() + ")", "Short form for area.");
@@ -325,15 +341,15 @@ public class GeneratorJava extends GeneratorLangs
     file.addConstructorDefault(listName);
 
     // create initial size contructor
-    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, listName, "int initialCapacity", "initialCapacity", null, "Constructor that initialises the capacity of the list.", Arrays.asList("initialCapacity the required initial capacity."), null);
+    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, listName, createCompositeElementsDetails(file, "initialCapacity", TypeUtils.createTypeReference(null, null, "int", false), false, false, "initialCapacity the required initial capacity."), true, null, "Constructor that initialises the capacity of the list.", null);
     method.addMethodCloseStatement();
 
-    method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, elementType, "createElement", "", null, "Creates an instance of this type using the default constructor. It is a generic factory method.", "A new instance of this type with default field values.", null, null);
+    method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, elementType, "createElement", null, null, "Creates an instance of this type using the default constructor. It is a generic factory method.", "A new instance of this type with default field values.", null);
     method.addMethodStatement("return new " + listName + "()");
     method.addMethodCloseStatement();
 
     // create encode method
-    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "encode", "org.ccsds.moims.mo.mal.MALEncoder encoder", throwsMALException, "Encodes the value of this object using the provided MALEncoder.", null, Arrays.asList("encoder - the encoder to use for encoding"), Arrays.asList(throwsMALException + " if any encoding errors are detected."));
+    method = encodeMethodOpen(file);
     method.addMethodStatement("org.ccsds.moims.mo.mal.MALListEncoder listEncoder = encoder.createListEncoder(this)");
     method.addMethodStatement("for (int i = 0; i < size(); i++)", false);
     method.addMethodStatement("{", false);
@@ -343,7 +359,7 @@ public class GeneratorJava extends GeneratorLangs
     method.addMethodCloseStatement();
 
     // create decode method
-    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, elementType, "decode", "org.ccsds.moims.mo.mal.MALDecoder decoder", throwsMALException, "Decodes the value of this object using the provided MALDecoder.", "Returns this object.", Arrays.asList("decoder - the decoder to use for decoding"), Arrays.asList(throwsMALException + " if any decoding errors are detected."));
+    method = decodeMethodOpen(file, elementType);
     method.addMethodStatement("org.ccsds.moims.mo.mal.MALListDecoder listDecoder = decoder.createListDecoder(this)");
     method.addMethodStatement("while (listDecoder.hasNext())", false);
     method.addMethodStatement("{", false);
@@ -488,7 +504,7 @@ public class GeneratorJava extends GeneratorLangs
   }
 
   @Override
-  protected CompositeField createCompositeElementsDetails(TargetWriter file, String fieldName, TypeReference elementType, boolean canBeNull, String comment)
+  protected CompositeField createCompositeElementsDetails(TargetWriter file, String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment)
   {
     CompositeField ele;
 
@@ -509,7 +525,7 @@ public class GeneratorJava extends GeneratorLangs
         }
         else
         {
-          fqTypeName = createElementType((LanguageWriter) file, elementType) + "List";
+          fqTypeName = createElementType((LanguageWriter) file, elementType, true) + "List";
         }
 
         String newCall = null;
@@ -520,7 +536,7 @@ public class GeneratorJava extends GeneratorLangs
           encCall = StdStrings.ELEMENT;
         }
 
-        ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, encCall, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, newCall, comment);
+        ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, encCall, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, newCall, comment);
       }
     }
     else
@@ -528,29 +544,29 @@ public class GeneratorJava extends GeneratorLangs
       if (isAttributeType(elementType))
       {
         AttributeTypeDetails details = getAttributeDetails(elementType);
-        String fqTypeName = createElementType((LanguageWriter) file, elementType);
-        ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(), canBeNull, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
+        String fqTypeName = createElementType((LanguageWriter) file, elementType, isStructure);
+        ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(), canBeNull, false, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
       }
       else
       {
-        String fqTypeName = createElementType((LanguageWriter) file, elementType);
+        String fqTypeName = createElementType((LanguageWriter) file, elementType, isStructure);
         if (isEnum(elementType))
         {
           EnumerationType typ = getEnum(typeName);
           String firstEle = fqTypeName + "." + typ.getItem().get(0).getValue();
-          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, firstEle, comment);
+          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, firstEle, comment);
         }
         else if (StdStrings.ATTRIBUTE.equals(typeName))
         {
-          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, StdStrings.ATTRIBUTE, "(" + fqTypeName + ") ", StdStrings.ATTRIBUTE, false, "", comment);
+          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ATTRIBUTE, "(" + fqTypeName + ") ", StdStrings.ATTRIBUTE, false, "", comment);
         }
         else if (StdStrings.ELEMENT.equals(typeName))
         {
-          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, false, "", comment);
+          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, false, "", comment);
         }
         else
         {
-          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, "new " + fqTypeName + "()", comment);
+          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, "new " + fqTypeName + "()", comment);
         }
       }
     }
@@ -590,6 +606,52 @@ public class GeneratorJava extends GeneratorLangs
   protected String getOctetCallMethod()
   {
     return "byteValue";
+  }
+
+  @Override
+  protected String getRegisterMethodName()
+  {
+    return "register";
+  }
+
+  @Override
+  protected String getDeregisterMethodName()
+  {
+    return "deregister";
+  }
+
+  @Override
+  protected String getEnumValueCompare(String lhs, String rhs)
+  {
+    return lhs + ".equals(" + rhs + ")";
+  }
+
+  @Override
+  protected String getEnumEncoderValue(long maxValue)
+  {
+    String enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UInteger(ordinal.longValue())";
+    if (maxValue < 256)
+    {
+      enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue())";
+    }
+    else if (maxValue < 65536)
+    {
+      enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UShort(ordinal.intValue())";
+    }
+
+    return enumEncoderValue;
+  }
+
+  @Override
+  protected String getEnumDecoderValue(long maxValue)
+  {
+    return ".getValue()";
+  }
+
+  @Override
+  protected String getNullValue()
+  {
+    return "null";
   }
 
   @Override
@@ -867,21 +929,26 @@ public class GeneratorJava extends GeneratorLangs
     {
       addMultilineComment(1, false, "Default constructor for " + className, false);
 
-      addConstructor(StdStrings.PUBLIC, className, "", "", null).addMethodCloseStatement();
+      addConstructor(StdStrings.PUBLIC, className, null, null, null, null, null).addMethodCloseStatement();
     }
 
     @Override
-    public MethodWriter addConstructor(String scope, String className, String args, String superArgs, String throwsSpec) throws IOException
+    public void addConstructorCopy(String className, List<CompositeField> compElements) throws IOException
     {
-      return addConstructor(scope, className, args, superArgs, throwsSpec, null, null, null);
     }
 
     @Override
-    public MethodWriter addConstructor(String scope, String className, String args, String superArgs, String throwsSpec, String comment, List<String> argsComments, String throwsComment) throws IOException
+    public MethodWriter addConstructor(String scope, String className, CompositeField arg, boolean isArgForSuper, String throwsSpec, String comment, String throwsComment) throws IOException
     {
-      addMultilineComment(1, false, normaliseComments(comment, null, argsComments, Arrays.asList(throwsComment)), false);
+      return addConstructor(scope, className, Arrays.asList(arg), (isArgForSuper ? Arrays.asList(arg) : ((List<CompositeField>) null)), throwsSpec, comment, throwsComment);
+    }
 
-      StringBuilder buf = new StringBuilder(scope + " " + className + "(" + args + ")");
+    @Override
+    public MethodWriter addConstructor(String scope, String className, List<CompositeField> args, List<CompositeField> superArgs, String throwsSpec, String comment, String throwsComment) throws IOException
+    {
+      addMultilineComment(1, false, normaliseArgComments(comment, null, args, Arrays.asList(throwsComment)), false);
+
+      StringBuilder buf = new StringBuilder(scope + " " + className + "(" + processArgs(args, true) + ")");
 
       if (null != throwsSpec)
       {
@@ -891,42 +958,42 @@ public class GeneratorJava extends GeneratorLangs
 
       file.append(addFileStatement(1, buf.toString(), false));
       file.append(addFileStatement(1, "{", false));
-      if ((null != superArgs) && (0 < superArgs.length()))
+      if ((null != superArgs) && (0 < superArgs.size()))
       {
-        file.append(addFileStatement(2, "super(" + superArgs + ")", true));
+        file.append(addFileStatement(2, "super(" + processArgs(superArgs, false) + ")", true));
       }
 
       return this;
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, String args, String throwsSpec) throws IOException
+    public MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec) throws IOException
     {
-      return addMethodOpenStatement(isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, null, null, null, null);
+      return addMethodOpenStatement(isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, null, null, null);
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, String args, String throwsSpec, String comment, String returnComment, List<String> argsComments, List<String> throwsComment) throws IOException
+    public MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException
     {
-      return addMethodOpenStatement(false, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, argsComments, throwsComment);
+      return addMethodOpenStatement(false, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, String args, String throwsSpec) throws IOException
+    public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec) throws IOException
     {
-      return addMethodOpenStatement(isVirtual, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, null, null, null, null);
+      return addMethodOpenStatement(isVirtual, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, null, null, null);
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, String args, String throwsSpec, String comment, String returnComment, List<String> argsComments, List<String> throwsComment) throws IOException
+    public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException
     {
-      return addMethodOpenStatement(false, isVirtual, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, argsComments, throwsComment);
+      return addMethodOpenStatement(false, isVirtual, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, String args, String throwsSpec, String comment, String returnComment, List<String> argsComments, List<String> throwsComment) throws IOException
+    public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException
     {
-      addMultilineComment(1, false, normaliseComments(comment, returnComment, argsComments, throwsComment), false);
+      addMultilineComment(1, false, normaliseArgComments(comment, returnComment, args, throwsComment), false);
 
       String nStatic = "";
 
@@ -943,9 +1010,9 @@ public class GeneratorJava extends GeneratorLangs
       }
 
       rtype = createLocalType(rtype);
-      args = processArgTypes(args);
+      String argString = processArgs(args, true);
 
-      StringBuilder buf = new StringBuilder(scope + " " + nStatic + nFinal + rtype + " " + methodName + "(" + args + ")");
+      StringBuilder buf = new StringBuilder(scope + " " + nStatic + nFinal + rtype + " " + methodName + "(" + argString + ")");
 
       if (null != throwsSpec)
       {
@@ -978,14 +1045,14 @@ public class GeneratorJava extends GeneratorLangs
     }
 
     @Override
-    public void addInterfaceMethodDeclaration(String scope, String rtype, String methodName, String args, String throwsSpec, String comment, String returnComment, List<String> argsComments, List<String> throwsComment) throws IOException
+    public void addInterfaceMethodDeclaration(String scope, String rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException
     {
       rtype = createLocalType(rtype);
-      args = processArgTypes(args);
+      String argString = processArgs(args, true);
 
-      addMultilineComment(1, false, normaliseComments(comment, returnComment, argsComments, throwsComment), false);
+      addMultilineComment(1, false, normaliseArgComments(comment, returnComment, args, throwsComment), false);
 
-      StringBuilder buf = new StringBuilder(rtype + " " + methodName + "(" + args + ")");
+      StringBuilder buf = new StringBuilder(rtype + " " + methodName + "(" + argString + ")");
 
       if (null != throwsSpec)
       {
@@ -1075,6 +1142,21 @@ public class GeneratorJava extends GeneratorLangs
       }
     }
 
+    private List<String> normaliseArgComments(String comment, String returnComment, List<CompositeField> argsComments, List<String> throwsComment)
+    {
+      List<String> rv = new LinkedList<String>();
+
+      if (null != argsComments)
+      {
+        for (CompositeField arg : argsComments)
+        {
+          rv.add(arg.getFieldName() + " " + arg.getComment());
+        }
+      }
+
+      return normaliseComments(comment, returnComment, rv, throwsComment);
+    }
+
     private List<String> normaliseComments(String comment, String returnComment, List<String> argsComments, List<String> throwsComment)
     {
       List<String> rv = new LinkedList<String>();
@@ -1087,27 +1169,30 @@ public class GeneratorJava extends GeneratorLangs
       return rv;
     }
 
-    private String processArgTypes(String argStr)
+    private String processArgs(List<CompositeField> args, boolean includeType)
     {
       StringBuilder buf = new StringBuilder();
-      if (0 < argStr.length())
+      if (null != args && (0 < args.size()))
       {
-        String[] args = argStr.split(",");
+        boolean firstTime = true;
 
-        for (int i = 0; i < args.length; i++)
+        for (CompositeField arg : args)
         {
-          String string = args[i].trim();
-          int spaceIndex = string.lastIndexOf(' ');
-          String type = string.substring(0, spaceIndex);
-          String name = checkForReservedWords(string.substring(spaceIndex + 1));
-
-          if (i > 0)
+          if (firstTime)
+          {
+            firstTime = false;
+          }
+          else
           {
             buf.append(", ");
           }
 
-          buf.append(createLocalType(type));
-          buf.append(" ");
+          if (includeType)
+          {
+            buf.append(createLocalType(arg.getTypeName())).append(" ");
+          }
+
+          String name = checkForReservedWords(arg.getFieldName());
           buf.append(name);
         }
       }

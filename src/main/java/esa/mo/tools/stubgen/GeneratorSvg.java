@@ -25,6 +25,7 @@ import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeInfo;
+import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.AbstractWriter;
 import esa.mo.tools.stubgen.xsd.*;
 import esa.mo.tools.stubgen.xsd.EnumerationType.Item;
@@ -85,7 +86,7 @@ public class GeneratorSvg extends GeneratorDocument
 
         Set<Map.Entry<String, String>> svcTocMap = new LinkedHashSet();
         SvgBufferWriter areaBodyBuff = new SvgBufferWriter();
-        
+
         // create services
         for (ServiceType service : area.getService())
         {
@@ -93,7 +94,7 @@ public class GeneratorSvg extends GeneratorDocument
           areaBodyBuff.addComment(service.getComment());
 
           svcTocMap.add(new AbstractMap.SimpleEntry<String, String>(service.getName(), createXlink(null, service.getName(), null)));
-          
+
           Set<Map.Entry<String, String>> opTocMap = new LinkedHashSet();
           SvgBufferWriter serviceBodyBuff = new SvgBufferWriter();
 
@@ -240,6 +241,25 @@ public class GeneratorSvg extends GeneratorDocument
       }
       case PUBSUB_OP:
       {
+        svgFile.addTitle(4, "Notify telemetry report application data:", null, "", false);
+        List<esa.mo.tools.stubgen.specification.TypeInfo> types = new ArrayList<TypeInfo>();
+        TypeReference subId = new TypeReference();
+        subId.setArea("MAL");
+        subId.setName("Identifier");
+        TypeReference updateHdr = new TypeReference();
+        updateHdr.setArea("MAL");
+        updateHdr.setName("UpdateHeader");
+        updateHdr.setList(Boolean.TRUE);
+        types.add(0, TypeUtils.convertTypeReference(this, subId));
+        types.add(1, TypeUtils.convertTypeReference(this, updateHdr));
+        List<esa.mo.tools.stubgen.specification.TypeInfo> rt = op.getRetTypes();
+        for (TypeInfo typeInfo : rt)
+        {
+          TypeReference refType = typeInfo.getSourceType();
+          refType.setList(Boolean.TRUE);
+          types.add(TypeUtils.convertTypeReference(this, refType));
+        }
+        drawOperationTypes(svgFile, types, op.getRetComment());
         break;
       }
 
@@ -439,7 +459,7 @@ public class GeneratorSvg extends GeneratorDocument
     {
       serviceName += "_";
     }
-    
+
     if (null == section)
     {
       section = "";
@@ -516,7 +536,7 @@ public class GeneratorSvg extends GeneratorDocument
       if (isList)
       {
         int repSpanDepth = spanDepth;
-        
+
         int li = getListIndex();
         svgFile.addSubField("N" + li, StdStrings.INTEGER, createXlink(StdStrings.MAL, null, StdStrings.INTEGER), xOff, yOff, 1, fullDepth, false, false, false);
         svgFile.addSubField(name, type, createXlink(typeRef.getArea(), typeRef.getService(), typeRef.getName()), xOff + 1, yOff, width, thisDepth, isAbstract(typeRef), isEnum(typeRef), isComposite(typeRef));

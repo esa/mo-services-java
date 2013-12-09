@@ -438,7 +438,14 @@ public class GeneratorDocx extends GeneratorDocument
             }
             else
             {
-              docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Not used");
+              if (null != obj.getRelatedObject() && (null != obj.getRelatedObject().getComment()))
+              {
+                docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getRelatedObject().getComment(), null);
+              }
+              else
+              {
+                docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Not used");
+              }
             }
             docxFile.endRow();
           }

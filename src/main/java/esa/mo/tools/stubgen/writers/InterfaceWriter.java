@@ -20,6 +20,7 @@
  */
 package esa.mo.tools.stubgen.writers;
 
+import esa.mo.tools.stubgen.specification.CompositeField;
 import java.io.IOException;
 import java.util.List;
 
@@ -48,18 +49,16 @@ public interface InterfaceWriter extends LanguageWriter
    * @param throwsSpec The throws specification.
    * @param comment The main comment for the method.
    * @param returnComment The comment about the return type.
-   * @param argsComments The comments for the arguments.
    * @param throwsComment The comment for the throws specification.
    * @throws IOException If there is an IO error.
    */
   void addInterfaceMethodDeclaration(String scope,
           String rtype,
           String methodName,
-          String args,
+          List<CompositeField> args,
           String throwsSpec,
           String comment,
           String returnComment,
-          List<String> argsComments,
           List<String> throwsComment) throws IOException;
 
   /**

@@ -416,11 +416,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   }
 
   @Override
-  public String createElementType(TargetWriter file, TypeReference type)
+  public String createElementType(TargetWriter file, TypeReference type, boolean isStructure)
   {
     if (null != type)
     {
-      return createElementType(file, type.getArea(), type.getService(), type.getName());
+      return createElementType(file, type.getArea(), type.getService(), isStructure ? config.getStructureFolder() : null, type.getName());
     }
     return null;
   }
@@ -475,6 +475,10 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     {
       retVal = jaxbBindings.get(service) + config.getNamingSeparator() + type;
     }
+    else if (null == area)
+    {
+      return type;
+    }
     else
     {
       if (isAttributeType(area, type))
@@ -484,12 +488,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
       }
       else
       {
-        retVal += config.getBasePackage();
-
-        if (null != area)
-        {
-          retVal += area.toLowerCase() + config.getNamingSeparator();
-        }
+        retVal += config.getBasePackage() + area.toLowerCase() + config.getNamingSeparator();
 
         if (null != service)
         {
@@ -563,6 +562,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
       CompositeField ele = createCompositeElementsDetails(file,
               element.getName(),
               element.getType(),
+              true,
               element.isCanBeNull(),
               element.getComment());
       lst.add(ele);
@@ -596,6 +596,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
           CompositeField ele = createCompositeElementsDetails(file,
                   element.getName(),
                   element.getType(),
+                  true,
                   element.isCanBeNull(),
                   element.getComment());
           lst.add(ele);
@@ -780,6 +781,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   protected abstract CompositeField createCompositeElementsDetails(TargetWriter file,
           String fieldName,
           TypeReference elementType,
+          boolean isStructure,
           boolean canBeNull,
           String comment);
 

@@ -92,7 +92,7 @@ public interface TypeInformation
    * @param type The type.
    * @return the full name of the type.
    */
-  String createElementType(TargetWriter file, TypeReference type);
+  String createElementType(TargetWriter file, TypeReference type, boolean isStructure);
 
   /**
    * Creates the full name of a structure type from the supplied details.

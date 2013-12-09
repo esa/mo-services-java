@@ -20,6 +20,7 @@
  */
 package esa.mo.tools.stubgen;
 
+import esa.mo.tools.stubgen.specification.CompositeField;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -244,11 +246,10 @@ public abstract class StubUtils
    * Concatenates an array of strings with intervening commas if required.
    *
    * @param preArgs First string.
-   * @param midArgs Second string.
    * @param args The string arguments.
    * @return The concatenated string.
    */
-  public static String concatenateArguments(String... args)
+  public static String concatenateStringArguments(boolean preArgs, String... args)
   {
     StringBuilder buf = new StringBuilder("");
 
@@ -256,7 +257,7 @@ public abstract class StubUtils
     {
       if ((null != str) && !str.isEmpty())
       {
-        if (0 < buf.length())
+        if (preArgs || (0 < buf.length()))
         {
           buf.append(", ");
         }
@@ -265,6 +266,49 @@ public abstract class StubUtils
     }
 
     return buf.toString();
+  }
+
+  /**
+   * Concatenates an array of arguments.
+   *
+   * @param args The arguments.
+   * @return The concatenated arguments.
+   */
+  public static List<CompositeField> concatenateArguments(CompositeField... args)
+  {
+    return Arrays.asList(args);
+  }
+
+  /**
+   * Concatenates an array of arguments.
+   *
+   * @param args The arguments.
+   * @return The concatenated arguments.
+   */
+  public static List<CompositeField> concatenateArguments(CompositeField firstArg, List<CompositeField>... args)
+  {
+    List lst = new LinkedList();
+    lst.add(firstArg);
+
+    for (List<CompositeField> elem : args)
+    {
+      lst.addAll(elem);
+    }
+    
+    return lst;
+  }
+
+  /**
+   * Concatenates an array of arguments.
+   *
+   * @param args The arguments.
+   * @return The concatenated arguments.
+   */
+  public static List<CompositeField> concatenateArguments(List<CompositeField> firstArg, CompositeField... args)
+  {
+    firstArg.addAll(Arrays.asList(args));
+    
+    return firstArg;
   }
 
   private StubUtils()

@@ -43,7 +43,7 @@ public abstract class TypeUtils
   {
     if (null != tr)
     {
-      String argTypeStr = tiSource.createElementType(null, tr);
+      String argTypeStr = tiSource.createElementType(null, tr, true);
       String argVersionStr = tiSource.getBasePackage() + tr.getArea().toLowerCase() + "." + tr.getArea() + "Helper." + tr.getArea().toUpperCase() + "_AREA_VERSION";
       TypeInfo ti;
       if (tr.isList())

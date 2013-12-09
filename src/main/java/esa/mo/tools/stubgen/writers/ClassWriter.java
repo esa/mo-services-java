@@ -20,6 +20,7 @@
  */
 package esa.mo.tools.stubgen.writers;
 
+import esa.mo.tools.stubgen.specification.CompositeField;
 import java.io.IOException;
 import java.util.List;
 
@@ -111,17 +112,28 @@ public interface ClassWriter extends LanguageWriter
   void addConstructorDefault(String className) throws IOException;
 
   /**
+   * Adds a copy constructor to the class if supported by the language.
+   *
+   * @param className The class name.
+   * @param compElements The elements of the class.
+   * @throws IOException If there is an IO error.
+   */
+  void addConstructorCopy(String className, List<CompositeField> compElements) throws IOException;
+
+  /**
    * Adds a constructor to the class.
    *
    * @param scope Constructor scope.
    * @param className The class name.
-   * @param args The arguments of the constructor.
-   * @param superArgs The arguments of any super type.
+   * @param arg The arguments of the constructor.
+   * @param isArgForSuper True if the argument is for the super type.
    * @param throwsSpec The throws specification.
+   * @param comment Comment for the constructor.
+   * @param throwsComment Comment for the throws specification.
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addConstructor(String scope, String className, String args, String superArgs, String throwsSpec) throws IOException;
+  MethodWriter addConstructor(String scope, String className, CompositeField arg, boolean isArgForSuper, String throwsSpec, String comment, String throwsComment) throws IOException;
 
   /**
    * Adds a constructor to the class.
@@ -132,12 +144,11 @@ public interface ClassWriter extends LanguageWriter
    * @param superArgs The arguments of any super type.
    * @param throwsSpec The throws specification.
    * @param comment Comment for the constructor.
-   * @param argsComments Comment for the arguments.
    * @param throwsComment Comment for the throws specification.
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addConstructor(String scope, String className, String args, String superArgs, String throwsSpec, String comment, List<String> argsComments, String throwsComment) throws IOException;
+  MethodWriter addConstructor(String scope, String className, List<CompositeField> args, List<CompositeField> superArgs, String throwsSpec, String comment, String throwsComment) throws IOException;
 
   /**
    * Add a method to the class.
@@ -154,7 +165,7 @@ public interface ClassWriter extends LanguageWriter
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, String args, String throwsSpec) throws IOException;
+  MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec) throws IOException;
 
   /**
    * Add a method to the class.
@@ -170,12 +181,11 @@ public interface ClassWriter extends LanguageWriter
    * @param throwsSpec The throws specification.
    * @param comment The comment for the method.
    * @param returnComment The comment for the return value.
-   * @param argsComments The comments for the arguments.
    * @param throwsComment The comment for the throws specification.
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, String args, String throwsSpec, String comment, String returnComment, List<String> argsComments, List<String> throwsComment) throws IOException;
+  MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException;
 
   /**
    * Add a method to the class.
@@ -193,7 +203,7 @@ public interface ClassWriter extends LanguageWriter
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, String args, String throwsSpec) throws IOException;
+  MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec) throws IOException;
 
   /**
    * Add a method to the class.
@@ -210,12 +220,11 @@ public interface ClassWriter extends LanguageWriter
    * @param throwsSpec The throws specification.
    * @param comment The comment for the method.
    * @param returnComment The comment for the return value.
-   * @param argsComments The comments for the arguments.
    * @param throwsComment The comment for the throws specification.
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, String args, String throwsSpec, String comment, String returnComment, List<String> argsComments, List<String> throwsComment) throws IOException;
+  MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException;
 
   /**
    * Add a method to the class.
@@ -233,12 +242,11 @@ public interface ClassWriter extends LanguageWriter
    * @param throwsSpec The throws specification.
    * @param comment The comment for the method.
    * @param returnComment The comment for the return value.
-   * @param argsComments The comments for the arguments.
    * @param throwsComment The comment for the throws specification.
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, String args, String throwsSpec, String comment, String returnComment, List<String> argsComments, List<String> throwsComment) throws IOException;
+  MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException;
 
   /**
    * Adds statements to close the class.

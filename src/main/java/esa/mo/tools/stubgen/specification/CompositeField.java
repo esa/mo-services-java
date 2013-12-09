@@ -32,6 +32,7 @@ public final class CompositeField
   private final String fieldName;
   private final boolean list;
   private final boolean canBeNull;
+  private final boolean isActual;
   private final String encodeCall;
   private final String decodeCast;
   private final String decodeCall;
@@ -47,6 +48,7 @@ public final class CompositeField
    * @param fieldName The name of the field.
    * @param isList True if the field is a list.
    * @param canBeNull True if the field may be null.
+   * @param isActual True if the field type is an actual type.
    * @param encodeCall The method for encoding the field.
    * @param decodeCast The type to cast to on a decode call.
    * @param decodeCall The method for decode the field.
@@ -54,18 +56,42 @@ public final class CompositeField
    * @param newCall The method to create a new instance.
    * @param comment The field comment.
    */
-  public CompositeField(String typeName, TypeReference typeReference, String fieldName, boolean isList, boolean canBeNull, String encodeCall, String decodeCast, String decodeCall, boolean decodeNeedsNewCall, String newCall, String comment)
+  public CompositeField(String typeName, TypeReference typeReference, String fieldName, boolean isList, boolean canBeNull, boolean isActual, String encodeCall, String decodeCast, String decodeCall, boolean decodeNeedsNewCall, String newCall, String comment)
   {
     this.typeName = typeName;
     this.typeReference = typeReference;
     this.fieldName = fieldName;
     this.list = isList;
     this.canBeNull = canBeNull;
+    this.isActual = isActual;
     this.encodeCall = encodeCall;
     this.decodeCast = decodeCast;
     this.decodeCall = decodeCall;
     this.decodeNeedsNewCall = decodeNeedsNewCall;
     this.newCall = newCall;
+    this.comment = comment;
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param other The structure to copy.
+   * @param fieldName The name of the field.
+   * @param comment The field comment.
+   */
+  public CompositeField(CompositeField other, String fieldName, String comment)
+  {
+    this.typeName = other.typeName;
+    this.typeReference = other.typeReference;
+    this.fieldName = fieldName;
+    this.list = other.list;
+    this.canBeNull = other.canBeNull;
+    this.isActual = other.isActual;
+    this.encodeCall = other.encodeCall;
+    this.decodeCast = other.decodeCast;
+    this.decodeCall = other.decodeCall;
+    this.decodeNeedsNewCall = other.decodeNeedsNewCall;
+    this.newCall = other.newCall;
     this.comment = comment;
   }
 
@@ -117,6 +143,16 @@ public final class CompositeField
   public boolean isCanBeNull()
   {
     return canBeNull;
+  }
+
+  /**
+   * Returns True if field type is an actual.
+   *
+   * @return the isActual
+   */
+  public boolean isActual()
+  {
+    return isActual;
   }
 
   /**
