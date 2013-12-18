@@ -215,7 +215,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
     loadURIs();
 
     malFactory = MALContextFactory.newFactory();
-    mal = malFactory.createMALContext(new Properties());
+    mal = malFactory.createMALContext(System.getProperties());
 
     MALHelper.init(MALContextFactory.getElementFactoryRegistry());
     MALDemoHelper.init(MALContextFactory.getElementFactoryRegistry());
@@ -278,7 +278,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
             session,
             sessionName,
             QoSLevel.ASSURED,
-            new Properties(),
+            System.getProperties(),
             new UInteger(0));
 
     demoService = new BasicMonitorStub(tmConsumer);

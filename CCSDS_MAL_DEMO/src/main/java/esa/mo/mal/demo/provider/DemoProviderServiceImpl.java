@@ -39,6 +39,7 @@ import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -146,14 +147,14 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
     demoServiceProvider = providerMgr.createProvider("Demo",
             null,
             BasicMonitorHelper.BASICMONITOR_SERVICE,
-            null,
+            new Blob("".getBytes()),
             this,
             new QoSLevel[]
             {
               QoSLevel.ASSURED
             },
             new UInteger(1),
-            null,
+            System.getProperties(),
             true,
             sharedBrokerURI);
 
