@@ -49,14 +49,11 @@ public interface ClassWriter extends LanguageWriter
    * @param isFinal True if the variable may not be modified.
    * @param scope Scope of the variable.
    * @param type Type of the variable.
-   * @param isActual True if the variable should be contained by value rather than reference.
-   * @param isArray true if it is an array type.
-   * @param variableName The variable name.
+   * @param isObject True if the variable is an object rather than native type.
    * @param initialValue The initial value of the variable.
-   * @param comment The comment for the variable.
    * @throws IOException If there is an IO error.
    */
-  void addClassVariable(boolean isStatic, boolean isFinal, String scope, String type, boolean isActual, boolean isArray, String variableName, String initialValue, String comment) throws IOException;
+  void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField type, boolean isObject, String initialValue) throws IOException;
 
   /**
    * Adds a member variable to the class.
@@ -65,32 +62,12 @@ public interface ClassWriter extends LanguageWriter
    * @param isFinal True if the variable may not be modified.
    * @param scope Scope of the variable.
    * @param type Type of the variable.
-   * @param isActual True if the variable should be contained by value rather than reference.
    * @param isObject True if the variable is an object rather than native type.
    * @param isArray true if it is an array type.
-   * @param variableName The variable name.
    * @param initialValue The initial value of the variable.
-   * @param comment The comment for the variable.
    * @throws IOException If there is an IO error.
    */
-  void addClassVariable(boolean isStatic, boolean isFinal, String scope, String type, boolean isActual, boolean isObject, boolean isArray, String variableName, String initialValue, String comment) throws IOException;
-
-  /**
-   * Adds a member variable to the class.
-   *
-   * @param isStatic True if the variable is static.
-   * @param isFinal True if the variable may not be modified.
-   * @param scope Scope of the variable.
-   * @param type Type of the variable.
-   * @param isActual True if the variable should be contained by value rather than reference.
-   * @param isObject True if the variable is an object rather than native type.
-   * @param isArray true if it is an array type.
-   * @param variableName The variable name.
-   * @param initialValue The initial value of the variable.
-   * @param comment The comment for the variable.
-   * @throws IOException If there is an IO error.
-   */
-  void addClassVariable(boolean isStatic, boolean isFinal, String scope, String type, boolean isActual, boolean isObject, boolean isArray, String variableName, List<String> initialValue, String comment) throws IOException;
+  void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField type, boolean isObject, boolean isArray, List<String> initialValue) throws IOException;
 
   /**
    * Add a static constructor to the class.

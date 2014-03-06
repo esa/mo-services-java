@@ -68,13 +68,13 @@ public class GeneratorJava extends GeneratorLangs
   public GeneratorJava(org.apache.maven.plugin.logging.Log logger)
   {
     super(logger, true, true, false, true, false, "/org/ccsds/moims/mo",
-            new GeneratorConfiguration("org.ccsds.moims.mo.", "structures", "structures.factory", "body", ".", "(Object[]) null",
-            "org.ccsds.moims.mo.mal.MALSendOperation",
-            "org.ccsds.moims.mo.mal.MALSubmitOperation",
-            "org.ccsds.moims.mo.mal.MALRequestOperation",
-            "org.ccsds.moims.mo.mal.MALInvokeOperation",
-            "org.ccsds.moims.mo.mal.MALProgressOperation",
-            "org.ccsds.moims.mo.mal.MALPubSubOperation"));
+            new GeneratorConfiguration("org.ccsds.moims.mo.", "structures", "factory", "body", ".", "(Object[]) null",
+            "MALSendOperation",
+            "MALSubmitOperation",
+            "MALRequestOperation",
+            "MALInvokeOperation",
+            "MALProgressOperation",
+            "MALPubSubOperation"));
   }
 
   @Override
@@ -142,13 +142,13 @@ public class GeneratorJava extends GeneratorLangs
     String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
     String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
     String throwsExceptions = "java.lang.IllegalArgumentException, " + throwsInteractionAndMALException;
-    String publisherSetType = createElementType(file, StdStrings.MAL, null, PROVIDER_FOLDER, "MALPublisherSet");
+    CompositeField publisherSetType = createCompositeElementsDetails(file, "publisherSet", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false), false, true, null);
 
     file.addClassOpenStatement(publisherName, true, false, null, null, "Publisher class for the " + op.getName() + " operation.");
 
-    file.addClassVariable(false, false, StdStrings.PRIVATE, publisherSetType, false, false, false, "publisherSet", (String) null, null);
+    file.addClassVariable(false, false, StdStrings.PRIVATE, publisherSetType, false, (String) null);
 
-    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, publisherName, createCompositeElementsDetails(file, "publisherSet", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false),false, true, "publisherSet The set of broker connections to use when registering and publishing."), false, null, "Creates an instance of this class using the supplied publisher set.", null);
+    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, publisherName, createCompositeElementsDetails(file, "publisherSet", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false), false, true, "publisherSet The set of broker connections to use when registering and publishing."), false, null, "Creates an instance of this class using the supplied publisher set.", null);
     method.addMethodStatement("this.publisherSet = publisherSet");
     method.addMethodCloseStatement();
 
@@ -164,22 +164,22 @@ public class GeneratorJava extends GeneratorLangs
     method.addMethodStatement("publisherSet.asyncRegister(entityKeys, listener)");
     method.addMethodCloseStatement();
 
-    
+
     List<CompositeField> argList = new LinkedList();
     argList.add(createCompositeElementsDetails(file, "updateHeaderList", TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true, "updateHeaderList The headers of the updates being added"));
     argList.addAll(createOperationArguments(getConfig(), file, op.getUpdateTypes(), true));
 
     String argNameList = "";
-    
+
     if (1 < argList.size())
     {
       List<String> strList = new LinkedList<String>();
-      
+
       for (int i = 1; i < argList.size(); i++)
       {
         strList.add(argList.get(i).getFieldName());
       }
-      
+
       argNameList = StubUtils.concatenateStringArguments(true, strList.toArray(new String[0]));
     }
 
@@ -317,25 +317,7 @@ public class GeneratorJava extends GeneratorLangs
 
     CompositeField listElement = createCompositeElementsDetails(file, null, srcType, true, true, "List element.");
 
-    addTypeShortForm(file, -shortFormPart);
-    file.addClassVariable(true, true, StdStrings.PUBLIC, StdStrings.USHORT, true, false, false, "AREA_SHORT_FORM", "(" + area.getNumber() + ")", "Short form for area.");
-    file.addClassVariable(true, true, StdStrings.PUBLIC, StdStrings.UOCTET, true, false, false, "AREA_VERSION", "((short)" + area.getVersion() + ")", "Version for area.");
-    StringBuilder asf = new StringBuilder();
-    asf.append(String.format("%04X", area.getNumber()));
-    if (null != service)
-    {
-      file.addClassVariable(true, true, StdStrings.PUBLIC, StdStrings.USHORT, true, false, false, "SERVICE_SHORT_FORM", "(" + service.getNumber() + ")", "Short form for service.");
-      asf.append(String.format("%04X", service.getNumber()));
-    }
-    else
-    {
-      file.addClassVariable(true, true, StdStrings.PUBLIC, StdStrings.USHORT, true, false, false, "SERVICE_SHORT_FORM", "(0)", "Short form for service.");
-      asf.append("0000");
-    }
-
-    asf.append(String.format("%02X", area.getVersion()));
-    asf.append(Integer.toHexString(-shortFormPart.intValue()).toUpperCase().substring(2));
-    addShortForm(file, Long.parseLong(asf.toString(), 16));
+    addTypeShortFormDetails(file, area, service, -shortFormPart);
 
     // create blank constructor
     file.addConstructorDefault(listName);
@@ -374,7 +356,9 @@ public class GeneratorJava extends GeneratorLangs
 
     file.flush();
 
-    createFactoryClass(folder, area, service, listName, false, false);
+    srcType.setList(Boolean.TRUE);
+    CompositeField listType = createCompositeElementsDetails(file, null, srcType, true, true, "List element.");
+    createFactoryClass(folder, area, service, listName, listType, false, false);
   }
 
   @Override
@@ -834,7 +818,13 @@ public class GeneratorJava extends GeneratorLangs
     }
 
     @Override
-    public void addClassVariable(boolean isStatic, boolean isFinal, String scope, String type, boolean isActual, boolean isObject, boolean isArray, String variableName, List<String> initialValue, String comment) throws IOException
+    public void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, String initialValue) throws IOException
+    {
+      addClassVariable(isStatic, isFinal, scope, arg, isObject, false, initialValue);
+    }
+
+    @Override
+    public void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, List<String> initialValue) throws IOException
     {
       StringBuilder iniVal = new StringBuilder();
 
@@ -859,19 +849,12 @@ public class GeneratorJava extends GeneratorLangs
         val = "(" + iniVal.toString() + ")";
       }
 
-      addClassVariable(isStatic, isFinal, scope, type, isActual, isObject, isArray, variableName, val, comment);
+      addClassVariable(isStatic, isFinal, scope, arg, isObject, isArray, val);
     }
-
-    @Override
-    public void addClassVariable(boolean isStatic, boolean isFinal, String scope, String type, boolean isActual, boolean isArray, String variableName, String initialValue, String comment) throws IOException
+    
+    protected void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, String initialValue) throws IOException
     {
-      addClassVariable(isStatic, isFinal, scope, type, isActual, false, isArray, variableName, initialValue, comment);
-    }
-
-    @Override
-    public void addClassVariable(boolean isStatic, boolean isFinal, String scope, String type, boolean isActual, boolean isObject, boolean isArray, String variableName, String initialValue, String comment) throws IOException
-    {
-      addMultilineComment(1, false, comment, false);
+      addMultilineComment(1, false, arg.getComment(), false);
 
       StringBuilder buf = new StringBuilder(scope);
       buf.append(" ");
@@ -883,14 +866,14 @@ public class GeneratorJava extends GeneratorLangs
       {
         buf.append("final ");
       }
-      String ltype = createLocalType(type);
+      String ltype = createLocalType(arg.getTypeName());
       buf.append(ltype);
       if (isArray)
       {
         buf.append("[]");
       }
       buf.append(" ");
-      buf.append(variableName);
+      buf.append(arg.getFieldName());
 
       if (null != initialValue)
       {
@@ -898,9 +881,9 @@ public class GeneratorJava extends GeneratorLangs
         {
           buf.append(" = {").append(initialValue).append("}");
         }
-        else if (isNativeType(type))
+        else if (isNativeType(arg.getTypeName()))
         {
-          NativeTypeDetails dets = getNativeType(type);
+          NativeTypeDetails dets = getNativeType(arg.getTypeName());
           if (dets.isObject())
           {
             buf.append(" = new ").append(ltype).append(initialValue);

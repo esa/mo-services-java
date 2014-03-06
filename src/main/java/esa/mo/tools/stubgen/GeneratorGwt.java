@@ -282,7 +282,6 @@ public class GeneratorGwt extends GeneratorJava
     file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
     String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-    String handlerName = createElementType(file, area.getName(), service.getName(), PROVIDER_FOLDER, service.getName() + "Handler");
 
     String implementsList = createElementType(file, area.getName(), service.getName(), CONSUMER_FOLDER, service.getName() + "GWT");
     if (!isDelegate)
@@ -294,7 +293,8 @@ public class GeneratorGwt extends GeneratorJava
 
     if (isDelegate)
     {
-      file.addClassVariable(false, false, StdStrings.PRIVATE, handlerName, false, false, false, "delegate", (String) null, null);
+      CompositeField handlerName = createCompositeElementsDetails(file, "delegate", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), false, true, null);
+      file.addClassVariable(false, false, StdStrings.PRIVATE, handlerName, false, (String) null);
     }
 
     if (isDelegate)
