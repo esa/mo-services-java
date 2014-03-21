@@ -96,9 +96,19 @@
     </dependency>
     <dependency>
       <groupId>int.esa</groupId>
+      <artifactId>CCSDS_MAL_ENCODING_BINARY_FIXED</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>int.esa</groupId>
       <artifactId>CCSDS_MAL_TRANSPORT_FILE</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
+<!--    <dependency>
+      <groupId>fr.cnes.maljoram</groupId>
+      <artifactId>mal-joram-malencoding</artifactId>
+      <version>3.1.1</version>
+    </dependency>-->
   </dependencies>
   
   <build>

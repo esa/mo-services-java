@@ -4,49 +4,31 @@
             xmlns:tst="http://www.ccsds.org/schema/PerfTestServiceSchema"
             elementFormDefault="qualified">
 
-  <xsd:complexType name="CompactArchiveReport">
+  <xsd:complexType name="Report">
     <xsd:sequence>
-      <xsd:element name="domain" type="xsd:string" maxOccurs="unbounded"/>
-      <xsd:element name="networkZone" type="xsd:string"/>
-      <xsd:element name="area" type="xsd:short"/>
-      <xsd:element name="service" type="xsd:short"/>
-      <xsd:element name="statusUpdates" type="tst:CompactStatusUpdate" maxOccurs="unbounded"/>
-      <xsd:element name="eventUpdates" type="tst:CompactStatusUpdate" maxOccurs="unbounded"/>
+      <xsd:element name="updateHeader" type="tst:UpdateHeader" maxOccurs="unbounded"/>
+      <xsd:element name="objectId" type="tst:ObjectId" maxOccurs="unbounded"/>
+      <xsd:element name="value" type="tst:AggregationValue" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
-
-  <xsd:complexType name="CompactStatus">
+      
+  <xsd:complexType name="AggregationValue">
     <xsd:sequence>
-      <xsd:element name="timestamp" type="xsd:dateTime"/>
-      <xsd:element name="updateType" type="tst:UpdateType"/>
-      <xsd:element name="updateSource" type="tst:ExternalReference"/>
-      <xsd:element name="status" type="tst:ComplexParameterValue"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="CompactStatusUpdate">
-    <xsd:sequence>
-      <xsd:element name="key" type="tst:StatusKey"/>
-      <xsd:element name="sourceURI" type="xsd:anyURI"/>
-      <xsd:element name="updates" type="tst:CompactStatus" maxOccurs="unbounded"/>
+      <xsd:element name="generationMode" type="tst:GenerationMode"/>
+      <xsd:element name="filtered" type="xsd:boolean"/>
+      <xsd:element name="deltaTime" type="xsd:duration" minOccurs="0"/>
+      <xsd:element name="intervalTime" type="xsd:duration" minOccurs="0"/>
+      <xsd:element name="setIntervalTime" type="xsd:duration" minOccurs="0"/>
+      <xsd:element name="values" type="tst:ParameterValue" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="ParameterValue">
     <xsd:sequence>
+      <xsd:element name="validityState" type="tst:Validity"/>
       <xsd:element name="rawValue" type="xsd:anySimpleType"/>
+      <xsd:element name="convertedValue" type="xsd:anySimpleType"/>
     </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="ComplexParameterValue">
-    <xsd:complexContent>
-      <xsd:extension base="tst:ParameterValue">
-        <xsd:sequence>
-          <xsd:element name="validityState" type="tst:Validity"/>
-          <xsd:element name="convertedValue" type="xsd:anySimpleType"/>
-        </xsd:sequence>
-      </xsd:extension>
-    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:simpleType name="UpdateType">
@@ -62,38 +44,60 @@
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="INVALID"/>
       <xsd:enumeration value="VALID"/>
+      <xsd:enumeration value="VALID_RAW_ONLY"/>
       <xsd:enumeration value="UNVERIFIED"/>
       <xsd:enumeration value="EXPIRED"/>
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="ExternalReference">
+  <xsd:simpleType name="GenerationMode">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ADHOC"/>
+      <xsd:enumeration value="PERIODIC"/>
+      <xsd:enumeration value="FILTERED_TIMEOUT"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="EntityKey">
+    <xsd:sequence>
+      <xsd:element name="firstSubKey" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="secondSubKey" type="xsd:long" minOccurs="0"/>
+      <xsd:element name="thirdSubKey" type="xsd:long" minOccurs="0"/>
+      <xsd:element name="fourthSubKey" type="xsd:long" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+      
+  <xsd:complexType name="UpdateHeader">
+    <xsd:sequence>
+      <xsd:element name="timestamp" type="xsd:dateTime"/>
+      <xsd:element name="sourceURI" type="xsd:anyURI"/>
+      <xsd:element name="updateType" type="tst:UpdateType"/>
+      <xsd:element name="key" type="tst:EntityKey"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ObjectType">
+    <xsd:sequence>
+      <xsd:element name="area" type="xsd:unsignedShort"/>
+      <xsd:element name="service" type="xsd:unsignedShort"/>
+      <xsd:element name="version" type="xsd:byte"/>
+      <xsd:element name="number" type="xsd:unsignedShort"/>
+    </xsd:sequence>
+  </xsd:complexType>
+      
+  <xsd:complexType name="ObjectKey">
     <xsd:sequence>
       <xsd:element name="domain" type="xsd:string" maxOccurs="unbounded"/>
-      <xsd:element name="networkZone" type="xsd:string"/>
-      <xsd:element name="area" type="xsd:short"/>
-      <xsd:element name="service" type="xsd:short"/>
-      <xsd:element name="operation" type="xsd:short"/>
-      <xsd:element name="sourceKey" type="tst:OccurrenceKey"/>
+      <xsd:element name="instId" type="xsd:long"/>
     </xsd:sequence>
   </xsd:complexType>
-
-  <xsd:complexType name="OccurrenceKey">
+      
+  <xsd:complexType name="ObjectId">
     <xsd:sequence>
-      <xsd:element name="entityId" type="xsd:string"/>
-      <xsd:element name="definitionId" type="xsd:int"/>
-      <xsd:element name="occurrenceId" type="xsd:int"/>
+      <xsd:element name="type" type="tst:ObjectType"/>
+      <xsd:element name="key" type="tst:ObjectKey"/>
     </xsd:sequence>
   </xsd:complexType>
-
-  <xsd:complexType name="StatusKey">
-    <xsd:sequence>
-      <xsd:element name="entityId" type="xsd:string"/>
-      <xsd:element name="definitionId" type="xsd:int"/>
-      <xsd:element name="occurrenceId" type="xsd:int"/>
-      <xsd:element name="statusId" type="xsd:int"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:element name="CompactArchiveReport" type="tst:CompactArchiveReport"/>
+      
+  <xsd:element name="report" type="tst:Report"/>
 </xsd:schema>

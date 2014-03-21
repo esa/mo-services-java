@@ -35,6 +35,7 @@ import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
+import org.ccsds.moims.mo.mal.structures.Blob;
 
 
 public class TestXMLStreamFactory extends MALElementStreamFactory
@@ -63,7 +64,7 @@ public class TestXMLStreamFactory extends MALElementStreamFactory
   }
 
   @Override
-  public byte[] encodeElement(Object[] elements, MALEncodingContext ctx) throws IllegalArgumentException, MALException
+  public Blob encode(Object[] elements, MALEncodingContext ctx) throws IllegalArgumentException, MALException
   {
     throw new UnsupportedOperationException("Not supported yet.");
   }
@@ -83,7 +84,7 @@ public class TestXMLStreamFactory extends MALElementStreamFactory
       try
       {
         String schemaURN = "http://www.ccsds.org/schema/PerfTestServiceSchema";
-        String schemaEle = "CompactArchiveReport";
+        String schemaEle = "report";
         JAXBContext jc = JAXBContext.newInstance(o.getClass().getPackage().getName());
         Marshaller marshaller = jc.createMarshaller();
         marshaller.marshal(new JAXBElement(new QName(schemaURN, schemaEle), o.getClass(), null, o), os);
