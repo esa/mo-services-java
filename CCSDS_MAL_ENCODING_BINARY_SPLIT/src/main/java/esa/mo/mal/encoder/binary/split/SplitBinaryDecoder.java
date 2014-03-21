@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.encoder.binary.split;
 
-import java.nio.ByteBuffer;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
@@ -35,7 +34,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    */
   public SplitBinaryDecoder(final byte[] src)
   {
-    super(src);
+    super(new SplitBufferHolder(null, src, 0, src.length));
   }
 
   /**
@@ -45,7 +44,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    */
   public SplitBinaryDecoder(final java.io.InputStream is)
   {
-    super(is);
+    super(new SplitBufferHolder(is, null, 0, 0));
   }
 
   /**
@@ -56,7 +55,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    */
   public SplitBinaryDecoder(final byte[] src, final int offset)
   {
-    super(src, offset);
+    super(new SplitBufferHolder(null, src, offset, src.length));
   }
 
   /**
@@ -67,12 +66,6 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   protected SplitBinaryDecoder(final BufferHolder src)
   {
     super(src);
-  }
-
-  @Override
-  protected BufferHolder createBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
-  {
-    return new SplitBufferHolder(is, buf, offset, length);
   }
 
   @Override
@@ -101,7 +94,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   protected static class SplitBufferHolder extends BufferHolder
   {
     private boolean bitStoreLoaded = false;
-    private java.util.BitSet bitStore = null;
+    private BitGet bitStore = null;
     private int bitIndex = 0;
 
     /**
@@ -115,19 +108,42 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     public SplitBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
       super(is, buf, offset, length);
+
+      forceRealloc = true;
     }
 
     @Override
     public void checkBuffer(final int requiredLength) throws MALException
     {
       // ensure that the bit buffer has been loaded first
-      if (!this.bitStoreLoaded)
+      if (!bitStoreLoaded)
       {
-        this.bitStoreLoaded = true;
-        this.bitStore = java.util.BitSet.valueOf(ByteBuffer.wrap(get(getUnsignedInt())));
+        bitStoreLoaded = true;
+        int size = getUnsignedInt();
+
+        if (size >= 0)
+        {
+          super.checkBuffer(size);
+
+          bitStore = new BitGet(buf, offset, size);
+          offset += size;
+        }
+        else
+        {
+          bitStore = new BitGet(null, 0, 0);
+        }
       }
 
       super.checkBuffer(requiredLength);
+    }
+
+    @Override
+    protected void bufferRealloced(int oldSize)
+    {
+      if (0 < oldSize)
+      {
+        forceRealloc = false;
+      }
     }
 
     @Override
@@ -141,6 +157,26 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
       boolean rv = bitStore.get(bitIndex);
       ++bitIndex;
       return rv;
+    }
+  }
+
+  protected static class BitGet
+  {
+    private final byte[] bitBytes;
+    private final int bitBytesOffset;
+    private final int bitBytesInUse;
+
+    public BitGet(byte[] bytes, final int offset, final int length)
+    {
+      this.bitBytes = bytes;
+      this.bitBytesOffset = offset;
+      this.bitBytesInUse = length;
+    }
+
+    public boolean get(int bitIndex)
+    {
+      int byteIndex = bitIndex / 8;
+      return (byteIndex < bitBytesInUse) && ((bitBytes[byteIndex + bitBytesOffset] & (1 << (bitIndex % 8))) != 0);
     }
   }
 }

@@ -41,7 +41,17 @@ public class BinaryEncoder implements MALListEncoder
    */
   public BinaryEncoder(final OutputStream os)
   {
-    this.outputStream = createStreamHolder(os);
+    this.outputStream = new StreamHolder(os);
+  }
+
+  /**
+   * Constructor for derived classes that have their own stream holder implementation that should be used.
+   *
+   * @param os Output stream to write to.
+   */
+  protected BinaryEncoder(final StreamHolder os)
+  {
+    this.outputStream = os;
   }
 
   @Override
@@ -59,17 +69,12 @@ public class BinaryEncoder implements MALListEncoder
     }
   }
 
-  protected StreamHolder createStreamHolder(final OutputStream os)
-  {
-    return new StreamHolder(os);
-  }
-
   @Override
   public void encodeDouble(final Double value) throws MALException
   {
     try
     {
-      outputStream.addSignedLong(Double.doubleToRawLongBits(value.doubleValue()));
+      outputStream.addSignedLong(Double.doubleToRawLongBits(value));
     }
     catch (IOException ex)
     {
@@ -84,12 +89,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeDouble(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -118,12 +123,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeLong(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -137,7 +142,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      outputStream.directAdd(value.byteValue());
+      outputStream.directAdd(value);
     }
     catch (IOException ex)
     {
@@ -152,12 +157,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeOctet(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -171,7 +176,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      outputStream.addSignedShort(value.shortValue());
+      outputStream.addSignedShort(value);
     }
     catch (IOException ex)
     {
@@ -186,12 +191,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeShort(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -220,12 +225,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeUInteger(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -287,12 +292,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeUOctet(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -321,12 +326,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeUShort(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -454,12 +459,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeInteger(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -528,12 +533,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeTime(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -562,12 +567,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeFineTime(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -631,12 +636,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeDuration(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -650,7 +655,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      outputStream.addSignedInt(Float.floatToRawIntBits(value.floatValue()));
+      outputStream.addSignedInt(Float.floatToRawIntBits(value));
     }
     catch (IOException ex)
     {
@@ -665,12 +670,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeFloat(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -700,12 +705,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         encodeAttribute(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -728,12 +733,12 @@ public class BinaryEncoder implements MALListEncoder
       if (null != value)
       {
         // Initial delim to represent not-null
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         value.encode(this);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -834,12 +839,22 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (value)
       {
-        directAdd((byte) 1);
+        addBoolTrue();
       }
       else
       {
-        directAdd((byte) 0);
+        addBoolFalse();
       }
+    }
+
+    public void addBoolTrue() throws IOException
+    {
+      directAdd((byte) 1);
+    }
+
+    public void addBoolFalse() throws IOException
+    {
+      directAdd((byte) 0);
     }
 
     public void directAdd(final byte[] val) throws IOException

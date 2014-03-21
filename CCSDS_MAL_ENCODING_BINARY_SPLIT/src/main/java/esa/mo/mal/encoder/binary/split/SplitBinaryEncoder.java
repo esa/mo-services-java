@@ -38,7 +38,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
    */
   public SplitBinaryEncoder(final OutputStream os)
   {
-    super(os);
+    super(new SplitStreamHolder(os));
   }
 
   @Override
@@ -47,12 +47,6 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     ++openCount;
 
     return super.createListEncoder(value);
-  }
-
-  @Override
-  protected StreamHolder createStreamHolder(final OutputStream os)
-  {
-    return new SplitStreamHolder(os);
   }
 
   @Override
@@ -75,12 +69,12 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     {
       if (null != value)
       {
-        outputStream.addBool(true);
+        outputStream.addBoolTrue();
         outputStream.addBool(value);
       }
       else
       {
-        outputStream.addBool(false);
+        outputStream.addBoolFalse();
       }
     }
     catch (IOException ex)
@@ -109,8 +103,10 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
 
   protected static class SplitStreamHolder extends StreamHolder
   {
-    private final java.util.BitSet bitStore = new java.util.BitSet();
+    private static final int BIT_BYTES_BLOCK_SIZE = 1024;
     private final java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+    private byte[] bitBytes = new byte[BIT_BYTES_BLOCK_SIZE];
+    private int bitBytesInUse = 0;
     private int bitIndex = 0;
 
     public SplitStreamHolder(OutputStream outputStream)
@@ -120,9 +116,8 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
 
     public void close() throws IOException
     {
-      byte[] bb = bitStore.toByteArray();
-      _addUnsignedInt(outputStream, bb.length);
-      outputStream.write(bb);
+      _addUnsignedInt(outputStream, bitBytesInUse);
+      outputStream.write(bitBytes, 0, bitBytesInUse);
       outputStream.write(baos.toByteArray());
     }
 
@@ -131,9 +126,22 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     {
       if (value)
       {
-        bitStore.set(bitIndex);
+        setBit(bitIndex);
       }
 
+      ++bitIndex;
+    }
+
+    @Override
+    public void addBoolFalse() throws IOException
+    {
+      ++bitIndex;
+    }
+
+    @Override
+    public void addBoolTrue() throws IOException
+    {
+      setBit(bitIndex);
       ++bitIndex;
     }
 
@@ -157,6 +165,25 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
         value >>>= 7;
       }
       os.write(value & 0x7F);
+    }
+
+    private void setBit(int bitIndex)
+    {
+      int byteIndex = bitIndex / 8;
+
+      int bytesRequired = byteIndex + 1;
+      if (bitBytesInUse < bytesRequired)
+      {
+        if (bitBytes.length < bytesRequired)
+        {
+          bitBytes = java.util.Arrays.copyOf(bitBytes, ((bytesRequired / BIT_BYTES_BLOCK_SIZE) + 1) * BIT_BYTES_BLOCK_SIZE);
+        }
+
+        bitBytesInUse = bytesRequired;
+      }
+
+      bitIndex %= 8;
+      bitBytes[byteIndex] |= (1 << bitIndex);
     }
   }
 }

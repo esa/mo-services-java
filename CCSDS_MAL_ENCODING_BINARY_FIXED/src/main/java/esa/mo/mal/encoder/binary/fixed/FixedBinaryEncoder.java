@@ -35,13 +35,7 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
    */
   public FixedBinaryEncoder(final OutputStream os)
   {
-    super(os);
-  }
-
-  @Override
-  protected StreamHolder createStreamHolder(final OutputStream os)
-  {
-    return new FixedStreamHolder(os);
+    super(new FixedStreamHolder(os));
   }
 
   protected static class FixedStreamHolder extends StreamHolder

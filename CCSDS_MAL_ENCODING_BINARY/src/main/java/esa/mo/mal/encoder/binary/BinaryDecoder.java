@@ -46,7 +46,7 @@ public class BinaryDecoder implements MALDecoder
    */
   public BinaryDecoder(final byte[] src)
   {
-    sourceBuffer = createBufferHolder(null, src, 0, src.length);
+    sourceBuffer = new BufferHolder(null, src, 0, src.length);
   }
 
   /**
@@ -56,7 +56,7 @@ public class BinaryDecoder implements MALDecoder
    */
   public BinaryDecoder(final java.io.InputStream is)
   {
-    sourceBuffer = createBufferHolder(is, null, 0, 0);
+    sourceBuffer = new BufferHolder(is, null, 0, 0);
   }
 
   /**
@@ -67,7 +67,7 @@ public class BinaryDecoder implements MALDecoder
    */
   public BinaryDecoder(final byte[] src, final int offset)
   {
-    sourceBuffer = createBufferHolder(null, src, offset, src.length);
+    sourceBuffer = new BufferHolder(null, src, offset, src.length);
   }
 
   /**
@@ -78,20 +78,6 @@ public class BinaryDecoder implements MALDecoder
   protected BinaryDecoder(final BufferHolder src)
   {
     sourceBuffer = src;
-  }
-
-  /**
-   * Factory method for the creation of the internal buffer holder. Usually overridden for classes that change the base
-   * binary encoding.
-   *
-   * @param is Input stream to read from.
-   * @param buf Source buffer to use.
-   * @param offset Buffer offset to read from next.
-   * @param length Length of readable data held in the array, which may be larger.
-   */
-  protected BufferHolder createBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
-  {
-    return new BufferHolder(is, buf, offset, length);
   }
 
   @Override
@@ -497,6 +483,7 @@ public class BinaryDecoder implements MALDecoder
     protected byte[] buf;
     protected int offset;
     protected int contentLength;
+    protected boolean forceRealloc = false;
 
     /**
      * Constructor.
@@ -537,10 +524,12 @@ public class BinaryDecoder implements MALDecoder
           {
             byte[] destBuf = this.buf;
 
-            // its not big enough, we need to check if we need a bigger buffer
-            if (existingBufferLength < requiredLength)
+            // its not big enough, we need to check if we need a bigger buffer or in case we know the existing 
+            // buffer is still required.
+            if (forceRealloc || (existingBufferLength < requiredLength))
             {
               // we do, so allocate one
+              bufferRealloced(existingBufferLength);
               existingBufferLength = (requiredLength > BLOCK_SIZE) ? requiredLength : BLOCK_SIZE;
               destBuf = new byte[existingBufferLength];
             }
@@ -571,6 +560,10 @@ public class BinaryDecoder implements MALDecoder
       }
     }
 
+    protected void bufferRealloced(int oldSize)
+    {
+    }
+    
     public byte[] getBuf()
     {
       return buf;

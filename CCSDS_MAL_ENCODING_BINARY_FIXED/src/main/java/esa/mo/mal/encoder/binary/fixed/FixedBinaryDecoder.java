@@ -34,7 +34,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    */
   public FixedBinaryDecoder(final byte[] src)
   {
-    super(src);
+    super(new FixedBufferHolder(null, src, 0, src.length));
   }
 
   /**
@@ -44,7 +44,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    */
   public FixedBinaryDecoder(final java.io.InputStream is)
   {
-    super(is);
+    super(new FixedBufferHolder(is, null, 0, 0));
   }
 
   /**
@@ -55,7 +55,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    */
   public FixedBinaryDecoder(final byte[] src, final int offset)
   {
-    super(src, offset);
+    super(new FixedBufferHolder(null, src, offset, src.length));
   }
 
   /**
@@ -72,12 +72,6 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final java.util.List list) throws MALException
   {
     return new FixedBinaryListDecoder(list, sourceBuffer);
-  }
-
-  @Override
-  protected BufferHolder createBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
-  {
-    return new FixedBufferHolder(is, buf, offset, length);
   }
 
   protected static class FixedBufferHolder extends BufferHolder
