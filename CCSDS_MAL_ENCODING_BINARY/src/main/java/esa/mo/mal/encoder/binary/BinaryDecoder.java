@@ -37,7 +37,6 @@ public class BinaryDecoder implements MALDecoder
 {
   protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
   protected static final int BLOCK_SIZE = 65536;
-  protected final java.io.InputStream inputStream;
   protected final BufferHolder sourceBuffer;
 
   /**
@@ -47,8 +46,7 @@ public class BinaryDecoder implements MALDecoder
    */
   public BinaryDecoder(final byte[] src)
   {
-    inputStream = null;
-    sourceBuffer = new BufferHolder(src, 0, src.length);
+    sourceBuffer = createBufferHolder(null, src, 0, src.length);
   }
 
   /**
@@ -58,8 +56,7 @@ public class BinaryDecoder implements MALDecoder
    */
   public BinaryDecoder(final java.io.InputStream is)
   {
-    inputStream = is;
-    sourceBuffer = new BufferHolder(null, 0, 0);
+    sourceBuffer = createBufferHolder(is, null, 0, 0);
   }
 
   /**
@@ -70,38 +67,49 @@ public class BinaryDecoder implements MALDecoder
    */
   public BinaryDecoder(final byte[] src, final int offset)
   {
-    inputStream = null;
-    sourceBuffer = new BufferHolder(src, offset, src.length);
+    sourceBuffer = createBufferHolder(null, src, offset, src.length);
   }
 
   /**
    * Constructor.
    *
-   * @param is Input stream to read from.
    * @param src Source buffer holder to use.
    */
-  protected BinaryDecoder(final java.io.InputStream is, final BufferHolder src)
+  protected BinaryDecoder(final BufferHolder src)
   {
-    inputStream = is;
     sourceBuffer = src;
+  }
+
+  /**
+   * Factory method for the creation of the internal buffer holder. Usually overridden for classes that change the base
+   * binary encoding.
+   *
+   * @param is Input stream to read from.
+   * @param buf Source buffer to use.
+   * @param offset Buffer offset to read from next.
+   * @param length Length of readable data held in the array, which may be larger.
+   */
+  protected BufferHolder createBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
+  {
+    return new BufferHolder(is, buf, offset, length);
   }
 
   @Override
   public MALListDecoder createListDecoder(final List list) throws MALException
   {
-    return new BinaryListDecoder(list, inputStream, sourceBuffer);
+    return new BinaryListDecoder(list, sourceBuffer);
   }
 
   @Override
   public Identifier decodeIdentifier() throws MALException
   {
-    return new Identifier(getString());
+    return new Identifier(sourceBuffer.getString());
   }
 
   @Override
   public Identifier decodeNullableIdentifier() throws MALException
   {
-    final String s = getString();
+    final String s = sourceBuffer.getString();
     if (null != s)
     {
       return new Identifier(s);
@@ -113,13 +121,13 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public URI decodeURI() throws MALException
   {
-    return new URI(getString());
+    return new URI(sourceBuffer.getString());
   }
 
   @Override
   public URI decodeNullableURI() throws MALException
   {
-    final String s = getString();
+    final String s = sourceBuffer.getString();
     if (null != s)
     {
       return new URI(s);
@@ -131,15 +139,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public String decodeString() throws MALException
   {
-    return getString();
+    return sourceBuffer.getString();
   }
 
   @Override
   public String decodeNullableString() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return getString();
+      return sourceBuffer.getString();
     }
 
     return null;
@@ -148,15 +156,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Integer decodeInteger() throws MALException
   {
-    return getSignedInt();
+    return sourceBuffer.getSignedInt();
   }
 
   @Override
   public Integer decodeNullableInteger() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return getSignedInt();
+      return sourceBuffer.getSignedInt();
     }
 
     return null;
@@ -165,13 +173,13 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Boolean decodeBoolean() throws MALException
   {
-    return (1 == get8() ? Boolean.TRUE : Boolean.FALSE);
+    return (1 == sourceBuffer.get8() ? Boolean.TRUE : Boolean.FALSE);
   }
 
   @Override
   public Boolean decodeNullableBoolean() throws MALException
   {
-    final byte b = get8();
+    final byte b = sourceBuffer.get8();
 
     if (2 == b)
     {
@@ -184,15 +192,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Time decodeTime() throws MALException
   {
-    return new Time(getUnsignedLong());
+    return new Time(sourceBuffer.getUnsignedLong());
   }
 
   @Override
   public Time decodeNullableTime() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return new Time(getUnsignedLong());
+      return new Time(sourceBuffer.getUnsignedLong());
     }
 
     return null;
@@ -201,15 +209,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public FineTime decodeFineTime() throws MALException
   {
-    return new FineTime(getUnsignedLong());
+    return new FineTime(sourceBuffer.getUnsignedLong());
   }
 
   @Override
   public FineTime decodeNullableFineTime() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return new FineTime(getUnsignedLong());
+      return new FineTime(sourceBuffer.getUnsignedLong());
     }
 
     return null;
@@ -218,16 +226,16 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Blob decodeBlob() throws MALException
   {
-    return new Blob(get(getSignedInt()));
+    return new Blob(sourceBuffer.get(sourceBuffer.getSignedInt()));
   }
 
   @Override
   public Blob decodeNullableBlob() throws MALException
   {
-    final int len = getSignedInt();
+    final int len = sourceBuffer.getSignedInt();
     if (len >= 0)
     {
-      return new Blob(get(len));
+      return new Blob(sourceBuffer.get(len));
     }
 
     return null;
@@ -236,15 +244,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Duration decodeDuration() throws MALException
   {
-    return new Duration(getSignedInt());
+    return new Duration(sourceBuffer.getSignedInt());
   }
 
   @Override
   public Duration decodeNullableDuration() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return new Duration(getSignedInt());
+      return new Duration(sourceBuffer.getSignedInt());
     }
 
     return null;
@@ -253,15 +261,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Float decodeFloat() throws MALException
   {
-    return Float.intBitsToFloat(getSignedInt());
+    return Float.intBitsToFloat(sourceBuffer.getSignedInt());
   }
 
   @Override
   public Float decodeNullableFloat() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return Float.intBitsToFloat(getSignedInt());
+      return Float.intBitsToFloat(sourceBuffer.getSignedInt());
     }
 
     return null;
@@ -270,15 +278,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Double decodeDouble() throws MALException
   {
-    return Double.longBitsToDouble(getSignedLong());
+    return Double.longBitsToDouble(sourceBuffer.getSignedLong());
   }
 
   @Override
   public Double decodeNullableDouble() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return Double.longBitsToDouble(getSignedLong());
+      return Double.longBitsToDouble(sourceBuffer.getSignedLong());
     }
 
     return null;
@@ -287,15 +295,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Long decodeLong() throws MALException
   {
-    return getSignedLong();
+    return sourceBuffer.getSignedLong();
   }
 
   @Override
   public Long decodeNullableLong() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return getSignedLong();
+      return sourceBuffer.getSignedLong();
     }
 
     return null;
@@ -304,15 +312,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Byte decodeOctet() throws MALException
   {
-    return get8();
+    return sourceBuffer.get8();
   }
 
   @Override
   public Byte decodeNullableOctet() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return get8();
+      return sourceBuffer.get8();
     }
 
     return null;
@@ -321,15 +329,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Short decodeShort() throws MALException
   {
-    return (short) getSignedInt();
+    return (short) sourceBuffer.getSignedShort();
   }
 
   @Override
   public Short decodeNullableShort() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return (short) getSignedInt();
+      return (short) sourceBuffer.getSignedShort();
     }
 
     return null;
@@ -338,15 +346,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public UInteger decodeUInteger() throws MALException
   {
-    return new UInteger(getUnsignedLong());
+    return new UInteger(sourceBuffer.getUnsignedLong32());
   }
 
   @Override
   public UInteger decodeNullableUInteger() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return new UInteger(getUnsignedLong());
+      return new UInteger(sourceBuffer.getUnsignedLong32());
     }
 
     return null;
@@ -355,16 +363,16 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public ULong decodeULong() throws MALException
   {
-    return new ULong(new BigInteger(get(getSignedInt())));
+    return new ULong(new BigInteger(sourceBuffer.get(sourceBuffer.getSignedInt())));
   }
 
   @Override
   public ULong decodeNullableULong() throws MALException
   {
-    final int len = getSignedInt();
+    final int len = sourceBuffer.getSignedInt();
     if (len >= 0)
     {
-      return new ULong(new BigInteger(get(len)));
+      return new ULong(new BigInteger(sourceBuffer.get(len)));
     }
 
     return null;
@@ -373,15 +381,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public UOctet decodeUOctet() throws MALException
   {
-    return new UOctet(getUnsignedShort());
+    return new UOctet(sourceBuffer.getUnsignedShort8());
   }
 
   @Override
   public UOctet decodeNullableUOctet() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return new UOctet(getUnsignedShort());
+      return new UOctet(sourceBuffer.getUnsignedShort8());
     }
 
     return null;
@@ -390,15 +398,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public UShort decodeUShort() throws MALException
   {
-    return new UShort(getUnsignedInt());
+    return new UShort(sourceBuffer.getUnsignedInt16());
   }
 
   @Override
   public UShort decodeNullableUShort() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return new UShort(getUnsignedInt());
+      return new UShort(sourceBuffer.getUnsignedInt16());
     }
 
     return null;
@@ -407,15 +415,15 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Attribute decodeAttribute() throws MALException
   {
-    return internalDecodeAttribute(get8());
+    return internalDecodeAttribute(sourceBuffer.get8());
   }
 
   @Override
   public Attribute decodeNullableAttribute() throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
-      return internalDecodeAttribute(get8());
+      return internalDecodeAttribute(sourceBuffer.get8());
     }
 
     return null;
@@ -475,7 +483,7 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Element decodeNullableElement(final Element element) throws MALException
   {
-    if (!isNull())
+    if (sourceBuffer.getBool())
     {
       return element.decode(this);
     }
@@ -483,161 +491,9 @@ public class BinaryDecoder implements MALDecoder
     return null;
   }
 
-  protected boolean isNull() throws MALException
-  {
-    return 0 == get8();
-  }
-
-  protected byte get8() throws MALException
-  {
-    checkBuffer(1);
-
-    final int i = sourceBuffer.offset;
-    sourceBuffer.offset++;
-    return sourceBuffer.buf[i];
-  }
-
-  protected String getString() throws MALException
-  {
-    final int len = getSignedInt();
-    if (len >= 0)
-    {
-      checkBuffer(len);
-
-      final String s = new String(sourceBuffer.buf, sourceBuffer.offset, len, UTF8_CHARSET);
-      sourceBuffer.offset += len;
-      return s;
-    }
-    return null;
-  }
-
-  protected byte[] get(final int size) throws MALException
-  {
-    if (size >= 0)
-    {
-      checkBuffer(size);
-
-      final byte[] v = Arrays.copyOfRange(sourceBuffer.buf, sourceBuffer.offset, sourceBuffer.offset + size);
-      sourceBuffer.offset += size;
-      return v;
-    }
-
-    return null;
-  }
-
-  protected long getSignedLong() throws MALException
-  {
-    final long raw = getUnsignedLong();
-    final long temp = (((raw << 63) >> 63) ^ raw) >> 1;
-    return temp ^ (raw & (1L << 63));
-  }
-
-  protected int getSignedInt() throws MALException
-  {
-    final int raw = getUnsignedInt();
-    final int temp = (((raw << 31) >> 31) ^ raw) >> 1;
-    return temp ^ (raw & (1 << 31));
-  }
-
-  protected long getUnsignedLong() throws MALException
-  {
-    long value = 0L;
-    int i = 0;
-    long b;
-    while (((b = get8()) & 0x80L) != 0)
-    {
-      value |= (b & 0x7F) << i;
-      i += 7;
-    }
-    return value | (b << i);
-  }
-
-  protected int getUnsignedInt() throws MALException
-  {
-    int value = 0;
-    int i = 0;
-    int b;
-    while (((b = get8()) & 0x80) != 0)
-    {
-      value |= (b & 0x7F) << i;
-      i += 7;
-    }
-    return value | (b << i);
-  }
-
-  protected short getUnsignedShort() throws MALException
-  {
-    short value = 0;
-    int i = 0;
-    short b;
-    if (((b = get8()) & 0x80) != 0)
-    {
-      value |= (b & 0x7F) << i;
-      i += 7;
-    }
-
-    return (short) (value | (b << i));
-  }
-
-  protected void checkBuffer(final int requiredLength) throws MALException
-  {
-    // ensure that we have loaded enough buffer from the input stream (if we are stream based) for the next read
-    if (null != inputStream)
-    {
-      int existingContentRemaining = 0;
-      int existingBufferLength = 0;
-
-      // have we got any loaded data currently
-      if (null != sourceBuffer.buf)
-      {
-        existingContentRemaining = sourceBuffer.contentLength - sourceBuffer.offset;
-        existingBufferLength = sourceBuffer.buf.length;
-      }
-
-      // check to see if currently loaded data covers the required data size
-      if (existingContentRemaining < requiredLength)
-      {
-        // ok, check to see if we have enough space left in the current buffer for what we need to load
-        if ((existingBufferLength - sourceBuffer.offset) < requiredLength)
-        {
-          byte[] destBuf = sourceBuffer.buf;
-
-          // its not big enough, we need to check if we need a bigger buffer
-          if (existingBufferLength < requiredLength)
-          {
-            // we do, so allocate one
-            existingBufferLength = (requiredLength > BLOCK_SIZE) ? requiredLength : BLOCK_SIZE;
-            destBuf = new byte[existingBufferLength];
-          }
-
-          // this either shifts the existing contents to the start of the old buffer, or copies it into the new buffer
-          for (int i = 0; i < existingContentRemaining; i++)
-          {
-            destBuf[i] = sourceBuffer.buf[sourceBuffer.offset + i];
-          }
-
-          // the start of the data in the buffer has moved to zero now
-          sourceBuffer.buf = destBuf;
-          sourceBuffer.offset = 0;
-          sourceBuffer.contentLength = existingContentRemaining;
-        }
-
-        try
-        {
-          // read into the empty space of the buffer
-          sourceBuffer.contentLength += inputStream.read(sourceBuffer.buf,
-                  sourceBuffer.contentLength, existingBufferLength - sourceBuffer.contentLength);
-        }
-        catch (IOException ex)
-        {
-          throw new MALException("Unable to read required amount from source stream", ex);
-        }
-      }
-    }
-  }
-
   protected static class BufferHolder
   {
+    protected final java.io.InputStream inputStream;
     protected byte[] buf;
     protected int offset;
     protected int contentLength;
@@ -645,15 +501,204 @@ public class BinaryDecoder implements MALDecoder
     /**
      * Constructor.
      *
+     * @param is Input stream to read from.
      * @param buf Source buffer to use.
      * @param offset Buffer offset to read from next.
      * @param length Length of readable data held in the array, which may be larger.
      */
-    public BufferHolder(final byte[] buf, final int offset, final int length)
+    public BufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
+      this.inputStream = is;
       this.buf = buf;
       this.offset = offset;
       this.contentLength = length;
+    }
+
+    public void checkBuffer(final int requiredLength) throws MALException
+    {
+      // ensure that we have loaded enough buffer from the input stream (if we are stream based) for the next read
+      if (null != inputStream)
+      {
+        int existingContentRemaining = 0;
+        int existingBufferLength = 0;
+
+        // have we got any loaded data currently
+        if (null != this.buf)
+        {
+          existingContentRemaining = this.contentLength - this.offset;
+          existingBufferLength = this.buf.length;
+        }
+
+        // check to see if currently loaded data covers the required data size
+        if (existingContentRemaining < requiredLength)
+        {
+          // ok, check to see if we have enough space left in the current buffer for what we need to load
+          if ((existingBufferLength - this.offset) < requiredLength)
+          {
+            byte[] destBuf = this.buf;
+
+            // its not big enough, we need to check if we need a bigger buffer
+            if (existingBufferLength < requiredLength)
+            {
+              // we do, so allocate one
+              existingBufferLength = (requiredLength > BLOCK_SIZE) ? requiredLength : BLOCK_SIZE;
+              destBuf = new byte[existingBufferLength];
+            }
+
+            // this either shifts the existing contents to the start of the old buffer, or copies it into the new buffer
+            for (int i = 0; i < existingContentRemaining; i++)
+            {
+              destBuf[i] = this.buf[this.offset + i];
+            }
+
+            // the start of the data in the buffer has moved to zero now
+            this.buf = destBuf;
+            this.offset = 0;
+            this.contentLength = existingContentRemaining;
+          }
+
+          try
+          {
+            // read into the empty space of the buffer
+            this.contentLength += inputStream.read(this.buf,
+                    this.contentLength, existingBufferLength - this.contentLength);
+          }
+          catch (IOException ex)
+          {
+            throw new MALException("Unable to read required amount from source stream", ex);
+          }
+        }
+      }
+    }
+
+    public byte[] getBuf()
+    {
+      return buf;
+    }
+
+    public int shiftOffsetAndReturnPrevious(int delta)
+    {
+      int i = offset;
+      offset += delta;
+      return i;
+    }
+
+    public byte get8() throws MALException
+    {
+      checkBuffer(1);
+
+      final int i = offset;
+      offset++;
+      return buf[i];
+    }
+
+    public String getString() throws MALException
+    {
+      final int len = getSignedInt();
+      if (len >= 0)
+      {
+        checkBuffer(len);
+
+        final String s = new String(buf, offset, len, UTF8_CHARSET);
+        offset += len;
+        return s;
+      }
+      return null;
+    }
+
+    public byte[] get(final int size) throws MALException
+    {
+      if (size >= 0)
+      {
+        checkBuffer(size);
+
+        final byte[] v = Arrays.copyOfRange(buf, offset, offset + size);
+        offset += size;
+        return v;
+      }
+
+      return null;
+    }
+
+    public long getSignedLong() throws MALException
+    {
+      final long raw = getUnsignedLong();
+      final long temp = (((raw << 63) >> 63) ^ raw) >> 1;
+      return temp ^ (raw & (1L << 63));
+    }
+
+    public int getSignedInt() throws MALException
+    {
+      final int raw = getUnsignedInt();
+      final int temp = (((raw << 31) >> 31) ^ raw) >> 1;
+      return temp ^ (raw & (1 << 31));
+    }
+
+    public short getSignedShort() throws MALException
+    {
+      final int raw = getUnsignedShort();
+      final int temp = (((raw << 15) >> 15) ^ raw) >> 1;
+      return (short) (temp ^ (raw & (1 << 15)));
+    }
+
+    public long getUnsignedLong() throws MALException
+    {
+      long value = 0L;
+      int i = 0;
+      long b;
+      while (((b = get8()) & 0x80L) != 0)
+      {
+        value |= (b & 0x7F) << i;
+        i += 7;
+      }
+      return value | (b << i);
+    }
+
+    public long getUnsignedLong32() throws MALException
+    {
+      return getUnsignedLong();
+    }
+
+    public int getUnsignedInt() throws MALException
+    {
+      int value = 0;
+      int i = 0;
+      int b;
+      while (((b = get8()) & 0x80) != 0)
+      {
+        value |= (b & 0x7F) << i;
+        i += 7;
+      }
+      return value | (b << i);
+    }
+
+    public int getUnsignedInt16() throws MALException
+    {
+      return getUnsignedInt();
+    }
+
+    public short getUnsignedShort() throws MALException
+    {
+      short value = 0;
+      int i = 0;
+      short b;
+      if (((b = get8()) & 0x80) != 0)
+      {
+        value |= (b & 0x7F) << i;
+        i += 7;
+      }
+
+      return (short) (value | (b << i));
+    }
+
+    public short getUnsignedShort8() throws MALException
+    {
+      return getUnsignedShort();
+    }
+
+    public boolean getBool() throws MALException
+    {
+      return !(0 == get8());
     }
   }
 }

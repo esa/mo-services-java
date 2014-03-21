@@ -32,7 +32,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 public class BinaryEncoder implements MALListEncoder
 {
   protected static final String ENCODING_EXCEPTION_STR = "Bad encoding";
-  protected final OutputStream outputStream;
+  protected final StreamHolder outputStream;
 
   /**
    * Constructor.
@@ -41,7 +41,7 @@ public class BinaryEncoder implements MALListEncoder
    */
   public BinaryEncoder(final OutputStream os)
   {
-    this.outputStream = os;
+    this.outputStream = createStreamHolder(os);
   }
 
   @Override
@@ -49,7 +49,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      addUnsignedInt(value.size());
+      outputStream.addUnsignedInt(value.size());
 
       return this;
     }
@@ -59,12 +59,17 @@ public class BinaryEncoder implements MALListEncoder
     }
   }
 
+  protected StreamHolder createStreamHolder(final OutputStream os)
+  {
+    return new StreamHolder(os);
+  }
+
   @Override
   public void encodeDouble(final Double value) throws MALException
   {
     try
     {
-      addSignedLong(Double.doubleToRawLongBits(value.doubleValue()));
+      outputStream.addSignedLong(Double.doubleToRawLongBits(value.doubleValue()));
     }
     catch (IOException ex)
     {
@@ -79,12 +84,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeDouble(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -98,7 +103,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      addSignedLong(value);
+      outputStream.addSignedLong(value);
     }
     catch (IOException ex)
     {
@@ -113,12 +118,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeLong(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -132,7 +137,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      directAdd(value.byteValue());
+      outputStream.directAdd(value.byteValue());
     }
     catch (IOException ex)
     {
@@ -147,12 +152,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeOctet(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -166,7 +171,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      addSignedInt(value.shortValue());
+      outputStream.addSignedShort(value.shortValue());
     }
     catch (IOException ex)
     {
@@ -181,12 +186,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeShort(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -200,7 +205,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      addUnsignedLong(value.getValue());
+      outputStream.addUnsignedLong32(value.getValue());
     }
     catch (IOException ex)
     {
@@ -215,12 +220,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeUInteger(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -234,7 +239,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      add(value.getValue().toByteArray());
+      outputStream.add(value.getValue().toByteArray());
     }
     catch (IOException ex)
     {
@@ -253,7 +258,7 @@ public class BinaryEncoder implements MALListEncoder
       }
       else
       {
-        add((byte[]) null);
+        outputStream.add((byte[]) null);
       }
     }
     catch (IOException ex)
@@ -267,7 +272,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      addUnsignedShort(value.getValue());
+      outputStream.addUnsignedShort8(value.getValue());
     }
     catch (IOException ex)
     {
@@ -282,12 +287,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeUOctet(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -301,7 +306,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      addUnsignedInt(value.getValue());
+      outputStream.addUnsignedInt16(value.getValue());
     }
     catch (IOException ex)
     {
@@ -316,12 +321,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeUShort(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -335,7 +340,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      add(value.getValue().getBytes(BinaryDecoder.UTF8_CHARSET));
+      outputStream.add(value.getValue().getBytes(BinaryDecoder.UTF8_CHARSET));
     }
     catch (IOException ex)
     {
@@ -354,7 +359,7 @@ public class BinaryEncoder implements MALListEncoder
       }
       else
       {
-        add((byte[]) null);
+        outputStream.add((byte[]) null);
       }
     }
     catch (IOException ex)
@@ -368,7 +373,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      add(value.getValue().getBytes(BinaryDecoder.UTF8_CHARSET));
+      outputStream.add(value.getValue().getBytes(BinaryDecoder.UTF8_CHARSET));
     }
     catch (IOException ex)
     {
@@ -387,7 +392,7 @@ public class BinaryEncoder implements MALListEncoder
       }
       else
       {
-        add((byte[]) null);
+        outputStream.add((byte[]) null);
       }
     }
     catch (IOException ex)
@@ -401,7 +406,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      add(value.getBytes(BinaryDecoder.UTF8_CHARSET));
+      outputStream.add(value.getBytes(BinaryDecoder.UTF8_CHARSET));
     }
     catch (IOException ex)
     {
@@ -420,7 +425,7 @@ public class BinaryEncoder implements MALListEncoder
       }
       else
       {
-        add((byte[]) null);
+        outputStream.add((byte[]) null);
       }
     }
     catch (IOException ex)
@@ -434,7 +439,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      addSignedInt(value);
+      outputStream.addSignedInt(value);
     }
     catch (IOException ex)
     {
@@ -449,12 +454,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeInteger(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -470,11 +475,11 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (value)
       {
-        directAdd((byte) 1);
+        outputStream.directAdd((byte) 1);
       }
       else
       {
-        directAdd((byte) 0);
+        outputStream.directAdd((byte) 0);
       }
     }
     catch (IOException ex)
@@ -494,7 +499,7 @@ public class BinaryEncoder implements MALListEncoder
       }
       else
       {
-        directAdd((byte) 2);
+        outputStream.directAdd((byte) 2);
       }
     }
     catch (IOException ex)
@@ -508,7 +513,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      addUnsignedLong(value.getValue());
+      outputStream.addUnsignedLong(value.getValue());
     }
     catch (IOException ex)
     {
@@ -523,12 +528,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeTime(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -542,7 +547,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      addUnsignedLong(value.getValue());
+      outputStream.addUnsignedLong(value.getValue());
     }
     catch (IOException ex)
     {
@@ -557,12 +562,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeFineTime(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -576,7 +581,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      add(value.getValue());
+      outputStream.add(value.getValue());
     }
     catch (IOException ex)
     {
@@ -593,7 +598,7 @@ public class BinaryEncoder implements MALListEncoder
               || (value.isURLBased() && (null == value.getURL()))
               || (!value.isURLBased() && (null == value.getValue())))
       {
-        add((byte[]) null);
+        outputStream.add((byte[]) null);
       }
       else
       {
@@ -611,7 +616,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      addUnsignedInt(value.getValue());
+      outputStream.addUnsignedInt(value.getValue());
     }
     catch (IOException ex)
     {
@@ -626,12 +631,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeDuration(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -645,7 +650,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      addSignedInt(Float.floatToRawIntBits(value.floatValue()));
+      outputStream.addSignedInt(Float.floatToRawIntBits(value.floatValue()));
     }
     catch (IOException ex)
     {
@@ -660,12 +665,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeFloat(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -679,7 +684,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      directAdd(value.getTypeShortForm().byteValue());
+      outputStream.directAdd(value.getTypeShortForm().byteValue());
       value.encode(this);
     }
     catch (IOException ex)
@@ -695,12 +700,12 @@ public class BinaryEncoder implements MALListEncoder
     {
       if (null != value)
       {
-        addNotNull();
+        outputStream.addBool(true);
         encodeAttribute(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -723,12 +728,12 @@ public class BinaryEncoder implements MALListEncoder
       if (null != value)
       {
         // Initial delim to represent not-null
-        addNotNull();
+        outputStream.addBool(true);
         value.encode(this);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -743,76 +748,113 @@ public class BinaryEncoder implements MALListEncoder
     // Do nothing
   }
 
-  protected void addNull() throws IOException
+  protected static class StreamHolder
   {
-    directAdd((byte) 0);
-  }
+    protected final OutputStream outputStream;
 
-  protected void addNotNull() throws IOException
-  {
-    directAdd((byte) 1);
-  }
-
-  protected void add(final byte[] val) throws IOException
-  {
-    if (null == val)
+    public StreamHolder(OutputStream outputStream)
     {
-      addSignedInt(-1);
+      this.outputStream = outputStream;
     }
-    else
+
+    public void add(final byte[] val) throws IOException
     {
-      addSignedInt(val.length);
-      directAdd(val);
+      if (null == val)
+      {
+        addSignedInt(-1);
+      }
+      else
+      {
+        addSignedInt(val.length);
+        directAdd(val);
+      }
     }
-  }
 
-  protected void addSignedLong(final long value) throws IOException
-  {
-    addUnsignedLong((value << 1) ^ (value >> 63));
-  }
-
-  protected void addSignedInt(final int value) throws IOException
-  {
-    addUnsignedInt((value << 1) ^ (value >> 31));
-  }
-
-  protected void addUnsignedLong(long value) throws IOException
-  {
-    while ((value & 0xFFFFFFFFFFFFFF80L) != 0L)
+    public void addSignedLong(final long value) throws IOException
     {
-      directAdd((byte)(((int) value & 0x7F) | 0x80));
-      value >>>= 7;
+      addUnsignedLong((value << 1) ^ (value >> 63));
     }
-    directAdd((byte)((int) value & 0x7F));
-  }
 
-  protected void addUnsignedInt(int value) throws IOException
-  {
-    while ((value & 0xFFFFFF80) != 0L)
+    public void addSignedInt(final int value) throws IOException
     {
-      directAdd((byte)((value & 0x7F) | 0x80));
-      value >>>= 7;
+      addUnsignedInt((value << 1) ^ (value >> 31));
     }
-    directAdd((byte)(value & 0x7F));
-  }
 
-  protected void addUnsignedShort(short value) throws IOException
-  {
-    if ((value & 0xFF80) != 0L)
+    public void addSignedShort(final short value) throws IOException
     {
-      directAdd((byte)((value & 0x7F) | 0x80));
-      value >>>= 7;
+      addUnsignedShort((short) ((value << 1) ^ (value >> 15)));
     }
-    directAdd((byte)(value & 0x7F));
-  }
 
-  protected void directAdd(final byte[] val) throws IOException
-  {
-    outputStream.write(val);
-  }
+    public void addUnsignedLong(long value) throws IOException
+    {
+      while ((value & 0xFFFFFFFFFFFFFF80L) != 0L)
+      {
+        directAdd((byte) (((int) value & 0x7F) | 0x80));
+        value >>>= 7;
+      }
+      directAdd((byte) ((int) value & 0x7F));
+    }
 
-  protected void directAdd(final byte val) throws IOException
-  {
-    outputStream.write(val);
+    public void addUnsignedLong32(long value) throws IOException
+    {
+      addUnsignedLong(value);
+    }
+
+    public void addUnsignedInt(int value) throws IOException
+    {
+      while ((value & 0xFFFFFF80) != 0L)
+      {
+        directAdd((byte) ((value & 0x7F) | 0x80));
+        value >>>= 7;
+      }
+      directAdd((byte) (value & 0x7F));
+    }
+
+    public void addUnsignedInt16(int value) throws IOException
+    {
+      addUnsignedInt(value);
+    }
+
+    public void addUnsignedShort(short value) throws IOException
+    {
+      if ((value & 0xFF80) != 0L)
+      {
+        directAdd((byte) ((value & 0x7F) | 0x80));
+        value >>>= 7;
+      }
+      directAdd((byte) (value & 0x7F));
+    }
+
+    public void addUnsignedShort8(short value) throws IOException
+    {
+      addUnsignedShort(value);
+    }
+
+    public void addBool(boolean value) throws IOException
+    {
+      if (value)
+      {
+        directAdd((byte) 1);
+      }
+      else
+      {
+        directAdd((byte) 0);
+      }
+    }
+
+    public void directAdd(final byte[] val) throws IOException
+    {
+      outputStream.write(val);
+    }
+
+    public void directAdd(final byte[] val, int os, int ln) throws IOException
+    {
+      outputStream.write(val, os, ln);
+    }
+
+    public void directAdd(final byte val) throws IOException
+    {
+      outputStream.write(val);
+    }
   }
 }

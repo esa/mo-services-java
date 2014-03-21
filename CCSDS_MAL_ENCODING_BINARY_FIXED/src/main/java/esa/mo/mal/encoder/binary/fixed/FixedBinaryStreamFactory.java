@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Split Binary encoder
+ * System                : CCSDS MO Fixed Length Binary encoder
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,35 +18,30 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary.split;
+package esa.mo.mal.encoder.binary.fixed;
 
 /**
- * Implements the MALListDecoder interface for a split binary encoding.
+ * Implements the MALElementStreamFactory interface for a fixed length binary encoding.
  */
-public class SplitBinaryListDecoder extends SplitBinaryDecoder implements org.ccsds.moims.mo.mal.MALListDecoder
+public class FixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.BinaryStreamFactory
 {
-  private final int size;
-  private final java.util.List list;
-
-  /**
-   * Constructor.
-   *
-   * @param list List to decode into.
-   * @param srcBuffer Buffer to manage.
-   * @throws MALException If cannot decode list size.
-   */
-  public SplitBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer)
-          throws org.ccsds.moims.mo.mal.MALException
+  @Override
+  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes, final int offset)
   {
-    super(srcBuffer);
-
-    this.list = list;
-    size = srcBuffer.getUnsignedInt();
+    return new FixedBinaryElementInputStream(bytes, offset);
   }
 
   @Override
-  public boolean hasNext()
+  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final java.io.InputStream is)
+          throws org.ccsds.moims.mo.mal.MALException
   {
-    return list.size() < size;
+    return new FixedBinaryElementInputStream(is);
+  }
+
+  @Override
+  public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(final java.io.OutputStream os)
+          throws org.ccsds.moims.mo.mal.MALException
+  {
+    return new FixedBinaryElementOutputStream(os);
   }
 }

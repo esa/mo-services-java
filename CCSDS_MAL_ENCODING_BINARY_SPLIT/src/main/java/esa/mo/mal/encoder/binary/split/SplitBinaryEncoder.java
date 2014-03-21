@@ -21,6 +21,7 @@
 package esa.mo.mal.encoder.binary.split;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
@@ -28,17 +29,14 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
 {
-  private final java.util.BitSet bitStore = new java.util.BitSet();
-  private final java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
   private int openCount = 1;
-  private int bitIndex = 0;
 
   /**
    * Constructor.
    *
    * @param os Output stream to write to.
    */
-  public SplitBinaryEncoder(final java.io.OutputStream os)
+  public SplitBinaryEncoder(final OutputStream os)
   {
     super(os);
   }
@@ -52,18 +50,17 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
   }
 
   @Override
+  protected StreamHolder createStreamHolder(final OutputStream os)
+  {
+    return new SplitStreamHolder(os);
+  }
+
+  @Override
   public void encodeBoolean(final Boolean value) throws MALException
   {
     try
     {
-      if (value)
-      {
-        addNotNull();
-      }
-      else
-      {
-        addNull();
-      }
+      outputStream.addBool(value);
     }
     catch (IOException ex)
     {
@@ -78,12 +75,12 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     {
       if (null != value)
       {
-        addNotNull();
-        encodeBoolean(value);
+        outputStream.addBool(true);
+        outputStream.addBool(value);
       }
       else
       {
-        addNull();
+        outputStream.addBool(false);
       }
     }
     catch (IOException ex)
@@ -101,10 +98,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     {
       try
       {
-        byte[] bb = bitStore.toByteArray();
-        _addUnsignedInt(outputStream, bb.length);
-        outputStream.write(bb);
-        outputStream.write(baos.toByteArray());
+        ((SplitStreamHolder) outputStream).close();
       }
       catch (IOException ex)
       {
@@ -113,38 +107,56 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     }
   }
 
-  @Override
-  protected void addNull() throws IOException
+  protected static class SplitStreamHolder extends StreamHolder
   {
-    ++bitIndex;
-  }
+    private final java.util.BitSet bitStore = new java.util.BitSet();
+    private final java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+    private int bitIndex = 0;
 
-  @Override
-  protected void addNotNull() throws IOException
-  {
-    bitStore.set(bitIndex);
-    ++bitIndex;
-  }
-
-  @Override
-  protected void directAdd(final byte[] val) throws IOException
-  {
-    baos.write(val);
-  }
-
-  @Override
-  protected void directAdd(final byte val) throws IOException
-  {
-    baos.write(val);
-  }
-
-  private static void _addUnsignedInt(java.io.OutputStream os, int value) throws IOException
-  {
-    while ((value & 0xFFFFFF80) != 0L)
+    public SplitStreamHolder(OutputStream outputStream)
     {
-      os.write((value & 0x7F) | 0x80);
-      value >>>= 7;
+      super(outputStream);
     }
-    os.write(value & 0x7F);
+
+    public void close() throws IOException
+    {
+      byte[] bb = bitStore.toByteArray();
+      _addUnsignedInt(outputStream, bb.length);
+      outputStream.write(bb);
+      outputStream.write(baos.toByteArray());
+    }
+
+    @Override
+    public void addBool(boolean value) throws IOException
+    {
+      if (value)
+      {
+        bitStore.set(bitIndex);
+      }
+
+      ++bitIndex;
+    }
+
+    @Override
+    public void directAdd(final byte[] val) throws IOException
+    {
+      baos.write(val);
+    }
+
+    @Override
+    public void directAdd(final byte val) throws IOException
+    {
+      baos.write(val);
+    }
+
+    private static void _addUnsignedInt(java.io.OutputStream os, int value) throws IOException
+    {
+      while ((value & 0xFFFFFF80) != 0L)
+      {
+        os.write((value & 0x7F) | 0x80);
+        value >>>= 7;
+      }
+      os.write(value & 0x7F);
+    }
   }
 }

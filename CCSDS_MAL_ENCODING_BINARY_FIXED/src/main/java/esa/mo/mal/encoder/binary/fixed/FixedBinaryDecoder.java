@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Split Binary encoder
+ * System                : CCSDS MO Fixed Length Binary encoder
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,22 +18,21 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary.split;
+package esa.mo.mal.encoder.binary.fixed;
 
-import java.nio.ByteBuffer;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
- * Implements the MALDecoder interface for a split binary encoding.
+ * Implements the MALDecoder interface for a fixed length binary encoding.
  */
-public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
+public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
 {
   /**
    * Constructor.
    *
    * @param src Byte array to read from.
    */
-  public SplitBinaryDecoder(final byte[] src)
+  public FixedBinaryDecoder(final byte[] src)
   {
     super(src);
   }
@@ -43,7 +42,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    *
    * @param is Input stream to read from.
    */
-  public SplitBinaryDecoder(final java.io.InputStream is)
+  public FixedBinaryDecoder(final java.io.InputStream is)
   {
     super(is);
   }
@@ -54,7 +53,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    * @param src Byte array to read from.
    * @param offset index in array to start reading from.
    */
-  public SplitBinaryDecoder(final byte[] src, final int offset)
+  public FixedBinaryDecoder(final byte[] src, final int offset)
   {
     super(src, offset);
   }
@@ -64,46 +63,25 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    *
    * @param src Source buffer holder to use.
    */
-  protected SplitBinaryDecoder(final BufferHolder src)
+  protected FixedBinaryDecoder(final BufferHolder src)
   {
     super(src);
   }
 
   @Override
-  protected BufferHolder createBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
-  {
-    return new SplitBufferHolder(is, buf, offset, length);
-  }
-
-  @Override
   public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final java.util.List list) throws MALException
   {
-    return new SplitBinaryListDecoder(list, sourceBuffer);
+    return new FixedBinaryListDecoder(list, sourceBuffer);
   }
 
   @Override
-  public Boolean decodeBoolean() throws MALException
+  protected BufferHolder createBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
   {
-    return sourceBuffer.getBool();
+    return new FixedBufferHolder(is, buf, offset, length);
   }
 
-  @Override
-  public Boolean decodeNullableBoolean() throws MALException
+  protected static class FixedBufferHolder extends BufferHolder
   {
-    if (sourceBuffer.getBool())
-    {
-      return decodeBoolean();
-    }
-
-    return null;
-  }
-
-  protected static class SplitBufferHolder extends BufferHolder
-  {
-    private boolean bitStoreLoaded = false;
-    private java.util.BitSet bitStore = null;
-    private int bitIndex = 0;
-
     /**
      * Constructor.
      *
@@ -112,35 +90,56 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
      * @param offset Buffer offset to read from next.
      * @param length Length of readable data held in the array, which may be larger.
      */
-    public SplitBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
+    public FixedBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
       super(is, buf, offset, length);
     }
 
     @Override
-    public void checkBuffer(final int requiredLength) throws MALException
+    public long getUnsignedLong() throws MALException
     {
-      // ensure that the bit buffer has been loaded first
-      if (!this.bitStoreLoaded)
-      {
-        this.bitStoreLoaded = true;
-        this.bitStore = java.util.BitSet.valueOf(ByteBuffer.wrap(get(getUnsignedInt())));
-      }
-
-      super.checkBuffer(requiredLength);
+      checkBuffer(8);
+      final int i = shiftOffsetAndReturnPrevious(8);
+      return java.nio.ByteBuffer.wrap(getBuf(), i, 8).getLong();
     }
 
     @Override
-    public boolean getBool() throws MALException
+    public long getUnsignedLong32() throws MALException
     {
-      if (!bitStoreLoaded)
-      {
-        checkBuffer(1);
-      }
+      checkBuffer(4);
 
-      boolean rv = bitStore.get(bitIndex);
-      ++bitIndex;
-      return rv;
+      final int i = shiftOffsetAndReturnPrevious(4);
+      return java.nio.ByteBuffer.wrap(getBuf(), i, 4).getInt() & 0xFFFFFFFFL;
+    }
+
+    @Override
+    public int getUnsignedInt() throws MALException
+    {
+      checkBuffer(4);
+      final int i = shiftOffsetAndReturnPrevious(4);
+      return java.nio.ByteBuffer.wrap(getBuf(), i, 4).getInt();
+    }
+
+    @Override
+    public int getUnsignedInt16() throws MALException
+    {
+      checkBuffer(2);
+      final int i = shiftOffsetAndReturnPrevious(2);
+      return java.nio.ByteBuffer.wrap(getBuf(), i, 2).getInt() & 0xFFFF;
+    }
+
+    @Override
+    public short getUnsignedShort() throws MALException
+    {
+      checkBuffer(2);
+      final int i = shiftOffsetAndReturnPrevious(2);
+      return java.nio.ByteBuffer.wrap(getBuf(), i, 2).getShort();
+    }
+
+    @Override
+    public short getUnsignedShort8() throws MALException
+    {
+      return (short) (get8() & 0xFF);
     }
   }
 }

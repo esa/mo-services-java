@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Split Binary encoder
+ * System                : CCSDS MO Fixed Length Binary encoder
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary.split;
+package esa.mo.mal.encoder.binary.fixed;
 
 /**
- * Implements the MALListDecoder interface for a split binary encoding.
+ * Implements the MALListDecoder interface for a fixed length binary encoding.
  */
-public class SplitBinaryListDecoder extends SplitBinaryDecoder implements org.ccsds.moims.mo.mal.MALListDecoder
+public class FixedBinaryListDecoder extends FixedBinaryDecoder implements org.ccsds.moims.mo.mal.MALListDecoder
 {
   private final int size;
   private final java.util.List list;
@@ -35,7 +35,7 @@ public class SplitBinaryListDecoder extends SplitBinaryDecoder implements org.cc
    * @param srcBuffer Buffer to manage.
    * @throws MALException If cannot decode list size.
    */
-  public SplitBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer)
+  public FixedBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer)
           throws org.ccsds.moims.mo.mal.MALException
   {
     super(srcBuffer);

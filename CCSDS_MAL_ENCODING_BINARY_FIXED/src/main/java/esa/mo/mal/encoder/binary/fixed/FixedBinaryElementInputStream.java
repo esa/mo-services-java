@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Split Binary encoder
+ * System                : CCSDS MO Fixed Length Binary encoder
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,35 +18,31 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary.split;
+package esa.mo.mal.encoder.binary.fixed;
 
 /**
- * Implements the MALListDecoder interface for a split binary encoding.
+ * Implements the MALElementInputStream interface for a fixed length binary encoding.
  */
-public class SplitBinaryListDecoder extends SplitBinaryDecoder implements org.ccsds.moims.mo.mal.MALListDecoder
+public class FixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.BinaryElementInputStream
 {
-  private final int size;
-  private final java.util.List list;
+  /**
+   * Constructor.
+   *
+   * @param is Input stream to read from.
+   */
+  public FixedBinaryElementInputStream(final java.io.InputStream is)
+  {
+    super(new FixedBinaryDecoder(is));
+  }
 
   /**
    * Constructor.
    *
-   * @param list List to decode into.
-   * @param srcBuffer Buffer to manage.
-   * @throws MALException If cannot decode list size.
+   * @param buf Byte buffer to read from.
+   * @param offset Offset into buffer to start from.
    */
-  public SplitBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer)
-          throws org.ccsds.moims.mo.mal.MALException
+  public FixedBinaryElementInputStream(final byte[] buf, final int offset)
   {
-    super(srcBuffer);
-
-    this.list = list;
-    size = srcBuffer.getUnsignedInt();
-  }
-
-  @Override
-  public boolean hasNext()
-  {
-    return list.size() < size;
+    super(new FixedBinaryDecoder(buf, offset));
   }
 }

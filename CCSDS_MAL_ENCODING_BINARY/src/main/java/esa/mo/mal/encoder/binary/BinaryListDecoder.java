@@ -36,17 +36,16 @@ public class BinaryListDecoder extends BinaryDecoder implements MALListDecoder
    * Constructor.
    *
    * @param list List to decode into.
-   * @param inputStream Input stream to read from.
    * @param srcBuffer Buffer to manage.
    * @throws MALException If cannot decode list size.
    */
-  public BinaryListDecoder(final List list, final java.io.InputStream inputStream, final BufferHolder srcBuffer)
+  public BinaryListDecoder(final List list, final BufferHolder srcBuffer)
           throws MALException
   {
-    super(inputStream, srcBuffer);
+    super(srcBuffer);
 
     this.list = list;
-    size = getUnsignedInt();
+    size = srcBuffer.getUnsignedInt();
   }
 
   @Override

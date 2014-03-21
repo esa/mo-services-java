@@ -66,6 +66,7 @@
     <module>CCSDS_MAL_ENCODING_STRING</module>
     <module>CCSDS_MAL_ENCODING_BINARY</module>
     <module>CCSDS_MAL_ENCODING_GEN</module>
+    <module>CCSDS_MAL_ENCODING_BINARY_FIXED</module>
   </modules>
 
   <profiles>
