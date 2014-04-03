@@ -66,7 +66,7 @@ public abstract class GeneratorDocument extends GeneratorBase
   }
 
   @Override
-  protected CompositeField createCompositeElementsDetails(TargetWriter file, String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment)
+  protected CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType, String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment)
   {
     CompositeField ele;
     String typeName = elementType.getName();

@@ -204,7 +204,7 @@ public class GeneratorGwt extends GeneratorJava
 
     file.addInterfaceOpenStatement(handlerName, null, null);
 
-    CompositeField intHandlerStr = createCompositeElementsDetails(file, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false), false, true, "interaction The MAL object representing the interaction in the provider.");
+    CompositeField intHandlerStr = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false), false, true, "interaction The MAL object representing the interaction in the provider.");
     String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
     for (OperationSummary op : summary.getOperations())
     {
@@ -229,13 +229,13 @@ public class GeneratorGwt extends GeneratorJava
         }
         case INVOKE_OP:
         {
-          CompositeField serviceHandlerStr = createCompositeElementsDetails(file, "interaction", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false), false, true, "interaction The MAL object representing the interaction in the provider.");
+          CompositeField serviceHandlerStr = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false), false, true, "interaction The MAL object representing the interaction in the provider.");
           file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr), throwsMALException, null, null, null);
           break;
         }
         case PROGRESS_OP:
         {
-          CompositeField serviceHandlerStr = createCompositeElementsDetails(file, "interaction", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false), false, true, "interaction The MAL object representing the interaction in the provider.");
+          CompositeField serviceHandlerStr = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false), false, true, "interaction The MAL object representing the interaction in the provider.");
           file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr), throwsMALException, null, null, null);
           break;
         }
@@ -293,19 +293,19 @@ public class GeneratorGwt extends GeneratorJava
 
     if (isDelegate)
     {
-      CompositeField handlerName = createCompositeElementsDetails(file, "delegate", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), false, true, null);
+      CompositeField handlerName = createCompositeElementsDetails(file, false, "delegate", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), false, true, null);
       file.addClassVariable(false, false, StdStrings.PRIVATE, handlerName, false, (String) null);
     }
 
     if (isDelegate)
     {
-      MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, createCompositeElementsDetails(file, "delegate", TypeUtils.createTypeReference(area.getName(), service.getName().toLowerCase() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), true, false, null), false, null, null, null);
+      MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, createCompositeElementsDetails(file, false, "delegate", TypeUtils.createTypeReference(area.getName(), service.getName().toLowerCase() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), true, false, null), false, null, null, null);
       method.addMethodStatement(createMethodCall("this.delegate = delegate"));
       method.addMethodCloseStatement();
     }
     else
     {
-      CompositeField skeletonName = createCompositeElementsDetails(file, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "skeleton Not used in the inheritance pattern (the skeleton is 'this'");
+      CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "skeleton Not used in the inheritance pattern (the skeleton is 'this'");
       MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "setSkeleton", Arrays.asList(skeletonName), null);
       method.addMethodStatement("// Not used in the inheritance pattern (the skeleton is 'this')");
       method.addMethodCloseStatement();

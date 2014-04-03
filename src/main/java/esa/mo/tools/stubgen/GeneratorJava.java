@@ -142,18 +142,18 @@ public class GeneratorJava extends GeneratorLangs
     String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
     String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
     String throwsExceptions = "java.lang.IllegalArgumentException, " + throwsInteractionAndMALException;
-    CompositeField publisherSetType = createCompositeElementsDetails(file, "publisherSet", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false), false, true, null);
+    CompositeField publisherSetType = createCompositeElementsDetails(file, false, "publisherSet", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false), false, true, null);
 
     file.addClassOpenStatement(publisherName, true, false, null, null, "Publisher class for the " + op.getName() + " operation.");
 
     file.addClassVariable(false, false, StdStrings.PRIVATE, publisherSetType, false, (String) null);
 
-    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, publisherName, createCompositeElementsDetails(file, "publisherSet", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false), false, true, "publisherSet The set of broker connections to use when registering and publishing."), false, null, "Creates an instance of this class using the supplied publisher set.", null);
+    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, publisherName, createCompositeElementsDetails(file, false, "publisherSet", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false), false, true, "publisherSet The set of broker connections to use when registering and publishing."), false, null, "Creates an instance of this class using the supplied publisher set.", null);
     method.addMethodStatement("this.publisherSet = publisherSet");
     method.addMethodCloseStatement();
 
-    CompositeField entKeyList = createCompositeElementsDetails(file, "entityKeys", TypeUtils.createTypeReference(StdStrings.MAL, null, "EntityKey", true), true, true, "entityKeys The entity keys to use in the method");
-    CompositeField psListener = createCompositeElementsDetails(file, "listener", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublishInteractionListener", false), false, true, "listener The listener object to use for callback from the publisher");
+    CompositeField entKeyList = createCompositeElementsDetails(file, false, "entityKeys", TypeUtils.createTypeReference(StdStrings.MAL, null, "EntityKey", true), true, true, "entityKeys The entity keys to use in the method");
+    CompositeField psListener = createCompositeElementsDetails(file, false, "listener", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublishInteractionListener", false), false, true, "listener The listener object to use for callback from the publisher");
     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "register", StubUtils.concatenateArguments(entKeyList, psListener), throwsExceptions,
             "Registers this provider implementation to the set of broker connections", null, Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
     method.addMethodStatement("publisherSet.register(entityKeys, listener)");
@@ -166,7 +166,7 @@ public class GeneratorJava extends GeneratorLangs
 
 
     List<CompositeField> argList = new LinkedList();
-    argList.add(createCompositeElementsDetails(file, "updateHeaderList", TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true, "updateHeaderList The headers of the updates being added"));
+    argList.add(createCompositeElementsDetails(file, true, "updateHeaderList", TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true, "updateHeaderList The headers of the updates being added"));
     argList.addAll(createOperationArguments(getConfig(), file, op.getUpdateTypes(), true));
 
     String argNameList = "";
@@ -250,7 +250,7 @@ public class GeneratorJava extends GeneratorLangs
       superTypeReference.setName(StdStrings.ELEMENT);
     }
 
-    CompositeField listSuperElement = createCompositeElementsDetails(file, null, superTypeReference, true, true, "List element.");
+    CompositeField listSuperElement = createCompositeElementsDetails(file, false, null, superTypeReference, true, true, "List element.");
 
     file.addInterfaceOpenStatement(listName + "<T extends " + fqSrcTypeName + ">", listSuperElement.getTypeName() + "List<T>", "List class for " + srcTypeName + "." + file.getLineSeparator() + " * @param <T> The type of this list must extend " + srcTypeName);
     file.addInterfaceCloseStatement();
@@ -311,11 +311,11 @@ public class GeneratorJava extends GeneratorLangs
       }
     }
 
-    CompositeField listSuperElement = createCompositeElementsDetails(file, null, superTypeReference, true, true, "List element.");
+    CompositeField listSuperElement = createCompositeElementsDetails(file, false, null, superTypeReference, true, true, "List element.");
 
     file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">", listSuperElement.getTypeName() + "List<" + fqSrcTypeName + ">", "List class for " + srcTypeName + ".");
 
-    CompositeField listElement = createCompositeElementsDetails(file, null, srcType, true, true, "List element.");
+    CompositeField listElement = createCompositeElementsDetails(file, true, null, srcType, true, true, "List element.");
 
     addTypeShortFormDetails(file, area, service, -shortFormPart);
 
@@ -323,7 +323,7 @@ public class GeneratorJava extends GeneratorLangs
     file.addConstructorDefault(listName);
 
     // create initial size contructor
-    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, listName, createCompositeElementsDetails(file, "initialCapacity", TypeUtils.createTypeReference(null, null, "int", false), false, false, "initialCapacity the required initial capacity."), true, null, "Constructor that initialises the capacity of the list.", null);
+    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, listName, createCompositeElementsDetails(file, false, "initialCapacity", TypeUtils.createTypeReference(null, null, "int", false), false, false, "initialCapacity the required initial capacity."), true, null, "Constructor that initialises the capacity of the list.", null);
     method.addMethodCloseStatement();
 
     method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, elementType, "createElement", null, null, "Creates an instance of this type using the default constructor. It is a generic factory method.", "A new instance of this type with default field values.", null);
@@ -357,7 +357,7 @@ public class GeneratorJava extends GeneratorLangs
     file.flush();
 
     srcType.setList(Boolean.TRUE);
-    CompositeField listType = createCompositeElementsDetails(file, null, srcType, true, true, "List element.");
+    CompositeField listType = createCompositeElementsDetails(file, false, null, srcType, true, true, "List element.");
     createFactoryClass(folder, area, service, listName, listType, false, false);
   }
 
@@ -488,12 +488,18 @@ public class GeneratorJava extends GeneratorLangs
   }
 
   @Override
-  protected CompositeField createCompositeElementsDetails(TargetWriter file, String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment)
+  protected CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType, String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment)
   {
     CompositeField ele;
 
     String typeName = elementType.getName();
 
+    if(checkType && !isKnownType(elementType))
+    {
+      getLog().warn("Unknown type (" + elementType.getArea() + ":" + elementType.getName()
+              + ") is being referenced as field (" + fieldName + ")");
+    }
+    
     if (elementType.isList())
     {
       if (StdStrings.XML.equals(elementType.getArea()))

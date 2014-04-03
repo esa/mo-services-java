@@ -310,12 +310,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   @Override
   public boolean isNativeType(TypeReference type)
   {
-    boolean attrType = isAttributeType(type);
-    if ((attrType) && (attributeTypesMap.get(type.getName()).isNativeType()))
-    {
-      return true;
-    }
-    return false;
+    return isAttributeType(type) && (attributeTypesMap.get(type.getName()).isNativeType());
   }
 
   /**
@@ -336,6 +331,22 @@ public abstract class GeneratorBase implements Generator, TypeInformation
       rType = new NativeTypeDetails("<Unknown native type of " + type + ">", false, false, null);
     }
     return rType;
+  }
+
+  /**
+   * Returns true if the type definition has been loaded.
+   *
+   * @param type the type to look for.
+   * @return true if a known type.
+   */
+  public boolean isKnownType(TypeReference type)
+  {
+    boolean knownType = false;
+    if (allTypesMap.containsKey(type.getName()))
+    {
+      knownType = true;
+    }
+    return knownType;
   }
 
   /**
@@ -403,7 +414,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   /**
    * Returns error details if defined.
    *
-   * @param type The error to look for.
+   * @param error The error to look for.
    * @return the details if found, otherwise null.
    */
   public ErrorDefinitionType getErrorDefinition(String error)
@@ -560,6 +571,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     for (NamedElementReferenceWithCommentType element : composite.getField())
     {
       CompositeField ele = createCompositeElementsDetails(file,
+              true,
               element.getName(),
               element.getType(),
               true,
@@ -594,6 +606,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
         for (NamedElementReferenceWithCommentType element : type.getField())
         {
           CompositeField ele = createCompositeElementsDetails(file,
+                  true,
                   element.getName(),
                   element.getType(),
                   true,
@@ -772,13 +785,16 @@ public abstract class GeneratorBase implements Generator, TypeInformation
    * Creates a composite element detail object for a field of a composite.
    *
    * @param file Writer to add any type dependencies to.
+   * @param checkType True if the type of the field should be checked for validity.
    * @param fieldName The field name in the composite.
    * @param elementType the type of the field.
+   * @param isStructure True if field is a structure.
    * @param canBeNull True if the field is allowed to be null.
    * @param comment The comment with the field.
    * @return the element details.
    */
   protected abstract CompositeField createCompositeElementsDetails(TargetWriter file,
+          boolean checkType,
           String fieldName,
           TypeReference elementType,
           boolean isStructure,
