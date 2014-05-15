@@ -528,5 +528,6 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:element name="field" type="mal:NamedElementReferenceWithCommentType"/>
   <xsd:element name="type" type="mal:TypeReference"/>
 </xsd:schema>
