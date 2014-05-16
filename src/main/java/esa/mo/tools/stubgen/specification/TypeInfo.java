@@ -28,6 +28,8 @@ import esa.mo.tools.stubgen.xsd.TypeReference;
 public class TypeInfo
 {
   private final TypeReference sourceType;
+  private final String fieldName;
+  private final String fieldComment;
   private final String actualMalType;
   private final String targetType;
   private final boolean nativeType;
@@ -38,15 +40,19 @@ public class TypeInfo
    * Constructor.
    *
    * @param sourceType XML type reference.
+   * @param fieldName Optional name for this field
+   * @param fieldComment Optional comment for this field
    * @param actualMalType The name of the type in the specification.
    * @param targetType The programming language type.
    * @param isNative True if the type is represented by a native language type.
    * @param malShortFormField The short form field value for the type.
    * @param versionInfo The version information for the type.
    */
-  public TypeInfo(TypeReference sourceType, String actualMalType, String targetType, boolean isNative, String malShortFormField, String versionInfo)
+  public TypeInfo(TypeReference sourceType, String fieldName, String fieldComment, String actualMalType, String targetType, boolean isNative, String malShortFormField, String versionInfo)
   {
     this.sourceType = sourceType;
+    this.fieldName = fieldName;
+    this.fieldComment = fieldComment;
     this.actualMalType = actualMalType;
     this.targetType = targetType;
     this.nativeType = isNative;
@@ -62,6 +68,26 @@ public class TypeInfo
   public TypeReference getSourceType()
   {
     return sourceType;
+  }
+
+  /**
+   * Returns the optional field name.
+   *
+   * @return the optional field name.
+   */
+  public String getFieldName()
+  {
+    return fieldName;
+  }
+
+  /**
+   * Returns the optional field comment.
+   *
+   * @return the optional field comment.
+   */
+  public String getFieldComment()
+  {
+    return fieldComment;
   }
 
   /**

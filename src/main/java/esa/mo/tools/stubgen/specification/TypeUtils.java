@@ -21,9 +21,9 @@
 package esa.mo.tools.stubgen.specification;
 
 import esa.mo.tools.stubgen.xsd.TypeReference;
+import esa.mo.tools.stubgen.xsd.NamedElementReferenceWithCommentType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.xml.bind.JAXBElement;
 import org.w3c.dom.Element;
 
@@ -40,6 +40,20 @@ public abstract class TypeUtils
    * @return the converted type information.
    */
   public static TypeInfo convertTypeReference(TypeInformation tiSource, TypeReference tr)
+  {
+    return convertTypeReference(tiSource, tr, null, null);
+  }
+  
+  /**
+   * Converts a type reference from the XML format to the internal format.
+   *
+   * @param tiSource Source of generator specific type information.
+   * @param tr The XML type reference
+   * @param fieldName Optional field name.
+   * @param fieldComment Optional field comment.
+   * @return the converted type information.
+   */
+  public static TypeInfo convertTypeReference(TypeInformation tiSource, TypeReference tr, String fieldName, String fieldComment)
   {
     if (null != tr)
     {
@@ -58,20 +72,53 @@ public abstract class TypeUtils
           if (tiSource.isNativeType(tr))
           {
             String fqName = tiSource.getBasePackage() + "mal.structures." + tr.getName() + "List";
-            ti = new TypeInfo(tr, tr.getName() + "List", fqName, false, fqName + ".SHORT_FORM", argVersionStr);
+            ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName() + "List", fqName, false, fqName + ".SHORT_FORM", argVersionStr);
           }
           else
           {
-            ti = new TypeInfo(tr, tr.getName() + "List", argTypeStr + "List", false, getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
+            ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName() + "List", argTypeStr + "List", false, getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
           }
         }
       }
       else
       {
-        ti = new TypeInfo(tr, tr.getName(), argTypeStr, tiSource.isNativeType(tr), getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
+        ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName(), argTypeStr, tiSource.isNativeType(tr), getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
       }
       return ti;
     }
+    return null;
+  }
+
+  /**
+   * Converts a type reference from the XML format to the internal format.
+   *
+   * @param tiSource Source of generator specific type information.
+   * @param ttr The XML type reference.
+   * @return the converted type information.
+   */
+  public static TypeInfo convertTypeReference(TypeInformation tiSource, TypeRef ttr)
+  {
+    if (null != ttr)
+    {
+      String fieldName;
+      String fieldComment;
+      TypeReference tr;
+      if (ttr.isField())
+      {
+        fieldName = ttr.getFieldRef().getName();
+        fieldComment = ttr.getFieldRef().getComment();
+        tr = ttr.getFieldRef().getType();
+      }
+      else
+      {
+        fieldName = null;
+        fieldComment = null;
+        tr = ttr.getTypeRef();
+      }
+
+      return convertTypeReference(tiSource, tr, fieldName, fieldComment);
+    }
+
     return null;
   }
 
@@ -82,12 +129,12 @@ public abstract class TypeUtils
    * @param trList The XML type reference list.
    * @return the converted type information.
    */
-  public static List<TypeInfo> convertTypeReferences(TypeInformation tiSource, List<TypeReference> trList)
+  public static List<TypeInfo> convertTypeReferences(TypeInformation tiSource, List<TypeRef> trList)
   {
     if (null != trList)
     {
       List<TypeInfo> tiList = new ArrayList<TypeInfo>(trList.size());
-      for (TypeReference tr : trList)
+      for (TypeRef tr : trList)
       {
         tiList.add(convertTypeReference(tiSource, tr));
       }
@@ -178,20 +225,19 @@ public abstract class TypeUtils
    * Converts an XML any field into a list of types.
    *
    * @param any the XML any field.
-   * @param comTypeSubs The COM type substitution map.
    * @return the convert type list.
    */
-  public static List<TypeReference> getTypeListViaXSDAny(Object any, Map<String, TypeReference> comTypeSubs)
+  public static List<TypeRef> getTypeListViaXSDAny(Object any)
   {
     if (null != any)
     {
       if (any instanceof List)
       {
         List li = (List) any;
-        ArrayList<TypeReference> rv = new ArrayList<TypeReference>(li.size());
+        ArrayList<TypeRef> rv = new ArrayList<TypeRef>(li.size());
         for (Object e : li)
         {
-          rv.add(getTypeViaXSDAny(e, comTypeSubs));
+          rv.add(getTypeViaXSDAny(e));
         }
         return rv;
       }
@@ -208,10 +254,9 @@ public abstract class TypeUtils
    * Converts an XML any field into a type reference.
    *
    * @param any the XML any field.
-   * @param comTypeSubs The COM type substitution map.
    * @return the converted type.
    */
-  public static TypeReference getTypeViaXSDAny(Object any, Map<String, TypeReference> comTypeSubs)
+  public static TypeRef getTypeViaXSDAny(Object any)
   {
     if (null != any)
     {
@@ -220,21 +265,11 @@ public abstract class TypeUtils
         JAXBElement re = (JAXBElement) any;
         if (re.getValue() instanceof TypeReference)
         {
-          TypeReference tr = (TypeReference) re.getValue();
-          if ((null != comTypeSubs) && !comTypeSubs.isEmpty() && StdStrings.COM.equals(tr.getArea()) && StdStrings.COM.equals(tr.getService()))
-          {
-            TypeReference sub = comTypeSubs.get(tr.getName());
-            if (null != sub)
-            {
-              TypeReference newTr = new TypeReference();
-              newTr.setArea(sub.getArea());
-              newTr.setService(sub.getService());
-              newTr.setName(sub.getName());
-              newTr.setList(tr.isList());
-              tr = newTr;
-            }
-          }
-          return tr;
+          return new TypeRef((TypeReference) re.getValue());
+        }
+        else if (re.getValue() instanceof NamedElementReferenceWithCommentType)
+        {
+          return new TypeRef((NamedElementReferenceWithCommentType) re.getValue());
         }
         else
         {
@@ -265,7 +300,11 @@ public abstract class TypeUtils
           newTr.setService(re.lookupNamespaceURI(uri));
           newTr.setName(type);
           newTr.setList(isList);
-          return newTr;
+          return new TypeRef(newTr);
+        }
+        else
+        {
+          throw new IllegalArgumentException("Unexpected XML type in message body of : " + re);
         }
       }
       else
@@ -275,6 +314,51 @@ public abstract class TypeUtils
     }
 
     return null;
+  }
+
+  public static final class TypeRef
+  {
+    private final Object ref;
+    private final boolean field;
+
+    public TypeRef(NamedElementReferenceWithCommentType ref)
+    {
+      this.ref = ref;
+      this.field = true;
+    }
+
+    public TypeRef(TypeReference ref)
+    {
+      this.ref = ref;
+      this.field = false;
+    }
+
+    public boolean isField()
+    {
+      return field;
+    }
+
+    public NamedElementReferenceWithCommentType getFieldRef()
+    {
+      return (NamedElementReferenceWithCommentType) ref;
+    }
+
+    public TypeReference getTypeRef()
+    {
+      if (null != ref)
+      {
+        if (field)
+        {
+          return ((NamedElementReferenceWithCommentType) ref).getType();
+        }
+        else
+        {
+          return (TypeReference) ref;
+        }
+      }
+
+      return null;
+    }
   }
 
   private TypeUtils()

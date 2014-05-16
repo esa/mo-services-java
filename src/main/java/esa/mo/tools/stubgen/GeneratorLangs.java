@@ -1421,7 +1421,7 @@ public abstract class GeneratorLangs extends GeneratorBase
 
     String areaObjectInitialValue = createAreaHelperClassInitialValue(areaNameCaps, area.getVersion());
     file.addClassVariable(true, false, StdStrings.PUBLIC, areaVar, true, areaObjectInitialValue);
-    
+
     // create error numbers
     if ((null != area.getErrors()) && !area.getErrors().getError().isEmpty())
     {
@@ -1572,7 +1572,7 @@ public abstract class GeneratorLangs extends GeneratorBase
         CompositeField opNumberVar = createCompositeElementsDetails(file, operationInstanceVar + "_OP_NUMBER", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, false, "Operation number instance for operation " + operationInstanceVar);
         file.addClassVariable(true, true, StdStrings.PUBLIC, _opNumberVar, false, op.getNumber().toString());
         file.addClassVariable(true, true, StdStrings.PUBLIC, opNumberVar, false, "(_" + operationInstanceVar + "_OP_NUMBER)");
-        
+
         List<String> opArgs = new LinkedList<String>();
         addServiceHelperOperationArgs(file, op, opArgs);
         CompositeField opInstVar = createCompositeElementsDetails(file, operationInstanceVar + "_OP", TypeUtils.createTypeReference(StdStrings.MAL, null, getOperationInstanceType(op), false), false, true, "Operation instance for operation " + operationInstanceVar);
@@ -2521,7 +2521,16 @@ public abstract class GeneratorLangs extends GeneratorBase
           tir = tir_new;
         }
 
-        String argName = "_" + TypeUtils.shortTypeName(config.getNamingSeparator(), ti.getTargetType()) + i;
+        String argName;
+        if (null != ti.getFieldName())
+        {
+          argName = ti.getFieldName();
+        }
+        else
+        {
+          argName = "_" + TypeUtils.shortTypeName(config.getNamingSeparator(), ti.getTargetType()) + i;
+        }
+
         CompositeField argType = createCompositeElementsDetails(file, argName, tir, true, true, argName + " Argument number " + i + " as defined by the service operation");
 
         rv.add(argType);
@@ -2634,7 +2643,6 @@ public abstract class GeneratorLangs extends GeneratorBase
   /**
    * Creates a set of argument names based on the type, wrapping the type in a Union if a native type.
    *
-   * @param config The Generator configuration to use.
    * @param typeNames The list of arguments.
    * @return The argument string.
    */
@@ -2650,11 +2658,21 @@ public abstract class GeneratorLangs extends GeneratorBase
         {
           buf.append(", ");
         }
+        
+        String argName;
+        if (null != ti.getFieldName())
+        {
+          argName = ti.getFieldName();
+        }
+        else
+        {
+          argName = "_" + TypeUtils.shortTypeName(getConfig().getNamingSeparator(), ti.getTargetType()) + i;
+        }
+
         if (ti.isNativeType())
         {
-          buf.append("(_");
-          buf.append(TypeUtils.shortTypeName(getConfig().getNamingSeparator(), ti.getTargetType()));
-          buf.append(i);
+          buf.append("(");
+          buf.append(argName);
           buf.append(" == null) ? null : new ");
           buf.append(getConfig().getBasePackage());
           buf.append("mal.");
@@ -2666,9 +2684,7 @@ public abstract class GeneratorLangs extends GeneratorBase
         }
         else
         {
-          buf.append("_");
-          buf.append(TypeUtils.shortTypeName(getConfig().getNamingSeparator(), ti.getTargetType()));
-          buf.append(i);
+          buf.append(argName);
         }
       }
 
@@ -2696,7 +2712,7 @@ public abstract class GeneratorLangs extends GeneratorBase
   {
     return "interaction.getOperation().getNumber().getValue()";
   }
-  
+
   protected String createReturnReference(String targetType)
   {
     return targetType;

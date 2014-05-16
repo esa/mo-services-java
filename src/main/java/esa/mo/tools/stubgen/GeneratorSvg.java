@@ -35,6 +35,7 @@ import java.io.Writer;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,6 +47,9 @@ import javax.xml.bind.JAXBException;
  */
 public class GeneratorSvg extends GeneratorDocument
 {
+  private boolean includeCollapsedMessages = true;
+  private boolean includeExpandedMessages = true;
+
   /**
    * Constructor.
    *
@@ -66,6 +70,22 @@ public class GeneratorSvg extends GeneratorDocument
   public String getDescription()
   {
     return "Generates a navigable XHTML file in an ECSS PUS style.";
+  }
+
+  @Override
+  public void init(String destinationFolderName, boolean generateStructures, boolean generateCOM, Map<String, String> extraProperties) throws IOException
+  {
+    super.init(destinationFolderName, generateStructures, generateCOM, extraProperties);
+
+    if (extraProperties.containsKey("svg.includeCollapsedMessages"))
+    {
+      includeCollapsedMessages = Boolean.parseBoolean(extraProperties.get("svg.includeCollapsedMessages"));
+    }
+
+    if (extraProperties.containsKey("svg.includeExpandedMessages"))
+    {
+      includeExpandedMessages = Boolean.parseBoolean(extraProperties.get("svg.includeExpandedMessages"));
+    }
   }
 
   @Override
@@ -356,35 +376,56 @@ public class GeneratorSvg extends GeneratorDocument
 
   private void drawOperationTypes(SvgBaseWriter svgFile, List<TypeInfo> types, String comment) throws IOException
   {
-    TopContainer cnt = new TopContainer();
-    cnt.addOperationTypes(types);
-    cnt.expandType();
-
-    svgFile.startDrawing();
+    List<String> cmts = new LinkedList<String>();
+    cmts.add(comment);
     for (TypeInfo e : types)
     {
-      drawOperationPart(svgFile, e);
+      cmts.add(e.getFieldComment());
     }
-    svgFile.endDrawing();
 
-    cnt.drawElement(svgFile, 1, 0, cnt.getDepth(0));
+    if (includeCollapsedMessages)
+    {
+      svgFile.startDrawing();
+      for (TypeInfo e : types)
+      {
+        drawOperationPart(svgFile, e);
+        cmts.add(e.getFieldComment());
+      }
+      svgFile.endDrawing();
+    }
 
-    svgFile.addComment(comment);
+    if (includeExpandedMessages)
+    {
+      TopContainer cnt = new TopContainer();
+      cnt.addOperationTypes(types);
+      cnt.expandType();
+
+      cnt.drawElement(svgFile, 1, 0, cnt.getDepth(0));
+    }
+
+    svgFile.addComment(cmts);
   }
 
   private void drawOperationPart(SvgBaseWriter svgFile, TypeInfo type) throws IOException
   {
     if (null != type)
     {
+      String partName = "Part";
+
+      if ((null != type.getFieldName()) && (0 < type.getFieldName().length()))
+      {
+        partName = type.getFieldName();
+      }
+
       if (type.getSourceType().isList())
       {
         svgFile.addField("N", StdStrings.INTEGER, createXlink(StdStrings.MAL, null, StdStrings.INTEGER), false, false);
         svgFile.addSpan(1, 1, "Repeated N times");
-        svgFile.addField("Part", type.getSourceType().getName(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getSourceType().getName()), isAbstract(type.getSourceType()), isEnum(type.getSourceType()));
+        svgFile.addField(partName, type.getSourceType().getName(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getSourceType().getName()), isAbstract(type.getSourceType()), isEnum(type.getSourceType()));
       }
       else
       {
-        svgFile.addField("Part", type.getActualMalType(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getActualMalType()), isAbstract(type.getSourceType()), isEnum(type.getSourceType()));
+        svgFile.addField(partName, type.getActualMalType(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getActualMalType()), isAbstract(type.getSourceType()), isEnum(type.getSourceType()));
       }
     }
   }
@@ -737,7 +778,14 @@ public class GeneratorSvg extends GeneratorDocument
       {
         if (null != e)
         {
-          addTypeElement("Part", e.getSourceType(), false);
+          String pname = "Part";
+
+          if ((null != e.getFieldName()) && (0 < e.getFieldName().length()))
+          {
+            pname = e.getFieldName();
+          }
+
+          addTypeElement(pname, e.getSourceType(), false);
         }
       }
     }

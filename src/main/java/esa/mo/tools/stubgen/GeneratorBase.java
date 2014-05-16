@@ -54,7 +54,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   private final Map<String, NativeTypeDetails> nativeTypesMap = new TreeMap<String, NativeTypeDetails>();
   private final Map<String, ErrorDefinitionType> errorDefinitionMap = new TreeMap();
   private final Map<String, String> jaxbBindings = new TreeMap<String, String>();
-  private final Map<Integer, List<OperationType>> standardCapabilityMap = new TreeMap<Integer, List<OperationType>>();
   private final Log logger;
   private boolean generateCOM;
 
@@ -132,28 +131,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation
             errorDefinitionMap.put(error.getName(), error);
           }
         }
-      }
-    }
-
-    // now load COM operations
-    for (AreaType area : spec.getArea())
-    {
-      if (StdStrings.COM.equals(area.getName()))
-      {
-        for (ServiceType service : area.getService())
-        {
-          if (StdStrings.COM.equals(service.getName()))
-          {
-            for (CapabilitySetType cap : service.getCapabilitySet())
-            {
-              standardCapabilityMap.put(cap.getNumber(), cap.getSendIPOrSubmitIPOrRequestIP());
-            }
-
-            break;
-          }
-        }
-
-        break;
       }
     }
   }
@@ -310,12 +287,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   @Override
   public boolean isNativeType(TypeReference type)
   {
-    boolean attrType = isAttributeType(type);
-    if ((attrType) && (attributeTypesMap.get(type.getName()).isNativeType()))
-    {
-      return true;
-    }
-    return false;
+    return isAttributeType(type) && (attributeTypesMap.get(type.getName()).isNativeType());
   }
 
   /**
@@ -403,7 +375,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   /**
    * Returns error details if defined.
    *
-   * @param type The error to look for.
+   * @param error The error to look for.
    * @return the details if found, otherwise null.
    */
   public ErrorDefinitionType getErrorDefinition(String error)
@@ -648,7 +620,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
       {
         for (OperationType op : capabilitySet.getSendIPOrSubmitIPOrRequestIP())
         {
-          createOperationSummary(op, capabilitySet.getNumber(), null, summary);
+          createOperationSummary(op, capabilitySet.getNumber(), summary);
         }
       }
     }
@@ -667,7 +639,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation
 
   private OperationSummary createOperationSummary(OperationType op,
           int capNum,
-          Map<String, TypeReference> comTypeSubs,
           ServiceSummary summary)
   {
     OperationSummary ele = null;
@@ -675,7 +646,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     {
       SendOperationType lop = (SendOperationType) op;
       ele = new OperationSummary(InteractionPatternEnum.SEND_OP, op, capNum,
-              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSend().getAny(), comTypeSubs)), lop.getMessages().getSend().getComment(),
+              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSend().getAny())), lop.getMessages().getSend().getComment(),
               null, "",
               null, "",
               null, "");
@@ -684,7 +655,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     {
       SubmitOperationType lop = (SubmitOperationType) op;
       ele = new OperationSummary(InteractionPatternEnum.SUBMIT_OP, op, capNum,
-              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSubmit().getAny(), comTypeSubs)), lop.getMessages().getSubmit().getComment(),
+              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSubmit().getAny())), lop.getMessages().getSubmit().getComment(),
               null, "",
               null, "",
               null, "");
@@ -693,34 +664,33 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     {
       RequestOperationType lop = (RequestOperationType) op;
       ele = new OperationSummary(InteractionPatternEnum.REQUEST_OP, op, capNum,
-              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getRequest().getAny(), comTypeSubs)), lop.getMessages().getRequest().getComment(),
+              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getRequest().getAny())), lop.getMessages().getRequest().getComment(),
               null, "",
               null, "",
-              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny(), comTypeSubs)), lop.getMessages().getResponse().getComment());
+              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny())), lop.getMessages().getResponse().getComment());
     }
     else if (op instanceof InvokeOperationType)
     {
       InvokeOperationType lop = (InvokeOperationType) op;
       ele = new OperationSummary(InteractionPatternEnum.INVOKE_OP, op, capNum,
-              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getInvoke().getAny(), comTypeSubs)), lop.getMessages().getInvoke().getComment(),
-              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny(), comTypeSubs)), lop.getMessages().getAcknowledgement().getComment(),
+              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getInvoke().getAny())), lop.getMessages().getInvoke().getComment(),
+              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny())), lop.getMessages().getAcknowledgement().getComment(),
               null, "",
-              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny(), comTypeSubs)), lop.getMessages().getResponse().getComment());
+              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny())), lop.getMessages().getResponse().getComment());
     }
     else if (op instanceof ProgressOperationType)
     {
       ProgressOperationType lop = (ProgressOperationType) op;
       ele = new OperationSummary(InteractionPatternEnum.PROGRESS_OP, op, capNum,
-              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getProgress().getAny(), comTypeSubs)), lop.getMessages().getProgress().getComment(),
-              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny(), comTypeSubs)), lop.getMessages().getAcknowledgement().getComment(),
-              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getUpdate().getAny(), comTypeSubs)), lop.getMessages().getUpdate().getComment(),
-              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny(), comTypeSubs)), lop.getMessages().getResponse().getComment());
+              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getProgress().getAny())), lop.getMessages().getProgress().getComment(),
+              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny())), lop.getMessages().getAcknowledgement().getComment(),
+              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getUpdate().getAny())), lop.getMessages().getUpdate().getComment(),
+              TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny())), lop.getMessages().getResponse().getComment());
     }
     else if (op instanceof PubSubOperationType)
     {
       PubSubOperationType lop = (PubSubOperationType) op;
-      List<TypeReference> ty = TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny(), comTypeSubs);
-      List<TypeInfo> riList = TypeUtils.convertTypeReferences(this, ty);
+      List<TypeInfo> riList = TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny()));
 
       ele = new OperationSummary(InteractionPatternEnum.PUBSUB_OP, op, capNum,
               null, "",
@@ -774,6 +744,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
    * @param file Writer to add any type dependencies to.
    * @param fieldName The field name in the composite.
    * @param elementType the type of the field.
+   * @param isStructure True if a structure.
    * @param canBeNull True if the field is allowed to be null.
    * @param comment The comment with the field.
    * @return the element details.
