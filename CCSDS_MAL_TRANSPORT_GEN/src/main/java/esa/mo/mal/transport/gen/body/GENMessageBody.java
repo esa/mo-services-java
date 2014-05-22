@@ -166,7 +166,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
   public Object getBodyElement(final int index, final Object element) throws IllegalArgumentException, MALException
   {
     decodeMessageBody();
-    if (null != element)
+    if ((null != element) && (null == shortForms[index]))
     {
       shortForms[index] = element.getClass().getPackage().getName();
     }
@@ -473,8 +473,8 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
       {
         final Long shortForm = u.getLongValue();
         GENTransport.LOGGER.log(Level.FINER, "GEN Message decoding body part : Type = {0}", shortForm);
-        final MALElementFactory ef =
-                MALContextFactory.getElementFactoryRegistry().lookupElementFactory(shortForm);
+        final MALElementFactory ef
+                = MALContextFactory.getElementFactoryRegistry().lookupElementFactory(shortForm);
 
         if (null != ef)
         {
