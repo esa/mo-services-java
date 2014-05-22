@@ -170,6 +170,7 @@ public class GENMessage implements MALMessage, java.io.Serializable
    *
    * @param streamFactory The stream factory to use for encoder creation.
    * @param enc The output stream to use for encoding.
+   * @param lowLevelOutputStream the stream to write to.
    * @throws MALException On encoding error.
    */
   public void encodeMessage(final MALElementStreamFactory streamFactory,

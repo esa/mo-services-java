@@ -31,25 +31,25 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class GENMessageHeader implements MALMessageHeader, Element
 {
-  private URI uriFrom;
-  private Blob authenticationId;
-  private URI uriTo;
-  private Time timestamp;
-  private QoSLevel qosLevel;
-  private UInteger priority;
-  private IdentifierList domain;
-  private Identifier networkZone;
-  private SessionType session;
-  private Identifier sessionName;
-  private InteractionType interactionType;
-  private UOctet interactionStage;
-  private Long transactionId;
-  private UShort serviceArea;
-  private UShort service;
-  private UShort operation;
-  private UOctet areaVersion;
-  private Boolean isErrorMessage;
-  private static final long serialVersionUID = 111111111111111L;
+  protected URI uriFrom;
+  protected Blob authenticationId;
+  protected URI uriTo;
+  protected Time timestamp;
+  protected QoSLevel qosLevel;
+  protected UInteger priority;
+  protected IdentifierList domain;
+  protected Identifier networkZone;
+  protected SessionType session;
+  protected Identifier sessionName;
+  protected InteractionType interactionType;
+  protected UOctet interactionStage;
+  protected Long transactionId;
+  protected UShort serviceArea;
+  protected UShort service;
+  protected UShort operation;
+  protected UOctet areaVersion;
+  protected Boolean isErrorMessage;
+  protected static final long serialVersionUID = 111111111111111L;
 
   /**
    * Constructor.

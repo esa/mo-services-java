@@ -41,10 +41,6 @@ public abstract class GENTransport implements MALTransport, GENSender
    */
   public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.gen");
   /**
-   * Delimiter to use when holding routing information in a URL
-   */
-  protected static final char ROUTING_DELIM = '@';
-  /**
    * Used to create random local names for endpoints.
    */
   protected static final Random RANDOM_NAME = new Random();
@@ -53,9 +49,17 @@ public abstract class GENTransport implements MALTransport, GENSender
    */
   protected final MALTransportFactory factory;
   /**
+   * The delimiter to use to separate the protocol part from the address part of the URL.
+   */
+  protected final String protocolDelim;
+  /**
    * The delimiter to use to separate the external address part from the internal object part of the URL.
    */
   protected final char serviceDelim;
+  /**
+   * Delimiter to use when holding routing information in a URL
+   */
+  protected final char routingDelim;
   /**
    * True if protocol supports the concept of routing.
    */
@@ -101,6 +105,8 @@ public abstract class GENTransport implements MALTransport, GENSender
    *
    * @param protocol The protocol string.
    * @param serviceDelim The delimiter to use for separating the URL
+   * @param supportsRouting True if routing is supported by the naming convention
+   * @param wrapBodyParts True is body parts should be wrapped in BLOBs
    * @param factory The factory that created us.
    * @param properties The QoS properties.
    * @throws MALException On error.
@@ -115,7 +121,9 @@ public abstract class GENTransport implements MALTransport, GENSender
     this.factory = factory;
     this.protocol = protocol;
     this.supportsRouting = supportsRouting;
+    this.protocolDelim = "://";
     this.serviceDelim = serviceDelim;
+    this.routingDelim = '@';
     streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
 
     LOGGER.log(Level.INFO, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
@@ -123,18 +131,60 @@ public abstract class GENTransport implements MALTransport, GENSender
     // very crude and faulty test but it will do for testing
     streamHasStrings = streamFactory.getClass().getName().contains("String");
 
-    if ((null != properties) && (properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.debug")))
+    logFullDebug = (null != properties) && (properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.debug"));
+
+    if ((null != properties) && (properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.wrap")))
     {
-      logFullDebug = true;
+      this.wrapBodyParts = Boolean.parseBoolean((String) properties.get("org.ccsds.moims.mo.mal.transport.gen.wrap"));
     }
     else
     {
-      logFullDebug = false;
+      this.wrapBodyParts = wrapBodyParts;
     }
-    
+
+    LOGGER.log(Level.INFO, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param protocol The protocol string.
+   * @param protocolDelim The delimiter to use for separating the protocol part in the URL
+   * @param serviceDelim The delimiter to use for separating the URL
+   * @param routingDelim The delimiter to use for separating the URL for routing
+   * @param supportsRouting True if routing is supported by the naming convention
+   * @param wrapBodyParts True is body parts should be wrapped in BLOBs
+   * @param factory The factory that created us.
+   * @param properties The QoS properties.
+   * @throws MALException On error.
+   */
+  public GENTransport(final String protocol,
+          final String protocolDelim,
+          final char serviceDelim,
+          final char routingDelim,
+          final boolean supportsRouting,
+          final boolean wrapBodyParts,
+          final MALTransportFactory factory,
+          final java.util.Map properties) throws MALException
+  {
+    this.factory = factory;
+    this.protocol = protocol;
+    this.supportsRouting = supportsRouting;
+    this.protocolDelim = protocolDelim;
+    this.serviceDelim = serviceDelim;
+    this.routingDelim = routingDelim;
+    streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
+
+    LOGGER.log(Level.INFO, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
+
+    // very crude and faulty test but it will do for testing
+    streamHasStrings = streamFactory.getClass().getName().contains("String");
+
+    logFullDebug = (null != properties) && (properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.debug"));
+
     if ((null != properties) && (properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.wrap")))
     {
-      this.wrapBodyParts = Boolean.parseBoolean((String)properties.get("org.ccsds.moims.mo.mal.transport.gen.wrap"));
+      this.wrapBodyParts = Boolean.parseBoolean((String) properties.get("org.ccsds.moims.mo.mal.transport.gen.wrap"));
     }
     else
     {
@@ -152,12 +202,12 @@ public abstract class GENTransport implements MALTransport, GENSender
   public void init() throws MALException
   {
     String protocolString = protocol;
-    if (protocol.contains("://"))
+    if (protocol.contains(":"))
     {
-      protocolString = protocol.substring(0, protocol.indexOf("://"));
+      protocolString = protocol.substring(0, protocol.indexOf(":"));
     }
 
-    uriBase = protocolString + "://" + createTransportAddress() + serviceDelim;
+    uriBase = protocolString + protocolDelim + createTransportAddress() + serviceDelim;
   }
 
   @Override
@@ -335,20 +385,13 @@ public abstract class GENTransport implements MALTransport, GENSender
     }
   }
 
-  private void receiveMessageThreadMain(final GENMessage msg, String smsg)
+  protected void receiveMessageThreadMain(final GENMessage msg, String smsg)
   {
     try
     {
       LOGGER.log(Level.INFO, "GEN Receiving and processing data : {0}", smsg);
 
-      String endpointUriPart = msg.getHeader().getURITo().getValue();
-      final int iFirst = endpointUriPart.indexOf(serviceDelim);
-      int iSecond = (supportsRouting ? endpointUriPart.indexOf(ROUTING_DELIM) : endpointUriPart.length());
-      if (0 > iSecond)
-      {
-        iSecond = endpointUriPart.length();
-      }
-      endpointUriPart = endpointUriPart.substring(iFirst + 1, iSecond);
+      String endpointUriPart = getRoutingPart(msg.getHeader().getURITo().getValue(), serviceDelim, routingDelim, supportsRouting);
 
       final GENEndpoint oSkel = (GENEndpoint) endpointMap.get(endpointUriPart);
 
@@ -373,10 +416,17 @@ public abstract class GENTransport implements MALTransport, GENSender
       final StringWriter wrt = new StringWriter();
       e.printStackTrace(new PrintWriter(wrt));
 
-      returnErrorMessage(null,
-              msg,
-              MALHelper.INTERNAL_ERROR_NUMBER,
-              "GEN Error occurred: " + e.toString() + " : " + wrt.toString());
+      try
+      {
+        returnErrorMessage(null,
+                msg,
+                MALHelper.INTERNAL_ERROR_NUMBER,
+                "GEN Error occurred: " + e.toString() + " : " + wrt.toString());
+      }
+      catch (MALException ex)
+      {
+        LOGGER.log(Level.SEVERE, "GEN Error occurred when return error data : {0}", e);
+      }
     }
   }
 
@@ -445,11 +495,12 @@ public abstract class GENTransport implements MALTransport, GENSender
    * @param oriMsg The original message
    * @param errorNumber The error number
    * @param errorMsg The error message.
+   * @throws org.ccsds.moims.mo.mal.MALException if cannot encode a response message
    */
   protected void returnErrorMessage(final GENEndpoint ep,
           final GENMessage oriMsg,
           final UInteger errorNumber,
-          final String errorMsg)
+          final String errorMsg) throws MALException
   {
     try
     {
@@ -467,8 +518,7 @@ public abstract class GENTransport implements MALTransport, GENSender
               || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._PUBLISH_DEREGISTER_STAGE)))
       {
         final MALMessageHeader srcHdr = oriMsg.getHeader();
-        final GENMessageHeader hdr = new GENMessageHeader(srcHdr.getURITo(),
-                srcHdr.getAuthenticationId(),
+        final GENMessage retMsg = (GENMessage) ep.createMessage(srcHdr.getAuthenticationId(),
                 srcHdr.getURIFrom(),
                 new Time(new Date().getTime()),
                 srcHdr.getQoSlevel(),
@@ -484,9 +534,9 @@ public abstract class GENTransport implements MALTransport, GENSender
                 srcHdr.getService(),
                 srcHdr.getOperation(),
                 srcHdr.getAreaVersion(),
-                Boolean.TRUE);
-        final GENMessage retMsg =
-                new GENMessage(oriMsg.isWrapBodyParts(), hdr, oriMsg.getQoSProperties(), null, errorNumber, new Union(errorMsg));
+                true,
+                oriMsg.getQoSProperties(),
+                errorNumber, new Union(errorMsg));
 
         sendMessage(ep, null, true, retMsg);
       }
@@ -511,6 +561,19 @@ public abstract class GENTransport implements MALTransport, GENSender
     }
 
     return localName;
+  }
+
+  protected static String getRoutingPart(String uriValue, char serviceDelim, char routingDelim, boolean supportsRouting)
+  {
+    String endpointUriPart = uriValue;
+    final int iFirst = endpointUriPart.indexOf(serviceDelim);
+    int iSecond = (supportsRouting ? endpointUriPart.indexOf(routingDelim) : endpointUriPart.length());
+    if (0 > iSecond)
+    {
+      iSecond = endpointUriPart.length();
+    }
+
+    return endpointUriPart.substring(iFirst + 1, iSecond);
   }
 
   /**
@@ -585,11 +648,11 @@ public abstract class GENTransport implements MALTransport, GENSender
   {
     return new GENMessage(wrapBodyParts, ios, getStreamFactory());
   }
-  
+
   /**
    * Overridable internal method for the creation of receiving messages.
    *
-   * @param ios The input packet to use.
+   * @param packet The input packet to use.
    * @return The new message.
    * @throws MALException on Error.
    */
@@ -597,12 +660,12 @@ public abstract class GENTransport implements MALTransport, GENSender
   {
     return new GENMessage(wrapBodyParts, packet, getStreamFactory());
   }
-  
+
   /**
    * Creates the part of the URL specific to this transport instance.
    *
    * @return The transport specific address part.
-   * @throws Exception On error
+   * @throws MALException On error
    */
   protected abstract String createTransportAddress() throws MALException;
 
