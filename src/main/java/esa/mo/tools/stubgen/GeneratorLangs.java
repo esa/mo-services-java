@@ -2677,9 +2677,8 @@ public abstract class GeneratorLangs extends GeneratorBase
           buf.append(getConfig().getBasePackage());
           buf.append("mal.");
           buf.append(getConfig().getStructureFolder());
-          buf.append(".Union(_");
-          buf.append(TypeUtils.shortTypeName(getConfig().getNamingSeparator(), ti.getTargetType()));
-          buf.append(i);
+          buf.append(".Union(");
+          buf.append(argName);
           buf.append(")");
         }
         else
