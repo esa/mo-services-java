@@ -54,21 +54,21 @@ public class StubGenerator extends AbstractMojo
   /**
    * The directory for XML files
    *
-   * @parameter expression="${basedir}/src/main/xml"
+   * @parameter default-value="${basedir}/src/main/xml"
    * @required
    */
   protected File xmlDirectory;
   /**
    * The directory for XML reference files
    *
-   * @parameter expression="${basedir}/src/main/xml-ref"
+   * @parameter default-value="${basedir}/src/main/xml-ref"
    * @required
    */
   protected File xmlRefDirectory;
   /**
    * The working directory to create the generated java source files.
    *
-   * @parameter expression="${project.build.directory}/generated-sources/stub"
+   * @parameter default-value="${project.build.directory}/generated-sources/stub"
    * @required
    */
   protected File outputDirectory;
@@ -81,13 +81,13 @@ public class StubGenerator extends AbstractMojo
   /**
    * Generate structures code?
    *
-   * @parameter expression="true"
+   * @parameter default-value="true"
    */
   protected boolean generateStructures;
   /**
    * Generate COM code?
    *
-   * @parameter expression="true"
+   * @parameter default-value="true"
    */
   protected boolean generateCOM;
   /**
@@ -282,10 +282,8 @@ public class StubGenerator extends AbstractMojo
     {
       final File xmlFiles[] = directory.listFiles();
 
-      for (int i = 0; i < xmlFiles.length; i++)
+      for (File file : xmlFiles)
       {
-        final File file = xmlFiles[i];
-
         try
         {
           if (file.isFile())
