@@ -46,7 +46,7 @@ public class TCPTransport extends InProcTransport implements InProcTransport.Ext
 
   public TCPTransport(String protocol, MALTransportFactory factory, java.util.Map properties) throws MALException
   {
-    super(protocol, '-', false, false, factory, properties);
+    super(protocol, factory, properties);
   }
 
   @Override
