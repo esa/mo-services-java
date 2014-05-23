@@ -205,7 +205,7 @@ public class GENEndpoint implements MALEndpoint
             op.getService().getArea().getVersion(),
             isErrorMessage),
             qosProperties,
-            op.getOperationStage(interactionStage).getElementShortForms(),
+            op,
             body);
   }
 
@@ -245,7 +245,7 @@ public class GENEndpoint implements MALEndpoint
             op.getService().getArea().getVersion(),
             isErrorMessage),
             qosProperties,
-            op.getOperationStage(interactionStage).getElementShortForms(),
+            op,
             body);
   }
 

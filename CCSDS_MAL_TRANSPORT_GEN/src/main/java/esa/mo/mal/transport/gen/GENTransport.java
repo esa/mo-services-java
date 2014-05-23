@@ -607,7 +607,7 @@ public abstract class GENTransport implements MALTransport, GENSender
    * @param data the packet.
    * @return the string representation.
    */
-  protected static String byteArrayToHexString(final byte[] data)
+  public static String byteArrayToHexString(final byte[] data)
   {
     final StringBuilder hexString = new StringBuilder();
     for (int i = 0; i < data.length; i++)
@@ -646,7 +646,7 @@ public abstract class GENTransport implements MALTransport, GENSender
    */
   protected GENMessage createMessage(final java.io.InputStream ios) throws MALException
   {
-    return new GENMessage(wrapBodyParts, ios, getStreamFactory());
+    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), ios, getStreamFactory());
   }
 
   /**
@@ -658,7 +658,7 @@ public abstract class GENTransport implements MALTransport, GENSender
    */
   protected GENMessage createMessage(final byte[] packet) throws MALException
   {
-    return new GENMessage(wrapBodyParts, packet, getStreamFactory());
+    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), packet, getStreamFactory());
   }
 
   /**

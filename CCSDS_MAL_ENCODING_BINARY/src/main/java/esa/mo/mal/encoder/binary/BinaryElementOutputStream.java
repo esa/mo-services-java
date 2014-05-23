@@ -48,7 +48,31 @@ public class BinaryElementOutputStream implements MALElementOutputStream
   public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException
   {
     final BinaryEncoder enc = createBinaryEncoder(dos);
-    enc.encodeNullableElement((Element) element);
+
+    if (null != ctx)
+    {
+      if (element == ctx.getHeader())
+      {
+        ((Element) element).encode(enc);
+      }
+      else
+      {
+        Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()];
+        if (null != sf)
+        {
+          ((Element) element).encode(enc);
+        }
+        else
+        {
+          enc.encodeNullableElement((Element) element);
+        }
+      }
+    }
+    else
+    {
+      enc.encodeNullableElement((Element) element);
+    }
+
     enc.close();
   }
 

@@ -119,7 +119,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     {
       checkBuffer(2);
       final int i = shiftOffsetAndReturnPrevious(2);
-      return java.nio.ByteBuffer.wrap(getBuf(), i, 2).getInt() & 0xFFFF;
+      return java.nio.ByteBuffer.wrap(getBuf(), i, 2).getShort() & 0xFFFF;
     }
 
     @Override

@@ -66,7 +66,6 @@
     <module>CCSDS_MAL_ENCODING_STRING</module>
     <module>CCSDS_MAL_ENCODING_BINARY</module>
     <module>CCSDS_MAL_ENCODING_GEN</module>
-    <module>CCSDS_MAL_ENCODING_BINARY_FIXED</module>
     <module>CCSDS_MAL_TRANSPORT_INPROC</module>
     <module>CCSDS_MAL_TRANSPORT_TCP</module>
   </modules>
@@ -89,6 +88,7 @@
       <modules>
         <module>CCSDS_MAL_TRANSPORT_FILE</module>
         <module>CCSDS_MAL_ENCODING_BINARY_SPLIT</module>
+        <module>CCSDS_MAL_ENCODING_BINARY_FIXED</module>
       </modules>  
     </profile>
   </profiles>

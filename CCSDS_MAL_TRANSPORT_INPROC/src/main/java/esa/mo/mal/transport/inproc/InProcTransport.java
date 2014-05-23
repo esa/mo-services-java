@@ -141,7 +141,7 @@ public class InProcTransport extends GENTransport
   {
     // this need to do the local look up
     String endpointUriPart = getRoutingPart(tmsg.url, serviceDelim, routingDelim, supportsRouting);
-    
+
     if (endpointMap.containsKey(endpointUriPart))
     {
       RLOGGER.log(Level.INFO, "InProc Sending data internally to {0}", new Object[]
@@ -164,20 +164,7 @@ public class InProcTransport extends GENTransport
         });
 
         // if not then encode and add to outgoing queue
-        byte[] buf = null;
-
-        // encode the message
-        try
-        {
-          final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-          final MALElementOutputStream enc = getStreamFactory().createOutputStream(baos);
-          tmsg.msg.encodeMessage(getStreamFactory(), enc, baos);
-          buf = baos.toByteArray();
-        }
-        catch (MALException ex)
-        {
-          ex.printStackTrace();
-        }
+        byte[] buf = encodeMessage(tmsg);
 
         RLOGGER.log(Level.INFO, "InProc Sending data to {0} : {1}", new Object[]
         {
@@ -198,6 +185,26 @@ public class InProcTransport extends GENTransport
                 "GEN Cannot find endpoint: " + endpointUriPart);
       }
     }
+  }
+
+  protected byte[] encodeMessage(final GENTransport.MsgPair tmsg)
+  {
+    byte[] buf = null;
+
+    // encode the message
+    try
+    {
+      final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      final MALElementOutputStream enc = getStreamFactory().createOutputStream(baos);
+      tmsg.msg.encodeMessage(getStreamFactory(), enc, baos);
+      buf = baos.toByteArray();
+    }
+    catch (MALException ex)
+    {
+      ex.printStackTrace();
+    }
+
+    return buf;
   }
 
   public static interface ExternalMessageSink

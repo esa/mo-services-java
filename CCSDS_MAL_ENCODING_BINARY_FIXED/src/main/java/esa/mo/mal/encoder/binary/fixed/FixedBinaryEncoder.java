@@ -46,6 +46,24 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     }
 
     @Override
+    public void addSignedLong(final long value) throws IOException
+    {
+      addUnsignedLong(value);
+    }
+
+    @Override
+    public void addSignedInt(final int value) throws IOException
+    {
+      addUnsignedInt(value);
+    }
+
+    @Override
+    public void addSignedShort(final short value) throws IOException
+    {
+      addUnsignedShort(value);
+    }
+
+    @Override
     public void addUnsignedLong(long value) throws IOException
     {
       directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array());

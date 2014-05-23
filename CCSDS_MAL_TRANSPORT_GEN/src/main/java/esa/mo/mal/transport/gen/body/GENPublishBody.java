@@ -24,6 +24,7 @@ import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
+import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
@@ -40,55 +41,63 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody
   /**
    * Constructor.
    *
+   * @param ctx The encoding context to use.
    * @param messageParts The message parts that compose the body.
    */
-  public GENPublishBody(final Object[] messageParts)
+  public GENPublishBody(final MALEncodingContext ctx, 
+          final Object[] messageParts)
   {
-    super(messageParts);
+    super(ctx, messageParts);
     offset = 0;
   }
 
   /**
    * Constructor.
    *
+   * @param ctx The encoding context to use.
    * @param messageParts The message parts that compose the body.
    * @param offset The offset in the message parts where the updates start.
    */
-  public GENPublishBody(final Object[] messageParts, final int offset)
+  public GENPublishBody(final MALEncodingContext ctx, 
+          final Object[] messageParts, final int offset)
   {
-    super(messageParts);
+    super(ctx, messageParts);
     this.offset = offset;
   }
 
   /**
    * Constructor.
    *
+   * @param ctx The encoding context to use.
    * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
    * @param encFactory The encoder stream factory to use.
    * @param encBodyElements The input stream that holds the encoded body parts.
    */
-  public GENPublishBody(final boolean wrappedBodyParts,
+  public GENPublishBody(final MALEncodingContext ctx, 
+          final boolean wrappedBodyParts,
           final MALElementStreamFactory encFactory,
           final MALElementInputStream encBodyElements)
   {
-    super(wrappedBodyParts, encFactory, encBodyElements);
+    super(ctx, wrappedBodyParts, encFactory, encBodyElements);
     offset = 0;
   }
 
   /**
    * Constructor.
    *
+   * @param ctx The encoding context to use.
    * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
    * @param encFactory The encoder stream factory to use.
    * @param encBodyElements The input stream that holds the encoded body parts.
    * @param offset The offset in the message parts where the updates start.
    */
-  public GENPublishBody(final boolean wrappedBodyParts,
+  public GENPublishBody(final MALEncodingContext ctx, 
+          final boolean wrappedBodyParts,
           final MALElementStreamFactory encFactory,
           final MALElementInputStream encBodyElements,
           final int offset)
   {
-    super(wrappedBodyParts, encFactory, encBodyElements);
+    super(ctx, wrappedBodyParts, encFactory, encBodyElements);
     this.offset = offset;
   }
 

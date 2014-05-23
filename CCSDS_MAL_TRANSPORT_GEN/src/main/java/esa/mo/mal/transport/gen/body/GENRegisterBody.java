@@ -23,6 +23,7 @@ package esa.mo.mal.transport.gen.body;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
+import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.transport.MALRegisterBody;
 
@@ -35,25 +36,29 @@ public class GENRegisterBody extends GENMessageBody implements MALRegisterBody
   /**
    * Constructor.
    *
+   * @param ctx The encoding context to use.
    * @param messageParts The message parts that compose the body.
    */
-  public GENRegisterBody(final Object[] messageParts)
+  public GENRegisterBody(final MALEncodingContext ctx, 
+          final Object[] messageParts)
   {
-    super(messageParts);
+    super(ctx, messageParts);
   }
 
   /**
    * Constructor.
    *
+   * @param ctx The encoding context to use.
    * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
    * @param encFactory The encoder stream factory to use.
    * @param encBodyElements The input stream that holds the encoded body parts.
    */
-  public GENRegisterBody(final boolean wrappedBodyParts,
+  public GENRegisterBody(final MALEncodingContext ctx, 
+          final boolean wrappedBodyParts,
           final MALElementStreamFactory encFactory,
           final MALElementInputStream encBodyElements)
   {
-    super(wrappedBodyParts, encFactory, encBodyElements);
+    super(ctx, wrappedBodyParts, encFactory, encBodyElements);
   }
 
   @Override

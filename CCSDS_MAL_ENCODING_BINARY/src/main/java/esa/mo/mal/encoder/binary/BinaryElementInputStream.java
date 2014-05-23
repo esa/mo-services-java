@@ -63,7 +63,30 @@ public class BinaryElementInputStream implements MALElementInputStream
   public Object readElement(final Object element, final MALEncodingContext ctx)
           throws IllegalArgumentException, MALException
   {
-    return dec.decodeNullableElement((Element) element);
+
+    if (null != ctx)
+    {
+      if (element == ctx.getHeader())
+      {
+        return dec.decodeElement((Element) element);
+      }
+      else
+      {
+        Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()];
+        if (null != sf)
+        {
+          return dec.decodeElement((Element) element);
+        }
+        else
+        {
+          return dec.decodeNullableElement((Element) element);
+        }
+      }
+    }
+    else
+    {
+      return dec.decodeNullableElement((Element) element);
+    }
   }
 
   @Override
