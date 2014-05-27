@@ -38,6 +38,16 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     super(new FixedStreamHolder(os));
   }
 
+  /**
+   * Constructor for derived classes that have their own stream holder implementation that should be used.
+   *
+   * @param os Output stream to write to.
+   */
+  protected FixedBinaryEncoder(final StreamHolder os)
+  {
+    super(os);
+  }
+
   protected static class FixedStreamHolder extends StreamHolder
   {
     public FixedStreamHolder(OutputStream outputStream)

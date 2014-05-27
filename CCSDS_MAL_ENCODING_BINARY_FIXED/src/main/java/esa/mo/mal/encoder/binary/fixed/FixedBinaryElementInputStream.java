@@ -20,6 +20,8 @@
  */
 package esa.mo.mal.encoder.binary.fixed;
 
+import esa.mo.mal.encoder.binary.BinaryDecoder;
+
 /**
  * Implements the MALElementInputStream interface for a fixed length binary encoding.
  */
@@ -44,5 +46,10 @@ public class FixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.Bin
   public FixedBinaryElementInputStream(final byte[] buf, final int offset)
   {
     super(new FixedBinaryDecoder(buf, offset));
+  }
+
+  protected FixedBinaryElementInputStream(FixedBinaryDecoder pdec)
+  {
+    super(pdec);
   }
 }
