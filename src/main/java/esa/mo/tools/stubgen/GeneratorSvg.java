@@ -20,6 +20,7 @@
  */
 package esa.mo.tools.stubgen;
 
+import static esa.mo.tools.stubgen.GeneratorDocument.splitString;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
@@ -47,6 +48,9 @@ import javax.xml.bind.JAXBException;
  */
 public class GeneratorSvg extends GeneratorDocument
 {
+  private boolean includeDescriptions = true;
+  private boolean includeIndexes = true;
+  private boolean splitOutSvg = false;
   private boolean includeCollapsedMessages = true;
   private boolean includeExpandedMessages = true;
 
@@ -77,6 +81,22 @@ public class GeneratorSvg extends GeneratorDocument
   {
     super.init(destinationFolderName, generateStructures, generateCOM, extraProperties);
 
+    if (extraProperties.containsKey("svg.includeDescriptiveText"))
+    {
+      includeDescriptions = Boolean.parseBoolean(extraProperties.get("svg.includeDescriptiveText"));
+    }
+
+    if (extraProperties.containsKey("svg.includeIndexes"))
+    {
+      includeIndexes = Boolean.parseBoolean(extraProperties.get("svg.includeIndexes"));
+    }
+
+    if (extraProperties.containsKey("svg.splitOutSvg"))
+    {
+      splitOutSvg = Boolean.parseBoolean(extraProperties.get("svg.splitOutSvg"));
+      System.out.println("svg.splitOutSvg: " + splitOutSvg);
+    }
+
     if (extraProperties.containsKey("svg.includeCollapsedMessages"))
     {
       includeCollapsedMessages = Boolean.parseBoolean(extraProperties.get("svg.includeCollapsedMessages"));
@@ -97,15 +117,16 @@ public class GeneratorSvg extends GeneratorDocument
 
       if ((!area.getName().equalsIgnoreCase(StdStrings.COM)) || (generateCOM()))
       {
-        SvgWriter svgFile = new SvgWriter(destinationFolderName, "output" + area.getName(), "xhtml");
-        SvgBufferWriter svgBuff = new SvgBufferWriter();
+        String outputName = "output" + area.getName();
+        SvgWriter svgFile = new SvgWriter(destinationFolderName, outputName, "xhtml", true);
+        SvgBufferWriter svgBuff = new SvgBufferWriter(destinationFolderName, outputName, true);
 
         getLog().info("Processing area: " + area.getName());
         svgBuff.addTitle(1, "Specification: ", createId(null, null), area.getName(), false);
         svgBuff.addComment(area.getComment());
 
         Set<Map.Entry<String, String>> svcTocMap = new LinkedHashSet();
-        SvgBufferWriter areaBodyBuff = new SvgBufferWriter();
+        SvgBufferWriter areaBodyBuff = new SvgBufferWriter(destinationFolderName, outputName, true);
 
         // create services
         for (ServiceType service : area.getService())
@@ -116,7 +137,7 @@ public class GeneratorSvg extends GeneratorDocument
           svcTocMap.add(new AbstractMap.SimpleEntry<String, String>(service.getName(), createXlink(null, service.getName(), null)));
 
           Set<Map.Entry<String, String>> opTocMap = new LinkedHashSet();
-          SvgBufferWriter serviceBodyBuff = new SvgBufferWriter();
+          SvgBufferWriter serviceBodyBuff = new SvgBufferWriter(destinationFolderName, outputName, true);
 
           ServiceSummary summary = createOperationElementList(service);
 
@@ -127,19 +148,25 @@ public class GeneratorSvg extends GeneratorDocument
 
             opTocMap.add(new AbstractMap.SimpleEntry<String, String>(op.getName(), createXlink(null, service.getName(), op.getName())));
 
-            drawOperationMessages(serviceBodyBuff, op);
+            drawOperationMessages(serviceBodyBuff, summary, op);
           }
 
           if (!opTocMap.isEmpty())
           {
-            areaBodyBuff.addIndex("Operations", 3, opTocMap);
+            if (includeIndexes)
+            {
+              areaBodyBuff.addIndex("Operations", 3, opTocMap);
+            }
             areaBodyBuff.appendBuffer(serviceBodyBuff.getBuffer());
           }
         }
 
         if (!svcTocMap.isEmpty())
         {
-          svgBuff.addIndex("Services", 2, svcTocMap);
+          if (includeIndexes)
+          {
+            svgBuff.addIndex("Services", 2, svcTocMap);
+          }
           svgBuff.appendBuffer(areaBodyBuff.getBuffer());
         }
 
@@ -201,7 +228,7 @@ public class GeneratorSvg extends GeneratorDocument
           }
         }
 
-        if (!indexMap.isEmpty())
+        if (!indexMap.isEmpty() && includeIndexes)
         {
           svgBuff.addIndex("Index", 1, indexMap.entrySet());
         }
@@ -213,55 +240,43 @@ public class GeneratorSvg extends GeneratorDocument
     }
   }
 
-  private void drawOperationMessages(SvgBaseWriter svgFile, OperationSummary op) throws IOException
+  private void drawOperationMessages(SvgBaseWriter svgFile, ServiceSummary summary, OperationSummary op) throws IOException
   {
     switch (op.getPattern())
     {
       case SEND_OP:
       {
-        svgFile.addTitle(4, "Telecommand application data:", null, "", false);
-        drawOperationTypes(svgFile, op.getArgTypes(), op.getArgComment());
+        drawOperationTypes(svgFile, summary, op, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "SEND");
         break;
       }
       case SUBMIT_OP:
       {
-        svgFile.addTitle(4, "Telecommand application data:", null, "", false);
-        drawOperationTypes(svgFile, op.getArgTypes(), op.getArgComment());
+        drawOperationTypes(svgFile, summary, op, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "SUBMIT");
         break;
       }
       case REQUEST_OP:
       {
-        svgFile.addTitle(4, "Telecommand application data:", null, "", false);
-        drawOperationTypes(svgFile, op.getArgTypes(), op.getArgComment());
-        svgFile.addTitle(4, "Response telemetry report application data:", null, "", false);
-        drawOperationTypes(svgFile, op.getRetTypes(), op.getRetComment());
+        drawOperationTypes(svgFile, summary, op, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "REQUEST");
+        drawOperationTypes(svgFile, summary, op, "Response telemetry report application data:", op.getRetTypes(), op.getRetComment(), op.getName(), "RESPONSE");
         break;
       }
       case INVOKE_OP:
       {
-        svgFile.addTitle(4, "Telecommand application data:", null, "", false);
-        drawOperationTypes(svgFile, op.getArgTypes(), op.getArgComment());
-        svgFile.addTitle(4, "Acknowledgement telemetry report application data:", null, "", false);
-        drawOperationTypes(svgFile, op.getAckTypes(), op.getAckComment());
-        svgFile.addTitle(4, "Response telemetry report application data:", null, "", false);
-        drawOperationTypes(svgFile, op.getRetTypes(), op.getRetComment());
+        drawOperationTypes(svgFile, summary, op, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "INVOKE");
+        drawOperationTypes(svgFile, summary, op, "Acknowledgement telemetry report application data:", op.getAckTypes(), op.getAckComment(), op.getName(), "INVOKE_ACK");
+        drawOperationTypes(svgFile, summary, op, "Response telemetry report application data:", op.getRetTypes(), op.getRetComment(), op.getName(), "INVOKE_RESPONSE");
         break;
       }
       case PROGRESS_OP:
       {
-        svgFile.addTitle(4, "Telecommand application data:", null, "", false);
-        drawOperationTypes(svgFile, op.getArgTypes(), op.getArgComment());
-        svgFile.addTitle(4, "Acknowledgement telemetry report application data:", null, "", false);
-        drawOperationTypes(svgFile, op.getAckTypes(), op.getAckComment());
-        svgFile.addTitle(4, "Progress telemetry report application data:", null, "", false);
-        drawOperationTypes(svgFile, op.getUpdateTypes(), op.getUpdateComment());
-        svgFile.addTitle(4, "Response telemetry report application data:", null, "", false);
-        drawOperationTypes(svgFile, op.getRetTypes(), op.getRetComment());
+        drawOperationTypes(svgFile, summary, op, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "PROGRESS");
+        drawOperationTypes(svgFile, summary, op, "Acknowledgement telemetry report application data:", op.getAckTypes(), op.getAckComment(), op.getName(), "PROGRESS_ACK");
+        drawOperationTypes(svgFile, summary, op, "Progress telemetry report application data:", op.getUpdateTypes(), op.getUpdateComment(), op.getName(), "PROGRESS_UPDATE");
+        drawOperationTypes(svgFile, summary, op, "Response telemetry report application data:", op.getRetTypes(), op.getRetComment(), op.getName(), "PROGRESS_RESPONSE");
         break;
       }
       case PUBSUB_OP:
       {
-        svgFile.addTitle(4, "Notify telemetry report application data:", null, "", false);
         List<esa.mo.tools.stubgen.specification.TypeInfo> types = new ArrayList<TypeInfo>();
         TypeReference subId = new TypeReference();
         subId.setArea("MAL");
@@ -279,7 +294,7 @@ public class GeneratorSvg extends GeneratorDocument
           refType.setList(Boolean.TRUE);
           types.add(TypeUtils.convertTypeReference(this, refType));
         }
-        drawOperationTypes(svgFile, types, op.getRetComment());
+        drawOperationTypes(svgFile, summary, op, "Notify telemetry report application data:", types, op.getRetComment(), op.getName(), "PUBSUB");
         break;
       }
 
@@ -374,8 +389,17 @@ public class GeneratorSvg extends GeneratorDocument
     indexMap.put(compName, createXlink(null, (service == null ? null : service.getName()), compName));
   }
 
-  private void drawOperationTypes(SvgBaseWriter svgFile, List<TypeInfo> types, String comment) throws IOException
+  private void drawOperationTypes(SvgBaseWriter svgFile, ServiceSummary summary, OperationSummary op, String title, List<TypeInfo> types, String comment, String name, String phase) throws IOException
   {
+    if (0 < types.size())
+    {
+      svgFile.addTitle(4, title, null, "", false);
+    }
+    else
+    {
+      svgFile.addTitle(4, title, null, " None", false);
+    }
+
     List<String> cmts = new LinkedList<String>();
     cmts.add(comment);
     for (TypeInfo e : types)
@@ -385,22 +409,32 @@ public class GeneratorSvg extends GeneratorDocument
 
     if (includeCollapsedMessages)
     {
-      svgFile.startDrawing();
-      for (TypeInfo e : types)
+      if (0 < types.size())
       {
-        drawOperationPart(svgFile, e);
-        cmts.add(e.getFieldComment());
+        SvgBaseWriter svgOutput = getSvgOutputFile(summary, op, name, phase, svgFile);
+        svgOutput.startDrawing();
+        for (TypeInfo e : types)
+        {
+          drawOperationPart(svgOutput, e);
+          cmts.add(e.getFieldComment());
+        }
+        svgOutput.endDrawing();
+        svgOutput.flush();
       }
-      svgFile.endDrawing();
     }
 
     if (includeExpandedMessages)
     {
-      TopContainer cnt = new TopContainer();
-      cnt.addOperationTypes(types);
-      cnt.expandType();
+      if (0 < types.size())
+      {
+        SvgBaseWriter svgOutput = getSvgOutputFile(summary, op, name, phase, svgFile);
+        TopContainer cnt = new TopContainer();
+        cnt.addOperationTypes(types);
+        cnt.expandType();
 
-      cnt.drawElement(svgFile, 1, 0, cnt.getDepth(0));
+        cnt.drawElement(svgOutput, 1, 0, cnt.getDepth(0));
+        svgOutput.flush();
+      }
     }
 
     svgFile.addComment(cmts);
@@ -514,6 +548,27 @@ public class GeneratorSvg extends GeneratorDocument
     {
       return "#" + serviceName + section;
     }
+  }
+
+  private SvgBaseWriter getSvgOutputFile(ServiceSummary service, OperationSummary op, String name, String phase, SvgBaseWriter mainSvgFile)
+  {
+    SvgBaseWriter rv = mainSvgFile;
+
+    if (splitOutSvg)
+    {
+      try
+      {
+        String filename = mainSvgFile.getClassName() + "_" + service.getService().getNumber() + "_" + op.getNumber() + "_" + name + "_" + phase;
+        rv = new SvgWriter(mainSvgFile.getFolder(), filename, "svg", false);
+        mainSvgFile.addComment(filename, true);
+      }
+      catch (IOException ex)
+      {
+        // nop
+      }
+    }
+
+    return rv;
   }
 
   private abstract class ContainerElement
@@ -878,35 +933,41 @@ public class GeneratorSvg extends GeneratorDocument
 
   private class SvgWriter extends SvgBaseWriter
   {
-    protected SvgWriter(String folder, String className, String ext) throws IOException
+    protected SvgWriter(String folder, String className, String ext, boolean withXhtml) throws IOException
     {
-      super(StubUtils.createLowLevelWriter(folder, className, ext));
+      super(folder, className, StubUtils.createLowLevelWriter(folder, className, ext), withXhtml);
 
       getLog().info("Creating file " + folder + " " + className + "." + ext);
 
-      getFile().append(addFileStatement(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>", false));
-      getFile().append(addFileStatement(0, "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">", false));
-      getFile().append(addFileStatement(0, "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">", false));
-      getFile().append(addFileStatement(1, "<head>", false));
-      getFile().append(addFileStatement(2, "<title></title>", false));
-      getFile().append(addFileStatement(1, "</head>", false));
-      getFile().append(addFileStatement(1, "<body>", false));
+      if (withXhtml)
+      {
+        getFile().append(addFileStatement(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>", false));
+        getFile().append(addFileStatement(0, "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">", false));
+        getFile().append(addFileStatement(0, "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">", false));
+        getFile().append(addFileStatement(1, "<head>", false));
+        getFile().append(addFileStatement(2, "<title></title>", false));
+        getFile().append(addFileStatement(1, "</head>", false));
+        getFile().append(addFileStatement(1, "<body>", false));
+      }
     }
 
     @Override
     public void flush() throws IOException
     {
-      getFile().append(addFileStatement(1, "</body>", false));
-      getFile().append(addFileStatement(0, "</html>", false));
+      if (withXhtml)
+      {
+        getFile().append(addFileStatement(1, "</body>", false));
+        getFile().append(addFileStatement(0, "</html>", false));
+      }
       getFile().flush();
     }
   }
 
   private class SvgBufferWriter extends SvgBaseWriter
   {
-    protected SvgBufferWriter()
+    protected SvgBufferWriter(String folder, String className, boolean withXhtml)
     {
-      super(new StringWriter());
+      super(folder, className, new StringWriter(), withXhtml);
     }
 
     protected StringBuffer getBuffer()
@@ -917,7 +978,10 @@ public class GeneratorSvg extends GeneratorDocument
 
   private abstract class SvgBaseWriter extends AbstractWriter
   {
+    private final String folder;
+    private final String className;
     private final Writer file;
+    protected final boolean withXhtml;
     private final StringBuffer tbuffer = new StringBuffer();
     private static final String PARENT_COLOUR = "grey";
     private static final String HEADER_COLOUR = "yellow";
@@ -935,9 +999,22 @@ public class GeneratorSvg extends GeneratorDocument
     private int maxWidth = 2;
     private int maxHeight = baseLine;
 
-    protected SvgBaseWriter(Writer file)
+    protected SvgBaseWriter(String folder, String className, Writer file, boolean withXhtml)
     {
+      this.folder = folder;
+      this.className = className;
       this.file = file;
+      this.withXhtml = withXhtml;
+    }
+
+    public String getFolder()
+    {
+      return folder;
+    }
+
+    public String getClassName()
+    {
+      return className;
     }
 
     protected void startDrawing() throws IOException
@@ -954,9 +1031,19 @@ public class GeneratorSvg extends GeneratorDocument
     {
       int w = (maxWidth * WIDTH) + 10;
       int h = maxHeight + 10;
-      file.append(addFileStatement(2, "<p><svg:svg version=\"1.1\" width=\"" + w + "px\" height=\"" + h + "px\">", false));
+
+      String prefix = "";
+      String postfix = "";
+
+      if (withXhtml)
+      {
+        prefix = "<p>";
+        postfix = "</p>";
+      }
+
+      file.append(addFileStatement(2, prefix + "<svg:svg version=\"1.1\" width=\"" + w + "px\" height=\"" + h + "px\">", false));
       file.append(tbuffer);
-      file.append(addFileStatement(2, "</svg:svg></p>", false));
+      file.append(addFileStatement(2, "</svg:svg>" + postfix, false));
     }
 
     protected void startNewLine()
@@ -986,25 +1073,49 @@ public class GeneratorSvg extends GeneratorDocument
 
     protected void addComment(List<String> cmts) throws IOException
     {
-      if (0 < cmts.size())
+      if (includeDescriptions)
       {
-        for (String str : cmts)
+        if (0 < cmts.size())
         {
-          addComment(str);
+          for (String str : cmts)
+          {
+            addComment(str);
+          }
         }
       }
     }
 
     protected void addComment(String text) throws IOException
     {
-      List<String> strings = splitString(null, text);
-      if (0 < strings.size())
+      if (includeDescriptions)
       {
-        for (String str : strings)
+        List<String> strings = splitString(null, text);
+        if (0 < strings.size())
         {
-          if (null != str)
+          for (String str : strings)
           {
-            file.append(addFileStatement(2, "<p>" + escape(str) + "</p>", false));
+            if (null != str)
+            {
+              file.append(addFileStatement(2, "<p>" + escape(str) + "</p>", false));
+            }
+          }
+        }
+      }
+    }
+
+    protected void addComment(String text, boolean override) throws IOException
+    {
+      if (override)
+      {
+        List<String> strings = splitString(null, text);
+        if (0 < strings.size())
+        {
+          for (String str : strings)
+          {
+            if (null != str)
+            {
+              file.append(addFileStatement(2, "<p>" + escape(str) + "</p>", false));
+            }
           }
         }
       }
@@ -1012,10 +1123,13 @@ public class GeneratorSvg extends GeneratorDocument
 
     protected void addFieldComment(String name, String text) throws IOException
     {
-      file.append(addFileStatement(2, "<p>", false));
-      file.append(addFileStatement(3, "<h4>" + name + ":</h4>", false));
-      file.append(addFileStatement(3, text, false));
-      file.append(addFileStatement(2, "</p>", false));
+      if (includeDescriptions)
+      {
+        file.append(addFileStatement(2, "<p>", false));
+        file.append(addFileStatement(3, "<h4>" + name + ":</h4>", false));
+        file.append(addFileStatement(3, text, false));
+        file.append(addFileStatement(2, "</p>", false));
+      }
     }
 
     protected void addSpan(int index, int count, String text) throws IOException

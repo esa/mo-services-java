@@ -629,7 +629,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
    */
   protected ServiceSummary createOperationElementList(ServiceType service)
   {
-    ServiceSummary summary = new ServiceSummary(StdStrings.COM.equalsIgnoreCase(service.getName()));
+    ServiceSummary summary = new ServiceSummary(service, StdStrings.COM.equalsIgnoreCase(service.getName()));
 
     // only load operations if this is not the COM service
     if (!summary.isComService())
