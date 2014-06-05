@@ -64,8 +64,11 @@
   </developers>
 
   <properties>
-    <extra.specification.version>1.0-SNAPSHOT</extra.specification.version>
-    <ccsds.specification.download.filter>**/ServiceDefMAL.xml, **/ServiceDefCOM.xml</ccsds.specification.download.filter>
+    <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
+    <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
+    <ccsds.specification.download.filter>**/ServiceDefMC.xml</ccsds.specification.download.filter>
+    <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
+    <ccsds.specification.download.ref-filter>**/ServiceDefMAL.xml, **/ServiceDefCOM.xml</ccsds.specification.download.ref-filter>
   </properties>
   
   <dependencies>
@@ -98,29 +101,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>download-service-xml</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.ccsds</groupId>
-                  <artifactId>MOXML</artifactId>
-                  <version>${ccsds.specification.version}</version>
-                  <type>jar</type>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                  <includes>**/ServiceDefMC.xml</includes>
-                </artifactItem>
-              </artifactItems>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

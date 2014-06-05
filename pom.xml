@@ -63,6 +63,7 @@
   <modules>
     <module>CCSDS_MAL_API</module>
     <module>CCSDS_COM_API</module>
+    <module>CCSDS_COMMON_API</module>
     <module>CCSDS_MC_API</module>
     <module>CCSDS_TEST_MAL_API</module>
     <module>CCSDS_TEST_COM_API</module>

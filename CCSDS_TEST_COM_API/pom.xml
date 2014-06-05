@@ -65,7 +65,12 @@
 
   <properties>
     <extra.specification.version>1.0-SNAPSHOT</extra.specification.version>
-    <ccsds.specification.download.filter>**/ServiceDefMAL.xml, **/ServiceDefCOM.xml</ccsds.specification.download.filter>
+    <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
+    <ccsds.specification.download.artifact>MOXML_Extra</ccsds.specification.download.artifact>
+    <ccsds.specification.download.version>${extra.specification.version}</ccsds.specification.download.version>
+    <ccsds.specification.download.filter>**/COMPrototype.xml</ccsds.specification.download.filter>
+    <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
+    <ccsds.specification.download.ref-filter>**/ServiceDefMAL.xml, **/ServiceDefCOM.xml</ccsds.specification.download.ref-filter>
   </properties>
   
   <dependencies>
@@ -98,29 +103,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>download-test-xml</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.ccsds</groupId>
-                  <artifactId>MOXML_Extra</artifactId>
-                  <version>${extra.specification.version}</version>
-                  <type>jar</type>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${esa.stubgen.xmlDirectory}</outputDirectory>
-                  <includes>**/COMPrototype.xml</includes>
-                </artifactItem>
-              </artifactItems>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

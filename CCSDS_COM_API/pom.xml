@@ -63,6 +63,13 @@
     </developer>
   </developers>
 
+  <properties>
+    <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
+    <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
+    <ccsds.specification.download.filter>**/ServiceDefCOM.xml</ccsds.specification.download.filter>
+    <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -88,29 +95,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>download-service-xml</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.ccsds</groupId>
-                  <artifactId>MOXML</artifactId>
-                  <version>${ccsds.specification.version}</version>
-                  <type>jar</type>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                  <includes>**/ServiceDefCOM.xml</includes>
-                </artifactItem>
-              </artifactItems>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
