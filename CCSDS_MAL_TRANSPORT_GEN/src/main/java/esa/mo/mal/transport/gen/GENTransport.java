@@ -497,7 +497,7 @@ public abstract class GENTransport implements MALTransport, GENSender
    * @param errorMsg The error message.
    * @throws org.ccsds.moims.mo.mal.MALException if cannot encode a response message
    */
-  protected void returnErrorMessage(final GENEndpoint ep,
+  protected void returnErrorMessage(GENEndpoint ep,
           final GENMessage oriMsg,
           final UInteger errorNumber,
           final String errorMsg) throws MALException
@@ -518,27 +518,33 @@ public abstract class GENTransport implements MALTransport, GENSender
               || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._PUBLISH_DEREGISTER_STAGE)))
       {
         final MALMessageHeader srcHdr = oriMsg.getHeader();
-        final GENMessage retMsg = (GENMessage) ep.createMessage(srcHdr.getAuthenticationId(),
-                srcHdr.getURIFrom(),
-                new Time(new Date().getTime()),
-                srcHdr.getQoSlevel(),
-                srcHdr.getPriority(),
-                srcHdr.getDomain(),
-                srcHdr.getNetworkZone(),
-                srcHdr.getSession(),
-                srcHdr.getSessionName(),
-                srcHdr.getInteractionType(),
-                new UOctet((short) (srcHdr.getInteractionStage().getValue() + 1)),
-                srcHdr.getTransactionId(),
-                srcHdr.getServiceArea(),
-                srcHdr.getService(),
-                srcHdr.getOperation(),
-                srcHdr.getAreaVersion(),
-                true,
-                oriMsg.getQoSProperties(),
-                errorNumber, new Union(errorMsg));
 
-        sendMessage(ep, null, true, retMsg);
+        if ((null == ep) && (0 < endpointMap.size()))
+        {
+          ep = endpointMap.entrySet().iterator().next().getValue();
+
+          final GENMessage retMsg = (GENMessage) ep.createMessage(srcHdr.getAuthenticationId(),
+                  srcHdr.getURIFrom(),
+                  new Time(new Date().getTime()),
+                  srcHdr.getQoSlevel(),
+                  srcHdr.getPriority(),
+                  srcHdr.getDomain(),
+                  srcHdr.getNetworkZone(),
+                  srcHdr.getSession(),
+                  srcHdr.getSessionName(),
+                  srcHdr.getInteractionType(),
+                  new UOctet((short) (srcHdr.getInteractionStage().getValue() + 1)),
+                  srcHdr.getTransactionId(),
+                  srcHdr.getServiceArea(),
+                  srcHdr.getService(),
+                  srcHdr.getOperation(),
+                  srcHdr.getAreaVersion(),
+                  true,
+                  oriMsg.getQoSProperties(),
+                  errorNumber, new Union(errorMsg));
+
+          sendMessage(ep, null, true, retMsg);
+        }
       }
     }
     catch (MALTransmitErrorException ex)
