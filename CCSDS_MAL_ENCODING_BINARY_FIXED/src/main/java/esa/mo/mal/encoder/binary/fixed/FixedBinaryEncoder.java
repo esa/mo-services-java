@@ -98,9 +98,9 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     }
 
     @Override
-    public void addUnsignedShort(short value) throws IOException
+    public void addUnsignedShort(int value) throws IOException
     {
-      directAdd(java.nio.ByteBuffer.allocate(2).putShort(value).array());
+      directAdd(java.nio.ByteBuffer.allocate(2).putShort((short)value).array());
     }
 
     @Override

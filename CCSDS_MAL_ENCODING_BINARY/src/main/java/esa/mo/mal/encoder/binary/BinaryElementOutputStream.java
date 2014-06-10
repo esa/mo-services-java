@@ -33,6 +33,7 @@ import org.ccsds.moims.mo.mal.structures.Element;
 public class BinaryElementOutputStream implements MALElementOutputStream
 {
   private final OutputStream dos;
+  private BinaryEncoder enc = null;
 
   /**
    * Constructor.
@@ -47,33 +48,19 @@ public class BinaryElementOutputStream implements MALElementOutputStream
   @Override
   public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException
   {
-    final BinaryEncoder enc = createBinaryEncoder(dos);
-
-    if (null != ctx)
+    if (null == enc)
     {
-      if (element == ctx.getHeader())
-      {
-        ((Element) element).encode(enc);
-      }
-      else
-      {
-        Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()];
-        if (null != sf)
-        {
-          ((Element) element).encode(enc);
-        }
-        else
-        {
-          enc.encodeNullableElement((Element) element);
-        }
-      }
+      this.enc = createBinaryEncoder(dos);
+    }
+
+    if ((null != ctx) && (element == ctx.getHeader()))
+    {
+      ((Element) element).encode(enc);
     }
     else
     {
       enc.encodeNullableElement((Element) element);
     }
-
-    enc.close();
   }
 
   @Override
@@ -95,6 +82,7 @@ public class BinaryElementOutputStream implements MALElementOutputStream
     try
     {
       dos.close();
+      enc.close();
     }
     catch (IOException ex)
     {

@@ -621,7 +621,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      outputStream.addUnsignedInt(value.getValue());
+      outputStream.addSignedInt(value.getValue());
     }
     catch (IOException ex)
     {
@@ -787,7 +787,7 @@ public class BinaryEncoder implements MALListEncoder
 
     public void addSignedShort(final short value) throws IOException
     {
-      addUnsignedShort((short) ((value << 1) ^ (value >> 15)));
+      addUnsignedInt((value << 1) ^ (value >> 31));
     }
 
     public void addUnsignedLong(long value) throws IOException
@@ -820,14 +820,9 @@ public class BinaryEncoder implements MALListEncoder
       addUnsignedInt(value);
     }
 
-    public void addUnsignedShort(short value) throws IOException
+    public void addUnsignedShort(int value) throws IOException
     {
-      if ((value & 0xFF80) != 0L)
-      {
-        directAdd((byte) ((value & 0x7F) | 0x80));
-        value >>>= 7;
-      }
-      directAdd((byte) (value & 0x7F));
+      addUnsignedInt(value);
     }
 
     public void addUnsignedShort8(short value) throws IOException

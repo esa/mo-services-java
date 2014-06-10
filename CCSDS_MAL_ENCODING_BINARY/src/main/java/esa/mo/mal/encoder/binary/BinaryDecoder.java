@@ -131,12 +131,7 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public String decodeNullableString() throws MALException
   {
-    if (sourceBuffer.getBool())
-    {
-      return sourceBuffer.getString();
-    }
-
-    return null;
+    return sourceBuffer.getString();
   }
 
   @Override
@@ -315,7 +310,7 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Short decodeShort() throws MALException
   {
-    return (short) sourceBuffer.getSignedShort();
+    return sourceBuffer.getSignedShort();
   }
 
   @Override
@@ -323,7 +318,7 @@ public class BinaryDecoder implements MALDecoder
   {
     if (sourceBuffer.getBool())
     {
-      return (short) sourceBuffer.getSignedShort();
+      return sourceBuffer.getSignedShort();
     }
 
     return null;
@@ -401,22 +396,8 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Attribute decodeAttribute() throws MALException
   {
-    return internalDecodeAttribute(sourceBuffer.get8());
-  }
+    final int typeval = sourceBuffer.get8();
 
-  @Override
-  public Attribute decodeNullableAttribute() throws MALException
-  {
-    if (sourceBuffer.getBool())
-    {
-      return internalDecodeAttribute(sourceBuffer.get8());
-    }
-
-    return null;
-  }
-
-  protected Attribute internalDecodeAttribute(final int typeval) throws MALException
-  {
     switch (typeval)
     {
       case Attribute._BLOB_TYPE_SHORT_FORM:
@@ -461,6 +442,17 @@ public class BinaryDecoder implements MALDecoder
   }
 
   @Override
+  public Attribute decodeNullableAttribute() throws MALException
+  {
+    if (sourceBuffer.getBool())
+    {
+      return decodeAttribute();
+    }
+
+    return null;
+  }
+
+  @Override
   public Element decodeElement(final Element element) throws IllegalArgumentException, MALException
   {
     return element.decode(this);
@@ -477,6 +469,10 @@ public class BinaryDecoder implements MALDecoder
     return null;
   }
 
+  /**
+   * Internal class that is used to hold the byte buffer. Derived classes should extend this (and replace it in the
+   * constructors) if they encode the fields differently from this encoding.
+   */
   protected static class BufferHolder
   {
     protected final java.io.InputStream inputStream;
@@ -501,9 +497,14 @@ public class BinaryDecoder implements MALDecoder
       this.contentLength = length;
     }
 
+    /**
+     * Ensures that we have loaded enough buffer from the input stream (if we are stream based) for the next read.
+     *
+     * @param requiredLength number of bytes required.
+     * @throws MALException if there is an error reading from the stream
+     */
     public void checkBuffer(final int requiredLength) throws MALException
     {
-      // ensure that we have loaded enough buffer from the input stream (if we are stream based) for the next read
       if (null != inputStream)
       {
         int existingContentRemaining = 0;
@@ -560,15 +561,32 @@ public class BinaryDecoder implements MALDecoder
       }
     }
 
+    /**
+     * Notification method that can be used by derived classes to notify them that the internal buffer has been
+     * reallocated.
+     *
+     * @param oldSize the old buffer size
+     */
     protected void bufferRealloced(int oldSize)
     {
     }
-    
+
+    /**
+     * Returns the internal byte buffer.
+     *
+     * @return the byte buffer
+     */
     public byte[] getBuf()
     {
       return buf;
     }
 
+    /**
+     * Adds a delta to the internal offset and returns the previous offset
+     *
+     * @param delta the delta to apply
+     * @return the previous offset
+     */
     public int shiftOffsetAndReturnPrevious(int delta)
     {
       int i = offset;
@@ -629,9 +647,7 @@ public class BinaryDecoder implements MALDecoder
 
     public short getSignedShort() throws MALException
     {
-      final int raw = getUnsignedShort();
-      final int temp = (((raw << 15) >> 15) ^ raw) >> 1;
-      return (short) (temp ^ (raw & (1 << 15)));
+      return (short) getSignedInt();
     }
 
     public long getUnsignedLong() throws MALException
@@ -670,23 +686,14 @@ public class BinaryDecoder implements MALDecoder
       return getUnsignedInt();
     }
 
-    public short getUnsignedShort() throws MALException
+    public int getUnsignedShort() throws MALException
     {
-      short value = 0;
-      int i = 0;
-      short b;
-      if (((b = get8()) & 0x80) != 0)
-      {
-        value |= (b & 0x7F) << i;
-        i += 7;
-      }
-
-      return (short) (value | (b << i));
+      return getUnsignedInt();
     }
 
     public short getUnsignedShort8() throws MALException
     {
-      return getUnsignedShort();
+      return (short) getUnsignedShort();
     }
 
     public boolean getBool() throws MALException

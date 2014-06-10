@@ -123,7 +123,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     }
 
     @Override
-    public short getUnsignedShort() throws MALException
+    public int getUnsignedShort() throws MALException
     {
       checkBuffer(2);
       final int i = shiftOffsetAndReturnPrevious(2);
@@ -134,6 +134,24 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     public short getUnsignedShort8() throws MALException
     {
       return (short) (get8() & 0xFF);
+    }
+
+    @Override
+    public short getSignedShort() throws MALException
+    {
+      return (short)getUnsignedShort();
+    }
+
+    @Override
+    public int getSignedInt() throws MALException
+    {
+      return getUnsignedInt();
+    }
+
+    @Override
+    public long getSignedLong() throws MALException
+    {
+      return getUnsignedLong();
     }
   }
 }

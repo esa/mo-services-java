@@ -20,8 +20,6 @@
  */
 package esa.mo.mal.encoder.binary.fixed;
 
-import esa.mo.mal.encoder.binary.BinaryDecoder;
-
 /**
  * Implements the MALElementInputStream interface for a fixed length binary encoding.
  */
