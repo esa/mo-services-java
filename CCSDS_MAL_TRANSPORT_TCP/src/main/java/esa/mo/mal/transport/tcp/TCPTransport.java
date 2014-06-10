@@ -35,7 +35,8 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
 /**
- *
+ * A simple point to point TCP/IP transport. It does not attempt any routing other than to send the encoded message down
+ * the socket.
  */
 public class TCPTransport extends InProcTransport implements InProcTransport.ExternalMessageSink
 {
@@ -44,6 +45,14 @@ public class TCPTransport extends InProcTransport implements InProcTransport.Ext
   private ServerSocket serverSocket;
   private Socket socket;
 
+  /**
+   * Constructor.
+   *
+   * @param protocol The protocol string.
+   * @param factory The factory that created us.
+   * @param properties The QoS properties.
+   * @throws MALException On error.
+   */
   public TCPTransport(String protocol, MALTransportFactory factory, java.util.Map properties) throws MALException
   {
     super(protocol, factory, properties);
@@ -53,8 +62,7 @@ public class TCPTransport extends InProcTransport implements InProcTransport.Ext
   public void init() throws MALException
   {
     this.setExternalSink(this);
-    
-    
+
     try
     {
       String serverHost = System.getProperty("org.ccsds.moims.mo.mal.transport.protocol.tcp.host");
@@ -140,11 +148,6 @@ public class TCPTransport extends InProcTransport implements InProcTransport.Ext
   @Override
   public void receiveMessage(byte[] buf)
   {
-//      LOGGER.log(Level.INFO, "TCP Sending data to {0} : {1}", new Object[]
-//      {
-//        tmsg.addr, tmsg.msg
-//      });
-
     try
     {
       socket.getOutputStream().write(buf);
