@@ -23,7 +23,6 @@ package esa.mo.mal.transport.inproc;
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENTransport;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,6 +82,11 @@ public class InProcTransport extends GENTransport
     super(protocol, protocolDelim, serviceDelim, routingDelim, supportsRouting, wrapBodyParts, factory, properties);
   }
 
+  /**
+   * Sets the sink object used for sending external messages to.
+   * 
+   * @param sink the external message sink.
+   */
   public void setExternalSink(ExternalMessageSink sink)
   {
     externalSink = sink;
@@ -137,7 +141,7 @@ public class InProcTransport extends GENTransport
   }
 
   @Override
-  protected void internalSendMessage(final GENTransport.MsgPair tmsg) throws Exception
+  protected void internalSendMessage(final GENTransport.MsgPair tmsg) throws MALException
   {
     // this need to do the local look up
     String endpointUriPart = getRoutingPart(tmsg.url, serviceDelim, routingDelim, supportsRouting);
@@ -187,6 +191,12 @@ public class InProcTransport extends GENTransport
     }
   }
 
+  /**
+   * Encodes a message into a byte array.
+   * 
+   * @param tmsg The message to encode.
+   * @return the encoded message.
+   */
   protected byte[] encodeMessage(final GENTransport.MsgPair tmsg)
   {
     byte[] buf = null;
@@ -207,8 +217,16 @@ public class InProcTransport extends GENTransport
     return buf;
   }
 
-  public static interface ExternalMessageSink
+  /**
+   * Applications should implement this to pass messages to external applications.
+   */
+  public interface ExternalMessageSink
   {
+    /**
+     * Called by this transport to deliver a message for external routing.
+     * 
+     * @param buf The external encoded message.
+     */
     void receiveMessage(byte[] buf);
   }
 }
