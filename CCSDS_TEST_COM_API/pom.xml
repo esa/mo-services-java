@@ -81,7 +81,6 @@
     <dependency> 
       <groupId>int.esa</groupId>
       <artifactId>CCSDS_COM_API</artifactId>
-      <version>${esa.api.version}</version>
     </dependency>
   </dependencies>
 
@@ -118,8 +117,16 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
+        <artifactId>maven-source-plugin</artifactId>
       </plugin>
-    </plugins>
+      <plugin> 
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId> 
+      </plugin>
+      <plugin> 
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId> 
+      </plugin>
+    </plugins> 
   </build>
 </project>
