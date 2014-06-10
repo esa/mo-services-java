@@ -398,6 +398,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
             Object sf = null;
             if (!ctx.getHeader().getIsErrorMessage())
             {
+              ctx.setBodyElementIndex(i);
               sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[i];
             }
             messageParts[i] = decodeBodyPart(benc, ctx, sf);
@@ -463,7 +464,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
 
         if (null != ef)
         {
-          rv = lenc.readElement(ef.createElement(), null);
+          rv = lenc.readElement(ef.createElement(), ctx);
         }
         else
         {
