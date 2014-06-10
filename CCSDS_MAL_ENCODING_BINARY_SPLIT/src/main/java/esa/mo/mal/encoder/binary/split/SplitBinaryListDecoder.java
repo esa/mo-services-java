@@ -33,7 +33,7 @@ public class SplitBinaryListDecoder extends SplitBinaryDecoder implements org.cc
    *
    * @param list List to decode into.
    * @param srcBuffer Buffer to manage.
-   * @throws MALException If cannot decode list size.
+   * @throws org.ccsds.moims.mo.mal.MALException If cannot decode list size.
    */
   public SplitBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer)
           throws org.ccsds.moims.mo.mal.MALException
