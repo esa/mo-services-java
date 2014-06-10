@@ -76,7 +76,7 @@ public abstract class TypeUtils
           }
           else
           {
-            ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName() + "List", argTypeStr + "List", false, getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
+            ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName() + "List", argTypeStr + "List", false, getTypeShortForm(tiSource, tr, argTypeStr + "List"), argVersionStr);
           }
         }
       }
