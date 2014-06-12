@@ -64,6 +64,7 @@
   </developers>
 
   <properties>
+    <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
     <esa.stubgen.xmlDirectory>${basedir}/src/main/resources</esa.stubgen.xmlDirectory>
     <assembly.mainClass>esa.mo.mal.demo.provider.DemoProviderGui</assembly.mainClass>
   </properties>
