@@ -91,6 +91,11 @@
       </dependency>
       <dependency>
         <groupId>int.esa</groupId>
+        <artifactId>CCSDS_COM_API</artifactId>
+        <version>${esa.api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>int.esa</groupId>
         <artifactId>CCSDS_MAL_IMPL</artifactId>
         <version>${esa.api.version}</version>
       </dependency>
@@ -162,57 +167,57 @@
             </execution>
           </executions>
         </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>2.6</version>
-            <executions>
-              <execution>
-                <id>download-xml</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <skip>${ccsds.specification.download.skip}</skip>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>${ccsds.specification.download.group}</groupId>
-                      <artifactId>${ccsds.specification.download.artifact}</artifactId>
-                      <version>${ccsds.specification.download.version}</version>
-                      <type>jar</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${ccsds.specification.download.directory}</outputDirectory>
-                      <includes>${ccsds.specification.download.filter}</includes>
-                    </artifactItem>
-                  </artifactItems>
-                  <overWriteSnapshots>true</overWriteSnapshots>
-                </configuration>
-              </execution>
-              <execution>
-                <id>download-ref-xml</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <skip>${ccsds.specification.download.ref-skip}</skip>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>${ccsds.specification.download.ref-group}</groupId>
-                      <artifactId>${ccsds.specification.download.ref-artifact}</artifactId>
-                      <version>${ccsds.specification.download.ref-version}</version>
-                      <type>jar</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${ccsds.specification.download.ref-directory}</outputDirectory>
-                      <includes>${ccsds.specification.download.ref-filter}</includes>
-                    </artifactItem>
-                  </artifactItems>
-                  <overWriteSnapshots>true</overWriteSnapshots>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.6</version>
+          <executions>
+            <execution>
+              <id>download-xml</id>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>unpack</goal>
+              </goals>
+              <configuration>
+                <skip>${ccsds.specification.download.skip}</skip>
+                <artifactItems>
+                  <artifactItem>
+                    <groupId>${ccsds.specification.download.group}</groupId>
+                    <artifactId>${ccsds.specification.download.artifact}</artifactId>
+                    <version>${ccsds.specification.download.version}</version>
+                    <type>jar</type>
+                    <overWrite>false</overWrite>
+                    <outputDirectory>${ccsds.specification.download.directory}</outputDirectory>
+                    <includes>${ccsds.specification.download.filter}</includes>
+                  </artifactItem>
+                </artifactItems>
+                <overWriteSnapshots>true</overWriteSnapshots>
+              </configuration>
+            </execution>
+            <execution>
+              <id>download-ref-xml</id>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>unpack</goal>
+              </goals>
+              <configuration>
+                <skip>${ccsds.specification.download.ref-skip}</skip>
+                <artifactItems>
+                  <artifactItem>
+                    <groupId>${ccsds.specification.download.ref-group}</groupId>
+                    <artifactId>${ccsds.specification.download.ref-artifact}</artifactId>
+                    <version>${ccsds.specification.download.ref-version}</version>
+                    <type>jar</type>
+                    <overWrite>false</overWrite>
+                    <outputDirectory>${ccsds.specification.download.ref-directory}</outputDirectory>
+                    <includes>${ccsds.specification.download.ref-filter}</includes>
+                  </artifactItem>
+                </artifactItems>
+                <overWriteSnapshots>true</overWriteSnapshots>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
@@ -322,7 +327,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
           <version>2.2.1</version>
-          <!--          <executions>
+          <executions>
             <execution>
               <id>attach-sources</id>
               <phase>deploy</phase>
@@ -330,7 +335,7 @@
                 <goal>jar-no-fork</goal>
               </goals> 
             </execution>
-          </executions>-->
+          </executions>
         </plugin>
         <plugin> 
           <groupId>org.apache.maven.plugins</groupId>
