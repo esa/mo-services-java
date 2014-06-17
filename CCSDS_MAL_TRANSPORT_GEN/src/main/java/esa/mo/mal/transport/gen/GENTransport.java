@@ -616,15 +616,19 @@ public abstract class GENTransport implements MALTransport, GENSender
   public static String byteArrayToHexString(final byte[] data)
   {
     final StringBuilder hexString = new StringBuilder();
-    for (int i = 0; i < data.length; i++)
+
+    if (null != data)
     {
-      final String hex = Integer.toHexString(0xFF & data[i]);
-      if (hex.length() == 1)
+      for (int i = 0; i < data.length; i++)
       {
-        // could use a for loop, but we're only dealing with a single byte
-        hexString.append('0');
+        final String hex = Integer.toHexString(0xFF & data[i]);
+        if (hex.length() == 1)
+        {
+          // could use a for loop, but we're only dealing with a single byte
+          hexString.append('0');
+        }
+        hexString.append(hex);
       }
-      hexString.append(hex);
     }
 
     return hexString.toString();
