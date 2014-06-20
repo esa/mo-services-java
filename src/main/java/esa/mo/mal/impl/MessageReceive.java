@@ -86,9 +86,9 @@ public class MessageReceive implements MALMessageListener
   @Override
   public void onMessages(final MALEndpoint callingEndpoint, final MALMessage[] msgList)
   {
-    for (int i = 0; i < msgList.length; i++)
+    for (MALMessage msgList1 : msgList)
     {
-      onMessage(callingEndpoint, msgList[i]);
+      onMessage(callingEndpoint, msgList1);
     }
   }
 
@@ -106,7 +106,7 @@ public class MessageReceive implements MALMessageListener
     try
     {
       msg = securityManager.check(msg);
-      
+
       short stage = -1;
       UOctet oStage = msg.getHeader().getInteractionStage();
       if (null != oStage)
@@ -397,22 +397,34 @@ public class MessageReceive implements MALMessageListener
     // find relevant broker
     final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
 
-    if (msg.getBody() instanceof MALRegisterBody)
+    if (null != brokerHandler)
     {
-      // update register list
-      final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
-      brokerHandler.addSubscriber(msg.getHeader().getURIFrom().getValue());
-      brokerHandler.getBrokerImpl().getHandler().handleRegister(interaction, (MALRegisterBody) msg.getBody());
+      if (msg.getBody() instanceof MALRegisterBody)
+      {
+        // update register list
+        final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
+        brokerHandler.addSubscriber(msg.getHeader().getURIFrom().getValue());
+        brokerHandler.getBrokerImpl().getHandler().handleRegister(interaction, (MALRegisterBody) msg.getBody());
 
-      // because we don't pass this upwards, we have to generate the ack
-      sender.returnResponse(address,
-              transId,
-              msg.getHeader(),
-              msg.getHeader().getQoSlevel(),
-              MALPubSubOperation.REGISTER_ACK_STAGE,
-              true,
-              interaction.getOperation(),
-              (Object[]) null);
+        // because we don't pass this upwards, we have to generate the ack
+        sender.returnResponse(address,
+                transId,
+                msg.getHeader(),
+                msg.getHeader().getQoSlevel(),
+                MALPubSubOperation.REGISTER_ACK_STAGE,
+                true,
+                interaction.getOperation(),
+                (Object[]) null);
+      }
+      else
+      {
+        sender.returnError(address,
+                transId,
+                msg.getHeader(),
+                MALPubSubOperation.REGISTER_ACK_STAGE,
+                new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER,
+                        new Union("Body of register message must be of type Subscription")));
+      }
     }
     else
     {
@@ -420,8 +432,8 @@ public class MessageReceive implements MALMessageListener
               transId,
               msg.getHeader(),
               MALPubSubOperation.REGISTER_ACK_STAGE,
-              new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER,
-              new Union("Body of register message must be of type Subscription")));
+              new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
+                      new Union("Broker unknown at this address")));
     }
   }
 
@@ -433,21 +445,33 @@ public class MessageReceive implements MALMessageListener
     // find relevant broker
     final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
 
-    if (msg.getBody() instanceof MALPublishRegisterBody)
+    if (null != brokerHandler)
     {
-      // update register list
-      final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
-      brokerHandler.getBrokerImpl().getHandler().handlePublishRegister(interaction, (MALPublishRegisterBody) msg.getBody());
+      if (msg.getBody() instanceof MALPublishRegisterBody)
+      {
+        // update register list
+        final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
+        brokerHandler.getBrokerImpl().getHandler().handlePublishRegister(interaction, (MALPublishRegisterBody) msg.getBody());
 
-      // need to use QOSlevel and priority from original publish register
-      final QoSLevel lvl = brokerHandler.getBrokerImpl().getProviderQoSLevel(msg.getHeader());
+        // need to use QOSlevel and priority from original publish register
+        final QoSLevel lvl = brokerHandler.getBrokerImpl().getProviderQoSLevel(msg.getHeader());
 
-      // because we don't pass this upwards, we have to generate the ack
-      sender.returnResponse(address,
-              transId,
-              msg.getHeader(),
-              lvl,
-              MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, true, interaction.getOperation(), (Object[]) null);
+        // because we don't pass this upwards, we have to generate the ack
+        sender.returnResponse(address,
+                transId,
+                msg.getHeader(),
+                lvl,
+                MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, true, interaction.getOperation(), (Object[]) null);
+      }
+      else
+      {
+        sender.returnError(address,
+                transId,
+                msg.getHeader(),
+                MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE,
+                new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER,
+                        new Union("Body of publish register message must be of type EntityKeyList")));
+      }
     }
     else
     {
@@ -455,8 +479,8 @@ public class MessageReceive implements MALMessageListener
               transId,
               msg.getHeader(),
               MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE,
-              new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER,
-              new Union("Body of publish register message must be of type EntityKeyList")));
+              new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
+                      new Union("Broker unknown at this address")));
     }
   }
 
@@ -493,43 +517,55 @@ public class MessageReceive implements MALMessageListener
       // find relevant broker
       final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
 
-      if (msg.getBody() instanceof MALPublishBody)
+      if (null != brokerHandler)
       {
-        try
+        if (msg.getBody() instanceof MALPublishBody)
         {
-          final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(),
-                  msg.getHeader().getTransactionId());
-          final MALInteraction interaction =
-                  new PubSubInteractionImpl(sender, address, transId, msg);
-          brokerHandler.getBrokerImpl().getHandler().handlePublish(interaction, (MALPublishBody) msg.getBody());
+          try
+          {
+            final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(),
+                    msg.getHeader().getTransactionId());
+            final MALInteraction interaction
+                    = new PubSubInteractionImpl(sender, address, transId, msg);
+            brokerHandler.getBrokerImpl().getHandler().handlePublish(interaction, (MALPublishBody) msg.getBody());
+          }
+          catch (MALInteractionException ex)
+          {
+            sender.returnError(address,
+                    msg.getHeader().getTransactionId(),
+                    msg.getHeader(),
+                    MALPubSubOperation.PUBLISH_STAGE,
+                    ex.getStandardError());
+          }
+          catch (MALException ex)
+          {
+            sender.returnError(address,
+                    msg.getHeader().getTransactionId(),
+                    msg.getHeader(),
+                    MALPubSubOperation.PUBLISH_STAGE,
+                    ex);
+          }
         }
-        catch (MALInteractionException ex)
+        else
         {
+          MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                  "Unexpected body type for PUBLISH: {0}", msg.getHeader().getURITo());
           sender.returnError(address,
                   msg.getHeader().getTransactionId(),
                   msg.getHeader(),
                   MALPubSubOperation.PUBLISH_STAGE,
-                  ex.getStandardError());
-        }
-        catch (MALException ex)
-        {
-          sender.returnError(address,
-                  msg.getHeader().getTransactionId(),
-                  msg.getHeader(),
-                  MALPubSubOperation.PUBLISH_STAGE,
-                  ex);
+                  new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER,
+                          new Union("Body of publish message must be of type UpdateList")));
         }
       }
       else
       {
-        MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                "Unexpected body type for PUBLISH: {0}", msg.getHeader().getURITo());
         sender.returnError(address,
                 msg.getHeader().getTransactionId(),
                 msg.getHeader(),
                 MALPubSubOperation.PUBLISH_STAGE,
-                new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER,
-                new Union("Body of publish message must be of type UpdateList")));
+                new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
+                        new Union("Broker unknown at this address")));
       }
     }
   }
@@ -593,29 +629,41 @@ public class MessageReceive implements MALMessageListener
     // find relevant broker
     final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
 
-    try
+    if (null != brokerHandler)
     {
-      // update register list
-      final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
-      brokerHandler.getBrokerImpl().getHandler().handleDeregister(interaction, (MALDeregisterBody) msg.getBody());
-      brokerHandler.removeSubscriber(msg.getHeader().getURIFrom().getValue());
+      try
+      {
+        // update register list
+        final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
+        brokerHandler.getBrokerImpl().getHandler().handleDeregister(interaction, (MALDeregisterBody) msg.getBody());
+        brokerHandler.removeSubscriber(msg.getHeader().getURIFrom().getValue());
 
-      // because we don't pass this upwards, we have to generate the ack
-      sender.returnResponse(address,
-              transId,
-              msg.getHeader(),
-              msg.getHeader().getQoSlevel(),
-              MALPubSubOperation.DEREGISTER_ACK_STAGE,
-              true,
-              interaction.getOperation(),
-              (Object[]) null);
+        // because we don't pass this upwards, we have to generate the ack
+        sender.returnResponse(address,
+                transId,
+                msg.getHeader(),
+                msg.getHeader().getQoSlevel(),
+                MALPubSubOperation.DEREGISTER_ACK_STAGE,
+                true,
+                interaction.getOperation(),
+                (Object[]) null);
+      }
+      catch (MALException ex)
+      {
+        sender.returnError(address,
+                transId,
+                msg.getHeader(),
+                MALPubSubOperation.DEREGISTER_ACK_STAGE, ex);
+      }
     }
-    catch (MALException ex)
+    else
     {
       sender.returnError(address,
               transId,
               msg.getHeader(),
-              MALPubSubOperation.DEREGISTER_ACK_STAGE, ex);
+              MALPubSubOperation.DEREGISTER_ACK_STAGE,
+              new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
+                      new Union("Broker unknown at this address")));
     }
   }
 
@@ -627,23 +675,35 @@ public class MessageReceive implements MALMessageListener
     // find relevant broker
     final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
 
-    // get the correct qos for the dergister
-    QoSLevel lvl = brokerHandler.getBrokerImpl().getProviderQoSLevel(msg.getHeader());
-    if (null == lvl)
+    if (null != brokerHandler)
     {
-      lvl = msg.getHeader().getQoSlevel();
+      // get the correct qos for the dergister
+      QoSLevel lvl = brokerHandler.getBrokerImpl().getProviderQoSLevel(msg.getHeader());
+      if (null == lvl)
+      {
+        lvl = msg.getHeader().getQoSlevel();
+      }
+
+      // update register list
+      final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
+      brokerHandler.getBrokerImpl().getHandler().handlePublishDeregister(interaction);
+
+      // because we don't pass this upwards, we have to generate the ack
+      sender.returnResponse(address,
+              transId,
+              msg.getHeader(),
+              lvl,
+              MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, true, interaction.getOperation(), (Object[]) null);
     }
-
-    // update register list
-    final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
-    brokerHandler.getBrokerImpl().getHandler().handlePublishDeregister(interaction);
-
-    // because we don't pass this upwards, we have to generate the ack
-    sender.returnResponse(address,
-            transId,
-            msg.getHeader(),
-            lvl,
-            MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, true, interaction.getOperation(), (Object[]) null);
+    else
+    {
+      sender.returnError(address,
+              transId,
+              msg.getHeader(),
+              MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE,
+              new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
+                      new Union("Broker unknown at this address")));
+    }
   }
 
   private Address lookupAddress(final MALEndpoint callingEndpoint, final MALMessage msg)
@@ -795,11 +855,7 @@ public class MessageReceive implements MALMessageListener
       {
         return false;
       }
-      if ((this.second == null) ? (other.second != null) : !this.second.equals(other.second))
-      {
-        return false;
-      }
-      return true;
+      return !((this.second == null) ? (other.second != null) : !this.second.equals(other.second));
     }
 
     @Override
