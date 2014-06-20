@@ -170,7 +170,7 @@ public class InProcTransport extends GENTransport
         // if not then encode and add to outgoing queue
         byte[] buf = encodeMessage(tmsg);
 
-        RLOGGER.log(Level.INFO, "InProc Sending data to {0} : {1}", new Object[]
+        RLOGGER.log(Level.INFO, "InProc Sending data remotely to {0} : {1}", new Object[]
         {
           tmsg.url, packetToString(buf)
         });
