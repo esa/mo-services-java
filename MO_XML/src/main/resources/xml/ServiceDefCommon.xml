@@ -218,5 +218,116 @@
         </mal:composite>
       </mal:dataTypes>
     </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Login" number="2"
+                 comment="The Login service provides the facility for authentication information to be provided.&#xA;Operators log in with a configured role; the meaning of a specific role is mission-specific, however it is expected that a specific role allocates them privileges to invoke operations on mission operation services.&#xA;This service is closely tied to the Access Control aspect of the MAL. The Login service is used primarily to authenticate a user with an implementation-specific authentication system; the result of this is used by the MAL in all messages to authenticate sent messages.&#xA;The form in which the password is sent to the Login service provider must be agreed upon before hand and is dependent on the security system implemented. For example, most security implementations do not recommend the use of plain text passwords but rather some encrypted version of the password. For this reason the contents of the messages sent between the login service consumer and provider during authentication handshaking are implementation-specific.&#xA;">
+      <mal:capabilitySet number="1">
+        <mal:requestIP name="login" number="1" supportInReplay="false"
+                       comment="The login operation allows an operator to log in to the system. An operator can log in more than once by using a different role; however, a specific implementation may place limits on the number of operators that may use a specific role, and in that case will fail the login operation.&#xA;">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="opDetails"
+                         comment="The operation shall take a Profile structure that contains the details of the operator and role.&#xA;If the username field is either NULL, the wildcard '*', or empty an INVALID error shall be returned.&#xA;If the role field is either the wildcard '*' or empty an INVALID error shall be returned.&#xA;The role field may be NULL if roles are not used by the system.&#xA;An UNKNOWN error shall be returned if the username and role combination do not match an existing definition.&#xA;A DUPLICATE error shall be returned if the username and role combination is currently in use.&#xA;A TOO_MANY error shall be returned if the username or role are already used and exceed the permitted maximum usage value (implementation dependent).&#xA;">
+                <mal:type name="Profile" service="Login" area="Common"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="authId"
+                         comment="The operation shall return a Blob token that is used as the authenticationId field in future messages by the MAL for authentication. The token is specific to the operator and role in use.&#xA;">
+                <mal:type name="Blob" area="MAL"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Submitted profile contains invalid values.">
+              <mal:type name="INVALID" area="COM"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Role concurrent session limit count exceeded.">
+              <mal:type name="TOO_MANY" area="MAL"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Unknown operator/role/password combination.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:requestIP>
+        <mal:submitIP name="logout" number="2" supportInReplay="false"
+                      comment="The logout operations allows an operator to log out from the system. No information is passed in the message as the MAL authentication Id is enough to identify the login occurrence.&#xA;">
+          <mal:messages>
+            <mal:submit comment="Not used."/>
+          </mal:messages>
+        </mal:submitIP>
+        <mal:requestIP name="reportRoles" number="3" supportInReplay="false"
+                       comment="The reportRoles operation returns the list of available roles for a specific operator. This operation is expected to be called before an operator logs in so that the software can provide a list of possible roles.&#xA;">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="opDetails"
+                         comment="The operation shall take a Profile structure that contains the details of the operator.&#xA;If the username field is either NULL, the wildcard '*', or empty an INVALID error shall be returned.&#xA;The role field shall be ignored.&#xA;An UNKNOWN error shall be returned if the username and password combination do not match an existing definition.&#xA;">
+                <mal:type name="Profile" service="Login" area="Common"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="permittedRoles"
+                         comment="The operation shall return a list of roles that are permitted for the user.&#xA;">
+                <mal:type list="true" name="Identifier" area="MAL"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Unknown operator/password combination.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Submitted profile contains invalid values.">
+              <mal:type name="INVALID" area="COM"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="2">
+        <mal:requestIP name="handover" number="4" supportInReplay="false"
+                       comment="The handover operation allows an existing login context to be transferred to a new login. Two cases are expected here, the first is where an operator uses this operation to change the role that they are using, and the second is where an operations context is handed over to another operator.&#xA;">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="newOpDetails"
+                         comment="The operation shall take a Profile structure that contains the details of the new operator and role.&#xA;If the username field is either NULL, the wildcard '*', or empty an INVALID error shall be returned.&#xA;If the role field is either the wildcard '*' or empty an INVALID error shall be returned.&#xA;The role field may be NULL if roles are not used by the system.&#xA;An UNKNOWN error shall be returned if the username and role combination do not match an existing definition.&#xA;A DUPLICATE error shall be returned if the username and role combination is currently in use.&#xA;A TOO_MANY error shall be returned if the username or role are already used and exceed the permitted maximum usage value (implementation dependent).&#xA;The maximum usage check shall take into account the fact that current operator/role combination will be logged out after the handover operation completes.&#xA;">
+                <mal:type name="Profile" service="Login" area="Common"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="newAuthId"
+                         comment="The operation shall return a Blob token that is used as the authenticationId field in future messages by the MAL for authentication. The token is specific to the new operator and role in use.&#xA;">
+                <mal:type name="Blob" area="MAL"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Unknown operator/role/password combination.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Submitted profile contains invalid values.">
+              <mal:type name="INVALID" area="COM"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Role concurrent session limit count exceeded.">
+              <mal:type name="TOO_MANY" area="MAL"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:composite name="Profile" shortFormPart="1"
+                       comment="The Profile structure contains details of the operator who is logging on to take a specified role. The password will be used to verify the identity of the operator.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="userName" canBeNull="false" comment="The name of the user.&#xA;">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="role" comment="The role of the user.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="password" comment="The password of the user.">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+    </mal:service>
   </mal:area>
 </mal:specification>
