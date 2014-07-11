@@ -470,6 +470,24 @@ public class BinaryDecoder implements MALDecoder
   }
 
   /**
+   * Returns the remaining data of the input stream that has not been used for decoding for wrapping in a MALEncodedBody
+   * class.
+   *
+   * @return the unused body data.
+   * @throws MALException if there is an error.
+   */
+  protected byte[] getRemainingEncodedData() throws MALException
+  {
+//    preLoadBuffer();
+//    while (loadExtraBuffer())
+//    {
+//      // do nothing, just loading in the complete message
+//    }
+
+    return Arrays.copyOfRange(sourceBuffer.buf, sourceBuffer.offset, sourceBuffer.contentLength);
+  }
+
+  /**
    * Internal class that is used to hold the byte buffer. Derived classes should extend this (and replace it in the
    * constructors) if they encode the fields differently from this encoding.
    */

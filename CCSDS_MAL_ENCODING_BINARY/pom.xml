@@ -63,6 +63,13 @@
     </developer>
   </developers>
 
+  <dependencies>
+    <dependency>
+      <groupId>int.esa</groupId>
+      <artifactId>CCSDS_MAL_ENCODING_GEN</artifactId>
+    </dependency>
+  </dependencies>
+  
   <build>
     <resources>
       <resource>

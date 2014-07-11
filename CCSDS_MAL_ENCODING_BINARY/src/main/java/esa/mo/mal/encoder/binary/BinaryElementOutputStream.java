@@ -20,17 +20,17 @@
  */
 package esa.mo.mal.encoder.binary;
 
+import esa.mo.mal.encoder.gen.GENElementOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Element;
 
 /**
  * Implements the MALElementInputStream interface for a binary encoding.
  */
-public class BinaryElementOutputStream implements MALElementOutputStream
+public class BinaryElementOutputStream implements GENElementOutputStream
 {
   private final OutputStream dos;
   private BinaryEncoder enc = null;
