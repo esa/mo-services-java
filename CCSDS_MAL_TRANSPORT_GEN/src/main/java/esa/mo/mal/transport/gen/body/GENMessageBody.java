@@ -35,9 +35,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import org.ccsds.moims.mo.mal.MALArea;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALElementFactory;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
@@ -49,6 +51,7 @@ import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Implementation of the MALMessageBody interface.
@@ -187,6 +190,20 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
       try
       {
         lowLevelOutputStream.write(((MALEncodedBody) messageParts[0]).getEncodedBody().getValue());
+        lowLevelOutputStream.flush();
+      }
+      catch (IOException ex)
+      {
+        throw new MALException("MAL encoded body encoding error", ex);
+      }
+    }
+    else if (!decodedBody)
+    {
+      enc.flush();
+
+      try
+      {
+        lowLevelOutputStream.write(getEncodedBody().getEncodedBody().getValue());
         lowLevelOutputStream.flush();
       }
       catch (IOException ex)
@@ -365,6 +382,20 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
 
       try
       {
+        if (null == ctx.getOperation())
+        {
+          MALMessageHeader header = ctx.getHeader();
+          MALArea area = MALContextFactory.lookupArea(header.getServiceArea(), header.getAreaVersion());
+          if (null != area)
+          {
+            MALService service = area.getServiceByNumber(header.getService());
+            if (null != service)
+            {
+              ctx.setOperation(service.getOperationByNumber(header.getOperation()));
+            }
+          }
+        }
+
         if (ctx.getHeader().getIsErrorMessage())
         {
           bodyPartCount = 2;

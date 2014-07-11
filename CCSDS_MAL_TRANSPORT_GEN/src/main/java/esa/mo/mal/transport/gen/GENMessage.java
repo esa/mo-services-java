@@ -31,10 +31,15 @@ import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.TreeMap;
+import org.ccsds.moims.mo.mal.MALArea;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
+import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
@@ -51,9 +56,9 @@ public class GENMessage implements MALMessage, java.io.Serializable
 {
   protected final GENMessageHeader header;
   protected final GENMessageBody body;
-  protected final MALOperation operation;
   protected final Map qosProperties;
   protected final boolean wrapBodyParts;
+  protected MALOperation operation = null;
   private static final long serialVersionUID = 222222222222222L;
 
   /**
@@ -62,21 +67,36 @@ public class GENMessage implements MALMessage, java.io.Serializable
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
    * @param header The message header to use.
    * @param qosProperties The QoS properties for this message.
-   * @param operation The details of the operation being encoding.
+   * @param operation The details of the operation being encoding, can be null.
    * @param body the body of the message.
+   * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation is unknown.
    */
   public GENMessage(final boolean wrapBodyParts,
           final GENMessageHeader header,
           final Map qosProperties,
           final MALOperation operation,
-          final Object... body)
+          final Object... body) throws MALInteractionException
   {
     this.header = header;
     if (null == operation)
     {
-      this.operation = MALContextFactory.lookupArea(this.header.getServiceArea(), this.header.getAreaVersion())
-              .getServiceByNumber(this.header.getService())
-              .getOperationByNumber(this.header.getOperation());
+      MALArea area = MALContextFactory.lookupArea(this.header.getServiceArea(), this.header.getAreaVersion());
+      if (null == area)
+      {
+        throw new MALInteractionException(new MALStandardError(MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER, null));
+      }
+
+      MALService service = area.getServiceByNumber(this.header.getService());
+      if (null == service)
+      {
+        throw new MALInteractionException(new MALStandardError(MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
+      }
+
+      this.operation = service.getOperationByNumber(this.header.getOperation());
+      if (null == this.operation)
+      {
+        throw new MALInteractionException(new MALStandardError(MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
+      }
     }
     else
     {
@@ -106,8 +126,7 @@ public class GENMessage implements MALMessage, java.io.Serializable
     this.qosProperties = new TreeMap();
     this.wrapBodyParts = wrapBodyParts;
 
-    final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
-    final MALElementInputStream enc = encFactory.createInputStream(bais);
+    final MALElementInputStream enc = encFactory.createInputStream(new ByteArrayInputStream(packet));
 
     if (readHeader)
     {
@@ -118,10 +137,6 @@ public class GENMessage implements MALMessage, java.io.Serializable
     {
       this.header = header;
     }
-
-    this.operation = MALContextFactory.lookupArea(this.header.getServiceArea(), this.header.getAreaVersion())
-            .getServiceByNumber(this.header.getService())
-            .getOperationByNumber(this.header.getOperation());
 
     this.body = createMessageBody(encFactory, enc);
   }
@@ -156,10 +171,6 @@ public class GENMessage implements MALMessage, java.io.Serializable
     {
       this.header = header;
     }
-
-    this.operation = MALContextFactory.lookupArea(this.header.getServiceArea(), this.header.getAreaVersion())
-            .getServiceByNumber(this.header.getService())
-            .getOperationByNumber(this.header.getOperation());
 
     this.body = createMessageBody(encFactory, enc);
   }
@@ -206,13 +217,13 @@ public class GENMessage implements MALMessage, java.io.Serializable
   {
     try
     {
+      MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties, qosProperties);
+
       // if we have a header encode it
       if (null != header)
       {
-        enc.writeElement(header, new MALEncodingContext(header, operation, 0, qosProperties, qosProperties));
+        enc.writeElement(header, ctx);
       }
-
-      MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties, qosProperties);
 
       // now encode the body
       body.encodeMessageBody(streamFactory, enc, lowLevelOutputStream, header.getInteractionStage(), ctx);

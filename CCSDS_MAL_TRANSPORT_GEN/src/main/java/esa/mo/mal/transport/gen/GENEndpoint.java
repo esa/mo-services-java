@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.structures.*;
@@ -106,25 +107,32 @@ public class GENEndpoint implements MALEndpoint
           final Map qosProperties,
           final Object... body) throws IllegalArgumentException, MALException
   {
-    return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
-            authenticationId,
-            uriTo,
-            timestamp,
-            qosLevel,
-            priority,
-            domain,
-            networkZone,
-            session,
-            sessionName,
-            interactionType,
-            interactionStage,
-            transactionId,
-            serviceArea,
-            service,
-            operation,
-            serviceVersion,
-            isErrorMessage),
-            qosProperties, null, body);
+    try
+    {
+      return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
+              authenticationId,
+              uriTo,
+              timestamp,
+              qosLevel,
+              priority,
+              domain,
+              networkZone,
+              session,
+              sessionName,
+              interactionType,
+              interactionStage,
+              transactionId,
+              serviceArea,
+              service,
+              operation,
+              serviceVersion,
+              isErrorMessage),
+              qosProperties, null, body);
+    }
+    catch (MALInteractionException ex)
+    {
+      throw new MALException("Error creating message", ex);
+    }
   }
 
   @Override
@@ -148,25 +156,32 @@ public class GENEndpoint implements MALEndpoint
           final Map qosProperties,
           final MALEncodedBody body) throws IllegalArgumentException, MALException
   {
-    return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
-            authenticationId,
-            uriTo,
-            timestamp,
-            qosLevel,
-            priority,
-            domain,
-            networkZone,
-            session,
-            sessionName,
-            interactionType,
-            interactionStage,
-            transactionId,
-            serviceArea,
-            service,
-            operation,
-            serviceVersion,
-            isErrorMessage),
-            qosProperties, null, body);
+    try
+    {
+      return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
+              authenticationId,
+              uriTo,
+              timestamp,
+              qosLevel,
+              priority,
+              domain,
+              networkZone,
+              session,
+              sessionName,
+              interactionType,
+              interactionStage,
+              transactionId,
+              serviceArea,
+              service,
+              operation,
+              serviceVersion,
+              isErrorMessage),
+              qosProperties, null, body);
+    }
+    catch (MALInteractionException ex)
+    {
+      throw new MALException("Error creating message", ex);
+    }
   }
 
   @Override
@@ -186,27 +201,34 @@ public class GENEndpoint implements MALEndpoint
           final Map qosProperties,
           final MALEncodedBody body) throws IllegalArgumentException, MALException
   {
-    return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
-            authenticationId,
-            uriTo,
-            timestamp,
-            qosLevel,
-            priority,
-            domain,
-            networkZone,
-            session,
-            sessionName,
-            op.getInteractionType(),
-            interactionStage,
-            transactionId,
-            op.getService().getArea().getNumber(),
-            op.getService().getNumber(),
-            op.getNumber(),
-            op.getService().getArea().getVersion(),
-            isErrorMessage),
-            qosProperties,
-            op,
-            body);
+    try
+    {
+      return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
+              authenticationId,
+              uriTo,
+              timestamp,
+              qosLevel,
+              priority,
+              domain,
+              networkZone,
+              session,
+              sessionName,
+              op.getInteractionType(),
+              interactionStage,
+              transactionId,
+              op.getService().getArea().getNumber(),
+              op.getService().getNumber(),
+              op.getNumber(),
+              op.getService().getArea().getVersion(),
+              isErrorMessage),
+              qosProperties,
+              op,
+              body);
+    }
+    catch (MALInteractionException ex)
+    {
+      throw new MALException("Error creating message", ex);
+    }
   }
 
   @Override
@@ -226,27 +248,34 @@ public class GENEndpoint implements MALEndpoint
           final Map qosProperties,
           final Object... body) throws IllegalArgumentException, MALException
   {
-    return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
-            authenticationId,
-            uriTo,
-            timestamp,
-            qosLevel,
-            priority,
-            domain,
-            networkZone,
-            session,
-            sessionName,
-            op.getInteractionType(),
-            interactionStage,
-            transactionId,
-            op.getService().getArea().getNumber(),
-            op.getService().getNumber(),
-            op.getNumber(),
-            op.getService().getArea().getVersion(),
-            isErrorMessage),
-            qosProperties,
-            op,
-            body);
+    try
+    {
+      return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
+              authenticationId,
+              uriTo,
+              timestamp,
+              qosLevel,
+              priority,
+              domain,
+              networkZone,
+              session,
+              sessionName,
+              op.getInteractionType(),
+              interactionStage,
+              transactionId,
+              op.getService().getArea().getNumber(),
+              op.getService().getNumber(),
+              op.getNumber(),
+              op.getService().getArea().getVersion(),
+              isErrorMessage),
+              qosProperties,
+              op,
+              body);
+    }
+    catch (MALInteractionException ex)
+    {
+      throw new MALException("Error creating message", ex);
+    }
   }
 
   @Override

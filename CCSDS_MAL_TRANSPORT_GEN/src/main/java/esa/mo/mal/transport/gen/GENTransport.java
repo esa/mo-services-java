@@ -654,7 +654,7 @@ public abstract class GENTransport implements MALTransport, GENSender
    * @return The new message.
    * @throws MALException on Error.
    */
-  protected GENMessage createMessage(final java.io.InputStream ios) throws MALException
+  public GENMessage createMessage(final java.io.InputStream ios) throws MALException
   {
     return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), ios, getStreamFactory());
   }
@@ -666,7 +666,7 @@ public abstract class GENTransport implements MALTransport, GENSender
    * @return The new message.
    * @throws MALException on Error.
    */
-  protected GENMessage createMessage(final byte[] packet) throws MALException
+  public GENMessage createMessage(final byte[] packet) throws MALException
   {
     return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), packet, getStreamFactory());
   }
