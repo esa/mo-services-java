@@ -11,7 +11,7 @@ public class FileBasedMessage extends GENMessage
 {
   private final InputStream is;
 
-  public FileBasedMessage(InputStream ios, MALElementStreamFactory encFactory) throws MALException
+  public FileBasedMessage(InputStream ios, MALElementStreamFactory encFactory) throws MALException 
   {
     super(false, true, new GENMessageHeader(), ios, encFactory);
 

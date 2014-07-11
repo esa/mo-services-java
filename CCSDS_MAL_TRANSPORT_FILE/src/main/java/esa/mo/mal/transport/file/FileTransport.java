@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -59,7 +60,7 @@ public class FileTransport extends GENTransport
   private String filenameString = "";
   private long msgCount = 0;
   private WatchService watcher = null;
-  private Path dir = Paths.get(System.getProperty("user.dir"));
+  private final Path dir = Paths.get(System.getProperty("user.dir"));
 
   /**
    * Constructor.
@@ -278,13 +279,13 @@ public class FileTransport extends GENTransport
   }
 
   @Override
-  protected GENMessage createMessage(InputStream ios) throws MALException
+  public GENMessage createMessage(InputStream ios) throws MALException
   {
     return new FileBasedMessage(ios, getStreamFactory());
   }
 
   @Override
-  protected GENMessage createMessage(byte[] packet) throws MALException
+  public GENMessage createMessage(byte[] packet) throws MALException
   {
     return null;
   }
