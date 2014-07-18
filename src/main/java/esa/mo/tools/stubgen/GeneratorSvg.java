@@ -159,6 +159,40 @@ public class GeneratorSvg extends GeneratorDocument
             }
             areaBodyBuff.appendBuffer(serviceBodyBuff.getBuffer());
           }
+
+          if (service instanceof ExtendedServiceType)
+          {
+            ExtendedServiceType eservice = (ExtendedServiceType) service;
+
+            if ((null != eservice.getFeatures()) && (null != eservice.getFeatures().getEvents()))
+            {
+              Set<Map.Entry<String, String>> evTocMap = new LinkedHashSet();
+              SvgBufferWriter eventBodyBuff = new SvgBufferWriter(destinationFolderName, outputName, true);
+
+              for (ModelObjectType evt : eservice.getFeatures().getEvents().getEvent())
+              {
+                eventBodyBuff.addTitle(3, "Event: ", createId(service, evt.getName()), evt.getName(), false);
+
+                evTocMap.add(new AbstractMap.SimpleEntry<String, String>(evt.getName(), createXlink(null, service.getName(), evt.getName())));
+
+                List<TypeInfo> types = new LinkedList<TypeInfo>();
+                if (null != evt.getObjectType())
+                {
+                  types = TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(evt.getObjectType().getAny()));
+                }
+                drawOperationTypes(eventBodyBuff, summary, (int)evt.getNumber(), "Event additional application data:", types, evt.getComment(), evt.getName(), "EVENT");
+              }
+
+              if (!evTocMap.isEmpty())
+              {
+                if (includeIndexes)
+                {
+                  areaBodyBuff.addIndex("Operations", 3, evTocMap);
+                }
+                areaBodyBuff.appendBuffer(eventBodyBuff.getBuffer());
+              }
+            }
+          }
         }
 
         if (!svcTocMap.isEmpty())
@@ -242,37 +276,39 @@ public class GeneratorSvg extends GeneratorDocument
 
   private void drawOperationMessages(SvgBaseWriter svgFile, ServiceSummary summary, OperationSummary op) throws IOException
   {
+    Integer opNumber = op.getNumber();
+    
     switch (op.getPattern())
     {
       case SEND_OP:
       {
-        drawOperationTypes(svgFile, summary, op, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "SEND");
+        drawOperationTypes(svgFile, summary, opNumber, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "SEND");
         break;
       }
       case SUBMIT_OP:
       {
-        drawOperationTypes(svgFile, summary, op, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "SUBMIT");
+        drawOperationTypes(svgFile, summary, opNumber, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "SUBMIT");
         break;
       }
       case REQUEST_OP:
       {
-        drawOperationTypes(svgFile, summary, op, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "REQUEST");
-        drawOperationTypes(svgFile, summary, op, "Response telemetry report application data:", op.getRetTypes(), op.getRetComment(), op.getName(), "RESPONSE");
+        drawOperationTypes(svgFile, summary, opNumber, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "REQUEST");
+        drawOperationTypes(svgFile, summary, opNumber, "Response telemetry report application data:", op.getRetTypes(), op.getRetComment(), op.getName(), "RESPONSE");
         break;
       }
       case INVOKE_OP:
       {
-        drawOperationTypes(svgFile, summary, op, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "INVOKE");
-        drawOperationTypes(svgFile, summary, op, "Acknowledgement telemetry report application data:", op.getAckTypes(), op.getAckComment(), op.getName(), "INVOKE_ACK");
-        drawOperationTypes(svgFile, summary, op, "Response telemetry report application data:", op.getRetTypes(), op.getRetComment(), op.getName(), "INVOKE_RESPONSE");
+        drawOperationTypes(svgFile, summary, opNumber, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "INVOKE");
+        drawOperationTypes(svgFile, summary, opNumber, "Acknowledgement telemetry report application data:", op.getAckTypes(), op.getAckComment(), op.getName(), "INVOKE_ACK");
+        drawOperationTypes(svgFile, summary, opNumber, "Response telemetry report application data:", op.getRetTypes(), op.getRetComment(), op.getName(), "INVOKE_RESPONSE");
         break;
       }
       case PROGRESS_OP:
       {
-        drawOperationTypes(svgFile, summary, op, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "PROGRESS");
-        drawOperationTypes(svgFile, summary, op, "Acknowledgement telemetry report application data:", op.getAckTypes(), op.getAckComment(), op.getName(), "PROGRESS_ACK");
-        drawOperationTypes(svgFile, summary, op, "Progress telemetry report application data:", op.getUpdateTypes(), op.getUpdateComment(), op.getName(), "PROGRESS_UPDATE");
-        drawOperationTypes(svgFile, summary, op, "Response telemetry report application data:", op.getRetTypes(), op.getRetComment(), op.getName(), "PROGRESS_RESPONSE");
+        drawOperationTypes(svgFile, summary, opNumber, "Telecommand application data:", op.getArgTypes(), op.getArgComment(), op.getName(), "PROGRESS");
+        drawOperationTypes(svgFile, summary, opNumber, "Acknowledgement telemetry report application data:", op.getAckTypes(), op.getAckComment(), op.getName(), "PROGRESS_ACK");
+        drawOperationTypes(svgFile, summary, opNumber, "Progress telemetry report application data:", op.getUpdateTypes(), op.getUpdateComment(), op.getName(), "PROGRESS_UPDATE");
+        drawOperationTypes(svgFile, summary, opNumber, "Response telemetry report application data:", op.getRetTypes(), op.getRetComment(), op.getName(), "PROGRESS_RESPONSE");
         break;
       }
       case PUBSUB_OP:
@@ -294,7 +330,7 @@ public class GeneratorSvg extends GeneratorDocument
           refType.setList(Boolean.TRUE);
           types.add(TypeUtils.convertTypeReference(this, refType));
         }
-        drawOperationTypes(svgFile, summary, op, "Notify telemetry report application data:", types, op.getRetComment(), op.getName(), "PUBSUB");
+        drawOperationTypes(svgFile, summary, opNumber, "Notify telemetry report application data:", types, op.getRetComment(), op.getName(), "PUBSUB");
         break;
       }
 
@@ -389,7 +425,7 @@ public class GeneratorSvg extends GeneratorDocument
     indexMap.put(compName, createXlink(null, (service == null ? null : service.getName()), compName));
   }
 
-  private void drawOperationTypes(SvgBaseWriter svgFile, ServiceSummary summary, OperationSummary op, String title, List<TypeInfo> types, String comment, String name, String phase) throws IOException
+  private void drawOperationTypes(SvgBaseWriter svgFile, ServiceSummary summary, Integer number, String title, List<TypeInfo> types, String comment, String name, String phase) throws IOException
   {
     if (0 < types.size())
     {
@@ -411,7 +447,7 @@ public class GeneratorSvg extends GeneratorDocument
     {
       if (0 < types.size())
       {
-        SvgBaseWriter svgOutput = getSvgOutputFile(summary, op, name, phase, svgFile);
+        SvgBaseWriter svgOutput = getSvgOutputFile(summary, number, name, phase, svgFile);
         svgOutput.startDrawing();
         for (TypeInfo e : types)
         {
@@ -427,7 +463,7 @@ public class GeneratorSvg extends GeneratorDocument
     {
       if (0 < types.size())
       {
-        SvgBaseWriter svgOutput = getSvgOutputFile(summary, op, name, phase, svgFile);
+        SvgBaseWriter svgOutput = getSvgOutputFile(summary, number, name, phase, svgFile);
         TopContainer cnt = new TopContainer();
         cnt.addOperationTypes(types);
         cnt.expandType();
@@ -491,7 +527,7 @@ public class GeneratorSvg extends GeneratorDocument
           {
             ++c;
           }
-          svgFile.addSpan(c, c, "Optional");
+          svgFile.addSpan(c, c, "Nullable");
         }
 
         if (element.isList())
@@ -550,7 +586,7 @@ public class GeneratorSvg extends GeneratorDocument
     }
   }
 
-  private SvgBaseWriter getSvgOutputFile(ServiceSummary service, OperationSummary op, String name, String phase, SvgBaseWriter mainSvgFile)
+  private SvgBaseWriter getSvgOutputFile(ServiceSummary service, Integer number, String name, String phase, SvgBaseWriter mainSvgFile)
   {
     SvgBaseWriter rv = mainSvgFile;
 
@@ -558,7 +594,7 @@ public class GeneratorSvg extends GeneratorDocument
     {
       try
       {
-        String filename = mainSvgFile.getClassName() + "_" + service.getService().getNumber() + "_" + op.getNumber() + "_" + name + "_" + phase;
+        String filename = mainSvgFile.getClassName() + "_" + service.getService().getNumber() + "_" + number + "_" + name + "_" + phase;
         rv = new SvgWriter(mainSvgFile.getFolder(), filename, "svg", false);
         mainSvgFile.addComment(filename, true);
       }
@@ -639,7 +675,7 @@ public class GeneratorSvg extends GeneratorDocument
 
         if (isOptional)
         {
-          svgFile.addSubSpan(xOff, yOff + fullDepth, getWidth(), spanDepth, "Optional");
+          svgFile.addSubSpan(xOff, yOff + fullDepth, getWidth(), spanDepth, "Nullable");
           --repSpanDepth;
         }
 
@@ -651,7 +687,7 @@ public class GeneratorSvg extends GeneratorDocument
 
         if (isOptional)
         {
-          svgFile.addSubSpan(xOff, yOff + fullDepth, getWidth(), spanDepth, "Optional");
+          svgFile.addSubSpan(xOff, yOff + fullDepth, getWidth(), spanDepth, "Nullable");
         }
       }
     }
