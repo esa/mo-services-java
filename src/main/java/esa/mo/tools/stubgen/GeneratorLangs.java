@@ -2114,36 +2114,32 @@ public abstract class GeneratorLangs extends GeneratorBase
 
     file.addClassOpenStatement(returnTypeInfo.getShortName(), true, false, null, null, "Multi body return class for " + returnTypeInfo.getShortName() + ".");
 
+    List<CompositeField> argsList = createOperationArguments(getConfig(), file, returnTypeInfo.getReturnTypes());
+    
     // create attributes
-    for (int i = 0; i < returnTypeInfo.getReturnTypes().size(); i++)
+    for (int i = 0; i < argsList.size(); i++)
     {
-      CompositeField argType = createCompositeElementsDetails(file, true, "bodyElement" + i, returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, null);
-      file.addClassVariable(false, false, StdStrings.PRIVATE, argType, false, (String) null);
+      CompositeField argType = argsList.get(i);
+      CompositeField memType = createCompositeElementsDetails(file, true, "bodyElement" + i, argType.getTypeReference(), true, true, argType.getFieldName() + ": " + argType.getComment());
+      file.addClassVariable(false, false, StdStrings.PRIVATE, memType, false, (String) null);
     }
 
     // create blank constructor
     file.addConstructorDefault(returnTypeInfo.getShortName());
 
     // if we or our parents have attributes then we need a typed constructor
-    List<CompositeField> conArgsList = new LinkedList<CompositeField>();
-    for (int i = 0; i < returnTypeInfo.getReturnTypes().size(); i++)
+    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, returnTypeInfo.getShortName(), argsList, null, null, "Constructs an instance of this type using provided values.", null);
+
+    for (int i = 0; i < argsList.size(); i++)
     {
-      TypeInfo element = returnTypeInfo.getReturnTypes().get(i);
-
-      conArgsList.add(createCompositeElementsDetails(file, true, "arg" + i, element.getSourceType(), true, true, "Initial value for argument " + i));
-    }
-
-    MethodWriter method = file.addConstructor(StdStrings.PUBLIC, returnTypeInfo.getShortName(), conArgsList, null, null, "Constructs an instance of this type using provided values.", null);
-
-    for (int i = 0; i < returnTypeInfo.getReturnTypes().size(); i++)
-    {
-      method.addMethodStatement(createMethodCall("this.bodyElement" + i + " = arg" + i));
+      CompositeField argType = argsList.get(i);
+      method.addMethodStatement(createMethodCall("this.bodyElement" + i + " = " + argType.getFieldName()));
     }
 
     method.addMethodCloseStatement();
 
     // add getters and setters
-    for (int i = 0; i < returnTypeInfo.getReturnTypes().size(); i++)
+    for (int i = 0; i < argsList.size(); i++)
     {
       CompositeField argType = createCompositeElementsDetails(file, true, "bodyElement" + i, returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");
       addGetter(file, argType);
@@ -2531,7 +2527,13 @@ public abstract class GeneratorLangs extends GeneratorBase
           argName = "_" + TypeUtils.shortTypeName(config.getNamingSeparator(), ti.getTargetType()) + i;
         }
 
-        CompositeField argType = createCompositeElementsDetails(file, true, argName, tir, true, true, argName + " Argument number " + i + " as defined by the service operation");
+        String cmt = argName + " Argument number " + i + " as defined by the service operation";
+        if ((null != ti.getFieldName()) && (null != ti.getFieldComment()))
+        {
+          cmt = ti.getFieldComment();
+        }
+        
+        CompositeField argType = createCompositeElementsDetails(file, true, argName, tir, true, true, cmt);
 
         rv.add(argType);
       }
