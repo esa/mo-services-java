@@ -788,7 +788,7 @@ public class GeneratorDocx extends GeneratorDocument
       }
       else
       {
-        docxFile.addComment("The operation may return the following errors:");
+        docxFile.addComment("The operation may return one of the following errors:");
       }
 
       TreeMap<String, List<Object[]>> m = new TreeMap();
