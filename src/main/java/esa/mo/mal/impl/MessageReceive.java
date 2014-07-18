@@ -776,14 +776,14 @@ public class MessageReceive implements MALMessageListener
   {
     private static final int HASH_VALUE = 71;
     private final String first;
-    private final Integer second;
+    private final Long second;
 
     protected EndPointPair(final String localName, final MALService service)
     {
       first = localName;
       if (null != service)
       {
-        second = service.getNumber().getValue();
+        second = (((long)service.getArea().getNumber().getValue()) << 32) + ((long)service.getNumber().getValue());
       }
       else
       {
@@ -797,7 +797,7 @@ public class MessageReceive implements MALMessageListener
 
       if (null != msg)
       {
-        second = msg.getHeader().getService().getValue();
+        second = (((long)msg.getHeader().getServiceArea().getValue()) << 32) + ((long)msg.getHeader().getService().getValue());
       }
       else
       {
