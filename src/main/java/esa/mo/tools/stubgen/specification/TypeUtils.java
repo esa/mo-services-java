@@ -43,7 +43,7 @@ public abstract class TypeUtils
   {
     return convertTypeReference(tiSource, tr, null, null);
   }
-  
+
   /**
    * Converts a type reference from the XML format to the internal format.
    *
@@ -204,7 +204,7 @@ public abstract class TypeUtils
       }
       else
       {
-        if (tiSource.isAttributeType(type))
+        if (!type.isList() && tiSource.isAttributeType(type))
         {
           return tiSource.convertToNamespace(tiSource.getBasePackage() + tiSource.convertToNamespace("mal.structures.Attribute.") + type.getName().toUpperCase() + "_SHORT_FORM");
         }
