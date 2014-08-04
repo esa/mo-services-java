@@ -217,7 +217,7 @@ public class Main
             sourceHdr.getAreaVersion(),
             sourceHdr.getIsErrorMessage(),
             srcMessage.getQoSProperties(),
-            body.getBodyElement());
+            body.getEncodedBody());
 
     destMessage.getHeader().setURIFrom(from);
 
