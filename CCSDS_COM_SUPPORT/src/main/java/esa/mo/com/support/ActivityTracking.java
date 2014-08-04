@@ -129,10 +129,9 @@ public class ActivityTracking extends EventInheritanceSkeleton
   public void publishExecution(MALInteraction interaction, boolean success,
           int currentStageCount, int totalStageCount) throws MALInteractionException, MALException
   {
-      publishExecution(interaction, success, currentStageCount, totalStageCount, null);
+    publishExecution(interaction, success, currentStageCount, totalStageCount, null);
   }
-  
-  
+
   public void publishExecution(MALInteraction interaction, boolean success,
           int currentStageCount, int totalStageCount, ObjectId source) throws MALInteractionException, MALException
   {
@@ -165,18 +164,18 @@ public class ActivityTracking extends EventInheritanceSkeleton
 
     if (source == null)
     {
-        source = new ObjectId();
+      source = new ObjectId();
 
-        source.setType(OBJECT_TYPE);
+      source.setType(OBJECT_TYPE);
 
-        ObjectKey key = new ObjectKey();
-        key.setDomain(interaction.getMessageHeader().getDomain());
-        key.setInstId(interaction.getMessageHeader().getTransactionId());
-        if (interaction.getMessageHeader().getTransactionId() == null)
-        {
-          System.out.println("ActivityTracking:getTransactionId = NULL");
-        }
-        source.setKey(key);
+      ObjectKey key = new ObjectKey();
+      key.setDomain(interaction.getMessageHeader().getDomain());
+      key.setInstId(interaction.getMessageHeader().getTransactionId());
+      if (interaction.getMessageHeader().getTransactionId() == null)
+      {
+        System.out.println("ActivityTracking:getTransactionId = NULL");
+      }
+      source.setKey(key);
     }
     objDetails.setSource(source);
     odl.add(objDetails);

@@ -65,5 +65,6 @@
     <module>CCSDS_MAL_ENCODING_PERF_TEST</module>
     <module>CCSDS_MAL_SUPPORT</module>
     <module>CCSDS_COM_SUPPORT</module>
+    <module>CCSDS_COMMON_SUPPORT</module>
   </modules>
 </project>

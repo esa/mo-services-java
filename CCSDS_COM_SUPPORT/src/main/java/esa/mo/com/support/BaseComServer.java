@@ -5,6 +5,7 @@ import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.event.EventHelper;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
+import org.ccsds.moims.mo.mal.MALElementFactoryRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
@@ -27,14 +28,17 @@ public abstract class BaseComServer extends BaseMalServer
     super(malFactory, mal, consumerMgr, providerMgr);
   }
 
+  @Override
+  protected void subInitHelpers(MALElementFactoryRegistry bodyElementFactory) throws MALException
+  {
+    COMHelper.deepInit(bodyElementFactory);
+  }
 
   @Override
   protected void subInit() throws MALException, MALInteractionException
   {
-    COMHelper.deepInit(MALContextFactory.getElementFactoryRegistry());
-
     activityService = new ActivityTracking();
-    
+
     createProvider(EventHelper.EVENT_SERVICE, activityService, true);
     activityService.init();
   }
