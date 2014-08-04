@@ -129,6 +129,13 @@ public class ActivityTracking extends EventInheritanceSkeleton
   public void publishExecution(MALInteraction interaction, boolean success,
           int currentStageCount, int totalStageCount) throws MALInteractionException, MALException
   {
+      publishExecution(interaction, success, currentStageCount, totalStageCount, null);
+  }
+  
+  
+  public void publishExecution(MALInteraction interaction, boolean success,
+          int currentStageCount, int totalStageCount, ObjectId source) throws MALInteractionException, MALException
+  {
     System.out.println("ActivityTracking:publishexecution malInter = " + interaction);
     // Produce header
     UpdateHeaderList uhl = new UpdateHeaderList();
@@ -156,18 +163,21 @@ public class ActivityTracking extends EventInheritanceSkeleton
     ObjectDetails objDetails = new ObjectDetails();
     objDetails.setRelated(null);
 
-    ObjectId source = new ObjectId();
-
-    source.setType(OBJECT_TYPE);
-
-    ObjectKey key = new ObjectKey();
-    key.setDomain(interaction.getMessageHeader().getDomain());
-    key.setInstId(interaction.getMessageHeader().getTransactionId());
-    if (interaction.getMessageHeader().getTransactionId() == null)
+    if (source == null)
     {
-      System.out.println("ActivityTracking:getTransactionId = NULL");
+        source = new ObjectId();
+
+        source.setType(OBJECT_TYPE);
+
+        ObjectKey key = new ObjectKey();
+        key.setDomain(interaction.getMessageHeader().getDomain());
+        key.setInstId(interaction.getMessageHeader().getTransactionId());
+        if (interaction.getMessageHeader().getTransactionId() == null)
+        {
+          System.out.println("ActivityTracking:getTransactionId = NULL");
+        }
+        source.setKey(key);
     }
-    source.setKey(key);
     objDetails.setSource(source);
     odl.add(objDetails);
 
@@ -184,7 +194,7 @@ public class ActivityTracking extends EventInheritanceSkeleton
    * @param objectNumber
    * @return
    */
-  static protected Long generateSubKey(int area, int service, int version, int objectNumber)
+  static public Long generateSubKey(int area, int service, int version, int objectNumber)
   {
     long subkey = objectNumber;
     subkey = subkey | (((long) version) << 24);
