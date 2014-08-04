@@ -78,10 +78,18 @@ public class ActivityTracking extends EventInheritanceSkeleton
       monitorEventPublisher.register(lst, new ActivityTrackingPublisher());
     }
   }
-
+  
   public void publishAcceptance(MALInteraction interaction, boolean success) throws MALInteractionException, MALException
   {
-    System.out.println("ActivityTracking:publishAcceptance malInter = " + interaction);
+    publishAcceptance(interaction, success, null);
+  }
+
+  public void publishAcceptance(MALInteraction interaction, boolean success, ObjectId source) throws MALInteractionException, MALException
+  {
+    if (source == null)  
+        System.out.println("ActivityTracking:publishAcceptance malInter = " + interaction);
+    else 
+        System.out.println("ActivityTracking:publishAcceptance malInter = " + interaction + " source " + source);
 
     // Produce ActivityTransferList
     ActivityAcceptanceList aal = new ActivityAcceptanceList();
@@ -94,19 +102,22 @@ public class ActivityTracking extends EventInheritanceSkeleton
     objDetails.setRelated(null);
 
     // Set source
-    ObjectId source = new ObjectId();
-    source.setType(OBJECT_TYPE);
-    System.out.println("ActivityTracking:publishAcceptance source = " + source);
-
-    ObjectKey key = new ObjectKey();
-    key.setDomain(interaction.getMessageHeader().getDomain());
-    key.setInstId(interaction.getMessageHeader().getTransactionId());
-    if (interaction.getMessageHeader().getTransactionId() == null)
+    if (source == null)
     {
-      System.out.println("ActivityTracking:getTransactionId = NULL");
+        source = new ObjectId();
+        source.setType(OBJECT_TYPE);
+        System.out.println("ActivityTracking:publishAcceptance source = " + source);
+
+        ObjectKey key = new ObjectKey();
+        key.setDomain(interaction.getMessageHeader().getDomain());
+        key.setInstId(interaction.getMessageHeader().getTransactionId());
+        if (interaction.getMessageHeader().getTransactionId() == null)
+        {
+          System.out.println("ActivityTracking:getTransactionId = NULL");
+        }
+        System.out.println("ActivityTracking:key = " + key);
+        source.setKey(key);
     }
-    System.out.println("ActivityTracking:key = " + key);
-    source.setKey(key);
     objDetails.setSource(source);
     odl.add(objDetails);
     // Produce header
