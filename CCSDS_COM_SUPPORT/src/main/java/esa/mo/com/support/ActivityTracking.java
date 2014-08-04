@@ -43,16 +43,16 @@ public class ActivityTracking extends EventInheritanceSkeleton
   public final static int OBJ_NO_ASE_OPERATION_ACTIVITY = 6;
   public final static String OBJ_NO_ASE_ACCEPTANCE_STR = Integer.toString(OBJ_NO_ASE_ACCEPTANCE);
   public final static String OBJ_NO_ASE_EXECUTION_STR = Integer.toString(OBJ_NO_ASE_EXECUTION);
-  private final ObjectType OBJECT_TYPE = new ObjectType();
+  private final ObjectType OPERATION_ACTIVITY_OBJECT_TYPE = new ObjectType();
   private MonitorEventPublisher monitorEventPublisher = null;
   private int instanceIdentifier = 0;
 
   public ActivityTracking()
   {
-    OBJECT_TYPE.setArea(COMHelper.COM_AREA_NUMBER);
-    OBJECT_TYPE.setService(ActivityTrackingHelper.ACTIVITYTRACKING_SERVICE_NUMBER);
-    OBJECT_TYPE.setVersion(COMHelper.COM_AREA_VERSION);
-    OBJECT_TYPE.setNumber(new UShort(OBJ_NO_ASE_OPERATION_ACTIVITY));
+    OPERATION_ACTIVITY_OBJECT_TYPE.setArea(COMHelper.COM_AREA_NUMBER);
+    OPERATION_ACTIVITY_OBJECT_TYPE.setService(ActivityTrackingHelper.ACTIVITYTRACKING_SERVICE_NUMBER);
+    OPERATION_ACTIVITY_OBJECT_TYPE.setVersion(COMHelper.COM_AREA_VERSION);
+    OPERATION_ACTIVITY_OBJECT_TYPE.setNumber(new UShort(OBJ_NO_ASE_OPERATION_ACTIVITY));
   }
 
   public void init() throws MALInteractionException, MALException
@@ -78,24 +78,29 @@ public class ActivityTracking extends EventInheritanceSkeleton
       monitorEventPublisher.register(lst, new ActivityTrackingPublisher());
     }
   }
-  
-  public void publishAcceptance(MALInteraction interaction, boolean success) throws MALInteractionException, MALException
+
+  public void publishAcceptanceEventOperation(MALInteraction interaction, boolean success) throws MALInteractionException, MALException
   {
-    publishAcceptance(interaction, success, null);
+    publishAcceptanceEvent(interaction, success, null);
   }
 
-  public void publishAcceptance(MALInteraction interaction, boolean success, ObjectId source) throws MALInteractionException, MALException
+  public void publishAcceptanceEvent(MALInteraction interaction, boolean success, ObjectId source) throws MALInteractionException, MALException
   {
-    if (source == null)  
-        System.out.println("ActivityTracking:publishAcceptance malInter = " + interaction);
-    else 
-        System.out.println("ActivityTracking:publishAcceptance malInter = " + interaction + " source " + source);
+    if (source == null)
+    {
+      System.out.println("ActivityTracking:publishAcceptance malInter = " + interaction);
+    }
+    else
+    {
+      System.out.println("ActivityTracking:publishAcceptance malInter = " + interaction + " source " + source);
+    }
 
     // Produce ActivityTransferList
     ActivityAcceptanceList aal = new ActivityAcceptanceList();
     ActivityAcceptance aa = new ActivityAcceptance();
     aa.setSuccess(success);
     aal.add(aa);
+    
     // Produce ObjectDetails
     ObjectDetailsList odl = new ObjectDetailsList();
     ObjectDetails objDetails = new ObjectDetails();
@@ -104,22 +109,24 @@ public class ActivityTracking extends EventInheritanceSkeleton
     // Set source
     if (source == null)
     {
-        source = new ObjectId();
-        source.setType(OBJECT_TYPE);
-        System.out.println("ActivityTracking:publishAcceptance source = " + source);
+      source = new ObjectId();
+      source.setType(OPERATION_ACTIVITY_OBJECT_TYPE);
+      System.out.println("ActivityTracking:publishAcceptance source = " + source);
 
-        ObjectKey key = new ObjectKey();
-        key.setDomain(interaction.getMessageHeader().getDomain());
-        key.setInstId(interaction.getMessageHeader().getTransactionId());
-        if (interaction.getMessageHeader().getTransactionId() == null)
-        {
-          System.out.println("ActivityTracking:getTransactionId = NULL");
-        }
-        System.out.println("ActivityTracking:key = " + key);
-        source.setKey(key);
+      ObjectKey key = new ObjectKey();
+      key.setDomain(interaction.getMessageHeader().getDomain());
+      key.setInstId(interaction.getMessageHeader().getTransactionId());
+      if (interaction.getMessageHeader().getTransactionId() == null)
+      {
+        System.out.println("ActivityTracking:getTransactionId = NULL");
+      }
+      System.out.println("ActivityTracking:key = " + key);
+      source.setKey(key);
     }
+    
     objDetails.setSource(source);
     odl.add(objDetails);
+
     // Produce header
     UpdateHeaderList uhl = new UpdateHeaderList();
     final EntityKey ekey = new EntityKey(
@@ -134,16 +141,35 @@ public class ActivityTracking extends EventInheritanceSkeleton
 
     // We can now publish the event
     monitorEventPublisher.publish(uhl, odl, aal);
-
   }
 
-  public void publishExecution(MALInteraction interaction, boolean success,
+  public void publishExecutionEventSubmitAck(MALInteraction interaction, boolean success) throws MALInteractionException, MALException
+  {
+    publishExecutionEvent(interaction, success, 1, 1, null);
+  }
+
+  public void publishExecutionEventRequestResponse(MALInteraction interaction, boolean success) throws MALInteractionException, MALException
+  {
+    publishExecutionEvent(interaction, success, 1, 1, null);
+  }
+
+  public void publishExecutionEventInvokeAck(MALInteraction interaction, boolean success) throws MALInteractionException, MALException
+  {
+    publishExecutionEvent(interaction, success, 1, 2, null);
+  }
+
+  public void publishExecutionEventInvokeResponse(MALInteraction interaction, boolean success) throws MALInteractionException, MALException
+  {
+    publishExecutionEvent(interaction, success, 2, 2, null);
+  }
+
+  public void publishExecutionEventOperation(MALInteraction interaction, boolean success,
           int currentStageCount, int totalStageCount) throws MALInteractionException, MALException
   {
-    publishExecution(interaction, success, currentStageCount, totalStageCount, null);
+    publishExecutionEvent(interaction, success, currentStageCount, totalStageCount, null);
   }
 
-  public void publishExecution(MALInteraction interaction, boolean success,
+  public void publishExecutionEvent(MALInteraction interaction, boolean success,
           int currentStageCount, int totalStageCount, ObjectId source) throws MALInteractionException, MALException
   {
     System.out.println("ActivityTracking:publishexecution malInter = " + interaction);
@@ -177,7 +203,7 @@ public class ActivityTracking extends EventInheritanceSkeleton
     {
       source = new ObjectId();
 
-      source.setType(OBJECT_TYPE);
+      source.setType(OPERATION_ACTIVITY_OBJECT_TYPE);
 
       ObjectKey key = new ObjectKey();
       key.setDomain(interaction.getMessageHeader().getDomain());
