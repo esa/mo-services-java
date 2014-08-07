@@ -23,9 +23,7 @@ package esa.mo.mal.transport.tcpip.util;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import esa.mo.mal.transport.tcpip.TCPIPTransport;
 

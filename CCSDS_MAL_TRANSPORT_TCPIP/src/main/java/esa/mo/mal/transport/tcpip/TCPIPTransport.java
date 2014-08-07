@@ -27,34 +27,58 @@ import java.io.StringWriter;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.rmi.server.UID;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.ccsds.moims.mo.mal.*;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALInvokeOperation;
+import org.ccsds.moims.mo.mal.MALProgressOperation;
+import org.ccsds.moims.mo.mal.MALPubSubOperation;
+import org.ccsds.moims.mo.mal.MALRequestOperation;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
-import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.transport.*;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
+import org.ccsds.moims.mo.mal.transport.MALTransmitMultipleErrorException;
+import org.ccsds.moims.mo.mal.transport.MALTransport;
+import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
+import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.tcpip.util.TCPIPClientConnectionDataReceiver;
 import esa.mo.mal.transport.tcpip.util.TCPIPConcurrentSocketDataSender;
+import esa.mo.mal.transport.tcpip.util.TCPIPConnectionDataReceiver;
 import esa.mo.mal.transport.tcpip.util.TCPIPInputDataForwarder;
 import esa.mo.mal.transport.tcpip.util.TCPIPOutgoingDataHolder;
 import esa.mo.mal.transport.tcpip.util.TCPIPServerConncetionListener;
-import esa.mo.mal.transport.tcpip.util.TCPIPConnectionDataReceiver;
 
 /**
  * The TCPIP MAL Transport implementation.
@@ -400,7 +424,7 @@ public class TCPIPTransport implements MALTransport {
      */
     public void receive(byte[] rawMessage, TCPIPConnectionDataReceiver receptionHandler) {
 
-	TCPIPMessage malMsg = null;
+	GENMessage malMsg = null;
 	try {
 	    String rawDataToHex = packetToString(rawMessage);
 	    LOGGER.log(Level.INFO, "TCPIP Receiving and processing data : {0}", rawDataToHex);
@@ -485,7 +509,7 @@ public class TCPIPTransport implements MALTransport {
      * @param msg The message to send.
      * @throws MALTransmitErrorException On transmit error.
      */
-    public void sendMessage(final TCPIPEndpoint ep, final TCPIPMessage msg) throws MALTransmitErrorException {
+    public void sendMessage(final TCPIPEndpoint ep, final GENMessage msg) throws MALTransmitErrorException {
 	try {
 	    // get the root URI, (e.g. tcpip://10.0.0.1:61616 )
 	    String destinationURI = msg.getHeader().getURITo().getValue();
@@ -567,7 +591,7 @@ public class TCPIPTransport implements MALTransport {
      * @param msg the messages
      * @throws MALTransmitMultipleErrorException in case there were errors in transmitting the messages
      */
-    public void sendMessages(TCPIPEndpoint tcpipEndpoint, TCPIPMessage[] msg) throws MALTransmitMultipleErrorException {
+    public void sendMessages(TCPIPEndpoint tcpipEndpoint, GENMessage[] msg) throws MALTransmitMultipleErrorException {
 	final List<MALTransmitErrorException> v = new LinkedList<MALTransmitErrorException>();
 
 	for (int i = 0; i < msg.length; i++) {
@@ -591,7 +615,7 @@ public class TCPIPTransport implements MALTransport {
      * @param errorMsg The error message.
      * @throws org.ccsds.moims.mo.mal.MALException if cannot encode a response message
      */
-    private void returnErrorMessage(TCPIPEndpoint ep, final TCPIPMessage oriMsg, final UInteger errorNumber, final String errorMsg) throws MALException {
+    private void returnErrorMessage(TCPIPEndpoint ep, final GENMessage oriMsg, final UInteger errorNumber, final String errorMsg) throws MALException {
 	try {
 	    final int type = oriMsg.getHeader().getInteractionType().getOrdinal();
 	    final short stage = oriMsg.getHeader().getInteractionStage().getValue();
@@ -603,7 +627,7 @@ public class TCPIPTransport implements MALTransport {
 		if ((null == ep) && (0 < endpointMap.size())) {
 		    ep = endpointMap.entrySet().iterator().next().getValue();
 
-		    final TCPIPMessage retMsg = (TCPIPMessage) ep.createMessage(srcHdr.getAuthenticationId(), srcHdr.getURIFrom(), new Time(new Date().getTime()), srcHdr.getQoSlevel(), srcHdr.getPriority(), srcHdr.getDomain(), srcHdr.getNetworkZone(), srcHdr.getSession(), srcHdr.getSessionName(), srcHdr.getInteractionType(), new UOctet((short) (srcHdr.getInteractionStage().getValue() + 1)), srcHdr.getTransactionId(), srcHdr.getServiceArea(), srcHdr.getService(), srcHdr.getOperation(), srcHdr.getAreaVersion(), true, oriMsg.getQoSProperties(), errorNumber, new Union(errorMsg));
+		    final GENMessage retMsg = (GENMessage) ep.createMessage(srcHdr.getAuthenticationId(), srcHdr.getURIFrom(), new Time(new Date().getTime()), srcHdr.getQoSlevel(), srcHdr.getPriority(), srcHdr.getDomain(), srcHdr.getNetworkZone(), srcHdr.getSession(), srcHdr.getSessionName(), srcHdr.getInteractionType(), new UOctet((short) (srcHdr.getInteractionStage().getValue() + 1)), srcHdr.getTransactionId(), srcHdr.getServiceArea(), srcHdr.getService(), srcHdr.getOperation(), srcHdr.getAreaVersion(), true, oriMsg.getQoSProperties(), errorNumber, new Union(errorMsg));
 
 		    sendMessage(ep, retMsg);
 		}
@@ -778,8 +802,8 @@ public class TCPIPTransport implements MALTransport {
      * @return The new message.
      * @throws MALException on Error.
      */
-    public TCPIPMessage createMessage(final byte[] packet) throws MALException {
-	return new TCPIPMessage(wrapBodyParts, true, new TCPIPMessageHeader(), packet, getStreamFactory());
+    private GENMessage createMessage(final byte[] packet) throws MALException {
+	return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), packet, getStreamFactory());
     }
 
     /**

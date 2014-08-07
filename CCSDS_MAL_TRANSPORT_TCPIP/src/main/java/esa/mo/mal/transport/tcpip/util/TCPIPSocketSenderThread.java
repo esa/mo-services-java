@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import esa.mo.mal.transport.tcpip.TCPIPTransport;
 

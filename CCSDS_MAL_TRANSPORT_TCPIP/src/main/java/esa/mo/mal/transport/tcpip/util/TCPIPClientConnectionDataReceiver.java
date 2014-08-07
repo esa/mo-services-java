@@ -22,16 +22,7 @@ package esa.mo.mal.transport.tcpip.util;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.transport.MALMessage;
-
-import esa.mo.mal.transport.tcpip.TCPIPMessage;
 import esa.mo.mal.transport.tcpip.TCPIPTransport;
 
 /**

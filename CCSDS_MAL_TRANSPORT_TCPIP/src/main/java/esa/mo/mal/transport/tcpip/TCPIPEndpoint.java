@@ -20,17 +20,32 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
-import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.transport.*;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageListener;
+import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
+import org.ccsds.moims.mo.mal.transport.MALTransmitMultipleErrorException;
+
+import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.GENMessageHeader;
 
 /**
  * A generic implementation of the end point interface.
@@ -84,7 +99,7 @@ public class TCPIPEndpoint implements MALEndpoint {
     @Override
     public MALMessage createMessage(final Blob authenticationId, final URI uriTo, final Time timestamp, final QoSLevel qosLevel, final UInteger priority, final IdentifierList domain, final Identifier networkZone, final SessionType session, final Identifier sessionName, final InteractionType interactionType, final UOctet interactionStage, final Long transactionId, final UShort serviceArea, final UShort service, final UShort operation, final UOctet serviceVersion, final Boolean isErrorMessage, final Map qosProperties, final Object... body) throws IllegalArgumentException, MALException {
 	try {
-	    return new TCPIPMessage(wrapBodyParts, new TCPIPMessageHeader(getURI(), authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone, session, sessionName, interactionType, interactionStage, transactionId, serviceArea, service, operation, serviceVersion, isErrorMessage), qosProperties, null, body);
+	    return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(), authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone, session, sessionName, interactionType, interactionStage, transactionId, serviceArea, service, operation, serviceVersion, isErrorMessage), qosProperties, null, body);
 	} catch (MALInteractionException ex) {
 	    throw new MALException("Error creating message", ex);
 	}
@@ -93,7 +108,7 @@ public class TCPIPEndpoint implements MALEndpoint {
     @Override
     public MALMessage createMessage(final Blob authenticationId, final URI uriTo, final Time timestamp, final QoSLevel qosLevel, final UInteger priority, final IdentifierList domain, final Identifier networkZone, final SessionType session, final Identifier sessionName, final InteractionType interactionType, final UOctet interactionStage, final Long transactionId, final UShort serviceArea, final UShort service, final UShort operation, final UOctet serviceVersion, final Boolean isErrorMessage, final Map qosProperties, final MALEncodedBody body) throws IllegalArgumentException, MALException {
 	try {
-	    return new TCPIPMessage(wrapBodyParts, new TCPIPMessageHeader(getURI(), authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone, session, sessionName, interactionType, interactionStage, transactionId, serviceArea, service, operation, serviceVersion, isErrorMessage), qosProperties, null, body);
+	    return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(), authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone, session, sessionName, interactionType, interactionStage, transactionId, serviceArea, service, operation, serviceVersion, isErrorMessage), qosProperties, null, body);
 	} catch (MALInteractionException ex) {
 	    throw new MALException("Error creating message", ex);
 	}
@@ -102,7 +117,7 @@ public class TCPIPEndpoint implements MALEndpoint {
     @Override
     public MALMessage createMessage(final Blob authenticationId, final URI uriTo, final Time timestamp, final QoSLevel qosLevel, final UInteger priority, final IdentifierList domain, final Identifier networkZone, final SessionType session, final Identifier sessionName, final Long transactionId, final Boolean isErrorMessage, final MALOperation op, final UOctet interactionStage, final Map qosProperties, final MALEncodedBody body) throws IllegalArgumentException, MALException {
 	try {
-	    return new TCPIPMessage(wrapBodyParts, new TCPIPMessageHeader(getURI(), authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone, session, sessionName, op.getInteractionType(), interactionStage, transactionId, op.getService().getArea().getNumber(), op.getService().getNumber(), op.getNumber(), op.getService().getArea().getVersion(), isErrorMessage), qosProperties, op, body);
+	    return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(), authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone, session, sessionName, op.getInteractionType(), interactionStage, transactionId, op.getService().getArea().getNumber(), op.getService().getNumber(), op.getNumber(), op.getService().getArea().getVersion(), isErrorMessage), qosProperties, op, body);
 	} catch (MALInteractionException ex) {
 	    throw new MALException("Error creating message", ex);
 	}
@@ -111,7 +126,7 @@ public class TCPIPEndpoint implements MALEndpoint {
     @Override
     public MALMessage createMessage(final Blob authenticationId, final URI uriTo, final Time timestamp, final QoSLevel qosLevel, final UInteger priority, final IdentifierList domain, final Identifier networkZone, final SessionType session, final Identifier sessionName, final Long transactionId, final Boolean isErrorMessage, final MALOperation op, final UOctet interactionStage, final Map qosProperties, final Object... body) throws IllegalArgumentException, MALException {
 	try {
-	    return new TCPIPMessage(wrapBodyParts, new TCPIPMessageHeader(getURI(), authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone, session, sessionName, op.getInteractionType(), interactionStage, transactionId, op.getService().getArea().getNumber(), op.getService().getNumber(), op.getNumber(), op.getService().getArea().getVersion(), isErrorMessage), qosProperties, op, body);
+	    return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(), authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone, session, sessionName, op.getInteractionType(), interactionStage, transactionId, op.getService().getArea().getNumber(), op.getService().getNumber(), op.getNumber(), op.getService().getArea().getVersion(), isErrorMessage), qosProperties, op, body);
 	} catch (MALInteractionException ex) {
 	    throw new MALException("Error creating message", ex);
 	}
@@ -119,12 +134,12 @@ public class TCPIPEndpoint implements MALEndpoint {
 
     @Override
     public void sendMessage(final MALMessage msg) throws MALTransmitErrorException {
-	transport.sendMessage(this, (TCPIPMessage) msg);
+	transport.sendMessage(this, (GENMessage) msg);
     }
 
     @Override
     public void sendMessages(final MALMessage[] msgList) throws MALTransmitMultipleErrorException {
-	transport.sendMessages(this, (TCPIPMessage[]) msgList);
+	transport.sendMessages(this, (GENMessage[]) msgList);
     }
 
     @Override
@@ -152,7 +167,7 @@ public class TCPIPEndpoint implements MALEndpoint {
      * @param pmsgs The received messages.
      * @throws MALException on an error.
      */
-    public void receiveMessages(final TCPIPMessage[] pmsgs) throws MALException {
+    public void receiveMessages(final GENMessage[] pmsgs) throws MALException {
 	if (active && (null != listener)) {
 	    listener.onMessages(this, pmsgs);
 	} else {

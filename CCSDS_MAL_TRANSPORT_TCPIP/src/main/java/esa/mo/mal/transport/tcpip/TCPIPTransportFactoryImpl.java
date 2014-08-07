@@ -22,8 +22,6 @@ package esa.mo.mal.transport.tcpip;
 
 import java.util.Map;
 
-import esa.mo.mal.transport.tcpip.TCPIPTransport;
-
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALTransport;

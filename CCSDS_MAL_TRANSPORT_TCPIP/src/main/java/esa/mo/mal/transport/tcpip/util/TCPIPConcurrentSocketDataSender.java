@@ -28,9 +28,6 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 
 import esa.mo.mal.transport.tcpip.TCPIPTransport;
 
