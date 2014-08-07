@@ -68,6 +68,8 @@
     <module>CCSDS_MAL_ENCODING_GEN</module>
     <module>CCSDS_MAL_TRANSPORT_INPROC</module>
     <module>CCSDS_MAL_TRANSPORT_TCP</module>
+    <module>CCSDS_MAL_TRANSPORT_TCPIP</module>
+
   </modules>
 
   <profiles>
