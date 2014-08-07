@@ -73,7 +73,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
   private final Identifier network = new Identifier("GROUND");
   private final SessionType session = SessionType.LIVE;
   private final Identifier sessionName = new Identifier("LIVE");
-  private final ParameterLabel[] labels = new ParameterLabel[512];
+  private final ParameterLabel[] labels ;
   private final Subscription subRequestWildcard;
   private final Subscription subRequestHalf;
   private final Subscription subRequestAll;
@@ -106,8 +106,9 @@ public class DemoConsumerGui extends javax.swing.JFrame
       System.setProperties(sysProps);
 
       final String name = System.getProperty("application.name", "DemoServiceConsumer");
-
-      final DemoConsumerGui gui = new DemoConsumerGui(name);
+      final Integer parametersNum = Integer.parseInt(System.getProperty("esa.mo.mal.demo.consumer.numparams", "512"));
+      
+      final DemoConsumerGui gui = new DemoConsumerGui(name, parametersNum);
       gui.init();
 
       EventQueue.invokeLater(new Runnable()
@@ -133,8 +134,9 @@ public class DemoConsumerGui extends javax.swing.JFrame
    *
    * @param name The name to display on the title bar of the form.
    */
-  public DemoConsumerGui(final String name)
+  public DemoConsumerGui(final String name, Integer parameterNum)
   {
+    labels  = new ParameterLabel[parameterNum];
     initComponents();
 
     this.setTitle(name);

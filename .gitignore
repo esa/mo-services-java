@@ -6,3 +6,8 @@
 */nb-*.xml
 */*.zip
 */*.xls
+*/.settings/
+*/.classpath
+*/.project
+.project
+*/bin
