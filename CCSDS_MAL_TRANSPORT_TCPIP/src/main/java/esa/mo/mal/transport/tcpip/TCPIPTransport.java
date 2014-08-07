@@ -1,10 +1,10 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2014      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Generic Transport Framework
+ * System                : CCSDS MO TCP/IP Transport Framework
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -663,12 +663,12 @@ public class TCPIPTransport implements MALTransport {
 		// create also a data reader thread for this socket in order to read messages from it        	
 		new TCPIPClientConnectionDataReceiver(this, socket, rootURI).start();        	
 	    }
-	} catch (Exception e) {
+	} catch (IOException e) {
 	    //there was a communication problem, we need to clean up the objects we created in the meanwhile
 	    this.communicationError(rootURI);
 	    //rethrow for higher MAL leyers
 	    throw (e);
-	}
+	} 
 	
 
     }
