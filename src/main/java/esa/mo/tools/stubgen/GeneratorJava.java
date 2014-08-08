@@ -69,12 +69,12 @@ public class GeneratorJava extends GeneratorLangs
   {
     super(logger, true, true, false, true, false, "/org/ccsds/moims/mo",
             new GeneratorConfiguration("org.ccsds.moims.mo.", "structures", "factory", "body", ".", "(Object[]) null",
-            "MALSendOperation",
-            "MALSubmitOperation",
-            "MALRequestOperation",
-            "MALInvokeOperation",
-            "MALProgressOperation",
-            "MALPubSubOperation"));
+                    "MALSendOperation",
+                    "MALSubmitOperation",
+                    "MALRequestOperation",
+                    "MALInvokeOperation",
+                    "MALProgressOperation",
+                    "MALPubSubOperation"));
   }
 
   @Override
@@ -163,7 +163,6 @@ public class GeneratorJava extends GeneratorLangs
             "Asynchronously registers this provider implementation to the set of broker connections", null, Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
     method.addMethodStatement("publisherSet.asyncRegister(entityKeys, listener)");
     method.addMethodCloseStatement();
-
 
     List<CompositeField> argList = new LinkedList<CompositeField>();
     argList.add(createCompositeElementsDetails(file, true, "updateHeaderList", TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true, "updateHeaderList The headers of the updates being added"));
@@ -429,7 +428,7 @@ public class GeneratorJava extends GeneratorLangs
   @Override
   protected void createStructureFactoryFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException
   {
-    createFolderComment(structureFolder, area, service, getConfig().getStructureFolder()+"."+getConfig().getFactoryFolder(), "Factory classes for the types defined in the "
+    createFolderComment(structureFolder, area, service, getConfig().getStructureFolder() + "." + getConfig().getFactoryFolder(), "Factory classes for the types defined in the "
             + ((null == service) ? (area.getName() + " area.") : (service.getName() + " service.")));
   }
 
@@ -494,12 +493,12 @@ public class GeneratorJava extends GeneratorLangs
 
     String typeName = elementType.getName();
 
-    if(checkType && !isKnownType(elementType))
+    if (checkType && !isKnownType(elementType))
     {
       getLog().warn("Unknown type (" + elementType.getArea() + ":" + elementType.getName()
               + ") is being referenced as field (" + fieldName + ")");
     }
-    
+
     if (elementType.isList())
     {
       if (StdStrings.XML.equals(elementType.getArea()))
@@ -857,7 +856,7 @@ public class GeneratorJava extends GeneratorLangs
 
       addClassVariable(isStatic, isFinal, scope, arg, isObject, isArray, val);
     }
-    
+
     protected void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, String initialValue) throws IOException
     {
       addMultilineComment(1, false, arg.getComment(), false);
