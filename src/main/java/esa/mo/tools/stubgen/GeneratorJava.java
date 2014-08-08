@@ -429,7 +429,7 @@ public class GeneratorJava extends GeneratorLangs
   @Override
   protected void createStructureFactoryFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException
   {
-    createFolderComment(structureFolder, area, service, getConfig().getFactoryFolder(), "Factory classes for the types defined in the "
+    createFolderComment(structureFolder, area, service, getConfig().getStructureFolder()+"."+getConfig().getFactoryFolder(), "Factory classes for the types defined in the "
             + ((null == service) ? (area.getName() + " area.") : (service.getName() + " service.")));
   }
 
