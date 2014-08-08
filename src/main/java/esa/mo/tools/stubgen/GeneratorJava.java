@@ -165,7 +165,7 @@ public class GeneratorJava extends GeneratorLangs
     method.addMethodCloseStatement();
 
 
-    List<CompositeField> argList = new LinkedList();
+    List<CompositeField> argList = new LinkedList<CompositeField>();
     argList.add(createCompositeElementsDetails(file, true, "updateHeaderList", TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true, "updateHeaderList The headers of the updates being added"));
     argList.addAll(createOperationArguments(getConfig(), file, op.getUpdateTypes(), true));
 

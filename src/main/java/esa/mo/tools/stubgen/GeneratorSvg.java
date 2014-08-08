@@ -113,7 +113,7 @@ public class GeneratorSvg extends GeneratorDocument
   {
     for (AreaType area : spec.getArea())
     {
-      Map<String, String> indexMap = new TreeMap();
+      Map<String, String> indexMap = new TreeMap<String, String>();
 
       if ((!area.getName().equalsIgnoreCase(StdStrings.COM)) || (generateCOM()))
       {
@@ -125,7 +125,7 @@ public class GeneratorSvg extends GeneratorDocument
         svgBuff.addTitle(1, "Specification: ", createId(null, null), area.getName(), false);
         svgBuff.addComment(area.getComment());
 
-        Set<Map.Entry<String, String>> svcTocMap = new LinkedHashSet();
+        Set<Map.Entry<String, String>> svcTocMap = new LinkedHashSet<Map.Entry<String, String>>();
         SvgBufferWriter areaBodyBuff = new SvgBufferWriter(destinationFolderName, outputName, true);
 
         // create services
@@ -136,7 +136,7 @@ public class GeneratorSvg extends GeneratorDocument
 
           svcTocMap.add(new AbstractMap.SimpleEntry<String, String>(service.getName(), createXlink(null, service.getName(), null)));
 
-          Set<Map.Entry<String, String>> opTocMap = new LinkedHashSet();
+          Set<Map.Entry<String, String>> opTocMap = new LinkedHashSet<Map.Entry<String, String>>();
           SvgBufferWriter serviceBodyBuff = new SvgBufferWriter(destinationFolderName, outputName, true);
 
           ServiceSummary summary = createOperationElementList(service);
@@ -166,7 +166,7 @@ public class GeneratorSvg extends GeneratorDocument
 
             if ((null != eservice.getFeatures()) && (null != eservice.getFeatures().getEvents()))
             {
-              Set<Map.Entry<String, String>> evTocMap = new LinkedHashSet();
+              Set<Map.Entry<String, String>> evTocMap = new LinkedHashSet<Map.Entry<String, String>>();
               SvgBufferWriter eventBodyBuff = new SvgBufferWriter(destinationFolderName, outputName, true);
 
               for (ModelObjectType evt : eservice.getFeatures().getEvents().getEvent())
@@ -741,7 +741,7 @@ public class GeneratorSvg extends GeneratorDocument
 
   private abstract class Container extends ContainerElement
   {
-    protected final List<ContainerElement> elements = new ArrayList();
+    protected final List<ContainerElement> elements = new ArrayList<ContainerElement>();
 
     public Container(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional)
     {

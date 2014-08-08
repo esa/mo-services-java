@@ -2293,7 +2293,7 @@ public abstract class GeneratorLangs extends GeneratorBase
 
   protected void addMalTypes(TypeInformation tiSource, List<String> opArgs, int index, List<TypeInfo> ti, boolean isPubSub)
   {
-    ArrayList<String> typeArgs = new ArrayList();
+    ArrayList<String> typeArgs = new ArrayList<String>();
     boolean needXmlSchema = false;
     boolean needMalTypes = false;
 

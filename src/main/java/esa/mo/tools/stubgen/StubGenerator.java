@@ -203,7 +203,7 @@ public class StubGenerator extends AbstractMojo
 
     if (null == extraProperties)
     {
-      extraProperties = new TreeMap();
+      extraProperties = new TreeMap<String, String>();
     }
 
     // if the directoy containing the xml specifications exists
@@ -276,7 +276,7 @@ public class StubGenerator extends AbstractMojo
 
   private static List<Map.Entry<SpecificationType, File>> loadSpecifications(final File directory) throws MojoExecutionException
   {
-    final List<Map.Entry<SpecificationType, File>> specList = new LinkedList();
+    final List<Map.Entry<SpecificationType, File>> specList = new LinkedList<Map.Entry<SpecificationType, File>>();
     
     if (directory.exists())
     {

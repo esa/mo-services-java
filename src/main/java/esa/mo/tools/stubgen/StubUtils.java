@@ -282,32 +282,35 @@ public abstract class StubUtils
   /**
    * Concatenates an array of arguments.
    *
+   * @param firstArg The initial argument to add.
    * @param args The arguments.
    * @return The concatenated arguments.
    */
   public static List<CompositeField> concatenateArguments(CompositeField firstArg, List<CompositeField>... args)
   {
-    List lst = new LinkedList();
+    List<CompositeField> lst = new LinkedList<CompositeField>();
     lst.add(firstArg);
 
     for (List<CompositeField> elem : args)
     {
       lst.addAll(elem);
     }
-    
+
     return lst;
   }
 
   /**
    * Concatenates an array of arguments.
    *
+   * @param firstArg The initial argument list to add to.
    * @param args The arguments.
    * @return The concatenated arguments.
    */
+  @SafeVarargs
   public static List<CompositeField> concatenateArguments(List<CompositeField> firstArg, CompositeField... args)
   {
     firstArg.addAll(Arrays.asList(args));
-    
+
     return firstArg;
   }
 

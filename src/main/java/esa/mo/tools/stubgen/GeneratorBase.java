@@ -46,13 +46,13 @@ public abstract class GeneratorBase implements Generator, TypeInformation
    * The configuration of the generator.
    */
   private final GeneratorConfiguration config;
-  private final Set<String> enumTypesSet = new TreeSet();
-  private final Set<String> abstractTypesSet = new TreeSet();
+  private final Set<String> enumTypesSet = new TreeSet<String>();
+  private final Set<String> abstractTypesSet = new TreeSet<String>();
   private final Map<String, Object> allTypesMap = new TreeMap<String, Object>();
   private final Map<String, CompositeType> compositeTypesMap = new TreeMap<String, CompositeType>();
-  private final Map<String, AttributeTypeDetails> attributeTypesMap = new TreeMap();
+  private final Map<String, AttributeTypeDetails> attributeTypesMap = new TreeMap<String, AttributeTypeDetails>();
   private final Map<String, NativeTypeDetails> nativeTypesMap = new TreeMap<String, NativeTypeDetails>();
-  private final Map<String, ErrorDefinitionType> errorDefinitionMap = new TreeMap();
+  private final Map<String, ErrorDefinitionType> errorDefinitionMap = new TreeMap<String, ErrorDefinitionType>();
   private final Map<String, String> jaxbBindings = new TreeMap<String, String>();
   private final Log logger;
   private boolean generateCOM;

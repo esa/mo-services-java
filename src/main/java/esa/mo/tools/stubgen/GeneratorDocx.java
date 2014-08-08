@@ -791,7 +791,7 @@ public class GeneratorDocx extends GeneratorDocument
         docxFile.addComment("The operation may return one of the following errors:");
       }
 
-      TreeMap<String, List<Object[]>> m = new TreeMap();
+      TreeMap<String, List<Object[]>> m = new TreeMap<String, List<Object[]>>();
 
       for (Object object : errs.getErrorOrErrorRef())
       {
@@ -818,7 +818,7 @@ public class GeneratorDocx extends GeneratorDocument
           }
           else
           {
-            v = new ArrayList();
+            v = new ArrayList<Object[]>();
             m.put(String.valueOf(err.getNumber()), v);
           }
 
@@ -871,7 +871,7 @@ public class GeneratorDocx extends GeneratorDocument
           }
           else
           {
-            v = new ArrayList();
+            v = new ArrayList<Object[]>();
             m.put(es, v);
           }
 
