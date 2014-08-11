@@ -35,7 +35,7 @@ public abstract class MALAccessControlFactory
    * The system property that resolves the specific MALAccessControlFactory class name.
    */
   public static final String FACTORY_PROP_NAME = "org.ccsds.moims.mo.mal.accesscontrol.factory.class";
-  private static final Map _FACTORY_MAP = new TreeMap();
+  private static final Map<String, Class> _FACTORY_MAP = new TreeMap<String, Class>();
 
   /**
    * The method allows an implementation to register the class of a specific MALAccessControlFactory. NOTE – This method
@@ -90,7 +90,7 @@ public abstract class MALAccessControlFactory
 
         if (_FACTORY_MAP.containsKey(className))
         {
-          factoryClass = (Class) _FACTORY_MAP.get(className);
+          factoryClass = _FACTORY_MAP.get(className);
         }
         else
         {

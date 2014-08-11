@@ -35,7 +35,7 @@ public abstract class MALTransportFactory
    * The system property prefix that resolves the specific MALTransportFactory class name for a protocol.
    */
   public static final String FACTORY_PROP_NAME_PREFIX = "org.ccsds.moims.mo.mal.transport.protocol";
-  private static final Map<String, Class> _FACTORY_MAP = new TreeMap();
+  private static final Map<String, Class> _FACTORY_MAP = new TreeMap<String, Class>();
   private final String protocol;
 
   /**
@@ -76,7 +76,7 @@ public abstract class MALTransportFactory
 
   /**
    * The method creates a factory instance from a protocol name. The method resolves the specific MALTransportFactory
-   * class name through the system property org.ccsds.moims.mo.mal.transport.protocol.<<protocol name>> NOTE – Each of
+   * class name through the system property org.ccsds.moims.mo.mal.transport.protocol.[protocol name] NOTE – Each of
    * those protocol properties is assigned with the class name of the transport factory. It should be noted that two
    * different protocol properties can share the same transport factory class name.
    *

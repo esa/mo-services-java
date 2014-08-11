@@ -37,8 +37,8 @@ import org.ccsds.moims.mo.mal.structures.*;
 public class MALProviderSet
 {
   private final MALService service;
-  private final Set<MALProvider> providers = new HashSet();
-  private final Set<MALPublisherSet> publisherSets = new HashSet();
+  private final Set<MALProvider> providers = new HashSet<MALProvider>();
+  private final Set<MALPublisherSet> publisherSets = new HashSet<MALPublisherSet>();
 
   /**
    * Constructs a provider set.

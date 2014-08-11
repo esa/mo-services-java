@@ -40,9 +40,9 @@ public class MALService
   private MALArea area;
   private final UShort number;
   private final Identifier name;
-  private final Map<Integer, MALOperation> operationsByNumber = new TreeMap();
-  private final Map<String, MALOperation> operationsByName = new TreeMap();
-  private final Map<Integer, MALOperation[]> operationsBySet = new TreeMap();
+  private final Map<Integer, MALOperation> operationsByNumber = new TreeMap<Integer, MALOperation>();
+  private final Map<String, MALOperation> operationsByName = new TreeMap<String, MALOperation>();
+  private final Map<Integer, MALOperation[]> operationsBySet = new TreeMap<Integer, MALOperation[]>();
   private MALSendOperation[] sendOperations;
   private MALSubmitOperation[] submitOperations;
   private MALRequestOperation[] requestOperations;
@@ -174,7 +174,7 @@ public class MALService
    */
   public MALOperation getOperationByNumber(final UShort opNumber)
   {
-    return (MALOperation) operationsByNumber.get(Integer.valueOf(opNumber.getValue()));
+    return (MALOperation) operationsByNumber.get(opNumber.getValue());
   }
 
   /**

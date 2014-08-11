@@ -36,8 +36,8 @@ public class MALArea
   private final Identifier name;
   private final UOctet version;
   private MALService[] services = new MALService[0];
-  private final Map<String, MALService> serviceNames = new TreeMap();
-  private final Map<Integer, MALService> serviceNumbers = new TreeMap();
+  private final Map<String, MALService> serviceNames = new TreeMap<String, MALService>();
+  private final Map<Integer, MALService> serviceNumbers = new TreeMap<Integer, MALService>();
 
   /**
    * MALArea constructor.
@@ -134,7 +134,7 @@ public class MALArea
   {
     synchronized (this)
     {
-      return (MALService) serviceNumbers.get(Integer.valueOf(serviceNumber.getValue()));
+      return (MALService) serviceNumbers.get(serviceNumber.getValue());
     }
   }
 

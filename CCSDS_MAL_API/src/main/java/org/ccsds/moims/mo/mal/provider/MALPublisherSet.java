@@ -37,7 +37,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 public class MALPublisherSet
 {
   private final MALProviderSet providerSet;
-  private final Set<MALPublisher> subpublishers = new HashSet();
+  private final Set<MALPublisher> subpublishers = new HashSet<MALPublisher>();
   private final MALPubSubOperation op;
   private final IdentifierList domain;
   private final Identifier networkZone;

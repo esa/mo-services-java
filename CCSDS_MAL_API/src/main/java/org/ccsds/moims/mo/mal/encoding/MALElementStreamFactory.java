@@ -35,7 +35,7 @@ public abstract class MALElementStreamFactory
    * The system property that resolves the specific MALElementStreamFactory class name.
    */
   public static final String FACTORY_PROP_NAME_PREFIX = "org.ccsds.moims.mo.mal.encoding.protocol";
-  private static final Map _FACTORY_MAP = new TreeMap();
+  private static final Map<String, Class> _FACTORY_MAP = new TreeMap<String, Class>();
 
   /**
    * The method allows an implementation to register the class of a specific MALElementStreamFactory. NOTE – This method
