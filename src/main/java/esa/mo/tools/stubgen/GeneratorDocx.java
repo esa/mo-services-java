@@ -541,7 +541,7 @@ public class GeneratorDocx extends GeneratorDocument
           }
           else
           {
-            evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, "Not specified", STD_COLOUR, 2);
+            evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, "Not specified");
           }
 
           evntTable.endRow();
