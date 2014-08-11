@@ -1,10 +1,10 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2014      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO MAL Demo Application
+ * System                : CCSDS MO MAL Support library
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,13 +18,20 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.demo.util;
+package esa.mo.mal.support;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
  * Helper class that contains useful utility functions. It also stores a list of loaded property files so that the same
@@ -33,7 +40,7 @@ import java.util.logging.Logger;
  */
 public abstract class StructureHelper
 {
-  private static final Set<String> LOADED_PROPERTIES = new TreeSet<String>();
+  private static final Set LOADED_PROPERTIES = new TreeSet();
 
   /**
    * Clears the list of loaded property files.
@@ -41,6 +48,38 @@ public abstract class StructureHelper
   public static void clearLoadedPropertiesList()
   {
     LOADED_PROPERTIES.clear();
+  }
+
+  /**
+   * Loads in a property file and optionally searches for a contained property that contains the next file to load.
+   * loaded properties are then stored in the system properties.
+   *
+   * @param chainProperty The property name that contains the name of the file to load.
+   * @param defaultFile The name of the property file to load if the chain property has not been set.
+   */
+  public static void loadPropertiesIntoSystem(final String chainProperty, final String defaultFile)
+  {
+    final Properties sysProps = System.getProperties();
+
+    File file = new File(System.getProperty(chainProperty, defaultFile));
+
+    if (file.exists())
+    {
+      try
+      {
+        sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), chainProperty));
+      }
+      catch (MalformedURLException ex)
+      {
+        Logger.getLogger("esa.mo.mal").log(Level.WARNING,
+                "Failed to load properties file {0} {1}", new Object[]
+                {
+                  file, ex
+                });
+      }
+    }
+
+    System.setProperties(sysProps);
   }
 
   /**
@@ -84,21 +123,51 @@ public abstract class StructureHelper
 
         final Properties subProps = loadProperties(myProps.getProperty(chainProperty), chainProperty);
 
-        Logger.getLogger("org.ccsds.moims.mo.mal.demo.util").log(Level.INFO,
+        Logger.getLogger("esa.mo.mal").log(Level.INFO,
                 "Loading properties from {0}", url.toString());
         topProps.putAll(subProps);
         topProps.putAll(myProps);
       }
-      catch (Exception ex)
+      catch (IOException ex)
       {
-        Logger.getLogger("org.ccsds.moims.mo.mal.demo.util").log(Level.WARNING,
+        Logger.getLogger("esa.mo.mal").log(Level.WARNING,
                 "Failed to load properties file {0} {1}", new Object[]
-        {
-          url, ex
-        });
+                {
+                  url, ex
+                });
       }
     }
 
     return topProps;
+  }
+
+  public static void storeURIs(String filename, URI mainUri, URI brokerUri)
+  {
+    if ((null != filename) && (0 < filename.length()))
+    {
+      try
+      {
+        File file = new File(filename);
+        final FileOutputStream fos = new FileOutputStream(file);
+        final OutputStreamWriter osw = new OutputStreamWriter(fos);
+        final BufferedWriter wrt = new BufferedWriter(osw);
+
+        if ((null != mainUri) && (null != mainUri.getValue()))
+        {
+          wrt.append("uri=" + mainUri);
+          wrt.newLine();
+        }
+        if ((null != brokerUri) && (null != brokerUri.getValue()))
+        {
+          wrt.append("broker=" + brokerUri);
+          wrt.newLine();
+        }
+        wrt.close();
+      }
+      catch (IOException ex)
+      {
+        Logger.getLogger("esa.mo.mal").log(Level.WARNING, "Unable to write URI information to properties file {0}", ex);
+      }
+    }
   }
 }
