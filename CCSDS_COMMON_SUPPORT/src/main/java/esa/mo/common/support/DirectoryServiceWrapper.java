@@ -28,6 +28,7 @@ import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.UShort;
 
 /**
  *
@@ -74,7 +75,7 @@ public class DirectoryServiceWrapper
     ProviderInformationList pil = new ProviderInformationList();
     pil.add(pi);
     
-    ServiceDetails sd = new ServiceDetails(service.getArea().getName(), service.getName(), service.getArea().getVersion(), pil);
+    ServiceDetails sd = new ServiceDetails(service.getArea().getNumber(), service.getNumber(), service.getArea().getVersion(), pil);
     ServiceDetailsList sdl = new ServiceDetailsList();
     sdl.add(sd);
     
@@ -97,7 +98,7 @@ public class DirectoryServiceWrapper
     ProviderInformationList pil = new ProviderInformationList();
     pil.add(pi);
     
-    ServiceDetails sd = new ServiceDetails(service.getArea().getName(), service.getName(), service.getArea().getVersion(), pil);
+    ServiceDetails sd = new ServiceDetails(service.getArea().getNumber(), service.getNumber(), service.getArea().getVersion(), pil);
     ServiceDetailsList sdl = new ServiceDetailsList();
     sdl.add(sd);
     
@@ -112,18 +113,18 @@ public class DirectoryServiceWrapper
   
   public ServiceDetailsList lookupService(Identifier providerName, IdentifierList domain, Identifier network, MALService service, IntegerList supportedCapabilities) throws MALException, MALInteractionException
   {
-    Identifier areaName = null;
-    Identifier serviceName = null;
+    UShort areaNumber = null;
+    UShort serviceNumber = null;
     UOctet areaVersion = null;
     
     if (null != service)
     {
-      areaName = service.getArea().getName();
-      serviceName = service.getName();
+      areaNumber = service.getArea().getNumber();
+      serviceNumber = service.getNumber();
       areaVersion = service.getArea().getVersion();
     }
     
-    ServiceFilter filter = new ServiceFilter(domain, network, SessionType.LIVE, new Identifier("LIVE"), areaName, serviceName, areaVersion, supportedCapabilities, providerName);
+    ServiceFilter filter = new ServiceFilter(domain, network, SessionType.LIVE, new Identifier("LIVE"), areaNumber, serviceNumber, areaVersion, supportedCapabilities, providerName);
     
     return directoryService.lookupService(filter);
   }
