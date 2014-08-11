@@ -51,7 +51,7 @@
             </mal:errorRef>
             <mal:errorRef comment="One or more of the requested objects specified in the operation do not exist and therefore cannot be found.&#xA;">
               <mal:type name="UNKNOWN" area="MAL"/>
-              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.&#xA;">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -83,7 +83,7 @@
           <mal:errors>
             <mal:errorRef comment="One or more of the query filters supplied contains an invalid value.&#xA;">
               <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains the indexes of the erroneous values from the originating list supplied.&#xA;">
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.&#xA;">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -105,7 +105,7 @@
           <mal:errors>
             <mal:errorRef comment="One or more of the query filters supplied contains an invalid value.&#xA;">
               <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains the indexes of the erroneous values from the originating list supplied.&#xA;">
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.&#xA;">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -130,13 +130,13 @@
           <mal:errors>
             <mal:errorRef comment="One or more of the objects being stored has supplied an object instance identifier that is already in use in the archive.&#xA;">
               <mal:type name="DUPLICATE" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains the indexes of the erroneous values from the originating request list.&#xA;">
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating request list.&#xA;">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="One or more of the objects being stored contains an invalid value.&#xA;">
               <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains the indexes of the erroneous values from the originating list supplied.&#xA;">
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.&#xA;">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -157,13 +157,13 @@
           <mal:errors>
             <mal:errorRef comment="One or more of the requested objects specified in the operation do not exist and therefore cannot be found.&#xA;">
               <mal:type name="UNKNOWN" area="MAL"/>
-              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.&#xA;">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="One or more of the objects being updated contains a wildcard value in the object identifier fields.&#xA;">
               <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains the indexes of the erroneous values from the originating list supplied.&#xA;">
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.&#xA;">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -196,7 +196,7 @@
           <mal:errors>
             <mal:errorRef comment="One or more of the requested objects specified in the operation do not exist and therefore cannot be found.&#xA;">
               <mal:type name="UNKNOWN" area="MAL"/>
-              <mal:extraInformation comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.&#xA;">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
