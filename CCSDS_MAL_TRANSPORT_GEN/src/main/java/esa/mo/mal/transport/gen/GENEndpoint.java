@@ -287,7 +287,7 @@ public class GENEndpoint implements MALEndpoint
   @Override
   public void sendMessages(final MALMessage[] msgList) throws MALTransmitMultipleErrorException
   {
-    final List<MALTransmitErrorException> v = new LinkedList();
+    final List<MALTransmitErrorException> v = new LinkedList<MALTransmitErrorException>();
 
     try
     {

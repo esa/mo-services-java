@@ -83,7 +83,7 @@ public abstract class GENTransport implements MALTransport, GENSender
   /**
    * Set of bad URLs
    */
-  protected final Set badUrls = new TreeSet();
+  protected final Set<String> badUrls = new TreeSet<String>();
   /**
    * Map of string names to endpoints.
    */
@@ -91,7 +91,7 @@ public abstract class GENTransport implements MALTransport, GENSender
   /**
    * List of outgoing messages for the message pump.
    */
-  protected final List outgoingMessageList = new LinkedList();
+  protected final List<MsgPair> outgoingMessageList = new LinkedList<MsgPair>();
   /**
    * The base string for URL for this protocol.
    */
