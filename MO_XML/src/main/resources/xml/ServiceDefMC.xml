@@ -1573,17 +1573,17 @@
         </mal:submitIP>
       </mal:capabilitySet>
       <mal:dataTypes>
-        <mal:enumeration name="AggregationCategory" shortFormPart="5"
+        <mal:enumeration name="AggregationCategory" shortFormPart="6"
                          comment="AggregationCategory is an enumeration definition holding the categories of aggregations.">
           <mal:item value="GENERAL" nvalue="1" comment="General aggregation."/>
           <mal:item value="DIAGNOSTIC" nvalue="2" comment="Diagnostic aggregation."/>
         </mal:enumeration>
-        <mal:enumeration name="ThresholdType" shortFormPart="6"
+        <mal:enumeration name="ThresholdType" shortFormPart="7"
                          comment="ThresholdType is an enumeration definition holding the types of filtering thresholds.">
           <mal:item value="PERCENTAGE" nvalue="1" comment="Threshold value is a percentage.&#xA;"/>
           <mal:item value="DELTA" nvalue="2" comment="Threshold value is a delta.&#xA;"/>
         </mal:enumeration>
-        <mal:enumeration name="GenerationMode" shortFormPart="7"
+        <mal:enumeration name="GenerationMode" shortFormPart="8"
                          comment="GenerationMode is an enumeration definition holding the reasons for the aggregation to be generated.&#xA;">
           <mal:item value="ADHOC" nvalue="1"
                     comment="The aggregation value was generated because of an ad-hoc implementation dependent reason.&#xA;"/>
@@ -1626,41 +1626,11 @@
           </mal:field>
           <mal:field name="parameterSets" canBeNull="false"
                      comment="List containing the parameter sets which define the aggregation.&#xA;">
-            <mal:type list="true" name="AggregationReference" service="Aggregation" area="MC"/>
+            <mal:type list="true" name="AggregationParameterSet" service="Aggregation" area="MC"/>
           </mal:field>
         </mal:composite>
-        <mal:composite name="AggregationValue" shortFormPart="2"
-                       comment="The AggregationValue structure holds the values for one or more sets of parameter values. The values must be held in the same order as that defined in the aggregation definition.&#xA;">
-          <mal:extends>
-            <mal:type name="Composite" area="MAL"/>
-          </mal:extends>
-          <mal:field name="generationMode" canBeNull="false"
-                     comment="Reason for the aggregation being generated.&#xA;">
-            <mal:type name="GenerationMode" service="Aggregation" area="MC"/>
-          </mal:field>
-          <mal:field name="filtered" canBeNull="false"
-                     comment="If a filter is enabled when the aggregation value is generated then this value shall be set to TRUE, else FALSE.&#xA;">
-            <mal:type name="Boolean" area="MAL"/>
-          </mal:field>
-          <mal:field name="deltaTime"
-                     comment="Optional delta time, from the time stamp of the aggregation, for the first parameter sample. If NULL, then the first sample time is the same as the aggregation time stamp.&#xA;">
-            <mal:type name="Duration" area="MAL"/>
-          </mal:field>
-          <mal:field name="intervalTime"
-                     comment="Optional delta time between samples in a single set. If NULL, then all samples in that set are given the same time.&#xA;">
-            <mal:type name="Duration" area="MAL"/>
-          </mal:field>
-          <mal:field name="setIntervalTime"
-                     comment="Optional delta time between the last sample of a set and the first sample of the next set. If NULL, then the first sample of a set is given the same time as the last sample of the previous set.&#xA;">
-            <mal:type name="Duration" area="MAL"/>
-          </mal:field>
-          <mal:field name="values" canBeNull="false"
-                     comment="List containing values of the parameters which are part of the aggregation. The ordering of the list entries shall match that of the definition of the aggregation. If a value for a particular entity is not being supplied, then its position shall be filled with a NULL value. If there are more values than contained in the definition then it is assumed that the parameters cycle as parameter sets.&#xA;">
-            <mal:type list="true" name="ParameterValue" service="Parameter" area="MC"/>
-          </mal:field>
-        </mal:composite>
-        <mal:composite name="AggregationReference" shortFormPart="3"
-                       comment="The AggregationReference structure holds the identifier and optional filter for a parameter in an aggregation.&#xA;">
+        <mal:composite name="AggregationParameterSet" shortFormPart="2"
+                       comment="The AggregationParameterSet structure holds the identifier and optional filter for a parameter, or set of parameters, in an aggregation.&#xA;">
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
@@ -1681,7 +1651,42 @@
             <mal:type name="ThresholdFilter" service="Aggregation" area="MC"/>
           </mal:field>
         </mal:composite>
-        <mal:composite name="ThresholdFilter" shortFormPart="4"
+        <mal:composite name="AggregationValue" shortFormPart="3"
+                       comment="The AggregationValue structure holds the values for one or more sets of parameter values. The value sets must be held in the same order as that defined in the aggregation definition.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="generationMode" canBeNull="false"
+                     comment="Reason for the aggregation being generated.&#xA;">
+            <mal:type name="GenerationMode" service="Aggregation" area="MC"/>
+          </mal:field>
+          <mal:field name="filtered" canBeNull="false"
+                     comment="If a filter is enabled when the aggregation value is generated then this value shall be set to TRUE, else FALSE.&#xA;">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="parameterSetValues" canBeNull="false" comment="">
+            <mal:type list="true" name="AggregationSetValue" service="Aggregation" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="AggregationSetValue" shortFormPart="4"
+                       comment="The AggregationSetValue structure holds the values for one sets of parameter values. The value sets must be held in the same order as that defined in the aggregation definition.&#xA;">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="deltaTime"
+                     comment="Optional delta time, from the time stamp of the aggregation for the first parameter set of the aggregation or the previous parameter set otherwise, for the first parameter sample of this set. If NULL, then the first sample time is the same as the aggregation time stamp for the first parameter set of the aggregation or the previous parameter set otherwise.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="intervalTime"
+                     comment="Optional delta time between samples in a single set. If NULL, then all samples in that set are given the same time.&#xA;">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="values" canBeNull="false"
+                     comment="List containing values of the parameters which are part of the aggregation. The ordering of the list entries shall match that of the definition of the aggregation. If a value for a particular entity is not being supplied, then its position shall be filled with a NULL value. If there are more values than contained in the definition then it is assumed that the parameters cycle as a complete parameter set.&#xA;">
+            <mal:type list="true" name="ParameterValue" service="Parameter" area="MC"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ThresholdFilter" shortFormPart="5"
                        comment="The ThresholdFilter structure holds the filter for a parameter.&#xA;">
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
