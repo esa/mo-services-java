@@ -198,6 +198,11 @@ public class GENMessage implements MALMessage, java.io.Serializable
   {
   }
 
+  /**
+   * Returns true if this message will wrap body parts in blobs.
+   *
+   * @return True if wrapping is enabled.
+   */
   public boolean isWrapBodyParts()
   {
     return wrapBodyParts;
