@@ -469,6 +469,8 @@ public abstract class GENTransport implements MALTransport, GENSender
                 badUrls.add(tmsg.addr);
               }
               LOGGER.log(Level.WARNING, "GEN Error occurred when sending data : {0}", e);
+              
+              tmsg.srcEp.getMessageListener().onTransmitError(tmsg.srcEp, tmsg.msg.getHeader(), new MALStandardError(MALHelper.DESTINATION_LOST_ERROR_NUMBER, null), null);
             }
           }
 

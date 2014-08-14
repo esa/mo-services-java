@@ -42,7 +42,7 @@ public class GENEndpoint implements MALEndpoint
   private final String localURI;
   private final boolean wrapBodyParts;
   private boolean active = false;
-  private MALMessageListener listener = null;
+  private MALMessageListener messageListener = null;
 
   /**
    * Constructor.
@@ -319,10 +319,15 @@ public class GENEndpoint implements MALEndpoint
     }
   }
 
+  public MALMessageListener getMessageListener()
+  {
+    return messageListener;
+  }
+
   @Override
   public void setMessageListener(final MALMessageListener list) throws MALException
   {
-    this.listener = list;
+    this.messageListener = list;
   }
 
   /**
@@ -333,9 +338,9 @@ public class GENEndpoint implements MALEndpoint
    */
   public void receiveMessage(final MALMessage pmsg) throws MALException
   {
-    if (active && (null != listener))
+    if (active && (null != messageListener))
     {
-      listener.onMessage(this, pmsg);
+      messageListener.onMessage(this, pmsg);
     }
     else
     {
@@ -343,7 +348,7 @@ public class GENEndpoint implements MALEndpoint
               "GENEndpoint ({0}) Discarding message active({1}) listener({2}) {3}",
               new Object[]
               {
-                localName, active, listener, pmsg.toString()
+                localName, active, messageListener, pmsg.toString()
               });
     }
   }
@@ -356,9 +361,9 @@ public class GENEndpoint implements MALEndpoint
    */
   public void receiveMessages(final GENMessage[] pmsgs) throws MALException
   {
-    if (active && (null != listener))
+    if (active && (null != messageListener))
     {
-      listener.onMessages(this, pmsgs);
+      messageListener.onMessages(this, pmsgs);
     }
     else
     {
@@ -366,7 +371,7 @@ public class GENEndpoint implements MALEndpoint
               "GENEndpoint ({0}) Discarding messages active({1}) listener({2})",
               new Object[]
               {
-                localName, active, listener
+                localName, active, messageListener
               });
     }
   }
