@@ -306,7 +306,6 @@ public abstract class StubUtils
    * @param args The arguments.
    * @return The concatenated arguments.
    */
-  @SafeVarargs
   public static List<CompositeField> concatenateArguments(List<CompositeField> firstArg, CompositeField... args)
   {
     firstArg.addAll(Arrays.asList(args));
