@@ -81,6 +81,8 @@ public class MessageReceive implements MALMessageListener
           final Map qosMap)
   {
     MALContextFactoryImpl.LOGGER.severe("MAL Receiving Transmission ERROR!");
+
+    icmap.handleError(srcMessageHeader, err, qosMap);
   }
 
   @Override

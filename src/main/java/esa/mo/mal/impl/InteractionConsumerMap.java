@@ -41,8 +41,8 @@ import org.ccsds.moims.mo.mal.transport.*;
  */
 class InteractionConsumerMap
 {
-  private final Map<Long, InternalOperationHandler> transMap =
-          new TreeMap<Long, InternalOperationHandler>();
+  private final Map<Long, InternalOperationHandler> transMap
+          = new TreeMap<Long, InternalOperationHandler>();
 
   Long createTransaction(final int interactionType,
           final boolean syncOperation,
@@ -141,7 +141,7 @@ class InteractionConsumerMap
     }
   }
 
-  MALMessage waitForResponse(final Long id)
+  MALMessage waitForResponse(final Long id) throws MALInteractionException
   {
     InternalOperationHandler handler = null;
 
@@ -177,9 +177,6 @@ class InteractionConsumerMap
         }
       }
 
-      // must have value now
-      retVal = handler.getResult();
-
       // delete entry from trans map
       synchronized (transMap)
       {
@@ -189,6 +186,14 @@ class InteractionConsumerMap
           transMap.remove(id);
         }
       }
+
+      if (handler.isInError())
+      {
+        handler.throwException();
+      }
+
+      // must have value now
+      retVal = handler.getResult();
     }
 
     return retVal;
@@ -227,6 +232,38 @@ class InteractionConsumerMap
     }
   }
 
+  void handleError(final MALMessageHeader hdr,
+          final MALStandardError err,
+          final Map qosMap)
+  {
+    final Long id = hdr.getTransactionId();
+    InternalOperationHandler handler = null;
+
+    synchronized (transMap)
+    {
+      if (transMap.containsKey(id))
+      {
+        handler = transMap.get(id);
+      }
+      else
+      {
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING, "No key found in service maps to get listener! {0}", id);
+      }
+    }
+
+    if (null != handler)
+    {
+      handler.handleError(hdr, err, qosMap);
+
+      // delete entry from trans map
+      synchronized (transMap)
+      {
+        MALContextFactoryImpl.LOGGER.log(Level.INFO, "Removing handler from service maps: {0}", id);
+        transMap.remove(id);
+      }
+    }
+  }
+
   private abstract static class InternalOperationHandler
   {
     private static final class BooleanLock
@@ -246,7 +283,9 @@ class InteractionConsumerMap
     protected final boolean syncOperation;
     protected final MALInteractionListener listener;
     protected final BooleanLock lock = new BooleanLock();
+    private boolean inError = false;
     private MALMessage result = null;
+    private MALStandardError error = null;
 
     protected InternalOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
@@ -266,7 +305,35 @@ class InteractionConsumerMap
       }
     }
 
+    protected void signalError(final MALStandardError err)
+    {
+      inError = true;
+      result = null;
+      error = err;
+
+      // do the wait
+      synchronized (lock)
+      {
+        lock.setLock();
+        lock.notifyAll();
+      }
+    }
+
     protected abstract void handleStage(final MALMessage msg) throws MALInteractionException;
+
+    protected abstract void handleError(final MALMessageHeader hdr,
+            final MALStandardError err,
+            final Map qosMap);
+
+    public boolean isInError()
+    {
+      return inError;
+    }
+
+    protected void throwException() throws MALInteractionException
+    {
+      throw new MALInteractionException(error);
+    }
 
     protected MALMessage getResult()
     {
@@ -357,6 +424,29 @@ class InteractionConsumerMap
       {
         logUnexpectedTransitionError(interactionType, interactionStage);
         throw new MALInteractionException(new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+      }
+    }
+
+    @Override
+    protected synchronized void handleError(final MALMessageHeader hdr,
+            final MALStandardError err,
+            final Map qosMap)
+    {
+      if (syncOperation)
+      {
+        signalError(err);
+      }
+      else
+      {
+        try
+        {
+          listener.submitErrorReceived(hdr, new DummyErrorBody(err), qosMap);
+        }
+        catch (MALException ex)
+        {
+          // not a lot we can do with this at this stage apart from log it
+          MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Error received from consumer error handler in response to a provider error! {0}", ex);
+        }
       }
     }
 
@@ -534,6 +624,36 @@ class InteractionConsumerMap
     }
 
     @Override
+    protected synchronized void handleError(final MALMessageHeader hdr,
+            final MALStandardError err,
+            final Map qosMap)
+    {
+      if (syncOperation)
+      {
+        signalError(err);
+      }
+      else
+      {
+        try
+        {
+          if (!receivedAck)
+          {
+            listener.invokeAckErrorReceived(hdr, new DummyErrorBody(err), qosMap);
+          }
+          else
+          {
+            listener.invokeResponseErrorReceived(hdr, new DummyErrorBody(err), qosMap);
+          }
+        }
+        catch (MALException ex)
+        {
+          // not a lot we can do with this at this stage apart from log it
+          MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Error received from consumer error handler in response to a provider error! {0}", ex);
+        }
+      }
+    }
+
+    @Override
     protected synchronized boolean finished()
     {
       return receivedResponse;
@@ -673,6 +793,36 @@ class InteractionConsumerMap
         {
           // nothing we can do with this
           MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Exception thrown handling stage {0}", ex);
+        }
+      }
+    }
+
+    @Override
+    protected synchronized void handleError(final MALMessageHeader hdr,
+            final MALStandardError err,
+            final Map qosMap)
+    {
+      if (syncOperation)
+      {
+        signalError(err);
+      }
+      else
+      {
+        try
+        {
+          if (!receivedAck)
+          {
+            listener.progressAckErrorReceived(hdr, new DummyErrorBody(err), qosMap);
+          }
+          else
+          {
+            listener.progressResponseErrorReceived(hdr, new DummyErrorBody(err), qosMap);
+          }
+        }
+        catch (MALException ex)
+        {
+          // not a lot we can do with this at this stage apart from log it
+          MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Error received from consumer error handler in response to a provider error! {0}", ex);
         }
       }
     }
@@ -873,6 +1023,41 @@ class InteractionConsumerMap
     public void submitErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
             throws MALException
     {
+    }
+  }
+
+  private static final class DummyErrorBody implements MALErrorBody
+  {
+    private final MALStandardError error;
+
+    public DummyErrorBody(MALStandardError error)
+    {
+      this.error = error;
+    }
+
+    public MALStandardError getError() throws MALException
+    {
+      return error;
+    }
+
+    public int getElementCount()
+    {
+      return 1;
+    }
+
+    public Object getBodyElement(int index, Object element) throws MALException
+    {
+      return error;
+    }
+
+    public MALEncodedElement getEncodedBodyElement(int index) throws MALException
+    {
+      return null;
+    }
+
+    public MALEncodedBody getEncodedBody() throws MALException
+    {
+      return null;
     }
   }
 }
