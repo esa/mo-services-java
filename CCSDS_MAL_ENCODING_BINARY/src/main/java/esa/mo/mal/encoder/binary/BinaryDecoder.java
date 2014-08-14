@@ -787,6 +787,12 @@ public class BinaryDecoder implements MALDecoder
       return (short) getUnsignedShort();
     }
 
+    /**
+     * Gets a single Boolean value from the incoming stream.
+     *
+     * @return the extracted value.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public boolean getBool() throws MALException
     {
       return !(0 == get8());
