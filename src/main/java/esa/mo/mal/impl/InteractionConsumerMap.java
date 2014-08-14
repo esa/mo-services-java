@@ -1030,31 +1030,36 @@ class InteractionConsumerMap
   {
     private final MALStandardError error;
 
-    public DummyErrorBody(MALStandardError error)
+    protected DummyErrorBody(MALStandardError error)
     {
       this.error = error;
     }
 
+    @Override
     public MALStandardError getError() throws MALException
     {
       return error;
     }
 
+    @Override
     public int getElementCount()
     {
       return 1;
     }
 
+    @Override
     public Object getBodyElement(int index, Object element) throws MALException
     {
       return error;
     }
 
+    @Override
     public MALEncodedElement getEncodedBodyElement(int index) throws MALException
     {
       return null;
     }
 
+    @Override
     public MALEncodedBody getEncodedBody() throws MALException
     {
       return null;
