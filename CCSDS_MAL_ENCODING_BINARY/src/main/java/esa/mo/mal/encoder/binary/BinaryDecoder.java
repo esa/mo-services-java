@@ -612,6 +612,12 @@ public class BinaryDecoder implements MALDecoder
       return i;
     }
 
+    /**
+     * Gets a single byte from the incoming stream.
+     *
+     * @return the extracted byte.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public byte get8() throws MALException
     {
       checkBuffer(1);
@@ -621,6 +627,12 @@ public class BinaryDecoder implements MALDecoder
       return buf[i];
     }
 
+    /**
+     * Gets a string from the incoming stream.
+     *
+     * @return the extracted string.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public String getString() throws MALException
     {
       final int len = getSignedInt();
@@ -635,6 +647,13 @@ public class BinaryDecoder implements MALDecoder
       return null;
     }
 
+    /**
+     * Gets a byte array from the incoming stream.
+     *
+     * @param size The size of the array to extract.
+     * @return the extracted array.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public byte[] get(final int size) throws MALException
     {
       if (size >= 0)
@@ -649,6 +668,12 @@ public class BinaryDecoder implements MALDecoder
       return null;
     }
 
+    /**
+     * Gets a single signed long from the incoming stream.
+     *
+     * @return the extracted value.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public long getSignedLong() throws MALException
     {
       final long raw = getUnsignedLong();
@@ -656,6 +681,12 @@ public class BinaryDecoder implements MALDecoder
       return temp ^ (raw & (1L << 63));
     }
 
+    /**
+     * Gets a single signed integer from the incoming stream.
+     *
+     * @return the extracted value.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public int getSignedInt() throws MALException
     {
       final int raw = getUnsignedInt();
@@ -663,11 +694,23 @@ public class BinaryDecoder implements MALDecoder
       return temp ^ (raw & (1 << 31));
     }
 
+    /**
+     * Gets a single signed short from the incoming stream.
+     *
+     * @return the extracted value.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public short getSignedShort() throws MALException
     {
       return (short) getSignedInt();
     }
 
+    /**
+     * Gets a single unsigned long from the incoming stream.
+     *
+     * @return the extracted value.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public long getUnsignedLong() throws MALException
     {
       long value = 0L;
@@ -681,11 +724,23 @@ public class BinaryDecoder implements MALDecoder
       return value | (b << i);
     }
 
+    /**
+     * Gets a single 32 bit unsigned integer as a long from the incoming stream.
+     *
+     * @return the extracted value.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public long getUnsignedLong32() throws MALException
     {
       return getUnsignedLong();
     }
 
+    /**
+     * Gets a single unsigned integer from the incoming stream.
+     *
+     * @return the extracted value.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public int getUnsignedInt() throws MALException
     {
       int value = 0;
@@ -699,16 +754,34 @@ public class BinaryDecoder implements MALDecoder
       return value | (b << i);
     }
 
+    /**
+     * Gets a single 16 bit unsigned integer as a int from the incoming stream.
+     *
+     * @return the extracted value.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public int getUnsignedInt16() throws MALException
     {
       return getUnsignedInt();
     }
 
+    /**
+     * Gets a single unsigned short from the incoming stream.
+     *
+     * @return the extracted value.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public int getUnsignedShort() throws MALException
     {
       return getUnsignedInt();
     }
 
+    /**
+     * Gets a single 8 bit unsigned integer as a short from the incoming stream.
+     *
+     * @return the extracted value.
+     * @throws MALException If there is a problem with the decoding.
+     */
     public short getUnsignedShort8() throws MALException
     {
       return (short) getUnsignedShort();
