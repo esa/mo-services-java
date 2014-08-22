@@ -15,13 +15,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>int.esa</groupId>
-  <artifactId>CCSDS_MO_POM</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <groupId>int.esa.ccsds.mo</groupId>
+  <artifactId>POM</artifactId>
+  <version>1</version>
   <packaging>pom</packaging>
   <name>ESA MO POM</name>
   <description>ESA top level POM for CCSDS MO based artifacts</description>
-  <url>http://github.com/esa/${project.artifactId}</url>
+  <url>http://github.com/esa/CCSDS_MO_POM</url>
   
   <organization>
     <name>ESA</name>
@@ -31,21 +31,32 @@
   <licenses>
     <license>
       <name>The European Space Agency Public License, Version 2.0</name>
-      <url>https://raw.github.com/esa/${project.artifactId}/master/LICENCE.md</url>
+      <url>https://raw.github.com/esa/CCSDS_MO_POM/master/LICENCE.md</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:esa/${project.artifactId}.git</connection>
-    <developerConnection>scm:git:git@github.com:esa/${project.artifactId}.git</developerConnection>
-    <url>https://github.com/esa/${project.artifactId}</url>
+    <connection>scm:git:git@github.com:esa/CCSDS_MO_POM.git</connection>
+    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_POM.git</developerConnection>
+    <url>https://github.com/esa/CCSDS_MO_POM</url>
   </scm>
   
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/esa/${project.artifactId}/issues</url>
+    <url>https://github.com/esa/CCSDS_MO_POM/issues</url>
   </issueManagement>
+  
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
   
   <developers>
     <developer>
@@ -58,76 +69,76 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <ccsds.specification.version>1.1-SNAPSHOT</ccsds.specification.version>
+    <ccsds.specification.version>1.0</ccsds.specification.version>
     <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
-    <ccsds.specification.download.group>org.ccsds</ccsds.specification.download.group>
+    <ccsds.specification.download.group>${project.groupId}</ccsds.specification.download.group>
     <ccsds.specification.download.artifact>MOXML</ccsds.specification.download.artifact>
     <ccsds.specification.download.version>${ccsds.specification.version}</ccsds.specification.download.version>
     <ccsds.specification.download.directory>${project.build.directory}/xml</ccsds.specification.download.directory>
     <ccsds.specification.download.filter></ccsds.specification.download.filter>
     <ccsds.specification.download.ref-skip>true</ccsds.specification.download.ref-skip>
-    <ccsds.specification.download.ref-group>org.ccsds</ccsds.specification.download.ref-group>
+    <ccsds.specification.download.ref-group>${project.groupId}</ccsds.specification.download.ref-group>
     <ccsds.specification.download.ref-artifact>MOXML</ccsds.specification.download.ref-artifact>
     <ccsds.specification.download.ref-version>${ccsds.specification.version}</ccsds.specification.download.ref-version>
     <ccsds.specification.download.ref-directory>${project.build.directory}/xml-ref</ccsds.specification.download.ref-directory>
     <ccsds.specification.download.ref-filter>**/ServiceDefMAL.xml</ccsds.specification.download.ref-filter>
-    <esa.stubgen.version>1.0-SNAPSHOT</esa.stubgen.version>
+    <esa.stubgen.version>1.0</esa.stubgen.version>
     <esa.stubgen.xmlDirectory>${project.build.directory}/xml</esa.stubgen.xmlDirectory>
     <esa.stubgen.xmlRefDirectory>${project.build.directory}/xml-ref/xml</esa.stubgen.xmlRefDirectory>
-    <esa.api.version>1.0-SNAPSHOT</esa.api.version>
-    <esa.gen.encoder.version>1.0-SNAPSHOT</esa.gen.encoder.version>
-    <esa.string.encoder.version>1.0-SNAPSHOT</esa.string.encoder.version>
-    <esa.binary.encoder.version>1.0-SNAPSHOT</esa.binary.encoder.version>
-    <esa.gen.transport.version>1.0-SNAPSHOT</esa.gen.transport.version>
-    <esa.rmi.transport.version>1.0-SNAPSHOT</esa.rmi.transport.version>
+    <esa.api.version>1.0</esa.api.version>
+    <esa.gen.encoder.version>1.0</esa.gen.encoder.version>
+    <esa.string.encoder.version>1.0</esa.string.encoder.version>
+    <esa.binary.encoder.version>1.0</esa.binary.encoder.version>
+    <esa.gen.transport.version>1.0</esa.gen.transport.version>
+    <esa.rmi.transport.version>1.0</esa.rmi.transport.version>
   </properties>
   
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>int.esa</groupId>
-        <artifactId>CCSDS_MAL_API</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>API_MAL</artifactId>
         <version>${esa.api.version}</version>
       </dependency>
       <dependency>
-        <groupId>int.esa</groupId>
-        <artifactId>CCSDS_COM_API</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>API_COM</artifactId>
         <version>${esa.api.version}</version>
       </dependency>
       <dependency>
-        <groupId>int.esa</groupId>
-        <artifactId>CCSDS_MAL_IMPL</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>MAL_IMPL</artifactId>
         <version>${esa.api.version}</version>
       </dependency>
       <dependency>
-        <groupId>int.esa</groupId>
-        <artifactId>CCSDS_MAL_ENCODING_GEN</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>ENCODING_GEN</artifactId>
         <version>${esa.gen.encoder.version}</version>
       </dependency>
       <dependency>
-        <groupId>int.esa</groupId>
-        <artifactId>CCSDS_MAL_ENCODING_STRING</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>ENCODING_STRING</artifactId>
         <version>${esa.string.encoder.version}</version>
       </dependency>
       <dependency>
-        <groupId>int.esa</groupId>
-        <artifactId>CCSDS_MAL_ENCODING_BINARY</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>ENCODING_BINARY</artifactId>
         <version>${esa.binary.encoder.version}</version>
       </dependency>
       <dependency>
-        <groupId>int.esa</groupId>
-        <artifactId>CCSDS_MAL_TRANSPORT_GEN</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>TRANSPORT_GEN</artifactId>
         <version>${esa.gen.transport.version}</version>
       </dependency>
       <dependency>
-        <groupId>int.esa</groupId>
-        <artifactId>CCSDS_MAL_TRANSPORT_RMI</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>TRANSPORT_RMI</artifactId>
         <version>${esa.rmi.transport.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
-        <version>2.2.7</version>
+        <version>2.2.11</version>
       </dependency>
       <dependency>
         <groupId>com.sun.xml.bind</groupId>
@@ -152,7 +163,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>1.2</version>
+          <version>1.3.1</version>
           <executions>
             <execution>
               <id>enforce</id>
@@ -221,7 +232,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>1.7</version>
+          <version>1.9</version>
           <executions>
             <execution>
               <id>add-source</id>
@@ -238,8 +249,8 @@
           </executions>
         </plugin>
         <plugin>
-          <groupId>int.esa</groupId>
-          <artifactId>CCSDS_MO_StubGenerator</artifactId>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>StubGenerator</artifactId>
           <version>${esa.stubgen.version}</version>
           <executions>
             <execution>
@@ -260,12 +271,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.0</version>
+          <version>3.1</version>
           <configuration>
             <encoding>${project.build.sourceEncoding}</encoding>
             <source>1.5</source>
             <target>1.5</target>
-<!--            <compilerArgument>-Xlint:unchecked</compilerArgument>-->
+            <!--            <compilerArgument>-Xlint:unchecked</compilerArgument>-->
           </configuration>
         </plugin>
         <plugin>
@@ -279,7 +290,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.4</version>
+          <version>2.4.1</version>
           <configuration>
             <archive>
               <manifest>
@@ -303,18 +314,18 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.2</version>
+          <version>3.4</version>
           <configuration>
             <reportPlugins>
               <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.6</version>
+                <version>2.7</version>
               </plugin>
               <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
+                <version>2.9.1</version>
               </plugin>
             </reportPlugins>
           </configuration>
@@ -322,12 +333,12 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jaxb2-maven-plugin</artifactId>
-          <version>1.5</version>
+          <version>1.6</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.2.1</version>
+          <version>2.3</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -341,7 +352,7 @@
         <plugin> 
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId> 
-          <version>2.9</version>
+          <version>2.9.1</version>
           <executions> 
             <execution> 
               <id>attach-javadocs</id>
@@ -356,7 +367,7 @@
           <!-- explicitly define maven-deploy-plugin after other to force exec order -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId> 
-          <version>2.7</version>
+          <version>2.8.1</version>
           <executions> 
             <execution> 
               <id>deploy</id>
@@ -367,7 +378,44 @@
             </execution> 
           </executions> 
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.5</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>      
       </plugins>
     </pluginManagement>
   </build>
+
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+          </plugin>
+          <plugin> 
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId> 
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
