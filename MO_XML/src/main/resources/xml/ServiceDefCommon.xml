@@ -3,14 +3,14 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
   <mal:area name="Common" number="3" version="1"
-            comment="This section details the Common Services; the structures used by the services are detailed in section 4. The services and structures are defined in terms of the MO Message Abstraction Layer (MAL) which is defined in reference [2], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM which is defined in reference [3]. &#xA;To aid comprehension several tables are included for each service and operation definition. The table formats are the same as those used for the specification of the MO COM Services in reference [3]. The formats are fully described in reference [2] in section 2 and in reference [3] section 2, for COM usage.&#xA;All service specifications in this document are part of the Common Area. This has a short form number of '3'.&#xA;">
+            comment="This section details the Common Services; the structures used by the services are detailed in section 4. The services and structures are defined in terms of the MO Message Abstraction Layer (MAL) which is defined in reference [2], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM which is defined in reference [3]. &#xA;To aid comprehension several tables are included for each service and operation definition. The table formats are the same as those used for the specification of the MO COM Services in reference [3]. The formats are fully described in reference [2] in section 2 and in reference [3] section 2, for COM usage.&#xA;All service specifications in this document are part of the Common Area. This has a short form number of '3'.">
     <mal:service xsi:type="com:ExtendedServiceType" name="Directory" number="1"
-                 comment="The Directory service allows service providers to publish information about their services and consumers to discover services to connect to.&#xA;The service directory is represented as a set of Nodes. Each Node is identified by a Domain, Network and Session identifier.&#xA;Each Node is either a local Node or an external Node, external Nodes reside in another Directory Service and contain only the address information of that external Directory Service.&#xA;Local Nodes contain information about actual services. As each service is associated to a specific Domain/Network/Session it is therefore located at a specific Node in the Directory Service.&#xA;The local Node occurrence structure contains a list of ServiceDetails structures, each one detailing a particular service and the providers of that service. Each ProviderInformation structure then contains one or more ServiceAddress structures, each of these defines one way to contact that service provider. It is possible for a provider to offer more than one ServiceAddress as it allows the provider to support multiple message transports and encodings. Each service address lists the supported QoS levels and associated QoS properties available for that connection, a service consumer indicates the required QoS level and priority to a service provider by using these values in the initial message.&#xA;For services that have operations based on the publish and subscribe interaction pattern there may be required a separate URI for the broker component. To support this the directory service holds two URIs for each service, the URI of the primary interface and also a secondary one which, if present, is used for publish and subscribe-based operations. It is also possible that a publish and subscribe broker component is shared between more than one provider, known as a shared data source, and in this case the broker should be published as a directory service entry without a primary interface URI. The sharing providers should reference it by naming it in the 'dataName' field in their directory service entry.&#xA;Service provider information is added/removed from the Node using the Directory service publishService/withdrawService operations.&#xA;The lookupService operation provides more flexible searching abilities for Directory service consumers.&#xA;">
+                 comment="The Directory service allows service providers to publish information about their services and consumers to discover services to connect to.&#xA;The service directory is represented as a set of Nodes. Each Node is identified by a Domain, Network and Session identifier.&#xA;Each Node is either a local Node or an external Node, external Nodes reside in another Directory Service and contain only the address information of that external Directory Service.&#xA;Local Nodes contain information about actual services. As each service is associated to a specific Domain/Network/Session it is therefore located at a specific Node in the Directory Service.&#xA;The local Node occurrence structure contains a list of ServiceDetails structures, each one detailing a particular service and the providers of that service. Each ProviderInformation structure then contains one or more ServiceAddress structures, each of these defines one way to contact that service provider. It is possible for a provider to offer more than one ServiceAddress as it allows the provider to support multiple message transports and encodings. Each service address lists the supported QoS levels and associated QoS properties available for that connection, a service consumer indicates the required QoS level and priority to a service provider by using these values in the initial message.&#xA;For services that have operations based on the publish and subscribe interaction pattern there may be required a separate URI for the broker component. To support this the directory service holds two URIs for each service, the URI of the primary interface and also a secondary one which, if present, is used for publish and subscribe-based operations. It is also possible that a publish and subscribe broker component is shared between more than one provider, known as a shared data source, and in this case the broker should be published as a directory service entry without a primary interface URI. The sharing providers should reference it by naming it in the 'dataName' field in their directory service entry.&#xA;Service provider information is added/removed from the Node using the Directory service publishService/withdrawService operations.&#xA;The lookupService operation provides more flexible searching abilities for Directory service consumers.">
       <mal:capabilitySet number="1">
         <mal:requestIP name="lookupService" number="1" supportInReplay="true"
-                       comment="The lookup operation allows a service consumer to query the directory service to determine if a specific service is available. If no match is found, then an empty list is returned.&#xA;">
+                       comment="The lookup operation allows a service consumer to query the directory service to determine if a specific service is available. If no match is found, then an empty list is returned.">
           <mal:messages>
-            <mal:request comment="The lookup operation shall take a single ServiceFilter structure.&#xA;If the final identifier of the domain is the wildcard '*', then all sub-domains shall be searched for matches.&#xA;The wildcard shall only be used for the final component of the domain.&#xA;If the domain field is either NULL or the wildcard '*' then all domains shall be matched.&#xA;If the network field is either NULL or the wildcard '*' then all Networks shall be matched.&#xA;If the session field is either NULL or the wildcard '*' then all Sessions shall be matched.&#xA;For all other fields in the ServiceFilter the wildcard '*' or NULL may be used to match all possible services/providers.&#xA;">
+            <mal:request comment="The lookup operation shall take a single ServiceFilter structure.&#xA;If the final identifier of the domain is the wildcard '*', then all sub-domains shall be searched for matches.&#xA;The wildcard shall only be used for the final component of the domain.&#xA;If the domain field is either NULL or the wildcard '*' then all domains shall be matched.&#xA;If the network field is either NULL or the wildcard '*' then all Networks shall be matched.&#xA;If the session field is either NULL or the wildcard '*' then all Sessions shall be matched.&#xA;For all other fields in the ServiceFilter the wildcard '*' or NULL may be used to match all possible services/providers.">
               <mal:type name="ServiceFilter" service="Directory" area="Common"/>
             </mal:request>
             <mal:response comment="The operation shall return a list of matches to the query.">
@@ -21,9 +21,9 @@
       </mal:capabilitySet>
       <mal:capabilitySet number="2">
         <mal:submitIP name="publishService" number="2" supportInReplay="false"
-                      comment="The publishService operation adds new, or updates existing, entries in the list of services held in the directory service.&#xA;">
+                      comment="The publishService operation adds new, or updates existing, entries in the list of services held in the directory service.">
           <mal:messages>
-            <mal:submit comment="The operation shall take a list of NodeDetails structures.&#xA;For each NodeDetails structure if any of the fields of the domain/session/network fields are either NULL, empty, or contain the wildcard '*' an INVALID error shall be returned.&#xA;If an error is being returned then all updates shall be ignored.&#xA;">
+            <mal:submit comment="The operation shall take a list of NodeDetails structures.&#xA;For each NodeDetails structure if any of the fields of the domain/session/network fields are either NULL, empty, or contain the wildcard '*' an INVALID error shall be returned.&#xA;If an error is being returned then all updates shall be ignored.">
               <mal:type list="true" name="NodeDetails" service="Directory" area="Common"/>
             </mal:submit>
           </mal:messages>
@@ -37,9 +37,9 @@
           </mal:errors>
         </mal:submitIP>
         <mal:submitIP name="withdrawService" number="3" supportInReplay="false"
-                      comment="The withdrawService operation removes existing entries from the list of services held in the directory service. If no match is found for the withdraw request, then nothing is changed.&#xA;">
+                      comment="The withdrawService operation removes existing entries from the list of services held in the directory service. If no match is found for the withdraw request, then nothing is changed.">
           <mal:messages>
-            <mal:submit comment="The operation shall take a list of NodeDetails structures.&#xA;For each NodeDetails structure if any of the fields of the domain/session/network fields are either NULL, empty, or contain the wildcard '*' an INVALID error shall be returned.&#xA;If the fields do not match an existing local Node then an UNKNOWN error shall be returned.&#xA;Each matched provider shall have its details updated with the supplied details.&#xA;If an error is being returned then all updates shall be ignored.&#xA;">
+            <mal:submit comment="The operation shall take a list of NodeDetails structures.&#xA;For each NodeDetails structure if any of the fields of the domain/session/network fields are either NULL, empty, or contain the wildcard '*' an INVALID error shall be returned.&#xA;If the fields do not match an existing local Node then an UNKNOWN error shall be returned.&#xA;Each matched provider shall have its details updated with the supplied details.&#xA;If an error is being returned then all updates shall be ignored.">
               <mal:type list="true" name="NodeDetails" service="Directory" area="Common"/>
             </mal:submit>
           </mal:messages>
@@ -55,7 +55,7 @@
       </mal:capabilitySet>
       <mal:dataTypes>
         <mal:composite name="Node"
-                       comment="The Node structure holds all information for the Directory service of a specific Domain/Network/Session.&#xA;">
+                       comment="The Node structure holds all information for the Directory service of a specific Domain/Network/Session.">
           <mal:field name="sessionType" canBeNull="false"
                      comment="The session type of this service.">
             <mal:type name="SessionType" area="MAL"/>
@@ -66,7 +66,7 @@
           </mal:field>
         </mal:composite>
         <mal:composite name="LocalNode" shortFormPart="1"
-                       comment="Represents a Node in the local Directory service.&#xA;">
+                       comment="Represents a Node in the local Directory service.">
           <mal:extends>
             <mal:type name="Node" service="Directory" area="Common"/>
           </mal:extends>
@@ -76,7 +76,7 @@
           </mal:field>
         </mal:composite>
         <mal:composite name="ExternalNode" shortFormPart="2"
-                       comment="Indicates that a Node is contained in an external Directory service.&#xA;">
+                       comment="Indicates that a Node is contained in an external Directory service.">
           <mal:extends>
             <mal:type name="Node" service="Directory" area="Common"/>
           </mal:extends>
@@ -86,51 +86,51 @@
           </mal:field>
         </mal:composite>
         <mal:composite name="NodeDetails" shortFormPart="4"
-                       comment="Represents the combination of the Domain/Network/Session information and the service details held at that Node.&#xA;">
+                       comment="Represents the combination of the Domain/Network/Session information and the service details held at that Node.">
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="domain" canBeNull="false" comment="The service provider domain.&#xA;">
+          <mal:field name="domain" canBeNull="false" comment="The service provider domain.">
             <mal:type list="true" name="Identifier" area="MAL"/>
           </mal:field>
-          <mal:field name="network" canBeNull="false" comment="The service provider network.&#xA;">
+          <mal:field name="network" canBeNull="false" comment="The service provider network.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
-          <mal:field name="node" canBeNull="false" comment="The service provider details.&#xA;">
+          <mal:field name="node" canBeNull="false" comment="The service provider details.">
             <mal:type name="LocalNode" service="Directory" area="Common"/>
           </mal:field>
         </mal:composite>
         <mal:composite name="ServiceFilter" shortFormPart="5"
-                       comment="The ServiceFilter structure holds all information required by the Directory service for service lookup operation. The field filters are AND'd together.&#xA;">
+                       comment="The ServiceFilter structure holds all information required by the Directory service for service lookup operation. The field filters are AND'd together.">
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
           <mal:field name="domain"
-                     comment="The domain to query. Can be NULL in which case matches all values.&#xA;">
+                     comment="The domain to query. Can be NULL in which case matches all values.">
             <mal:type list="true" name="Identifier" area="MAL"/>
           </mal:field>
           <mal:field name="network"
-                     comment="The network to match. Can be NULL or '*' which matches all values.&#xA;">
+                     comment="The network to match. Can be NULL or '*' which matches all values.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
           <mal:field name="sessionType"
-                     comment="The session type to match. Can be NULL in which case matches all values.&#xA;">
+                     comment="The session type to match. Can be NULL in which case matches all values.">
             <mal:type name="SessionType" area="MAL"/>
           </mal:field>
           <mal:field name="sessionName"
-                     comment="The session name to match. Can be NULL or '*' which matches all values.&#xA;">
+                     comment="The session name to match. Can be NULL or '*' which matches all values.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
           <mal:field name="area" canBeNull="false"
-                     comment="The area of this service taken from the Area Identifier of the service specification. Can be '0' which matches all values.&#xA;">
+                     comment="The area of this service taken from the Area Identifier of the service specification. Can be '0' which matches all values.">
             <mal:type name="UShort" area="MAL"/>
           </mal:field>
           <mal:field name="service" canBeNull="false"
-                     comment="The service taken from the Service Identifier of the service specification. Can be '0' which matches all values.&#xA;">
+                     comment="The service taken from the Service Identifier of the service specification. Can be '0' which matches all values.">
             <mal:type name="UShort" area="MAL"/>
           </mal:field>
           <mal:field name="version" canBeNull="false"
-                     comment="The version of this service taken from the Area Version of the service specification. Can be '0' which matches all values.&#xA;">
+                     comment="The version of this service taken from the Area Version of the service specification. Can be '0' which matches all values.">
             <mal:type name="UOctet" area="MAL"/>
           </mal:field>
           <mal:field name="requiredCapabilities"
@@ -138,7 +138,7 @@
             <mal:type list="true" name="Integer" area="MAL"/>
           </mal:field>
           <mal:field name="serviceProviderName"
-                     comment="The required service provider. Can be NULL or '*' which matches all values.&#xA;">
+                     comment="The required service provider. Can be NULL or '*' which matches all values.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
         </mal:composite>
@@ -148,15 +148,15 @@
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
           <mal:field name="area" canBeNull="false"
-                     comment="The area of this service taken from the numeric Area identifierof the service specification.&#xA;">
+                     comment="The area of this service taken from the numeric Area identifierof the service specification.">
             <mal:type name="UShort" area="MAL"/>
           </mal:field>
           <mal:field name="service" canBeNull="false"
-                     comment="The service taken from the numeric Service identifier of the service specification.&#xA;">
+                     comment="The service taken from the numeric Service identifier of the service specification.">
             <mal:type name="UShort" area="MAL"/>
           </mal:field>
           <mal:field name="version" canBeNull="false"
-                     comment="The version of this service taken from the Service Version of the service specification.&#xA;">
+                     comment="The version of this service taken from the Service Version of the service specification.">
             <mal:type name="UOctet" area="MAL"/>
           </mal:field>
           <mal:field name="providers" canBeNull="false"
@@ -219,14 +219,14 @@
       </mal:dataTypes>
     </mal:service>
     <mal:service xsi:type="com:ExtendedServiceType" name="Login" number="2"
-                 comment="The Login service provides the facility for authentication information to be provided.&#xA;User log in with a configured role; the meaning of a specific role is mission-specific, however it is expected that a specific role allocates them privileges to invoke operations on mission operation services.&#xA;This service is closely tied to the Access Control aspect of the MAL. The Login service is used primarily to authenticate a user with an implementation-specific authentication system; the result of this is used by the MAL in all messages to authenticate sent messages.&#xA;The form in which the password is sent to the Login service provider must be agreed upon before hand and is dependent on the security system implemented. For example, most security implementations do not recommend the use of plain text passwords but rather some encrypted version of the password. For this reason the contents of the messages sent between the login service consumer and provider during authentication handshaking are implementation-specific.&#xA;">
+                 comment="The Login service provides the facility for authentication information to be provided.&#xA;User log in with a configured role; the meaning of a specific role is mission-specific, however it is expected that a specific role allocates them privileges to invoke operations on mission operation services.&#xA;This service is closely tied to the Access Control aspect of the MAL. The Login service is used primarily to authenticate a user with an implementation-specific authentication system; the result of this is used by the MAL in all messages to authenticate sent messages.&#xA;The form in which the password is sent to the Login service provider must be agreed upon before hand and is dependent on the security system implemented. For example, most security implementations do not recommend the use of plain text passwords but rather some encrypted version of the password. For this reason the contents of the messages sent between the login service consumer and provider during authentication handshaking are implementation-specific.">
       <mal:capabilitySet number="1">
         <mal:requestIP name="login" number="1" supportInReplay="false"
-                       comment="The login operation allows a user to log in to the system. A user can log in more than once by using a different role; however, a specific implementation may place limits on the number of users that may use a specific role, and in that case will fail the login operation.&#xA;">
+                       comment="The login operation allows a user to log in to the system. A user can log in more than once by using a different role; however, a specific implementation may place limits on the number of users that may use a specific role, and in that case will fail the login operation.">
           <mal:messages>
             <mal:request>
               <mal:field name="opDetails"
-                         comment="The operation shall take a Profile structure that contains the details of the user and role.&#xA;If the username field is either the wildcard value of '*' or empty an INVALID error shall be returned.&#xA;If the role field is either the wildcard '*' or empty an INVALID error shall be returned.&#xA;The role field may be NULL if roles are not used by the system.&#xA;The system shall verify the supplied credentials at this point, if they are not correct an UNKNOWN error shall be returned.&#xA;An UNKNOWN error shall be returned if the username and role combination do not match an existing definition.&#xA;A DUPLICATE error shall be returned if the username and role combination is currently in use.&#xA;A TOO_MANY error shall be returned if the username or role are already used and exceed the permitted maximum usage value (implementation dependent).&#xA;If the login is successful the provider should create a new LoginInstance COM object and store it in the COM archive.&#xA;">
+                         comment="The operation shall take a Profile structure that contains the details of the user and role.&#xA;If the username field is either the wildcard value of '*' or empty an INVALID error shall be returned.&#xA;If the role field is either the wildcard '*' or empty an INVALID error shall be returned.&#xA;The role field may be NULL if roles are not used by the system.&#xA;The system shall verify the supplied credentials at this point, if they are not correct an UNKNOWN error shall be returned.&#xA;An UNKNOWN error shall be returned if the username and role combination do not match an existing definition.&#xA;A DUPLICATE error shall be returned if the username and role combination is currently in use.&#xA;A TOO_MANY error shall be returned if the username or role are already used and exceed the permitted maximum usage value (implementation dependent).&#xA;If the login is successful the provider should create a new LoginInstance COM object and store it in the COM archive.">
                 <mal:type name="Profile" service="Login" area="Common"/>
               </mal:field>
               <mal:field name="password">
@@ -235,7 +235,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="authId"
-                         comment="The operation shall return a Blob token that is used as the authenticationId field in future messages by the MAL for authentication. The token is specific to the user and role in use.&#xA;It also shall return the LoginInstance COM object instance identifier that was created by the login operation.&#xA;">
+                         comment="The operation shall return a Blob token that is used as the authenticationId field in future messages by the MAL for authentication. The token is specific to the user and role in use.&#xA;It also shall return the LoginInstance COM object instance identifier that was created by the login operation.">
                 <mal:type name="Blob" area="MAL"/>
               </mal:field>
               <mal:field name="loginInstId">
@@ -244,7 +244,7 @@
             </mal:response>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="Username/role combination currently in use.&#xA;">
+            <mal:errorRef comment="Username/role combination currently in use.">
               <mal:type name="DUPLICATE" area="COM"/>
             </mal:errorRef>
             <mal:errorRef comment="Submitted profile contains invalid values.">
@@ -253,25 +253,25 @@
             <mal:errorRef comment="Role concurrent session limit count exceeded.">
               <mal:type name="TOO_MANY" area="MAL"/>
             </mal:errorRef>
-            <mal:errorRef comment="Unknown username/role/password combination.&#xA;">
+            <mal:errorRef comment="Unknown username/role/password combination.">
               <mal:type name="UNKNOWN" area="MAL"/>
             </mal:errorRef>
           </mal:errors>
         </mal:requestIP>
         <mal:submitIP name="logout" number="2" supportInReplay="false"
-                      comment="The logout operations allows a user to log out from the system. No information is passed in the message as the MAL authentication Id is enough to identify the login.&#xA;">
+                      comment="The logout operations allows a user to log out from the system. No information is passed in the message as the MAL authentication Id is enough to identify the login.">
           <mal:messages>
-            <mal:submit comment="Upon reception of the message the operation shall remove the matched user from the set of logged in users.&#xA;No errors shall be returned by this operation.&#xA;"/>
+            <mal:submit comment="Upon reception of the message the operation shall remove the matched user from the set of logged in users.&#xA;No errors shall be returned by this operation."/>
           </mal:messages>
         </mal:submitIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="2">
         <mal:requestIP name="reportRoles" number="3" supportInReplay="false"
-                       comment="The reportRoles operation returns the list of available roles for a specific user. This operation is expected to be called before an user logs in so that the software can provide a list of possible roles.&#xA;">
+                       comment="The reportRoles operation returns the list of available roles for a specific user. This operation is expected to be called before an user logs in so that the software can provide a list of possible roles.">
           <mal:messages>
             <mal:request>
               <mal:field name="opDetails"
-                         comment="The operation shall take a Profile structure that contains the details of the user.&#xA;If the username field is either NULL, the wildcard '*', or empty an INVALID error shall be returned.&#xA;The role field shall be ignored.&#xA;An UNKNOWN error shall be returned if the username and password combination do not match an existing definition.&#xA;">
+                         comment="The operation shall take a Profile structure that contains the details of the user.&#xA;If the username field is either NULL, the wildcard '*', or empty an INVALID error shall be returned.&#xA;The role field shall be ignored.&#xA;An UNKNOWN error shall be returned if the username and password combination do not match an existing definition.">
                 <mal:type name="Profile" service="Login" area="Common"/>
               </mal:field>
               <mal:field name="password">
@@ -280,13 +280,13 @@
             </mal:request>
             <mal:response>
               <mal:field name="permittedRoles"
-                         comment="The operation shall return a list of roles that are permitted for the user or NULL if roles are not used by the system.&#xA;">
+                         comment="The operation shall return a list of roles that are permitted for the user or NULL if roles are not used by the system.">
                 <mal:type list="true" name="Identifier" area="MAL"/>
               </mal:field>
             </mal:response>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="Unknown username/password combination.&#xA;">
+            <mal:errorRef comment="Unknown username/password combination.">
               <mal:type name="UNKNOWN" area="MAL"/>
             </mal:errorRef>
             <mal:errorRef comment="Submitted profile contains invalid values.">
@@ -297,11 +297,11 @@
       </mal:capabilitySet>
       <mal:capabilitySet number="3">
         <mal:requestIP name="handover" number="4" supportInReplay="false"
-                       comment="The handover operation allows an existing login context to be transferred to a new login. Two cases are expected here, the first is where a user uses this operation to change the role that they are using, and the second is where an operations context is handed over to another user.&#xA;">
+                       comment="The handover operation allows an existing login context to be transferred to a new login. Two cases are expected here, the first is where a user uses this operation to change the role that they are using, and the second is where an operations context is handed over to another user.">
           <mal:messages>
             <mal:request>
               <mal:field name="newOpDetails"
-                         comment="The operation shall take a Profile structure that contains the details of the new user and role.&#xA;If the username field is either NULL, the wildcard '*', or empty an INVALID error shall be returned.&#xA;If the role field is either the wildcard '*' or empty an INVALID error shall be returned.&#xA;The role field may be NULL if roles are not used by the system.&#xA;The system shall verify the supplied credentials at this point, if they are not correct an UNKNOWN error shall be returned.&#xA;An UNKNOWN error shall be returned if the username and role combination do not match an existing definition.&#xA;A DUPLICATE error shall be returned if the username and role combination is currently in use.&#xA;A TOO_MANY error shall be returned if the username or role are already used and exceed the permitted maximum usage value (implementation dependent).&#xA;The DUPLICATE and TOO_MANY checks shall take into account the fact that current operator/role combination will be logged out after the handover operation completes.&#xA;If the handover is successful the provider should create a new LoginInstance COM object and store it in the COM archive.&#xA;The related link of the new LoginInstance COM object shall be the LoginInstance COM object that represents the previous login.&#xA;">
+                         comment="The operation shall take a Profile structure that contains the details of the new user and role.&#xA;If the username field is either NULL, the wildcard '*', or empty an INVALID error shall be returned.&#xA;If the role field is either the wildcard '*' or empty an INVALID error shall be returned.&#xA;The role field may be NULL if roles are not used by the system.&#xA;The system shall verify the supplied credentials at this point, if they are not correct an UNKNOWN error shall be returned.&#xA;An UNKNOWN error shall be returned if the username and role combination do not match an existing definition.&#xA;A DUPLICATE error shall be returned if the username and role combination is currently in use.&#xA;A TOO_MANY error shall be returned if the username or role are already used and exceed the permitted maximum usage value (implementation dependent).&#xA;The DUPLICATE and TOO_MANY checks shall take into account the fact that current operator/role combination will be logged out after the handover operation completes.&#xA;If the handover is successful the provider should create a new LoginInstance COM object and store it in the COM archive.&#xA;The related link of the new LoginInstance COM object shall be the LoginInstance COM object that represents the previous login.">
                 <mal:type name="Profile" service="Login" area="Common"/>
               </mal:field>
               <mal:field name="password">
@@ -310,7 +310,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="newAuthId"
-                         comment="The operation shall return a Blob token that is used as the authenticationId field in future messages by the MAL for authentication. The token is specific to the new user and role in use.&#xA;It also shall return the LoginInstance COM object instance identifier that was created by the handover operation.&#xA;">
+                         comment="The operation shall return a Blob token that is used as the authenticationId field in future messages by the MAL for authentication. The token is specific to the new user and role in use.&#xA;It also shall return the LoginInstance COM object instance identifier that was created by the handover operation.">
                 <mal:type name="Blob" area="MAL"/>
               </mal:field>
               <mal:field name="loginInstId">
@@ -319,7 +319,7 @@
             </mal:response>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="Unknown username/role/password combination.&#xA;">
+            <mal:errorRef comment="Unknown username/role/password combination.">
               <mal:type name="UNKNOWN" area="MAL"/>
             </mal:errorRef>
             <mal:errorRef comment="Submitted profile contains invalid values.">
@@ -328,7 +328,7 @@
             <mal:errorRef comment="Role concurrent session limit count exceeded.">
               <mal:type name="TOO_MANY" area="MAL"/>
             </mal:errorRef>
-            <mal:errorRef comment="Username/role combination currently in use.&#xA;">
+            <mal:errorRef comment="Username/role combination currently in use.">
               <mal:type name="DUPLICATE" area="COM"/>
             </mal:errorRef>
           </mal:errors>
@@ -336,11 +336,11 @@
       </mal:capabilitySet>
       <mal:dataTypes>
         <mal:composite name="Profile" shortFormPart="1"
-                       comment="The Profile structure contains details of the operator who is logging on to take a specified role.&#xA;">
+                       comment="The Profile structure contains details of the operator who is logging on to take a specified role.">
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="username" canBeNull="false" comment="The name of the user.&#xA;">
+          <mal:field name="username" canBeNull="false" comment="The name of the user.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
           <mal:field name="role" comment="The role of the user.">
@@ -349,7 +349,7 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
-        <com:objects comment="Instances of a user login shall be represented as LoginInstance COM object.&#xA;LoginInstance objects shall be created by the login and handover operations.&#xA;The object instance identifier for a LoginInstance object shall be populated by the provider of the Login service.&#xA;If the LoginInstance object is being created during a login operation then the related link shall be set to NULL.&#xA;If the LoginInstance object is being created during a handover operation then the related link shall be set to to the object instance identifier of the LoginInstance object being handed over to.&#xA;If the LoginInstance object is being created during a login operation then the related link shall be set to NULL.&#xA;The LoginInstance object shall use the source link to indicate what object (if any) caused it to be evaluated, most likely the relevant COM OperationActivity object of a login or handover operations.&#xA;">
+        <com:objects comment="Instances of a user login shall be represented as LoginInstance COM object.&#xA;LoginInstance objects shall be created by the login and handover operations.&#xA;The object instance identifier for a LoginInstance object shall be populated by the provider of the Login service.&#xA;If the LoginInstance object is being created during a login operation then the related link shall be set to NULL.&#xA;If the LoginInstance object is being created during a handover operation then the related link shall be set to to the object instance identifier of the LoginInstance object being handed over to.&#xA;If the LoginInstance object is being created during a login operation then the related link shall be set to NULL.&#xA;The LoginInstance object shall use the source link to indicate what object (if any) caused it to be evaluated, most likely the relevant COM OperationActivity object of a login or handover operations.">
           <com:object name="LoginInstance" number="1">
             <com:objectType>
               <mal:type name="Profile" service="Login" area="Common"/>
@@ -359,7 +359,7 @@
             </com:relatedObject>
           </com:object>
         </com:objects>
-        <com:events comment="When a user logs in a LoginEvent COM event shall be generated.&#xA;When a user logs out a LogoutEvent COM event shall be generated.&#xA;The LoginEvent event shall use the related link to indicate which LoginInstance object is being logged in.&#xA;The LogoutEvent event shall use the related link to indicate which LoginInstance object is being logged out.&#xA;The events shall not use the COM object source link and shall set it to NULL.&#xA;The events shall be published using the COM event service.&#xA;">
+        <com:events comment="When a user logs in a LoginEvent COM event shall be generated.&#xA;When a user logs out a LogoutEvent COM event shall be generated.&#xA;The LoginEvent event shall use the related link to indicate which LoginInstance object is being logged in.&#xA;The LogoutEvent event shall use the related link to indicate which LoginInstance object is being logged out.&#xA;The events shall not use the COM object source link and shall set it to NULL.&#xA;The events shall be published using the COM event service.">
           <com:event name="LoginEvent" number="2">
             <com:relatedObject>
               <com:objectType number="1" service="Login" area="Common"/>
@@ -371,7 +371,379 @@
             </com:relatedObject>
           </com:event>
         </com:events>
-        <com:archiveUsage comment="When an user is logged in by the login operation, the LoginInstance object should be stored in the COM archive by the provider.&#xA;"/>
+        <com:archiveUsage comment="When an user is logged in by the login operation, the LoginInstance object should be stored in the COM archive by the provider."/>
+      </com:features>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Interact" number="3"
+                 comment="This service allows a consumer to raise interactions with an operator when it requires operator acknowledgement or an operator decision.&#xA;&lt;&lt; diagram &gt;&gt;&#xA;An interaction service provider implementation is responsible for determining which operators should provide the interaction response and also for managing the situation where several operators attempt to provide a response. For each interaction operation only one response will be returned to the consumer that initiated the interaction; it is the responsibility of the interaction service provider to ensure this is the case and also to inform the failed operators that their interaction response was not used. The interaction between the operator and the Interact service provider is outside the scope, only the interaction between the service consumer and the Interact service provider is covered by the specification.&#xA;The interaction requests can contain a response timeout field that provides the interaction service provider with an upper time in which a response is required, if a response is not received in this time period, then the provider returns a TIMEDOUT error. The consumer must wait for this response, if it has requested a timeout, before assuming no response has been provided.&#xA;NOTE The mapping of responsibilities to roles is an implementation detail. One approach would be to have an always-logged-in default/automatic operator to whom an 'interaction' can be directed in the event that no human operators are available. The default operator can be used to support an automatic control function or automatic alarm system.">
+      <mal:capabilitySet number="1">
+        <mal:invokeIP name="acknowledge" number="1" supportInReplay="false"
+                      comment="The acknowledge operation allows a consumer to request an acknowledge from an operator/role. The operator can only acknowledge the interaction; it cannot be declined (confirm is used in this case). It is expected to be used to allow an operator to acknowledge that a specific operation can proceed. If no operator or role is specified, then the interaction is for any operator, group, or role.">
+          <mal:messages>
+            <mal:invoke comment="If the destination field is either the wildcard '*' or empty an INVALID error shall be returned.&#xA;If the destination field contains NULL, then the destinationIsRole field shall be ignored.&#xA;If the destination field is not NULL and the destinationIsRole field is set to FALSE, the destination field shall contain a user name.&#xA;If the destination field is not NULL and the destinationIsRole field is set to TRUE, the destination field shall contain a role name.&#xA;If an appropriate user or role cannot be identified then an UNKNOWN error shall be returned.">
+              <mal:type name="InteractAcknowledgeDetails" service="Interact" area="Common"/>
+            </mal:invoke>
+            <mal:acknowledgement comment="The acknowledgement shall be returned when the message has been displayed to a specific operator.&#xA;The returned OccurrenceKey shall identify the interaction.&#xA;The returned OccurrenceKey may be used by the cancelInteraction operation.">
+              <mal:type name="Long" area="MAL"/>
+            </mal:acknowledgement>
+            <mal:response comment="The response shall be returned when the operator has completed the interaction.&#xA;If responseTimeout field contains a positive value then a TIMEDOUT error shall be raised if the operator fails to respond within that time limit.&#xA;If this operation is cancelled, then a CANCELLED error shall be returned.">
+              <mal:type name="InteractAcknowledgeResponse" service="Interact" area="Common"/>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Invalid values were provided.">
+              <mal:type name="INVALID" area="COM"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Operator could not be found to satisfy interaction.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:invokeIP>
+        <mal:invokeIP name="confirm" number="2" supportInReplay="false"
+                      comment="The confirm operation allows a consumer to request confirmationfrom an operator/role. The operator can confirm or decline the interaction; it is expected to be used to present an operator with a 'Yes/No' confirmation choice. If no operator or role is specified, then the interaction is for any operator, group, or role.">
+          <mal:messages>
+            <mal:invoke comment="If the destination field is either the wildcard '*' or empty an INVALID error shall be returned.&#xA;If the destination field contains NULL, then the destinationIsRole field shall be ignored.&#xA;If the destination field is not NULL and the destinationIsRole field is set to FALSE, the destination field shall contain a user name.&#xA;If the destination field is not NULL and the destinationIsRole field is set to TRUE, the destination field shall contain a role name.&#xA;If an appropriate user or role cannot be identified then an UNKNOWN error shall be returned.">
+              <mal:type name="InteractConfirmDetails" service="Interact" area="Common"/>
+            </mal:invoke>
+            <mal:acknowledgement comment="The acknowledgement shall be returned when the message has been displayed to a specific operator.&#xA;The operator shall be offered the ability to confirm or reject the interaction.&#xA;The returned OccurrenceKey shall identify the interaction.&#xA;The returned OccurrenceKey may be used by the cancelInteraction operation.">
+              <mal:type name="Long" area="MAL"/>
+            </mal:acknowledgement>
+            <mal:response comment="The response shall be returned when the operator has completed the interaction.&#xA;The confirmation field of the response message shall contain the result of the query presented to the operator.&#xA;If responseTimeout field contains a positive value then a TIMEDOUT error shall be raised if the operator fails to respond within that time limit.&#xA;If this operation is cancelled, then a CANCELLED error shall be returned.">
+              <mal:type name="InteractConfirmResponse" service="Interact" area="Common"/>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Operator could not be found to satisfy interaction.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Invalid values were provided.">
+              <mal:type name="INVALID" area="COM"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:invokeIP>
+        <mal:invokeIP name="choice" number="3" supportInReplay="false"
+                      comment="The choice operation allows a consumer to request an operator/role provide a choice from a set of predefined values. The operator must pick one of the presented list of options; it is expected to be used to allow an operator to select an option from the list of possible choices. If no operator or role is specified, then the interaction is for any operator, group, or role.">
+          <mal:messages>
+            <mal:invoke comment="If the destination field is either the wildcard '*' or empty an INVALID error shall be returned.&#xA;If the destination field contains NULL, then the destinationIsRole field shall be ignored.&#xA;If the destination field is not NULL and the destinationIsRole field is set to FALSE, the destination field shall contain a user name.&#xA;If the destination field is not NULL and the destinationIsRole field is set to TRUE, the destination field shall contain a role name.&#xA;If an appropriate user or role cannot be identified then an UNKNOWN error shall be returned.">
+              <mal:type name="InteractChoiceDetails" service="Interact" area="Common"/>
+            </mal:invoke>
+            <mal:acknowledgement comment="The acknowledgement shall be returned when the message has been displayed to a specific operator.&#xA;The operator shall be offered the ability to select from the list of allowedResponses.&#xA;The returned OccurrenceKey shall identify the interaction.&#xA;The returned OccurrenceKey may be used by the cancelInteraction operation.">
+              <mal:type name="Long" area="MAL"/>
+            </mal:acknowledgement>
+            <mal:response comment="The response shall be returned when the operator has completed the interaction.&#xA;The response field of the response message shall contain the index of the chosen response list presented to the operator.&#xA;If responseTimeout field contains a positive value then a TIMEDOUT error shall be raised if the operator fails to respond within that time limit.&#xA;If this operation is cancelled, then a CANCELLED error shall be returned.">
+              <mal:type name="InteractChoiceResponse" service="Interact" area="Common"/>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Operator could not be found to satisfy interaction.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Invalid values were provided.">
+              <mal:type name="INVALID" area="COM"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:invokeIP>
+        <mal:invokeIP name="getValues" number="4" supportInReplay="false"
+                      comment="The getValues operation allows a consumer to request a set of new values from an operator/role. The operator must supply the set of values; it is expected to be used to allow an operator to provide input values for an operation. If no operator or role is specified, then the interaction is for any operator, group, or role.">
+          <mal:messages>
+            <mal:invoke comment="If the destination field is either the wildcard '*' or empty an INVALID error shall be returned.&#xA;If the destination field contains NULL, then the destinationIsRole field shall be ignored.&#xA;If the destination field is not NULL and the destinationIsRole field is set to FALSE, the destination field shall contain a user name.&#xA;If the destination field is not NULL and the destinationIsRole field is set to TRUE, the destination field shall contain a role name.&#xA;If an appropriate user or role cannot be identified then an UNKNOWN error shall be returned.&#xA;For each entry in the defaultValues list, the first part of the ElementPair must be either NULL or a String name of the value required.&#xA;For each entry in the defaultValues list, the second part of the ElementPair must be provided, even if it is empty (not NULL), so that the software used to request the value from an operator can determine the type of value required (Integer, Boolean, etc.).&#xA;For each entry in the defaultValues list, setting the second part of the ElementPair to NULL shall not permitted as NULL does not have a type and therefore the receiving software would not be able to determine the desired value type.&#xA;If any field in the defautValues list contains an invalid value as defined above then an INVALUDerror shall be returned.">
+              <mal:type name="InteractValueDetails" service="Interact" area="Common"/>
+            </mal:invoke>
+            <mal:acknowledgement comment="The acknowledgement shall be returned when the message has been displayed to a specific operator.&#xA;The returned OccurrenceKey shall identify the interaction.&#xA;The returned OccurrenceKey may be used by the cancelInteraction operation.">
+              <mal:type name="Long" area="MAL"/>
+            </mal:acknowledgement>
+            <mal:response comment="The response shall be returned when the operator has completed the interaction.&#xA;The newValues list of the response message shall contain the new values aquired from the operator.&#xA;There shall be an entry for each supplied entry in the initial InteractValueOccurrence.&#xA;The order of the newValues list shall match that of the defaultValues list.&#xA;If responseTimeout field contains a positive value then a TIMEDOUT error shall be raised if the operator fails to respond within that time limit.&#xA;If this operation is cancelled, then a CANCELLED error shall be returned.">
+              <mal:type name="InteractValueResponse" service="Interact" area="Common"/>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Invalid values in the request.">
+              <mal:type name="INVALID" area="COM"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Operator could not be found to satisfy interaction.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:invokeIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="2">
+        <mal:requestIP name="listActiveInteractions" number="5" supportInReplay="false"
+                       comment="The listActiveInteractions operation returns the list of interactions that have not been either cancelled or responded to.">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="interactionTypeFilter">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="activeInteractionObjInstIds">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="3">
+        <mal:submitIP name="cancelInteraction" number="6" supportInReplay="false"
+                      comment="The cancelInteraction operation allows a consumer of the service to cancel an active interaction.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="interactionObjInstId"
+                         comment="The operation shall take an object instance identifier of the interaction object to be cancelled.&#xA;If the object instance indentifier does not match an existing interaction an UNKNOWN error shall be returned.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Requested interaction is not known.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+        <mal:composite name="InteractDetailsBase"
+                       comment="The base Interact service request structure. Holds fields common to all Interact service requests.">
+          <mal:field name="destination"
+                     comment="Username of operator or role to interact with, set to NULL if for anyone.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="destinationIsRole" canBeNull="false"
+                     comment="True if destination is a role name, value ignored if no destination supplied.">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+          <mal:field name="responseTimeout"
+                     comment="Duration in which response must be received. NULL if no timeout required.">
+            <mal:type name="Duration" area="MAL"/>
+          </mal:field>
+          <mal:field name="displayMessage" canBeNull="false"
+                     comment="Message to present to operator.">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractResponseBase"
+                       comment="The base Interact service response structure. Holds fields common to all Interact service responses.">
+          <mal:field name="operator"
+                     comment="The operator usename that is providing the response. May be NULL if not supported by the implementation.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractAcknowledgeDetails" shortFormPart="1"
+                       comment="The InteractAcknowledgeDetails structure holds the fields required for an interaction acknowledgement.">
+          <mal:extends>
+            <mal:type name="InteractDetailsBase" service="Interact" area="Common"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="InteractConfirmDetails" shortFormPart="2"
+                       comment="The InteractConfirmDetails structure holds the fields required for an interaction confirmation.">
+          <mal:extends>
+            <mal:type name="InteractDetailsBase" service="Interact" area="Common"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="InteractChoiceDetails" shortFormPart="3"
+                       comment="The InteractChoiceDetails structure holds the fields required for an interaction choice query.">
+          <mal:extends>
+            <mal:type name="InteractDetailsBase" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="allowedChoices" canBeNull="false"
+                     comment="Set of choices for operator to select from.">
+            <mal:type list="true" name="String" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractValueDetails" shortFormPart="4"
+                       comment="The InteractValueDetails structure holds the fields required for an interaction value query.">
+          <mal:extends>
+            <mal:type name="InteractDetailsBase" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="defaultValues" canBeNull="false"
+                     comment="Default values to provide to operator. Both parts of the Element pairs structure must be populated as it provides the value type required. The first part of the pair shall always be a String that contains the name of the value required.">
+            <mal:type list="true" name="NamedValue" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractAcknowledgeResponse" shortFormPart="5"
+                       comment="The InteractAcknowledgeResponse structure represents a response to an interaction acknowledge query.">
+          <mal:extends>
+            <mal:type name="InteractResponseBase" service="Interact" area="Common"/>
+          </mal:extends>
+        </mal:composite>
+        <mal:composite name="InteractConfirmResponse" shortFormPart="6"
+                       comment="The InteractConfirmResponse structure represents a response to an interaction confirm query.">
+          <mal:extends>
+            <mal:type name="InteractResponseBase" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="confirmation" canBeNull="false" comment="Response to interaction.">
+            <mal:type name="Boolean" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractChoiceResponse" shortFormPart="7"
+                       comment="The InteractChoiceResponse structure represents a response to a choice interaction query.">
+          <mal:extends>
+            <mal:type name="InteractResponseBase" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="choice" canBeNull="false"
+                     comment="Index of chosen value from provided list.">
+            <mal:type name="Integer" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractValueResponse" shortFormPart="8"
+                       comment="The InteractValueResponse structure represents a response to a value interaction query.">
+          <mal:extends>
+            <mal:type name="InteractResponseBase" service="Interact" area="Common"/>
+          </mal:extends>
+          <mal:field name="newValues" canBeNull="false"
+                     comment="New values provided by operator. Only changed values from those supplied in the request shall be returned. The type of the value returned must match that of the default value sent in the request.">
+            <mal:type list="true" name="NamedValue" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="InteractCancelled" shortFormPart="9"
+                       comment="The InteractCancelled structure is used to notify of an interaction being cancelled. The responding operator credentials shall be held in the UpdateSource of the OccurrenceUpdate if cancelled by an operator.">
+          <mal:extends>
+            <mal:type name="InteractResponseBase" service="Interact" area="Common"/>
+          </mal:extends>
+        </mal:composite>
+      </mal:dataTypes>
+      <com:features>
+        <com:objects comment="The entity identifier shall hold a string representation of the type of interaction.&#xA;The permitted values for the entityId are 'Acknowledge', 'Confirm', 'Choice', and 'Value'.&#xA;The definitionId is not used and shall be set to NULL.&#xA;The occurrenceId shall be generated by the service provider and is unique for that domain.&#xA;Responses to interactions shall be submitted using the modifyOccurrence operation.&#xA;The supplied InteractionResponse type must match the original InteractionOccurrence type, an INVALID error will be raised if this is not the case.&#xA;The response to an active interaction shall be supplied using the COM modifyOccurrence operation.&#xA;One a reponse has been supplied, the interaction service provider shall delete the interaction using the COM deleteOccurrence operation.&#xA;Active interactions may be cancelled using the COM Activity service cancelActivity operation.">
+          <com:object name="InteractRequest" number="1"
+                      comment="The body of the object holds the ObjectType that is combined with the related link to locate the actual Interact COM Object that holds the request.">
+            <com:objectType>
+              <mal:type name="ObjectType" area="COM"/>
+            </com:objectType>
+            <com:sourceObject comment="The source shall link to the source of the interaction, most likely a Login COM Object"/>
+          </com:object>
+          <com:object name="InteractResult" number="2"
+                      comment="The body of the object holds the ObjectType that is combined with the related link to locate the actual Interact COM Object that holds the result.">
+            <com:objectType>
+              <mal:type name="ObjectType" area="COM"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Interact" area="Common"/>
+            </com:relatedObject>
+            <com:sourceObject comment="The source shall link to the source of the interaction result, most likely a Login COM Object"/>
+          </com:object>
+          <com:object name="InteractAckRequest" number="3">
+            <com:objectType>
+              <mal:type name="InteractAcknowledgeDetails" service="Interact" area="Common"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Interact" area="Common"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="InteractConfirmRequest" number="4">
+            <com:objectType>
+              <mal:type name="InteractConfirmDetails" service="Interact" area="Common"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Interact" area="Common"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="InteractChoiceRequest" number="5">
+            <com:objectType>
+              <mal:type name="InteractChoiceDetails" service="Interact" area="Common"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Interact" area="Common"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="InteractValueRequest" number="6">
+            <com:objectType>
+              <mal:type name="InteractValueDetails" service="Interact" area="Common"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Interact" area="Common"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="InteractCancelResult" number="7">
+            <com:objectType>
+              <mal:type name="InteractCancelled" service="Interact" area="Common"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="2" service="Interact" area="Common"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="InteractConfirmResult" number="8">
+            <com:objectType>
+              <mal:type name="InteractConfirmDetails" service="Interact" area="Common"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="2" service="Interact" area="Common"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="InteractAckResult" number="9">
+            <com:objectType>
+              <mal:type name="InteractAcknowledgeResponse" service="Interact" area="Common"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="2" service="Interact" area="Common"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="InteractChoiceResult" number="10">
+            <com:objectType>
+              <mal:type name="InteractChoiceResponse" service="Interact" area="Common"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="2" service="Interact" area="Common"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="InteractValueResult" number="11">
+            <com:objectType>
+              <mal:type name="InteractValueResponse" service="Interact" area="Common"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="2" service="Interact" area="Common"/>
+            </com:relatedObject>
+          </com:object>
+        </com:objects>
+      </com:features>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Configuration" number="5"
+                 comment="The Configuration service allows service providers to publish information about their configuration and consumers to manage the configuration of the provider.&#xA;The contents of the configuration of a service is service specific, but the management of these configurations has been standardised in this service. Implementations of this service may also use bespoke methods for configuration upload (such as files) which is outside the scope of this specification; however, the status and management of these uploaded configurations can still be managed with this service.&#xA;Some other services may offer online update/modification of aspects of their definitions and configuration through the definition aspects of the Common Model; this is separate from the facilities provided by this service, which is to allow the management of implementation specific configurations in a standard way.&#xA;The service uses the COM entity to represent the different types of configuration allowed by a component, the different configurations for each of those entities is represented by a COM definition. The different configuration aspects of a service are represented by entity (for example, this could be colour balance or frame rate for a camera service) and the different configurations of those aspects are represented by definition (for example, that could be different frame rate values for the previous example).&#xA;Not all operations are required to be implemented, for example if the possible configurations are fixed in the component and cannot be changed then the COM operations to modify the definition need not be implemented.&#xA;Configurations are activated/deactivated by making one of the definitions the only allowed currently non-deleted definition. For example, COM only permits a single definition to be marked as non-deleted for an entity, for the configuration service this would be the active configuration for that entity.&#xA;The entity and definition identifiers used by this service are not tied to anything else in the MO architecture therefore their meaning is completely service dependent.">
+      <mal:capabilitySet number="1">
+        <mal:invokeIP name="activate" number="1" supportInReplay="false"
+                      comment="The activate operation instructs a service provider to make a specific configuration active. As it is possible that it may take an indeterminate amount of time to activate a specific configuration the INVOKE pattern is used.">
+          <mal:messages>
+            <mal:invoke>
+              <mal:field name="configObjInstId"
+                         comment="The operation shall take an COM object instance identifier that identifies the configuration to activate.&#xA;An UNKNOWN error shall be returned if the object instance indentifier does not match an existing configuration.&#xA;If the object instance identifier does not reference a valid configuration for the service provider an INVALID error shall be returned.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+            </mal:invoke>
+            <mal:acknowledgement comment="The empty acknowledgement shall be returned if a matching configuration exists."/>
+            <mal:response comment="The configuration shall be made active after the acknowledgement is sent and before the response is sent.&#xA;The INVALID error may be returned as a result of a service specific data check.&#xA;If the operation fails the previous configuration shall remain active.&#xA;A ConfigurationActivation COM Event shall be published if the new configuration has been made active."/>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="Requested configuration is unknown.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+            <mal:errorRef comment="Requested configuration is invalid.">
+              <mal:type name="INVALID" area="COM"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:invokeIP>
+      </mal:capabilitySet>
+      <com:features>
+        <com:objects comment="The entity identifier shall be the unique identifier of the Configuration for the domain.&#xA;The definitions of the Configurations shall be maintained by using the relevant COM Definition update operations.&#xA;Following the COM rules for definition, only one definition shall be active for an entity at a time.&#xA;The activate operation shall be used to change the currently active configuration.">
+          <com:object name="ConfigurationDefinition" number="1"
+                      comment="Represents a configuration definition for a service provider.">
+            <com:objectType>
+              <mal:type name="Boolean" area="MAL"/>
+            </com:objectType>
+            <com:sourceObject comment="The source links to the actual configuration definition for the provider."/>
+          </com:object>
+        </com:objects>
+        <com:events>
+          <com:event name="ConfigurationActivationEvent" number="2"
+                     comment="The event shall be raised when a configuration is made active. The body of the event is the previously active configuration which shall be NULL if no configuration was previously active.">
+            <com:objectType>
+              <mal:type name="Long" area="MAL"/>
+            </com:objectType>
+            <com:relatedObject comment="The related object is the activated configuration.">
+              <com:objectType number="1" service="Configuration" area="Common"/>
+            </com:relatedObject>
+            <com:sourceObject comment="The source of the event is the object that triggered the activation, most likely the activateConfiguration operation."/>
+          </com:event>
+        </com:events>
+        <com:archiveUsage/>
       </com:features>
     </mal:service>
   </mal:area>
