@@ -17,16 +17,17 @@
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
-    <groupId>int.esa</groupId>
-    <artifactId>CCSDS_MO_POM</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>int.esa.ccsds.mo</groupId>
+    <artifactId>POM</artifactId>
+    <version>1</version>
+    <relativePath/>
   </parent>
 
-  <artifactId>CCSDS_COM_API</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <artifactId>API_COM</artifactId>
+  <version>1.0</version>
   <packaging>jar</packaging>
 
-  <name>ESA COM API</name>
+  <name>ESA COM Java API</name>
   <description>The CCSDS COM API for Java</description>
   <url>http://www.esa.int</url>
   
@@ -72,8 +73,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>CCSDS_MAL_API</artifactId>
+      <groupId>int.esa.ccsds.mo</groupId>
+      <artifactId>API_MAL</artifactId>
     </dependency>
   </dependencies>
 
@@ -101,25 +102,13 @@
         <artifactId>build-helper-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>int.esa</groupId>
-        <artifactId>CCSDS_MO_StubGenerator</artifactId>
+        <groupId>int.esa.ccsds.mo</groupId>
+        <artifactId>StubGenerator</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-      <plugin> 
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId> 
-      </plugin>
-      <plugin> 
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId> 
-      </plugin>
-    </plugins> 
+    </plugins>
   </build>
 </project>
