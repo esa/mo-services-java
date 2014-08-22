@@ -19,13 +19,13 @@
       <mal:attribute name="Blob" shortFormPart="1"
                      comment="The Blob structure is used to store binary object attributes. It is a variable-length, unbounded, octet array. The distinction between this type and a list of Octet attributes is that this type may allow language mappings and encodings to use more efficient or appropriate representations."/>
       <mal:attribute name="Boolean" shortFormPart="2"
-                     comment="The Boolean structure is used to store Boolean attributes. Possible values are 'True' or 'False'.&#xA;"/>
+                     comment="The Boolean structure is used to store Boolean attributes. Possible values are 'True' or 'False'."/>
       <mal:attribute name="Duration" shortFormPart="3"
                      comment="The Duration structure is used to store Duration attributes. It represents a length of time in seconds. It may contain a fractional component."/>
       <mal:attribute name="Float" shortFormPart="4"
-                     comment="The Float structure is used to store floating point attributes using the IEEE 754 32-bit range.&#xA;Three special values exist for this type: POSITIVE_INFINITY, NEGATIVE_INFINITY, and NaN (Not A Number).&#xA;"/>
+                     comment="The Float structure is used to store floating point attributes using the IEEE 754 32-bit range.&#xA;Three special values exist for this type: POSITIVE_INFINITY, NEGATIVE_INFINITY, and NaN (Not A Number)."/>
       <mal:attribute name="Double" shortFormPart="5"
-                     comment="The Double structure is used to store floating point attributes using the IEEE 754 64-bit range.&#xA;Three special values exist for this type: POSITIVE_INFINITY, NEGATIVE_INFINITY, and NaN (Not A Number).&#xA;"/>
+                     comment="The Double structure is used to store floating point attributes using the IEEE 754 64-bit range.&#xA;Three special values exist for this type: POSITIVE_INFINITY, NEGATIVE_INFINITY, and NaN (Not A Number)."/>
       <mal:attribute name="Identifier" shortFormPart="6"
                      comment="The Identifier structure is used to store an identifier and can be used for indexing. It is a variable-length, unbounded, Unicode string."/>
       <mal:attribute name="Octet" shortFormPart="7"
@@ -137,13 +137,13 @@
         <mal:field name="firstSubKey" comment="The first sub-key of the key.">
           <mal:type name="Identifier" area="MAL"/>
         </mal:field>
-        <mal:field name="secondSubKey" comment="The second sub-key of the key.&#xA;">
+        <mal:field name="secondSubKey" comment="The second sub-key of the key.">
           <mal:type name="Long" area="MAL"/>
         </mal:field>
-        <mal:field name="thirdSubKey" comment="The third sub-key of the key.&#xA;">
+        <mal:field name="thirdSubKey" comment="The third sub-key of the key.">
           <mal:type name="Long" area="MAL"/>
         </mal:field>
-        <mal:field name="fourthSubKey" comment="The fourth sub-key of the key.&#xA;">
+        <mal:field name="fourthSubKey" comment="The fourth sub-key of the key.">
           <mal:type name="Long" area="MAL"/>
         </mal:field>
       </mal:composite>
@@ -220,10 +220,10 @@
           <mal:type name="Time" area="MAL"/>
         </mal:field>
         <mal:field name="modificationDate"
-                   comment="The last modification timestamp of the file, NULL if not known.&#xA;">
+                   comment="The last modification timestamp of the file, NULL if not known.">
           <mal:type name="Time" area="MAL"/>
         </mal:field>
-        <mal:field name="size" comment="The size of the file in Octets, NULL if not known.&#xA;">
+        <mal:field name="size" comment="The size of the file in Octets, NULL if not known.">
           <mal:type name="ULong" area="MAL"/>
         </mal:field>
         <mal:field name="content" comment="The contents of the file, NULL if not supplied.">

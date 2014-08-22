@@ -16,8 +16,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
-  <groupId>int.esa</groupId>
-  <artifactId>CCSDS_MO_XML_POM</artifactId>
+  <parent>
+    <groupId>int.esa.ccsds.mo</groupId>
+    <artifactId>POM</artifactId>
+    <version>1</version>
+    <relativePath/>
+  </parent>
+  
+  <artifactId>REACTOR_XML</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>CCSDS MO XML Build reactor</name>
