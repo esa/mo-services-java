@@ -55,7 +55,6 @@ public interface TypeInformation
   /**
    * Returns true if the type is an attribute.
    *
-   * @param area the type area, must be MAL.
    * @param type the type to look for.
    * @return true if an attribute.
    */
@@ -90,6 +89,7 @@ public interface TypeInformation
    *
    * @param file The writer to add any type dependencies to.
    * @param type The type.
+   * @param isStructure True if the type is a structure type.
    * @return the full name of the type.
    */
   String createElementType(TargetWriter file, TypeReference type, boolean isStructure);

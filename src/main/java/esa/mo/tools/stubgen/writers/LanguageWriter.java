@@ -74,12 +74,12 @@ public interface LanguageWriter extends TargetWriter
   void addMultilineComment(String comment) throws IOException;
 
   /**
-   * Adds a multiline comment to the file.
+   * Adds a multi-line comment to the file.
    *
    * @param tabCount Indentation level.
    * @param preBlankLine True is a blank line is required before the comment.
    * @param comment the comment.
-   * @param preBlankLine True is a blank line is required after the comment.
+   * @param postBlankLine True is a blank line is required after the comment.
    * @throws IOException If there is an IO error.
    */
   void addMultilineComment(int tabCount, boolean preBlankLine, String comment, boolean postBlankLine)
@@ -91,7 +91,7 @@ public interface LanguageWriter extends TargetWriter
    * @param tabCount Indentation level.
    * @param preBlankLine True is a blank line is required before the comment.
    * @param comments the comments.
-   * @param preBlankLine True is a blank line is required after the comment.
+   * @param postBlankLine True is a blank line is required after the comment.
    * @throws IOException If there is an IO error.
    */
   void addMultilineComment(int tabCount, boolean preBlankLine, List<String> comments, boolean postBlankLine)
