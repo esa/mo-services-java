@@ -17,12 +17,13 @@
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
-    <groupId>int.esa</groupId>
-    <artifactId>CCSDS_MO_POM</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>int.esa.ccsds.mo</groupId>
+    <artifactId>POM</artifactId>
+    <version>1</version>
+    <relativePath/>
   </parent>
   
-  <artifactId>CCSDS_MAL_TRANSPORTS</artifactId>
+  <artifactId>REACTOR_TRANSPORTS</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>ESA CCSDS Java Transport reactor build</name>
@@ -35,20 +36,20 @@
   <licenses>
     <license>
       <name>The European Space Agency Public License, Version 2.0</name>
-      <url>https://raw.github.com/esa/${project.artifactId}/master/LICENCE.md</url>
+      <url>https://raw.github.com/esa/CCSDS_MAL_TRANSPORTS/master/LICENCE.md</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:esa/${project.artifactId}.git</connection>
-    <developerConnection>scm:git:git@github.com:esa/${project.artifactId}.git</developerConnection>
-    <url>https://github.com/esa/${project.artifactId}</url>
+    <connection>scm:git:git@github.com:esa/CCSDS_MAL_TRANSPORTS.git</connection>
+    <developerConnection>scm:git:git@github.com:esa/CCSDS_MAL_TRANSPORTS.git</developerConnection>
+    <url>https://github.com/esa/CCSDS_MAL_TRANSPORTS</url>
   </scm>
   
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/esa/${project.artifactId}/issues</url>
+    <url>https://github.com/esa/CCSDS_MAL_TRANSPORTS/issues</url>
   </issueManagement>
   
   <developers>
@@ -61,11 +62,11 @@
   </developers>
 
   <modules>
-    <module>CCSDS_MAL_TRANSPORT_GEN</module>
-    <module>CCSDS_MAL_TRANSPORT_RMI</module>
+    <module>CCSDS_MAL_ENCODING_GEN</module>
     <module>CCSDS_MAL_ENCODING_STRING</module>
     <module>CCSDS_MAL_ENCODING_BINARY</module>
-    <module>CCSDS_MAL_ENCODING_GEN</module>
+    <module>CCSDS_MAL_TRANSPORT_GEN</module>
+    <module>CCSDS_MAL_TRANSPORT_RMI</module>
     <module>CCSDS_MAL_TRANSPORT_INPROC</module>
     <module>CCSDS_MAL_TRANSPORT_TCP</module>
   </modules>
@@ -75,13 +76,13 @@
       <id>ESA</id>
       <dependencies>
         <dependency>
-          <groupId>int.esa</groupId>
-          <artifactId>CCSDS_MAL_API</artifactId>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL</artifactId>
         </dependency>
       </dependencies>
     </profile>
     <profile>
-      <id>Split-Binary-Encoder</id>
+      <id>One-Oh-Seven-Needed</id>
       <activation>
         <jdk>[1.7,]</jdk>
       </activation>
