@@ -17,12 +17,13 @@
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
-    <groupId>int.esa</groupId>
-    <artifactId>CCSDS_MO_POM</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>int.esa.ccsds.mo</groupId>
+    <artifactId>POM</artifactId>
+    <version>1</version>
+    <relativePath/>
   </parent>
   
-  <artifactId>CCSDS_APPS</artifactId>
+  <artifactId>REACTOR_APPS</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>ESA CCSDS Apps reactor build</name>
@@ -35,20 +36,20 @@
   <licenses>
     <license>
       <name>The European Space Agency Public License, Version 2.0</name>
-      <url>https://raw.github.com/esa/${project.artifactId}/master/LICENCE.md</url>
+      <url>https://raw.github.com/esa/CCSDS_APPS/master/LICENCE.md</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:esa/${project.artifactId}.git</connection>
-    <developerConnection>scm:git:git@github.com:esa/${project.artifactId}.git</developerConnection>
-    <url>https://github.com/esa/${project.artifactId}</url>
+    <connection>scm:git:git@github.com:esa/CCSDS_APPS.git</connection>
+    <developerConnection>scm:git:git@github.com:esa/CCSDS_APPS.git</developerConnection>
+    <url>https://github.com/esa/CCSDS_APPS</url>
   </scm>
   
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/esa/${project.artifactId}/issues</url>
+    <url>https://github.com/esa/CCSDS_APPS/issues</url>
   </issueManagement>
   
   <developers>

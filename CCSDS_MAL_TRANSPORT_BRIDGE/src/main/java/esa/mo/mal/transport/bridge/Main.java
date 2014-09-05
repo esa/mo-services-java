@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package org.ccsds.moims.mo.mal.transport.bridge;
+package esa.mo.mal.transport.bridge;
 
 import esa.mo.mal.impl.util.StructureHelper;
 import java.io.BufferedWriter;
