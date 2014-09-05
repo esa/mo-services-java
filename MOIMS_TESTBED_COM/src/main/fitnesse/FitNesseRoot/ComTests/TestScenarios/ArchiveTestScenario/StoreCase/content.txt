@@ -1,0 +1,321 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.com.test.archive|
+
+*!
+!3 Store operation test case
+This tests each prescriptive statement defined for the operation 'store'.
+
+!4 General store
+Checks the following statements:
+* a) The first part of the request indicates whether the operation should return the object instance identifiers used, if TRUE it shall return them, otherwise it returns NULL.
+* b) The second part of the request shall contain the type of object being stored.
+* c) The third part of the request shall contain the domain of the objects being stored.
+* d) The fourth part of the request shall contain the list of archive details to use, one for each object being stored.
+* g) The fifth part of the request shall contain the list of objects to store.
+* o) The response shall contain the set of new object instance identifiers if the request supplied an initial TRUE Boolean value, otherwise it returns NULL.
+* p) The returned list shall be ordered identically to the submitted list so that the returned object instance identifiers can be mapped to the correct objects.
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+| note | Store several objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 1 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 3 | and network | network |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 3 |
+|ensure| returned instance id at | 0 | index is | 1 |
+|ensure| returned instance id at | 1 | index is | 3 |
+|ensure| returned instance id at | 2 | index is | 2 |
+| note | check the returned identifiers ordering |
+|ensure| add returned instance ids in retrieve list |
+|ensure| retrieve |
+|ensure| retrieved archive details list size is | 3 |
+|ensure| retrieved object list size is | 3 |
+|ensure| retrieved object list contains instance id | 1 | and has integer value | 234 |
+|ensure| retrieved object list contains instance id | 2 | and has integer value | 236 |
+|ensure| retrieved object list contains instance id | 3 | and has integer value | 235 |
+| note | Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 4 | and network | network |
+|ensure| add object payload with int | 237 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 5 | and network | network |
+|ensure| add object payload with int | 238 | and sub composite | true | and int | 345 |
+|ensure| store | false |
+|ensure| returned instance id list is null |
+| note | need to add the instance identifiers that have been stored |
+|ensure| add instance id to retrieve | 4 |
+|ensure| add instance id to retrieve | 5 |
+|ensure| retrieve |
+|ensure| retrieved archive details list size is | 5 |
+|ensure| retrieved object list size is | 5 |
+|ensure| retrieved object list contains instance id | 1 | and has integer value | 234 |
+|ensure| retrieved object list contains instance id | 2 | and has integer value | 236 |
+|ensure| retrieved object list contains instance id | 3 | and has integer value | 235 |
+|ensure| retrieved object list contains instance id | 4 | and has integer value | 237 |
+|ensure| retrieved object list contains instance id | 5 | and has integer value | 238 |
+
+!4 Instance identifier allocation
+Checks the following statements:
+* e) If the object instance identifier supplied in the archive details is set to 0 then the store operation shall allocate a new and unused object instance identifier.
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 1 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 0 | and network | network |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 0 | and network | network |
+|ensure| add object payload with int | 237 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 4 |
+|ensure| add returned instance ids in retrieve list |
+|ensure| retrieve |
+|ensure| retrieved archive details list size is | 4 |
+|ensure| retrieved object list size is | 4 |
+|ensure| retrieved object list contains instance id | 1 | and has integer value | 234 |
+|ensure| retrieved object list contains instance id | 2 | and has integer value | 235 |
+|ensure| retrieved object list contains instance id | 3 | and has integer value | 236 |
+|ensure| retrieved object list contains instance id | 4 | and has integer value | 237 |
+
+!4 Invalid object type
+Checks the following statements:
+* i) An INVALID error shall be returned if a wildcard value of '0' is detected in the object type.
+
+|scenario| invalid store with area | objectArea | and service | objectService | and version | objectVersion | and number | objectNumber |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an invalid object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set object type with area | @objectArea | and service | @objectService | and version | @objectVersion | and number | @objectNumber |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned error is invalid |
+
+|script| archive scenario |
+| invalid store with area | 0 | and service | 1 | and version | 1 | and number | 1 |
+| invalid store with area | 1 | and service | 0 | and version | 1 | and number | 1 |
+| invalid store with area | 1 | and service | 1 | and version | 0 | and number | 1 |
+| invalid store with area | 1 | and service | 1 | and version | 1 | and number | 0 |
+
+!4 Invalid domain
+Checks the following statements:
+* j) An INVALID error shall be returned if a wildcard value of '*' is detected in the domain identifier list.
+
+|scenario| invalid store with domain | domain |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an invalid object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set domain | @domain |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned error is invalid |
+
+|script| archive scenario |
+| invalid store with domain | spacecraftA.aocs.* |
+| invalid store with domain | * |
+
+!4 Invalid archive details
+Checks the following statements:
+* l) No wildcard values of '0', '*', or NULL shall be accepted in the network, timestamp or provider fields of the archive details except for the object instance identifier or an INVALID error is returned.
+* INVALID.a) One or more of the objects being stored contains a wildcard value.
+* INVALID.b) The extra information field contains the indexes of the erroneous values from the originating list supplied.
+
+|scenario| invalid store with network | network | and timestamp | timestamp | and provider | provider |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an invalid object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set domain | @domain |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 0 | and network | @network | and timestamp | @timestamp | and provider uri | @provider |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned error is invalid |
+|ensure| invalid store index at | 0 | is | 1 |
+
+|script| archive scenario |
+| invalid store with network | NULL | and timestamp | 60 | and provider | aaa:provider |
+| invalid store with network | network | and timestamp | 0 | and provider | aaa:provider |
+| invalid store with network | network | and timestamp | 60 | and provider | NULL |
+
+!4 Duplicate store
+Checks the following statements:
+* f) If the object instance identifier supplied in the archive details is not set to 0 and is currently used in the archive then a DUPLICATE error is returned and no objects from the request shall be stored.
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store 4 objects; one has a duplicate id |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 1 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 3 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned error is duplicate |
+|note| Store 1 object with a unique id |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 1 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 1 |
+|note| Store 1 object with a duplicate id |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 1 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned error is duplicate |
+
+!4 Store rollback in case of error
+Checks the following statements:
+* n) If any error is returned then the store operation shall be rolled back and nothing is stored as a result of the operation.
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store a valid object and an invalid object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|note| Create a valid object |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|note| Create an invalid object |
+|ensure| set object type with area | 0 | and service | 1 | and version | 1 | and number | 1 |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned error is invalid |
+|note| Check the rollback (nothing stored) |
+|ensure| reset object type |
+|ensure| retrieve all |
+|ensure| retrieved archive details list is null |
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store 4 objects; one has a duplicate id |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 1 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 3 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|note| Store 1 object; one has a duplicate id |
+|ensure| store | true |
+|ensure| returned error is duplicate |
+|note| Check the rollback (nothing stored) |
+|ensure| reset object type |
+|ensure| retrieve all |
+|ensure| retrieved archive details list is null |
+
+!4 Object type checking
+* m) The type of the body of the object should be checked against the declared type in the relevant service specification, if different an INVALID error is raised.
+
+Should statements are not tested.
+
+!4 Size
+h)	The fourth and fifth list must be the same size as there is only entry in each for each object to be stored. If they differ in size and INVALID error is returned with the extra error information integer giving the index of the list entry without a matching entry in the other list.
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+| note | Store several objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 1 | and network | network |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 3 | and network | network |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network |
+| note | missing object body |
+|ensure| store | true |
+|ensure| returned error is invalid |

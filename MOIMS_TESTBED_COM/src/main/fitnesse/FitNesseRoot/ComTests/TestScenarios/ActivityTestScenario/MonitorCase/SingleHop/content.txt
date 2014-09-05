@@ -1,0 +1,84 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO COM Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.com.test.activity|
+
+*!
+!4 Monitoring a Single hop activity test procedure
+This tests that activities can be monitored in a single hop situation, specifically:
+* That relays return the correct messages
+* That the returned messages have the correct header fields
+* That the returned messages have the correct body fields
+* That the originating pattern is failed by the relays if appropriate
+
+!*> Sub scenario definitions
+
+|scenario| test interaction pattern | interaction | via | relay | with transport activity | transactivity | and execution activity | exeactivity |
+|ensure| clear received activity reports list |
+|$MON= | pattern initiation for| @interaction | via| @relay | with transport activity | @transactivity | and execution activity | @exeactivity |
+|ensure| pattern | $MON | completes as expected |@transactivity || @exeactivity |
+|ensure| received | $MON | expected transport activity | @transactivity | 
+|ensure| received | $MON | expected execution activity | @exeactivity | 
+|ensure| received | $MON | event details valid |@transactivity || @exeactivity | 
+
+|scenario| test interaction pattern | interaction | via | relay | for correct transport activity |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE_ERROR] | and execution activity | [] |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION_ERROR(!-RelayE-!)] | and execution activity | [] |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION(!-RelayE-!), FORWARD_ERROR(!-RelayE-!)] | and execution activity | [] |
+
+|scenario| test interaction pattern | interaction | via | relay | with execution activity | exeactivity |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION(!-RelayE-!), FORWARD(!-RelayE-!), ACCEPTANCE] | and execution activity | @exeactivity |
+***********!
+
+|script| monitor activity scenario| !-SingleHop-! |
+|ensure| test activity service client has been created|
+|ensure| test activity relay management service client has been created|
+|ensure| call reset test on service provider |
+|ensure| call reset test on relay management service provider |
+|ensure| create activity service relay called | !-RelayE-! | to relay to | Provider |
+|ensure| call reset test on relay service provider | !-RelayE-! |
+|ensure| subscribe for activity events from | !-RelayE-! |
+|note| test correct behaviour for each pattern type |
+|test interaction pattern | Send | via | !-RelayE-! | for correct transport activity |
+|test interaction pattern | Send | via | !-RelayE-! | with execution activity | [] |
+|test interaction pattern | Submit | via | !-RelayE-! | for correct transport activity |
+|test interaction pattern | Submit | via | !-RelayE-! | with execution activity | [ACK_ERROR] |
+|test interaction pattern | Submit | via | !-RelayE-! | with execution activity | [ACK] |
+|test interaction pattern | Request | via | !-RelayE-! | for correct transport activity |
+|test interaction pattern | Request | via | !-RelayE-! | with execution activity | [RESPONSE_ERROR] |
+|test interaction pattern | Request | via | !-RelayE-! | with execution activity | [RESPONSE] |
+|test interaction pattern | Invoke | via | !-RelayE-! | for correct transport activity |
+|test interaction pattern | Invoke | via | !-RelayE-! | with execution activity | [ACK_ERROR] |
+|test interaction pattern | Invoke | via | !-RelayE-! | with execution activity | [ACK, RESPONSE_ERROR] |
+|test interaction pattern | Invoke | via | !-RelayE-! | with execution activity | [ACK, RESPONSE] |
+|test interaction pattern | Progress | via | !-RelayE-! | for correct transport activity |
+|test interaction pattern | Progress | via | !-RelayE-! | with execution activity | [ACK_ERROR] |
+|test interaction pattern | Progress | via | !-RelayE-! | with execution activity | [ACK, RESPONSE_ERROR] |
+|test interaction pattern | Progress | via | !-RelayE-! | with execution activity | [ACK, RESPONSE] |
+|test interaction pattern | Progress | via | !-RelayE-! | with execution activity | [ACK, UPDATE, UPDATE, UPDATE_ERROR] |
+|test interaction pattern | Progress | via | !-RelayE-! | with execution activity | [ACK, UPDATE, UPDATE, RESPONSE_ERROR] |
+|test interaction pattern | Progress | via | !-RelayE-! | with execution activity | [ACK, UPDATE, UPDATE, RESPONSE] |
+|ensure| unsubscribe for activity events from | !-RelayE-! |
+|close relay service provider | !-RelayE-! |
+|close test activity service client|

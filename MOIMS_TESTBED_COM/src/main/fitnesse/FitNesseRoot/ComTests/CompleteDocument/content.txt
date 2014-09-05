@@ -1,0 +1,43 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO COM Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+*!
+
+!include TestScenarios.ActivityTestScenario
+!include TestScenarios.ActivityTestScenario.MonitorCase
+!include TestScenarios.ActivityTestScenario.MonitorCase.DirectToProvider
+!include TestScenarios.ActivityTestScenario.MonitorCase.SingleHop
+!include TestScenarios.ActivityTestScenario.MonitorCase.MultiHop
+!include TestScenarios.EventTestScenario
+!include TestScenarios.EventTestScenario.EventCapability
+!include TestScenarios.ArchiveTestScenario
+!include TestScenarios.ArchiveTestScenario.StoreCase
+!include TestScenarios.ArchiveTestScenario.RetrieveCase
+!include TestScenarios.ArchiveTestScenario.QueryCase
+!include TestScenarios.ArchiveTestScenario.ArchiveQueryCase
+!include TestScenarios.ArchiveTestScenario.CompositeFilterCase
+!include TestScenarios.ArchiveTestScenario.CompositeFilterSetCase
+!include TestScenarios.ArchiveTestScenario.CountCase
+!include TestScenarios.ArchiveTestScenario.EventCase
+!include TestScenarios.ArchiveTestScenario.DeleteCase
+!include TestScenarios.ArchiveTestScenario.UpdateCase

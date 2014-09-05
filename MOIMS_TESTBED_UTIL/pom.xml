@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!--
+    Licensed under the European Space Agency Public License, Version 2.0
+    You may not use this file except in compliance with the License.
+
+    Except as expressly set forth in this License, the Software is provided to
+    You on an "as is" basis and without warranties of any kind, including without
+    limitation merchantability, fitness for a particular purpose, absence of
+    defects or errors, accuracy or non-infringement of intellectual property rights.
+ 
+    See the License for the specific language governing permissions and limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>int.esa.ccsds.mo</groupId>
+    <artifactId>TESTBED_POM</artifactId>
+    <version>1.0</version>
+    <relativePath/>
+  </parent>
+  
+  <artifactId>TESTBED_UTIL</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>CCSDS MOIMS MO Testbed utilities</name>
+
+  <organization>
+    <name>CCSDS</name>
+    <url>http://www.ccsds.org</url>
+  </organization>
+  
+  <licenses>
+    <license>
+      <name>The European Space Agency Public License, Version 2.0</name>
+      <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_ESA.md</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>CeCILL-C FREE SOFTWARE LICENSE AGREEMENT</name>
+      <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_CNES.md</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</connection>
+    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</developerConnection>
+    <url>https://github.com/esa/CCSDS_MO_TESTBEDS</url>
+  </scm>
+  
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/esa/CCSDS_MO_TESTBEDS/issues</url>
+  </issueManagement>
+  
+  <developers>
+    <developer>
+      <id>SamCooper</id>
+      <name>Sam Cooper</name>
+      <email>sam.cooper@scisys.co.uk</email>
+      <url>https://github.com/SamCooper</url>
+    </developer>
+    <developer>
+      <id>DavidFeliot</id>
+      <name>David Feliot</name>
+      <email>david.feliot@scalagent.com</email>
+      <url>https://github.com/DavidFeliot</url>
+    </developer>
+  </developers>
+  
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>${basedir}/..</directory>
+        <includes>
+          <include>LICENCE_ESA.md</include>
+          <include>LICENCE_CNES.md</include>
+        </includes>
+      </resource>
+    </resources>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <profiles>
+    <profile>
+      <id>ESA</id>
+      <dependencies>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>CNES</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.ccsds.moims.mo</groupId>
+          <artifactId>cnes-mal-api</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+</project>

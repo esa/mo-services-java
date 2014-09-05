@@ -1,0 +1,714 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.com.test.archive|
+
+*!
+!3 !-ArchiveQuery-! structure test case
+This tests each prescriptive statement defined for the structure 'ArchiveQuery' in the contexts of the operation 'query' and 'count' (when appropriate).
+
+!4 Filter on domain
+Checks the following statements:
+* !-ArchiveQuery-!.domain) Only the objects whose domain matches the provided domain will be returned. The domain field supports the wildcard value of '*' only in the last part of the domain. If NULL then all domains shall be matched.
+
+|scenario| store an object from domain | domain | and timestamp | timestamp |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set domain | @domain |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | @timestamp |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 1 |
+
+|scenario| query objects from domain | domain | and check count | count |
+|ensure| clear archive query list |
+|ensure| add archive query with domain | @domain | and sorting order | TRUE | and field | NULL |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | @count |
+|ensure| count |
+|ensure| count at index | 0 | is | @count |
+
+|scenario| query objects from domain | domain | and check null list |
+|ensure| clear archive query list |
+|ensure| add archive query with domain | @domain | and sorting order | TRUE | and field | NULL |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list is null |
+|ensure| count |
+|ensure| count at index | 0 | is | 0 |
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+| store an object from domain | spacecraftA.aocs | and timestamp | 60 |
+| store an object from domain | spacecraftA.payload | and timestamp | 61 |
+| store an object from domain | spacecraftA.payload.cameraA.tempB | and timestamp | 62 |
+|note| Query objects according to their domain |
+| query objects from domain | * | and check count | 3 |
+|ensure| queried domain list contains | spacecraftA.aocs |
+|ensure| queried domain list contains | spacecraftA.payload |
+|ensure| queried domain list contains | spacecraftA.payload.cameraA.tempB |
+| query objects from domain | spacecraftA | and check null list |
+| query objects from domain | spacecraftA.* | and check count | 3 |
+|ensure| queried domain list contains | spacecraftA.aocs |
+|ensure| queried domain list contains | spacecraftA.payload |
+|ensure| queried domain list contains | spacecraftA.payload.cameraA.tempB |
+| query objects from domain | spacecraftA.aocs | and check count | 1 |
+|ensure| queried domain list contains | spacecraftA.aocs |
+| query objects from domain | spacecraftA.aocs.* | and check count | 1 |
+|ensure| queried domain list contains | spacecraftA.aocs |
+| query objects from domain | spacecraftA.payload | and check count | 1 |
+|ensure| queried domain list contains | spacecraftA.payload |
+| query objects from domain | spacecraftA.payload.* | and check count | 2 |
+|ensure| queried domain list contains | spacecraftA.payload |
+|ensure| queried domain list contains | spacecraftA.payload.cameraA.tempB |
+| query objects from domain | spacecraftA.payload.cameraA.tempB | and check count | 1 |
+|ensure| queried domain list contains | spacecraftA.payload.cameraA.tempB |
+|note| Query objects from all domains |
+|ensure| clear archive query list |
+|ensure| add archive query with wildcards |
+|ensure| query | true |
+|ensure| queried object list size is | 3 |
+|ensure| queried domain list contains | spacecraftA.aocs |
+|ensure| queried domain list contains | spacecraftA.payload |
+|ensure| queried domain list contains | spacecraftA.payload.cameraA.tempB |
+|ensure| count |
+|ensure| count at index | 0 | is | 3 |
+
+!4 Filter on network
+Checks the following statements:
+* !-ArchiveQuery-!.network) Optional network zone. Only the objects whose network zone matches the provided value will be returned. If NULL then all values will be matched.
+
+|scenario| store an object from network | network |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | @network | and timestamp | 60 |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 1 |
+
+|scenario| query objects from network | network | and check count | count |
+|ensure| clear archive query list |
+|ensure| add archive query with network | @network |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | @count |
+|ensure| count |
+|ensure| count at index | 0 | is | @count |
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+| store an object from network | networkA |
+| store an object from network | networkA |
+| store an object from network | networkB |
+|note| Query objects according to their domain |
+| query objects from network | networkA | and check count | 2 |
+| query objects from network | networkB | and check count | 1 |
+|note| Query objects from all domains |
+|ensure| clear archive query list |
+|ensure| add archive query with wildcards |
+|ensure| query | true |
+|ensure| queried object list size is | 3 |
+|ensure| count |
+|ensure| count at index | 0 | is | 3 |
+
+!4 Filter on provider URI
+Checks the following statements:
+* !-ArchiveQuery-!.provider) Optional provider. Only the objects whose provider URI matches the provided provider URI will be returned. If NULL then all values will be matched.
+
+|scenario| store an object from provider | providerUri |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 | and provider uri | @providerUri |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 1 |
+
+|scenario| query objects from provider | providerUri | and check count | count |
+|ensure| clear archive query list |
+|ensure| add archive query with provider uri | @providerUri |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | @count |
+|ensure| count |
+|ensure| count at index | 0 | is | @count |
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+| store an object from provider | proto://provider1 |
+| store an object from provider | proto://provider1 |
+| store an object from provider | proto://provider2 |
+|note| Query objects according to their provider |
+| query objects from provider | proto://provider1 | and check count | 2 |
+| query objects from provider | proto://provider2 | and check count | 1 |
+|note| Query objects from all providers |
+|ensure| clear archive query list |
+|ensure| add archive query with wildcards |
+|ensure| query | true |
+|ensure| queried object list size is | 3 |
+|ensure| count |
+|ensure| count at index | 0 | is | 3 |
+
+!4 Filter on related
+Checks the following statements:
+* !-ArchiveQuery-!.related) Object instance identifier of the related Object. Only the objects whose related Object matches the provided related Object will be returned unless the '0' wildcard value is supplied.
+
+|scenario| store an object with related | related |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | @related |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 1 |
+
+|scenario| query objects with related | related | and check count | count |
+|ensure| clear archive query list |
+|ensure| add archive query with related | @related |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | @count |
+|ensure| count |
+|ensure| count at index | 0 | is | @count |
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+| store an object with related | 1 |
+| store an object with related | 1 |
+| store an object with related | 2 |
+|note| Query objects according to their provider |
+| query objects with related | 1 | and check count | 2 |
+| query objects with related | 2 | and check count | 1 |
+|note| Query objects from any related |
+|ensure| clear archive query list |
+|ensure| add archive query with wildcards |
+|ensure| query | true |
+|ensure| queried object list size is | 3 |
+|ensure| count |
+|ensure| count at index | 0 | is | 3 |
+
+!4 Filter on source
+Checks the following statements:
+* !-ArchiveQuery-!.source) Optional source. Only the objects whose source matches the provided source will be returned. 
+* !-ArchiveQuery-!.source) The fields of the !-ObjectId-! may contain the wildcard values ('0' for numeric fields, '*' for Identifier fields). 
+* !-ArchiveQuery-!.source) If NULL then all values will be matched.
+
+|scenario| store an object with source area | area | and service | service | and version | version | and type | type | and domain | domain | and instance id | instanceId |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set object type with area | @area | and service | @service | and version | @version  | and number | @type  |
+|ensure| set domain | @domain |
+|ensure| set source id | @instanceId |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| reset object type |
+|ensure| store | true |
+|ensure| returned instance id list size is | 1 |
+
+|scenario| query objects with source area | area | and service | service | and version | version | and type | type | and domain | domain | and instance id | instanceId | and check count | count |
+|ensure| clear archive query list |
+|ensure| set object type with area | @area | and service | @service | and version | @version  | and number | @type  |
+|ensure| set domain | @domain |
+|ensure| add archive query with source | @instanceId |
+|ensure| reset object type |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | @count |
+|ensure| count |
+|ensure| count at index | 0 | is | @count |
+
+|scenario| query objects with source area | area | and service | service | and version | version | and type | type | and domain | domain | and instance id | instanceId | and check null list |
+|ensure| clear archive query list |
+|ensure| set object type with area | @area | and service | @service | and version | @version  | and number | @type  |
+|ensure| set domain | @domain |
+|ensure| add archive query with source | @instanceId |
+|ensure| reset object type |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list is null |
+|ensure| count |
+|ensure| count at index | 0 | is | 0 |
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+| store an object with source area | 201 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 1 |
+| store an object with source area | 201 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 1 |
+| store an object with source area | 201 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 2 |
+| store an object with source area | 201 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.payload | and instance id | 1 |
+| store an object with source area | 202 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 1 |
+| store an object with source area | 202 | and service | 2 | and version | 1 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 1 |
+| store an object with source area | 202 | and service | 2 | and version | 2 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 1 |
+| store an object with source area | 202 | and service | 2 | and version | 2 | and type | 2 | and domain | spacecraftA.aocs | and instance id | 1 |
+|note| Query objects according to their source |
+| query objects with source area | 201 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 1 | and check count | 2 |
+| query objects with source area | 201 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 2 | and check count | 1 |
+| query objects with source area | 201 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.payload | and instance id | 3 | and check null list |
+| query objects with source area | 201 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.payload | and instance id | 1 | and check count | 1 |
+| query objects with source area | 201 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA | and instance id | 1 | and check null list |
+| query objects with source area | 202 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.payload | and instance id | 1 | and check null list |
+| query objects with source area | 201 | and service | 3 | and version | 1 | and type | 1 | and domain | spacecraftA.payload | and instance id | 1 | and check null list  |
+| query objects with source area | 201 | and service | 1 | and version | 3 | and type | 1 | and domain | spacecraftA.payload | and instance id | 1 | and check null list  |
+| query objects with source area | 202 | and service | 1 | and version | 1 | and type | 3 | and domain | spacecraftA.payload | and instance id | 1 | and check null list  |
+|note| Area wildcard |
+| query objects with source area | 0 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 1 | and check count | 3 |
+|note| service wildcard |
+| query objects with source area | 202 | and service | 0 | and version | 1 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 1 | and check count | 2 |
+|note| version wildcard |
+| query objects with source area | 202 | and service | 2 | and version | 0 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 1 | and check count | 2 |
+|note| type wildcard |
+| query objects with source area | 202 | and service | 2 | and version | 2 | and type | 0 | and domain | spacecraftA.aocs | and instance id | 1 | and check count | 2 |
+|note| Domain wildcard |
+| query objects with source area | 201 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.* | and instance id | 1 | and check count | 3 |
+|note| Domain wildcard |
+| query objects with source area | 201 | and service | 1 | and version | 1 | and type | 1 | and domain | spacecraftA.aocs | and instance id | 0 | and check count | 3 |
+|note| Query objects from any source (NULL) |
+|ensure| clear archive query list |
+|ensure| add archive query with wildcards |
+|ensure| query | true |
+|ensure| queried object list size is | 8 |
+|ensure| count |
+|ensure| count at index | 0 | is | 8 |
+
+!4 Filter on start time
+Checks the following statements:
+* !-ArchiveQuery-!.startTime) Optional start time. Only the objects whose timestamp is equal or greater than the provided start time will be returned. If NULL then no start time shall be applied.
+
+|scenario| store an object with timestamp | time |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | @time |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 1 |
+
+|scenario| query objects with start time | time | and check count | count |
+|ensure| clear archive query list |
+|ensure| add archive query with start time | @time |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | @count |
+|ensure| count |
+|ensure| count at index | 0 | is | @count |
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+| store an object with timestamp | 59 |
+| store an object with timestamp | 60 |
+| store an object with timestamp | 61 |
+|note| Query objects according to a start time |
+| query objects with start time | 60 | and check count | 2 |
+| query objects with start time | 61 | and check count | 1 |
+|note| Query objects from any time |
+|ensure| clear archive query list |
+|ensure| add archive query with wildcards |
+|ensure| query | true |
+|ensure| queried object list size is | 3 |
+
+!4 Filter on end time
+Checks the following statements:
+* !-ArchiveQuery-!.endTime) Optional end time. Only the objects whose timestamp is equal or less than the provided end time will be returned. If NULL then no end time will be applied.
+
+|scenario| store an object with timestamp | time |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | @time |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 1 |
+
+|scenario| query objects with start time | startTime | and end time | endTime | and check count | count |
+|ensure| clear archive query list |
+|ensure| add archive query with start time | @startTime | and end time | @endTime |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | @count |
+|ensure| count |
+|ensure| count at index | 0 | is | @count |
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+| store an object with timestamp | 59 |
+| store an object with timestamp | 60 |
+| store an object with timestamp | 61 |
+|note| Query objects according to a start time and an end time |
+| query objects with start time | 59 | and end time | 60 | and check count | 2 |
+| query objects with start time | 59 | and end time | 59 | and check count | 1 |
+|note| Query objects from any time |
+|ensure| clear archive query list |
+|ensure| add archive query with wildcards |
+|ensure| query | true |
+|ensure| queried object list size is | 3 |
+
+!4 Sorting order
+Checks the following statements:
+* !-ArchiveQuery-!.sortOrder) If set to TRUE then returned values shall be sorted in ascending order, if FALSE then in descending order. If NULL then no sorting shall be applied.
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 341 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 233 | and sub composite | true | and int | 342 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 343 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 232 | and sub composite | true | and int | 344 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 231 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|note| Query all objects (ascending order) |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field | integerField |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | 5 |
+|ensure| queried object at index | 0 | has integer value | 231 |
+|ensure| queried object at index | 1 | has integer value | 232 |
+|ensure| queried object at index | 2 | has integer value | 233 |
+|ensure| queried object at index | 3 | has integer value | 235 |
+|ensure| queried object at index | 4 | has integer value | 236 |
+|note| Query all objects (descending order) |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | FALSE | and field | integerField |
+|ensure| query | true |
+|ensure| queried object list size is | 5 |
+|ensure| queried object at index | 0 | has integer value | 236 |
+|ensure| queried object at index | 1 | has integer value | 235 |
+|ensure| queried object at index | 2 | has integer value | 233 |
+|ensure| queried object at index | 3 | has integer value | 232 |
+|ensure| queried object at index | 4 | has integer value | 231 |
+|note| Query all objects (NULL order) |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | NULL | and field | integerField |
+|ensure| query | true |
+|ensure| queried object list size is | 5 |
+
+!4 Sort field name
+* !-ArchiveQuery-!.sortFieldName) If the returned values are to be sorted because the sortOrder field is not NULL then this field may contain the name of the field in the object body (MAL::Composite) to sort against.
+* !-ArchiveQuery-!.sortFieldName) If the object body is not a composite but an Attribute or Enumeration then to sort on the values an empty string of "" should be used.
+* !-ArchiveQuery-!.sortFieldName) Enumerations are sorted on their numerical value.
+* !-ArchiveQuery-!.sortFieldName) If this field is NULL then the objects shall be sorted on the COM object timestamp.
+* !-ArchiveQuery-!.sortFieldName) The field follows the naming convention of !-CompositeFilter-!::fieldName.
+* !-ArchiveQuery-!.sortFieldName) If the field points to a composite, list, abstract type (including Attribute) or Blob then no sorting shall be applied.
+
+!5 Two-level field name
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 344 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 233 | and sub composite | true | and int | 341 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 347 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 232 | and sub composite | true | and int | 348 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 231 | and sub composite | true | and int | 343 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|note| Query all objects (ascending order) |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field | compositeField.integerField |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | 5 |
+|ensure| queried object at index | 0 | has composite integer value | 341 |
+|ensure| queried object at index | 1 | has composite integer value | 343 |
+|ensure| queried object at index | 2 | has composite integer value | 344 |
+|ensure| queried object at index | 3 | has composite integer value | 347 |
+|ensure| queried object at index | 4 | has composite integer value | 348 |
+
+!5 NULL field name (timestamp ordering)
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 63 |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 344 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 233 | and sub composite | true | and int | 341 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 347 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 66 |
+|ensure| add object payload with int | 232 | and sub composite | true | and int | 348 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 65 |
+|ensure| add object payload with int | 231 | and sub composite | true | and int | 343 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|note| Query all objects (ascending order) |
+|ensure| clear archive query list |
+|ensure| set null query filter list |
+|ensure| add archive query with sorting order | TRUE | and field | NULL |
+|ensure| query | true |
+|ensure| queried object list size is | 5 |
+|ensure| queried object at index | 0 | has timestamp | 60 |
+|ensure| queried object at index | 1 | has timestamp | 61 |
+|ensure| queried object at index | 2 | has timestamp | 63 |
+|ensure| queried object at index | 3 | has timestamp | 65 |
+|ensure| queried object at index | 4 | has timestamp | 66 |
+
+!5 Sort on enumerated
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with enumerated | OBJECT2 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with enumerated | OBJECT1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with enumerated | OBJECT3 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with enumerated | OBJECT1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with enumerated | OBJECT2 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|note| Query all objects (ascending order) |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field | enumeratedField |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | 5 |
+|ensure| queried object at index | 0 | has enumerated value | OBJECT1 |
+|ensure| queried object at index | 1 | has enumerated value | OBJECT1 |
+|ensure| queried object at index | 2 | has enumerated value | OBJECT2 |
+|ensure| queried object at index | 3 | has enumerated value | OBJECT2 |
+|ensure| queried object at index | 4 | has enumerated value | OBJECT3 |
+
+!5 Attribute object sorting
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add integer payload | 235 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add integer payload | 233 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 53 |
+|ensure| add integer payload | 236 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 59 |
+|ensure| add integer payload | 232 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 65 |
+|ensure| add integer payload | 231 |
+|ensure| set object type with area | 202 | and service | 1 | and version | 1  | and number | 1  |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field |  |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | 5 |
+|ensure| queried object at index | 0 | is int | 231 |
+|ensure| queried object at index | 1 | is int | 232 |
+|ensure| queried object at index | 2 | is int | 233 |
+|ensure| queried object at index | 3 | is int | 235 |
+|ensure| queried object at index | 4 | is int | 236 |
+
+!5 Enumerated object sorting
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add enumerated payload | OBJECT2 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add enumerated payload | OBJECT3 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 53 |
+|ensure| add enumerated payload | OBJECT1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 59 |
+|ensure| add enumerated payload | OBJECT2 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 65 |
+|ensure| add enumerated payload | OBJECT1 |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 3  |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field |  |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | 5 |
+|ensure| queried object at index | 0 | is enumerated | OBJECT1 |
+|ensure| queried object at index | 1 | is enumerated | OBJECT1 |
+|ensure| queried object at index | 2 | is enumerated | OBJECT2 |
+|ensure| queried object at index | 3 | is enumerated | OBJECT2 |
+|ensure| queried object at index | 4 | is enumerated | OBJECT3 |
+
+!5 Sort on a composite (no sorting done)
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 63 |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 344 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 233 | and sub composite | true | and int | 341 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 347 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 66 |
+|ensure| add object payload with int | 232 | and sub composite | true | and int | 348 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 65 |
+|ensure| add object payload with int | 231 | and sub composite | true | and int | 343 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|note| Query all objects on a composite field |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field | compositeField |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | 5 |
+
+!5 Sort on a list (no sorting done)
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 63 |
+|ensure| add object payload with list |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with list |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with list |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 66 |
+|ensure| add object payload with list |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 65 |
+|ensure| add object payload with list |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|note| Query all objects on a composite field |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field | listField |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | 5 |
+
+!5 Sort on a Blob (no sorting done)
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 63 |
+|ensure| add blob payload | Blob1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add blob payload | Blob2 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add blob payload | Blob3 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 66 |
+|ensure| add blob payload | Blob4 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 65 |
+|ensure| add blob payload | Blob5 |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 4 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|note| Query all objects on a composite field |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field |  |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried object list size is | 5 |
+
+
+

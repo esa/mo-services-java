@@ -1,0 +1,35 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO MAL Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+*!
+!2 IP test scenario
+Two test cases are defined:
+ * The first one tests every interaction pattern except the Pub/Sub pattern.
+ * The second one is dedicated to the Pub/Sub pattern which is different as it does not involve the provider in the same way and it is more complex. Several aspects of the Pub/Sub pattern need to be tested. One test procedure is done for each of them.
+Pub/Sub tests are to be done with a private and a shared broker.
+
+Two constraints are required in order to check the IP state charts:
+ * no message loss
+ * FIFO message ordering is required
+
+''As a consequence, the Best Effort !-QoS-! can only be used if the specific transport layer ensures in the context of the test bed that messages are delivered exactly once and according to a FIFO ordering.''
+
