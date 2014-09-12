@@ -1,0 +1,221 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.malspp.test.patterns|
+
+*******!
+!3 All IPs except Pub/Sub test case
+
+Reuse the MAL test procedure that does the following actions:
+ 1 Call the operation <ip> provided by the IPTest service with the parameters passed to the test procedures: 'ip', 'qos', 'session' and 'transition list id'.
+ 2 Wait for the expected transitions to be done, except the faulty ones that are ignored.
+ 3 Check the message headers
+ 4 Check the transitions
+
+!*> Sub scenario definitions
+|scenario| pattern | interaction | with multi| multi | and qos| qos | and session | sess | and transitions | trans | and trans id | id | test |
+|ensure |pattern initiation for| @interaction | with multi| @multi | and qos| @qos | and session | @sess | and transistions | @trans | and trans id | @id | test |
+|ensure |the consumer assertions are ok|
+|ensure |the transitions are ok|
+
+|scenario| pattern | interaction | with qos| qos | and session | sess | and transitions | trans | and trans id | id | test |
+|pattern | @interaction | with multi| false | and qos| @qos | and session | @sess | and transitions | @trans | and trans id | @id | test |
+
+|scenario| test interaction pattern | interaction | with transitions | trans | and trans id | id | and qos | qos | and session | sess |
+|pattern | @interaction | with qos| @qos | and session | @sess | and transitions | @trans | and trans id | @id | test |
+
+|scenario| secondary header sdu type | sdu | and operation | op | and error | error | and qos | qos | and session | session | and session name | sessionName |
+|check  | version is | 0 |
+|check  | sdu type is | @sdu |
+|check  | area is | 100 |
+|check  | service is | 1 |
+|check  | operation is | @op |
+|check  | area version is | 1 |
+|check  | error flag is | @error |
+|ensure | check qos | @qos |
+|ensure | check session | @session |
+|check  | secondary apid is | 0 |
+|check  | secondary apid qualifier is | 247 |
+|ensure | check transaction id |
+|check  | source id flag is | 1 |
+|check  | destination id flag is | 1 |
+|check  | priority flag is | 1 |
+|check  | timestamp flag is | 1 |
+|check  | network zone flag is | 1 |
+|check  | session name flag is | 1 |
+|check  | domain flag is | 1 |
+|check  | authentication id flag is | 1 |
+|ensure | read source id |
+|ensure | read destination id |
+|ensure | check uri from |
+|ensure | check uri to |
+|check  | priority is | 1 |
+|ensure | check timestamp |
+|check  | network zone is | !-NetworkZone-! |
+|check  | session name is | @sessionName |
+|ensure | check domain id |
+|ensure | check authentication id |
+
+|scenario| test mal spp pattern with qos | qos | and session | sess | and session name | sessionName |
+|ensure|reset spp interceptor|
+|ensure|initiate send pattern with qos| @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 0 | and operation | 100 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test interaction pattern | Submit| with transitions | [ACK] | and trans id | 1 | and qos | @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 1 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 2 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test interaction pattern | Submit| with transitions | [ACK_ERROR] | and trans id | 2 | and qos | @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 1 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 2 | and operation | 101 | and error | 1 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test interaction pattern | Request| with transitions | [RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 3 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 4 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test interaction pattern | Request| with transitions | [RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 3 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 4 | and operation | 102 | and error | 1 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 6 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 1 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 7 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 6 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 1 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 7 | and operation | 103 | and error | 1 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test interaction pattern | Invoke| with transitions | [ACK_ERROR] | and trans id | 3 | and qos | @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 6 | and operation | 103 | and error | 1 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test interaction pattern | Progress| with transitions | [ACK, RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 9 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 1 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 11 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test interaction pattern | Progress| with transitions | [ACK, RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 9 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 1 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 11 | and operation | 104 | and error | 1 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test interaction pattern | Progress| with transitions | [ACK_ERROR] | and trans id | 3 | and qos | @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 9 | and operation | 104 | and error | 1 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, RESPONSE] | and trans id | 4 | and qos | @qos | and session | @sess |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 9 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 1 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 10 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 2 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 10 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 3 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 11 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+
+|scenario| test mal spp pattern with session | sess | and session name | sessionName |
+|test mal spp pattern with qos | Best Effort | and session | @sess | and session name | @sessionName |
+|test mal spp pattern with qos | Assured | and session | @sess | and session name | @sessionName |
+|test mal spp pattern with qos | Queued | and session | @sess | and session name | @sessionName |
+|test mal spp pattern with qos | Timely | and session | @sess | and session name | @sessionName |
+
+***********!
+
+|script| mal spp pattern test |
+|test mal spp pattern with session | Live | and session name | LIVE |
+|test mal spp pattern with session | Simulation | and session name | S1 |
+|test mal spp pattern with session | Replay | and session name | R1 |

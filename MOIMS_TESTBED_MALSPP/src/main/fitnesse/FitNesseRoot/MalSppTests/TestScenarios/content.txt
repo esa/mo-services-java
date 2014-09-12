@@ -1,0 +1,162 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+!*< Hidden
+!define TEST_SYSTEM {slim}
+*!
+
+!1 Test Scenarios
+
+!2 Compliance matrix
+| Comment |
+| Statements | Test scenarios | Test cases | Test methods |
+| 3.2.1x     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
+| 3.3.2.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from |
+| 3.3.3.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check authentication id |
+| 3.3.4.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri to |
+| 3.3.5.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check timestamp |
+| 3.3.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check qos |
+| 3.3.7.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | priority is |
+| 3.3.8.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check domain id |
+| 3.3.9.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | network zone is |
+| 3.3.10     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check session |
+| 3.3.11.x   | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | session name is |
+| 3.3.12     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | sdu type is |
+| 3.3.13     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check transaction id |
+| 3.3.14     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | area is |
+| 3.3.15     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | service is |
+| 3.3.16     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | operation is |
+| 3.3.17     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | area version is |
+| 3.3.18     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | error flag is |
+| 3.4.2.2    | missing | missing | missing |
+| 3.4.2.3    | missing | missing | missing |
+| 3.4.2.4    | missing | missing | missing |
+| 3.4.2.5    | missing | missing | missing |
+| 3.4.2.6    | missing | missing | missing |
+| 3.4.2.7    | missing | missing | missing |
+| 3.4.3.2.x  | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | version is |
+| 3.4.3.3    | missing | missing | missing |
+| 3.5.3.2.1  | !-MalMessageMapping-!   | !-MalMessageBodyMapping-! | check body element order |
+| 3.5.3.2.2  | missing | missing | missing |
+| 3.5.3.x.y  | missing | missing | missing |
+| 4.2.x      | missing | missing | missing |
+| 4.3.x      | missing | missing | missing |
+| 4.4.1      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select sent packet at |
+| 4.4.2      | missing | missing | missing |
+| 4.4.3      | See statements 3.x |
+| 4.4.4      | missing | missing | missing |
+| 4.4.5      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
+| 4.4.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
+| 4.4.7      | missing | missing | missing |
+| 4.4.8      | missing | missing | missing |
+| 4.4.9      | missing | missing | missing |
+| 4.4.10     | missing | missing | missing |
+| 4.4.11     | missing | missing | missing |
+| 4.4.12     | missing | missing | missing |
+| 4.5.x      | missing | missing | missing |
+| 4.6.1      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select received packet at |
+| 4.6.2      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select received packet at |
+| 4.6.3      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
+| 4.6.4x     | missing | missing | missing |
+| 4.6.5x     | missing | missing | missing |
+| 4.6.6      | missing | missing | missing |
+| 5.2.1-2    | !-MalDataEncoding-! | !-ElementTest-! | check a composite with a field typed !-MAL::Attribute-!, attribute tag is |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite sent as a !-MAL::Element-!, check short form |
+| 5.2.5      | !-MalDataEncoding-! | !-ElementTest-! | check a composite defined by a service and sent as a !-MAL::Element-! |
+| 5.2.6      | !-MalDataEncoding-! | !-ElementTest-! | check an attribute sent as a !-MAL::Element-!, check short form |
+| 5.2.9a     | !-MalDataEncoding-! | !-ElementTest-! | check every attribute |
+| 5.2.9b     | !-MalDataEncoding-! | !-ElementTest-! | check an enumerated sent as a !-MAL::Element-! |
+| 5.2.9c     | !-MalDataEncoding-! | !-ElementTest-! | check a composite with a field typed as a list |
+| 5.2.9d     | !-MalDataEncoding-! | !-ElementTest-! | check a composite sent as a !-MAL::Element-! |
+| 5.3.1      | !-MalDataEncoding-! | !-EnumerationTest-! | check first element in an enumeration |
+| 5.3.2      | !-MalDataEncoding-! | !-EnumerationTest-! | check second and third elements in an enumeration |
+| 5.3.3      | !-MalDataEncoding-! | !-EnumerationTest-! | check an enumerated sent as a !-MAL::Element-! |
+| 5.3.4      | missing | missing | missing |
+| 5.4.1      | !-MalDataEncoding-! | !-CompositeTest-! | check field order |
+| 5.4.2      | missing | missing | missing |
+| 5.4.3      | !-MalDataEncoding-! | !-CompositeTest-! | check composite inheritance |
+| 5.5.1-3    | !-MalDataEncoding-! | !-ListTest-! | check list format and elements order |
+| 5.6.1-2    | !-MalDataEncoding-! | !-NullableElementTest-! | check presence flag |
+| 5.7-28     | !-MalDataEncoding-! | !-AttributeTest-! | check every attribute |
+
+!2 Missing tests
+| Comment |
+| Statements | Feature to be tested or left out |
+| 3.2.1d     | APID qualifier range |
+| 3.2.1f     | APID range |
+| 3.2.1g     | No source/destination id |
+| 3.2.2      | May not be possible to test, to be left out? |
+| 3.2.3      | May not be possible to test, to be left out? |
+| 3.2.4      | Out of scope, to be left out |
+| 3.3.2.x    | TM/TC mapping |
+| 3.3.2.5    | No source/destination id |
+| 3.3.3.2    | Authentication id flag and mapping configuration parameter |
+| 3.3.4.x    | TM/TC mapping |
+| 3.3.4.5    | No source/destination id |
+| 3.3.5.2    | Timestamp flag |
+| 3.3.7.2    | Priority flag and mapping configuration parameter |
+| 3.3.8.2    | Domain flag and mapping configuration parameter |
+| 3.3.9.2    | Network zone flag and mapping configuration parameter |
+| 3.3.11.2   | Session name flag and mapping configuration parameter |
+| 3.4.2.2    | Packet version number (SPP feature) |
+| 3.4.2.3    | TM/TC mapping |
+| 3.4.2.4    | Secondary header flag (SPP feature) |
+| 3.4.2.5    | MAL message segmentation |
+| 3.4.2.6    | Packet sequence count (SPP feature) |
+| 3.4.2.7    | Packet data length (SPP feature) |
+| 3.4.3.3    | MAL message segmentation |
+| 3.5.3.2.2  | Empty body |
+| 3.5.3.x.y  | Body encoding format according to interaction type and stage |
+| 4.2.x      | Transport interface: supported qos |
+| 4.3.x      | Transport interface: supported ip |
+| 4.4.2      | Null MAL header field |
+| 4.4.4      | URI From/To not compliant with MAL/SPP URI format |
+| 4.4.5      | TM/TC mapping |
+| 4.4.6      | TM/TC mapping |
+| 4.4.7      | !-QoS-! properties transmission to SPP layer |
+| 4.4.8      | MAL message segmentation |
+| 4.4.9      | MAL message segmentation |
+| 4.4.10     | MAL message segmentation |
+| 4.4.11     | SPP transmission error |
+| 4.4.12     | SPP transmission ack |
+| 4.5.x      | Transmit multiple |
+| 4.6.2      | MAL message segmentation |
+| 4.6.4x     | MAL message segmentation |
+| 4.6.5x     | MAL message segmentation |
+| 4.6.6      | Unknown URI To |
+| 5.2.1-2    | Test operation with a body element typed MAL::Attribute |
+| 5.2.3      | Test operation with a body element typed MAL::Composite, abstract composite, a composite with a field typed MAL::Composite, abstract composite |
+| 5.3.5      | 2^16 elements in an enumeration is difficult to test with the MAL Java API, to be left out? |
+| 5.4.2      | Nullable fields in a composite |
+| 5.9        | !-MAL::Duration-! bug in !-MAL Java API-! |
+| 5.22-23    | CCSDS Time Code Format |
+| 5.15-20    | Varint supported true/false |

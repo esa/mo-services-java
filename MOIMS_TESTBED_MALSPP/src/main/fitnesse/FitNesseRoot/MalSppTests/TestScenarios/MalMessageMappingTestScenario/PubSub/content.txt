@@ -1,0 +1,284 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.malspp.test.patterns.pubsub|
+
+*******!
+!4 Test procedure: header
+Reuses the MAL prototype test procedure that checks the MAL message header in every stage of the Pub/Sub interaction.
+
+However the Pub/Sub error tests could not be reused because the MAL prototype artificially produces error messages at the test transport
+level, so above the MAL/SPP layer, preventing from getting the SPP packets. A specific broker handler has been implemented
+in order to raise Register, Notify and Publish Register errors. This broker is deployed on the consumer side.
+Specific providers and consumers have also been implemented.
+A provider is launched on the consumer side in order to initiate a Publish Register with the error broker.
+
+The procedure is executed once for each !-QoS-! level, session. 
+The session name depends on the session type. If the session type is Live, the name is 'LIVE'. If the session type is Replay, the name is 'R1'. If the session type is Simulation, the name is 'S1'.
+
+The consumer creates subscriptions from the following parameters:
+ * subscription identifier: 'sub1'
+ * authentication identifier: '0x00,0x01'
+ * priority: 1
+ * domain: 'Test,Domain'
+ * networkZone: '!-NetworkZone-!'
+ * entity expression: 'A,null,null,null'
+ * only on change: false
+ 
+All the tests are executed once with a private broker and a second time with a shared one.
+The shared broker is created one the consumer side because. In this way, it enables the test to intercept the messages going out of the provider's publisher.
+
+Some headers are only checked with the shared broker (deployed on the consumer side):
+ * Publish
+ * Publish Register
+ * Publish Register ack
+ * Publish Register Error
+ * Publish Deregister
+ * Publish Deregister ack
+ 
+ The Publish Error is triggered by publishing an entity that has not been registered: 'B,null,null,null'.
+ 
+ The Register Error is triggered by registering to the error broker.
+ 
+ The Publish Register Error is triggered by registering to the error broker.
+ 
+ The Notify Error is triggered by requesting the error provider to publish updates.
+ 
+ The MAL assertions are still checked:
+ The provider assertions are described in the IPTest service specification (section 5.1).
+ The consumer assertions are described in annex B.
+
+The MAL/SPP assertions are specified in this script. They check the MAL header mapping statements 
+for the Pub/Sub interaction:
+- interaction type and stage
+- is error
+
+!*> Sub scenario definitions
+
+|scenario| secondary header sdu type | sdu | and operation | op | and error | error | and qos | qos | and session | session | and session name | sessionName |
+|check  | version is | 0 |
+|check  | sdu type is | @sdu |
+|check  | area is | 100 |
+|check  | service is | 1 |
+|check  | operation is | @op |
+|check  | area version is | 1 |
+|check  | error flag is | @error |
+|ensure | check qos | @qos |
+|ensure | check session | @session |
+|check  | secondary apid is | 0 |
+|check  | secondary apid qualifier is | 247 |
+|ensure | check transaction id |
+|check  | source id flag is | 1 |
+|check  | destination id flag is | 1 |
+|check  | priority flag is | 1 |
+|check  | timestamp flag is | 1 |
+|check  | network zone flag is | 1 |
+|check  | session name flag is | 1 |
+|check  | domain flag is | 1 |
+|check  | authentication id flag is | 1 |
+|ensure | read source id |
+|ensure | read destination id |
+|ensure | check uri from |
+|ensure | check uri to |
+|check  | priority is | 1 |
+|ensure | check timestamp |
+|check  | network zone is | !-NetworkZone-! |
+|check  | session name is | @sessionName |
+|ensure | check domain id |
+|ensure | check authentication id |
+
+|scenario| publish register | qos | and session | sess | and shared broker | shared | and domain | domain |
+|ensure |initiate publish register with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|ensure |Call the operation getResult|
+|ensure |the provider assertions|
+
+|scenario| test publish register | qos | and session | sess | and session name | sessionName | and domain | domain |
+|publish register | @qos | and session | @sess | and shared broker | false | and domain | @domain |
+|ensure|reset spp interceptor|
+|publish register | @qos | and session | @sess | and shared broker | true | and domain | @domain |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 14 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select sent packet at| 1 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 15 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+
+|scenario| register | qos | and session | sess | and shared broker | shared | and domain | domain |
+|ensure |initiate register with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|ensure |Call the operation getResult|
+|ensure |the consumer assertions|
+
+|scenario| test register | qos | and session | sess | and session name | sessionName | and domain | domain |
+|ensure|reset spp interceptor|
+|register | @qos | and session | @sess | and shared broker | false | and domain | @domain |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 12 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 13 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|register | @qos | and session | @sess | and shared broker | true | and domain | @domain |
+
+|scenario| publish | qos | and session | sess | and shared broker | shared | and domain | domain |
+|ensure |initiate publish with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|ensure |Call the operation getResult|
+|ensure |the provider assertions|
+
+|scenario| test publish | qos | and session | sess | and session name | sessionName | and domain | domain |
+|ensure|reset spp interceptor|
+|publish | @qos | and session | @sess | and shared broker | false | and domain | @domain |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 17 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|publish | @qos | and session | @sess | and shared broker | true | and domain | @domain |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 16 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+
+
+|scenario| notify | qos | and session | sess | and shared broker | shared | and domain | domain |
+|ensure |get notify with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|ensure |Call the operation getResult|
+|ensure |the provider assertions|
+|ensure |the consumer assertions|
+
+|scenario| test notify | qos | and session | sess | and session name | sessionName | and domain | domain |
+|note | do not reset spp interceptor|
+|notify | @qos | and session | @sess | and shared broker | false | and domain | @domain |
+|notify | @qos | and session | @sess | and shared broker | true | and domain | @domain |
+
+
+|scenario| publishError | qos | and session | sess | and shared broker | shared | and domain | domain |
+|ensure |initiate publish error with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|ensure |Call the operation getResult|
+|ensure |the provider assertions|
+
+|scenario| test publishError | qos | and session | sess | and session name | sessionName | and domain | domain |
+|publishError | @qos | and session | @sess | and shared broker | false | and domain | @domain |
+|ensure|reset spp interceptor|
+|publishError | @qos | and session | @sess | and shared broker | true | and domain | @domain |
+|note | skip first packet publishUpdates|
+|ensure|select sent packet at| 1 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 16 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sess | and session name | @sessionName |
+
+
+|scenario| deregister | qos | and session | sess | and shared broker | shared | and domain | domain |
+|ensure |initiate deregister with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|ensure |Call the operation getResult|
+|ensure |the consumer assertions|
+
+|scenario| test deregister | qos | and session | sess | and session name | sessionName | and domain | domain |
+|ensure|reset spp interceptor|
+|deregister | @qos | and session | @sess | and shared broker | false | and domain | @domain |
+|ensure|select sent packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 18 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 19 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|deregister | @qos | and session | @sess | and shared broker | true | and domain | @domain |
+
+
+|scenario| publishDeregister | qos | and session | sess | and shared broker | shared | and domain | domain |
+|ensure |initiate publishDeregister with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|ensure |Call the operation getResult|
+|ensure |the provider assertions|
+
+|scenario| test publishDeregister | qos | and session | sess | and session name | sessionName | and domain | domain |
+|publishDeregister | @qos | and session | @sess | and shared broker | false | and domain | @domain |
+|ensure|reset spp interceptor|
+|publishDeregister | @qos | and session | @sess | and shared broker | true | and domain | @domain |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 20 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|select sent packet at| 1 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 21 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sess | and session name | @sessionName |
+
+|scenario| test register error | qos | and session | sess | and session name | sessionName | and domain | domain |
+|ensure |initiate register error with qos | @qos | and session | @sess | and domain | @domain |
+
+
+|scenario| test notify error | qos | and session | sess | and session name | sessionName | and domain | domain |
+|ensure |initiate notify error with qos | @qos | and session | @sess | and domain | @domain |
+
+
+|scenario| test publish register error | qos | and session | sess | and session name | sessionName | and domain | domain |
+|ensure |initiate publish register error with qos | @qos | and session | @sess | and domain | @domain |
+
+
+|scenario| test mal spp pubsub | qos | and session | sess | and session name | sessionName | and domain | domain |
+|test publish register | @qos | and session | @sess | and session name | @sessionName | and domain | @domain |
+|test register | @qos | and session | @sess | and session name | @sessionName | and domain | @domain |
+|test publish  | @qos | and session | @sess | and session name | @sessionName | and domain | @domain |
+|test publishError  | @qos | and session | @sess | and session name | @sessionName | and domain | @domain |
+|test deregister | @qos | and session | @sess | and session name | @sessionName | and domain | @domain |
+|test publishDeregister | @qos | and session | @sess | and session name | @sessionName | and domain | @domain |
+|ensure|reset spp interceptor|
+|test register error | @qos | and session | @sess | and session name | @sessionName | and domain | @domain |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 13 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test notify error | @qos | and session | @sess | and session name | @sessionName | and domain | @domain |
+|note | skip test register and publish request ack |
+|ensure|select received packet at| 2 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 17 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+|test publish register error | @qos | and session | @sess | and session name | @sessionName | and domain | @domain |
+|ensure|select received packet at| 0 |
+|check | space packet type is | 1 |
+|secondary header sdu type | 15 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sess | and session name | @sessionName |
+|ensure|reset spp interceptor|
+
+|scenario| test mal spp pubsub | sess | and session name | sessionName |
+|test mal spp pubsub | Best Effort | and session | @sess | and session name | @sessionName | and domain | 1 |
+|test mal spp pubsub | Assured | and session | @sess | and session name | @sessionName | and domain | 2 |
+|test mal spp pubsub | Queued | and session | @sess | and session name | @sessionName | and domain | 3 |
+|test mal spp pubsub | Timely | and session | @sess | and session name | @sessionName | and domain | 4 |
+
+***********!
+
+|script| mal spp pubsub test |
+|test mal spp pubsub | Live | and session name | LIVE |
+|test mal spp pubsub | Simulation | and session name | S1 |
+|test mal spp pubsub | Replay | and session name | R1 |
+

@@ -1,0 +1,511 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+
+!2 Data type test scenario
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.malspp.test.datatype|
+
+*!
+Reuse the data type MAL test scenario.
+A list of MAL data structure instances is statically defined according to the following constraints:
+* All the data types shall be instantiated at least once.
+* Enumerations shall be instantiated once for each enumerated value.
+* Abstract types need to be extended by a concrete type for the test
+* The value Null shall belong to the list
+* The value Null shall be inserted into a Composite structure
+This data list is statically known by the !-DataTest-! service provider and consumer.
+The consumer takes the data from the list one by one, in the same order, and calls the operation 'testData'. It checks that no error is raised by the provider, especially DATA_ERROR and BAD_ENCODING.
+
+!*> Sub scenario definitions
+
+|scenario| check every attribute |
+|ensure|reset spp interceptor|
+|check| explicit duration type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check duration |
+|ensure|reset spp interceptor|
+|check| explicit Fine Time type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check fine time |
+|ensure|reset spp interceptor|
+|check| explicit Identifier type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check identifier |
+|ensure|reset spp interceptor|
+|check| explicit Time type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check time |
+|ensure|reset spp interceptor|
+|check| explicit URI type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check uri |
+|ensure|reset spp interceptor|
+|check| explicit Blob type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check blob |
+|ensure|reset spp interceptor|
+|check| explicit Boolean type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check boolean |
+|ensure|reset spp interceptor|
+|check| explicit Octet type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check octet |
+|ensure|reset spp interceptor|
+|check| explicit Double type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check double |
+|ensure|reset spp interceptor|
+|check| explicit Float type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check float |
+|ensure|reset spp interceptor|
+|check| explicit Integer type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check integer |
+|ensure|reset spp interceptor|
+|check| explicit Long type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check long |
+|ensure|reset spp interceptor|
+|check| explicit Short type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check short |
+|ensure|reset spp interceptor|
+|check| explicit String type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check string |
+|ensure|reset spp interceptor|
+|check| explicit UOctet type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check uoctet |
+|ensure|reset spp interceptor|
+|check| explicit UInteger type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check uinteger |
+|ensure|reset spp interceptor|
+|check| explicit ULong type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check ulong |
+|ensure|reset spp interceptor|
+|check| explicit UShort type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check ushort |
+|ensure|reset spp interceptor|
+
+|scenario| check an attribute sent as a !-MAL::Element-! |
+|check| attribute types work| OK|
+| note | Duration |
+|ensure|select sent packet at| 1 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 3 |
+|ensure| check duration |
+| note | Fine time |
+|ensure|select sent packet at| 2 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 17 |
+|ensure| check fine time |
+| note | Identifier |
+|ensure|select sent packet at| 3 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 6 |
+|ensure| check identifier |
+| note | Time |
+|ensure|select sent packet at| 4 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 16 |
+|ensure| check time |
+| note | URI |
+|ensure|select sent packet at| 5 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 18 |
+|ensure| check uri |
+| note | Boolean |
+|ensure|select sent packet at| 6 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 2 |
+|ensure| check boolean |
+| note | Octet |
+|ensure|select sent packet at| 7 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 7 |
+|ensure| check octet |
+| note | Double |
+|ensure|select sent packet at| 8 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 5 |
+|ensure| check double |
+| note | Float |
+|ensure|select sent packet at| 9 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 4 |
+|ensure| check float |
+| note | Integer |
+|ensure|select sent packet at| 10 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 11 |
+|ensure| check integer |
+| note | Long |
+|ensure|select sent packet at| 11 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 13 |
+|ensure| check long |
+| note | Short |
+|ensure|select sent packet at| 12 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 9 |
+|ensure| check short |
+| note | String |
+|ensure|select sent packet at| 13 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 15 |
+|ensure| check string |
+|ensure|reset spp interceptor|
+
+|scenario| check first element in an enumeration |
+|check| enumerations work| OK|
+| note | Interaction type SEND |
+|ensure|select sent packet at| 1 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 19 |
+|check | enumerated is | 0 |
+|ensure|reset spp interceptor|
+
+|scenario| check first and second elements in an enumeration |
+|check| enumerations work| OK|
+| note | Interaction type SUBMIT |
+|ensure|select sent packet at| 2 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 19 |
+|check | enumerated is | 1 |
+| note | Interaction type REQUEST |
+|ensure|select sent packet at| 3 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 19 |
+|check | enumerated is | 2 |
+|ensure|reset spp interceptor|
+
+|scenario| check an enumerated sent as a !-MAL::Element-! |
+|check| enumerations work| OK|
+| note | Interaction type SEND |
+|ensure|select sent packet at| 1 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 19 |
+|check | enumerated is | 0 |
+| note | Interaction type SUBMIT |
+|ensure|select sent packet at| 2 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 19 |
+|check | enumerated is | 1 |
+|ensure|reset spp interceptor|
+
+|scenario| check a composite with a field typed !-MAL::Attribute-! |
+|check| complete composites work | OK|
+|note  | skip first packet setTestDataOffset|
+| note | Fourth composite typed pair |
+|ensure|select sent packet at| 4 |
+|check | presence flag is  | 1 |
+|check short form area | 1  | and service | 0 | and type | 28 |
+|check | presence flag is  | 1 |
+|check | attribute tag is  | 10 |
+|check | integer field is  | 2147483647 |
+|check | presence flag is  | 1 |
+|check | attribute tag is  | 17 |
+|check | string field is  | !-http://www.esa.int/-! |
+|ensure|reset spp interceptor|
+
+|scenario| check a composite defined by a service and sent as a !-MAL::Element-! |
+|check| abstract composites work | OK|
+| note | First composite typed publish register |
+| note | skip first packet setTestDataOffset|
+|ensure|select sent packet at| 1 |
+|check | presence flag is  | 1 |
+|check short form area | 100  | and service | 1 | and type | 5 |
+|ensure|reset spp interceptor|
+
+|scenario| check composite inheritance |
+|check| abstract composites work | OK|
+| note | First composite typed publish register |
+| note | skip first packet setTestDataOffset|
+|ensure|select sent packet at| 1 |
+|check | presence flag is  | 1 |
+|check short form area | 100  | and service | 1 | and type | 5 |
+| note | 1st field of !-TestPublish-! typed !-QoSLevel-! equal to !-QUEUED-! |
+|check | presence flag is  | 1 |
+|check | enumerated is | 2 |
+| note | 2nd field of !-TestPublish-! typed !-UInteger-! |
+|check | presence flag is  | 1 |
+|ensure| check uinteger |
+| note | 3rd field of !-TestPublish-! typed !-IdentifierList-! with 4 identifiers |
+|check | presence flag is  | 1 |
+|check | list size is  | 4 |
+|check | presence flag is | 1 |
+|ensure| check identifier |
+|check | presence flag is | 1 |
+|ensure| check identifier |
+|check | presence flag is | 1 |
+|ensure| check identifier |
+|check | presence flag is | 1 |
+|ensure| check identifier |
+| note | 4th field of !-TestPublish-! typed !-Identifier-! |
+|check | presence flag is  | 1 |
+|ensure| check identifier |
+| note | 5th field of !-TestPublish-! typed !-SessionType-! equal to !-SIMULATION-! |
+|check | presence flag is  | 1 |
+|check | enumerated is | 1 |
+| note | 6th field of !-TestPublish-! typed !-Identifier-! |
+|check | presence flag is  | 1 |
+|ensure| check identifier |
+| note | 7th field of !-TestPublish-! typed !-Boolean-! |
+|check | presence flag is  | 1 |
+|check | boolean is | false |
+| note | 1st field of !-TestPublishRegister-! is null |
+|check | presence flag is  | 0 |
+| note | 2nd field of !-TestPublishRegister-! typed !-UInteger-! |
+|check | presence flag is  | 1 |
+|ensure| check uinteger |
+|ensure|reset spp interceptor|
+
+|scenario| check a composite with a field typed as a list |
+|check| complete composites work | OK|
+| note | Third composite typed entity request |
+|ensure|select sent packet at| 3 |
+|check | presence flag is  | 1 |
+|check short form area | 1  | and service | 0 | and type | 24 |
+|check | presence flag is  | 0 |
+|check | boolean field is  | false |
+|check | boolean field is  | false |
+|check | boolean field is  | false |
+|check | boolean field is  | true |
+|check | list size is  | 2 |
+|check | presence flag is  | 1 |
+| note | First entity key |
+|check | presence flag is  | 1 |
+|check | string field is  | a |
+|check | presence flag is  | 1 |
+|check | integer field is  | 1 |
+|check | presence flag is  | 1 |
+|check | integer field is  | 2 |
+|check | presence flag is  | 1 |
+|check | integer field is  | 3 |
+|check | presence flag is  | 1 |
+| note | Second entity key |
+|check | presence flag is  | 1 |
+|check | string field is  | b |
+|check | presence flag is  | 1 |
+|check | integer field is  | 11 |
+|check | presence flag is  | 1 |
+|check | integer field is  | 12 |
+|check | presence flag is  | 1 |
+|check | integer field is  | 13 |
+|ensure|reset spp interceptor|
+
+|scenario| check a composite sent as a !-MAL::Element-! |
+|check| complete composites work | OK|
+| note | First composite typed assertion |
+|note  | skip first packet setTestDataOffset|
+|ensure|select sent packet at| 1 |
+|check | presence flag is  | 1 |
+|check short form area | 100  | and service | 0 | and type | 1 |
+|check | presence flag is  | 1 |
+|check | string field is   | Test string |
+|check | presence flag is  | 1 |
+|check | string field is   | Second test string |
+|check | presence flag is  | 1 |
+|check | boolean field is  | false |
+| note | Second composite typed entity request |
+|ensure|select sent packet at| 2 |
+|check | presence flag is  | 1 |
+|check short form area | 1  | and service | 0 | and type | 24 |
+|check | presence flag is  | 0 |
+|check | boolean field is  | false |
+|check | boolean field is  | false |
+|check | boolean field is  | false |
+|check | boolean field is  | true |
+|check | list size is  | 0 |
+|ensure|reset spp interceptor|
+
+|scenario| check null sent as a !-MAL::Element-! |
+|check| nulls work|OK|
+|note | skip first packet setTestDataOffset|
+|ensure|select sent packet at| 1 |
+|check | presence flag is | 0 |
+|ensure|reset spp interceptor|
+
+|scenario| check null inside a composite sent as a !-MAL::Element-! |
+|check| composites with null work| OK|
+| note | First composite typed entity request |
+| note | skip first packet setTestDataOffset|
+|ensure|select sent packet at| 1 |
+|check | presence flag is  | 1 |
+|check short form area | 1  | and service | 0 | and type | 24 |
+|check | presence flag is  | 0 |
+|check | boolean field is  | false |
+|check | boolean field is  | false |
+|check | boolean field is  | false |
+|check | boolean field is  | true |
+|check | list size is  | 0 |
+| note | Second composite typed entity request |
+|ensure|select sent packet at| 2 |
+|check | presence flag is  | 1 |
+|check short form area | 1  | and service | 0 | and type | 24 |
+|check | presence flag is  | 0 |
+|check | boolean field is  | false |
+|check | boolean field is  | false |
+|check | boolean field is  | false |
+|check | boolean field is  | false |
+|check | list size is  | 3 |
+|check | presence flag is  | 1 |
+| note | First entity key |
+|check | presence flag is  | 1 |
+|check | string field is  | a |
+|check | presence flag is  | 1 |
+|check | integer field is  | 1 |
+|check | presence flag is  | 1 |
+|check | integer field is  | 3 |
+|check | presence flag is  | 0 |
+|check | presence flag is  | 1 |
+| note | Second entity key |
+|check | presence flag is  | 1 |
+|check | string field is  | b |
+|check | presence flag is  | 1 |
+|check | integer field is  | 11 |
+|check | presence flag is  | 0 |
+|check | presence flag is  | 1 |
+|check | integer field is  | 13 |
+| note | Third entity key |
+|check | presence flag is  | 0 |
+| note | Third composite typed pair |
+|ensure|select sent packet at| 3 |
+|check | presence flag is  | 1 |
+|check short form area | 1  | and service | 0 | and type | 28 |
+|check | presence flag is  | 0 |
+|check | presence flag is  | 1 |
+|check | attribute tag is  | 17 |
+|check | string field is  | !-http://www.esa.int/-! |
+|ensure|reset spp interceptor|
+
+|scenario| check multiple body elements |
+|check| explicit multi return works| OK|
+| note | skip first packet setTestDataOffset|
+|ensure|select sent packet at| 1 |
+| check body element order |
+|ensure|reset spp interceptor|
+
+|scenario| check multiple body elements with last one abstract |
+|check| abstract multi return works | OK|
+| note | no first packet setTestDataOffset|
+|ensure|select sent packet at| 0 |
+|check | presence flag is   | 1 |
+|ensure| check uoctet   |
+|check | presence flag is   | 1 |
+|ensure| check ushort   |
+|check | presence flag is   | 1 |
+|ensure| check uinteger |
+|check | presence flag is   | 1 |
+|check short form area | 1  | and service | 0 | and type | 14 |
+|ensure| check ulong    |
+|ensure|reset spp interceptor|
+
+|scenario| check multiple body elements with last one null |
+|check| multi return with nulls work| OK|
+| note | skip first packet setTestDataOffset|
+|ensure|select sent packet at| 1 |
+|check | presence flag is   | 1 |
+|ensure| check uoctet   |
+|check | presence flag is   | 1 |
+|ensure| check ushort   |
+|check | presence flag is   | 1 |
+|ensure| check uinteger |
+|check | presence flag is   | 0 |
+|ensure|reset spp interceptor|
+
+|scenario| check short form area | area | and service | service | and type | type |
+|check | area number is | @area |
+|check | service number is | @service |
+|check | version is | 1 |
+|check | type number is | @type |
+
+|scenario| check body element order |
+|check | presence flag is   | 1 |
+|ensure| check uoctet   |
+|check | presence flag is   | 1 |
+|ensure| check ushort   |
+|check | presence flag is   | 1 |
+|ensure| check uinteger |
+|check | presence flag is   | 1 |
+|ensure| check ulong    |
+
+***********!
+
+|script| mal spp data type test|
+|check every attribute |
+|check a composite with a field typed !-MAL::Attribute-! |
+|check a composite with a field typed as a list |
+|check composite inheritance |
+|check an attribute sent as a !-MAL::Element-! |
+|check an enumerated sent as a !-MAL::Element-! |
+|check a composite sent as a !-MAL::Element-! |
+|check a composite defined by a service and sent as a !-MAL::Element-! |
+|check null sent as a !-MAL::Element-! |
+|check null inside a composite sent as a !-MAL::Element-! |
+|check multiple body elements |
+|check multiple body elements with last one abstract |
+|check multiple body elements with last one null |
+|check first element in an enumeration |
+|check first and second elements in an enumeration |
+
+
+
