@@ -24,7 +24,7 @@
   </parent>
   
   <artifactId>REACTOR_TESTBEDS</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>ESA CCSDS Testbed reactor build</name>
 
@@ -68,5 +68,8 @@
     <module>MOIMS_TESTBED_COM_FRAMEWORK</module>
     <module>MOIMS_TESTBED_COM_PROVIDER_ESA</module>
     <module>MOIMS_TESTBED_COM</module>
+    <module>MOIMS_TESTBED_UTIL_SPP</module>
+    <module>MOIMS_TESTBED_MALSPP_FRAMEWORK</module>
+    <module>MOIMS_TESTBED_MALSPP</module>
   </modules>
 </project>
