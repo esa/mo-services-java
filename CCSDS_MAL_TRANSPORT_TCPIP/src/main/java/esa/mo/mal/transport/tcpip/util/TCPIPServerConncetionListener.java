@@ -28,42 +28,44 @@ import java.util.logging.Level;
 import esa.mo.mal.transport.tcpip.TCPIPTransport;
 
 /**
- * Server Thread for the TCPIP transport. 
- * 
- * This thread listens for new connections to a predefined port and when new connections
- * arrive it forwards the newly created socket to a dedicated manager thread.
- * 
- * @author Petros Pissias
+ * Server Thread for the TCPIP transport.
+ *
+ * This thread listens for new connections to a predefined port and when new connections arrive it forwards the newly
+ * created socket to a dedicated manager thread.
  *
  */
-public class TCPIPServerConncetionListener extends Thread {
+public class TCPIPServerConncetionListener extends Thread
+{
+  private final TCPIPTransport transport;
+  private final ServerSocket serverSocket;
 
-    private final TCPIPTransport transport;
-    private final ServerSocket serverSocket;
+  private final java.util.logging.Logger LOGGER = TCPIPTransport.LOGGER;
 
-    private final java.util.logging.Logger LOGGER = TCPIPTransport.LOGGER;
+  public TCPIPServerConncetionListener(TCPIPTransport transport, ServerSocket serverSocket)
+  {
+    this.transport = transport;
+    this.serverSocket = serverSocket;
+    setName(getClass().getName() + " - Main Server Socket Thread");
+  }
 
-    public TCPIPServerConncetionListener(TCPIPTransport transport, ServerSocket serverSocket) {
-	this.transport = transport;
-	this.serverSocket = serverSocket;
-	setName(getClass().getName()+" - Main Server Socket Thread");
+  @Override
+  public void run()
+  {
+    // setup socket and then listen for connections forever
+    while (true)
+    {
+      try
+      {
+        // wait for connection
+        Socket socket = serverSocket.accept();
+
+        // handle socket in separate thread
+        new TCPIPConnectionDataReceiver(transport, socket).start();
+      }
+      catch (IOException e)
+      {
+        LOGGER.log(Level.WARNING, "Error while accepting connection", e);
+      }
     }
-
-    @Override
-    public void run() {
-	// setup socket and then listen for connections forever
-	while (true) {
-	    try {
-
-		// wait for connection
-		Socket socket = serverSocket.accept();
-
-		// handle socket in separate thread
-		new TCPIPConnectionDataReceiver(transport, socket).start();
-
-	    } catch (IOException e) {
-		LOGGER.log(Level.WARNING, "Error while accepting connection", e);
-	    }
-	}
-    }
+  }
 }

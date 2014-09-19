@@ -28,97 +28,102 @@ import java.util.logging.Level;
 import esa.mo.mal.transport.tcpip.TCPIPTransport;
 
 /**
- * This thread will listen for incoming messages
- * through a blocking queue and send them through a socket. 
- * In case of communication problems it will inform the transport and terminate. 
- * 
- * In any case, a reply is send back to the originator of the request
- * using a blocking queue from the input data.
- * 
- * @author Petros Pissias
+ * This thread will listen for incoming messages through a blocking queue and send them through a socket. In case of
+ * communication problems it will inform the transport and terminate.
+ *
+ * In any case, a reply is send back to the originator of the request using a blocking queue from the input data.
  *
  */
-public class TCPIPSocketSenderThread extends Thread {
+public class TCPIPSocketSenderThread extends Thread
+{
+  public final java.util.logging.Logger LOGGER = TCPIPTransport.LOGGER;
 
-    public final java.util.logging.Logger LOGGER = TCPIPTransport.LOGGER;
+  // input queue to receive data to send
+  private final BlockingQueue<TCPIPOutgoingDataHolder> inputQueue;
 
-    // input queue to receive data to send
-    private final BlockingQueue<TCPIPOutgoingDataHolder> inputQueue;
+  // the socket to send the data to
+  private final Socket socket;
 
-    // the socket to send the data to
-    private final Socket socket;
+  // the destination URI
+  private final String uriTo;
 
-    // the destination URI
-    private final String uriTo;
+  // the data tranceiver
+  private final TCPIPTransportDataTransceiver dataSender;
 
-    // the data tranceiver
-    private final TCPIPTransportDataTransceiver dataSender;
+  // the transport object. Needed in order to send information on connection / data problems
+  private TCPIPTransport transport;
 
-    // the transport object. Needed in order to send information on connection /
-    // data problems
-    private TCPIPTransport transport;
+  /**
+   * Constructor
+   *
+   * @param inputQueue
+   * @param socket
+   * @param uriTo
+   * @param transport
+   * @throws IOException
+   */
+  public TCPIPSocketSenderThread(BlockingQueue<TCPIPOutgoingDataHolder> inputQueue, Socket socket, String uriTo, TCPIPTransport transport) throws IOException
+  {
+    this.inputQueue = inputQueue;
+    this.socket = socket;
+    this.uriTo = uriTo;
+    this.transport = transport;
+    dataSender = new TCPIPTransportDataTransceiver(socket);
+    setName(getClass().getName() + " URI:" + uriTo);
+  }
 
-    /**
-     * Constructor
-     * 
-     * @param inputQueue
-     * @param socket
-     * @param uriTo
-     * @param transport
-     * @throws IOException
-     */
-    public TCPIPSocketSenderThread(BlockingQueue<TCPIPOutgoingDataHolder> inputQueue, Socket socket, String uriTo, TCPIPTransport transport) throws IOException {
-	this.inputQueue = inputQueue;
-	this.socket = socket;
-	this.uriTo = uriTo;
-	this.transport = transport;
-	dataSender = new TCPIPTransportDataTransceiver(socket);
-	setName(getClass().getName()+" URI:"+uriTo);
+  @Override
+  public void run()
+  {
+    // read forever while not interrupted
+    while (!interrupted())
+    {
+      try
+      {
+        TCPIPOutgoingDataHolder packet = inputQueue.take();
+
+        try
+        {
+          dataSender.sendPacket(packet.getData());
+
+          //send back reply that the data was sent succesfully
+          packet.setResult(Boolean.TRUE);
+        }
+        catch (IOException e)
+        {
+          LOGGER.log(Level.WARNING, "Cannot send packet to descination:" + uriTo + " informing transport");
+          //send back reply that the data was not sent succesfully
+          packet.setResult(Boolean.FALSE);
+          //inform transport about communication error 
+          transport.communicationError(uriTo);
+          break;
+        }
+      }
+      catch (InterruptedException e)
+      {
+        // finish processing
+        break;
+      }
     }
 
-    @Override
-    public void run() {
-	// read forever while not interrupted
-	while (!interrupted()) {
-	    try {
-		TCPIPOutgoingDataHolder packet = inputQueue.take();
-
-		try {
-		    dataSender.sendPacket(packet.getData());
-		    
-		    //send back reply that the data was sent succesfully
-		    packet.setResult(Boolean.TRUE);
-		} catch (IOException e) {
-		    LOGGER.log(Level.WARNING, "Cannot send packet to descination:" + uriTo + " informing transport");
-		    //send back reply that the data was not sent succesfully
-		    packet.setResult(Boolean.FALSE);
-		    //inform transport about communication error 
-		    transport.communicationError(uriTo);
-		    break;
-		}
-
-
-		
-	    } catch (InterruptedException e) {
-		// finish processing
-		break;
-	    }
-	}
-
-	// finished processing, close socket if not already closed
-	try {
-	    socket.close();
-	} catch (IOException e) {
-	    // ignore
-	}
+    // finished processing, close socket if not already closed
+    try
+    {
+      socket.close();
     }
-
-    public Socket getSocket() {
-	return socket;
+    catch (IOException e)
+    {
+      // ignore
     }
+  }
 
-    public String getUriTo() {
-	return uriTo;
-    }
+  public Socket getSocket()
+  {
+    return socket;
+  }
 
+  public String getUriTo()
+  {
+    return uriTo;
+  }
 }
