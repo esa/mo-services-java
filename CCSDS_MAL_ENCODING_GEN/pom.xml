@@ -17,17 +17,18 @@
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
-    <groupId>int.esa</groupId>
-    <artifactId>CCSDS_MO_POM</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>int.esa.ccsds.mo</groupId>
+    <artifactId>POM</artifactId>
+    <version>1</version>
+    <relativePath/>
   </parent>
   
-  <artifactId>CCSDS_MAL_ENCODING_GEN</artifactId>
+  <artifactId>ENCODING_GEN</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
 
-  <name>ESA MAL Generic encoding framework</name>
-  <description>A base framework for CCSDS MAL encoders</description>
+  <name>ESA MAL Generic Java encoding framework</name>
+  <description>A base Java framework for CCSDS MAL encoders</description>
   <url>http://www.esa.int</url>
   
   <organization>
@@ -86,18 +87,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-      <plugin> 
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId> 
-      </plugin>
-      <plugin> 
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId> 
-      </plugin>
     </plugins>
   </build>
 
@@ -106,8 +95,8 @@
       <id>ESA</id>
       <dependencies>
         <dependency>
-          <groupId>int.esa</groupId>
-          <artifactId>CCSDS_MAL_API</artifactId>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL</artifactId>
         </dependency>
       </dependencies>
     </profile>
