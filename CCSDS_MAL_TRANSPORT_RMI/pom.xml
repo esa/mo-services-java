@@ -25,7 +25,7 @@
   
   <artifactId>TRANSPORT_RMI</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
 
   <name>ESA MAL RMI Java transport</name>
   <description>A Java RMI transport for CCSDS MAL</description>
@@ -68,6 +68,7 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TRANSPORT_GEN</artifactId>
+      <version>1.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

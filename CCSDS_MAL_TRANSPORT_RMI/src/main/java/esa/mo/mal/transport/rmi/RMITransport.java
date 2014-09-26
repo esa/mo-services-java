@@ -20,14 +20,14 @@
  */
 package esa.mo.mal.transport.rmi;
 
+import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENTransport;
-import java.io.ByteArrayOutputStream;
+import esa.mo.mal.transport.gen.sending.GENDataTransmitter;
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.UnknownHostException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
@@ -36,13 +36,15 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
-import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
+import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
 /**
@@ -203,29 +205,25 @@ public class RMITransport extends GENTransport
   }
 
   @Override
-  protected void internalSendMessage(final GENTransport.MsgPair tmsg)
-          throws MalformedURLException, NotBoundException, RemoteException
+  protected GENDataTransmitter createDataReceiver(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException
   {
-    byte[] buf = null;
+    RLOGGER.log(Level.INFO, "RMI received request to create connections to URI:{0}", remoteRootURI);
 
-    // encode the message
     try
     {
-      final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      final MALElementOutputStream enc = getStreamFactory().createOutputStream(baos);
-      tmsg.msg.encodeMessage(getStreamFactory(), enc, baos);
-      buf = baos.toByteArray();
+      // create new sender for this URI
+      return new RMITransmitter(remoteRootURI);
     }
-    catch (MALException ex)
+    catch (NotBoundException e)
     {
-      ex.printStackTrace();
-    }
+      RLOGGER.log(Level.WARNING, "RMI cound not connect to :" + remoteRootURI, e);
+      throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
 
-    RLOGGER.log(Level.INFO, "RMI Sending data to {0} : {1}", new Object[]
-            {
-              tmsg.addr, packetToString(buf)
-            });
-    final RMIReceiveInterface destinationRMI = (RMIReceiveInterface) Naming.lookup(tmsg.addr);
-    destinationRMI.receive(buf);
+    }
+    catch (IOException e)
+    {
+      RLOGGER.log(Level.WARNING, "RMI cound not connect to :" + remoteRootURI, e);
+      throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
+    }
   }
 }

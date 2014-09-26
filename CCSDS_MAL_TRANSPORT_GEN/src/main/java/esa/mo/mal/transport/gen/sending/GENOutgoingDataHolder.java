@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO TCP/IP Transport Framework
+ * System                : CCSDS MO Generic Transport Framework
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,20 +18,20 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.tcpip.util;
+package esa.mo.mal.transport.gen.sending;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 
-import esa.mo.mal.transport.tcpip.TCPIPTransport;
+import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 
 /**
  * This class holds the data to be sent in raw format and a reply queue that the internal sender of the data can listen
  * to in order to be informed if the data was successfully sent or not.
  *
  */
-public class TCPIPOutgoingDataHolder
+public class GENOutgoingDataHolder
 {
   //reply queue
   private final BlockingQueue<Boolean> replyQueue;
@@ -39,15 +39,12 @@ public class TCPIPOutgoingDataHolder
   //the raw data
   private final byte[] data;
 
-  //reference to logger
-  public final java.util.logging.Logger LOGGER = TCPIPTransport.LOGGER;
-
   /**
    * Will construct a new object and create a new internal reply queue
    *
    * @param data the data to be sent
    */
-  public TCPIPOutgoingDataHolder(byte[] data)
+  public GENOutgoingDataHolder(byte[] data)
   {
     this.data = data;
     replyQueue = new LinkedBlockingQueue<Boolean>();

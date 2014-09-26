@@ -18,8 +18,10 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.tcpip.util;
+package esa.mo.mal.transport.tcpip;
 
+import esa.mo.mal.transport.gen.receiving.GENDataReceiver;
+import esa.mo.mal.transport.gen.sending.GENDataTransmitter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,7 +32,7 @@ import java.net.Socket;
  * each other, the protocol has a very simple format: |size|message|
  *
  */
-public class TCPIPTransportDataTransceiver
+public class TCPIPTransportDataTransceiver implements GENDataReceiver, GENDataTransmitter
 {
   private final Socket socket;
 
@@ -50,6 +52,7 @@ public class TCPIPTransportDataTransceiver
    * @param packetData the MALMessage encoded as a byte array
    * @throws IOException in case the data cannot be send to the client
    */
+  @Override
   public void sendPacket(byte[] packetData) throws IOException
   {
     // write packet length and then the packet
@@ -72,5 +75,17 @@ public class TCPIPTransportDataTransceiver
     byte[] data = new byte[packetSize];
     socketReadIf.readFully(data);
     return data;
+  }
+
+  public void close()
+  {
+    try
+    {
+      socket.close();
+    }
+    catch (IOException e)
+    {
+      // ignore
+    }
   }
 }

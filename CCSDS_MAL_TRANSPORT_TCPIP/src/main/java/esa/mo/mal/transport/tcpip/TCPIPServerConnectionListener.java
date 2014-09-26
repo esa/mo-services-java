@@ -18,14 +18,15 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.tcpip.util;
+package esa.mo.mal.transport.tcpip;
 
+import esa.mo.mal.transport.gen.util.GENDataPoller;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 
-import esa.mo.mal.transport.tcpip.TCPIPTransport;
+import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
 
 /**
  * Server Thread for the TCPIP transport.
@@ -34,14 +35,12 @@ import esa.mo.mal.transport.tcpip.TCPIPTransport;
  * created socket to a dedicated manager thread.
  *
  */
-public class TCPIPServerConncetionListener extends Thread
+public class TCPIPServerConnectionListener extends Thread
 {
   private final TCPIPTransport transport;
   private final ServerSocket serverSocket;
 
-  private final java.util.logging.Logger LOGGER = TCPIPTransport.LOGGER;
-
-  public TCPIPServerConncetionListener(TCPIPTransport transport, ServerSocket serverSocket)
+  public TCPIPServerConnectionListener(TCPIPTransport transport, ServerSocket serverSocket)
   {
     this.transport = transport;
     this.serverSocket = serverSocket;
@@ -52,7 +51,7 @@ public class TCPIPServerConncetionListener extends Thread
   public void run()
   {
     // setup socket and then listen for connections forever
-    while (true)
+    while (!interrupted())
     {
       try
       {
@@ -60,11 +59,13 @@ public class TCPIPServerConncetionListener extends Thread
         Socket socket = serverSocket.accept();
 
         // handle socket in separate thread
-        new TCPIPConnectionDataReceiver(transport, socket).start();
+        TCPIPTransportDataTransceiver tc = new TCPIPTransportDataTransceiver(socket);
+        
+        new GENDataPoller(transport, tc, tc).start();
       }
       catch (IOException e)
       {
-        LOGGER.log(Level.WARNING, "Error while accepting connection", e);
+        RLOGGER.log(Level.WARNING, "Error while accepting connection", e);
       }
     }
   }
