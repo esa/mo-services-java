@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -298,7 +298,12 @@ public class BufferReader {
   }
   
   public long readCUCTime() throws Exception {
+	// Time is not well-defined in MAL Java API.
+	// First line (CNES): Time value represents apparent elapsed milliseconds since Java epoch.
+	// Second line (DLR): Time value represents real elapsed milliseconds since Java
+	// epoch.
   	return readCUCAbsoluteTime().toDate(TimeScalesFactory.getUTC()).getTime();
+	//return Math.round(readCUCAbsoluteTime().durationFrom(AbsoluteDate.JAVA_EPOCH) * 1000);
   }
   
   public Duration readDuration() throws Exception {
