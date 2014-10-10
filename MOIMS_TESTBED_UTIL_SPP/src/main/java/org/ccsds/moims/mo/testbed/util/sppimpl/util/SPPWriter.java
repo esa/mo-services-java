@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -86,9 +86,8 @@ public class SPPWriter {
     int pkt_seq_ctrl = (segt_flag << 14)
         | (packet.getHeader().getSequenceCount());
 
-    //Add the 2 bytes of the CRC and remove 1 as specified by
-    // the specification.
-    int pkt_length_value = packet.getLength() + 2 - 1;
+    // Remove 1 byte as specified by the specification.
+    int pkt_length_value = packet.getLength() - 1;
     
     outHeaderBuffer[0] = (byte) (pkt_ident>>8); 
     outHeaderBuffer[1] = (byte) (pkt_ident & 0xFF);
