@@ -86,7 +86,7 @@
   <properties>
     <fitnesse.toplevel.test>MalSppTests</fitnesse.toplevel.test>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <ccsds.testbed.malspp.version>1.0-SNAPSHOT</ccsds.testbed.malspp.version>
+    <ccsds.testbed.malspp.version>1.1-SNAPSHOT</ccsds.testbed.malspp.version>
   </properties>
   
   <dependencies>
@@ -214,20 +214,37 @@
       <id>DLR</id>
       <dependencies>
         <dependency>
-          <groupId>esa.esoc</groupId>
-          <artifactId>CCSDS_MAL_API</artifactId>
-          <version>${esa.version}</version>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL_TEST</artifactId>
+          <version>${esa.mal.test_api.version}</version>
         </dependency>
         <dependency>
-          <groupId>esa.esoc</groupId>
-          <artifactId>CCSDS_MAL_IMPL</artifactId>
-          <version>${esa.version}</version>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL</artifactId>
         </dependency>
-        <!--  TODO: add DLR libraries -->
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>MAL_IMPL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>de.dlr.gsoc</groupId>
+          <artifactId>MO_MALSPP_TRANSPORT</artifactId>
+		  <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>de.dlr.gsoc</groupId>
+          <artifactId>MO_MALSPP_ENCODING</artifactId>
+          <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>org.ow2.joram</groupId>
+          <artifactId>a3-common</artifactId>
+          <version>${joram.version}</version>
+        </dependency>
       </dependencies>
       <properties>
-        <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/esa-rmi</org.ccsds.moims.mo.testbed.local.configuration.dir>
-        <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/esa-rmi</org.ccsds.moims.mo.testbed.remote.configuration.dir>
+        <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/dlr</org.ccsds.moims.mo.testbed.local.configuration.dir>
+        <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/dlr</org.ccsds.moims.mo.testbed.remote.configuration.dir>
       </properties>
     </profile>
     <profile>

@@ -121,5 +121,14 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>DLR</id>
+      <dependencies>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 </project>

@@ -77,12 +77,14 @@
     <ant.version>1.8.1</ant.version>
     <ant.trax.version>1.8.0</ant.trax.version>
     <fitnesse.version>20140901</fitnesse.version>
-    <jacoco.version>0.6.0.201210061924</jacoco.version>
+    <jacoco.version>0.7.1.201405082137</jacoco.version>
     <junit.version>4.8.1</junit.version>
     <fitnesse.output.dir>${project.build.directory}/surefire-reports</fitnesse.output.dir>
     <ccsds.testbed.util.version>1.1-SNAPSHOT</ccsds.testbed.util.version>
     <cnes.version>3.2.0</cnes.version>
     <joram.version>5.9.0</joram.version>
+	<esa.api.version>1.0</esa.api.version>
+	<esa.mal.test_api.version>1.0</esa.mal.test_api.version>
   </properties>
   
   <dependencyManagement>
@@ -152,6 +154,16 @@
         <artifactId>joram-mom-amqp</artifactId>
         <version>${joram.version}</version>
       </dependency>
+	  <dependency>
+		<groupId>int.esa.ccsds.mo</groupId>
+		<artifactId>API_MAL</artifactId>
+		<version>${esa.api.version}</version>
+	  </dependency>
+	  <dependency>
+		<groupId>int.esa.ccsds.mo</groupId>
+		<artifactId>MAL_IMPL</artifactId>
+		<version>${esa.api.version}</version>
+	  </dependency>
     </dependencies>
   </dependencyManagement>
   
