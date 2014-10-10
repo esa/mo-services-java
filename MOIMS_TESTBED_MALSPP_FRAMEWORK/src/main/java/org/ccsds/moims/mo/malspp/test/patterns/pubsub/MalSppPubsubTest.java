@@ -36,6 +36,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
@@ -276,7 +277,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
     		HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY);
     IPTest errorIpTest = errorIpTestConsumer.getStub();
     
-    UInteger errorCode = new UInteger(-1);
+    UInteger errorCode = MALHelper.INTERNAL_ERROR_NUMBER;
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY, 
     		HeaderTestProcedure.getDomain(domain), 
     		HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, new UpdateHeaderList(), 
