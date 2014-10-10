@@ -294,7 +294,10 @@ public class SecondaryHeaderReader {
     IdentifierList domain = new IdentifierList();
     long size = bufferReader.readUInteger().getValue();
     for (long i = 0; i < size; i++) {
-      Identifier id = new Identifier(bufferReader.readString());
+      Identifier id = null;
+      if (bufferReader.readBoolean()) {
+        id = new Identifier(bufferReader.readString());
+      }
       domain.add(id);
     }
     secondaryHeader.setDomain(domain);
