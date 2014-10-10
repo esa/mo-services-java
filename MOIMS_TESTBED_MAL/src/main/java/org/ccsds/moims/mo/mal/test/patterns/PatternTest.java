@@ -715,7 +715,7 @@ public class PatternTest
       this.expectedMessages = expectedMessages;
     }
 
-    public boolean checkCorrectNumberOfReceivedMessages()
+    public synchronized boolean checkCorrectNumberOfReceivedMessages()
     {
       return expectedMessages == receivedMessages;
     }
@@ -871,7 +871,7 @@ public class PatternTest
     }
 
     @Override
-    public void progressUpdateReceived(MALMessageHeader msgHeader, Integer result, Map qosProperties)
+    public synchronized void progressUpdateReceived(MALMessageHeader msgHeader, Integer result, Map qosProperties)
     {
       ++receivedMessages;
 
