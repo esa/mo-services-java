@@ -289,29 +289,32 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
     return true;
   }
 	
+	protected static PubsubErrorIPTestHandler ipTestHandler = null;
 	public boolean initiatePublishRegisterErrorWithQosAndSessionAndDomain(String qosLevel,
       String sessionType, int domain) throws Exception
   {
     logMessage("initiatePublishRegisterErrorWithQosAndSessionAndDomain(" + qosLevel + ',' + sessionType + ',' + domain+ ')');
     
-    FileBasedDirectory.URIpair errorBrokerUris = FileBasedDirectory
-		    .loadURIs(TestServiceProvider.ERROR_BROKER_NAME);
-    PubsubErrorIPTestHandler ipTestHandler = new PubsubErrorIPTestHandler();
-    MALProviderManager providerMgr = LocalMALInstance.instance().getMalContext().createProviderManager();
-    MALProvider pubsubErrorIPTestProvider = providerMgr.createProvider(
-				TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
-				LocalMALInstance.instance().getProtocol(),
-        IPTestHelper.IPTEST_SERVICE,
-        TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
-        ipTestHandler,
-        new QoSLevel[]
-        {
-          QoSLevel.ASSURED
-        },
-        new UInteger(1), // number of priority levels
-        null,
-        Boolean.TRUE, // isPublisher
-        errorBrokerUris.broker);
+    if (null == ipTestHandler) {
+		FileBasedDirectory.URIpair errorBrokerUris = FileBasedDirectory
+				.loadURIs(TestServiceProvider.ERROR_BROKER_NAME);
+		ipTestHandler = new PubsubErrorIPTestHandler();
+		MALProviderManager providerMgr = LocalMALInstance.instance().getMalContext().createProviderManager();
+		MALProvider pubsubErrorIPTestProvider = providerMgr.createProvider(
+					TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
+					LocalMALInstance.instance().getProtocol(),
+			IPTestHelper.IPTEST_SERVICE,
+			TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
+			ipTestHandler,
+			new QoSLevel[]
+			{
+			  QoSLevel.ASSURED
+			},
+			new UInteger(1), // number of priority levels
+			null,
+			Boolean.TRUE, // isPublisher
+			errorBrokerUris.broker);
+	}
     
     QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
     SessionType session = ParseHelper.parseSessionType(sessionType);
