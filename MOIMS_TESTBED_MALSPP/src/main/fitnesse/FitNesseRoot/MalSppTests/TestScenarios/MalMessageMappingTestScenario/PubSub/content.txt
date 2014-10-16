@@ -47,6 +47,10 @@ in order to raise Register, Notify and Publish Register errors. This broker is d
 Specific providers and consumers have also been implemented.
 A provider is launched on the consumer side in order to initiate a Publish Register with the error broker.
 
+The space packet type is always 1 (TC). So the secondary APID and APID qualifier are used by the MAL header field 'URI From'.
+The local APID and APID qualifier are respectively equal to 1 and 247.
+The remote APID and APID qualifier are respectively equal to 2 and 248.
+
 The procedure is executed once for each !-QoS-! level, session. 
 The session name depends on the session type. If the session type is Live, the name is 'LIVE'. If the session type is Replay, the name is 'R1'. If the session type is Simulation, the name is 'S1'.
 
@@ -89,7 +93,7 @@ for the Pub/Sub interaction:
 
 !*> Sub scenario definitions
 
-|scenario| secondary header sdu type | sdu | and operation | op | and error | error | and qos | qos | and session | sessionId | and session name | sessionName |
+|scenario| secondary header sdu type | sdu | and apid | apid | and apid qualifier | qualifier | and operation | op | and error | error | and qos | qos | and session | sessionId | and session name | sessionName |
 |check  | version is | 0 |
 |check  | sdu type is | @sdu |
 |check  | area is | 100 |
@@ -99,8 +103,8 @@ for the Pub/Sub interaction:
 |check  | error flag is | @error |
 |ensure | check qos | @qos |
 |ensure | check session | @sessionId |
-|check  | secondary apid is | 0 |
-|check  | secondary apid qualifier is | 247 |
+|check  | secondary apid is | @apid |
+|check  | secondary apid qualifier is | @qualifier |
 |ensure | check transaction id |
 |check  | source id flag is | 1 |
 |check  | destination id flag is | 1 |
@@ -132,10 +136,10 @@ for the Pub/Sub interaction:
 |publish register | @qos | and session | @sessId | and shared broker | true | and domain | @domain |
 |ensure|select received packet at| 0 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 14 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 14 | and apid | 2 | and apid qualifier | 248 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select sent packet at| 1 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 15 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 15 | and apid | 1 | and apid qualifier | 247 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 
 |scenario| register | qos | and session | sessId | and shared broker | shared | and domain | domain |
 |ensure |initiate register with qos | @qos | and session | @sessId | and shared broker | @shared | and domain | @domain |
@@ -147,10 +151,10 @@ for the Pub/Sub interaction:
 |register | @qos | and session | @sessId | and shared broker | false | and domain | @domain |
 |ensure|select sent packet at| 0 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 12 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 12 | and apid | 1 | and apid qualifier | 247 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 13 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 13 | and apid | 2 | and apid qualifier | 248 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |register | @qos | and session | @sessId | and shared broker | true | and domain | @domain |
 
@@ -164,12 +168,12 @@ for the Pub/Sub interaction:
 |publish | @qos | and session | @sessId | and shared broker | false | and domain | @domain |
 |ensure|select received packet at| 0 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 17 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 17 | and apid | 2 | and apid qualifier | 248 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |publish | @qos | and session | @sessId | and shared broker | true | and domain | @domain |
 |ensure|select received packet at| 0 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 16 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 16 | and apid | 2 | and apid qualifier | 248 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 
 
 |scenario| notify | qos | and session | sessId | and shared broker | shared | and domain | domain |
@@ -196,7 +200,7 @@ for the Pub/Sub interaction:
 |note | skip first packet publishUpdates|
 |ensure|select sent packet at| 1 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 16 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 16 | and apid | 1 | and apid qualifier | 247 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 
 
 |scenario| deregister | qos | and session | sessId | and shared broker | shared | and domain | domain |
@@ -209,10 +213,10 @@ for the Pub/Sub interaction:
 |deregister | @qos | and session | @sessId | and shared broker | false | and domain | @domain |
 |ensure|select sent packet at| 0 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 18 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 18 | and apid | 1 | and apid qualifier | 247 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 19 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 19 | and apid | 2 | and apid qualifier | 248 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |deregister | @qos | and session | @sessId | and shared broker | true | and domain | @domain |
 
 
@@ -227,10 +231,10 @@ for the Pub/Sub interaction:
 |publishDeregister | @qos | and session | @sessId | and shared broker | true | and domain | @domain |
 |ensure|select received packet at| 0 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 20 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 20 | and apid | 2 | and apid qualifier | 248 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select sent packet at| 1 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 21 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 21 | and apid | 1 | and apid qualifier | 247 | and operation | 105 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 
 |scenario| test register error | qos | and session | sessId | and session name | sessionName | and domain | domain |
 |ensure |initiate register error with qos | @qos | and session | @sessId | and domain | @domain |
@@ -255,18 +259,18 @@ for the Pub/Sub interaction:
 |test register error | @qos | and session | @sessId | and session name | @sessionName | and domain | @domain |
 |ensure|select received packet at| 0 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 13 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 13 | and apid | 2 | and apid qualifier | 248 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test notify error | @qos | and session | @sessId | and session name | @sessionName | and domain | @domain |
 |note | skip test register and publish request ack |
 |ensure|select received packet at| 2 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 17 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 17 | and apid | 2 | and apid qualifier | 248 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test publish register error | @qos | and session | @sessId | and session name | @sessionName | and domain | @domain |
 |ensure|select received packet at| 0 |
 |check | space packet type is | 1 |
-|secondary header sdu type | 15 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|secondary header sdu type | 15 | and apid | 2 | and apid qualifier | 248 | and operation | 105 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 
 |scenario| test mal spp pubsub | sessId | and session name | sessionName |

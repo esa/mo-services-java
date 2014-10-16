@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!--
+    Copyright or © or Copr. CNES
+  
+    This software is a computer program whose purpose is to provide a 
+    framework for the CCSDS Mission Operations services.
+  
+    This software is governed by the CeCILL-C license under French law and
+    abiding by the rules of distribution of free software.  You can  use, 
+    modify and/ or redistribute the software under the terms of the CeCILL-C
+    license as circulated by CEA, CNRS and INRIA at the following URL
+    "http://www.cecill.info". 
+  
+    As a counterpart to the access to the source code and  rights to copy,
+    modify and redistribute granted by the license, users are provided only
+    with a limited warranty  and the software's author,  the holder of the
+    economic rights,  and the successive licensors  have only  limited
+    liability. 
+  
+    In this respect, the user's attention is drawn to the risks associated
+    with loading,  using,  modifying and/or developing or reproducing the
+    software by the user in light of its specific status of free software,
+    that may mean  that it is complicated to manipulate,  and  that  also
+    therefore means  that it is reserved for developers  and  experienced
+    professionals having in-depth computer knowledge. Users are therefore
+    encouraged to load and test the software's suitability as regards their
+    requirements in conditions enabling the security of their systems and/or 
+    data to be ensured and,  more generally, to use and operate it in the 
+    same conditions as regards security. 
+  
+    The fact that you are presently reading this means that you have had
+    knowledge of the CeCILL-C license and that you accept its terms.
+-->
+
+<ms:conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ms="http://www.cnes.fr/schema/MalSppSchema">
+  <ms:app apidQualifier="247" apid="1" comment="" >
+    <ms:authenticationId value="" comment="Empty authentication id." />
+    <ms:domain value="" comment="Empty domain." />
+    <ms:duration codeFormat="2C" comment="CUC, no fractional time: 0001 1100" >
+      <ms:unit value="second" comment="" />
+    </ms:duration>
+    <ms:time codeFormat="2F" comment="CUC, CCSDS epoch: 0001 1111" >
+      <ms:unit value="second" comment="" />
+    </ms:time>
+    <ms:fineTime codeFormat="AF08" comment="CUC, agency epoch, fractional=3+2: 1010 1111 0000 1000" >
+      <ms:unit value="second" comment="" />
+      <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
+    </ms:fineTime>
+    <ms:networkZone value="" comment="Empty network zone." />
+    <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
+    <ms:priority value="0" comment="" />
+    <ms:sessionName value="" comment="Empty session name." />
+    <ms:varintSupported value="true" comment="" />
+  </ms:app>
+  <ms:app apidQualifier="248" apid="2" comment="" >
+    <ms:authenticationId value="" comment="Empty authentication id." />
+    <ms:domain value="" comment="Empty domain." />
+    <ms:duration codeFormat="2C" comment="CUC, no fractional time: 0001 1100" >
+      <ms:unit value="second" comment="" />
+    </ms:duration>
+    <ms:time codeFormat="2F" comment="CUC, CCSDS epoch: 0001 1111" >
+      <ms:unit value="second" comment="" />
+    </ms:time>
+    <ms:fineTime codeFormat="AF08" comment="CUC, agency epoch, fractional=3+2: 1010 1111 0000 1000" >
+      <ms:unit value="second" comment="" />
+      <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
+    </ms:fineTime>
+    <ms:networkZone value="" comment="Empty network zone." />
+    <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
+    <ms:priority value="0" comment="" />
+    <ms:sessionName value="" comment="Empty session name." />
+    <ms:varintSupported value="true" comment="" />
+  </ms:app>
+</ms:conf>

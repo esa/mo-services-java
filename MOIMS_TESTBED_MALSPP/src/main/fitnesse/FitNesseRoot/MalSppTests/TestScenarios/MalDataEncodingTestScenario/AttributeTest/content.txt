@@ -33,6 +33,14 @@
 
 !2 Attribute test scenario
 
+The local APID and APID qualifier are respectively equal to 1 and 247.
+The remote APID and APID qualifier are respectively equal to 2 and 248.
+
+The time encoding formats are specified according to the APID and APID qualifier, as follows:
+- Time: 0001 1111 (CUC, CCSDS epoch, 4 bytes, 3 bytes)
+- !-FineTime-!: 1010 1111 0000 1000 (CUC, agency epoch, 4 bytes, 3+2 bytes)
+- Duration: 0001 1100 (CUC, no fractional time)
+
 !*< Hidden
 !define TEST_SYSTEM {slim}
 
