@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -40,11 +40,15 @@ import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacketHeader;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
+import org.ccsds.moims.mo.malspp.test.util.CUCTimeCode;
 import org.ccsds.moims.mo.malspp.test.util.SecondaryHeader;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
+import org.ccsds.moims.mo.malspp.test.util.TimeCode;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.objectweb.util.monolog.api.BasicLevel;
 import org.objectweb.util.monolog.api.Logger;
+import org.orekit.time.AbsoluteDate;
+import org.orekit.time.TimeScalesFactory;
 
 public class MalSppDataTypeTest extends DataTypeScenario {
 	
@@ -56,6 +60,19 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	private SecondaryHeader secondaryHeader;
 	
 	private BufferReader bufferReader;
+	
+	private TimeCode timeCode;
+	
+	private TimeCode fineTimeCode;
+	
+	private TimeCode durationCode;
+	
+	public MalSppDataTypeTest() {
+    timeCode = new CUCTimeCode(TimeCode.EPOCH_TAI, TimeCode.UNIT_SECOND, 4, 3);
+    fineTimeCode = new CUCTimeCode(new AbsoluteDate("2013-01-01T00:00:00.000",
+        TimeScalesFactory.getTAI()), TimeCode.UNIT_SECOND, 4, 5);
+    durationCode = new CUCTimeCode(null, TimeCode.UNIT_SECOND, 4, 0);
+	}
 	
 	public String explicitDurationTypeWorks() throws MALInteractionException, MALException
   {
@@ -103,9 +120,10 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 		LoggingBase.logMessage("primaryHeader=" + primaryHeader);
 		secondaryHeader = new SecondaryHeader();
 		try {
-			bufferReader = new BufferReader(packetBody, 0, true);
+      bufferReader = new BufferReader(packetBody, 0, true, timeCode,
+          fineTimeCode, durationCode);
 	    TestHelper.decodeSecondaryHeader(secondaryHeader, bufferReader, 
-	    		packet.getHeader().getSequenceFlags(), BufferReader.TimeFormat.CUC);
+	    		packet.getHeader().getSequenceFlags());
 	    LoggingBase.logMessage("secondaryHeader=" + secondaryHeader);
     } catch (Exception e) {
     	if (logger.isLoggable(BasicLevel.WARN)) {
@@ -293,7 +311,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	
 	public boolean checkTime() {
 		try {
-		  return checkData(bufferReader.readTime(BufferReader.TimeFormat.CUC), TestData.testTime);
+		  return checkData(bufferReader.readTime(), TestData.testTime);
 		} catch (Exception e) {
     	return logError(e);
     }
@@ -301,7 +319,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	
 	public boolean checkFineTime() {
 		try {
-		  return checkData(bufferReader.readFineTime(BufferReader.TimeFormat.CUC), TestData.testFineTime);
+		  return checkData(bufferReader.readFineTime(), TestData.testFineTime);
 		} catch (Exception e) {
     	return logError(e);
     }

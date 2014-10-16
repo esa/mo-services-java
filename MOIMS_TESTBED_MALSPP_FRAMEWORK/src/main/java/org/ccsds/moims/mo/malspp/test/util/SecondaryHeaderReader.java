@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -41,19 +41,16 @@ public class SecondaryHeaderReader {
   
   private byte byteToParse;
   
-  private int timeFormat;
-  
   private SecondaryHeader secondaryHeader;
   
-  public SecondaryHeaderReader(BufferReader bufferReader, int timeFormat) {
-    this(bufferReader, timeFormat, new SecondaryHeader());
+  public SecondaryHeaderReader(BufferReader bufferReader) {
+    this(bufferReader, new SecondaryHeader());
   }
   
-  public SecondaryHeaderReader(BufferReader bufferReader, int timeFormat,
+  public SecondaryHeaderReader(BufferReader bufferReader,
       SecondaryHeader secondaryHeader) {
     super();
     this.bufferReader = bufferReader;
-    this.timeFormat = timeFormat;
     this.secondaryHeader = secondaryHeader;
   }
 
@@ -273,7 +270,7 @@ public class SecondaryHeaderReader {
   }
   
   public long readTimestamp() throws Exception {
-    long timestamp = bufferReader.readTimestamp(timeFormat);
+    long timestamp = bufferReader.readTimestamp();
     secondaryHeader.setTimestamp(timestamp);
     return timestamp;
   }
@@ -294,11 +291,7 @@ public class SecondaryHeaderReader {
     IdentifierList domain = new IdentifierList();
     long size = bufferReader.readUInteger().getValue();
     for (long i = 0; i < size; i++) {
-      Identifier id = null;
-      if (bufferReader.readBoolean()) {
-        id = new Identifier(bufferReader.readString());
-      }
-      domain.add(id);
+      domain.add(bufferReader.readNullableIdentifier());
     }
     secondaryHeader.setDomain(domain);
     return domain;

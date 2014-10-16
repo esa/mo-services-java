@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -81,8 +81,8 @@ public class TestHelper {
   }
   
   public static int decodeSecondaryHeader(SecondaryHeader ssh,
-      BufferReader bufferReader, int sequenceFlag, int timeFormat) throws Exception {
-    SecondaryHeaderReader secondaryHeaderReader = new SecondaryHeaderReader(bufferReader, timeFormat);
+      BufferReader bufferReader, int sequenceFlag) throws Exception {
+    SecondaryHeaderReader secondaryHeaderReader = new SecondaryHeaderReader(bufferReader);
     secondaryHeaderReader.readAll(sequenceFlag);
     return bufferReader.getIndex();
   }

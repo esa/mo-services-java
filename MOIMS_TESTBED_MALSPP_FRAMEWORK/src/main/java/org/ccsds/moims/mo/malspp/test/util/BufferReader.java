@@ -40,13 +40,13 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.ULong;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.orekit.data.DataProvidersManager;
 import org.orekit.data.DirectoryCrawler;
 import org.orekit.errors.OrekitException;
@@ -56,18 +56,12 @@ import org.orekit.time.TimeScalesFactory;
 public class BufferReader {
   
   public static void init() {
-    String path = System.getProperty("org.ccsds.moims.mo.malspp.test.util.orekit.data.path", "./target");
+    String path = System.getProperty("org.ccsds.moims.mo.malspp.test.util.orekit.data.path", ".");
     try {
       DataProvidersManager.getInstance().addProvider(new DirectoryCrawler(new File(path)));
     } catch (OrekitException e) {
       throw new RuntimeException(e);
     } 
-  }
-	
-	public static class TimeFormat {
-    public final static int NO_TIME = 0;
-    public final static int CUC = 1;
-    public final static int CDS = 2;
   }
 
 	public static final double PICO = Math.pow(10, 12);
@@ -77,11 +71,22 @@ public class BufferReader {
   private boolean varintSupported;
   
   private int index;
+  
+  private TimeCode timeCode;
+  
+  private TimeCode fineTimeCode;
+  
+  private TimeCode durationCode;
 
-  public BufferReader(byte[] bytes, int offset, boolean varintSupported) {
+  public BufferReader(byte[] bytes, int offset, boolean varintSupported,
+      TimeCode timeCode, TimeCode fineTimeCode,
+      TimeCode durationCode) {
     this.bytes = bytes;
+    this.index = offset;
     this.varintSupported = varintSupported;
-    index = offset;
+    this.timeCode = timeCode;
+    this.fineTimeCode = fineTimeCode;
+    this.durationCode = durationCode;
   }
 
   public byte read() {
@@ -151,10 +156,20 @@ public class BufferReader {
    return new URI(readString());
   }
   
+  public boolean isNull() throws Exception {
+    byte b = read();
+    return (b == 0x00);
+  }
+  
   public String readString() {
     byte[] bytes = readBytes();
     String res = new String(bytes);
     return res;
+  }
+  
+  public Identifier readNullableIdentifier() throws Exception{
+    if (isNull()) return null;
+    else return new Identifier(readString());
   }
   
   public UOctet readUOctet() {
@@ -257,13 +272,10 @@ public class BufferReader {
       return new Long(read64());
     }
   }
- 
-  private AbsoluteDate readCUCAbsoluteTime() {
-  	byte coarseTimeLength = 4;
-    byte fineTimeLength = 3;
+  
+  private double readCUCDuration(int coarseTimeLength,
+      int fineTimeLength) {
     byte[] timeField = readBytes(coarseTimeLength + fineTimeLength);
-    // TAI epoch of 1958 January 1
-    AbsoluteDate agencyDefinedEpoch = new AbsoluteDate(1958, 1, 1, TimeScalesFactory.getTAI());
     double seconds = 0;
     for (int i = 0; i < coarseTimeLength; ++i) {
       seconds = seconds * 256 + (timeField[i] & 0xFF);
@@ -272,63 +284,92 @@ public class BufferReader {
     for (int i = timeField.length - 1; i >= coarseTimeLength; --i) {
       subseconds = (subseconds + (timeField[i] & 0xFF)) / 256;
     }
-    AbsoluteDate absoluteDate = new AbsoluteDate(agencyDefinedEpoch, seconds).shiftedBy(subseconds);
+    LoggingBase.logMessage("seconds=" + seconds);
+    LoggingBase.logMessage("subseconds=" + subseconds);
+    return seconds + subseconds;
+  }
+ 
+  private AbsoluteDate readCUCAbsoluteTime(int coarseTimeLength,
+      int fineTimeLength, AbsoluteDate epoch) {
+    double seconds = readCUCDuration(coarseTimeLength, fineTimeLength);
+    AbsoluteDate absoluteDate = new AbsoluteDate(epoch, seconds);
     return absoluteDate;
   }
   
-  public Time readTime(int timeFormat) throws Exception {
-  	return new Time(readTimestamp(timeFormat));
+  public Time readTime() throws Exception {
+  	return new Time(readTimestamp());
   }
   
-  public long readTimestamp(int timeFormat) throws Exception {
+  public long readTimestamp() throws Exception {
   	long timestamp;
-		switch (timeFormat) {
-		case BufferReader.TimeFormat.NO_TIME:
-			timestamp = 0;
+		switch (timeCode.getType()) {
+		case TimeCode.CUC:
+			timestamp = readCUCTime((CUCTimeCode) timeCode);
 			break;
-		case BufferReader.TimeFormat.CUC:
-			timestamp = readCUCTime();
-			break;
-		case BufferReader.TimeFormat.CDS:
+		case TimeCode.CDS:
 			throw new Exception("Not yet available");
 		default:
-			throw new Exception("Unknown time format: " + timeFormat);
+			throw new Exception("Unknown time code: " + timeCode);
 		}
 		return timestamp;
   }
   
-  public long readCUCTime() throws Exception {
+  private long readCUCTime(CUCTimeCode timeCode) throws Exception {
 	// Time is not well-defined in MAL Java API.
 	// First line (CNES): Time value represents apparent elapsed milliseconds since Java epoch.
 	// Second line (DLR): Time value represents real elapsed milliseconds since Java
 	// epoch.
-  	return readCUCAbsoluteTime().toDate(TimeScalesFactory.getUTC()).getTime();
-	//return Math.round(readCUCAbsoluteTime().durationFrom(AbsoluteDate.JAVA_EPOCH) * 1000);
+  //return readCUCAbsoluteTime().toDate(TimeScalesFactory.getUTC()).getTime();
+    // TAI epoch of 1958 January 1
+    AbsoluteDate epoch = timeCode.getEpoch();
+    return Math.round(readCUCAbsoluteTime(timeCode.getBasicTimeLength(),
+        timeCode.getFractionalTimeLength(), epoch).durationFrom(
+        AbsoluteDate.JAVA_EPOCH) * 1000);
   }
   
   public Duration readDuration() throws Exception {
-    return new Duration(readCUCDuration());
+    int duration;
+    switch (durationCode.getType()) {
+    case TimeCode.CUC:
+      duration = readCUCDuration((CUCTimeCode) durationCode);
+      break;
+    case TimeCode.CDS:
+      throw new Exception("Not yet available");
+    default:
+      throw new Exception("Unknown time code: " + timeCode);
+    }
+    return new Duration(duration);
   }
   
-  public int readCUCDuration() throws Exception {
-    // 4 bytes
-    int duration = read32();
-    // 3 bytes
-    // There is currently nothing decoded because of the 'int' format of
-    // MAL::Duration in the MAL Java API. This bug should be fixed by changing
-    // the type to 'float'.
-    return duration;
+  private int readCUCDuration(CUCTimeCode durationCode) throws Exception {
+    return (int) readCUCDuration(durationCode.getBasicTimeLength(),
+        durationCode.getFractionalTimeLength());
   }
   
-  public FineTime readFineTime(int timeFormat) throws Exception {
-  	return new FineTime(readCUCFineTime(timeFormat));
+  public FineTime readFineTime() throws Exception {
+    long fineTime;
+    switch (fineTimeCode.getType()) {
+    case TimeCode.CUC:
+      fineTime = readCUCFineTime((CUCTimeCode) fineTimeCode);
+      break;
+    case TimeCode.CDS:
+      throw new Exception("Not yet available");
+    default:
+      throw new Exception("Unknown time code: " + timeCode);
+    }
+  	return new FineTime(fineTime);
   }
   
-  public long readCUCFineTime(int timeFormat) throws Exception {
-    AbsoluteDate absoluteDate = readCUCAbsoluteTime();
+  public long readCUCFineTime(CUCTimeCode fineTimeCode) throws Exception {
+    AbsoluteDate malsppEpoch = fineTimeCode.getEpoch();
+    AbsoluteDate absoluteDate = readCUCAbsoluteTime(
+        fineTimeCode.getBasicTimeLength(),
+        fineTimeCode.getFractionalTimeLength(), malsppEpoch);
+    LoggingBase.logMessage("absoluteDate=" + absoluteDate);
     String epochAsString = System.getProperty("org.ccsds.moims.mo.mal.finetime.epoch", "2013-01-01T00:00:00.000");
-    AbsoluteDate epoch = new AbsoluteDate(epochAsString, TimeScalesFactory.getUTC());
-    double offset = absoluteDate.offsetFrom(epoch, TimeScalesFactory.getUTC());
+    AbsoluteDate malJavaEpoch = new AbsoluteDate(epochAsString, TimeScalesFactory.getTAI());
+    double offset = absoluteDate.durationFrom(malJavaEpoch);
+    LoggingBase.logMessage("duration since Java epoch (seconds) = " + offset);
     // convert to picoseconds
     return (long) (offset * PICO);
   }
@@ -342,15 +383,6 @@ public class BufferReader {
     byte[] res = new byte[length];
     System.arraycopy(bytes, index, res, 0, length);
     index += res.length;
-    return res;
-  }
-  
-  public IdentifierList readIdentifierList() {
-    int size = readUnsignedVarInt();
-    IdentifierList res = new IdentifierList(size);
-    for (int i = 0; i < size; i++) {
-      res.add(readIdentifier());
-    }
     return res;
   }
 

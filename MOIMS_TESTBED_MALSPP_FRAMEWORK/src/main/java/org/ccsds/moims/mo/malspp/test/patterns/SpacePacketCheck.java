@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -41,13 +41,17 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
+import org.ccsds.moims.mo.malspp.test.util.CUCTimeCode;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
 import org.ccsds.moims.mo.malspp.test.util.SecondaryHeaderReader;
+import org.ccsds.moims.mo.malspp.test.util.TimeCode;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacketHeader;
+import org.orekit.time.AbsoluteDate;
+import org.orekit.time.TimeScalesFactory;
 
 public class SpacePacketCheck {
   
@@ -61,9 +65,18 @@ public class SpacePacketCheck {
 	
 	private SecondaryHeaderReader secondaryHeaderReader;
 	
-	private int sourceId;
+	private TimeCode timeCode;
+  
+	private TimeCode fineTimeCode;
+  
+	private TimeCode durationCode;
 	
-	private int destinationId;
+	public SpacePacketCheck() {
+	  timeCode = new CUCTimeCode(TimeCode.EPOCH_TAI, TimeCode.UNIT_SECOND, 4, 3);
+    fineTimeCode = new CUCTimeCode(new AbsoluteDate("2013-01-01T00:00:00.000",
+        TimeScalesFactory.getTAI()), TimeCode.UNIT_SECOND, 4, 5);
+    durationCode = new CUCTimeCode(null, TimeCode.UNIT_SECOND, 4, 0);
+  }
 	
 	public boolean selectReceivedPacketAt(int index) {
 		MALMessage message = TransportInterceptor.instance().getLastReceivedMessage(index);
@@ -82,14 +95,13 @@ public class SpacePacketCheck {
   public boolean selectPacket(SpacePacket packet) {
     byte[] packetBody = packet.getBody();
     primaryHeader = packet.getHeader();
-    bufferReader = new BufferReader(packetBody, 0, true);
-    secondaryHeaderReader = new SecondaryHeaderReader(bufferReader,
-        BufferReader.TimeFormat.CUC);
+    bufferReader = new BufferReader(packetBody, 0, true, timeCode, fineTimeCode, durationCode);
+    secondaryHeaderReader = new SecondaryHeaderReader(bufferReader);
     return true;
   }
 	
 	public boolean checkTimestamp() throws Exception {
-		long timestamp = bufferReader.readTimestamp(BufferReader.TimeFormat.CUC);
+		long timestamp = bufferReader.readTimestamp();
 		boolean res = (malHeader.getTimestamp().getValue() == timestamp);
 		if (! res) {
 			LoggingBase.logMessage(timestamp + " != " + malHeader.getTimestamp().getValue());
