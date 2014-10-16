@@ -131,11 +131,11 @@
                 <configuration>
                   <url>http://hpiers.obspm.fr/eoppc/bul/bulc</url>
                   <fromFile>UTC-TAI.history</fromFile>
-                  <toDir>target/</toDir>
+                  <toDir>.</toDir>
                 </configuration>
             </execution>
           </executions>
-       </plugin>         
+       </plugin>      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
