@@ -31,9 +31,6 @@
             <mal:errorRef comment="Submitted values are invalid.">
               <mal:type name="INVALID" area="COM"/>
             </mal:errorRef>
-            <mal:errorRef comment="Requested Node was not found.">
-              <mal:type name="UNKNOWN" area="MAL"/>
-            </mal:errorRef>
           </mal:errors>
         </mal:submitIP>
         <mal:submitIP name="withdrawService" number="3" supportInReplay="false"
