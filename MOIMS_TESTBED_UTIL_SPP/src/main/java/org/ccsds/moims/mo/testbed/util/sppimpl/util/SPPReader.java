@@ -32,6 +32,7 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.testbed.util.sppimpl.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
@@ -54,9 +55,21 @@ public class SPPReader {
     //inCrcBuffer = new byte[2];
   }
   
+  private int read(final byte[] b, final int initialOffset, final int totalLength) throws IOException {
+    int n;
+    int len = 0;
+    do {
+      n = is.read(b, initialOffset + len, totalLength - len);
+      if (n != -1) {
+        len += n;
+      }
+    } while (len < totalLength);
+    return len;
+  }
+  
   public SpacePacket receive() throws Exception {
     // 1- Read the APID qualifier
-    is.read(apidQualifierBuffer, 0, 2);
+    read(apidQualifierBuffer, 0, 2);
     int apidQualifier = (((apidQualifierBuffer[0] & 0xFF) << 8) | (apidQualifierBuffer[1] & 0xFF));
 
     SpacePacketHeader header = new SpacePacketHeader();
@@ -66,7 +79,7 @@ public class SPPReader {
     packet.setApidQualifier(apidQualifier);
     
     // 2- Read the Space Packet
-    is.read(inHeaderBuffer, 0, 6);
+    read(inHeaderBuffer, 0, 6);
     int pk_ident = inHeaderBuffer[0] & 0xFF;
     pk_ident = (pk_ident<<8) | (inHeaderBuffer[1] & 0xFF);
     int vers_nb = (pk_ident>>13) & 0x0007;
@@ -96,7 +109,7 @@ public class SPPReader {
     int dataLength = pkt_length_value;
     byte[] data = packet.getBody();
     packet.setLength(dataLength);
-    is.read(data, packet.getOffset(), dataLength);
+    read(data, packet.getOffset(), dataLength);
     
     /*
     int CRC = SPPHelper.computeCRC(inHeaderBuffer, data, packet.getOffset(), dataLength);
