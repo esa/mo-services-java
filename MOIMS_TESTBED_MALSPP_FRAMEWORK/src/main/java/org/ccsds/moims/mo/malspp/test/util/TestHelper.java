@@ -37,6 +37,10 @@ import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
 
 public class TestHelper {
   
+  public static final String IS_TC_PACKET_PROPERTY = "org.ccsds.moims.mo.malspp.isTcPacket";
+  public static final String APID_QUALIFIER_PROPERTY = "org.ccsds.moims.mo.malspp.apidQualifier";
+  public static final String APID_PROPERTY = "org.ccsds.moims.mo.malspp.apid";
+  
   public static final String PROTOCOL = "malspp:";
   
   public static final char SLASH = '/';

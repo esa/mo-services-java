@@ -54,7 +54,83 @@
     <ms:sessionName value="" comment="Empty session name." />
     <ms:varintSupported value="true" comment="" />
   </ms:app>
+  <ms:app apidQualifier="347" apid="3" comment="" >
+    <ms:authenticationId value="" comment="Empty authentication id." />
+    <ms:domain value="" comment="Empty domain." />
+    <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
+      <ms:unit value="second" comment="" />
+    </ms:duration>
+    <ms:time codeFormat="1F" comment="CUC, CCSDS epoch: 0001 1111" >
+      <ms:unit value="second" comment="" />
+    </ms:time>
+    <ms:fineTime codeFormat="AF08" comment="CUC, agency epoch, fractional=3+2: 1010 1111 0000 1000" >
+      <ms:unit value="second" comment="" />
+      <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
+    </ms:fineTime>
+    <ms:networkZone value="" comment="Empty network zone." />
+    <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
+    <ms:priority value="0" comment="" />
+    <ms:sessionName value="" comment="Empty session name." />
+    <ms:varintSupported value="true" comment="" />
+  </ms:app>
+  <ms:app apidQualifier="447" apid="5" comment="" >
+    <ms:authenticationId value="" comment="Empty authentication id." />
+    <ms:domain value="" comment="Empty domain." />
+    <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
+      <ms:unit value="second" comment="" />
+    </ms:duration>
+    <ms:time codeFormat="1F" comment="CUC, CCSDS epoch: 0001 1111" >
+      <ms:unit value="second" comment="" />
+    </ms:time>
+    <ms:fineTime codeFormat="AF08" comment="CUC, agency epoch, fractional=3+2: 1010 1111 0000 1000" >
+      <ms:unit value="second" comment="" />
+      <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
+    </ms:fineTime>
+    <ms:networkZone value="" comment="Empty network zone." />
+    <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
+    <ms:priority value="0" comment="" />
+    <ms:sessionName value="" comment="Empty session name." />
+    <ms:varintSupported value="true" comment="" />
+  </ms:app>
+  <ms:app apidQualifier="547" apid="7" comment="" >
+    <ms:authenticationId value="" comment="Empty authentication id." />
+    <ms:domain value="" comment="Empty domain." />
+    <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
+      <ms:unit value="second" comment="" />
+    </ms:duration>
+    <ms:time codeFormat="1F" comment="CUC, CCSDS epoch: 0001 1111" >
+      <ms:unit value="second" comment="" />
+    </ms:time>
+    <ms:fineTime codeFormat="AF08" comment="CUC, agency epoch, fractional=3+2: 1010 1111 0000 1000" >
+      <ms:unit value="second" comment="" />
+      <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
+    </ms:fineTime>
+    <ms:networkZone value="" comment="Empty network zone." />
+    <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
+    <ms:priority value="0" comment="" />
+    <ms:sessionName value="" comment="Empty session name." />
+    <ms:varintSupported value="true" comment="" />
+  </ms:app>
   <ms:app apidQualifier="248" apid="2" comment="" >
+    <ms:authenticationId value="" comment="Empty authentication id." />
+    <ms:domain value="" comment="Empty domain." />
+    <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
+      <ms:unit value="second" comment="" />
+    </ms:duration>
+    <ms:time codeFormat="1F" comment="CUC, CCSDS epoch: 0001 1111" >
+      <ms:unit value="second" comment="" />
+    </ms:time>
+    <ms:fineTime codeFormat="AF08" comment="CUC, agency epoch, fractional=3+2: 1010 1111 0000 1000" >
+      <ms:unit value="second" comment="" />
+      <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
+    </ms:fineTime>
+    <ms:networkZone value="" comment="Empty network zone." />
+    <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
+    <ms:priority value="0" comment="" />
+    <ms:sessionName value="" comment="Empty session name." />
+    <ms:varintSupported value="true" comment="" />
+  </ms:app>
+  <ms:app apidQualifier="348" apid="4" comment="" >
     <ms:authenticationId value="" comment="Empty authentication id." />
     <ms:domain value="" comment="Empty domain." />
     <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >

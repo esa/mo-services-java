@@ -52,12 +52,23 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
   private Hashtable<PublishInteractionListenerKey, MALPublishInteractionListener> publishInteractionListeners;
   private Hashtable<PublisherKey, MonitorPublisher> publishers;
   private Hashtable<PublisherKey, MonitorMultiPublisher> publishersMulti;
+  
+  private String ipTestProviderFileName;
 
   public IPTestHandlerImpl()
   {
     publishInteractionListeners = new Hashtable<PublishInteractionListenerKey, MALPublishInteractionListener>();
     publishers = new Hashtable<PublisherKey, MonitorPublisher>();
     publishersMulti = new Hashtable<PublisherKey, MonitorMultiPublisher>();
+    ipTestProviderFileName = IPTestHelper.IPTEST_SERVICE_NAME.getValue();
+  }
+
+  public String getIpTestProviderFileName() {
+    return ipTestProviderFileName;
+  }
+
+  public void setIpTestProviderWithSharedBrokerFileName(String ipTestProviderFileName) {
+    this.ipTestProviderFileName = ipTestProviderFileName;
   }
 
   protected void resetAssertions()
@@ -754,7 +765,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
 
   protected FileBasedDirectory.URIpair getProviderURIs()
   {
-    return FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME.getValue());
+    return FileBasedDirectory.loadURIs(ipTestProviderFileName);
   }
 
   protected Blob getBrokerAuthenticationId()

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -39,9 +39,9 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.test.patterns.PatternTest;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.PubSubTestCaseHelper;
-import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
 import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransitionList;
+import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
 import org.objectweb.util.monolog.api.Logger;
 
@@ -50,7 +50,52 @@ public class MalSppPatternTest extends PatternTest {
 	public final static Logger logger = fr.dyade.aaa.common.Debug
 		  .getLogger(MalSppPatternTest.class.getName());
 	
-	private SpacePacketCheck spacePacketCheck = new SpacePacketCheck();
+	private SpacePacketCheck spacePacketCheck;
+
+	public MalSppPatternTest() {
+    super();
+    spacePacketCheck = new SpacePacketCheck();
+  }
+
+  public boolean consumerPacketIsTc(boolean isTc) {
+    return spacePacketCheck.consumerPacketIsTc(isTc);
+  }
+	
+	public boolean providerPacketIsTc(boolean isTc) {
+	  return spacePacketCheck.providerPacketIsTc(isTc);
+  }
+	
+  protected void initConsumer(SessionType session, Identifier sessionName,
+      QoSLevel qos) throws Exception {
+    int consumerPacketType = spacePacketCheck.getConsumerPacketType();
+    int providerPacketType = spacePacketCheck.getProviderPacketType();
+    if (consumerPacketType == 1) {
+      if (providerPacketType == 1) {
+        ipTestConsumer = LocalMALInstance.instance().ipTestStub(
+            HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+            HeaderTestProcedure.PRIORITY, false);
+      } else {
+        ipTestConsumer = LocalMALInstance.instance().getTcTmIpTestStub(
+            HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+            HeaderTestProcedure.PRIORITY, false);
+      }
+    } else {
+      if (providerPacketType == 1) {
+        ipTestConsumer = LocalMALInstance.instance().getTmTcIpTestStub(
+            HeaderTestProcedure.AUTHENTICATION_ID,
+            HeaderTestProcedure.DOMAIN,
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+            HeaderTestProcedure.PRIORITY, false);
+      } else {
+        ipTestConsumer = LocalMALInstance.instance().getTmTmIpTestStub(
+            HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+            HeaderTestProcedure.PRIORITY, false);
+      }
+    }
+  }
 	
 	public boolean selectReceivedPacketAt(int index) {
 		return spacePacketCheck.selectReceivedPacketAt(index);
@@ -64,8 +109,8 @@ public class MalSppPatternTest extends PatternTest {
 		return spacePacketCheck.checkTimestamp();
 	}
 	
-	public int spacePacketTypeIs() {
-		return spacePacketCheck.spacePacketTypeIs();
+	public boolean checkSpacePacketType() {
+		return spacePacketCheck.checkSpacePacketType();
   }
 	
 	public int versionIs() {
@@ -116,6 +161,8 @@ public class MalSppPatternTest extends PatternTest {
 		QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
+    initConsumer(session, sessionName, qos);
+    /*
 		ipTestConsumer = LocalMALInstance.instance().ipTestStub(HeaderTestProcedure.AUTHENTICATION_ID,
         HeaderTestProcedure.DOMAIN,
         HeaderTestProcedure.NETWORK_ZONE,
@@ -123,7 +170,7 @@ public class MalSppPatternTest extends PatternTest {
         sessionName,
         qos,
         HeaderTestProcedure.PRIORITY,
-        false);
+        false);*/
     ipTest = ipTestConsumer.getStub();
     IPTestDefinition testDef = new IPTestDefinition("TestSendPattern",
         ipTestConsumer.getConsumer().getURI(),
@@ -135,6 +182,7 @@ public class MalSppPatternTest extends PatternTest {
         session, sessionName,
         new IPTestTransitionList(),
         new Time(System.currentTimeMillis()));
+        
     ipTest.send(testDef);
     return true;
 	}
@@ -147,12 +195,12 @@ public class MalSppPatternTest extends PatternTest {
 		return spacePacketCheck.checkSession(sessionTypeAsString);
   }
 	
-	public int secondaryApidIs() {
-    return spacePacketCheck.secondaryApidIs();
+	public boolean checkSecondaryApid() {
+    return spacePacketCheck.checkSecondaryApid();
   }
   
-  public int secondaryApidQualifierIs() {
-    return spacePacketCheck.secondaryApidQualifierIs();
+  public boolean checkSecondaryApidQualifier() {
+    return spacePacketCheck.checkSecondaryApidQualifier();
   }
   
   public byte sourceIdFlagIs() throws Exception {

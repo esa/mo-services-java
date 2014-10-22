@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -32,7 +32,8 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.malspp.test.suite;
 
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
@@ -41,54 +42,173 @@ import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.test.patterns.IPTestHandlerImpl;
+import org.ccsds.moims.mo.mal.test.patterns.pubsub.IPTestHandlerWithSharedBroker;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
+import org.ccsds.moims.mo.malspp.test.util.TestHelper;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
+import org.ccsds.moims.mo.testbed.util.FileBasedDirectory.URIpair;
 
 public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestServiceProvider {
-
+  
 	public static final String ERROR_BROKER_NAME = "ErrorBroker";
+	public static final String TM_ERROR_BROKER_NAME = "TMPacketErrorBroker";
 	
 	public static final String PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "PubsubErrorIPTestProvider";
+	public static final String TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TmPubsubErrorIPTestProvider";
+	public static final String TC_IP_TEST_PROVIDER_NAME = "IPTest";
+	public static final String TM_IP_TEST_PROVIDER_NAME = "TmIPTestProvider";
+	public static final String TM_TC_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TmTcIPTestProviderWithSharedBroker";
+	public static final String TC_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TcTmIPTestProviderWithSharedBroker";
+	public static final String TM_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TmTmIPTestProviderWithSharedBroker";
+	
+	/**
+	 * APID qualifier for remote providers and shared brokers sending TC packets.
+	 * Default value to be set at the transport level (see TestServiceProviderMAL.properties).
+	 */
+	public static final int TC_REMOTE_APID_QUALIFIER = 248;
+	
+	/**
+	 * APID for remote providers and shared brokers sending TC packets.
+   * Default value to be set at the transport level (see TestServiceProviderMAL.properties).
+   */
+  public static final int TC_REMOTE_APID = 2;
+	
+  /**
+   * APID qualifier for remote providers and shared brokers sending TM packets.
+   */
+	public static final int TM_REMOTE_APID_QUALIFIER = 348;
+	
+	/**
+   * APID for remote providers and shared brokers sending TM packets.
+   */
+	public static final int TM_REMOTE_APID = 4;
+	
+	private String protocol;
+	
+	private MALBrokerManager brokerManager;
+
+  /**
+   * Broker used to generate errors: Register Error, Publish Register Error,
+   * Notify Error. These brokers need to be shared.
+   * 
+   * @param brokerName
+   * @param properties
+   * @return
+   * @throws MALException
+   */
+  private MALBrokerBinding createSharedErrorBroker(String brokerName,
+      Map<Object, Object> properties) throws MALException {
+    ErrorBrokerHandler brokerHandler = new ErrorBrokerHandler();
+    MALBroker broker = brokerManager.createBroker(brokerHandler);
+    MALBrokerBinding sharedBrokerBinding = brokerManager.createBrokerBinding(
+        broker, brokerName, protocol,
+        Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
+        new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), properties);
+    FileBasedDirectory.storeURI(brokerName, sharedBrokerBinding.getURI(),
+        sharedBrokerBinding.getURI());
+    return sharedBrokerBinding;
+  }
+  
+  /**
+   * Provider used with a broker generating errors.
+   * 
+   * @param providerName
+   * @param sharedBrokerUri the URI of the ErrorBroker
+   * @param properties
+   * @throws MALException
+   */
+  private void createPubSubErrorIpTestProvider(String providerName,
+      URI sharedBrokerUri, Map<Object, Object> properties) throws MALException {
+    PubsubErrorIPTestHandler handler = new PubsubErrorIPTestHandler();
+    MALProvider provider = defaultProviderMgr.createProvider(
+        PUBSUB_ERROR_IP_TEST_PROVIDER_NAME, protocol,
+        IPTestHelper.IPTEST_SERVICE, IP_TEST_AUTHENTICATION_ID,
+        handler, new QoSLevel[] { QoSLevel.ASSURED },
+        new UInteger(1),
+        properties, Boolean.TRUE,
+        sharedBrokerUri);
+    FileBasedDirectory.storeURI(providerName,
+        provider.getURI(),
+        provider.getBrokerURI());
+  }
+  
+  /**
+   * Provider used with a shared broker. 
+   * 
+   * @param providerName
+   * @param sharedBrokerUri
+   * @param properties
+   * @throws MALException
+   */
+  private void createIpTestProviderWithSharedBroker(String providerName,
+      URI sharedBrokerUri, Map<Object, Object> properties) throws MALException {
+    IPTestHandlerWithSharedBroker handler = new IPTestHandlerWithSharedBroker();
+    handler.setIpTestProviderWithSharedBrokerFileName(providerName);
+    MALProvider provider = defaultProviderMgr
+        .createProvider(providerName, protocol, IPTestHelper.IPTEST_SERVICE,
+            IP_TEST_AUTHENTICATION_ID, handler,
+            new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), properties,
+            Boolean.TRUE, sharedBrokerUri);
+    FileBasedDirectory.storeURI(providerName,
+        provider.getURI(),
+        provider.getBrokerURI());
+  }
 
 	protected void createProviders() throws MALException {
 	  BufferReader.init();
 	  
 		super.createProviders();
 		
-		String protocol = getProtocol();
-
-		MALBrokerManager brokerManager = defaultMal.createBrokerManager();
-
-		ErrorBrokerHandler errorBroker = new ErrorBrokerHandler();
-		MALBroker sharedBroker = brokerManager.createBroker(errorBroker);
-
-		MALBrokerBinding sharedBrokerBinding = brokerManager.createBrokerBinding(
-		    sharedBroker, ERROR_BROKER_NAME, protocol,
-		    Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
-		    new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), new Hashtable());
-
-		FileBasedDirectory.storeURI(ERROR_BROKER_NAME,
-		    sharedBrokerBinding.getURI(), sharedBrokerBinding.getURI());
+		protocol = getProtocol();
+    brokerManager = defaultMal.createBrokerManager();
+    
+    HashMap<Object, Object> tmProviderProps = new HashMap<Object, Object>();
+    tmProviderProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
+    tmProviderProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+        TM_REMOTE_APID_QUALIFIER);
+    tmProviderProps.put(TestHelper.APID_PROPERTY, TM_REMOTE_APID);
 		
-		PubsubErrorIPTestHandler pubsubErrorIPTestHandler = new PubsubErrorIPTestHandler();
+    MALBrokerBinding sharedErrorBrokerBinding = createSharedErrorBroker(
+        ERROR_BROKER_NAME, null);
+    MALBrokerBinding tmSharedErrorBrokerBinding = createSharedErrorBroker(
+        TM_ERROR_BROKER_NAME, tmProviderProps);
 		
-		MALProvider pubsubErrorIPTestProvider = defaultProviderMgr.createProvider(
-				PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
-        protocol,
-        IPTestHelper.IPTEST_SERVICE,
-        IP_TEST_AUTHENTICATION_ID,
-        pubsubErrorIPTestHandler,
-        new QoSLevel[]
-        {
-          QoSLevel.ASSURED
-        },
-        new UInteger(1), // number of priority levels
-        null,
-        Boolean.TRUE, // isPublisher
-        sharedBrokerBinding.getURI());
-     FileBasedDirectory.storeURI(PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
-    		 pubsubErrorIPTestProvider.getURI(), pubsubErrorIPTestProvider.getBrokerURI());
+    createPubSubErrorIpTestProvider(PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
+        sharedErrorBrokerBinding.getURI(), null);
+    createPubSubErrorIpTestProvider(TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
+        tmSharedErrorBrokerBinding.getURI(), tmProviderProps);
+
+    IPTestHandlerImpl iphandler = new IPTestHandlerImpl();
+    iphandler.setIpTestProviderWithSharedBrokerFileName(TM_IP_TEST_PROVIDER_NAME);
+    MALProvider tmPacketIpProvider = defaultProviderMgr.createProvider(
+        TM_IP_TEST_PROVIDER_NAME, protocol, IPTestHelper.IPTEST_SERVICE,
+        IP_TEST_AUTHENTICATION_ID, iphandler,
+        new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), tmProviderProps,
+        Boolean.TRUE, null);
+    FileBasedDirectory.storeURI(TM_IP_TEST_PROVIDER_NAME,
+        tmPacketIpProvider.getURI(), tmPacketIpProvider.getBrokerURI());
+    
+    URIpair tcTmSharedBrokerUriPair = FileBasedDirectory
+        .loadURIs(LocalMALInstance.TC_TM_SHARED_BROKER_NAME);
+    createIpTestProviderWithSharedBroker(
+        TC_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME,
+        tcTmSharedBrokerUriPair.broker, tmProviderProps);
+    
+    URIpair tmTcSharedBrokerUriPair =
+        FileBasedDirectory.loadURIs(LocalMALInstance.TM_TC_SHARED_BROKER_NAME);
+    createIpTestProviderWithSharedBroker(
+        TM_TC_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME,
+        tmTcSharedBrokerUriPair.broker, null);
+    
+    URIpair tmTmSharedBrokerUriPair =
+        FileBasedDirectory.loadURIs(LocalMALInstance.TM_TM_SHARED_BROKER_NAME);
+    createIpTestProviderWithSharedBroker(
+        TM_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME,
+        tmTmSharedBrokerUriPair.broker, tmProviderProps);
 	}
+	
 }

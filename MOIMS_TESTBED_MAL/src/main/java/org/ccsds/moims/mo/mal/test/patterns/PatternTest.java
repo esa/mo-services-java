@@ -60,6 +60,26 @@ public class PatternTest
   private AssertionList assertions;
   private boolean correctNumberOfTransistions = false;
   private TestEndPoint ep;
+  
+  /**
+   * Allows a subclass to override the consumer, for example by
+   * interacting with another service provider and with specific QoS properties.
+   * @param session
+   * @param sessionName
+   * @param qos
+   * @throws Exception
+   */
+  protected void initConsumer(SessionType session, Identifier sessionName, QoSLevel qos) throws Exception 
+  {
+    ipTestConsumer = LocalMALInstance.instance().ipTestStub(HeaderTestProcedure.AUTHENTICATION_ID,
+        HeaderTestProcedure.DOMAIN,
+        HeaderTestProcedure.NETWORK_ZONE,
+        session,
+        sessionName,
+        qos,
+        HeaderTestProcedure.PRIORITY,
+        false);
+  }
 
   public boolean patternInitiationForWithMultiAndQosAndSessionAndTransistionsAndTransIdTest(String pattern, boolean callMultiVersion, String qosLevel, String sessionType, String[] transistions, int procedureId) throws Exception
   {
@@ -70,14 +90,7 @@ public class PatternTest
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
 
-    ipTestConsumer = LocalMALInstance.instance().ipTestStub(HeaderTestProcedure.AUTHENTICATION_ID,
-            HeaderTestProcedure.DOMAIN,
-            HeaderTestProcedure.NETWORK_ZONE,
-            session,
-            sessionName,
-            qos,
-            HeaderTestProcedure.PRIORITY,
-            false);
+    initConsumer(session, sessionName, qos);
     ipTest = ipTestConsumer.getStub();
 
     ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());

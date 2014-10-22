@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -98,6 +98,7 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
 
 	public void handleRegister(MALInteraction interaction, MALRegisterBody body)
       throws MALInteractionException, MALException {
+	  LoggingBase.logMessage("ErrorBrokerHandler.handleRegister(" + interaction.getMessageHeader() + ')');
 	  if (body.getSubscription().getSubscriptionId().getValue().equals(SUBSCRIPTION_RAISING_ERROR)) {
 	    throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null));
 	  } else {

@@ -57,14 +57,29 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl
 {
+  
+  private String ipTestProviderWithSharedBrokerFileName;
+  
+  public IPTestHandlerWithSharedBroker() {
+    super();
+    ipTestProviderWithSharedBrokerFileName = TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME;
+  }
+
+  public String getIpTestProviderWithSharedBrokerFileName() {
+    return ipTestProviderWithSharedBrokerFileName;
+  }
+
+  public void setIpTestProviderWithSharedBrokerFileName(String ipTestProviderWithSharedBrokerFileName) {
+    this.ipTestProviderWithSharedBrokerFileName = ipTestProviderWithSharedBrokerFileName;
+  }
+
   @Override
   protected void doPublishRegister(
           TestPublishRegister _TestPublishRegister,
           MonitorPublishInteractionListener listener) throws MALInteractionException, MALException
   {
     LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister(" + _TestPublishRegister + ')');
-    FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(
-            TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
+    FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ipTestProviderWithSharedBrokerFileName);
     // Reset the listener
     listener.setHeader(null);
     listener.setError(null);
@@ -198,8 +213,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl
   public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction) throws MALException
   {
     LoggingBase.logMessage("IPTestHandlerWithSharedBroker.publishUpdates(" + _TestPublishUpdate + ')');
-    FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(
-            TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
+    FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ipTestProviderWithSharedBrokerFileName);
 
     MonitorPublishInteractionListener listener = getPublishInteractionListener(
             _TestPublishUpdate.getDomain(), _TestPublishUpdate.getNetworkZone(),
@@ -263,8 +277,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl
           throws MALInteractionException, MALException
   {
     LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishDeregister(" + _TestPublishDeregister + ')');
-    FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(
-            TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
+    FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ipTestProviderWithSharedBrokerFileName);
 
     Time timestamp = new Time(System.currentTimeMillis());
 
@@ -363,7 +376,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl
   @Override
   protected FileBasedDirectory.URIpair getProviderURIs()
   {
-    return FileBasedDirectory.loadURIs(TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
+    return FileBasedDirectory.loadURIs(ipTestProviderWithSharedBrokerFileName);
   }
 
   @Override

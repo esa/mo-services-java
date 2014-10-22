@@ -132,6 +132,7 @@
                   <url>http://hpiers.obspm.fr/eoppc/bul/bulc</url>
                   <fromFile>UTC-TAI.history</fromFile>
                   <toDir>.</toDir>
+              <!--   <skip>true</skip> -->   
                 </configuration>
             </execution>
           </executions>

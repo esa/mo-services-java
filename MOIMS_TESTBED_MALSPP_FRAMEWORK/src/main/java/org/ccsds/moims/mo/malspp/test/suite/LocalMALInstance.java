@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -37,7 +37,11 @@ import java.util.Hashtable;
 
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.broker.MALBroker;
+import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+import org.ccsds.moims.mo.mal.provider.MALProvider;
+import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -47,28 +51,199 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
+import org.ccsds.moims.mo.malspp.test.util.TestHelper;
+import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 
 public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMALInstance {
+  
+  /**
+   * APID qualifier for interactions sending TC packets and receiving TC packets.
+   * Default value to be set at the transport level (see TestServiceProviderMAL.properties).
+   */
+  public static final int TC_TC_LOCAL_APID_QUALIFIER = 247;
+  
+  /**
+   * APID for interactions sending TC packets and receiving TC packets.
+   * Default value to be set at the transport level (see TestServiceProviderMAL.properties).
+   */
+  public static final int TC_TC_LOCAL_APID = 1;
+  
+  /**
+   * APID qualifier for interactions sending TC packets and receiving TM packets.
+   */
+  public static final int TC_TM_LOCAL_APID_QUALIFIER = 347;
+  
+  /**
+   * APID for interactions sending TC packets and receiving TM packets.
+   */
+  public static final int TC_TM_LOCAL_APID = 3;
+  
+  /**
+   * APID qualifier for interactions sending TM packets and receiving TC packets.
+   */
+  public static final int TM_TC_LOCAL_APID_QUALIFIER = 447;
+  
+  /**
+   * APID for interactions sending TM packets and receiving TC packets.
+   */
+  public static final int TM_TC_LOCAL_APID = 5;
+  
+  /**
+   * APID qualifier for interactions sending TM packets and receiving TM packets.
+   */
+  public static final int TM_TM_LOCAL_APID_QUALIFIER = 547;
+  
+  /**
+   * APID for interactions sending TM packets and receiving TM packets.
+   */
+  public static final int TM_TM_LOCAL_APID = 7;
+  
+  public static final String TC_TM_SHARED_BROKER_NAME = "TcTmSharedBroker";
+  public static final String TM_TC_SHARED_BROKER_NAME = "TmTcSharedBroker";
+  public static final String TM_TM_SHARED_BROKER_NAME = "TmTmSharedBroker";
 
 	public static LocalMALInstance instance() throws MALException {
 		return (LocalMALInstance) binstance();
 	}
+	
+  /**
+   * Handler used to create locally a publisher that initiate a Publish Register
+   * as a TC with a broker returning a Publish Register Error as a TC.
+   */
+  private PubsubErrorIPTestHandler tcTcPublishErrorHandler;
+	
+  /**
+   * Handler used to create locally a publisher that initiate a Publish Register
+   * as a TC with a broker returning a Publish Register Error as a TM.
+   */
+	private PubsubErrorIPTestHandler tcTmPublishErrorHandler;
+	
+  /**
+   * Handler used to create locally a publisher that initiate a Publish Register
+   * as a TM with a broker returning a Publish Register Error as a TC.
+   */
+	private PubsubErrorIPTestHandler tmTcPublishErrorHandler;
+	
+  /**
+   * Handler used to create locally a publisher that initiate a Publish Register
+   * as a TM with a broker returning a Publish Register Error as a TM.
+   */
+	private PubsubErrorIPTestHandler tmTmPublishErrorHandler;
 
-	private Hashtable<StubKey, IPTestConsumer> ipstubs = 
+  /**
+   * Consumer used to interact with a broker that generates errors: Register
+   * Error, Notify Error. The consumer sends TC packets and the broker sends TC
+   * packets.
+   */
+	private Hashtable<StubKey, IPTestConsumer> tcTcPubsubErrorStubs = 
 	  new Hashtable<StubKey, IPTestConsumer>();
+	
+  /**
+   * Consumer used to interact with a broker that generates errors: Register
+   * Error, Notify Error. The consumer sends TC packets and the broker sends TM
+   * packets.
+   */
+	private Hashtable<StubKey, IPTestConsumer> tcTmPubsubErrorStubs = 
+      new Hashtable<StubKey, IPTestConsumer>();
+	
+  /**
+   * Consumer used to interact with a broker that generates errors: Register
+   * Error, Notify Error. The consumer sends TM packets and the broker sends TC
+   * packets.
+   */
+	private Hashtable<StubKey, IPTestConsumer> tmTcPubsubErrorStubs = 
+	    new Hashtable<StubKey, IPTestConsumer>();
+	
+  /**
+   * Consumer used to interact with a broker that generates errors: Register
+   * Error, Notify Error. The consumer sends TM packets and the broker sends TM
+   * packets.
+   */
+	private Hashtable<StubKey, IPTestConsumer> tmTmPubsubErrorStubs = 
+      new Hashtable<StubKey, IPTestConsumer>();
+	
+	/**
+   * Consumer used to interact with an IPTest provider. The consumer sends TC
+   * packets and the provider sends TM packets.
+   */
+	private Hashtable<StubKey, IPTestConsumer> tcTmIpStubs = 
+      new Hashtable<StubKey, IPTestConsumer>();
+	
+  /**
+   * Consumer used to interact with an IPTest provider. The consumer sends TM
+   * packets and the provider sends TC packets.
+   */
+	private Hashtable<StubKey, IPTestConsumer> tmTcIpStubs = 
+	  new Hashtable<StubKey, IPTestConsumer>();
+	
+	/**
+   * Consumer used to interact with an IPTest provider. The consumer sends TM
+   * packets and the provider sends TM packets.
+   */
+	private Hashtable<StubKey, IPTestConsumer> tmTmIpStubs = 
+      new Hashtable<StubKey, IPTestConsumer>();
 	
 	public LocalMALInstance() throws MALException {
 		super();
 		BufferReader.init();
 	}
+	
+  protected void createBrokers() throws MALException {
+    super.createBrokers();
 
-	public synchronized IPTestConsumer getPubsubErrorIPTestStub(
+    String protocol = getProtocol();
+
+    MALBroker tcTmSharedBroker = brokerManager.createBroker();
+    HashMap<Object, Object> tcTmProps = new HashMap<Object, Object>();
+    tcTmProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
+    tcTmProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+        TC_TM_LOCAL_APID_QUALIFIER);
+    tcTmProps.put(TestHelper.APID_PROPERTY,
+        TC_TM_LOCAL_APID);
+    MALBrokerBinding tcTmSharedBrokerBinding = brokerManager.createBrokerBinding(
+        tcTmSharedBroker, Configuration.SHARED_BROKER_NAME, protocol,
+        Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
+        new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), tcTmProps);
+    
+    MALBroker tmTcSharedBroker = brokerManager.createBroker();
+    HashMap<Object, Object> tmTcProps = new HashMap<Object, Object>();
+    tmTcProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
+    tmTcProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+        TM_TC_LOCAL_APID_QUALIFIER);
+    tmTcProps.put(TestHelper.APID_PROPERTY,
+        TM_TC_LOCAL_APID);
+    MALBrokerBinding tmTcSharedBrokerBinding = brokerManager.createBrokerBinding(
+        tmTcSharedBroker, Configuration.SHARED_BROKER_NAME, protocol,
+        Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
+        new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), tmTcProps);
+    
+    MALBroker tmTmSharedBroker = brokerManager.createBroker();
+    HashMap<Object, Object> tmTmProps = new HashMap<Object, Object>();
+    tmTmProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
+    tmTmProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+        TM_TM_LOCAL_APID_QUALIFIER);
+    tmTmProps.put(TestHelper.APID_PROPERTY,
+        TM_TM_LOCAL_APID);
+    MALBrokerBinding tmTmSharedBrokerBinding = brokerManager.createBrokerBinding(
+        tmTmSharedBroker, Configuration.SHARED_BROKER_NAME, protocol,
+        Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
+        new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), tmTmProps);
+    
+    FileBasedDirectory.storeURI(TC_TM_SHARED_BROKER_NAME,
+        tcTmSharedBrokerBinding.getURI(), tcTmSharedBrokerBinding.getURI());
+    FileBasedDirectory.storeURI(TM_TC_SHARED_BROKER_NAME,
+        tmTcSharedBrokerBinding.getURI(), tmTcSharedBrokerBinding.getURI());
+    FileBasedDirectory.storeURI(TM_TM_SHARED_BROKER_NAME,
+        tmTmSharedBrokerBinding.getURI(), tmTmSharedBrokerBinding.getURI());
+  }
+
+	public synchronized IPTestConsumer getTcTcPubsubErrorIPTestStub(
 	    Blob authenticationId, IdentifierList domain,
 	    Identifier networkZone, SessionType sessionType, Identifier sessionName,
 	    QoSLevel qosLevel, UInteger priority) throws MALException {
 		StubKey key = new StubKey(authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, priority, true);
-    IPTestConsumer ipconsumer = (IPTestConsumer) ipstubs.get(key);
+    IPTestConsumer ipconsumer = (IPTestConsumer) tcTcPubsubErrorStubs.get(key);
     if (ipconsumer == null) {
    		FileBasedDirectory.URIpair uris = FileBasedDirectory
 		    .loadURIs(TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME);
@@ -78,12 +253,315 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
 		    priority);
   		IPTestStub stub = new IPTestStub(consumer);
   		ipconsumer = new IPTestConsumer(consumer, stub);
-  		ipstubs.put(key, ipconsumer);
+  		tcTcPubsubErrorStubs.put(key, ipconsumer);
 		  return ipconsumer;
 	  } else {
 	  	return ipconsumer;
 	  }
 	}
+	
+  public synchronized IPTestConsumer getTcTmPubsubErrorIPTestStub(
+      Blob authenticationId, IdentifierList domain, Identifier networkZone,
+      SessionType sessionType, Identifier sessionName, QoSLevel qosLevel,
+      UInteger priority) throws MALException {
+    StubKey key = new StubKey(authenticationId, domain, networkZone,
+        sessionType, sessionName, qosLevel, priority, true);
+    IPTestConsumer ipconsumer = (IPTestConsumer) tcTmPubsubErrorStubs.get(key);
+    if (ipconsumer == null) {
+      FileBasedDirectory.URIpair uris = FileBasedDirectory
+          .loadURIs(TestServiceProvider.TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME);
+
+      HashMap<Object, Object> tcTmIpConsumerProps = new HashMap<Object, Object>();
+      tcTmIpConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
+      tcTmIpConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+          TC_TM_LOCAL_APID_QUALIFIER);
+      tcTmIpConsumerProps.put(TestHelper.APID_PROPERTY,
+          TC_TM_LOCAL_APID);
+
+      MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
+          uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
+          domain, networkZone, sessionType, sessionName, qosLevel,
+          tcTmIpConsumerProps, priority);
+      IPTestStub stub = new IPTestStub(consumer);
+      ipconsumer = new IPTestConsumer(consumer, stub);
+      tcTmPubsubErrorStubs.put(key, ipconsumer);
+      return ipconsumer;
+    } else {
+      return ipconsumer;
+    }
+  }
+	
+  public synchronized IPTestConsumer getTmTmPubsubErrorIPTestStub(
+      Blob authenticationId, IdentifierList domain, Identifier networkZone,
+      SessionType sessionType, Identifier sessionName, QoSLevel qosLevel,
+      UInteger priority) throws MALException {
+    StubKey key = new StubKey(authenticationId, domain, networkZone,
+        sessionType, sessionName, qosLevel, priority, true);
+    IPTestConsumer ipconsumer = (IPTestConsumer) tmTmPubsubErrorStubs.get(key);
+    if (ipconsumer == null) {
+      FileBasedDirectory.URIpair uris = FileBasedDirectory
+          .loadURIs(TestServiceProvider.TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME);
+
+      HashMap<Object, Object> tmTmIpConsumerProps = new HashMap<Object, Object>();
+      tmTmIpConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
+      tmTmIpConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+          TM_TM_LOCAL_APID_QUALIFIER);
+      tmTmIpConsumerProps.put(TestHelper.APID_PROPERTY,
+          TM_TM_LOCAL_APID);
+
+      MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
+          uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
+          domain, networkZone, sessionType, sessionName, qosLevel,
+          tmTmIpConsumerProps, priority);
+      IPTestStub stub = new IPTestStub(consumer);
+      ipconsumer = new IPTestConsumer(consumer, stub);
+      tmTmPubsubErrorStubs.put(key, ipconsumer);
+      return ipconsumer;
+    } else {
+      return ipconsumer;
+    }
+  }
+	
+  public synchronized IPTestConsumer getTmTcPubsubErrorIPTestStub(
+      Blob authenticationId, IdentifierList domain, Identifier networkZone,
+      SessionType sessionType, Identifier sessionName, QoSLevel qosLevel,
+      UInteger priority) throws MALException {
+    StubKey key = new StubKey(authenticationId, domain, networkZone,
+        sessionType, sessionName, qosLevel, priority, true);
+    IPTestConsumer ipconsumer = (IPTestConsumer) tmTcPubsubErrorStubs.get(key);
+    if (ipconsumer == null) {
+      FileBasedDirectory.URIpair uris = FileBasedDirectory
+          .loadURIs(TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME);
+
+      HashMap<Object, Object> tmTcIpConsumerProps = new HashMap<Object, Object>();
+      tmTcIpConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
+      tmTcIpConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+          TM_TC_LOCAL_APID_QUALIFIER);
+      tmTcIpConsumerProps.put(TestHelper.APID_PROPERTY,
+          TM_TC_LOCAL_APID);
+
+      MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
+          uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
+          domain, networkZone, sessionType, sessionName, qosLevel,
+          tmTcIpConsumerProps, priority);
+      IPTestStub stub = new IPTestStub(consumer);
+      ipconsumer = new IPTestConsumer(consumer, stub);
+      tmTcPubsubErrorStubs.put(key, ipconsumer);
+      return ipconsumer;
+    } else {
+      return ipconsumer;
+    }
+  }
+	
+	public synchronized IPTestConsumer getTmTcIpTestStub(Blob authenticationId,
+      IdentifierList domain, Identifier networkZone, SessionType sessionType,
+      Identifier sessionName, QoSLevel qosLevel, UInteger priority,
+      boolean shared) throws MALException {
+	  StubKey key = new StubKey(authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, priority, shared);
+    IPTestConsumer ipconsumer = (IPTestConsumer) tmTcIpStubs.get(key);
+    if (ipconsumer == null) {
+      FileBasedDirectory.URIpair uris;
+      if (shared) {
+        uris = FileBasedDirectory
+            .loadURIs(TestServiceProvider.TM_TC_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
+      } else {
+        uris = FileBasedDirectory
+            .loadURIs(TestServiceProvider.TC_IP_TEST_PROVIDER_NAME);
+      }
+
+      HashMap<Object, Object> tmTcIpConsumerProps = new HashMap<Object, Object>();
+      tmTcIpConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
+      tmTcIpConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+          TM_TC_LOCAL_APID_QUALIFIER);
+      tmTcIpConsumerProps.put(TestHelper.APID_PROPERTY,
+          TM_TC_LOCAL_APID);
+      MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
+          uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
+          domain, networkZone, sessionType, sessionName, qosLevel,
+          tmTcIpConsumerProps, priority);
+
+      IPTestStub stub = new IPTestStub(consumer);
+      ipconsumer = new IPTestConsumer(consumer, stub);
+      tmTcIpStubs.put(key, ipconsumer);
+      return ipconsumer;
+    } else {
+      return ipconsumer;
+    }
+  }
+	
+  public synchronized IPTestConsumer getTcTmIpTestStub(Blob authenticationId,
+      IdentifierList domain, Identifier networkZone, SessionType sessionType,
+      Identifier sessionName, QoSLevel qosLevel, UInteger priority,
+      boolean shared) throws MALException {
+    StubKey key = new StubKey(authenticationId, domain, networkZone,
+        sessionType, sessionName, qosLevel, priority, shared);
+    IPTestConsumer ipconsumer = (IPTestConsumer) tcTmIpStubs.get(key);
+    if (ipconsumer == null) {
+      FileBasedDirectory.URIpair uris;
+      if (shared) {
+        uris = FileBasedDirectory
+            .loadURIs(TestServiceProvider.TC_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
+      } else {
+        uris = FileBasedDirectory
+            .loadURIs(TestServiceProvider.TM_IP_TEST_PROVIDER_NAME);
+      }
+
+      HashMap<Object, Object> tcTmIpConsumerProps = new HashMap<Object, Object>();
+      tcTmIpConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
+      tcTmIpConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+          TC_TM_LOCAL_APID_QUALIFIER);
+      tcTmIpConsumerProps.put(TestHelper.APID_PROPERTY,
+          TC_TM_LOCAL_APID);
+      MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
+          uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
+          domain, networkZone, sessionType, sessionName, qosLevel,
+          tcTmIpConsumerProps, priority);
+
+      IPTestStub stub = new IPTestStub(consumer);
+      ipconsumer = new IPTestConsumer(consumer, stub);
+      tcTmIpStubs.put(key, ipconsumer);
+      return ipconsumer;
+    } else {
+      return ipconsumer;
+    }
+  }
+  
+  public synchronized IPTestConsumer getTmTmIpTestStub(Blob authenticationId,
+      IdentifierList domain, Identifier networkZone, SessionType sessionType,
+      Identifier sessionName, QoSLevel qosLevel, UInteger priority,
+      boolean shared) throws MALException {
+    StubKey key = new StubKey(authenticationId, domain, networkZone,
+        sessionType, sessionName, qosLevel, priority, shared);
+    IPTestConsumer ipconsumer = (IPTestConsumer) tmTmIpStubs.get(key);
+    if (ipconsumer == null) {
+      FileBasedDirectory.URIpair uris;
+      if (shared) {
+        uris = FileBasedDirectory
+            .loadURIs(TestServiceProvider.TM_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
+      } else {
+        uris = FileBasedDirectory
+            .loadURIs(TestServiceProvider.TM_IP_TEST_PROVIDER_NAME);
+      }
+
+      HashMap<Object, Object> tmTmConsumerProps = new HashMap<Object, Object>();
+      tmTmConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
+      tmTmConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+          TM_TM_LOCAL_APID_QUALIFIER);
+      tmTmConsumerProps.put(TestHelper.APID_PROPERTY,
+          TM_TM_LOCAL_APID);
+      MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
+          uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
+          domain, networkZone, sessionType, sessionName, qosLevel,
+          tmTmConsumerProps, priority);
+
+      IPTestStub stub = new IPTestStub(consumer);
+      ipconsumer = new IPTestConsumer(consumer, stub);
+      tmTmIpStubs.put(key, ipconsumer);
+      return ipconsumer;
+    } else {
+      return ipconsumer;
+    }
+  }
+  
+  public PubsubErrorIPTestHandler getTcTcHandlerForPublishRegister() throws Exception {
+    if (null == tcTcPublishErrorHandler) {
+      FileBasedDirectory.URIpair errorBrokerUris = FileBasedDirectory
+          .loadURIs(TestServiceProvider.ERROR_BROKER_NAME);
+      tcTcPublishErrorHandler = new PubsubErrorIPTestHandler();
+      MALProviderManager providerMgr = LocalMALInstance.instance()
+          .getMalContext().createProviderManager();
+      MALProvider pubsubErrorIPTestProvider = providerMgr.createProvider(
+          TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
+          LocalMALInstance.instance().getProtocol(),
+          IPTestHelper.IPTEST_SERVICE,
+          TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tcTcPublishErrorHandler,
+          new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1),
+          null, Boolean.TRUE,
+          errorBrokerUris.broker);
+    }
+    return tcTcPublishErrorHandler;
+  }
+  
+  public PubsubErrorIPTestHandler getTcTmHandlerForPublishRegister() throws Exception {
+    if (null == tcTmPublishErrorHandler) {
+      FileBasedDirectory.URIpair errorBrokerUris = FileBasedDirectory
+          .loadURIs(TestServiceProvider.TM_ERROR_BROKER_NAME);
+      tcTmPublishErrorHandler = new PubsubErrorIPTestHandler();
+      MALProviderManager providerMgr = LocalMALInstance.instance()
+          .getMalContext().createProviderManager();
+      
+      HashMap<Object, Object> tcTmProps = new HashMap<Object, Object>();
+      tcTmProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
+      tcTmProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+          TC_TM_LOCAL_APID_QUALIFIER);
+      tcTmProps.put(TestHelper.APID_PROPERTY,
+          TC_TM_LOCAL_APID);
+      
+      MALProvider pubsubErrorIPTestProvider = providerMgr.createProvider(
+          TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
+          LocalMALInstance.instance().getProtocol(),
+          IPTestHelper.IPTEST_SERVICE,
+          TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tcTmPublishErrorHandler,
+          new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1),
+          tcTmProps, Boolean.TRUE,
+          errorBrokerUris.broker);
+    }
+    return tcTmPublishErrorHandler;
+  }
+  
+  public PubsubErrorIPTestHandler getTmTcHandlerForPublishRegister() throws Exception {
+    if (null == tmTcPublishErrorHandler) {
+      FileBasedDirectory.URIpair errorBrokerUris = FileBasedDirectory
+          .loadURIs(TestServiceProvider.ERROR_BROKER_NAME);
+      tmTcPublishErrorHandler = new PubsubErrorIPTestHandler();
+      MALProviderManager providerMgr = LocalMALInstance.instance()
+          .getMalContext().createProviderManager();
+      
+      HashMap<Object, Object> tmTcProps = new HashMap<Object, Object>();
+      tmTcProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
+      tmTcProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+          TM_TC_LOCAL_APID_QUALIFIER);
+      tmTcProps.put(TestHelper.APID_PROPERTY,
+          TM_TC_LOCAL_APID);
+      
+      MALProvider pubsubErrorIPTestProvider = providerMgr.createProvider(
+          TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
+          LocalMALInstance.instance().getProtocol(),
+          IPTestHelper.IPTEST_SERVICE,
+          TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tmTcPublishErrorHandler,
+          new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1),
+          tmTcProps, Boolean.TRUE,
+          errorBrokerUris.broker);
+    }
+    return tmTcPublishErrorHandler;
+  }
+  
+  public PubsubErrorIPTestHandler getTmTmHandlerForPublishRegister() throws Exception {
+    if (null == tmTmPublishErrorHandler) {
+      FileBasedDirectory.URIpair errorBrokerUris = FileBasedDirectory
+          .loadURIs(TestServiceProvider.TM_ERROR_BROKER_NAME);
+      tmTmPublishErrorHandler = new PubsubErrorIPTestHandler();
+      MALProviderManager providerMgr = LocalMALInstance.instance()
+          .getMalContext().createProviderManager();
+      
+      HashMap<Object, Object> tmTmProps = new HashMap<Object, Object>();
+      tmTmProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
+      tmTmProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
+          TM_TM_LOCAL_APID_QUALIFIER);
+      tmTmProps.put(TestHelper.APID_PROPERTY,
+          TM_TM_LOCAL_APID);
+      
+      MALProvider pubsubErrorIPTestProvider = providerMgr.createProvider(
+          TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
+          LocalMALInstance.instance().getProtocol(),
+          IPTestHelper.IPTEST_SERVICE,
+          TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tmTmPublishErrorHandler,
+          new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1),
+          tmTmProps, Boolean.TRUE,
+          errorBrokerUris.broker);
+    }
+    return tmTmPublishErrorHandler;
+  }
 	
 	public String getProtocol() {
 		return super.getProtocol();

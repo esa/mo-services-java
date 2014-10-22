@@ -40,6 +40,8 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
+import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
+import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
 import org.ccsds.moims.mo.malspp.test.util.CUCTimeCode;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
@@ -71,14 +73,30 @@ public class SpacePacketCheck {
   
 	private TimeCode durationCode;
 	
+  private int consumerPacketType;
+	  
+	private int providerPacketType;
+	
+	private boolean isSent;
+
 	public SpacePacketCheck() {
+    super();  
 	  timeCode = new CUCTimeCode(TimeCode.EPOCH_TAI, TimeCode.UNIT_SECOND, 4, 3);
     fineTimeCode = new CUCTimeCode(new AbsoluteDate("2013-01-01T00:00:00.000",
         TimeScalesFactory.getTAI()), TimeCode.UNIT_SECOND, 4, 5);
     durationCode = new CUCTimeCode(null, TimeCode.UNIT_SECOND, 4, 0);
   }
 	
-	public boolean selectReceivedPacketAt(int index) {
+	public int getConsumerPacketType() {
+    return consumerPacketType;
+  }
+
+  public int getProviderPacketType() {
+    return providerPacketType;
+  }
+
+  public boolean selectReceivedPacketAt(int index) {
+	  isSent = false;
 		MALMessage message = TransportInterceptor.instance().getLastReceivedMessage(index);
 		malHeader = message.getHeader();
 		spacePacket = SPPInterceptor.instance().getReceivedPacket(index);
@@ -86,6 +104,7 @@ public class SpacePacketCheck {
 	}
 	
 	public boolean selectSentPacketAt(int index) {
+	  isSent = true;
 		MALMessage message = TransportInterceptor.instance().getLastSentMessage(index);
 		malHeader = message.getHeader();
 		spacePacket = SPPInterceptor.instance().getSentPacket(index);
@@ -99,6 +118,24 @@ public class SpacePacketCheck {
     secondaryHeaderReader = new SecondaryHeaderReader(bufferReader);
     return true;
   }
+  
+  public boolean consumerPacketIsTc(boolean isTc) {
+    if (isTc) {
+      consumerPacketType = 1;
+    } else {
+      consumerPacketType = 0;
+    }
+    return true;
+  }
+  
+  public boolean providerPacketIsTc(boolean isTc) {
+    if (isTc) {
+      providerPacketType = 1;
+    } else {
+      providerPacketType = 0;
+    }
+    return true;
+  }
 	
 	public boolean checkTimestamp() throws Exception {
 		long timestamp = bufferReader.readTimestamp();
@@ -110,8 +147,12 @@ public class SpacePacketCheck {
 		return res;
 	}
 	
-	public int spacePacketTypeIs() {
-    return primaryHeader.getPacketType();
+  public boolean checkSpacePacketType() {
+    if (isSent) {
+      return primaryHeader.getPacketType() == consumerPacketType;
+    } else {
+      return primaryHeader.getPacketType() == providerPacketType;
+    }
   }
 	
 	public int versionIs() {
@@ -191,12 +232,110 @@ public class SpacePacketCheck {
 		return (session == sessionType.getOrdinal());
   }
 	
-	public int secondaryApidIs() {
-	  return secondaryHeaderReader.readSecondaryApid();
+	private int getExpectedSecondaryApid() {
+	  int expectedSecondaryApid;
+	  if (consumerPacketType == 1) {
+      if (providerPacketType == 1) {
+        if (isSent) {
+          // TC: consumer APID (from)
+          expectedSecondaryApid = LocalMALInstance.TC_TC_LOCAL_APID;
+        } else {
+          // TC: provider APID (from)
+          expectedSecondaryApid = TestServiceProvider.TC_REMOTE_APID;
+        }
+      } else {
+        if (isSent) {
+          // TC: consumer APID (from)
+          expectedSecondaryApid = LocalMALInstance.TC_TM_LOCAL_APID;
+        } else {
+          // TM: consumer APID (to)
+          expectedSecondaryApid = LocalMALInstance.TC_TM_LOCAL_APID;
+        }
+      }
+    } else {
+      if (providerPacketType == 1) {
+        if (isSent) {
+          // TM: provider APID (to)
+          expectedSecondaryApid = TestServiceProvider.TC_REMOTE_APID;
+        } else {
+          // TC: provider APID (from)
+          expectedSecondaryApid = TestServiceProvider.TC_REMOTE_APID;
+        }
+      } else {
+        if (isSent) {
+          // TM: provider APID (to)
+          expectedSecondaryApid = TestServiceProvider.TM_REMOTE_APID;
+        } else {
+          // TM: consumer APID (to)
+          expectedSecondaryApid = LocalMALInstance.TM_TM_LOCAL_APID;
+        }
+      }
+    }
+	  return expectedSecondaryApid;
 	}
 	
-	public int secondaryApidQualifierIs() {
-    return secondaryHeaderReader.readSecondaryApidQualifier();
+	private int getExpectedSecondaryApidQualifier() {
+    int expectedSecondaryApidQualifier;
+    if (consumerPacketType == 1) {
+      if (providerPacketType == 1) {
+        if (isSent) {
+          // TC: consumer APID (from)
+          expectedSecondaryApidQualifier = LocalMALInstance.TC_TC_LOCAL_APID_QUALIFIER;
+        } else {
+          // TC: provider APID (from)
+          expectedSecondaryApidQualifier = TestServiceProvider.TC_REMOTE_APID_QUALIFIER;
+        }
+      } else {
+        if (isSent) {
+          // TC: consumer APID (from)
+          expectedSecondaryApidQualifier = LocalMALInstance.TC_TM_LOCAL_APID_QUALIFIER;
+        } else {
+          // TM: consumer APID (to)
+          expectedSecondaryApidQualifier = LocalMALInstance.TC_TM_LOCAL_APID_QUALIFIER;
+        }
+      }
+    } else {
+      if (providerPacketType == 1) {
+        if (isSent) {
+          // TM: provider APID (to)
+          expectedSecondaryApidQualifier = TestServiceProvider.TC_REMOTE_APID_QUALIFIER;
+        } else {
+          // TC: provider APID (from)
+          expectedSecondaryApidQualifier = TestServiceProvider.TC_REMOTE_APID_QUALIFIER;
+        }
+      } else {
+        if (isSent) {
+          // TM: provider APID (to)
+          expectedSecondaryApidQualifier = TestServiceProvider.TM_REMOTE_APID_QUALIFIER;
+        } else {
+          // TM: consumer APID (to)
+          expectedSecondaryApidQualifier = LocalMALInstance.TM_TM_LOCAL_APID_QUALIFIER;
+        }
+      }
+    }
+    return expectedSecondaryApidQualifier;
+  }
+	
+  public boolean checkSecondaryApid() {
+    int secondaryApid = secondaryHeaderReader.readSecondaryApid();
+    boolean res = secondaryApid == getExpectedSecondaryApid();
+    if (!res) {
+      LoggingBase.logMessage("Secondary APID: "
+          + secondaryApid + " != "
+          + getExpectedSecondaryApid());
+    }
+    return res;
+  }
+
+  public boolean checkSecondaryApidQualifier() {
+    int secondaryApidQualifier = secondaryHeaderReader.readSecondaryApidQualifier();
+    boolean res = secondaryApidQualifier == getExpectedSecondaryApidQualifier();
+    if (!res) {
+      LoggingBase.logMessage("Secondary APID qualifier: "
+          + secondaryApidQualifier + " != "
+          + getExpectedSecondaryApidQualifier());
+    }
+    return res;
   }
 	
 	public byte sourceIdFlagIs() throws Exception {

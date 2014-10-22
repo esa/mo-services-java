@@ -45,10 +45,14 @@ Reuse the MAL test procedure that does the following actions:
  2 Wait for the expected transitions to be done, except the faulty ones that are ignored.
  3 Check the message headers
  4 Check the transitions
-
-The space packet type is always 1 (TC). So the secondary APID and APID qualifier are used by the MAL header field 'URI From'.
-The local APID and APID qualifier are respectively equal to 1 and 247.
-The remote APID and APID qualifier are respectively equal to 2 and 248.
+ 
+ Several APIDs and APID qualifiers are used:
+ - 248/2: IPTest providers sending TC packets
+ - 348/4: IPTest providers sending TM packets
+ - 247/1: IPTest consumers sending TC packets and expecting to receive TC packets
+ - 347/3: IPTest consumers sending TC packets and expecting to receive TM packets
+ - 447/5: IPTest consumers sending TM packets and expecting to receive TC packets
+ - 547/7: IPTest consumers sending TM packets and expecting to receive TM packets
 
 !*> Sub scenario definitions
 |scenario| pattern | interaction | with multi| multi | and qos| qos | and session | sessId | and transitions | trans | and trans id | id | test |
@@ -62,7 +66,7 @@ The remote APID and APID qualifier are respectively equal to 2 and 248.
 |scenario| test interaction pattern | interaction | with transitions | trans | and trans id | id | and qos | qos | and session | sessId |
 |pattern | @interaction | with qos| @qos | and session | @sessId | and transitions | @trans | and trans id | @id | test |
 
-|scenario| secondary header sdu type | sdu | and apid | apid | and apid qualifier | qualifier | and operation | op | and error | error | and qos | qos | and session | sessionId | and session name | sessionName |
+|scenario| secondary header sdu type | sdu | and operation | op | and error | error | and qos | qos | and session | sessionId | and session name | sessionName |
 |check  | version is | 0 |
 |check  | sdu type is | @sdu |
 |check  | area is | 100 |
@@ -72,8 +76,8 @@ The remote APID and APID qualifier are respectively equal to 2 and 248.
 |check  | error flag is | @error |
 |ensure | check qos | @qos |
 |ensure | check session | @sessionId |
-|check  | secondary apid is | @apid |
-|check  | secondary apid qualifier is | @qualifier |
+|ensure | check secondary apid |
+|ensure | check secondary apid qualifier |
 |ensure | check transaction id |
 |check  | source id flag is | 1 |
 |check  | destination id flag is | 1 |
@@ -98,117 +102,117 @@ The remote APID and APID qualifier are respectively equal to 2 and 248.
 |ensure|reset spp interceptor|
 |ensure|initiate send pattern with qos| @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 0 | and apid | 1 | and apid qualifier | 247 | and operation | 100 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 0 | and operation | 100 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test interaction pattern | Submit| with transitions | [ACK] | and trans id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 1 | and apid | 1 | and apid qualifier | 247 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 1 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 2 | and apid | 2 | and apid qualifier | 248 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 2 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test interaction pattern | Submit| with transitions | [ACK_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 1 | and apid | 1 | and apid qualifier | 247 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 1 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 2 | and apid | 2 | and apid qualifier | 248 | and operation | 101 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 2 | and operation | 101 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test interaction pattern | Request| with transitions | [RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 3 | and apid | 1 | and apid qualifier | 247 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 3 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 4 | and apid | 2 | and apid qualifier | 248 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 4 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test interaction pattern | Request| with transitions | [RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 3 | and apid | 1 | and apid qualifier | 247 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 3 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 4 | and apid | 2 | and apid qualifier | 248 | and operation | 102 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 4 | and operation | 102 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test interaction pattern | Invoke| with transitions | [ACK, RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 5 | and apid | 1 | and apid qualifier | 247 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 6 | and apid | 2 | and apid qualifier | 248 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 6 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 1 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 7 | and apid | 2 | and apid qualifier | 248 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 7 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test interaction pattern | Invoke| with transitions | [ACK, RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 5 | and apid | 1 | and apid qualifier | 247 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 6 | and apid | 2 | and apid qualifier | 248 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 6 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 1 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 7 | and apid | 2 | and apid qualifier | 248 | and operation | 103 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 7 | and operation | 103 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test interaction pattern | Invoke| with transitions | [ACK_ERROR] | and trans id | 3 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 5 | and apid | 1 | and apid qualifier | 247 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 6 | and apid | 2 | and apid qualifier | 248 | and operation | 103 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 6 | and operation | 103 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test interaction pattern | Progress| with transitions | [ACK, RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 8 | and apid | 1 | and apid qualifier | 247 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 9 | and apid | 2 | and apid qualifier | 248 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 9 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 1 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 11 | and apid | 2 | and apid qualifier | 248 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 11 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test interaction pattern | Progress| with transitions | [ACK, RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 8 | and apid | 1 | and apid qualifier | 247 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 9 | and apid | 2 | and apid qualifier | 248 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 9 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 1 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 11 | and apid | 2 | and apid qualifier | 248 | and operation | 104 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 11 | and operation | 104 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test interaction pattern | Progress| with transitions | [ACK_ERROR] | and trans id | 3 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 8 | and apid | 1 | and apid qualifier | 247 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 9 | and apid | 2 | and apid qualifier | 248 | and operation | 104 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 9 | and operation | 104 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 |test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, RESPONSE] | and trans id | 4 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 8 | and apid | 1 | and apid qualifier | 247 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 0 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 9 | and apid | 2 | and apid qualifier | 248 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 9 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 1 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 10 | and apid | 2 | and apid qualifier | 248 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 10 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 2 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 10 | and apid | 2 | and apid qualifier | 248 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 10 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|select received packet at| 3 |
-|check | space packet type is | 1 |
-|secondary header sdu type | 11 | and apid | 2 | and apid qualifier | 248 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|check space packet type |
+|secondary header sdu type | 11 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |ensure|reset spp interceptor|
 
 |scenario| test mal spp pattern with session | sessId | and session name | sessionName |
@@ -217,9 +221,20 @@ The remote APID and APID qualifier are respectively equal to 2 and 248.
 |test mal spp pattern with qos | Queued | and session | @sessId | and session name | @sessionName |
 |test mal spp pattern with qos | Timely | and session | @sessId | and session name | @sessionName |
 
-***********!
-
-|script| mal spp pattern test |
+|scenario| test mal spp pattern with consumer tc| consumerTc | and provider tc | providerTc |
+|ensure |consumer packet is tc| @consumerTc |
+|ensure |provider packet is tc| @providerTc | 
 |test mal spp pattern with session | Live | and session name | LIVE |
 |test mal spp pattern with session | Simulation | and session name | S1 |
 |test mal spp pattern with session | Replay | and session name | R1 |
+
+***********!
+
+|script| mal spp pattern test |
+|test mal spp pattern with consumer tc | true  | and provider tc | true  |
+|test mal spp pattern with consumer tc | true  | and provider tc | false |
+|test mal spp pattern with consumer tc | false | and provider tc | true  |
+|test mal spp pattern with consumer tc | false | and provider tc | false |
+
+
+

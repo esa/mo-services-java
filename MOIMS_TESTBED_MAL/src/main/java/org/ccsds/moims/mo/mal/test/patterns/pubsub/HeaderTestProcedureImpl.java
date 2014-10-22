@@ -85,7 +85,7 @@ import org.ccsds.moims.mo.testbed.util.ParseHelper;
 
 public class HeaderTestProcedureImpl extends LoggingBase
 {
-  private LocalMALInstance.IPTestConsumer ipTestConsumer;
+  protected LocalMALInstance.IPTestConsumer ipTestConsumer;
   
   private IPTestStub ipTest;
   
@@ -111,11 +111,33 @@ public class HeaderTestProcedureImpl extends LoggingBase
   private void resetAssertions() {
     assertions = new AssertionList();
   }
+  
+  public boolean resetConsumers() {
+    consumerContexts.clear();
+    return true;
+  }
 
   public boolean logTime(String str)
   {
     logMessage("TIMESTAMP (" + str + ") " + new java.util.Date().getTime());
     return true;
+  }
+  
+  /**
+   * Allows a subclass to override the consumer, for example by
+   * interacting with another service provider and with specific QoS properties.
+   * @param session
+   * @param sessionName
+   * @param qos
+   * @throws Exception
+   */
+  protected void initConsumer(int domain, SessionType session,
+      Identifier sessionName, QoSLevel qos, boolean shared) throws Exception {
+    ipTestConsumer = LocalMALInstance.instance().ipTestStub(
+        HeaderTestProcedure.AUTHENTICATION_ID,
+        HeaderTestProcedure.getDomain(domain),
+        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+        HeaderTestProcedure.PRIORITY, shared);
   }
 
   public boolean initiatePublishRegisterWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel, 
@@ -129,8 +151,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     boolean shared = Boolean.parseBoolean(sharedBroker);
-    ipTestConsumer = LocalMALInstance.instance().ipTestStub(
-        HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY, shared);
+    initConsumer(domain, session, sessionName, qos, shared);
+    
     ipTest = ipTestConsumer.getStub();
     EntityKeyList entityKeys = new EntityKeyList();
     entityKeys.add(HeaderTestProcedure.RIGHT_ENTITY_KEY);
@@ -154,7 +176,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     return AssertionHelper.checkAssertions(result.getAssertions());
   }
   
-  public static FileBasedDirectory.URIpair getProviderURIs(boolean shared) {
+  public FileBasedDirectory.URIpair getProviderURIs(boolean shared) {
     FileBasedDirectory.URIpair uris;
     if (shared) {
       uris = FileBasedDirectory.loadURIs(TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
@@ -174,8 +196,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     boolean shared = Boolean.parseBoolean(sharedBroker);
-    ipTestConsumer = LocalMALInstance.instance().ipTestStub(
-        HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY, shared);
+    initConsumer(domain, session, sessionName, qos, shared);
+    
     ipTest = ipTestConsumer.getStub();
     EntityKeyList entityKeys = new EntityKeyList();
     entityKeys.add(HeaderTestProcedure.RIGHT_ENTITY_KEY);
@@ -299,8 +321,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     boolean shared = Boolean.parseBoolean(sharedBroker);
-    ipTestConsumer = LocalMALInstance.instance().ipTestStub(
-        HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY, shared);
+    initConsumer(domain, session, sessionName, qos, shared);
+    
     ipTest = ipTestConsumer.getStub();
     
     UpdateHeader updateHeader1 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.CREATION, HeaderTestProcedure.RIGHT_ENTITY_KEY);
@@ -351,8 +373,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     boolean shared = Boolean.parseBoolean(sharedBroker);
-    ipTestConsumer = LocalMALInstance.instance().ipTestStub(
-        HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY, shared);
+    initConsumer(domain, session, sessionName, qos, shared);
+    
     ipTest = ipTestConsumer.getStub();
     
     ConsumerContext cc = 
@@ -411,8 +433,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     boolean shared = Boolean.parseBoolean(sharedBroker);
-    ipTestConsumer = LocalMALInstance.instance().ipTestStub(
-        HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY, shared);
+    initConsumer(domain, session, sessionName, qos, shared);
+    
     ipTest = ipTestConsumer.getStub();
     
     ConsumerContext cc = 
@@ -476,8 +498,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     boolean shared = Boolean.parseBoolean(sharedBroker);
-    ipTestConsumer = LocalMALInstance.instance().ipTestStub(
-        HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY, shared);
+    initConsumer(domain, session, sessionName, qos, shared);
+    
     ipTest = ipTestConsumer.getStub();
     
     UpdateHeader updateHeader = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.CREATION, HeaderTestProcedure.WRONG_ENTITY_KEY);
@@ -522,8 +544,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     boolean shared = Boolean.parseBoolean(sharedBroker);
-    ipTestConsumer = LocalMALInstance.instance().ipTestStub(HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain),
-        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY, shared);
+    initConsumer(domain, session, sessionName, qos, shared);
+    
     ipTest = ipTestConsumer.getStub();
     
     ConsumerContext consumerContext = 
@@ -630,8 +652,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     boolean shared = Boolean.parseBoolean(sharedBroker);
-    ipTestConsumer = LocalMALInstance.instance().ipTestStub(HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain),
-        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY, shared);
+    initConsumer(domain, session, sessionName, qos, shared);
+    
     ipTest = ipTestConsumer.getStub();
     UInteger errorCode = new UInteger(999);
     TestPublishDeregister testPublishDeregister = new TestPublishDeregister(qos,
@@ -653,8 +675,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     boolean shared = Boolean.parseBoolean(sharedBroker);
-    ipTestConsumer = LocalMALInstance.instance().ipTestStub(HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain),
-        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY, shared);
+    initConsumer(domain, session, sessionName, qos, shared);
+    
     ipTest = ipTestConsumer.getStub();
     EntityKeyList entityKeys = new EntityKeyList();
     entityKeys.add(HeaderTestProcedure.PUBLISH_REGISTER_ERROR_ENTITY_KEY);
@@ -680,8 +702,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     boolean shared = Boolean.parseBoolean(sharedBroker);
-    ipTestConsumer = LocalMALInstance.instance().ipTestStub(HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain),
-        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY, shared);
+    initConsumer(domain, session, sessionName, qos, shared);
+    
     ipTest = ipTestConsumer.getStub();
     EntityKeyList entityKeys = new EntityKeyList();
     entityKeys.add(HeaderTestProcedure.RIGHT_ENTITY_KEY);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -39,8 +39,6 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
-import org.ccsds.moims.mo.mal.provider.MALProvider;
-import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.EntityRequestList;
@@ -78,6 +76,89 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 	
   private SpacePacketCheck spacePacketCheck = new SpacePacketCheck();
   
+  public boolean consumerPacketIsTc(boolean isTc) {
+    return spacePacketCheck.consumerPacketIsTc(isTc);
+  }
+  
+  public boolean providerPacketIsTc(boolean isTc) {
+    return spacePacketCheck.providerPacketIsTc(isTc);
+  }
+  
+  public FileBasedDirectory.URIpair getProviderURIs(boolean shared) {
+    FileBasedDirectory.URIpair uris;
+    int consumerPacketType = spacePacketCheck.getConsumerPacketType();
+    int providerPacketType = spacePacketCheck.getProviderPacketType();
+    if (consumerPacketType == 1) {
+      if (providerPacketType == 1) {
+        if (shared) {
+          uris = FileBasedDirectory
+              .loadURIs(TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
+        } else {
+          uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME
+              .getValue());
+        }
+      } else {
+        if (shared) {
+          uris = FileBasedDirectory
+              .loadURIs(TestServiceProvider.TC_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
+        } else {
+          uris = FileBasedDirectory.loadURIs(TestServiceProvider.TM_IP_TEST_PROVIDER_NAME);
+        }
+      }
+    } else {
+      if (providerPacketType == 1) {
+        if (shared) {
+          uris = FileBasedDirectory
+              .loadURIs(TestServiceProvider.TM_TC_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
+        } else {
+          uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME
+              .getValue());
+        }
+      } else {
+        if (shared) {
+          uris = FileBasedDirectory
+              .loadURIs(TestServiceProvider.TM_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
+        } else {
+          uris = FileBasedDirectory.loadURIs(TestServiceProvider.TM_IP_TEST_PROVIDER_NAME);
+        }
+      }
+    }
+    return uris;
+  }
+  
+  protected void initConsumer(int domain, SessionType session,
+      Identifier sessionName, QoSLevel qos, boolean shared) throws Exception {
+    int consumerPacketType = spacePacketCheck.getConsumerPacketType();
+    int providerPacketType = spacePacketCheck.getProviderPacketType();
+    if (consumerPacketType == 1) {
+      if (providerPacketType == 1) {
+        ipTestConsumer = LocalMALInstance.instance().ipTestStub(
+            HeaderTestProcedure.AUTHENTICATION_ID,
+            HeaderTestProcedure.getDomain(domain),
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+            HeaderTestProcedure.PRIORITY, shared);
+      } else {
+        ipTestConsumer = LocalMALInstance.instance().getTcTmIpTestStub(
+            HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain),
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+            HeaderTestProcedure.PRIORITY, shared);
+      }
+    } else {
+      if (providerPacketType == 1) {
+        ipTestConsumer = LocalMALInstance.instance().getTmTcIpTestStub(
+            HeaderTestProcedure.AUTHENTICATION_ID,
+            HeaderTestProcedure.getDomain(domain),
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+            HeaderTestProcedure.PRIORITY, shared);
+      } else {
+        ipTestConsumer = LocalMALInstance.instance().getTmTmIpTestStub(
+            HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain),
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+            HeaderTestProcedure.PRIORITY, shared);
+      }
+    }
+  }
+  
 	public boolean selectReceivedPacketAt(int index) {
 		return spacePacketCheck.selectReceivedPacketAt(index);
 	}
@@ -90,8 +171,8 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 		return spacePacketCheck.checkTimestamp();
 	}
 	
-	public int spacePacketTypeIs() {
-		return spacePacketCheck.spacePacketTypeIs();
+	public boolean checkSpacePacketType() {
+		return spacePacketCheck.checkSpacePacketType();
   }
 	
 	public int versionIs() {
@@ -166,12 +247,12 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 		return spacePacketCheck.checkDomainId();
 	}
   
-  public int secondaryApidIs() {
-    return spacePacketCheck.secondaryApidIs();
+  public boolean checkSecondaryApid() {
+    return spacePacketCheck.checkSecondaryApid();
   }
   
-  public int secondaryApidQualifierIs() {
-    return spacePacketCheck.secondaryApidQualifierIs();
+  public boolean checkSecondaryApidQualifier() {
+    return spacePacketCheck.checkSecondaryApidQualifier();
   }
   
   public byte sourceIdFlagIs() throws Exception {
@@ -217,6 +298,44 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
   public int segmentCounterIs() {
     return spacePacketCheck.segmentCounterIs();
   }
+  
+  private IPTestConsumer getPubsubErrorIPTestStub(int domain, SessionType session,
+      Identifier sessionName, QoSLevel qos) throws Exception {
+    int consumerPacketType = spacePacketCheck.getConsumerPacketType();
+    int providerPacketType = spacePacketCheck.getProviderPacketType();
+    if (consumerPacketType == 1) {
+      if (providerPacketType == 1) {
+        return LocalMALInstance.instance().getTcTcPubsubErrorIPTestStub(
+            HeaderTestProcedure.AUTHENTICATION_ID,
+            HeaderTestProcedure.getDomain(domain),
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+            HeaderTestProcedure.PRIORITY);
+      } else {
+        return LocalMALInstance.instance()
+            .getTcTmPubsubErrorIPTestStub(
+                HeaderTestProcedure.AUTHENTICATION_ID,
+                HeaderTestProcedure.getDomain(domain),
+                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+                HeaderTestProcedure.PRIORITY);
+      }
+    } else {
+      if (providerPacketType == 1) {
+        return LocalMALInstance.instance()
+            .getTmTcPubsubErrorIPTestStub(
+                HeaderTestProcedure.AUTHENTICATION_ID,
+                HeaderTestProcedure.getDomain(domain),
+                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+                HeaderTestProcedure.PRIORITY);
+      } else {
+        return LocalMALInstance.instance()
+            .getTmTmPubsubErrorIPTestStub(
+                HeaderTestProcedure.AUTHENTICATION_ID,
+                HeaderTestProcedure.getDomain(domain),
+                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+                HeaderTestProcedure.PRIORITY);
+      }
+    } 
+  }
 
 	public boolean initiateRegisterErrorWithQosAndSessionAndDomain(String qosLevel,
       String sessionType, int domain) throws Exception
@@ -226,9 +345,8 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
     QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
-    IPTestConsumer ipTestConsumer = LocalMALInstance.instance().getPubsubErrorIPTestStub(
-        HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain), 
-        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY);
+    
+    IPTestConsumer ipTestConsumer = getPubsubErrorIPTestStub(domain, session, sessionName, qos);
     IPTest ipTest = ipTestConsumer.getStub();
     
     Subscription subscription = new Subscription(new Identifier(
@@ -255,10 +373,8 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     
-    // First, need to subscribe in order to synchonize with the Notify  
-    IPTestConsumer ipTestConsumer = LocalMALInstance.instance().getPubsubErrorIPTestStub(
-        HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain), 
-        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY);
+    // First, need to subscribe in order to synchronize with the Notify  
+    IPTestConsumer ipTestConsumer = getPubsubErrorIPTestStub(domain, session, sessionName, qos);
     IPTest ipTest = ipTestConsumer.getStub();
     
     Subscription subscription = new Subscription(new Identifier("subscription"), new EntityRequestList());
@@ -268,53 +384,50 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
     try {
       ipTest.monitorRegister(subscription, listener);
     } catch (MALInteractionException exc) {
-      // Expected error
-      return true;
+      // Unexpected error
+      logMessage("Unexpected error: " + exc);
+      return false;
     }
     
-    IPTestConsumer errorIpTestConsumer = LocalMALInstance.instance().getPubsubErrorIPTestStub(
-    		HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.getDomain(domain), 
-    		HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos, HeaderTestProcedure.PRIORITY);
-    IPTest errorIpTest = errorIpTestConsumer.getStub();
+    //IPTestConsumer errorIpTestConsumer = getPubsubErrorIPTestStub(domain, session, sessionName, qos);
+    //IPTest errorIpTest = errorIpTestConsumer.getStub();
     
     UInteger errorCode = MALHelper.INTERNAL_ERROR_NUMBER;
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY, 
     		HeaderTestProcedure.getDomain(domain), 
     		HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, new UpdateHeaderList(), 
         new TestUpdateList(), errorCode, Boolean.FALSE, null);
-    errorIpTest.publishUpdates(testPublishUpdate);
+    ipTest.publishUpdates(testPublishUpdate);
     
     listener.waitNotifyError();
 
     return true;
   }
 	
-	protected static PubsubErrorIPTestHandler ipTestHandler = null;
+	private PubsubErrorIPTestHandler initHandlerForPublishRegister() throws Exception {
+    int consumerPacketType = spacePacketCheck.getConsumerPacketType();
+    int providerPacketType = spacePacketCheck.getProviderPacketType();
+    if (consumerPacketType == 1) {
+      if (providerPacketType == 1) {
+        return LocalMALInstance.instance().getTcTcHandlerForPublishRegister();
+      } else {
+        return LocalMALInstance.instance().getTcTmHandlerForPublishRegister();
+      }
+    } else {
+      if (providerPacketType == 1) {
+        return LocalMALInstance.instance().getTmTcHandlerForPublishRegister();
+      } else {
+        return LocalMALInstance.instance().getTmTmHandlerForPublishRegister();
+      }
+    } 
+  }
+	
 	public boolean initiatePublishRegisterErrorWithQosAndSessionAndDomain(String qosLevel,
       String sessionType, int domain) throws Exception
   {
     logMessage("initiatePublishRegisterErrorWithQosAndSessionAndDomain(" + qosLevel + ',' + sessionType + ',' + domain+ ')');
     
-    if (null == ipTestHandler) {
-		FileBasedDirectory.URIpair errorBrokerUris = FileBasedDirectory
-				.loadURIs(TestServiceProvider.ERROR_BROKER_NAME);
-		ipTestHandler = new PubsubErrorIPTestHandler();
-		MALProviderManager providerMgr = LocalMALInstance.instance().getMalContext().createProviderManager();
-		MALProvider pubsubErrorIPTestProvider = providerMgr.createProvider(
-					TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
-					LocalMALInstance.instance().getProtocol(),
-			IPTestHelper.IPTEST_SERVICE,
-			TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
-			ipTestHandler,
-			new QoSLevel[]
-			{
-			  QoSLevel.ASSURED
-			},
-			new UInteger(1), // number of priority levels
-			null,
-			Boolean.TRUE, // isPublisher
-			errorBrokerUris.broker);
-	}
+    PubsubErrorIPTestHandler ipTestHandler = initHandlerForPublishRegister();
     
     QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
     SessionType session = ParseHelper.parseSessionType(sessionType);
