@@ -138,7 +138,8 @@ Reuse the data type MAL test scenario.
 |ensure|reset spp interceptor|
 
 |scenario| check an attribute sent as a !-MAL::Element-! |
-|check| attribute types work| OK|
+|ensure|reset spp interceptor|
+|check | attribute types work| OK|
 | note | Duration |
 |ensure|select sent packet at| 1 |
 |check | presence flag is | 1 |
@@ -207,7 +208,8 @@ Reuse the data type MAL test scenario.
 |ensure|reset spp interceptor|
 
 |scenario| check an enumerated sent as a !-MAL::Element-! |
-|check| enumerations work| OK|
+|ensure|reset spp interceptor|
+|check | enumerations work| OK|
 | note | Interaction type SEND |
 |ensure|select sent packet at| 1 |
 |check | presence flag is | 1 |
@@ -221,7 +223,8 @@ Reuse the data type MAL test scenario.
 |ensure|reset spp interceptor|
 
 |scenario| check a composite with a field typed !-MAL::Attribute-! |
-|check| complete composites work | OK|
+|ensure|reset spp interceptor|
+|check | complete composites work | OK|
 |note  | skip first packet setTestDataOffset|
 | note | Fourth composite typed pair |
 |ensure|select sent packet at| 4 |
@@ -245,7 +248,8 @@ Reuse the data type MAL test scenario.
 |ensure|reset spp interceptor|
 
 |scenario| check a composite with a field typed as a list |
-|check| complete composites work | OK|
+|ensure|reset spp interceptor|
+|check | complete composites work | OK|
 | note | Third composite typed entity request |
 |ensure|select sent packet at| 3 |
 |check | presence flag is  | 1 |
@@ -279,7 +283,8 @@ Reuse the data type MAL test scenario.
 |ensure|reset spp interceptor|
 
 |scenario| check a composite sent as a !-MAL::Element-! |
-|check| complete composites work | OK|
+|ensure|reset spp interceptor|
+|check | complete composites work | OK|
 | note | First composite typed assertion |
 |note  | skip first packet setTestDataOffset|
 |ensure|select sent packet at| 1 |

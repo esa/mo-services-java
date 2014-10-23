@@ -137,12 +137,14 @@ In the second case, the mapping configuration parameters of the provider (APID 3
 |check  | session name is | LIVE |
 |ensure | check domain id |
 |ensure | check authentication id |
+|ensure | reset spp interceptor |
 
 ***********!
 
 |script| qos properties test |
 |test qos properties with provider tc | true  |
 |test qos properties with provider tc | false |
+
 
 
 
