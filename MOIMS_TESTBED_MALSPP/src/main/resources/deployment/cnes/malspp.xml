@@ -35,9 +35,7 @@
 
 <ms:conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:ms="http://www.cnes.fr/schema/MalSppSchema">
-  <ms:app apidQualifier="247" apid="1" comment="" >
-    <ms:authenticationId value="" comment="Empty authentication id." />
-    <ms:domain value="" comment="Empty domain." />
+  <ms:app apidQualifier="247" apid="1" comment="No mapping configuration parameters for the flagged fields." >
     <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
       <ms:unit value="second" comment="" />
     </ms:duration>
@@ -48,15 +46,12 @@
       <ms:unit value="second" comment="" />
       <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
     </ms:fineTime>
-    <ms:networkZone value="" comment="Empty network zone." />
     <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
-    <ms:priority value="0" comment="" />
-    <ms:sessionName value="" comment="Empty session name." />
     <ms:varintSupported value="true" comment="" />
   </ms:app>
   <ms:app apidQualifier="347" apid="3" comment="" >
-    <ms:authenticationId value="" comment="Empty authentication id." />
-    <ms:domain value="" comment="Empty domain." />
+    <ms:authenticationId value="0A0B0C" comment="" />
+    <ms:domain value="malspp.test.domain" comment="" />
     <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
       <ms:unit value="second" comment="" />
     </ms:duration>
@@ -67,15 +62,15 @@
       <ms:unit value="second" comment="" />
       <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
     </ms:fineTime>
-    <ms:networkZone value="" comment="Empty network zone." />
+    <ms:networkZone value="malsppTestNw" comment="" />
     <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
-    <ms:priority value="0" comment="" />
-    <ms:sessionName value="" comment="Empty session name." />
+    <ms:priority value="4294967295" comment="Max priority (2^32-1)" />
+    <ms:sessionName value="malsppTestSession" comment="" />
     <ms:varintSupported value="true" comment="" />
   </ms:app>
   <ms:app apidQualifier="447" apid="5" comment="" >
-    <ms:authenticationId value="" comment="Empty authentication id." />
-    <ms:domain value="" comment="Empty domain." />
+    <ms:authenticationId value="0A0B0C" comment="" />
+    <ms:domain value="malspp.test.domain" comment="" />
     <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
       <ms:unit value="second" comment="" />
     </ms:duration>
@@ -86,15 +81,15 @@
       <ms:unit value="second" comment="" />
       <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
     </ms:fineTime>
-    <ms:networkZone value="" comment="Empty network zone." />
+    <ms:networkZone value="malsppTestNw" comment="" />
     <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
-    <ms:priority value="0" comment="" />
-    <ms:sessionName value="" comment="Empty session name." />
+    <ms:priority value="4294967295" comment="Max priority (2^32-1)" />
+    <ms:sessionName value="malsppTestSession" comment="" />
     <ms:varintSupported value="true" comment="" />
   </ms:app>
   <ms:app apidQualifier="547" apid="7" comment="" >
-    <ms:authenticationId value="" comment="Empty authentication id." />
-    <ms:domain value="" comment="Empty domain." />
+    <ms:authenticationId value="0A0B0C" comment="" />
+    <ms:domain value="malspp.test.domain" comment="" />
     <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
       <ms:unit value="second" comment="" />
     </ms:duration>
@@ -105,15 +100,15 @@
       <ms:unit value="second" comment="" />
       <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
     </ms:fineTime>
-    <ms:networkZone value="" comment="Empty network zone." />
+    <ms:networkZone value="malsppTestNw" comment="" />
     <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
-    <ms:priority value="0" comment="" />
-    <ms:sessionName value="" comment="Empty session name." />
+    <ms:priority value="4294967295" comment="Max priority (2^32-1)" />
+    <ms:sessionName value="malsppTestSession" comment="" />
     <ms:varintSupported value="true" comment="" />
   </ms:app>
   <ms:app apidQualifier="248" apid="2" comment="" >
-    <ms:authenticationId value="" comment="Empty authentication id." />
-    <ms:domain value="" comment="Empty domain." />
+    <ms:authenticationId value="0A0B0C" comment="" />
+    <ms:domain value="malspp.test.domain" comment="" />
     <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
       <ms:unit value="second" comment="" />
     </ms:duration>
@@ -124,15 +119,15 @@
       <ms:unit value="second" comment="" />
       <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
     </ms:fineTime>
-    <ms:networkZone value="" comment="Empty network zone." />
+    <ms:networkZone value="malsppTestNw" comment="" />
     <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
-    <ms:priority value="0" comment="" />
-    <ms:sessionName value="" comment="Empty session name." />
+    <ms:priority value="4294967295" comment="Max priority (2^32-1)" />
+    <ms:sessionName value="malsppTestSession" comment="" />
     <ms:varintSupported value="true" comment="" />
   </ms:app>
   <ms:app apidQualifier="348" apid="4" comment="" >
-    <ms:authenticationId value="" comment="Empty authentication id." />
-    <ms:domain value="" comment="Empty domain." />
+    <ms:authenticationId value="0A0B0C" comment="" />
+    <ms:domain value="malspp.test.domain" comment="" />
     <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
       <ms:unit value="second" comment="" />
     </ms:duration>
@@ -143,10 +138,10 @@
       <ms:unit value="second" comment="" />
       <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
     </ms:fineTime>
-    <ms:networkZone value="" comment="Empty network zone." />
+    <ms:networkZone value="malsppTestNw" comment="" />
     <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
-    <ms:priority value="0" comment="" />
-    <ms:sessionName value="" comment="Empty session name." />
+    <ms:priority value="4294967295" comment="Max priority (2^32-1)" />
+    <ms:sessionName value="malsppTestSession" comment="" />
     <ms:varintSupported value="true" comment="" />
   </ms:app>
 </ms:conf>

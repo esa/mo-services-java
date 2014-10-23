@@ -126,13 +126,13 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
     return uris;
   }
   
-  protected void initConsumer(int domain, SessionType session,
-      Identifier sessionName, QoSLevel qos, boolean shared) throws Exception {
+  protected void initConsumer(int domain, SessionType session, Identifier sessionName,
+      QoSLevel qos, boolean shared) throws Exception {
     int consumerPacketType = spacePacketCheck.getConsumerPacketType();
     int providerPacketType = spacePacketCheck.getProviderPacketType();
     if (consumerPacketType == 1) {
       if (providerPacketType == 1) {
-        ipTestConsumer = LocalMALInstance.instance().ipTestStub(
+        ipTestConsumer = LocalMALInstance.instance().getTcTcIpTestStub(
             HeaderTestProcedure.AUTHENTICATION_ID,
             HeaderTestProcedure.getDomain(domain),
             HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,

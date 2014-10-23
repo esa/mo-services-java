@@ -32,10 +32,15 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.malspp.test.patterns;
 
+import java.util.HashMap;
+
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -44,6 +49,8 @@ import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
 import org.ccsds.moims.mo.malspp.test.util.CUCTimeCode;
+import org.ccsds.moims.mo.malspp.test.util.MappingConfiguration;
+import org.ccsds.moims.mo.malspp.test.util.QualifiedApid;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
 import org.ccsds.moims.mo.malspp.test.util.SecondaryHeaderReader;
 import org.ccsds.moims.mo.malspp.test.util.TimeCode;
@@ -57,6 +64,13 @@ import org.orekit.time.TimeScalesFactory;
 
 public class SpacePacketCheck {
   
+  public static final UInteger DEFAULT_PRIORITY = new UInteger(0);
+  public static final Identifier DEFAULT_NETWORK_ZONE = new Identifier("");
+  public static final Identifier DEFAULT_SESSION_NAME = new Identifier("");
+  public static final IdentifierList DEFAULT_DOMAIN = new IdentifierList(0);
+  public static final Blob DEFAULT_AUTHENTICATION_ID = new Blob(new byte[0]);
+  public static final Time DEFAULT_TIMESTAMP = new Time(0L);
+  
   private SpacePacket spacePacket;
 	
 	private SpacePacketHeader primaryHeader;
@@ -67,24 +81,61 @@ public class SpacePacketCheck {
 	
 	private SecondaryHeaderReader secondaryHeaderReader;
 	
-	private TimeCode timeCode;
-  
-	private TimeCode fineTimeCode;
-  
-	private TimeCode durationCode;
-	
   private int consumerPacketType;
 	  
 	private int providerPacketType;
 	
 	private boolean isSent;
+	
+	private QualifiedApid primaryQualifiedApid;
+  
+  private HashMap<QualifiedApid, MappingConfiguration> mappingConfigurations;
 
 	public SpacePacketCheck() {
-    super();  
-	  timeCode = new CUCTimeCode(TimeCode.EPOCH_TAI, TimeCode.UNIT_SECOND, 4, 3);
-    fineTimeCode = new CUCTimeCode(new AbsoluteDate("2013-01-01T00:00:00.000",
+    super();
+    mappingConfigurations = new HashMap<QualifiedApid, MappingConfiguration>();
+    
+    CUCTimeCode timeCode = new CUCTimeCode(TimeCode.EPOCH_TAI, TimeCode.UNIT_SECOND, 4, 3);
+	  CUCTimeCode fineTimeCode = new CUCTimeCode(new AbsoluteDate("2013-01-01T00:00:00.000",
         TimeScalesFactory.getTAI()), TimeCode.UNIT_SECOND, 4, 5);
-    durationCode = new CUCTimeCode(null, TimeCode.UNIT_SECOND, 4, 0);
+    CUCTimeCode durationCode = new CUCTimeCode(null, TimeCode.UNIT_SECOND, 4, 0);
+    UInteger priority = new UInteger(0xFFFFFFFFL);
+    Blob authenticationId = new Blob(new byte[] {0x0A, 0x0B, 0x0C});
+    IdentifierList domain = new IdentifierList();
+    domain.add(new Identifier("malspp"));
+    domain.add(new Identifier("test"));
+    domain.add(new Identifier("domain"));
+    Identifier networkZone = new Identifier("malsppTestNw");
+    Identifier sessionName = new Identifier("malsppTestSession");
+    
+    boolean varintSupported = true;
+    
+    MappingConfiguration defaultMappingConfiguration = new MappingConfiguration(
+        priority, networkZone, sessionName, domain, authenticationId,
+        varintSupported, timeCode, fineTimeCode, durationCode);
+    
+    MappingConfiguration nullMappingConfiguration = new MappingConfiguration(
+        null, null, null, null, null,
+        varintSupported, timeCode, fineTimeCode, durationCode);
+    
+    mappingConfigurations.put(new QualifiedApid(
+        LocalMALInstance.TC_TC_LOCAL_APID_QUALIFIER,
+        LocalMALInstance.TC_TC_LOCAL_APID), nullMappingConfiguration);
+    mappingConfigurations.put(new QualifiedApid(
+        LocalMALInstance.TC_TM_LOCAL_APID_QUALIFIER,
+        LocalMALInstance.TC_TM_LOCAL_APID), defaultMappingConfiguration);
+    mappingConfigurations.put(new QualifiedApid(
+        LocalMALInstance.TM_TC_LOCAL_APID_QUALIFIER,
+        LocalMALInstance.TM_TC_LOCAL_APID), defaultMappingConfiguration);
+    mappingConfigurations.put(new QualifiedApid(
+        LocalMALInstance.TM_TM_LOCAL_APID_QUALIFIER,
+        LocalMALInstance.TM_TM_LOCAL_APID), defaultMappingConfiguration);
+    mappingConfigurations.put(new QualifiedApid(
+        TestServiceProvider.TC_REMOTE_APID_QUALIFIER,
+        TestServiceProvider.TC_REMOTE_APID), defaultMappingConfiguration);
+    mappingConfigurations.put(new QualifiedApid(
+        TestServiceProvider.TM_REMOTE_APID_QUALIFIER,
+        TestServiceProvider.TM_REMOTE_APID), defaultMappingConfiguration);
   }
 	
 	public int getConsumerPacketType() {
@@ -114,8 +165,16 @@ public class SpacePacketCheck {
   public boolean selectPacket(SpacePacket packet) {
     byte[] packetBody = packet.getBody();
     primaryHeader = packet.getHeader();
-    bufferReader = new BufferReader(packetBody, 0, true, timeCode, fineTimeCode, durationCode);
+    primaryQualifiedApid = new QualifiedApid(packet.getApidQualifier(),
+        primaryHeader.getApid());
+
+    MappingConfiguration mappingConf = mappingConfigurations
+        .get(primaryQualifiedApid);
+    bufferReader = new BufferReader(packetBody, 0, true,
+        mappingConf.getTimeCode(), mappingConf.getFineTimeCode(),
+        mappingConf.getDurationCode());
     secondaryHeaderReader = new SecondaryHeaderReader(bufferReader);
+
     return true;
   }
   
@@ -388,6 +447,66 @@ public class SpacePacketCheck {
 		return secondaryHeaderReader.readPriority();
 	}
 	
+  private boolean checkEquals(String fieldName, Object value,
+      Object mappingValue, Object defaultValue) {
+    if (mappingValue == null) {
+      mappingValue = defaultValue;
+    }
+    boolean res = mappingValue.equals(value);
+    if (!res) {
+      LoggingBase.logMessage("Unexpected '" + fieldName + "': " + value + " != "
+          + mappingValue);
+    }
+    return res;
+  }
+	
+  public boolean checkPriorityIsLeftOut() throws Exception {
+    if (secondaryHeaderReader.getSecondaryHeader().getPriorityFlag() != 0x00)
+      return false;
+    MappingConfiguration mappingConf = mappingConfigurations.get(primaryQualifiedApid);
+    return checkEquals("Priority", malHeader.getPriority(), mappingConf.getPriority(),
+        DEFAULT_PRIORITY);
+  }
+  
+  public boolean checkAuthenticationIdIsLeftOut() throws Exception {
+    if (secondaryHeaderReader.getSecondaryHeader().getAuthenticationIdFlag() != 0x00)
+      return false;
+    MappingConfiguration mappingConf = mappingConfigurations.get(primaryQualifiedApid);
+    return checkEquals("AuthenticationId", malHeader.getAuthenticationId(),
+        mappingConf.getAuthenticationId(), DEFAULT_AUTHENTICATION_ID);
+  }
+  
+  public boolean checkDomainIsLeftOut() throws Exception {
+    if (secondaryHeaderReader.getSecondaryHeader().getDomainFlag() != 0x00)
+      return false;
+    MappingConfiguration mappingConf = mappingConfigurations.get(primaryQualifiedApid);
+    return checkEquals("Domain", malHeader.getDomain(),
+        mappingConf.getDomain(), DEFAULT_DOMAIN);
+  }
+  
+  public boolean checkNetworkZoneIsLeftOut() throws Exception {
+    if (secondaryHeaderReader.getSecondaryHeader().getNetworkZoneFlag() != 0x00)
+      return false;
+    MappingConfiguration mappingConf = mappingConfigurations.get(primaryQualifiedApid);
+    return checkEquals("NetworkZone", malHeader.getNetworkZone(),
+        mappingConf.getNetworkZone(), DEFAULT_NETWORK_ZONE);
+  }
+	
+  public boolean checkSessionNameIsLeftOut() throws Exception {
+    if (secondaryHeaderReader.getSecondaryHeader().getSessionNameFlag() != 0x00)
+      return false;
+    MappingConfiguration mappingConf = mappingConfigurations.get(primaryQualifiedApid);
+    return checkEquals("SessionName", malHeader.getSessionName(),
+        mappingConf.getSessionName(), DEFAULT_SESSION_NAME);
+  }
+  
+  public boolean checkTimestampIsLeftOut() throws Exception {
+    if (secondaryHeaderReader.getSecondaryHeader().getTimestampFlag() != 0x00)
+      return false;
+    return checkEquals("Timestamp", malHeader.getTimestamp(),
+        null, DEFAULT_TIMESTAMP);
+  }
+  
 	public String networkZoneIs() throws Exception {
 		return secondaryHeaderReader.readNetworkZone();
 	}
@@ -430,5 +549,15 @@ public class SpacePacketCheck {
 		}
 		return res;
 	}
+	
+	public int presenceFlagIs() {
+    return bufferReader.read();
+  }
+	
+	public String stringFieldIs() throws Exception {
+    String s = bufferReader.readString();
+    LoggingBase.logMessage("String=" + s);
+    return s;
+  }
 	
 }

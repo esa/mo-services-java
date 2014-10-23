@@ -41,6 +41,13 @@ public class TestHelper {
   public static final String APID_QUALIFIER_PROPERTY = "org.ccsds.moims.mo.malspp.apidQualifier";
   public static final String APID_PROPERTY = "org.ccsds.moims.mo.malspp.apid";
   
+  public static final String AUTHENTICATION_ID_FLAG = "org.ccsds.moims.mo.malspp.authenticationIdFlag";
+  public static final String DOMAIN_FLAG = "org.ccsds.moims.mo.malspp.domainFlag";
+  public static final String NETWORK_ZONE_FLAG = "org.ccsds.moims.mo.malspp.networkZoneFlag";
+  public static final String PRIORITY_FLAG = "org.ccsds.moims.mo.malspp.priorityFlag";
+  public static final String SESSION_NAME_FLAG = "org.ccsds.moims.mo.malspp.sessionNameFlag";
+  public static final String TIMESTAMP_FLAG = "org.ccsds.moims.mo.malspp.timestampFlag";
+  
   public static final String PROTOCOL = "malspp:";
   
   public static final char SLASH = '/';

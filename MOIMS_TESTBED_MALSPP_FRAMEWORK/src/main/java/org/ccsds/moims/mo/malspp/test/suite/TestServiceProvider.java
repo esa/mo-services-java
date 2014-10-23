@@ -59,8 +59,13 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
 	
 	public static final String PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "PubsubErrorIPTestProvider";
 	public static final String TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TmPubsubErrorIPTestProvider";
+	
 	public static final String TC_IP_TEST_PROVIDER_NAME = "IPTest";
 	public static final String TM_IP_TEST_PROVIDER_NAME = "TmIPTestProvider";
+	
+	public static final String QOS_TC_IP_TEST_PROVIDER_NAME = "QosTcIPTest";
+	public static final String QOS_TM_IP_TEST_PROVIDER_NAME = "QosTmIPTest";
+	
 	public static final String TM_TC_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TmTcIPTestProviderWithSharedBroker";
 	public static final String TC_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TcTmIPTestProviderWithSharedBroker";
 	public static final String TM_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TmTmIPTestProviderWithSharedBroker";
@@ -157,6 +162,29 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
         provider.getURI(),
         provider.getBrokerURI());
   }
+  
+  /**
+   * Provider setting QoS properties.
+   * 
+   * @param providerName
+   * @param sharedBrokerUri the URI of the ErrorBroker
+   * @param properties
+   * @throws MALException
+   */
+  private void createQosIpTestProvider(String providerName,
+      URI sharedBrokerUri, Map<Object, Object> properties) throws MALException {
+    QosPropertiesIPTestHandler handler = new QosPropertiesIPTestHandler();
+    MALProvider provider = defaultProviderMgr.createProvider(
+        PUBSUB_ERROR_IP_TEST_PROVIDER_NAME, protocol,
+        IPTestHelper.IPTEST_SERVICE, IP_TEST_AUTHENTICATION_ID,
+        handler, new QoSLevel[] { QoSLevel.ASSURED },
+        new UInteger(1),
+        properties, Boolean.TRUE,
+        sharedBrokerUri);
+    FileBasedDirectory.storeURI(providerName,
+        provider.getURI(),
+        provider.getBrokerURI());
+  }
 
 	protected void createProviders() throws MALException {
 	  BufferReader.init();
@@ -181,6 +209,9 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
         sharedErrorBrokerBinding.getURI(), null);
     createPubSubErrorIpTestProvider(TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
         tmSharedErrorBrokerBinding.getURI(), tmProviderProps);
+    
+    createQosIpTestProvider(QOS_TC_IP_TEST_PROVIDER_NAME, null, null);
+    createQosIpTestProvider(QOS_TM_IP_TEST_PROVIDER_NAME, null, tmProviderProps);
 
     IPTestHandlerImpl iphandler = new IPTestHandlerImpl();
     iphandler.setIpTestProviderWithSharedBrokerFileName(TM_IP_TEST_PROVIDER_NAME);

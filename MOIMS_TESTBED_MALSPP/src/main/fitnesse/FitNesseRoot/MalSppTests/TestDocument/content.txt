@@ -35,6 +35,7 @@
 !see TestScenarios.MalMessageMappingTestScenario.AllExceptPubSub
 !see TestScenarios.MalMessageMappingTestScenario.PubSub
 !see TestScenarios.MalMessageMappingTestScenario.MalMessageBodyMapping
+!see TestScenarios.MalMessageMappingTestScenario.QosProperties
 !see TestScenarios.MalDataEncodingTestScenario.ElementTest
 !see TestScenarios.MalDataEncodingTestScenario.EnumerationTest
 !see TestScenarios.MalDataEncodingTestScenario.CompositeTest
@@ -42,4 +43,5 @@
 !see TestScenarios.MalDataEncodingTestScenario.NullableElementTest
 !see TestScenarios.MalDataEncodingTestScenario.AttributeTest
 !see TestScenarios.MalDataEncodingTestScenario.DataType
+
 

@@ -50,7 +50,7 @@ public class MalSppPatternTest extends PatternTest {
 	public final static Logger logger = fr.dyade.aaa.common.Debug
 		  .getLogger(MalSppPatternTest.class.getName());
 	
-	private SpacePacketCheck spacePacketCheck;
+	protected SpacePacketCheck spacePacketCheck;
 
 	public MalSppPatternTest() {
     super();
@@ -64,14 +64,14 @@ public class MalSppPatternTest extends PatternTest {
 	public boolean providerPacketIsTc(boolean isTc) {
 	  return spacePacketCheck.providerPacketIsTc(isTc);
   }
-	
+
   protected void initConsumer(SessionType session, Identifier sessionName,
       QoSLevel qos) throws Exception {
     int consumerPacketType = spacePacketCheck.getConsumerPacketType();
     int providerPacketType = spacePacketCheck.getProviderPacketType();
     if (consumerPacketType == 1) {
       if (providerPacketType == 1) {
-        ipTestConsumer = LocalMALInstance.instance().ipTestStub(
+        ipTestConsumer = LocalMALInstance.instance().getTcTcIpTestStub(
             HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
             HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
             HeaderTestProcedure.PRIORITY, false);
@@ -157,20 +157,12 @@ public class MalSppPatternTest extends PatternTest {
 		return spacePacketCheck.resetSppInterceptor();
 	}
 	
-	public boolean initiateSendPatternWithQosAndSession(String qosLevel, String sessionType) throws Exception {
-		QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
+  public boolean initiateSendPatternWithQosAndSession(String qosLevel,
+      String sessionType) throws Exception {
+    QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     initConsumer(session, sessionName, qos);
-    /*
-		ipTestConsumer = LocalMALInstance.instance().ipTestStub(HeaderTestProcedure.AUTHENTICATION_ID,
-        HeaderTestProcedure.DOMAIN,
-        HeaderTestProcedure.NETWORK_ZONE,
-        session,
-        sessionName,
-        qos,
-        HeaderTestProcedure.PRIORITY,
-        false);*/
     ipTest = ipTestConsumer.getStub();
     IPTestDefinition testDef = new IPTestDefinition("TestSendPattern",
         ipTestConsumer.getConsumer().getURI(),
@@ -266,5 +258,37 @@ public class MalSppPatternTest extends PatternTest {
 	public boolean checkAuthenticationId() throws Exception {
 		return spacePacketCheck.checkAuthenticationId();
 	}
+	
+	public boolean checkPriorityIsLeftOut() throws Exception {
+    return spacePacketCheck.checkPriorityIsLeftOut();
+  }
+  
+  public boolean checkAuthenticationIdIsLeftOut() throws Exception {
+    return spacePacketCheck.checkAuthenticationIdIsLeftOut();
+  }
+  
+  public boolean checkDomainIsLeftOut() throws Exception {
+    return spacePacketCheck.checkDomainIsLeftOut();
+  }
+  
+  public boolean checkNetworkZoneIsLeftOut() throws Exception {
+    return spacePacketCheck.checkNetworkZoneIsLeftOut();
+  }
+  
+  public boolean checkSessionNameIsLeftOut() throws Exception {
+    return spacePacketCheck.checkSessionNameIsLeftOut();
+  }
+  
+  public boolean checkTimestampIsLeftOut() throws Exception {
+    return spacePacketCheck.checkTimestampIsLeftOut();
+  }
+  
+  public int presenceFlagIs() {
+    return spacePacketCheck.presenceFlagIs();
+  }
+  
+  public String stringFieldIs() throws Exception {
+    return spacePacketCheck.stringFieldIs();
+  }
 	
 }
