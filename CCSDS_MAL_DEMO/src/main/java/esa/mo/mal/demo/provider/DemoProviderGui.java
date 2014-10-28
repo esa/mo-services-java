@@ -53,26 +53,26 @@ public class DemoProviderGui extends javax.swing.JFrame
     try
     {
       final java.util.Properties sysProps = System.getProperties();
-      
+
       File file = new File(System.getProperty("provider.properties", "demoProvider.properties"));
       if (file.exists())
       {
         sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), "provider.properties"));
       }
-      
+
       file = new File(System.getProperty("broker.properties", "sharedBrokerURI.properties"));
       if (file.exists())
       {
         sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), "broker.properties"));
       }
-      
+
       System.setProperties(sysProps);
-      
+
       final String name = System.getProperty("application.name", "DemoServiceProvider");
-      
+
       final DemoProviderGui gui = new DemoProviderGui(name);
       gui.handler.init();
-      
+
       EventQueue.invokeLater(new Runnable()
       {
         public void run()
@@ -103,34 +103,38 @@ public class DemoProviderGui extends javax.swing.JFrame
   public DemoProviderGui(final String name)
   {
     initComponents();
-    
+
     defaultProtocol = System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol");
-    
+
     String protocolString = System.getProperty("esa.mo.mal.demo.provider.protocols");
-    String[] protocols = protocolString.split(",");
-    
-    for (int i = 0; i < protocols.length; i = i + 2)
+
+    if ((null != protocolString) && (0 < protocolString.trim().length()))
     {
-      String displayName = protocols[i];
-      String protocol = protocols[i + 1];
-      
-      javax.swing.JMenuItem tmpMenuItem = new javax.swing.JMenuItem();
-      tmpMenuItem.setText(displayName);
-      tmpMenuItem.setActionCommand(protocol);
-      tmpMenuItem.addActionListener(new java.awt.event.ActionListener()
+      String[] protocols = protocolString.trim().split(",");
+
+      for (int i = 0; i < protocols.length; i = i + 2)
       {
-        public void actionPerformed(java.awt.event.ActionEvent evt)
+        String displayName = protocols[i];
+        String protocol = protocols[i + 1];
+
+        javax.swing.JMenuItem tmpMenuItem = new javax.swing.JMenuItem();
+        tmpMenuItem.setText(displayName);
+        tmpMenuItem.setActionCommand(protocol);
+        tmpMenuItem.addActionListener(new java.awt.event.ActionListener()
         {
-          transportSelected(evt);
-        }
-      });
-      
-      jMenu3.add(tmpMenuItem);
+          public void actionPerformed(java.awt.event.ActionEvent evt)
+          {
+            transportSelected(evt);
+          }
+        });
+
+        jMenu3.add(tmpMenuItem);
+      }
     }
-    
+
     this.setTitle(name);
     statusLabel.setOpaque(true);
-    
+
     ((javax.swing.SpinnerNumberModel) poolSize.getModel()).setMinimum(1);
     ((javax.swing.SpinnerNumberModel) blockSize.getModel()).setMinimum(1);
     ((javax.swing.SpinnerNumberModel) poolSize.getModel()).setValue(handler.getPoolSize());
@@ -365,7 +369,7 @@ public class DemoProviderGui extends javax.swing.JFrame
   private void transportSelected(java.awt.event.ActionEvent evt)//GEN-FIRST:event_transportSelected
   {//GEN-HEADEREND:event_transportSelected
     String newProtocol;
-    
+
     if (evt.getSource() == this.defaultTransportMenuItem)
     {
       System.out.println("SELECTED DEFAULT TRANSPORT");
@@ -376,14 +380,14 @@ public class DemoProviderGui extends javax.swing.JFrame
       System.out.println("SELECTED TRANSPORT: " + evt.getActionCommand());
       newProtocol = evt.getActionCommand();
     }
-    
+
     boolean isGenerating = handler.isGenerating();
-    
+
     if (isGenerating)
     {
       pauseTMMenuItemActionPerformed(null);
     }
-    
+
     try
     {
       handler.startServices(newProtocol);
@@ -396,7 +400,7 @@ public class DemoProviderGui extends javax.swing.JFrame
     {
       LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Provider {0}", ex);
     }
-    
+
     if (isGenerating)
     {
       genTMMenuItemActionPerformed(null);

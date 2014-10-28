@@ -286,28 +286,6 @@ public class DemoConsumerGui extends javax.swing.JFrame
     demoService = new BasicMonitorStub(tmConsumer);
   }
 
-  private void registerSubscription()
-  {
-    if (this.regWildcardRadioButtonMenuItem.isSelected())
-    {
-      this.regWildcardRadioButtonMenuItemActionPerformed(null);
-    }
-    else
-    {
-      if (this.regHalfRadioButtonMenuItem.isSelected())
-      {
-        this.regHalfRadioButtonMenuItemActionPerformed(null);
-      }
-      else
-      {
-        if (this.regAllRadioButtonMenuItem.isSelected())
-        {
-          this.regAllRadioButtonMenuItemActionPerformed(null);
-        }
-      }
-    }
-  }
-
   private static void loadURIs() throws MalformedURLException
   {
     final java.util.Properties sysProps = System.getProperties();
@@ -508,7 +486,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
       {
-        jMenuItem1ActionPerformed(evt);
+        reconnectActionPerformed(evt);
       }
     });
     jMenu2.add(jMenuItem1);
@@ -672,7 +650,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
       }
     }//GEN-LAST:event_regAllRadioButtonMenuItemActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void reconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reconnectActionPerformed
       try
       {
         this.delayManager.resetDelay();
@@ -688,7 +666,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
       {
         Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
       }
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_reconnectActionPerformed
 
   private void returnBooleanActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_returnBooleanActionPerformed
   {//GEN-HEADEREND:event_returnBooleanActionPerformed
