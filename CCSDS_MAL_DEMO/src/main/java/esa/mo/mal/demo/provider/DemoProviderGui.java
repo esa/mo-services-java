@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
 
 /**
  * This class provides a simple form for the control of the provider. It allows control of the generation of updates,
@@ -40,6 +41,7 @@ public class DemoProviderGui extends javax.swing.JFrame
    */
   public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.demo.provider");
   private final DemoProviderServiceImpl handler = new DemoProviderServiceImpl();
+  private final String defaultProtocol;
 
   /**
    * Main command line entry point.
@@ -51,26 +53,26 @@ public class DemoProviderGui extends javax.swing.JFrame
     try
     {
       final java.util.Properties sysProps = System.getProperties();
-
+      
       File file = new File(System.getProperty("provider.properties", "demoProvider.properties"));
       if (file.exists())
       {
         sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), "provider.properties"));
       }
-
+      
       file = new File(System.getProperty("broker.properties", "sharedBrokerURI.properties"));
       if (file.exists())
       {
         sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), "broker.properties"));
       }
-
+      
       System.setProperties(sysProps);
-
+      
       final String name = System.getProperty("application.name", "DemoServiceProvider");
-
+      
       final DemoProviderGui gui = new DemoProviderGui(name);
       gui.handler.init();
-
+      
       EventQueue.invokeLater(new Runnable()
       {
         public void run()
@@ -87,6 +89,10 @@ public class DemoProviderGui extends javax.swing.JFrame
     {
       LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Provider {0}", ex);
     }
+    catch (MALInteractionException ex)
+    {
+      LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Provider {0}", ex);
+    }
   }
 
   /**
@@ -97,10 +103,34 @@ public class DemoProviderGui extends javax.swing.JFrame
   public DemoProviderGui(final String name)
   {
     initComponents();
-
+    
+    defaultProtocol = System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol");
+    
+    String protocolString = System.getProperty("esa.mo.mal.demo.provider.protocols");
+    String[] protocols = protocolString.split(",");
+    
+    for (int i = 0; i < protocols.length; i = i + 2)
+    {
+      String displayName = protocols[i];
+      String protocol = protocols[i + 1];
+      
+      javax.swing.JMenuItem tmpMenuItem = new javax.swing.JMenuItem();
+      tmpMenuItem.setText(displayName);
+      tmpMenuItem.setActionCommand(protocol);
+      tmpMenuItem.addActionListener(new java.awt.event.ActionListener()
+      {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
+        {
+          transportSelected(evt);
+        }
+      });
+      
+      jMenu3.add(tmpMenuItem);
+    }
+    
     this.setTitle(name);
     statusLabel.setOpaque(true);
-
+    
     ((javax.swing.SpinnerNumberModel) poolSize.getModel()).setMinimum(1);
     ((javax.swing.SpinnerNumberModel) blockSize.getModel()).setMinimum(1);
     ((javax.swing.SpinnerNumberModel) poolSize.getModel()).setValue(handler.getPoolSize());
@@ -134,6 +164,9 @@ public class DemoProviderGui extends javax.swing.JFrame
     jMenu2 = new javax.swing.JMenu();
     genTMMenuItem = new javax.swing.JMenuItem();
     pauseTMMenuItem = new javax.swing.JMenuItem();
+    jMenu3 = new javax.swing.JMenu();
+    defaultTransportMenuItem = new javax.swing.JMenuItem();
+    jSeparator1 = new javax.swing.JPopupMenu.Separator();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setName("Form"); // NOI18N
@@ -260,6 +293,25 @@ public class DemoProviderGui extends javax.swing.JFrame
 
     jMenuBar1.add(jMenu2);
 
+    jMenu3.setText("Transport");
+    jMenu3.setName("jMenu3"); // NOI18N
+
+    defaultTransportMenuItem.setText("default");
+    defaultTransportMenuItem.setName("defaultTransportMenuItem"); // NOI18N
+    defaultTransportMenuItem.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        transportSelected(evt);
+      }
+    });
+    jMenu3.add(defaultTransportMenuItem);
+
+    jSeparator1.setName("jSeparator1"); // NOI18N
+    jMenu3.add(jSeparator1);
+
+    jMenuBar1.add(jMenu3);
+
     setJMenuBar(jMenuBar1);
 
     pack();
@@ -276,7 +328,6 @@ public class DemoProviderGui extends javax.swing.JFrame
       handler.startGeneration();
       statusLabel.setText("GENERATING");
       statusLabel.setBackground(Color.ORANGE);
-
     }//GEN-LAST:event_genTMMenuItemActionPerformed
 
     private void pauseTMMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_pauseTMMenuItemActionPerformed
@@ -310,16 +361,61 @@ public class DemoProviderGui extends javax.swing.JFrame
     {//GEN-HEADEREND:event_blockSizeStateChanged
       handler.setBlockSize((Integer) blockSize.getValue());
     }//GEN-LAST:event_blockSizeStateChanged
+
+  private void transportSelected(java.awt.event.ActionEvent evt)//GEN-FIRST:event_transportSelected
+  {//GEN-HEADEREND:event_transportSelected
+    String newProtocol;
+    
+    if (evt.getSource() == this.defaultTransportMenuItem)
+    {
+      System.out.println("SELECTED DEFAULT TRANSPORT");
+      newProtocol = defaultProtocol;
+    }
+    else
+    {
+      System.out.println("SELECTED TRANSPORT: " + evt.getActionCommand());
+      newProtocol = evt.getActionCommand();
+    }
+    
+    boolean isGenerating = handler.isGenerating();
+    
+    if (isGenerating)
+    {
+      pauseTMMenuItemActionPerformed(null);
+    }
+    
+    try
+    {
+      handler.startServices(newProtocol);
+    }
+    catch (MALException ex)
+    {
+      LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Provider {0}", ex);
+    }
+    catch (MALInteractionException ex)
+    {
+      LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Provider {0}", ex);
+    }
+    
+    if (isGenerating)
+    {
+      genTMMenuItemActionPerformed(null);
+    }
+  }//GEN-LAST:event_transportSelected
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JSpinner blockSize;
   private javax.swing.JPanel controlsPanel;
+  private javax.swing.JMenuItem defaultTransportMenuItem;
   private javax.swing.JMenuItem genTMMenuItem;
   private javax.swing.JLabel jLabel2;
   private javax.swing.JLabel jLabel3;
   private javax.swing.JLabel jLabel4;
   private javax.swing.JMenu jMenu1;
   private javax.swing.JMenu jMenu2;
+  private javax.swing.JMenu jMenu3;
   private javax.swing.JMenuBar jMenuBar1;
+  private javax.swing.JPopupMenu.Separator jSeparator1;
   private javax.swing.JSeparator jSeparator2;
   private javax.swing.JPanel mainPanel;
   private javax.swing.JMenuItem pauseTMMenuItem;

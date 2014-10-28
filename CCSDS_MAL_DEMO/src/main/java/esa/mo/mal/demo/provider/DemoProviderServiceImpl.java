@@ -87,8 +87,9 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
    * creates the MAL objects, the publisher used to create updates and starts the publishing thread
    *
    * @throws MALException On initialisation error.
+   * @throws MALInteractionException On error.
    */
-  public synchronized void init() throws MALException
+  public synchronized void init() throws MALException, MALInteractionException
   {
     if (!initialiased)
     {
@@ -100,19 +101,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
       MALDemoHelper.init(MALContextFactory.getElementFactoryRegistry());
       BasicMonitorHelper.init(MALContextFactory.getElementFactoryRegistry());
 
-      final IdentifierList domain = new IdentifierList();
-      domain.add(new Identifier("esa"));
-      domain.add(new Identifier("mission"));
-
-      publisher = createMonitorPublisher(domain,
-              new Identifier("GROUND"),
-              SessionType.LIVE,
-              new Identifier("LIVE"),
-              QoSLevel.BESTEFFORT,
-              null,
-              new UInteger(0));
-
-      startServices();
+      startServices(null);
 
       running = true;
 
@@ -126,13 +115,26 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
   /**
    * Closes any existing service providers and recreates them. Used to switch the transport used by the provider.
    *
+   * @param protocol the transport protocol to use
    * @throws MALException On error.
+   * @throws MALInteractionException On error.
    */
-  public void startServices() throws MALException
+  public void startServices(final String protocol) throws MALException, MALInteractionException
   {
+    boolean wasRegistered = false;
+    
     // shut down old service transport
     if (null != demoServiceProvider)
     {
+      if (isRegistered)
+      {
+        publisher.deregister();
+
+        isRegistered = false;
+        wasRegistered = true;
+      }
+
+      publisher.close();
       demoServiceProvider.close();
     }
 
@@ -145,7 +147,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
     }
 
     demoServiceProvider = providerMgr.createProvider("Demo",
-            null,
+            protocol,
             BasicMonitorHelper.BASICMONITOR_SERVICE,
             new Blob("".getBytes()),
             this,
@@ -160,6 +162,18 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
 
     DemoProviderGui.LOGGER.log(Level.INFO, "Demo Service URI       : {0}", demoServiceProvider.getURI());
     DemoProviderGui.LOGGER.log(Level.INFO, "Demo Service broker URI: {0}", demoServiceProvider.getBrokerURI());
+
+    final IdentifierList domain = new IdentifierList();
+    domain.add(new Identifier("esa"));
+    domain.add(new Identifier("mission"));
+
+    publisher = createMonitorPublisher(domain,
+            new Identifier("GROUND"),
+            SessionType.LIVE,
+            new Identifier("LIVE"),
+            QoSLevel.BESTEFFORT,
+            null,
+            new UInteger(0));
 
     try
     {
@@ -176,6 +190,11 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
     catch (IOException ex)
     {
       DemoProviderGui.LOGGER.log(Level.WARNING, "Unable to write URI information to properties file {0}", ex);
+    }
+    
+    if (wasRegistered)
+    {
+      registerPublisher();
     }
   }
 
@@ -221,6 +240,11 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
   public void pauseGeneration()
   {
     generating = false;
+  }
+
+  public boolean isGenerating()
+  {
+    return generating;
   }
 
   /**
@@ -355,18 +379,23 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
     // Do nothing
   }
 
+  private void registerPublisher() throws MALException, MALInteractionException
+  {
+    if (!isRegistered)
+    {
+      final EntityKeyList lst = new EntityKeyList();
+      lst.add(new EntityKey(new Identifier("*"), 0L, 0L, 0L));
+      publisher.register(lst, new PublishInteractionListener());
+
+      isRegistered = true;
+    }
+  }
+
   private void publishParameterUpdate()
   {
     try
     {
-      if (!isRegistered)
-      {
-        final EntityKeyList lst = new EntityKeyList();
-        lst.add(new EntityKey(new Identifier("*"), 0L, 0L, 0L));
-        publisher.register(lst, new PublishInteractionListener());
-
-        isRegistered = true;
-      }
+      registerPublisher();
 
       final List<Map.Entry<UpdateHeaderList, BasicUpdateList>> updateList = generateUpdates();
 
@@ -405,8 +434,8 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
               currentValue, poolSize, blockSize
             });
 
-    final List<Map.Entry<UpdateHeaderList, BasicUpdateList>> updateList =
-            new LinkedList<Map.Entry<UpdateHeaderList, BasicUpdateList>>();
+    final List<Map.Entry<UpdateHeaderList, BasicUpdateList>> updateList
+            = new LinkedList<Map.Entry<UpdateHeaderList, BasicUpdateList>>();
 
     for (int i = 0; i < poolSize;)
     {

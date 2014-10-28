@@ -133,6 +133,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
    * Creates new form DemoConsumerGui
    *
    * @param name The name to display on the title bar of the form.
+   * @param parameterNum Number of parameters to display.
    */
   public DemoConsumerGui(final String name, Integer parameterNum)
   {
@@ -260,7 +261,6 @@ public class DemoConsumerGui extends javax.swing.JFrame
     // close old transport
     if (null != tmConsumer)
     {
-      deregMenuItemActionPerformed(null);
       tmConsumer.close();
       resetErrorMenuItemActionPerformed(null);
     }
@@ -675,12 +675,10 @@ public class DemoConsumerGui extends javax.swing.JFrame
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
       try
       {
-        deregMenuItemActionPerformed(null);
         this.delayManager.resetDelay();
         labels[0].reset();
         StructureHelper.clearLoadedPropertiesList();
         startService();
-        registerSubscription();
       }
       catch (MALException ex)
       {
