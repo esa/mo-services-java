@@ -223,7 +223,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     tcTmProps.put(TestHelper.APID_PROPERTY,
         TC_TM_LOCAL_APID);
     MALBrokerBinding tcTmSharedBrokerBinding = brokerManager.createBrokerBinding(
-        tcTmSharedBroker, Configuration.SHARED_BROKER_NAME, protocol,
+        tcTmSharedBroker, TC_TM_SHARED_BROKER_NAME, protocol,
         Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
         new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), tcTmProps);
     
@@ -235,7 +235,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     tmTcProps.put(TestHelper.APID_PROPERTY,
         TM_TC_LOCAL_APID);
     MALBrokerBinding tmTcSharedBrokerBinding = brokerManager.createBrokerBinding(
-        tmTcSharedBroker, Configuration.SHARED_BROKER_NAME, protocol,
+        tmTcSharedBroker, TM_TC_SHARED_BROKER_NAME, protocol,
         Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
         new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), tmTcProps);
     
@@ -247,7 +247,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     tmTmProps.put(TestHelper.APID_PROPERTY,
         TM_TM_LOCAL_APID);
     MALBrokerBinding tmTmSharedBrokerBinding = brokerManager.createBrokerBinding(
-        tmTmSharedBroker, Configuration.SHARED_BROKER_NAME, protocol,
+        tmTmSharedBroker, TM_TM_SHARED_BROKER_NAME, protocol,
         Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
         new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), tmTmProps);
     
@@ -594,7 +594,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       MALProviderManager providerMgr = LocalMALInstance.instance()
           .getMalContext().createProviderManager();
       MALProvider pubsubErrorIPTestProvider = providerMgr.createProvider(
-          TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
+          TestServiceProvider.TC_TC_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
           LocalMALInstance.instance().getProtocol(),
           IPTestHelper.IPTEST_SERVICE,
           TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tcTcPublishErrorHandler,
@@ -621,7 +621,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
           TC_TM_LOCAL_APID);
       
       MALProvider pubsubErrorIPTestProvider = providerMgr.createProvider(
-          TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
+          TestServiceProvider.TC_TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
           LocalMALInstance.instance().getProtocol(),
           IPTestHelper.IPTEST_SERVICE,
           TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tcTmPublishErrorHandler,
@@ -648,7 +648,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
           TM_TC_LOCAL_APID);
       
       MALProvider pubsubErrorIPTestProvider = providerMgr.createProvider(
-          TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
+          TestServiceProvider.TM_TC_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
           LocalMALInstance.instance().getProtocol(),
           IPTestHelper.IPTEST_SERVICE,
           TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tmTcPublishErrorHandler,
@@ -675,7 +675,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
           TM_TM_LOCAL_APID);
       
       MALProvider pubsubErrorIPTestProvider = providerMgr.createProvider(
-          TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
+          TestServiceProvider.TM_TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME,
           LocalMALInstance.instance().getProtocol(),
           IPTestHelper.IPTEST_SERVICE,
           TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tmTmPublishErrorHandler,

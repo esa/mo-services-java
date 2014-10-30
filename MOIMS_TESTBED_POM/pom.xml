@@ -84,6 +84,7 @@
     <cnes.version>3.2.0</cnes.version>
     <joram.version>5.9.0</joram.version>
 	<esa.api.version>1.0</esa.api.version>
+	<esa.impl.version>1.1-SNAPSHOT</esa.impl.version>
 	<esa.mal.test_api.version>1.0</esa.mal.test_api.version>
   </properties>
   
@@ -162,7 +163,7 @@
 	  <dependency>
 		<groupId>int.esa.ccsds.mo</groupId>
 		<artifactId>MAL_IMPL</artifactId>
-		<version>${esa.api.version}</version>
+		<version>${esa.impl.version}</version>
 	  </dependency>
     </dependencies>
   </dependencyManagement>

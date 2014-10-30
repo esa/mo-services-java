@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.dlr.de/gsoc/mo/malspp">
+	<app apidQualifier="0" apid="0">
+		<packetDataFieldSizeLimit>0</packetDataFieldSizeLimit>
+		<varintSupported>true</varintSupported>
+		<time>
+			<format unit="second">00101110</format>
+			<epoch scale="TAI">1970-01-01T00:00:00.000</epoch>
+		</time>
+		<fineTime>
+			<format unit="second">1010111100001000</format>
+			<epoch scale="TAI">2013-01-01T00:00:00.000</epoch>
+		</fineTime>
+		<duration>
+			<format unit="second">00101100</format>
+		</duration>
+		<!--
+		<authenticationId>0001</authenticationId>
+		<domain />
+		<networkZone />
+		<priority />
+		<sessionName />
+		-->
+	</app>
+
+	<app apidQualifier="0" apid="1">
+		<packetDataFieldSizeLimit>0</packetDataFieldSizeLimit>
+		<varintSupported>true</varintSupported>
+		<time>
+			<format unit="second">00101110</format>
+			<epoch scale="TAI">1970-01-01T00:00:00.000</epoch>
+		</time>
+		<fineTime>
+			<format unit="second">1010111100001000</format>
+			<epoch scale="TAI">2013-01-01T00:00:00.000</epoch>
+		</fineTime>
+		<duration>
+			<format unit="second">00101100</format>
+		</duration>
+	</app>
+</config>

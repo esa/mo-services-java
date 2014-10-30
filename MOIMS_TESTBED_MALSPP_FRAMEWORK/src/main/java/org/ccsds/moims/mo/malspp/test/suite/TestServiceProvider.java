@@ -69,6 +69,11 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
 	public static final String TM_TC_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TmTcIPTestProviderWithSharedBroker";
 	public static final String TC_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TcTmIPTestProviderWithSharedBroker";
 	public static final String TM_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TmTmIPTestProviderWithSharedBroker";
+    
+    public static final String TC_TC_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TcTcPubsubErrorIPTestProvider";
+    public static final String TC_TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TcTmPubsubErrorIPTestProvider";
+    public static final String TM_TC_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TmTcPubsubErrorIPTestProvider";
+    public static final String TM_TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TmTmPubsubErrorIPTestProvider";
 	
 	/**
 	 * APID qualifier for remote providers and shared brokers sending TC packets.
@@ -130,7 +135,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
       URI sharedBrokerUri, Map<Object, Object> properties) throws MALException {
     PubsubErrorIPTestHandler handler = new PubsubErrorIPTestHandler();
     MALProvider provider = defaultProviderMgr.createProvider(
-        PUBSUB_ERROR_IP_TEST_PROVIDER_NAME, protocol,
+        providerName, protocol,
         IPTestHelper.IPTEST_SERVICE, IP_TEST_AUTHENTICATION_ID,
         handler, new QoSLevel[] { QoSLevel.ASSURED },
         new UInteger(1),
@@ -175,7 +180,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
       URI sharedBrokerUri, Map<Object, Object> properties) throws MALException {
     QosPropertiesIPTestHandler handler = new QosPropertiesIPTestHandler();
     MALProvider provider = defaultProviderMgr.createProvider(
-        PUBSUB_ERROR_IP_TEST_PROVIDER_NAME, protocol,
+        providerName, protocol,
         IPTestHelper.IPTEST_SERVICE, IP_TEST_AUTHENTICATION_ID,
         handler, new QoSLevel[] { QoSLevel.ASSURED },
         new UInteger(1),
