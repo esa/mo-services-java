@@ -289,7 +289,7 @@ public class TCPIPTransport extends GENTransport
     }
     catch (UnknownHostException e)
     {
-      LOGGER.log(Level.WARNING, "TCPIP cound not connect to :" + remoteRootURI, e);
+      LOGGER.log(Level.WARNING, "TCPIP could not connect to :" + remoteRootURI, e);
       throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
     }
     catch (IOException e)

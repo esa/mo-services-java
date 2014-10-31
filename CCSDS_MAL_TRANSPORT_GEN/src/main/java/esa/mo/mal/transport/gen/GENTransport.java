@@ -338,6 +338,17 @@ public abstract class GENTransport implements MALTransport, GENSender
     }
 
     endpointMap.clear();
+    
+    asyncInputDataProcessors.shutdown();
+
+    for (Map.Entry<String, GENConcurrentMessageSender> entry : outgoingDataChannels.entrySet())
+    {
+      final GENConcurrentMessageSender sender = entry.getValue();
+
+      sender.terminate();
+    }
+    
+    outgoingDataChannels.clear();
   }
 
   /**
@@ -386,7 +397,7 @@ public abstract class GENTransport implements MALTransport, GENSender
       String destinationURI = msg.getHeader().getURITo().getValue();
       String remoteRootURI = getRootURI(destinationURI);
 
-      LOGGER.log(Level.INFO, "TCPIP sending msg. Target root URI: {0} full URI:{1}", new Object[]
+      LOGGER.log(Level.INFO, "GEN sending msg. Target root URI: {0} full URI:{1}", new Object[]
       {
         remoteRootURI, destinationURI
       });
@@ -416,11 +427,11 @@ public abstract class GENTransport implements MALTransport, GENSender
         throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
       }
 
-      LOGGER.log(Level.INFO, "TCPIP finished Sending data to {0}", remoteRootURI);
+      LOGGER.log(Level.INFO, "GEN finished Sending data to {0}", remoteRootURI);
     }
     catch (Exception t)
     {
-      LOGGER.log(Level.SEVERE, "TCPIP cound not send message!", t);
+      LOGGER.log(Level.SEVERE, "GEN could not send message!", t);
       throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), null);
     }
   }
@@ -543,7 +554,7 @@ public abstract class GENTransport implements MALTransport, GENSender
 
     if (uriTo != null)
     {
-      LOGGER.log(Level.WARNING, "TCPIP Communication Error with {0} ", uriTo);
+      LOGGER.log(Level.WARNING, "GEN Communication Error with {0} ", uriTo);
 
       GENConcurrentMessageSender commsChannel = outgoingDataChannels.get(uriTo);
       if (commsChannel != null)
@@ -822,7 +833,7 @@ public abstract class GENTransport implements MALTransport, GENSender
       }
       catch (MALException e)
       {
-        LOGGER.log(Level.WARNING, "GEN cound not connect to :" + remoteRootURI, e);
+        LOGGER.log(Level.WARNING, "GEN could not connect to :" + remoteRootURI, e);
         throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
 
       }
@@ -866,7 +877,7 @@ public abstract class GENTransport implements MALTransport, GENSender
     }
     catch (MALException ex)
     {
-      LOGGER.log(Level.SEVERE, "GEN cound not encode message!", ex);
+      LOGGER.log(Level.SEVERE, "GEN could not encode message!", ex);
       throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, null), null);
     }
   }

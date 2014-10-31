@@ -73,7 +73,7 @@ public class GENConcurrentMessageSender
 
   /**
    * This method will try to send the data via one of the available sockets and provide a reply through the
-   * TCPIPOutgoingDataHolder object if the data was successful or not. users of this method should call getResult to
+   * GENOutgoingDataHolder object if the data was successful or not. users of this method should call getResult to
    * block waiting for an indication if the data was sent successfully or not.
    *
    * @param data the data to be sent.

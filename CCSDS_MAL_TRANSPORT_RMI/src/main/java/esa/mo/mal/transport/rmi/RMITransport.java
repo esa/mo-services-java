@@ -185,6 +185,8 @@ public class RMITransport extends GENTransport
   @Override
   public void close() throws MALException
   {
+    super.close();
+    
     try
     {
       registry.unbind(String.valueOf(portNumber));
@@ -216,13 +218,13 @@ public class RMITransport extends GENTransport
     }
     catch (NotBoundException e)
     {
-      RLOGGER.log(Level.WARNING, "RMI cound not connect to :" + remoteRootURI, e);
+      RLOGGER.log(Level.WARNING, "RMI could not connect to :" + remoteRootURI, e);
       throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
 
     }
     catch (IOException e)
     {
-      RLOGGER.log(Level.WARNING, "RMI cound not connect to :" + remoteRootURI, e);
+      RLOGGER.log(Level.WARNING, "RMI could not connect to :" + remoteRootURI, e);
       throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
     }
   }
