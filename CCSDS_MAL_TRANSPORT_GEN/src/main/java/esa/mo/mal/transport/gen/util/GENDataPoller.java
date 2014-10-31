@@ -69,6 +69,16 @@ public class GENDataPoller extends Thread implements GENReceptionHandler
 
         transport.receive(malMsgData, this);
       }
+      catch (java.io.EOFException ex)
+      {
+        LOGGER.log(Level.INFO, "Client closing connection: {0}", remoteURI);
+
+        transport.closeConnection(remoteURI, this);
+        close();
+
+        //and terminate
+        break;
+      }
       catch (IOException e)
       {
         LOGGER.log(Level.WARNING, "Cannot read data from client", e);

@@ -33,7 +33,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.server.UID;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
@@ -111,6 +113,11 @@ public class TCPIPTransport extends GENTransport
    */
   private final char portDelimiter = ':';
 
+  /**
+   * Holds the list of data poller threads
+   */
+  private final List<Thread> pollerThreads = new Vector<Thread>();
+  
   /*
    * Constructor.
    *
@@ -192,6 +199,7 @@ public class TCPIPTransport extends GENTransport
         // create thread that will listen for connections
         TCPIPServerConnectionListener serverConnectionListener = new TCPIPServerConnectionListener(this, serverSocket);
         serverConnectionListener.start();
+        this.pollerThreads.add(serverConnectionListener);
 
         RLOGGER.log(Level.INFO, "Started TCP Server Transport on port {0}", serverPort);
       }
@@ -230,6 +238,22 @@ public class TCPIPTransport extends GENTransport
     // The transport only supports BESTEFFORT in reality but this is only a
     // test transport so we say it supports all
     return true;
+  }
+
+  @Override
+  public void close() throws MALException
+  {
+    super.close();
+    
+    for (Thread pollerThread : pollerThreads)
+    {
+      synchronized(pollerThread)
+      {
+        pollerThread.interrupt();
+      }
+    }
+    
+    pollerThreads.clear();
   }
 
   @Override
@@ -302,6 +326,11 @@ public class TCPIPTransport extends GENTransport
     }
   }
 
+  protected synchronized void addDataPoller(GENDataPoller newPoller)
+  {
+    this.pollerThreads.add(newPoller);
+  }
+  
   /**
    * Provide a default IP address for this host
    *

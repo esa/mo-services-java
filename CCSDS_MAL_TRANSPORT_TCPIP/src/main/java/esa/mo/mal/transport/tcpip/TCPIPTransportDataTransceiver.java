@@ -70,11 +70,24 @@ public class TCPIPTransportDataTransceiver implements GENDataReceiver, GENDataTr
    */
   public byte[] readPacket() throws IOException
   {
-    // read packet length and then the packet
-    int packetSize = socketReadIf.readInt();
-    byte[] data = new byte[packetSize];
-    socketReadIf.readFully(data);
-    return data;
+    try
+    {
+      // read packet length and then the packet
+      int packetSize = socketReadIf.readInt();
+      byte[] data = new byte[packetSize];
+      socketReadIf.readFully(data);
+      return data;
+    }
+    catch (java.net.SocketException ex)
+    {
+      if (socket.isClosed())
+      {
+        // socket has been closed to throw EOF exception higher
+        throw new java.io.EOFException();
+      }
+
+      throw ex;
+    }
   }
 
   public void close()

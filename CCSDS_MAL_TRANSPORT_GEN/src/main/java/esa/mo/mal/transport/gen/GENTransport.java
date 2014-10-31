@@ -394,48 +394,64 @@ public abstract class GENTransport implements MALTransport, GENSender
           final boolean lastForHandle,
           final GENMessage msg) throws MALTransmitErrorException
   {
-    try
-    {
-      // get the root URI, (e.g. tcpip://10.0.0.1:61616 )
-      String destinationURI = msg.getHeader().getURITo().getValue();
-      String remoteRootURI = getRootURI(destinationURI);
+    // first check if its actually a message to ourselves
+    String endpointUriPart = getRoutingPart(msg.getHeader().getURITo().getValue(), serviceDelim, routingDelim, supportsRouting);
 
-      LOGGER.log(Level.INFO, "GEN sending msg. Target root URI: {0} full URI:{1}", new Object[]
+    if (endpointMap.containsKey(endpointUriPart))
+    {
+      LOGGER.log(Level.INFO, "GEN routing msg internally to {0}", new Object[]
       {
-        remoteRootURI, destinationURI
+        endpointUriPart
       });
 
-      // get outgoing channel
-      GENConcurrentMessageSender dataSender = checkConnections(msg, remoteRootURI, null);
-
-      GENOutgoingDataHolder outgoingPacket = internalEncodeMessage(dataSender.getTargetURI(), msg);
-
-      dataSender.sendMessage(outgoingPacket);
-
-      Boolean dataSendResult = Boolean.FALSE;
+      // if local then just send internally
+      receiveMessageThreadMain(msg, "");
+    }
+    else
+    {
       try
       {
-        dataSendResult = outgoingPacket.getResult();
+        // get the root URI, (e.g. tcpip://10.0.0.1:61616 )
+        String destinationURI = msg.getHeader().getURITo().getValue();
+        String remoteRootURI = getRootURI(destinationURI);
+
+        LOGGER.log(Level.INFO, "GEN sending msg. Target root URI: {0} full URI:{1}", new Object[]
+        {
+          remoteRootURI, destinationURI
+        });
+
+        // get outgoing channel
+        GENConcurrentMessageSender dataSender = checkConnections(msg, remoteRootURI, null);
+
+        GENOutgoingDataHolder outgoingPacket = internalEncodeMessage(dataSender.getTargetURI(), msg);
+
+        dataSender.sendMessage(outgoingPacket);
+
+        Boolean dataSendResult = Boolean.FALSE;
+        try
+        {
+          dataSendResult = outgoingPacket.getResult();
+        }
+        catch (InterruptedException e)
+        {
+          LOGGER.log(Level.SEVERE, "Interrupted while waiting for data reply", e);
+          throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), null);
+        }
+
+        if (!dataSendResult)
+        {
+        // data was not sent succesfully, throw an exception for the
+          // higher MAL layers
+          throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
+        }
+
+        LOGGER.log(Level.INFO, "GEN finished Sending data to {0}", remoteRootURI);
       }
-      catch (InterruptedException e)
+      catch (Exception t)
       {
-        LOGGER.log(Level.SEVERE, "Interrupted while waiting for data reply", e);
+        LOGGER.log(Level.SEVERE, "GEN could not send message!", t);
         throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), null);
       }
-
-      if (!dataSendResult)
-      {
-        // data was not sent succesfully, throw an exception for the
-        // higher MAL layers
-        throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
-      }
-
-      LOGGER.log(Level.INFO, "GEN finished Sending data to {0}", remoteRootURI);
-    }
-    catch (Exception t)
-    {
-      LOGGER.log(Level.SEVERE, "GEN could not send message!", t);
-      throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), null);
     }
   }
 
@@ -538,18 +554,15 @@ public abstract class GENTransport implements MALTransport, GENSender
   }
 
   /**
-   * Used to inform the transport about communication problems with clients. In this case the transport will terminate
+   * Used to request the transport close a connection with a client. In this case the transport will terminate
    * all communication channels with the destination in order for them to be re-established.
    *
    * @param uriTo the connection handler that received this message
    * @param receptionHandler
    */
-  public void communicationError(String uriTo, GENReceptionHandler receptionHandler)
+  public void closeConnection(String uriTo, GENReceptionHandler receptionHandler)
   {
     // remove all associations with this target URI
-    // if the error came from a transport resource that has an
-    // associated URI (i.e. has received at least one good message, or is a client socket reader in which
-    // case the socket is already associated at creation time)
     if ((null == uriTo) && (null != receptionHandler))
     {
       uriTo = receptionHandler.getRemoteURI();
@@ -557,8 +570,6 @@ public abstract class GENTransport implements MALTransport, GENSender
 
     if (uriTo != null)
     {
-      LOGGER.log(Level.WARNING, "GEN Communication Error with {0} ", uriTo);
-
       GENConcurrentMessageSender commsChannel = outgoingDataChannels.get(uriTo);
       if (commsChannel != null)
       {
@@ -575,6 +586,20 @@ public abstract class GENTransport implements MALTransport, GENSender
     {
       receptionHandler.close();
     }
+  }
+
+  /**
+   * Used to inform the transport about communication problems with clients. In this case the transport will terminate
+   * all communication channels with the destination in order for them to be re-established.
+   *
+   * @param uriTo the connection handler that received this message
+   * @param receptionHandler
+   */
+  public void communicationError(String uriTo, GENReceptionHandler receptionHandler)
+  {
+    LOGGER.log(Level.WARNING, "GEN Communication Error with {0} ", uriTo);
+
+    closeConnection(uriTo, receptionHandler);
   }
 
   /**
@@ -849,6 +874,8 @@ public abstract class GENTransport implements MALTransport, GENSender
   {
     // create new sender for this URI
     GENConcurrentMessageSender dataSender = new GENConcurrentMessageSender(this, remoteRootURI);
+
+    LOGGER.log(Level.INFO, "GEN registering data sender for URI:{0}", remoteRootURI);
     outgoingDataChannels.put(remoteRootURI, dataSender);
 
     // insert new processor (data sender) to root data sender for the URI        	

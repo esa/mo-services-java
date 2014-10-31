@@ -50,6 +50,15 @@ public class TCPIPServerConnectionListener extends Thread
   @Override
   public void run()
   {
+    try
+    {
+      serverSocket.setSoTimeout(1000);
+    }
+    catch (IOException e)
+    {
+      RLOGGER.log(Level.WARNING, "Error while setting connection timeout", e);
+    }
+
     // setup socket and then listen for connections forever
     while (!interrupted())
     {
@@ -60,8 +69,14 @@ public class TCPIPServerConnectionListener extends Thread
 
         // handle socket in separate thread
         TCPIPTransportDataTransceiver tc = new TCPIPTransportDataTransceiver(socket);
-        
-        new GENDataPoller(transport, tc, tc).start();
+
+        GENDataPoller poller = new GENDataPoller(transport, tc, tc);
+        transport.addDataPoller(poller);
+        poller.start();
+      }
+      catch (java.net.SocketTimeoutException ex)
+      {
+        // this is ok, we just loop back around
       }
       catch (IOException e)
       {
