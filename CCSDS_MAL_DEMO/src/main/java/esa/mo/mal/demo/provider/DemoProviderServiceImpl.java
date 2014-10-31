@@ -67,7 +67,6 @@ import org.ccsds.moims.mo.maldemo.basicmonitor.structures.*;
  */
 public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
 {
-  private static final int DEFAULT_SLEEP = 10000;
   private final UpdateGenerationThread updateGenThread = new UpdateGenerationThread();
   private MALContextFactory malFactory;
   private MALContext mal;
@@ -76,7 +75,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton
   private boolean initialiased = false;
   private boolean running = false;
   private boolean generating = false;
-  private int generationSleep = DEFAULT_SLEEP;
+  private int generationSleep = 1000;
   private MonitorPublisher publisher;
   private int gPoolSize = 1;
   private int gBlockSize = 1;

@@ -137,7 +137,7 @@
                 <Property name="majorTickSpacing" type="int" value="1"/>
                 <Property name="maximum" type="int" value="11"/>
                 <Property name="paintTicks" type="boolean" value="true"/>
-                <Property name="value" type="int" value="1"/>
+                <Property name="value" type="int" value="10"/>
                 <Property name="name" type="java.lang.String" value="updateRate" noResource="true"/>
               </Properties>
               <Events>

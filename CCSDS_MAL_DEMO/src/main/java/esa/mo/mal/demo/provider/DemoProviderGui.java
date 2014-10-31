@@ -139,6 +139,8 @@ public class DemoProviderGui extends javax.swing.JFrame
     ((javax.swing.SpinnerNumberModel) blockSize.getModel()).setMinimum(1);
     ((javax.swing.SpinnerNumberModel) poolSize.getModel()).setValue(handler.getPoolSize());
     ((javax.swing.SpinnerNumberModel) blockSize.getModel()).setValue(handler.getBlockSize());
+    
+    updateRateStateChanged(null);
   }
 
   /**
@@ -188,7 +190,7 @@ public class DemoProviderGui extends javax.swing.JFrame
     updateRate.setMajorTickSpacing(1);
     updateRate.setMaximum(11);
     updateRate.setPaintTicks(true);
-    updateRate.setValue(1);
+    updateRate.setValue(10);
     updateRate.setName("updateRate"); // NOI18N
     updateRate.addChangeListener(new javax.swing.event.ChangeListener()
     {
