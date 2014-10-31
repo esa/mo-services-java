@@ -126,6 +126,7 @@ public abstract class BaseInteractionImpl implements MALInteraction
             stage,
             isFinalStage,
             operation,
+            qosProperties,
             result);
   }
 
@@ -149,6 +150,7 @@ public abstract class BaseInteractionImpl implements MALInteraction
             stage,
             isFinalStage,
             operation,
+            qosProperties,
             body);
   }
 
