@@ -416,6 +416,7 @@ public class MessageReceive implements MALMessageListener
                 MALPubSubOperation.REGISTER_ACK_STAGE,
                 true,
                 interaction.getOperation(),
+                interaction.getQoSProperties(),
                 (Object[]) null);
       }
       else
@@ -463,7 +464,7 @@ public class MessageReceive implements MALMessageListener
                 transId,
                 msg.getHeader(),
                 lvl,
-                MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, true, interaction.getOperation(), (Object[]) null);
+                MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, true, interaction.getOperation(), interaction.getQoSProperties(), (Object[]) null);
       }
       else
       {
@@ -648,6 +649,7 @@ public class MessageReceive implements MALMessageListener
                 MALPubSubOperation.DEREGISTER_ACK_STAGE,
                 true,
                 interaction.getOperation(),
+                interaction.getQoSProperties(),
                 (Object[]) null);
       }
       catch (MALException ex)
@@ -695,7 +697,7 @@ public class MessageReceive implements MALMessageListener
               transId,
               msg.getHeader(),
               lvl,
-              MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, true, interaction.getOperation(), (Object[]) null);
+              MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, true, interaction.getOperation(), interaction.getQoSProperties(), (Object[]) null);
     }
     else
     {

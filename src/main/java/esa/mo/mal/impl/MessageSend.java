@@ -23,6 +23,7 @@ package esa.mo.mal.impl;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
@@ -443,6 +444,7 @@ public class MessageSend
    * @param rspnInteractionStage Interaction stage to use on the response.
    * @param rspn Response message body.
    * @param isFinalStage True if this the final stage of the interaction.
+   * @param qosProperties The QoS properties.
    * @param operation The operation.
    * @return The sent MAL message.
    */
@@ -453,6 +455,7 @@ public class MessageSend
           final UOctet rspnInteractionStage,
           final boolean isFinalStage,
           final MALOperation operation,
+          final Map qosProperties,
           final Object... rspn)
   {
     MALMessage msg = null;
@@ -472,7 +475,7 @@ public class MessageSend
               false,
               operation,
               rspnInteractionStage,
-              new Hashtable(),
+              qosProperties,
               rspn);
 
       if (isFinalStage)
@@ -511,6 +514,7 @@ public class MessageSend
    * @param rspnInteractionStage Interaction stage to use on the response.
    * @param rspn Response encoded message body.
    * @param isFinalStage True if this the final stage of the interaction.
+   * @param qosProperties The QoS properties.
    * @param operation The operation.
    * @return The sent MAL message.
    */
@@ -521,6 +525,7 @@ public class MessageSend
           final UOctet rspnInteractionStage,
           final boolean isFinalStage,
           final MALOperation operation,
+          final Map qosProperties,
           final MALEncodedBody rspn)
   {
     MALMessage msg = null;
@@ -540,7 +545,7 @@ public class MessageSend
               false,
               operation,
               rspnInteractionStage,
-              new Hashtable(),
+              qosProperties,
               rspn);
 
       if (isFinalStage)
