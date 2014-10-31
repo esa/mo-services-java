@@ -117,6 +117,7 @@ public abstract class GENTransport implements MALTransport, GENSender
   protected String uriBase;
   static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
   private final MALElementStreamFactory streamFactory;
+  protected final Map qosProperties;
 
   /**
    * Constructor.
@@ -142,6 +143,7 @@ public abstract class GENTransport implements MALTransport, GENSender
     this.protocolDelim = "://";
     this.serviceDelim = serviceDelim;
     this.routingDelim = '@';
+    this.qosProperties = properties;
     streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
 
     LOGGER.log(Level.INFO, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
@@ -219,6 +221,7 @@ public abstract class GENTransport implements MALTransport, GENSender
     this.protocolDelim = protocolDelim;
     this.serviceDelim = serviceDelim;
     this.routingDelim = routingDelim;
+    this.qosProperties = properties;
     streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
 
     LOGGER.log(Level.INFO, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
@@ -338,7 +341,7 @@ public abstract class GENTransport implements MALTransport, GENSender
     }
 
     endpointMap.clear();
-    
+
     asyncInputDataProcessors.shutdown();
 
     for (Map.Entry<String, GENConcurrentMessageSender> entry : outgoingDataChannels.entrySet())
@@ -347,7 +350,7 @@ public abstract class GENTransport implements MALTransport, GENSender
 
       sender.terminate();
     }
-    
+
     outgoingDataChannels.clear();
   }
 
@@ -761,7 +764,7 @@ public abstract class GENTransport implements MALTransport, GENSender
    */
   public GENMessage createMessage(final java.io.InputStream ios) throws MALException
   {
-    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), ios, getStreamFactory());
+    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, ios, getStreamFactory());
   }
 
   /**
@@ -773,7 +776,7 @@ public abstract class GENTransport implements MALTransport, GENSender
    */
   public GENMessage createMessage(final byte[] packet) throws MALException
   {
-    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), packet, getStreamFactory());
+    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, packet, getStreamFactory());
   }
 
   /**
@@ -802,9 +805,9 @@ public abstract class GENTransport implements MALTransport, GENSender
         {
           String destinationURI = msg.getHeader().getURIFrom().getValue();
           remoteRootURI = getRootURI(destinationURI);
-          
+
           receptionHandler.setRemoteURI(remoteRootURI);
-          
+
           registerDataSender(receptionHandler.getTransportTransmitter(), remoteRootURI);
         }
       }
