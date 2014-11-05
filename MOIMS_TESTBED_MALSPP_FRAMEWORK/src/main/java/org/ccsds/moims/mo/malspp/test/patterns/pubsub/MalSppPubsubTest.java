@@ -295,8 +295,12 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
     return spacePacketCheck.readDestinationId();
   }
   
-  public int segmentCounterIs() {
+  public long segmentCounterIs() {
     return spacePacketCheck.segmentCounterIs();
+  }
+  
+  public boolean readSegmentCounterIfSegmented() {
+    return spacePacketCheck.readSegmentCounterIfSegmented();
   }
   
   private IPTestConsumer getPubsubErrorIPTestStub(int domain, SessionType session,

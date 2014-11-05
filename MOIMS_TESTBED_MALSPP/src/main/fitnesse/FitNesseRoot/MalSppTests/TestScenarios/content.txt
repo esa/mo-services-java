@@ -66,11 +66,11 @@
 | 3.4.2.2    | missing | missing | missing |
 | 3.4.2.3    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check space packet type |
 | 3.4.2.4    | missing | missing | missing |
-| 3.4.2.5    | missing | missing | missing |
-| 3.4.2.6    | missing | missing | missing |
+| 3.4.2.5    | !-MalMessageMapping-! | !-MalMessageSegmentation-! | primary header sequence flags are |
+| 3.4.2.6    | !-MalMessageMapping-! | !-MalMessageSegmentation-! | primary header sequence counter is initial counter plus |
 | 3.4.2.7    | missing | missing | missing |
 | 3.4.3.2.x  | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | version is |
-| 3.4.3.3    | missing | missing | missing |
+| 3.4.3.3    | !-MalMessageMapping-! | !-MalMessageSegmentation-! | secondary header segment counter is, test message segmentation with scrambling pattern |
 | 3.5.3.2.1  | !-MalMessageMapping-!   | !-MalMessageBodyMapping-! | check body element order |
 | 3.5.3.2.2  | missing | missing | missing |
 | 3.5.3.x.y  | missing | missing | missing |
@@ -83,17 +83,24 @@
 | 4.4.5      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
 | 4.4.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
 | 4.4.7      | missing | missing | missing |
-| 4.4.8      | missing | missing | missing |
-| 4.4.9      | missing | missing | missing |
-| 4.4.10     | missing | missing | missing |
+| 4.4.8      | !-MalMessageMapping-! | !-MalMessageSegmentation-! | check small blob |
+| 4.4.9a     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | packet data length is consistent with |
+| 4.4.9b     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | number of sent packets is |
+| 4.4.9c     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | mal message header mapping compares packet at index to first packet |
+| 4.4.9d     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | secondary header segment counter is |
+| 4.4.9e     | missing | missing | missing |
+| 4.4.9f,g,h | !-MalMessageMapping-! | !-MalMessageSegmentation-! | primary header sequence flags are |
+| 4.4.10     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | check packet data field size limits |
 | 4.4.11     | missing | missing | missing |
 | 4.4.12     | missing | missing | missing |
 | 4.5.x      | missing | missing | missing |
 | 4.6.1      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select received packet at |
-| 4.6.2      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select received packet at |
+| 4.6.2      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-!, !-MalMessageSegmentation-! | select received packet at, small blob works, large blob works |
 | 4.6.3      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
-| 4.6.4x     | missing | missing | missing |
-| 4.6.5x     | missing | missing | missing |
+| 4.6.4x     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | small blob works |
+| 4.6.5a     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | large blob works |
+| 4.6.5b,c,e | missing | missing | missing |
+| 4.6.5d     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | large blob works |
 | 4.6.6      | missing | missing | missing |
 | 5.2.1-2    | !-MalDataEncoding-! | !-ElementTest-! | check a composite with a field typed !-MAL::Attribute-!, attribute tag is |
 | 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite sent as a !-MAL::Element-!, check short form |
@@ -127,10 +134,7 @@
 | 3.3.4.5    | No source/destination id |
 | 3.4.2.2    | Packet version number (SPP feature) |
 | 3.4.2.4    | Secondary header flag (SPP feature) |
-| 3.4.2.5    | MAL message segmentation |
-| 3.4.2.6    | Packet sequence count (SPP feature) |
 | 3.4.2.7    | Packet data length (SPP feature) |
-| 3.4.3.3    | MAL message segmentation |
 | 3.5.3.2.2  | Empty body |
 | 3.5.3.x.y  | Body encoding format according to interaction type and stage |
 | 4.2.x      | Transport interface: supported qos |
@@ -138,15 +142,11 @@
 | 4.4.2      | Null MAL header field |
 | 4.4.4      | URI From/To not compliant with MAL/SPP URI format |
 | 4.4.7      | !-QoS-! properties transmission to SPP layer |
-| 4.4.8      | MAL message segmentation |
-| 4.4.9      | MAL message segmentation |
-| 4.4.10     | MAL message segmentation |
+| 4.4.9e      | MAL message segmentation |
 | 4.4.11     | SPP transmission error |
 | 4.4.12     | SPP transmission ack |
 | 4.5.x      | Transmit multiple |
-| 4.6.2      | MAL message segmentation |
-| 4.6.4x     | MAL message segmentation |
-| 4.6.5x     | MAL message segmentation |
+| 4.6.5b,c,e | MAL message segmentation |
 | 4.6.6      | Unknown URI To |
 | 5.2.1-2    | Test operation with a body element typed MAL::Attribute |
 | 5.2.3      | Test operation with a body element typed MAL::Composite, abstract composite, a composite with a field typed MAL::Composite, abstract composite |

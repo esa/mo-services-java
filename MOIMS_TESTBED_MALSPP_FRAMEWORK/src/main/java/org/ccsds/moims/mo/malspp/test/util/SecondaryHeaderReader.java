@@ -257,8 +257,8 @@ public class SecondaryHeaderReader {
     return destinationId;
   }
   
-  public int readSegmentCounter() {
-    int segmentCounter = bufferReader.read();
+  public long readSegmentCounter() {
+    long segmentCounter = bufferReader.read32() & 0xFFFFFFFFL;
     secondaryHeader.setSegmentCounter(segmentCounter);
     return segmentCounter;
   }

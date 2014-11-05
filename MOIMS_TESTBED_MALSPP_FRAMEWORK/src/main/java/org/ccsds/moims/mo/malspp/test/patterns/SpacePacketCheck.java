@@ -439,10 +439,17 @@ public class SpacePacketCheck {
     return true;
   }
 	
-	public int segmentCounterIs() {
-    return secondaryHeaderReader.readSegmentCounter();
+	public long segmentCounterIs() {
+      return secondaryHeaderReader.readSegmentCounter();
   }
 	
+	public boolean readSegmentCounterIfSegmented() {
+      if (primaryHeader.getSequenceFlags() != 3) {
+        secondaryHeaderReader.readSegmentCounter();
+      }
+      return true;
+  }
+    
 	public long priorityIs() throws Exception {
 		return secondaryHeaderReader.readPriority();
 	}

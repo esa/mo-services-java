@@ -55,9 +55,11 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	public final static Logger logger = fr.dyade.aaa.common.Debug
 		  .getLogger(MalSppDataTypeTest.class.getName());
 	
-	private SpacePacketHeader primaryHeader;
+	protected SpacePacketHeader primaryHeader;
 
-	private SecondaryHeader secondaryHeader;
+	protected SecondaryHeader secondaryHeader;
+    
+    protected byte[] packetBody;
 	
 	private BufferReader bufferReader;
 	
@@ -114,7 +116,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	  if (logger.isLoggable(BasicLevel.DEBUG)) {
       logger.log(BasicLevel.DEBUG, "selectSentPacketAt(" + packet + ')');
     }
-		byte[] packetBody = packet.getBody();
+		packetBody = packet.getBody();
 		LoggingBase.logMessage("packetBody.length=" + packetBody.length);
 		primaryHeader = packet.getHeader();
 		LoggingBase.logMessage("primaryHeader=" + primaryHeader);

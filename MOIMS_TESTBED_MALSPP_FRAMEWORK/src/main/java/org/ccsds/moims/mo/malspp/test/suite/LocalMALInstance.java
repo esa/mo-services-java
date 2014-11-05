@@ -48,6 +48,8 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
+import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
@@ -57,6 +59,10 @@ import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 
 public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMALInstance {
   
+  private DataTestStub segstub = null;
+  private DataTestStub segErrorSmallStub = null;
+  private DataTestStub segErrorLargeStub = null;
+
   /**
    * APID qualifier for interactions sending TC packets and receiving TC packets.
    * Default value to be set at the transport level (see TestServiceProviderMAL.properties).
@@ -693,4 +699,83 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
 	public MALContext getMalContext() {
 		return defaultMal;
 	}
+  
+  public synchronized DataTestStub segmentationStub() throws MALException {
+    if (null == segstub) {
+      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_TEST_PROVIDER_NAME);
+
+      MALConsumer consumer = defaultConsumerMgr.createConsumer(
+              "segmentationTestConsumer",
+              uris.uri,
+              uris.broker,
+              DataTestHelper.DATATEST_SERVICE,
+              new Blob("".getBytes()),
+              new IdentifierList(),
+              new Identifier("networkZone"),
+              SessionType.LIVE,
+              new Identifier("LIVE"),
+              QoSLevel.BESTEFFORT,
+              new Hashtable(), new UInteger(0));
+
+      segstub = new DataTestStub(consumer);
+    }
+    return segstub;
+  }
+  
+  public synchronized DataTestStub segmentationErrorSmallHeaderStub() throws MALException {
+    if (null == segErrorSmallStub) {
+      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_ERROR_TEST_PROVIDER_NAME);
+      HashMap<Object, Object> props = new HashMap<Object, Object>();
+      props.put(TestHelper.AUTHENTICATION_ID_FLAG, Boolean.FALSE);
+      props.put(TestHelper.DOMAIN_FLAG, Boolean.FALSE);
+      props.put(TestHelper.NETWORK_ZONE_FLAG, Boolean.FALSE);
+      props.put(TestHelper.PRIORITY_FLAG, Boolean.FALSE);
+      props.put(TestHelper.SESSION_NAME_FLAG, Boolean.FALSE);
+      props.put(TestHelper.TIMESTAMP_FLAG, Boolean.FALSE);
+      MALConsumer consumer = defaultConsumerMgr.createConsumer(
+              "segmentationTestConsumerSmallHeader",
+              uris.uri,
+              uris.broker,
+              DataTestHelper.DATATEST_SERVICE,
+              new Blob("".getBytes()),
+              new IdentifierList(),
+              new Identifier("networkZone"),
+              SessionType.LIVE,
+              new Identifier("LIVE"),
+              QoSLevel.BESTEFFORT,
+              props, new UInteger(0));
+
+      segErrorSmallStub = new DataTestStub(consumer);
+    }
+    return segErrorSmallStub;
+  }
+  
+  public synchronized DataTestStub segmentationErrorLargeHeaderStub() throws MALException {
+    if (null == segErrorLargeStub) {
+      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_ERROR_TEST_PROVIDER_NAME);
+      HashMap<Object, Object> props = new HashMap<Object, Object>();
+      props.put(TestHelper.AUTHENTICATION_ID_FLAG, Boolean.FALSE);
+      props.put(TestHelper.DOMAIN_FLAG, Boolean.FALSE);
+      props.put(TestHelper.NETWORK_ZONE_FLAG, Boolean.FALSE);
+      props.put(TestHelper.PRIORITY_FLAG, Boolean.TRUE);
+      props.put(TestHelper.SESSION_NAME_FLAG, Boolean.FALSE);
+      props.put(TestHelper.TIMESTAMP_FLAG, Boolean.FALSE);
+      MALConsumer consumer = defaultConsumerMgr.createConsumer(
+              "segmentationTestConsumerLargerHeader",
+              uris.uri,
+              uris.broker,
+              DataTestHelper.DATATEST_SERVICE,
+              new Blob("".getBytes()),
+              new IdentifierList(),
+              new Identifier("networkZone"),
+              SessionType.LIVE,
+              new Identifier("LIVE"),
+              QoSLevel.BESTEFFORT,
+              props, new UInteger(0));
+
+      segErrorLargeStub = new DataTestStub(consumer);
+    }
+    return segErrorLargeStub;
+  }
+
 }

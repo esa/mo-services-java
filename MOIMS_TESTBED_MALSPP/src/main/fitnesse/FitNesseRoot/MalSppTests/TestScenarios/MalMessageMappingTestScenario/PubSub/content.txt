@@ -122,6 +122,7 @@ for the Pub/Sub interaction:
 |ensure | read destination id |
 |ensure | check uri from |
 |ensure | check uri to |
+|ensure | read segment counter if segmented |
 |check  | priority is | 1 |
 |ensure | check timestamp |
 |check  | network zone is | !-NetworkZone-! |

@@ -61,6 +61,11 @@
       <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_CNES.md</url>
       <distribution>repo</distribution>
     </license>
+    <license>
+      <name>GNU Lesser General Public License</name>
+      <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_DLR.md</url>
+      <distribution>repo</distribution>
+    </license>
   </licenses>
 
   <scm>
@@ -80,6 +85,12 @@
       <name>David Feliot</name>
       <email>david.feliot@scalagent.com</email>
       <url>https://github.com/DavidFeliot</url>
+    </developer>
+    <developer>
+      <id>S-Gaertner</id>
+      <name>Stefan Gärtner</name>
+      <email>stefan.gaertner@dlr.de</email>
+      <url>https://github.com/S-Gaertner</url>
     </developer>
   </developers>
   

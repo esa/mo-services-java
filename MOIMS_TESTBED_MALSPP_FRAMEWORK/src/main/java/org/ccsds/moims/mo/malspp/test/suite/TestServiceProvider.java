@@ -39,10 +39,12 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
+import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
 import org.ccsds.moims.mo.mal.test.patterns.IPTestHandlerImpl;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.IPTestHandlerWithSharedBroker;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
@@ -74,6 +76,14 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
     public static final String TC_TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TcTmPubsubErrorIPTestProvider";
     public static final String TM_TC_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TmTcPubsubErrorIPTestProvider";
     public static final String TM_TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TmTmPubsubErrorIPTestProvider";
+    
+    public static final String SEGMENTATION_TEST_PROVIDER_NAME = "SegmentationTest";
+    public static final String SEGMENTATION_ERROR_TEST_PROVIDER_NAME = "SegmentationErrorTest";
+    public static final int SEGMENTATION_ERROR_REMOTE_APID_QUALIFIER = 648;
+    public static final int SEGMENTATION_ERROR_REMOTE_APID = 2;
+    public static final String SEGMENTATION_SMALL_SIZE_LIMIT_TEST_PROVIDER_NAME = "SegmentationSmallSizeLimitTest";
+    public static final int SEGMENTATION_SMALL_SIZE_LIMIT_REMOTE_APID_QUALIFIER = 648;
+    public static final int SEGMENTATION_SMALL_SIZE_LIMIT_REMOTE_APID = 4;
 	
 	/**
 	 * APID qualifier for remote providers and shared brokers sending TC packets.
@@ -245,6 +255,68 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
     createIpTestProviderWithSharedBroker(
         TM_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME,
         tmTmSharedBrokerUriPair.broker, tmProviderProps);
+
+    MALInteractionHandler dthandler = new DataTestHandlerImpl();
+    MALProvider segmentationTestProvider = defaultProviderMgr.createProvider(
+            SEGMENTATION_TEST_PROVIDER_NAME,
+            protocol,
+            DataTestHelper.DATATEST_SERVICE,
+            DATA_TEST_AUTHENTICATION_ID,
+            dthandler,
+            new QoSLevel[]{
+              QoSLevel.ASSURED
+            },
+            new UInteger(1), // number of priority levels
+            null,
+            Boolean.FALSE, // isPublisher
+            null);
+
+    Map<Object, Object> segmentationErrorProps = new HashMap<Object, Object>();
+    segmentationErrorProps.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_ERROR_REMOTE_APID_QUALIFIER);
+    segmentationErrorProps.put(TestHelper.APID_PROPERTY, SEGMENTATION_ERROR_REMOTE_APID);
+
+    MALInteractionHandler dtErrorHandler = new DataTestHandlerImpl();
+    MALProvider segmentationErrorTestProvider = defaultProviderMgr.createProvider(
+            SEGMENTATION_ERROR_TEST_PROVIDER_NAME,
+            protocol,
+            DataTestHelper.DATATEST_SERVICE,
+            DATA_TEST_AUTHENTICATION_ID,
+            dtErrorHandler,
+            new QoSLevel[]{
+              QoSLevel.ASSURED
+            },
+            new UInteger(1), // number of priority levels
+            segmentationErrorProps,
+            Boolean.FALSE, // isPublisher
+            null);
+
+    Map<Object, Object> segmentationSmallSizeLimitProps = new HashMap<Object, Object>();
+    segmentationSmallSizeLimitProps.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_SMALL_SIZE_LIMIT_REMOTE_APID_QUALIFIER);
+    segmentationSmallSizeLimitProps.put(TestHelper.APID_PROPERTY, SEGMENTATION_SMALL_SIZE_LIMIT_REMOTE_APID);
+    
+    MALInteractionHandler segmentationSmallSizeLimitHandler = new IPTestHandlerImpl();
+    MALProvider segmentationSmallSizeLimitTestProvider = defaultProviderMgr.createProvider(
+            SEGMENTATION_SMALL_SIZE_LIMIT_TEST_PROVIDER_NAME,
+            protocol,
+            IPTestHelper.IPTEST_SERVICE,
+            IP_TEST_AUTHENTICATION_ID,
+            segmentationSmallSizeLimitHandler,
+            new QoSLevel[]{
+              QoSLevel.ASSURED
+            },
+            new UInteger(1), // number of priority levels
+            segmentationSmallSizeLimitProps,
+            Boolean.FALSE, // isPublisher
+            null);
+    
+    FileBasedDirectory.storeURI(SEGMENTATION_TEST_PROVIDER_NAME,
+            segmentationTestProvider.getURI(), segmentationTestProvider.getBrokerURI());
+    
+    FileBasedDirectory.storeURI(SEGMENTATION_ERROR_TEST_PROVIDER_NAME,
+            segmentationErrorTestProvider.getURI(), segmentationErrorTestProvider.getBrokerURI());
+    
+    FileBasedDirectory.storeURI(SEGMENTATION_SMALL_SIZE_LIMIT_TEST_PROVIDER_NAME,
+            segmentationSmallSizeLimitTestProvider.getURI(), segmentationSmallSizeLimitTestProvider.getBrokerURI());
 	}
 	
 }

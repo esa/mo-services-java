@@ -93,7 +93,7 @@ public class TestHelper {
   
   public static int decodeSecondaryHeader(SecondaryHeader ssh,
       BufferReader bufferReader, int sequenceFlag) throws Exception {
-    SecondaryHeaderReader secondaryHeaderReader = new SecondaryHeaderReader(bufferReader);
+    SecondaryHeaderReader secondaryHeaderReader = new SecondaryHeaderReader(bufferReader, ssh);
     secondaryHeaderReader.readAll(sequenceFlag);
     return bufferReader.getIndex();
   }

@@ -235,7 +235,7 @@ public class MalSppPatternTest extends PatternTest {
     return spacePacketCheck.readDestinationId();
   }
   
-  public int segmentCounterIs() {
+  public long segmentCounterIs() {
     return spacePacketCheck.segmentCounterIs();
   }
 	
