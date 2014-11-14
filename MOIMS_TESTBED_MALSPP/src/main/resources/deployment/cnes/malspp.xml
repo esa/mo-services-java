@@ -144,4 +144,60 @@
     <ms:sessionName value="malsppTestSession" comment="" />
     <ms:varintSupported value="true" comment="" />
   </ms:app>
+  <ms:app apidQualifier="647" apid="1" comment="" >
+    <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
+      <ms:unit value="second" comment="" />
+    </ms:duration>
+    <ms:time codeFormat="1F" comment="CUC, CCSDS epoch: 0001 1111" >
+      <ms:unit value="second" comment="" />
+    </ms:time>
+    <ms:fineTime codeFormat="AF08" comment="CUC, agency epoch, fractional=3+2: 1010 1111 0000 1000" >
+      <ms:unit value="second" comment="" />
+      <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
+    </ms:fineTime>
+    <ms:packetDataFieldSizeLimit value="27" comment="" />
+    <ms:varintSupported value="true" comment="" />
+  </ms:app>
+    <ms:app apidQualifier="648" apid="2" comment="" >
+    <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
+      <ms:unit value="second" comment="" />
+    </ms:duration>
+    <ms:time codeFormat="1F" comment="CUC, CCSDS epoch: 0001 1111" >
+      <ms:unit value="second" comment="" />
+    </ms:time>
+    <ms:fineTime codeFormat="AF08" comment="CUC, agency epoch, fractional=3+2: 1010 1111 0000 1000" >
+      <ms:unit value="second" comment="" />
+      <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
+    </ms:fineTime>
+    <ms:packetDataFieldSizeLimit value="27" comment="" />
+    <ms:varintSupported value="true" comment="" />
+  </ms:app>
+  <ms:app apidQualifier="647" apid="3" comment="" >
+    <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
+      <ms:unit value="second" comment="" />
+    </ms:duration>
+    <ms:time codeFormat="1F" comment="CUC, CCSDS epoch: 0001 1111" >
+      <ms:unit value="second" comment="" />
+    </ms:time>
+    <ms:fineTime codeFormat="AF08" comment="CUC, agency epoch, fractional=3+2: 1010 1111 0000 1000" >
+      <ms:unit value="second" comment="" />
+      <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
+    </ms:fineTime>
+    <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
+    <ms:varintSupported value="true" comment="" />
+  </ms:app>
+  <ms:app apidQualifier="648" apid="4" comment="" >
+    <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
+      <ms:unit value="second" comment="" />
+    </ms:duration>
+    <ms:time codeFormat="1F" comment="CUC, CCSDS epoch: 0001 1111" >
+      <ms:unit value="second" comment="" />
+    </ms:time>
+    <ms:fineTime codeFormat="AF08" comment="CUC, agency epoch, fractional=3+2: 1010 1111 0000 1000" >
+      <ms:unit value="second" comment="" />
+      <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
+    </ms:fineTime>
+    <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
+    <ms:varintSupported value="true" comment="" />
+  </ms:app>
 </ms:conf>
