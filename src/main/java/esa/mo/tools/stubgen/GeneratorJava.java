@@ -501,11 +501,11 @@ public class GeneratorJava extends GeneratorLangs
 
     if (elementType.isList())
     {
-      if (StdStrings.XML.equals(elementType.getArea()))
-      {
-        throw new IllegalArgumentException("XML type of (" + elementType.getService() + ":" + elementType.getName() + ") with maxOccurrs <> 1 is not permitted");
-      }
-      else
+//      if (StdStrings.XML.equals(elementType.getArea()))
+//      {
+//        throw new IllegalArgumentException("XML type of (" + elementType.getService() + ":" + elementType.getName() + ") with maxOccurrs <> 1 is not permitted");
+//      }
+//      else
       {
         String fqTypeName;
         if (isNativeType(elementType))

@@ -64,8 +64,8 @@ public abstract class TypeUtils
       {
         if (StdStrings.XML.equals(tr.getArea()))
         {
-          // lists of XML types are not supported
-          throw new IllegalArgumentException("XML type of (" + tr.getService() + ":" + tr.getName() + ") with maxOccurrs <> 1 is not permitted");
+          // ToDo proper support for lists of XML types
+          ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName(), argTypeStr, tiSource.isNativeType(tr), getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
         }
         else
         {

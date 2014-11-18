@@ -524,6 +524,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     attributeTypesMap.put(name, details);
   }
 
+  protected Map<String, AttributeTypeDetails> getAttributeTypesMap()
+  {
+    return attributeTypesMap;
+  }
+
   /**
    * To be used by derived generators to add an entry to the native type details map.
    *
