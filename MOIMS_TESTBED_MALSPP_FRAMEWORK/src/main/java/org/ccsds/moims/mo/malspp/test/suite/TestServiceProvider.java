@@ -274,6 +274,12 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
     Map<Object, Object> segmentationErrorProps = new HashMap<Object, Object>();
     segmentationErrorProps.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_ERROR_REMOTE_APID_QUALIFIER);
     segmentationErrorProps.put(TestHelper.APID_PROPERTY, SEGMENTATION_ERROR_REMOTE_APID);
+    segmentationErrorProps.put(TestHelper.AUTHENTICATION_ID_FLAG, Boolean.FALSE);
+    segmentationErrorProps.put(TestHelper.DOMAIN_FLAG, Boolean.FALSE);
+    segmentationErrorProps.put(TestHelper.NETWORK_ZONE_FLAG, Boolean.FALSE);
+    segmentationErrorProps.put(TestHelper.PRIORITY_FLAG, Boolean.FALSE);
+    segmentationErrorProps.put(TestHelper.SESSION_NAME_FLAG, Boolean.FALSE);
+    segmentationErrorProps.put(TestHelper.TIMESTAMP_FLAG, Boolean.FALSE);
 
     MALInteractionHandler dtErrorHandler = new DataTestHandlerImpl();
     MALProvider segmentationErrorTestProvider = defaultProviderMgr.createProvider(

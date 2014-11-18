@@ -121,7 +121,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
   }
 
   public String testDataString(String rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
-    // Only handle empty string. Non-empty string should cause error already on cinsumer side.
+    // Only handle empty string. Non-empty string should cause error already on consumer side.
     LoggingBase.logMessage("testDataString: empty string");
     _testDataValue(MalSppSegmentationTest.testEmptyString, rcvdValue, "empty string data test");
     return rcvdValue;

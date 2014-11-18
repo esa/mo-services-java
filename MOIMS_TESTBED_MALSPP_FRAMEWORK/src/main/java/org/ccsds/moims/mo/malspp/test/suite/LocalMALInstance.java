@@ -62,6 +62,10 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
   private DataTestStub segstub = null;
   private DataTestStub segErrorSmallStub = null;
   private DataTestStub segErrorLargeStub = null;
+  public static final int SEGMENTATION_ERROR_LOCAL_APID_QUALIFIER = 647;
+  public static final int SEGMENTATION_ERROR_LOCAL_APID = 1;
+  public static final int SEGMENTATION_SMALL_SIZE_LIMIT_LOCAL_APID_QUALIFIER = 647;
+  public static final int SEGMENTATION_SMALL_SIZE_LIMIT_LOCAL_APID = 3;
 
   /**
    * APID qualifier for interactions sending TC packets and receiving TC packets.
@@ -726,6 +730,8 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     if (null == segErrorSmallStub) {
       FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_ERROR_TEST_PROVIDER_NAME);
       HashMap<Object, Object> props = new HashMap<Object, Object>();
+      props.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_ERROR_LOCAL_APID_QUALIFIER);
+      props.put(TestHelper.APID_PROPERTY, SEGMENTATION_ERROR_LOCAL_APID);
       props.put(TestHelper.AUTHENTICATION_ID_FLAG, Boolean.FALSE);
       props.put(TestHelper.DOMAIN_FLAG, Boolean.FALSE);
       props.put(TestHelper.NETWORK_ZONE_FLAG, Boolean.FALSE);
@@ -754,6 +760,8 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     if (null == segErrorLargeStub) {
       FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_ERROR_TEST_PROVIDER_NAME);
       HashMap<Object, Object> props = new HashMap<Object, Object>();
+      props.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_ERROR_LOCAL_APID_QUALIFIER);
+      props.put(TestHelper.APID_PROPERTY, SEGMENTATION_ERROR_LOCAL_APID);
       props.put(TestHelper.AUTHENTICATION_ID_FLAG, Boolean.FALSE);
       props.put(TestHelper.DOMAIN_FLAG, Boolean.FALSE);
       props.put(TestHelper.NETWORK_ZONE_FLAG, Boolean.FALSE);

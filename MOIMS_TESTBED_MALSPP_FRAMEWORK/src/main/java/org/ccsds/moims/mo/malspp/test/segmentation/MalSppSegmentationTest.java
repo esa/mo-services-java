@@ -23,6 +23,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
 import org.ccsds.moims.mo.malspp.test.datatype.MalSppDataTypeTest;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
@@ -299,12 +300,12 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
     return false;
   }
 
-  public String stringTest() throws MALException {
+  public String stringTest() throws MALInteractionException, MALException {
     String rv;
     logMessage("Starting packet data field size string data test...");
     try {
       rv = subSingleTest(testString, segErrorStub.testDataString(testString), "string segmentation");
-    } catch (MALInteractionException ex) {
+    } catch (MALTransmitErrorException ex) {
       boolean expected = ex.getStandardError().getErrorNumber().getValue() == MALHelper._INTERNAL_ERROR_NUMBER;
       if (expected) {
         rv = "generates internal error";

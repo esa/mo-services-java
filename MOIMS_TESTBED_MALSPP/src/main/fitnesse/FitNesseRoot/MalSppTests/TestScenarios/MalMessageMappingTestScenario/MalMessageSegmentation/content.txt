@@ -48,15 +48,15 @@ In both cases the Blob is statically known to the provider and consumer side.
 
 The testStringData operation of the DataTest service is used with endpoints configured for a limited
 packet data field size of 27 bytes. Three cases are tested:
-- secondary header: 23 bytes; body: 1 byte; one packet, no error expected.
-- secondary header: 23 bytes + 4 bytes for counter (because message segmentation); body: 5 bytes; INTERNAL error expected.
-- secondary header: 24 bytes + 4 bytes for counter (because message segmentation); body: 5 bytes; INTERNAL error expected.
+- secondary header: 23 bytes; body: 2 bytes; one packet, no error expected.
+- secondary header: 23 bytes + 4 bytes for counter (because of message segmentation); body: 6 bytes; INTERNAL error expected.
+- secondary header: 24 bytes + 4 bytes for counter (because of message segmentation); body: 6 bytes; INTERNAL error expected.
 Secondary header size is set by per-message QoS property flag Priority. All other flags (except
 Source and Destination id flag) are set to false.
 
 Correct sequencing of Space Packets is ensured by scrambling outgoing packets in certain patterns.
 Scrambling is realized in the packet interceptor by collecting packets for an interval of one second
-starting with the first packet. These are scrambled according to a cyclic pattern given in the test.
+starting with the first packet. These are scrambled according to a cyclic pattern given by the test.
 This pattern gives the indices of the packets that shall be sent out next. Indices referring to
 non-existent packets (because less packets were collected during the interval) are skipped.
 For test purposes it is assumed that a mission-defined timeout is longer than the one second
