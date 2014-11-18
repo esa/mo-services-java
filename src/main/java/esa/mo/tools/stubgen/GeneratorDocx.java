@@ -136,11 +136,10 @@ public class GeneratorDocx extends GeneratorDocument
 
         docxServiceFile.addTitle(2, "General");
         docxServiceFile.addComment(area.getComment());
-
-        if ((null != area.getRequirements()) && (0 < area.getRequirements().trim().length()))
+        for (DocumentationType documentation : area.getDocumentation())
         {
-          docxServiceFile.addTitle(2, "Requirements");
-          docxServiceFile.addNumberedComment(splitString(null, area.getRequirements()));
+          docxServiceFile.addTitle(2, documentation.getName());
+          docxServiceFile.addNumberedComment(splitString(null, documentation.getContent()));
         }
 
         // create services
@@ -151,10 +150,10 @@ public class GeneratorDocx extends GeneratorDocument
           docxServiceFile.addComment(service.getComment());
           drawServiceTable(docxServiceFile, area, service);
 
-          if ((null != service.getRequirements()) && (0 < service.getRequirements().trim().length()))
+          for (DocumentationType documentation : service.getDocumentation())
           {
-            docxServiceFile.addTitle(3, "Requirements");
-            docxServiceFile.addNumberedComment(splitString(null, service.getRequirements()));
+            docxServiceFile.addTitle(3, documentation.getName());
+            docxServiceFile.addNumberedComment(splitString(null, documentation.getContent()));
           }
 
           if (!StdStrings.COM.equalsIgnoreCase(service.getName()))
@@ -415,6 +414,9 @@ public class GeneratorDocx extends GeneratorDocument
 
     if (null != features)
     {
+      boolean hasCOMobjects = false;
+      boolean hasCOMevents = false;
+
       if (null != features.getObjects())
       {
         docxFile.addTitle(3, "COM usage");
@@ -422,6 +424,8 @@ public class GeneratorDocx extends GeneratorDocument
 
         if (!features.getObjects().getObject().isEmpty())
         {
+          hasCOMobjects = true;
+
           docxFile.startTable(SERVICE_COM_TYPES_TABLE_WIDTHS, service.getName() + " Service Object Types");
 
           docxFile.startRow();
@@ -472,6 +476,8 @@ public class GeneratorDocx extends GeneratorDocument
 
       if (null != features.getEvents())
       {
+        hasCOMevents = true;
+
         DocxBaseWriter evntTable = new DocxBaseWriter(docxFile.numberWriter);
         evntTable.addTitle(3, "COM Event Service usage");
         evntTable.addNumberedComment(splitString(null, features.getEvents().getComment()));
@@ -550,6 +556,30 @@ public class GeneratorDocx extends GeneratorDocument
         evntTable.endTable();
 
         docxFile.appendBuffer(evntTable.getBuffer());
+      }
+
+      if ((hasCOMobjects) || (hasCOMevents))
+      {
+        StringBuilder str = new StringBuilder(StdStrings.COM);
+        if (hasCOMobjects)
+        {
+          str.append(" object");
+        }
+        if (hasCOMevents)
+        {
+          if (hasCOMobjects)
+          {
+            str.append(" and");
+
+          }
+          str.append(" event");
+        }
+        str.append(" relationships");
+
+        docxFile.addTitle(3, "COM Object Relationships");
+        docxFile.addComment("The Figure below shows the " + str + " for this service:");
+        docxFile.addComment("INSERT DIAGRAM HERE");
+        docxFile.addFigureCaption(service.getName() + " Service " + str);        
       }
 
       if (null != features.getArchiveUsage())
@@ -1135,7 +1165,7 @@ public class GeneratorDocx extends GeneratorDocument
       String prefix = "";
       String typeName;
       String postfix = "";
-      
+
       TypeRef ref = types.get(i);
       if (includeMessageFieldNames && ref.isField())
       {
@@ -1151,7 +1181,7 @@ public class GeneratorDocx extends GeneratorDocument
         {
           prefix = "(";
         }
-        
+
         postfix = ")";
       }
       else
@@ -1238,6 +1268,23 @@ public class GeneratorDocx extends GeneratorDocument
     {
       super("\r\n");
       this.numberWriter = numberWriter;
+    }
+    
+    protected void addFigureCaption(String caption) throws IOException
+    {
+      if (null != caption)
+      {
+        buffer.append(addFileStatement(2, "<w:p>", false));
+        buffer.append(addFileStatement(3, "<w:pPr><w:pStyle w:val=\"TableTitle\"/></w:pPr><w:r><w:t xml:space=\"preserve\">Figure </w:t></w:r>", false));
+        buffer.append(addFileStatement(3, "<w:bookmarkStart w:id=\"0\" w:name=\"F_" + caption + "\"/>", false));
+        buffer.append(addFileStatement(3, "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> STYLEREF \"Heading 1\"\\l \\n \\t  \\* MERGEFORMAT </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:r><w:noBreakHyphen/></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Figure \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:bookmarkEnd w:id=\"0\"/><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText>tc  \\f T \"</w:instrText></w:r><w:fldSimple w:instr=\" STYLEREF &quot;Heading 1&quot;\\l \\n \\t  \\* MERGEFORMAT \">", false));
+        buffer.append(addFileStatement(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + caption + "\"/><w:r><w:instrText>1</w:instrText></w:r></w:fldSimple>", false));
+        buffer.append(addFileStatement(3, "<w:r><w:instrText>-</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Figure_TOC \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:instrText>1</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>", false));
+        buffer.append(addFileStatement(3, "<w:r><w:instrText>" + caption + "</w:instrText></w:r>", false));
+        buffer.append(addFileStatement(3, "<w:bookmarkEnd w:id=\"1\"/><w:r><w:instrText>\"</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>", false));
+        buffer.append(addFileStatement(3, "<w:r><w:t>:  " + caption + "</w:t></w:r>", false));
+        buffer.append(addFileStatement(2, "</w:p>", false));
+      }
     }
 
     protected void startTable(int[] widths) throws IOException
@@ -1450,12 +1497,30 @@ public class GeneratorDocx extends GeneratorDocument
             instance = this.numberWriter.getNextNumberingInstance();
           }
 
-          for (String text : strings)
+          addNumberedComment(instance, 0, strings.iterator());
+        }
+      }
+    }
+
+    protected void addNumberedComment(int instance, int level, Iterator<String> iterator) throws IOException
+    {
+      while (iterator.hasNext())
+      {
+        String text = iterator.next();
+
+        if (null != text)
+        {
+          if ("<ol>".equalsIgnoreCase(text))
           {
-            if (null != text)
-            {
-              addNumberedComment(instance, text);
-            }
+            addNumberedComment(instance, level + 1, iterator);
+          }
+          else if ("</ol>".equalsIgnoreCase(text))
+          {
+            return;
+          }
+          else
+          {
+            addNumberedComment(instance, level, text);
           }
         }
       }
@@ -1520,7 +1585,7 @@ public class GeneratorDocx extends GeneratorDocument
       buffer.append(buf);
     }
 
-    private void addNumberedComment(int instance, String text) throws IOException
+    private void addNumberedComment(int instance, int level, String text) throws IOException
     {
       List<String> strings = splitString(null, text);
       if (0 < strings.size())
@@ -1529,7 +1594,7 @@ public class GeneratorDocx extends GeneratorDocument
         {
           for (String str : strings)
           {
-            addNumberedComment(instance, str);
+            addNumberedComment(instance, level, str);
           }
         }
         else
@@ -1537,7 +1602,7 @@ public class GeneratorDocx extends GeneratorDocument
           String str = strings.get(0);
           if ((null != str) && (0 < str.length()))
           {
-            buffer.append(addFileStatement(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\"0\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr><w:r><w:t>" + escape(str) + "</w:t></w:r></w:p>", false));
+            buffer.append(addFileStatement(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\"" + level + "\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr><w:r><w:t>" + escape(str) + "</w:t></w:r></w:p>", false));
           }
         }
       }
@@ -1547,6 +1612,8 @@ public class GeneratorDocx extends GeneratorDocument
     {
       if (null != t)
       {
+        t = t.replaceAll("<li>", "");
+        t = t.replaceAll("</li>", "");
         t = t.replaceAll("&", "&amp;");
         t = t.replaceAll("<", "&lt;");
         t = t.replaceAll(">", "&gt;");
