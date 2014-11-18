@@ -31,6 +31,7 @@ import esa.mo.tools.stubgen.xsd.EnumerationType.Item;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -114,7 +115,7 @@ public class GeneratorDocx extends GeneratorDocument
   }
 
   @Override
-  public void compile(String destFolderName, SpecificationType spec) throws IOException, JAXBException
+  public void compile(String destFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException
   {
     for (AreaType area : spec.getArea())
     {

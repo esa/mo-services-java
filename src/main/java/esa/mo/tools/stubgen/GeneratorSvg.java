@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -109,7 +110,7 @@ public class GeneratorSvg extends GeneratorDocument
   }
 
   @Override
-  public void compile(String destinationFolderName, SpecificationType spec) throws IOException, JAXBException
+  public void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException
   {
     for (AreaType area : spec.getArea())
     {

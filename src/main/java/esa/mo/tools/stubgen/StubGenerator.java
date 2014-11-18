@@ -210,10 +210,10 @@ public class StubGenerator extends AbstractMojo
     if (xmlDirectory.exists())
     {
       // load in any reference specifications
-      final List<Map.Entry<SpecificationType, File>> refSpecs = loadSpecifications(xmlRefDirectory);
+      final List<Map.Entry<SpecificationType, XmlSpecification>> refSpecs = loadSpecifications(xmlRefDirectory);
 
       // load in the specifications
-      final List<Map.Entry<SpecificationType, File>> specs = loadSpecifications(xmlDirectory);
+      final List<Map.Entry<SpecificationType, XmlSpecification>> specs = loadSpecifications(xmlDirectory);
 
       // run the specifications through each generator
       // first process the list of languages to generate
@@ -274,10 +274,10 @@ public class StubGenerator extends AbstractMojo
     }
   }
 
-  private static List<Map.Entry<SpecificationType, File>> loadSpecifications(final File directory) throws MojoExecutionException
+  private static List<Map.Entry<SpecificationType, XmlSpecification>> loadSpecifications(final File directory) throws MojoExecutionException
   {
-    final List<Map.Entry<SpecificationType, File>> specList = new LinkedList<Map.Entry<SpecificationType, File>>();
-    
+    final List<Map.Entry<SpecificationType, XmlSpecification>> specList = new LinkedList<Map.Entry<SpecificationType, XmlSpecification>>();
+
     if (directory.exists())
     {
       final File xmlFiles[] = directory.listFiles();
@@ -288,7 +288,7 @@ public class StubGenerator extends AbstractMojo
         {
           if (file.isFile())
           {
-            specList.add(new AbstractMap.SimpleEntry<SpecificationType, File>(loadSpecification(file), file));
+            specList.add(loadSpecification(file));
           }
         }
         catch (Exception ex)
@@ -302,12 +302,13 @@ public class StubGenerator extends AbstractMojo
     return specList;
   }
 
-  private static SpecificationType loadSpecification(final File is) throws IOException, JAXBException
+  private static AbstractMap.SimpleEntry<SpecificationType, XmlSpecification> loadSpecification(final File is) throws IOException, JAXBException
   {
     final JAXBContext jc = JAXBContext.newInstance("esa.mo.tools.stubgen.xsd");
     final Unmarshaller unmarshaller = jc.createUnmarshaller();
     final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
-    return (SpecificationType) rootElement.getValue();
+    return new AbstractMap.SimpleEntry<SpecificationType, XmlSpecification>((SpecificationType) rootElement.getValue(),
+            new XmlSpecification(is, rootElement));
   }
 
   private static void loadGenerators(final org.apache.maven.plugin.logging.Log logger)
@@ -326,12 +327,12 @@ public class StubGenerator extends AbstractMojo
         try
         {
           final Generator g = (Generator) cls.getConstructor(new Class[]
-                  {
-                    org.apache.maven.plugin.logging.Log.class
-                  })
+          {
+            org.apache.maven.plugin.logging.Log.class
+          })
                   .newInstance(new Object[]
-                  {
-                    logger
+                          {
+                            logger
                   });
 
           GENERATOR_MAP.put(g.getShortName().toLowerCase(), g);
@@ -345,8 +346,8 @@ public class StubGenerator extends AbstractMojo
   }
 
   private void processWithGenerator(final Generator generator,
-          final List<Map.Entry<SpecificationType, File>> refSpecs,
-          final List<Map.Entry<SpecificationType, File>> specs) throws MojoExecutionException
+          final List<Map.Entry<SpecificationType, XmlSpecification>> refSpecs,
+          final List<Map.Entry<SpecificationType, XmlSpecification>> specs) throws MojoExecutionException
   {
     try
     {
@@ -359,7 +360,7 @@ public class StubGenerator extends AbstractMojo
     }
 
     // pre process the reference specifications
-    for (Map.Entry<SpecificationType, File> spec : refSpecs)
+    for (Map.Entry<SpecificationType, XmlSpecification> spec : refSpecs)
     {
       try
       {
@@ -368,12 +369,12 @@ public class StubGenerator extends AbstractMojo
       catch (Exception ex)
       {
         throw new MojoExecutionException("Exception thrown during the pre-processing of reference XML file: "
-                + spec.getValue().getPath(), ex);
+                + spec.getValue().file.getPath(), ex);
       }
     }
 
     // pre process the specifications
-    for (Map.Entry<SpecificationType, File> spec : specs)
+    for (Map.Entry<SpecificationType, XmlSpecification> spec : specs)
     {
       try
       {
@@ -382,22 +383,22 @@ public class StubGenerator extends AbstractMojo
       catch (Exception ex)
       {
         throw new MojoExecutionException("Exception thrown during the pre-processing of XML file: "
-                + spec.getValue().getPath(), ex);
+                + spec.getValue().file.getPath(), ex);
       }
     }
 
     // now generator from each specification
-    for (Map.Entry<SpecificationType, File> spec : specs)
+    for (Map.Entry<SpecificationType, XmlSpecification> spec : specs)
     {
       try
       {
         getLog().info("Generating " + generator.getShortName());
-        generator.compile(outputDirectory.getPath(), spec.getKey());
+        generator.compile(outputDirectory.getPath(), spec.getKey(), spec.getValue().rootElement);
       }
       catch (Exception ex)
       {
         throw new MojoExecutionException("Exception thrown during the processing of XML file: "
-                + spec.getValue().getPath(), ex);
+                + spec.getValue().file.getPath(), ex);
       }
     }
 
@@ -408,6 +409,18 @@ public class StubGenerator extends AbstractMojo
     catch (IOException ex)
     {
       throw new MojoExecutionException("Exception thrown during the closing of the generator", ex);
+    }
+  }
+
+  private final static class XmlSpecification
+  {
+    public final File file;
+    public final JAXBElement rootElement;
+
+    public XmlSpecification(File file, JAXBElement rootElement)
+    {
+      this.file = file;
+      this.rootElement = rootElement;
     }
   }
 }

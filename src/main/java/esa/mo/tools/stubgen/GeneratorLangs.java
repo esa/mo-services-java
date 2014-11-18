@@ -39,6 +39,7 @@ import esa.mo.tools.stubgen.xsd.EnumerationType.Item;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import org.apache.maven.plugin.logging.Log;
 
@@ -116,7 +117,7 @@ public abstract class GeneratorLangs extends GeneratorBase
   }
 
   @Override
-  public void compile(String destinationFolderName, SpecificationType spec) throws IOException, JAXBException
+  public void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException
   {
     File destFolder = StubUtils.createFolder(new File(destinationFolderName), baseFolder);
     for (AreaType area : spec.getArea())

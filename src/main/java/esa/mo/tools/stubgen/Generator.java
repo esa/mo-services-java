@@ -23,6 +23,7 @@ package esa.mo.tools.stubgen;
 import esa.mo.tools.stubgen.xsd.SpecificationType;
 import java.io.IOException;
 import java.util.Map;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -79,10 +80,11 @@ public interface Generator
    *
    * @param destinationFolderName The folder to generate in to.
    * @param spec The specification to process.
+   * @param rootNode The JAXB root node for the specification
    * @throws IOException If there are problems writing the files.
    * @throws JAXBException If there are problems reading any XML Schema definitions.
    */
-  void compile(String destinationFolderName, SpecificationType spec) throws IOException, JAXBException;
+  void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException;
 
   /**
    * Closes the generator allowing it to write out any final files or processing.

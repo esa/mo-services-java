@@ -124,6 +124,7 @@
           </execution>
         </executions>
         <configuration>
+          <npa>true</npa>
           <packageName>esa.mo.tools.stubgen.xsd</packageName>
           <schemaDirectory>${project.build.directory}/xsd</schemaDirectory>
         </configuration>
