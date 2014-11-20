@@ -81,9 +81,9 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
     public static final String SEGMENTATION_ERROR_TEST_PROVIDER_NAME = "SegmentationErrorTest";
     public static final int SEGMENTATION_ERROR_REMOTE_APID_QUALIFIER = 648;
     public static final int SEGMENTATION_ERROR_REMOTE_APID = 2;
-    public static final String SEGMENTATION_SMALL_SIZE_LIMIT_TEST_PROVIDER_NAME = "SegmentationSmallSizeLimitTest";
-    public static final int SEGMENTATION_SMALL_SIZE_LIMIT_REMOTE_APID_QUALIFIER = 648;
-    public static final int SEGMENTATION_SMALL_SIZE_LIMIT_REMOTE_APID = 4;
+    public static final String SEGMENTATION_COUNTER_SELECT_TEST_PROVIDER_NAME = "SegmentationCounterSelectTest";
+    public static final int SEGMENTATION_COUNTER_SELECT_REMOTE_APID_QUALIFIER = 648;
+    public static final int SEGMENTATION_COUNTER_SELECT_REMOTE_APID = 4;
 	
 	/**
 	 * APID qualifier for remote providers and shared brokers sending TC packets.
@@ -296,22 +296,22 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
             Boolean.FALSE, // isPublisher
             null);
 
-    Map<Object, Object> segmentationSmallSizeLimitProps = new HashMap<Object, Object>();
-    segmentationSmallSizeLimitProps.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_SMALL_SIZE_LIMIT_REMOTE_APID_QUALIFIER);
-    segmentationSmallSizeLimitProps.put(TestHelper.APID_PROPERTY, SEGMENTATION_SMALL_SIZE_LIMIT_REMOTE_APID);
+    Map<Object, Object> segmentationCounterSelectProps = new HashMap<Object, Object>();
+    segmentationCounterSelectProps.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_COUNTER_SELECT_REMOTE_APID_QUALIFIER);
+    segmentationCounterSelectProps.put(TestHelper.APID_PROPERTY, SEGMENTATION_COUNTER_SELECT_REMOTE_APID);
     
-    MALInteractionHandler segmentationSmallSizeLimitHandler = new IPTestHandlerImpl();
-    MALProvider segmentationSmallSizeLimitTestProvider = defaultProviderMgr.createProvider(
-            SEGMENTATION_SMALL_SIZE_LIMIT_TEST_PROVIDER_NAME,
+    MALInteractionHandler segmentationCounterSelectHandler = new IPSegmentationTestHandlerImpl();
+    MALProvider segmentationCounterSelectTestProvider = defaultProviderMgr.createProvider(
+            SEGMENTATION_COUNTER_SELECT_TEST_PROVIDER_NAME,
             protocol,
             IPTestHelper.IPTEST_SERVICE,
             IP_TEST_AUTHENTICATION_ID,
-            segmentationSmallSizeLimitHandler,
+            segmentationCounterSelectHandler,
             new QoSLevel[]{
               QoSLevel.ASSURED
             },
             new UInteger(1), // number of priority levels
-            segmentationSmallSizeLimitProps,
+            segmentationCounterSelectProps,
             Boolean.FALSE, // isPublisher
             null);
     
@@ -321,8 +321,8 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
     FileBasedDirectory.storeURI(SEGMENTATION_ERROR_TEST_PROVIDER_NAME,
             segmentationErrorTestProvider.getURI(), segmentationErrorTestProvider.getBrokerURI());
     
-    FileBasedDirectory.storeURI(SEGMENTATION_SMALL_SIZE_LIMIT_TEST_PROVIDER_NAME,
-            segmentationSmallSizeLimitTestProvider.getURI(), segmentationSmallSizeLimitTestProvider.getBrokerURI());
+    FileBasedDirectory.storeURI(SEGMENTATION_COUNTER_SELECT_TEST_PROVIDER_NAME,
+            segmentationCounterSelectTestProvider.getURI(), segmentationCounterSelectTestProvider.getBrokerURI());
 	}
 	
 }

@@ -18,13 +18,24 @@
  */
 package org.ccsds.moims.mo.malspp.test.segmentation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.IntegerList;
+import org.ccsds.moims.mo.mal.structures.StringList;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
+import org.ccsds.moims.mo.malprototype.iptest.body.ProgressMultiAck;
+import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
+import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
 import org.ccsds.moims.mo.malspp.test.datatype.MalSppDataTypeTest;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptorSocket;
@@ -36,7 +47,7 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
 
   private static final int PACKET_DATA_FIELD_SIZE_LIMIT = 65536; // max
   protected static final int LARGE_BLOB_SIZE = 3 * PACKET_DATA_FIELD_SIZE_LIMIT; // this leads to 4 packets due to the extra data in the secondary header
-  public static final Blob testLargeBlob = createTestLargeBlob();
+  public static final Blob testLargeBlob = createTestBlob(LARGE_BLOB_SIZE);
   public static final Blob testSmallBlob = new Blob(new byte[]{1, 2, 3});
 
   public static final String testLongString = "ABCD";
@@ -46,9 +57,15 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
 
   private SpacePacketHeader firstPrimaryHeader;
   private SecondaryHeader firstSecondaryHeader;
+  
+  private ProgressAdapter progressAdapterA;
+  private ProgressAdapter progressAdapterB;
+  public static final Blob update1Packets = createTestBlob(100); // 1 packet; scdr. hdr. is 52 bytes without segment counter
+  public static final Blob update2Packets = createTestBlob(200); // 2 packets
+  public static final Blob update3Packets = createTestBlob(400); // 3 packets
 
-  protected static Blob createTestLargeBlob() {
-    byte[] b = new byte[LARGE_BLOB_SIZE];
+  protected static Blob createTestBlob(int size) {
+    byte[] b = new byte[size];
     for (int i = 0; i < b.length; i++) {
       b[i] = (byte) i;
     }
@@ -83,6 +100,10 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
     return SPPInterceptor.instance().getSentPacketCount();
   }
 
+  public int numberOfReceivedPacketsIs() {
+    return SPPInterceptor.instance().getReceivedPacketCount();
+  }
+  
   public int primaryHeaderSequenceFlagsAre() {
     return primaryHeader.getSequenceFlags();
   }
@@ -317,8 +338,7 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
     return rv;
   }
 
-  public boolean scramblingPattern(String[] pattern) throws Exception {
-    //Thread.sleep(2000);
+  public static void setScramblingPattern(String[] pattern) {
     logMessage("Set scrambling pattern to " + Arrays.toString(pattern));
     int[] p = new int[pattern.length];
     for (int i = 0; i < pattern.length; i++) {
@@ -328,7 +348,150 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
       p = null;
     }
     SPPInterceptorSocket.setScramblePattern(p);
+  }
+  
+  public static boolean remoteReceptionScramblingPattern(String[] pattern) throws Exception {
+    Thread.sleep(2000);
+    setScramblingPattern(pattern);
     return true;
+  }
+  
+  public boolean localReceptionScramblingPattern(String[] pattern) throws Exception {
+    StringList p = new StringList();
+    p.addAll(Arrays.asList(pattern));
+    IPTestDefinition def = new IPTestDefinition("setScramblingPattern", null, null, null, null, null, null, null, null, null, null);
+    LocalMALInstance.instance().segCounterTestStub().submitMulti(def, p);
+    return true;
+  }
+
+  public boolean establishProgressIp(String identifier) throws Exception {
+    ProgressAdapter progressAdapter;
+    if (null == progressAdapterA) {
+      progressAdapterA = new ProgressAdapter();
+    }
+    if (null == progressAdapterB) {
+      progressAdapterB = new ProgressAdapter();
+    }
+    selectAdapter(identifier).resetAdapter();
+    ProgressMultiAck ack = LocalMALInstance.instance().segCounterTestStub().progressMulti(null, new Union(identifier), selectAdapter(identifier));
+    Thread.sleep(100);
+    return null == ack.getBodyElement0() && null == ack.getBodyElement1();
+  }
+  
+  public boolean triggerUpdateForGeneratingPackets(String identifier, int nPackets) throws Exception {
+    selectAdapter(identifier).addExpectedNPackets(nPackets);
+    IPTestDefinition def = new IPTestDefinition(identifier, null, null, null, null, null, null, null, null, null, null);
+    LocalMALInstance.instance().segCounterTestStub().sendMulti(def, new Union(nPackets));
+    Thread.sleep(50);
+    return true;
+  }
+  
+  public boolean waitSecondsForPacketDelivery(int sec) throws Exception {
+    Thread.sleep(sec * 1000);
+    return true;
+  }
+  
+  public String updateForIs(int index, String identifier) throws Exception {
+    return selectAdapter(identifier).checkIndex(index - 1);
+  }
+  
+  public boolean triggerResponseFor(String identifier) throws Exception {
+    IPTestDefinition def = new IPTestDefinition(identifier, null, null, null, null, null, null, null, null, null, null);
+    LocalMALInstance.instance().segCounterTestStub().sendMulti(def, new Union(0));
+    Thread.sleep(100);
+    return true;
+  }
+  
+  public boolean responseReceivedFor(String identifier) throws Exception {
+    return selectAdapter(identifier).getCorrectResponseReceived();
+  }
+  
+  public int numberOfReceivedUpdatesForIs(String identifier) throws Exception {
+    return selectAdapter(identifier).getUpdatesReceived();
+  }
+  
+  public boolean delayReceptionOfNextPacketAtIndexBySeconds(int index, int delay) throws Exception {
+    IntegerList list  = new IntegerList(2);
+    list.add(index);
+    list.add(delay);
+    IPTestDefinition def = new IPTestDefinition("setDelay", null, null, null, null, null, null, null, null, null, null);
+    LocalMALInstance.instance().segCounterTestStub().submitMulti(def, list);
+    Thread.sleep(100);
+    return true;
+  }
+  
+  public boolean noReceptionDelay() throws Exception {
+    return delayReceptionOfNextPacketAtIndexBySeconds(0, 0);
+  }
+
+  private ProgressAdapter selectAdapter(String identifier) throws MALException {
+    if (identifier.equals("A")) {
+      return progressAdapterA;
+    } else if (identifier.equals("B")) {
+      return progressAdapterB;
+    } else {
+      throw new MALException("Invalid identifier.");
+    }    
+  }
+  
+  private class ProgressAdapter extends IPTestAdapter {
+    private final List<Blob> payloads = new ArrayList<Blob>();
+    private final List<Integer> packetNumbers = new ArrayList<Integer>();
+    private boolean correctResponseReceived = false;
+    
+    @Override
+    public void progressMultiResponseReceived(MALMessageHeader msgHeader, String str, Element elem, Map qosProperties) {
+      correctResponseReceived = null == str && null == elem;
+    }
+
+    @Override
+    public void progressMultiUpdateReceived(MALMessageHeader msgHeader, Integer nPackets, Element payload, Map qosProperties) {
+      payloads.add((Blob) payload);
+    }
+
+    @Override
+    public void progressMultiAckReceived(MALMessageHeader msgHeader, String _String0, Element _Element1, Map qosProperties) {
+
+    }
+    
+    public boolean getCorrectResponseReceived() {
+      return correctResponseReceived;
+    }
+    
+    public int getUpdatesReceived() {
+      return payloads.size();
+    }
+    
+    public void addExpectedNPackets(int nPackets) {
+      packetNumbers.add(nPackets);
+    }
+    
+    public void resetAdapter() {
+      payloads.clear();
+      packetNumbers.clear();
+      correctResponseReceived = false;
+    }
+    
+    public String checkIndex(int index) throws Exception {
+      int nPackets = packetNumbers.get(index);
+      Blob received = payloads.get(index);
+      Blob expected;
+      switch (nPackets) {
+        case 1:
+          expected = update1Packets;
+          break;
+        case 2:
+          expected = update2Packets;
+          break;
+        case 3:
+          expected = update3Packets;
+          break;
+        default:
+          return "No payload defined translating to a number of packets of " + nPackets;
+      }
+      return subSingleTest(expected, received, "counter selection payload");
+    }
+
   }
 
 }

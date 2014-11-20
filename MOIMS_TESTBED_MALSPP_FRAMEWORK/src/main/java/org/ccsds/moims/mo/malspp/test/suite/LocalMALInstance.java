@@ -62,10 +62,11 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
   private DataTestStub segstub = null;
   private DataTestStub segErrorSmallStub = null;
   private DataTestStub segErrorLargeStub = null;
+  private IPTestStub segCounterStub = null;
   public static final int SEGMENTATION_ERROR_LOCAL_APID_QUALIFIER = 647;
   public static final int SEGMENTATION_ERROR_LOCAL_APID = 1;
-  public static final int SEGMENTATION_SMALL_SIZE_LIMIT_LOCAL_APID_QUALIFIER = 647;
-  public static final int SEGMENTATION_SMALL_SIZE_LIMIT_LOCAL_APID = 3;
+  public static final int SEGMENTATION_COUNTER_SELECT_LOCAL_APID_QUALIFIER = 647;
+  public static final int SEGMENTATION_COUNTER_SELECT_LOCAL_APID = 3;
 
   /**
    * APID qualifier for interactions sending TC packets and receiving TC packets.
@@ -784,6 +785,30 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       segErrorLargeStub = new DataTestStub(consumer);
     }
     return segErrorLargeStub;
+  }
+
+  public synchronized IPTestStub segCounterTestStub() throws MALException {
+    if (null == segCounterStub) {
+      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_COUNTER_SELECT_TEST_PROVIDER_NAME);
+      HashMap<Object, Object> props = new HashMap<Object, Object>();
+      props.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_COUNTER_SELECT_LOCAL_APID_QUALIFIER);
+      props.put(TestHelper.APID_PROPERTY, SEGMENTATION_COUNTER_SELECT_LOCAL_APID);
+      MALConsumer consumer = defaultConsumerMgr.createConsumer(
+              "segmentationCounterSelectTestConsumer",
+              uris.uri,
+              uris.broker,
+              IPTestHelper.IPTEST_SERVICE,
+              TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
+              new IdentifierList(),
+              new Identifier("networkZone"),
+              SessionType.LIVE,
+              new Identifier("LIVE"),
+              QoSLevel.BESTEFFORT,
+              props, new UInteger(0));
+
+      segCounterStub = new IPTestStub(consumer);
+    }
+    return segCounterStub;
   }
 
 }

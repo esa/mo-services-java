@@ -41,21 +41,32 @@ import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
 
 public class SPPInterceptorSocket implements SPPSocket {
 	
-	private SPPSocket socket;
+	private final SPPSocket socket;
+    // statically setting scrambling or delay is not nice but good enough for now
     private static int[] scramblePattern = null;
     private Thread scrambleThread;
     private final List<SpacePacket> packets = Collections.synchronizedList(new LinkedList<SpacePacket>());
     // collect all packets requested to be sent out during 1 second before scrambling them
     private static final int COLLECTION_INTERVAL = 1000;
-    private static long packetCounter = 0;
+    private static int delay = 0;
+    private static int sentPackets = 0;
+    private static int delayIndex = 0;
 
 	public SPPInterceptorSocket(SPPSocket socket) {
 	  this.socket = socket;
     }
 
 	public void send(SpacePacket packet) throws Exception {
-      // Put packets into queue in order of send. Any scrambling happens afterwards.
+      // Put packets into queue in order of send. Any scrambling or delay happens afterwards.
       SPPInterceptor.instance().packetSent(packet);
+      if (delay > 0) {
+        sentPackets++;
+        if (sentPackets == delayIndex + 1) {
+          Thread delayThread = createDelayThread(delay, packet);
+          delayThread.start();
+          return;
+        }
+      }
       if (null == scramblePattern) {
         internalSend(packet);
       } else {
@@ -94,13 +105,18 @@ public class SPPInterceptorSocket implements SPPSocket {
       for (int i = 0; i < packets.size(); i++) {
         boolean sent = false;
         while (!sent) {
-          int idx = pattern[(i + skip) % pattern.length] + ((i / pattern.length) * pattern.length);
+          int rawIdx = pattern[(i + skip) % pattern.length];
+          if (rawIdx < 0) {
+            LoggingBase.logMessage("Drop packet.");
+            break;
+          }
+          int idx = rawIdx + ((i / pattern.length) * pattern.length);
           LoggingBase.logMessage("Send packet " + idx + " @ " + i);
           try {
             SpacePacket p = packets.get(idx);
             internalSend(p);
             sent = true;
-        } catch (IndexOutOfBoundsException ex) {
+          } catch (IndexOutOfBoundsException ex) {
             ++skip;
             LoggingBase.logMessage("    ... skip index");
           }
@@ -108,10 +124,24 @@ public class SPPInterceptorSocket implements SPPSocket {
       }
     }
 
+    private Thread createDelayThread(final int delay, final SpacePacket packet) {
+      return new Thread() {
+        @Override
+        public void run() {
+          try {
+            Thread.sleep(delay);
+            internalSend(packet);
+          } catch (Exception ex) {
+            LoggingBase.logMessage("Exception thrown: " + ex.getMessage());
+          }
+        }
+      };
+    }
+    
 	public SpacePacket receive() throws Exception {
 	  SpacePacket packet = socket.receive();
-		SPPInterceptor.instance().packetReceived(packet);
-		return packet;
+      SPPInterceptor.instance().packetReceived(packet);
+      return packet;
 	}
 
 	public void close() throws Exception {
@@ -124,5 +154,11 @@ public class SPPInterceptorSocket implements SPPSocket {
     
     public static void setScramblePattern(int[] pattern) {
       scramblePattern = pattern;
+    }
+    
+    public static void setDelay(int delayInMillisecs, int index) {
+      delay = delayInMillisecs;
+      sentPackets = 0;
+      delayIndex = index;
     }
 }

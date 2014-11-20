@@ -161,7 +161,7 @@
 	</app>
 
 	<app apidQualifier="647" apid="3">
-		<packetDataFieldSizeLimit>0</packetDataFieldSizeLimit>
+		<packetDataFieldSizeLimit>200</packetDataFieldSizeLimit>
 		<varintSupported>true</varintSupported>
 		<time>
 			<format unit="second">00011111</format>
@@ -177,7 +177,7 @@
 	</app>
 	
 	<app apidQualifier="648" apid="4">
-		<packetDataFieldSizeLimit>0</packetDataFieldSizeLimit>
+		<packetDataFieldSizeLimit>200</packetDataFieldSizeLimit>
 		<varintSupported>true</varintSupported>
 		<time>
 			<format unit="second">00011111</format>
