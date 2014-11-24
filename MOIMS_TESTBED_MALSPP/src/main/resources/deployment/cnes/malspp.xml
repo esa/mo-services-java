@@ -183,7 +183,7 @@
       <ms:unit value="second" comment="" />
       <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
     </ms:fineTime>
-    <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
+    <ms:packetDataFieldSizeLimit value="200" comment="Max size." />
     <ms:varintSupported value="true" comment="" />
   </ms:app>
   <ms:app apidQualifier="648" apid="4" comment="" >
@@ -197,7 +197,7 @@
       <ms:unit value="second" comment="" />
       <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
     </ms:fineTime>
-    <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
+    <ms:packetDataFieldSizeLimit value="200" comment="Max size." />
     <ms:varintSupported value="true" comment="" />
   </ms:app>
 </ms:conf>
