@@ -142,7 +142,7 @@ public interface ClassWriter extends LanguageWriter
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec) throws IOException;
+  MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec) throws IOException;
 
   /**
    * Add a method to the class.
@@ -162,7 +162,7 @@ public interface ClassWriter extends LanguageWriter
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException;
+  MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException;
 
   /**
    * Add a method to the class.
@@ -180,7 +180,7 @@ public interface ClassWriter extends LanguageWriter
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec) throws IOException;
+  MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec) throws IOException;
 
   /**
    * Add a method to the class.
@@ -201,7 +201,7 @@ public interface ClassWriter extends LanguageWriter
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException;
+  MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException;
 
   /**
    * Add a method to the class.
@@ -223,7 +223,7 @@ public interface ClassWriter extends LanguageWriter
    * @return Returns a method writer for the method.
    * @throws IOException If there is an IO error.
    */
-  MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, String rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException;
+  MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual, boolean isConst, boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException;
 
   /**
    * Adds statements to close the class.

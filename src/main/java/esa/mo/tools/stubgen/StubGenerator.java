@@ -41,6 +41,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
+import w3c.xsd.Schema;
 
 /**
  * Generates stubs and skeletons for CCSDS MO Service specifications.
@@ -65,6 +66,13 @@ public class StubGenerator extends AbstractMojo
    * @required
    */
   protected File xmlRefDirectory;
+  /**
+   * The directory for XSD type reference files
+   *
+   * @parameter default-value="${basedir}/src/main/xsd-ref"
+   * @required
+   */
+  protected File xsdRefDirectory;
   /**
    * The working directory to create the generated java source files.
    *
@@ -158,6 +166,12 @@ public class StubGenerator extends AbstractMojo
           i++;
           gen.xmlRefDirectory = new File(args[i]);
         }
+        else if ("-R".equalsIgnoreCase(arg))
+        {
+          // XSD reference directory is held in next argument
+          i++;
+          gen.xsdRefDirectory = new File(args[i]);
+        }
         else if ("-o".equalsIgnoreCase(arg))
         {
           // output directory is held in next argument
@@ -212,6 +226,9 @@ public class StubGenerator extends AbstractMojo
       // load in any reference specifications
       final List<Map.Entry<SpecificationType, XmlSpecification>> refSpecs = loadSpecifications(xmlRefDirectory);
 
+      // load in any reference XML schema
+      final List<Map.Entry<Schema, XmlSpecification>> refXsd = loadXsdSpecifications(xsdRefDirectory);
+
       // load in the specifications
       final List<Map.Entry<SpecificationType, XmlSpecification>> specs = loadSpecifications(xmlDirectory);
 
@@ -224,7 +241,7 @@ public class StubGenerator extends AbstractMojo
           final Generator gen = GENERATOR_MAP.get(targetLanguage.toLowerCase());
           if (null != gen)
           {
-            processWithGenerator(gen, refSpecs, specs);
+            processWithGenerator(gen, refSpecs, refXsd, specs);
           }
           else
           {
@@ -235,7 +252,7 @@ public class StubGenerator extends AbstractMojo
       else
       {
         getLog().info("Generating Java by default");
-        processWithGenerator(new GeneratorJava(getLog()), refSpecs, specs);
+        processWithGenerator(new GeneratorJava(getLog()), refSpecs, refXsd, specs);
       }
     }
     else
@@ -302,6 +319,34 @@ public class StubGenerator extends AbstractMojo
     return specList;
   }
 
+  private static List<Map.Entry<Schema, XmlSpecification>> loadXsdSpecifications(final File directory) throws MojoExecutionException
+  {
+    final List<Map.Entry<Schema, XmlSpecification>> specList = new LinkedList<Map.Entry<Schema, XmlSpecification>>();
+
+    if (directory.exists())
+    {
+      final File xmlFiles[] = directory.listFiles();
+
+      for (File file : xmlFiles)
+      {
+        try
+        {
+          if (file.isFile())
+          {
+            specList.add(loadXsdSpecification(file));
+          }
+        }
+        catch (Exception ex)
+        {
+          throw new MojoExecutionException("Exception thrown during the pre-processing of XSD file: "
+                  + file.getPath(), ex);
+        }
+      }
+    }
+
+    return specList;
+  }
+
   private static AbstractMap.SimpleEntry<SpecificationType, XmlSpecification> loadSpecification(final File is) throws IOException, JAXBException
   {
     final JAXBContext jc = JAXBContext.newInstance("esa.mo.tools.stubgen.xsd");
@@ -309,6 +354,14 @@ public class StubGenerator extends AbstractMojo
     final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
     return new AbstractMap.SimpleEntry<SpecificationType, XmlSpecification>((SpecificationType) rootElement.getValue(),
             new XmlSpecification(is, rootElement));
+  }
+
+  private static AbstractMap.SimpleEntry<Schema, XmlSpecification> loadXsdSpecification(final File is) throws IOException, JAXBException
+  {
+    final JAXBContext jc = JAXBContext.newInstance("w3c.xsd");
+    final Unmarshaller unmarshaller = jc.createUnmarshaller();
+    return new AbstractMap.SimpleEntry<Schema, XmlSpecification>((Schema) unmarshaller.unmarshal(is),
+            new XmlSpecification(is, null));
   }
 
   private static void loadGenerators(final org.apache.maven.plugin.logging.Log logger)
@@ -347,12 +400,14 @@ public class StubGenerator extends AbstractMojo
 
   private void processWithGenerator(final Generator generator,
           final List<Map.Entry<SpecificationType, XmlSpecification>> refSpecs,
+          final List<Map.Entry<Schema, XmlSpecification>> refXsd,
           final List<Map.Entry<SpecificationType, XmlSpecification>> specs) throws MojoExecutionException
   {
     try
     {
       generator.init(outputDirectory.getPath(), generateStructures, generateCOM, extraProperties);
       generator.setJaxbBindings(jaxbBindings);
+      generator.postinit(outputDirectory.getPath(), generateStructures, generateCOM, extraProperties);
     }
     catch (IOException ex)
     {
@@ -369,6 +424,20 @@ public class StubGenerator extends AbstractMojo
       catch (Exception ex)
       {
         throw new MojoExecutionException("Exception thrown during the pre-processing of reference XML file: "
+                + spec.getValue().file.getPath(), ex);
+      }
+    }
+
+    // pre process the reference XSD specifications
+    for (Map.Entry<Schema, XmlSpecification> spec : refXsd)
+    {
+      try
+      {
+        generator.preProcess(spec.getKey());
+      }
+      catch (Exception ex)
+      {
+        throw new MojoExecutionException("Exception thrown during the pre-processing of reference XSD file: "
                 + spec.getValue().file.getPath(), ex);
       }
     }

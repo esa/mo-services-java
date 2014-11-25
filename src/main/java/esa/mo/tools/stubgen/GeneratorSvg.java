@@ -536,7 +536,7 @@ public class GeneratorSvg extends GeneratorDocument
           svgFile.addField("N", StdStrings.INTEGER, createXlink(StdStrings.MAL, null, StdStrings.INTEGER), false, false);
           svgFile.addSpan(1, 1, "Repeated N times");
         }
-        svgFile.addField(element.getFieldName(), element.getTypeName(), createXlink(element.getEncodeCall(), element.getDecodeCall(), element.getTypeName()), isAbstract(element.getTypeName()), isEnum(element.getTypeName()));
+        svgFile.addField(element.getFieldName(), element.getTypeName(), createXlink(element.getEncodeCall(), element.getDecodeCall(), element.getTypeName()), isAbstract(element.getTypeReference()), isEnum(element.getTypeReference()));
       }
     }
     svgFile.endDrawing();

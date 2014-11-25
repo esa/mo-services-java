@@ -26,6 +26,10 @@ package esa.mo.tools.stubgen.specification;
 public final class AttributeTypeDetails
 {
   /**
+   * The MAL type.
+   */
+  private final String malType;
+  /**
    * True if this Attribute type is represented by a language native type.
    */
   private final boolean nativeType;
@@ -42,15 +46,18 @@ public final class AttributeTypeDetails
    * Constructor.
    *
    * @param ti The source of type resolution.
+   * @param malType The MAL type this represents.
    * @param isNativeType True if native type.
    * @param targetType The type to generate too.
    * @param defaultValue An example of a default value.
    */
   public AttributeTypeDetails(final TypeInformation ti,
+          final String malType,
           final boolean isNativeType,
           final String targetType,
           final String defaultValue)
   {
+    this.malType = malType;
     this.nativeType = isNativeType;
 
     if (!nativeType)
@@ -63,6 +70,11 @@ public final class AttributeTypeDetails
     }
 
     this.defaultValue = defaultValue;
+  }
+
+  public String getMalType()
+  {
+    return malType;
   }
 
   public boolean isNativeType()

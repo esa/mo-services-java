@@ -53,7 +53,7 @@ public interface InterfaceWriter extends LanguageWriter
    * @throws IOException If there is an IO error.
    */
   void addInterfaceMethodDeclaration(String scope,
-          String rtype,
+          CompositeField rtype,
           String methodName,
           List<CompositeField> args,
           String throwsSpec,

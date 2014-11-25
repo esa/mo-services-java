@@ -24,6 +24,7 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
+import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.AbstractWriter;
 import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.tools.stubgen.xsd.AnyTypeReference;
@@ -47,7 +48,6 @@ import esa.mo.tools.stubgen.xsd.SubmitOperationType;
 import esa.mo.tools.stubgen.xsd.TypeReference;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,8 +61,8 @@ import org.dom4j.dom.DOMElement;
 import org.w3c.dom.Element;
 
 /**
- * Converts an MO XML service specification that uses MO XML types to use XSD
- * based types. Converts the MO types into XSD equivalent. EXPERIMENTAL
+ * Converts an MO XML service specification that uses MO XML types to use XSD based types. Converts the MO types into
+ * XSD equivalent. EXPERIMENTAL
  */
 public class GeneratorXsd extends GeneratorDocument
 {
@@ -75,24 +75,24 @@ public class GeneratorXsd extends GeneratorDocument
   {
     super(logger, new GeneratorConfiguration("", "", "", "", "", "", "", "", "", "", "", ""));
 
-    addAttributeType(StdStrings.BLOB, new AttributeTypeDetails(this, true, "xsd:hexBinary", ""));
-    addAttributeType(StdStrings.BOOLEAN, new AttributeTypeDetails(this, true, "xsd:boolean", ""));
-    addAttributeType(StdStrings.DOUBLE, new AttributeTypeDetails(this, true, "xsd:double", ""));
-    addAttributeType(StdStrings.DURATION, new AttributeTypeDetails(this, true, "xsd:duration", ""));
-    addAttributeType(StdStrings.FLOAT, new AttributeTypeDetails(this, true, "xsd:float", ""));
-    addAttributeType(StdStrings.INTEGER, new AttributeTypeDetails(this, true, "xsd:int", ""));
-    addAttributeType(StdStrings.IDENTIFIER, new AttributeTypeDetails(this, true, "xsd:NCName", ""));
-    addAttributeType(StdStrings.LONG, new AttributeTypeDetails(this, true, "xsd:long", ""));
-    addAttributeType(StdStrings.OCTET, new AttributeTypeDetails(this, true, "xsd:byte", ""));
-    addAttributeType(StdStrings.SHORT, new AttributeTypeDetails(this, true, "xsd:short", ""));
-    addAttributeType(StdStrings.UINTEGER, new AttributeTypeDetails(this, true, "xsd:unsignedInt", ""));
-    addAttributeType(StdStrings.ULONG, new AttributeTypeDetails(this, true, "xsd:unsignedLong", ""));
-    addAttributeType(StdStrings.UOCTET, new AttributeTypeDetails(this, true, "xsd:unsignedByte", ""));
-    addAttributeType(StdStrings.USHORT, new AttributeTypeDetails(this, true, "xsd:unsignedShort", ""));
-    addAttributeType(StdStrings.STRING, new AttributeTypeDetails(this, true, "xsd:string", ""));
-    addAttributeType(StdStrings.TIME, new AttributeTypeDetails(this, true, "xsd:dateTime", ""));
-    addAttributeType(StdStrings.FINETIME, new AttributeTypeDetails(this, true, "xsd:dateTime", ""));
-    addAttributeType(StdStrings.URI, new AttributeTypeDetails(this, true, "xsd:anyURI", ""));
+    addAttributeType(StdStrings.MAL, StdStrings.BLOB, true, "xsd:hexBinary", "");
+    addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, true, "xsd:boolean", "");
+    addAttributeType(StdStrings.MAL, StdStrings.DOUBLE, true, "xsd:double", "");
+    addAttributeType(StdStrings.MAL, StdStrings.DURATION, true, "xsd:duration", "");
+    addAttributeType(StdStrings.MAL, StdStrings.FLOAT, true, "xsd:float", "");
+    addAttributeType(StdStrings.MAL, StdStrings.INTEGER, true, "xsd:int", "");
+    addAttributeType(StdStrings.MAL, StdStrings.IDENTIFIER, true, "xsd:NCName", "");
+    addAttributeType(StdStrings.MAL, StdStrings.LONG, true, "xsd:long", "");
+    addAttributeType(StdStrings.MAL, StdStrings.OCTET, true, "xsd:byte", "");
+    addAttributeType(StdStrings.MAL, StdStrings.SHORT, true, "xsd:short", "");
+    addAttributeType(StdStrings.MAL, StdStrings.UINTEGER, true, "xsd:unsignedInt", "");
+    addAttributeType(StdStrings.MAL, StdStrings.ULONG, true, "xsd:unsignedLong", "");
+    addAttributeType(StdStrings.MAL, StdStrings.UOCTET, true, "xsd:unsignedByte", "");
+    addAttributeType(StdStrings.MAL, StdStrings.USHORT, true, "xsd:unsignedShort", "");
+    addAttributeType(StdStrings.MAL, StdStrings.STRING, true, "xsd:string", "");
+    addAttributeType(StdStrings.MAL, StdStrings.TIME, true, "xsd:dateTime", "");
+    addAttributeType(StdStrings.MAL, StdStrings.FINETIME, true, "xsd:dateTime", "");
+    addAttributeType(StdStrings.MAL, StdStrings.URI, true, "xsd:anyURI", "");
   }
 
   @Override
@@ -170,8 +170,6 @@ public class GeneratorXsd extends GeneratorDocument
         }
       }
 
-      xsdTypesFile.flush();
-
       // modify area and services now for XSD/XML service output
       area.setDataTypes(null);
 
@@ -229,6 +227,8 @@ public class GeneratorXsd extends GeneratorDocument
         service.setDataTypes(null);
       }
 
+      xsdTypesFile.flush();
+
       {
         try
         {
@@ -280,13 +280,13 @@ public class GeneratorXsd extends GeneratorDocument
     }
     else if ("Composite".equalsIgnoreCase(type.getName()))
     {
-
+      xsdFile.addXsdStatement(1, "<xsd:complexType name=\"Composite\" abstract=\"true\"/>");
     }
     else if ("Attribute".equalsIgnoreCase(type.getName()))
     {
       xsdFile.addXsdStatement(1, "<xsd:simpleType name=\"" + type.getName() + "\">");
       xsdFile.addXsdStatement(2, "<xsd:union>");
-      for (Map.Entry<String, AttributeTypeDetails> item : getAttributeTypesMap().entrySet())
+      for (Map.Entry<TypeKey, AttributeTypeDetails> item : getAttributeTypesMap().entrySet())
       {
         xsdFile.addXsdStatement(3, "<xsd:simpleType>");
         xsdFile.addXsdStatement(4, "<xsd:restriction base=\"" + item.getValue().getTargetType() + "\"/>");
@@ -328,19 +328,42 @@ public class GeneratorXsd extends GeneratorDocument
 
     getLog().info("Creating composite class " + compName);
 
-    // ToDo support type extension
-    // ToDo extend Composite by default
+    TypeReference superType;
+    if (null == type.getExtends())
+    {
+      superType = TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.COMPOSITE, false);
+    }
+    else
+    {
+      superType = type.getExtends().getType();
+    }
+    xsdFile.addTypeDependency(superType.getArea());
+    String superTypeName = createCompositeElementsDetails(null, false, null, superType, true, true, null).getTypeName();
+
     xsdFile.addXsdStatement(1, "<xsd:complexType name=\"" + compName + "\">");
-    xsdFile.addXsdStatement(2, "<xsd:sequence>");
+    xsdFile.addXsdStatement(2, "<xsd:complexContent>");
+    xsdFile.addXsdStatement(3, "<xsd:extension base=\"" + superTypeName + "\">");
+    xsdFile.addXsdStatement(4, "<xsd:sequence>");
 
     List<CompositeField> compElements = createCompositeElementsList(xsdFile, type);
 
     for (CompositeField field : compElements)
     {
+      String extr = "";
+      if (field.isCanBeNull())
+      {
+        extr += " minOccurs=\"0\"";
+      }
+      if (field.isList())
+      {
+        extr += " maxOccurs=\"unbounded\"";
+      }
       xsdFile.addTypeDependency(field.getTypeReference().getArea());
-      xsdFile.addXsdStatement(3, "<xsd:element name=\"" + field.getFieldName() + "\" type=\"" + field.getTypeName() + "\"/>");
+      xsdFile.addXsdStatement(5, "<xsd:element name=\"" + field.getFieldName() + "\" type=\"" + field.getTypeName() + "\"" + extr + "/>");
     }
-    xsdFile.addXsdStatement(2, "</xsd:sequence>");
+    xsdFile.addXsdStatement(4, "</xsd:sequence>");
+    xsdFile.addXsdStatement(3, "</xsd:extension>");
+    xsdFile.addXsdStatement(2, "</xsd:complexContent>");
     xsdFile.addXsdStatement(1, "</xsd:complexType>");
   }
 
@@ -354,7 +377,7 @@ public class GeneratorXsd extends GeneratorDocument
     }
   }
 
-  public Object updateMessageField(int index, Object any)
+  private Object updateMessageField(int index, Object any)
   {
     if (null != any)
     {
@@ -363,19 +386,22 @@ public class GeneratorXsd extends GeneratorDocument
         JAXBElement re = (JAXBElement) any;
         if (re.getValue() instanceof TypeReference)
         {
-          Element e = new DOMElement("ELE", Namespace.NO_NAMESPACE);
-          return e;
-          //return new XsdElement((TypeReference) re.getValue());
+          throw new IllegalArgumentException("Direct type not supported in message body of : " + re.getValue().getClass().getSimpleName());
         }
         else if (re.getValue() instanceof NamedElementReferenceWithCommentType)
         {
-          // <xsd:element name="referenceSystem" type="ndm:ndmHeader"/>
-
           NamedElementReferenceWithCommentType ne = (NamedElementReferenceWithCommentType) re.getValue();
+          String partType = createCompositeElementsDetails(null, false, null, ne.getType(), true, true, null).getTypeName();
+
+          if (ne.getType().isList())
+          {
+            // the message part is a list, XML schema does not support this at this level so we need to warn
+            getLog().warn("XML Schema does not support top level elements with multiple occurrences of type " + partType);
+          }
 
           DOMElement e = new DOMElement(new org.dom4j.QName("element", Namespace.get("http://www.w3.org/2001/XMLSchema")), 2);
           e.setAttribute("name", ne.getName());
-          e.setAttribute("type", createCompositeElementsDetails(null, false, null, ne.getType(), true, true, null).getTypeName());
+          e.setAttribute("type", partType);
 
           return e;
         }
@@ -420,10 +446,8 @@ public class GeneratorXsd extends GeneratorDocument
       strs[3] = "http://www.w3.org/2001/XMLSchema-instance";
 
       int i = 4;
-      for (Iterator<String> it = areas.iterator(); it.hasNext();)
+      for (String elem : areas)
       {
-        String elem = it.next();
-
         strs[i] = elem.toLowerCase() + "Types";
         strs[i + 1] = "http://www.ccsds.org/schema/" + elem + "Types";
 
@@ -439,23 +463,23 @@ public class GeneratorXsd extends GeneratorDocument
     private final Writer file;
     private final StringBuffer buffer = new StringBuffer();
     private final Set<String> areas = new TreeSet<String>();
+    private final String thisArea;
 
     protected XsdWriter(String folder, String fileName, String areaName, String ext) throws IOException
     {
+      thisArea = areaName;
       areas.add(areaName);
 
       file = StubUtils.createLowLevelWriter(folder, fileName, ext);
       file.append(addFileStatement(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>", false));
       file.append(addFileStatement(0, "<xsd:schema xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"", false));
       file.append(addFileStatement(0, "            targetNamespace=\"http://www.ccsds.org/schema/" + areaName + "Types\"", false));
-      buffer.append(addFileStatement(0, "            elementFormDefault=\"qualified\">", false));
 
       getLog().info("Creating file " + folder + " " + fileName + "." + ext);
     }
 
     /**
-     * Creates a String indented correctly with a semicolon at the end if
-     * required.
+     * Creates a String indented correctly with a semicolon at the end if required.
      *
      * @param tabCount Indentation level.
      * @param statement The file statement.
@@ -478,6 +502,16 @@ public class GeneratorXsd extends GeneratorDocument
       {
         file.append(addFileStatement(0, "            xmlns:" + area.toLowerCase() + "Types=\"http://www.ccsds.org/schema/" + area + "Types\"", false));
       }
+      file.append(addFileStatement(0, "            elementFormDefault=\"qualified\">", false));
+
+      for (String area : areas)
+      {
+        if (!area.equalsIgnoreCase(thisArea))
+        {
+          file.append(addFileStatement(1, "<xsd:import namespace=\"http://www.ccsds.org/schema/" + area + "Types\" schemaLocation=\"ServiceDef" + area + "Types.xsd\"/>", false));
+        }
+      }
+
       file.append(buffer.toString());
       file.append(addFileStatement(0, "</xsd:schema>", false));
       file.flush();

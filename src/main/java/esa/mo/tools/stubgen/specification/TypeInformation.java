@@ -50,7 +50,7 @@ public interface TypeInformation
    * @param type the type to look for.
    * @return true if native.
    */
-  boolean isNativeType(TypeReference type);
+  boolean isAttributeNativeType(TypeReference type);
 
   /**
    * Returns true if the type is an attribute.

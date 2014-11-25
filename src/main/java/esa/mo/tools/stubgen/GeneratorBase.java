@@ -34,8 +34,14 @@ import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.tools.stubgen.xsd.*;
 import java.io.*;
 import java.util.*;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import org.apache.maven.plugin.logging.Log;
+import w3c.xsd.ComplexType;
+import w3c.xsd.NoFixedFacet;
+import w3c.xsd.OpenAttrs;
+import w3c.xsd.Schema;
+import w3c.xsd.SimpleType;
 
 /**
  * This class provides the generators with the basic type processing required.
@@ -46,11 +52,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation
    * The configuration of the generator.
    */
   private final GeneratorConfiguration config;
-  private final Set<String> enumTypesSet = new TreeSet<String>();
-  private final Set<String> abstractTypesSet = new TreeSet<String>();
-  private final Map<String, Object> allTypesMap = new TreeMap<String, Object>();
-  private final Map<String, CompositeType> compositeTypesMap = new TreeMap<String, CompositeType>();
-  private final Map<String, AttributeTypeDetails> attributeTypesMap = new TreeMap<String, AttributeTypeDetails>();
+  private final Set<TypeKey> enumTypesSet = new TreeSet<TypeKey>();
+  private final Set<TypeKey> abstractTypesSet = new TreeSet<TypeKey>();
+  private final Map<TypeKey, Object> allTypesMap = new TreeMap<TypeKey, Object>();
+  private final Map<TypeKey, CompositeType> compositeTypesMap = new TreeMap<TypeKey, CompositeType>();
+  private final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new TreeMap<TypeKey, AttributeTypeDetails>();
   private final Map<String, NativeTypeDetails> nativeTypesMap = new TreeMap<String, NativeTypeDetails>();
   private final Map<String, ErrorDefinitionType> errorDefinitionMap = new TreeMap<String, ErrorDefinitionType>();
   private final Map<String, String> jaxbBindings = new TreeMap<String, String>();
@@ -76,6 +82,14 @@ public abstract class GeneratorBase implements Generator, TypeInformation
           Map<String, String> extraProperties) throws IOException
   {
     this.generateCOM = generateCOM;
+  }
+
+  @Override
+  public void postinit(String destinationFolderName,
+          boolean generateStructures,
+          boolean generateCOM,
+          Map<String, String> extraProperties) throws IOException
+  {
   }
 
   @Override
@@ -106,7 +120,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     {
       if (null != area.getDataTypes())
       {
-        loadTypesFromObjectList(area.getDataTypes().getFundamentalOrAttributeOrComposite());
+        loadTypesFromObjectList(area.getName(), null, area.getDataTypes().getFundamentalOrAttributeOrComposite());
       }
 
       if ((null != area.getErrors()) && (null != area.getErrors().getError()))
@@ -121,7 +135,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
       {
         if (null != service.getDataTypes())
         {
-          loadTypesFromObjectList(service.getDataTypes().getCompositeOrEnumeration());
+          loadTypesFromObjectList(area.getName(), service.getName(), service.getDataTypes().getCompositeOrEnumeration());
         }
 
         if ((null != service.getErrors()) && (null != service.getErrors().getError()))
@@ -132,6 +146,16 @@ public abstract class GeneratorBase implements Generator, TypeInformation
           }
         }
       }
+    }
+  }
+
+  @Override
+  public void preProcess(Schema spec) throws IOException, JAXBException
+  {
+    // load in types
+    if (null != spec.getSimpleTypeOrComplexTypeOrGroup())
+    {
+      loadTypesFromXsdList(StdStrings.XML, spec.getTargetNamespace(), spec.getSimpleTypeOrComplexTypeOrGroup());
     }
   }
 
@@ -159,50 +183,13 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   @Override
   public boolean isAbstract(TypeReference type)
   {
-    return isAbstract(type.getName());
-  }
-
-  /**
-   * Returns true if the type is abstract.
-   *
-   * @param type the type to look for.
-   * @return true if abstract.
-   */
-  public boolean isAbstract(String type)
-  {
-    boolean abstractType = false;
-    if (abstractTypesSet.contains(type))
-    {
-      abstractType = true;
-    }
-    return abstractType;
+    return abstractTypesSet.contains(new TypeKey(type));
   }
 
   @Override
   public boolean isEnum(TypeReference type)
   {
-    boolean enumType = false;
-    if (enumTypesSet.contains(type.getName()))
-    {
-      enumType = true;
-    }
-    return enumType;
-  }
-
-  /**
-   * Returns true if the type is an enumeration.
-   *
-   * @param type the type to look for.
-   * @return true if an enumeration.
-   */
-  public boolean isEnum(String type)
-  {
-    boolean enumType = false;
-    if (enumTypesSet.contains(type))
-    {
-      enumType = true;
-    }
-    return enumType;
+    return enumTypesSet.contains(new TypeKey(type));
   }
 
   /**
@@ -211,31 +198,20 @@ public abstract class GeneratorBase implements Generator, TypeInformation
    * @param type The type to look for.
    * @return the details if found, otherwise null.
    */
-  public EnumerationType getEnum(String type)
+  public EnumerationType getEnum(TypeReference type)
   {
-    if (enumTypesSet.contains(type))
+    if (isEnum(type))
     {
-      return (EnumerationType) allTypesMap.get(type);
+      return (EnumerationType) allTypesMap.get(new TypeKey(type));
     }
+
     return null;
   }
 
   @Override
   public boolean isAttributeType(TypeReference type)
   {
-    return (null != type) && isAttributeType(type.getArea(), type.getName());
-  }
-
-  /**
-   * Returns true if the type is an attribute.
-   *
-   * @param area the type area, must be MAL.
-   * @param type the type to look for.
-   * @return true if an attribute.
-   */
-  public boolean isAttributeType(String area, String type)
-  {
-    return (StdStrings.MAL.equalsIgnoreCase(area)) && (attributeTypesMap.containsKey(type));
+    return (null != type) && attributeTypesMap.containsKey(new TypeKey(type));
   }
 
   /**
@@ -248,7 +224,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   {
     if (null != type)
     {
-      return attributeTypesMap.get(type.getName());
+      return attributeTypesMap.get(new TypeKey(type));
     }
     return null;
   }
@@ -256,14 +232,15 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   /**
    * Returns attribute details if attribute type.
    *
+   * @param area the type area.
    * @param type The type to look for.
    * @return the details if found, otherwise null.
    */
-  public AttributeTypeDetails getAttributeDetails(String type)
+  public AttributeTypeDetails getAttributeDetails(String area, String type)
   {
     if (null != type)
     {
-      return attributeTypesMap.get(type);
+      return attributeTypesMap.get(new TypeKey(area, null, type));
     }
     return null;
   }
@@ -285,9 +262,9 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   }
 
   @Override
-  public boolean isNativeType(TypeReference type)
+  public boolean isAttributeNativeType(TypeReference type)
   {
-    return isAttributeType(type) && (attributeTypesMap.get(type.getName()).isNativeType());
+    return isAttributeType(type) && (getAttributeDetails(type).isNativeType());
   }
 
   /**
@@ -319,7 +296,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   public boolean isKnownType(TypeReference type)
   {
     boolean knownType = false;
-    if (allTypesMap.containsKey(type.getName()))
+    if (allTypesMap.containsKey(new TypeKey(type)))
     {
       knownType = true;
     }
@@ -335,23 +312,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   public boolean isComposite(TypeReference type)
   {
     boolean compType = false;
-    if (compositeTypesMap.containsKey(type.getName()))
-    {
-      compType = true;
-    }
-    return compType;
-  }
-
-  /**
-   * Returns true if the type is a composite.
-   *
-   * @param type the type to look for.
-   * @return true if a composite.
-   */
-  public boolean isComposite(String type)
-  {
-    boolean compType = false;
-    if (compositeTypesMap.containsKey(type))
+    if (compositeTypesMap.containsKey(new TypeKey(type)))
     {
       compType = true;
     }
@@ -368,22 +329,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   {
     if (null != type)
     {
-      return compositeTypesMap.get(type.getName());
-    }
-    return null;
-  }
-
-  /**
-   * Returns composite details if composite type.
-   *
-   * @param type The type to look for.
-   * @return the details if found, otherwise null.
-   */
-  public CompositeType getCompositeDetails(String type)
-  {
-    if (null != type)
-    {
-      return compositeTypesMap.get(type);
+      return compositeTypesMap.get(new TypeKey(type));
     }
     return null;
   }
@@ -459,36 +405,39 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   {
     String retVal = "";
 
-    if (StdStrings.XML.equals(area))
-    {
-      retVal = jaxbBindings.get(service) + config.getNamingSeparator() + type;
-    }
-    else if (null == area)
+    if (null == area)
     {
       return type;
     }
     else
     {
-      if (isAttributeType(area, type))
+      if (isAttributeType(TypeUtils.createTypeReference(area, service, type, false)))
       {
-        AttributeTypeDetails details = attributeTypesMap.get(type);
+        AttributeTypeDetails details = getAttributeDetails(area, type);
         retVal = details.getTargetType();
       }
       else
       {
-        retVal += config.getBasePackage() + area.toLowerCase() + config.getNamingSeparator();
-
-        if (null != service)
+        if (StdStrings.XML.equals(area))
         {
-          retVal += service.toLowerCase() + config.getNamingSeparator();
+          retVal = jaxbBindings.get(service) + config.getNamingSeparator() + StubUtils.preCap(type);
         }
-
-        if ((null != extraPackageLevel) && (0 < extraPackageLevel.length()))
+        else
         {
-          retVal += extraPackageLevel + config.getNamingSeparator();
-        }
+          retVal += config.getBasePackage() + area.toLowerCase() + config.getNamingSeparator();
 
-        retVal += type;
+          if (null != service)
+          {
+            retVal += service.toLowerCase() + config.getNamingSeparator();
+          }
+
+          if ((null != extraPackageLevel) && (0 < extraPackageLevel.length()))
+          {
+            retVal += extraPackageLevel + config.getNamingSeparator();
+          }
+
+          retVal += type;
+        }
       }
     }
 
@@ -516,15 +465,33 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   /**
    * To be used by derived generators to add an entry to the attribute type details map.
    *
+   * @param area The area of the type.
    * @param name The name of the type.
    * @param details The new details.
    */
-  protected void addAttributeType(String name, AttributeTypeDetails details)
+  protected void addAttributeType(final String area, final String name, AttributeTypeDetails details)
   {
-    attributeTypesMap.put(name, details);
+    attributeTypesMap.put(new TypeKey(area, null, name), details);
   }
 
-  protected Map<String, AttributeTypeDetails> getAttributeTypesMap()
+  /**
+   * To be used by derived generators to add an entry to the attribute type details map.
+   *
+   * @param area The area of the type.
+   * @param name The name of the type.
+   * @param isNativeType True if native type.
+   * @param targetType The type to generate too.
+   * @param defaultValue An example of a default value.
+   */
+  protected void addAttributeType(final String area, final String name,
+          final boolean isNativeType,
+          final String targetType,
+          final String defaultValue)
+  {
+    attributeTypesMap.put(new TypeKey(area, null, name), new AttributeTypeDetails(this, name, isNativeType, targetType, defaultValue));
+  }
+
+  protected Map<TypeKey, AttributeTypeDetails> getAttributeTypesMap()
   {
     return attributeTypesMap;
   }
@@ -568,24 +535,24 @@ public abstract class GeneratorBase implements Generator, TypeInformation
    * Creates a list of composite element details for each field of the composite, including those of its super type.
    *
    * @param file Writer to add any type dependencies to.
-   * @param composite the composite to inspect.
+   * @param type the composite to inspect.
    * @param lst a list of the element details to populate.
    */
-  protected void createCompositeSuperElementsList(TargetWriter file, String composite, List<CompositeField> lst)
+  protected void createCompositeSuperElementsList(TargetWriter file, TypeReference type, List<CompositeField> lst)
   {
-    if ((null != composite) && (!StdStrings.COMPOSITE.equals(composite)))
+    if ((null != type) && (!StdStrings.COMPOSITE.equals(type.getName())))
     {
-      CompositeType type = compositeTypesMap.get(composite);
-      if (null != type)
+      CompositeType theType = compositeTypesMap.get(new TypeKey(type));
+      if (null != theType)
       {
         // first looks for super types of this one and add their details
-        if ((null != type.getExtends()) && (!StdStrings.COMPOSITE.equals(type.getExtends().getType().getName())))
+        if ((null != theType.getExtends()) && (!StdStrings.COMPOSITE.equals(theType.getExtends().getType().getName())))
         {
-          createCompositeSuperElementsList(file, type.getExtends().getType().getName(), lst);
+          createCompositeSuperElementsList(file, theType.getExtends().getType(), lst);
         }
 
         // now add the details of this type
-        for (NamedElementReferenceWithCommentType element : type.getField())
+        for (NamedElementReferenceWithCommentType element : theType.getField())
         {
           CompositeField ele = createCompositeElementsDetails(file,
                   true,
@@ -599,7 +566,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
       }
       else
       {
-        throw new IllegalStateException("Unknown super type of (" + composite + ") for composite");
+        throw new IllegalStateException("Unknown super type of (" + type.getName() + ") for composite");
       }
     }
   }
@@ -607,14 +574,14 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   /**
    * Returns the super type of a composite.
    *
-   * @param typeName the composite to look for.
+   * @param type the composite to look for.
    * @return The super type of the composite or null if extends fundamental type Composite.
    */
-  protected TypeReference getCompositeElementSuperType(String typeName)
+  protected TypeReference getCompositeElementSuperType(TypeReference type)
   {
-    if ((null != typeName) && (!StdStrings.COMPOSITE.equals(typeName)))
+    if ((null != type) && (!StdStrings.COMPOSITE.equals(type.getName())))
     {
-      CompositeType theType = compositeTypesMap.get(typeName);
+      CompositeType theType = compositeTypesMap.get(new TypeKey(type));
 
       if ((null != theType) && (null != theType.getExtends())
               && (!StdStrings.COMPOSITE.equals(theType.getExtends().getType().getName())))
@@ -730,34 +697,153 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     return ele;
   }
 
-  private void loadTypesFromObjectList(List<Object> typeList)
+  private void loadTypesFromObjectList(String area, String service, List<Object> typeList)
   {
     for (Object object : typeList)
     {
       if (object instanceof EnumerationType)
       {
-        allTypesMap.put(((EnumerationType) object).getName(), object);
-        enumTypesSet.add(((EnumerationType) object).getName());
+        EnumerationType ty = (EnumerationType) object;
+        TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
+        allTypesMap.put(key, object);
+        enumTypesSet.add(key);
       }
       else if (object instanceof FundamentalType)
       {
-        allTypesMap.put(((FundamentalType) object).getName(), object);
-        abstractTypesSet.add(((FundamentalType) object).getName());
+        FundamentalType ty = (FundamentalType) object;
+        TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
+        allTypesMap.put(key, object);
+        abstractTypesSet.add(key);
       }
       else if (object instanceof AttributeType)
       {
-        allTypesMap.put(((AttributeType) object).getName(), object);
+        AttributeType ty = (AttributeType) object;
+        TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
+        allTypesMap.put(key, object);
       }
       else if (object instanceof CompositeType)
       {
-        CompositeType c = (CompositeType) object;
-        allTypesMap.put(c.getName(), object);
-        compositeTypesMap.put(c.getName(), c);
+        CompositeType ty = (CompositeType) object;
+        TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
+        allTypesMap.put(key, object);
+        compositeTypesMap.put(key, ty);
         if (null == ((CompositeType) object).getShortFormPart())
         {
-          abstractTypesSet.add(c.getName());
+          abstractTypesSet.add(key);
         }
       }
+    }
+  }
+
+  private void loadTypesFromXsdList(String area, String service, List<OpenAttrs> typeList)
+  {
+    for (OpenAttrs object : typeList)
+    {
+      if (object instanceof SimpleType)
+      {
+        SimpleType ty = (SimpleType) object;
+        TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
+        if (null != ty.getRestriction())
+        {
+          for (Object o : ty.getRestriction().getFacetOrAny())
+          {
+            if ("enumeration".equalsIgnoreCase(((JAXBElement) o).getName().getLocalPart()))
+            {
+              EnumerationType e = new EnumerationType();
+              EnumerationType.Item i = new EnumerationType.Item();
+              i.setValue(((NoFixedFacet)((JAXBElement) o).getValue()).getValue());
+              e.getItem().add(i);
+              allTypesMap.put(key, e);
+              enumTypesSet.add(key);
+              break;
+            }
+          }
+        }
+        else
+        {
+          // ignore unexpected type, maybe warn in future?
+        }
+      }
+      else if (object instanceof ComplexType)
+      {
+        ComplexType ty = (ComplexType) object;
+        TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
+        allTypesMap.put(key, object);
+        compositeTypesMap.put(key, new CompositeType());
+        if (ty.isAbstract())
+        {
+          abstractTypesSet.add(key);
+        }
+      }
+    }
+  }
+
+  public static final class TypeKey implements Comparable<TypeKey>
+  {
+    private final String key;
+
+    public TypeKey(TypeReference type)
+    {
+      this.key = createTypeKey(type);
+    }
+
+    public TypeKey(String area, String service, String name)
+    {
+      this.key = createTypeKey(TypeUtils.createTypeReference(area, service, name, false));
+    }
+
+    @Override
+    public int hashCode()
+    {
+      int hash = 5;
+      hash = 59 * hash + (this.key != null ? this.key.hashCode() : 0);
+      return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (obj == null)
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass())
+      {
+        return false;
+      }
+      final TypeKey other = (TypeKey) obj;
+
+      return !((this.key == null) ? (other.key != null) : !this.key.equals(other.key));
+    }
+
+    public int compareTo(TypeKey o)
+    {
+      return this.key.compareTo(o.key);
+    }
+
+    @Override
+    public String toString()
+    {
+      return "TypeKey{" + key + '}';
+    }
+
+    private static String createTypeKey(TypeReference type)
+    {
+      StringBuilder buf = new StringBuilder();
+      buf.append(type.getArea());
+      if (null != type.getService())
+      {
+        buf.append(':');
+        buf.append(type.getService());
+        buf.append(':');
+      }
+      else
+      {
+        buf.append(":_:");
+      }
+      buf.append(type.getName());
+
+      return buf.toString();
     }
   }
 
@@ -782,7 +868,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
           String comment);
 
   /**
-   * @return the config
+   * @return the configuration.
    */
   public GeneratorConfiguration getConfig()
   {

@@ -90,7 +90,7 @@ public class GeneratorGwt extends GeneratorJava
     file.addInterfaceOpenStatement(serviceName + "GWT", "com.google.gwt.user.client.rpc.RemoteService", null);
 
     String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-    String msgType = createReturnReference(createElementType(file, StdStrings.MAL, null, TRANSPORT_FOLDER, StdStrings.MALMESSAGE));
+    CompositeField msgType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false), false, true, null);
 
     for (OperationSummary op : summary.getOperations())
     {
@@ -104,12 +104,12 @@ public class GeneratorGwt extends GeneratorJava
         }
         case SUBMIT_OP:
         {
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), opArgs, throwsMALException, null, null, null);
+          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), opArgs, throwsMALException, null, null, null);
           break;
         }
         case REQUEST_OP:
         {
-          String opRetType = createOperationReturnType(file, area, service, op);
+          CompositeField opRetType = createOperationReturnType(file, area, service, op);
           file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs, throwsMALException, null, null, null);
           break;
         }
@@ -153,17 +153,17 @@ public class GeneratorGwt extends GeneratorJava
       {
         case SEND_OP:
         {
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), opArgs, null, null, null, null);
+          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), opArgs, null, null, null, null);
           break;
         }
         case SUBMIT_OP:
         {
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), opArgs, null, null, null, null);
+          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), opArgs, null, null, null, null);
           break;
         }
         case REQUEST_OP:
         {
-          String opRetType = createOperationReturnType(file, area, service, op);
+          CompositeField opRetType = createOperationReturnType(file, area, service, op);
 //          String asyncOpArgs = StubUtils.concatenateArguments(opArgs, "com.google.gwt.user.client.rpc.AsyncCallback<" + opRetType + "> _callback");
 //          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), asyncOpArgs, null, null, null, null);
           break;
@@ -213,30 +213,30 @@ public class GeneratorGwt extends GeneratorJava
       {
         case SEND_OP:
         {
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
+          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
           break;
         }
         case SUBMIT_OP:
         {
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
+          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
           break;
         }
         case REQUEST_OP:
         {
-          String opRetType = createOperationReturnType(file, area, service, op);
+          CompositeField opRetType = createOperationReturnType(file, area, service, op);
           file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
           break;
         }
         case INVOKE_OP:
         {
           CompositeField serviceHandlerStr = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false), false, true, "interaction The MAL object representing the interaction in the provider.");
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr), throwsMALException, null, null, null);
+          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr), throwsMALException, null, null, null);
           break;
         }
         case PROGRESS_OP:
         {
           CompositeField serviceHandlerStr = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false), false, true, "interaction The MAL object representing the interaction in the provider.");
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr), throwsMALException, null, null, null);
+          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr), throwsMALException, null, null, null);
           break;
         }
         case PUBSUB_OP:
@@ -306,7 +306,7 @@ public class GeneratorGwt extends GeneratorJava
     else
     {
       CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "skeleton Not used in the inheritance pattern (the skeleton is 'this'");
-      MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, "setSkeleton", Arrays.asList(skeletonName), null);
+      MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "setSkeleton", Arrays.asList(skeletonName), null);
       method.addMethodStatement("// Not used in the inheritance pattern (the skeleton is 'this')");
       method.addMethodCloseStatement();
     }
@@ -324,7 +324,7 @@ public class GeneratorGwt extends GeneratorJava
       {
         case SEND_OP:
         {
-          MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, op.getName(), createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
+          MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, op.getName(), createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
 
           String opArgs = createArgNameOrNull(op.getArgTypes());
           method.addMethodStatement(createMethodCall(delegateCall + op.getName() + "(" + opArgs + ", null)"));
@@ -334,7 +334,7 @@ public class GeneratorGwt extends GeneratorJava
         }
         case SUBMIT_OP:
         {
-          MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, StdStrings.VOID, op.getName(), createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
+          MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, op.getName(), createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
 
           String opArgs = createArgNameOrNull(op.getArgTypes());
           method.addMethodStatement(createMethodCall(delegateCall + op.getName() + "(" + opArgs + ", null)"));
@@ -344,7 +344,7 @@ public class GeneratorGwt extends GeneratorJava
         }
         case REQUEST_OP:
         {
-          String opRetType = createOperationReturnType(file, area, service, op);
+          CompositeField opRetType = createOperationReturnType(file, area, service, op);
           MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, opRetType, op.getName(), createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
 
           String opArgs = createArgNameOrNull(op.getArgTypes());

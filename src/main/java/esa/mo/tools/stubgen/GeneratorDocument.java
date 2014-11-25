@@ -45,24 +45,24 @@ public abstract class GeneratorDocument extends GeneratorBase
   {
     super(logger, config);
 
-    addAttributeType(StdStrings.BLOB, new AttributeTypeDetails(this, true, "Blob", ""));
-    addAttributeType(StdStrings.BOOLEAN, new AttributeTypeDetails(this, true, "Boolean", ""));
-    addAttributeType(StdStrings.DOUBLE, new AttributeTypeDetails(this, true, "Double", ""));
-    addAttributeType(StdStrings.DURATION, new AttributeTypeDetails(this, true, "Duration", ""));
-    addAttributeType(StdStrings.FLOAT, new AttributeTypeDetails(this, true, "Float", ""));
-    addAttributeType(StdStrings.INTEGER, new AttributeTypeDetails(this, true, "Integer", ""));
-    addAttributeType(StdStrings.IDENTIFIER, new AttributeTypeDetails(this, true, "Identifier", ""));
-    addAttributeType(StdStrings.LONG, new AttributeTypeDetails(this, true, "Long", ""));
-    addAttributeType(StdStrings.OCTET, new AttributeTypeDetails(this, true, "Octet", ""));
-    addAttributeType(StdStrings.SHORT, new AttributeTypeDetails(this, true, "Short", ""));
-    addAttributeType(StdStrings.UINTEGER, new AttributeTypeDetails(this, true, "UInteger", ""));
-    addAttributeType(StdStrings.ULONG, new AttributeTypeDetails(this, true, "ULong", ""));
-    addAttributeType(StdStrings.UOCTET, new AttributeTypeDetails(this, true, "UOctet", ""));
-    addAttributeType(StdStrings.USHORT, new AttributeTypeDetails(this, true, "UShort", ""));
-    addAttributeType(StdStrings.STRING, new AttributeTypeDetails(this, true, "String", ""));
-    addAttributeType(StdStrings.TIME, new AttributeTypeDetails(this, true, "Time", ""));
-    addAttributeType(StdStrings.FINETIME, new AttributeTypeDetails(this, true, "FineTime", ""));
-    addAttributeType(StdStrings.URI, new AttributeTypeDetails(this, true, "URI", ""));
+    addAttributeType(StdStrings.MAL, StdStrings.BLOB, true, "Blob", "");
+    addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, true, "Boolean", "");
+    addAttributeType(StdStrings.MAL, StdStrings.DOUBLE, true, "Double", "");
+    addAttributeType(StdStrings.MAL, StdStrings.DURATION, true, "Duration", "");
+    addAttributeType(StdStrings.MAL, StdStrings.FLOAT, true, "Float", "");
+    addAttributeType(StdStrings.MAL, StdStrings.INTEGER, true, "Integer", "");
+    addAttributeType(StdStrings.MAL, StdStrings.IDENTIFIER, true, "Identifier", "");
+    addAttributeType(StdStrings.MAL, StdStrings.LONG, true, "Long", "");
+    addAttributeType(StdStrings.MAL, StdStrings.OCTET, true, "Octet", "");
+    addAttributeType(StdStrings.MAL, StdStrings.SHORT, true, "Short", "");
+    addAttributeType(StdStrings.MAL, StdStrings.UINTEGER, true, "UInteger", "");
+    addAttributeType(StdStrings.MAL, StdStrings.ULONG, true, "ULong", "");
+    addAttributeType(StdStrings.MAL, StdStrings.UOCTET, true, "UOctet", "");
+    addAttributeType(StdStrings.MAL, StdStrings.USHORT, true, "UShort", "");
+    addAttributeType(StdStrings.MAL, StdStrings.STRING, true, "String", "");
+    addAttributeType(StdStrings.MAL, StdStrings.TIME, true, "Time", "");
+    addAttributeType(StdStrings.MAL, StdStrings.FINETIME, true, "FineTime", "");
+    addAttributeType(StdStrings.MAL, StdStrings.URI, true, "URI", "");
   }
 
   @Override

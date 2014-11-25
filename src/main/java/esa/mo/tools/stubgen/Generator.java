@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Map;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import w3c.xsd.Schema;
 
 /**
  * Interface class for a language generator.
@@ -60,6 +61,20 @@ public interface Generator
           Map<String, String> extraProperties) throws IOException;
 
   /**
+   * Extra initialisation the generator called after init.
+   *
+   * @param destinationFolderName The folder to generate into too.
+   * @param generateStructures Whether to generate any data types in the specification.
+   * @param generateCOM Whether to generate COM information.
+   * @param extraProperties Any generator specific properties.
+   * @throws IOException If there is a problem initialising the generator.
+   */
+  void postinit(String destinationFolderName,
+          boolean generateStructures,
+          boolean generateCOM,
+          Map<String, String> extraProperties) throws IOException;
+
+  /**
    * Sets any JAXB binding information for when services are specified using XML Schema for the data type specification.
    *
    * @param jaxbBindings The JAXB bindings.
@@ -74,6 +89,15 @@ public interface Generator
    * @throws JAXBException If there are problems reading any XML Schema definitions.
    */
   void preProcess(SpecificationType spec) throws IOException, JAXBException;
+
+  /**
+   * Pre process an XSD specification to load in the type definitions.
+   *
+   * @param spec The specification to process.
+   * @throws IOException If there are problems reading the file.
+   * @throws JAXBException If there are problems reading any XML Schema definitions.
+   */
+  void preProcess(Schema spec) throws IOException, JAXBException;
 
   /**
    * compiles the specification into the appropriate form for the generator.

@@ -65,11 +65,11 @@ public abstract class TypeUtils
         if (StdStrings.XML.equals(tr.getArea()))
         {
           // ToDo proper support for lists of XML types
-          ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName(), argTypeStr, tiSource.isNativeType(tr), getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
+          ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName(), argTypeStr, tiSource.isAttributeNativeType(tr), getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
         }
         else
         {
-          if (tiSource.isNativeType(tr))
+          if (tiSource.isAttributeNativeType(tr))
           {
             String fqName = tiSource.getBasePackage() + "mal.structures." + tr.getName() + "List";
             ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName() + "List", fqName, false, fqName + ".SHORT_FORM", argVersionStr);
@@ -82,7 +82,7 @@ public abstract class TypeUtils
       }
       else
       {
-        ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName(), argTypeStr, tiSource.isNativeType(tr), getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
+        ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName(), argTypeStr, tiSource.isAttributeNativeType(tr), getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
       }
       return ti;
     }
