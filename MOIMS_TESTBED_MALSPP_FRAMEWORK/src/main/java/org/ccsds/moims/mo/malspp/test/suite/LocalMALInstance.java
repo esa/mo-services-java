@@ -215,6 +215,8 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
    */
   private Hashtable<StubKey, IPTestConsumer> qosTcTmIpStubs = 
       new Hashtable<StubKey, IPTestConsumer>();
+  
+  private DataTestStub dataTestStubNoVarint;
 	
 	public LocalMALInstance() throws MALException {
 		super();
@@ -809,6 +811,29 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       segCounterStub = new IPTestStub(consumer);
     }
     return segCounterStub;
+  }
+  
+  public synchronized DataTestStub dataTestStubNoVarint() throws MALException {
+    if (null == dataTestStubNoVarint) {
+      FileBasedDirectory.URIpair uris = FileBasedDirectory
+          .loadURIs(TestServiceProvider.DATA_TEST_NO_VARINT_PROVIDER_NAME);
+
+      HashMap<Object, Object> props = new HashMap<Object, Object>();
+      props.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
+      props.put(TestHelper.APID_QUALIFIER_PROPERTY,
+          TC_TM_LOCAL_APID_QUALIFIER);
+      props.put(TestHelper.APID_PROPERTY, TC_TM_LOCAL_APID);
+
+      MALConsumer consumer = defaultConsumerMgr.createConsumer(
+          "dataTestConsumer", uris.uri, uris.broker,
+          DataTestHelper.DATATEST_SERVICE, new Blob("".getBytes()),
+          new IdentifierList(), new Identifier("networkZone"),
+          SessionType.LIVE, new Identifier("LIVE"), QoSLevel.BESTEFFORT,
+          props, new UInteger(2));
+
+      dataTestStubNoVarint = new DataTestStub(consumer);
+    }
+    return dataTestStubNoVarint;
   }
 
 }

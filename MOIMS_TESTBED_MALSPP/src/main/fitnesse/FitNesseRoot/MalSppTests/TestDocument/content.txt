@@ -44,5 +44,5 @@
 !see TestScenarios.MalDataEncodingTestScenario.NullableElementTest
 !see TestScenarios.MalDataEncodingTestScenario.AttributeTest
 !see TestScenarios.MalDataEncodingTestScenario.DataType
-
+!see TestScenarios.MalDataEncodingTestScenario.VarintSupportedTest
 

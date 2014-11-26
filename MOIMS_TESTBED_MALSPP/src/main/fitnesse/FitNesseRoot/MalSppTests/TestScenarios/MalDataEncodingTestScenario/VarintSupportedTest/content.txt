@@ -1,0 +1,116 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+
+!2 Data type test scenario
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.malspp.test.datatype|
+
+*!
+Reuse the data type MAL test scenario.
+Check the types that are affected by the mapping configuration property 'varintSupported'.
+
+!*> Sub scenario definitions
+
+|scenario| check every attribute affected by varintSupported |
+|ensure|reset spp interceptor|
+|check| explicit Identifier type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check identifier |
+|ensure|reset spp interceptor|
+|check| explicit URI type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check uri |
+|ensure|reset spp interceptor|
+|check| explicit Blob type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check blob |
+|ensure|reset spp interceptor|
+|check| explicit Integer type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check integer |
+|ensure|reset spp interceptor|
+|check| explicit Long type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check long |
+|ensure|reset spp interceptor|
+|check| explicit Short type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check short |
+|ensure|reset spp interceptor|
+|check| explicit String type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check string |
+|ensure|reset spp interceptor|
+|check| explicit UOctet type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check uoctet |
+|ensure|reset spp interceptor|
+|check| explicit UInteger type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check uinteger |
+|ensure|reset spp interceptor|
+|check| explicit ULong type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check ulong |
+|ensure|reset spp interceptor|
+|check| explicit UShort type works| OK|
+|ensure|select sent packet at| 0 |
+|check | presence flag is | 1 |
+|ensure| check ushort |
+|ensure|reset spp interceptor|
+
+***********!
+
+|script| mal spp data type test|
+|ensure| set varint supported | true |
+|check every attribute affected by varintSupported |
+|ensure| set varint supported | false |
+|check every attribute affected by varintSupported |
+
+
+
+

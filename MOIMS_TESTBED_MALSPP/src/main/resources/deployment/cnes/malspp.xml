@@ -142,7 +142,7 @@
     <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
     <ms:priority value="4294967295" comment="Max priority (2^32-1)" />
     <ms:sessionName value="malsppTestSession" comment="" />
-    <ms:varintSupported value="true" comment="" />
+    <ms:varintSupported value="false" comment="Used to test encoding without varint in the MAL message header and body" />
   </ms:app>
   <ms:app apidQualifier="647" apid="1" comment="" >
     <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >

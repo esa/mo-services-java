@@ -38,7 +38,9 @@ import org.ccsds.moims.mo.mal.test.datatype.DataTypeScenario;
 import org.ccsds.moims.mo.mal.test.datatype.TestData;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacketHeader;
+import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
+import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
 import org.ccsds.moims.mo.malspp.test.util.CUCTimeCode;
 import org.ccsds.moims.mo.malspp.test.util.SecondaryHeader;
@@ -69,12 +71,31 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	
 	private TimeCode durationCode;
 	
+	private boolean varintSupported;
+	
 	public MalSppDataTypeTest() {
+	  // Mapping configuration parameters 
+	  // for default DataTest service provider
+	  // available at APID 248:2
     timeCode = new CUCTimeCode(TimeCode.EPOCH_TAI, TimeCode.UNIT_SECOND, 4, 3);
     fineTimeCode = new CUCTimeCode(new AbsoluteDate("2013-01-01T00:00:00.000",
         TimeScalesFactory.getTAI()), TimeCode.UNIT_SECOND, 4, 5);
     durationCode = new CUCTimeCode(null, TimeCode.UNIT_SECOND, 4, 0);
+    varintSupported = true;
 	}
+	
+	public boolean setVarintSupported(boolean varintSupported) {
+    this.varintSupported = varintSupported;
+    return true;
+  }
+
+  protected DataTestStub getDataTestStub() throws MALException {
+    if (varintSupported) {
+      return super.getDataTestStub();
+    } else {
+      return LocalMALInstance.instance().dataTestStubNoVarint();
+    }
+  }
 	
 	public String explicitDurationTypeWorks() throws MALInteractionException, MALException
   {
@@ -122,7 +143,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 		LoggingBase.logMessage("primaryHeader=" + primaryHeader);
 		secondaryHeader = new SecondaryHeader();
 		try {
-      bufferReader = new BufferReader(packetBody, 0, true, timeCode,
+      bufferReader = new BufferReader(packetBody, 0, varintSupported, timeCode,
           fineTimeCode, durationCode);
 	    TestHelper.decodeSecondaryHeader(secondaryHeader, bufferReader, 
 	    		packet.getHeader().getSequenceFlags());

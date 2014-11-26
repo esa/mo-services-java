@@ -118,6 +118,10 @@ public class SpacePacketCheck {
         null, null, null, null, null,
         varintSupported, timeCode, fineTimeCode, durationCode);
     
+    MappingConfiguration noVarintMappingConfiguration = new MappingConfiguration(
+        priority, networkZone, sessionName, domain, authenticationId,
+        false, timeCode, fineTimeCode, durationCode);
+    
     mappingConfigurations.put(new QualifiedApid(
         LocalMALInstance.TC_TC_LOCAL_APID_QUALIFIER,
         LocalMALInstance.TC_TC_LOCAL_APID), nullMappingConfiguration);
@@ -135,7 +139,7 @@ public class SpacePacketCheck {
         TestServiceProvider.TC_REMOTE_APID), defaultMappingConfiguration);
     mappingConfigurations.put(new QualifiedApid(
         TestServiceProvider.TM_REMOTE_APID_QUALIFIER,
-        TestServiceProvider.TM_REMOTE_APID), defaultMappingConfiguration);
+        TestServiceProvider.TM_REMOTE_APID), noVarintMappingConfiguration);
   }
 	
 	public int getConsumerPacketType() {
@@ -170,7 +174,7 @@ public class SpacePacketCheck {
 
     MappingConfiguration mappingConf = mappingConfigurations
         .get(primaryQualifiedApid);
-    bufferReader = new BufferReader(packetBody, 0, true,
+    bufferReader = new BufferReader(packetBody, 0, mappingConf.isVarintSupported(),
         mappingConf.getTimeCode(), mappingConf.getFineTimeCode(),
         mappingConf.getDurationCode());
     secondaryHeaderReader = new SecondaryHeaderReader(bufferReader);

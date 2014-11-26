@@ -375,7 +375,7 @@ public class BufferReader {
   }
 
   public byte[] readBytes() {
-    int length = readUnsignedVarInt();
+    int length = (int) readUInteger().getValue();
     return readBytes(length);
   }
     
