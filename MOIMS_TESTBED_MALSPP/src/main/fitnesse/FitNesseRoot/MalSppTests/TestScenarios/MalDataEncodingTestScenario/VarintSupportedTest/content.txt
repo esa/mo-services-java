@@ -106,9 +106,11 @@ Check the types that are affected by the mapping configuration property 'varintS
 ***********!
 
 |script| mal spp data type test|
-|ensure| set varint supported | true |
+|note| varintSupported is true |
+|ensure| use default configuration | true |
 |check every attribute affected by varintSupported |
-|ensure| set varint supported | false |
+|note| varintSupported is false |
+|ensure| use default configuration | false |
 |check every attribute affected by varintSupported |
 
 

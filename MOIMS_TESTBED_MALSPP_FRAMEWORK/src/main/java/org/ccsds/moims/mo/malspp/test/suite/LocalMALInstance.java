@@ -813,7 +813,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     return segCounterStub;
   }
   
-  public synchronized DataTestStub dataTestStubNoVarint() throws MALException {
+  public synchronized DataTestStub alternateDataTestStub() throws MALException {
     if (null == dataTestStubNoVarint) {
       FileBasedDirectory.URIpair uris = FileBasedDirectory
           .loadURIs(TestServiceProvider.DATA_TEST_NO_VARINT_PROVIDER_NAME);

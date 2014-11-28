@@ -123,6 +123,8 @@
 | 5.7-28     | !-MalDataEncoding-! | !-AttributeTest-! | check every attribute |
 | 5.15-20    | !-MalDataEncoding-! | !-VarintSupportedTest-! | check every attribute affected by varintSupported |
 | 5.15-20    | !-MalMessageMapping-! | !-AllExceptPubSub-! | priority is, check domain id, network zone is, session name is, check authentication id |
+| 5.22-23    | !-MalDataEncoding-! | !-TimeCodeFormatTest-! | check every attribute affected by time code formats |
+| 5.22-23    | !-MalMessageMapping-! | !-AllExceptPubSub-! | check timestamp |
 
 !2 Missing tests
 | Comment |
@@ -154,5 +156,5 @@
 | 5.3.5      | 2^16 elements in an enumeration is difficult to test with the MAL Java API, to be left out? |
 | 5.4.2      | Nullable fields in a composite |
 | 5.9        | !-MAL::Duration-! bug in !-MAL Java API-! |
-| 5.22-23    | CCSDS Time Code Format |
+
 
