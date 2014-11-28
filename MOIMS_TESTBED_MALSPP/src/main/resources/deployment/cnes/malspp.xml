@@ -125,24 +125,25 @@
     <ms:sessionName value="malsppTestSession" comment="" />
     <ms:varintSupported value="true" comment="" />
   </ms:app>
-  <ms:app apidQualifier="348" apid="4" comment="" >
+  <ms:app apidQualifier="348" apid="4" comment="Alternate mapping configuration" >
     <ms:authenticationId value="0A0B0C" comment="" />
     <ms:domain value="malspp.test.domain" comment="" />
-    <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >
+    <ms:duration codeFormat="1F" comment="CUC, with fractional time: 0001 1111" >
       <ms:unit value="second" comment="" />
     </ms:duration>
-    <ms:time codeFormat="1F" comment="CUC, CCSDS epoch: 0001 1111" >
+    <ms:time codeFormat="4E" comment="CDS, agency epoch: 0100 1110" >
       <ms:unit value="second" comment="" />
+      <ms:epoch value="1958-01-01T00:00:00.000" timeScale="UTC" comment="" />
     </ms:time>
-    <ms:fineTime codeFormat="AF08" comment="CUC, agency epoch, fractional=3+2: 1010 1111 0000 1000" >
+    <ms:fineTime codeFormat="4F" comment="CDS, agency epoch, fractional=3+2: 0100 1110" >
       <ms:unit value="second" comment="" />
-      <ms:epoch value="2013-01-01T00:00:00.000" timeScale="TAI" comment="" />
+      <ms:epoch value="2012-01-01T00:00:00.000" timeScale="UTC" comment="" />
     </ms:fineTime>
     <ms:networkZone value="malsppTestNw" comment="" />
     <ms:packetDataFieldSizeLimit value="0" comment="Max size." />
     <ms:priority value="4294967295" comment="Max priority (2^32-1)" />
     <ms:sessionName value="malsppTestSession" comment="" />
-    <ms:varintSupported value="true" comment="" />
+    <ms:varintSupported value="false" comment="Used to test encoding without varint in the MAL message header and body" />
   </ms:app>
   <ms:app apidQualifier="647" apid="1" comment="" >
     <ms:duration codeFormat="1C" comment="CUC, no fractional time: 0001 1100" >

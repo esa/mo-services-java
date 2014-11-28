@@ -71,12 +71,14 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
 	public static final String TM_TC_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TmTcIPTestProviderWithSharedBroker";
 	public static final String TC_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TcTmIPTestProviderWithSharedBroker";
 	public static final String TM_TM_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME = "TmTmIPTestProviderWithSharedBroker";
-    
-    public static final String TC_TC_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TcTcPubsubErrorIPTestProvider";
-    public static final String TC_TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TcTmPubsubErrorIPTestProvider";
-    public static final String TM_TC_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TmTcPubsubErrorIPTestProvider";
-    public static final String TM_TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TmTmPubsubErrorIPTestProvider";
-    
+
+  public static final String TC_TC_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TcTcPubsubErrorIPTestProvider";
+  public static final String TC_TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TcTmPubsubErrorIPTestProvider";
+  public static final String TM_TC_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TmTcPubsubErrorIPTestProvider";
+  public static final String TM_TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME = "TmTmPubsubErrorIPTestProvider";
+  
+  public static final String DATA_TEST_NO_VARINT_PROVIDER_NAME = "DataTestNoVarint";
+  
     public static final String SEGMENTATION_TEST_PROVIDER_NAME = "SegmentationTest";
     public static final String SEGMENTATION_ERROR_TEST_PROVIDER_NAME = "SegmentationErrorTest";
     public static final int SEGMENTATION_ERROR_REMOTE_APID_QUALIFIER = 648;
@@ -323,6 +325,25 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
     
     FileBasedDirectory.storeURI(SEGMENTATION_COUNTER_SELECT_TEST_PROVIDER_NAME,
             segmentationCounterSelectTestProvider.getURI(), segmentationCounterSelectTestProvider.getBrokerURI());
+    
+    MALProvider dataTestProviderNoVarint = defaultProviderMgr.createProvider(
+        DATA_TEST_NO_VARINT_PROVIDER_NAME,
+        protocol,
+        DataTestHelper.DATATEST_SERVICE,
+        DATA_TEST_AUTHENTICATION_ID,
+        new org.ccsds.moims.mo.mal.test.datatype.DataTestHandlerImpl(),
+        new QoSLevel[]
+        {
+          QoSLevel.ASSURED
+        },
+        new UInteger(1),
+        tmProviderProps,
+        Boolean.FALSE,
+        null);
+    
+    FileBasedDirectory.storeURI(DATA_TEST_NO_VARINT_PROVIDER_NAME,
+        dataTestProviderNoVarint.getURI(),
+        dataTestProviderNoVarint.getBrokerURI());
 	}
 	
 }

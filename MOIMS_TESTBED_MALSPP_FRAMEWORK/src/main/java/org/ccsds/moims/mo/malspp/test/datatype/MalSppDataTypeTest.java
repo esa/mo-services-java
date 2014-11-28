@@ -36,19 +36,21 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.test.datatype.DataTypeScenario;
 import org.ccsds.moims.mo.mal.test.datatype.TestData;
-import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
-import org.ccsds.moims.mo.testbed.util.spp.SpacePacketHeader;
+import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
+import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
+import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
-import org.ccsds.moims.mo.malspp.test.util.CUCTimeCode;
+import org.ccsds.moims.mo.malspp.test.util.MappingConfiguration;
+import org.ccsds.moims.mo.malspp.test.util.MappingConfigurationRegistry;
+import org.ccsds.moims.mo.malspp.test.util.QualifiedApid;
 import org.ccsds.moims.mo.malspp.test.util.SecondaryHeader;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
-import org.ccsds.moims.mo.malspp.test.util.TimeCode;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
+import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
+import org.ccsds.moims.mo.testbed.util.spp.SpacePacketHeader;
 import org.objectweb.util.monolog.api.BasicLevel;
 import org.objectweb.util.monolog.api.Logger;
-import org.orekit.time.AbsoluteDate;
-import org.orekit.time.TimeScalesFactory;
 
 public class MalSppDataTypeTest extends DataTypeScenario {
 	
@@ -59,22 +61,54 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 
 	protected SecondaryHeader secondaryHeader;
     
-    protected byte[] packetBody;
+  protected byte[] packetBody;
 	
 	private BufferReader bufferReader;
 	
-	private TimeCode timeCode;
+	private MappingConfiguration mappingConf;
 	
-	private TimeCode fineTimeCode;
+	private MappingConfiguration defaultMappingConf;
 	
-	private TimeCode durationCode;
+	private MappingConfiguration alternateMappingConf;
+	
+	private boolean useDefaultConfiguration;
 	
 	public MalSppDataTypeTest() {
+	  // Mapping configuration parameters 
+	  // for default DataTest service provider
+	  // available at APID 248:2
+	  /*
     timeCode = new CUCTimeCode(TimeCode.EPOCH_TAI, TimeCode.UNIT_SECOND, 4, 3);
     fineTimeCode = new CUCTimeCode(new AbsoluteDate("2013-01-01T00:00:00.000",
         TimeScalesFactory.getTAI()), TimeCode.UNIT_SECOND, 4, 5);
     durationCode = new CUCTimeCode(null, TimeCode.UNIT_SECOND, 4, 0);
+    */
+    defaultMappingConf = MappingConfigurationRegistry.getSingleton().get(
+        new QualifiedApid(TestServiceProvider.TC_REMOTE_APID_QUALIFIER,
+            TestServiceProvider.TC_REMOTE_APID));
+    alternateMappingConf = MappingConfigurationRegistry.getSingleton().get(
+        new QualifiedApid(TestServiceProvider.TM_REMOTE_APID_QUALIFIER,
+            TestServiceProvider.TM_REMOTE_APID));
+    useDefaultConfiguration(true);
 	}
+	
+	public boolean useDefaultConfiguration(boolean useDefaultConfiguration) {
+    this.useDefaultConfiguration = useDefaultConfiguration;
+    if (useDefaultConfiguration) {
+      mappingConf = defaultMappingConf;
+    } else {
+      mappingConf = alternateMappingConf;
+    }
+    return true;
+  }
+
+  protected DataTestStub getDataTestStub() throws MALException {
+    if (useDefaultConfiguration) {
+      return super.getDataTestStub();
+    } else {
+      return LocalMALInstance.instance().alternateDataTestStub();
+    }
+  }
 	
 	public String explicitDurationTypeWorks() throws MALInteractionException, MALException
   {
@@ -122,8 +156,10 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 		LoggingBase.logMessage("primaryHeader=" + primaryHeader);
 		secondaryHeader = new SecondaryHeader();
 		try {
-      bufferReader = new BufferReader(packetBody, 0, true, timeCode,
-          fineTimeCode, durationCode);
+		  LoggingBase.logMessage("fineTimeCode=" + mappingConf.getFineTimeCode());
+      bufferReader = new BufferReader(packetBody, 0, useDefaultConfiguration,
+          mappingConf.getTimeCode(), mappingConf.getFineTimeCode(),
+          mappingConf.getDurationCode());
 	    TestHelper.decodeSecondaryHeader(secondaryHeader, bufferReader, 
 	    		packet.getHeader().getSequenceFlags());
 	    LoggingBase.logMessage("secondaryHeader=" + secondaryHeader);

@@ -48,8 +48,10 @@ import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
+import org.ccsds.moims.mo.malspp.test.util.CDSTimeCode;
 import org.ccsds.moims.mo.malspp.test.util.CUCTimeCode;
 import org.ccsds.moims.mo.malspp.test.util.MappingConfiguration;
+import org.ccsds.moims.mo.malspp.test.util.MappingConfigurationRegistry;
 import org.ccsds.moims.mo.malspp.test.util.QualifiedApid;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
 import org.ccsds.moims.mo.malspp.test.util.SecondaryHeaderReader;
@@ -59,7 +61,9 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacketHeader;
+import org.orekit.errors.OrekitException;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.TimeScale;
 import org.orekit.time.TimeScalesFactory;
 
 public class SpacePacketCheck {
@@ -88,54 +92,9 @@ public class SpacePacketCheck {
 	private boolean isSent;
 	
 	private QualifiedApid primaryQualifiedApid;
-  
-  private HashMap<QualifiedApid, MappingConfiguration> mappingConfigurations;
 
 	public SpacePacketCheck() {
     super();
-    mappingConfigurations = new HashMap<QualifiedApid, MappingConfiguration>();
-    
-    CUCTimeCode timeCode = new CUCTimeCode(TimeCode.EPOCH_TAI, TimeCode.UNIT_SECOND, 4, 3);
-	  CUCTimeCode fineTimeCode = new CUCTimeCode(new AbsoluteDate("2013-01-01T00:00:00.000",
-        TimeScalesFactory.getTAI()), TimeCode.UNIT_SECOND, 4, 5);
-    CUCTimeCode durationCode = new CUCTimeCode(null, TimeCode.UNIT_SECOND, 4, 0);
-    UInteger priority = new UInteger(0xFFFFFFFFL);
-    Blob authenticationId = new Blob(new byte[] {0x0A, 0x0B, 0x0C});
-    IdentifierList domain = new IdentifierList();
-    domain.add(new Identifier("malspp"));
-    domain.add(new Identifier("test"));
-    domain.add(new Identifier("domain"));
-    Identifier networkZone = new Identifier("malsppTestNw");
-    Identifier sessionName = new Identifier("malsppTestSession");
-    
-    boolean varintSupported = true;
-    
-    MappingConfiguration defaultMappingConfiguration = new MappingConfiguration(
-        priority, networkZone, sessionName, domain, authenticationId,
-        varintSupported, timeCode, fineTimeCode, durationCode);
-    
-    MappingConfiguration nullMappingConfiguration = new MappingConfiguration(
-        null, null, null, null, null,
-        varintSupported, timeCode, fineTimeCode, durationCode);
-    
-    mappingConfigurations.put(new QualifiedApid(
-        LocalMALInstance.TC_TC_LOCAL_APID_QUALIFIER,
-        LocalMALInstance.TC_TC_LOCAL_APID), nullMappingConfiguration);
-    mappingConfigurations.put(new QualifiedApid(
-        LocalMALInstance.TC_TM_LOCAL_APID_QUALIFIER,
-        LocalMALInstance.TC_TM_LOCAL_APID), defaultMappingConfiguration);
-    mappingConfigurations.put(new QualifiedApid(
-        LocalMALInstance.TM_TC_LOCAL_APID_QUALIFIER,
-        LocalMALInstance.TM_TC_LOCAL_APID), defaultMappingConfiguration);
-    mappingConfigurations.put(new QualifiedApid(
-        LocalMALInstance.TM_TM_LOCAL_APID_QUALIFIER,
-        LocalMALInstance.TM_TM_LOCAL_APID), defaultMappingConfiguration);
-    mappingConfigurations.put(new QualifiedApid(
-        TestServiceProvider.TC_REMOTE_APID_QUALIFIER,
-        TestServiceProvider.TC_REMOTE_APID), defaultMappingConfiguration);
-    mappingConfigurations.put(new QualifiedApid(
-        TestServiceProvider.TM_REMOTE_APID_QUALIFIER,
-        TestServiceProvider.TM_REMOTE_APID), defaultMappingConfiguration);
   }
 	
 	public int getConsumerPacketType() {
@@ -168,9 +127,9 @@ public class SpacePacketCheck {
     primaryQualifiedApid = new QualifiedApid(packet.getApidQualifier(),
         primaryHeader.getApid());
 
-    MappingConfiguration mappingConf = mappingConfigurations
+    MappingConfiguration mappingConf = MappingConfigurationRegistry.getSingleton()
         .get(primaryQualifiedApid);
-    bufferReader = new BufferReader(packetBody, 0, true,
+    bufferReader = new BufferReader(packetBody, 0, mappingConf.isVarintSupported(),
         mappingConf.getTimeCode(), mappingConf.getFineTimeCode(),
         mappingConf.getDurationCode());
     secondaryHeaderReader = new SecondaryHeaderReader(bufferReader);
@@ -478,7 +437,7 @@ public class SpacePacketCheck {
   public boolean checkPriorityIsLeftOut() throws Exception {
     if (secondaryHeaderReader.getSecondaryHeader().getPriorityFlag() != 0x00)
       return false;
-    MappingConfiguration mappingConf = mappingConfigurations.get(primaryQualifiedApid);
+    MappingConfiguration mappingConf = MappingConfigurationRegistry.getSingleton().get(primaryQualifiedApid);
     return checkEquals("Priority", malHeader.getPriority(), mappingConf.getPriority(),
         DEFAULT_PRIORITY);
   }
@@ -486,7 +445,7 @@ public class SpacePacketCheck {
   public boolean checkAuthenticationIdIsLeftOut() throws Exception {
     if (secondaryHeaderReader.getSecondaryHeader().getAuthenticationIdFlag() != 0x00)
       return false;
-    MappingConfiguration mappingConf = mappingConfigurations.get(primaryQualifiedApid);
+    MappingConfiguration mappingConf = MappingConfigurationRegistry.getSingleton().get(primaryQualifiedApid);
     return checkEquals("AuthenticationId", malHeader.getAuthenticationId(),
         mappingConf.getAuthenticationId(), DEFAULT_AUTHENTICATION_ID);
   }
@@ -494,7 +453,7 @@ public class SpacePacketCheck {
   public boolean checkDomainIsLeftOut() throws Exception {
     if (secondaryHeaderReader.getSecondaryHeader().getDomainFlag() != 0x00)
       return false;
-    MappingConfiguration mappingConf = mappingConfigurations.get(primaryQualifiedApid);
+    MappingConfiguration mappingConf = MappingConfigurationRegistry.getSingleton().get(primaryQualifiedApid);
     return checkEquals("Domain", malHeader.getDomain(),
         mappingConf.getDomain(), DEFAULT_DOMAIN);
   }
@@ -502,7 +461,7 @@ public class SpacePacketCheck {
   public boolean checkNetworkZoneIsLeftOut() throws Exception {
     if (secondaryHeaderReader.getSecondaryHeader().getNetworkZoneFlag() != 0x00)
       return false;
-    MappingConfiguration mappingConf = mappingConfigurations.get(primaryQualifiedApid);
+    MappingConfiguration mappingConf = MappingConfigurationRegistry.getSingleton().get(primaryQualifiedApid);
     return checkEquals("NetworkZone", malHeader.getNetworkZone(),
         mappingConf.getNetworkZone(), DEFAULT_NETWORK_ZONE);
   }
@@ -510,7 +469,7 @@ public class SpacePacketCheck {
   public boolean checkSessionNameIsLeftOut() throws Exception {
     if (secondaryHeaderReader.getSecondaryHeader().getSessionNameFlag() != 0x00)
       return false;
-    MappingConfiguration mappingConf = mappingConfigurations.get(primaryQualifiedApid);
+    MappingConfiguration mappingConf = MappingConfigurationRegistry.getSingleton().get(primaryQualifiedApid);
     return checkEquals("SessionName", malHeader.getSessionName(),
         mappingConf.getSessionName(), DEFAULT_SESSION_NAME);
   }

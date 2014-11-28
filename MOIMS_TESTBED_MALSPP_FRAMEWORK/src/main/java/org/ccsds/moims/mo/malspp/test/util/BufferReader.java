@@ -51,9 +51,17 @@ import org.orekit.data.DataProvidersManager;
 import org.orekit.data.DirectoryCrawler;
 import org.orekit.errors.OrekitException;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.DateComponents;
+import org.orekit.time.TimeComponents;
 import org.orekit.time.TimeScalesFactory;
 
 public class BufferReader {
+  
+  public static final double PICO = Math.pow(10, 12);
+  
+  public static final int CDS_MILLISECOND_FIELD_LENGTH = 4;
+  
+  public static final String MAL_JAVA_API_FINETIME_EPOCH = "org.ccsds.moims.mo.mal.finetime.epoch";
   
   public static void init() {
     String path = System.getProperty("org.ccsds.moims.mo.malspp.test.util.orekit.data.path", ".");
@@ -61,11 +69,16 @@ public class BufferReader {
       DataProvidersManager.getInstance().addProvider(new DirectoryCrawler(new File(path)));
     } catch (OrekitException e) {
       throw new RuntimeException(e);
-    } 
+    }
+    
+    String epochAsString = System.getProperty(MAL_JAVA_API_FINETIME_EPOCH,
+        "2013-01-01T00:00:00.000");
+    fineTimeMalJavaApiEpoch = new AbsoluteDate(epochAsString,
+        TimeScalesFactory.getTAI());
   }
-
-	public static final double PICO = Math.pow(10, 12);
-	
+  
+  private static AbsoluteDate fineTimeMalJavaApiEpoch;
+  
   private byte[] bytes;
   
   private boolean varintSupported;
@@ -304,10 +317,13 @@ public class BufferReader {
   	long timestamp;
 		switch (timeCode.getType()) {
 		case TimeCode.CUC:
+		  LoggingBase.logMessage("Read CUC time");
 			timestamp = readCUCTime((CUCTimeCode) timeCode);
 			break;
 		case TimeCode.CDS:
-			throw new Exception("Not yet available");
+		  LoggingBase.logMessage("Read CDS time");
+		  timestamp = readCDSTime((CDSTimeCode) timeCode);
+      break;
 		default:
 			throw new Exception("Unknown time code: " + timeCode);
 		}
@@ -325,6 +341,65 @@ public class BufferReader {
     return Math.round(readCUCAbsoluteTime(timeCode.getBasicTimeLength(),
         timeCode.getFractionalTimeLength(), epoch).durationFrom(
         AbsoluteDate.JAVA_EPOCH) * 1000);
+  }
+  
+  private long readCDSTime(CDSTimeCode timeCode) throws Exception {
+    DateComponents epochDate = timeCode.getEpoch().getDate()
+        .getComponents(TimeScalesFactory.getUTC()).getDate();
+    int daySegmentedLength = timeCode.getDaySegmentLength();
+    int submillisecondsLength = timeCode.getSubMillisecondLength();
+    byte[] timeField = readBytes(daySegmentedLength
+        + CDS_MILLISECOND_FIELD_LENGTH + submillisecondsLength);
+    double elapsedDuration = parseSegmentedTimeCode(daySegmentedLength,
+        submillisecondsLength, timeField, AbsoluteDate.JAVA_EPOCH, epochDate);
+    return Math.round(elapsedDuration);
+  }
+  
+  public static double parseSegmentedTimeCode(int daySegmentLength,
+      int submillisecondsLength, byte[] timeField, AbsoluteDate javaEpoch,
+      DateComponents epochDate) throws Exception {
+    LoggingBase.logMessage("epochDate=" + epochDate);
+    
+    int i = 0;
+    int day = 0;
+    while (i < daySegmentLength) {
+      LoggingBase.logMessage("byte=" + (timeField[i] & 0xFF));
+      day = day * 256 + (timeField[i++] & 0xFF);
+    }
+    
+    LoggingBase.logMessage("day=" + day);
+    
+    long milliInDay = 0l;
+    while (i < daySegmentLength + CDS_MILLISECOND_FIELD_LENGTH) {
+      LoggingBase.logMessage("byte=" + (timeField[i] & 0xFF));
+      milliInDay = milliInDay * 256 + (timeField[i++] & 0xFF);
+    }
+    
+    LoggingBase.logMessage("milliInDay=" + milliInDay);
+    
+    final int milli   = (int) (milliInDay % 1000l);
+    final int seconds = (int) ((milliInDay - milli) / 1000l);
+
+    double subMilli = 0;
+    double divisor  = 1;
+    while (i < timeField.length) {
+      LoggingBase.logMessage("byte=" + (timeField[i] & 0xFF));
+      subMilli = subMilli * 256 + (timeField[i++] & 0xFF);
+      divisor *= 1000;
+    }
+    
+    LoggingBase.logMessage("subMilli=" + subMilli);
+
+    final DateComponents date = new DateComponents(epochDate, day);
+    final TimeComponents time = new TimeComponents(seconds);
+    
+    AbsoluteDate resultDate = new AbsoluteDate(date, time,
+        TimeScalesFactory.getUTC()).shiftedBy(milli * 1.0e-3 + subMilli
+        / divisor);
+    LoggingBase.logMessage("resultDate=" + resultDate);
+    double resultTime = resultDate.offsetFrom(javaEpoch, TimeScalesFactory.getTAI());
+    LoggingBase.logMessage("resultTime=" + resultTime);
+    return resultTime * 1000;
   }
   
   public Duration readDuration() throws Exception {
@@ -353,7 +428,8 @@ public class BufferReader {
       fineTime = readCUCFineTime((CUCTimeCode) fineTimeCode);
       break;
     case TimeCode.CDS:
-      throw new Exception("Not yet available");
+      fineTime = readCDSFineTime((CDSTimeCode) fineTimeCode);
+      break;
     default:
       throw new Exception("Unknown time code: " + timeCode);
     }
@@ -373,9 +449,23 @@ public class BufferReader {
     // convert to picoseconds
     return (long) (offset * PICO);
   }
+  
+  public long readCDSFineTime(CDSTimeCode fineTimeCode) throws Exception {
+    LoggingBase.logMessage("epoch=" + fineTimeCode.getEpoch());
+    DateComponents epochDate = fineTimeCode.getEpoch().getDate()
+        .getComponents(TimeScalesFactory.getUTC()).getDate();
+    LoggingBase.logMessage("epochDate=" + epochDate);
+    int daySegmentedLength = fineTimeCode.getDaySegmentLength();
+    int submillisecondsLength = fineTimeCode.getSubMillisecondLength();
+    byte[] timeField = readBytes(daySegmentedLength
+        + CDS_MILLISECOND_FIELD_LENGTH + submillisecondsLength);
+    double elapsedDuration = parseSegmentedTimeCode(daySegmentedLength,
+        submillisecondsLength, timeField, fineTimeMalJavaApiEpoch, epochDate);
+    return Math.round(elapsedDuration * PICO / 1000);
+  }
 
   public byte[] readBytes() {
-    int length = readUnsignedVarInt();
+    int length = (int) readUInteger().getValue();
     return readBytes(length);
   }
     
