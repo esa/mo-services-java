@@ -825,7 +825,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       props.put(TestHelper.APID_PROPERTY, TC_TM_LOCAL_APID);
 
       MALConsumer consumer = defaultConsumerMgr.createConsumer(
-          "dataTestConsumer", uris.uri, uris.broker,
+          "dataTestConsumer2", uris.uri, uris.broker,
           DataTestHelper.DATATEST_SERVICE, new Blob("".getBytes()),
           new IdentifierList(), new Identifier("networkZone"),
           SessionType.LIVE, new Identifier("LIVE"), QoSLevel.BESTEFFORT,

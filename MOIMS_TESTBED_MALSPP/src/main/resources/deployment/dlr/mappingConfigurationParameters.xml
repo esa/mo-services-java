@@ -109,17 +109,17 @@
 
 	<app apidQualifier="348" apid="4">
 		<packetDataFieldSizeLimit>0</packetDataFieldSizeLimit>
-		<varintSupported>true</varintSupported>
+		<varintSupported>false</varintSupported>
 		<time>
-			<format unit="second">00011111</format>
-			<epoch scale="TAI">1958-01-01T00:00:00.000</epoch>
+			<format unit="second">01001110</format>
+			<epoch scale="UTC">1958-01-01T00:00:00.000</epoch>
 		</time>
 		<fineTime>
-			<format unit="second">1010111100001000</format>
-			<epoch scale="TAI">2013-01-01T00:00:00.000</epoch>
+			<format unit="second">01001110</format>
+			<epoch scale="UTC">2012-01-01T00:00:00.000</epoch>
 		</fineTime>
 		<duration>
-			<format unit="second">00011100</format>
+			<format unit="second">00011111</format>
 		</duration>
 		<authenticationId>0A0B0C</authenticationId>
 		<domain>malspp.test.domain</domain>
