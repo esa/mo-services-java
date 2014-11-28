@@ -300,7 +300,13 @@ public abstract class TypeUtils
           newTr.setService(re.lookupNamespaceURI(uri));
           newTr.setName(type);
           newTr.setList(isList);
-          return new TypeRef(newTr);
+
+          NamedElementReferenceWithCommentType newField = new NamedElementReferenceWithCommentType();
+          newField.setName(re.getAttribute("name"));
+          newField.setType(newTr);
+          newField.setCanBeNull(true);
+
+          return new TypeRef(newField);
         }
         else
         {
@@ -316,33 +322,61 @@ public abstract class TypeUtils
     return null;
   }
 
+  /**
+   * Simple holder class that contains either a XML Type reference or a named field.
+   */
   public static final class TypeRef
   {
     private final Object ref;
     private final boolean field;
 
+    /**
+     * Constructor
+     *
+     * @param ref The field to encapsulate
+     */
     public TypeRef(NamedElementReferenceWithCommentType ref)
     {
       this.ref = ref;
       this.field = true;
     }
 
+    /**
+     * Constructor
+     *
+     * @param ref The type to encapsulate
+     */
     public TypeRef(TypeReference ref)
     {
       this.ref = ref;
       this.field = false;
     }
 
+    /**
+     * Is the type reference encapsulating a field or type.
+     *
+     * @return true if encapsulating a field.
+     */
     public boolean isField()
     {
       return field;
     }
 
+    /**
+     * Get contained object as a field.
+     *
+     * @return the encapsulated field.
+     */
     public NamedElementReferenceWithCommentType getFieldRef()
     {
       return (NamedElementReferenceWithCommentType) ref;
     }
 
+    /**
+     * Get contained object as a type reference.
+     *
+     * @return the encapsulated type reference.
+     */
     public TypeReference getTypeRef()
     {
       if (null != ref)

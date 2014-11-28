@@ -107,6 +107,7 @@ public class GeneratorXsd extends GeneratorDocument
     return "Generates an XSD type based equivalent of the service specification.";
   }
 
+  @Override
   public void compile(String destFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException
   {
     for (AreaType area : spec.getArea())
@@ -127,11 +128,11 @@ public class GeneratorXsd extends GeneratorDocument
           }
           else if (oType instanceof AttributeType)
           {
-            createAttributeType(xsdTypesFile, (AttributeType) oType);
+            createAttributeType((AttributeType) oType);
           }
           else if (oType instanceof CompositeType)
           {
-            createCompositeType(xsdTypesFile, area, (CompositeType) oType);
+            createCompositeType(xsdTypesFile, (CompositeType) oType);
           }
           else if (oType instanceof EnumerationType)
           {
@@ -160,7 +161,7 @@ public class GeneratorXsd extends GeneratorDocument
             }
             else if (oType instanceof CompositeType)
             {
-              createCompositeType(xsdTypesFile, area, (CompositeType) oType);
+              createCompositeType(xsdTypesFile, (CompositeType) oType);
             }
             else
             {
@@ -234,8 +235,6 @@ public class GeneratorXsd extends GeneratorDocument
         {
           Writer os = StubUtils.createLowLevelWriter(destFolderName, "ServiceDef" + area.getName(), "xml");
 
-          String schemaURN = "http://www.ccsds.org/schema/ServiceSchema";
-          String schemaEle = "specification";
           final JAXBContext jc = JAXBContext.newInstance("esa.mo.tools.stubgen.xsd");
           Marshaller marshaller = jc.createMarshaller();
           marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -245,7 +244,7 @@ public class GeneratorXsd extends GeneratorDocument
         }
         catch (JAXBException ex)
         {
-          ex.printStackTrace();
+          getLog().error(ex);
         }
       }
     }
@@ -301,7 +300,7 @@ public class GeneratorXsd extends GeneratorDocument
     }
   }
 
-  private void createAttributeType(XsdWriter xsdFile, AttributeType type) throws IOException
+  private void createAttributeType(AttributeType type) throws IOException
   {
     getLog().info("Recording defintion of type " + type.getName());
 
@@ -322,7 +321,7 @@ public class GeneratorXsd extends GeneratorDocument
     xsdFile.addXsdStatement(1, "</xsd:simpleType>");
   }
 
-  private void createCompositeType(XsdWriter xsdFile, AreaType area, CompositeType type) throws IOException
+  private void createCompositeType(XsdWriter xsdFile, CompositeType type) throws IOException
   {
     String compName = type.getName();
 
@@ -373,11 +372,11 @@ public class GeneratorXsd extends GeneratorDocument
 
     for (int i = 0; i < lst.size(); i++)
     {
-      lst.set(i, updateMessageField(i, lst.get(i)));
+      lst.set(i, updateMessageField(lst.get(i)));
     }
   }
 
-  private Object updateMessageField(int index, Object any)
+  private Object updateMessageField(Object any)
   {
     if (null != any)
     {
@@ -423,6 +422,11 @@ public class GeneratorXsd extends GeneratorDocument
   {
     private final Set<String> areas;
 
+    /**
+     * Constructor.
+     *
+     * @param areas Set of XML areas.
+     */
     public CustomNamespacePrefixMapper(Set<String> areas)
     {
       this.areas = areas;
@@ -479,7 +483,7 @@ public class GeneratorXsd extends GeneratorDocument
     }
 
     /**
-     * Creates a String indented correctly with a semicolon at the end if required.
+     * Creates a String indented correctly.
      *
      * @param tabCount Indentation level.
      * @param statement The file statement.
@@ -517,6 +521,11 @@ public class GeneratorXsd extends GeneratorDocument
       file.flush();
     }
 
+    /**
+     * Returns the set of XML areas.
+     * 
+     * @return the XML areas.
+     */
     public Set<String> getAreas()
     {
       return areas;

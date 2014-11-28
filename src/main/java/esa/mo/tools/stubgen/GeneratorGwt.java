@@ -163,7 +163,7 @@ public class GeneratorGwt extends GeneratorJava
         }
         case REQUEST_OP:
         {
-          CompositeField opRetType = createOperationReturnType(file, area, service, op);
+//          CompositeField opRetType = createOperationReturnType(file, area, service, op);
 //          String asyncOpArgs = StubUtils.concatenateArguments(opArgs, "com.google.gwt.user.client.rpc.AsyncCallback<" + opRetType + "> _callback");
 //          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), asyncOpArgs, null, null, null, null);
           break;
@@ -193,7 +193,8 @@ public class GeneratorGwt extends GeneratorJava
   {
   }
 
-  protected void createServiceProviderHandler2(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException
+  @Override
+  protected void createServiceProviderHandler(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException
   {
     getLog().info("Creating provider handler interface: " + service.getName());
 

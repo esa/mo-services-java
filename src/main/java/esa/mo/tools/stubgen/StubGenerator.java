@@ -483,9 +483,21 @@ public class StubGenerator extends AbstractMojo
 
   private final static class XmlSpecification
   {
+    /**
+     * Holds the source file object.
+     */
     public final File file;
+    /**
+     * Holds the XML root element.
+     */
     public final JAXBElement rootElement;
 
+    /**
+     * Constructor.
+     *
+     * @param file The file.
+     * @param rootElement The XML root element.
+     */
     public XmlSpecification(File file, JAXBElement rootElement)
     {
       this.file = file;

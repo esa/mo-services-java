@@ -432,13 +432,14 @@ public class GeneratorJava extends GeneratorLangs
   }
 
   /**
+   * Creates a java package file.
    *
-   * @param structureFolder
-   * @param area
-   * @param service
-   * @param extraPackage
-   * @param comment
-   * @throws IOException
+   * @param structureFolder The folder containing the generated code.
+   * @param area the area.
+   * @param service the server.
+   * @param extraPackage any extra package level.
+   * @param comment the comment.
+   * @throws IOException if there is a problem.
    */
   protected void createFolderComment(File structureFolder, AreaType area, ServiceType service, String extraPackage, String comment) throws IOException
   {
@@ -448,13 +449,14 @@ public class GeneratorJava extends GeneratorLangs
   }
 
   /**
+   * Creates a java package file.
    *
-   * @param file
-   * @param area
-   * @param service
-   * @param extraPackage
-   * @param comment
-   * @throws IOException
+   * @param file The folder containing the generated code.
+   * @param area the area.
+   * @param service the server.
+   * @param extraPackage any extra package level.
+   * @param comment the comment.
+   * @throws IOException if there is a problem.
    */
   protected void createFolderComment(ClassWriter file, AreaType area, ServiceType service, String extraPackage, String comment) throws IOException
   {
@@ -538,13 +540,13 @@ public class GeneratorJava extends GeneratorLangs
       else
       {
         TypeReference elementTypeIndir = elementType;
-        
+
         // have to work around the fact that JAXB does not replicate the XML type name into Java in all cases
-        if("XML".equalsIgnoreCase(elementType.getArea()))
+        if ("XML".equalsIgnoreCase(elementType.getArea()))
         {
           elementTypeIndir = TypeUtils.createTypeReference(elementType.getArea(), elementType.getService(), StubUtils.preCap(elementType.getName()), elementType.isList());
         }
-                
+
         String fqTypeName = createElementType((LanguageWriter) file, elementTypeIndir, isStructure);
 
         if (isEnum(elementType))
@@ -1177,10 +1179,10 @@ public class GeneratorJava extends GeneratorLangs
 
         return type.getTypeName();
       }
-      
+
       return StdStrings.VOID;
     }
-    
+
 //    private String createLocalType(String type)
 //    {
 //      if (null != type)

@@ -83,6 +83,13 @@ public abstract class GeneratorDocument extends GeneratorBase
     return ele;
   }
 
+  /**
+   * Splits a supplied string on any CRs or double spaces.
+   *
+   * @param srcArr Source string array to append to.
+   * @param str String to split.
+   * @return The updated source array.
+   */
   protected static List<String> splitString(List<String> srcArr, String str)
   {
     if (null == srcArr)

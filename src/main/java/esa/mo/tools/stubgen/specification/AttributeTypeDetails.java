@@ -72,21 +72,41 @@ public final class AttributeTypeDetails
     this.defaultValue = defaultValue;
   }
 
+  /**
+   * Returns the MAL type.
+   *
+   * @return the MAL type.
+   */
   public String getMalType()
   {
     return malType;
   }
 
+  /**
+   * Returns true if the attribute is represented by a native type.
+   *
+   * @return true if attribute is a native type.
+   */
   public boolean isNativeType()
   {
     return nativeType;
   }
 
+  /**
+   * Returns the target type.
+   *
+   * @return the target type.
+   */
   public String getTargetType()
   {
     return targetType;
   }
 
+  /**
+   * Returns the default value.
+   *
+   * @return the default value.
+   */
   public String getDefaultValue()
   {
     return defaultValue;

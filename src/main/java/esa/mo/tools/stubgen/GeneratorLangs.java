@@ -2118,11 +2118,6 @@ public abstract class GeneratorLangs extends GeneratorBase
         method.addMethodStatement("return new " + createElementType(file, area, service, srcTypeName) + "()");
       }
     }
-    else if (isEnum)
-    {
-      file.addTypeDependency(typeDetails.getTypeName());
-      method.addMethodStatement("return " + typeDetails.getNewCall());
-    }
     else
     {
       file.addTypeDependency(typeDetails.getTypeName());

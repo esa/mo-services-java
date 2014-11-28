@@ -491,6 +491,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     attributeTypesMap.put(new TypeKey(area, null, name), new AttributeTypeDetails(this, name, isNativeType, targetType, defaultValue));
   }
 
+  /**
+   * Returns the internal attribute type map.
+   *
+   * @return the internal map.
+   */
   protected Map<TypeKey, AttributeTypeDetails> getAttributeTypesMap()
   {
     return attributeTypesMap;
@@ -751,7 +756,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
             {
               EnumerationType e = new EnumerationType();
               EnumerationType.Item i = new EnumerationType.Item();
-              i.setValue(((NoFixedFacet)((JAXBElement) o).getValue()).getValue());
+              i.setValue(((NoFixedFacet) ((JAXBElement) o).getValue()).getValue());
               e.getItem().add(i);
               allTypesMap.put(key, e);
               enumTypesSet.add(key);
@@ -778,15 +783,30 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     }
   }
 
+  /**
+   * Simple comparable class that allows indexing on an MO type.
+   */
   public static final class TypeKey implements Comparable<TypeKey>
   {
     private final String key;
 
+    /**
+     * Constructor.
+     *
+     * @param type The type reference to create the key from.
+     */
     public TypeKey(TypeReference type)
     {
       this.key = createTypeKey(type);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param area The area of the type.
+     * @param service The service of the type.
+     * @param name The name of the type.
+     */
     public TypeKey(String area, String service, String name)
     {
       this.key = createTypeKey(TypeUtils.createTypeReference(area, service, name, false));
@@ -816,6 +836,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
       return !((this.key == null) ? (other.key != null) : !this.key.equals(other.key));
     }
 
+    @Override
     public int compareTo(TypeKey o)
     {
       return this.key.compareTo(o.key);

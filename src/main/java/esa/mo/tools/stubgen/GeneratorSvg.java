@@ -85,27 +85,31 @@ public class GeneratorSvg extends GeneratorDocument
     if (extraProperties.containsKey("svg.includeDescriptiveText"))
     {
       includeDescriptions = Boolean.parseBoolean(extraProperties.get("svg.includeDescriptiveText"));
+      getLog().info("svg.includeDescriptiveText: " + includeDescriptions);
     }
 
     if (extraProperties.containsKey("svg.includeIndexes"))
     {
       includeIndexes = Boolean.parseBoolean(extraProperties.get("svg.includeIndexes"));
+      getLog().info("svg.includeIndexes: " + includeIndexes);
     }
 
     if (extraProperties.containsKey("svg.splitOutSvg"))
     {
       splitOutSvg = Boolean.parseBoolean(extraProperties.get("svg.splitOutSvg"));
-      System.out.println("svg.splitOutSvg: " + splitOutSvg);
+      getLog().info("svg.splitOutSvg: " + splitOutSvg);
     }
 
     if (extraProperties.containsKey("svg.includeCollapsedMessages"))
     {
       includeCollapsedMessages = Boolean.parseBoolean(extraProperties.get("svg.includeCollapsedMessages"));
+      getLog().info("svg.includeCollapsedMessages: " + includeCollapsedMessages);
     }
 
     if (extraProperties.containsKey("svg.includeExpandedMessages"))
     {
       includeExpandedMessages = Boolean.parseBoolean(extraProperties.get("svg.includeExpandedMessages"));
+      getLog().info("svg.includeExpandedMessages: " + includeExpandedMessages);
     }
   }
 
