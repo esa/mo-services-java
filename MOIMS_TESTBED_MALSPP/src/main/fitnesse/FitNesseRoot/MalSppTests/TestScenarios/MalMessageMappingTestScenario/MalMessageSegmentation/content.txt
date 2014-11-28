@@ -26,7 +26,7 @@
 |org.ccsds.moims.mo.malspp.test.segmentation|
 
 *!
-All test services are extensions of other MAL/SPP service and/or MAL services.
+All test services are extensions of other MAL/SPP services and/or MAL services.
 
 Message segmentation is tested using three providers and three consumers:
 - APID qualifier/APID 248/2: DataTest service provider - configured to maximum packet size

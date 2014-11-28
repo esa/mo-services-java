@@ -47,11 +47,11 @@ public class IPSegmentationTestHandlerImpl extends IPTestInheritanceSkeleton {
   ProgressMultiInteraction progressB;
 
   public void send(IPTestDefinition _IPTestDefinition0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
+    // do nothing
   }
 
   public void testSubmit(IPTestDefinition _IPTestDefinition0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
+    // do nothing
   }
 
   public String request(IPTestDefinition _IPTestDefinition0, MALInteraction interaction) throws MALInteractionException, MALException {

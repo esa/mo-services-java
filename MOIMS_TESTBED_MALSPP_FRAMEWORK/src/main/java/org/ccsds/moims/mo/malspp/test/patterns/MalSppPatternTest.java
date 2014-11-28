@@ -32,27 +32,46 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.malspp.test.patterns;
 
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALInvokeOperation;
+import org.ccsds.moims.mo.mal.MALProgressOperation;
+import org.ccsds.moims.mo.mal.MALRequestOperation;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.test.patterns.PatternTest;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.PubSubTestCaseHelper;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
 import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
 import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransitionList;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
+import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
+import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
 import org.objectweb.util.monolog.api.Logger;
 
 public class MalSppPatternTest extends PatternTest {
-	
-	public final static Logger logger = fr.dyade.aaa.common.Debug
-		  .getLogger(MalSppPatternTest.class.getName());
-	
-	protected SpacePacketCheck spacePacketCheck;
 
-	public MalSppPatternTest() {
+  private MALMessage rcvdMsg = null;
+
+  public final static Logger logger = fr.dyade.aaa.common.Debug
+          .getLogger(MalSppPatternTest.class.getName());
+
+  protected SpacePacketCheck spacePacketCheck;
+
+  public MalSppPatternTest() {
     super();
     spacePacketCheck = new SpacePacketCheck();
   }
@@ -290,5 +309,122 @@ public class MalSppPatternTest extends PatternTest {
   public String stringFieldIs() throws Exception {
     return spacePacketCheck.stringFieldIs();
   }
-	
+  
+  public int packetVersionNumberIs() {
+    return spacePacketCheck.packetVersionNumberIs();
+  }
+  
+  public int secondaryHeaderFlagIs() {
+    return spacePacketCheck.secondaryHeaderFlagIs();
+  }
+  
+  public int packetDataLengthIs() {
+    return spacePacketCheck.packetDataLengthIs();
+  }
+  
+  public boolean packetDataLengthIsLengthOfPacketDataFieldMinusOne() {
+    return spacePacketCheck.packetDataLengthIsLengthOfPacketDataFieldMinusOne();
+  }
+
+  private MALMessage createMessage(URI uriTo, MALEndpoint ep, InteractionType type, UOctet stage, UShort operation, QoSLevel qos, SessionType session) throws Exception {
+    Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
+    Long transId = 0L;
+    try {
+      transId = TransportInterceptor.instance().getLastSentMessage(0).getHeader().getTransactionId() + 1;
+    } catch (Exception ex) {
+      // do nothing
+    }
+    return ep.createMessage(
+            TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
+            uriTo,
+            new Time(System.currentTimeMillis()),
+            qos,
+            HeaderTestProcedure.PRIORITY,
+            HeaderTestProcedure.DOMAIN,
+            HeaderTestProcedure.NETWORK_ZONE,
+            session,
+            sessionName,
+            type,
+            stage,
+            transId,
+            MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
+            IPTestHelper.IPTEST_SERVICE_NUMBER,
+            operation,
+            MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
+            Boolean.FALSE,
+            null, // qos proerties
+            new Object[]{null} // body
+    );
+  }
+
+  public boolean patternInitiationForWithUnknownUriToAndQosAndSession(String pattern, String uri, String qosLevel, String sessionType) throws Exception {
+    URI uriTo = new URI(uri);
+    QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
+    SessionType session = ParseHelper.parseSessionType(sessionType);
+    Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
+
+    initConsumer(session, sessionName, qos);
+    ipTest = ipTestConsumer.getStub();
+
+    MALEndpoint ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
+    MALMessage msg = null;
+
+    if ("SUBMIT".equalsIgnoreCase(pattern)) {
+      msg = createMessage(uriTo, ep,
+              InteractionType.SUBMIT,
+              MALSubmitOperation.SUBMIT_STAGE,
+              IPTestHelper.TESTSUBMIT_OP_NUMBER,
+              qos, session
+      );
+    } else if ("REQUEST".equalsIgnoreCase(pattern)) {
+      msg = createMessage(uriTo, ep,
+              InteractionType.REQUEST,
+              MALRequestOperation.REQUEST_STAGE,
+              IPTestHelper.REQUEST_OP_NUMBER,
+              qos, session
+      );
+    } else if ("INVOKE".equalsIgnoreCase(pattern)) {
+      msg = createMessage(uriTo, ep,
+              InteractionType.INVOKE,
+              MALInvokeOperation.INVOKE_STAGE,
+              IPTestHelper.INVOKE_OP_NUMBER,
+              qos, session
+      );
+    } else if ("PROGRESS".equalsIgnoreCase(pattern)) {
+      msg = createMessage(uriTo, ep,
+              InteractionType.PROGRESS,
+              MALProgressOperation.PROGRESS_STAGE,
+              IPTestHelper.PROGRESS_OP_NUMBER,
+              qos, session
+      );
+    }
+    ep.sendMessage(msg);
+    Thread.sleep(2000);
+    return true;
+  }
+
+  public boolean selectLastReceivedMessage() {
+    rcvdMsg = TransportInterceptor.instance().getLastReceivedMessage();
+    return true;
+  }
+
+  public boolean receivedMessageMalHeaderFieldIsErrorMessage() {
+    return rcvdMsg.getHeader().getIsErrorMessage();
+  }
+
+  public String receivedMessageBodyContainsError() throws Exception {
+    if (rcvdMsg.getBody() instanceof MALErrorBody) {
+      MALStandardError error = ((MALErrorBody) rcvdMsg.getBody()).getError();
+      if (error.getErrorNumber().equals(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER)) {
+        return "destination unknown";
+      } else {
+        return error.getErrorName().toString();
+      }
+    }
+    return "Not an error.";
+  }
+
+  public String receivedMessageMalHeaderFieldUriFromIs() {
+    return rcvdMsg.getHeader().getURIFrom().toString();
+  }
 }

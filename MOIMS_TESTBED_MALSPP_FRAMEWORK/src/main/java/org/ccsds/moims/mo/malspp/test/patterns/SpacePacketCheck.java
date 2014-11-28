@@ -245,23 +245,31 @@ public class SpacePacketCheck {
   public boolean checkUriFrom() {
     URI expectedURI = TestHelper.getUriFrom(spacePacket,
         secondaryHeaderReader.getSecondaryHeader());
+    boolean fmt = TestHelper.isValidUri(malHeader.getURIFrom());
+    if (!fmt) {
+      LoggingBase.logMessage("Wrong URI format for " + malHeader.getURIFrom());
+    }
     boolean res = expectedURI.equals(malHeader.getURIFrom());
     if (!res) {
       LoggingBase.logMessage(expectedURI + " != " + malHeader.getURIFrom());
     }
-    return res;
+    return res && fmt;
   }
 
   public boolean checkUriTo() {
     URI expectedURI = TestHelper.getUriTo(spacePacket,
         secondaryHeaderReader.getSecondaryHeader());
+    boolean fmt = TestHelper.isValidUri(malHeader.getURIFrom());
+    if (!fmt) {
+      LoggingBase.logMessage("Wrong URI format for " + malHeader.getURIFrom());
+    }
     boolean res = expectedURI.equals(malHeader.getURITo());
     if (!res) {
       LoggingBase.logMessage(expectedURI + " != " + malHeader.getURITo());
     }
-    return res;
+    return res && fmt;
   }
-	
+  
 	public boolean checkTransactionId() {
 		Long tid = secondaryHeaderReader.readTransactionId();
 		boolean res = tid.equals(malHeader.getTransactionId());
@@ -566,5 +574,25 @@ public class SpacePacketCheck {
     LoggingBase.logMessage("String=" + s);
     return s;
   }
-	
+    
+    public int packetVersionNumberIs() {
+      return primaryHeader.getPacketVersionNumber();
+    }
+    
+    public int secondaryHeaderFlagIs() {
+      return primaryHeader.getSecondaryHeaderFlag();
+    }
+    
+    public int packetDataLengthIs() {
+      return spacePacket.getLength() - 1;
+    }
+    
+    public boolean packetDataLengthIsLengthOfPacketDataFieldMinusOne() {
+      // only valid for sent packets, not for received ones (does not make sense for received
+      // packets, because packetDataLength itself is used for determining the body size)
+      if (isSent) {
+        return packetDataLengthIs() + 1 == spacePacket.getBody().length;
+      }
+      return true;
+    }
 }

@@ -39,7 +39,7 @@
 !2 Compliance matrix
 | Comment |
 | Statements | Test scenarios | Test cases | Test methods |
-| 3.2.1x     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
+| 3.2.1x     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-!, !-UriTest-! | check uri from, check uri to, check uri from format, check uri to format |
 | 3.3.2.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from |
 | 3.3.3.1    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check authentication id |
 | 3.3.3.2    | !-MalMessageMapping-! | !-QoSProperties-!               | check authentication id is left out |
@@ -63,12 +63,12 @@
 | 3.3.16     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | operation is |
 | 3.3.17     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | area version is |
 | 3.3.18     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | error flag is |
-| 3.4.2.2    | missing | missing | missing |
+| 3.4.2.2    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | packet version number is |
 | 3.4.2.3    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check space packet type |
-| 3.4.2.4    | missing | missing | missing |
+| 3.4.2.4    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | secondary header flag is |
 | 3.4.2.5    | !-MalMessageMapping-! | !-MalMessageSegmentation-! | primary header sequence flags are |
 | 3.4.2.6    | !-MalMessageMapping-! | !-MalMessageSegmentation-! | primary header sequence counter is initial counter plus |
-| 3.4.2.7    | missing | missing | missing |
+| 3.4.2.7    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | packet data length is length of packet data field minus one |
 | 3.4.3.2.x  | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | version is |
 | 3.4.3.3    | !-MalMessageMapping-! | !-MalMessageSegmentation-! | secondary header segment counter is, test message segmentation with scrambling pattern |
 | 3.5.3.2.1  | !-MalMessageMapping-!   | !-MalMessageBodyMapping-! | check body element order |
@@ -79,7 +79,7 @@
 | 4.4.1      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select sent packet at |
 | 4.4.2      | missing | missing | missing |
 | 4.4.3      | See statements 3.x |
-| 4.4.4      | missing | missing | missing |
+| 4.4.4      | !-MalMessageMapping-! | !-UriTest-! | send message from uri to uri and expect |
 | 4.4.5      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
 | 4.4.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
 | 4.4.7      | missing | missing | missing |
@@ -102,7 +102,7 @@
 | 4.6.5b,c   | !-MalMessageMapping-! | !-MalMessageSegmentation-! | test message segmentation with scrambling pattern, check dropped packet |
 | 4.6.5d     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | large blob works, test message segmentation with scrambling pattern |
 | 4.6.5e     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | check timeout with |
-| 4.6.6      | missing | missing | missing |
+| 4.6.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | test interaction pattern with unknown uri to, test stage with unknown uri to |
 | 5.2.1-2    | !-MalDataEncoding-! | !-ElementTest-! | check a composite with a field typed !-MAL::Attribute-!, attribute tag is |
 | 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite sent as a !-MAL::Element-!, check short form |
 | 5.2.5      | !-MalDataEncoding-! | !-ElementTest-! | check a composite defined by a service and sent as a !-MAL::Element-! |
@@ -125,28 +125,20 @@
 !2 Missing tests
 | Comment |
 | Statements | Feature to be tested or left out |
-| 3.2.1d     | APID qualifier range |
-| 3.2.1f     | APID range |
-| 3.2.1g     | No source/destination id |
 | 3.2.2      | May not be possible to test, to be left out? |
 | 3.2.3      | May not be possible to test, to be left out? |
 | 3.2.4      | Out of scope, to be left out |
 | 3.3.2.5    | No source/destination id |
 | 3.3.4.5    | No source/destination id |
-| 3.4.2.2    | Packet version number (SPP feature) |
-| 3.4.2.4    | Secondary header flag (SPP feature) |
-| 3.4.2.7    | Packet data length (SPP feature) |
 | 3.5.3.2.2  | Empty body |
 | 3.5.3.x.y  | Body encoding format according to interaction type and stage |
 | 4.2.x      | Transport interface: supported qos |
 | 4.3.x      | Transport interface: supported ip |
 | 4.4.2      | Null MAL header field |
-| 4.4.4      | URI From/To not compliant with MAL/SPP URI format |
 | 4.4.7      | !-QoS-! properties transmission to SPP layer |
 | 4.4.11     | SPP transmission error |
 | 4.4.12     | SPP transmission ack |
 | 4.5.x      | Transmit multiple |
-| 4.6.6      | Unknown URI To |
 | 5.2.1-2    | Test operation with a body element typed MAL::Attribute |
 | 5.2.3      | Test operation with a body element typed MAL::Composite, abstract composite, a composite with a field typed MAL::Composite, abstract composite |
 | 5.3.5      | 2^16 elements in an enumeration is difficult to test with the MAL Java API, to be left out? |

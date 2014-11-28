@@ -38,25 +38,36 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
+import org.ccsds.moims.mo.mal.structures.EntityRequest;
 import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedureImpl;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.PubSubTestCaseHelper;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance.IPTestConsumer;
+import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTest;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
+import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
 import org.ccsds.moims.mo.malprototype.iptest.provider.MonitorPublisher;
 import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
 import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
@@ -65,6 +76,7 @@ import org.ccsds.moims.mo.malspp.test.suite.ErrorBrokerHandler;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malspp.test.suite.PubsubErrorIPTestHandler;
 import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
+import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
 import org.objectweb.util.monolog.api.Logger;
@@ -75,6 +87,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 		  .getLogger(MalSppPubsubTest.class.getName());
 	
   private SpacePacketCheck spacePacketCheck = new SpacePacketCheck();
+  private MALMessage rcvdMsg = null;
   
   public boolean consumerPacketIsTc(boolean isTc) {
     return spacePacketCheck.consumerPacketIsTc(isTc);
@@ -303,6 +316,22 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
     return spacePacketCheck.readSegmentCounterIfSegmented();
   }
   
+  public int packetVersionNumberIs() {
+    return spacePacketCheck.packetVersionNumberIs();
+  }
+  
+  public int secondaryHeaderFlagIs() {
+    return spacePacketCheck.secondaryHeaderFlagIs();
+  }
+  
+  public int packetDataLengthIs() {
+    return spacePacketCheck.packetDataLengthIs();
+  }
+  
+  public boolean packetDataLengthIsLengthOfPacketDataFieldMinusOne() {
+    return spacePacketCheck.packetDataLengthIsLengthOfPacketDataFieldMinusOne();
+  }
+
   private IPTestConsumer getPubsubErrorIPTestStub(int domain, SessionType session,
       Identifier sessionName, QoSLevel qos) throws Exception {
     int consumerPacketType = spacePacketCheck.getConsumerPacketType();
@@ -450,6 +479,107 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 
     return false;
   }
+    
+    private MALMessage createMessage(Object[] body, URI uriTo, MALEndpoint ep, UOctet stage, QoSLevel qos, SessionType session, Identifier sessionName, int domain) throws Exception {
+      Long transId = 0L;
+      try {
+        transId = TransportInterceptor.instance().getLastSentMessage(0).getHeader().getTransactionId() + 1;
+      } catch (Exception ex) {
+        // do nothing
+      }
+      return ep.createMessage(
+              TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
+              uriTo,
+              new Time(System.currentTimeMillis()),
+              qos,
+              HeaderTestProcedure.PRIORITY,
+              HeaderTestProcedure.getDomain(domain),
+              HeaderTestProcedure.NETWORK_ZONE,
+              session,
+              sessionName,
+              InteractionType.PUBSUB,
+              stage,
+              transId,
+              MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
+              IPTestHelper.IPTEST_SERVICE_NUMBER,
+              IPTestHelper.MONITOR_OP_NUMBER,
+              MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
+              Boolean.FALSE,
+              null, // qos proerties
+              body
+      );
+    }
+    
+    public boolean stageInitiationForWithUnknownUriToAndQosAndSessionAndSessionNameAndDomain(
+            String stage, String uri, String qosLevel, String sessionType, String sessionNameStr, int domain
+    ) throws Exception {
+      URI uriTo = new URI(uri);
+      QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
+      SessionType session = ParseHelper.parseSessionType(sessionType);
+      Identifier sessionName = new Identifier(sessionNameStr);
+
+      // Value of 'shared' does not matter because uriTo is set to unknown URI anyway.
+      initConsumer(domain, session, sessionName, qos, false);
+      IPTestStub ipTest = ipTestConsumer.getStub();
+
+      MALEndpoint ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
+      MALMessage msg = null;
+      
+      EntityKeyList entityKeys = new EntityKeyList();
+      entityKeys.add(HeaderTestProcedure.RIGHT_ENTITY_KEY);
+      Boolean onlyOnChange =  false;
+      EntityRequest entityRequest = new EntityRequest(
+          null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
+          onlyOnChange, entityKeys);
+      EntityRequestList entityRequests = new EntityRequestList();
+      entityRequests.add(entityRequest);
+      Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, entityRequests);
+
+      if ("REGISTER".equalsIgnoreCase(stage)) {
+        Object[] body = new Object[]{subscription};
+        msg = createMessage(body, uriTo, ep, MALPubSubOperation.REGISTER_STAGE, qos, session, sessionName, domain);
+      } else if ("PUBLISH_REGISTER".equalsIgnoreCase(stage)) {
+        Object[] body = new Object[]{entityKeys};
+        msg = createMessage(body, uriTo, ep, MALPubSubOperation.PUBLISH_REGISTER_STAGE, qos, session, sessionName, domain);
+      } else if ("PUBLISH_DEREGISTER".equalsIgnoreCase(stage)) {
+        Object[] body = new Object[]{};
+        msg = createMessage(body, uriTo, ep, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, qos, session, sessionName, domain);
+      } else if ("DEREGISTER".equalsIgnoreCase(stage)) {
+        IdentifierList identifierList = new IdentifierList();
+        identifierList.add(HeaderTestProcedure.SUBSCRIPTION_ID);
+        Object[] body = new Object[]{identifierList};
+        msg = createMessage(body, uriTo, ep, MALPubSubOperation.DEREGISTER_STAGE, qos, session, sessionName, domain);
+      }
+      ep.sendMessage(msg);
+      Thread.sleep(2000);
+      return true;
+    }
+
+    public boolean selectLastReceivedMessage() {
+      rcvdMsg = TransportInterceptor.instance().getLastReceivedMessage();
+      return true;
+    }
+
+    public boolean receivedMessageMalHeaderFieldIsErrorMessage() {
+      return rcvdMsg.getHeader().getIsErrorMessage();
+    }
+
+    public String receivedMessageBodyContainsError() throws Exception {
+      if (rcvdMsg.getBody() instanceof MALErrorBody) {
+        MALStandardError error = ((MALErrorBody) rcvdMsg.getBody()).getError();
+        if (error.getErrorNumber().equals(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER)) {
+          return "destination unknown";
+        } else {
+          return error.getErrorName().toString();
+        }
+      }
+      return "Not an error.";
+    }
+
+    public String receivedMessageMalHeaderFieldUriFromIs() {
+      return rcvdMsg.getHeader().getURIFrom().toString();
+    }
+	
 	
 	static class IPTestListener extends IPTestAdapter {
 	  

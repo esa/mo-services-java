@@ -32,6 +32,8 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.malspp.test.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
 
@@ -51,6 +53,7 @@ public class TestHelper {
   public static final String PROTOCOL = "malspp:";
   
   public static final char SLASH = '/';
+  private static final Pattern URI_PATTERN = Pattern.compile("\\A" + PROTOCOL + "(\\d{1,5})" + SLASH + "(\\d{1,4})(?:" + SLASH + "(\\d{1,3}))?\\z");
   
   public static URI getUriFrom(SpacePacket spacePacket,
       SecondaryHeader secondaryHeader) {
@@ -89,6 +92,29 @@ public class TestHelper {
       buf.append(instanceId);
     }
     return new URI(buf.toString());
+  }
+  
+  public static boolean isValidUri(URI uri) {
+    Matcher m = URI_PATTERN.matcher(uri.toString());
+    if (!m.matches()) {
+      return false;
+    }
+    final int qualifier;
+    final short apid;
+    final Short identifier;
+    try {
+      qualifier = Integer.valueOf(m.group(1));
+      apid = Short.valueOf(m.group(2));
+      identifier = m.group(3) == null ? null : Short.valueOf(m.group(3));
+    } catch (NumberFormatException ex) {
+      return false;
+    }
+    if (qualifier < 0 || qualifier > 65535
+      || apid < 0 || apid >= 2047
+      || (identifier != null && (identifier < 0 || identifier > 255))) {
+      return false;
+    }
+    return true;
   }
   
   public static int decodeSecondaryHeader(SecondaryHeader ssh,
