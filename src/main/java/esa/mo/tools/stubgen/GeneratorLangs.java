@@ -1726,7 +1726,7 @@ public abstract class GeneratorLangs extends GeneratorBase
       CompositeField eInstVar = createCompositeElementsDetails(file, false, value, TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false), true, false, "Enumeration singleton for value " + value);
       file.addClassVariable(true, true, StdStrings.PUBLIC, _eNumberVar, false, String.valueOf(i));
       file.addClassVariable(true, true, StdStrings.PUBLIC, eValueVar, false, "(" + item.getNvalue() + ")");
-      file.addClassVariable(true, false, StdStrings.PUBLIC, eInstVar, true, "(" + convertToNamespace(convertClassName(fqEnumName) + "._" + value + "_INDEX)"));
+      file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + convertToNamespace(convertClassName(fqEnumName) + "._" + value + "_INDEX)"));
     }
 
     // create arrays
@@ -1740,7 +1740,7 @@ public abstract class GeneratorLangs extends GeneratorBase
       vaStr.add(enumeration.getItem().get(i).getValue() + "_NUM_VALUE");
     }
     CompositeField eInstArrVar = createCompositeElementsDetails(file, false, "_ENUMERATIONS", TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false), true, true, "Set of enumeration instances.");
-    file.addClassVariable(true, false, StdStrings.PRIVATE, eInstArrVar, true, true, opStr);
+    file.addClassVariable(true, true, StdStrings.PRIVATE, eInstArrVar, true, true, opStr);
     if (supportsToString)
     {
       CompositeField eStrArrVar = createCompositeElementsDetails(file, false, "_ENUMERATION_NAMES", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.STRING, false), true, true, "Set of enumeration string values.");
