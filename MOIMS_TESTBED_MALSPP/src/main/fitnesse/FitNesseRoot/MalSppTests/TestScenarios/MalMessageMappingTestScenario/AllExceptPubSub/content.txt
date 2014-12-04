@@ -235,16 +235,13 @@ Reuse the MAL test procedure that does the following actions:
 
 |scenario| test mal spp pattern with session | sessId | and session name | sessionName |
 |test mal spp pattern with qos | Best Effort | and session | @sessId | and session name | @sessionName |
-|test mal spp pattern with qos | Assured | and session | @sessId | and session name | @sessionName |
-|test mal spp pattern with qos | Queued | and session | @sessId | and session name | @sessionName |
-|test mal spp pattern with qos | Timely | and session | @sessId | and session name | @sessionName |
+
 
 |scenario| test mal spp pattern with consumer tc| consumerTc | and provider tc | providerTc |
 |ensure |consumer packet is tc| @consumerTc |
 |ensure |provider packet is tc| @providerTc | 
 |test mal spp pattern with session | Live | and session name | LIVE |
-|test mal spp pattern with session | Simulation | and session name | S1 |
-|test mal spp pattern with session | Replay | and session name | R1 |
+
 
 ***********!
 

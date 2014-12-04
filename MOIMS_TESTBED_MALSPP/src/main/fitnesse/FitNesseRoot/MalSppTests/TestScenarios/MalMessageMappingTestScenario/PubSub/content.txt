@@ -297,17 +297,14 @@ for the Pub/Sub interaction:
 
 |scenario| test mal spp pubsub | sessId | and session name | sessionName |
 |test mal spp pubsub | Best Effort | and session | @sessId | and session name | @sessionName | and domain | 1 |
-|test mal spp pubsub | Assured | and session | @sessId | and session name | @sessionName | and domain | 2 |
-|test mal spp pubsub | Queued | and session | @sessId | and session name | @sessionName | and domain | 3 |
-|test mal spp pubsub | Timely | and session | @sessId | and session name | @sessionName | and domain | 4 |
+
 
 |scenario| test mal spp pubsub with consumer tc | consumerTc | and provider tc | providerTc |
 |ensure | reset consumers |
 |ensure | consumer packet is tc | @consumerTc |
 |ensure | provider packet is tc | @providerTc |
 |test mal spp pubsub | Live | and session name | LIVE |
-|test mal spp pubsub | Simulation | and session name | S1 |
-|test mal spp pubsub | Replay | and session name | R1 |
+
 
 ***********!
 
