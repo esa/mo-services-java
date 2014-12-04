@@ -387,10 +387,18 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     }
   }
   
+  public IPTestConsumer getTcTcIpTestStub(Blob authenticationId,
+    IdentifierList domain, Identifier networkZone, SessionType sessionType,
+    Identifier sessionName, QoSLevel qosLevel, UInteger priority,
+    boolean shared) throws MALException {
+    return getTcTcIpTestStub(authenticationId, domain, networkZone, sessionType,
+      sessionName, qosLevel, priority, shared, true);
+  }
+  
   public synchronized IPTestConsumer getTcTcIpTestStub(Blob authenticationId,
       IdentifierList domain, Identifier networkZone, SessionType sessionType,
       Identifier sessionName, QoSLevel qosLevel, UInteger priority,
-      boolean shared) throws MALException {
+      boolean shared, boolean appendIdToUri) throws MALException {
     StubKey key = new StubKey(authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, priority, shared);
     IPTestConsumer ipconsumer = (IPTestConsumer) tcTcIpStubs.get(key);
     if (ipconsumer == null) {
@@ -409,6 +417,8 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
           TC_TC_LOCAL_APID_QUALIFIER);
       tcTcConsumerProps.put(TestHelper.APID_PROPERTY,
           TC_TC_LOCAL_APID);
+      tcTcConsumerProps.put(TestHelper.APPEND_ID_TO_URI,
+          appendIdToUri);
       
       MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
           uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,

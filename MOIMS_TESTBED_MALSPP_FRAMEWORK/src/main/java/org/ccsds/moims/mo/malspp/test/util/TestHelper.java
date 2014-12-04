@@ -42,6 +42,7 @@ public class TestHelper {
   public static final String IS_TC_PACKET_PROPERTY = "org.ccsds.moims.mo.malspp.isTcPacket";
   public static final String APID_QUALIFIER_PROPERTY = "org.ccsds.moims.mo.malspp.apidQualifier";
   public static final String APID_PROPERTY = "org.ccsds.moims.mo.malspp.apid";
+  public static final String APPEND_ID_TO_URI = "org.ccsds.moims.mo.malspp.appendIdToUri";
   
   public static final String AUTHENTICATION_ID_FLAG = "org.ccsds.moims.mo.malspp.authenticationIdFlag";
   public static final String DOMAIN_FLAG = "org.ccsds.moims.mo.malspp.domainFlag";
