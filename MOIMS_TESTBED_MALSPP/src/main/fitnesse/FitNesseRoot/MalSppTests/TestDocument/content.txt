@@ -31,6 +31,11 @@
 # knowledge of the CeCILL-C license and that you accept its terms.
 #
 
+# Add in the following line and comment out the rest to build a single document
+#  then run the Maven site target to post process the document into a
+#  stripped down version. It will be called target/surefire-reports/xxx.CompleteDocument-out.html
+#!see CompleteDocument
+
 !see TestScenarios
 !see TestScenarios.MalMessageMappingTestScenario.AllExceptPubSub
 !see TestScenarios.MalMessageMappingTestScenario.PubSub
