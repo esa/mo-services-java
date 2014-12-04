@@ -81,7 +81,9 @@ response.
 |ensure | read destination id |
 |ensure | check uri from |
 |ensure | check uri to |
-
+|check  | priority is | 1 |
+|ensure | check timestamp |
+|check  | network zone is | !-NetworkZone-! |
 
 |scenario | primary header |
 |check  | packet version number is | 0 |

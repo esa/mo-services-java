@@ -41,9 +41,11 @@
 | Statements | Test scenarios | Test cases | Test methods |
 | 3.2.1x     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-!, !-UriTest-! | check uri from, check uri to, check uri from format, check uri to format |
 | 3.3.2.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from |
+| 3.3.2.5    | !-MalMessageMapping-! | !-SourceDestIdTest-! | source id flag is, check uri from |
 | 3.3.3.1    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check authentication id |
 | 3.3.3.2    | !-MalMessageMapping-! | !-QoSProperties-!               | check authentication id is left out |
 | 3.3.4.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri to |
+| 3.3.4.5    | !-MalMessageMapping-! | !-SourceDestIdTest-! | destination id flag is, check uri to |
 | 3.3.5.1    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check timestamp |
 | 3.3.5.2    | !-MalMessageMapping-! | !-QoSProperties-!               | check timestamp is left out |
 | 3.3.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check qos |
@@ -132,8 +134,6 @@
 | 3.2.2      | May not be possible to test, to be left out? |
 | 3.2.3      | May not be possible to test, to be left out? |
 | 3.2.4      | Out of scope, to be left out |
-| 3.3.2.5    | No source/destination id |
-| 3.3.4.5    | No source/destination id |
 | 3.5.3.2.2  | Empty body |
 | 3.5.3.x.y  | Body encoding format according to interaction type and stage |
 | 4.2.x      | Transport interface: supported qos |
