@@ -90,7 +90,7 @@ public abstract class MALContextFactory
       final Long num = errorNumber.getValue();
       final Identifier currentMapping = _ERROR_MAP.get(num);
 
-      if ((null != currentMapping) && (currentMapping.equals(errorName)))
+      if ((null != currentMapping) && !(currentMapping.equals(errorName)))
       {
         throw new MALException("Error already registered with a different name");
       }
