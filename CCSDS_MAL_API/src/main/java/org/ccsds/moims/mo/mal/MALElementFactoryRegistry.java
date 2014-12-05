@@ -20,8 +20,8 @@
  */
 package org.ccsds.moims.mo.mal;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Holds a map of MALElementFactorys indexed on type short forms. Used to lookup the correct element factory for a
@@ -29,7 +29,7 @@ import java.util.TreeMap;
  */
 public class MALElementFactoryRegistry
 {
-  private final Map<Object, MALElementFactory> factoryMap = new TreeMap<Object, MALElementFactory>();
+  private final Map<Object, MALElementFactory> factoryMap = new HashMap<Object, MALElementFactory>();
           
   /**
    * Registers a element factory in the map using the supplied short form object as the key. 
