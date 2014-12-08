@@ -118,7 +118,7 @@
 | 5.3.3      | !-MalDataEncoding-! | !-EnumerationTest-! | check an enumerated sent as a !-MAL::Element-! |
 | 5.3.4      | missing | missing | missing |
 | 5.4.1      | !-MalDataEncoding-! | !-CompositeTest-! | check field order |
-| 5.4.2      | missing | missing | missing |
+| 5.4.2      | !-MalDataEncoding-! | !-CompositeTest-! | check presence flag |
 | 5.4.3      | !-MalDataEncoding-! | !-CompositeTest-! | check composite inheritance |
 | 5.5.1-3    | !-MalDataEncoding-! | !-ListTest-! | check list format and elements order |
 | 5.6.1-2    | !-MalDataEncoding-! | !-NullableElementTest-! | check presence flag |
@@ -145,7 +145,6 @@
 | 5.2.1-2    | Test operation with a body element typed MAL::Attribute |
 | 5.2.3      | Test operation with a body element typed MAL::Composite, abstract composite, a composite with a field typed MAL::Composite, abstract composite |
 | 5.3.5      | 2^16 elements in an enumeration is difficult to test with the MAL Java API, to be left out? |
-| 5.4.2      | Nullable fields in a composite |
 | 5.9        | !-MAL::Duration-! bug in !-MAL Java API-! |
 
 

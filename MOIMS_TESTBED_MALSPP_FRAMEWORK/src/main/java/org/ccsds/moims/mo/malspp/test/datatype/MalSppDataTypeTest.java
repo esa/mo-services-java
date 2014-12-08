@@ -206,6 +206,10 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	public int integerFieldIs() throws Exception {
 		return bufferReader.readInteger();
 	}
+    
+    public long longFieldIs() throws Exception {
+      return bufferReader.readLong();
+    }
 	
 	public boolean booleanFieldIs() throws Exception {
 		return bufferReader.readBoolean();
