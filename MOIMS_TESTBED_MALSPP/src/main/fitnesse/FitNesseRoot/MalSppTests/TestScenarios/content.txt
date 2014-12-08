@@ -79,9 +79,9 @@
 | 4.2.x      | missing | missing | missing |
 | 4.3.x      | missing | missing | missing |
 | 4.4.1      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select sent packet at |
-| 4.4.2      | missing | missing | missing |
+| 4.4.2      | !-MalMessageMapping-! | !-TransmitRequest-! | send message with null mal header field and expect |
 | 4.4.3      | See statements 3.x |
-| 4.4.4      | !-MalMessageMapping-! | !-UriTest-! | send message from uri to uri and expect |
+| 4.4.4      | !-MalMessageMapping-! | !-TransmitRequest-! | send message from uri to uri and expect |
 | 4.4.5      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
 | 4.4.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
 | 4.4.7      | missing | missing | missing |
@@ -138,7 +138,6 @@
 | 3.5.3.x.y  | Body encoding format according to interaction type and stage |
 | 4.2.x      | Transport interface: supported qos |
 | 4.3.x      | Transport interface: supported ip |
-| 4.4.2      | Null MAL header field |
 | 4.4.7      | !-QoS-! properties transmission to SPP layer |
 | 4.4.11     | SPP transmission error |
 | 4.4.12     | SPP transmission ack |
