@@ -20,9 +20,9 @@
  */
 package esa.mo.mal.impl.transport;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -39,11 +39,11 @@ public final class TransportSingleton
   /**
    * Map of transport factories currently used by the application
    */
-  private static final Map<String, MALTransportFactory> FACTORY_MAP = new TreeMap<String, MALTransportFactory>();
+  private static final Map<String, MALTransportFactory> FACTORY_MAP = new HashMap<String, MALTransportFactory>();
   /**
    * Map of transport handlers currently used by the application
    */
-  private static final Map<String, MALTransport> TRANSPORT_MAP = new TreeMap<String, MALTransport>();
+  private static final Map<String, MALTransport> TRANSPORT_MAP = new HashMap<String, MALTransport>();
   /**
    * The default protocol to be used by the provider
    */

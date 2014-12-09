@@ -20,8 +20,8 @@
  */
 package esa.mo.mal.impl;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.structures.URI;
 
@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
  */
 class InteractionProviderMap
 {
-  private final Map<Long, Map.Entry> resolveMap = new TreeMap<Long, Map.Entry>();
+  private final Map<Long, Map.Entry> resolveMap = new HashMap<Long, Map.Entry>();
 
   Long addTransactionSource(final URI urlFrom, final Long transactionId)
   {
@@ -38,7 +38,7 @@ class InteractionProviderMap
     {
       final Long internalTransactionId = InteractionTransaction.getTransactionId(resolveMap.keySet());
 
-      resolveMap.put(internalTransactionId, new TreeMap.SimpleEntry(urlFrom, transactionId));
+      resolveMap.put(internalTransactionId, new HashMap.SimpleEntry(urlFrom, transactionId));
 
       return internalTransactionId;
     }

@@ -26,8 +26,8 @@ import esa.mo.mal.impl.consumer.MALConsumerManagerImpl;
 import esa.mo.mal.impl.provider.MALProviderManagerImpl;
 import esa.mo.mal.impl.transport.TransportSingleton;
 import esa.mo.mal.impl.util.MALClose;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
@@ -50,7 +50,7 @@ public class MALContextImpl extends MALClose implements MALContext
   private final InteractionConsumerMap icmap = new InteractionConsumerMap();
   private final InteractionProviderMap ipmap = new InteractionProviderMap();
   private final InteractionPubSubMap ipsmap = new InteractionPubSubMap();
-  private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new TreeMap<String, MALBrokerBindingImpl>();
+  private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<String, MALBrokerBindingImpl>();
   private final MessageReceive receiver;
   private final MessageSend sender;
 

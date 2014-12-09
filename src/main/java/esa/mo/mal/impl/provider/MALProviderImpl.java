@@ -22,8 +22,8 @@ package esa.mo.mal.impl.provider;
 
 import esa.mo.mal.impl.MALContextImpl;
 import esa.mo.mal.impl.ServiceComponentImpl;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALService;
@@ -41,7 +41,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 {
   private final boolean isPublisher;
-  private final Map<String, MALPublisher> publishers = new TreeMap<String, MALPublisher>();
+  private final Map<String, MALPublisher> publishers = new HashMap<String, MALPublisher>();
   private final URI sharedBrokerUri;
   private final MALBrokerBinding localBrokerBinding;
   private final URI localBrokerUri;

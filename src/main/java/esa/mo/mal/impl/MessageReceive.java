@@ -27,8 +27,8 @@ import esa.mo.mal.impl.patterns.PubSubInteractionImpl;
 import esa.mo.mal.impl.patterns.RequestInteractionImpl;
 import esa.mo.mal.impl.patterns.SendInteractionImpl;
 import esa.mo.mal.impl.patterns.SubmitInteractionImpl;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
@@ -49,7 +49,7 @@ public class MessageReceive implements MALMessageListener
   private final MALAccessControl securityManager;
   private final InteractionConsumerMap icmap;
   private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
-  private final Map<EndPointPair, Address> providerEndpointMap = new TreeMap();
+  private final Map<EndPointPair, Address> providerEndpointMap = new HashMap();
   private final InteractionProviderMap ipmap;
   private final InteractionPubSubMap ipsmap;
 

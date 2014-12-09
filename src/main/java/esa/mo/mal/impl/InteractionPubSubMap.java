@@ -20,8 +20,8 @@
  */
 package esa.mo.mal.impl;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
@@ -39,10 +39,10 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 class InteractionPubSubMap
 {
   private final Map<StringPair, MALPublishInteractionListener> publisherMap
-          = new TreeMap<StringPair, MALPublishInteractionListener>();
+          = new HashMap<StringPair, MALPublishInteractionListener>();
   private final Map<String, Map<String, MALInteractionListener>> errorMap
-          = new TreeMap<String, Map<String, MALInteractionListener>>();
-  private final Map<StringPair, MALInteractionListener> notifyMap = new TreeMap<StringPair, MALInteractionListener>();
+          = new HashMap<String, Map<String, MALInteractionListener>>();
+  private final Map<StringPair, MALInteractionListener> notifyMap = new HashMap<StringPair, MALInteractionListener>();
 
   void registerPublishListener(final MessageDetails details, final MALPublishInteractionListener listener)
   {
@@ -139,7 +139,7 @@ class InteractionPubSubMap
 
       if (null == ent)
       {
-        ent = new TreeMap<String, MALInteractionListener>();
+        ent = new HashMap<String, MALInteractionListener>();
         errorMap.put(uri, ent);
       }
 
@@ -214,11 +214,10 @@ class InteractionPubSubMap
     {
       final String uri = details.endpoint.getURI().getValue();
 
-      for (int i = 0; i < unsubscription.size(); i++)
+      for (Identifier unsubscription1 : unsubscription)
       {
-        final String unsubId = unsubscription.get(i).getValue();
+        final String unsubId = unsubscription1.getValue();
         final StringPair id = new StringPair(uri, unsubId);
-
         if (notifyMap.containsKey(id))
         {
           MALContextFactoryImpl.LOGGER.log(Level.INFO,

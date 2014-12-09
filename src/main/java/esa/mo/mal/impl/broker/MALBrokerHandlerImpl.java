@@ -24,10 +24,10 @@ import esa.mo.mal.impl.StringPair;
 import esa.mo.mal.impl.broker.NotifyMessageSet.NotifyMessage;
 import esa.mo.mal.impl.broker.key.BrokerKey;
 import esa.mo.mal.impl.util.MALClose;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
@@ -53,8 +53,8 @@ import org.ccsds.moims.mo.mal.transport.MALRegisterBody;
 public abstract class MALBrokerHandlerImpl extends MALClose implements MALBrokerHandler
 {
   private final List<MALBrokerBindingImpl> bindings = new LinkedList<MALBrokerBindingImpl>();
-  private final Map<BrokerKey, Map<StringPair, PublisherSource>> providerMap = new TreeMap();
-  private final Map<BrokerKey, Map<String, SubscriptionSource>> consumerMap = new TreeMap();
+  private final Map<BrokerKey, Map<StringPair, PublisherSource>> providerMap = new HashMap();
+  private final Map<BrokerKey, Map<String, SubscriptionSource>> consumerMap = new HashMap();
 
   /**
    * Constructor.
@@ -305,7 +305,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
     if (null == rv)
     {
-      rv = new TreeMap();
+      rv = new HashMap();
       consumerMap.put(key, rv);
     }
 
@@ -333,7 +333,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
     if (null == rv)
     {
-      rv = new TreeMap();
+      rv = new HashMap();
       providerMap.put(key, rv);
     }
 

@@ -20,8 +20,8 @@
  */
 package esa.mo.mal.impl;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
@@ -42,7 +42,7 @@ import org.ccsds.moims.mo.mal.transport.*;
 class InteractionConsumerMap
 {
   private final Map<Long, InternalOperationHandler> transMap
-          = new TreeMap<Long, InternalOperationHandler>();
+          = new HashMap<Long, InternalOperationHandler>();
 
   Long createTransaction(final int interactionType,
           final boolean syncOperation,

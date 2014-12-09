@@ -23,9 +23,9 @@ package esa.mo.mal.impl.provider;
 import esa.mo.mal.impl.MessageDetails;
 import esa.mo.mal.impl.MessageSend;
 import esa.mo.mal.impl.util.StructureHelper;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.*;
@@ -55,7 +55,7 @@ class MALPublisherImpl implements MALPublisher
   private final QoSLevel remotePublisherQos;
   private final Map remotePublisherQosProps;
   private final UInteger remotePublisherPriority;
-  private final Map<AddressKey, Long> transIdMap = new TreeMap<AddressKey, Long>();
+  private final Map<AddressKey, Long> transIdMap = new HashMap<AddressKey, Long>();
 
   MALPublisherImpl(final MALProviderImpl parent,
           final MessageSend handler,
@@ -403,8 +403,13 @@ class MALPublisherImpl implements MALPublisher
     @Override
     public int hashCode()
     {
-      assert false : "hashCode not designed";
-      return HASH_MAGIC_NUMBER;
+      int hash = 7;
+      hash = 53 * hash + (this.uri != null ? this.uri.hashCode() : 0);
+      hash = 53 * hash + (this.domain != null ? this.domain.hashCode() : 0);
+      hash = 53 * hash + (this.networkZone != null ? this.networkZone.hashCode() : 0);
+      hash = 53 * hash + this.session;
+      hash = 53 * hash + (this.sessionName != null ? this.sessionName.hashCode() : 0);
+      return hash;
     }
 
     @Override

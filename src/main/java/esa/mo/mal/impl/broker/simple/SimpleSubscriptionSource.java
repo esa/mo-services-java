@@ -43,7 +43,7 @@ class SimpleSubscriptionSource extends SubscriptionSource
 {
   private final String signature;
   private final Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
-  private final Map<String, SimpleSubscriptionDetails> details = new TreeMap<String, SimpleSubscriptionDetails>();
+  private final Map<String, SimpleSubscriptionDetails> details = new HashMap<String, SimpleSubscriptionDetails>();
 
   /**
    * Constructor.
