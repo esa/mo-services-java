@@ -21,8 +21,8 @@
 package org.ccsds.moims.mo.mal;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -40,9 +40,9 @@ public class MALService
   private MALArea area;
   private final UShort number;
   private final Identifier name;
-  private final Map<Integer, MALOperation> operationsByNumber = new TreeMap<Integer, MALOperation>();
-  private final Map<String, MALOperation> operationsByName = new TreeMap<String, MALOperation>();
-  private final Map<Integer, MALOperation[]> operationsBySet = new TreeMap<Integer, MALOperation[]>();
+  private final Map<Integer, MALOperation> operationsByNumber = new HashMap<Integer, MALOperation>();
+  private final Map<String, MALOperation> operationsByName = new HashMap<String, MALOperation>();
+  private final Map<Integer, MALOperation[]> operationsBySet = new HashMap<Integer, MALOperation[]>();
   private MALSendOperation[] sendOperations;
   private MALSubmitOperation[] submitOperations;
   private MALRequestOperation[] requestOperations;

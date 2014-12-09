@@ -20,8 +20,8 @@
  */
 package org.ccsds.moims.mo.mal;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**
@@ -37,10 +37,10 @@ public abstract class MALContextFactory
    * The default implementation to use.
    */
   public static final String MAL_DEFAULT_FACTORY = "esa.mo.mal.impl.MALContextFactoryImpl";
-  private static final Map<String, Class> _FACTORY_MAP = new TreeMap<String, Class>();
-  private static final Map<String, MALArea> _AREA_MAP = new TreeMap<String, MALArea>();
-  private static final Map<Integer, MALArea> _AREA_NUMBER_MAP = new TreeMap<Integer, MALArea>();
-  private static final Map<Long, Identifier> _ERROR_MAP = new TreeMap<Long, Identifier>();
+  private static final Map<String, Class> _FACTORY_MAP = new HashMap<String, Class>();
+  private static final Map<String, MALArea> _AREA_MAP = new HashMap<String, MALArea>();
+  private static final Map<Integer, MALArea> _AREA_NUMBER_MAP = new HashMap<Integer, MALArea>();
+  private static final Map<Long, Identifier> _ERROR_MAP = new HashMap<Long, Identifier>();
   private static final MALElementFactoryRegistry _FACTORY_REGISTRY = new MALElementFactoryRegistry();
 
   /**

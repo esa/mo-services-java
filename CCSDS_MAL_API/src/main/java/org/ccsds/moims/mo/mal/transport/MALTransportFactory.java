@@ -21,8 +21,8 @@
 package org.ccsds.moims.mo.mal.transport;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 
@@ -35,7 +35,7 @@ public abstract class MALTransportFactory
    * The system property prefix that resolves the specific MALTransportFactory class name for a protocol.
    */
   public static final String FACTORY_PROP_NAME_PREFIX = "org.ccsds.moims.mo.mal.transport.protocol";
-  private static final Map<String, Class> _FACTORY_MAP = new TreeMap<String, Class>();
+  private static final Map<String, Class> _FACTORY_MAP = new HashMap<String, Class>();
   private final String protocol;
 
   /**

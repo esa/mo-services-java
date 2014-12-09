@@ -21,8 +21,8 @@
 package org.ccsds.moims.mo.mal;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -36,8 +36,8 @@ public class MALArea
   private final Identifier name;
   private final UOctet version;
   private MALService[] services = new MALService[0];
-  private final Map<String, MALService> serviceNames = new TreeMap<String, MALService>();
-  private final Map<Integer, MALService> serviceNumbers = new TreeMap<Integer, MALService>();
+  private final Map<String, MALService> serviceNames = new HashMap<String, MALService>();
+  private final Map<Integer, MALService> serviceNumbers = new HashMap<Integer, MALService>();
 
   /**
    * MALArea constructor.

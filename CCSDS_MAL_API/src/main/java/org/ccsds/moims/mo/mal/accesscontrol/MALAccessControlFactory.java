@@ -20,8 +20,8 @@
  */
 package org.ccsds.moims.mo.mal.accesscontrol;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
@@ -35,7 +35,7 @@ public abstract class MALAccessControlFactory
    * The system property that resolves the specific MALAccessControlFactory class name.
    */
   public static final String FACTORY_PROP_NAME = "org.ccsds.moims.mo.mal.accesscontrol.factory.class";
-  private static final Map<String, Class> _FACTORY_MAP = new TreeMap<String, Class>();
+  private static final Map<String, Class> _FACTORY_MAP = new HashMap<String, Class>();
 
   /**
    * The method allows an implementation to register the class of a specific MALAccessControlFactory. NOTE – This method
