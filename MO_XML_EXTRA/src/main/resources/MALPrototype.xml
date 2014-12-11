@@ -1027,6 +1027,148 @@
             </smc:errorRef>
           </smc:errors>
         </smc:requestIP>
+        <smc:requestIP name="testEmptyBody" number="124"
+          supportInReplay="false"
+          comment="This operation checks that an empty body can be sent and received explicitly">
+          <smc:messages>
+            <smc:request>
+            </smc:request>
+            <smc:response>
+            </smc:response>
+          </smc:messages>
+          <smc:errors>
+            <smc:errorRef comment="Data interoperability error">
+              <smc:type area="MALPrototype" service="DataTest"
+                name="DATA_ERROR" />
+            </smc:errorRef>
+          </smc:errors>
+        </smc:requestIP>
+        <smc:requestIP name="testMalAttribute" number="125"
+          supportInReplay="false"
+          comment="This operation checks that a MAL::Attribute can be sent and received explicitly">
+          <smc:messages>
+            <smc:request>
+              <smc:type area="MAL" name="Attribute" />
+            </smc:request>
+            <smc:response>
+              <smc:type area="MAL" name="Attribute" />
+            </smc:response>
+          </smc:messages>
+          <smc:errors>
+            <smc:errorRef comment="Data interoperability error">
+              <smc:type area="MALPrototype" service="DataTest"
+                name="DATA_ERROR" />
+            </smc:errorRef>
+          </smc:errors>
+        </smc:requestIP>
+        <smc:requestIP name="testMalComposite" number="126"
+          supportInReplay="false"
+          comment="This operation checks that a MAL::Composite can be sent and received explicitly">
+          <smc:messages>
+            <smc:request>
+              <smc:type area="MAL" name="Composite" />
+            </smc:request>
+            <smc:response>
+              <smc:type area="MAL" name="Composite" />
+            </smc:response>
+          </smc:messages>
+          <smc:errors>
+            <smc:errorRef comment="Data interoperability error">
+              <smc:type area="MALPrototype" service="DataTest"
+                name="DATA_ERROR" />
+            </smc:errorRef>
+          </smc:errors>
+        </smc:requestIP>
+        <smc:requestIP name="testAbstractComposite" number="127"
+          supportInReplay="false"
+          comment="This operation checks that an abstract Composite can be sent and received explicitly">
+          <smc:messages>
+            <smc:request>
+              <smc:type area="MALPrototype" service="IPTest" name="TestPublish" />
+            </smc:request>
+            <smc:response>
+              <smc:type area="MALPrototype" service="IPTest" name="TestPublish" />
+            </smc:response>
+          </smc:messages>
+          <smc:errors>
+            <smc:errorRef comment="Data interoperability error">
+              <smc:type area="MALPrototype" service="DataTest"
+                name="DATA_ERROR" />
+            </smc:errorRef>
+          </smc:errors>
+        </smc:requestIP>
+        <smc:requestIP name="testMalAttributeList" number="128"
+          supportInReplay="false"
+          comment="This operation checks that a list of MAL::Attribute can be sent and received explicitly">
+          <smc:messages>
+            <smc:request>
+              <smc:type list="true" area="MAL" name="Attribute" />
+            </smc:request>
+            <smc:response>
+              <smc:type list="true" area="MAL" name="Attribute" />
+            </smc:response>
+          </smc:messages>
+          <smc:errors>
+            <smc:errorRef comment="Data interoperability error">
+              <smc:type area="MALPrototype" service="DataTest"
+                name="DATA_ERROR" />
+            </smc:errorRef>
+          </smc:errors>
+        </smc:requestIP>
+        <smc:requestIP name="testMalElementList" number="129"
+          supportInReplay="false"
+          comment="This operation checks that a list of MAL::Element can be sent and received explicitly">
+          <smc:messages>
+            <smc:request>
+              <smc:type list="true" area="MAL" name="Element" />
+            </smc:request>
+            <smc:response>
+              <smc:type list="true" area="MAL" name="Element" />
+            </smc:response>
+          </smc:messages>
+          <smc:errors>
+            <smc:errorRef comment="Data interoperability error">
+              <smc:type area="MALPrototype" service="DataTest"
+                name="DATA_ERROR" />
+            </smc:errorRef>
+          </smc:errors>
+        </smc:requestIP>
+        <smc:requestIP name="testMalCompositeList" number="130"
+          supportInReplay="false"
+          comment="This operation checks that a list of MAL::Composite can be sent and received explicitly">
+          <smc:messages>
+            <smc:request>
+              <smc:type list="true" area="MAL" name="Composite" />
+            </smc:request>
+            <smc:response>
+              <smc:type list="true" area="MAL" name="Composite" />
+            </smc:response>
+          </smc:messages>
+          <smc:errors>
+            <smc:errorRef comment="Data interoperability error">
+              <smc:type area="MALPrototype" service="DataTest"
+                name="DATA_ERROR" />
+            </smc:errorRef>
+          </smc:errors>
+        </smc:requestIP>
+        <smc:requestIP name="testAbstractCompositeList" number="131"
+          supportInReplay="false"
+          comment="This operation checks that a list of abstract composite can be sent and received explicitly">
+          <smc:messages>
+            <smc:request>
+              <smc:type list="true" area="MALPrototype" service="IPTest" name="TestPublish" />
+            </smc:request>
+            <smc:response>
+              <smc:type list="true" area="MALPrototype" service="IPTest" name="TestPublish" />
+            </smc:response>
+          </smc:messages>
+          <smc:errors>
+            <smc:errorRef comment="Data interoperability error">
+              <smc:type area="MALPrototype" service="DataTest"
+                name="DATA_ERROR" />
+            </smc:errorRef>
+          </smc:errors>
+        </smc:requestIP>
       </smc:capabilitySet>
       <smc:errors>
         <smc:error name="DATA_ERROR" number="70001"
