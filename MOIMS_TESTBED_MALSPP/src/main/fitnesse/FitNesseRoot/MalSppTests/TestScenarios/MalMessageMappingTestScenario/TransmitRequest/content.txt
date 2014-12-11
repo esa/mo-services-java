@@ -23,21 +23,44 @@
 !define TEST_SYSTEM {slim}
 
 |Import|
-|org.ccsds.moims.mo.malspp.test.uri|
+|org.ccsds.moims.mo.malspp.test.transmit|
 
 *!
 
 A template message is created and sent using the send operation of the IPTest service.
 - APID qualifier/APID 648/4: IPTest service provider
 - APID qualifier/APID 647/3: IPTest service consumer
-The uris of the template message are modified and correct behaviour of the transmit request is
-checked by directly invoking the transmit request on the transport API. The provider does not do
-anything. Errors on provider side are ignored, because they are not relevant to the test.
-
-The same priniciple is used with the testSubmit operation of the IPTest service to test for the
-error returned for unknown destinations. In this case the error is not ignored.
+The MAL message header fields of the template message are modified and correct behaviour of the
+transmit request is checked by directly invoking the transmit request on the transport API. The
+provider does not do anything. Errors on provider side are ignored, because they are not relevant to
+the test.
 
 !*> Sub scenario definitions
+
+| scenario | send message with null mal header field | field | and expect | error |
+| ensure | set null | @field |
+| check | transmit request returns | @error |
+
+| scenario | check null mal header field |
+| ensure | create and send template send message |
+| send message with null mal header field | uri from          | and expect | transmit error internal |
+| send message with null mal header field | authentication id | and expect | transmit error internal |
+| send message with null mal header field | uri to            | and expect | transmit error internal |
+| send message with null mal header field | timestamp         | and expect | transmit error internal |
+| send message with null mal header field | qoslevel          | and expect | transmit error internal |
+| send message with null mal header field | priority          | and expect | transmit error internal |
+| send message with null mal header field | domain            | and expect | transmit error internal |
+| send message with null mal header field | network zone      | and expect | transmit error internal |
+| send message with null mal header field | session           | and expect | transmit error internal |
+| send message with null mal header field | session name      | and expect | transmit error internal |
+| send message with null mal header field | interaction type  | and expect | transmit error internal |
+| send message with null mal header field | interaction stage | and expect | transmit error internal |
+| send message with null mal header field | transaction id    | and expect | transmit error internal |
+| send message with null mal header field | service area      | and expect | transmit error internal |
+| send message with null mal header field | service           | and expect | transmit error internal |
+| send message with null mal header field | operation         | and expect | transmit error internal |
+| send message with null mal header field | area version      | and expect | transmit error internal |
+| send message with null mal header field | is error message  | and expect | transmit error internal |
 
 | scenario | send message from uri | urifrom | to uri | urito | and expect | error |
 | ensure | set uri from | @urifrom |
@@ -45,6 +68,7 @@ error returned for unknown destinations. In this case the error is not ignored.
 | check | transmit request returns | @error |
 
 | scenario | check uri from format |
+| ensure | create and send template send message |
 | send message from uri | malspp:647/3/0    | to uri | malspp:648/4/0 | and expect | no transmit error |
 | send message from uri | spp:647/3/0       | to uri | malspp:648/4/0 | and expect | transmit error internal |
 | send message from uri | 647/3/0           | to uri | malspp:648/4/0 | and expect | transmit error internal |
@@ -65,6 +89,7 @@ error returned for unknown destinations. In this case the error is not ignored.
 | send message from uri | malspp:647/3/256  | to uri | malspp:648/4/0 | and expect | transmit error internal |
 
 | scenario | check uri to format |
+| ensure | create and send template send message |
 | send message from uri | malspp:647/3/0 | to uri | malspp:648/4/0    | and expect | no transmit error |
 | send message from uri | malspp:647/3/0 | to uri | spp:648/4/0       | and expect | transmit error internal |
 | send message from uri | malspp:647/3/0 | to uri | 648/4/0           | and expect | transmit error internal |
@@ -86,7 +111,7 @@ error returned for unknown destinations. In this case the error is not ignored.
 
 ***********!
 
-| script | uri test |
-| ensure | create and send template send message |
+| script | transmit request test |
+| check null mal header field |
 | check uri from format |
 | check uri to format   |

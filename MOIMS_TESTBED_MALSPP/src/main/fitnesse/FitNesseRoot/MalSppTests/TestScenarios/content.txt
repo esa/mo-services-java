@@ -79,9 +79,9 @@
 | 4.2.x      | missing | missing | missing |
 | 4.3.x      | missing | missing | missing |
 | 4.4.1      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select sent packet at |
-| 4.4.2      | missing | missing | missing |
+| 4.4.2      | !-MalMessageMapping-! | !-TransmitRequest-! | send message with null mal header field and expect |
 | 4.4.3      | See statements 3.x |
-| 4.4.4      | !-MalMessageMapping-! | !-UriTest-! | send message from uri to uri and expect |
+| 4.4.4      | !-MalMessageMapping-! | !-TransmitRequest-! | send message from uri to uri and expect |
 | 4.4.5      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
 | 4.4.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
 | 4.4.7      | missing | missing | missing |
@@ -127,7 +127,7 @@
 | 5.3.3      | !-MalDataEncoding-! | !-EnumerationTest-! | check an enumerated sent as a !-MAL::Element-! |
 | 5.3.4      | missing | missing | missing |
 | 5.4.1      | !-MalDataEncoding-! | !-CompositeTest-! | check field order |
-| 5.4.2      | missing | missing | missing |
+| 5.4.2      | !-MalDataEncoding-! | !-CompositeTest-! | check presence flag |
 | 5.4.3      | !-MalDataEncoding-! | !-CompositeTest-! | check composite inheritance |
 | 5.5.1-3    | !-MalDataEncoding-! | !-ListTest-! | check list format and elements order |
 | 5.6.1-2    | !-MalDataEncoding-! | !-NullableElementTest-! | check presence flag |
@@ -147,13 +147,11 @@
 | 3.5.3.x.y  | Body encoding format according to interaction type and stage |
 | 4.2.x      | Transport interface: supported qos |
 | 4.3.x      | Transport interface: supported ip |
-| 4.4.2      | Null MAL header field |
 | 4.4.7      | !-QoS-! properties transmission to SPP layer |
 | 4.4.11     | SPP transmission error |
 | 4.4.12     | SPP transmission ack |
 | 4.5.x      | Transmit multiple |
 | 5.3.5      | 2^16 elements in an enumeration is difficult to test with the MAL Java API, to be left out? |
-| 5.4.2      | Nullable fields in a composite |
 | 5.9        | !-MAL::Duration-! bug in !-MAL Java API-! |
 
 

@@ -42,7 +42,7 @@
 !see TestScenarios.MalMessageMappingTestScenario.MalMessageBodyMapping
 !see TestScenarios.MalMessageMappingTestScenario.QosProperties
 !see TestScenarios.MalMessageMappingTestScenario.MalMessageSegmentation
-!see TestScenarios.MalMessageMappingTestScenario.UriTest
+!see TestScenarios.MalMessageMappingTestScenario.TransmitRequest
 !see TestScenarios.MalMessageMappingTestScenario.SourceDestIdTest
 !see TestScenarios.MalDataEncodingTestScenario.ElementTest
 !see TestScenarios.MalDataEncodingTestScenario.EnumerationTest
