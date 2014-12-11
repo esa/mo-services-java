@@ -63,6 +63,8 @@ public class BufferReader {
   
   public static final String MAL_JAVA_API_FINETIME_EPOCH = "org.ccsds.moims.mo.mal.finetime.epoch";
   
+  public static final int signMaskFor24bitInteger = 0x00800000;
+  
   public static void init() {
     String path = System.getProperty("org.ccsds.moims.mo.malspp.test.util.orekit.data.path", ".");
     try {
@@ -115,8 +117,14 @@ public class BufferReader {
   }
   
   public int read24() {
-    return ((((int) read()) &0xFF) << 16) |
+    int decoded = ((((int) read()) &0xFF) << 16) |
         ((((int) read()) &0xFF) << 8) | (((int) read()) &0xFF);
+    if ((decoded & signMaskFor24bitInteger) != 0) {
+      // Negative value
+      return decoded | 0xFF000000;
+    } else {
+      return decoded;
+    }
   }
   
   public int read32() {

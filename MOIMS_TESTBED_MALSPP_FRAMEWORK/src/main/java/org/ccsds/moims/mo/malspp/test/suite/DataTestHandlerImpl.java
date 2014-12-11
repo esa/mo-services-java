@@ -22,9 +22,14 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.CompositeList;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.SessionType;
@@ -39,6 +44,8 @@ import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.provider.DataTestInheritanceSkeleton;
+import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublish;
+import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishList;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.malspp.test.segmentation.MalSppSegmentationTest;
@@ -171,4 +178,36 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
+  public void testEmptyBody(MALInteraction mali) throws MALInteractionException, MALException {
+    // Do nothing
+  }
+
+  public Attribute testMalAttribute(Attribute atrbt, MALInteraction mali) throws MALInteractionException, MALException {
+    return atrbt;
+  }
+
+  public Composite testMalComposite(Composite cmpst, MALInteraction mali) throws MALInteractionException, MALException {
+    return cmpst;
+  }
+
+  public TestPublish testAbstractComposite(TestPublish tp, MALInteraction mali) throws MALInteractionException, MALException {
+    return tp;
+  }
+  
+  public AttributeList testMalAttributeList(AttributeList al, MALInteraction mali) throws MALInteractionException, MALException {
+    return al;
+  }
+
+  public ElementList testMalElementList(ElementList el, MALInteraction mali) throws MALInteractionException, MALException {
+    return el;
+  }
+
+  public CompositeList testMalCompositeList(CompositeList cl, MALInteraction mali) throws MALInteractionException, MALException {
+    return cl;
+  }
+
+  public TestPublishList testAbstractCompositeList(TestPublishList tpl, MALInteraction mali) throws MALInteractionException, MALException {
+    return tpl;
+  }
+  
 }
