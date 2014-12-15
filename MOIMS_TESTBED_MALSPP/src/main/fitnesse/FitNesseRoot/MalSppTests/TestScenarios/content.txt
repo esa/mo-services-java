@@ -76,6 +76,9 @@
 | 3.5.3.2.1  | !-MalMessageMapping-!   | !-MalMessageBodyMapping-! | check body element order |
 | 3.5.3.2.2  | missing | missing | missing |
 | 3.5.3.x.y  | missing | missing | missing |
+| 3.5.3.3.12a| !-MalMessageMapping-! | !-AllExceptPubSub-! | body element encoded as uinteger |
+| 3.5.3.3.12b| !-MalMessageMapping-! | !-AllExceptPubSub-! | body element encoded as nullable element |
+| 3.5.3.3.13 | !-MalMessageMapping-! | !-AllExceptPubSub-! | body element encoded as nullable element |
 | 4.2.x      | missing | missing | missing |
 | 4.3.x      | missing | missing | missing |
 | 4.4.1      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select sent packet at |

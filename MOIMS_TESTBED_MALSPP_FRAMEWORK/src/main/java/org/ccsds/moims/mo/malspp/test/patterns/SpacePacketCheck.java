@@ -32,7 +32,6 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.malspp.test.patterns;
 
-import java.util.HashMap;
 
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -48,23 +47,16 @@ import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
-import org.ccsds.moims.mo.malspp.test.util.CDSTimeCode;
-import org.ccsds.moims.mo.malspp.test.util.CUCTimeCode;
 import org.ccsds.moims.mo.malspp.test.util.MappingConfiguration;
 import org.ccsds.moims.mo.malspp.test.util.MappingConfigurationRegistry;
 import org.ccsds.moims.mo.malspp.test.util.QualifiedApid;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
 import org.ccsds.moims.mo.malspp.test.util.SecondaryHeaderReader;
-import org.ccsds.moims.mo.malspp.test.util.TimeCode;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacketHeader;
-import org.orekit.errors.OrekitException;
-import org.orekit.time.AbsoluteDate;
-import org.orekit.time.TimeScale;
-import org.orekit.time.TimeScalesFactory;
 
 public class SpacePacketCheck {
   
@@ -80,7 +72,7 @@ public class SpacePacketCheck {
 	private SpacePacketHeader primaryHeader;
 	
 	private MALMessageHeader malHeader;
-	
+    
 	private BufferReader bufferReader;
 	
 	private SecondaryHeaderReader secondaryHeaderReader;
@@ -554,4 +546,69 @@ public class SpacePacketCheck {
       }
       return true;
     }
+    
+    public int bufferRemainingSizeIs() {
+      return bufferReader.getLength() - bufferReader.getIndex();
+    }
+    
+    public Integer readInteger() {
+      Integer res = bufferReader.readInteger();
+      LoggingBase.logMessage("Integer=" + res.toString());
+      return res;
+    }
+    
+    public UInteger readUInteger() {
+      UInteger res = bufferReader.readUInteger();
+      LoggingBase.logMessage("UInteger=" + res.toString());
+      return res;
+    }
+    
+    public URI readUri() {
+      URI res = bufferReader.readUri();
+      LoggingBase.logMessage("URI=" + res.toString());
+      return res;
+    }
+    
+    public Blob readBlob() {
+      Blob res = bufferReader.readBlob();
+      LoggingBase.logMessage("Blob=" + res.toString());
+      return res;
+    }
+    
+    public int readUInt8Enum() {
+      int res = bufferReader.readUnsignedByteAsInt();
+      LoggingBase.logMessage("Enum=" + res);
+      return res;
+    }
+    
+    public Identifier readIdentifier() {
+      Identifier res = bufferReader.readIdentifier();
+      LoggingBase.logMessage("Identifier=" + res.toString());
+      return res;
+    }
+    
+    public Time readTime() throws Exception {
+      Time res = bufferReader.readTime();
+      LoggingBase.logMessage("Time=" + res.toString());
+      return res;
+    }
+    
+    public int readUInt16() {
+      int res = bufferReader.read16();
+      LoggingBase.logMessage("UInt16=" + res);
+      return res;
+    }
+
+    public int readUInt8() {
+      int res = bufferReader.readUnsignedByteAsInt();
+      LoggingBase.logMessage("UInt8=" + res);
+      return res;
+    }
+
+    public int readInt24() {
+      int res = bufferReader.read24();
+      LoggingBase.logMessage("Int24=" + res);
+      return res;
+    }
+
 }

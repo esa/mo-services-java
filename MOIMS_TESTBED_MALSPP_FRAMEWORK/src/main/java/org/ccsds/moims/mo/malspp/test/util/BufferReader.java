@@ -480,4 +480,8 @@ public class BufferReader {
     return index;
   }
   
+  public int getLength() {
+    return bytes.length;
+  }
+  
 }

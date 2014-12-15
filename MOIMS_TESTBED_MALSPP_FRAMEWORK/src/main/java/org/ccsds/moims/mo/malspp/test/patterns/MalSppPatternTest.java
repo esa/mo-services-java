@@ -43,6 +43,7 @@ import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -426,5 +427,90 @@ public class MalSppPatternTest extends PatternTest {
 
   public String receivedMessageMalHeaderFieldUriFromIs() {
     return rcvdMsg.getHeader().getURIFrom().toString();
+  }
+  
+  public int bufferRemainingSizeIs() {
+    return spacePacketCheck.bufferRemainingSizeIs();
+  }
+  
+  public boolean readInteger() {
+    spacePacketCheck.readInteger();
+    return true;
+  }
+
+  public boolean readUInteger() {
+    spacePacketCheck.readUInteger();
+    return true;
+  }
+  
+  public boolean readString() throws Exception {
+    spacePacketCheck.stringFieldIs();
+    return true;
+  }
+  
+  public boolean readUri() throws Exception {
+    spacePacketCheck.readUri();
+    return true;
+  }
+  
+  public boolean readBlob() throws Exception {
+    spacePacketCheck.readBlob();
+    return true;
+  }
+  
+  public boolean readUInt8Enum() throws Exception {
+    spacePacketCheck.readUInt8Enum();
+    return true;
+  }
+  
+  public boolean readIdentifierList() throws Exception {
+    UInteger length = spacePacketCheck.readUInteger();
+    for (long i = 0; i < length.getValue(); i++) {
+      if (spacePacketCheck.presenceFlagIs() == 1) {
+        spacePacketCheck.readIdentifier();
+      }
+    }
+    return true;
+  }
+
+  public boolean readIdentifier() throws Exception {
+    spacePacketCheck.readIdentifier();
+    return true;
+  }
+
+  public boolean readIpTestTransitionList() throws Exception {
+    UInteger length = spacePacketCheck.readUInteger();
+    for (long i = 0; i < length.getValue(); i++) {
+      if (spacePacketCheck.presenceFlagIs() == 1) {
+        if (spacePacketCheck.presenceFlagIs() == 1) {
+          spacePacketCheck.readUInt8Enum();
+        }
+        if (spacePacketCheck.presenceFlagIs() == 1) {
+          spacePacketCheck.readUInteger();
+        }
+      }
+    }
+    return true;
+  }
+
+  public boolean readTime() throws Exception {
+    spacePacketCheck.readTime();
+    return true;
+  }
+  
+  public int elementAreaNumberIs() {
+    return spacePacketCheck.readUInt16();
+  }
+	
+  public long elementServiceNumberIs() {
+    return spacePacketCheck.readUInt16();
+  }
+	
+  public int elementVersionIs() {
+    return spacePacketCheck.readUInt8();
+  }
+	
+  public int elementTypeNumberIs() {
+    return spacePacketCheck.readInt24();
   }
 }

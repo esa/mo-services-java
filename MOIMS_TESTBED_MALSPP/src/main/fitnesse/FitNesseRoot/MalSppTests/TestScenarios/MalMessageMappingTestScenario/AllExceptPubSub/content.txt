@@ -62,6 +62,60 @@ Reuse the MAL test procedure that does the following actions:
 | check | received message body contains error | destination unknown |
 | check | received message mal header field uri from is | malspp:123/123/0 |
 
+|scenario| check element short form area | area | and service | service | and type | type |
+|check | element area number is | @area |
+|check | element service number is | @service |
+|check | element version is | 1 |
+|check | element type number is | @type |
+
+| scenario | read element !-IPTestDefinition-! |
+| check | presence flag is | 1 |
+| ensure | read string |
+| check | presence flag is | 1 |
+| ensure | read uri |
+| check | presence flag is | 1 |
+| ensure | read blob |
+| check | presence flag is | 1 |
+| ensure | read !-UInt8-! enum |
+| check | presence flag is | 1 |
+| ensure | read !-UInteger-! |
+| check | presence flag is | 1 |
+| ensure | read identifier list |
+| check | presence flag is | 1 |
+| ensure | read identifier |
+| check | presence flag is | 1 |
+| ensure | read !-UInt8-! enum |
+| check | presence flag is | 1 |
+| ensure | read identifier |
+| check | presence flag is | 1 |
+| ensure | read ip test transition list |
+| check | presence flag is | 1 |
+| ensure | read time |
+
+| scenario | read element string |
+| ensure | read string |
+
+| scenario | read element integer |
+| ensure | read integer |
+
+| scenario | read element element |
+| note | actual element type is string |
+| check element short form area | 1 | and service | 0 | and type | 15 |
+| ensure | read string |
+
+| scenario | body element encoded as empty |
+| body ends here |
+
+| scenario | body ends here |
+| check | buffer remaining size is | 0 |
+
+| scenario | body element | type | encoded as nullable element |
+| check | presence flag is | 1 |
+| read element @type |
+
+| scenario | body element encoded as !-UInteger-! |
+| ensure | read !-UInteger-! |
+
 |scenario| pattern | interaction | with multi| multi | and qos| qos | and session | sessId | and transitions | trans | and trans id | id | test |
 |ensure |pattern initiation for| @interaction | with multi| @multi | and qos| @qos | and session | @sessId | and transistions | @trans | and trans id | @id | test |
 |ensure |the consumer assertions are ok|
@@ -117,115 +171,180 @@ Reuse the MAL test procedure that does the following actions:
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 0 | and operation | 100 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|reset spp interceptor|
 |test interaction pattern | Submit| with transitions | [ACK] | and trans id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 1 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 0 |
 |primary header |
 |secondary header sdu type | 2 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element encoded as empty |
 |ensure|reset spp interceptor|
 |test interaction pattern | Submit| with transitions | [ACK_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 1 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 0 |
 |primary header |
 |secondary header sdu type | 2 | and operation | 101 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element encoded as !-UInteger-! | 
+|body element | element | encoded as nullable element |
+|body ends here|
 |ensure|reset spp interceptor|
 |test interaction pattern | Request| with transitions | [RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 3 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 0 |
 |primary header |
 |secondary header sdu type | 4 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | string | encoded as nullable element |
+|body ends here|
 |ensure|reset spp interceptor|
 |test interaction pattern | Request| with transitions | [RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 3 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 0 |
 |primary header |
 |secondary header sdu type | 4 | and operation | 102 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element encoded as !-UInteger-! | 
+|body element | element | encoded as nullable element |
+|body ends here|
 |ensure|reset spp interceptor|
 |test interaction pattern | Invoke| with transitions | [ACK, RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 0 |
 |primary header |
 |secondary header sdu type | 6 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | string | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 1 |
 |primary header |
 |secondary header sdu type | 7 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | string | encoded as nullable element |
+|body ends here|
 |ensure|reset spp interceptor|
 |test interaction pattern | Invoke| with transitions | [ACK, RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 0 |
 |primary header |
 |secondary header sdu type | 6 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | string | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 1 |
 |primary header |
 |secondary header sdu type | 7 | and operation | 103 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element encoded as !-UInteger-! | 
+|body element | element | encoded as nullable element |
+|body ends here|
 |ensure|reset spp interceptor|
 |test interaction pattern | Invoke| with transitions | [ACK_ERROR] | and trans id | 3 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 0 |
 |primary header |
 |secondary header sdu type | 6 | and operation | 103 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element encoded as !-UInteger-! | 
+|body element | element | encoded as nullable element |
+|body ends here|
 |ensure|reset spp interceptor|
 |test interaction pattern | Progress| with transitions | [ACK, RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 0 |
 |primary header |
 |secondary header sdu type | 9 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | string | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 1 |
 |primary header |
 |secondary header sdu type | 11 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | string | encoded as nullable element |
+|body ends here|
 |ensure|reset spp interceptor|
 |test interaction pattern | Progress| with transitions | [ACK, RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 0 |
 |primary header |
 |secondary header sdu type | 9 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | string | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 1 |
 |primary header |
 |secondary header sdu type | 11 | and operation | 104 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element encoded as !-UInteger-! | 
+|body element | element | encoded as nullable element |
+|body ends here|
 |ensure|reset spp interceptor|
 |test interaction pattern | Progress| with transitions | [ACK_ERROR] | and trans id | 3 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 0 |
 |primary header |
 |secondary header sdu type | 9 | and operation | 104 | and error | 1 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element encoded as !-UInteger-! | 
+|body element | element | encoded as nullable element |
+|body ends here|
 |ensure|reset spp interceptor|
 |test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, RESPONSE] | and trans id | 4 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | !-IPTestDefinition-! | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 0 |
 |primary header |
 |secondary header sdu type | 9 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | string | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 1 |
 |primary header |
 |secondary header sdu type | 10 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | integer | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 2 |
 |primary header |
 |secondary header sdu type | 10 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | integer | encoded as nullable element |
+|body ends here|
 |ensure|select received packet at| 3 |
 |primary header |
 |secondary header sdu type | 11 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
+|body element | string | encoded as nullable element |
+|body ends here|
 |ensure|reset spp interceptor|
 |test interaction pattern | SUBMIT   | with unknown uri to and qos | @qos | and session | @sessId |
 |test interaction pattern | REQUEST  | with unknown uri to and qos | @qos | and session | @sessId |
