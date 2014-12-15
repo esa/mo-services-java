@@ -34,9 +34,20 @@ package org.ccsds.moims.mo.malspp.test.datatype;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.CompositeList;
+import org.ccsds.moims.mo.mal.structures.ElementList;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UIntegerList;
 import org.ccsds.moims.mo.mal.test.datatype.DataTypeScenario;
 import org.ccsds.moims.mo.mal.test.datatype.TestData;
 import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
+import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublish;
+import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishList;
+import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdateList;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
@@ -202,7 +213,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 		LoggingBase.logMessage("String=" + s);
 		return s;
 	}
-	
+  
 	public int integerFieldIs() throws Exception {
 		return bufferReader.readInteger();
 	}
@@ -210,6 +221,10 @@ public class MalSppDataTypeTest extends DataTypeScenario {
     public long longFieldIs() throws Exception {
       return bufferReader.readLong();
     }
+  
+  public long uintegerFieldIs() {
+    return bufferReader.readUInteger().getValue();
+  }
 	
 	public boolean booleanFieldIs() throws Exception {
 		return bufferReader.readBoolean();
@@ -402,5 +417,178 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 		//TransportInterceptor.instance().resetReceiveCount(ip);
 		return true;
 	}
+  
+  public boolean testMalAttribute() {
+    Attribute attribute = new UInteger(0xFFFFFFFFL);
+    LoggingBase.logMessage("attribute=" + attribute);
+    Attribute res;
+    try {
+      res = getDataTestStub().testMalAttribute(attribute);
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    LoggingBase.logMessage("res=" + res);
+    return attribute.equals(res);
+  }
+  
+  public boolean testMalComposite() {
+    Composite composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+    Composite res;
+    try {
+      res = getDataTestStub().testMalComposite(composite);
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    return composite.equals(res);
+  }
+  
+  public boolean testAbstractComposite() {
+    TestPublish composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+    Composite res;
+    try {
+      res = getDataTestStub().testAbstractComposite(composite);
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    return composite.equals(res);
+  }
+  
+  public boolean testMalAttributeList() {
+    UInteger attribute = new UInteger(0xFFFFFFFFL);
+    UIntegerList attributeList = new UIntegerList();
+    attributeList.add(attribute);
+    attributeList.add(attribute);
+    AttributeList res;
+    try {
+      res = getDataTestStub().testMalAttributeList(attributeList);
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    return attributeList.equals(res);
+  }
+  
+  public boolean testMalCompositeList() {
+    Composite composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+    CompositeList compositeList = new TestPublishUpdateList();
+    compositeList.add(composite);
+    compositeList.add(composite);
+    CompositeList res;
+    try {
+      res = getDataTestStub().testMalCompositeList(compositeList);
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    return compositeList.equals(res);
+  }
+  
+  public boolean testCompositeListSentAsMalElementList() {
+    TestPublishUpdate composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+    TestPublishUpdateList compositeList = new TestPublishUpdateList();
+    compositeList.add(composite);
+    compositeList.add(composite);
+    ElementList res;
+    try {
+      res = getDataTestStub().testMalElementList(compositeList);
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    return compositeList.equals(res);
+  }
+  
+  public boolean testAttributeListSentAsMalElementList() {
+    UInteger attribute = new UInteger(0xFFFFFFFFL);
+    UIntegerList attributeList = new UIntegerList();
+    attributeList.add(attribute);
+    attributeList.add(attribute);
+    ElementList res;
+    try {
+      res = getDataTestStub().testMalElementList(attributeList);
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    return attributeList.equals(res);
+  }
+  
+  public boolean testAttributeListSentAsMalComposite() {
+    UInteger attribute = new UInteger(0xFFFFFFFFL);
+    UIntegerList attributeList = new UIntegerList();
+    attributeList.add(attribute);
+    attributeList.add(attribute);
+    Composite res;
+    try {
+      res = getDataTestStub().testMalComposite(attributeList);
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    return attributeList.equals(res);
+  }
+  
+  public boolean testCompositeListSentAsMalComposite() {
+    TestPublishUpdate composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+    TestPublishUpdateList compositeList = new TestPublishUpdateList();
+    compositeList.add(composite);
+    compositeList.add(composite);
+    Composite res;
+    try {
+      res = getDataTestStub().testMalComposite(compositeList);
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    return compositeList.equals(res);
+  }
+  
+  public boolean testAbstractCompositeList() {
+    Composite composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+    TestPublishList abstractCompositeList = new TestPublishUpdateList();
+    abstractCompositeList.add(composite);
+    abstractCompositeList.add(composite);
+    TestPublishList res;
+    try {
+      res = getDataTestStub().testAbstractCompositeList(abstractCompositeList);
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    return abstractCompositeList.equals(res);
+  }
 	
 }

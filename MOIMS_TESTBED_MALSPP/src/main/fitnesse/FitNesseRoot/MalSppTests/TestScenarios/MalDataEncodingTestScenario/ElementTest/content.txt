@@ -308,6 +308,97 @@ Reuse the data type MAL test scenario.
 |check | list size is  | 0 |
 |ensure|reset spp interceptor|
 
+|scenario| check an attribute sent as a !-MAL::Attribute-! |
+|ensure|reset spp interceptor|
+|ensure| test mal attribute |
+| note | The tested attribute is a !-UInteger-! |
+|ensure|select sent packet at| 0 |
+|check | presence flag is  | 1 |
+|check short form area | 1  | and service | 0 | and type | 12 |
+|check | uinteger field is | 4294967295 |
+|ensure|reset spp interceptor|
+
+|scenario| check a composite sent as a !-MAL::Composite-! |
+|ensure|reset spp interceptor|
+|ensure| test mal composite |
+| note | The tested composite is a !-TestPublishUpdate-! |
+|ensure|select sent packet at| 0 |
+|check | presence flag is  | 1 |
+|check short form area | 100  | and service | 1 | and type | 7 |
+|ensure|reset spp interceptor|
+
+|scenario| check a composite sent as an abstract composite |
+|ensure|reset spp interceptor|
+|ensure| test abstract composite |
+| note | The tested composite is a !-TestPublishUpdate-! |
+|ensure|select sent packet at| 0 |
+|check | presence flag is  | 1 |
+|check short form area | 100  | and service | 1 | and type | 7 |
+|ensure|reset spp interceptor|
+
+|scenario| check an attribute list sent as a !-MAL::Attribute-! list |
+|ensure|reset spp interceptor|
+|ensure| test mal attribute list |
+| note | The tested list is a !-UIntegerList-! |
+|ensure|select sent packet at| 0 |
+|check | presence flag is  | 1 |
+|check short form area | 1  | and service | 0 | and type | -12 |
+|ensure|reset spp interceptor|
+
+|scenario| check an attribute list sent as a !-MAL::Composite-! |
+|ensure|reset spp interceptor|
+|ensure| test attribute list sent as mal composite|
+| note | The tested list is a !-UIntegerList-! |
+|ensure|select sent packet at| 0 |
+|check | presence flag is  | 1 |
+|check short form area | 1  | and service | 0 | and type | -12 |
+|ensure|reset spp interceptor|
+
+|scenario| check a composite list sent as a !-MAL::Composite-! list |
+|ensure|reset spp interceptor|
+|ensure| test mal composite list |
+| note | The tested list is a !-TestPublishUpdate-! |
+|ensure|select sent packet at| 0 |
+|check | presence flag is  | 1 |
+|check short form area | 100  | and service | 1 | and type | -7 |
+|ensure|reset spp interceptor|
+
+|scenario| check a composite list sent as an abstract composite list |
+|ensure|reset spp interceptor|
+|ensure| test abstract composite list |
+| note | The tested list is a !-TestPublishUpdate-! |
+|ensure|select sent packet at| 0 |
+|check | presence flag is  | 1 |
+|check short form area | 100  | and service | 1 | and type | -7 |
+|ensure|reset spp interceptor|
+
+|scenario| check a composite list sent as a !-MAL::Element-! list |
+|ensure|reset spp interceptor|
+|ensure| test composite list sent as mal element list |
+| note | The tested list is a !-TestPublishUpdate-! |
+|ensure|select sent packet at| 0 |
+|check | presence flag is  | 1 |
+|check short form area | 100  | and service | 1 | and type | -7 |
+|ensure|reset spp interceptor|
+
+|scenario| check an attribute list sent as a !-MAL::Element-! list |
+|ensure|reset spp interceptor|
+|ensure| test attribute list sent as mal element list |
+| note | The tested list is a !-UIntegerList-! |
+|ensure|select sent packet at| 0 |
+|check | presence flag is  | 1 |
+|check short form area | 1  | and service | 0 | and type | -12 |
+|ensure|reset spp interceptor|
+
+|scenario| check a composite list sent as a !-MAL::Composite-! |
+|ensure|reset spp interceptor|
+|ensure| test composite list sent as mal composite |
+| note | The tested list is a !-TestPublishUpdate-! |
+|ensure|select sent packet at| 0 |
+|check | presence flag is  | 1 |
+|check short form area | 100  | and service | 1 | and type | -7 |
+|ensure|reset spp interceptor|
+
 |scenario| check short form area | area | and service | service | and type | type |
 |check | area number is | @area |
 |check | service number is | @service |
@@ -319,8 +410,18 @@ Reuse the data type MAL test scenario.
 |script| mal spp data type test |
 |check a composite with a field typed !-MAL::Attribute-! |
 |check a composite sent as a !-MAL::Element-! |
+|check a composite sent as a !-MAL::Composite-! |
+|check a composite sent as an abstract composite |
 |check a composite defined by a service and sent as a !-MAL::Element-! |
 |check an attribute sent as a !-MAL::Element-! |
+|check an attribute sent as a !-MAL::Attribute-! |
+|check an attribute list sent as a !-MAL::Element-! list |
+|check an attribute list sent as a !-MAL::Attribute-! list |
+|check an attribute list sent as a !-MAL::Composite-! |
+|check a composite list sent as a !-MAL::Element-! list |
+|check a composite list sent as a !-MAL::Composite-! list |
+|check a composite list sent as an abstract composite list |
+|check a composite list sent as a !-MAL::Composite-! |
 |check every attribute |
 |check an enumerated sent as a !-MAL::Element-! |
 |check a composite with a field typed as a list |

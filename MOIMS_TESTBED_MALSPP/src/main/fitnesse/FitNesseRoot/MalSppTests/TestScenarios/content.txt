@@ -110,6 +110,15 @@
 | 4.6.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | test interaction pattern with unknown uri to, test stage with unknown uri to |
 | 5.2.1-2    | !-MalDataEncoding-! | !-ElementTest-! | check a composite with a field typed !-MAL::Attribute-!, attribute tag is |
 | 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite sent as a !-MAL::Element-!, check short form |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite sent as a !-MAL::Composite-! |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite sent as an abstract composite |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check an attribute sent as a !-MAL::Element-!, check short form |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check an attribute sent as a !-MAL::Attribute-!, check an attribute list sent as a !-MAL::Element-! list, check an attribute list sent as a !-MAL::Attribute-! list |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check an attribute list sent as a !-MAL::Composite-! |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite list sent as a !-MAL::Element-! list |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite list sent as a !-MAL::Composite-! list |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite list sent as an abstract composite list |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite list sent as a !-MAL::Composite-! |
 | 5.2.5      | !-MalDataEncoding-! | !-ElementTest-! | check a composite defined by a service and sent as a !-MAL::Element-! |
 | 5.2.6      | !-MalDataEncoding-! | !-ElementTest-! | check an attribute sent as a !-MAL::Element-!, check short form |
 | 5.2.9a     | !-MalDataEncoding-! | !-ElementTest-! | check every attribute |
@@ -145,8 +154,6 @@
 | 4.4.11     | SPP transmission error |
 | 4.4.12     | SPP transmission ack |
 | 4.5.x      | Transmit multiple |
-| 5.2.1-2    | Test operation with a body element typed MAL::Attribute |
-| 5.2.3      | Test operation with a body element typed MAL::Composite, abstract composite, a composite with a field typed MAL::Composite, abstract composite |
 | 5.3.5      | 2^16 elements in an enumeration is difficult to test with the MAL Java API, to be left out? |
 | 5.9        | !-MAL::Duration-! bug in !-MAL Java API-! |
 
