@@ -69,10 +69,14 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	
 	public final static Logger logger = fr.dyade.aaa.common.Debug
 		  .getLogger(MalSppDataTypeTest.class.getName());
+  
+  protected SpacePacket currentPacket;
 	
 	protected SpacePacketHeader primaryHeader;
 
 	protected SecondaryHeader secondaryHeader;
+  
+  protected int firstIndexOfMalBody;
     
   protected byte[] packetBody;
 	
@@ -163,6 +167,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	  if (logger.isLoggable(BasicLevel.DEBUG)) {
       logger.log(BasicLevel.DEBUG, "selectSentPacketAt(" + packet + ')');
     }
+    currentPacket = packet;
 		packetBody = packet.getBody();
 		LoggingBase.logMessage("packetBody.length=" + packetBody.length);
 		primaryHeader = packet.getHeader();
@@ -173,8 +178,8 @@ public class MalSppDataTypeTest extends DataTypeScenario {
       bufferReader = new BufferReader(packetBody, 0, useDefaultConfiguration,
           mappingConf.getTimeCode(), mappingConf.getFineTimeCode(),
           mappingConf.getDurationCode());
-	    TestHelper.decodeSecondaryHeader(secondaryHeader, bufferReader, 
-	    		packet.getHeader().getSequenceFlags());
+      firstIndexOfMalBody = TestHelper.decodeSecondaryHeader(secondaryHeader, bufferReader,
+        packet.getHeader().getSequenceFlags());
 	    LoggingBase.logMessage("secondaryHeader=" + secondaryHeader);
     } catch (Exception e) {
     	if (logger.isLoggable(BasicLevel.WARN)) {
@@ -185,6 +190,10 @@ public class MalSppDataTypeTest extends DataTypeScenario {
     }
 		return true;
 	}
+  
+  public boolean packetBodyIsEmpty() {
+    return firstIndexOfMalBody == currentPacket.getOffset() + currentPacket.getLength();
+  }
 	
 	public int presenceFlagIs() {
 		return bufferReader.read();
@@ -625,6 +634,19 @@ public class MalSppDataTypeTest extends DataTypeScenario {
       return true;
     }
     return largeEnum.equals(res);
+  }
+  
+  public boolean testEmptyBody() {
+    try {
+      getDataTestStub().testEmptyBody();
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    return true;
   }
 	
 }
