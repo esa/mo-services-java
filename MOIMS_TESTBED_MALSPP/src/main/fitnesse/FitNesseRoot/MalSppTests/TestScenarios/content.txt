@@ -41,6 +41,8 @@
 | Statements | Test scenarios | Test cases | Test methods |
 | 3.2.1x     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-!, !-UriTest-! | check uri from, check uri to, check uri from format, check uri to format |
 | 3.3.2.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from |
+| 3.2.2      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | implicit check |
+| 3.2.3      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | implicit check |
 | 3.3.2.5    | !-MalMessageMapping-! | !-SourceDestIdTest-! | source id flag is, check uri from |
 | 3.3.3.1    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check authentication id |
 | 3.3.3.2    | !-MalMessageMapping-! | !-QoSProperties-!               | check authentication id is left out |
@@ -125,7 +127,8 @@
 | 5.3.1      | !-MalDataEncoding-! | !-EnumerationTest-! | check first element in an enumeration |
 | 5.3.2      | !-MalDataEncoding-! | !-EnumerationTest-! | check second and third elements in an enumeration |
 | 5.3.3      | !-MalDataEncoding-! | !-EnumerationTest-! | check an enumerated sent as a !-MAL::Element-! |
-| 5.3.4      | missing | missing | missing |
+| 5.3.4      | !-MalDataEncoding-! | !-EnumerationTest-! | check a medium enumeration |
+| 5.3.5      | !-MalDataEncoding-! | !-EnumerationTest-! | check a large enumeration |
 | 5.4.1      | !-MalDataEncoding-! | !-CompositeTest-! | check field order |
 | 5.4.2      | !-MalDataEncoding-! | !-CompositeTest-! | check presence flag |
 | 5.4.3      | !-MalDataEncoding-! | !-CompositeTest-! | check composite inheritance |
@@ -140,9 +143,6 @@
 !2 Missing tests
 | Comment |
 | Statements | Feature to be tested or left out |
-| 3.2.2      | May not be possible to test, to be left out? |
-| 3.2.3      | May not be possible to test, to be left out? |
-| 3.2.4      | Out of scope, to be left out |
 | 3.5.3.2.2  | Empty body |
 | 3.5.3.x.y  | Body encoding format according to interaction type and stage |
 | 4.2.x      | Transport interface: supported qos |
@@ -151,7 +151,5 @@
 | 4.4.11     | SPP transmission error |
 | 4.4.12     | SPP transmission ack |
 | 4.5.x      | Transmit multiple |
-| 5.3.5      | 2^16 elements in an enumeration is difficult to test with the MAL Java API, to be left out? |
-| 5.9        | !-MAL::Duration-! bug in !-MAL Java API-! |
 
 
