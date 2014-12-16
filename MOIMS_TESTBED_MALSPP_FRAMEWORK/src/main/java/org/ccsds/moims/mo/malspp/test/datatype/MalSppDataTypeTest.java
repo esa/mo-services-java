@@ -32,12 +32,14 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.malspp.test.datatype;
 
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Composite;
 import org.ccsds.moims.mo.mal.structures.CompositeList;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UIntegerList;
@@ -232,6 +234,14 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	
 	public int enumeratedIs() {
 		return bufferReader.read();
+	}
+  
+  public long mediumEnumeratedIs() {
+		return bufferReader.readUShort().getValue();
+	}
+  
+  public long largeEnumeratedIs() {
+		return bufferReader.readUInteger().getValue();
 	}
 	
 	public int attributeTagIs() throws Exception {
@@ -589,6 +599,32 @@ public class MalSppDataTypeTest extends DataTypeScenario {
       return false;
     }
     return abstractCompositeList.equals(res);
+  }
+  
+  public boolean testMediumEnumeration() {
+    MediumEnumeration mediumEnum = new MediumEnumeration(0xFFF);
+    Element res;
+    try {
+      res = getDataTestStub().testData(mediumEnum);
+    } catch (Exception exc) {
+      // An exception is expected as the MediumEnumeration is not 
+      // a registered type at the provider side.
+      return true;
+    }
+    return mediumEnum.equals(res);
+  }
+  
+  public boolean testLargeEnumeration() {
+    LargeEnumeration largeEnum = new LargeEnumeration(0xFFFFFF);
+    Element res;
+    try {
+      res = getDataTestStub().testData(largeEnum);
+    } catch (Exception exc) {
+      // An exception is expected as the LargeEnumeration is not 
+      // a registered type at the provider side.
+      return true;
+    }
+    return largeEnum.equals(res);
   }
 	
 }
