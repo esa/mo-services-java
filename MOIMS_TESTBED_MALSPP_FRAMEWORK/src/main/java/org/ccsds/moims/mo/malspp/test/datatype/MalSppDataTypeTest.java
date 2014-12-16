@@ -191,7 +191,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 		return true;
 	}
   
-  public boolean packetBodyIsEmpty() {
+  public boolean malMessageBodyIsEmpty() {
     return firstIndexOfMalBody == currentPacket.getOffset() + currentPacket.getLength();
   }
 	
