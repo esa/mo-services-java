@@ -31,26 +31,24 @@
 # knowledge of the CeCILL-C license and that you accept its terms.
 #
 
-# Add in the following line and comment out the rest to build a single document
-#  then run the Maven site target to post process the document into a
-#  stripped down version. It will be called target/surefire-reports/xxx.CompleteDocument-out.html
-#!see CompleteDocument
+!3 Empty body test case
 
-!see TestScenarios
-!see TestScenarios.MalMessageMappingTestScenario.AllExceptPubSub
-!see TestScenarios.MalMessageMappingTestScenario.PubSub
-!see TestScenarios.MalMessageMappingTestScenario.MalMessageBodyMapping
-!see TestScenarios.MalMessageMappingTestScenario.QosProperties
-!see TestScenarios.MalMessageMappingTestScenario.MalMessageSegmentation
-!see TestScenarios.MalMessageMappingTestScenario.TransmitRequest
-!see TestScenarios.MalMessageMappingTestScenario.SourceDestIdTest
-!see TestScenarios.MalMessageMappingTestScenario.EmptyBody
-!see TestScenarios.MalDataEncodingTestScenario.ElementTest
-!see TestScenarios.MalDataEncodingTestScenario.EnumerationTest
-!see TestScenarios.MalDataEncodingTestScenario.CompositeTest
-!see TestScenarios.MalDataEncodingTestScenario.ListTest
-!see TestScenarios.MalDataEncodingTestScenario.NullableElementTest
-!see TestScenarios.MalDataEncodingTestScenario.AttributeTest
-!see TestScenarios.MalDataEncodingTestScenario.DataType
-!see TestScenarios.MalDataEncodingTestScenario.VarintSupportedTest
-!see TestScenarios.MalDataEncodingTestScenario.TimeCodeFormatTest
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.malspp.test.datatype|
+
+*!
+Reuse the data type MAL test scenario.
+
+|script| mal spp data type test|
+|ensure|reset spp interceptor |
+|ensure| test empty body |
+|ensure| select sent packet at | 0 |
+|ensure| packet body is empty |
+|ensure|reset spp interceptor|
+
+
+
+
