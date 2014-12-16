@@ -46,7 +46,7 @@ Reuse the data type MAL test scenario.
 |ensure|reset spp interceptor |
 |ensure| test empty body |
 |ensure| select sent packet at | 0 |
-|ensure| packet body is empty |
+|ensure| mal message body is empty |
 |ensure|reset spp interceptor|
 
 

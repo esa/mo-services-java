@@ -76,7 +76,7 @@
 | 3.4.3.2.x  | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | version is |
 | 3.4.3.3    | !-MalMessageMapping-! | !-MalMessageSegmentation-! | secondary header segment counter is, test message segmentation with scrambling pattern |
 | 3.5.3.2.1  | !-MalMessageMapping-!   | !-MalMessageBodyMapping-! | check body element order |
-| 3.5.3.2.2  | missing | missing | missing |
+| 3.5.3.2.2  | !-MalMessageMapping-!   | !-EmptyBody-! | mal message body is empty |
 | 3.5.3.x.y  | missing | missing | missing |
 | 4.2.x      | missing | missing | missing |
 | 4.3.x      | missing | missing | missing |
@@ -143,7 +143,6 @@
 !2 Missing tests
 | Comment |
 | Statements | Feature to be tested or left out |
-| 3.5.3.2.2  | Empty body |
 | 3.5.3.x.y  | Body encoding format according to interaction type and stage |
 | 4.2.x      | Transport interface: supported qos |
 | 4.3.x      | Transport interface: supported ip |
