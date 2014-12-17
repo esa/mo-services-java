@@ -21,6 +21,7 @@
 package org.ccsds.moims.mo.mal.test.suite;
 
 import java.util.Hashtable;
+import java.util.Map;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
@@ -329,12 +330,21 @@ public class LocalMALInstance extends BaseLocalMALInstance
   {
     private MALConsumer consumer;
     private IPTestStub stub;
+    private Map qosProperties;
 
     public IPTestConsumer(MALConsumer consumer, IPTestStub stub)
     {
       super();
       this.consumer = consumer;
       this.stub = stub;
+    }
+
+    public Map getQosProperties() {
+      return qosProperties;
+    }
+
+    public void setQosProperties(Map qosProperties) {
+      this.qosProperties = qosProperties;
     }
 
     public MALConsumer getConsumer()
