@@ -51,10 +51,9 @@
 !*> Sub scenario definitions
 
 |scenario| test transmit qos properties with consumer tc | consumerTc | and provider tc | providerTc |
+|ensure|reset spp interceptor|
 |ensure|consumer packet is tc| @consumerTc |
 |ensure|provider packet is tc| @providerTc |
-|ensure|initiate send pattern with qos| Best Effort | and session | Live |
-|ensure|reset spp interceptor|
 |ensure|initiate send pattern with qos| Best Effort | and session | Live |
 |ensure|select sent packet at| 0 |
 |ensure|check transmit qos properties|
