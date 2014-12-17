@@ -31,28 +31,42 @@
 # knowledge of the CeCILL-C license and that you accept its terms.
 #
 
-# Add in the following line and comment out the rest to build a single document
-#  then run the Maven site target to post process the document into a
-#  stripped down version. It will be called target/surefire-reports/xxx.CompleteDocument-out.html
-#!see CompleteDocument
+!*< Hidden
+!define TEST_SYSTEM {slim}
 
-!see TestScenarios
-!see TestScenarios.MalMessageMappingTestScenario.AllExceptPubSub
-!see TestScenarios.MalMessageMappingTestScenario.PubSub
-!see TestScenarios.MalMessageMappingTestScenario.MalMessageBodyMapping
-!see TestScenarios.MalMessageMappingTestScenario.QosProperties
-!see TestScenarios.MalMessageMappingTestScenario.MalMessageSegmentation
-!see TestScenarios.MalMessageMappingTestScenario.TransmitRequest
-!see TestScenarios.MalMessageMappingTestScenario.SourceDestIdTest
-!see TestScenarios.MalMessageMappingTestScenario.EmptyBody
-!see TestScenarios.MalMessageMappingTestScenario.MalSppTransport
-!see TestScenarios.MalMessageMappingTestScenario.TransmitQosProperties
-!see TestScenarios.MalDataEncodingTestScenario.ElementTest
-!see TestScenarios.MalDataEncodingTestScenario.EnumerationTest
-!see TestScenarios.MalDataEncodingTestScenario.CompositeTest
-!see TestScenarios.MalDataEncodingTestScenario.ListTest
-!see TestScenarios.MalDataEncodingTestScenario.NullableElementTest
-!see TestScenarios.MalDataEncodingTestScenario.AttributeTest
-!see TestScenarios.MalDataEncodingTestScenario.DataType
-!see TestScenarios.MalDataEncodingTestScenario.VarintSupportedTest
-!see TestScenarios.MalDataEncodingTestScenario.TimeCodeFormatTest
+|Import|
+|org.ccsds.moims.mo.malspp.test.patterns|
+
+*******!
+!3 Transmit QoS properties test case
+ 
+ Several APIDs and APID qualifiers are used:
+ - 248/2: IPTest providers sending TC packets
+ - 348/4: IPTest providers sending TM packets
+ - 247/1: IPTest consumers sending TC packets and expecting to receive TC packets
+ - 347/3: IPTest consumers sending TC packets and expecting to receive TM packets
+ - 447/5: IPTest consumers sending TM packets and expecting to receive TC packets
+ - 547/7: IPTest consumers sending TM packets and expecting to receive TM packets
+
+!*> Sub scenario definitions
+
+|scenario| test transmit qos properties with consumer tc | consumerTc | and provider tc | providerTc |
+|ensure|consumer packet is tc| @consumerTc |
+|ensure|provider packet is tc| @providerTc |
+|ensure|initiate send pattern with qos| Best Effort | and session | Live |
+|ensure|reset spp interceptor|
+|ensure|initiate send pattern with qos| Best Effort | and session | Live |
+|ensure|select sent packet at| 0 |
+|ensure|check transmit qos properties|
+|ensure|reset spp interceptor|
+
+***********!
+
+|script| mal spp pattern test |
+|test transmit qos properties with consumer tc | true  | and provider tc | true  |
+|test transmit qos properties with consumer tc | true  | and provider tc | false |
+|test transmit qos properties with consumer tc | false | and provider tc | true  |
+|test transmit qos properties with consumer tc | false | and provider tc | false |
+
+
+

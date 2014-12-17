@@ -86,7 +86,7 @@
 | 4.4.4      | !-MalMessageMapping-! | !-TransmitRequest-! | send message from uri to uri and expect |
 | 4.4.5      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
 | 4.4.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
-| 4.4.7      | missing | missing | missing |
+| 4.4.7      | !-MalMessageMapping-! | !-TransmitQosProperties-! | check transmit qos properties |
 | 4.4.8      | !-MalMessageMapping-! | !-MalMessageSegmentation-! | check small blob |
 | 4.4.9a     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | packet data length is consistent with |
 | 4.4.9b     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | number of sent packets is |
@@ -144,7 +144,6 @@
 | Comment |
 | Statements | Feature to be tested or left out |
 | 3.5.3.x.y  | Body encoding format according to interaction type and stage |
-| 4.4.7      | !-QoS-! properties transmission to SPP layer |
 | 4.4.11     | SPP transmission error |
 | 4.4.12     | SPP transmission ack |
 | 4.5.x      | Transmit multiple |
