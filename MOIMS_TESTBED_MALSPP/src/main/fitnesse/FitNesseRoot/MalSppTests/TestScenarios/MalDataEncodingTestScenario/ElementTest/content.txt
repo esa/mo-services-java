@@ -314,7 +314,8 @@ Reuse the data type MAL test scenario.
 | note | The tested attribute is a !-UInteger-! |
 |ensure|select sent packet at| 0 |
 |check | presence flag is  | 1 |
-|check short form area | 1  | and service | 0 | and type | 12 |
+| note | The attribute tag is the short form (12) minus 1 |
+|check | attribute tag is  | 11 |
 |check | uinteger field is | 4294967295 |
 |ensure|reset spp interceptor|
 
