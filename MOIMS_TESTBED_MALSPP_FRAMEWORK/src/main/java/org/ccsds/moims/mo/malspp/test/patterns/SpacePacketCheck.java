@@ -32,8 +32,8 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.malspp.test.patterns;
 
-import java.util.HashMap;
 
+import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -48,23 +48,16 @@ import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.malspp.test.util.BufferReader;
-import org.ccsds.moims.mo.malspp.test.util.CDSTimeCode;
-import org.ccsds.moims.mo.malspp.test.util.CUCTimeCode;
 import org.ccsds.moims.mo.malspp.test.util.MappingConfiguration;
 import org.ccsds.moims.mo.malspp.test.util.MappingConfigurationRegistry;
 import org.ccsds.moims.mo.malspp.test.util.QualifiedApid;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
 import org.ccsds.moims.mo.malspp.test.util.SecondaryHeaderReader;
-import org.ccsds.moims.mo.malspp.test.util.TimeCode;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacket;
 import org.ccsds.moims.mo.testbed.util.spp.SpacePacketHeader;
-import org.orekit.errors.OrekitException;
-import org.orekit.time.AbsoluteDate;
-import org.orekit.time.TimeScale;
-import org.orekit.time.TimeScalesFactory;
 
 public class SpacePacketCheck {
   
@@ -103,6 +96,10 @@ public class SpacePacketCheck {
 
   public int getProviderPacketType() {
     return providerPacketType;
+  }
+  
+  public Map getPacketQoSproperties() {
+    return spacePacket.getQosProperties();
   }
 
   public boolean selectReceivedPacketAt(int index) {

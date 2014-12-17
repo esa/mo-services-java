@@ -32,6 +32,7 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.malspp.test.patterns;
 
+import java.util.Map;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
@@ -59,6 +60,7 @@ import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransitionList;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
+import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
 import org.objectweb.util.monolog.api.Logger;
 
@@ -427,4 +429,17 @@ public class MalSppPatternTest extends PatternTest {
   public String receivedMessageMalHeaderFieldUriFromIs() {
     return rcvdMsg.getHeader().getURIFrom().toString();
   }
+  
+  public boolean checkTransmitQosProperties() {
+    Map packetQosProperties = spacePacketCheck.getPacketQoSproperties();
+    LoggingBase.logMessage("packetQosProperties:  " + packetQosProperties);
+    Map consumerQosProperties = ipTestConsumer.getQosProperties();
+    LoggingBase.logMessage("consumerQosProperties:  " + consumerQosProperties);
+    if (consumerQosProperties == null || consumerQosProperties.size() == 0) {
+      return (packetQosProperties == null || packetQosProperties.size() == 0);
+    } else {
+      return consumerQosProperties.equals(packetQosProperties);
+    }
+  }
+  
 }
