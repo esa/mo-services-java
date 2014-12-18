@@ -508,22 +508,31 @@
     <xsd:attribute name="name" type="xsd:NCName" use="required"/>
   </xsd:complexType>
 
+  <xsd:complexType name="DocumentationBaseType">
+    <xsd:sequence>
+      <xsd:element name="documentation" type="mal:DocumentationType" maxOccurs="unbounded" minOccurs="0"/>
+      <xsd:element name="diagram" type="mal:AnyTypeReferenceWithId" maxOccurs="unbounded" minOccurs="0"/>      
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DocumentationType" mixed="true">
+    <xsd:attribute name="name" type="xsd:string" use="required"/>
+    <xsd:attribute name="order" type="xsd:unsignedInt" use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnyTypeReferenceWithId">
+    <xsd:complexContent>
+      <xsd:extension base="mal:AnyTypeReference">
+        <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
   <xsd:complexType name="AnyTypeReference">
     <xsd:sequence>
       <xsd:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
     <xsd:attribute name="comment" type="xsd:string" use="optional"/>
-  </xsd:complexType>
-
-  <xsd:complexType name="DocumentationBaseType">
-    <xsd:sequence>
-      <xsd:element name="documentation" type="mal:DocumentationType" maxOccurs="unbounded" minOccurs="0"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="DocumentationType" mixed="true">
-    <xsd:attribute name="name" type="xsd:string" use="optional"/>
-    <xsd:attribute name="order" type="xsd:unsignedInt" use="optional"/>
   </xsd:complexType>
 
   <xsd:simpleType name="ServiceNumber">
