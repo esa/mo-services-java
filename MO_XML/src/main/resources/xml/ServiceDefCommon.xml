@@ -437,8 +437,8 @@
  &lt;li&gt;the capability for listing the currently active interactions;&lt;/li&gt;
  &lt;li&gt;the capability for cancelling an interaction.&lt;/li&gt;
 &lt;/ol&gt;
-        The interact service shall use the event service for notifying consumers of new interactions and also completion of existing interactions.
-      </mal:documentation>
+The interact service shall use the event service for notifying consumers of new interactions and also completion of existing interactions.
+</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:invokeIP name="raiseAcknowledge" number="1" supportInReplay="false"
                       comment="The raiseAcknowledge operation allows a consumer to request an acknowledge from a user/role. The user can only acknowledge the interaction; it cannot be declined (confirm is used in this case). It is expected to be used to allow a user to acknowledge that a specific operation can proceed for example. If no user or role is specified, then the interaction is for any user or role.&#xA;The interaction can be responded to via the matching respond operation.">
@@ -697,7 +697,7 @@
         </mal:submitIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="5">
-        <mal:requestIP name="listActiveInteractions" number="9" supportInReplay="false"
+        <mal:requestIP name="listActiveInteractions" number="9" supportInReplay="true"
                        comment="The listActiveInteractions operation returns the list of active interactions, i.e. those that have not been either had a responded, cancelled or timed out.">
           <mal:messages>
             <mal:request/>
@@ -894,13 +894,13 @@
  &lt;li&gt;the capability for deleting an existing replay session.&lt;/li&gt;
 &lt;/ol&gt;</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">Replay sessions shall be based on an existing LIVE or SIMULATION session.
-        New replay session shall be created using the addReplay operation.
-        The addReplay operation shall take the details of the existing LIVE or SIMULATION session to duplicate and a time to use as the current time for the replay session.
-        The rate field of the PlaybackSettings structure shall control the current replay rate for the replay session. For example, setting the rate to 2.5 would play the items at two and a half times the normal rate.
-        The interval field of the PlaybackSettings shall control the current replay step interval for the replay session.
-        The replay service provider shall publish ReplayStatus events whenever the current time or replay state of the replay session changes.
-        When the end of a replay session is reached, either before the first entry for backwards replay and after the last entry for forwards replay, the state of a replay shall be automatically switched to STOPPED.
-      </mal:documentation>
+New replay session shall be created using the addReplay operation.
+The addReplay operation shall take the details of the existing LIVE or SIMULATION session to duplicate and a time to use as the current time for the replay session.
+The rate field of the PlaybackSettings structure shall control the current replay rate for the replay session. For example, setting the rate to 2.5 would play the items at two and a half times the normal rate.
+The interval field of the PlaybackSettings shall control the current replay step interval for the replay session.
+The replay service provider shall publish ReplayStatus events whenever the current time or replay state of the replay session changes.
+When the end of a replay session is reached, either before the first entry for backwards replay and after the last entry for forwards replay, the state of a replay shall be automatically switched to STOPPED.
+</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:submitIP name="pauseReplay" number="1" supportInReplay="false"
                       comment="The pauseReplay operation allows a consumer to pause playback of the selected replay session. Effectively this sets the replay session state to STOPPED.">
@@ -1182,7 +1182,7 @@
  &lt;li&gt;the capability for activating a configuration.&lt;/li&gt;
 &lt;/ol&gt;
 
-      </mal:documentation>
+</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:invokeIP name="activate" number="1" supportInReplay="false"
                       comment="The activate operation instructs a service provider to make a specific configuration active. As it is possible that it may take an indeterminate amount of time to activate a specific configuration the INVOKE pattern is used.">
@@ -1237,8 +1237,8 @@
       </com:features>
     </mal:service>
     <mal:errors>
-      <mal:error name="TIMEDOUT" number="70010" comment=""/>
-      <mal:error name="CANCELLED" number="70011" comment=""/>
+      <mal:error name="TIMEDOUT" number="70010" comment="Operation specific"/>
+      <mal:error name="CANCELLED" number="70011" comment="Operation specific"/>
     </mal:errors>
   </mal:area>
 </mal:specification>
