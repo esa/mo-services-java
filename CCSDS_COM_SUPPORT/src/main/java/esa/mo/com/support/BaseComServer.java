@@ -10,6 +10,8 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 
 /**
  *
@@ -18,14 +20,14 @@ public abstract class BaseComServer extends BaseMalServer
 {
   protected ActivityTracking activityService;
 
-  public BaseComServer()
+  public BaseComServer(IdentifierList domain, Identifier network)
   {
-    super();
+    super(domain, network);
   }
 
-  public BaseComServer(MALContextFactory malFactory, MALContext mal, MALConsumerManager consumerMgr, MALProviderManager providerMgr)
+  public BaseComServer(MALContextFactory malFactory, MALContext mal, MALConsumerManager consumerMgr, MALProviderManager providerMgr, IdentifierList domain, Identifier network)
   {
-    super(malFactory, mal, consumerMgr, providerMgr);
+    super(malFactory, mal, consumerMgr, providerMgr, domain, network);
   }
 
   @Override
@@ -40,6 +42,6 @@ public abstract class BaseComServer extends BaseMalServer
     activityService = new ActivityTracking();
 
     createProvider(EventHelper.EVENT_SERVICE, activityService, true);
-    activityService.init();
+    activityService.init(domain, network);
   }
 }

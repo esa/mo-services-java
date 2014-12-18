@@ -36,21 +36,27 @@ public abstract class BaseMalServer
   protected MALProviderManager providerMgr;
   protected MALTransport transport;
   protected MALEndpoint ep;
+  protected final IdentifierList domain;
+  protected final Identifier network;
 
-  public BaseMalServer()
+  public BaseMalServer(IdentifierList domain, Identifier network)
   {
     this.malFactory = null;
     this.mal = null;
     this.consumerMgr = null;
     this.providerMgr = null;
+    this.domain = domain;
+    this.network = network;
   }
 
-  public BaseMalServer(MALContextFactory malFactory, MALContext mal, MALConsumerManager consumerMgr, MALProviderManager providerMgr)
+  public BaseMalServer(MALContextFactory malFactory, MALContext mal, MALConsumerManager consumerMgr, MALProviderManager providerMgr, IdentifierList domain, Identifier network)
   {
     this.malFactory = malFactory;
     this.mal = mal;
     this.consumerMgr = consumerMgr;
     this.providerMgr = providerMgr;
+    this.domain = domain;
+    this.network = network;
   }
 
   public void init(String localname, String protocol) throws Exception
@@ -146,8 +152,8 @@ public abstract class BaseMalServer
             uri,
             service,
             new Blob("".getBytes()),
-            new IdentifierList(),
-            new Identifier("Space"),
+            domain,
+            network,
             SessionType.LIVE,
             new Identifier("LIVE"),
             QoSLevel.BESTEFFORT,

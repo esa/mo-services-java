@@ -56,7 +56,7 @@ public class ActivityTracking extends EventInheritanceSkeleton
     OPERATION_ACTIVITY_OBJECT_TYPE.setNumber(new UShort(OBJ_NO_ASE_OPERATION_ACTIVITY));
   }
 
-  public void init() throws MALInteractionException, MALException
+  public void init(IdentifierList domain, Identifier network) throws MALInteractionException, MALException
   {
     System.out.println("ActivityTracking:init");
 
@@ -64,10 +64,18 @@ public class ActivityTracking extends EventInheritanceSkeleton
     {
       System.out.println("ActivityTracking:creating event publisher");
 
-      final IdentifierList domain = new IdentifierList();
+      if (null == domain)
+      {
+        domain = new IdentifierList();
+      }
+
+      if (null == network)
+      {
+        network = new Identifier("SPACE");
+      }
 
       monitorEventPublisher = createMonitorEventPublisher(domain,
-              new Identifier("SPACE"),
+              network,
               SessionType.LIVE,
               new Identifier("LIVE"),
               QoSLevel.BESTEFFORT,
