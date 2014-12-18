@@ -238,14 +238,23 @@ public class GeneratorJava extends GeneratorLangs
 
     file.addPackageStatement(area, service, getConfig().getStructureFolder());
 
-    TypeReference superTypeReference = getCompositeElementSuperType(TypeUtils.createTypeReference(area.getName(), (null == service) ? null : service.getName(), srcTypeName, false));
+    TypeReference typeRef = TypeUtils.createTypeReference(area.getName(), (null == service) ? null : service.getName(), srcTypeName, false);
+    TypeReference superTypeReference = getCompositeElementSuperType(typeRef);
     String fqSrcTypeName = createElementType(file, area, service, srcTypeName);
 
     if (null == superTypeReference)
     {
       superTypeReference = new TypeReference();
       superTypeReference.setArea(StdStrings.MAL);
-      superTypeReference.setName(StdStrings.ELEMENT);
+
+      if (isComposite(typeRef))
+      {
+        superTypeReference.setName(StdStrings.COMPOSITE);
+      }
+      else
+      {
+        superTypeReference.setName(StdStrings.ELEMENT);
+      }
     }
 
     CompositeField listSuperElement = createCompositeElementsDetails(file, false, null, superTypeReference, true, true, "List element.");
