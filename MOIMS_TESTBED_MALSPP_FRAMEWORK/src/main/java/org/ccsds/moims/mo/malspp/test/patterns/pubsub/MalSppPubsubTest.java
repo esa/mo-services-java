@@ -41,6 +41,8 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.ElementList;
+import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.EntityRequest;
 import org.ccsds.moims.mo.mal.structures.EntityRequestList;
@@ -54,7 +56,9 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateType;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedureImpl;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.PubSubTestCaseHelper;
@@ -69,13 +73,17 @@ import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTest;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
 import org.ccsds.moims.mo.malprototype.iptest.provider.MonitorPublisher;
+import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
 import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdate;
 import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
 import org.ccsds.moims.mo.malspp.test.patterns.SpacePacketCheck;
 import org.ccsds.moims.mo.malspp.test.suite.ErrorBrokerHandler;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malspp.test.suite.PubsubErrorIPTestHandler;
 import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
+import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
@@ -86,6 +94,9 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 	public final static Logger logger = fr.dyade.aaa.common.Debug
 		  .getLogger(MalSppPubsubTest.class.getName());
 	
+  public static final EntityKey WILDCARD_ENTITY_KEY = new EntityKey(new Identifier("A"), (long) 0, null, null);
+  public static final EntityKey SPECIAL_ENTITY_KEY = new EntityKey(new Identifier("A"), (long) 1, null, null);
+  
   private SpacePacketCheck spacePacketCheck = new SpacePacketCheck();
   private MALMessage rcvdMsg = null;
   
@@ -480,6 +491,121 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
     return false;
   }
     
+    public boolean publishRegisterAndRegisterWithAndSessionAndSharedBrokerAndDomain(
+            String qosLevel, String sessionType, String sharedBroker, int domain) throws Exception {
+      logMessage("publishRegisterAndRegisterWithAndSessionAndDomain(" + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain+ ')');
+
+      QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
+      SessionType session = ParseHelper.parseSessionType(sessionType);
+      Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
+      boolean shared = Boolean.parseBoolean(sharedBroker);
+
+      initConsumer(domain, session, sessionName, qos, shared);
+      IPTest ipTest = ipTestConsumer.getStub();
+      
+      // Publish Register
+      EntityKeyList entityKeys = new EntityKeyList();
+      entityKeys.add(WILDCARD_ENTITY_KEY);
+
+      UInteger expectedErrorCode = new UInteger(999);
+      TestPublishRegister testPublishRegister =
+              new TestPublishRegister(qos, HeaderTestProcedure.PRIORITY,
+              HeaderTestProcedure.getDomain(domain),
+              HeaderTestProcedure.NETWORK_ZONE, session, sessionName, true,
+              entityKeys, expectedErrorCode);
+      ipTest.publishRegister(testPublishRegister);
+      
+      // Register
+      Boolean onlyOnChange = false;
+      EntityRequest entityRequest = new EntityRequest(
+              null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
+              onlyOnChange, entityKeys);
+      EntityRequestList entityRequests = new EntityRequestList();
+      entityRequests.add(entityRequest);
+      Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, entityRequests);
+      ipTest.monitorMultiRegister(subscription, new IPTestListener());
+      
+      return true;
+    }
+      
+    public boolean publishWithAndSessionAndDomain(String mode,
+            String qosLevel, String sessionType, int domain) throws Exception {
+      logMessage("publishWithAndSessionAndDomain(" + mode + ',' + qosLevel + ',' + sessionType + ',' + domain+ ')');
+
+      QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
+      SessionType session = ParseHelper.parseSessionType(sessionType);
+      Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
+
+      IPTest ipTest = ipTestConsumer.getStub();
+      
+      EntityKey entityKey = null;
+      if (mode.equalsIgnoreCase("abstract service-defined")) {
+        entityKey = HeaderTestProcedure.RIGHT_ENTITY_KEY;
+      } else if (mode.equalsIgnoreCase("abstract non-service defined")) {
+        entityKey = SPECIAL_ENTITY_KEY;
+      } else {
+        logMessage("Unexpected Publish mode: " + mode);
+        return false;
+      }
+      
+      // Publish
+      UpdateHeader updateHeader1 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.CREATION, entityKey);
+      TestUpdate update1 = new TestUpdate(new Integer(1));
+      UpdateHeader updateHeader2 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.DELETION, entityKey);
+      TestUpdate update2 = new TestUpdate(new Integer(2));
+      UpdateHeader updateHeader3 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.MODIFICATION, entityKey);
+      TestUpdate update3 = new TestUpdate(new Integer(3));
+      UpdateHeader updateHeader4 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.UPDATE, entityKey);
+      TestUpdate update4 = new TestUpdate(new Integer(4));
+
+      UpdateHeaderList updateHeaders = new UpdateHeaderList();
+      updateHeaders.add(updateHeader1);
+      updateHeaders.add(updateHeader2);
+      updateHeaders.add(updateHeader3);
+      updateHeaders.add(updateHeader4);
+
+      TestUpdateList updates = new TestUpdateList();
+      updates.add(update1);
+      updates.add(update2);
+      updates.add(update3);
+      updates.add(update4);
+
+      UInteger expectedErrorCode = new UInteger(999);
+      TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
+              qos, HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE,
+              session, sessionName, true, updateHeaders, updates, expectedErrorCode, false, null);
+
+      ipTest.publishUpdates(testPublishUpdate);
+      
+      return true;
+    }
+      
+    public boolean deregisterAndPublishDeregisterWithAndSessionAndDomain(
+            String qosLevel, String sessionType, int domain) throws Exception {
+      logMessage("deregisterAndPublishDeregisterWithAndSessionAndDomain(" + qosLevel + ',' + sessionType + ',' + domain+ ')');
+
+      QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
+      SessionType session = ParseHelper.parseSessionType(sessionType);
+      Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
+
+      IPTest ipTest = ipTestConsumer.getStub();
+      
+      // Deregister
+      IdentifierList subIds = new IdentifierList();
+      subIds.add(HeaderTestProcedure.SUBSCRIPTION_ID);
+      ipTest.monitorMultiDeregister(subIds);
+      
+      // Publish-Deregister
+      UInteger expectedErrorCode = new UInteger(999);
+      TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
+              qos, HeaderTestProcedure.PRIORITY,
+              HeaderTestProcedure.getDomain(domain),
+              HeaderTestProcedure.NETWORK_ZONE, session, sessionName, true, null, expectedErrorCode);
+      ipTest.publishDeregister(testPublishDeregister);
+      
+      return true;
+    }
+    
     private MALMessage createMessage(Object[] body, URI uriTo, MALEndpoint ep, UOctet stage, QoSLevel qos, SessionType session, Identifier sessionName, int domain) throws Exception {
       Long transId = 0L;
       try {
@@ -580,10 +706,162 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
       return rcvdMsg.getHeader().getURIFrom().toString();
     }
 	
+  public int presenceFlagIs() {
+    return spacePacketCheck.presenceFlagIs();
+  }
+  
+  public int bufferRemainingSizeIs() {
+    return spacePacketCheck.bufferRemainingSizeIs();
+  }
+
+  public boolean readUInteger() {
+    spacePacketCheck.readUInteger();
+    return true;
+  }
+  
+  public int readIntegerHasValue() {
+    return spacePacketCheck.readInteger();
+  }
+  
+  public long uintegerFieldIs() {
+    long res = spacePacketCheck.readUInteger().getValue();
+    return res;
+  }
+  
+  public boolean uintegerFieldIsSizeOf(String type) {
+    long res = spacePacketCheck.readUInteger().getValue();
+    long exp;
+    
+    // integer size for small MAL::Integers is different for different varintSupported settings
+    long integerSize = spacePacketCheck.isVarintSupported() ? 1 : 4;
+    if (type.equalsIgnoreCase("integer")) {
+      exp = integerSize; // MAL::Integer
+    } else if (type.equalsIgnoreCase("TestUpdate")) {
+      exp = integerSize + 1; // Presence field boolean + MAL::Integer
+    } else {
+      return false;
+    }
+    return res == exp;
+  }
+  
+  public boolean readIdentifierList() throws Exception {
+    UInteger length = spacePacketCheck.readUInteger();
+    for (long i = 0; i < length.getValue(); i++) {
+      if (spacePacketCheck.presenceFlagIs() == 1) {
+        spacePacketCheck.readIdentifier();
+      }
+    }
+    return true;
+  }
+
+  public boolean readIdentifier() throws Exception {
+    spacePacketCheck.readIdentifier();
+    return true;
+  }
+  
+  private boolean readEntityKey() {
+    if (spacePacketCheck.presenceFlagIs() == 1) {
+      spacePacketCheck.readIdentifier();
+    }
+    if (spacePacketCheck.presenceFlagIs() == 1) {
+      spacePacketCheck.readLong();
+    }
+    if (spacePacketCheck.presenceFlagIs() == 1) {
+      spacePacketCheck.readLong();
+    }
+    if (spacePacketCheck.presenceFlagIs() == 1) {
+      spacePacketCheck.readLong();
+    }
+    return true;
+  }
+  
+  public boolean readEntityKeyList() {
+    UInteger length = spacePacketCheck.readUInteger();
+    for (long i = 0; i < length.getValue(); i++) {
+      if (spacePacketCheck.presenceFlagIs() == 1) {
+        readEntityKey();
+      }
+    }
+    return true;
+  }
+  
+  private boolean readUpdateHeader() throws Exception {
+    spacePacketCheck.readTime();
+    spacePacketCheck.readUri();
+    spacePacketCheck.readUInt8Enum();
+    readEntityKey();
+    return true;
+  }
+  
+  public boolean readUpdateHeaderList() throws Exception {
+    UInteger length = spacePacketCheck.readUInteger();
+    for (long i = 0; i < length.getValue(); i++) {
+      if (spacePacketCheck.presenceFlagIs() == 1) {
+        readUpdateHeader();
+      }
+    }
+    return true;
+  }
+  
+  private boolean readEntityRequest() throws Exception {
+    if (spacePacketCheck.presenceFlagIs() == 1) {
+      readIdentifierList();
+    }
+    spacePacketCheck.readBoolean();
+    spacePacketCheck.readBoolean();
+    spacePacketCheck.readBoolean();
+    spacePacketCheck.readBoolean();
+    readEntityKeyList();
+    return true;
+  }
+  
+  public boolean readEntityRequestList() throws Exception {
+    UInteger length = spacePacketCheck.readUInteger();
+    for (long i = 0; i < length.getValue(); i++) {
+      if (spacePacketCheck.presenceFlagIs() == 1) {
+        readEntityRequest();
+      }
+    }
+    return true;
+  }
+  
+  public Integer readTestUpdateHasValue() {
+    if (spacePacketCheck.presenceFlagIs() == 1) {
+      return spacePacketCheck.readInteger();
+    }
+    return null;
+  }
+  
+  public boolean readTestUpdateList() throws Exception {
+    UInteger length = spacePacketCheck.readUInteger();
+    for (long i = 0; i < length.getValue(); i++) {
+      if (spacePacketCheck.presenceFlagIs() == 1) {
+        readTestUpdateHasValue();
+      }
+    }
+    return true;
+  }
+  
+  public int elementAreaNumberIs() {
+    return spacePacketCheck.readUInt16();
+  }
 	
+  public long elementServiceNumberIs() {
+    return spacePacketCheck.readUInt16();
+  }
+	
+  public int elementVersionIs() {
+    return spacePacketCheck.readUInt8();
+  }
+	
+  public int elementTypeNumberIs() {
+    return spacePacketCheck.readInt24();
+  }
+
 	static class IPTestListener extends IPTestAdapter {
 	  
 	  private boolean notifyErrorReceived;
+      private final BooleanCondition monitorMultiCond = new BooleanCondition();
 	  
     @Override
     public synchronized void monitorNotifyErrorReceived(MALMessageHeader msgHeader,
@@ -591,6 +869,13 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
       System.out.println("monitorNotifyErrorReceived: " + error);
       notifyErrorReceived = true;
       notify();
+    }
+
+    @Override
+    public void monitorMultiNotifyReceived(MALMessageHeader msgHeader,
+            Identifier _Identifier0, UpdateHeaderList _UpdateHeaderList1,
+            TestUpdateList _TestUpdateList2, ElementList _ElementList3, Map qosProperties) {
+      monitorMultiCond.set();
     }
     
     synchronized void waitNotifyError() {

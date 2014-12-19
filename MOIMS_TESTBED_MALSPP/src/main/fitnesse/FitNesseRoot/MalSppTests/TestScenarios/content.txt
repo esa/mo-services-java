@@ -75,10 +75,19 @@
 | 3.4.3.3    | !-MalMessageMapping-! | !-MalMessageSegmentation-! | secondary header segment counter is, test message segmentation with scrambling pattern |
 | 3.5.3.2.1  | !-MalMessageMapping-!   | !-MalMessageBodyMapping-! | check body element order |
 | 3.5.3.2.2  | missing | missing | missing |
-| 3.5.3.x.y  | missing | missing | missing |
-| 3.5.3.3.12a| !-MalMessageMapping-! | !-AllExceptPubSub-! | body element encoded as uinteger |
-| 3.5.3.3.12b| !-MalMessageMapping-! | !-AllExceptPubSub-! | body element encoded as nullable element |
+| 3.5.3.3.1  | !-MalMessageMapping-! | !-PubSub-! | testPublishAndSessionAndSessionNameAndDomain, testPublishWithAndSessionAndSessionNameAndDomain |
+| 3.5.3.3.3-7| !-MalMessageMapping-! | !-PubSub-! | check element short form area and service and type |
+| 3.5.3.3.4  | !-MalMessageMapping-! | !-PubSub-! | body element abstract service defined encoded for publish message |
+| 3.5.3.3.5  | !-MalMessageMapping-! | !-PubSub-! | body element abstract non-service defined encoded for publish message |
+| 3.5.3.3.8  | !-MalMessageMapping-! | !-PubSub-! | body element encoded as element |
+| 3.5.3.3.9  | !-MalMessageMapping-! | !-PubSub-! | body element encoded as nullable element |
+| 3.5.3.3.10 | !-MalMessageMapping-! | !-PubSub-! | body element encoded as element |
+| 3.5.3.3.11 | !-MalMessageMapping-! | !-PubSub-! | body element encoded as element |
+| 3.5.3.3.12a| !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | body element encoded as uinteger |
+| 3.5.3.3.12b| !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | body element encoded as nullable element, body element null encoded as nullable element |
 | 3.5.3.3.13 | !-MalMessageMapping-! | !-AllExceptPubSub-! | body element encoded as nullable element |
+| 3.5.3.4    | !-MalMessageMapping-! | !-PubSub-! | publish update list is for update value type |
+| 3.5.3.5    | !-MalMessageMapping-! | !-PubSub-! | read publish update for concrete/abstract service-defined/abstract non-service defined update value type with value |
 | 4.2.x      | missing | missing | missing |
 | 4.3.x      | missing | missing | missing |
 | 4.4.1      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select sent packet at |
@@ -147,7 +156,6 @@
 | 3.2.3      | May not be possible to test, to be left out? |
 | 3.2.4      | Out of scope, to be left out |
 | 3.5.3.2.2  | Empty body |
-| 3.5.3.x.y  | Body encoding format according to interaction type and stage |
 | 4.2.x      | Transport interface: supported qos |
 | 4.3.x      | Transport interface: supported ip |
 | 4.4.7      | !-QoS-! properties transmission to SPP layer |

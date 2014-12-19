@@ -54,6 +54,8 @@ Reuse the MAL test procedure that does the following actions:
  - 447/5: IPTest consumers sending TM packets and expecting to receive TC packets
  - 547/7: IPTest consumers sending TM packets and expecting to receive TM packets
 
+Body element encoding is checked for each interaction pattern and interaction stage.
+
 !*> Sub scenario definitions
 | scenario | test interaction pattern | pattern | with unknown uri to and qos | qos | and session | sessId |
 | ensure | pattern initiation for | @pattern | with unknown uri to | malspp:123/123/0 | and qos | @qos | and session | @sessId |

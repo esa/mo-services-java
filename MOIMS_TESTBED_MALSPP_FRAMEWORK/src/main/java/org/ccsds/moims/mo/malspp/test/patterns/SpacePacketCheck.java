@@ -84,6 +84,8 @@ public class SpacePacketCheck {
 	private boolean isSent;
 	
 	private QualifiedApid primaryQualifiedApid;
+    
+    private boolean varintSupported;
 
 	public SpacePacketCheck() {
     super();
@@ -125,6 +127,7 @@ public class SpacePacketCheck {
         mappingConf.getTimeCode(), mappingConf.getFineTimeCode(),
         mappingConf.getDurationCode());
     secondaryHeaderReader = new SecondaryHeaderReader(bufferReader);
+    varintSupported = mappingConf.isVarintSupported();
 
     return true;
   }
@@ -355,6 +358,10 @@ public class SpacePacketCheck {
     }
     return res;
   }
+  
+  public boolean isVarintSupported() {
+    return varintSupported;
+  }
 	
 	public byte sourceIdFlagIs() throws Exception {
     return secondaryHeaderReader.readSourceIdFlag();
@@ -560,6 +567,18 @@ public class SpacePacketCheck {
     public UInteger readUInteger() {
       UInteger res = bufferReader.readUInteger();
       LoggingBase.logMessage("UInteger=" + res.toString());
+      return res;
+    }
+    
+    public Long readLong() {
+      Long res = bufferReader.readLong();
+      LoggingBase.logMessage("Long=" + res.toString());
+      return res;
+    }
+    
+    public Boolean readBoolean() throws Exception {
+      Boolean res = bufferReader.readBoolean();
+      LoggingBase.logMessage("Boolean=" + res.toString());
       return res;
     }
     

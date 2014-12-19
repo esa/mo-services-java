@@ -477,7 +477,19 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
                 _TestPublishUpdate.getSessionName(),
                 _TestPublishUpdate.getQos(),
                 _TestPublishUpdate.getPriority());
-        publisher.publish(updateHeaderList, testUpdateList, testUpdateList);
+        boolean specialSubKey = false;
+        try {
+            specialSubKey = updateHeaderList.get(0).getKey().getSecondSubKey() == 1;
+        } catch (NullPointerException ex) {} catch (IndexOutOfBoundsException ex) {}
+        if (specialSubKey) {
+            IntegerList integerUpdateList = new IntegerList();
+            for (int i = 0; i < testUpdateList.size(); i++) {
+                integerUpdateList.add(testUpdateList.get(i).getCounter());
+            }
+            publisher.publish(updateHeaderList, testUpdateList, integerUpdateList);
+        } else {
+            publisher.publish(updateHeaderList, testUpdateList, testUpdateList);
+        }
       }
       else
       {
