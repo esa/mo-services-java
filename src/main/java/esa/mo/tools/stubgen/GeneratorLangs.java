@@ -2332,6 +2332,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     boolean needXmlSchema = false;
     boolean needMalTypes = false;
     boolean finalTypeIsAttribute = false;
+    boolean finalTypeIsList = false;
 
     for (TypeInfo typeInfo : ti)
     {
@@ -2351,6 +2352,7 @@ public abstract class GeneratorLangs extends GeneratorBase
         if (StdStrings.ATTRIBUTE.equals(typeInfo.getSourceType().getName()))
         {
           finalTypeIsAttribute = true;
+          finalTypeIsList = typeInfo.getSourceType().isList();
         }
       }
       else
@@ -2397,8 +2399,12 @@ public abstract class GeneratorLangs extends GeneratorBase
         TypeReference tr = new TypeReference();
         tr.setArea(StdStrings.MAL);
         tr.setName(val.getValue().getMalType());
-        TypeInfo lti = TypeUtils.convertTypeReference(this, tr);
-        attribArgs.add(lti.getMalShortFormField());
+        if (!isAbstract(tr))
+        {
+          tr.setList(finalTypeIsList);
+          TypeInfo lti = TypeUtils.convertTypeReference(this, tr);
+          attribArgs.add(lti.getMalShortFormField());
+        }
       }
       polyArgs = StubUtils.concatenateStringArguments(false, attribArgs.toArray(new String[0]));
     }
