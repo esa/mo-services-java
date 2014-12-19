@@ -138,9 +138,9 @@ public abstract class GeneratorLangs extends GeneratorBase
     addAttributeType(StdStrings.XML, "string", getAttributeDetails(StdStrings.MAL, StdStrings.STRING));
     addAttributeType(StdStrings.XML, "dateTime", getAttributeDetails(StdStrings.MAL, StdStrings.TIME));
     addAttributeType(StdStrings.XML, "dateTime", getAttributeDetails(StdStrings.MAL, StdStrings.FINETIME));
-    addAttributeType(StdStrings.XML, "anyURI", getAttributeDetails(StdStrings.MAL, StdStrings.URI));    
+    addAttributeType(StdStrings.XML, "anyURI", getAttributeDetails(StdStrings.MAL, StdStrings.URI));
 
-    addAttributeType(StdStrings.XML, "Element",  new AttributeTypeDetails(this, "Element", true, "Object", ""));    
+    addAttributeType(StdStrings.XML, "Element", new AttributeTypeDetails(this, "Element", true, "Object", ""));
   }
 
   @Override
@@ -2232,7 +2232,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     CompositeField intType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.INTEGER, false), true, true, null);
     CompositeField ustType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, true, null);
     CompositeField uocType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false), true, true, null);
-    
+
     MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, lonType, "getShortForm", null, null, "Returns the absolute short form of this type.", "The absolute short form of this type.", null);
     method.addMethodStatement("return SHORT_FORM");
     method.addMethodCloseStatement();
@@ -2331,6 +2331,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     ArrayList<String> typeArgs = new ArrayList<String>();
     boolean needXmlSchema = false;
     boolean needMalTypes = false;
+    boolean finalTypeIsAttribute = false;
 
     for (TypeInfo typeInfo : ti)
     {
@@ -2346,9 +2347,16 @@ public abstract class GeneratorLangs extends GeneratorBase
       if (tiSource.isAbstract(typeInfo.getSourceType()))
       {
         typeArgs.add("null");
+
+        if (StdStrings.ATTRIBUTE.equals(typeInfo.getSourceType().getName()))
+        {
+          finalTypeIsAttribute = true;
+        }
       }
       else
       {
+        finalTypeIsAttribute = false;
+
         if (isPubSub)
         {
           // this is a bit of a hack for now
@@ -2379,13 +2387,29 @@ public abstract class GeneratorLangs extends GeneratorBase
 
     String shortFormType = (needXmlSchema ? StdStrings.STRING : StdStrings.LONG);
     String arrayArgs = StubUtils.concatenateStringArguments(false, typeArgs.toArray(new String[0]));
+    String polyArgs = "";
+    if (finalTypeIsAttribute)
+    {
+      Set<String> attribArgs = new HashSet<String>();
+
+      for (Map.Entry<TypeKey, AttributeTypeDetails> val : getAttributeTypesMap().entrySet())
+      {
+        TypeReference tr = new TypeReference();
+        tr.setArea(StdStrings.MAL);
+        tr.setName(val.getValue().getMalType());
+        TypeInfo lti = TypeUtils.convertTypeReference(this, tr);
+        attribArgs.add(lti.getMalShortFormField());
+      }
+      polyArgs = StubUtils.concatenateStringArguments(false, attribArgs.toArray(new String[0]));
+    }
+
     if (isPubSub)
     {
       opArgs.add("new " + shortFormType + "[] {" + arrayArgs + "}, new " + shortFormType + "[0]");
     }
     else
     {
-      opArgs.add("new org.ccsds.moims.mo.mal.MALOperationStage(new org.ccsds.moims.mo.mal.structures.UOctet((short) " + index + "), new " + shortFormType + "[] {" + arrayArgs + "}, new " + shortFormType + "[] {})");
+      opArgs.add("new org.ccsds.moims.mo.mal.MALOperationStage(new org.ccsds.moims.mo.mal.structures.UOctet((short) " + index + "), new " + shortFormType + "[] {" + arrayArgs + "}, new " + shortFormType + "[] {" + polyArgs + "})");
     }
   }
 
