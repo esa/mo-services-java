@@ -109,15 +109,15 @@ public abstract class StubUtils
   }
 
   /**
-   * Creates an output stream writer for a file.
+   * Creates an output file.
    *
    * @param folder The folder to create the file in.
    * @param name The name of the file.
    * @param ext The extension of the file.
-   * @return The new write.
+   * @return The new file.
    * @throws IOException If there is a problem creating the file.
    */
-  public static Writer createLowLevelWriter(String folder, String name, String ext) throws IOException
+  public static File createLowLevelFile(String folder, String name, String ext) throws IOException
   {
     File file = new File(folder, name + "." + ext);
     if (!file.exists())
@@ -134,6 +134,22 @@ public abstract class StubUtils
         throw new IOException("Unable to create directory: " + file.getParentFile().getPath());
       }
     }
+
+    return file;
+  }
+
+  /**
+   * Creates an output stream writer for a file.
+   *
+   * @param folder The folder to create the file in.
+   * @param name The name of the file.
+   * @param ext The extension of the file.
+   * @return The new writer.
+   * @throws IOException If there is a problem creating the file.
+   */
+  public static Writer createLowLevelWriter(String folder, String name, String ext) throws IOException
+  {
+    File file = createLowLevelFile(folder, name, ext);
 
     return new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8"));
   }
