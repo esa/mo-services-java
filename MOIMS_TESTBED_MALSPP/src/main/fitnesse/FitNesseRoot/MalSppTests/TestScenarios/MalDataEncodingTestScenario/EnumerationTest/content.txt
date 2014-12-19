@@ -81,6 +81,28 @@ Reuse the data type MAL test scenario.
 |check | enumerated is | 1 |
 |ensure|reset spp interceptor|
 
+|scenario| check a medium enumeration |
+|ensure| test medium enumeration |
+|ensure| select sent packet at| 0 |
+|check | presence flag is | 1 |
+| note | !-MediumEnumeration-! type is 7FFFFE |
+|check short form area | 100 | and service | 0 | and type | 8388606 |
+| note | Interaction type SUBMIT |
+| note | !-LargeEnumeration-! value is FFF |
+|check | medium enumerated is | 4095 |
+|ensure|reset spp interceptor|
+
+|scenario| check a large enumeration |
+|ensure| test large enumeration |
+|ensure| select sent packet at| 0 |
+|check | presence flag is | 1 |
+| note | !-LargeEnumeration-! type is 7FFFFF |
+|check short form area | 100 | and service | 0 | and type | 8388607 |
+| note | Interaction type SUBMIT |
+| note | !-LargeEnumeration-! value is FFFFFF |
+|check | large enumerated is | 16777215 |
+|ensure|reset spp interceptor|
+
 |scenario| check short form area | area | and service | service | and type | type |
 |check | area number is | @area |
 |check | service number is | @service |
@@ -93,5 +115,6 @@ Reuse the data type MAL test scenario.
 |check first element in an enumeration |
 |check first and second elements in an enumeration |
 |check an enumerated sent as a !-MAL::Element-! |
-
+|check a medium enumeration |
+|check a large enumeration |
 

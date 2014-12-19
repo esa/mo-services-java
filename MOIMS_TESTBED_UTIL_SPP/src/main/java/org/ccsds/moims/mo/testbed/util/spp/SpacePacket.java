@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -32,6 +32,8 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.testbed.util.spp;
 
+import java.util.Map;
+
 public class SpacePacket {
   
   private SpacePacketHeader header;
@@ -43,6 +45,8 @@ public class SpacePacket {
   private int offset;
   
   private int length;
+  
+  private Map qosProperties;
   
   public SpacePacket(SpacePacketHeader header, byte[] body, int offset,
       int length) {
@@ -57,6 +61,14 @@ public class SpacePacket {
     this.body = body;
     this.offset = offset;
     this.length = length;
+  }
+
+  public void setQosProperties(Map qosProperties) {
+    this.qosProperties = qosProperties;
+  }
+
+  public Map getQosProperties() {
+    return qosProperties;
   }
 
   /**

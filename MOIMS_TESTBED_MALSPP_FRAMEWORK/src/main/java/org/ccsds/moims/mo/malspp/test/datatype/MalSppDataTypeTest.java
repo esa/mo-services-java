@@ -32,12 +32,14 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.malspp.test.datatype;
 
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Composite;
 import org.ccsds.moims.mo.mal.structures.CompositeList;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UIntegerList;
@@ -67,10 +69,14 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	
 	public final static Logger logger = fr.dyade.aaa.common.Debug
 		  .getLogger(MalSppDataTypeTest.class.getName());
+  
+  protected SpacePacket currentPacket;
 	
 	protected SpacePacketHeader primaryHeader;
 
 	protected SecondaryHeader secondaryHeader;
+  
+  protected int firstIndexOfMalBody;
     
   protected byte[] packetBody;
 	
@@ -161,6 +167,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	  if (logger.isLoggable(BasicLevel.DEBUG)) {
       logger.log(BasicLevel.DEBUG, "selectSentPacketAt(" + packet + ')');
     }
+    currentPacket = packet;
 		packetBody = packet.getBody();
 		LoggingBase.logMessage("packetBody.length=" + packetBody.length);
 		primaryHeader = packet.getHeader();
@@ -171,8 +178,8 @@ public class MalSppDataTypeTest extends DataTypeScenario {
       bufferReader = new BufferReader(packetBody, 0, useDefaultConfiguration,
           mappingConf.getTimeCode(), mappingConf.getFineTimeCode(),
           mappingConf.getDurationCode());
-	    TestHelper.decodeSecondaryHeader(secondaryHeader, bufferReader, 
-	    		packet.getHeader().getSequenceFlags());
+      firstIndexOfMalBody = TestHelper.decodeSecondaryHeader(secondaryHeader, bufferReader,
+        packet.getHeader().getSequenceFlags());
 	    LoggingBase.logMessage("secondaryHeader=" + secondaryHeader);
     } catch (Exception e) {
     	if (logger.isLoggable(BasicLevel.WARN)) {
@@ -183,6 +190,10 @@ public class MalSppDataTypeTest extends DataTypeScenario {
     }
 		return true;
 	}
+  
+  public boolean malMessageBodyIsEmpty() {
+    return firstIndexOfMalBody == currentPacket.getOffset() + currentPacket.getLength();
+  }
 	
 	public int presenceFlagIs() {
 		return bufferReader.read();
@@ -232,6 +243,14 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	
 	public int enumeratedIs() {
 		return bufferReader.read();
+	}
+  
+  public long mediumEnumeratedIs() {
+		return bufferReader.readUShort().getValue();
+	}
+  
+  public long largeEnumeratedIs() {
+		return bufferReader.readUInteger().getValue();
 	}
 	
 	public int attributeTagIs() throws Exception {
@@ -589,6 +608,45 @@ public class MalSppDataTypeTest extends DataTypeScenario {
       return false;
     }
     return abstractCompositeList.equals(res);
+  }
+  
+  public boolean testMediumEnumeration() {
+    MediumEnumeration mediumEnum = new MediumEnumeration(0xFFF);
+    Element res;
+    try {
+      res = getDataTestStub().testData(mediumEnum);
+    } catch (Exception exc) {
+      // An exception is expected as the MediumEnumeration is not 
+      // a registered type at the provider side.
+      return true;
+    }
+    return mediumEnum.equals(res);
+  }
+  
+  public boolean testLargeEnumeration() {
+    LargeEnumeration largeEnum = new LargeEnumeration(0xFFFFFF);
+    Element res;
+    try {
+      res = getDataTestStub().testData(largeEnum);
+    } catch (Exception exc) {
+      // An exception is expected as the LargeEnumeration is not 
+      // a registered type at the provider side.
+      return true;
+    }
+    return largeEnum.equals(res);
+  }
+  
+  public boolean testEmptyBody() {
+    try {
+      getDataTestStub().testEmptyBody();
+    } catch (Exception exc) {
+      if (logger.isLoggable(BasicLevel.WARN)) {
+	      logger.log(BasicLevel.WARN, "", exc);
+	    }
+      LoggingBase.logMessage(exc.toString());
+      return false;
+    }
+    return true;
   }
 	
 }

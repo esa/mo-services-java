@@ -31,28 +31,31 @@
 # knowledge of the CeCILL-C license and that you accept its terms.
 #
 
-# Add in the following line and comment out the rest to build a single document
-#  then run the Maven site target to post process the document into a
-#  stripped down version. It will be called target/surefire-reports/xxx.CompleteDocument-out.html
-#!see CompleteDocument
+!3 MAL/SPP transport test case
 
-!see TestScenarios
-!see TestScenarios.MalMessageMappingTestScenario.AllExceptPubSub
-!see TestScenarios.MalMessageMappingTestScenario.PubSub
-!see TestScenarios.MalMessageMappingTestScenario.MalMessageBodyMapping
-!see TestScenarios.MalMessageMappingTestScenario.QosProperties
-!see TestScenarios.MalMessageMappingTestScenario.MalMessageSegmentation
-!see TestScenarios.MalMessageMappingTestScenario.TransmitRequest
-!see TestScenarios.MalMessageMappingTestScenario.SourceDestIdTest
-!see TestScenarios.MalMessageMappingTestScenario.EmptyBody
-!see TestScenarios.MalMessageMappingTestScenario.MalSppTransport
-!see TestScenarios.MalMessageMappingTestScenario.TransmitQosProperties
-!see TestScenarios.MalDataEncodingTestScenario.ElementTest
-!see TestScenarios.MalDataEncodingTestScenario.EnumerationTest
-!see TestScenarios.MalDataEncodingTestScenario.CompositeTest
-!see TestScenarios.MalDataEncodingTestScenario.ListTest
-!see TestScenarios.MalDataEncodingTestScenario.NullableElementTest
-!see TestScenarios.MalDataEncodingTestScenario.AttributeTest
-!see TestScenarios.MalDataEncodingTestScenario.DataType
-!see TestScenarios.MalDataEncodingTestScenario.VarintSupportedTest
-!see TestScenarios.MalDataEncodingTestScenario.TimeCodeFormatTest
+The test MAL/SPP transport is assumed to support every !-QoS-! level and every interaction type.
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.malspp.test.transport|
+
+*!
+
+|script| mal spp transport test|
+|ensure| supports qos level | Best Effort | is | True |
+|ensure| supports qos level | Assured | is |True |
+|ensure| supports qos level | Queued | is |True |
+|ensure| supports qos level | Timely | is |True |
+|ensure| supports interaction type | Send | is |True |
+|ensure| supports interaction type | Submit | is |True |
+|ensure| supports interaction type | Request | is |True |
+|ensure| supports interaction type | Invoke | is |True |
+|ensure| supports interaction type | Progress | is |True |
+|ensure| supports interaction type | Pub/Sub | is |False |
+
+
+
+
+

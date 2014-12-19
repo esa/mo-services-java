@@ -35,6 +35,7 @@ package org.ccsds.moims.mo.malspp.test.util;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
@@ -46,6 +47,10 @@ import org.ccsds.moims.mo.mal.structures.ULong;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.malspp.test.datatype.LargeEnumeration;
+import org.ccsds.moims.mo.malspp.test.datatype.LargeEnumerationFactory;
+import org.ccsds.moims.mo.malspp.test.datatype.MediumEnumeration;
+import org.ccsds.moims.mo.malspp.test.datatype.MediumEnumerationFactory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.orekit.data.DataProvidersManager;
 import org.orekit.data.DirectoryCrawler;
@@ -77,6 +82,12 @@ public class BufferReader {
         "2013-01-01T00:00:00.000");
     fineTimeMalJavaApiEpoch = new AbsoluteDate(epochAsString,
         TimeScalesFactory.getTAI());
+    
+    // Initialize BigEnumeration data type
+    MALContextFactory.getElementFactoryRegistry().registerElementFactory(
+      LargeEnumeration.SHORT_FORM, new LargeEnumerationFactory());
+    MALContextFactory.getElementFactoryRegistry().registerElementFactory(
+      MediumEnumeration.SHORT_FORM, new MediumEnumerationFactory());
   }
   
   private static AbsoluteDate fineTimeMalJavaApiEpoch;

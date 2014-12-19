@@ -56,6 +56,9 @@ public class TestHelper {
   public static final char SLASH = '/';
   private static final Pattern URI_PATTERN = Pattern.compile("\\A" + PROTOCOL + "(\\d{1,5})" + SLASH + "(\\d{1,4})(?:" + SLASH + "(\\d{1,3}))?\\z");
   
+  public static final int TYPE_SHORT_FORM_MAX = 0x007FFFFF;
+  public static final int TYPE_SHORT_FORM_MIN = -TYPE_SHORT_FORM_MAX;
+
   public static URI getUriFrom(SpacePacket spacePacket,
       SecondaryHeader secondaryHeader) {
     if (spacePacket.getHeader().getPacketType() == 1) {
@@ -123,6 +126,18 @@ public class TestHelper {
     SecondaryHeaderReader secondaryHeaderReader = new SecondaryHeaderReader(bufferReader, ssh);
     secondaryHeaderReader.readAll(sequenceFlag);
     return bufferReader.getIndex();
+  }
+  
+  public static long getAbsoluteShortForm(int area, int service, int version, int type) {
+    if (type < TYPE_SHORT_FORM_MIN ||
+        type > TYPE_SHORT_FORM_MAX) {
+      throw new RuntimeException("Invalid type short form: " + type);
+    }
+    long res = type & 0xFFFFFF;
+    res |= (version & 0xFF) << 24;
+    res |= (service & 0xFFFFL) << 32;
+    res |= (area & 0xFFFFL) << 48;
+    return res;
   }
 
 }

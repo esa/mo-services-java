@@ -427,6 +427,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
 
       IPTestStub stub = new IPTestStub(consumer);
       ipconsumer = new IPTestConsumer(consumer, stub);
+      ipconsumer.setQosProperties(tcTcConsumerProps);
       tcTcIpStubs.put(key, ipconsumer);
       return ipconsumer;
     } else {
@@ -464,6 +465,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
 
       IPTestStub stub = new IPTestStub(consumer);
       ipconsumer = new IPTestConsumer(consumer, stub);
+      ipconsumer.setQosProperties(tmTcConsumerProps);
       tmTcIpStubs.put(key, ipconsumer);
       return ipconsumer;
     } else {
@@ -502,6 +504,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
 
       IPTestStub stub = new IPTestStub(consumer);
       ipconsumer = new IPTestConsumer(consumer, stub);
+      ipconsumer.setQosProperties(tcTmConsumerProps);
       tcTmIpStubs.put(key, ipconsumer);
       return ipconsumer;
     } else {
@@ -540,6 +543,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
 
       IPTestStub stub = new IPTestStub(consumer);
       ipconsumer = new IPTestConsumer(consumer, stub);
+      ipconsumer.setQosProperties(tmTmConsumerProps);
       tmTmIpStubs.put(key, ipconsumer);
       return ipconsumer;
     } else {

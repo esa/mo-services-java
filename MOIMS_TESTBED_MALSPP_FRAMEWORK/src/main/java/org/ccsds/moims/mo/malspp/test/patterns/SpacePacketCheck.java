@@ -33,6 +33,7 @@
 package org.ccsds.moims.mo.malspp.test.patterns;
 
 
+import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -72,7 +73,7 @@ public class SpacePacketCheck {
 	private SpacePacketHeader primaryHeader;
 	
 	private MALMessageHeader malHeader;
-    
+	
 	private BufferReader bufferReader;
 	
 	private SecondaryHeaderReader secondaryHeaderReader;
@@ -97,6 +98,10 @@ public class SpacePacketCheck {
 
   public int getProviderPacketType() {
     return providerPacketType;
+  }
+  
+  public Map getPacketQoSproperties() {
+    return spacePacket.getQosProperties();
   }
 
   public boolean selectReceivedPacketAt(int index) {
