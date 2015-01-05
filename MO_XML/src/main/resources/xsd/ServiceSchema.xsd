@@ -74,69 +74,75 @@
     <xsd:annotation>
       <xsd:documentation xml:lang="en">Element that represents an Area, contains one or more Service specifications and optionally data type and error definitions.</xsd:documentation>
     </xsd:annotation>
-    <xsd:sequence>
-      <xsd:element name="service" type="mal:ServiceType" minOccurs="0" maxOccurs="unbounded">
-        <xsd:unique name="capabilityNumber">
-          <xsd:annotation>
-            <xsd:documentation xml:lang="en">Capability numbers inside a service should be unique.</xsd:documentation>
-          </xsd:annotation>
-          <xsd:selector xpath="mal:capabilitySet"/>
-          <xsd:field    xpath="@number"/>
-        </xsd:unique>
-        <xsd:unique name="operationName">
-          <xsd:annotation>
-            <xsd:documentation xml:lang="en">Operation names inside a service should be unique.</xsd:documentation>
-          </xsd:annotation>
-          <xsd:selector xpath="mal:capabilitySet/*"/>
-          <xsd:field    xpath="@name"/>
-        </xsd:unique>
-        <xsd:unique name="operationNumber">
-          <xsd:annotation>
-            <xsd:documentation xml:lang="en">Operation numbers inside a service should be unique.</xsd:documentation>
-          </xsd:annotation>
-          <xsd:selector xpath="mal:capabilitySet/*"/>
-          <xsd:field    xpath="@number"/>
-        </xsd:unique>
-      </xsd:element>
-      <xsd:element name="dataTypes" type="mal:AreaDataTypeList" maxOccurs="1" minOccurs="0">
-        <xsd:unique name="areaTypeShortFormCheck">
-          <xsd:annotation>
-            <xsd:documentation xml:lang="en">Ensures that type short forms are unique.</xsd:documentation>
-          </xsd:annotation>
-          <xsd:selector xpath=".//mal:composite|.//mal:attribute|.//mal:enumeration"/>
-          <xsd:field    xpath="@shortFormPart"/>
-        </xsd:unique>
-      </xsd:element>
-      <xsd:element name="errors" type="mal:ErrorDefinitionList" minOccurs="0"/>
-    </xsd:sequence>
-    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
-    <xsd:attribute name="number" type="mal:ServiceNumber" use="required"/>
-    <xsd:attribute name="version" type="mal:VersionNumber" use="required"/>
-    <xsd:attribute name="comment" type="xsd:string" use="optional"/>
-    <xsd:attribute name="requirements" type="xsd:string" use="optional"/>
+    <xsd:complexContent>
+      <xsd:extension base="mal:DocumentationBaseType">
+        <xsd:sequence>
+          <xsd:element name="service" type="mal:ServiceType" minOccurs="0" maxOccurs="unbounded">
+            <xsd:unique name="capabilityNumber">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">Capability numbers inside a service should be unique.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:selector xpath="mal:capabilitySet"/>
+              <xsd:field    xpath="@number"/>
+            </xsd:unique>
+            <xsd:unique name="operationName">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">Operation names inside a service should be unique.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:selector xpath="mal:capabilitySet/*"/>
+              <xsd:field    xpath="@name"/>
+            </xsd:unique>
+            <xsd:unique name="operationNumber">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">Operation numbers inside a service should be unique.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:selector xpath="mal:capabilitySet/*"/>
+              <xsd:field    xpath="@number"/>
+            </xsd:unique>
+          </xsd:element>
+          <xsd:element name="dataTypes" type="mal:AreaDataTypeList" maxOccurs="1" minOccurs="0">
+            <xsd:unique name="areaTypeShortFormCheck">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">Ensures that type short forms are unique.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:selector xpath=".//mal:composite|.//mal:attribute|.//mal:enumeration"/>
+              <xsd:field    xpath="@shortFormPart"/>
+            </xsd:unique>
+          </xsd:element>
+          <xsd:element name="errors" type="mal:ErrorDefinitionList" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+        <xsd:attribute name="number" type="mal:ServiceNumber" use="required"/>
+        <xsd:attribute name="version" type="mal:VersionNumber" use="required"/>
+        <xsd:attribute name="comment" type="xsd:string" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="ServiceType">
     <xsd:annotation>
       <xsd:documentation xml:lang="en">Element represents a Service specification inside an Area. May also optionally include data type and error definitions.</xsd:documentation>
     </xsd:annotation>
-    <xsd:sequence>
-      <xsd:element name="capabilitySet" type="mal:CapabilitySetType" maxOccurs="unbounded" minOccurs="0"/>
-      <xsd:element name="dataTypes" type="mal:DataTypeList" maxOccurs="1" minOccurs="0">
-        <xsd:unique name="serviceTypeShortFormCheck">
-          <xsd:annotation>
-            <xsd:documentation xml:lang="en">Ensures that type short forms are unique.</xsd:documentation>
-          </xsd:annotation>
-          <xsd:selector xpath=".//mal:composite|.//mal:enumeration"/>
-          <xsd:field    xpath="@shortFormPart"/>
-        </xsd:unique>
-      </xsd:element>
-      <xsd:element name="errors" type="mal:ErrorDefinitionList" minOccurs="0"/>
-    </xsd:sequence>
-    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
-    <xsd:attribute name="number" type="mal:ServiceNumber" use="required"/>
-    <xsd:attribute name="comment" type="xsd:string" use="optional"/>
-    <xsd:attribute name="requirements" type="xsd:string" use="optional"/>
+    <xsd:complexContent>
+      <xsd:extension base="mal:DocumentationBaseType">
+        <xsd:sequence>
+          <xsd:element name="capabilitySet" type="mal:CapabilitySetType" maxOccurs="unbounded" minOccurs="0"/>
+          <xsd:element name="dataTypes" type="mal:DataTypeList" maxOccurs="1" minOccurs="0">
+            <xsd:unique name="serviceTypeShortFormCheck">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">Ensures that type short forms are unique.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:selector xpath=".//mal:composite|.//mal:enumeration"/>
+              <xsd:field    xpath="@shortFormPart"/>
+            </xsd:unique>
+          </xsd:element>
+          <xsd:element name="errors" type="mal:ErrorDefinitionList" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+        <xsd:attribute name="number" type="mal:ServiceNumber" use="required"/>
+        <xsd:attribute name="comment" type="xsd:string" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="CapabilitySetType">
@@ -500,6 +506,26 @@
     <xsd:attribute name="area" type="xsd:NCName" use="required"/>
     <xsd:attribute name="service" type="xsd:NCName" use="optional"/>
     <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="DocumentationBaseType">
+    <xsd:sequence>
+      <xsd:element name="documentation" type="mal:DocumentationType" maxOccurs="unbounded" minOccurs="0"/>
+      <xsd:element name="diagram" type="mal:AnyTypeReferenceWithId" maxOccurs="unbounded" minOccurs="0"/>      
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DocumentationType" mixed="true">
+    <xsd:attribute name="name" type="xsd:string" use="required"/>
+    <xsd:attribute name="order" type="xsd:unsignedInt" use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnyTypeReferenceWithId">
+    <xsd:complexContent>
+      <xsd:extension base="mal:AnyTypeReference">
+        <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="AnyTypeReference">

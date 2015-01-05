@@ -29,28 +29,32 @@
   </xsd:complexType>
 
   <xsd:complexType name="SupportedFeatures">
-    <xsd:sequence>
-      <xsd:element name="objects" type="com:ModelObjectTypeList" minOccurs="0" maxOccurs="1">
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en">If this node is present then this service defines some service specific objects.</xsd:documentation>
-        </xsd:annotation>
-      </xsd:element>
-      <xsd:element name="events" type="com:ModelEventTypeList" minOccurs="0" maxOccurs="1">
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en"></xsd:documentation>
-        </xsd:annotation>
-      </xsd:element>
-      <xsd:element name="archiveUsage" type="com:CommentType" minOccurs="0" maxOccurs="1">
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en"></xsd:documentation>
-        </xsd:annotation>
-      </xsd:element>
-      <xsd:element name="activityUsage" type="com:CommentType" minOccurs="0" maxOccurs="1">
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en"></xsd:documentation>
-        </xsd:annotation>
-      </xsd:element>
-    </xsd:sequence>
+    <xsd:complexContent>
+      <xsd:extension base="mal:DocumentationBaseType">
+        <xsd:sequence>
+          <xsd:element name="objects" type="com:ModelObjectTypeList" minOccurs="0" maxOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">If this node is present then this service defines some service specific objects.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="events" type="com:ModelEventTypeList" minOccurs="0" maxOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en"></xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="archiveUsage" type="com:CommentType" minOccurs="0" maxOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en"></xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="activityUsage" type="com:CommentType" minOccurs="0" maxOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en"></xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="ModelObjectTypeList">
