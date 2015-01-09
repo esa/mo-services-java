@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>1</version>
+    <version>2</version>
     <relativePath/>
   </parent>
   
   <artifactId>TRANSPORT_RMI</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.0.1</version>
 
   <name>ESA MAL RMI Java transport</name>
   <description>A Java RMI transport for CCSDS MAL</description>
@@ -39,20 +39,20 @@
   <licenses>
     <license>
       <name>The European Space Agency Public License, Version 2.0</name>
-      <url>https://raw.github.com/esa/CCSDS_MAL_TRANSPORTS/master/LICENCE.md</url>
+      <url>https://raw.github.com/esa/CCSDS_MO_TRANS/master/LICENCE.md</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:esa/CCSDS_MAL_TRANSPORTS.git</connection>
-    <developerConnection>scm:git:git@github.com:esa/CCSDS_MAL_TRANSPORTS.git</developerConnection>
-    <url>https://github.com/esa/CCSDS_MAL_TRANSPORTS</url>
+    <connection>scm:git:git@github.com:esa/CCSDS_MO_TRANS.git</connection>
+    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_TRANS.git</developerConnection>
+    <url>https://github.com/esa/CCSDS_MO_TRANS</url>
   </scm>
   
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/esa/CCSDS_MAL_TRANSPORTS/issues</url>
+    <url>https://github.com/esa/CCSDS_MO_TRANS/issues</url>
   </issueManagement>
   
   <developers>
