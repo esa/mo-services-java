@@ -19,12 +19,12 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>1</version>
+    <version>2</version>
     <relativePath/>
   </parent>
   
   <artifactId>MOXML_Extra</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
 
   <name>MOXML (Extra)</name>
