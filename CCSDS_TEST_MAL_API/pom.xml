@@ -19,12 +19,12 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>1</version>
+    <version>2</version>
     <relativePath/>
   </parent>
   
   <artifactId>API_MAL_TEST</artifactId>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
 
   <name>ESA TEST MAL Java API</name>
@@ -39,20 +39,20 @@
   <licenses>
     <license>
       <name>The European Space Agency Public License, Version 2.0</name>
-      <url>https://raw.github.com/esa/CCSDS_APIS/master/LICENCE.md</url>
+      <url>https://raw.github.com/esa/CCSDS_MO_APIS/master/LICENCE.md</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:esa/CCSDS_APIS.git</connection>
-    <developerConnection>scm:git:git@github.com:esa/CCSDS_APIS.git</developerConnection>
-    <url>https://github.com/esa/CCSDS_APIS</url>
+    <connection>scm:git:git@github.com:esa/CCSDS_MO_APIS.git</connection>
+    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_APIS.git</developerConnection>
+    <url>https://github.com/esa/CCSDS_MO_APIS</url>
   </scm>
   
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/esa/CCSDS_APIS/issues</url>
+    <url>https://github.com/esa/CCSDS_MO_APIS/issues</url>
   </issueManagement>
   
   <developers>
@@ -65,7 +65,7 @@
   </developers>
 
   <properties>
-    <extra.specification.version>1.0</extra.specification.version>
+    <extra.specification.version>1.0.1</extra.specification.version>
     <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
     <ccsds.specification.download.artifact>MOXML_Extra</ccsds.specification.download.artifact>
     <ccsds.specification.download.version>${extra.specification.version}</ccsds.specification.download.version>
