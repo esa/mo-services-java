@@ -2,3 +2,9 @@
 .classpath
 .project
 .settings/
+/GEN_LIB/target/
+/GEN_JAVA/target/
+/PLUGIN/target/
+/GEN_DOCS/target/
+/GEN_LIB - Copy/target/
+/GEN_IF/target/

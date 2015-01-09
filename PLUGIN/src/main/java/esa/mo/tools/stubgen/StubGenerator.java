@@ -251,8 +251,7 @@ public class StubGenerator extends AbstractMojo
       }
       else
       {
-        getLog().info("Generating Java by default");
-        processWithGenerator(new GeneratorJava(getLog()), refSpecs, refXsd, specs);
+        getLog().error("No generators selected - could not process files");
       }
     }
     else

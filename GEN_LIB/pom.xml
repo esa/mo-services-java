@@ -13,7 +13,7 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
@@ -23,10 +23,12 @@
     <relativePath/>
   </parent>
   
-  <artifactId>REACTOR_STUBGEN</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>ESA MO Stub Generator Reactor</name>
+  <artifactId>StubGenerator_Lib</artifactId>
+  <version>1.1</version>
+  <packaging>jar</packaging>
+  
+  <name>ESA MO Stub Generator Plugin Library</name>
+  <url>http://github.com/esa/CCSDS_MO_StubGenerator</url>
   
   <organization>
     <name>ESA</name>
@@ -61,11 +63,52 @@
     </developer>
   </developers>
 
-  <modules>
-    <module>GEN_IF</module>
-    <module>GEN_LIB</module>
-    <module>GEN_JAVA</module>
-    <module>GEN_DOCS</module>
-    <module>PLUGIN</module>
-  </modules>
+  <properties>
+    <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
+    <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
+    <ccsds.specification.download.filter>**/*.xsd</ccsds.specification.download.filter>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>int.esa.ccsds.mo</groupId>
+      <artifactId>StubGenerator_Interfaces</artifactId>
+      <version>1.1</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/..</directory>
+        <includes>
+          <include>LICENCE.md</include>
+        </includes>
+      </resource>
+    </resources>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -1416,6 +1416,12 @@ public abstract class GeneratorLangs extends GeneratorBase
         method.addMethodStatement(createMethodCall("    interaction.sendResponse(" + buf.toString() + ")"));
       }
     }
+    else
+    {
+      // operation has an empty response
+      method.addMethodStatement(createMethodCall("    " + opCall));
+      method.addMethodStatement(createMethodCall("    interaction.sendResponse()"));
+    }
   }
 
   protected void createAreaHelperClass(File areaFolder, AreaType area) throws IOException
