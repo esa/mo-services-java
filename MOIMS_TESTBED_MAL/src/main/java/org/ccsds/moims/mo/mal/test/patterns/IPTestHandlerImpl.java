@@ -143,6 +143,11 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
     return new RequestMultiResponse(request(_IPTestDefinition0, interaction), null);
   }
 
+  public void testRequestEmptyBody(IPTestDefinition _IPTestDefinition, MALInteraction interaction) throws MALInteractionException, MALException
+  {
+    request(_IPTestDefinition, interaction);
+  }
+
   public void invoke(IPTestDefinition _IPTestDefinition, InvokeInteraction interaction)
           throws MALInteractionException, MALException
   {
@@ -215,6 +220,11 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
   public void invokeMulti(IPTestDefinition _IPTestDefinition0, Element _Element1, InvokeMultiInteraction interaction) throws MALInteractionException, MALException
   {
     invoke(_IPTestDefinition0, new InvokeMultiToInvokeInteractionMapper(interaction));
+  }
+
+  public void testInvokeEmptyBody(IPTestDefinition _IPTestDefinition, TestInvokeEmptyBodyInteraction interaction) throws MALInteractionException, MALException
+  {
+    invoke(_IPTestDefinition, new InvokeEmptyToInvokeInteractionMapper(interaction));
   }
 
   public void progress(IPTestDefinition _IPTestDefinition, ProgressInteraction interaction)
@@ -363,6 +373,11 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
     progress(_IPTestDefinition0, new ProgressMultiToProgressInteractionMapper(interaction));
   }
 
+  public void testProgressEmptyBody(IPTestDefinition _IPTestDefinition, TestProgressEmptyBodyInteraction interaction) throws MALInteractionException, MALException
+  {
+    progress(_IPTestDefinition, new ProgressEmptyToProgressInteractionMapper(interaction));
+  }
+
   public void publishRegister(TestPublishRegister _TestPublishRegister, MALInteraction interaction)
           throws MALInteractionException, MALException
   {
@@ -489,7 +504,6 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
 
     // The Publish header is checked with a shared broker
     // (see test.patterns.pubsub.IPTestHandlerWithSharedBroker)
-
     try
     {
       // this will timeout unless there is an error
@@ -686,8 +700,8 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
 
   private MonitorPublishInteractionListener getPublishInteractionListener(PublishInteractionListenerKey key)
   {
-    MonitorPublishInteractionListener listener =
-            (MonitorPublishInteractionListener) publishInteractionListeners.get(key);
+    MonitorPublishInteractionListener listener
+            = (MonitorPublishInteractionListener) publishInteractionListeners.get(key);
     if (listener == null)
     {
       listener = new MonitorPublishInteractionListener();
@@ -797,7 +811,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
     catch (InterruptedException e)
     {
     }
-    
+
     if (_TestPublishUpdate.getErrorCode().getValue() != 999)
     {
       assertions.add(new Assertion("TransmitMultipleError",
@@ -805,10 +819,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
     }
     else
     {
-      int transmitMultipleRequestCount =
-              TransportInterceptor.instance().getTransmitMultipleRequestCount();
-      int transmitMultipleResponseCount =
-              TransportInterceptor.instance().getTransmitMultipleResponseCount();
+      int transmitMultipleRequestCount
+              = TransportInterceptor.instance().getTransmitMultipleRequestCount();
+      int transmitMultipleResponseCount
+              = TransportInterceptor.instance().getTransmitMultipleResponseCount();
 
       // Check the Transmit Multiple interaction
       assertions.add(new Assertion("TestMultipleNotify", "TransmitMultiple request count "
@@ -856,6 +870,36 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
     }
   }
 
+  static class InvokeEmptyToInvokeInteractionMapper extends InvokeInteraction
+  {
+    private final TestInvokeEmptyBodyInteraction interaction;
+
+    public InvokeEmptyToInvokeInteractionMapper(TestInvokeEmptyBodyInteraction interaction)
+    {
+      super(interaction.getInteraction());
+
+      this.interaction = interaction;
+    }
+
+    @Override
+    public MALMessage sendAcknowledgement(String _String0) throws MALInteractionException, MALException
+    {
+      return interaction.sendAcknowledgement();
+    }
+
+    @Override
+    public MALMessage sendResponse(String _String0) throws MALInteractionException, MALException
+    {
+      return interaction.sendResponse();
+    }
+
+    @Override
+    public MALMessage sendError(MALStandardError error) throws MALInteractionException, MALException
+    {
+      return interaction.sendError(error);
+    }
+  }
+
   static class ProgressMultiToProgressInteractionMapper extends ProgressInteraction
   {
     private final ProgressMultiInteraction interaction;
@@ -883,6 +927,48 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
     public MALMessage sendResponse(String _String0) throws MALInteractionException, MALException
     {
       return interaction.sendResponse(_String0, null);
+    }
+
+    @Override
+    public MALMessage sendError(MALStandardError error) throws MALInteractionException, MALException
+    {
+      return interaction.sendError(error);
+    }
+
+    @Override
+    public MALMessage sendUpdateError(MALStandardError error) throws MALInteractionException, MALException
+    {
+      return interaction.sendUpdateError(error);
+    }
+  }
+
+  static class ProgressEmptyToProgressInteractionMapper extends ProgressInteraction
+  {
+    private final TestProgressEmptyBodyInteraction interaction;
+
+    public ProgressEmptyToProgressInteractionMapper(TestProgressEmptyBodyInteraction interaction)
+    {
+      super(interaction.getInteraction());
+
+      this.interaction = interaction;
+    }
+
+    @Override
+    public MALMessage sendAcknowledgement(String _String0) throws MALInteractionException, MALException
+    {
+      return interaction.sendAcknowledgement();
+    }
+
+    @Override
+    public MALMessage sendUpdate(Integer _Integer0) throws MALInteractionException, MALException
+    {
+      return interaction.sendUpdate();
+    }
+
+    @Override
+    public MALMessage sendResponse(String _String0) throws MALInteractionException, MALException
+    {
+      return interaction.sendResponse();
     }
 
     @Override

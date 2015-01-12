@@ -20,19 +20,19 @@
  */
 package org.ccsds.moims.mo.com.test.suite;
 
-import fitnesse.junit.FitNesseSuite;
-import fitnesse.junit.FitNesseSuite.FitnesseDir;
-import fitnesse.junit.FitNesseSuite.Name;
-import fitnesse.junit.FitNesseSuite.OutputDir;
-import fitnesse.junit.FitNesseSuite.Port;
+import fitnesse.junit.FitNesseRunner;
+import fitnesse.junit.FitNesseRunner.FitnesseDir;
+import fitnesse.junit.FitNesseRunner.Suite;
+import fitnesse.junit.FitNesseRunner.OutputDir;
+import fitnesse.junit.FitNesseRunner.Port;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
  *
  */
-@RunWith(FitNesseSuite.class)
-@Name("ComTests.TestDocument")
+@RunWith(FitNesseRunner.class)
+@Suite("ComTests.TestDocument")
 @FitnesseDir("src/main/fitnesse")
 @OutputDir(systemProperty = "ccsds.fitnesse.output.dir")
 @Port(systemProperty = "ccsds.fitnesse.port")

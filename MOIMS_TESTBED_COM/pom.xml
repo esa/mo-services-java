@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <relativePath/>
   </parent>
   
   <artifactId>TESTBED_COM</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <name>CCSDS MOIMS MO Testbed for COM</name>
 
   <organization>
@@ -80,9 +80,9 @@
   
   <properties>
     <fitnesse.toplevel.test>ComTests</fitnesse.toplevel.test>
-    <ccsds.testbed.com.version>1.0</ccsds.testbed.com.version>
-    <esa.com.test_api.version>1.0</esa.com.test_api.version>
-    <esa.com.version>1.0</esa.com.version>
+    <ccsds.testbed.com.version>1.0.1</ccsds.testbed.com.version>
+    <esa.com.test_api.version>1.0.1</esa.com.test_api.version>
+    <esa.com.test_provider.version>1.0.1</esa.com.test_provider.version>
     <cnes.com.test_api.version>3.1.1</cnes.com.test_api.version>
     <joram.amqp.version>0.4</joram.amqp.version>
   </properties>
@@ -122,10 +122,10 @@
     </resources>
     
     <plugins>
-<!--      <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-      </plugin>-->
+      </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -214,7 +214,7 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
-          <version>${esa.com.version}</version>
+          <version>${esa.com.test_provider.version}</version>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
@@ -353,7 +353,7 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
-          <version>${esa.com.version}</version>
+          <version>${esa.com.test_provider.version}</version>
         </dependency>
         <dependency>
           <groupId>fr.cnes.maljoram</groupId>
@@ -428,7 +428,7 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
-          <version>${esa.com.version}</version>
+          <version>${esa.com.test_provider.version}</version>
         </dependency>
         <dependency>
           <groupId>fr.cnes.maljoram</groupId>

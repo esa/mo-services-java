@@ -19,12 +19,12 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <relativePath/>
   </parent>
   
   <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
   
   <name>ESA MOIMS MO Testbed COM Provider</name>
@@ -70,8 +70,8 @@
 
 
   <properties>
-    <ccsds.testbed.com.version>1.0</ccsds.testbed.com.version>
-    <esa.api.com.version>1.0</esa.api.com.version>
+    <esa.com.test_api.version>1.0.1</esa.com.test_api.version>
+    <ccsds.testbed.com.version>1.0.1</ccsds.testbed.com.version>
   </properties>
   
   <dependencies>
@@ -86,7 +86,7 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>API_COM_TEST</artifactId>
-      <version>${esa.api.com.version}</version>
+      <version>${esa.com.test_api.version}</version>
     </dependency>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
@@ -104,7 +104,7 @@
       <resource>
         <directory>${basedir}/..</directory>
         <includes>
-          <include>LICENCE.md</include>
+          <include>LICENCE_ESA.md</include>
         </includes>
       </resource>
     </resources>
@@ -124,26 +124,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-          </plugin>
-          <plugin> 
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId> 
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>

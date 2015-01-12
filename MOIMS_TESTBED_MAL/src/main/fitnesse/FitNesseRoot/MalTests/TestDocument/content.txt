@@ -18,6 +18,9 @@
 # limitations under the License. 
 # ----------------------------------------------------------------------------
 
+# Replace all the 'see' lines with the following to create a single merged HTML report
+# !see CompleteDocument
+
 !see TestScenarios.Section4Scenarios
 !see TestScenarios.Section4Scenarios.InteractionPatternTestScenario
 !see TestScenarios.Section4Scenarios.InteractionPatternTestScenario.AllExceptPubSubTestCase

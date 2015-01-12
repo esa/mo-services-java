@@ -40,10 +40,13 @@ The transitions are checked by ensuring that the faulty messages are not receive
 
 !*> Sub scenario definitions
 |scenario| pattern | interaction | with qos| qos | and session | sess | and transitions | trans | and trans id | id | test |
-|ensure |pattern initiation for| @interaction | with multi| false | and qos| @qos | and session | @sess | and transistions | @trans | and trans id | @id | test |
+|ensure |pattern initiation for| @interaction | with multi| false | with empty body| false | and qos| @qos | and session | @sess | and transistions | @trans | and trans id | @id | test |
 |ensure |the consumer assertions are ok|
 |ensure |the transitions are ok|
-|ensure |pattern initiation for| @interaction | with multi| true | and qos| @qos | and session | @sess | and transistions | @trans | and trans id | @id | test |
+|ensure |pattern initiation for| @interaction | with multi| false | with empty body| true | and qos| @qos | and session | @sess | and transistions | @trans | and trans id | @id | test |
+|ensure |the consumer assertions are ok|
+|ensure |the transitions are ok|
+|ensure |pattern initiation for| @interaction | with multi| true | with empty body| false | and qos| @qos | and session | @sess | and transistions | @trans | and trans id | @id | test |
 |ensure |the consumer assertions are ok|
 |ensure |the transitions are ok|
 

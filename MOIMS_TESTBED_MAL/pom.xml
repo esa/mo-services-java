@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <relativePath/>
   </parent>
   
   <artifactId>TESTBED_MAL</artifactId>
   <packaging>jar</packaging>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
   <name>CCSDS MOIMS MO Testbed for MAL</name>
 
   <organization>
@@ -89,7 +89,7 @@
   
   <properties>
     <fitnesse.toplevel.test>MalTests</fitnesse.toplevel.test>
-    <esa.mal.test_api.version>1.0</esa.mal.test_api.version>
+    <esa.mal.test_api.version>1.0.1</esa.mal.test_api.version>
     <cnes.mal.test_api.version>3.1.1</cnes.mal.test_api.version>
   </properties>
   
@@ -499,7 +499,7 @@
         <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/esa-rmi</org.ccsds.moims.mo.testbed.local.configuration.dir>
         <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/cnes-rmi</org.ccsds.moims.mo.testbed.remote.configuration.dir>
         <org.ccsds.moims.mo.testbed.remote.classpath.filter>ESA</org.ccsds.moims.mo.testbed.remote.classpath.filter>
-        <org.ccsds.moims.mo.testbed.remote.classpath.maven>int.esa.ccsds.mo:TRANSPORT_RMI:${esa.rmi.transport.version},int.esa.ccsds.mo:TRANSPORT_GEN:${ccsds.test.transport.version},int.esa.ccsds.mo:ENCODING_STRING:${esa.string.encoder.version},fr.cnes.mal:mal-impl-broker:${cnes.version},fr.cnes.mal:mal-impl-base:${cnes.version},fr.cnes.mal:mal-impl-security:${cnes.version},org.ccsds.moims.mo:cnes-mal-api:${cnes.version},org.ccsds.moims.mo:cnes-malprototype-stubs:${cnes.version},org.objectweb.monolog:monolog:2.1.12,org.ow2.joram:a3-common:5.8.0-SNAPSHOT,org.ow2.jonas.osgi:monolog:5.1.1,org.osgi:org.osgi:3.0.0</org.ccsds.moims.mo.testbed.remote.classpath.maven>
+        <org.ccsds.moims.mo.testbed.remote.classpath.maven>int.esa.ccsds.mo:TRANSPORT_RMI:${esa.rmi.transport.version},int.esa.ccsds.mo:TRANSPORT_GEN:${esa.gen.transport.version},int.esa.ccsds.mo:ENCODING_STRING:${esa.string.encoder.version},fr.cnes.mal:mal-impl-broker:${cnes.version},fr.cnes.mal:mal-impl-base:${cnes.version},fr.cnes.mal:mal-impl-security:${cnes.version},org.ccsds.moims.mo:cnes-mal-api:${cnes.version},org.ccsds.moims.mo:cnes-malprototype-stubs:${cnes.version},org.objectweb.monolog:monolog:2.1.12,org.ow2.joram:a3-common:5.8.0-SNAPSHOT,org.ow2.jonas.osgi:monolog:5.1.1,org.osgi:org.osgi:3.0.0</org.ccsds.moims.mo.testbed.remote.classpath.maven>
       </properties>
     </profile>
     <profile>
