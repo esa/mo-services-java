@@ -4,6 +4,7 @@ import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENMessageHeader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 
@@ -11,9 +12,9 @@ public class FileBasedMessage extends GENMessage
 {
   private final InputStream is;
 
-  public FileBasedMessage(InputStream ios, MALElementStreamFactory encFactory) throws MALException 
+  public FileBasedMessage(Map qosProperties, InputStream ios, MALElementStreamFactory encFactory) throws MALException 
   {
-    super(false, true, new GENMessageHeader(), ios, encFactory);
+    super(false, true, new GENMessageHeader(), qosProperties, ios, encFactory);
 
     is = ios;
   }

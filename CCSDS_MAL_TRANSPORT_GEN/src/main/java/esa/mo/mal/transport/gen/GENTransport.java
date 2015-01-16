@@ -110,7 +110,7 @@ public abstract class GENTransport implements MALTransport, GENSender
   /**
    * Map of string names to endpoints.
    */
-  protected final Map<String, GENEndpoint> endpointMap = new TreeMap<String, GENEndpoint>();
+  protected final Map<String, GENEndpoint> endpointMap = new HashMap<String, GENEndpoint>();
   /**
    * The base string for URL for this protocol.
    */
