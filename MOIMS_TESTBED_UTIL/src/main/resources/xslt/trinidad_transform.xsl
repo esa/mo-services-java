@@ -47,6 +47,12 @@
   <xsl:template match='xhtml:tr[xhtml:td="scenario"]'>
   </xsl:template>
 
+  <xsl:template match='xhtml:tr[@class="scenario-detail closed-detail"]'>
+    <tr>
+      <xsl:apply-templates select='node()'/>
+    </tr>
+  </xsl:template>
+
   <xsl:template match='xhtml:script'>
     <xsl:apply-templates select='xhtml:div[@class="hidden"]'/>
   </xsl:template>

@@ -95,7 +95,7 @@
   </developers>
   
   <properties>
-    <ccsds.testbed.mal.version>1.1-SNAPSHOT</ccsds.testbed.mal.version>
+    <ccsds.testbed.mal.version>1.2-SNAPSHOT</ccsds.testbed.mal.version>
     <ccsds.testbed.util.spp.version>1.0-SNAPSHOT</ccsds.testbed.util.spp.version>
     <orekit.version>6.1</orekit.version>
     <monolog.version>5.2.0</monolog.version>

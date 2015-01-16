@@ -81,7 +81,7 @@ public class PatternTest
         false);
   }
 
-  public boolean patternInitiationForWithMultiAndQosAndSessionAndTransistionsAndTransIdTest(String pattern, boolean callMultiVersion, String qosLevel, String sessionType, String[] transistions, int procedureId) throws Exception
+  public boolean patternInitiationForWithMultiWithEmptyBodyAndQosAndSessionAndTransistionsAndTransIdTest(String pattern, boolean callMultiVersion, boolean callEmptyVersion, String qosLevel, String sessionType, String[] transistions, int procedureId) throws Exception
   {
     LoggingBase.logMessage("PatternTest(" + pattern + ", " + callMultiVersion + ", " + qosLevel + ", " + sessionType + ", " + procedureId + ")");
     resetAssertions();
@@ -210,9 +210,16 @@ public class PatternTest
       }
       else
       {
-        expectedInitialHeader.setOperation(IPTestHelper.REQUEST_OP.getNumber());
+        if (callEmptyVersion)
+        {
+          expectedInitialHeader.setOperation(IPTestHelper.TESTREQUESTEMPTYBODY_OP.getNumber());
+        }
+        else
+        {
+          expectedInitialHeader.setOperation(IPTestHelper.REQUEST_OP.getNumber());
+        }
       }
-      testRequest(monitor, ipTest, callMultiVersion, testDef);
+      testRequest(monitor, ipTest, callMultiVersion, callEmptyVersion, testDef);
     }
     else if ("INVOKE".equalsIgnoreCase(pattern))
     {
@@ -224,9 +231,16 @@ public class PatternTest
       }
       else
       {
-        expectedInitialHeader.setOperation(IPTestHelper.INVOKE_OP.getNumber());
+        if (callEmptyVersion)
+        {
+          expectedInitialHeader.setOperation(IPTestHelper.TESTINVOKEEMPTYBODY_OP.getNumber());
+        }
+        else
+        {
+          expectedInitialHeader.setOperation(IPTestHelper.INVOKE_OP.getNumber());
+        }
       }
-      testInvoke(monitor, ipTest, callMultiVersion, testDef);
+      testInvoke(monitor, ipTest, callMultiVersion, callEmptyVersion, testDef);
     }
     else if ("PROGRESS".equalsIgnoreCase(pattern))
     {
@@ -238,9 +252,16 @@ public class PatternTest
       }
       else
       {
-        expectedInitialHeader.setOperation(IPTestHelper.PROGRESS_OP.getNumber());
+        if (callEmptyVersion)
+        {
+          expectedInitialHeader.setOperation(IPTestHelper.TESTPROGRESSEMPTYBODY_OP.getNumber());
+        }
+        else
+        {
+          expectedInitialHeader.setOperation(IPTestHelper.PROGRESS_OP.getNumber());
+        }
       }
-      testProgress(monitor, ipTest, callMultiVersion, testDef);
+      testProgress(monitor, ipTest, callMultiVersion, callEmptyVersion, testDef);
     }
 
     MALMessageHeader msgHeader = addInitialHeaderAssertions(expectedInitialHeader);
@@ -330,7 +351,7 @@ public class PatternTest
     return (null != msgHeaderFinal);
   }
 
-  private void testRequest(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion, IPTestDefinition testDef) throws Exception
+  private void testRequest(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion, boolean callEmptyVersion, IPTestDefinition testDef) throws Exception
   {
     LoggingBase.logMessage("PatternTest.testRequest(" + callMultiVersion + ")");
 
@@ -340,7 +361,14 @@ public class PatternTest
     }
     else
     {
-      ipTest.asyncRequest(testDef, monitor);
+      if (callEmptyVersion)
+      {
+        ipTest.asyncTestRequestEmptyBody(testDef, monitor);
+      }
+      else
+      {
+        ipTest.asyncRequest(testDef, monitor);
+      }
     }
   }
 
@@ -366,7 +394,7 @@ public class PatternTest
     return (null != msgHeaderFinal);
   }
 
-  private void testInvoke(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion, IPTestDefinition testDef) throws Exception
+  private void testInvoke(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion, boolean callEmptyVersion, IPTestDefinition testDef) throws Exception
   {
     LoggingBase.logMessage("PatternTest.testInvoke(" + callMultiVersion + ")");
 
@@ -376,7 +404,14 @@ public class PatternTest
     }
     else
     {
-      ipTest.asyncInvoke(testDef, monitor);
+      if (callEmptyVersion)
+      {
+        ipTest.asyncTestInvokeEmptyBody(testDef, monitor);
+      }
+      else
+      {
+        ipTest.asyncInvoke(testDef, monitor);
+      }
     }
   }
 
@@ -423,7 +458,7 @@ public class PatternTest
     return (null != msgHeaderFinal);
   }
 
-  private void testProgress(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion, IPTestDefinition testDef) throws Exception
+  private void testProgress(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion, boolean callEmptyVersion, IPTestDefinition testDef) throws Exception
   {
     LoggingBase.logMessage("PatternTest.testProgress(" + callMultiVersion + ")");
 
@@ -433,7 +468,14 @@ public class PatternTest
     }
     else
     {
-      ipTest.asyncProgress(testDef, monitor);
+      if (callEmptyVersion)
+      {
+        ipTest.asyncTestProgressEmptyBody(testDef, monitor);
+      }
+      else
+      {
+        ipTest.asyncProgress(testDef, monitor);
+      }
     }
   }
 
@@ -733,7 +775,7 @@ public class PatternTest
       return expectedMessages == receivedMessages;
     }
 
-		@Override
+    @Override
     public synchronized void testSubmitAckReceived(MALMessageHeader msgHeader, Map qosProperties)
     {
       ++receivedMessages;
@@ -778,6 +820,12 @@ public class PatternTest
     }
 
     @Override
+    public void testRequestEmptyBodyResponseReceived(MALMessageHeader msgHeader, Map qosProperties)
+    {
+      requestResponseReceived(msgHeader, (String) null, qosProperties);
+    }
+
+    @Override
     public synchronized void requestErrorReceived(MALMessageHeader msgHeader,
             MALStandardError error, Map qosProperties)
     {
@@ -794,6 +842,12 @@ public class PatternTest
     }
 
     @Override
+    public void testRequestEmptyBodyErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties)
+    {
+      requestErrorReceived(msgHeader, error, qosProperties);
+    }
+
+    @Override
     public synchronized void invokeAckReceived(MALMessageHeader msgHeader,
             String bodyElement1, Map qosProperties)
     {
@@ -803,6 +857,12 @@ public class PatternTest
 
     @Override
     public void invokeMultiAckReceived(MALMessageHeader msgHeader, String _String0, Element _Element1, Map qosProperties)
+    {
+      invokeAckReceived(msgHeader, (String) null, qosProperties);
+    }
+
+    @Override
+    public void testInvokeEmptyBodyAckReceived(MALMessageHeader msgHeader, Map qosProperties)
     {
       invokeAckReceived(msgHeader, (String) null, qosProperties);
     }
@@ -824,6 +884,12 @@ public class PatternTest
     }
 
     @Override
+    public void testInvokeEmptyBodyAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties)
+    {
+      invokeAckErrorReceived(msgHeader, error, qosProperties);
+    }
+
+    @Override
     public synchronized void invokeResponseReceived(MALMessageHeader msgHeader, String _String, Map qosProperties)
     {
       ++receivedMessages;
@@ -833,6 +899,12 @@ public class PatternTest
 
     @Override
     public void invokeMultiResponseReceived(MALMessageHeader msgHeader, String _String0, Element _Element1, Map qosProperties)
+    {
+      invokeResponseReceived(msgHeader, (String) null, qosProperties);
+    }
+
+    @Override
+    public void testInvokeEmptyBodyResponseReceived(MALMessageHeader msgHeader, Map qosProperties)
     {
       invokeResponseReceived(msgHeader, (String) null, qosProperties);
     }
@@ -854,6 +926,12 @@ public class PatternTest
     }
 
     @Override
+    public void testInvokeEmptyBodyResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties)
+    {
+      invokeResponseErrorReceived(msgHeader, error, qosProperties);
+    }
+
+    @Override
     public synchronized void progressAckReceived(MALMessageHeader msgHeader,
             String bodyElement1, Map qosProperties)
     {
@@ -863,6 +941,12 @@ public class PatternTest
 
     @Override
     public void progressMultiAckReceived(MALMessageHeader msgHeader, String _String0, Element _Element1, Map qosProperties)
+    {
+      progressAckReceived(msgHeader, (String) null, qosProperties);
+    }
+
+    @Override
+    public void testProgressEmptyBodyAckReceived(MALMessageHeader msgHeader, Map qosProperties)
     {
       progressAckReceived(msgHeader, (String) null, qosProperties);
     }
@@ -879,6 +963,12 @@ public class PatternTest
 
     @Override
     public void progressMultiAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties)
+    {
+      progressAckErrorReceived(msgHeader, error, qosProperties);
+    }
+
+    @Override
+    public void testProgressEmptyBodyAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties)
     {
       progressAckErrorReceived(msgHeader, error, qosProperties);
     }
@@ -905,6 +995,12 @@ public class PatternTest
     }
 
     @Override
+    public void testProgressEmptyBodyUpdateReceived(MALMessageHeader msgHeader, Map qosProperties)
+    {
+      progressUpdateReceived(msgHeader, (Integer) null, qosProperties);
+    }
+
+    @Override
     public synchronized void progressUpdateErrorReceived(MALMessageHeader msgHeader,
             MALStandardError error, Map qosProperties)
     {
@@ -916,6 +1012,12 @@ public class PatternTest
 
     @Override
     public void progressMultiUpdateErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties)
+    {
+      progressUpdateErrorReceived(msgHeader, error, qosProperties);
+    }
+
+    @Override
+    public void testProgressEmptyBodyUpdateErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties)
     {
       progressUpdateErrorReceived(msgHeader, error, qosProperties);
     }
@@ -935,6 +1037,12 @@ public class PatternTest
     }
 
     @Override
+    public void testProgressEmptyBodyResponseReceived(MALMessageHeader msgHeader, Map qosProperties)
+    {
+      progressResponseReceived(msgHeader, (String) null, qosProperties);
+    }
+
+    @Override
     public synchronized void progressResponseErrorReceived(MALMessageHeader msgHeader,
             MALStandardError error, Map qosProperties)
     {
@@ -946,6 +1054,12 @@ public class PatternTest
 
     @Override
     public void progressMultiResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties)
+    {
+      progressResponseErrorReceived(msgHeader, error, qosProperties);
+    }
+
+    @Override
+    public void testProgressEmptyBodyResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties)
     {
       progressResponseErrorReceived(msgHeader, error, qosProperties);
     }

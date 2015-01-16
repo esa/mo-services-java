@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or © or Copr. CNES
+ * Copyright or ï¿½ or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
@@ -56,6 +56,8 @@ import org.ccsds.moims.mo.malprototype.iptest.provider.InvokeMultiInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.provider.MonitorPublisher;
 import org.ccsds.moims.mo.malprototype.iptest.provider.ProgressInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.provider.ProgressMultiInteraction;
+import org.ccsds.moims.mo.malprototype.iptest.provider.TestInvokeEmptyBodyInteraction;
+import org.ccsds.moims.mo.malprototype.iptest.provider.TestProgressEmptyBodyInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
 import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestResult;
 import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
@@ -172,6 +174,18 @@ public class PubsubErrorIPTestHandler extends IPTestInheritanceSkeleton {
 	    throws MALInteractionException, MALException {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void testRequestEmptyBody(IPTestDefinition _IPTestDefinition0, MALInteraction interaction) throws MALInteractionException, MALException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void testInvokeEmptyBody(IPTestDefinition _IPTestDefinition0, TestInvokeEmptyBodyInteraction interaction) throws MALInteractionException, MALException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void testProgressEmptyBody(IPTestDefinition _IPTestDefinition0, TestProgressEmptyBodyInteraction interaction) throws MALInteractionException, MALException {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	static class PublishListener implements MALPublishInteractionListener {

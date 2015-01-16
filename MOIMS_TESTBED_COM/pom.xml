@@ -80,9 +80,9 @@
   
   <properties>
     <fitnesse.toplevel.test>ComTests</fitnesse.toplevel.test>
-    <ccsds.testbed.com.version>1.1-SNAPSHOT</ccsds.testbed.com.version>
-    <esa.com.test_api.version>1.0</esa.com.test_api.version>
-    <esa.com.version>1.0</esa.com.version>
+    <ccsds.testbed.com.version>1.0.1</ccsds.testbed.com.version>
+    <esa.com.test_api.version>1.0.1</esa.com.test_api.version>
+    <esa.com.test_provider.version>1.0.1</esa.com.test_provider.version>
     <cnes.com.test_api.version>${cnes.version}</cnes.com.test_api.version>
   </properties>
 
@@ -121,10 +121,10 @@
     </resources>
     
     <plugins>
-<!--      <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-      </plugin>-->
+      </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -213,7 +213,7 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
-          <version>${esa.com.version}</version>
+          <version>${esa.com.test_provider.version}</version>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
@@ -352,7 +352,7 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
-          <version>${esa.com.version}</version>
+          <version>${esa.com.test_provider.version}</version>
         </dependency>
         <dependency>
           <groupId>fr.cnes.maljoram</groupId>
@@ -427,7 +427,7 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
-          <version>${esa.com.version}</version>
+          <version>${esa.com.test_provider.version}</version>
         </dependency>
         <dependency>
           <groupId>fr.cnes.maljoram</groupId>

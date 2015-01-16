@@ -119,7 +119,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 | ensure | read !-UInteger-! |
 
 |scenario| pattern | interaction | with multi| multi | and qos| qos | and session | sessId | and transitions | trans | and trans id | id | test |
-|ensure |pattern initiation for| @interaction | with multi| @multi | and qos| @qos | and session | @sessId | and transistions | @trans | and trans id | @id | test |
+|ensure |pattern initiation for| @interaction | with multi| @multi | with empty body | false | and qos| @qos | and session | @sessId | and transistions | @trans | and trans id | @id | test |
 |ensure |the consumer assertions are ok|
 |ensure |the transitions are ok|
 
