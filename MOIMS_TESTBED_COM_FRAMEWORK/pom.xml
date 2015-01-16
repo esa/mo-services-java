@@ -79,6 +79,7 @@
   </developers>
   
   <properties>
+    <esa.com.test_api.version>1.0.1</esa.com.test_api.version>
     <cnes.com.test_api.version>${cnes.version}</cnes.com.test_api.version>
   </properties>
   

@@ -90,6 +90,7 @@
   <properties>
     <fitnesse.toplevel.test>MalTests</fitnesse.toplevel.test>
     <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
+    <esa.mal.test_api.version>1.0.1</esa.mal.test_api.version>
   </properties>
   
   <build>
