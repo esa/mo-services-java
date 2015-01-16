@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
+import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptorSocket;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 
 public class TransmitRequestTest {
@@ -175,5 +176,16 @@ public class TransmitRequestTest {
     } catch (Exception ex) {
       return "error " + ex.getMessage();
     }
+  }
+  
+  public boolean sendingRequestsOnPurpose(String failState) {
+    if (failState.equalsIgnoreCase("fail")) {
+      SPPInterceptorSocket.setSendFail(true);
+    } else if (failState.equalsIgnoreCase("do not fail")) {
+      SPPInterceptorSocket.setSendFail(false);
+    } else {
+      return false;
+    }
+    return true;
   }
 }

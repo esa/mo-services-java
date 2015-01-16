@@ -51,12 +51,16 @@ public class SPPInterceptorSocket implements SPPSocket {
     private static int delay = 0;
     private static int sentPackets = 0;
     private static int delayIndex = 0;
+    private static boolean sendFail = false;
 
 	public SPPInterceptorSocket(SPPSocket socket) {
 	  this.socket = socket;
     }
 
 	public void send(SpacePacket packet) throws Exception {
+      if (sendFail) {
+        throw new Exception("sending request failing on purpose");
+      }
       // Put packets into queue in order of send. Any scrambling or delay happens afterwards.
       SPPInterceptor.instance().packetSent(packet);
       if (delay > 0) {
@@ -160,5 +164,9 @@ public class SPPInterceptorSocket implements SPPSocket {
       delay = delayInMillisecs;
       sentPackets = 0;
       delayIndex = index;
+    }
+    
+    public static void setSendFail(boolean failState) {
+      sendFail = failState;
     }
 }

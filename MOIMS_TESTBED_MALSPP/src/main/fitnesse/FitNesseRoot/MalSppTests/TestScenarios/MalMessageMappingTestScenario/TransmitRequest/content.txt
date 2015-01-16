@@ -109,9 +109,16 @@ the test.
 | send message from uri | malspp:647/3/0 | to uri | malspp:648/4/-3   | and expect | transmit error internal |
 | send message from uri | malspp:647/3/0 | to uri | malspp:648/4/256  | and expect | transmit error internal |
 
+| scenario | check space packet sending request error |
+| ensure | create and send template send message |
+| ensure | sending requests | fail | on purpose |
+| check  | transmit request returns | transmit error internal |
+| ensure | sending requests | do not fail | on purpose |
+| check  | transmit request returns | no transmit error |
 ***********!
 
 | script | transmit request test |
 | check null mal header field |
 | check uri from format |
 | check uri to format   |
+| check space packet sending request error |
