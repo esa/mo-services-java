@@ -128,6 +128,9 @@ public class MappingConfigurationRegistry {
     mappingConfigurations.put(new QualifiedApid(
         TestServiceProvider.TM_REMOTE_APID_QUALIFIER,
         TestServiceProvider.TM_REMOTE_APID), alternateMappingConfiguration);
+    mappingConfigurations.put(new QualifiedApid(
+        TestServiceProvider.SEGMENTATION_COUNTER_SELECT_REMOTE_APID_QUALIFIER,
+        TestServiceProvider.SEGMENTATION_COUNTER_SELECT_REMOTE_APID), defaultMappingConfiguration);
   }
   
   public MappingConfiguration get(QualifiedApid apid) {

@@ -163,7 +163,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 
 |scenario | primary header |
 |check  | packet version number is | 0 |
-|check space packet type |
+|ensure | check space packet type |
 |check  | secondary header flag is | 1 |
 |ensure | packet data length is length of packet data field minus one |
 

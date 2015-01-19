@@ -109,7 +109,8 @@
 | 4.4.10     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | check packet data field size limits |
 | 4.4.11     | !-MalMessageMapping-! | !-TransmitRequest-! | check space packet sending request error |
 | 4.4.12     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | implicit check |
-| 4.5.x      | missing | missing | missing |
+| 4.5.1      | !-MalMessageMapping-! | !-TransmitRequest-! | check transmit multiple |
+| 4.5.2      | !-MalMessageMapping-! | !-TransmitRequest-! | check transmit multiple error |
 | 4.6.1      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select received packet at |
 | 4.6.2      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-!, !-MalMessageSegmentation-! | select received packet at, small blob works, large blob works |
 | 4.6.3      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
@@ -151,10 +152,3 @@
 | 5.15-20    | !-MalMessageMapping-! | !-AllExceptPubSub-! | priority is, check domain id, network zone is, session name is, check authentication id |
 | 5.22-23    | !-MalDataEncoding-! | !-TimeCodeFormatTest-! | check every attribute affected by time code formats |
 | 5.22-23    | !-MalMessageMapping-! | !-AllExceptPubSub-! | check timestamp |
-
-!2 Missing tests
-| Comment |
-| Statements | Feature to be tested or left out |
-| 4.5.x      | Transmit multiple |
-
-

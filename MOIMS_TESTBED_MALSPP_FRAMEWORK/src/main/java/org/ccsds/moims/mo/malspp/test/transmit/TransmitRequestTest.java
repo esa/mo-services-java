@@ -34,12 +34,18 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
+import org.ccsds.moims.mo.mal.transport.MALTransmitMultipleErrorException;
+import org.ccsds.moims.mo.malspp.test.patterns.SpacePacketCheck;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptorSocket;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
+import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 
 public class TransmitRequestTest {
 
+  protected SpacePacketCheck spacePacketCheck;
   private MALMessage templateSendMsg = null;
+  private MALMessage[] multipleTemplateSendMsgs = null;
+  private MALTransmitErrorException[] errors = null;
   private URI origURIFrom = null;
   private Blob origAuthenticationId = null;
   private URI origUriTo = null;
@@ -58,6 +64,10 @@ public class TransmitRequestTest {
   private UShort origOperation = null;
   private UOctet origAreaVersion = null;
   private Boolean origIsErrorMessage = null;
+
+  public TransmitRequestTest() {
+    spacePacketCheck = new SpacePacketCheck();
+  }
 
   public boolean createAndSendTemplateSendMessage() throws Exception {
     templateSendMsg = LocalMALInstance.instance().segCounterTestStub().send(null);
@@ -159,6 +169,8 @@ public class TransmitRequestTest {
   }
 
   public String transmitRequestReturns() throws Exception {
+    // Do not use TestEndPoint from interceptor here because it causes unwanted Exceptions.
+    // Therefore these packets are not intercepted.
     MALEndpoint ep = LocalMALInstance.instance().getMalContext().getTransport("malspp").getEndpoint("segmentationCounterSelectTestConsumer");
     try {
       if (null != templateSendMsg.getHeader().getTransactionId()) {
@@ -187,5 +199,53 @@ public class TransmitRequestTest {
       return false;
     }
     return true;
+  }
+  
+  public boolean nextSendingRequestsFailOnPurpose(int nFailPackets) throws Exception {
+    SPPInterceptorSocket.setNumberOFFailPackets(nFailPackets);
+    return true;
+  }
+  
+  public boolean createAndSendTemplateSendMessages(int n) throws Exception {
+    multipleTemplateSendMsgs = new MALMessage[n];
+    for (int i = 0; i < n; i++) {
+      multipleTemplateSendMsgs[i] = LocalMALInstance.instance().segCounterTestStub().send(null);
+    }
+    return true;
+  }
+
+  public boolean resetSppInterceptor() {
+    return spacePacketCheck.resetSppInterceptor();
+  }
+
+  public boolean selectMultipleSentPacketAt(int index) {
+    return spacePacketCheck.selectMultipleSentPacketAt(index);
+  }
+  
+  public String transmitMultipleRequestReturns() throws Exception {
+    errors = null;
+    URI uri = LocalMALInstance.instance().getMalContext().getTransport("malspp").getEndpoint("segmentationCounterSelectTestConsumer").getURI();
+    MALEndpoint ep = TransportInterceptor.instance().getEndPoint(uri);
+    try {
+      int n = multipleTemplateSendMsgs.length;
+      for (MALMessage msg : multipleTemplateSendMsgs) {
+        msg.getHeader().setTransactionId(msg.getHeader().getTransactionId() + n);
+      }
+      ep.sendMessages(multipleTemplateSendMsgs);
+      return "no error";
+    } catch (MALTransmitMultipleErrorException ex) {
+      errors = ex.getTransmitExceptions();
+      return "transmit multiple error (" + errors.length + " errors)";
+    } catch (Exception ex) {
+      return "error " + ex.getMessage();
+    }
+  }
+  
+  public String errorAtIs(int index) {
+      if (errors[index].getStandardError().getErrorNumber().equals(MALHelper.INTERNAL_ERROR_NUMBER)) {
+        return "transmit error internal";
+      } else {
+        return "transmit error " + errors[index].getMessage();
+      }
   }
 }

@@ -119,6 +119,14 @@ public class SpacePacketCheck {
 		spacePacket = SPPInterceptor.instance().getSentPacket(index);
 		return selectPacket(spacePacket);
 	}
+    
+    public boolean selectMultipleSentPacketAt(int index) {
+      isSent = true;
+      MALMessage message = TransportInterceptor.instance().getLastSentMessages()[index];
+      malHeader = message.getHeader();
+      spacePacket = SPPInterceptor.instance().getSentPacket(index);
+      return selectPacket(spacePacket);
+    }
 	
   public boolean selectPacket(SpacePacket packet) {
     byte[] packetBody = packet.getBody();

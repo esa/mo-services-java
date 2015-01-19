@@ -115,6 +115,28 @@ the test.
 | check  | transmit request returns | transmit error internal |
 | ensure | sending requests | do not fail | on purpose |
 | check  | transmit request returns | no transmit error |
+
+| scenario | check successful transmit request for message at | index |
+| ensure | select multiple sent packet at | @index |
+
+| scenario | check transmit multiple |
+| ensure | create and send | 3 | template send messages |
+| ensure | reset spp interceptor |
+| check  | transmit multiple request returns | no error |
+| check successful transmit request for message at | 0 |
+| check successful transmit request for message at | 1 |
+| check successful transmit request for message at | 2 |
+| ensure | reset spp interceptor|
+
+| scenario | check transmit multiple error |
+| ensure | create and send | 3 | template send messages |
+| ensure | next | 2 | sending requests fail on purpose |
+| check  | transmit multiple request returns | transmit multiple error (2 errors) |
+| check  | error at | 0 | is | transmit error internal |
+| check  | error at | 1 | is | transmit error internal |
+| check successful transmit request for message at | 0 |
+| ensure | sending requests | do not fail | on purpose |
+
 ***********!
 
 | script | transmit request test |
@@ -122,3 +144,5 @@ the test.
 | check uri from format |
 | check uri to format   |
 | check space packet sending request error |
+| check transmit multiple |
+| check transmit multiple error |
