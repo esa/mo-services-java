@@ -80,7 +80,7 @@
   
   <properties>
     <fitnesse.toplevel.test>ComTests</fitnesse.toplevel.test>
-    <ccsds.testbed.com.version>1.0.1</ccsds.testbed.com.version>
+    <ccsds.testbed.com.version>1.1-SNAPSHOT</ccsds.testbed.com.version>
     <esa.com.test_api.version>1.0.1</esa.com.test_api.version>
     <esa.com.test_provider.version>1.0.1</esa.com.test_provider.version>
     <cnes.com.test_api.version>${cnes.version}</cnes.com.test_api.version>
