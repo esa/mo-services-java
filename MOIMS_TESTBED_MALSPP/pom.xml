@@ -61,6 +61,11 @@
       <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_CNES.md</url>
       <distribution>repo</distribution>
     </license>
+    <license>
+      <name>GNU Lesser General Public License</name>
+      <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_DLR</url>
+      <distribution>repo</distribution>
+    </license>
   </licenses>
 
   <scm>
@@ -80,6 +85,12 @@
       <name>David Feliot</name>
       <email>david.feliot@scalagent.com</email>
       <url>https://github.com/DavidFeliot</url>
+    </developer>
+    <developer>
+      <id>S-Gaertner</id>
+      <name>Stefan Gärtner</name>
+      <email>stefan.gaertner@dlr.de</email>
+      <url>https://github.com/S-Gaertner</url>
     </developer>
   </developers>
 
@@ -112,6 +123,7 @@
         <includes>
           <include>LICENCE_ESA.md</include>
           <include>LICENCE_CNES.md</include>
+          <include>LICENCE_DLR</include>
         </includes>
       </resource>
     </resources>
@@ -230,12 +242,12 @@
         <dependency>
           <groupId>de.dlr.gsoc</groupId>
           <artifactId>MO_MALSPP_TRANSPORT</artifactId>
-		  <version>1.0-SNAPSHOT</version>
+		  <version>1.0</version>
         </dependency>
         <dependency>
           <groupId>de.dlr.gsoc</groupId>
           <artifactId>MO_MALSPP_ENCODING</artifactId>
-          <version>1.0-SNAPSHOT</version>
+          <version>1.0</version>
         </dependency>
         <dependency>
           <groupId>org.ow2.joram</groupId>
