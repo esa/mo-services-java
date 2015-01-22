@@ -81,7 +81,7 @@
     <junit.version>4.8.1</junit.version>
     <fitnesse.output.dir>${project.build.directory}/surefire-reports</fitnesse.output.dir>
     <ccsds.testbed.util.version>1.1-SNAPSHOT</ccsds.testbed.util.version>
-    <cnes.version>3.2.0</cnes.version>
+    <cnes.version>3.2.2-SNAPSHOT</cnes.version>
     <joram.version>5.9.0</joram.version>
 	<esa.api.version>1.0.1</esa.api.version>
 	<esa.impl.version>1.0.1</esa.impl.version>
