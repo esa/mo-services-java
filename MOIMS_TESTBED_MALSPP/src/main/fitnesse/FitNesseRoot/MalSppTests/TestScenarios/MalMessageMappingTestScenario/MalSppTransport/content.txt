@@ -33,7 +33,7 @@
 
 !3 MAL/SPP transport test case
 
-The test MAL/SPP transport is assumed to support every !-QoS-! level and every interaction type.
+The test MAL/SPP transport supports every !-QoS-! level and every interaction type except Pub/Sub.
 
 !*< Hidden
 !define TEST_SYSTEM {slim}
