@@ -142,7 +142,7 @@ public class ActivityTracking extends EventInheritanceSkeleton
             new Identifier(OBJ_NO_ASE_ACCEPTANCE_STR),
             generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, 0),
             new Long(instanceIdentifier++),
-            generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, OBJ_NO_ASE_OPERATION_ACTIVITY));
+            generateSubKey(source.getType()));
     System.out.println("ActivityTracking:eKey = " + ekey);
     final Time timestamp = new Time(System.currentTimeMillis());
     UpdateHeader uh = new UpdateHeader(timestamp, interaction.getMessageHeader().getURITo(), UpdateType.DELETION, ekey);
@@ -229,7 +229,7 @@ public class ActivityTracking extends EventInheritanceSkeleton
             new Identifier(OBJ_NO_ASE_EXECUTION_STR),
             generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, 0),
             new Long(instanceIdentifier++),
-            generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, OBJ_NO_ASE_OPERATION_ACTIVITY));
+            generateSubKey(source.getType()));
 
     System.out.println("ActivityTracking:publishexecution ekey = " + ekey);
     final Time timestamp = new Time(System.currentTimeMillis());
@@ -273,6 +273,20 @@ public class ActivityTracking extends EventInheritanceSkeleton
     subkey = subkey | ((long) area << 48);
 
     return subkey;
+  }
+
+  /**
+   * Generate a EntityKey sub key using fields as specified in COM STD 3.2.4.2b
+   *
+   * @param objectType
+   * @return
+   */
+  static public Long generateSubKey(ObjectType objectType)
+  {
+    return generateSubKey(objectType.getArea().getValue(),
+            objectType.getService().getValue(),
+            objectType.getVersion().getValue(),
+            objectType.getNumber().getValue());
   }
 
   public class ActivityTrackingPublisher implements MALPublishInteractionListener
