@@ -101,6 +101,9 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     }
   }
 
+  /**
+   * Extends the StreamHolder class for handling splitting out the Boolean values.
+   */
   protected static class SplitStreamHolder extends StreamHolder
   {
     private static final int BIT_BYTES_BLOCK_SIZE = 1024;
@@ -109,11 +112,21 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     private int bitBytesInUse = 0;
     private int bitIndex = 0;
 
+    /**
+     * Constructor.
+     *
+     * @param outputStream The output stream to encode into.
+     */
     public SplitStreamHolder(OutputStream outputStream)
     {
       super(outputStream);
     }
 
+    /**
+     * Writes the actual encoded data to the output stream.
+     *
+     * @throws IOException in case of an IO error.
+     */
     public void close() throws IOException
     {
       _addUnsignedInt(outputStream, bitBytesInUse);

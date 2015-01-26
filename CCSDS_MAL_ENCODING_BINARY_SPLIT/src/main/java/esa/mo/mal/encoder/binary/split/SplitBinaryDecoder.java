@@ -91,6 +91,9 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     return null;
   }
 
+  /**
+   * Extends BufferHolder to handle split binary encoding.s
+   */
   protected static class SplitBufferHolder extends BufferHolder
   {
     private boolean bitStoreLoaded = false;
@@ -160,12 +163,22 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     }
   }
 
+  /**
+   * Simple helper class for dealing with bit array. Smaller and faster than Java BitSet.
+   */
   protected static class BitGet
   {
     private final byte[] bitBytes;
     private final int bitBytesOffset;
     private final int bitBytesInUse;
 
+    /**
+     * Constructor.
+     *
+     * @param bytes Encoded bit set bytes. Supplied array is accessed directly, it is not copied.
+     * @param offset Offset, in bytes, into supplied byte array for start of bit set.
+     * @param length Length, in bytes, of supplied bit set.
+     */
     public BitGet(byte[] bytes, final int offset, final int length)
     {
       this.bitBytes = bytes;
@@ -173,6 +186,12 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
       this.bitBytesInUse = length;
     }
 
+    /**
+     * Returns true if requested bit is set to '1', false is set to '0'.
+     *
+     * @param bitIndex The bit offset in the bit set.
+     * @return True is set to '1', false otherwise.
+     */
     public boolean get(int bitIndex)
     {
       int byteIndex = bitIndex / 8;
