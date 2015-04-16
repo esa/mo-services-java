@@ -25,7 +25,7 @@
   
   <artifactId>ENCODING_BINARY</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1</version>
+  <version>1.0.2-SNAPSHOT</version>
 
   <name>ESA MAL Binary Java encoder</name>
   <description>A simple Java binary encoder for the CCSDS MAL</description>

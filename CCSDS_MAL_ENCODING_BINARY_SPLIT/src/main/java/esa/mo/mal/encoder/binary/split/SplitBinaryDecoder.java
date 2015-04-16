@@ -98,7 +98,6 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   {
     private boolean bitStoreLoaded = false;
     private BitGet bitStore = null;
-    private int bitIndex = 0;
 
     /**
      * Constructor.
@@ -121,20 +120,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
       // ensure that the bit buffer has been loaded first
       if (!bitStoreLoaded)
       {
-        bitStoreLoaded = true;
-        int size = getUnsignedInt();
-
-        if (size >= 0)
-        {
-          super.checkBuffer(size);
-
-          bitStore = new BitGet(buf, offset, size);
-          offset += size;
-        }
-        else
-        {
-          bitStore = new BitGet(null, 0, 0);
-        }
+        loadBitStore();
       }
 
       super.checkBuffer(requiredLength);
@@ -152,14 +138,37 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     @Override
     public boolean getBool() throws MALException
     {
+      // ensure that the bit buffer has been loaded first
       if (!bitStoreLoaded)
       {
-        checkBuffer(1);
+        loadBitStore();
       }
 
-      boolean rv = bitStore.get(bitIndex);
-      ++bitIndex;
-      return rv;
+      return bitStore.pop();
+    }
+
+    /**
+     * Ensures that the bit buffer has been loaded
+     *
+     * @throws MALException on error.
+     */
+    protected void loadBitStore() throws MALException
+    {
+      // ensure that the bit buffer has been loaded first
+      bitStoreLoaded = true;
+      int size = getUnsignedInt();
+
+      if (size >= 0)
+      {
+        super.checkBuffer(size);
+
+        bitStore = new BitGet(buf, offset, size);
+        offset += size;
+      }
+      else
+      {
+        bitStore = new BitGet(null, 0, 0);
+      }
     }
   }
 
@@ -171,6 +180,8 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     private final byte[] bitBytes;
     private final int bitBytesOffset;
     private final int bitBytesInUse;
+    private int byteIndex = 0;
+    private int bitIndex = 0;
 
     /**
      * Constructor.
@@ -187,15 +198,25 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     }
 
     /**
-     * Returns true if requested bit is set to '1', false is set to '0'.
+     * Returns true if the next bit is set to '1', false is set to '0'.
      *
-     * @param bitIndex The bit offset in the bit set.
      * @return True is set to '1', false otherwise.
      */
-    public boolean get(int bitIndex)
+    public boolean pop()
     {
-      int byteIndex = bitIndex / 8;
-      return (byteIndex < bitBytesInUse) && ((bitBytes[byteIndex + bitBytesOffset] & (1 << (bitIndex % 8))) != 0);
+      boolean rv = (byteIndex < bitBytesInUse) && ((bitBytes[byteIndex + bitBytesOffset] & (1 << bitIndex)) != 0);
+
+      if (7 == bitIndex)
+      {
+        bitIndex = 0;
+        ++byteIndex;
+      }
+      else
+      {
+        ++bitIndex;
+      }
+
+      return rv;
     }
   }
 }

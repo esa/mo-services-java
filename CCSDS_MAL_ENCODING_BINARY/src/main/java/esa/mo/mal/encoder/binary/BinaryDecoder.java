@@ -554,7 +554,8 @@ public class BinaryDecoder implements MALDecoder
             }
 
             // this either shifts the existing contents to the start of the old buffer, or copies it into the new buffer
-            for (int i = 0; i < existingContentRemaining; i++)
+            // NOTE: this is faster than System.arraycopy, as that performs argument type checks
+            for (int i = 0; i < existingContentRemaining; ++i)
             {
               destBuf[i] = this.buf[this.offset + i];
             }
@@ -622,9 +623,7 @@ public class BinaryDecoder implements MALDecoder
     {
       checkBuffer(1);
 
-      final int i = offset;
-      offset++;
-      return buf[i];
+      return buf[offset++];
     }
 
     /**

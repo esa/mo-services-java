@@ -131,7 +131,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     {
       _addUnsignedInt(outputStream, bitBytesInUse);
       outputStream.write(bitBytes, 0, bitBytesInUse);
-      outputStream.write(baos.toByteArray());
+      baos.writeTo(outputStream);
     }
 
     @Override
