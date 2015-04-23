@@ -478,12 +478,6 @@ public class BinaryDecoder implements MALDecoder
    */
   protected byte[] getRemainingEncodedData() throws MALException
   {
-//    preLoadBuffer();
-//    while (loadExtraBuffer())
-//    {
-//      // do nothing, just loading in the complete message
-//    }
-
     return Arrays.copyOfRange(sourceBuffer.buf, sourceBuffer.offset, sourceBuffer.contentLength);
   }
 

@@ -129,7 +129,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
      */
     public void close() throws IOException
     {
-      _addUnsignedInt(outputStream, bitBytesInUse);
+      streamAddUnsignedInt(outputStream, bitBytesInUse);
       outputStream.write(bitBytes, 0, bitBytesInUse);
       baos.writeTo(outputStream);
     }
@@ -170,7 +170,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
       baos.write(val);
     }
 
-    private static void _addUnsignedInt(java.io.OutputStream os, int value) throws IOException
+    private static void streamAddUnsignedInt(java.io.OutputStream os, int value) throws IOException
     {
       while ((value & 0xFFFFFF80) != 0L)
       {

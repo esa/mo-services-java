@@ -54,6 +54,11 @@ public class BinaryElementInputStream implements GENElementInputStream
     dec = new BinaryDecoder(buf, offset);
   }
 
+  /**
+   * Sub class constructor.
+   *
+   * @param pdec Decoder to use.
+   */
   protected BinaryElementInputStream(BinaryDecoder pdec)
   {
     dec = pdec;

@@ -635,7 +635,7 @@ public class StringDecoder implements MALDecoder
 
     // we should really precheck the area and service parts of the long before splitting out the type part
     // ToDo
-
+    
     switch (typeval)
     {
       case Attribute._BLOB_TYPE_SHORT_FORM:
@@ -816,7 +816,7 @@ public class StringDecoder implements MALDecoder
   }
 
   /**
-   *
+   * Simple class for holding the source string and the offset into that string for the next read.
    */
   protected static class BufferHolder
   {
@@ -824,9 +824,10 @@ public class StringDecoder implements MALDecoder
     private int offset;
 
     /**
+     * Constructor.
      *
-     * @param buf
-     * @param offset
+     * @param buf The source buffer string.
+     * @param offset The current read offset.
      */
     public BufferHolder(final String buf, final int offset)
     {
