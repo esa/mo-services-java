@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>1</version>
+    <version>2</version>
     <relativePath/>
   </parent>
   
   <artifactId>MAL_DEMO</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.0.1</version>
 
   <name>ESA MAL Java Demo</name>
   <description>A Demo Java application for the CCSDS MAL</description>
@@ -39,20 +39,20 @@
   <licenses>
     <license>
       <name>The European Space Agency Public License, Version 2.0</name>
-      <url>https://raw.github.com/esa/CCSDS_APPS/master/LICENCE.md</url>
+      <url>https://raw.github.com/esa/CCSDS_MO_APPS/master/LICENCE.md</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:esa/CCSDS_APPS.git</connection>
-    <developerConnection>scm:git:git@github.com:esa/CCSDS_APPS.git</developerConnection>
-    <url>https://github.com/esa/CCSDS_APPS</url>
+    <connection>scm:git:git@github.com:esa/CCSDS_MO_APPS.git</connection>
+    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_APPS.git</developerConnection>
+    <url>https://github.com/esa/CCSDS_MO_APPS</url>
   </scm>
   
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/esa/CCSDS_APPS/issues</url>
+    <url>https://github.com/esa/CCSDS_MO_APPS/issues</url>
   </issueManagement>
   
   <developers>
@@ -149,26 +149,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-          </plugin>
-          <plugin> 
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId> 
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
