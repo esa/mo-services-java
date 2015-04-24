@@ -753,6 +753,9 @@ public class BinaryEncoder implements MALListEncoder
     // Do nothing
   }
 
+  /**
+   * Internal class for accessing the binary stream. Overridden by sub-classes to alter the low level encoding.
+   */
   protected static class StreamHolder
   {
     protected final OutputStream outputStream;

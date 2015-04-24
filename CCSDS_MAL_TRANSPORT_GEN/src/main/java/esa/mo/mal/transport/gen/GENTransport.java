@@ -44,6 +44,14 @@ import org.ccsds.moims.mo.mal.transport.*;
 public abstract class GENTransport implements MALTransport, GENSender
 {
   /**
+   * System property to control whether message parts of wrapped in BLOBs.
+   */
+  public static final String WRAP_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.wrap";
+  /**
+   * System property to control whether debug messages are generated.
+   */
+  public static final String DEBUG_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.debug";
+  /**
    * Logger
    */
   public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.gen");
@@ -154,9 +162,9 @@ public abstract class GENTransport implements MALTransport, GENSender
     // decode configuration
     if (properties != null)
     {
-      logFullDebug = properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.debug");
+      logFullDebug = properties.containsKey(DEBUG_PROPERTY);
 
-      this.wrapBodyParts = Boolean.parseBoolean((String) properties.get("org.ccsds.moims.mo.mal.transport.gen.wrap"));
+      this.wrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
 
       // number of internal threads that process incoming MAL packets
       if (properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.inputprocessors"))
@@ -232,9 +240,9 @@ public abstract class GENTransport implements MALTransport, GENSender
     // decode configuration
     if (properties != null)
     {
-      logFullDebug = properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.debug");
+      logFullDebug = properties.containsKey(DEBUG_PROPERTY);
 
-      this.wrapBodyParts = Boolean.parseBoolean((String) properties.get("org.ccsds.moims.mo.mal.transport.gen.wrap"));
+      this.wrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
 
       // number of internal threads that process incoming MAL packets
       if (properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.inputprocessors"))
@@ -280,7 +288,7 @@ public abstract class GENTransport implements MALTransport, GENSender
     String protocolString = protocol;
     if (protocol.contains(":"))
     {
-      protocolString = protocol.substring(0, protocol.indexOf(":"));
+      protocolString = protocol.substring(0, protocol.indexOf(':'));
     }
 
     uriBase = protocolString + protocolDelim + createTransportAddress() + serviceDelim;
@@ -508,6 +516,12 @@ public abstract class GENTransport implements MALTransport, GENSender
     }
   }
 
+  /**
+   * Thread main for reading and processing a message.
+   *
+   * @param msg The source message.
+   * @param smsg The message in a string representation for logging.
+   */
   protected void receiveMessageThreadMain(final GENMessage msg, String smsg)
   {
     try
@@ -609,7 +623,7 @@ public abstract class GENTransport implements MALTransport, GENSender
    * @param oriMsg The original message
    * @param errorNumber The error number
    * @param errorMsg The error message.
-   * @throws org.ccsds.moims.mo.mal.MALException if cannot encode a response message
+   * @throws MALException if cannot encode a response message
    */
   protected void returnErrorMessage(GENEndpoint ep,
           final GENMessage oriMsg,
@@ -702,6 +716,14 @@ public abstract class GENTransport implements MALTransport, GENSender
     return rootURI;
   }
 
+  /**
+   * Returns the routing part of the URI.
+   * @param uriValue The URI value
+   * @param serviceDelim The service delimiter
+   * @param routingDelim The routing delimiter
+   * @param supportsRouting True if this URI scheme supporting routing
+   * @return the routing part of the URI
+   */
   protected static String getRoutingPart(String uriValue, char serviceDelim, char routingDelim, boolean supportsRouting)
   {
     String endpointUriPart = uriValue;

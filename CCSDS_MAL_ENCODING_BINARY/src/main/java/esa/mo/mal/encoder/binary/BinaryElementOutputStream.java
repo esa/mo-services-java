@@ -90,6 +90,12 @@ public class BinaryElementOutputStream implements GENElementOutputStream
     }
   }
 
+  /**
+   * Over-ridable factory function.
+   *
+   * @param os Output stream to wrap.
+   * @return the new encoder.
+   */
   protected BinaryEncoder createBinaryEncoder(OutputStream os)
   {
     return new BinaryEncoder(os);

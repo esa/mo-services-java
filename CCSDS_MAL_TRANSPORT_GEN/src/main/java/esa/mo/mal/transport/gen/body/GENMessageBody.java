@@ -439,7 +439,6 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
       catch (MALException ex)
       {
         GENTransport.LOGGER.log(Level.WARNING, "GEN Message body ERROR on decode : {0}", ex);
-        ex.printStackTrace();
       }
     }
   }
@@ -448,6 +447,8 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
    * Decodes a single part of the message body.
    *
    * @param decoder The decoder to use.
+   * @ctx The encoding context to use.
+   * @sf The type short form.
    * @return The decoded chunk.
    * @throws MALException if any error detected.
    */

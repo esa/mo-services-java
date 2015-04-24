@@ -319,6 +319,11 @@ public class GENEndpoint implements MALEndpoint
     }
   }
 
+  /**
+   * Returns the current message listener.
+   *
+   * @return the current message listener.
+   */
   public MALMessageListener getMessageListener()
   {
     return messageListener;
