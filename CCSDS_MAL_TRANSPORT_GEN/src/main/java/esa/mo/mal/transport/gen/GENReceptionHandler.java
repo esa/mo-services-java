@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.gen;
 
-import esa.mo.mal.transport.gen.sending.GENDataTransmitter;
+import esa.mo.mal.transport.gen.sending.GENMessageSender;
 
 /**
  *
@@ -30,7 +30,7 @@ public interface GENReceptionHandler
   String getRemoteURI();
   void setRemoteURI(String newURI);
 
-  GENDataTransmitter getTransportTransmitter();
+  GENMessageSender getMessageSender();
   
   void close();
 }

@@ -46,7 +46,7 @@ import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 public class GENConcurrentMessageSender
 {
   //input message queue
-  private final BlockingQueue<GENOutgoingDataHolder> inputQueue;
+  private final BlockingQueue<GENOutgoingMessageHolder> outgoingQueue;
 
   //the list of processing threads that send the messages
   private final List<GENSenderThread> processingThreads;
@@ -65,7 +65,7 @@ public class GENConcurrentMessageSender
    */
   public GENConcurrentMessageSender(GENTransport transport, String targetURI)
   {
-    inputQueue = new LinkedBlockingQueue<GENOutgoingDataHolder>();
+    outgoingQueue = new LinkedBlockingQueue<GENOutgoingMessageHolder>();
     processingThreads = Collections.synchronizedList(new ArrayList<GENSenderThread>());
     this.transport = transport;
     this.targetURI = targetURI;
@@ -78,7 +78,7 @@ public class GENConcurrentMessageSender
    *
    * @param data the data to be sent.
    */
-  public void sendMessage(GENOutgoingDataHolder data)
+  public void sendMessage(GENOutgoingMessageHolder data)
   {
     if (processingThreads.isEmpty())
     {
@@ -89,7 +89,7 @@ public class GENConcurrentMessageSender
 
       return;
     }
-    boolean inserted = inputQueue.add(data);
+    boolean inserted = outgoingQueue.add(data);
     if (!inserted)
     {
       // log error. According to the specification (see *add* call
@@ -107,10 +107,10 @@ public class GENConcurrentMessageSender
    * @param uriTo the target URI
    * @return number of active processors
    */
-  public synchronized int addProcessor(GENDataTransmitter dataTransmitter, String uriTo)
+  public synchronized int addProcessor(GENMessageSender dataTransmitter, String uriTo)
   {
     // create new thread
-    GENSenderThread procThread = new GENSenderThread(inputQueue, dataTransmitter, uriTo, transport);
+    GENSenderThread procThread = new GENSenderThread(outgoingQueue, dataTransmitter, uriTo, transport);
     // keep reference to thread
     processingThreads.add(procThread);
     // start thread

@@ -20,8 +20,8 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import esa.mo.mal.transport.gen.receiving.GENDataReceiver;
-import esa.mo.mal.transport.gen.sending.GENDataTransmitter;
+import esa.mo.mal.transport.gen.receiving.GENMessageReceiver;
+import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import java.net.Socket;
  * each other, the protocol has a very simple format: |size|message|
  *
  */
-public class TCPIPTransportDataTransceiver implements GENDataReceiver, GENDataTransmitter
+public class TCPIPTransportDataTransceiver implements GENMessageReceiver, GENMessageSender
 {
   private final Socket socket;
 
@@ -53,7 +53,7 @@ public class TCPIPTransportDataTransceiver implements GENDataReceiver, GENDataTr
    * @throws IOException in case the data cannot be send to the client
    */
   @Override
-  public void sendPacket(byte[] packetData) throws IOException
+  public void sendEncodedMessage(byte[] packetData) throws IOException
   {
     // write packet length and then the packet
     socketWriteIf.writeInt(packetData.length);
@@ -68,7 +68,7 @@ public class TCPIPTransportDataTransceiver implements GENDataReceiver, GENDataTr
    * @return the byte array containing the MAL Message
    * @throws IOException in case the data cannot be read
    */
-  public byte[] readPacket() throws IOException
+  public byte[] readEncodedMessage() throws IOException
   {
     try
     {

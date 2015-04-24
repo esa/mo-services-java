@@ -23,8 +23,8 @@ package esa.mo.mal.transport.tcpip;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENTransport;
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
-import esa.mo.mal.transport.gen.sending.GENDataTransmitter;
-import esa.mo.mal.transport.gen.util.GENDataPoller;
+import esa.mo.mal.transport.gen.sending.GENMessageSender;
+import esa.mo.mal.transport.gen.util.GENMessagePoller;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -275,7 +275,7 @@ public class TCPIPTransport extends GENTransport
   }
 
   @Override
-  protected GENDataTransmitter createDataReceiver(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException
+  protected GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException
   {
     try
     {
@@ -305,7 +305,7 @@ public class TCPIPTransport extends GENTransport
       TCPIPTransportDataTransceiver trans = new TCPIPTransportDataTransceiver(new Socket(host, port));
 
       // create also a data reader thread for this socket in order to read messages from it        	
-      GENDataPoller rcvr = new GENDataPoller(this, trans, trans);
+      GENMessagePoller rcvr = new GENMessagePoller(this, trans, trans);
       rcvr.setRemoteURI(remoteRootURI);
       rcvr.start();
 
@@ -326,7 +326,7 @@ public class TCPIPTransport extends GENTransport
     }
   }
 
-  protected synchronized void addDataPoller(GENDataPoller newPoller)
+  protected synchronized void addDataPoller(GENMessagePoller newPoller)
   {
     this.pollerThreads.add(newPoller);
   }

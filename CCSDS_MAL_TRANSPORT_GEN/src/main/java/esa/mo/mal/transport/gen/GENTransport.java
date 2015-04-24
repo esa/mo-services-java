@@ -21,8 +21,8 @@
 package esa.mo.mal.transport.gen;
 
 import esa.mo.mal.transport.gen.sending.GENConcurrentMessageSender;
-import esa.mo.mal.transport.gen.sending.GENDataTransmitter;
-import esa.mo.mal.transport.gen.sending.GENOutgoingDataHolder;
+import esa.mo.mal.transport.gen.sending.GENMessageSender;
+import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -431,7 +431,7 @@ public abstract class GENTransport implements MALTransport, GENSender
         // get outgoing channel
         GENConcurrentMessageSender dataSender = checkConnections(msg, remoteRootURI, null);
 
-        GENOutgoingDataHolder outgoingPacket = internalEncodeMessage(dataSender.getTargetURI(), msg);
+        GENOutgoingMessageHolder outgoingPacket = internalEncodeMessage(dataSender.getTargetURI(), msg);
 
         dataSender.sendMessage(outgoingPacket);
 
@@ -855,7 +855,7 @@ public abstract class GENTransport implements MALTransport, GENSender
 
           receptionHandler.setRemoteURI(remoteRootURI);
 
-          registerDataSender(receptionHandler.getTransportTransmitter(), remoteRootURI);
+          registerMessageSender(receptionHandler.getMessageSender(), remoteRootURI);
         }
       }
     }
@@ -871,14 +871,14 @@ public abstract class GENTransport implements MALTransport, GENSender
       try
       {
         // create new sender for this URI
-        dataSender = registerDataSender(createDataReceiver(msg, remoteRootURI), remoteRootURI);
+        dataSender = registerMessageSender(createMessageSender(msg, remoteRootURI), remoteRootURI);
 
         LOGGER.log(Level.INFO, "GEN opening {0}", numConnections);
 
         for (int i = 1; i < numConnections; i++)
         {
           // insert new processor (data sender) to root data sender for the URI        	
-          dataSender.addProcessor(createDataReceiver(msg, remoteRootURI), remoteRootURI);
+          dataSender.addProcessor(createMessageSender(msg, remoteRootURI), remoteRootURI);
         }
       }
       catch (MALException e)
@@ -892,7 +892,7 @@ public abstract class GENTransport implements MALTransport, GENSender
     return dataSender;
   }
 
-  public synchronized GENConcurrentMessageSender registerDataSender(GENDataTransmitter dataTransmitter, String remoteRootURI)
+  public synchronized GENConcurrentMessageSender registerMessageSender(GENMessageSender dataTransmitter, String remoteRootURI)
   {
     // create new sender for this URI
     GENConcurrentMessageSender dataSender = new GENConcurrentMessageSender(this, remoteRootURI);
@@ -906,9 +906,9 @@ public abstract class GENTransport implements MALTransport, GENSender
     return dataSender;
   }
 
-  protected abstract GENDataTransmitter createDataReceiver(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException;
+  protected abstract GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException;
 
-  protected GENOutgoingDataHolder internalEncodeMessage(final String targetURI,
+  protected GENOutgoingMessageHolder internalEncodeMessage(final String targetURI,
           final GENMessage msg) throws Exception
   {
     // encode the message
@@ -925,7 +925,7 @@ public abstract class GENTransport implements MALTransport, GENSender
         targetURI, packetToString(data)
       });
 
-      return new GENOutgoingDataHolder(data);
+      return new GENOutgoingMessageHolder(data);
     }
     catch (MALException ex)
     {

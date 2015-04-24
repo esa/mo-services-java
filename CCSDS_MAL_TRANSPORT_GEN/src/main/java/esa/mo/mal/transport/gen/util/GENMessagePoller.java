@@ -21,8 +21,8 @@
 package esa.mo.mal.transport.gen.util;
 
 import esa.mo.mal.transport.gen.GENReceptionHandler;
-import esa.mo.mal.transport.gen.receiving.GENDataReceiver;
-import esa.mo.mal.transport.gen.sending.GENDataTransmitter;
+import esa.mo.mal.transport.gen.receiving.GENMessageReceiver;
+import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.GENTransport;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -30,30 +30,30 @@ import java.util.logging.Level;
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 
 /**
- * This utility class creates a thread to pull packets from a transceiver. It receives data from it (MAL packets) and
- * then forwards the incoming packet to an asynchronous processor in order to return immediately and not hold the
- * calling thread while the packet is processed.
+ * This utility class creates a thread to pull encoded messages from a transceiver. It receives messages from it and
+ * then forwards the incoming message to an asynchronous processor in order to return immediately and not hold the
+ * calling thread while the message is processed.
  *
- * In case of a communication problem it informs the transport and/or closes the resource (socket)
+ * In case of a communication problem it informs the transport and/or closes the resource
  *
  * Only transport adapter that pull messages from their transport layer will need to use this class.
  */
-public class GENDataPoller extends Thread implements GENReceptionHandler
+public class GENMessagePoller extends Thread implements GENReceptionHandler
 {
   //reference to the transport
   private final GENTransport transport;
   //the low level data transmitter
-  private final GENDataTransmitter dataTransmitter;
+  private final GENMessageSender messageSender;
   //the low level data receiver
-  private final GENDataReceiver dataReceiver;
+  private final GENMessageReceiver messageReceiver;
   //the remote URI (client) this socket is associated to. This is volatile as it is potentially set by a different thread after its creation
   private volatile String remoteURI = null;
 
-  public GENDataPoller(GENTransport transport, GENDataTransmitter dataTransmitter, GENDataReceiver dataReceiver)
+  public GENMessagePoller(GENTransport transport, GENMessageSender messageSender, GENMessageReceiver messageReceiver)
   {
     this.transport = transport;
-    this.dataTransmitter = dataTransmitter;
-    this.dataReceiver = dataReceiver;
+    this.messageSender = messageSender;
+    this.messageReceiver = messageReceiver;
     setName(getClass().getName());
   }
 
@@ -65,9 +65,9 @@ public class GENDataPoller extends Thread implements GENReceptionHandler
     {
       try
       {
-        byte[] malMsgData = dataReceiver.readPacket();
+        byte[] encodedMalMessage = messageReceiver.readEncodedMessage();
 
-        transport.receive(malMsgData, this);
+        transport.receive(encodedMalMessage, this);
       }
       catch (java.io.EOFException ex)
       {
@@ -106,15 +106,15 @@ public class GENDataPoller extends Thread implements GENReceptionHandler
   }
 
   @Override
-  public GENDataTransmitter getTransportTransmitter()
+  public GENMessageSender getMessageSender()
   {
-    return dataTransmitter;
+    return messageSender;
   }
 
   @Override
   public void close()
   {
-    dataTransmitter.close();
-    dataReceiver.close();
+    messageSender.close();
+    messageReceiver.close();
   }
 }

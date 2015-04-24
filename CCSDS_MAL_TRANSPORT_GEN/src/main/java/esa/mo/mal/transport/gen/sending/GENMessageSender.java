@@ -25,16 +25,15 @@ import java.io.IOException;
 /**
  *
  */
-public interface GENDataTransmitter
+public interface GENMessageSender
 {
-
   /**
-   * Sends data to the client (MAL Message encoded as a byte array)
+   * Sends an encoded message to the client (MAL Message encoded as a byte array)
    *
-   * @param packetData the MALMessage encoded as a byte array
-   * @throws IOException in case the data cannot be send to the client
+   * @param encodedMessage the MALMessage encoded as a byte array
+   * @throws IOException in case the message cannot be sent to the client
    */
-  void sendPacket(byte[] packetData) throws IOException;
+  void sendEncodedMessage(byte[] encodedMessage) throws IOException;
   
   void close();
 }

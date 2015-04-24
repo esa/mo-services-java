@@ -37,13 +37,13 @@ import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 public class GENSenderThread extends Thread
 {
   // input queue to receive data to send
-  private final BlockingQueue<GENOutgoingDataHolder> inputQueue;
+  private final BlockingQueue<GENOutgoingMessageHolder> inputQueue;
 
   // the destination URI
   private final String uriTo;
 
   // the data tranceiver
-  private final GENDataTransmitter dataTransmitter;
+  private final GENMessageSender dataTransmitter;
 
   // the transport object. Needed in order to send information on connection / data problems
   private final GENTransport transport;
@@ -56,7 +56,7 @@ public class GENSenderThread extends Thread
    * @param uriTo
    * @param transport
    */
-  public GENSenderThread(BlockingQueue<GENOutgoingDataHolder> inputQueue, GENDataTransmitter dataTransmitter, String uriTo, GENTransport transport)
+  public GENSenderThread(BlockingQueue<GENOutgoingMessageHolder> inputQueue, GENMessageSender dataTransmitter, String uriTo, GENTransport transport)
   {
     this.inputQueue = inputQueue;
     this.uriTo = uriTo;
@@ -73,11 +73,11 @@ public class GENSenderThread extends Thread
     {
       try
       {
-        GENOutgoingDataHolder packet = inputQueue.take();
+        GENOutgoingMessageHolder packet = inputQueue.take();
 
         try
         {
-          dataTransmitter.sendPacket(packet.getData());
+          dataTransmitter.sendEncodedMessage(packet.getData());
 
           //send back reply that the data was sent succesfully
           packet.setResult(Boolean.TRUE);

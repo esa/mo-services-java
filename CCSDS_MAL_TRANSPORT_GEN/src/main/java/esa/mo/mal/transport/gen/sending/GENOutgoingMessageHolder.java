@@ -27,11 +27,11 @@ import java.util.logging.Level;
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 
 /**
- * This class holds the data to be sent in raw format and a reply queue that the internal sender of the data can listen
- * to in order to be informed if the data was successfully sent or not.
+ * This class holds the message to be sent in encoded format and a reply queue that the internal sender of the data can
+ * listen to in order to be informed if the message was successfully sent or not.
  *
  */
-public class GENOutgoingDataHolder
+public class GENOutgoingMessageHolder
 {
   //reply queue
   private final BlockingQueue<Boolean> replyQueue;
@@ -44,7 +44,7 @@ public class GENOutgoingDataHolder
    *
    * @param data the data to be sent
    */
-  public GENOutgoingDataHolder(byte[] data)
+  public GENOutgoingMessageHolder(byte[] data)
   {
     this.data = data;
     replyQueue = new LinkedBlockingQueue<Boolean>();

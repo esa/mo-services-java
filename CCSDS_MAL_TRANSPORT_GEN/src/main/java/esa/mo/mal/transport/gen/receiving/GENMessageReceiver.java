@@ -25,15 +25,15 @@ import java.io.IOException;
 /**
  *
  */
-public interface GENDataReceiver
+public interface GENMessageReceiver
 {
   /**
    * Reads a MALMessage encoded as a byte array.
    *
-   * @return the byte array containing the MAL Message
+   * @return the byte array containing the encoded MAL Message
    * @throws IOException in case the data cannot be read
    */
-  byte[] readPacket() throws IOException;
+  byte[] readEncodedMessage() throws IOException;
   
   void close();
 }

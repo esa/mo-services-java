@@ -22,7 +22,7 @@ package esa.mo.mal.transport.rmi;
 
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENTransport;
-import esa.mo.mal.transport.gen.sending.GENDataTransmitter;
+import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -207,14 +207,14 @@ public class RMITransport extends GENTransport
   }
 
   @Override
-  protected GENDataTransmitter createDataReceiver(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException
+  protected GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException
   {
     RLOGGER.log(Level.INFO, "RMI received request to create connections to URI:{0}", remoteRootURI);
 
     try
     {
       // create new sender for this URI
-      return new RMITransmitter(remoteRootURI);
+      return new RMIMessageSender(remoteRootURI);
     }
     catch (NotBoundException e)
     {
