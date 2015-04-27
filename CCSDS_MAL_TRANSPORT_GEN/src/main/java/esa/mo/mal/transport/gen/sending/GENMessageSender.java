@@ -30,10 +30,10 @@ public interface GENMessageSender
   /**
    * Sends an encoded message to the client (MAL Message encoded as a byte array)
    *
-   * @param encodedMessage the MALMessage encoded as a byte array
+   * @param encodedMessage the MALMessage
    * @throws IOException in case the message cannot be sent to the client
    */
-  void sendEncodedMessage(byte[] encodedMessage) throws IOException;
+  void sendEncodedMessage(GENOutgoingMessageHolder encodedMessage) throws IOException;
   
   void close();
 }

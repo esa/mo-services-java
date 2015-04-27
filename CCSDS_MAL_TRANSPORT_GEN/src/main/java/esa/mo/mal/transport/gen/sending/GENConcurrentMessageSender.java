@@ -21,6 +21,7 @@
 package esa.mo.mal.transport.gen.sending;
 
 import esa.mo.mal.transport.gen.GENTransport;
+import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +29,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 
-import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
+import java.io.IOException;
+import static java.lang.Thread.interrupted;
 
 /**
  * This class manages a set of threads that are able to send messages via transceivers. It uses a blocking queue from
@@ -39,22 +41,30 @@ import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
  *
  * There is normally a numConnections (transport configuration item) number of threads.
  *
- * It accepts requests to send the data, which is done via the worker threads. A reply is provided indicating if the
- * data was sent successfully or not.
+ * It accepts requests to send the message, which is done via the worker threads. A reply is provided indicating if the
+ * message was sent successfully or not.
  *
  */
 public class GENConcurrentMessageSender
 {
-  //input message queue
+  /**
+   * input message queue
+   */
   private final BlockingQueue<GENOutgoingMessageHolder> outgoingQueue;
 
-  //the list of processing threads that send the messages
+  /**
+   * the list of processing threads that send the messages
+   */
   private final List<GENSenderThread> processingThreads;
 
-  //reference to the transport
+  /**
+   * reference to the transport
+   */
   private final GENTransport transport;
 
-  //reference to target URI
+  /**
+   * reference to target URI
+   */
   private final String targetURI;
 
   /**
@@ -72,51 +82,57 @@ public class GENConcurrentMessageSender
   }
 
   /**
-   * This method will try to send the data via one of the available sockets and provide a reply through the
-   * GENOutgoingDataHolder object if the data was successful or not. users of this method should call getResult to
-   * block waiting for an indication if the data was sent successfully or not.
+   * This method will try to send the message via one of the available connections and provide a reply through the
+   * GENOutgoingMessageHolder object if the message was successful or not. Users of this method should call getResult to
+   * block waiting for an indication if the message was sent successfully or not.
    *
-   * @param data the data to be sent.
+   * @param message the message to be sent.
    */
-  public void sendMessage(GENOutgoingMessageHolder data)
+  public void sendMessage(GENOutgoingMessageHolder message)
   {
     if (processingThreads.isEmpty())
     {
       //this should never happen. Only possibly in boundary cases where this object is asked
-      //to terminate and there is another thread trying to send data in parallel.
-      LOGGER.log(Level.SEVERE, "No active processors in this processing queue!", new Throwable());
-      data.setResult(Boolean.FALSE);
+      //to terminate and there is another thread trying to send message in parallel.
+      LOGGER.log(Level.SEVERE, "No active processors in this processing queue!");
+      message.setResult(Boolean.FALSE);
 
       return;
     }
-    boolean inserted = outgoingQueue.add(data);
+
+    boolean inserted = outgoingQueue.add(message);
     if (!inserted)
     {
       // log error. According to the specification (see *add* call
       // documentation) this will always return true, or throw an
       // exception
-      LOGGER.log(Level.SEVERE, "Could not insert message to processing queue", new Throwable());
-      data.setResult(Boolean.FALSE);
+      LOGGER.log(Level.SEVERE, "Could not insert message to processing queue");
+      message.setResult(Boolean.FALSE);
     }
   }
 
   /**
    * Adds a processor which is able to send messages to a specific URI
    *
-   * @param dataTransmitter the socket that this processor will use
+   * @param messageSender the socket that this processor will use
    * @param uriTo the target URI
    * @return number of active processors
    */
-  public synchronized int addProcessor(GENMessageSender dataTransmitter, String uriTo)
+  public synchronized int addProcessor(GENMessageSender messageSender, String uriTo)
   {
     // create new thread
-    GENSenderThread procThread = new GENSenderThread(outgoingQueue, dataTransmitter, uriTo, transport);
+    GENSenderThread procThread = new GENSenderThread(messageSender, uriTo);
+
     // keep reference to thread
     processingThreads.add(procThread);
+
     // start thread
     procThread.start();
 
-    LOGGER.log(Level.INFO, "Adding processor for URI:{0} total processors:{1}", new Object[]{uriTo, processingThreads.size()});
+    LOGGER.log(Level.INFO, "Adding processor for URI:{0} total processors:{1}", new Object[]
+    {
+      uriTo, processingThreads.size()
+    });
 
     // return number of processors
     return processingThreads.size();
@@ -143,7 +159,87 @@ public class GENConcurrentMessageSender
       LOGGER.log(Level.INFO, "Terminating sender processing thread for URI:{0}", t.getUriTo());
       t.interrupt();
     }
-    //clear the references to active threads
+
+    // clear the references to active threads
     processingThreads.clear();
+  }
+
+  /**
+   * This thread will listen for outgoing messages through a blocking queue and send them through a transceiver. In case
+   * of communication problems it will inform the transport and terminate.
+   *
+   * In any case, a reply is send back to the originator of the request using a blocking queue from the outgoing
+   * message.
+   *
+   */
+  private class GENSenderThread extends Thread
+  {
+    /**
+     * The destination URI
+     */
+    private final String uriTo;
+
+    /**
+     * The message sender
+     */
+    private final GENMessageSender messageSender;
+
+    /**
+     * Constructor
+     *
+     * @param messageSender
+     * @param uriTo
+     */
+    public GENSenderThread(GENMessageSender messageSender, String uriTo)
+    {
+      this.uriTo = uriTo;
+      this.messageSender = messageSender;
+      setName(getClass().getName() + " URI:" + uriTo);
+    }
+
+    @Override
+    public void run()
+    {
+      // read forever while not interrupted
+      while (!interrupted())
+      {
+        try
+        {
+          GENOutgoingMessageHolder messageHolder = outgoingQueue.take();
+
+          try
+          {
+            messageSender.sendEncodedMessage(messageHolder);
+
+            //send back reply that the message was sent succesfully
+            messageHolder.setResult(Boolean.TRUE);
+          }
+          catch (IOException e)
+          {
+            LOGGER.log(Level.WARNING, "Cannot send packet to destination:{0} informing transport", uriTo);
+
+            //send back reply that the message was not sent succesfully
+            messageHolder.setResult(Boolean.FALSE);
+
+            //inform transport about communication error 
+            transport.communicationError(uriTo, null);
+            break;
+          }
+        }
+        catch (InterruptedException e)
+        {
+          // finish processing
+          break;
+        }
+      }
+
+      // finished processing, close connection if not already closed
+      messageSender.close();
+    }
+
+    public String getUriTo()
+    {
+      return uriTo;
+    }
   }
 }

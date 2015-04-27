@@ -31,7 +31,7 @@ public interface GENMessageReceiver
    * Reads a MALMessage encoded as a byte array.
    *
    * @return the byte array containing the encoded MAL Message
-   * @throws IOException in case the data cannot be read
+   * @throws IOException in case the encoded message cannot be read
    */
   byte[] readEncodedMessage() throws IOException;
   

@@ -40,13 +40,22 @@ import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
  */
 public class GENMessagePoller extends Thread implements GENReceptionHandler
 {
-  //reference to the transport
+  /**
+   * Reference to the transport
+   */
   private final GENTransport transport;
-  //the low level data transmitter
+  /**
+   * the low level message sender
+   */
   private final GENMessageSender messageSender;
-  //the low level data receiver
+  /**
+   * the low level message receiver
+   */
   private final GENMessageReceiver messageReceiver;
-  //the remote URI (client) this socket is associated to. This is volatile as it is potentially set by a different thread after its creation
+  /**
+   * the remote URI (client) this connection is associated to. This is volatile as it is potentially set by a different
+   * thread after its creation
+   */
   private volatile String remoteURI = null;
 
   public GENMessagePoller(GENTransport transport, GENMessageSender messageSender, GENMessageReceiver messageReceiver)
@@ -60,7 +69,7 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
   @Override
   public void run()
   {
-    // handles data reads from this client
+    // handles message reads from this client
     while (!interrupted())
     {
       try
@@ -81,7 +90,7 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
       }
       catch (IOException e)
       {
-        LOGGER.log(Level.WARNING, "Cannot read data from client", e);
+        LOGGER.log(Level.WARNING, "Cannot read message from client", e);
 
         transport.communicationError(remoteURI, this);
         close();

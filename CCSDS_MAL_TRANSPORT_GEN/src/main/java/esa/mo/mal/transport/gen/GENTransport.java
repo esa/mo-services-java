@@ -431,7 +431,7 @@ public abstract class GENTransport implements MALTransport, GENSender
         // get outgoing channel
         GENConcurrentMessageSender dataSender = checkConnections(msg, remoteRootURI, null);
 
-        GENOutgoingMessageHolder outgoingPacket = internalEncodeMessage(dataSender.getTargetURI(), msg);
+        GENOutgoingMessageHolder outgoingPacket = internalEncodeMessage(remoteRootURI, destinationURI, handle, lastForHandle, dataSender.getTargetURI(), msg);
 
         dataSender.sendMessage(outgoingPacket);
 
@@ -448,7 +448,7 @@ public abstract class GENTransport implements MALTransport, GENSender
 
         if (!dataSendResult)
         {
-        // data was not sent succesfully, throw an exception for the
+          // data was not sent succesfully, throw an exception for the
           // higher MAL layers
           throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
         }
@@ -568,8 +568,8 @@ public abstract class GENTransport implements MALTransport, GENSender
   }
 
   /**
-   * Used to request the transport close a connection with a client. In this case the transport will terminate
-   * all communication channels with the destination in order for them to be re-established.
+   * Used to request the transport close a connection with a client. In this case the transport will terminate all
+   * communication channels with the destination in order for them to be re-established.
    *
    * @param uriTo the connection handler that received this message
    * @param receptionHandler
@@ -718,6 +718,7 @@ public abstract class GENTransport implements MALTransport, GENSender
 
   /**
    * Returns the routing part of the URI.
+   *
    * @param uriValue The URI value
    * @param serviceDelim The service delimiter
    * @param routingDelim The routing delimiter
@@ -908,7 +909,11 @@ public abstract class GENTransport implements MALTransport, GENSender
 
   protected abstract GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException;
 
-  protected GENOutgoingMessageHolder internalEncodeMessage(final String targetURI,
+  protected GENOutgoingMessageHolder internalEncodeMessage(final String destinationRootURI,
+          final String destinationURI,
+          final Object handle,
+          final boolean lastForHandle,
+          final String targetURI,
           final GENMessage msg) throws Exception
   {
     // encode the message
@@ -925,7 +930,7 @@ public abstract class GENTransport implements MALTransport, GENSender
         targetURI, packetToString(data)
       });
 
-      return new GENOutgoingMessageHolder(data);
+      return new GENOutgoingMessageHolder(destinationRootURI, destinationURI, handle, lastForHandle, data);
     }
     catch (MALException ex)
     {

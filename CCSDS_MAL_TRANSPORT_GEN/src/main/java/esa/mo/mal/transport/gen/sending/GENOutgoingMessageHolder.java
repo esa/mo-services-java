@@ -27,8 +27,8 @@ import java.util.logging.Level;
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 
 /**
- * This class holds the message to be sent in encoded format and a reply queue that the internal sender of the data can
- * listen to in order to be informed if the message was successfully sent or not.
+ * This class holds the message to be sent in encoded format and a reply queue that the internal sender of the message
+ * can listen to in order to be informed if the message was successfully sent or not.
  *
  */
 public class GENOutgoingMessageHolder
@@ -36,24 +36,35 @@ public class GENOutgoingMessageHolder
   //reply queue
   private final BlockingQueue<Boolean> replyQueue;
 
-  //the raw data
-  private final byte[] data;
+  private final String destinationRootURI;
+  private final String destinationURI;
+  private final Object handle;
+  private final boolean lastForHandle;
+  //the encoded message
+  private final byte[] encodedMessage;
 
   /**
    * Will construct a new object and create a new internal reply queue
    *
-   * @param data the data to be sent
+   * @param encodedMessage the encoded message to be sent
    */
-  public GENOutgoingMessageHolder(byte[] data)
+  public GENOutgoingMessageHolder(final String destinationRootURI,
+          final String destinationURI, final Object handle,
+          final boolean lastForHandle,
+          byte[] encodedMessage)
   {
-    this.data = data;
     replyQueue = new LinkedBlockingQueue<Boolean>();
+    this.destinationRootURI = destinationRootURI;
+    this.destinationURI = destinationURI;
+    this.handle = handle;
+    this.lastForHandle = lastForHandle;
+    this.encodedMessage = encodedMessage;
   }
 
   /**
-   * This method blocks until there is an attempt to send the data.
+   * This method blocks until there is an attempt to send the message.
    *
-   * @return TRUE if the data was successfully sent and FALSE if there was a communication or internal problem.
+   * @return TRUE if the message was successfully sent and FALSE if there was a communication or internal problem.
    * @throws InterruptedException in case of shutting down or internal error
    */
   public Boolean getResult() throws InterruptedException
@@ -62,9 +73,9 @@ public class GENOutgoingMessageHolder
   }
 
   /**
-   * Sets the result indicating if the data was sent successfully.
+   * Sets the result indicating if the message was sent successfully.
    *
-   * @param result TRUE if the data was successfully sent and FALSE if there was a communication or internal problem.
+   * @param result TRUE if the message was successfully sent and FALSE if there was a communication or internal problem.
    */
   public void setResult(Boolean result)
   {
@@ -78,13 +89,33 @@ public class GENOutgoingMessageHolder
     }
   }
 
-  /**
-   * Getter for the data to be sent
-   *
-   * @return
-   */
-  public byte[] getData()
+  public String getDestinationURI()
   {
-    return data;
+    return destinationURI;
+  }
+
+  public String getDestinationRootURI()
+  {
+    return destinationRootURI;
+  }
+
+  public Object getHandle()
+  {
+    return handle;
+  }
+
+  public boolean isLastForHandle()
+  {
+    return lastForHandle;
+  }
+
+  /**
+   * Getter for the encoded message to be sent
+   *
+   * @return the encoded message
+   */
+  public byte[] getEncodedMessage()
+  {
+    return encodedMessage;
   }
 }

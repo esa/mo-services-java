@@ -22,6 +22,7 @@ package esa.mo.mal.transport.tcpip;
 
 import esa.mo.mal.transport.gen.receiving.GENMessageReceiver;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
+import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -53,12 +54,12 @@ public class TCPIPTransportDataTransceiver implements GENMessageReceiver, GENMes
    * @throws IOException in case the data cannot be send to the client
    */
   @Override
-  public void sendEncodedMessage(byte[] packetData) throws IOException
+  public void sendEncodedMessage(GENOutgoingMessageHolder packetData) throws IOException
   {
     // write packet length and then the packet
-    socketWriteIf.writeInt(packetData.length);
+    socketWriteIf.writeInt(packetData.getEncodedMessage().length);
 
-    socketWriteIf.write(packetData);
+    socketWriteIf.write(packetData.getEncodedMessage());
     socketWriteIf.flush();
   }
 
