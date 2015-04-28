@@ -344,9 +344,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
           lenc = streamFactory.createOutputStream(lbaos);
         }
 
-        // first encode a FALSE boolean because this is an XML object
-        lenc.writeElement(new Union(Boolean.FALSE), null);
-        // then encode the short form
+        // encode the short form
         lenc.writeElement(new Union(ssf), null);
         // now encode the element
         lenc.writeElement(new Union(ow.toString()), null);
@@ -441,7 +439,6 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
       catch (MALException ex)
       {
         GENTransport.LOGGER.log(Level.WARNING, "GEN Message body ERROR on decode : {0}", ex);
-        ex.printStackTrace();
       }
     }
   }
@@ -450,6 +447,8 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
    * Decodes a single part of the message body.
    *
    * @param decoder The decoder to use.
+   * @ctx The encoding context to use.
+   * @sf The type short form.
    * @return The decoded chunk.
    * @throws MALException if any error detected.
    */
@@ -514,7 +513,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
         try
         {
           final String schemaURN = shortForm.substring(0, shortForm.lastIndexOf(':'));
-          final String packageName = "";//(String) shortForms[0];
+          final String packageName = (String) ctx.getEndpointQosProperties().get(schemaURN);
 
           final JAXBContext jc = JAXBContext.newInstance(packageName);
           final Unmarshaller unmarshaller = jc.createUnmarshaller();

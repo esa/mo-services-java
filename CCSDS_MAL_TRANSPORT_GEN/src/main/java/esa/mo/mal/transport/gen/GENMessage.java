@@ -30,7 +30,6 @@ import esa.mo.mal.transport.gen.body.GENRegisterBody;
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 import java.util.Map;
-import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALArea;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
@@ -113,6 +112,7 @@ public class GENMessage implements MALMessage, java.io.Serializable
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
    * @param readHeader True if the header should be read from the packet.
    * @param header An instance of the header class to use.
+   * @param qosProperties The QoS properties for this message.
    * @param packet The message in encoded form.
    * @param encFactory The stream factory to use for decoding.
    * @throws MALException On decoding error.
@@ -120,10 +120,11 @@ public class GENMessage implements MALMessage, java.io.Serializable
   public GENMessage(final boolean wrapBodyParts,
           final boolean readHeader,
           final GENMessageHeader header,
+          final Map qosProperties,
           final byte[] packet,
           final MALElementStreamFactory encFactory) throws MALException
   {
-    this.qosProperties = new TreeMap();
+    this.qosProperties = qosProperties;
     this.wrapBodyParts = wrapBodyParts;
 
     final MALElementInputStream enc = encFactory.createInputStream(new ByteArrayInputStream(packet));
@@ -147,6 +148,7 @@ public class GENMessage implements MALMessage, java.io.Serializable
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
    * @param readHeader True if the header should be read from the stream.
    * @param header An instance of the header class to use.
+   * @param qosProperties The QoS properties for this message.
    * @param ios The message in encoded form.
    * @param encFactory The stream factory to use for decoding.
    * @throws MALException On decoding error.
@@ -154,10 +156,11 @@ public class GENMessage implements MALMessage, java.io.Serializable
   public GENMessage(final boolean wrapBodyParts,
           final boolean readHeader,
           final GENMessageHeader header,
+          final Map qosProperties,
           final java.io.InputStream ios,
           final MALElementStreamFactory encFactory) throws MALException
   {
-    this.qosProperties = new TreeMap();
+    this.qosProperties = qosProperties;
     this.wrapBodyParts = wrapBodyParts;
 
     final MALElementInputStream enc = encFactory.createInputStream(ios);
@@ -198,6 +201,11 @@ public class GENMessage implements MALMessage, java.io.Serializable
   {
   }
 
+  /**
+   * Returns true if this message will wrap body parts in blobs.
+   *
+   * @return True if wrapping is enabled.
+   */
   public boolean isWrapBodyParts()
   {
     return wrapBodyParts;

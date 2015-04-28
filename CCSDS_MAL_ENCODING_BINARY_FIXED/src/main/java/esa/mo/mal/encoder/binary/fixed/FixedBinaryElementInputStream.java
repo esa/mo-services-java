@@ -46,6 +46,11 @@ public class FixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.Bin
     super(new FixedBinaryDecoder(buf, offset));
   }
 
+  /**
+   * Sub class constructor.
+   *
+   * @param pdec Decoder to use.
+   */
   protected FixedBinaryElementInputStream(FixedBinaryDecoder pdec)
   {
     super(pdec);

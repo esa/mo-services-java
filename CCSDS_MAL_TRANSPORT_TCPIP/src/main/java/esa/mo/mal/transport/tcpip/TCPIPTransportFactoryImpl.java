@@ -21,36 +21,41 @@
 package esa.mo.mal.transport.tcpip;
 
 import java.util.Map;
-
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
 /**
- * Instance of the transport factory for a TCP/IP transport factory.
+ * Instance of the transport factory for a TCP/IP transport.
  */
-public class TCPIPTransportFactoryImpl extends MALTransportFactory {
+public class TCPIPTransportFactoryImpl extends MALTransportFactory
+{
+  private static final Object MUTEX = new Object();
+  private TCPIPTransport transport = null;
 
-    private TCPIPTransport transport = null;
+  /**
+   * Constructor.
+   *
+   * @param protocol The protocol string.
+   */
+  public TCPIPTransportFactoryImpl(final String protocol)
+  {
+    super(protocol);
+  }
 
-    /**
-     * Constructor.
-     *
-     * @param protocol The protocol string.
-     */
-    public TCPIPTransportFactoryImpl(final String protocol) {
-	super(protocol);
+  @Override
+  public MALTransport createTransport(final MALContext malContext, final Map properties) throws MALException
+  {
+    synchronized (MUTEX)
+    {
+      if (null == transport)
+      {
+        transport = new TCPIPTransport(getProtocol(), '-', false, this, properties);
+        transport.init();
+      }
+
+      return transport;
     }
-
-    @Override
-    public synchronized MALTransport createTransport(final MALContext malContext, final Map properties) throws MALException {
-
-	if (transport == null) {
-	    transport = new TCPIPTransport(getProtocol(), '-', false, this, properties);
-	    transport.init();
-	}
-
-	return transport;
-    }
+  }
 }

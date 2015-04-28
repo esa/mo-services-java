@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO TCP/IP Transport Framework
+ * System                : CCSDS MO Generic Transport Framework
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,34 +18,22 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.tcpip.util;
+package esa.mo.mal.transport.gen.sending;
 
-import esa.mo.mal.transport.tcpip.TCPIPTransport;
+import java.io.IOException;
 
 /**
- * This Runnable task is responsible of forwarding newly arrived MAL Messages (in raw format)
- * to the transport. 
- * 
- * @author Petros Pissias
  *
  */
-public class TCPIPInputDataForwarder implements Runnable {
-
-    private final TCPIPTransport transport;
-    private final byte[] rawMessage;
-    private final TCPIPConnectionDataReceiver receptionHandler;
-    
-    public TCPIPInputDataForwarder(TCPIPTransport transport, byte[] rawMessage, TCPIPConnectionDataReceiver receptionHandler) {
-	this.transport = transport;
-	this.rawMessage = rawMessage;
-	this.receptionHandler = receptionHandler;
-    }
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
-    @Override
-    public void run() {
-	transport.receive(rawMessage, receptionHandler);
-    }
-
+public interface GENMessageSender
+{
+  /**
+   * Sends an encoded message to the client (MAL Message encoded as a byte array)
+   *
+   * @param encodedMessage the MALMessage
+   * @throws IOException in case the message cannot be sent to the client
+   */
+  void sendEncodedMessage(GENOutgoingMessageHolder encodedMessage) throws IOException;
+  
+  void close();
 }

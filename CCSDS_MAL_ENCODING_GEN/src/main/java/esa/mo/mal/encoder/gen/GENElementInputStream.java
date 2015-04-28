@@ -35,5 +35,5 @@ public interface GENElementInputStream extends MALElementInputStream
    * @return a byte array containing the remaining encoded data for this stream.
    * @throws MALException On error.
    */
-  public byte[] getRemainingEncodedData() throws MALException;
+  byte[] getRemainingEncodedData() throws MALException;
 }

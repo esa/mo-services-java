@@ -753,43 +753,81 @@ public class BinaryEncoder implements MALListEncoder
     // Do nothing
   }
 
+  /**
+   * Internal class for accessing the binary stream. Overridden by sub-classes to alter the low level encoding.
+   */
   protected static class StreamHolder
   {
     protected final OutputStream outputStream;
 
+    /**
+     * Constructor.
+     *
+     * @param outputStream the stream to encode in to.
+     */
     public StreamHolder(OutputStream outputStream)
     {
       this.outputStream = outputStream;
     }
 
-    public void add(final byte[] val) throws IOException
+    /**
+     * Adds a byte array to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
+    public void add(final byte[] value) throws IOException
     {
-      if (null == val)
+      if (null == value)
       {
         addSignedInt(-1);
       }
       else
       {
-        addSignedInt(val.length);
-        directAdd(val);
+        addSignedInt(value.length);
+        directAdd(value);
       }
     }
 
+    /**
+     * Adds a signed long to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addSignedLong(final long value) throws IOException
     {
       addUnsignedLong((value << 1) ^ (value >> 63));
     }
 
+    /**
+     * Adds a signed int to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addSignedInt(final int value) throws IOException
     {
       addUnsignedInt((value << 1) ^ (value >> 31));
     }
 
+    /**
+     * Adds a signed short to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addSignedShort(final short value) throws IOException
     {
       addUnsignedInt((value << 1) ^ (value >> 31));
     }
 
+    /**
+     * Adds a zigzag encoded unsigned long to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addUnsignedLong(long value) throws IOException
     {
       while ((value & 0xFFFFFFFFFFFFFF80L) != 0L)
@@ -800,11 +838,23 @@ public class BinaryEncoder implements MALListEncoder
       directAdd((byte) ((int) value & 0x7F));
     }
 
+    /**
+     * Adds an unsigned 32bit integer held as a long to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addUnsignedLong32(long value) throws IOException
     {
       addUnsignedLong(value);
     }
 
+    /**
+     * Adds a zigzag encoded unsigned int to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addUnsignedInt(int value) throws IOException
     {
       while ((value & 0xFFFFFF80) != 0L)
@@ -815,21 +865,45 @@ public class BinaryEncoder implements MALListEncoder
       directAdd((byte) (value & 0x7F));
     }
 
+    /**
+     * Adds an unsigned 32bit integer held as a long to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addUnsignedInt16(int value) throws IOException
     {
       addUnsignedInt(value);
     }
 
+    /**
+     * Adds a zigzag encoded unsigned short to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addUnsignedShort(int value) throws IOException
     {
       addUnsignedInt(value);
     }
 
+    /**
+     * Adds an unsigned 32bit integer held as a long to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addUnsignedShort8(short value) throws IOException
     {
       addUnsignedShort(value);
     }
 
+    /**
+     * Adds a Boolean to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addBool(boolean value) throws IOException
     {
       if (value)
@@ -842,29 +916,59 @@ public class BinaryEncoder implements MALListEncoder
       }
     }
 
+    /**
+     * Adds a Boolean True value to the output stream.
+     *
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addBoolTrue() throws IOException
     {
       directAdd((byte) 1);
     }
 
+    /**
+     * Adds a Boolean False value to the output stream.
+     *
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
     public void addBoolFalse() throws IOException
     {
       directAdd((byte) 0);
     }
 
-    public void directAdd(final byte[] val) throws IOException
+    /**
+     * Low level byte array write to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
+    public void directAdd(final byte[] value) throws IOException
     {
-      outputStream.write(val);
+      outputStream.write(value);
     }
 
-    public void directAdd(final byte[] val, int os, int ln) throws IOException
+    /**
+     * Low level byte array write to the output stream.
+     *
+     * @param value the value to encode.
+     * @param os offset into array.
+     * @param ln length to add.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
+    public void directAdd(final byte[] value, int os, int ln) throws IOException
     {
-      outputStream.write(val, os, ln);
+      outputStream.write(value, os, ln);
     }
 
-    public void directAdd(final byte val) throws IOException
+    /**
+     * Low level byte write to the output stream.
+     *
+     * @param value the value to encode.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
+    public void directAdd(final byte value) throws IOException
     {
-      outputStream.write(val);
+      outputStream.write(value);
     }
   }
 }

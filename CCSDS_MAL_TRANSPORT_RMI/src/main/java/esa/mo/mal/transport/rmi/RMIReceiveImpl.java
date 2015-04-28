@@ -44,8 +44,8 @@ public class RMIReceiveImpl extends UnicastRemoteObject implements RMIReceiveInt
   @Override
   public void receive(final byte[] packet) throws RemoteException
   {
-    transport.receive(packet);
+    transport.receive(packet, null);
   }
-  
+
   private static final long serialVersionUID = 0x1000001111100L;
 }
