@@ -302,9 +302,11 @@ public class TCPIPTransport extends GENTransport
         throw new MALException("Have no means to communicate with client URI : " + remoteRootURI);
       }
 
+      //create a message sender and receiver for the socket
       TCPIPTransportDataTransceiver trans = new TCPIPTransportDataTransceiver(new Socket(host, port));
 
-      // create also a data reader thread for this socket in order to read messages from it        	
+      // create also a data reader thread for this socket in order to read messages from it 
+      // no need to register this as it will automatically terminate when the uunderlying connection is terminated.
       GENMessagePoller rcvr = new GENMessagePoller(this, trans, trans);
       rcvr.setRemoteURI(remoteRootURI);
       rcvr.start();
