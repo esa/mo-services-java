@@ -2368,7 +2368,7 @@ public abstract class GeneratorLangs extends GeneratorBase
         if (isPubSub)
         {
           // this is a bit of a hack for now
-          if (tiSource.isAttributeNativeType(typeInfo.getSourceType()))
+          if (tiSource.isAttributeNativeType(typeInfo.getSourceType()) || tiSource.isAttributeType(typeInfo.getSourceType()))
           {
             TypeReference tr = typeInfo.getSourceType();
             tr.setList(true);
