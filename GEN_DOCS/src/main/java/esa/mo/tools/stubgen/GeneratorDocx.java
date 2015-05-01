@@ -478,7 +478,7 @@ public class GeneratorDocx extends GeneratorDocument
               }
               else
               {
-                docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Not used");
+                docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Set to NULL");
               }
             }
             docxFile.endRow();
@@ -519,7 +519,7 @@ public class GeneratorDocx extends GeneratorDocument
           }
           else
           {
-            evntTable.addCell(2, SERVICE_EVENT_TABLE_WIDTHS, "Not used", STD_COLOUR);
+            evntTable.addCell(2, SERVICE_EVENT_TABLE_WIDTHS, "No body", STD_COLOUR);
           }
           if (null != evnt.getRelatedObject())
           {
@@ -541,8 +541,9 @@ public class GeneratorDocx extends GeneratorDocument
           }
           else
           {
-            evntTable.addCell(3, SERVICE_EVENT_TABLE_WIDTHS, "Not specified", STD_COLOUR);
+            evntTable.addCell(3, SERVICE_EVENT_TABLE_WIDTHS, "Set to NULL", STD_COLOUR);
           }
+          
           if (null != evnt.getSourceObject())
           {
             if (null != evnt.getSourceObject().getObjectType())
@@ -563,7 +564,7 @@ public class GeneratorDocx extends GeneratorDocument
           }
           else
           {
-            evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, "Not specified");
+            evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, "Set to NULL");
           }
 
           evntTable.endRow();
