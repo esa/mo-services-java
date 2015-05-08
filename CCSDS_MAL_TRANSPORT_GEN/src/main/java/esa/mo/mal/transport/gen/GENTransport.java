@@ -41,7 +41,7 @@ import org.ccsds.moims.mo.mal.transport.*;
 /**
  * A generic implementation of the transport interface.
  */
-public abstract class GENTransport implements MALTransport, GENSender
+public abstract class GENTransport implements MALTransport
 {
   /**
    * System property to control whether message parts of wrapped in BLOBs.
@@ -196,7 +196,7 @@ public abstract class GENTransport implements MALTransport, GENSender
     }
 
     asyncInputDataProcessors = Executors.newFixedThreadPool(inputProcessorThreads);
-    
+
     outgoingDataChannels = Collections.synchronizedMap(new HashMap<String, GENConcurrentMessageSender>());
 
     LOGGER.log(Level.INFO, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
@@ -397,7 +397,15 @@ public abstract class GENTransport implements MALTransport, GENSender
     asyncInputDataProcessors.submit(new GENIncomingDataProcessor(this, rawMessage, receptionHandler));
   }
 
-  @Override
+  /**
+   * The main exit point for messages from this transport.
+   *
+   * @param ep The endpoint sending the message.
+   * @param handle A context handle for multi send
+   * @param lastForHandle True if that is the last message in a multi send for the handle
+   * @param msg The message to send.
+   * @throws MALTransmitErrorException On transmit error.
+   */
   public void sendMessage(final GENEndpoint ep,
           final Object handle,
           final boolean lastForHandle,
@@ -430,7 +438,7 @@ public abstract class GENTransport implements MALTransport, GENSender
         });
 
         // get outgoing channel
-        GENConcurrentMessageSender dataSender = manageCommunicationChannel(msg, GENMessageDirection.OUTGOING, null);
+        GENConcurrentMessageSender dataSender = manageCommunicationChannel(msg, false, null);
 
         GENOutgoingMessageHolder outgoingPacket = internalEncodeMessage(remoteRootURI, destinationURI, handle, lastForHandle, dataSender.getTargetURI(), msg);
 
@@ -465,25 +473,26 @@ public abstract class GENTransport implements MALTransport, GENSender
   }
 
   /**
-   * This method processes an incoming message and then forwards it
-   * for touring to the appropriate endpoint. The processing consists of 
-   * transforming the raw message to the appropriate format and then 
-   * registering if necessary the communication channel.
+   * This method processes an incoming message and then forwards it for touring to the appropriate endpoint. The
+   * processing consists of transforming the raw message to the appropriate format and then registering if necessary the
+   * communication channel.
+   *
    * @param ios the stream to be used to read the message
-   * @param receptionHandler The reception handler of the message. This might be null of the transport implementation does not have a reception handler for this message.
+   * @param receptionHandler The reception handler of the message. This might be null of the transport implementation
+   * does not have a reception handler for this message.
    */
   protected void internalMessageReceive(final java.io.InputStream ios, GENReceptionHandler receptionHandler)
   {
-    LOGGER.log(Level.INFO, "GEN Receiving data (creating thread) : ");
+    LOGGER.log(Level.INFO, "GEN Receiving data (creating thread)");
 
     if (null != ios)
     {
       try
       {
-      	//create message    	  
+        //create message    	  
         GENMessage malMsg = createMessage(ios);
         //register communication channel if needed
-        manageCommunicationChannel(malMsg, GENMessageDirection.INCOMING, receptionHandler);
+        manageCommunicationChannel(malMsg, true, receptionHandler);
         //send message for further processing and routing
         processIncomingMessage(malMsg, "");
       }
@@ -500,12 +509,13 @@ public abstract class GENTransport implements MALTransport, GENSender
   }
 
   /**
-   * This method processes an incoming message and then forwards it
-   * for touring to the appropriate endpoint. The processing consists of 
-   * transforming the raw message to the appropriate format and then 
-   * registering if necessary the communication channel.
+   * This method processes an incoming message and then forwards it for touring to the appropriate endpoint. The
+   * processing consists of transforming the raw message to the appropriate format and then registering if necessary the
+   * communication channel.
+   *
    * @param rawMessage the message
-   * @param receptionHandler The reception handler of the message. This might be null of the transport implementation does not have a reception handler for this message.
+   * @param receptionHandler The reception handler of the message. This might be null of the transport implementation
+   * does not have a reception handler for this message.
    */
   protected void internalMessageReceive(final byte[] rawMessage, GENReceptionHandler receptionHandler)
   {
@@ -516,10 +526,10 @@ public abstract class GENTransport implements MALTransport, GENSender
     {
       try
       {
-    	//create message
+        //create message
         GENMessage malMsg = createMessage(rawMessage);
         //register communication channel if needed
-        manageCommunicationChannel(malMsg, GENMessageDirection.INCOMING, receptionHandler);
+        manageCommunicationChannel(malMsg, true, receptionHandler);
         //send message for further processing and routing
         processIncomingMessage(malMsg, smsg);
       }
@@ -536,9 +546,8 @@ public abstract class GENTransport implements MALTransport, GENSender
   }
 
   /**
-   * This method processes an incoming message
-   * by routing it to the appropriate endpoint, returning
-   * an error if the message cannot be processed.
+   * This method processes an incoming message by routing it to the appropriate endpoint, returning an error if the
+   * message cannot be processed.
    *
    * @param msg The source message.
    * @param smsg The message in a string representation for logging.
@@ -729,12 +738,14 @@ public abstract class GENTransport implements MALTransport, GENSender
   {
     // get the root URI, (e.g. tcpip://10.0.0.1:61616 )
     int serviceDelimPosition = fullURI.indexOf(serviceDelim);
+    
     if (serviceDelimPosition < 0)
     {
-      // does not exist, return as is
+      // does not exist, return as is      
+      return fullURI;
     }
-    String rootURI = fullURI.substring(0, serviceDelimPosition);
-    return rootURI;
+    
+    return fullURI.substring(0, serviceDelimPosition);
   }
 
   /**
@@ -857,124 +868,132 @@ public abstract class GENTransport implements MALTransport, GENSender
   protected abstract String createTransportAddress() throws MALException;
 
   /**
-   * This method checks if there is a communication channel for sending a particular message
-   * and in addition stores the communication channel on incoming messages in case of bi-directional transports for re-use.
-   * If there is no communication channel for sending a message the transport creates and registers it.  
+   * This method checks if there is a communication channel for sending a particular message and in addition stores the
+   * communication channel on incoming messages in case of bi-directional transports for re-use. If there is no
+   * communication channel for sending a message the transport creates and registers it.
+   *
    * @param msg The message received or to be sent
-   * @param msgDirection the message direction
+   * @param isIncomingMsgDirection the message direction
    * @param receptionHandler the message reception handler, null if the message is an outgoing message
    * @return returns an existing or newly created message sender
    * @throws MALTransmitErrorException in case of communication problems
    */
-  protected synchronized GENConcurrentMessageSender manageCommunicationChannel(GENMessage msg, GENMessageDirection msgDirection, GENReceptionHandler receptionHandler) throws MALTransmitErrorException
+  protected synchronized GENConcurrentMessageSender manageCommunicationChannel(GENMessage msg, boolean isIncomingMsgDirection, GENReceptionHandler receptionHandler) throws MALTransmitErrorException
   {
-	GENConcurrentMessageSender sender = null;
-	  
-	if (msgDirection == GENMessageDirection.INCOMING) {
-		//incoming msg
-		if (receptionHandler == null) {
-			//transport does not support bi-directional communication. nothing to do in this case
-		} else {
-			//transport supports bi-directional communication
-			String receptionHandlerURI = receptionHandler.getRemoteURI();
-			if (receptionHandlerURI == null) {
-				//this is the first message received form this reception handler
-				//add the remote base URI it is receiving messages from
-		          String sourceURI = msg.getHeader().getURIFrom().getValue();
-		          String sourceRootURI = getRootURI(sourceURI);
-	
-		          receptionHandler.setRemoteURI(sourceRootURI);	
-		          
-		          //register the communication channel with this URI if needed
-		          sender = registerMessageSender(receptionHandler.getMessageSender(), sourceRootURI);
-			}
-		}
-	} else if (msgDirection == GENMessageDirection.OUTGOING){
-		//outgoing message
-		//get target URI
-	    String destinationURI = msg.getHeader().getURITo().getValue();
-	    String remoteRootURI = getRootURI(destinationURI);
-	    
-	    //get sender if it exists
-	    sender = outgoingDataChannels.get(remoteRootURI);
+    GENConcurrentMessageSender sender = null;
 
-	    if (sender == null)
-	    {
-	      // we do not have any channel for this URI
-	      // try to create a set of connections to this URI 
-	      LOGGER.log(Level.INFO, "GEN received request to create connections to URI:{0}", remoteRootURI);
+    if (isIncomingMsgDirection)
+    {
+      //incoming msg
+      if (receptionHandler == null)
+      {
+        //transport does not support bi-directional communication. nothing to do in this case
+      }
+      else
+      {
+        //transport supports bi-directional communication
+        String receptionHandlerURI = receptionHandler.getRemoteURI();
+        if (receptionHandlerURI == null)
+        {
+          //this is the first message received form this reception handler
+          //add the remote base URI it is receiving messages from
+          String sourceURI = msg.getHeader().getURIFrom().getValue();
+          String sourceRootURI = getRootURI(sourceURI);
 
-	      try
-	      {
-	        // create new sender for this URI
-	        sender = registerMessageSender(createMessageSender(msg, remoteRootURI), remoteRootURI);
+          receptionHandler.setRemoteURI(sourceRootURI);
 
-	        LOGGER.log(Level.INFO, "GEN opening {0}", numConnections);
+          //register the communication channel with this URI if needed
+          sender = registerMessageSender(receptionHandler.getMessageSender(), sourceRootURI);
+        }
+      }
+    }
+    else
+    {
+      //outgoing message
+      //get target URI
+      String destinationURI = msg.getHeader().getURITo().getValue();
+      String remoteRootURI = getRootURI(destinationURI);
 
-	        for (int i = 1; i < numConnections; i++)
-	        {
-	          // insert new processor (data sender) to root data sender for the URI        	
-	           sender.addProcessor(createMessageSender(msg, remoteRootURI), remoteRootURI);
-	        }
-	      }
-	      catch (MALException e)
-	      {
-	        LOGGER.log(Level.WARNING, "GEN could not connect to :" + remoteRootURI, e);
-	        throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
+      //get sender if it exists
+      sender = outgoingDataChannels.get(remoteRootURI);
 
-	      }
-	    }
-	    
-	}  else {
-		//should not happen as the caller should always specify a message direction. Log the problem
-	    LOGGER.log(Level.SEVERE, "GEN cannot determine message direction :"+msgDirection, new Throwable());
-	}
+      if (sender == null)
+      {
+        // we do not have any channel for this URI
+        // try to create a set of connections to this URI 
+        LOGGER.log(Level.INFO, "GEN received request to create connections to URI:{0}", remoteRootURI);
+
+        try
+        {
+          // create new sender for this URI
+          sender = registerMessageSender(createMessageSender(msg, remoteRootURI), remoteRootURI);
+
+          LOGGER.log(Level.INFO, "GEN opening {0}", numConnections);
+
+          for (int i = 1; i < numConnections; i++)
+          {
+            // insert new processor (data sender) to root data sender for the URI        	
+            sender.addProcessor(createMessageSender(msg, remoteRootURI), remoteRootURI);
+          }
+        }
+        catch (MALException e)
+        {
+          LOGGER.log(Level.WARNING, "GEN could not connect to :" + remoteRootURI, e);
+          throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
+
+        }
+      }
+    }
 
     return sender;
   }
 
   /**
-   * Registers a message sender for a given root URI. 
-   * If this is the first data sender for the URI, it also creates a GENConcurrentMessageSender to
-   * manage all the senders.
-   * If there are already enough connections (numConnections) to the given URI the method
-   * does not register the sender. This ensures that we will have at maximum numConnections
-   * to the target root URI.
+   * Registers a message sender for a given root URI. If this is the first data sender for the URI, it also creates a
+   * GENConcurrentMessageSender to manage all the senders. If there are already enough connections (numConnections) to
+   * the given URI the method does not register the sender. This ensures that we will have at maximum numConnections to
+   * the target root URI.
+   *
    * @param dataTransmitter The data sender that is able to send messages to the URI
    * @param remoteRootURI the remote root URI
    * @return returns the GENConcurrentMessageSender for this URI.
    */
   public synchronized GENConcurrentMessageSender registerMessageSender(GENMessageSender dataTransmitter, String remoteRootURI)
   {
-	//check if we already have a communication channel for this URI
-	GENConcurrentMessageSender dataSender = outgoingDataChannels.get(remoteRootURI);
-	if (dataSender != null) {
-		//we already have a communication channel for this URI
-		//check if we have enough connections for the URI, if not then add the data sender 
-		if (dataSender.getNumberOfProcessors() < numConnections) {
-		    LOGGER.log(Level.INFO, "GEN registering data sender for URI:{0}", remoteRootURI);
-		    // insert new processor (data sender) to root data sender for the URI        	
-		    dataSender.addProcessor(dataTransmitter, remoteRootURI);			
-		}
-	} else {
-		//we do not have a communication channel, create a data sender manager and add the first data sender
-		// create new sender manager for this URI
-	    LOGGER.log(Level.INFO, "GEN creating data sender manager for URI:{0}", remoteRootURI);
-	    dataSender = new GENConcurrentMessageSender(this, remoteRootURI);
+    //check if we already have a communication channel for this URI
+    GENConcurrentMessageSender dataSender = outgoingDataChannels.get(remoteRootURI);
+    if (dataSender != null)
+    {
+      //we already have a communication channel for this URI
+      //check if we have enough connections for the URI, if not then add the data sender 
+      if (dataSender.getNumberOfProcessors() < numConnections)
+      {
+        LOGGER.log(Level.INFO, "GEN registering data sender for URI:{0}", remoteRootURI);
+        // insert new processor (data sender) to root data sender for the URI        	
+        dataSender.addProcessor(dataTransmitter, remoteRootURI);
+      }
+    }
+    else
+    {
+      //we do not have a communication channel, create a data sender manager and add the first data sender
+      // create new sender manager for this URI
+      LOGGER.log(Level.INFO, "GEN creating data sender manager for URI:{0}", remoteRootURI);
+      dataSender = new GENConcurrentMessageSender(this, remoteRootURI);
 
-	    LOGGER.log(Level.INFO, "GEN registering data sender for URI:{0}", remoteRootURI);
-	    outgoingDataChannels.put(remoteRootURI, dataSender);
+      LOGGER.log(Level.INFO, "GEN registering data sender for URI:{0}", remoteRootURI);
+      outgoingDataChannels.put(remoteRootURI, dataSender);
 
-	    // insert new processor (data sender) to root data sender for the URI        	
-	    dataSender.addProcessor(dataTransmitter, remoteRootURI);
-	}
+      // insert new processor (data sender) to root data sender for the URI        	
+      dataSender.addProcessor(dataTransmitter, remoteRootURI);
+    }
 
     return dataSender;
   }
 
   /**
-   * Method to be implemented by the transport in order to return a message sender capable
-   * if sending messages to a target root URI.
+   * Method to be implemented by the transport in order to return a message sender capable if sending messages to a
+   * target root URI.
+   *
    * @param msg the message to be send
    * @param remoteRootURI the remote root URI.
    * @return returns a message sender capable of sending messages to the target URI
@@ -1056,12 +1075,5 @@ public abstract class GENTransport implements MALTransport, GENSender
         transport.internalMessageReceive(rawMessage, receptionHandler);
       }
     }
-  }
-
-
-  
-  private enum GENMessageDirection {
-	  INCOMING,
-	  OUTGOING
   }
 }

@@ -143,10 +143,11 @@ public class GENConcurrentMessageSender
     return targetURI;
   }
 
-  public synchronized int getNumberOfProcessors() {
-	  return processingThreads.size();
+  public synchronized int getNumberOfProcessors()
+  {
+    return processingThreads.size();
   }
-  
+
   /**
    * This method will shutdown all processing threads (by calling their interrupt method) which will result in all of
    * them closing their sockets and terminating their processing.

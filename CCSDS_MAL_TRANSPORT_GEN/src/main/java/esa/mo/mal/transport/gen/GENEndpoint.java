@@ -37,7 +37,7 @@ import org.ccsds.moims.mo.mal.transport.*;
  */
 public class GENEndpoint implements MALEndpoint
 {
-  private final GENSender transport;
+  private final GENTransport transport;
   private final String localName;
   private final String localURI;
   private final boolean wrapBodyParts;
@@ -52,7 +52,7 @@ public class GENEndpoint implements MALEndpoint
    * @param uri The URI string for this end point.
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
    */
-  public GENEndpoint(final GENSender transport, final String localName, final String uri, final boolean wrapBodyParts)
+  public GENEndpoint(final GENTransport transport, final String localName, final String uri, final boolean wrapBodyParts)
   {
     this.transport = transport;
     this.localName = localName;

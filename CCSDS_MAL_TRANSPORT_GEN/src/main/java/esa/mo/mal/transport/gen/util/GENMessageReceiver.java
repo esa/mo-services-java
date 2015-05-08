@@ -18,12 +18,12 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.gen.receiving;
+package esa.mo.mal.transport.gen.util;
 
 import java.io.IOException;
 
 /**
- *
+ * Simple interface for reading byte encoded messages from a low level transport. Used by the message poller class. s
  */
 public interface GENMessageReceiver
 {
@@ -34,6 +34,9 @@ public interface GENMessageReceiver
    * @throws IOException in case the encoded message cannot be read
    */
   byte[] readEncodedMessage() throws IOException;
-  
+
+  /**
+   * Closes any used resources.s
+   */
   void close();
 }
