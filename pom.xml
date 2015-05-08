@@ -68,7 +68,6 @@
     <module>CCSDS_MAL_TRANSPORT_GEN</module>
     <module>CCSDS_MAL_TRANSPORT_RMI</module>
     <module>CCSDS_MAL_TRANSPORT_INPROC</module>
-    <module>CCSDS_MAL_TRANSPORT_TCP</module>
     <module>CCSDS_MAL_TRANSPORT_TCPIP</module>
 
   </modules>
