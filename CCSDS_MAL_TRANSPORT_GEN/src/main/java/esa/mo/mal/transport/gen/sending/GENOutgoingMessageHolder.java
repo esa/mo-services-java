@@ -33,30 +33,51 @@ import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
  */
 public class GENOutgoingMessageHolder
 {
-  //reply queue
+  /**
+   * The reply queue
+   */
   private final BlockingQueue<Boolean> replyQueue;
 
+  /**
+   * The destination root URI, holds the connection level URI
+   */
   private final String destinationRootURI;
+  /**
+   * The complete destination URI
+   */
   private final String destinationURI;
-  private final Object handle;
+  /**
+   * The message handle for multi-send messages, may be NULL
+   */
+  private final Object multiSendHandle;
+  /**
+   * True if this is the last message in the multi-send for the supplied handle
+   */
   private final boolean lastForHandle;
-  //the encoded message
+  /**
+   * The encoded message
+   */
   private final byte[] encodedMessage;
 
   /**
-   * Will construct a new object and create a new internal reply queue
+   * Will construct a new object and create a new internal reply queue.
    *
-   * @param encodedMessage the encoded message to be sent
+   * @param destinationRootURI The destination root URI, holds the connection level URI.
+   * @param destinationURI The complete destination URI.
+   * @param multiSendHandle The message handle for multi-send messages, may be NULL.
+   * @param lastForHandle True if this is the last message in the multi-send for the supplied handle.
+   * @param encodedMessage The encoded message to be sent
    */
   public GENOutgoingMessageHolder(final String destinationRootURI,
-          final String destinationURI, final Object handle,
+          final String destinationURI,
+          final Object multiSendHandle,
           final boolean lastForHandle,
           byte[] encodedMessage)
   {
     replyQueue = new LinkedBlockingQueue<Boolean>();
     this.destinationRootURI = destinationRootURI;
     this.destinationURI = destinationURI;
-    this.handle = handle;
+    this.multiSendHandle = multiSendHandle;
     this.lastForHandle = lastForHandle;
     this.encodedMessage = encodedMessage;
   }
@@ -89,21 +110,41 @@ public class GENOutgoingMessageHolder
     }
   }
 
+  /**
+   * Returns the complete destination URI.
+   *
+   * @return the complete destination URI.
+   */
   public String getDestinationURI()
   {
     return destinationURI;
   }
 
+  /**
+   * Returns the destination root URI.
+   *
+   * @return The root URI.
+   */
   public String getDestinationRootURI()
   {
     return destinationRootURI;
   }
 
-  public Object getHandle()
+  /**
+   * returns the multi send message handle.
+   *
+   * @return the message handle.
+   */
+  public Object getMultiSendHandle()
   {
-    return handle;
+    return multiSendHandle;
   }
 
+  /**
+   * Returns true is this is the last message in a multi-send for the current handle.
+   *
+   * @return true if last message.
+   */
   public boolean isLastForHandle()
   {
     return lastForHandle;

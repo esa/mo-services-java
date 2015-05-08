@@ -23,7 +23,7 @@ package esa.mo.mal.transport.gen.util;
 import java.io.IOException;
 
 /**
- * Simple interface for reading byte encoded messages from a low level transport. Used by the message poller class. s
+ * Simple interface for reading byte encoded messages from a low level transport. Used by the message poller class.
  */
 public interface GENMessageReceiver
 {
@@ -36,7 +36,7 @@ public interface GENMessageReceiver
   byte[] readEncodedMessage() throws IOException;
 
   /**
-   * Closes any used resources.s
+   * Closes any used resources.
    */
   void close();
 }

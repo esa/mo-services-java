@@ -23,7 +23,7 @@ package esa.mo.mal.transport.gen.sending;
 import java.io.IOException;
 
 /**
- *
+ * Interface used to map to the low level transport specific send.
  */
 public interface GENMessageSender
 {
@@ -34,6 +34,9 @@ public interface GENMessageSender
    * @throws IOException in case the message cannot be sent to the client
    */
   void sendEncodedMessage(GENOutgoingMessageHolder encodedMessage) throws IOException;
-  
+
+  /**
+   * Closes any resources connected to the low level interface.
+   */
   void close();
 }

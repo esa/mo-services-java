@@ -401,13 +401,13 @@ public abstract class GENTransport implements MALTransport
    * The main exit point for messages from this transport.
    *
    * @param ep The endpoint sending the message.
-   * @param handle A context handle for multi send
+   * @param multiSendHandle A context handle for multi send
    * @param lastForHandle True if that is the last message in a multi send for the handle
    * @param msg The message to send.
    * @throws MALTransmitErrorException On transmit error.
    */
   public void sendMessage(final GENEndpoint ep,
-          final Object handle,
+          final Object multiSendHandle,
           final boolean lastForHandle,
           final GENMessage msg) throws MALTransmitErrorException
   {
@@ -440,7 +440,7 @@ public abstract class GENTransport implements MALTransport
         // get outgoing channel
         GENConcurrentMessageSender dataSender = manageCommunicationChannel(msg, false, null);
 
-        GENOutgoingMessageHolder outgoingPacket = internalEncodeMessage(remoteRootURI, destinationURI, handle, lastForHandle, dataSender.getTargetURI(), msg);
+        GENOutgoingMessageHolder outgoingPacket = internalEncodeMessage(remoteRootURI, destinationURI, multiSendHandle, lastForHandle, dataSender.getTargetURI(), msg);
 
         dataSender.sendMessage(outgoingPacket);
 
@@ -1002,9 +1002,21 @@ public abstract class GENTransport implements MALTransport
    */
   protected abstract GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException;
 
+  /**
+   * Internal method for encoding the message.
+   * 
+   * @param destinationRootURI The destination root URI.
+   * @param destinationURI The complete destination URI.
+   * @param multiSendHandle Handle for multi send messages.
+   * @param lastForHandle true if last message in a multi send.
+   * @param targetURI The target URI.
+   * @param msg The message to send.
+   * @return The message holder for the outgoing message.
+   * @throws Exception if an error.
+   */
   protected GENOutgoingMessageHolder internalEncodeMessage(final String destinationRootURI,
           final String destinationURI,
-          final Object handle,
+          final Object multiSendHandle,
           final boolean lastForHandle,
           final String targetURI,
           final GENMessage msg) throws Exception
@@ -1023,7 +1035,7 @@ public abstract class GENTransport implements MALTransport
         targetURI, packetToString(data)
       });
 
-      return new GENOutgoingMessageHolder(destinationRootURI, destinationURI, handle, lastForHandle, data);
+      return new GENOutgoingMessageHolder(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, data);
     }
     catch (MALException ex)
     {

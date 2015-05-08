@@ -138,11 +138,21 @@ public class GENConcurrentMessageSender
     return processingThreads.size();
   }
 
+  /**
+   * Returns the URI this class sends to.
+   *
+   * @return the target URI.
+   */
   public String getTargetURI()
   {
     return targetURI;
   }
 
+  /**
+   * Returns the number of concurrent processors.
+   *
+   * @return the number of processing threads.
+   */
   public synchronized int getNumberOfProcessors()
   {
     return processingThreads.size();
@@ -242,6 +252,11 @@ public class GENConcurrentMessageSender
       messageSender.close();
     }
 
+    /**
+     * Returns the destination URI being sent to.
+     *
+     * @return the URI to.
+     */
     public String getUriTo()
     {
       return uriTo;
