@@ -23,6 +23,7 @@ package esa.mo.mal.transport.gen;
 import esa.mo.mal.transport.gen.sending.GENConcurrentMessageSender;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
+import esa.mo.mal.transport.gen.util.GENHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -327,42 +328,6 @@ public abstract class GENTransport implements MALTransport
     return (GENEndpoint) endpointMap.get(endpointUriPart);
   }
 
-  @Override
-  public void deleteEndpoint(final String localName) throws MALException
-  {
-    final GENEndpoint endpoint = (GENEndpoint) endpointMap.get(localName);
-
-    if (null != endpoint)
-    {
-      LOGGER.log(Level.INFO, "GEN Deleting endpoint", localName);
-      endpointMap.remove(localName);
-      endpoint.close();
-    }
-  }
-
-  @Override
-  public void close() throws MALException
-  {
-    for (Map.Entry<String, GENEndpoint> entry : endpointMap.entrySet())
-    {
-      final GENEndpoint ep = entry.getValue();
-      ep.close();
-    }
-
-    endpointMap.clear();
-
-    asyncInputDataProcessors.shutdown();
-
-    for (Map.Entry<String, GENConcurrentMessageSender> entry : outgoingDataChannels.entrySet())
-    {
-      final GENConcurrentMessageSender sender = entry.getValue();
-
-      sender.terminate();
-    }
-
-    outgoingDataChannels.clear();
-  }
-
   /**
    * Returns the stream factory.
    *
@@ -371,6 +336,30 @@ public abstract class GENTransport implements MALTransport
   public MALElementStreamFactory getStreamFactory()
   {
     return streamFactory;
+  }
+
+  /**
+   * Overridable internal method for the creation of receiving messages.
+   *
+   * @param ios The input stream to use.
+   * @return The new message.
+   * @throws MALException on Error.
+   */
+  public GENMessage createMessage(final java.io.InputStream ios) throws MALException
+  {
+    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, ios, getStreamFactory());
+  }
+
+  /**
+   * Overridable internal method for the creation of receiving messages.
+   *
+   * @param packet The input packet to use.
+   * @return The new message.
+   * @throws MALException on Error.
+   */
+  public GENMessage createMessage(final byte[] packet) throws MALException
+  {
+    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, packet, getStreamFactory());
   }
 
   /**
@@ -470,6 +459,91 @@ public abstract class GENTransport implements MALTransport
         throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), null);
       }
     }
+  }
+
+  /**
+   * Used to request the transport close a connection with a client. In this case the transport will terminate all
+   * communication channels with the destination in order for them to be re-established.
+   *
+   * @param uriTo the connection handler that received this message
+   * @param receptionHandler
+   */
+  public void closeConnection(String uriTo, GENReceptionHandler receptionHandler)
+  {
+    // remove all associations with this target URI
+    if ((null == uriTo) && (null != receptionHandler))
+    {
+      uriTo = receptionHandler.getRemoteURI();
+    }
+
+    if (uriTo != null)
+    {
+      GENConcurrentMessageSender commsChannel = outgoingDataChannels.get(uriTo);
+      if (commsChannel != null)
+      {
+        commsChannel.terminate();
+        outgoingDataChannels.remove(uriTo);
+      }
+      else
+      {
+        LOGGER.log(Level.FINE, "Could not locate associated data to close communications for URI : {0} ", uriTo);
+      }
+    }
+
+    if (null != receptionHandler)
+    {
+      receptionHandler.close();
+    }
+  }
+
+  /**
+   * Used to inform the transport about communication problems with clients. In this case the transport will terminate
+   * all communication channels with the destination in order for them to be re-established.
+   *
+   * @param uriTo the connection handler that received this message
+   * @param receptionHandler
+   */
+  public void communicationError(String uriTo, GENReceptionHandler receptionHandler)
+  {
+    LOGGER.log(Level.WARNING, "GEN Communication Error with {0} ", uriTo);
+
+    closeConnection(uriTo, receptionHandler);
+  }
+
+  @Override
+  public void deleteEndpoint(final String localName) throws MALException
+  {
+    final GENEndpoint endpoint = (GENEndpoint) endpointMap.get(localName);
+
+    if (null != endpoint)
+    {
+      LOGGER.log(Level.INFO, "GEN Deleting endpoint", localName);
+      endpointMap.remove(localName);
+      endpoint.close();
+    }
+  }
+
+  @Override
+  public void close() throws MALException
+  {
+    for (Map.Entry<String, GENEndpoint> entry : endpointMap.entrySet())
+    {
+      final GENEndpoint ep = entry.getValue();
+      ep.close();
+    }
+
+    endpointMap.clear();
+
+    asyncInputDataProcessors.shutdown();
+
+    for (Map.Entry<String, GENConcurrentMessageSender> entry : outgoingDataChannels.entrySet())
+    {
+      final GENConcurrentMessageSender sender = entry.getValue();
+
+      sender.terminate();
+    }
+
+    outgoingDataChannels.clear();
   }
 
   /**
@@ -595,55 +669,6 @@ public abstract class GENTransport implements MALTransport
         LOGGER.log(Level.SEVERE, "GEN Error occurred when return error data : {0}", e);
       }
     }
-  }
-
-  /**
-   * Used to request the transport close a connection with a client. In this case the transport will terminate all
-   * communication channels with the destination in order for them to be re-established.
-   *
-   * @param uriTo the connection handler that received this message
-   * @param receptionHandler
-   */
-  public void closeConnection(String uriTo, GENReceptionHandler receptionHandler)
-  {
-    // remove all associations with this target URI
-    if ((null == uriTo) && (null != receptionHandler))
-    {
-      uriTo = receptionHandler.getRemoteURI();
-    }
-
-    if (uriTo != null)
-    {
-      GENConcurrentMessageSender commsChannel = outgoingDataChannels.get(uriTo);
-      if (commsChannel != null)
-      {
-        commsChannel.terminate();
-        outgoingDataChannels.remove(uriTo);
-      }
-      else
-      {
-        LOGGER.log(Level.FINE, "Could not locate associated data to close communications for URI : {0} ", uriTo);
-      }
-    }
-
-    if (null != receptionHandler)
-    {
-      receptionHandler.close();
-    }
-  }
-
-  /**
-   * Used to inform the transport about communication problems with clients. In this case the transport will terminate
-   * all communication channels with the destination in order for them to be re-established.
-   *
-   * @param uriTo the connection handler that received this message
-   * @param receptionHandler
-   */
-  public void communicationError(String uriTo, GENReceptionHandler receptionHandler)
-  {
-    LOGGER.log(Level.WARNING, "GEN Communication Error with {0} ", uriTo);
-
-    closeConnection(uriTo, receptionHandler);
   }
 
   /**
@@ -786,40 +811,13 @@ public abstract class GENTransport implements MALTransport
       }
       else
       {
-        return byteArrayToHexString(data);
+        return GENHelper.byteArrayToHexString(data);
       }
     }
     else
     {
       return "";
     }
-  }
-
-  /**
-   * Creates a string version of byte buffer in hex.
-   *
-   * @param data the packet.
-   * @return the string representation.
-   */
-  public static String byteArrayToHexString(final byte[] data)
-  {
-    final StringBuilder hexString = new StringBuilder();
-
-    if (null != data)
-    {
-      for (int i = 0; i < data.length; i++)
-      {
-        final String hex = Integer.toHexString(0xFF & data[i]);
-        if (hex.length() == 1)
-        {
-          // could use a for loop, but we're only dealing with a single byte
-          hexString.append('0');
-        }
-        hexString.append(hex);
-      }
-    }
-
-    return hexString.toString();
   }
 
   /**
@@ -834,38 +832,6 @@ public abstract class GENTransport implements MALTransport
   {
     return new GENEndpoint(this, localName, uriBase + localName, wrapBodyParts);
   }
-
-  /**
-   * Overridable internal method for the creation of receiving messages.
-   *
-   * @param ios The input stream to use.
-   * @return The new message.
-   * @throws MALException on Error.
-   */
-  public GENMessage createMessage(final java.io.InputStream ios) throws MALException
-  {
-    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, ios, getStreamFactory());
-  }
-
-  /**
-   * Overridable internal method for the creation of receiving messages.
-   *
-   * @param packet The input packet to use.
-   * @return The new message.
-   * @throws MALException on Error.
-   */
-  public GENMessage createMessage(final byte[] packet) throws MALException
-  {
-    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, packet, getStreamFactory());
-  }
-
-  /**
-   * Creates the part of the URL specific to this transport instance.
-   *
-   * @return The transport specific address part.
-   * @throws MALException On error
-   */
-  protected abstract String createTransportAddress() throws MALException;
 
   /**
    * This method checks if there is a communication channel for sending a particular message and in addition stores the
@@ -958,7 +924,7 @@ public abstract class GENTransport implements MALTransport
    * @param remoteRootURI the remote root URI
    * @return returns the GENConcurrentMessageSender for this URI.
    */
-  public synchronized GENConcurrentMessageSender registerMessageSender(GENMessageSender dataTransmitter, String remoteRootURI)
+  protected synchronized GENConcurrentMessageSender registerMessageSender(GENMessageSender dataTransmitter, String remoteRootURI)
   {
     //check if we already have a communication channel for this URI
     GENConcurrentMessageSender dataSender = outgoingDataChannels.get(remoteRootURI);
@@ -989,18 +955,6 @@ public abstract class GENTransport implements MALTransport
 
     return dataSender;
   }
-
-  /**
-   * Method to be implemented by the transport in order to return a message sender capable if sending messages to a
-   * target root URI.
-   *
-   * @param msg the message to be send
-   * @param remoteRootURI the remote root URI.
-   * @return returns a message sender capable of sending messages to the target URI
-   * @throws MALException in case of error trying to create the communication channel
-   * @throws MALTransmitErrorException in case of error connecting to the target URI
-   */
-  protected abstract GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException;
 
   /**
    * Internal method for encoding the message.
@@ -1043,6 +997,26 @@ public abstract class GENTransport implements MALTransport
       throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, null), null);
     }
   }
+
+  /**
+   * Creates the part of the URL specific to this transport instance.
+   *
+   * @return The transport specific address part.
+   * @throws MALException On error
+   */
+  protected abstract String createTransportAddress() throws MALException;
+
+  /**
+   * Method to be implemented by the transport in order to return a message sender capable if sending messages to a
+   * target root URI.
+   *
+   * @param msg the message to be send
+   * @param remoteRootURI the remote root URI.
+   * @return returns a message sender capable of sending messages to the target URI
+   * @throws MALException in case of error trying to create the communication channel
+   * @throws MALTransmitErrorException in case of error connecting to the target URI
+   */
+  protected abstract GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException;
 
   /**
    * This Runnable task is responsible for holding newly arrived MAL Messages (in raw format) and passing to the
