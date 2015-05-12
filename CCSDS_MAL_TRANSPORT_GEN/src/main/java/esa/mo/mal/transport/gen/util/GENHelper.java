@@ -18,24 +18,38 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.gen;
-
-import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
+package esa.mo.mal.transport.gen.util;
 
 /**
- *
+ * Simple class for holding helper methods.
  */
-public interface GENSender
+public abstract class GENHelper
 {
   /**
-   * The main exit point for messages from this transport.
+   * Creates a string version of byte buffer in hex.
    *
-   * @param ep The endpoint sending the message.
-   * @param handle A context handle for multi send
-   * @param lastForHandle True if that is the last message in a multi send for the handle
-   * @param msg The message to send.
-   * @throws MALTransmitErrorException On transmit error.
+   * @param data the packet.
+   * @return the string representation.
    */
-  void sendMessage(final GENEndpoint ep, final Object handle, final boolean lastForHandle, final GENMessage msg)
-          throws MALTransmitErrorException;
+  public static String byteArrayToHexString(final byte[] data)
+  {
+    final StringBuilder hexString = new StringBuilder();
+
+    if (null != data)
+    {
+      for (int i = 0; i < data.length; i++)
+      {
+        final String hex = Integer.toHexString(0xFF & data[i]);
+        if (hex.length() == 1)
+        {
+          // could use a for loop, but we're only dealing with a single byte
+          hexString.append('0');
+        }
+        hexString.append(hex);
+      }
+    }
+
+    return hexString.toString();
+  }
+
 }

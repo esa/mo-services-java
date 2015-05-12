@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import esa.mo.mal.transport.gen.receiving.GENMessageReceiver;
+import esa.mo.mal.transport.gen.util.GENMessageReceiver;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
 import java.io.DataInputStream;

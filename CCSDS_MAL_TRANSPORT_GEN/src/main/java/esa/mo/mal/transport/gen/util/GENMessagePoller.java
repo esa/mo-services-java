@@ -21,7 +21,6 @@
 package esa.mo.mal.transport.gen.util;
 
 import esa.mo.mal.transport.gen.GENReceptionHandler;
-import esa.mo.mal.transport.gen.receiving.GENMessageReceiver;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.GENTransport;
 import java.io.IOException;
@@ -58,6 +57,13 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
    */
   private volatile String remoteURI = null;
 
+  /**
+   * Constructor.
+   *
+   * @param transport Message transport being used.
+   * @param messageSender The message sending interface associated to this connection.
+   * @param messageReceiver The message reception interface, used for pulling messaging into this transport.
+   */
   public GENMessagePoller(GENTransport transport, GENMessageSender messageSender, GENMessageReceiver messageReceiver)
   {
     this.transport = transport;
