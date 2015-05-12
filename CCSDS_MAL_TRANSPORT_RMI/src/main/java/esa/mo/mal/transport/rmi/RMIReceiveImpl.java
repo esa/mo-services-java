@@ -28,6 +28,7 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class RMIReceiveImpl extends UnicastRemoteObject implements RMIReceiveInterface
 {
+  private static final long serialVersionUID = 0x1000001111100L;
   private final transient RMITransport transport;
 
   /**
@@ -46,6 +47,4 @@ public class RMIReceiveImpl extends UnicastRemoteObject implements RMIReceiveInt
   {
     transport.receive(packet, null);
   }
-
-  private static final long serialVersionUID = 0x1000001111100L;
 }

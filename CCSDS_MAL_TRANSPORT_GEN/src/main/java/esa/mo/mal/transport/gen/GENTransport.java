@@ -300,7 +300,7 @@ public abstract class GENTransport implements MALTransport
   public MALEndpoint createEndpoint(final String localName, final Map qosProperties) throws MALException
   {
     final String strLocalName = getLocalName(localName);
-    GENEndpoint endpoint = (GENEndpoint) endpointMap.get(strLocalName);
+    GENEndpoint endpoint = endpointMap.get(strLocalName);
 
     if (null == endpoint)
     {
@@ -315,7 +315,7 @@ public abstract class GENTransport implements MALTransport
   @Override
   public MALEndpoint getEndpoint(final String localName) throws IllegalArgumentException
   {
-    return (GENEndpoint) endpointMap.get(localName);
+    return endpointMap.get(localName);
   }
 
   @Override
@@ -325,7 +325,7 @@ public abstract class GENTransport implements MALTransport
     final int iFirst = endpointUriPart.indexOf(serviceDelim);
     endpointUriPart = endpointUriPart.substring(iFirst + 1, endpointUriPart.length());
 
-    return (GENEndpoint) endpointMap.get(endpointUriPart);
+    return endpointMap.get(endpointUriPart);
   }
 
   /**
@@ -468,25 +468,26 @@ public abstract class GENTransport implements MALTransport
    * @param uriTo the connection handler that received this message
    * @param receptionHandler
    */
-  public void closeConnection(String uriTo, GENReceptionHandler receptionHandler)
+  public void closeConnection(final String uriTo, final GENReceptionHandler receptionHandler)
   {
+    String localUriTo = uriTo;
     // remove all associations with this target URI
-    if ((null == uriTo) && (null != receptionHandler))
+    if ((null == localUriTo) && (null != receptionHandler))
     {
-      uriTo = receptionHandler.getRemoteURI();
+      localUriTo = receptionHandler.getRemoteURI();
     }
 
-    if (uriTo != null)
+    if (localUriTo != null)
     {
-      GENConcurrentMessageSender commsChannel = outgoingDataChannels.get(uriTo);
+      GENConcurrentMessageSender commsChannel = outgoingDataChannels.get(localUriTo);
       if (commsChannel != null)
       {
         commsChannel.terminate();
-        outgoingDataChannels.remove(uriTo);
+        outgoingDataChannels.remove(localUriTo);
       }
       else
       {
-        LOGGER.log(Level.FINE, "Could not locate associated data to close communications for URI : {0} ", uriTo);
+        LOGGER.log(Level.FINE, "Could not locate associated data to close communications for URI : {0} ", localUriTo);
       }
     }
 
@@ -513,7 +514,7 @@ public abstract class GENTransport implements MALTransport
   @Override
   public void deleteEndpoint(final String localName) throws MALException
   {
-    final GENEndpoint endpoint = (GENEndpoint) endpointMap.get(localName);
+    final GENEndpoint endpoint = endpointMap.get(localName);
 
     if (null != endpoint)
     {
@@ -528,8 +529,7 @@ public abstract class GENTransport implements MALTransport
   {
     for (Map.Entry<String, GENEndpoint> entry : endpointMap.entrySet())
     {
-      final GENEndpoint ep = entry.getValue();
-      ep.close();
+      entry.getValue().close();
     }
 
     endpointMap.clear();
@@ -563,11 +563,11 @@ public abstract class GENTransport implements MALTransport
     {
       try
       {
-        //create message    	  
+        // create message
         GENMessage malMsg = createMessage(ios);
-        //register communication channel if needed
+        // register communication channel if needed
         manageCommunicationChannel(malMsg, true, receptionHandler);
-        //send message for further processing and routing
+        // send message for further processing and routing
         processIncomingMessage(malMsg, "");
       }
       catch (Exception e)
@@ -634,7 +634,7 @@ public abstract class GENTransport implements MALTransport
 
       String endpointUriPart = getRoutingPart(msg.getHeader().getURITo().getValue(), serviceDelim, routingDelim, supportsRouting);
 
-      final GENEndpoint oSkel = (GENEndpoint) endpointMap.get(endpointUriPart);
+      final GENEndpoint oSkel = endpointMap.get(endpointUriPart);
 
       if (null != oSkel)
       {
@@ -702,11 +702,11 @@ public abstract class GENTransport implements MALTransport
       {
         final MALMessageHeader srcHdr = oriMsg.getHeader();
 
-        if ((null == ep) && (0 < endpointMap.size()))
+        if ((null == ep) && (!endpointMap.isEmpty()))
         {
-          ep = endpointMap.entrySet().iterator().next().getValue();
+          GENEndpoint endpoint = endpointMap.entrySet().iterator().next().getValue();
 
-          final GENMessage retMsg = (GENMessage) ep.createMessage(srcHdr.getAuthenticationId(),
+          final GENMessage retMsg = (GENMessage) endpoint.createMessage(srcHdr.getAuthenticationId(),
                   srcHdr.getURIFrom(),
                   new Time(new Date().getTime()),
                   srcHdr.getQoSlevel(),
@@ -726,7 +726,7 @@ public abstract class GENTransport implements MALTransport
                   oriMsg.getQoSProperties(),
                   errorNumber, new Union(errorMsg));
 
-          sendMessage(ep, null, true, retMsg);
+          sendMessage(endpoint, null, true, retMsg);
         }
       }
     }
@@ -763,13 +763,13 @@ public abstract class GENTransport implements MALTransport
   {
     // get the root URI, (e.g. tcpip://10.0.0.1:61616 )
     int serviceDelimPosition = fullURI.indexOf(serviceDelim);
-    
+
     if (serviceDelimPosition < 0)
     {
       // does not exist, return as is      
       return fullURI;
     }
-    
+
     return fullURI.substring(0, serviceDelimPosition);
   }
 
@@ -786,7 +786,7 @@ public abstract class GENTransport implements MALTransport
   {
     String endpointUriPart = uriValue;
     final int iFirst = endpointUriPart.indexOf(serviceDelim);
-    int iSecond = (supportsRouting ? endpointUriPart.indexOf(routingDelim) : endpointUriPart.length());
+    int iSecond = supportsRouting ? endpointUriPart.indexOf(routingDelim) : endpointUriPart.length();
     if (0 > iSecond)
     {
       iSecond = endpointUriPart.length();
@@ -850,40 +850,31 @@ public abstract class GENTransport implements MALTransport
 
     if (isIncomingMsgDirection)
     {
-      //incoming msg
-      if (receptionHandler == null)
+      // incoming msg
+      if ((null != receptionHandler) && (null == receptionHandler.getRemoteURI()))
       {
-        //transport does not support bi-directional communication. nothing to do in this case
-      }
-      else
-      {
-        //transport supports bi-directional communication
-        String receptionHandlerURI = receptionHandler.getRemoteURI();
-        if (receptionHandlerURI == null)
-        {
-          //this is the first message received form this reception handler
-          //add the remote base URI it is receiving messages from
-          String sourceURI = msg.getHeader().getURIFrom().getValue();
-          String sourceRootURI = getRootURI(sourceURI);
+        // transport supports bi-directional communication
+        // this is the first message received form this reception handler
+        // add the remote base URI it is receiving messages from
+        String sourceURI = msg.getHeader().getURIFrom().getValue();
+        String sourceRootURI = getRootURI(sourceURI);
 
-          receptionHandler.setRemoteURI(sourceRootURI);
+        receptionHandler.setRemoteURI(sourceRootURI);
 
-          //register the communication channel with this URI if needed
-          sender = registerMessageSender(receptionHandler.getMessageSender(), sourceRootURI);
-        }
+        //register the communication channel with this URI if needed
+        sender = registerMessageSender(receptionHandler.getMessageSender(), sourceRootURI);
       }
     }
     else
     {
-      //outgoing message
-      //get target URI
-      String destinationURI = msg.getHeader().getURITo().getValue();
-      String remoteRootURI = getRootURI(destinationURI);
+      // outgoing message
+      // get target URI
+      String remoteRootURI = getRootURI(msg.getHeader().getURITo().getValue());
 
-      //get sender if it exists
+      // get sender if it exists
       sender = outgoingDataChannels.get(remoteRootURI);
 
-      if (sender == null)
+      if (null == sender)
       {
         // we do not have any channel for this URI
         // try to create a set of connections to this URI 
@@ -898,15 +889,15 @@ public abstract class GENTransport implements MALTransport
 
           for (int i = 1; i < numConnections; i++)
           {
-            // insert new processor (data sender) to root data sender for the URI        	
+            // insert new processor (message sender) to root data sender for the URI
             sender.addProcessor(createMessageSender(msg, remoteRootURI), remoteRootURI);
           }
         }
         catch (MALException e)
         {
           LOGGER.log(Level.WARNING, "GEN could not connect to :" + remoteRootURI, e);
-          throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
-
+          throw new MALTransmitErrorException(msg.getHeader(),
+                  new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
         }
       }
     }
@@ -935,7 +926,7 @@ public abstract class GENTransport implements MALTransport
       if (dataSender.getNumberOfProcessors() < numConnections)
       {
         LOGGER.log(Level.INFO, "GEN registering data sender for URI:{0}", remoteRootURI);
-        // insert new processor (data sender) to root data sender for the URI        	
+        // insert new processor (message sender) to root data sender for the URI
         dataSender.addProcessor(dataTransmitter, remoteRootURI);
       }
     }
@@ -949,7 +940,7 @@ public abstract class GENTransport implements MALTransport
       LOGGER.log(Level.INFO, "GEN registering data sender for URI:{0}", remoteRootURI);
       outgoingDataChannels.put(remoteRootURI, dataSender);
 
-      // insert new processor (data sender) to root data sender for the URI        	
+      // insert new processor (message sender) to root data sender for the URI
       dataSender.addProcessor(dataTransmitter, remoteRootURI);
     }
 
@@ -958,7 +949,7 @@ public abstract class GENTransport implements MALTransport
 
   /**
    * Internal method for encoding the message.
-   * 
+   *
    * @param destinationRootURI The destination root URI.
    * @param destinationURI The complete destination URI.
    * @param multiSendHandle Handle for multi send messages.

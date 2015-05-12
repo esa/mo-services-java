@@ -97,6 +97,11 @@ public class TCPIPTransport extends GENTransport
   public static final java.util.logging.Logger RLOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.tcpip");
 
   /**
+   * Port delimiter
+   */
+  private static final char portDelimiter = ':';
+
+  /**
    * The server port that the TCP transport listens for incoming connections
    */
   private final int serverPort;
@@ -105,11 +110,6 @@ public class TCPIPTransport extends GENTransport
    * Server host, this can be one of the IP Addresses / hostnames of the host.
    */
   private final String serverHost;
-
-  /**
-   * Port delimiter
-   */
-  private final char portDelimiter = ':';
 
   /**
    * Holds the server connection listener
@@ -173,11 +173,6 @@ public class TCPIPTransport extends GENTransport
     RLOGGER.log(Level.INFO, "TCPIP Wrapping body parts set to  : {0}", this.wrapBodyParts);
   }
 
-  /**
-   * Initialises this transport.
-   *
-   * @throws MALException On error
-   */
   @Override
   public void init() throws MALException
   {
@@ -229,7 +224,7 @@ public class TCPIPTransport extends GENTransport
   public boolean isSupportedInteractionType(final InteractionType type)
   {
     // Supports all IPs except Pub Sub
-    return (InteractionType.PUBSUB.getOrdinal() != type.getOrdinal());
+    return InteractionType.PUBSUB.getOrdinal() != type.getOrdinal();
   }
 
   @Override
@@ -379,8 +374,6 @@ public class TCPIPTransport extends GENTransport
    */
   private String getRandomClientId()
   {
-    UID hostUniqueUID = new UID();
-    String hostUniqueUIDHex = hostUniqueUID.toString().replaceAll("[^abcdef0-9]", "");
-    return hostUniqueUIDHex;
+    return new UID().toString().replaceAll("[^abcdef0-9]", "");
   }
 }

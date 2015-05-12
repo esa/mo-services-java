@@ -411,6 +411,7 @@ public class GENEndpoint implements MALEndpoint
    */
   protected Object internalCreateMultiSendHandle(final MALMessage[] msgList) throws Exception
   {
+    // implemented in derived transport if it uses multi-send handles. 
     return null;
   }
 
@@ -423,5 +424,6 @@ public class GENEndpoint implements MALEndpoint
    */
   protected void internalCloseMultiSendHandle(final Object multiSendHandle, final MALMessage[] msgList) throws Exception
   {
+    // implemented in derived transport if it uses multi-send handles. 
   }
 }

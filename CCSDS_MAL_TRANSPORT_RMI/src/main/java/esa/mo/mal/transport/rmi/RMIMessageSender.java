@@ -29,23 +29,39 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 /**
- *
+ * implementation of the GENMessageSender information for RMI transport.
  */
 public class RMIMessageSender implements GENMessageSender
 {
-  private final RMIReceiveInterface destinationRMI;
+  private RMIReceiveInterface destinationRMI;
 
+  /**
+   * Constructor.
+   *
+   * @param remoteRootURI The remote RMI object URI.
+   * @throws NotBoundException If remote RMI object no bound.
+   * @throws MalformedURLException If URI not correct.
+   * @throws RemoteException If there is a remote error.
+   */
   public RMIMessageSender(String remoteRootURI) throws NotBoundException, MalformedURLException, RemoteException
   {
     destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteRootURI);
   }
 
+  @Override
   public void sendEncodedMessage(GENOutgoingMessageHolder packetData) throws IOException
   {
-    destinationRMI.receive(packetData.getEncodedMessage());
+    RMIReceiveInterface remoteIf = destinationRMI;
+
+    if (null != remoteIf)
+    {
+      remoteIf.receive(packetData.getEncodedMessage());
+    }
   }
 
+  @Override
   public void close()
   {
+    destinationRMI = null;
   }
 }

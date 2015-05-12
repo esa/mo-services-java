@@ -52,4 +52,8 @@ public abstract class GENHelper
     return hexString.toString();
   }
 
+  private GENHelper()
+  {
+    // private contructor as not a real class but a place for static methods
+  }
 }

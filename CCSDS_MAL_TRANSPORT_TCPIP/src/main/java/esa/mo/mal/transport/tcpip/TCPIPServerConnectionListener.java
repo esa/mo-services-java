@@ -27,8 +27,8 @@ import java.net.Socket;
 import java.util.logging.Level;
 
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Server Thread for the TCPIP transport.
@@ -45,7 +45,7 @@ public class TCPIPServerConnectionListener extends Thread
   /**
    * Holds the list of data poller threads
    */
-  private final List<Thread> pollerThreads = new Vector<Thread>();
+  private final List<Thread> pollerThreads = new ArrayList<Thread>();
 
   /**
    * Constructor.

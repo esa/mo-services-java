@@ -172,7 +172,7 @@ public class RMITransport extends GENTransport
   public boolean isSupportedInteractionType(final InteractionType type)
   {
     // Supports all IPs except Pub Sub
-    return (InteractionType.PUBSUB.getOrdinal() != type.getOrdinal());
+    return InteractionType.PUBSUB.getOrdinal() != type.getOrdinal();
   }
 
   @Override

@@ -199,6 +199,7 @@ public class GENMessage implements MALMessage, java.io.Serializable
   @Override
   public void free() throws MALException
   {
+    // do nothing in the GEN case.
   }
 
   /**
@@ -236,7 +237,7 @@ public class GENMessage implements MALMessage, java.io.Serializable
       // now encode the body
       body.encodeMessageBody(streamFactory, enc, lowLevelOutputStream, header.getInteractionStage(), ctx);
     }
-    catch (Throwable ex)
+    catch (Exception ex)
     {
       throw new MALException("Internal error encoding message", ex);
     }
