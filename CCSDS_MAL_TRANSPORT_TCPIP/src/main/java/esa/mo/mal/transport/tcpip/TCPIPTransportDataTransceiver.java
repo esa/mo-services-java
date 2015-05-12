@@ -32,14 +32,21 @@ import java.net.Socket;
  * This class implements the low level data (MAL Message) transport protocol. In order to differentiate messages with
  * each other, the protocol has a very simple format: |size|message|
  *
+ * If the protocol uses a different message encoding this class can be replaced in the TCPIPTransport.
+ *
  */
 public class TCPIPTransportDataTransceiver implements GENMessageReceiver, GENMessageSender
 {
-  private final Socket socket;
+  protected final Socket socket;
+  protected final DataOutputStream socketWriteIf;
+  protected final DataInputStream socketReadIf;
 
-  private final DataOutputStream socketWriteIf;
-  private final DataInputStream socketReadIf;
-
+  /**
+   * Constructor.
+   *
+   * @param socket the TCPIP socket.
+   * @throws IOException if there is an error.
+   */
   public TCPIPTransportDataTransceiver(Socket socket) throws IOException
   {
     this.socket = socket;
@@ -47,12 +54,6 @@ public class TCPIPTransportDataTransceiver implements GENMessageReceiver, GENMes
     socketReadIf = new DataInputStream(socket.getInputStream());
   }
 
-  /**
-   * Sends data to the client (MAL Message encoded as a byte array)
-   *
-   * @param packetData the MALMessage encoded as a byte array
-   * @throws IOException in case the data cannot be send to the client
-   */
   @Override
   public void sendEncodedMessage(GENOutgoingMessageHolder packetData) throws IOException
   {
@@ -63,12 +64,7 @@ public class TCPIPTransportDataTransceiver implements GENMessageReceiver, GENMes
     socketWriteIf.flush();
   }
 
-  /**
-   * Reads a MALMessage encoded as a byte array.
-   *
-   * @return the byte array containing the MAL Message
-   * @throws IOException in case the data cannot be read
-   */
+  @Override
   public byte[] readEncodedMessage() throws IOException
   {
     try
@@ -91,6 +87,7 @@ public class TCPIPTransportDataTransceiver implements GENMessageReceiver, GENMes
     }
   }
 
+  @Override
   public void close()
   {
     try

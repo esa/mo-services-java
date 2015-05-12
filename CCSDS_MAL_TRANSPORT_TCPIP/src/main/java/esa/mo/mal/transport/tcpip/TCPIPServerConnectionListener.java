@@ -27,6 +27,8 @@ import java.net.Socket;
 import java.util.logging.Level;
 
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Server Thread for the TCPIP transport.
@@ -40,6 +42,17 @@ public class TCPIPServerConnectionListener extends Thread
   private final TCPIPTransport transport;
   private final ServerSocket serverSocket;
 
+  /**
+   * Holds the list of data poller threads
+   */
+  private final List<Thread> pollerThreads = new Vector<Thread>();
+
+  /**
+   * Constructor.
+   *
+   * @param transport The parent TCPIP transport.
+   * @param serverSocket The server TCPIP socket.
+   */
   public TCPIPServerConnectionListener(TCPIPTransport transport, ServerSocket serverSocket)
   {
     this.transport = transport;
@@ -68,10 +81,10 @@ public class TCPIPServerConnectionListener extends Thread
         Socket socket = serverSocket.accept();
 
         // handle socket in separate thread
-        TCPIPTransportDataTransceiver tc = new TCPIPTransportDataTransceiver(socket);
+        TCPIPTransportDataTransceiver tc = transport.createDataTransceiver(socket);
 
         GENMessagePoller poller = new GENMessagePoller(transport, tc, tc);
-        transport.addDataPoller(poller);
+        pollerThreads.add(poller);
         poller.start();
       }
       catch (java.net.SocketTimeoutException ex)
@@ -83,5 +96,15 @@ public class TCPIPServerConnectionListener extends Thread
         RLOGGER.log(Level.WARNING, "Error while accepting connection", e);
       }
     }
+
+    for (Thread pollerThread : pollerThreads)
+    {
+      synchronized (pollerThread)
+      {
+        pollerThread.interrupt();
+      }
+    }
+
+    pollerThreads.clear();
   }
 }

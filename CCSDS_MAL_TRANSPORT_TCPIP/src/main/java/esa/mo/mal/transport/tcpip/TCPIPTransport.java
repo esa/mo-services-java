@@ -33,9 +33,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.server.UID;
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
@@ -81,7 +79,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  *
  * URIs:
  *
- * The TCPIP Transpost, generates URIs, in the for of : tcpip://<host>:<port or client ID>-<service id>
+ * The TCPIP Transport, generates URIs, in the for of : tcpip://<host>:<port or client ID>-<service id>
  * There are two categories of URIs Client URIs, which are in the form of tcpip://<host>:<clientId>-<serviceId> , where
  * the client id is a unique identifier for the client on its host, for example : 4783fbc147ab7aa56e7fff and ServerURIs,
  * which are in the form of tcpip://<host>:<port>-<serviceId> and clients can actively connect to.
@@ -114,10 +112,10 @@ public class TCPIPTransport extends GENTransport
   private final char portDelimiter = ':';
 
   /**
-   * Holds the list of data poller threads
+   * Holds the server connection listener
    */
-  private final List<Thread> pollerThreads = new Vector<Thread>();
-  
+  private TCPIPServerConnectionListener serverConnectionListener = null;
+
   /*
    * Constructor.
    *
@@ -197,9 +195,11 @@ public class TCPIPTransport extends GENTransport
         ServerSocket serverSocket = new ServerSocket(serverPort, 0, serverHostAddr);
 
         // create thread that will listen for connections
-        TCPIPServerConnectionListener serverConnectionListener = new TCPIPServerConnectionListener(this, serverSocket);
-        serverConnectionListener.start();
-        this.pollerThreads.add(serverConnectionListener);
+        synchronized (this)
+        {
+          serverConnectionListener = new TCPIPServerConnectionListener(this, serverSocket);
+          serverConnectionListener.start();
+        }
 
         RLOGGER.log(Level.INFO, "Started TCP Server Transport on port {0}", serverPort);
       }
@@ -244,16 +244,14 @@ public class TCPIPTransport extends GENTransport
   public void close() throws MALException
   {
     super.close();
-    
-    for (Thread pollerThread : pollerThreads)
+
+    synchronized (this)
     {
-      synchronized(pollerThread)
+      if (null != serverConnectionListener)
       {
-        pollerThread.interrupt();
+        serverConnectionListener.interrupt();
       }
     }
-    
-    pollerThreads.clear();
   }
 
   @Override
@@ -298,12 +296,12 @@ public class TCPIPTransport extends GENTransport
       }
       catch (NumberFormatException nfe)
       {
-        LOGGER.log(Level.WARNING, "Have no means to communicate with client URI : " + remoteRootURI);
+        LOGGER.log(Level.WARNING, "Have no means to communicate with client URI : {0}", remoteRootURI);
         throw new MALException("Have no means to communicate with client URI : " + remoteRootURI);
       }
 
       //create a message sender and receiver for the socket
-      TCPIPTransportDataTransceiver trans = new TCPIPTransportDataTransceiver(new Socket(host, port));
+      TCPIPTransportDataTransceiver trans = createDataTransceiver(new Socket(host, port));
 
       // create also a data reader thread for this socket in order to read messages from it 
       // no need to register this as it will automatically terminate when the uunderlying connection is terminated.
@@ -322,17 +320,25 @@ public class TCPIPTransport extends GENTransport
     {
       //there was a communication problem, we need to clean up the objects we created in the meanwhile
       communicationError(remoteRootURI, null);
-      
+
       //rethrow for higher MAL leyers
       throw new MALException("IO Exception", e);
     }
   }
 
-  protected synchronized void addDataPoller(GENMessagePoller newPoller)
+  /**
+   * Allows transport derived from this, where the message encoding is changed for example, to easily replace the
+   * message transceiver without worrying about the TCPIP connection
+   *
+   * @param socket the TCPIP socket
+   * @return the new transceiver
+   * @throws IOException if there is an error
+   */
+  protected TCPIPTransportDataTransceiver createDataTransceiver(Socket socket) throws IOException
   {
-    this.pollerThreads.add(newPoller);
+    return new TCPIPTransportDataTransceiver(socket);
   }
-  
+
   /**
    * Provide a default IP address for this host
    *
