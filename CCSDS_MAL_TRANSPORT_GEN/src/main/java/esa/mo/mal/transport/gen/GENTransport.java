@@ -53,6 +53,14 @@ public abstract class GENTransport implements MALTransport
    */
   public static final String DEBUG_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.debug";
   /**
+   * System property to control the number of input processors.
+   */
+  public static final String INPUT_PROCESSORS_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.inputprocessors";
+  /**
+   * System property to control the number of connections per client.
+   */
+  public static final String NUM_CLIENT_CONNS_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.numconnections";
+  /**
    * Logger
    */
   public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.gen");
@@ -168,9 +176,9 @@ public abstract class GENTransport implements MALTransport
       this.wrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
 
       // number of internal threads that process incoming MAL packets
-      if (properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.inputprocessors"))
+      if (properties.containsKey(INPUT_PROCESSORS_PROPERTY))
       {
-        this.inputProcessorThreads = Integer.parseInt((String) properties.get("org.ccsds.moims.mo.mal.transport.gen.inputprocessors"));
+        this.inputProcessorThreads = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
       }
       else
       {
@@ -178,9 +186,9 @@ public abstract class GENTransport implements MALTransport
       }
 
       // number of connections per client/server
-      if (properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.numconnections"))
+      if (properties.containsKey(NUM_CLIENT_CONNS_PROPERTY))
       {
-        this.numConnections = Integer.parseInt((String) properties.get("org.ccsds.moims.mo.mal.transport.gen.numconnections"));
+        this.numConnections = Integer.parseInt((String) properties.get(NUM_CLIENT_CONNS_PROPERTY));
       }
       else
       {
@@ -247,18 +255,18 @@ public abstract class GENTransport implements MALTransport
       this.wrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
 
       // number of internal threads that process incoming MAL packets
-      if (properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.inputprocessors"))
+      if (properties.containsKey(INPUT_PROCESSORS_PROPERTY))
       {
-        this.inputProcessorThreads = Integer.parseInt((String) properties.get("org.ccsds.moims.mo.mal.transport.gen.inputprocessors"));
+        this.inputProcessorThreads = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
       }
       else
       {
         this.inputProcessorThreads = 20;
       }
       // number of connections per client/server
-      if (properties.containsKey("org.ccsds.moims.mo.mal.transport.gen.numconnections"))
+      if (properties.containsKey(NUM_CLIENT_CONNS_PROPERTY))
       {
-        this.numConnections = Integer.parseInt((String) properties.get("org.ccsds.moims.mo.mal.transport.gen.numconnections"));
+        this.numConnections = Integer.parseInt((String) properties.get(NUM_CLIENT_CONNS_PROPERTY));
       }
       else
       {
@@ -433,18 +441,7 @@ public abstract class GENTransport implements MALTransport
 
         dataSender.sendMessage(outgoingPacket);
 
-        Boolean dataSendResult = Boolean.FALSE;
-        try
-        {
-          dataSendResult = outgoingPacket.getResult();
-        }
-        catch (InterruptedException e)
-        {
-          LOGGER.log(Level.SEVERE, "Interrupted while waiting for data reply", e);
-          throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), null);
-        }
-
-        if (!dataSendResult)
+        if (!outgoingPacket.getResult())
         {
           // data was not sent succesfully, throw an exception for the
           // higher MAL layers
@@ -452,6 +449,16 @@ public abstract class GENTransport implements MALTransport
         }
 
         LOGGER.log(Level.INFO, "GEN finished Sending data to {0}", remoteRootURI);
+      }
+      catch (MALTransmitErrorException e)
+      {
+        // this stops any true MAL exceptoins getting caught by the generic catch all below
+        throw e;
+      }
+      catch (InterruptedException e)
+      {
+        LOGGER.log(Level.SEVERE, "Interrupted while waiting for data reply", e);
+        throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), null);
       }
       catch (Exception t)
       {

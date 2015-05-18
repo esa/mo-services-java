@@ -99,7 +99,7 @@ public class TCPIPTransport extends GENTransport
   /**
    * Port delimiter
    */
-  private static final char portDelimiter = ':';
+  private static final char PORT_DELIMITER = ':';
 
   /**
    * The server port that the TCP transport listens for incoming connections
@@ -258,12 +258,12 @@ public class TCPIPTransport extends GENTransport
       //in this case we get the IP Address of the host and provide a unique id as the port.
       //the actual IP and port information does not matter as the server will not try
       //to connect to it, it is used as an identifier for the MAL in the URI.
-      return getDefaultHost() + portDelimiter + getRandomClientId();
+      return getDefaultHost() + PORT_DELIMITER + getRandomClientId();
     }
     else
     {
       //this a server (and potentially a client)
-      return serverHost + portDelimiter + serverPort;
+      return serverHost + PORT_DELIMITER + serverPort;
     }
   }
 
@@ -283,17 +283,7 @@ public class TCPIPTransport extends GENTransport
       }
 
       String host = targetAddress.split(":")[0];
-      int port;
-      try
-      {
-        //URIs are split into 2 categories, Server URIs 
-        port = Integer.parseInt(targetAddress.split(":")[1]);
-      }
-      catch (NumberFormatException nfe)
-      {
-        LOGGER.log(Level.WARNING, "Have no means to communicate with client URI : {0}", remoteRootURI);
-        throw new MALException("Have no means to communicate with client URI : " + remoteRootURI);
-      }
+      int port = Integer.parseInt(targetAddress.split(":")[1]);
 
       //create a message sender and receiver for the socket
       TCPIPTransportDataTransceiver trans = createDataTransceiver(new Socket(host, port));
@@ -305,6 +295,11 @@ public class TCPIPTransport extends GENTransport
       rcvr.start();
 
       return trans;
+    }
+    catch (NumberFormatException nfe)
+    {
+      LOGGER.log(Level.WARNING, "Have no means to communicate with client URI : {0}", remoteRootURI);
+      throw new MALException("Have no means to communicate with client URI : " + remoteRootURI);
     }
     catch (UnknownHostException e)
     {

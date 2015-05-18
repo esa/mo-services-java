@@ -215,36 +215,39 @@ public class GENConcurrentMessageSender
     @Override
     public void run()
     {
+      boolean bContinue = true;
+      
       // read forever while not interrupted
-      while (!interrupted())
+      while (bContinue && !interrupted())
       {
+        GENOutgoingMessageHolder messageHolder = null;
         try
         {
-          GENOutgoingMessageHolder messageHolder = outgoingQueue.take();
+          messageHolder = outgoingQueue.take();
 
-          try
+          messageSender.sendEncodedMessage(messageHolder);
+
+          //send back reply that the message was sent succesfully
+          messageHolder.setResult(Boolean.TRUE);
+        }
+        catch (IOException e)
+        {
+          LOGGER.log(Level.WARNING, "Cannot send packet to destination:{0} informing transport", uriTo);
+
+          //send back reply that the message was not sent successfully
+          if (null != messageHolder)
           {
-            messageSender.sendEncodedMessage(messageHolder);
-
-            //send back reply that the message was sent succesfully
-            messageHolder.setResult(Boolean.TRUE);
-          }
-          catch (IOException e)
-          {
-            LOGGER.log(Level.WARNING, "Cannot send packet to destination:{0} informing transport", uriTo);
-
-            //send back reply that the message was not sent successfully
             messageHolder.setResult(Boolean.FALSE);
-
-            //inform transport about communication error 
-            transport.communicationError(uriTo, null);
-            break;
           }
+
+          //inform transport about communication error 
+          transport.communicationError(uriTo, null);
+          bContinue = false;
         }
         catch (InterruptedException e)
         {
           // finish processing
-          break;
+          bContinue = false;
         }
       }
 

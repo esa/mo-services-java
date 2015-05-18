@@ -39,6 +39,7 @@ public class BinaryStreamFactory extends MALElementStreamFactory
   @Override
   protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException
   {
+    // nothing required here
   }
 
   @Override

@@ -87,5 +87,6 @@ public class BinaryElementInputStream implements GENElementInputStream
   @Override
   public void close() throws MALException
   {
+    // Nothing to do for this decoder
   }
 }

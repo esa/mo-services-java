@@ -154,7 +154,7 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Boolean decodeBoolean() throws MALException
   {
-    return (1 == sourceBuffer.get8() ? Boolean.TRUE : Boolean.FALSE);
+    return 1 == sourceBuffer.get8() ? Boolean.TRUE : Boolean.FALSE;
   }
 
   @Override
@@ -167,7 +167,7 @@ public class BinaryDecoder implements MALDecoder
       return null;
     }
 
-    return (1 == b ? Boolean.TRUE : Boolean.FALSE);
+    return 1 == b ? Boolean.TRUE : Boolean.FALSE;
   }
 
   @Override
@@ -582,6 +582,7 @@ public class BinaryDecoder implements MALDecoder
      */
     protected void bufferRealloced(int oldSize)
     {
+      // no implementation for standard decoder
     }
 
     /**
@@ -643,7 +644,7 @@ public class BinaryDecoder implements MALDecoder
     /**
      * Gets a byte array from the incoming stream.
      *
-     * @param size The size of the array to extract.
+     * @param size The size of the array to extract, must not be negative.
      * @return the extracted array.
      * @throws MALException If there is a problem with the decoding.
      */
@@ -658,7 +659,7 @@ public class BinaryDecoder implements MALDecoder
         return v;
       }
 
-      return null;
+      throw new IllegalArgumentException("Size must not be negative");
     }
 
     /**

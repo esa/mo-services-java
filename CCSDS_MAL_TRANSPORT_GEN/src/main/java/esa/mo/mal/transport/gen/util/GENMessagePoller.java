@@ -24,8 +24,8 @@ import esa.mo.mal.transport.gen.GENReceptionHandler;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.GENTransport;
 import java.io.IOException;
+import java.io.EOFException;
 import java.util.logging.Level;
-
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 
 /**
@@ -75,8 +75,10 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
   @Override
   public void run()
   {
+    boolean bContinue = true;
+
     // handles message reads from this client
-    while (!interrupted())
+    while (bContinue && !interrupted())
     {
       try
       {
@@ -84,7 +86,7 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
 
         transport.receive(encodedMalMessage, this);
       }
-      catch (java.io.EOFException ex)
+      catch (EOFException ex)
       {
         LOGGER.log(Level.INFO, "Client closing connection: {0}", remoteURI);
 
@@ -92,7 +94,7 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
         close();
 
         //and terminate
-        break;
+        bContinue = false;
       }
       catch (IOException e)
       {
@@ -102,7 +104,7 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
         close();
 
         //and terminate
-        break;
+        bContinue = false;
       }
     }
   }
@@ -131,5 +133,24 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
   {
     messageSender.close();
     messageReceiver.close();
+  }
+
+  /**
+   * Simple interface for reading byte encoded messages from a low level transport. Used by the message poller class.
+   */
+  public static interface GENMessageReceiver
+  {
+    /**
+     * Reads a MALMessage encoded as a byte array.
+     *
+     * @return the byte array containing the encoded MAL Message
+     * @throws IOException in case the encoded message cannot be read
+     */
+    byte[] readEncodedMessage() throws IOException;
+
+    /**
+     * Closes any used resources.
+     */
+    void close();
   }
 }

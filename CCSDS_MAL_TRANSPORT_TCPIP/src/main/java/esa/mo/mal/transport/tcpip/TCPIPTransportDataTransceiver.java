@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import esa.mo.mal.transport.gen.util.GENMessageReceiver;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
 import java.io.DataInputStream;
@@ -35,7 +34,7 @@ import java.net.Socket;
  * If the protocol uses a different message encoding this class can be replaced in the TCPIPTransport.
  *
  */
-public class TCPIPTransportDataTransceiver implements GENMessageReceiver, GENMessageSender
+public class TCPIPTransportDataTransceiver implements esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver GENMessageSender
 {
   protected final Socket socket;
   protected final DataOutputStream socketWriteIf;
