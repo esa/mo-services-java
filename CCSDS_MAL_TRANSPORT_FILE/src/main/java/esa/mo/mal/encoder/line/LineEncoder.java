@@ -1,11 +1,21 @@
 /* ----------------------------------------------------------------------------
- * (C) 2011      European Space Agency
- *               European Space Operations Centre
- *               Darmstadt Germany
+ * Copyright (C) 2014      European Space Agency
+ *                         European Space Operations Centre
+ *                         Darmstadt
+ *                         Germany
  * ----------------------------------------------------------------------------
- * System       : CCSDS MO Line encoder
- * Author       : Sam Cooper
+ * System                : CCSDS MO Line encoder framework
+ * ----------------------------------------------------------------------------
+ * Licensed under the European Space Agency Public License, Version 2.0
+ * You may not use this file except in compliance with the License.
  *
+ * Except as expressly set forth in this License, the Software is provided to
+ * You on an "as is" basis and without warranties of any kind, including without
+ * limitation merchantability, fitness for a particular purpose, absence of
+ * defects or errors, accuracy or non-infringement of intellectual property rights.
+ * 
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
 package esa.mo.mal.encoder.line;
@@ -20,7 +30,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**
- * The implementation of the MALEncoder and MALListEncoder interfaces for the String encoding.
+ * The implementation of the MALEncoder and MALListEncoder interfaces for the line encoding.
  */
 public class LineEncoder
 {
@@ -388,7 +398,7 @@ public class LineEncoder
       add("type", String.valueOf(((Element) value).getShortForm()));
     }
 
-    encodeInteger("listSize", Integer.valueOf(value.size()));
+    encodeInteger("listSize", value.size());
 
     for (int i = 0; i < value.size(); i++)
     {
@@ -426,10 +436,8 @@ public class LineEncoder
 
     Field[] fields = cls.getDeclaredFields();
 
-    for (int i = 0; i < fields.length; i++)
+    for (Field field : fields)
     {
-      Field field = fields[i];
-
       final int mods = field.getModifiers();
       if (!Modifier.isStatic(mods))
       {

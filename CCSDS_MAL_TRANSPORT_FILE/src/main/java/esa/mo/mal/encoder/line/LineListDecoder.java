@@ -1,11 +1,21 @@
 /* ----------------------------------------------------------------------------
- * (C) 2011      European Space Agency
- *               European Space Operations Centre
- *               Darmstadt Germany
+ * Copyright (C) 2014      European Space Agency
+ *                         European Space Operations Centre
+ *                         Darmstadt
+ *                         Germany
  * ----------------------------------------------------------------------------
- * System       : CCSDS MO Line encoder
- * Author       : Sam Cooper
+ * System                : CCSDS MO Line encoder framework
+ * ----------------------------------------------------------------------------
+ * Licensed under the European Space Agency Public License, Version 2.0
+ * You may not use this file except in compliance with the License.
  *
+ * Except as expressly set forth in this License, the Software is provided to
+ * You on an "as is" basis and without warranties of any kind, including without
+ * limitation merchantability, fitness for a particular purpose, absence of
+ * defects or errors, accuracy or non-infringement of intellectual property rights.
+ * 
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
 package esa.mo.mal.encoder.line;
@@ -15,7 +25,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
 
 /**
- * The implementation of the MALListDecoder interfaces for the String encoding.
+ * The implementation of the MALListDecoder interfaces for the line encoding.
  */
 public class LineListDecoder extends LineDecoder implements MALListDecoder
 {
@@ -36,7 +46,7 @@ public class LineListDecoder extends LineDecoder implements MALListDecoder
     super(inputStream, srcBuffer);
 
     this.list = list;
-    size = decodeInteger().intValue();
+    size = decodeInteger();
   }
 
   @Override

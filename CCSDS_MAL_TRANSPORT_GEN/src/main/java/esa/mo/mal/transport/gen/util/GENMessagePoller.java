@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.EOFException;
 import java.util.logging.Level;
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
+import java.io.InputStream;
 
 /**
  * This utility class creates a thread to pull encoded messages from a transceiver. It receives messages from it and
@@ -50,7 +51,7 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
   /**
    * the low level message receiver
    */
-  private final GENMessageReceiver messageReceiver;
+  private final MessageAdapter messageReceiver;
   /**
    * the remote URI (client) this connection is associated to. This is volatile as it is potentially set by a different
    * thread after its creation
@@ -64,11 +65,26 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
    * @param messageSender The message sending interface associated to this connection.
    * @param messageReceiver The message reception interface, used for pulling messaging into this transport.
    */
-  public GENMessagePoller(GENTransport transport, GENMessageSender messageSender, GENMessageReceiver messageReceiver)
+  public GENMessagePoller(GENTransport transport, GENMessageSender messageSender, GENByteMessageReceiver messageReceiver)
   {
     this.transport = transport;
     this.messageSender = messageSender;
-    this.messageReceiver = messageReceiver;
+    this.messageReceiver = new ByteAdapter(transport, this, messageReceiver);
+    setName(getClass().getName());
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param transport Message transport being used.
+   * @param messageSender The message sending interface associated to this connection.
+   * @param messageReceiver The message reception interface, used for pulling messaging into this transport.
+   */
+  public GENMessagePoller(GENTransport transport, GENMessageSender messageSender, GENStreamMessageReceiver messageReceiver)
+  {
+    this.transport = transport;
+    this.messageSender = messageSender;
+    this.messageReceiver = new StreamAdapter(transport, this, messageReceiver);
     setName(getClass().getName());
   }
 
@@ -82,9 +98,17 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
     {
       try
       {
-        byte[] encodedMalMessage = messageReceiver.readEncodedMessage();
+        messageReceiver.receiveMessage();
+      }
+      catch (InterruptedException ex)
+      {
+        LOGGER.log(Level.INFO, "Client closing connection: {0}", remoteURI);
 
-        transport.receive(encodedMalMessage, this);
+        transport.closeConnection(remoteURI, this);
+        close();
+
+        //and terminate
+        bContinue = false;
       }
       catch (EOFException ex)
       {
@@ -138,7 +162,7 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
   /**
    * Simple interface for reading byte encoded messages from a low level transport. Used by the message poller class.
    */
-  public static interface GENMessageReceiver
+  public static interface GENByteMessageReceiver
   {
     /**
      * Reads a MALMessage encoded as a byte array.
@@ -152,5 +176,90 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
      * Closes any used resources.
      */
     void close();
+  }
+
+  /**
+   * Simple interface for reading stream encoded messages from a low level transport. Used by the message poller class.
+   */
+  public static interface GENStreamMessageReceiver
+  {
+    /**
+     * Reads a MALMessage encoded as a IO stream.
+     *
+     * @return the input stream containing the encoded MAL Message
+     * @throws IOException in case the encoded message cannot be read
+     * @throws InterruptedException in case IO read is interrupted
+     */
+    java.io.InputStream readEncodedMessage() throws IOException, InterruptedException;
+
+    /**
+     * Closes any used resources.
+     */
+    void close();
+  }
+
+  private interface MessageAdapter
+  {
+    void receiveMessage() throws IOException, InterruptedException;
+    
+    void close();
+  }
+
+  private static class ByteAdapter implements MessageAdapter
+  {
+    private final GENTransport transport;
+    private final GENReceptionHandler handler;
+    private final GENByteMessageReceiver receiver;
+
+    public ByteAdapter(GENTransport transport, GENReceptionHandler handler, GENByteMessageReceiver receiver)
+    {
+      this.transport = transport;
+      this.handler = handler;
+      this.receiver = receiver;
+    }
+
+    public void receiveMessage() throws IOException, InterruptedException
+    {
+      byte[] msg = receiver.readEncodedMessage();
+      
+      if(null != msg)
+      {
+        transport.receive(msg, handler);
+      }
+    }
+    
+    public void close()
+    {
+      receiver.close();
+    }
+  }
+
+  private static class StreamAdapter implements MessageAdapter
+  {
+    private final GENTransport transport;
+    private final GENReceptionHandler handler;
+    private final GENStreamMessageReceiver receiver;
+
+    public StreamAdapter(GENTransport transport, GENReceptionHandler handler, GENStreamMessageReceiver receiver)
+    {
+      this.transport = transport;
+      this.handler = handler;
+      this.receiver = receiver;
+    }
+
+    public void receiveMessage() throws IOException, InterruptedException
+    {
+      InputStream msg = receiver.readEncodedMessage();
+      
+      if(null != msg)
+      {
+        transport.receive(msg, handler);
+      }
+    }
+    
+    public void close()
+    {
+      receiver.close();
+    }
   }
 }

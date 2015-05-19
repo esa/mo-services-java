@@ -1,11 +1,21 @@
 /* ----------------------------------------------------------------------------
- * (C) 2011      European Space Agency
- *               European Space Operations Centre
- *               Darmstadt Germany
+ * Copyright (C) 2014      European Space Agency
+ *                         European Space Operations Centre
+ *                         Darmstadt
+ *                         Germany
  * ----------------------------------------------------------------------------
- * System       : CCSDS MO Line encoder
- * Author       : Sam Cooper
+ * System                : CCSDS MO Line encoder framework
+ * ----------------------------------------------------------------------------
+ * Licensed under the European Space Agency Public License, Version 2.0
+ * You may not use this file except in compliance with the License.
  *
+ * Except as expressly set forth in this License, the Software is provided to
+ * You on an "as is" basis and without warranties of any kind, including without
+ * limitation merchantability, fitness for a particular purpose, absence of
+ * defects or errors, accuracy or non-infringement of intellectual property rights.
+ * 
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
 package esa.mo.mal.encoder.line;
@@ -20,13 +30,14 @@ import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
 
 /**
- * Implementation of the MALElementStreamFactory interface for the String encoding.
+ * Implementation of the MALElementStreamFactory interface for the line encoding.
  */
 public class LineStreamFactory extends MALElementStreamFactory
 {
   @Override
   protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException
   {
+    // nothing to do here
   }
 
   @Override
@@ -54,9 +65,9 @@ public class LineStreamFactory extends MALElementStreamFactory
     
     final MALElementOutputStream os = createOutputStream(baos);
     
-    for (int i = 0; i < elements.length; i++)
+    for (Object element : elements)
     {
-      os.writeElement(elements[i], ctx);
+      os.writeElement(element, ctx);
     }
     
     os.flush();
