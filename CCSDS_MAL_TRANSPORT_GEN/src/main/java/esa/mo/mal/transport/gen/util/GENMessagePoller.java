@@ -167,10 +167,11 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
     /**
      * Reads a MALMessage encoded as a byte array.
      *
-     * @return the byte array containing the encoded MAL Message
+     * @return the input stream containing the encoded MAL Message, may be null if nothing to read at this time
      * @throws IOException in case the encoded message cannot be read
+     * @throws InterruptedException in case IO read is interrupted
      */
-    byte[] readEncodedMessage() throws IOException;
+    byte[] readEncodedMessage() throws IOException, InterruptedException;
 
     /**
      * Closes any used resources.
@@ -186,7 +187,7 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
     /**
      * Reads a MALMessage encoded as a IO stream.
      *
-     * @return the input stream containing the encoded MAL Message
+     * @return the input stream containing the encoded MAL Message, may be null if nothing to read at this time
      * @throws IOException in case the encoded message cannot be read
      * @throws InterruptedException in case IO read is interrupted
      */
@@ -198,19 +199,41 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
     void close();
   }
 
+  /**
+   * Internal interface for adapting from the message receivers to the relevant receive operation on the transport.
+   */
   private interface MessageAdapter
   {
+    /**
+     * Takes the message from the recevier and passes it to the transport if not null.
+     *
+     * @throws IOException in case the encoded message cannot be read
+     * @throws InterruptedException in case IO read is interrupted
+     */
     void receiveMessage() throws IOException, InterruptedException;
-    
+
+    /**
+     * Closes any used resources.
+     */
     void close();
   }
 
+  /**
+   * Internal adapter class for mapping from a byte based message to the GEN transport.
+   */
   private static class ByteAdapter implements MessageAdapter
   {
     private final GENTransport transport;
     private final GENReceptionHandler handler;
     private final GENByteMessageReceiver receiver;
 
+    /**
+     * Constructor.
+     *
+     * @param transport Transport to pass messages to.
+     * @param handler The reception handler.
+     * @param receiver The receiver to pull messages from.
+     */
     public ByteAdapter(GENTransport transport, GENReceptionHandler handler, GENByteMessageReceiver receiver)
     {
       this.transport = transport;
@@ -218,28 +241,40 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
       this.receiver = receiver;
     }
 
+    @Override
     public void receiveMessage() throws IOException, InterruptedException
     {
       byte[] msg = receiver.readEncodedMessage();
-      
-      if(null != msg)
+
+      if (null != msg)
       {
         transport.receive(msg, handler);
       }
     }
-    
+
+    @Override
     public void close()
     {
       receiver.close();
     }
   }
 
+  /**
+   * Internal adapter class for mapping from a stream based message to the GEN transport.
+   */
   private static class StreamAdapter implements MessageAdapter
   {
     private final GENTransport transport;
     private final GENReceptionHandler handler;
     private final GENStreamMessageReceiver receiver;
 
+    /**
+     * Constructor.
+     *
+     * @param transport Transport to pass messages to.
+     * @param handler The reception handler.
+     * @param receiver The receiver to pull messages from.
+     */
     public StreamAdapter(GENTransport transport, GENReceptionHandler handler, GENStreamMessageReceiver receiver)
     {
       this.transport = transport;
@@ -247,16 +282,18 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
       this.receiver = receiver;
     }
 
+    @Override
     public void receiveMessage() throws IOException, InterruptedException
     {
       InputStream msg = receiver.readEncodedMessage();
-      
-      if(null != msg)
+
+      if (null != msg)
       {
         transport.receive(msg, handler);
       }
     }
-    
+
+    @Override
     public void close()
     {
       receiver.close();

@@ -29,13 +29,13 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * A generic implementation of the message header interface.
  */
-public class GENMessageHeader implements MALMessageHeader, Element
+public class GENMessageHeader implements MALMessageHeader, Composite
 {
-  protected URI uriFrom;
+  protected URI URIFrom;
   protected Blob authenticationId;
-  protected URI uriTo;
+  protected URI URITo;
   protected Time timestamp;
-  protected QoSLevel qosLevel;
+  protected QoSLevel QoSlevel;
   protected UInteger priority;
   protected IdentifierList domain;
   protected Identifier networkZone;
@@ -99,11 +99,11 @@ public class GENMessageHeader implements MALMessageHeader, Element
           final UOctet serviceVersion,
           final Boolean isErrorMessage)
   {
-    this.uriFrom = uriFrom;
+    this.URIFrom = uriFrom;
     this.authenticationId = authenticationId;
-    this.uriTo = uriTo;
+    this.URITo = uriTo;
     this.timestamp = timestamp;
-    this.qosLevel = qosLevel;
+    this.QoSlevel = qosLevel;
     this.priority = priority;
     this.domain = domain;
     this.networkZone = networkZone;
@@ -122,13 +122,13 @@ public class GENMessageHeader implements MALMessageHeader, Element
   @Override
   public URI getURIFrom()
   {
-    return uriFrom;
+    return URIFrom;
   }
 
   @Override
   public void setURIFrom(final URI urIFrom)
   {
-    this.uriFrom = urIFrom;
+    this.URIFrom = urIFrom;
   }
 
   @Override
@@ -230,13 +230,13 @@ public class GENMessageHeader implements MALMessageHeader, Element
   @Override
   public QoSLevel getQoSlevel()
   {
-    return qosLevel;
+    return QoSlevel;
   }
 
   @Override
   public void setQoSlevel(final QoSLevel qoSLevel)
   {
-    this.qosLevel = qoSLevel;
+    this.QoSlevel = qoSLevel;
   }
 
   @Override
@@ -326,13 +326,13 @@ public class GENMessageHeader implements MALMessageHeader, Element
   @Override
   public URI getURITo()
   {
-    return uriTo;
+    return URITo;
   }
 
   @Override
   public void setURITo(final URI urITo)
   {
-    this.uriTo = urITo;
+    this.URITo = urITo;
   }
 
   @Override
@@ -344,11 +344,11 @@ public class GENMessageHeader implements MALMessageHeader, Element
   @Override
   public void encode(final MALEncoder encoder) throws MALException
   {
-    encoder.encodeNullableURI(uriFrom);
+    encoder.encodeNullableURI(URIFrom);
     encoder.encodeNullableBlob(authenticationId);
-    encoder.encodeNullableURI(uriTo);
+    encoder.encodeNullableURI(URITo);
     encoder.encodeNullableTime(timestamp);
-    encoder.encodeNullableElement(qosLevel);
+    encoder.encodeNullableElement(QoSlevel);
     encoder.encodeNullableUInteger(priority);
     encoder.encodeNullableElement(domain);
     encoder.encodeNullableIdentifier(networkZone);
@@ -367,11 +367,11 @@ public class GENMessageHeader implements MALMessageHeader, Element
   @Override
   public Element decode(final MALDecoder decoder) throws MALException
   {
-    uriFrom = decoder.decodeNullableURI();
+    URIFrom = decoder.decodeNullableURI();
     authenticationId = decoder.decodeNullableBlob();
-    uriTo = decoder.decodeNullableURI();
+    URITo = decoder.decodeNullableURI();
     timestamp = decoder.decodeNullableTime();
-    qosLevel = (QoSLevel) decoder.decodeNullableElement(QoSLevel.BESTEFFORT);
+    QoSlevel = (QoSLevel) decoder.decodeNullableElement(QoSLevel.BESTEFFORT);
     priority = decoder.decodeNullableUInteger();
     domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
     networkZone = decoder.decodeNullableIdentifier();
@@ -418,15 +418,15 @@ public class GENMessageHeader implements MALMessageHeader, Element
   {
     final StringBuilder str = new StringBuilder("GENMessageHeader{");
     str.append("URIFrom=");
-    str.append(uriFrom);
+    str.append(URIFrom);
     str.append(", authenticationId=");
     str.append(authenticationId);
     str.append(", URITo=");
-    str.append(uriTo);
+    str.append(URITo);
     str.append(", timestamp=");
     str.append(timestamp);
     str.append(", QoSlevel=");
-    str.append(qosLevel);
+    str.append(QoSlevel);
     str.append(", priority=");
     str.append(priority);
     str.append(", domain=");

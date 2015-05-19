@@ -1028,6 +1028,13 @@ public abstract class GENTransport implements MALTransport
     private final java.io.InputStream ioMessage;
     private final GENReceptionHandler receptionHandler;
 
+    /**
+     * Constructor
+     *
+     * @param transport Parent transport
+     * @param rawMessage The raw message
+     * @param receptionHandler The reception handler to pass them to.
+     */
     public GENIncomingDataProcessor(GENTransport transport, byte[] rawMessage, GENReceptionHandler receptionHandler)
     {
       this.transport = transport;
@@ -1036,6 +1043,13 @@ public abstract class GENTransport implements MALTransport
       this.receptionHandler = receptionHandler;
     }
 
+    /**
+     * Constructor
+     *
+     * @param transport Parent transport
+     * @param ioMessage The raw message
+     * @param receptionHandler The reception handler to pass them to.
+     */
     public GENIncomingDataProcessor(GENTransport transport, java.io.InputStream ioMessage, GENReceptionHandler receptionHandler)
     {
       this.transport = transport;
@@ -1044,9 +1058,6 @@ public abstract class GENTransport implements MALTransport
       this.receptionHandler = receptionHandler;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
     @Override
     public void run()
     {
