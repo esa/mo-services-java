@@ -40,11 +40,26 @@ public class LineEncoder
   private final StringBuilder buffer = new StringBuilder();
   private final Deque<String> nameStack = new LinkedList();
 
+  /**
+   * Encode the top level element.
+   *
+   * @param name field name
+   * @param value field value
+   * @throws MALException on error.
+   */
   public void encodeTopLevelElement(final String name, final Element value) throws MALException
   {
     encodeField(name, value.getClass(), value);
   }
 
+  /**
+   * Encodes a specific field.
+   *
+   * @param name Field name
+   * @param declaredType Declare field type
+   * @param value field value
+   * @throws MALException on error.
+   */
   public void encodeField(final String name, final Class declaredType, final Object value) throws MALException
   {
     if (null != value)
@@ -64,6 +79,15 @@ public class LineEncoder
     }
   }
 
+  /**
+   * Encodes a specific field.
+   *
+   * @param isAbstract Is Field abstract
+   * @param name Field name
+   * @param declaredType Declare field type
+   * @param value field value
+s   * @throws MALException on error.
+   */
   public void internalEncodeField(final boolean isAbstract, final String name, final Class declaredType, final Object value) throws MALException
   {
     if (null != value)

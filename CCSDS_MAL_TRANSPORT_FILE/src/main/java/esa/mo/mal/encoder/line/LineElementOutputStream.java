@@ -26,6 +26,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Implements the MALElementOutputStream interface for the line encodings.
@@ -48,7 +49,15 @@ public class LineElementOutputStream implements MALElementOutputStream
   public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException
   {
     final LineEncoder enc = new LineEncoder();
-    enc.encodeTopLevelElement("Body", (Element) element);
+
+    if (element instanceof MALMessageHeader)
+    {
+      enc.encodeTopLevelElement("Header", (Element) element);
+    }
+    else
+    {
+      enc.encodeTopLevelElement("Body", (Element) element);
+    }
 
     try
     {

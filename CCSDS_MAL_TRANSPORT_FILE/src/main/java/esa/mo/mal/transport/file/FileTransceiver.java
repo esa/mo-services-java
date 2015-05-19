@@ -31,7 +31,6 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
@@ -43,7 +42,8 @@ import java.util.Iterator;
  */
 public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessagePoller.GENStreamMessageReceiver, GENMessageSender
 {
-  private final Path dir = Paths.get(System.getProperty("user.dir"));
+  private final Path incomingDirectory;
+  private final Path outgoingDirectory;
   private final WatchService watcher;
   private final String transportString;
   private final String filenameString;
@@ -55,13 +55,17 @@ public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessage
   /**
    * Constructor.
    *
+   * @param incomingDirectory The directory that incoming messages will appear in.
+   * @param outgoingDirectory The directory that outgoing messages will be written into.
    * @param watcher The file watcher.
    * @param transportString The filename string to match for incoming messages
    * @param filenameString The file prefix for outgoing messages
    * @param deleteFiles True if files should be auto deleted after being read.
    */
-  public FileTransceiver(WatchService watcher, String transportString, String filenameString, boolean deleteFiles)
+  public FileTransceiver(Path incomingDirectory, Path outgoingDirectory, WatchService watcher, String transportString, String filenameString, boolean deleteFiles)
   {
+    this.incomingDirectory = incomingDirectory;
+    this.outgoingDirectory = outgoingDirectory;
     this.watcher = watcher;
     this.transportString = transportString;
     this.filenameString = filenameString;
@@ -79,7 +83,7 @@ public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessage
             + "-"
             + String.format("%07d", ++msgCount);
 
-    java.io.File tmpFile = new File(tmpname + ".tmp");
+    java.io.File tmpFile = new File(outgoingDirectory.toFile(), tmpname + ".tmp");
 
     try (java.io.FileOutputStream fos = new FileOutputStream(tmpFile))
     {
@@ -88,7 +92,7 @@ public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessage
     }
 
     // rename file to correct file name
-    tmpFile.renameTo(new File(tmpname + ".msg"));
+    tmpFile.renameTo(new File(outgoingDirectory.toFile(), tmpname + ".msg"));
   }
 
   @Override
@@ -115,7 +119,7 @@ public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessage
       // Context for directory entry event is the file name of entry
       WatchEvent<Path> ev = (WatchEvent<Path>) event;
       Path name = ev.context();
-      Path child = dir.resolve(name);
+      Path child = incomingDirectory.resolve(name);
 
       if (Files.isRegularFile(child, LinkOption.NOFOLLOW_LINKS))
       {
@@ -151,7 +155,7 @@ public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessage
       if (!valid)
       {
         // object no longer registered
-        System.out.println("Not registered : " + dir.toString());
+        System.out.println("Not registered : " + incomingDirectory.toString());
       }
 
       events = null;

@@ -55,13 +55,18 @@ public class FileTransport extends GENTransport
    */
   public static final java.util.logging.Logger RLOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.file");
   public static final String FILE_PREFIX = "CCSDS_FILE_TRANSPORT_";
+  private static final String QOS_I_MESSAGE_PROPERTY = "ccsds.mal.transport.file.incoming.directory.property";
+  private static final String QOS_I_MESSAGE_DIRECTORY = "ccsds.mal.transport.file.incoming.directory.name";
+  private static final String QOS_O_MESSAGE_PROPERTY = "ccsds.mal.transport.file.outgoing.directory.property";
+  private static final String QOS_O_MESSAGE_DIRECTORY = "ccsds.mal.transport.file.outgoing.directory.name";
   private static final String QOS_DELETE_FILE = "ccsds.mal.transport.file.qos.delete";
   private final boolean deleteFiles;
   private final Thread asyncPollThread;
   private final String transportString;
   private final String filenameString;
   private final WatchService watcher;
-  private final Path dir = Paths.get(System.getProperty("user.dir"));
+  private final Path incomingDirectory;
+  private final Path outgoingDirectory;
   private final FileTransceiver tc;
 
   /**
@@ -78,25 +83,65 @@ public class FileTransport extends GENTransport
   {
     super(protocol, '-', false, false, factory, properties);
 
-    if ((null != properties) && (properties.containsKey(QOS_DELETE_FILE)))
+    String incomingDirectoryName = System.getProperty("user.dir");
+    String outgoingDirectoryName = incomingDirectoryName;
+    boolean lDeleteFiles = true;
+
+    if (null != properties)
     {
-      RLOGGER.info("File transport set to NOT delete message files");
-      deleteFiles = false;
+      if (properties.containsKey(QOS_DELETE_FILE))
+      {
+        RLOGGER.info("File transport set to NOT delete message files");
+        lDeleteFiles = false;
+      }
+
+      String lIncomingDirectoryName;
+
+      if (properties.containsKey(QOS_I_MESSAGE_PROPERTY) && null != properties.get(QOS_I_MESSAGE_PROPERTY))
+      {
+        lIncomingDirectoryName = String.valueOf(properties.get(QOS_I_MESSAGE_PROPERTY));
+      }
+      else
+      {
+        lIncomingDirectoryName = String.valueOf(properties.get(QOS_I_MESSAGE_DIRECTORY));
+      }
+
+      if (null != lIncomingDirectoryName)
+      {
+        incomingDirectoryName = lIncomingDirectoryName;
+      }
+
+      String lOutgoingDirectoryName;
+
+      if (properties.containsKey(QOS_O_MESSAGE_PROPERTY) && null != properties.get(QOS_O_MESSAGE_PROPERTY))
+      {
+        lOutgoingDirectoryName = String.valueOf(properties.get(QOS_O_MESSAGE_PROPERTY));
+      }
+      else
+      {
+        lOutgoingDirectoryName = String.valueOf(properties.get(QOS_O_MESSAGE_DIRECTORY));
+      }
+
+      if (null != lOutgoingDirectoryName)
+      {
+        outgoingDirectoryName = lOutgoingDirectoryName;
+      }
     }
-    else
-    {
-      deleteFiles = true;
-    }
+
+    // set up the directory to watch for incoming and outgoing messages
+    incomingDirectory = Paths.get(incomingDirectoryName);
+    outgoingDirectory = Paths.get(outgoingDirectoryName);
+    deleteFiles = lDeleteFiles;
 
     try
     {
       watcher = FileSystems.getDefault().newWatchService();
-      System.out.println("Watching : " + dir.toString());
+      System.out.println("Watching : " + incomingDirectoryName);
 
       filenameString = ManagementFactory.getRuntimeMXBean().getName();
       transportString = FILE_PREFIX + filenameString + "-";
-      dir.register(watcher, java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY);
-      tc = new FileTransceiver(watcher, transportString, filenameString, deleteFiles);
+      incomingDirectory.register(watcher, java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY);
+      tc = new FileTransceiver(incomingDirectory, outgoingDirectory, watcher, transportString, filenameString, deleteFiles);
 
       asyncPollThread = new GENMessagePoller(this, tc, tc);
     }
@@ -109,7 +154,11 @@ public class FileTransport extends GENTransport
     // set up polling thread for new files appearing in the file directory
     RLOGGER.log(Level.INFO, "Monitoring directory {0} for file prefix {1}", new Object[]
     {
-      System.getProperty("java.io.tmpdir"), transportString
+      incomingDirectoryName, transportString
+    });
+    RLOGGER.log(Level.INFO, "Writing to directory {0} for outgoing messages", new Object[]
+    {
+      outgoingDirectoryName
     });
   }
 
