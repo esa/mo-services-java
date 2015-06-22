@@ -65,6 +65,13 @@ class MALConsumerImpl extends MALClose implements MALConsumer
 
     final MALEndpoint ep = TransportSingleton.instance(uriTo, impl.getInitialProperties())
             .createEndpoint(localName, qosProps);
+
+    if (null == ep)
+    {
+      // transport was unable to create the end point for us, need to throw an exception
+      throw new MALException("Unable to create transport endpoint for URI: " + uriTo);
+    }
+
     ep.setMessageListener(impl.getReceivingInterface());
 
     this.details = new MessageDetails(ep,
