@@ -25,7 +25,7 @@
   
   <artifactId>TESTBED_MAL</artifactId>
   <packaging>jar</packaging>
-  <version>1.1</version>
+  <version>1.1.1-SNAPSHOT</version>
   <name>CCSDS MOIMS MO Testbed for MAL</name>
 
   <organization>
@@ -193,6 +193,7 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>MAL_IMPL</artifactId>
+          <version>1.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
