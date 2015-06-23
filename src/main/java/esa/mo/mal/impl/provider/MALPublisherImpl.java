@@ -83,6 +83,7 @@ class MALPublisherImpl implements MALPublisher
   @Override
   public void close() throws MALException
   {
+    // nothing to do here
   }
 
   @Override

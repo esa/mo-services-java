@@ -23,7 +23,6 @@ package esa.mo.mal.impl;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Identifier;

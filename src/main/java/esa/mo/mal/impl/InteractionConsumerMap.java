@@ -1022,12 +1022,14 @@ class InteractionConsumerMap
     public void invokeAckErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
     public void invokeAckReceived(final MALMessageHeader header, final MALMessageBody body, final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
@@ -1036,6 +1038,7 @@ class InteractionConsumerMap
             final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
@@ -1044,18 +1047,21 @@ class InteractionConsumerMap
             final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
     public void notifyErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
     public void notifyReceived(final MALMessageHeader header, final MALNotifyBody body, final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
@@ -1064,12 +1070,14 @@ class InteractionConsumerMap
             final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
     public void progressAckReceived(final MALMessageHeader header, final MALMessageBody body, final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
@@ -1078,6 +1086,7 @@ class InteractionConsumerMap
             final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
@@ -1086,6 +1095,7 @@ class InteractionConsumerMap
             final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
@@ -1094,6 +1104,7 @@ class InteractionConsumerMap
             final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
@@ -1102,12 +1113,14 @@ class InteractionConsumerMap
             final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
     public void requestErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
@@ -1116,18 +1129,21 @@ class InteractionConsumerMap
             final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
     public void submitAckReceived(final MALMessageHeader header, final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
 
     @Override
     public void submitErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
             throws MALException
     {
+      // nothing to do here
     }
   }
 
