@@ -335,7 +335,7 @@ class InteractionConsumerMap
             final MALStandardError err,
             final Map qosMap);
 
-    public boolean isInError()
+    protected boolean isInError()
     {
       return inError;
     }
@@ -909,31 +909,31 @@ class InteractionConsumerMap
     private final MALMessageBody body;
     private final MALStandardError err;
 
-    public MessageHandlerDetails(boolean isAckStage, MALMessageBody body)
+    protected MessageHandlerDetails(boolean isAckStage, MALMessageBody body)
     {
       this.ackStage = isAckStage;
       this.body = body;
       this.err = null;
     }
 
-    public MessageHandlerDetails(boolean isAckStage, MALStandardError err)
+    protected MessageHandlerDetails(boolean isAckStage, MALStandardError err)
     {
       this.ackStage = isAckStage;
       this.body = new DummyErrorBody(err);
       this.err = err;
     }
 
-    public boolean isAckStage()
+    protected boolean isAckStage()
     {
       return ackStage;
     }
 
-    public MALMessageBody getBody()
+    protected MALMessageBody getBody()
     {
       return body;
     }
 
-    public MALStandardError getErr()
+    protected MALStandardError getErr()
     {
       return err;
     }
