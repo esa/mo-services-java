@@ -855,11 +855,11 @@ public class MessageReceive implements MALMessageListener
         return false;
       }
       final EndPointPair other = (EndPointPair) obj;
-      if ((this.first == null) ? (other.first != null) : !this.first.equals(other.first))
+      if (this.first == null ? other.first != null : !this.first.equals(other.first))
       {
         return false;
       }
-      return !((this.second == null) ? (other.second != null) : !this.second.equals(other.second));
+      return !(this.second == null ? other.second != null : !this.second.equals(other.second));
     }
 
     @Override

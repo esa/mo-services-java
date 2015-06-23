@@ -72,7 +72,7 @@ public final class UpdateKey extends PublisherKey
     }
 
     final UpdateKey other = (UpdateKey) obj;
-    if ((this.domain == null) ? (other.domain != null) : !this.domain.equals(other.domain))
+    if (this.domain == null ? other.domain != null : !this.domain.equals(other.domain))
     {
       return false;
     }

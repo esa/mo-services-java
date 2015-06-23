@@ -28,6 +28,10 @@ import java.util.Set;
 abstract class InteractionTransaction
 {
   private static volatile long transId = 0;
+  
+  private InteractionTransaction()
+  {
+  }
 
   static synchronized Long getTransactionId(Set<Long> keySet)
   {

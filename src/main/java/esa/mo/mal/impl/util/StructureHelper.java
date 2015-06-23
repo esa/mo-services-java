@@ -37,6 +37,10 @@ public abstract class StructureHelper
 {
   private static final Set LOADED_PROPERTIES = new TreeSet();
 
+  private StructureHelper()
+  {
+  }
+  
   /**
    * Loads in a property file and optionally searches for a contained property that contains the next file to load.
    *
@@ -134,7 +138,7 @@ public abstract class StructureHelper
           final Identifier sId = srcDomain.get(i);
           final Identifier tId = testDomain.get(i);
 
-          if ((sId == null) ? (tId != null) : !sId.equals(tId))
+          if (sId == null ? tId != null : !sId.equals(tId))
           {
             return false;
           }

@@ -96,7 +96,7 @@ public final class PublisherSource
           lst.add(updateKey);
         }
       }
-      if (0 < lst.size())
+      if (!lst.isEmpty())
       {
         MALBrokerImpl.LOGGER.warning("Provider not allowed to publish some keys");
         throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, lst));

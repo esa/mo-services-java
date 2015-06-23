@@ -68,7 +68,7 @@ public class MessageSend
           final Subscription subscription,
           final MALInteractionListener listener) throws MALInteractionException, MALException
   {
-    ipsmap.registerNotifyListener(details, op, subscription, listener);
+    ipsmap.registerNotifyListener(details, subscription, listener);
     initiateSynchronousInteraction(details,
             op,
             MALPubSubOperation.REGISTER_STAGE,
@@ -138,7 +138,7 @@ public class MessageSend
             MALPubSubOperation.DEREGISTER_STAGE,
             (MALPublishInteractionListener) null,
             unsubscription);
-    ipsmap.deregisterNotifyListener(details, op, unsubscription);
+    ipsmap.deregisterNotifyListener(details, unsubscription);
   }
 
   /**
@@ -179,7 +179,7 @@ public class MessageSend
           final Subscription subscription,
           final MALInteractionListener listener) throws MALInteractionException, MALException
   {
-    ipsmap.registerNotifyListener(details, op, subscription, listener);
+    ipsmap.registerNotifyListener(details, subscription, listener);
     return asynchronousInteraction(details, op, MALPubSubOperation.REGISTER_STAGE, listener, subscription);
   }
 
@@ -224,7 +224,7 @@ public class MessageSend
             MALPubSubOperation.DEREGISTER_STAGE,
             listener,
             unsubscription);
-    ipsmap.deregisterNotifyListener(details, op, unsubscription);
+    ipsmap.deregisterNotifyListener(details, unsubscription);
 
     return msg;
   }

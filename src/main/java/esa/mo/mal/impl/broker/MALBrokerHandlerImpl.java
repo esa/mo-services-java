@@ -163,7 +163,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     final BrokerKey key = new BrokerKey(hdr);
 
     report(key);
-    if ((null != hdr) && (null != lst) && (0 < lst.size()))
+    if ((null != hdr) && (null != lst) && !lst.isEmpty())
     {
       final SubscriptionSource ent = getConsumerEntry(key, hdr, false);
       if (null != ent)

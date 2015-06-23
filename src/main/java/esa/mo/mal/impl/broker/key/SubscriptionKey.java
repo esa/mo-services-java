@@ -55,12 +55,12 @@ public final class SubscriptionKey extends PublisherKey
     if ((null != mdomain) || (null != sdomain))
     {
       final StringBuilder buf = new StringBuilder();
-      if ((null != mdomain) && (0 < mdomain.size()))
+      if ((null != mdomain) && !mdomain.isEmpty())
       {
         buf.append(StructureHelper.domainToString(mdomain));
       }
 
-      if ((null != sdomain) && (0 < sdomain.size()))
+      if ((null != sdomain) && !sdomain.isEmpty())
       {
         for (Identifier identifier : sdomain)
         {
@@ -119,7 +119,7 @@ public final class SubscriptionKey extends PublisherKey
     {
       return false;
     }
-    if ((this.domain == null) ? (other.domain != null) : !this.domain.equals(other.domain))
+    if (this.domain == null ? other.domain != null : !this.domain.equals(other.domain))
     {
       return false;
     }
@@ -157,7 +157,7 @@ public final class SubscriptionKey extends PublisherKey
 
       if (matched)
       {
-        if ((this.domain.length() < rhs.getDomain().length()))
+        if (this.domain.length() < rhs.getDomain().length())
         {
           matched = this.andSubDomains;
         }

@@ -286,7 +286,6 @@ class MALPublisherImpl implements MALPublisher
 
   private static class AddressKey implements Comparable
   {
-    private static final int HASH_MAGIC_NUMBER = 42;
     private final String uri;
     private final String domain;
     private final String networkZone;

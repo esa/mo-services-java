@@ -124,7 +124,6 @@ class InteractionPubSubMap
   }
 
   void registerNotifyListener(final MessageDetails details,
-          final MALPubSubOperation op,
           final Subscription subscription,
           final MALInteractionListener list)
   {
@@ -207,7 +206,6 @@ class InteractionPubSubMap
   }
 
   void deregisterNotifyListener(final MessageDetails details,
-          final MALPubSubOperation op,
           final IdentifierList unsubscription)
   {
     synchronized (notifyMap)

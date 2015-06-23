@@ -102,19 +102,19 @@ public class PublisherKey implements Comparable
       return false;
     }
     final PublisherKey other = (PublisherKey) obj;
-    if ((this.key1 == null) ? (other.key1 != null) : !this.key1.equals(other.key1))
+    if (this.key1 == null ? other.key1 != null : !this.key1.equals(other.key1))
     {
       return false;
     }
-    if ((this.key2 == null) ? (other.key2 != null) : !this.key2.equals(other.key2))
+    if (this.key2 == null ? other.key2 != null : !this.key2.equals(other.key2))
     {
       return false;
     }
-    if ((this.key3 == null) ? (other.key3 != null) : !this.key3.equals(other.key3))
+    if (this.key3 == null ? other.key3 != null : !this.key3.equals(other.key3))
     {
       return false;
     }
-    if ((this.key4 == null) ? (other.key4 != null) : !this.key4.equals(other.key4))
+    if (this.key4 == null ? other.key4 != null : !this.key4.equals(other.key4))
     {
       return false;
     }

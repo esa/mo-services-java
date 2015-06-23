@@ -49,6 +49,11 @@ public final class TransportSingleton
    */
   private static String defaultProtocol = null;
 
+  private TransportSingleton()
+  {
+    // make default constructor private so cannot instatiate this class as it is a singleton.
+  }
+
   /**
    * Initialises the transport singleton.
    */
@@ -266,10 +271,5 @@ public final class TransportSingleton
     }
 
     return dstUri;
-  }
-
-  private TransportSingleton()
-  {
-    // make default constructor private so cannot instatiate this class as it is a singleton.
   }
 }
