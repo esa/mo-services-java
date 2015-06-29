@@ -204,7 +204,10 @@ public abstract class GENTransport implements MALTransport
     // decode configuration
     if (properties != null)
     {
-      lLogFullDebug = properties.containsKey(DEBUG_PROPERTY);
+      if (properties.containsKey(DEBUG_PROPERTY))
+      {
+        lLogFullDebug = Boolean.parseBoolean((String) properties.get(DEBUG_PROPERTY));
+      }
 
       if (properties.containsKey(WRAP_PROPERTY))
       {
@@ -287,7 +290,10 @@ public abstract class GENTransport implements MALTransport
     // decode configuration
     if (properties != null)
     {
-      lLogFullDebug = properties.containsKey(DEBUG_PROPERTY);
+      if (properties.containsKey(DEBUG_PROPERTY))
+      {
+        lLogFullDebug = Boolean.parseBoolean((String) properties.get(DEBUG_PROPERTY));
+      }
 
       if (properties.containsKey(WRAP_PROPERTY))
       {
@@ -453,7 +459,7 @@ public abstract class GENTransport implements MALTransport
       });
 
       // if local then just send internally
-      processIncomingMessage(msg, "");
+      receiveIncomingMessage(new MessageDetails(msg.getHeader().getTransactionId(), msg, ""));
     }
     else
     {
@@ -595,6 +601,11 @@ public abstract class GENTransport implements MALTransport
    */
   protected void receiveIncomingMessage(final MessageDetails malMsg)
   {
+    LOGGER.log(Level.INFO, "GEN Queuing message : {0} : {1}", new Object[]
+    {
+      malMsg.malMsg.getHeader().getTransactionId(), malMsg.smsg
+    });
+
     synchronized (transactionQueues)
     {
       GENIncomingMessageProcessor proc = transactionQueues.get(malMsg.transactionId);
@@ -1121,7 +1132,10 @@ public abstract class GENTransport implements MALTransport
           smsg = packetToString(rawMessage);
           malMsg = createMessage(rawMessage);
         }
-        LOGGER.log(Level.INFO, "GEN Receving message : {0}", smsg);
+        LOGGER.log(Level.INFO, "GEN Receving message : {0} : {1}", new Object[]
+        {
+          malMsg.getHeader().getTransactionId(), smsg
+        });
 
         //register communication channel if needed
         manageCommunicationChannel(malMsg, true, receptionHandler);
