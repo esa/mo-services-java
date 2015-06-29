@@ -28,7 +28,7 @@ import org.omg.CORBA.BooleanHolder;
  */
 public final class BooleanCondition
 {
-  private BooleanHolder isSet = new BooleanHolder(false);
+  private final BooleanHolder isSet = new BooleanHolder(false);
 
   public synchronized final void set()
   {
@@ -42,20 +42,36 @@ public final class BooleanCondition
     notifyAll();
   }
 
-  public synchronized final boolean waitFor(long timeout) throws InterruptedException
+  public final boolean waitFor(final long timeout) throws InterruptedException
   {
-    BooleanHolder hld = isSet;
-    if (false == hld.value)
-    {
-      this.wait(timeout);
-    }
-    // held value will be true if set, false if timed out
+    long timeToGo = timeout;
+    long endTime = System.currentTimeMillis() + timeToGo;
 
-    if (false == hld.value)
+    // Wait until response receieved
+    synchronized (this)
+    {
+      while ((timeToGo > 0) && !isSet.value)
+      {
+        try
+        {
+          this.wait(timeToGo);
+        }
+        catch (InterruptedException ex)
+        {
+          // this can happen
+        }
+
+        // update timeout in case woken up prematurely
+        timeToGo = endTime - System.currentTimeMillis();
+      }
+    }
+    
+    // held value will be true if set, false if timed out
+    if (false == isSet.value)
     {
       LoggingBase.logMessage("Condition timed out");
     }
 
-    return hld.value;
+    return isSet.value;
   }
 }
