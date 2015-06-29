@@ -99,7 +99,7 @@ class SimpleSubscriptionDetails
           final UpdateHeaderList updateHeaderList,
           final MALPublishBody publishBody) throws MALException
   {
-    MALBrokerImpl.LOGGER.fine("INFO: Checking SimSubDetails");
+    MALBrokerImpl.LOGGER.fine("Checking SimSubDetails");
 
     final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
 

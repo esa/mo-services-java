@@ -174,7 +174,7 @@ class MALPublisherImpl implements MALPublisher
 
     if (null != tid)
     {
-      LOGGER.log(Level.INFO, "Publisher using transaction Id of: {0}", tid);
+      LOGGER.log(Level.FINE, "Publisher using transaction Id of: {0}", tid);
 
       final Object[] body = new Object[updateLists.length + 1];
       body[0] = updateHeaderList;
@@ -255,7 +255,7 @@ class MALPublisherImpl implements MALPublisher
 
     if (!transIdMap.containsKey(key))
     {
-      LOGGER.log(Level.INFO, "Publisher setting transaction Id to: {0}", lid);
+      LOGGER.log(Level.FINE, "Publisher setting transaction Id to: {0}", lid);
       transIdMap.put(key, lid);
     }
   }
@@ -271,7 +271,7 @@ class MALPublisherImpl implements MALPublisher
     final Long id = transIdMap.get(key);
     if (null != id)
     {
-      LOGGER.log(Level.INFO, "Publisher removing transaction Id of: {0}", id);
+      LOGGER.log(Level.FINE, "Publisher removing transaction Id of: {0}", id);
       transIdMap.remove(key);
     }
   }

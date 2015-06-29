@@ -195,7 +195,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     final Map<StringPair, PublisherSource> rv = getProviderMap(key);
     if (null != rv.remove(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr))))
     {
-      MALBrokerImpl.LOGGER.log(Level.INFO, "Removing publisher details: {0}", hdr);
+      MALBrokerImpl.LOGGER.log(Level.FINE, "Removing publisher details: {0}", hdr);
     }
 
     if (rv.isEmpty())
@@ -349,7 +349,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     {
       details = new PublisherSource(hdr.getURIFrom().getValue(), hdr.getQoSlevel());
       rv.put(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr)), details);
-      MALBrokerImpl.LOGGER.log(Level.INFO, "New publisher registering: {0}", hdr);
+      MALBrokerImpl.LOGGER.log(Level.FINE, "New publisher registering: {0}", hdr);
     }
 
     return details;
