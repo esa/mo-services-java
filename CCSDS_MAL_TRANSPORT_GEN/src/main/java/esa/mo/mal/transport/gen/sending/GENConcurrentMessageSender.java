@@ -129,7 +129,7 @@ public class GENConcurrentMessageSender
     // start thread
     procThread.start();
 
-    LOGGER.log(Level.INFO, "Adding processor for URI:{0} total processors:{1}", new Object[]
+    LOGGER.log(Level.FINE, "Adding processor for URI:{0} total processors:{1}", new Object[]
     {
       uriTo, processingThreads.size()
     });
@@ -171,7 +171,7 @@ public class GENConcurrentMessageSender
     for (GENSenderThread t : processingThreads)
     {
       // this will cause all threads to terminate
-      LOGGER.log(Level.INFO, "Terminating sender processing thread for URI:{0}", t.getUriTo());
+      LOGGER.log(Level.FINE, "Terminating sender processing thread for URI:{0}", t.getUriTo());
       t.interrupt();
     }
 

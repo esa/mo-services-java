@@ -189,7 +189,7 @@ public abstract class GENTransport implements MALTransport
     this.qosProperties = properties;
     this.streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
 
-    LOGGER.log(Level.INFO, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
+    LOGGER.log(Level.FINE, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
 
     // very crude and faulty test but it will do for testing
     this.streamHasStrings = streamFactory.getClass().getName().contains("String");
@@ -241,7 +241,7 @@ public abstract class GENTransport implements MALTransport
     this.asyncInputReceptionProcessor = Executors.newSingleThreadExecutor();
     this.asyncInputDataProcessors = Executors.newFixedThreadPool(inputProcessorThreads);
 
-    LOGGER.log(Level.INFO, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
+    LOGGER.log(Level.FINE, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
   }
 
   /**
@@ -275,7 +275,7 @@ public abstract class GENTransport implements MALTransport
     this.qosProperties = properties;
     streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
 
-    LOGGER.log(Level.INFO, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
+    LOGGER.log(Level.FINE, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
 
     // very crude and faulty test but it will do for testing
     streamHasStrings = streamFactory.getClass().getName().contains("String");
@@ -327,7 +327,7 @@ public abstract class GENTransport implements MALTransport
     asyncInputReceptionProcessor = Executors.newSingleThreadExecutor();
     asyncInputDataProcessors = Executors.newFixedThreadPool(inputProcessorThreads);
 
-    LOGGER.log(Level.INFO, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
+    LOGGER.log(Level.FINE, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
   }
 
   /**
@@ -453,7 +453,7 @@ public abstract class GENTransport implements MALTransport
 
     if (inProcessSupport && endpointMap.containsKey(endpointUriPart))
     {
-      LOGGER.log(Level.INFO, "GEN routing msg internally to {0}", new Object[]
+      LOGGER.log(Level.FINE, "GEN routing msg internally to {0}", new Object[]
       {
         endpointUriPart
       });
@@ -469,7 +469,7 @@ public abstract class GENTransport implements MALTransport
         String destinationURI = msg.getHeader().getURITo().getValue();
         String remoteRootURI = getRootURI(destinationURI);
 
-        LOGGER.log(Level.INFO, "GEN sending msg. Target root URI: {0} full URI:{1}", new Object[]
+        LOGGER.log(Level.FINE, "GEN sending msg. Target root URI: {0} full URI:{1}", new Object[]
         {
           remoteRootURI, destinationURI
         });
@@ -488,7 +488,7 @@ public abstract class GENTransport implements MALTransport
           throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
         }
 
-        LOGGER.log(Level.INFO, "GEN finished Sending data to {0}", remoteRootURI);
+        LOGGER.log(Level.FINE, "GEN finished Sending data to {0}", remoteRootURI);
       }
       catch (MALTransmitErrorException e)
       {
@@ -534,7 +534,7 @@ public abstract class GENTransport implements MALTransport
       }
       else
       {
-        LOGGER.log(Level.FINE, "Could not locate associated data to close communications for URI : {0} ", localUriTo);
+        LOGGER.log(Level.WARNING, "Could not locate associated data to close communications for URI : {0} ", localUriTo);
       }
     }
 
@@ -601,7 +601,7 @@ public abstract class GENTransport implements MALTransport
    */
   protected void receiveIncomingMessage(final MessageDetails malMsg)
   {
-    LOGGER.log(Level.INFO, "GEN Queuing message : {0} : {1}", new Object[]
+    LOGGER.log(Level.FINE, "GEN Queuing message : {0} : {1}", new Object[]
     {
       malMsg.malMsg.getHeader().getTransactionId(), malMsg.smsg
     });
@@ -655,7 +655,7 @@ public abstract class GENTransport implements MALTransport
   {
     try
     {
-      LOGGER.log(Level.INFO, "GEN Processing message : {0} : {1}", new Object[]
+      LOGGER.log(Level.FINE, "GEN Processing message : {0} : {1}", new Object[]
       {
         msg.getHeader().getTransactionId(), smsg
       });
@@ -666,7 +666,7 @@ public abstract class GENTransport implements MALTransport
 
       if (null != oSkel)
       {
-        LOGGER.log(Level.INFO, "GEN Passing to message handler " + oSkel.getLocalName() + " : {0}", smsg);
+        LOGGER.log(Level.FINE, "GEN Passing to message handler " + oSkel.getLocalName() + " : {0}", smsg);
         oSkel.receiveMessage(msg);
       }
       else
@@ -913,7 +913,7 @@ public abstract class GENTransport implements MALTransport
           // create new sender for this URI
           sender = registerMessageSender(createMessageSender(msg, remoteRootURI), remoteRootURI);
 
-          LOGGER.log(Level.INFO, "GEN opening {0}", numConnections);
+          LOGGER.log(Level.FINE, "GEN opening {0}", numConnections);
 
           for (int i = 1; i < numConnections; i++)
           {
@@ -953,7 +953,7 @@ public abstract class GENTransport implements MALTransport
       //check if we have enough connections for the URI, if not then add the data sender 
       if (dataSender.getNumberOfProcessors() < numConnections)
       {
-        LOGGER.log(Level.INFO, "GEN registering data sender for URI:{0}", remoteRootURI);
+        LOGGER.log(Level.FINE, "GEN registering data sender for URI:{0}", remoteRootURI);
         // insert new processor (message sender) to root data sender for the URI
         dataSender.addProcessor(dataTransmitter, remoteRootURI);
       }
@@ -962,10 +962,10 @@ public abstract class GENTransport implements MALTransport
     {
       //we do not have a communication channel, create a data sender manager and add the first data sender
       // create new sender manager for this URI
-      LOGGER.log(Level.INFO, "GEN creating data sender manager for URI:{0}", remoteRootURI);
+      LOGGER.log(Level.FINE, "GEN creating data sender manager for URI:{0}", remoteRootURI);
       dataSender = new GENConcurrentMessageSender(this, remoteRootURI);
 
-      LOGGER.log(Level.INFO, "GEN registering data sender for URI:{0}", remoteRootURI);
+      LOGGER.log(Level.FINE, "GEN registering data sender for URI:{0}", remoteRootURI);
       outgoingDataChannels.put(remoteRootURI, dataSender);
 
       // insert new processor (message sender) to root data sender for the URI
@@ -1003,7 +1003,7 @@ public abstract class GENTransport implements MALTransport
       byte[] data = baos.toByteArray();
 
       // message is encoded!
-      LOGGER.log(Level.INFO, "GEN Sending data to {0} : {1}", new Object[]
+      LOGGER.log(Level.FINE, "GEN Sending data to {0} : {1}", new Object[]
       {
         targetURI, packetToString(data)
       });
@@ -1132,7 +1132,7 @@ public abstract class GENTransport implements MALTransport
           smsg = packetToString(rawMessage);
           malMsg = createMessage(rawMessage);
         }
-        LOGGER.log(Level.INFO, "GEN Receving message : {0} : {1}", new Object[]
+        LOGGER.log(Level.FINE, "GEN Receving message : {0} : {1}", new Object[]
         {
           malMsg.getHeader().getTransactionId(), smsg
         });

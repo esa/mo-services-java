@@ -215,7 +215,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
     {
       final int count = getElementCount();
 
-      GENTransport.LOGGER.log(Level.INFO, "GEN Message encoding body ... pc ({0})", count);
+      GENTransport.LOGGER.log(Level.FINE, "GEN Message encoding body ... pc ({0})", count);
 
       // if we only have a single body part then encode that directly
       if (count == 1)
@@ -332,7 +332,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
         // encode the XML into a string
         final StringWriter ow = new StringWriter();
         marshaller.marshal(new JAXBElement(new QName(schemaURN, schemaEle), o.getClass(), null, o), ow);
-        GENTransport.LOGGER.log(Level.INFO, "GEN Message encoding XML body part : {0}", ow.toString());
+        GENTransport.LOGGER.log(Level.FINE, "GEN Message encoding XML body part : {0}", ow.toString());
 
         MALElementOutputStream lenc = enc;
         ByteArrayOutputStream lbaos = null;
@@ -434,7 +434,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
           }
         }
 
-        GENTransport.LOGGER.info("GEN Message decoded body");
+        GENTransport.LOGGER.fine("GEN Message decoded body");
       }
       catch (MALException ex)
       {
