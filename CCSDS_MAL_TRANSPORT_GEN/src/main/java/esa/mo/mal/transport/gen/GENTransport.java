@@ -49,6 +49,10 @@ public abstract class GENTransport implements MALTransport
    */
   public static final String WRAP_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.wrap";
   /**
+   * System property to control whether in-process processing supported.
+   */
+  public static final String INPROC_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.fastInProcessMessages";
+  /**
    * System property to control whether debug messages are generated.
    */
   public static final String DEBUG_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.debug";
@@ -100,6 +104,10 @@ public abstract class GENTransport implements MALTransport
    * True if body parts should be wrapped in blobs for encoded element support.
    */
   protected final boolean wrapBodyParts;
+  /**
+   * True if calls to ourselves should be handled in-process i.e. not via the underlying transport.
+   */
+  protected final boolean inProcessSupport;
   /**
    * True if want to log the packet data
    */
@@ -189,6 +197,7 @@ public abstract class GENTransport implements MALTransport
     // default values
     boolean lLogFullDebug = false;
     boolean lWrapBodyParts = wrapBodyParts;
+    boolean lInProcessSupport = true;
     int lInputProcessorThreads = 100;
     int lNumConnections = 1;
 
@@ -197,7 +206,15 @@ public abstract class GENTransport implements MALTransport
     {
       lLogFullDebug = properties.containsKey(DEBUG_PROPERTY);
 
-      lWrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
+      if (properties.containsKey(WRAP_PROPERTY))
+      {
+        lWrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
+      }
+
+      if (properties.containsKey(INPROC_PROPERTY))
+      {
+        lInProcessSupport = Boolean.parseBoolean((String) properties.get(INPROC_PROPERTY));
+      }
 
       // number of internal threads that process incoming MAL packets
       if (properties.containsKey(INPUT_PROCESSORS_PROPERTY))
@@ -214,6 +231,7 @@ public abstract class GENTransport implements MALTransport
 
     this.logFullDebug = lLogFullDebug;
     this.wrapBodyParts = lWrapBodyParts;
+    this.inProcessSupport = lInProcessSupport;
     this.inputProcessorThreads = lInputProcessorThreads;
     this.numConnections = lNumConnections;
 
@@ -262,6 +280,7 @@ public abstract class GENTransport implements MALTransport
     // default values
     boolean lLogFullDebug = false;
     boolean lWrapBodyParts = wrapBodyParts;
+    boolean lInProcessSupport = true;
     int lInputProcessorThreads = 100;
     int lNumConnections = 1;
 
@@ -270,7 +289,15 @@ public abstract class GENTransport implements MALTransport
     {
       lLogFullDebug = properties.containsKey(DEBUG_PROPERTY);
 
-      lWrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
+      if (properties.containsKey(WRAP_PROPERTY))
+      {
+        lWrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
+      }
+
+      if (properties.containsKey(INPROC_PROPERTY))
+      {
+        lInProcessSupport = Boolean.parseBoolean((String) properties.get(INPROC_PROPERTY));
+      }
 
       // number of internal threads that process incoming MAL packets
       if (properties.containsKey(INPUT_PROCESSORS_PROPERTY))
@@ -287,6 +314,7 @@ public abstract class GENTransport implements MALTransport
 
     this.logFullDebug = lLogFullDebug;
     this.wrapBodyParts = lWrapBodyParts;
+    this.inProcessSupport = lInProcessSupport;
     this.inputProcessorThreads = lInputProcessorThreads;
     this.numConnections = lNumConnections;
 
@@ -417,7 +445,7 @@ public abstract class GENTransport implements MALTransport
     // first check if its actually a message to ourselves
     String endpointUriPart = getRoutingPart(msg.getHeader().getURITo().getValue(), serviceDelim, routingDelim, supportsRouting);
 
-    if (endpointMap.containsKey(endpointUriPart))
+    if (inProcessSupport && endpointMap.containsKey(endpointUriPart))
     {
       LOGGER.log(Level.INFO, "GEN routing msg internally to {0}", new Object[]
       {
