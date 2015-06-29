@@ -182,7 +182,7 @@ class InteractionConsumerMap
       {
         if (handler.finished())
         {
-          MALContextFactoryImpl.LOGGER.log(Level.INFO, "Removing handler from service maps: {0}", id);
+          MALContextFactoryImpl.LOGGER.log(Level.FINE, "Removing handler from service maps: {0}", id);
           transMap.remove(id);
         }
       }
@@ -223,7 +223,7 @@ class InteractionConsumerMap
         // delete entry from trans map
         if (handler.finished())
         {
-          MALContextFactoryImpl.LOGGER.log(Level.INFO, "Removing handler from service maps: {0}", id);
+          MALContextFactoryImpl.LOGGER.log(Level.FINE, "Removing handler from service maps: {0}", id);
           transMap.remove(id);
         }
       }
@@ -261,7 +261,7 @@ class InteractionConsumerMap
       if (null != handler)
       {
         // delete entry from trans map
-        MALContextFactoryImpl.LOGGER.log(Level.INFO, "Removing handler from service maps: {0}", id);
+        MALContextFactoryImpl.LOGGER.log(Level.FINE, "Removing handler from service maps: {0}", id);
         transMap.remove(id);
       }
     }

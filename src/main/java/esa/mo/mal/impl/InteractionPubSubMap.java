@@ -51,7 +51,7 @@ class InteractionPubSubMap
     {
       publisherMap.put(id, listener);
 
-      MALContextFactoryImpl.LOGGER.log(Level.INFO, "Adding publisher: {0}", id);
+      MALContextFactoryImpl.LOGGER.log(Level.FINE, "Adding publisher: {0}", id);
     }
   }
 
@@ -116,7 +116,7 @@ class InteractionPubSubMap
 
     if (null != list)
     {
-      MALContextFactoryImpl.LOGGER.log(Level.INFO, "Removing publisher: {0}", id);
+      MALContextFactoryImpl.LOGGER.log(Level.FINE, "Removing publisher: {0}", id);
     }
 
     return list;
@@ -141,7 +141,7 @@ class InteractionPubSubMap
         errorMap.put(uri, ent);
       }
 
-      MALContextFactoryImpl.LOGGER.log(Level.INFO,
+      MALContextFactoryImpl.LOGGER.log(Level.FINE,
               "PubSubMap({0}), adding notify handler: {1} : {2} : {3}", new Object[]
               {
                 this, uri, subId, list
@@ -191,7 +191,7 @@ class InteractionPubSubMap
       {
         for (Map.Entry<String, MALInteractionListener> e : ent.entrySet())
         {
-          MALContextFactoryImpl.LOGGER.log(Level.INFO,
+          MALContextFactoryImpl.LOGGER.log(Level.FINE,
                   "PubSubMap({0}), removing notify handler: {1} : *", new Object[]
                   {
                     this, uri
@@ -217,7 +217,7 @@ class InteractionPubSubMap
         final StringPair id = new StringPair(uri, unsubId);
         if (notifyMap.containsKey(id))
         {
-          MALContextFactoryImpl.LOGGER.log(Level.INFO,
+          MALContextFactoryImpl.LOGGER.log(Level.FINE,
                   "PubSubMap({0}), removing notify handler: {1} : {2}", new Object[]
                   {
                     this, uri, unsubId

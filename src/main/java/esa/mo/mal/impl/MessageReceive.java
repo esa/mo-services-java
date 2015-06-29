@@ -116,7 +116,7 @@ public class MessageReceive implements MALMessageListener
         stage = oStage.getValue();
       }
 
-      MALContextFactoryImpl.LOGGER.info("MAL Receiving message");
+      MALContextFactoryImpl.LOGGER.fine("MAL Receiving message");
 
       switch (msg.getHeader().getInteractionType().getOrdinal())
       {
