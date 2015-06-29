@@ -399,7 +399,7 @@ public class GENEndpoint implements MALEndpoint
           final boolean lastForHandle,
           final GENMessage msg) throws MALTransmitErrorException
   {
-    transport.sendMessage(this, multiSendHandle, lastForHandle, msg);
+    transport.sendMessage(multiSendHandle, lastForHandle, msg);
   }
 
   /**

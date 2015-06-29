@@ -61,6 +61,10 @@ public abstract class GENTransport implements MALTransport
    */
   public static final String NUM_CLIENT_CONNS_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.numconnections";
   /**
+   * Charset used for converting the encoded message into a string for debugging.
+   */
+  public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+  /**
    * Logger
    */
   public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.gen");
@@ -105,6 +109,14 @@ public abstract class GENTransport implements MALTransport
    */
   protected final String protocol;
   /**
+   * Map of string names to endpoints.
+   */
+  protected final Map<String, GENEndpoint> endpointMap = new HashMap<String, GENEndpoint>();
+  /**
+   * Map of QoS properties.
+   */
+  protected final Map qosProperties;
+  /**
    * The number of connections per client or server. The Transport will connect numConnections times to the predefined
    * port and host per different client/server.
    */
@@ -115,26 +127,32 @@ public abstract class GENTransport implements MALTransport
    * concurrently serve.
    */
   private final int inputProcessorThreads;
-
   /**
-   * The thread pool of input data processors. All incoming raw data packets are processed by this thread pool.
+   * The thread that receives incoming message from the underlying transport. All incoming raw data packets are
+   * processed by this thread.
+   */
+  private final ExecutorService asyncInputReceptionProcessor;
+  /**
+   * The thread pool of input message processors. All incoming messages are processed by this thread pool after they
+   * have been decoded by the asyncInputReceptionProcessor thread.
    */
   private final ExecutorService asyncInputDataProcessors;
   /**
+   * The map of message queues, segregated by transaction id.
+   */
+  private final Map<Long, GENIncomingMessageProcessor> transactionQueues = new HashMap<Long, GENIncomingMessageProcessor>();
+  /**
    * Map of outgoing channels. This associates a URI to a transport resource that is able to send messages to this URI.
    */
-  private final Map<String, GENConcurrentMessageSender> outgoingDataChannels;
+  private final Map<String, GENConcurrentMessageSender> outgoingDataChannels = Collections.synchronizedMap(new HashMap<String, GENConcurrentMessageSender>());
   /**
-   * Map of string names to endpoints.
+   * The stream factory used for encoding and decoding messages.
    */
-  protected final Map<String, GENEndpoint> endpointMap = new HashMap<String, GENEndpoint>();
+  private final MALElementStreamFactory streamFactory;
   /**
    * The base string for URL for this protocol.
    */
   protected String uriBase;
-  static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
-  private final MALElementStreamFactory streamFactory;
-  protected final Map qosProperties;
 
   /**
    * Constructor.
@@ -161,52 +179,46 @@ public abstract class GENTransport implements MALTransport
     this.serviceDelim = serviceDelim;
     this.routingDelim = '@';
     this.qosProperties = properties;
-    streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
+    this.streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
 
     LOGGER.log(Level.INFO, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
 
     // very crude and faulty test but it will do for testing
-    streamHasStrings = streamFactory.getClass().getName().contains("String");
+    this.streamHasStrings = streamFactory.getClass().getName().contains("String");
+
+    // default values
+    boolean lLogFullDebug = false;
+    boolean lWrapBodyParts = wrapBodyParts;
+    int lInputProcessorThreads = 100;
+    int lNumConnections = 1;
 
     // decode configuration
     if (properties != null)
     {
-      logFullDebug = properties.containsKey(DEBUG_PROPERTY);
+      lLogFullDebug = properties.containsKey(DEBUG_PROPERTY);
 
-      this.wrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
+      lWrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
 
       // number of internal threads that process incoming MAL packets
       if (properties.containsKey(INPUT_PROCESSORS_PROPERTY))
       {
-        this.inputProcessorThreads = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
-      }
-      else
-      {
-        this.inputProcessorThreads = 20;
+        lInputProcessorThreads = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
       }
 
       // number of connections per client/server
       if (properties.containsKey(NUM_CLIENT_CONNS_PROPERTY))
       {
-        this.numConnections = Integer.parseInt((String) properties.get(NUM_CLIENT_CONNS_PROPERTY));
-      }
-      else
-      {
-        this.numConnections = 1;
+        lNumConnections = Integer.parseInt((String) properties.get(NUM_CLIENT_CONNS_PROPERTY));
       }
     }
-    else
-    {
-      // default values
-      this.logFullDebug = false;
-      this.wrapBodyParts = wrapBodyParts;
-      this.inputProcessorThreads = 20;
-      this.numConnections = 1;
-    }
 
-    asyncInputDataProcessors = Executors.newFixedThreadPool(inputProcessorThreads);
+    this.logFullDebug = lLogFullDebug;
+    this.wrapBodyParts = lWrapBodyParts;
+    this.inputProcessorThreads = lInputProcessorThreads;
+    this.numConnections = lNumConnections;
 
-    outgoingDataChannels = Collections.synchronizedMap(new HashMap<String, GENConcurrentMessageSender>());
+    this.asyncInputReceptionProcessor = Executors.newSingleThreadExecutor();
+    this.asyncInputDataProcessors = Executors.newFixedThreadPool(inputProcessorThreads);
 
     LOGGER.log(Level.INFO, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
   }
@@ -247,43 +259,39 @@ public abstract class GENTransport implements MALTransport
     // very crude and faulty test but it will do for testing
     streamHasStrings = streamFactory.getClass().getName().contains("String");
 
+    // default values
+    boolean lLogFullDebug = false;
+    boolean lWrapBodyParts = wrapBodyParts;
+    int lInputProcessorThreads = 100;
+    int lNumConnections = 1;
+
     // decode configuration
     if (properties != null)
     {
-      logFullDebug = properties.containsKey(DEBUG_PROPERTY);
+      lLogFullDebug = properties.containsKey(DEBUG_PROPERTY);
 
-      this.wrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
+      lWrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
 
       // number of internal threads that process incoming MAL packets
       if (properties.containsKey(INPUT_PROCESSORS_PROPERTY))
       {
-        this.inputProcessorThreads = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
+        lInputProcessorThreads = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
       }
-      else
-      {
-        this.inputProcessorThreads = 20;
-      }
+
       // number of connections per client/server
       if (properties.containsKey(NUM_CLIENT_CONNS_PROPERTY))
       {
-        this.numConnections = Integer.parseInt((String) properties.get(NUM_CLIENT_CONNS_PROPERTY));
+        lNumConnections = Integer.parseInt((String) properties.get(NUM_CLIENT_CONNS_PROPERTY));
       }
-      else
-      {
-        this.numConnections = 1;
-      }
-    }
-    else
-    {
-      // default values
-      this.logFullDebug = false;
-      this.wrapBodyParts = wrapBodyParts;
-      this.inputProcessorThreads = 20;
-      this.numConnections = 1;
     }
 
+    this.logFullDebug = lLogFullDebug;
+    this.wrapBodyParts = lWrapBodyParts;
+    this.inputProcessorThreads = lInputProcessorThreads;
+    this.numConnections = lNumConnections;
+
+    asyncInputReceptionProcessor = Executors.newSingleThreadExecutor();
     asyncInputDataProcessors = Executors.newFixedThreadPool(inputProcessorThreads);
-    outgoingDataChannels = Collections.synchronizedMap(new HashMap<String, GENConcurrentMessageSender>());
 
     LOGGER.log(Level.INFO, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
   }
@@ -379,7 +387,7 @@ public abstract class GENTransport implements MALTransport
    */
   public void receive(final java.io.InputStream ios, GENReceptionHandler receptionHandler)
   {
-    asyncInputDataProcessors.submit(new GENIncomingDataProcessor(this, ios, receptionHandler));
+    asyncInputReceptionProcessor.submit(new GENIncomingMessageReceiver(ios, receptionHandler));
   }
 
   /**
@@ -391,20 +399,18 @@ public abstract class GENTransport implements MALTransport
    */
   public void receive(final byte[] rawMessage, GENReceptionHandler receptionHandler)
   {
-    asyncInputDataProcessors.submit(new GENIncomingDataProcessor(this, rawMessage, receptionHandler));
+    asyncInputReceptionProcessor.submit(new GENIncomingMessageReceiver(rawMessage, receptionHandler));
   }
 
   /**
    * The main exit point for messages from this transport.
    *
-   * @param ep The endpoint sending the message.
    * @param multiSendHandle A context handle for multi send
    * @param lastForHandle True if that is the last message in a multi send for the handle
    * @param msg The message to send.
    * @throws MALTransmitErrorException On transmit error.
    */
-  public void sendMessage(final GENEndpoint ep,
-          final Object multiSendHandle,
+  public void sendMessage(final Object multiSendHandle,
           final boolean lastForHandle,
           final GENMessage msg) throws MALTransmitErrorException
   {
@@ -541,6 +547,7 @@ public abstract class GENTransport implements MALTransport
 
     endpointMap.clear();
 
+    asyncInputReceptionProcessor.shutdown();
     asyncInputDataProcessors.shutdown();
 
     for (Map.Entry<String, GENConcurrentMessageSender> entry : outgoingDataChannels.entrySet())
@@ -554,74 +561,46 @@ public abstract class GENTransport implements MALTransport
   }
 
   /**
-   * This method processes an incoming message and then forwards it for touring to the appropriate endpoint. The
-   * processing consists of transforming the raw message to the appropriate format and then registering if necessary the
-   * communication channel.
+   * This method receives an incoming message and adds to to the correct queue based on its transaction id.
    *
-   * @param ios the stream to be used to read the message
-   * @param receptionHandler The reception handler of the message. This might be null of the transport implementation
-   * does not have a reception handler for this message.
+   * @param malMsg the message
    */
-  protected void internalMessageReceive(final java.io.InputStream ios, GENReceptionHandler receptionHandler)
+  protected void receiveIncomingMessage(final MessageDetails malMsg)
   {
-    LOGGER.log(Level.INFO, "GEN Receiving data (creating thread)");
-
-    if (null != ios)
+    synchronized (transactionQueues)
     {
-      try
+      GENIncomingMessageProcessor proc = transactionQueues.get(malMsg.transactionId);
+
+      if (null == proc)
       {
-        // create message
-        GENMessage malMsg = createMessage(ios);
-        // register communication channel if needed
-        manageCommunicationChannel(malMsg, true, receptionHandler);
-        // send message for further processing and routing
-        processIncomingMessage(malMsg, "");
+        proc = new GENIncomingMessageProcessor(malMsg);
+        transactionQueues.put(malMsg.transactionId, proc);
+        asyncInputDataProcessors.submit(proc);
       }
-      catch (Exception e)
+      else
       {
-        LOGGER.log(Level.WARNING, "GEN Error occurred when decoding data : {0}", e);
-
-        final StringWriter wrt = new StringWriter();
-        e.printStackTrace(new PrintWriter(wrt));
-
-        communicationError(null, receptionHandler);
+        if (proc.addMessage(malMsg))
+        {
+          // need to resubmit this to the processing threads
+          asyncInputDataProcessors.submit(proc);
+        }
       }
-    }
-  }
 
-  /**
-   * This method processes an incoming message and then forwards it for touring to the appropriate endpoint. The
-   * processing consists of transforming the raw message to the appropriate format and then registering if necessary the
-   * communication channel.
-   *
-   * @param rawMessage the message
-   * @param receptionHandler The reception handler of the message. This might be null of the transport implementation
-   * does not have a reception handler for this message.
-   */
-  protected void internalMessageReceive(final byte[] rawMessage, GENReceptionHandler receptionHandler)
-  {
-    final String smsg = packetToString(rawMessage);
-    LOGGER.log(Level.INFO, "GEN Receiving data (creating thread) : {0}", smsg);
-
-    if (null != rawMessage)
-    {
-      try
+      Set<Long> transactionsToRemove = new HashSet<Long>();
+      for (Map.Entry<Long, GENIncomingMessageProcessor> entrySet : transactionQueues.entrySet())
       {
-        //create message
-        GENMessage malMsg = createMessage(rawMessage);
-        //register communication channel if needed
-        manageCommunicationChannel(malMsg, true, receptionHandler);
-        //send message for further processing and routing
-        processIncomingMessage(malMsg, smsg);
+        Long key = entrySet.getKey();
+        GENIncomingMessageProcessor lproc = entrySet.getValue();
+
+        if (lproc.isFinished())
+        {
+          transactionsToRemove.add(key);
+        }
       }
-      catch (Exception e)
+
+      for (Long transId : transactionsToRemove)
       {
-        LOGGER.log(Level.WARNING, "GEN Error occurred when decoding data : {0}", e);
-
-        final StringWriter wrt = new StringWriter();
-        e.printStackTrace(new PrintWriter(wrt));
-
-        communicationError(null, receptionHandler);
+        transactionQueues.remove(transId);
       }
     }
   }
@@ -637,7 +616,10 @@ public abstract class GENTransport implements MALTransport
   {
     try
     {
-      LOGGER.log(Level.INFO, "GEN Receiving and processing data : {0}", smsg);
+      LOGGER.log(Level.INFO, "GEN Processing message : {0} : {1}", new Object[]
+      {
+        msg.getHeader().getTransactionId(), smsg
+      });
 
       String endpointUriPart = getRoutingPart(msg.getHeader().getURITo().getValue(), serviceDelim, routingDelim, supportsRouting);
 
@@ -673,7 +655,7 @@ public abstract class GENTransport implements MALTransport
       }
       catch (MALException ex)
       {
-        LOGGER.log(Level.SEVERE, "GEN Error occurred when return error data : {0}", e);
+        LOGGER.log(Level.SEVERE, "GEN Error occurred when return error data : {0}", ex);
       }
     }
   }
@@ -733,7 +715,7 @@ public abstract class GENTransport implements MALTransport
                   oriMsg.getQoSProperties(),
                   errorNumber, new Union(errorMsg));
 
-          sendMessage(endpoint, null, true, retMsg);
+          sendMessage(null, true, retMsg);
         }
       }
     }
@@ -1017,13 +999,45 @@ public abstract class GENTransport implements MALTransport
   protected abstract GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException;
 
   /**
-   * This Runnable task is responsible for holding newly arrived MAL Messages (in raw format) and passing to the
-   * transport executor.
+   * Simple structure class for holding related aspects of a decoded MAL message.
+   */
+  protected static final class MessageDetails
+  {
+    /**
+     * The transaction id of this message.
+     */
+    public final Long transactionId;
+    /**
+     * The decoded MAL message.
+     */
+    public final GENMessage malMsg;
+    /**
+     * A string representation for debug tracing.
+     */
+    public final String smsg;
+
+    /**
+     * Constructor.
+     *
+     * @param transactionId the message transaction id.
+     * @param malMsg The decoded MAL message.
+     * @param smsg A string representation for debug tracing.
+     */
+    public MessageDetails(final Long transactionId, final GENMessage malMsg, final String smsg)
+    {
+      this.transactionId = transactionId;
+      this.malMsg = malMsg;
+      this.smsg = smsg;
+    }
+  }
+
+  /**
+   * This Runnable task is responsible for holding newly arrived MAL Messages (in raw format), decoding, and passing to
+   * the transport executor.
    *
    */
-  protected final class GENIncomingDataProcessor implements Runnable
+  private final class GENIncomingMessageReceiver implements Runnable
   {
-    private final GENTransport transport;
     private final byte[] rawMessage;
     private final java.io.InputStream ioMessage;
     private final GENReceptionHandler receptionHandler;
@@ -1031,13 +1045,11 @@ public abstract class GENTransport implements MALTransport
     /**
      * Constructor
      *
-     * @param transport Parent transport
      * @param rawMessage The raw message
      * @param receptionHandler The reception handler to pass them to.
      */
-    public GENIncomingDataProcessor(GENTransport transport, byte[] rawMessage, GENReceptionHandler receptionHandler)
+    public GENIncomingMessageReceiver(byte[] rawMessage, GENReceptionHandler receptionHandler)
     {
-      this.transport = transport;
       this.rawMessage = rawMessage;
       this.ioMessage = null;
       this.receptionHandler = receptionHandler;
@@ -1046,28 +1058,137 @@ public abstract class GENTransport implements MALTransport
     /**
      * Constructor
      *
-     * @param transport Parent transport
      * @param ioMessage The raw message
      * @param receptionHandler The reception handler to pass them to.
      */
-    public GENIncomingDataProcessor(GENTransport transport, java.io.InputStream ioMessage, GENReceptionHandler receptionHandler)
+    public GENIncomingMessageReceiver(java.io.InputStream ioMessage, GENReceptionHandler receptionHandler)
     {
-      this.transport = transport;
       this.rawMessage = null;
       this.ioMessage = ioMessage;
       this.receptionHandler = receptionHandler;
     }
 
+    /**
+     * This method processes an incoming message and then forwards it for routing to the appropriate message queue. The
+     * processing consists of transforming the raw message to the appropriate format and then registering if necessary
+     * the communication channel.
+     */
     @Override
     public void run()
     {
-      if (null == rawMessage)
+      try
       {
-        transport.internalMessageReceive(ioMessage, receptionHandler);
+        String smsg;
+        GENMessage malMsg;
+
+        if (null == rawMessage)
+        {
+          // create message
+          smsg = "";
+          malMsg = createMessage(ioMessage);
+        }
+        else
+        {
+          // create message
+          smsg = packetToString(rawMessage);
+          malMsg = createMessage(rawMessage);
+        }
+        LOGGER.log(Level.INFO, "GEN Receving message : {0}", smsg);
+
+        //register communication channel if needed
+        manageCommunicationChannel(malMsg, true, receptionHandler);
+
+        receiveIncomingMessage(new MessageDetails(malMsg.getHeader().getTransactionId(), malMsg, smsg));
       }
-      else
+      catch (MALException e)
       {
-        transport.internalMessageReceive(rawMessage, receptionHandler);
+        LOGGER.log(Level.WARNING, "GEN Error occurred when decoding data : {0}", e);
+        communicationError(null, receptionHandler);
+      }
+      catch (MALTransmitErrorException e)
+      {
+        LOGGER.log(Level.WARNING, "GEN Error occurred when decoding data : {0}", e);
+        communicationError(null, receptionHandler);
+      }
+    }
+  }
+
+  /**
+   * This Runnable task is responsible for processing the already decoded message. It holds a queue of messages split on
+   * transaction id so that messages with the same transaction id get processed in reception order.
+   *
+   */
+  private final class GENIncomingMessageProcessor implements Runnable
+  {
+    private final Queue<MessageDetails> malMsgs = new ArrayDeque<MessageDetails>();
+    private boolean finished = false;
+
+    /**
+     * Constructor
+     *
+     * @param malMsg The MAL message.
+     */
+    public GENIncomingMessageProcessor(final MessageDetails malMsg)
+    {
+      malMsgs.add(malMsg);
+    }
+
+    /**
+     * Adds a message to the internal queue. If the thread associated with this executor has finished it resets the flag
+     * and returns true to indicate that it should be resubmitted for more processing to the Executor pool.
+     *
+     * @param malMsg The decoded message.
+     * @return True if this needs to be resubmitted to the processing executor pool.
+     */
+    public synchronized boolean addMessage(final MessageDetails malMsg)
+    {
+      malMsgs.add(malMsg);
+
+      if (finished)
+      {
+        finished = false;
+
+        // need to resubmit this to the processing threads
+        return true;
+      }
+
+      return false;
+    }
+
+    /**
+     * Returns true if this thread has finished processing its queue.
+     *
+     * @return True if finished processing queue.
+     */
+    public boolean isFinished()
+    {
+      return finished;
+    }
+
+    @Override
+    public void run()
+    {
+      MessageDetails msg;
+
+      synchronized (this)
+      {
+        msg = malMsgs.poll();
+      }
+
+      while (null != msg)
+      {
+        // send message for further processing and routing
+        processIncomingMessage(msg.malMsg, msg.smsg);
+
+        synchronized (this)
+        {
+          msg = malMsgs.poll();
+
+          if (null == msg)
+          {
+            finished = true;
+          }
+        }
       }
     }
   }
