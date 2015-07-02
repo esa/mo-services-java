@@ -20,19 +20,13 @@
  */
 package esa.mo.mal.transport.jms;
 
-import java.util.Vector;
+import esa.mo.mal.transport.gen.GENTransport;
 import java.util.logging.Level;
 import javax.jms.*;
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.UShort;
-import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
-import esa.mo.mal.transport.jms.util.Condition;
-import esa.mo.mal.transport.jms.util.StoppableThread;
 import esa.mo.mal.transport.jms.util.StructureHelper;
-import java.util.HashMap;
 
 /**
  *
@@ -45,9 +39,6 @@ public class JMSQueueHandler implements MessageListener
   protected final String sourceName;
   protected Session queueSession;
   private final MessageConsumer consumer;
-  private final MessageReceiver mr = new MessageReceiver();
-  protected final Condition messageCondition = new Condition();
-  protected final Vector<JMSUpdate> messageQueue = new Vector<JMSUpdate>();
 
   public JMSQueueHandler(JMSEndpoint endPoint, Object interruption, Session qs, Destination messageSource, String sourceName) throws Exception
   {
@@ -60,10 +51,7 @@ public class JMSQueueHandler implements MessageListener
     consumer = queueSession.createConsumer(messageSource);
     consumer.setMessageListener(this);
 
-    JMSTransport.RLOGGER.log(Level.INFO, "JMS JMSQueueHandler created for: {0}", messageSource);
-
-    // We create a thread which sends back the message (to avoid dead locks cf CommonServiceMaps)
-    mr.pleaseStart();
+    JMSTransport.RLOGGER.log(Level.FINE, "JMS JMSQueueHandler created for: {0}", messageSource);
   }
 
   public JMSQueueHandler(JMSEndpoint endPoint, Object interruption, Session qs, Topic messageSource, String sourceName) throws Exception
@@ -75,19 +63,17 @@ public class JMSQueueHandler implements MessageListener
     this.sourceName = sourceName;
     this.consumer = null;
 
-    JMSTransport.RLOGGER.log(Level.INFO, "JMS JMSQueueHandler created for: {0}", messageSource);
-
-    // We create a thread which sends back the message (to avoid dead locks cf CommonServiceMaps)
-    mr.pleaseStart();
+    JMSTransport.RLOGGER.log(Level.FINE, "JMS JMSQueueHandler created for: {0}", messageSource);
   }
 
   /**
    * Reception of a message from JMS implementation
+   * @param msg The JMS message
    */
   public void onMessage(Message msg)
   {
     JMSTransport.RLOGGER.fine("JMS onMessage");
-    
+
     try
     {
       if (msg instanceof ObjectMessage)
@@ -102,12 +88,8 @@ public class JMSQueueHandler implements MessageListener
           UShort a = new UShort(objMsg.getIntProperty(JMSEndpoint.ARR_PROPERTY));
           UShort s = new UShort(objMsg.getIntProperty(JMSEndpoint.SVC_PROPERTY));
           UShort o = new UShort(objMsg.getIntProperty(JMSEndpoint.OPN_PROPERTY));
-          synchronized (messageQueue)
-          {
-            messageQueue.add(new JMSUpdate(d, n, a, s, o, (byte[]) dat));
-          }
 
-          messageCondition.set();
+          endPoint.getJtransport().receive(createMessageReceiver(new JMSUpdate(d, n, a, s, o, (byte[]) dat)));
         }
         else
         {
@@ -126,80 +108,8 @@ public class JMSQueueHandler implements MessageListener
     }
   }
 
-  public void stop()
+  protected GENTransport.GENIncomingMessageReceiverBase createMessageReceiver(JMSUpdate update)
   {
-    mr.pleaseStop();
-
-    messageCondition.set();
-  }
-
-  /**
-   * MessageSender Sends a message back to the common service
-   *
-   */
-  private class MessageReceiver extends StoppableThread
-  {
-    public MessageReceiver()
-    {
-      super("JMS message receiver");
-    }
-
-    public void stoppableRun()
-    {
-      while (shouldContinue())
-      {
-        try
-        {
-          messageCondition.waitFor();
-          messageCondition.reset();
-
-          // (process the message components ...)
-          decode(consume());
-        }
-        catch (InterruptedException ex)
-        {
-          // just check in case we are being stopped
-          if (shouldContinue())
-          {
-            // oh, we weren't expecting to stop!
-            ex.printStackTrace();
-          }
-        }
-        catch (Exception ex)
-        {
-          ex.printStackTrace();
-        }
-      }
-    }
-  }
-
-  protected void decode(Vector<JMSUpdate> pmsgs) throws Exception
-  {
-    if (0 < pmsgs.size())
-    {
-      JMSTransport.RLOGGER.log(Level.FINE, "JMS Receiving data {0}", pmsgs.size());
-
-      for (JMSUpdate bs : pmsgs)
-      {
-        GENMessage msg = new GENMessage(false, true, new GENMessageHeader(), new HashMap(), bs.getDat(), endPoint.getJtransport().getStreamFactory());
-        endPoint.receiveMessage(msg);
-      }
-    }
-  }
-
-  protected Vector<JMSUpdate> consume() throws MALException
-  {
-    Vector<JMSUpdate> v = new Vector<JMSUpdate>();
-
-    synchronized (messageQueue)
-    {
-      if (0 < messageQueue.size())
-      {
-        v.addAll(messageQueue);
-        messageQueue.clear();
-      }
-    }
-
-    return v;
+    return new JMSIncomingMessageReceiver(endPoint.getJtransport(), update, null);
   }
 }

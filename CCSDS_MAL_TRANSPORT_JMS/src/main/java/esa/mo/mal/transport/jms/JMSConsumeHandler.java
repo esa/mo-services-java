@@ -22,21 +22,15 @@ package esa.mo.mal.transport.jms;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.Topic;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
-import java.io.ByteArrayInputStream;
-import org.ccsds.moims.mo.mal.MALContextFactory;
-import org.ccsds.moims.mo.mal.MALElementFactory;
-import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
+import esa.mo.mal.transport.gen.GENTransport;
 import esa.mo.mal.transport.jms.util.StructureHelper;
 
 /**
@@ -45,15 +39,11 @@ import esa.mo.mal.transport.jms.util.StructureHelper;
 public class JMSConsumeHandler extends JMSQueueHandler
 {
   private final List<MessageConsumer> consumerList = new LinkedList<MessageConsumer>();
-  private final UShort area;
-  private final UShort service;
-  private final UShort operation;
   private final UOctet version;
   private Identifier subId = null;
   private URI URIFrom = null;
   private QoSLevel level = null;
   private UInteger priority = null;
-  private IdentifierList domain = null;
   private Identifier networkZone = null;
   private SessionType session = null;
   private Identifier sessionName = null;
@@ -63,9 +53,6 @@ public class JMSConsumeHandler extends JMSQueueHandler
   {
     super(endPoint, interruption, qs, messageSource, sourceName);
 
-    this.area = area;
-    this.service = service;
-    this.operation = operation;
     this.version = version;
   }
 
@@ -79,7 +66,6 @@ public class JMSConsumeHandler extends JMSQueueHandler
     URIFrom = hdr.getURITo();
     level = hdr.getQoSlevel();
     priority = hdr.getPriority();
-    domain = hdr.getDomain();
     networkZone = hdr.getNetworkZone();
     session = hdr.getSession();
     sessionName = hdr.getSessionName();
@@ -233,61 +219,6 @@ public class JMSConsumeHandler extends JMSQueueHandler
     }
   }
 
-  @Override
-  protected void decode(Vector<JMSUpdate> msgs) throws Exception
-  {
-    JMSTransport.RLOGGER.log(Level.FINE, "JMS receiving messages: {0}", msgs.size());
-
-    // build header
-    GENMessageHeader hdr = new GENMessageHeader();
-    hdr.setURITo(endPoint.getURI());
-    hdr.setTimestamp(new Time(new java.util.Date().getTime()));
-    hdr.setInteractionType(InteractionType.PUBSUB);
-    hdr.setInteractionStage(MALPubSubOperation.NOTIFY_STAGE);
-    hdr.setAreaVersion(version);
-    hdr.setIsErrorMessage(false);
-
-    hdr.setURIFrom(URIFrom);
-    hdr.setAuthenticationId(new Blob(JMSTransport.authId));
-    hdr.setQoSlevel(level);
-    hdr.setPriority(priority);
-    hdr.setNetworkZone(networkZone);
-    hdr.setSession(session);
-    hdr.setSessionName(sessionName);
-    hdr.setTransactionId(transactionId);
-
-    GENMessage[] gmsgs = new GENMessage[msgs.size()];
-
-    for (int idx = 0; idx < gmsgs.length; idx++)
-    {
-      JMSUpdate upd = msgs.get(idx);
-
-      try
-      {
-        ByteArrayInputStream baos = new ByteArrayInputStream(upd.getDat());
-        MALElementInputStream enc = endPoint.getJtransport().getStreamFactory().createInputStream(baos);
-
-        UShort lstCount = (UShort) enc.readElement(new UShort(0), null);
-
-        Object[] new_objs = new Object[lstCount.getValue() + 1];
-        new_objs[0] = subId;
-        for (int i = 1; i < new_objs.length; i++)
-        {
-          MALElementFactory factory = MALContextFactory.getElementFactoryRegistry().lookupElementFactory(((Union)enc.readElement(new Union(0L), null)).getLongValue());
-          new_objs[i] = enc.readElement(factory.createElement(), null);
-        }
-
-        gmsgs[idx] = new GENMessage(false, new JMSMessageHeader(hdr, upd), null, null, new_objs);
-      }
-      catch (Throwable ex)
-      {
-        throw new MALException("Internal error decoding message", ex);
-      }
-    }
-
-    endPoint.receiveMessages(gmsgs);
-  }
-
   protected static boolean createRoutingKeyIdentifier(StringBuilder buf, String propertyId, Identifier id)
   {
     if ((null != id) && (null != id.getValue()) && (!"*".equals(id.getValue())))
@@ -396,5 +327,11 @@ public class JMSConsumeHandler extends JMSQueueHandler
     }
 
     return true;
+  }
+
+  @Override
+  protected GENTransport.GENIncomingMessageReceiverBase createMessageReceiver(JMSUpdate update)
+  {
+    return new JMSIncomingPSMessageReceiver(endPoint.getJtransport(), update, endPoint.getURI(), version, subId, URIFrom, level, priority, networkZone, session, sessionName, transactionId, null);
   }
 }

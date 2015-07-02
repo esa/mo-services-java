@@ -98,12 +98,9 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
     
     try
     {
-      rspnHandler.stop();
-
       for (JMSConsumeHandler handler : consumeHandlerMap.values())
       {
         handler.deregister(true);
-        handler.stop();
       }
 
       consumeHandlerMap.clear();
@@ -130,7 +127,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
 
     if (lqs.getTransacted())
     {
-      JMSTransport.RLOGGER.info("Commiting transaction");
+      JMSTransport.RLOGGER.fine("Commiting transaction");
       lqs.commit();
     }
 
@@ -185,7 +182,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
             {
               if (lqs.getTransacted())
               {
-                JMSTransport.RLOGGER.info("Commiting transaction");
+                JMSTransport.RLOGGER.fine("Commiting transaction");
                 lqs.commit();
               }
             }
@@ -313,7 +310,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
     {
       details = new JMSPublishHandler(jtransport, msg);
       publishHandlerMap.put(createProviderKey(hdr), details);
-      JMSTransport.RLOGGER.log(Level.INFO, "New JMS publisher registering: {0}", hdr);
+      JMSTransport.RLOGGER.log(Level.FINE, "New JMS publisher registering: {0}", hdr);
     }
 
     details.setKeyList(hdr, ((MALPublishRegisterBody) msg.getBody()).getEntityKeyList());
@@ -358,7 +355,6 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
         JMSConsumeHandler handler = consumeHandlerMap.get(subscriptionKey);
         consumeHandlerMap.remove(subscriptionKey);
         handler.deregister(true);
-        handler.stop();
       }
       else
       {

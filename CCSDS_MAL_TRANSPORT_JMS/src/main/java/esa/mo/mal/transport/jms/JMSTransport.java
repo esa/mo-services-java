@@ -177,7 +177,7 @@ public class JMSTransport extends GENTransport implements MALTransport
   @Override
   protected GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException
   {
-    RLOGGER.log(Level.INFO, "JMS received request to create connections to URI:{0}", remoteRootURI);
+    RLOGGER.log(Level.FINE, "JMS received request to create connections to URI:{0}", remoteRootURI);
 
     // create new sender for this URI
     return new JMSMessageSender(remoteRootURI);
@@ -231,8 +231,8 @@ public class JMSTransport extends GENTransport implements MALTransport
     public void sendEncodedMessage(GENOutgoingMessageHolder tmsg) throws IOException
     {
       String sendRoutingKey = tmsg.getDestinationURI().substring(remoteRootURI.length() + 1);
-      
-      RLOGGER.log(Level.INFO, "Attempting to send to {0}", new Object[]
+
+      RLOGGER.log(Level.FINE, "Attempting to send to {0}", new Object[]
       {
         remoteRootURI
       });
@@ -269,7 +269,7 @@ public class JMSTransport extends GENTransport implements MALTransport
 
           sender.close();
 
-          RLOGGER.log(Level.INFO, "Sending data to {0} : {2}", new Object[]
+          RLOGGER.log(Level.FINE, "Sending data to {0} : {2}", new Object[]
           {
             sendRoutingKey, tmsg.getEncodedMessage()
           });
@@ -278,13 +278,13 @@ public class JMSTransport extends GENTransport implements MALTransport
           {
             if (lqs.getTransacted())
             {
-              RLOGGER.info("Commiting transaction");
+              RLOGGER.fine("Commiting transaction");
               lqs.commit();
             }
 
             lqs.close();
           }
-          RLOGGER.log(Level.INFO, "Sent data to {0}", new Object[]
+          RLOGGER.log(Level.FINE, "Sent data to {0}", new Object[]
           {
             sendRoutingKey
           });
@@ -306,7 +306,7 @@ public class JMSTransport extends GENTransport implements MALTransport
           {
             if (lqs.getTransacted())
             {
-              RLOGGER.info("Rolling back transaction");
+              RLOGGER.fine("Rolling back transaction");
               lqs.rollback();
             }
 
