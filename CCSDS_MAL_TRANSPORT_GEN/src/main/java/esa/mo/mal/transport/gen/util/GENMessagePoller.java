@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.EOFException;
 import java.util.logging.Level;
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
+import esa.mo.mal.transport.gen.receivers.GENIncomingByteMessageReceiver;
+import esa.mo.mal.transport.gen.receivers.GENIncomingStreamMessageReceiver;
 import java.io.InputStream;
 
 /**
@@ -248,7 +250,7 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
 
       if (null != msg)
       {
-        transport.receive(msg, handler);
+        transport.receive(new GENIncomingByteMessageReceiver(transport, msg, handler));
       }
     }
 
@@ -289,7 +291,7 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
 
       if (null != msg)
       {
-        transport.receive(msg, handler);
+        transport.receive(new GENIncomingStreamMessageReceiver(transport, msg, handler));
       }
     }
 

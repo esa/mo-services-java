@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.gen;
 
+import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
 import esa.mo.mal.transport.gen.sending.GENConcurrentMessageSender;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
@@ -416,24 +417,11 @@ public abstract class GENTransport implements MALTransport
    * On reception of an IO stream this method should be called. This is the main reception entry point into the generic
    * transport for stream based transports.
    *
-   * @param ios The stream being received.
-   * @param receptionHandler
+   * @param receiver The message being received.
    */
-  public void receive(final java.io.InputStream ios, GENReceptionHandler receptionHandler)
+  public void receive(final GENIncomingMessageReceiverBase receiver)
   {
-    asyncInputReceptionProcessor.submit(new GENIncomingMessageReceiver(ios, receptionHandler));
-  }
-
-  /**
-   * On reception of a packet this method should be called. This is the main reception entry point into the generic
-   * transport.
-   *
-   * @param rawMessage The raw message being received.
-   * @param receptionHandler NULL if the transport does not support bi-directional communications
-   */
-  public void receive(final byte[] rawMessage, GENReceptionHandler receptionHandler)
-  {
-    asyncInputReceptionProcessor.submit(new GENIncomingMessageReceiver(rawMessage, receptionHandler));
+    asyncInputReceptionProcessor.submit(receiver);
   }
 
   /**
@@ -459,7 +447,7 @@ public abstract class GENTransport implements MALTransport
       });
 
       // if local then just send internally
-      receiveIncomingMessage(new MessageDetails(msg.getHeader().getTransactionId(), msg, new PacketToString(null)));
+      receiveIncomingMessage(new GENIncomingMessageHolder(msg.getHeader().getTransactionId(), msg, new PacketToString(null)));
     }
     else
     {
@@ -599,7 +587,7 @@ public abstract class GENTransport implements MALTransport
    *
    * @param malMsg the message
    */
-  protected void receiveIncomingMessage(final MessageDetails malMsg)
+  protected void receiveIncomingMessage(final GENIncomingMessageHolder malMsg)
   {
     LOGGER.log(Level.FINE, "GEN Queuing message : {0} : {1}", new Object[]
     {
@@ -1013,72 +1001,22 @@ public abstract class GENTransport implements MALTransport
   protected abstract GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException;
 
   /**
-   * Simple structure class for holding related aspects of a decoded MAL message.
+   * This Runnable task is responsible for decoding newly arrived MAL Messages and passing to the transport executor.
    */
-  protected static final class MessageDetails
+  public abstract static class GENIncomingMessageReceiverBase implements Runnable
   {
-    /**
-     * The transaction id of this message.
-     */
-    public final Long transactionId;
-    /**
-     * The decoded MAL message.
-     */
-    public final GENMessage malMsg;
-    /**
-     * A string representation for debug tracing.
-     */
-    public final PacketToString smsg;
-
-    /**
-     * Constructor.
-     *
-     * @param transactionId the message transaction id.
-     * @param malMsg The decoded MAL message.
-     * @param smsg A string representation for debug tracing.
-     */
-    public MessageDetails(final Long transactionId, final GENMessage malMsg, final PacketToString smsg)
-    {
-      this.transactionId = transactionId;
-      this.malMsg = malMsg;
-      this.smsg = smsg;
-    }
-  }
-
-  /**
-   * This Runnable task is responsible for holding newly arrived MAL Messages (in raw format), decoding, and passing to
-   * the transport executor.
-   *
-   */
-  private final class GENIncomingMessageReceiver implements Runnable
-  {
-    private final byte[] rawMessage;
-    private final java.io.InputStream ioMessage;
-    private final GENReceptionHandler receptionHandler;
+    protected final GENTransport transport;
+    protected final GENReceptionHandler receptionHandler;
 
     /**
      * Constructor
      *
-     * @param rawMessage The raw message
+     * @param transport Containing transport.
      * @param receptionHandler The reception handler to pass them to.
      */
-    public GENIncomingMessageReceiver(byte[] rawMessage, GENReceptionHandler receptionHandler)
+    protected GENIncomingMessageReceiverBase(final GENTransport transport, GENReceptionHandler receptionHandler)
     {
-      this.rawMessage = rawMessage;
-      this.ioMessage = null;
-      this.receptionHandler = receptionHandler;
-    }
-
-    /**
-     * Constructor
-     *
-     * @param ioMessage The raw message
-     * @param receptionHandler The reception handler to pass them to.
-     */
-    public GENIncomingMessageReceiver(java.io.InputStream ioMessage, GENReceptionHandler receptionHandler)
-    {
-      this.rawMessage = null;
-      this.ioMessage = ioMessage;
+      this.transport = transport;
       this.receptionHandler = receptionHandler;
     }
 
@@ -1092,40 +1030,28 @@ public abstract class GENTransport implements MALTransport
     {
       try
       {
-        PacketToString smsg = new PacketToString(null);
-        GENMessage malMsg;
-
-        if (null == rawMessage)
+        GENIncomingMessageHolder msg = decodeAndCreateMessage();
+        GENTransport.LOGGER.log(Level.FINE, "GEN Receving message : {0} : {1}", new Object[]
         {
-          // create message
-          malMsg = createMessage(ioMessage);
-        }
-        else
-        {
-          // create message
-          malMsg = createMessage(rawMessage);
-        }
-        LOGGER.log(Level.FINE, "GEN Receving message : {0} : {1}", new Object[]
-        {
-          malMsg.getHeader().getTransactionId(), smsg
+          msg.malMsg.getHeader().getTransactionId(), msg.smsg
         });
-
         //register communication channel if needed
-        manageCommunicationChannel(malMsg, true, receptionHandler);
-
-        receiveIncomingMessage(new MessageDetails(malMsg.getHeader().getTransactionId(), malMsg, smsg));
+        transport.manageCommunicationChannel(msg.malMsg, true, receptionHandler);
+        transport.receiveIncomingMessage(msg);
       }
       catch (MALException e)
       {
-        LOGGER.log(Level.WARNING, "GEN Error occurred when decoding data : {0}", e);
-        communicationError(null, receptionHandler);
+        GENTransport.LOGGER.log(Level.WARNING, "GEN Error occurred when decoding data : {0}", e);
+        transport.communicationError(null, receptionHandler);
       }
       catch (MALTransmitErrorException e)
       {
-        LOGGER.log(Level.WARNING, "GEN Error occurred when decoding data : {0}", e);
-        communicationError(null, receptionHandler);
+        GENTransport.LOGGER.log(Level.WARNING, "GEN Error occurred when decoding data : {0}", e);
+        transport.communicationError(null, receptionHandler);
       }
     }
+
+    protected abstract GENIncomingMessageHolder decodeAndCreateMessage() throws MALException;
   }
 
   /**
@@ -1135,7 +1061,7 @@ public abstract class GENTransport implements MALTransport
    */
   private final class GENIncomingMessageProcessor implements Runnable
   {
-    private final Queue<MessageDetails> malMsgs = new ArrayDeque<MessageDetails>();
+    private final Queue<GENIncomingMessageHolder> malMsgs = new ArrayDeque<GENIncomingMessageHolder>();
     private boolean finished = false;
 
     /**
@@ -1143,7 +1069,7 @@ public abstract class GENTransport implements MALTransport
      *
      * @param malMsg The MAL message.
      */
-    public GENIncomingMessageProcessor(final MessageDetails malMsg)
+    public GENIncomingMessageProcessor(final GENIncomingMessageHolder malMsg)
     {
       malMsgs.add(malMsg);
     }
@@ -1155,7 +1081,7 @@ public abstract class GENTransport implements MALTransport
      * @param malMsg The decoded message.
      * @return True if this needs to be resubmitted to the processing executor pool.
      */
-    public synchronized boolean addMessage(final MessageDetails malMsg)
+    public synchronized boolean addMessage(final GENIncomingMessageHolder malMsg)
     {
       malMsgs.add(malMsg);
 
@@ -1183,7 +1109,7 @@ public abstract class GENTransport implements MALTransport
     @Override
     public void run()
     {
-      MessageDetails msg;
+      GENIncomingMessageHolder msg;
 
       synchronized (this)
       {
@@ -1212,7 +1138,7 @@ public abstract class GENTransport implements MALTransport
    * Converts the packet to a string form for logging.
    *
    */
-  protected class PacketToString
+  public class PacketToString
   {
     private final byte[] data;
     private String str;

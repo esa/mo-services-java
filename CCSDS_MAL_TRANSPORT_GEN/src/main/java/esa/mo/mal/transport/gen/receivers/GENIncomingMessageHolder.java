@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO RMI Transport
+ * System                : CCSDS MO Generic Transport Framework
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,34 +18,40 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.rmi;
+package esa.mo.mal.transport.gen.receivers;
 
-import esa.mo.mal.transport.gen.receivers.GENIncomingByteMessageReceiver;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
+import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.GENTransport;
 
 /**
- * The implementation of the RMIReceiveInterface interface. Holds a reference to the transport instance that created it.
+ * Simple structure class for holding related aspects of a decoded MAL message.
  */
-public class RMIReceiveImpl extends UnicastRemoteObject implements RMIReceiveInterface
+public final class GENIncomingMessageHolder
 {
-  private static final long serialVersionUID = 0x1000001111100L;
-  private final transient RMITransport transport;
+  /**
+   * The transaction id of this message.
+   */
+  public final Long transactionId;
+  /**
+   * The decoded MAL message.
+   */
+  public final GENMessage malMsg;
+  /**
+   * A string representation for debug tracing.
+   */
+  public final GENTransport.PacketToString smsg;
 
   /**
-   * Creates a new instance of RMIRecvImpl
+   * Constructor.
    *
-   * @param transport The transport instance to pass received messages to.
-   * @throws RemoteException On error.
+   * @param transactionId the message transaction id.
+   * @param malMsg The decoded MAL message.
+   * @param smsg A string representation for debug tracing.
    */
-  public RMIReceiveImpl(final RMITransport transport) throws RemoteException
+  public GENIncomingMessageHolder(final Long transactionId, final GENMessage malMsg, final GENTransport.PacketToString smsg)
   {
-    this.transport = transport;
-  }
-
-  @Override
-  public void receive(final byte[] packet) throws RemoteException
-  {
-    transport.receive(new GENIncomingByteMessageReceiver(transport, packet, null));
+    this.transactionId = transactionId;
+    this.malMsg = malMsg;
+    this.smsg = smsg;
   }
 }
