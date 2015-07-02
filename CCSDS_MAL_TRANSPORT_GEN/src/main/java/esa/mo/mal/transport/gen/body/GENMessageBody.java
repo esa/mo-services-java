@@ -372,7 +372,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
   /**
    * Decodes the message body.
    */
-  protected void decodeMessageBody()
+  protected synchronized void decodeMessageBody()
   {
     if (!decodedBody)
     {

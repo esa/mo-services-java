@@ -459,7 +459,7 @@ public abstract class GENTransport implements MALTransport
       });
 
       // if local then just send internally
-      receiveIncomingMessage(new MessageDetails(msg.getHeader().getTransactionId(), msg, ""));
+      receiveIncomingMessage(new MessageDetails(msg.getHeader().getTransactionId(), msg, new PacketToString(null)));
     }
     else
     {
@@ -651,7 +651,7 @@ public abstract class GENTransport implements MALTransport
    * @param msg The source message.
    * @param smsg The message in a string representation for logging.
    */
-  protected void processIncomingMessage(final GENMessage msg, String smsg)
+  protected void processIncomingMessage(final GENMessage msg, PacketToString smsg)
   {
     try
     {
@@ -824,31 +824,6 @@ public abstract class GENTransport implements MALTransport
   }
 
   /**
-   * Converts the packet to a string form for logging.
-   *
-   * @param data the packet.
-   * @return the string representation.
-   */
-  protected String packetToString(final byte[] data)
-  {
-    if (logFullDebug)
-    {
-      if (streamHasStrings)
-      {
-        return new String(data, UTF8_CHARSET);
-      }
-      else
-      {
-        return GENHelper.byteArrayToHexString(data);
-      }
-    }
-    else
-    {
-      return "";
-    }
-  }
-
-  /**
    * Overridable internal method for the creation of endpoints.
    *
    * @param localName The local name to use.
@@ -1005,7 +980,7 @@ public abstract class GENTransport implements MALTransport
       // message is encoded!
       LOGGER.log(Level.FINE, "GEN Sending data to {0} : {1}", new Object[]
       {
-        targetURI, packetToString(data)
+        targetURI, new PacketToString(data)
       });
 
       return new GENOutgoingMessageHolder(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, data);
@@ -1053,7 +1028,7 @@ public abstract class GENTransport implements MALTransport
     /**
      * A string representation for debug tracing.
      */
-    public final String smsg;
+    public final PacketToString smsg;
 
     /**
      * Constructor.
@@ -1062,7 +1037,7 @@ public abstract class GENTransport implements MALTransport
      * @param malMsg The decoded MAL message.
      * @param smsg A string representation for debug tracing.
      */
-    public MessageDetails(final Long transactionId, final GENMessage malMsg, final String smsg)
+    public MessageDetails(final Long transactionId, final GENMessage malMsg, final PacketToString smsg)
     {
       this.transactionId = transactionId;
       this.malMsg = malMsg;
@@ -1117,19 +1092,17 @@ public abstract class GENTransport implements MALTransport
     {
       try
       {
-        String smsg;
+        PacketToString smsg = new PacketToString(null);
         GENMessage malMsg;
 
         if (null == rawMessage)
         {
           // create message
-          smsg = "";
           malMsg = createMessage(ioMessage);
         }
         else
         {
           // create message
-          smsg = packetToString(rawMessage);
           malMsg = createMessage(rawMessage);
         }
         LOGGER.log(Level.FINE, "GEN Receving message : {0} : {1}", new Object[]
@@ -1232,6 +1205,54 @@ public abstract class GENTransport implements MALTransport
           }
         }
       }
+    }
+  }
+
+  /**
+   * Converts the packet to a string form for logging.
+   *
+   */
+  protected class PacketToString
+  {
+    private final byte[] data;
+    private String str;
+
+    /**
+     * Constructor.
+     *
+     * @param data the packet.
+     */
+    public PacketToString(byte[] data)
+    {
+      this.data = data;
+    }
+
+    @Override
+    public String toString()
+    {
+      if (null == str)
+      {
+        synchronized (this)
+        {
+          if (logFullDebug && null != data)
+          {
+            if (streamHasStrings)
+            {
+              str = new String(data, UTF8_CHARSET);
+            }
+            else
+            {
+              str = GENHelper.byteArrayToHexString(data);
+            }
+          }
+          else
+          {
+            str = "";
+          }
+        }
+      }
+
+      return str;
     }
   }
 }
