@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.transport.jms;
 
-import esa.mo.mal.transport.jms.util.MALQueuedClose;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Level;
@@ -37,8 +36,6 @@ import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENTransport;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
-import esa.mo.mal.transport.jms.util.ActiveQueueAdapter;
-import esa.mo.mal.transport.jms.util.MALClose;
 import java.io.IOException;
 import javax.naming.NameNotFoundException;
 import org.ccsds.moims.mo.mal.MALHelper;
@@ -59,7 +56,6 @@ public class JMSTransport extends GENTransport implements MALTransport
   public static final char JMS_SERVICE_DELIM = '_';
   public static final char JMS_BROKER_DELIM = '[';
   private final JMSAbstractAdministrator administrator;
-  private final JMSTransportQueue queue;
   private Connection queueConnection;
   private final Hashtable namingContextEnv;
 
@@ -68,7 +64,6 @@ public class JMSTransport extends GENTransport implements MALTransport
     super(protocol, JMS_SERVICE_DELIM, true, true, factory, properties);
 
     this.administrator = administrator;
-    queue = new JMSTransportQueue(null);
 
     namingContextEnv = new Hashtable();
 
@@ -187,7 +182,6 @@ public class JMSTransport extends GENTransport implements MALTransport
   public void close() throws MALException
   {
     RLOGGER.info("Transport closing");
-    queue.close();
 
     try
     {
@@ -199,24 +193,6 @@ public class JMSTransport extends GENTransport implements MALTransport
     }
 
     super.close();
-  }
-
-  private class JMSTransportQueue extends MALQueuedClose<GENMessage>
-  {
-    public JMSTransportQueue(MALClose parent) throws InterruptedException
-    {
-      super(parent);
-
-      createQueue("JMSTransport", new JMSTransportAdapter());
-    }
-  }
-
-  private class JMSTransportAdapter implements ActiveQueueAdapter<GENMessage>
-  {
-    public boolean consume(GENMessage lmsg)
-    {
-      return true;
-    }
   }
 
   private class JMSMessageSender implements GENMessageSender
