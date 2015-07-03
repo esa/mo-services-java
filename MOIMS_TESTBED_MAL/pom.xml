@@ -76,6 +76,7 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TESTBED_UTIL</artifactId>
+      <version>1.0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.fitnesse</groupId>
@@ -91,6 +92,7 @@
     <fitnesse.toplevel.test>MalTests</fitnesse.toplevel.test>
     <esa.mal.test_api.version>1.0.1</esa.mal.test_api.version>
     <cnes.mal.test_api.version>3.1.1</cnes.mal.test_api.version>
+    <ccsds.testbed.util.version>1.0.2-SNAPSHOT</ccsds.testbed.util.version>
   </properties>
   
   <build>
@@ -161,7 +163,7 @@
           <failIfNoTests>false</failIfNoTests>
           <systemPropertyVariables>
             <ccsds.fitnesse.output.dir>${fitnesse.output.dir}</ccsds.fitnesse.output.dir>
-            <ccsds.fitnesse.port>${fitnesse.port}</ccsds.fitnesse.port>
+            <slim.port>${fitnesse.port}</slim.port>
             <org.ccsds.moims.mo.testbed.remote.extra.args>${argLine}r</org.ccsds.moims.mo.testbed.remote.extra.args>
             <org.ccsds.moims.mo.testbed.local.configuration.dir>${org.ccsds.moims.mo.testbed.local.configuration.dir}</org.ccsds.moims.mo.testbed.local.configuration.dir>
             <org.ccsds.moims.mo.testbed.remote.configuration.dir>${org.ccsds.moims.mo.testbed.remote.configuration.dir}</org.ccsds.moims.mo.testbed.remote.configuration.dir>
@@ -193,11 +195,23 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>MAL_IMPL</artifactId>
-          <version>1.0.2-SNAPSHOT</version>
+          <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>TRANSPORT_RMI</artifactId>
+          <version>1.1-SNAPSHOT</version>
+          <exclusions>
+            <exclusion>
+              <groupId>int.esa.ccsds.mo</groupId>
+              <artifactId>TRANSPORT_GEN</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>TRANSPORT_GEN</artifactId>
+          <version>1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
@@ -207,6 +221,49 @@
       <properties>
         <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/esa-rmi</org.ccsds.moims.mo.testbed.local.configuration.dir>
         <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/esa-rmi</org.ccsds.moims.mo.testbed.remote.configuration.dir>
+      </properties>
+    </profile>
+    <profile>
+      <id>ESA_JMS</id>
+      <dependencies>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL_TEST</artifactId>
+          <version>${esa.mal.test_api.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>MAL_IMPL</artifactId>
+          <version>1.0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>TRANSPORT_ACTIVEMQ</artifactId>
+          <version>1.0-SNAPSHOT</version>
+          <exclusions>
+            <exclusion>
+              <groupId>int.esa.ccsds.mo</groupId>
+              <artifactId>TRANSPORT_GEN</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>TRANSPORT_GEN</artifactId>
+          <version>1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY_SPLIT</artifactId>
+        </dependency>
+      </dependencies>
+      <properties>
+        <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/esa-jms</org.ccsds.moims.mo.testbed.local.configuration.dir>
+        <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/esa-jms</org.ccsds.moims.mo.testbed.remote.configuration.dir>
       </properties>
     </profile>
     <profile>
