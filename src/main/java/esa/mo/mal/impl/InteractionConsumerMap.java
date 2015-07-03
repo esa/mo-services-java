@@ -188,10 +188,13 @@ class InteractionConsumerMap
         }
       }
 
-      handler.throwAnyStoredExceptions();
+      synchronized (handler)
+      {
+        handler.throwAnyStoredExceptions();
 
-      // must have value now
-      retVal = handler.getResult();
+        // must have value now
+        retVal = handler.getResult();
+      }
     }
 
     return retVal;
@@ -229,9 +232,12 @@ class InteractionConsumerMap
 
     if (null != handler)
     {
-      handler.processStage(dets);
+      synchronized (handler)
+      {
+        handler.processStage(dets);
 
-      handler.throwAnyStoredExceptions();
+        handler.throwAnyStoredExceptions();
+      }
     }
   }
 
@@ -263,7 +269,10 @@ class InteractionConsumerMap
 
     if (null != handler)
     {
-      handler.handleError(hdr, err, qosMap);
+      synchronized (handler)
+      {
+        handler.handleError(hdr, err, qosMap);
+      }
     }
   }
 
