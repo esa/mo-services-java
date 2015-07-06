@@ -39,68 +39,71 @@ is set to "-1". The field 'Transition list id' is used to identify the test proc
 The transitions are checked by ensuring that the faulty messages are not received by the consumer.
 
 !*> Sub scenario definitions
-|scenario| pattern | interaction | with qos| qos | and session | sess | and transitions | trans | and trans id | id | test |
-|ensure |pattern initiation for| @interaction | with multi| false | with empty body| false | and qos| @qos | and session | @sess | and transistions | @trans | and trans id | @id | test |
+|scenario| pattern | interaction | with qos| qos | and session | sess | and transitions | trans | and behaviour id | id | test |
+|ensure |pattern initiation for| @interaction | with multi| false | with empty body| false | and qos| @qos | and session | @sess | and transistions | @trans | and behaviour id | @id | test |
 |ensure |the consumer assertions are ok|
 |ensure |the transitions are ok|
-|ensure |pattern initiation for| @interaction | with multi| false | with empty body| true | and qos| @qos | and session | @sess | and transistions | @trans | and trans id | @id | test |
+|ensure |pattern initiation for| @interaction | with multi| false | with empty body| true | and qos| @qos | and session | @sess | and transistions | @trans | and behaviour id | @id | test |
 |ensure |the consumer assertions are ok|
 |ensure |the transitions are ok|
-|ensure |pattern initiation for| @interaction | with multi| true | with empty body| false | and qos| @qos | and session | @sess | and transistions | @trans | and trans id | @id | test |
+|ensure |pattern initiation for| @interaction | with multi| true | with empty body| false | and qos| @qos | and session | @sess | and transistions | @trans | and behaviour id | @id | test |
 |ensure |the consumer assertions are ok|
 |ensure |the transitions are ok|
 
-|scenario| pattern | interaction | and session | sess | and transitions | trans | and trans id | id | test |
-|pattern | @interaction | with qos| Best Effort | and session | @sess | and transitions | @trans | and trans id | @id | test |
-|pattern | @interaction | with qos| Assured  | and session | @sess | and transitions | @trans | and trans id | @id | test |
-|pattern | @interaction | with qos| Queued | and session | @sess | and transitions | @trans | and trans id | @id | test |
-|pattern | @interaction | with qos| Timely | and session | @sess | and transitions | @trans | and trans id | @id | test |
+|scenario| pattern | interaction | and session | sess | and transitions | trans | and behaviour id | id | test |
+|pattern | @interaction | with qos| Best Effort | and session | @sess | and transitions | @trans | and behaviour id | @id | test |
+|pattern | @interaction | with qos| Assured  | and session | @sess | and transitions | @trans | and behaviour id | @id | test |
+|pattern | @interaction | with qos| Queued | and session | @sess | and transitions | @trans | and behaviour id | @id | test |
+|pattern | @interaction | with qos| Timely | and session | @sess | and transitions | @trans | and behaviour id | @id | test |
 
-|scenario| test interaction pattern | interaction | with transitions | trans | and trans id | id |
-|pattern | @interaction | and session | Live | and transitions | @trans | and trans id | @id | test |
-|pattern | @interaction | and session | Simulation | and transitions | @trans | and trans id | @id | test |
-|pattern | @interaction | and session | Replay | and transitions | @trans | and trans id | @id | test |
+|scenario| test interaction pattern | interaction | with transitions | trans | and behaviour id | id |
+|pattern | @interaction | and session | Live | and transitions | @trans | and behaviour id | @id | test |
+|pattern | @interaction | and session | Simulation | and transitions | @trans | and behaviour id | @id | test |
+|pattern | @interaction | and session | Replay | and transitions | @trans | and behaviour id | @id | test |
 
 ***********!
 
 |script| pattern test|
 |note| Submit pattern test|
-|test interaction pattern | Submit| with transitions | [ACK] | and trans id | 1 |
-|test interaction pattern | Submit| with transitions | [ACK_ERROR] | and trans id | 2 |
-|test interaction pattern | Submit| with transitions | [ACK, _ACK_ERROR_] | and trans id | 3 |
-|test interaction pattern | Submit| with transitions | [ACK_ERROR, _ACK_ERROR_] | and trans id | 4 |
+|test interaction pattern | Submit| with transitions | [ACK] | and behaviour id | 1 |
+|test interaction pattern | Submit| with transitions | [ACK_ERROR] | and behaviour id | 2 |
+|test interaction pattern | Submit| with transitions | [ACK, _ACK_ERROR_] | and behaviour id | 3 |
+|test interaction pattern | Submit| with transitions | [ACK_ERROR, _ACK_ERROR_] | and behaviour id | 4 |
 
 |script| pattern test|
 |note| Request pattern test|
-|test interaction pattern | Request| with transitions | [RESPONSE] | and trans id | 1 |
-|test interaction pattern | Request| with transitions | [RESPONSE_ERROR] | and trans id | 2 |
-|test interaction pattern | Request| with transitions | [RESPONSE, _RESPONSE_] | and trans id | 3 |
-|test interaction pattern | Request| with transitions | [RESPONSE_ERROR, _RESPONSE_] | and trans id | 4 |
+|test interaction pattern | Request| with transitions | [RESPONSE] | and behaviour id | 1 |
+|test interaction pattern | Request| with transitions | [RESPONSE_ERROR] | and behaviour id | 2 |
+|test interaction pattern | Request| with transitions | [RESPONSE, _RESPONSE_] | and behaviour id | 3 |
+|test interaction pattern | Request| with transitions | [RESPONSE_ERROR, _RESPONSE_] | and behaviour id | 4 |
 
 |script| pattern test|
 |note| Invoke pattern test|
-|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE] | and trans id | 1 |
-|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE_ERROR] | and trans id | 2 |
-|test interaction pattern | Invoke| with transitions | [ACK_ERROR] | and trans id | 3 |
-|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE, _RESPONSE_] | and trans id | 4 |
-|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE_ERROR, _RESPONSE_] | and trans id | 5 |
-|test interaction pattern | Invoke| with transitions | [ACK_ERROR, _ACK_] | and trans id | 6 |
-|test interaction pattern | Invoke| with transitions | [_RESPONSE_, ACK, RESPONSE] | and trans id | 7 |
+|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE] | and behaviour id | 1 |
+|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE_ERROR] | and behaviour id | 2 |
+|test interaction pattern | Invoke| with transitions | [ACK_ERROR] | and behaviour id | 3 |
+|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE, _RESPONSE_] | and behaviour id | 4 |
+|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE_ERROR, _RESPONSE_] | and behaviour id | 5 |
+|test interaction pattern | Invoke| with transitions | [ACK, _ACK_] | and behaviour id | 6 |
+|test interaction pattern | Invoke| with transitions | [ACK_ERROR, _ACK_] | and behaviour id | 6 |
+|test interaction pattern | Invoke| with transitions | [_RESPONSE_, ACK, RESPONSE] | and behaviour id | 7 |
 
 |script| pattern test|
 |note| Progress pattern test|
-|test interaction pattern | Progress| with transitions | [ACK, RESPONSE] | and trans id | 1 |
-|test interaction pattern | Progress| with transitions | [ACK, RESPONSE_ERROR] | and trans id | 2 |
-|test interaction pattern | Progress| with transitions | [ACK_ERROR] | and trans id | 3 |
-|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, RESPONSE] | and trans id | 4 |
-|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, UPDATE_ERROR] | and trans id | 5 |
-|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, RESPONSE_ERROR] | and trans id | 6 |
-|test interaction pattern | Progress| with transitions | [ACK, RESPONSE, _RESPONSE_] | and trans id | 7 |
-|test interaction pattern | Progress| with transitions | [ACK, RESPONSE_ERROR, _RESPONSE_] | and trans id | 8 |
-|test interaction pattern | Progress| with transitions | [ACK_ERROR, _ACK_] | and trans id | 9 |
-|test interaction pattern | Progress| with transitions | [_UPDATE_, ACK, UPDATE, UPDATE, RESPONSE] | and trans id | 10 |
-|test interaction pattern | Progress| with transitions | [_UPDATE_ERROR_, ACK, UPDATE, UPDATE, RESPONSE] | and trans id | 11 |
-|test interaction pattern | Progress| with transitions | [_RESPONSE_, ACK, UPDATE, UPDATE, UPDATE_ERROR] | and trans id | 12 |
-|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, UPDATE_ERROR, _RESPONSE_] | and trans id | 13 |
-|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, RESPONSE_ERROR, _RESPONSE_] | and trans id | 14 |
+|test interaction pattern | Progress| with transitions | [ACK, RESPONSE] | and behaviour id | 1 |
+|test interaction pattern | Progress| with transitions | [ACK, RESPONSE_ERROR] | and behaviour id | 2 |
+|test interaction pattern | Progress| with transitions | [ACK_ERROR] | and behaviour id | 3 |
+|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, RESPONSE] | and behaviour id | 4 |
+|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, UPDATE_ERROR] | and behaviour id | 5 |
+|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, RESPONSE_ERROR] | and behaviour id | 6 |
+|test interaction pattern | Progress| with transitions | [ACK, RESPONSE, _RESPONSE_] | and behaviour id | 7 |
+|test interaction pattern | Progress| with transitions | [ACK, RESPONSE_ERROR, _RESPONSE_] | and behaviour id | 8 |
+|test interaction pattern | Progress| with transitions | [ACK, _ACK_] | and behaviour id | 9 |
+|test interaction pattern | Progress| with transitions | [ACK, _ACK_ERROR_] | and behaviour id | 9 |
+|test interaction pattern | Progress| with transitions | [ACK_ERROR, _ACK_] | and behaviour id | 9 |
+|test interaction pattern | Progress| with transitions | [_UPDATE_, ACK, UPDATE, UPDATE, RESPONSE] | and behaviour id | 10 |
+|test interaction pattern | Progress| with transitions | [_UPDATE_ERROR_, ACK, UPDATE, UPDATE, RESPONSE] | and behaviour id | 11 |
+|test interaction pattern | Progress| with transitions | [_RESPONSE_, ACK, UPDATE, UPDATE, UPDATE_ERROR] | and behaviour id | 12 |
+|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, UPDATE_ERROR, _RESPONSE_] | and behaviour id | 13 |
+|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, RESPONSE_ERROR, _RESPONSE_] | and behaviour id | 14 |
 

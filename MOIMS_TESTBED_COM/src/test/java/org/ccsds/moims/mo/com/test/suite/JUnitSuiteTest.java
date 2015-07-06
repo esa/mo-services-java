@@ -35,7 +35,6 @@ import org.junit.runner.RunWith;
 @Suite("ComTests.TestDocument")
 @FitnesseDir("src/main/fitnesse")
 @OutputDir(systemProperty = "ccsds.fitnesse.output.dir")
-@Port(systemProperty = "ccsds.fitnesse.port")
 public class JUnitSuiteTest
 {
   @Test
