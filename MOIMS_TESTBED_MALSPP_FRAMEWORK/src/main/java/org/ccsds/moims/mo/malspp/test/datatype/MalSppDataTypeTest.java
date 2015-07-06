@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright or � or Copr. CNES
+ * Copyright or © or Copr. CNES
  *
  * This software is a computer program whose purpose is to provide a 
  * framework for the CCSDS Mission Operations services.
