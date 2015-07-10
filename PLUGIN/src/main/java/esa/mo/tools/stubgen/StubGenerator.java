@@ -20,7 +20,7 @@
  */
 package esa.mo.tools.stubgen;
 
-import esa.mo.tools.stubgen.xsd.SpecificationType;
+import esa.mo.xsd.SpecificationType;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -348,7 +348,7 @@ public class StubGenerator extends AbstractMojo
 
   private static AbstractMap.SimpleEntry<SpecificationType, XmlSpecification> loadSpecification(final File is) throws IOException, JAXBException
   {
-    final JAXBContext jc = JAXBContext.newInstance("esa.mo.tools.stubgen.xsd");
+    final JAXBContext jc = JAXBContext.newInstance("esa.mo.xsd");
     final Unmarshaller unmarshaller = jc.createUnmarshaller();
     final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
     return new AbstractMap.SimpleEntry<SpecificationType, XmlSpecification>((SpecificationType) rootElement.getValue(),

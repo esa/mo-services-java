@@ -24,7 +24,7 @@ import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.writers.TargetWriter;
-import esa.mo.tools.stubgen.xsd.TypeReference;
+import esa.mo.xsd.TypeReference;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

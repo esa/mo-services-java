@@ -20,7 +20,7 @@
  */
 package esa.mo.tools.stubgen.specification;
 
-import esa.mo.tools.stubgen.xsd.TypeReference;
+import esa.mo.xsd.TypeReference;
 
 /**
  * Holds information about a type.

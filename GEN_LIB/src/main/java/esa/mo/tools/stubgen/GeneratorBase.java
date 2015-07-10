@@ -31,7 +31,7 @@ import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeInformation;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.TargetWriter;
-import esa.mo.tools.stubgen.xsd.*;
+import esa.mo.xsd.*;
 import java.io.*;
 import java.util.*;
 import javax.xml.bind.JAXBElement;

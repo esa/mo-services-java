@@ -7,4 +7,4 @@
         },
         elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 
-package esa.mo.tools.stubgen.xsd;
+package esa.mo.xsd;

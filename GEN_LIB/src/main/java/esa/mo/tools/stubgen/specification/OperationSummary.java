@@ -20,7 +20,7 @@
  */
 package esa.mo.tools.stubgen.specification;
 
-import esa.mo.tools.stubgen.xsd.OperationType;
+import esa.mo.xsd.OperationType;
 import java.util.List;
 
 /**

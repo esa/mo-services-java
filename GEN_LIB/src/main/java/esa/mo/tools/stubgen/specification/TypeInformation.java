@@ -21,7 +21,7 @@
 package esa.mo.tools.stubgen.specification;
 
 import esa.mo.tools.stubgen.writers.TargetWriter;
-import esa.mo.tools.stubgen.xsd.TypeReference;
+import esa.mo.xsd.TypeReference;
 
 /**
  * Interface for querying basic type information.

@@ -20,8 +20,8 @@
  */
 package esa.mo.tools.stubgen.specification;
 
-import esa.mo.tools.stubgen.xsd.TypeReference;
-import esa.mo.tools.stubgen.xsd.NamedElementReferenceWithCommentType;
+import esa.mo.xsd.TypeReference;
+import esa.mo.xsd.NamedElementReferenceWithCommentType;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.JAXBElement;

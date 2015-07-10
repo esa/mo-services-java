@@ -20,8 +20,8 @@
  */
 package esa.mo.tools.stubgen.specification;
 
-import esa.mo.tools.stubgen.xsd.AreaType;
-import esa.mo.tools.stubgen.xsd.ServiceType;
+import esa.mo.xsd.AreaType;
+import esa.mo.xsd.ServiceType;
 import java.util.List;
 
 /**
