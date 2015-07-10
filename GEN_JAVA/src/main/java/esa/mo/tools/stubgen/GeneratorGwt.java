@@ -33,7 +33,6 @@ import esa.mo.tools.stubgen.xsd.AreaType;
 import esa.mo.tools.stubgen.xsd.ServiceType;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +50,14 @@ public class GeneratorGwt extends GeneratorJava
   public GeneratorGwt(org.apache.maven.plugin.logging.Log logger)
   {
     super(logger);
+  }
+
+  @Override
+  public void init(String destinationFolderName, boolean generateStructures, boolean generateCOM, Map<String, String> extraProperties) throws IOException
+  {
+    super.init(destinationFolderName, generateStructures, generateCOM, extraProperties);
+    
+    addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, false, "Boolean", "Boolean.FALSE");
   }
 
   @Override
@@ -135,6 +142,10 @@ public class GeneratorGwt extends GeneratorJava
 
   @Override
   protected void createServiceConsumerStub(File consumerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException
+  {
+  }
+  
+  protected void createServiceConsumerStub2(File consumerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException
   {
     getLog().info("Creating consumer stub: " + service.getName());
 
@@ -300,16 +311,16 @@ public class GeneratorGwt extends GeneratorJava
 
     if (isDelegate)
     {
-      MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, createCompositeElementsDetails(file, false, "delegate", TypeUtils.createTypeReference(area.getName(), service.getName().toLowerCase() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), true, false, null), false, null, null, null);
+      MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, createCompositeElementsDetails(file, false, "delegate", TypeUtils.createTypeReference(area.getName(), service.getName().toLowerCase() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), false, false, null), false, null, null, null);
       method.addMethodStatement(createMethodCall("this.delegate = delegate"));
       method.addMethodCloseStatement();
     }
     else
     {
-      CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "skeleton Not used in the inheritance pattern (the skeleton is 'this'");
-      MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "setSkeleton", Arrays.asList(skeletonName), null);
-      method.addMethodStatement("// Not used in the inheritance pattern (the skeleton is 'this')");
-      method.addMethodCloseStatement();
+//      CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "skeleton Not used in the inheritance pattern (the skeleton is 'this'");
+//      MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "setSkeleton", Arrays.asList(skeletonName), null);
+//      method.addMethodStatement("// Not used in the inheritance pattern (the skeleton is 'this')");
+//      method.addMethodCloseStatement();
     }
 
     // for each IP type add handler code
