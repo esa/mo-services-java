@@ -24,7 +24,7 @@
   </parent>
   
   <artifactId>StubGenerator</artifactId>
-  <version>1.1</version>
+  <version>1.2-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   
   <name>ESA MO Stub Generator</name>
@@ -101,7 +101,7 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>StubGenerator_Interfaces</artifactId>
-      <version>1.1</version>
+      <version>1.2-SNAPSHOT</version>
     </dependency>
   </dependencies>
   

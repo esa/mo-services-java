@@ -62,6 +62,7 @@
   </developers>
 
   <modules>
+    <module>XML_JAXB</module>
     <module>GEN_IF</module>
     <module>GEN_LIB</module>
     <module>GEN_JAVA</module>
