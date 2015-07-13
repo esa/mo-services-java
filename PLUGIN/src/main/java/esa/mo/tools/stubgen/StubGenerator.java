@@ -21,6 +21,8 @@
 package esa.mo.tools.stubgen;
 
 import esa.mo.xsd.SpecificationType;
+import esa.mo.xsd.util.XmlHelper;
+import esa.mo.xsd.util.XmlHelper.XmlSpecification;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -31,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import org.apache.maven.plugin.AbstractMojo;
@@ -224,34 +225,45 @@ public class StubGenerator extends AbstractMojo
     if (xmlDirectory.exists())
     {
       // load in any reference specifications
-      final List<Map.Entry<SpecificationType, XmlSpecification>> refSpecs = loadSpecifications(xmlRefDirectory);
+      try
+      {
+        final List<Map.Entry<SpecificationType, XmlSpecification>> refSpecs = XmlHelper.loadSpecifications(xmlRefDirectory);
 
-      // load in any reference XML schema
-      final List<Map.Entry<Schema, XmlSpecification>> refXsd = loadXsdSpecifications(xsdRefDirectory);
+        // load in any reference XML schema
+        final List<Map.Entry<Schema, XmlSpecification>> refXsd = loadXsdSpecifications(xsdRefDirectory);
 
-      // load in the specifications
-      final List<Map.Entry<SpecificationType, XmlSpecification>> specs = loadSpecifications(xmlDirectory);
+        // load in the specifications
+        final List<Map.Entry<SpecificationType, XmlSpecification>> specs = XmlHelper.loadSpecifications(xmlDirectory);
 
       // run the specifications through each generator
-      // first process the list of languages to generate
-      if ((null != targetLanguages) && (0 < targetLanguages.length))
-      {
-        for (String targetLanguage : targetLanguages)
+        // first process the list of languages to generate
+        if ((null != targetLanguages) && (0 < targetLanguages.length))
         {
-          final Generator gen = GENERATOR_MAP.get(targetLanguage.toLowerCase());
-          if (null != gen)
+          for (String targetLanguage : targetLanguages)
           {
-            processWithGenerator(gen, refSpecs, refXsd, specs);
-          }
-          else
-          {
-            getLog().warn("Could not find generator for language: " + targetLanguage);
+            final Generator gen = GENERATOR_MAP.get(targetLanguage.toLowerCase());
+            if (null != gen)
+            {
+              processWithGenerator(gen, refSpecs, refXsd, specs);
+            }
+            else
+            {
+              getLog().warn("Could not find generator for language: " + targetLanguage);
+            }
           }
         }
+        else
+        {
+          getLog().error("No generators selected - could not process files");
+        }
       }
-      else
+      catch (IOException ex)
       {
-        getLog().error("No generators selected - could not process files");
+        throw new MojoExecutionException("Exception thrown during the processing of XML file: ", ex);
+      }
+      catch (JAXBException ex)
+      {
+        throw new MojoExecutionException("Exception thrown during the processing of XML file: ", ex);
       }
     }
     else
@@ -290,35 +302,7 @@ public class StubGenerator extends AbstractMojo
     }
   }
 
-  private static List<Map.Entry<SpecificationType, XmlSpecification>> loadSpecifications(final File directory) throws MojoExecutionException
-  {
-    final List<Map.Entry<SpecificationType, XmlSpecification>> specList = new LinkedList<Map.Entry<SpecificationType, XmlSpecification>>();
-
-    if (directory.exists())
-    {
-      final File xmlFiles[] = directory.listFiles();
-
-      for (File file : xmlFiles)
-      {
-        try
-        {
-          if (file.isFile())
-          {
-            specList.add(loadSpecification(file));
-          }
-        }
-        catch (Exception ex)
-        {
-          throw new MojoExecutionException("Exception thrown during the pre-processing of XML file: "
-                  + file.getPath(), ex);
-        }
-      }
-    }
-
-    return specList;
-  }
-
-  private static List<Map.Entry<Schema, XmlSpecification>> loadXsdSpecifications(final File directory) throws MojoExecutionException
+  private static List<Map.Entry<Schema, XmlSpecification>> loadXsdSpecifications(final File directory) throws IOException, JAXBException
   {
     final List<Map.Entry<Schema, XmlSpecification>> specList = new LinkedList<Map.Entry<Schema, XmlSpecification>>();
 
@@ -328,31 +312,14 @@ public class StubGenerator extends AbstractMojo
 
       for (File file : xmlFiles)
       {
-        try
+        if (file.isFile())
         {
-          if (file.isFile())
-          {
-            specList.add(loadXsdSpecification(file));
-          }
-        }
-        catch (Exception ex)
-        {
-          throw new MojoExecutionException("Exception thrown during the pre-processing of XSD file: "
-                  + file.getPath(), ex);
+          specList.add(loadXsdSpecification(file));
         }
       }
     }
 
     return specList;
-  }
-
-  private static AbstractMap.SimpleEntry<SpecificationType, XmlSpecification> loadSpecification(final File is) throws IOException, JAXBException
-  {
-    final JAXBContext jc = JAXBContext.newInstance("esa.mo.xsd");
-    final Unmarshaller unmarshaller = jc.createUnmarshaller();
-    final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
-    return new AbstractMap.SimpleEntry<SpecificationType, XmlSpecification>((SpecificationType) rootElement.getValue(),
-            new XmlSpecification(is, rootElement));
   }
 
   private static AbstractMap.SimpleEntry<Schema, XmlSpecification> loadXsdSpecification(final File is) throws IOException, JAXBException
@@ -477,30 +444,6 @@ public class StubGenerator extends AbstractMojo
     catch (IOException ex)
     {
       throw new MojoExecutionException("Exception thrown during the closing of the generator", ex);
-    }
-  }
-
-  private final static class XmlSpecification
-  {
-    /**
-     * Holds the source file object.
-     */
-    public final File file;
-    /**
-     * Holds the XML root element.
-     */
-    public final JAXBElement rootElement;
-
-    /**
-     * Constructor.
-     *
-     * @param file The file.
-     * @param rootElement The XML root element.
-     */
-    public XmlSpecification(File file, JAXBElement rootElement)
-    {
-      this.file = file;
-      this.rootElement = rootElement;
     }
   }
 }
