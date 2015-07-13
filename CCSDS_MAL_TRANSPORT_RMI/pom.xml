@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>2</version>
+    <version>3</version>
     <relativePath/>
   </parent>
   
   <artifactId>TRANSPORT_RMI</artifactId>
   <packaging>jar</packaging>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
 
   <name>ESA MAL RMI Java transport</name>
   <description>A Java RMI transport for CCSDS MAL</description>
@@ -68,7 +68,6 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TRANSPORT_GEN</artifactId>
-      <version>1.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

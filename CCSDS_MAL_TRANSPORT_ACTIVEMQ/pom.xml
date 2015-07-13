@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>2</version>
+    <version>3</version>
     <relativePath/>
   </parent>
   
   <artifactId>TRANSPORT_ACTIVEMQ</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
 
   <name>ESA MAL ActiveMQ JMS transport</name>
   <description>A Java JMS transport for CCSDS MAL based on Apache ActiveMQ</description>
@@ -68,18 +68,10 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TRANSPORT_GEN</artifactId>
-      <version>1.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TRANSPORT_JMS</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <exclusions>
-        <exclusion>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>TRANSPORT_GEN</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
