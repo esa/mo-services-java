@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>2</version>
+    <version>3</version>
     <relativePath/>
   </parent>
   
   <artifactId>MAL_DEMO</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 
   <name>ESA MAL Java Demo</name>
   <description>A Demo Java application for the CCSDS MAL</description>
@@ -70,7 +70,7 @@
     <assembly.mainClass>esa.mo.mal.demo.provider.DemoProviderGui</assembly.mainClass>
   </properties>
 
-  <dependencies>
+ <dependencies>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>API_MAL</artifactId>
@@ -85,6 +85,14 @@
     </dependency>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
+      <artifactId>TRANSPORT_TCPIP</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>int.esa.ccsds.mo</groupId>
+      <artifactId>TRANSPORT_ACTIVEMQ</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>ENCODING_STRING</artifactId>
     </dependency>
     <dependency>
@@ -92,7 +100,7 @@
       <artifactId>ENCODING_BINARY</artifactId>
     </dependency>
   </dependencies>
-  
+
   <build>
     <resources>
       <resource>
