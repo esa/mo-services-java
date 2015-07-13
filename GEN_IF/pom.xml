@@ -19,12 +19,12 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>2</version>
+    <version>3</version>
     <relativePath/>
   </parent>
   
   <artifactId>StubGenerator_Interfaces</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
   <packaging>jar</packaging>
   
   <name>ESA MO Stub Generator Plugin Interfaces</name>
@@ -67,7 +67,7 @@
     <dependency>
     <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>XML_JAXB</artifactId>
-      <version>1.2-SNAPSHOT</version>
+      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>javax.xml.bind</groupId>
@@ -141,7 +141,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>wagon-maven-plugin</artifactId>
-            <version>1.0-beta-5</version>
+            <version>1.0</version>
             <executions>
               <execution>
                 <id>get-xsd</id>
