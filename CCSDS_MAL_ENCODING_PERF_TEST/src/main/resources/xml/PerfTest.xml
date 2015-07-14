@@ -20,6 +20,16 @@
             </mal:send>
           </mal:messages>
         </mal:sendIP>
+        <mal:requestIP name="request" number="102" supportInReplay="false">
+          <mal:messages>
+            <mal:request>
+              <mal:type area="PerfTest" name="Report"/>
+            </mal:request>
+            <mal:response>
+              <mal:type area="PerfTest" name="Report"/>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
       </mal:capabilitySet>
     </mal:service>
     <mal:dataTypes>

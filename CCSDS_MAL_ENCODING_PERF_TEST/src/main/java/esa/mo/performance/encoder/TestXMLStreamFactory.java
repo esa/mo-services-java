@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.encoderperf;
+package esa.mo.performance.encoder;
 
 import java.io.IOException;
 import java.io.InputStream;

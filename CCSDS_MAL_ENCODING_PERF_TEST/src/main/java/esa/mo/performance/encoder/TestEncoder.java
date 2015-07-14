@@ -18,8 +18,9 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.encoderperf;
+package esa.mo.performance.encoder;
 
+import esa.mo.performance.util.TestStructureBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
