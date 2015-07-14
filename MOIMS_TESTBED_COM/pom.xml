@@ -19,7 +19,7 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <relativePath/>
   </parent>
   
@@ -80,9 +80,9 @@
   
   <properties>
     <fitnesse.toplevel.test>ComTests</fitnesse.toplevel.test>
-    <ccsds.testbed.com.version>1.0.1</ccsds.testbed.com.version>
+    <ccsds.testbed.com.version>1.0.2-SNAPSHOT</ccsds.testbed.com.version>
     <esa.com.test_api.version>1.0.1</esa.com.test_api.version>
-    <esa.com.test_provider.version>1.0.1</esa.com.test_provider.version>
+    <esa.com.test_provider.version>1.0.2-SNAPSHOT</esa.com.test_provider.version>
     <cnes.com.test_api.version>3.1.1</cnes.com.test_api.version>
     <joram.amqp.version>0.4</joram.amqp.version>
     <ccsds.testbed.util.version>1.0.2-SNAPSHOT</ccsds.testbed.util.version>
@@ -96,18 +96,11 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TESTBED_UTIL</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TESTBED_COM_FRAMEWORK</artifactId>
       <version>${ccsds.testbed.com.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>TESTBED_UTIL</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -213,7 +206,6 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>MAL_IMPL</artifactId>
-          <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
@@ -224,32 +216,10 @@
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
           <version>${esa.com.test_provider.version}</version>
-          <exclusions>
-            <exclusion>
-              <groupId>int.esa.ccsds.mo</groupId>
-              <artifactId>TESTBED_UTIL</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>int.esa.ccsds.mo</groupId>
-              <artifactId>MAL_IMPL</artifactId>
-            </exclusion>
-          </exclusions>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>TRANSPORT_RMI</artifactId>
-          <version>1.1-SNAPSHOT</version>
-          <exclusions>
-            <exclusion>
-              <groupId>int.esa.ccsds.mo</groupId>
-              <artifactId>TRANSPORT_GEN</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>TRANSPORT_GEN</artifactId>
-          <version>1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
@@ -271,7 +241,6 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>MAL_IMPL</artifactId>
-          <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
@@ -282,32 +251,10 @@
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
           <version>${esa.com.test_provider.version}</version>
-          <exclusions>
-            <exclusion>
-              <groupId>int.esa.ccsds.mo</groupId>
-              <artifactId>TESTBED_UTIL</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>int.esa.ccsds.mo</groupId>
-              <artifactId>MAL_IMPL</artifactId>
-            </exclusion>
-          </exclusions>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>TRANSPORT_ACTIVEMQ</artifactId>
-          <version>1.0-SNAPSHOT</version>
-          <exclusions>
-            <exclusion>
-              <groupId>int.esa.ccsds.mo</groupId>
-              <artifactId>TRANSPORT_GEN</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>TRANSPORT_GEN</artifactId>
-          <version>1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>

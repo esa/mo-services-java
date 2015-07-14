@@ -86,6 +86,7 @@ import org.ccsds.moims.mo.mal.structures.LongList;
 import org.ccsds.moims.mo.mal.structures.StringList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UIntegerList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.URIList;
@@ -124,13 +125,13 @@ public class ArchiveScenario
 
   private MALStandardError returnedError;
 
-  private IntegerList invalidQueryIndexes;
+  private UIntegerList invalidQueryIndexes;
 
-  private IntegerList unknownRetrieveIndexes;
+  private UIntegerList unknownRetrieveIndexes;
 
-  private IntegerList invalidStoreIndexes;
+  private UIntegerList invalidStoreIndexes;
 
-  private IntegerList duplicateStoreIndexes;
+  private UIntegerList duplicateStoreIndexes;
 
   private LongList instanceIdsToRetrieve;
 
@@ -170,11 +171,11 @@ public class ArchiveScenario
 
   private LongList deletedInstanceIds;
 
-  private IntegerList unknownDeleteIndexes;
+  private UIntegerList unknownDeleteIndexes;
 
-  private IntegerList invalidUpdateIndexes;
+  private UIntegerList invalidUpdateIndexes;
 
-  private IntegerList unknownUpdateIndexes;
+  private UIntegerList unknownUpdateIndexes;
 
   public boolean resetArchiveScenario()
   {
@@ -229,6 +230,7 @@ public class ArchiveScenario
 
   /**
    * Default is the first object type (1)
+   * @return 
    */
   public boolean resetObjectType()
   {
@@ -495,9 +497,9 @@ public class ArchiveScenario
 
   public boolean addArchiveQueryWithSource(long instanceId)
   {
-    ObjectId sourceId = new ObjectId(objectType, new ObjectKey(domain, instanceId));
+    ObjectId srcId = new ObjectId(objectType, new ObjectKey(domain, instanceId));
     ArchiveQuery archiveQuery = new ArchiveQuery(null,
-            null, null, 0L, sourceId, null, null, null, null);
+            null, null, 0L, srcId, null, null, null, null);
     archiveQueryList.add(archiveQuery);
     return true;
   }
@@ -745,17 +747,17 @@ public class ArchiveScenario
     if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber()))
     {
       Object extraInfo = returnedError.getExtraInformation();
-      if (extraInfo instanceof IntegerList)
+      if (extraInfo instanceof UIntegerList)
       {
-        invalidStoreIndexes = (IntegerList) extraInfo;
+        invalidStoreIndexes = (UIntegerList) extraInfo;
       }
     }
     else if (COMHelper.DUPLICATE_ERROR_NUMBER.equals(returnedError.getErrorNumber()))
     {
       Object extraInfo = returnedError.getExtraInformation();
-      if (extraInfo instanceof IntegerList)
+      if (extraInfo instanceof UIntegerList)
       {
-        duplicateStoreIndexes = (IntegerList) extraInfo;
+        duplicateStoreIndexes = (UIntegerList) extraInfo;
       }
     }
   }
@@ -792,29 +794,29 @@ public class ArchiveScenario
     if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber()))
     {
       Object extraInfo = returnedError.getExtraInformation();
-      if (extraInfo instanceof IntegerList)
+      if (extraInfo instanceof UIntegerList)
       {
-        invalidUpdateIndexes = (IntegerList) extraInfo;
+        invalidUpdateIndexes = (UIntegerList) extraInfo;
       }
     }
     else if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(returnedError.getErrorNumber()))
     {
       Object extraInfo = returnedError.getExtraInformation();
-      if (extraInfo instanceof IntegerList)
+      if (extraInfo instanceof UIntegerList)
       {
-        unknownUpdateIndexes = (IntegerList) extraInfo;
+        unknownUpdateIndexes = (UIntegerList) extraInfo;
       }
     }
   }
 
-  public boolean invalidUpdateIndexAtIs(int index, int expectedIndex)
+  public boolean invalidUpdateIndexAtIs(int index, long expectedIndex)
   {
-    return invalidUpdateIndexes.get(index).intValue() == expectedIndex;
+    return invalidUpdateIndexes.get(index).getValue() == expectedIndex;
   }
 
-  public boolean unknownUpdateIndexAtIs(int index, int expectedIndex)
+  public boolean unknownUpdateIndexAtIs(int index, long expectedIndex)
   {
-    return unknownUpdateIndexes.get(index).intValue() == expectedIndex;
+    return unknownUpdateIndexes.get(index).getValue() == expectedIndex;
   }
 
   public boolean delete() throws Exception
@@ -845,16 +847,16 @@ public class ArchiveScenario
     if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(returnedError.getErrorNumber()))
     {
       Object extraInfo = returnedError.getExtraInformation();
-      if (extraInfo instanceof IntegerList)
+      if (extraInfo instanceof UIntegerList)
       {
-        unknownDeleteIndexes = (IntegerList) extraInfo;
+        unknownDeleteIndexes = (UIntegerList) extraInfo;
       }
     }
   }
 
-  public boolean unknownDeleteIndexAtIs(int index, int expectedIndex)
+  public boolean unknownDeleteIndexAtIs(int index, long expectedIndex)
   {
-    return unknownDeleteIndexes.get(index).intValue() == expectedIndex;
+    return unknownDeleteIndexes.get(index).getValue() == expectedIndex;
   }
 
   public boolean deletedInstanceIdListSizeIs(int size)
@@ -874,7 +876,7 @@ public class ArchiveScenario
 
   public boolean returnedInstanceIdAtIndexIs(int index, long value)
   {
-    return returnedInstanceIds.get(index).longValue() == value;
+    return returnedInstanceIds.get(index) == value;
   }
 
   public boolean returnedInstanceIdListIsNull()
@@ -944,10 +946,10 @@ public class ArchiveScenario
     if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(returnedError.getErrorNumber()))
     {
       Object extraInfo = returnedError.getExtraInformation();
-      if (extraInfo instanceof IntegerList)
+      if (extraInfo instanceof UIntegerList)
       {
         LoggingBase.logMessage("set unknownRetrieveIndexes");
-        unknownRetrieveIndexes = (IntegerList) extraInfo;
+        unknownRetrieveIndexes = (UIntegerList) extraInfo;
       }
     }
   }
@@ -1083,10 +1085,10 @@ public class ArchiveScenario
     int index = 0;
     for (ArchiveDetails ad : retrievedArchiveDetailsList)
     {
-      if (ad.getInstId().longValue() == instanceId)
+      if (ad.getInstId() == instanceId)
       {
         TestObjectPayload object = (TestObjectPayload) retrievedObjectList.get(index);
-        return object.getIntegerField().intValue() == intValue;
+        return object.getIntegerField() == intValue;
       }
       index++;
     }
@@ -1186,7 +1188,7 @@ public class ArchiveScenario
   public boolean queriedObjectAtIndexIsInt(int index, int expectedValue)
   {
     Integer objectPayload = (Integer) queriedObjectList.get(index);
-    return objectPayload.intValue() == expectedValue;
+    return objectPayload == expectedValue;
   }
 
   public boolean queriedObjectAtIndexIsEnumerated(int index, String expectedValue)
@@ -1206,7 +1208,7 @@ public class ArchiveScenario
   public boolean queriedObjectAtIndexHasCompositeIntegerValue(int index, int expectedIntValue)
   {
     TestObjectPayload objectPayload = (TestObjectPayload) queriedObjectList.get(index);
-    return objectPayload.getCompositeField().getIntegerField().intValue() == expectedIntValue;
+    return objectPayload.getCompositeField().getIntegerField() == expectedIntValue;
   }
 
   public boolean queriedObjectAtIndexHasNullCompositeValue(int index)
@@ -1248,34 +1250,34 @@ public class ArchiveScenario
   public boolean queriedObjectAtIndexHasInstanceId(int index, long instanceId)
   {
     ArchiveDetails archiveDetails = (ArchiveDetails) queriedArchiveDetailsList.get(index);
-    return archiveDetails.getInstId().longValue() == instanceId;
+    return archiveDetails.getInstId() == instanceId;
   }
 
   public boolean queriedObjectAtIndexHasSourceInstanceId(int index, long instanceId)
   {
     ArchiveDetails archiveDetails = (ArchiveDetails) queriedArchiveDetailsList.get(index);
-    return archiveDetails.getDetails().getSource().getKey().getInstId().longValue() == instanceId;
+    return archiveDetails.getDetails().getSource().getKey().getInstId() == instanceId;
   }
 
   public boolean queriedObjectAtIndexHasRelated(int index, long related)
   {
     ArchiveDetails archiveDetails = (ArchiveDetails) queriedArchiveDetailsList.get(index);
-    return archiveDetails.getDetails().getRelated().longValue() == related;
+    return archiveDetails.getDetails().getRelated() == related;
   }
 
-  public boolean invalidQueryIndexAtIs(int index, int expectedQueryIndex)
+  public boolean invalidQueryIndexAtIs(int index, long expectedQueryIndex)
   {
-    return invalidQueryIndexes.get(index).intValue() == expectedQueryIndex;
+    return invalidQueryIndexes.get(index).getValue() == expectedQueryIndex;
   }
 
-  public boolean invalidStoreIndexAtIs(int index, int expectedQueryIndex)
+  public boolean invalidStoreIndexAtIs(int index, long expectedQueryIndex)
   {
-    return invalidStoreIndexes.get(index).intValue() == expectedQueryIndex;
+    return invalidStoreIndexes.get(index).getValue() == expectedQueryIndex;
   }
 
-  public boolean unknownRetrieveIndexAtIs(int index, int expectedQueryIndex)
+  public boolean unknownRetrieveIndexAtIs(int index, long expectedQueryIndex)
   {
-    return unknownRetrieveIndexes.get(index).intValue() == expectedQueryIndex;
+    return unknownRetrieveIndexes.get(index).getValue() == expectedQueryIndex;
   }
 
   public boolean addInstanceIdToRetrieve(long instanceId)
@@ -1339,9 +1341,9 @@ public class ArchiveScenario
     if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber()))
     {
       Object extraInfo = returnedError.getExtraInformation();
-      if (extraInfo instanceof IntegerList)
+      if (extraInfo instanceof UIntegerList)
       {
-        invalidQueryIndexes = (IntegerList) extraInfo;
+        invalidQueryIndexes = (UIntegerList) extraInfo;
       }
     }
   }
@@ -1383,16 +1385,16 @@ public class ArchiveScenario
     if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber()))
     {
       Object extraInfo = returnedError.getExtraInformation();
-      if (extraInfo instanceof IntegerList)
+      if (extraInfo instanceof UIntegerList)
       {
-        invalidQueryIndexes = (IntegerList) extraInfo;
+        invalidQueryIndexes = (UIntegerList) extraInfo;
       }
     }
   }
 
   public boolean countAtIndexIs(int index, long expectedCount)
   {
-    return countLongList.get(index).longValue() == expectedCount;
+    return countLongList.get(index) == expectedCount;
   }
 
   public boolean resetLongList()
