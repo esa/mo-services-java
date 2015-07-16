@@ -46,32 +46,47 @@ public abstract class FileBasedDirectory
 
   public static boolean storeURI(String name, URI uri, URI broker)
   {
-    java.util.Properties prop = new Properties();
-
-    String uriValue = "";
-    String brokerValue = "";
-
-    if (null != uri)
+    if (null != name)
     {
-      uriValue = uri.getValue();
+      java.util.Properties prop = new Properties();
+
+      String uriValue = "";
+      String brokerValue = "";
+
+      if ((null != uri) && (null != uri.getValue()))
+      {
+        uriValue = uri.getValue();
+      }
+      else
+      {
+        System.err.println("WARNING: Service uri empty for service : " + name);
+      }
+
+      if ((null != broker) && (null != broker.getValue()))
+      {
+        brokerValue = broker.getValue();
+      }
+      else
+      {
+        System.err.println("WARNING: Broker uri empty for service : " + name);
+      }
+
+      prop.setProperty(URI_PROPERTY, uriValue);
+      prop.setProperty(BROKER_PROPERTY, brokerValue);
+
+      try
+      {
+        prop.store(new java.io.FileOutputStream(name + FILENAME_EXT), "Created: " + new java.util.Date().toString());
+      }
+      catch (IOException ex)
+      {
+        ex.printStackTrace();
+        return false;
+      }
     }
-
-    if (null != broker)
+    else
     {
-      brokerValue = broker.getValue();
-    }
-
-    prop.setProperty(URI_PROPERTY, uriValue);
-    prop.setProperty(BROKER_PROPERTY, brokerValue);
-
-    try
-    {
-      prop.store(new java.io.FileOutputStream(name + FILENAME_EXT), "Created: " + new java.util.Date().toString());
-    }
-    catch (IOException ex)
-    {
-      ex.printStackTrace();
-      return false;
+      System.err.println("ERROR: Could not store URIs: " + uri + " , " + broker);
     }
 
     return true;
@@ -113,12 +128,12 @@ public abstract class FileBasedDirectory
   {
     return storeBrokerAuthenticationId(authId, Configuration.SHARED_BROKER_NAME);
   }
-  
+
   public static boolean storePrivateBrokerAuthenticationId(Blob authId) throws MALException
   {
     return storeBrokerAuthenticationId(authId, Configuration.PRIVATE_BROKER_NAME);
   }
-  
+
   public static boolean storeBrokerAuthenticationId(Blob authId, String brokerName) throws MALException
   {
     java.util.Properties prop = new Properties();
@@ -138,12 +153,12 @@ public abstract class FileBasedDirectory
 
     return true;
   }
-  
+
   public static Blob loadSharedBrokerAuthenticationId()
   {
     return loadBrokerAuthenticationId(Configuration.SHARED_BROKER_NAME);
   }
-  
+
   public static Blob loadPrivateBrokerAuthenticationId()
   {
     return loadBrokerAuthenticationId(Configuration.PRIVATE_BROKER_NAME);
@@ -171,7 +186,9 @@ public abstract class FileBasedDirectory
     {
       byte[] buf = hexStringToByteArray(authenticationIdStr);
       authenticationId = new Blob(buf);
-    } else {
+    }
+    else
+    {
       authenticationId = new Blob(new byte[0]);
     }
 
@@ -180,7 +197,7 @@ public abstract class FileBasedDirectory
 
   public static String byteArrayToHexString(byte[] data)
   {
-    StringBuffer hexString = new StringBuffer();
+    StringBuilder hexString = new StringBuilder();
     for (int i = 0; i < data.length; i++)
     {
       String hex = Integer.toHexString(0xFF & data[i]);
