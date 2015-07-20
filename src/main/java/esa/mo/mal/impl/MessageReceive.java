@@ -341,10 +341,10 @@ public class MessageReceive implements MALMessageListener
   {
     final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
 
+    InvokeInteractionImpl interaction = new InvokeInteractionImpl(sender, address, transId, msg);
+
     try
     {
-      InvokeInteractionImpl interaction = new InvokeInteractionImpl(sender, address, transId, msg);
-
       try
       {
         address.handler.handleInvoke(interaction, msg.getBody());
@@ -356,11 +356,14 @@ public class MessageReceive implements MALMessageListener
     }
     catch (MALException ex)
     {
-      sender.returnError(address,
-              transId,
-              msg.getHeader(),
-              MALInvokeOperation.INVOKE_ACK_STAGE,
-              ex);
+      try
+      {
+        interaction.sendError(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, new Union(ex.getLocalizedMessage())));
+      }
+      catch (MALException noex)
+      {
+        // this exception cannot actually be thrown in this implmentation, therefore we can safely ignore it
+      }
     }
   }
 
@@ -368,10 +371,10 @@ public class MessageReceive implements MALMessageListener
   {
     final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
 
+    ProgressInteractionImpl interaction = new ProgressInteractionImpl(sender, address, transId, msg);
+
     try
     {
-      ProgressInteractionImpl interaction = new ProgressInteractionImpl(sender, address, transId, msg);
-
       try
       {
         address.handler.handleProgress(interaction, msg.getBody());
@@ -383,11 +386,14 @@ public class MessageReceive implements MALMessageListener
     }
     catch (MALException ex)
     {
-      sender.returnError(address,
-              transId,
-              msg.getHeader(),
-              MALProgressOperation.PROGRESS_ACK_STAGE,
-              ex);
+      try
+      {
+        interaction.sendError(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, new Union(ex.getLocalizedMessage())));
+      }
+      catch (MALException noex)
+      {
+        // this exception cannot actually be thrown in this implmentation, therefore we can safely ignore it
+      }
     }
   }
 
@@ -787,7 +793,7 @@ public class MessageReceive implements MALMessageListener
       first = localName;
       if (null != service)
       {
-        second = (((long)service.getArea().getNumber().getValue()) << 32) + ((long)service.getNumber().getValue());
+        second = (((long) service.getArea().getNumber().getValue()) << 32) + ((long) service.getNumber().getValue());
       }
       else
       {
@@ -801,7 +807,7 @@ public class MessageReceive implements MALMessageListener
 
       if (null != msg)
       {
-        second = (((long)msg.getHeader().getServiceArea().getValue()) << 32) + ((long)msg.getHeader().getService().getValue());
+        second = (((long) msg.getHeader().getServiceArea().getValue()) << 32) + ((long) msg.getHeader().getService().getValue());
       }
       else
       {
