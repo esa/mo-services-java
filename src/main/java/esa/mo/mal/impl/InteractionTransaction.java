@@ -35,11 +35,11 @@ abstract class InteractionTransaction
 
   static synchronized Long getTransactionId(Set<Long> keySet)
   {
-    long lt = transId++;
+    long lt = ++transId;
     
     while(keySet.contains(lt))
     {
-      lt = transId++;
+      lt = ++transId;
     }
     
     return lt;
