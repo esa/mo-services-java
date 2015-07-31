@@ -1438,12 +1438,7 @@ When the end of a replay session is reached, either before the first entry for b
         </mal:requestIP>
       </mal:capabilitySet>
       <mal:dataTypes>
-        <mal:composite name="ConfigurationObjectDetails" comment="">
-          <mal:field name="configObjects" canBeNull="false" comment="">
-            <mal:type list="true" name="ConfigurationObjectSet" service="Configuration" area="Common"/>
-          </mal:field>
-        </mal:composite>
-        <mal:composite name="ConfigurationObjectSet" comment="">
+        <mal:composite name="ConfigurationObjectSet" shortFormPart="1" comment="">
           <mal:field name="objType" canBeNull="false" comment="">
             <mal:type name="ObjectType" area="COM"/>
           </mal:field>
@@ -1452,6 +1447,11 @@ When the end of a replay session is reached, either before the first entry for b
           </mal:field>
           <mal:field name="objInstIds" canBeNull="false" comment="">
             <mal:type list="true" name="Long" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+        <mal:composite name="ConfigurationObjectDetails" shortFormPart="2" comment="">
+          <mal:field name="configObjects" canBeNull="false" comment="">
+            <mal:type list="true" name="ConfigurationObjectSet" service="Configuration" area="Common"/>
           </mal:field>
         </mal:composite>
       </mal:dataTypes>
