@@ -243,7 +243,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             version,
             Boolean.TRUE,
             notifyQosProps,
-            error);
+            error.getErrorNumber(), error.getExtraInformation());
 
     endpoint.sendMessage(msg);
 
@@ -277,7 +277,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             op,
             MALPubSubOperation.NOTIFY_STAGE,
             notifyQosProps,
-            error);
+            error.getErrorNumber(), error.getExtraInformation());
 
     endpoint.sendMessage(msg);
 
@@ -318,7 +318,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             version,
             Boolean.TRUE,
             qosProps,
-            error);
+            error.getErrorNumber(), error.getExtraInformation());
 
     endpoint.sendMessage(msg);
 
@@ -352,7 +352,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             op,
             MALPubSubOperation.PUBLISH_STAGE,
             qosProps,
-            error);
+            error.getErrorNumber(), error.getExtraInformation());
 
     endpoint.sendMessage(msg);
 
