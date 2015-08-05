@@ -59,6 +59,7 @@ public class RMITransport extends GENTransport
   private static final char RMI_PORT_DELIM = ':';
   private Registry registry;
   private int portNumber;
+  private final String serverHost;
   private UnicastRemoteObject ourRMIinterface;
 
   /**
@@ -74,6 +75,25 @@ public class RMITransport extends GENTransport
           final java.util.Map properties) throws MALException
   {
     super(protocol, '-', true, true, factory, properties);
+    
+    // decode configuration
+    if (properties != null)
+    {
+      // host / ip adress
+      if (properties.containsKey("org.ccsds.moims.mo.mal.transport.rmi.host"))
+      {
+        this.serverHost = (String) properties.get("org.ccsds.moims.mo.mal.transport.rmi.host");
+      }
+      else
+      {
+        this.serverHost = null; // this is only a client
+      }
+    }
+    else
+    {
+      // default values
+      this.serverHost = null; //null means this is a client
+    }
   }
 
   @Override
@@ -116,6 +136,32 @@ public class RMITransport extends GENTransport
   @Override
   protected String createTransportAddress() throws MALException
   {
+    final StringBuilder transportAddress = new StringBuilder();
+    if (serverHost == null)
+    {
+      transportAddress.append(getDefaultHost());
+    }
+    else
+    {
+      transportAddress.append(serverHost);
+    }
+    
+    transportAddress.append(RMI_PORT_DELIM);
+    transportAddress.append(portNumber);
+    transportAddress.append('/');
+    transportAddress.append(portNumber);
+
+    return transportAddress.toString();
+  }
+  
+  /**
+   * Provide a default IP address for this host
+   *
+   * @return The transport specific address part.
+   * @throws MALException On error
+   */
+  private String getDefaultHost() throws MALException
+  {
     try
     {
       // Build RMI url string
@@ -132,12 +178,7 @@ public class RMITransport extends GENTransport
       {
         hostAddress.append(addr.getHostAddress());
       }
-
-      hostAddress.append(RMI_PORT_DELIM);
-      hostAddress.append(portNumber);
-      hostAddress.append('/');
-      hostAddress.append(portNumber);
-
+      
       return hostAddress.toString();
     }
     catch (UnknownHostException ex)
