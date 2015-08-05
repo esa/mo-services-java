@@ -56,6 +56,7 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
 import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
 import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransitionList;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
@@ -185,7 +186,7 @@ public class MalSppPatternTest extends PatternTest {
     SessionType session = ParseHelper.parseSessionType(sessionType);
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
     initConsumer(session, sessionName, qos);
-    ipTest = ipTestConsumer.getStub();
+    IPTestStub ipTest = ipTestConsumer.getStub();
     IPTestDefinition testDef = new IPTestDefinition("TestSendPattern",
         ipTestConsumer.getConsumer().getURI(),
         HeaderTestProcedure.AUTHENTICATION_ID,
@@ -367,7 +368,7 @@ public class MalSppPatternTest extends PatternTest {
     Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
 
     initConsumer(session, sessionName, qos);
-    ipTest = ipTestConsumer.getStub();
+    IPTestStub ipTest = ipTestConsumer.getStub();
 
     MALEndpoint ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
     MALMessage msg = null;

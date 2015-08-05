@@ -97,7 +97,7 @@ response.
 |ensure | reset spp interceptor |
 |ensure |consumer packet is tc| true |
 |ensure |provider packet is tc| true |
-|ensure |pattern initiation for| Request | with multi| false | with empty body | false | and qos| Assured | and session | Live | and transistions | [RESPONSE] | and trans id | 1 | test |
+|ensure |pattern initiation for| Request | with multi| false | with empty body | false | and qos| Assured | and session | Live | and transistions | [RESPONSE] | and behaviour id | 1 | test |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 3 | and source id flag | 0 | and destination id flag | 1 |

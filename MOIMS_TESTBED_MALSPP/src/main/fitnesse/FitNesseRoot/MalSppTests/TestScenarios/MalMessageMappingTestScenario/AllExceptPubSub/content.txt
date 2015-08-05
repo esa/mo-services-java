@@ -118,16 +118,16 @@ Body element encoding is checked for each interaction pattern and interaction st
 | scenario | body element encoded as !-UInteger-! |
 | ensure | read !-UInteger-! |
 
-|scenario| pattern | interaction | with multi| multi | and qos| qos | and session | sessId | and transitions | trans | and trans id | id | test |
-|ensure |pattern initiation for| @interaction | with multi| @multi | with empty body | false | and qos| @qos | and session | @sessId | and transistions | @trans | and trans id | @id | test |
+|scenario| pattern | interaction | with multi| multi | and qos| qos | and session | sessId | and transitions | trans | and behaviour id | id | test |
+|ensure |pattern initiation for| @interaction | with multi| @multi | with empty body | false | and qos| @qos | and session | @sessId | and transistions | @trans | and behaviour id | @id | test |
 |ensure |the consumer assertions are ok|
 |ensure |the transitions are ok|
 
-|scenario| pattern | interaction | with qos| qos | and session | sessId | and transitions | trans | and trans id | id | test |
-|pattern | @interaction | with multi| false | and qos| @qos | and session | @sessId | and transitions | @trans | and trans id | @id | test |
+|scenario| pattern | interaction | with qos| qos | and session | sessId | and transitions | trans | and behaviour id | id | test |
+|pattern | @interaction | with multi| false | and qos| @qos | and session | @sessId | and transitions | @trans | and behaviour id | @id | test |
 
-|scenario| test interaction pattern | interaction | with transitions | trans | and trans id | id | and qos | qos | and session | sessId |
-|pattern | @interaction | with qos| @qos | and session | @sessId | and transitions | @trans | and trans id | @id | test |
+|scenario| test interaction pattern | interaction | with transitions | trans | and behaviour id | id | and qos | qos | and session | sessId |
+|pattern | @interaction | with qos| @qos | and session | @sessId | and transitions | @trans | and behaviour id | @id | test |
 
 |scenario| secondary header sdu type | sdu | and operation | op | and error | error | and qos | qos | and session | sessionId | and session name | sessionName |
 |check  | version is | 0 |
@@ -176,7 +176,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 |body element | !-IPTestDefinition-! | encoded as nullable element |
 |body ends here|
 |ensure|reset spp interceptor|
-|test interaction pattern | Submit| with transitions | [ACK] | and trans id | 1 | and qos | @qos | and session | @sessId |
+|test interaction pattern | Submit| with transitions | [ACK] | and behaviour id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 1 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
@@ -187,7 +187,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 |secondary header sdu type | 2 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
 |body element encoded as empty |
 |ensure|reset spp interceptor|
-|test interaction pattern | Submit| with transitions | [ACK_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
+|test interaction pattern | Submit| with transitions | [ACK_ERROR] | and behaviour id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 1 | and operation | 101 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
@@ -200,7 +200,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 |body element | element | encoded as nullable element |
 |body ends here|
 |ensure|reset spp interceptor|
-|test interaction pattern | Request| with transitions | [RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sessId |
+|test interaction pattern | Request| with transitions | [RESPONSE] | and behaviour id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 3 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
@@ -212,7 +212,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 |body element | string | encoded as nullable element |
 |body ends here|
 |ensure|reset spp interceptor|
-|test interaction pattern | Request| with transitions | [RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
+|test interaction pattern | Request| with transitions | [RESPONSE_ERROR] | and behaviour id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 3 | and operation | 102 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
@@ -225,7 +225,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 |body element | element | encoded as nullable element |
 |body ends here|
 |ensure|reset spp interceptor|
-|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sessId |
+|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE] | and behaviour id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
@@ -242,7 +242,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 |body element | string | encoded as nullable element |
 |body ends here|
 |ensure|reset spp interceptor|
-|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
+|test interaction pattern | Invoke| with transitions | [ACK, RESPONSE_ERROR] | and behaviour id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
@@ -260,7 +260,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 |body element | element | encoded as nullable element |
 |body ends here|
 |ensure|reset spp interceptor|
-|test interaction pattern | Invoke| with transitions | [ACK_ERROR] | and trans id | 3 | and qos | @qos | and session | @sessId |
+|test interaction pattern | Invoke| with transitions | [ACK_ERROR] | and behaviour id | 3 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 5 | and operation | 103 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
@@ -273,7 +273,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 |body element | element | encoded as nullable element |
 |body ends here|
 |ensure|reset spp interceptor|
-|test interaction pattern | Progress| with transitions | [ACK, RESPONSE] | and trans id | 1 | and qos | @qos | and session | @sessId |
+|test interaction pattern | Progress| with transitions | [ACK, RESPONSE] | and behaviour id | 1 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
@@ -290,7 +290,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 |body element | string | encoded as nullable element |
 |body ends here|
 |ensure|reset spp interceptor|
-|test interaction pattern | Progress| with transitions | [ACK, RESPONSE_ERROR] | and trans id | 2 | and qos | @qos | and session | @sessId |
+|test interaction pattern | Progress| with transitions | [ACK, RESPONSE_ERROR] | and behaviour id | 2 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
@@ -308,7 +308,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 |body element | element | encoded as nullable element |
 |body ends here|
 |ensure|reset spp interceptor|
-|test interaction pattern | Progress| with transitions | [ACK_ERROR] | and trans id | 3 | and qos | @qos | and session | @sessId |
+|test interaction pattern | Progress| with transitions | [ACK_ERROR] | and behaviour id | 3 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |
@@ -321,7 +321,7 @@ Body element encoding is checked for each interaction pattern and interaction st
 |body element | element | encoded as nullable element |
 |body ends here|
 |ensure|reset spp interceptor|
-|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, RESPONSE] | and trans id | 4 | and qos | @qos | and session | @sessId |
+|test interaction pattern | Progress| with transitions | [ACK, UPDATE, UPDATE, RESPONSE] | and behaviour id | 4 | and qos | @qos | and session | @sessId |
 |ensure|select sent packet at| 0 |
 |primary header |
 |secondary header sdu type | 8 | and operation | 104 | and error | 0 | and qos | @qos | and session | @sessId | and session name | @sessionName |

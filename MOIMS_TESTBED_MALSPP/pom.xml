@@ -205,7 +205,7 @@
           <failIfNoTests>false</failIfNoTests>
           <systemPropertyVariables>
             <ccsds.fitnesse.output.dir>${fitnesse.output.dir}</ccsds.fitnesse.output.dir>
-            <ccsds.fitnesse.port>${fitnesse.port}</ccsds.fitnesse.port>
+            <slim.port>${fitnesse.port}</slim.port>
             <org.ccsds.moims.mo.testbed.remote.extra.args>${argLine}r</org.ccsds.moims.mo.testbed.remote.extra.args>
             <org.ccsds.moims.mo.testbed.local.configuration.dir>${org.ccsds.moims.mo.testbed.local.configuration.dir}</org.ccsds.moims.mo.testbed.local.configuration.dir>
             <org.ccsds.moims.mo.testbed.remote.configuration.dir>${org.ccsds.moims.mo.testbed.remote.configuration.dir}</org.ccsds.moims.mo.testbed.remote.configuration.dir>
@@ -242,12 +242,12 @@
         <dependency>
           <groupId>de.dlr.gsoc</groupId>
           <artifactId>MO_MALSPP_TRANSPORT</artifactId>
-		    <version>1.0</version>
+          <version>1.0.1</version>
         </dependency>
         <dependency>
           <groupId>de.dlr.gsoc</groupId>
           <artifactId>MO_MALSPP_ENCODING</artifactId>
-          <version>1.0</version>
+          <version>1.0.1</version>
         </dependency>
         <dependency>
           <groupId>org.ow2.joram</groupId>
@@ -293,7 +293,7 @@
           <artifactId>cnes-malprototype-stubs</artifactId>
           <version>${cnes.version}</version>
         </dependency>
-		    <dependency>
+        <dependency>
           <groupId>org.ccsds.moims.mo</groupId>
           <artifactId>cnes-malprototype-stubs</artifactId>
           <version>${cnes.version}</version>
