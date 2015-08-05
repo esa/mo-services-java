@@ -20,55 +20,34 @@
  */
 package org.ccsds.moims.mo.com.test.suite;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
+import java.util.List;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
 import org.ccsds.moims.mo.com.event.EventHelper;
-import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementHelper;
 import org.ccsds.moims.mo.comprototype.activitytest.ActivityTestHelper;
 import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestHelper;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
-import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
-import org.ccsds.moims.mo.testbed.suite.BaseTestServiceProvider;
-import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import static org.ccsds.moims.mo.testbed.util.LoggingBase.logMessage;
 
 /**
- *
+ * Extend this to test an implementation that can be called directly from here.
  */
-public abstract class BaseCOMTestServiceProvider extends BaseTestServiceProvider
+public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvider
 {
-  public String getProtocol()
-  {
-    return System.getProperty(Configuration.DEFAULT_PROTOCOL);
-  }
-
-  protected void initHelpers() throws MALException
-  {
-    org.ccsds.moims.mo.com.COMHelper.init(MALContextFactory.getElementFactoryRegistry());
-    ActivityTrackingHelper.init(MALContextFactory.getElementFactoryRegistry());
-    ArchiveHelper.init(MALContextFactory.getElementFactoryRegistry());
-    EventHelper.init(MALContextFactory.getElementFactoryRegistry());
-
-    COMPrototypeHelper.init(MALContextFactory.getElementFactoryRegistry());
-    ActivityTestHelper.init(MALContextFactory.getElementFactoryRegistry());
-    ActivityRelayManagementHelper.init(MALContextFactory.getElementFactoryRegistry());
-    ArchiveTestHelper.init(MALContextFactory.getElementFactoryRegistry());
-    EventTestHelper.init(MALContextFactory.getElementFactoryRegistry());
-  }
-
-  protected void createProviders() throws MALException
+  protected List<URItriple> initURIs() throws MALException
   {
     String protocol = getProtocol();
     logMessage("Create Providers Called");
@@ -87,9 +66,9 @@ public abstract class BaseCOMTestServiceProvider extends BaseTestServiceProvider
             new Blob(new byte[0]),
             getArchiveHandler(),
             new QoSLevel[]
-    {
-      QoSLevel.ASSURED
-    },
+            {
+              QoSLevel.ASSURED
+            },
             new UInteger(1), // number of priority levels
             null,
             Boolean.TRUE, // isPublisher
@@ -101,9 +80,9 @@ public abstract class BaseCOMTestServiceProvider extends BaseTestServiceProvider
             new Blob(new byte[0]),
             getArchiveTestHandler(),
             new QoSLevel[]
-    {
-      QoSLevel.ASSURED
-    },
+            {
+              QoSLevel.ASSURED
+            },
             new UInteger(1), // number of priority levels
             null,
             Boolean.TRUE, // isPublisher
@@ -115,9 +94,9 @@ public abstract class BaseCOMTestServiceProvider extends BaseTestServiceProvider
             new Blob(new byte[0]),
             getArchiveEventHandler(),
             new QoSLevel[]
-    {
-      QoSLevel.ASSURED
-    },
+            {
+              QoSLevel.ASSURED
+            },
             new UInteger(1), // number of priority levels
             null,
             Boolean.TRUE, // isPublisher
@@ -129,9 +108,9 @@ public abstract class BaseCOMTestServiceProvider extends BaseTestServiceProvider
             new Blob(new byte[0]),
             getActivityTestServiceHandler(),
             new QoSLevel[]
-    {
-      QoSLevel.ASSURED
-    },
+            {
+              QoSLevel.ASSURED
+            },
             new UInteger(1), // number of priority levels
             null,
             Boolean.FALSE, // isPublisher
@@ -143,9 +122,9 @@ public abstract class BaseCOMTestServiceProvider extends BaseTestServiceProvider
             new Blob(new byte[0]),
             getActivityRelayManagementServiceHandler(),
             new QoSLevel[]
-    {
-      QoSLevel.ASSURED
-    },
+            {
+              QoSLevel.ASSURED
+            },
             new UInteger(1), // number of priority levels
             null,
             Boolean.FALSE, // isPublisher
@@ -157,9 +136,9 @@ public abstract class BaseCOMTestServiceProvider extends BaseTestServiceProvider
             new Blob(new byte[0]),
             getActivityEventHandler(),
             new QoSLevel[]
-    {
-      QoSLevel.ASSURED
-    },
+            {
+              QoSLevel.ASSURED
+            },
             new UInteger(1), // number of priority levels
             null,
             Boolean.TRUE, // isPublisher
@@ -171,9 +150,9 @@ public abstract class BaseCOMTestServiceProvider extends BaseTestServiceProvider
             new Blob(new byte[0]),
             getEventTestServiceHandler(),
             new QoSLevel[]
-    {
-      QoSLevel.ASSURED
-    },
+            {
+              QoSLevel.ASSURED
+            },
             new UInteger(1), // number of priority levels
             null,
             Boolean.FALSE, // isPublisher
@@ -185,27 +164,31 @@ public abstract class BaseCOMTestServiceProvider extends BaseTestServiceProvider
             new Blob(new byte[0]),
             getEventServiceHandler(),
             new QoSLevel[]
-    {
-      QoSLevel.ASSURED
-    },
+            {
+              QoSLevel.ASSURED
+            },
             new UInteger(1), // number of priority levels
             null,
             Boolean.TRUE, // isPublisher
             null);
 
-    FileBasedDirectory.storeURI(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME.getValue(), activityTestProvider.getURI(), activityTestProvider.getBrokerURI());
-    FileBasedDirectory.storeURI(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME.getValue(), activityRelayManagementProvider.getURI(), activityRelayManagementProvider.getBrokerURI());
-    FileBasedDirectory.storeURI(LocalMALInstance.ACTIVITY_EVENT_NAME, activityEventProvider.getURI(), activityEventProvider.getBrokerURI());
-    FileBasedDirectory.storeURI(EventTestHelper.EVENTTEST_SERVICE_NAME.getValue(), eventTestProvider.getURI(), eventTestProvider.getBrokerURI());
-    FileBasedDirectory.storeURI(EventHelper.EVENT_SERVICE_NAME.getValue(), eventProvider.getURI(), eventProvider.getBrokerURI());
-    FileBasedDirectory.storeURI(ArchiveHelper.ARCHIVE_SERVICE_NAME.getValue(), archiveProvider.getURI(), archiveProvider.getBrokerURI());
-    FileBasedDirectory.storeURI(ArchiveTestHelper.ARCHIVETEST_SERVICE_NAME.getValue(), archiveTestProvider.getURI(), archiveTestProvider.getBrokerURI());
-    FileBasedDirectory.storeURI(LocalMALInstance.ARCHIVE_EVENT_NAME, archiveEventProvider.getURI(), archiveEventProvider.getBrokerURI());
+    List<URItriple> returnValues = new ArrayList<URItriple>();
+    
+    returnValues.add(new URItriple(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME, activityTestProvider.getURI(), activityTestProvider.getBrokerURI()));
+    returnValues.add(new URItriple(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME, activityRelayManagementProvider.getURI(), activityRelayManagementProvider.getBrokerURI()));
+    returnValues.add(new URItriple(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME), activityEventProvider.getURI(), activityEventProvider.getBrokerURI()));
+    returnValues.add(new URItriple(EventTestHelper.EVENTTEST_SERVICE_NAME, eventTestProvider.getURI(), eventTestProvider.getBrokerURI()));
+    returnValues.add(new URItriple(EventHelper.EVENT_SERVICE_NAME, eventProvider.getURI(), eventProvider.getBrokerURI()));
+    returnValues.add(new URItriple(ArchiveHelper.ARCHIVE_SERVICE_NAME, archiveProvider.getURI(), archiveProvider.getBrokerURI()));
+    returnValues.add(new URItriple(ArchiveTestHelper.ARCHIVETEST_SERVICE_NAME, archiveTestProvider.getURI(), archiveTestProvider.getBrokerURI()));
+    returnValues.add(new URItriple(new Identifier(LocalMALInstance.ARCHIVE_EVENT_NAME), archiveEventProvider.getURI(), archiveEventProvider.getBrokerURI()));
 
     activityEndPoint.startMessageDelivery();
     activityRelayManagementEndPoint.startMessageDelivery();
     eventTestEndPoint.startMessageDelivery();
     archiveEndpoint.startMessageDelivery();
+    
+    return returnValues;
   }
 
   public void storeActivityRelayURI(String name, URI uri, URI brokerURI) throws MALException
@@ -227,9 +210,9 @@ public abstract class BaseCOMTestServiceProvider extends BaseTestServiceProvider
             new Blob(new byte[0]),
             activityEventRelayHandler,
             new QoSLevel[]
-    {
-      QoSLevel.ASSURED
-    },
+            {
+              QoSLevel.ASSURED
+            },
             new UInteger(1), // number of priority levels
             null,
             Boolean.TRUE, // isPublisher

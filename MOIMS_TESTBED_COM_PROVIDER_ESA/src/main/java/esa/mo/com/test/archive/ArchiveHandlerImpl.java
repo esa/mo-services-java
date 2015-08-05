@@ -69,9 +69,9 @@ import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Enumeration;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.IntegerList;
 import org.ccsds.moims.mo.mal.structures.LongList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UIntegerList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -123,7 +123,6 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
   private final static Identifier IDENTIFIER_WILDCARD = new Identifier("*");
 
   // Enum used to classify filter
-
   private enum FilterType
   {
     NUMERIC, STRING, BLOB, INVALID
@@ -213,7 +212,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
   private void checkAllInstancesExist(LongList instIds, Archive.ArchiveObjectList archiveObjects) throws MALInteractionException
   {
     LoggingBase.logMessage(CLS + ":checkAllInstancesExist " + instIds);
-    IntegerList errorList = new IntegerList();
+    UIntegerList errorList = new UIntegerList();
 
     for (int instCnt = 0; instCnt < instIds.size(); instCnt++)
     {
@@ -231,7 +230,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
         }
         if (!matchFound)
         {
-          errorList.add(instCnt);
+          errorList.add(new UInteger(instCnt));
         }
       }
     }
@@ -241,16 +240,6 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
       throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, errorList));
     }
     LoggingBase.logMessage(CLS + " checkAllInstancesExist RET:" + instIds);
-  }
-
-  private String identifierListToStr(IdentifierList identifierList)
-  {
-    String str = ":";
-    for (int i = 0; i < identifierList.size(); i++)
-    {
-      str = str.concat(identifierList.get(i).toString());
-    }
-    return str;
   }
 
   /**
@@ -312,7 +301,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
       }
       else if (qDomain.size() == (domain.size() + 1) && qDomain.get(qDomain.size() - 1).equals(IDENTIFIER_WILDCARD))
       {
-                // Also allow the case where there is only 1 extra domain in the filter and it is a wildcard
+        // Also allow the case where there is only 1 extra domain in the filter and it is a wildcard
         // for example MSG1.aocs and MSG1.aocs.*
         match = true;
       }
@@ -872,7 +861,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
         LoggingBase.logMessage(CLS + ":applyArchiveQuery End Time No Match:"
                 + archiveQuery.getStartTime() + ":" + nextObj);
       }
-            // A special rule applies for the case where quert contains an and time but no start time
+      // A special rule applies for the case where quert contains an and time but no start time
       // in this case - it shall match the the single object closest to but not greater than the end time field
       if (archiveQuery.getStartTime() == null && archiveQuery.getEndTime() != null && match)
       {
@@ -888,7 +877,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
         retObjs.add(nextObj);
       }
     }
-        // A special rule applies for the case where query contains an end time but no start time
+    // A special rule applies for the case where query contains an end time but no start time
     // in this case - it shall match the the single object closest to but not greater than the end time field
     if (archiveQuery.getStartTime() == null && archiveQuery.getEndTime() != null && currentMatchingObj != -1)
     {
@@ -1215,7 +1204,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
     {
       LoggingBase.logMessage(CLS + ":query:Filter List" + queryFilterList);
     }
-    IntegerList failedQueries = new IntegerList();
+    UIntegerList failedQueries = new UIntegerList();
     ArrayList<Archive.ArchiveObjectList> returnedLists = new ArrayList<Archive.ArchiveObjectList>();
 
     interaction.sendAcknowledgement();
@@ -1254,7 +1243,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
       catch (MALInteractionException ex)
       {
         LoggingBase.logMessage(CLS + ":query:exception caught:" + i + ":" + ex);
-        failedQueries.add(new Integer(i));
+        failedQueries.add(new UInteger(i));
       }
     }
     // If any failures occured generate exception with failure list
@@ -1294,7 +1283,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
     {
       LoggingBase.logMessage(CLS + ":count:Filter List" + queryFilterList);
     }
-    IntegerList failedQueries = new IntegerList();
+    UIntegerList failedQueries = new UIntegerList();
     LongList countResults = new LongList();
     ArrayList<Archive.ArchiveObjectList> returnedLists = new ArrayList<Archive.ArchiveObjectList>();
 
@@ -1324,7 +1313,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
           // CompositeFilterSet is the only filter supported
           objs = applyCompositeFilterSet(objs, (CompositeFilterSet) queryFilterList.get(i));
         }
-              // Group objects according to domain/object type then sort 
+        // Group objects according to domain/object type then sort 
         // This is necessary as spec states sort parameters must be checked 
         ArrayList<Archive.ArchiveObjectList> domainObjectTypeList = createDomainObjectTypeLists(objs);
         sortObjects(domainObjectTypeList, archiveQueryList.get(i));
@@ -1335,7 +1324,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
       catch (MALInteractionException ex)
       {
         LoggingBase.logMessage(CLS + ":query:exception caught:" + i + ":" + ex);
-        failedQueries.add(new Integer(i));
+        failedQueries.add(new UInteger(i));
       }
     }
     // If any failures occured generate exception with failure list
@@ -1405,7 +1394,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
    */
   private void checkInstIdDuplicates(ArchiveDetailsList archiveDetailsList) throws MALInteractionException
   {
-    IntegerList errorList = new IntegerList();
+    UIntegerList errorList = new UIntegerList();
     for (int i = 0; i < archiveDetailsList.size(); i++)
     {
       long instId = archiveDetailsList.get(i).getInstId().longValue();
@@ -1418,7 +1407,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
           if (archiveDetailsList.get(j).getInstId().longValue() == instId)
           {
             LoggingBase.logMessage(CLS + ":checkInstIdDuplicates:Raise ERR - ");
-            errorList.add(new Integer(i));
+            errorList.add(new UInteger(i));
             throw new MALInteractionException(new MALStandardError(DUPLICATE_ERROR_NUMBER, errorList));
           }
 
@@ -1460,7 +1449,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
   private void checkStoreValidity(Boolean setInstId, ObjectType objectType, IdentifierList domain,
           ArchiveDetailsList archiveDetailsList, ElementList elementList) throws MALInteractionException
   {
-    IntegerList errorList = new IntegerList();
+    UIntegerList errorList = new UIntegerList();
     // Check clause (h) - The fourth and fifth list must be the same size 
     if (archiveDetailsList == null || (elementList != null && archiveDetailsList.size() != elementList.size()))
     {
@@ -1491,20 +1480,20 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
     for (int i = 0; i < archiveDetailsList.size(); i++)
     {
       ArchiveDetails archiveDetails = archiveDetailsList.get(i);
-            // Element element  =  (Element) elementList.get(i);
+      // Element element  =  (Element) elementList.get(i);
             /* Check clause (l) - No wildcard values of '0', '*', or NULL shall be accepted in the network, 
        timestamp or provider fields of the archive details except for the object instance identifier 
        * or an INVALID error is returned. */
       if (archiveDetails.getNetwork() == null || archiveDetails.getNetwork().equals(IDENTIFIER_WILDCARD))
       {
-        errorList.add(new Integer(i));
+        errorList.add(new UInteger(i));
         LoggingBase.logMessage(CLS + ":checkStoreValidity:Raise ERR - Network");
         throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER, errorList));
       }
 
       if (archiveDetails.getTimestamp() == null || archiveDetails.getTimestamp().getValue() == 0)
       {
-        errorList.add(new Integer(i));
+        errorList.add(new UInteger(i));
         LoggingBase.logMessage(CLS + ":checkStoreValidity:Raise ERR - Timestamp");
         throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER, errorList));
       }
@@ -1512,7 +1501,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
       if (archiveDetails.getProvider() == null)
       {
         LoggingBase.logMessage(CLS + ":checkStoreValidity:Raise ERR - Provider");
-        errorList.add(new Integer(i));
+        errorList.add(new UInteger(i));
         throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER, errorList));
       }
 
@@ -1521,7 +1510,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
       if (!setInstId && archive.contains(objectType, domain, instId))
       {
         LoggingBase.logMessage(CLS + ":checkStoreValidity:Raise ERR - InstId");
-        errorList.add(new Integer(i));
+        errorList.add(new UInteger(i));
         throw new MALInteractionException(new MALStandardError(DUPLICATE_ERROR_NUMBER, errorList));
       }
 
@@ -1639,12 +1628,12 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
     if (instIds.contains(new Long(0)))
     {
       LoggingBase.logMessage(CLS + ":update:instance has wildcard");
-      IntegerList errorList = new IntegerList();
+      UIntegerList errorList = new UIntegerList();
       for (int i = 0; i < instIds.size(); i++)
       {
         if (instIds.get(i).longValue() == 0)
         {
-          errorList.add(i);
+          errorList.add(new UInteger(i));
         }
       }
       throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
