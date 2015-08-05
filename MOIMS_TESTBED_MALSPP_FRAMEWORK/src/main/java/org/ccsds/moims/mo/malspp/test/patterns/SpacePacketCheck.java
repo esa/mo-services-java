@@ -136,7 +136,8 @@ public class SpacePacketCheck {
 
     MappingConfiguration mappingConf = MappingConfigurationRegistry.getSingleton()
         .get(primaryQualifiedApid);
-    bufferReader = new BufferReader(packetBody, 0, mappingConf.isVarintSupported(),
+    
+    bufferReader = new BufferReader(packetBody, packet.getOffset(), mappingConf.isVarintSupported(),
         mappingConf.getTimeCode(), mappingConf.getFineTimeCode(),
         mappingConf.getDurationCode());
     secondaryHeaderReader = new SecondaryHeaderReader(bufferReader);
@@ -562,7 +563,7 @@ public class SpacePacketCheck {
       // only valid for sent packets, not for received ones (does not make sense for received
       // packets, because packetDataLength itself is used for determining the body size)
       if (isSent) {
-        return packetDataLengthIs() + 1 == spacePacket.getBody().length;
+        return packetDataLengthIs() + 1 == (spacePacket.getBody().length - spacePacket.getOffset());
       }
       return true;
     }

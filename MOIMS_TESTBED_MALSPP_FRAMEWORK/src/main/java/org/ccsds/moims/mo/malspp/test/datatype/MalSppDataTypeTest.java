@@ -175,7 +175,10 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 		secondaryHeader = new SecondaryHeader();
 		try {
 		  LoggingBase.logMessage("fineTimeCode=" + mappingConf.getFineTimeCode());
-      bufferReader = new BufferReader(packetBody, 0, useDefaultConfiguration,
+      boolean useVarInt = useDefaultConfiguration ? defaultMappingConf.isVarintSupported() : alternateMappingConf.isVarintSupported();
+		  LoggingBase.logMessage("isVarintSupported=" + useVarInt);
+      bufferReader = new BufferReader(packetBody, packet.getOffset(),
+          useVarInt,
           mappingConf.getTimeCode(), mappingConf.getFineTimeCode(),
           mappingConf.getDurationCode());
       firstIndexOfMalBody = TestHelper.decodeSecondaryHeader(secondaryHeader, bufferReader,
@@ -216,7 +219,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 	}
 	
 	public int listSizeIs() throws Exception {
-		return bufferReader.readUnsignedVarInt();
+		return (int)bufferReader.readUInteger().getValue();
 	}
 	
 	public String stringFieldIs() throws Exception {

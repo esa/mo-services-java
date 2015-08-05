@@ -265,21 +265,21 @@ Reuse the data type MAL test scenario.
 |check | presence flag is  | 1 |
 |check | string field is  | a |
 |check | presence flag is  | 1 |
-|check | integer field is  | 1 |
+|check | long field is  | 1 |
 |check | presence flag is  | 1 |
-|check | integer field is  | 2 |
+|check | long field is  | 2 |
 |check | presence flag is  | 1 |
-|check | integer field is  | 3 |
+|check | long field is  | 3 |
 |check | presence flag is  | 1 |
 | note | Second entity key |
 |check | presence flag is  | 1 |
 |check | string field is  | b |
 |check | presence flag is  | 1 |
-|check | integer field is  | 11 |
+|check | long field is  | 11 |
 |check | presence flag is  | 1 |
-|check | integer field is  | 12 |
+|check | long field is  | 12 |
 |check | presence flag is  | 1 |
-|check | integer field is  | 13 |
+|check | long field is  | 13 |
 |ensure|reset spp interceptor|
 
 |scenario| check a composite sent as a !-MAL::Element-! |
