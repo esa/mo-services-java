@@ -20,12 +20,14 @@
  */
 package esa.mo.mal.encoder.binary;
 
+import esa.mo.mal.encoder.gen.GENDecoder;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
-import org.ccsds.moims.mo.mal.MALDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
 import org.ccsds.moims.mo.mal.structures.*;
@@ -33,7 +35,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 /**
  * Implements the MALDecoder interface for a binary encoding.
  */
-public class BinaryDecoder implements MALDecoder
+public class BinaryDecoder extends GENDecoder
 {
   protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
   protected static final int BLOCK_SIZE = 65536;
@@ -396,8 +398,11 @@ public class BinaryDecoder implements MALDecoder
   @Override
   public Attribute decodeAttribute() throws MALException
   {
-    final int typeval = sourceBuffer.get8();
+    return internalDecodeAttribute(internalDecodeAttributeType(sourceBuffer.get8()));
+  }
 
+  protected Attribute internalDecodeAttribute(final int typeval) throws MALException
+  {
     switch (typeval)
     {
       case Attribute._BLOB_TYPE_SHORT_FORM:
@@ -469,13 +474,7 @@ public class BinaryDecoder implements MALDecoder
     return null;
   }
 
-  /**
-   * Returns the remaining data of the input stream that has not been used for decoding for wrapping in a MALEncodedBody
-   * class.
-   *
-   * @return the unused body data.
-   * @throws MALException if there is an error.
-   */
+  @Override
   protected byte[] getRemainingEncodedData() throws MALException
   {
     return Arrays.copyOfRange(sourceBuffer.buf, sourceBuffer.offset, sourceBuffer.contentLength);
@@ -630,6 +629,11 @@ public class BinaryDecoder implements MALDecoder
     public String getString() throws MALException
     {
       final int len = getSignedInt();
+
+      Logger.getLogger("org.ccsds.moims.mo.mal.transport.gen").log(Level.INFO, "Binary.getString {0} : {1}", new Object[]
+      {
+        len, offset
+      });
       if (len >= 0)
       {
         checkBuffer(len);

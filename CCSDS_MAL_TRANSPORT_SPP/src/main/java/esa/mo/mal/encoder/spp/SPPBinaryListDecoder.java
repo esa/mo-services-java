@@ -33,15 +33,24 @@ public class SPPBinaryListDecoder extends SPPBinaryDecoder implements org.ccsds.
    *
    * @param list List to decode into.
    * @param srcBuffer Buffer to manage.
+   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    * @throws org.ccsds.moims.mo.mal.MALException If cannot decode list size.
    */
-  public SPPBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer)
+  public SPPBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer, final boolean smallLengthField)
           throws org.ccsds.moims.mo.mal.MALException
   {
-    super(srcBuffer);
+    super(srcBuffer, smallLengthField);
 
     this.list = list;
-    size = srcBuffer.getUnsignedShort();
+
+    if (smallLengthField)
+    {
+      size = srcBuffer.getUnsignedShort();
+    }
+    else
+    {
+      size = srcBuffer.getUnsignedInt();
+    }
   }
 
   @Override

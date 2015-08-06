@@ -21,7 +21,7 @@
 package esa.mo.mal.encoder.binary.fixed;
 
 /**
- * Implements the MALElementInputStream interface for a fixed length binary encoding.
+ * Implements the MALElementOutputStream interface for a fixed length binary encoding.
  */
 public class FixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary.BinaryElementOutputStream
 {
@@ -36,7 +36,7 @@ public class FixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary.Bi
   }
 
   @Override
-  protected esa.mo.mal.encoder.binary.BinaryEncoder createBinaryEncoder(java.io.OutputStream os)
+  protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os)
   {
     return new FixedBinaryEncoder(os);
   }

@@ -20,44 +20,19 @@
  */
 package esa.mo.mal.encoder.string;
 
-import esa.mo.mal.encoder.gen.GENElementInputStream;
-import java.io.InputStream;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.Element;
 
 /**
  * Implements the MALElementInputStream interface for String encodings.
  */
-public class StringElementInputStream implements GENElementInputStream
+public class StringElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream
 {
-  private final StringDecoder dec;
-
   /**
    * Constructor.
    *
    * @param is Input stream to read from.
    */
-  public StringElementInputStream(final InputStream is)
+  public StringElementInputStream(final java.io.InputStream is)
   {
-    dec = new StringDecoder(is);
-  }
-
-  @Override
-  public Object readElement(final Object element, final MALEncodingContext ctx)
-          throws IllegalArgumentException, MALException
-  {
-    return dec.decodeNullableElement((Element) element);
-  }
-
-  @Override
-  public byte[] getRemainingEncodedData() throws MALException
-  {
-    return dec.getRemainingEncodedData();
-  }
-
-  @Override
-  public void close() throws MALException
-  {
+    super(new StringDecoder(is));
   }
 }

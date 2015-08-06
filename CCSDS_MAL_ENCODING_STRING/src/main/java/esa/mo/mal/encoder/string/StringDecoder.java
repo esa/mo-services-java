@@ -20,11 +20,11 @@
  */
 package esa.mo.mal.encoder.string;
 
+import esa.mo.mal.encoder.gen.GENDecoder;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.List;
-import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
 import org.ccsds.moims.mo.mal.structures.*;
@@ -32,7 +32,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 /**
  * The implementation of the MALDecoder interface for the String encoding.
  */
-public class StringDecoder implements MALDecoder
+public class StringDecoder extends GENDecoder
 {
   static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
   private static final String STR_DELIM = "|";
@@ -699,13 +699,7 @@ public class StringDecoder implements MALDecoder
     return null;
   }
 
-  /**
-   * Returns the remaining data of the input stream that has not been used for decoding for wrapping in a MALEncodedBody
-   * class.
-   *
-   * @return the unused body data.
-   * @throws MALException if there is an error.
-   */
+  @Override
   protected byte[] getRemainingEncodedData() throws MALException
   {
     preLoadBuffer();

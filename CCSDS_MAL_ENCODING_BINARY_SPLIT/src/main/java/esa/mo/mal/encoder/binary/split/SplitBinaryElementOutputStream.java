@@ -21,7 +21,7 @@
 package esa.mo.mal.encoder.binary.split;
 
 /**
- * Implements the MALElementInputStream interface for a split binary encoding.
+ * Implements the MALElementOutputStream interface for a split binary encoding.
  */
 public class SplitBinaryElementOutputStream extends esa.mo.mal.encoder.binary.BinaryElementOutputStream
 {
@@ -36,7 +36,7 @@ public class SplitBinaryElementOutputStream extends esa.mo.mal.encoder.binary.Bi
   }
 
   @Override
-  protected esa.mo.mal.encoder.binary.BinaryEncoder createBinaryEncoder(java.io.OutputStream os)
+  protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os)
   {
     return new SplitBinaryEncoder(os);
   }

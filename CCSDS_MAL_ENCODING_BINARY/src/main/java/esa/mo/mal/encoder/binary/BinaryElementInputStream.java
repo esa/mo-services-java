@@ -20,27 +20,20 @@
  */
 package esa.mo.mal.encoder.binary;
 
-import esa.mo.mal.encoder.gen.GENElementInputStream;
-import java.io.InputStream;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.Element;
 
 /**
  * Implements the MALElementInputStream interface for a binary encoding.
  */
-public class BinaryElementInputStream implements GENElementInputStream
+public class BinaryElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream
 {
-  private final BinaryDecoder dec;
-
   /**
    * Constructor.
    *
    * @param is Input stream to read from.
    */
-  public BinaryElementInputStream(final InputStream is)
+  public BinaryElementInputStream(final java.io.InputStream is)
   {
-    dec = new BinaryDecoder(is);
+    super(new BinaryDecoder(is));
   }
 
   /**
@@ -51,42 +44,16 @@ public class BinaryElementInputStream implements GENElementInputStream
    */
   public BinaryElementInputStream(final byte[] buf, final int offset)
   {
-    dec = new BinaryDecoder(buf, offset);
+    super(new BinaryDecoder(buf, offset));
   }
 
   /**
    * Sub class constructor.
    *
-   * @param pdec Decoder to use.
+   * @param dec Decoder to use.
    */
-  protected BinaryElementInputStream(BinaryDecoder pdec)
+  protected BinaryElementInputStream(BinaryDecoder dec)
   {
-    dec = pdec;
-  }
-
-  @Override
-  public Object readElement(final Object element, final MALEncodingContext ctx)
-          throws IllegalArgumentException, MALException
-  {
-    if ((null != ctx) && (element == ctx.getHeader()))
-    {
-      return dec.decodeElement((Element) element);
-    }
-    else
-    {
-      return dec.decodeNullableElement((Element) element);
-    }
-  }
-
-  @Override
-  public byte[] getRemainingEncodedData() throws MALException
-  {
-    return dec.getRemainingEncodedData();
-  }
-
-  @Override
-  public void close() throws MALException
-  {
-    // Nothing to do for this decoder
+    super(dec);
   }
 }

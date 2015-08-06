@@ -20,28 +20,47 @@
  */
 package esa.mo.mal.encoder.spp;
 
+import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
+
 /**
  * Implements the MALElementStreamFactory interface for a SPP binary encoding.
  */
 public class SPPBinaryStreamFactory extends esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory
 {
+  public static final String SMALL_LENGTH_FIELD = "esa.mo.mal.encoding.spp.smallLengthField";
+  private boolean smallLengthField = false;
+
+  @Override
+  protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException
+  {
+    super.init(protocol, properties);
+
+    if ((null != properties)
+            && properties.containsKey(SMALL_LENGTH_FIELD)
+            && Boolean.parseBoolean((String) properties.get(SMALL_LENGTH_FIELD)))
+    {
+      smallLengthField = true;
+    }
+  }
+
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes, final int offset)
   {
-    return new SPPBinaryElementInputStream(bytes, offset);
+    return new SPPBinaryElementInputStream(bytes, offset, smallLengthField);
   }
 
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final java.io.InputStream is)
           throws org.ccsds.moims.mo.mal.MALException
   {
-    return new SPPBinaryElementInputStream(is);
+    return new SPPBinaryElementInputStream(is, smallLengthField);
   }
 
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(final java.io.OutputStream os)
           throws org.ccsds.moims.mo.mal.MALException
   {
-    return new SPPBinaryElementOutputStream(os);
+    return new SPPBinaryElementOutputStream(os, smallLengthField);
   }
 }

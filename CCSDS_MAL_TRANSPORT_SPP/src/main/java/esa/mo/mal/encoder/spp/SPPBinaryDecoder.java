@@ -35,24 +35,32 @@ import org.ccsds.moims.mo.mal.structures.URI;
  */
 public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder
 {
+  private final boolean smallLengthField;
+
   /**
    * Constructor.
    *
    * @param src Byte array to read from.
+   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryDecoder(final byte[] src)
+  public SPPBinaryDecoder(final byte[] src, final boolean smallLengthField)
   {
-    super(new SPPBufferHolder(null, src, 0, src.length));
+    super(new SPPBufferHolder(null, src, 0, src.length, smallLengthField));
+
+    this.smallLengthField = smallLengthField;
   }
 
   /**
    * Constructor.
    *
    * @param is Input stream to read from.
+   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryDecoder(final java.io.InputStream is)
+  public SPPBinaryDecoder(final java.io.InputStream is, final boolean smallLengthField)
   {
-    super(new SPPBufferHolder(is, null, 0, 0));
+    super(new SPPBufferHolder(is, null, 0, 0, smallLengthField));
+
+    this.smallLengthField = smallLengthField;
   }
 
   /**
@@ -60,32 +68,54 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
    *
    * @param src Byte array to read from.
    * @param offset index in array to start reading from.
+   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryDecoder(final byte[] src, final int offset)
+  public SPPBinaryDecoder(final byte[] src, final int offset, final boolean smallLengthField)
   {
-    super(new SPPBufferHolder(null, src, offset, src.length));
+    super(new SPPBufferHolder(null, src, offset, src.length, smallLengthField));
+
+    this.smallLengthField = smallLengthField;
   }
 
   /**
    * Constructor.
    *
    * @param src Source buffer holder to use.
+   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  protected SPPBinaryDecoder(final BufferHolder src)
+  protected SPPBinaryDecoder(final BufferHolder src, final boolean smallLengthField)
   {
     super(src);
+
+    this.smallLengthField = smallLengthField;
   }
 
   @Override
   public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final java.util.List list) throws MALException
   {
-    return new SPPBinaryListDecoder(list, sourceBuffer);
+    return new SPPBinaryListDecoder(list, sourceBuffer, smallLengthField);
+  }
+
+  @Override
+  public Boolean decodeNullableBoolean() throws MALException
+  {
+    if (sourceBuffer.getBool())
+    {
+      return decodeBoolean();
+    }
+
+    return null;
   }
 
   @Override
   public Blob decodeBlob() throws MALException
   {
-    return new Blob(sourceBuffer.get(sourceBuffer.getSignedShort()));
+    if (smallLengthField)
+    {
+      return new Blob(sourceBuffer.get(sourceBuffer.getSignedShort()));
+    }
+
+    return super.decodeBlob();
   }
 
   @Override
@@ -158,7 +188,13 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     long s = sourceBuffer.getUnsignedLong32() * 1000;
     sourceBuffer.checkBuffer(3);
     final int i = sourceBuffer.shiftOffsetAndReturnPrevious(3);
-    int ms = java.nio.ByteBuffer.wrap(sourceBuffer.getBuf(), i, 3).getInt();
+
+    byte[] b = new byte[4];
+    b[0] = 0;
+    b[1] = sourceBuffer.getBuf()[i];
+    b[2] = sourceBuffer.getBuf()[i + 1];
+    b[3] = sourceBuffer.getBuf()[i + 2];
+    int ms = java.nio.ByteBuffer.wrap(b).getInt();
 
     s += ms;
     return new FineTime(s);
@@ -181,7 +217,13 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     long s = sourceBuffer.getUnsignedLong32() * 1000;
     sourceBuffer.checkBuffer(3);
     final int i = sourceBuffer.shiftOffsetAndReturnPrevious(3);
-    int ms = java.nio.ByteBuffer.wrap(sourceBuffer.getBuf(), i, 3).getInt();
+
+    byte[] b = new byte[4];
+    b[0] = 0;
+    b[1] = sourceBuffer.getBuf()[i];
+    b[2] = sourceBuffer.getBuf()[i + 1];
+    b[3] = sourceBuffer.getBuf()[i + 2];
+    int ms = java.nio.ByteBuffer.wrap(b).getInt();
 
     s += ms;
     return new Duration((int) s);
@@ -231,12 +273,20 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     return null;
   }
 
+  @Override
+  protected int internalDecodeAttributeType(byte value) throws MALException
+  {
+    return value + 1;
+  }
+
   /**
    * Extends the fixed length internal buffer holder to cope with the smaller size of the size field for Strings in SPP
    * packets.
    */
   protected static class SPPBufferHolder extends FixedBufferHolder
   {
+    private final boolean smallLengthField;
+
     /**
      * Constructor.
      *
@@ -244,25 +294,41 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
      * @param buf Source buffer to use.
      * @param offset Buffer offset to read from next.
      * @param length Length of readable data held in the array, which may be larger.
+     * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
      */
-    public SPPBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
+    public SPPBufferHolder(final java.io.InputStream is,
+            final byte[] buf,
+            final int offset,
+            final int length,
+            final boolean smallLengthField)
     {
       super(is, buf, offset, length);
+
+      this.smallLengthField = smallLengthField;
     }
 
     @Override
     public String getString() throws MALException
     {
-      final int len = getSignedShort();
-      if (len >= 0)
+      if (smallLengthField)
       {
-        checkBuffer(len);
+        final int len = getSignedShort();
 
-        final String s = new String(buf, offset, len, UTF8_CHARSET);
-        offset += len;
-        return s;
+        if (len >= 0)
+        {
+          checkBuffer(len);
+
+          final String s = new String(buf, offset, len, UTF8_CHARSET);
+          offset += len;
+          return s;
+        }
+
+        return null;
       }
-      return null;
+      else
+      {
+        return super.getString();
+      }
     }
   }
 }

@@ -20,24 +20,31 @@
  */
 package esa.mo.mal.encoder.spp;
 
+import esa.mo.mal.encoder.gen.GENEncoder;
+
 /**
- * Implements the MALElementInputStream interface for a fixed length binary encoding.
+ * Implements the MALElementOutputStream interface for a fixed length binary encoding.
  */
 public class SPPBinaryElementOutputStream extends esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream
 {
+  private final boolean smallLengthField;
+  
   /**
    * Constructor.
    *
    * @param os Output stream to write to.
+   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryElementOutputStream(final java.io.OutputStream os)
+  public SPPBinaryElementOutputStream(final java.io.OutputStream os, final boolean smallLengthField)
   {
     super(os);
+    
+    this.smallLengthField = smallLengthField;
   }
 
   @Override
-  protected esa.mo.mal.encoder.binary.BinaryEncoder createBinaryEncoder(java.io.OutputStream os)
+  protected GENEncoder createEncoder(java.io.OutputStream os)
   {
-    return new SPPBinaryEncoder(os);
+    return new SPPBinaryEncoder(os, smallLengthField);
   }
 }

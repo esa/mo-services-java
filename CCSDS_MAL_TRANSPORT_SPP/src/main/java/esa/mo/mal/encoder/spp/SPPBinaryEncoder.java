@@ -45,15 +45,19 @@ public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
   };
   protected static final BigInteger ZERO = new BigInteger("0");
   protected static final BigInteger MAX_ULONG = new BigInteger("18446744073709551615");
+  private final boolean smallLengthField;
 
   /**
    * Constructor.
    *
    * @param os Output stream to write to.
+   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryEncoder(final OutputStream os)
+  public SPPBinaryEncoder(final OutputStream os, final boolean smallLengthField)
   {
-    super(new SPPStreamHolder(os));
+    super(new SPPStreamHolder(os, smallLengthField));
+
+    this.smallLengthField = smallLengthField;
   }
 
   @Override
@@ -61,9 +65,37 @@ public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
   {
     try
     {
-      outputStream.addUnsignedShort((short) value.size());
+      if (smallLengthField)
+      {
+        outputStream.addUnsignedShort((short) value.size());
+      }
+      else
+      {
+        outputStream.addUnsignedInt((short) value.size());
+      }
 
       return this;
+    }
+    catch (IOException ex)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    }
+  }
+
+  @Override
+  public void encodeNullableBoolean(final Boolean value) throws MALException
+  {
+    try
+    {
+      if (null != value)
+      {
+        outputStream.addBoolTrue();
+        encodeBoolean(value);
+      }
+      else
+      {
+        outputStream.addBoolFalse();
+      }
     }
     catch (IOException ex)
     {
@@ -262,19 +294,30 @@ public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     }
   }
 
+  @Override
+  protected byte internalEncodeAttributeType(byte value) throws MALException
+  {
+    return (byte) (value - 1);
+  }
+
   /**
    * Extends the FixedStreamHolder class for handling SPP fields.
    */
   protected static class SPPStreamHolder extends FixedStreamHolder
   {
+    private final boolean smallLengthField;
+
     /**
      * Constructor.
      *
      * @param outputStream The output stream to encode into.
+     * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
      */
-    public SPPStreamHolder(OutputStream outputStream)
+    public SPPStreamHolder(OutputStream outputStream, final boolean smallLengthField)
     {
       super(outputStream);
+
+      this.smallLengthField = smallLengthField;
     }
 
     @Override
@@ -282,11 +325,25 @@ public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     {
       if (null == val)
       {
-        addSignedShort((short) -1);
+        if (smallLengthField)
+        {
+          addSignedShort((short) -1);
+        }
+        else
+        {
+          addSignedInt(-1);
+        }
       }
       else
       {
-        addSignedShort((short) val.length);
+        if (smallLengthField)
+        {
+          addSignedShort((short) val.length);
+        }
+        else
+        {
+          addSignedInt(val.length);
+        }
         directAdd(val);
       }
     }

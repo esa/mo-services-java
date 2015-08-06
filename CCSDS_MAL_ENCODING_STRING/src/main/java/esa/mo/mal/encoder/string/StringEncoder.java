@@ -20,6 +20,10 @@
  */
 package esa.mo.mal.encoder.string;
 
+import esa.mo.mal.encoder.gen.GENEncoder;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListEncoder;
@@ -28,17 +32,27 @@ import org.ccsds.moims.mo.mal.structures.*;
 /**
  * The implementation of the MALEncoder and MALListEncoder interfaces for the String encoding.
  */
-public class StringEncoder implements MALListEncoder
+public class StringEncoder extends GENEncoder
 {
   private static final String STR_DELIM = "|";
   private static final String STR_NULL = "_";
   private static final int HEX_MASK = 0xFF;
-  private final StringBuilder buffer = new StringBuilder();
+  private final Writer buffer;
+
+  /**
+   * Constructor.
+   *
+   * @param buffer The output stream to write to.
+   */
+  public StringEncoder(OutputStream buffer)
+  {
+    this.buffer = new PrintWriter(buffer, false);
+  }
 
   @Override
   public MALListEncoder createListEncoder(final List value) throws MALException
   {
-    encodeInteger(Integer.valueOf(value.size()));
+    encodeInteger(value.size());
 
     return this;
   }
@@ -402,16 +416,17 @@ public class StringEncoder implements MALListEncoder
     // Do nothing
   }
 
-  @Override
-  public String toString()
+  private void add(final String val) throws MALException
   {
-    return buffer.toString();
-  }
-
-  private void add(final String val)
-  {
-    buffer.append(val);
-    buffer.append(STR_DELIM);
+    try
+    {
+      buffer.append(val);
+      buffer.append(STR_DELIM);
+    }
+    catch (Exception ex)
+    {
+      throw new MALException(ex.getLocalizedMessage(), ex);
+    }
   }
 
   private static String byteArrayToHexString(final byte[] data)

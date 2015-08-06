@@ -286,25 +286,8 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
         lenc = streamFactory.createOutputStream(lbaos);
       }
 
-      // encode the short form if it is not fixed in the operation
-      final Element e = (Element) o;
-      if (null == sf)
-      {
-        if (null != e)
-        {
-          lenc.writeElement(new Union(e.getShortForm()), ctx);
-        }
-        else
-        {
-          lenc.writeElement(null, ctx);
-        }
-      }
-
-      if ((null != sf) || (null != e))
-      {
-        // now encode the element
-        lenc.writeElement(e, ctx);
-      }
+      // now encode the element
+      lenc.writeElement((Element) o, ctx);
 
       if (wrapBodyParts)
       {
@@ -447,8 +430,8 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
    * Decodes a single part of the message body.
    *
    * @param decoder The decoder to use.
-   * @ctx The encoding context to use.
-   * @sf The type short form.
+   * @param ctx The encoding context to use.
+   * @param sf The type short form.
    * @return The decoded chunk.
    * @throws MALException if any error detected.
    */
@@ -467,40 +450,24 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
     // work out whether it is a MAL element or JAXB element we have received
     if (!(sf instanceof String))
     {
-      Long shortForm;
+      Object element = null;
       if (null != sf)
       {
-        shortForm = (Long) sf;
-      }
-      else
-      {
-        Union u = (Union) lenc.readElement(new Union(0L), null);
-
-        if (null != u)
-        {
-          shortForm = u.getLongValue();
-        }
-        else
-        {
-          shortForm = null;
-        }
-      }
-
-      if (null != shortForm)
-      {
+        Long shortForm = (Long) sf;
         GENTransport.LOGGER.log(Level.FINER, "GEN Message decoding body part : Type = {0}", shortForm);
         final MALElementFactory ef
                 = MALContextFactory.getElementFactoryRegistry().lookupElementFactory(shortForm);
-
         if (null != ef)
         {
-          rv = lenc.readElement(ef.createElement(), ctx);
+          element = (Element) ef.createElement();
         }
         else
         {
           throw new MALException("GEN transport unable to find element factory for short type: " + shortForm);
         }
       }
+
+      rv = lenc.readElement(element, ctx);
     }
     else
     {

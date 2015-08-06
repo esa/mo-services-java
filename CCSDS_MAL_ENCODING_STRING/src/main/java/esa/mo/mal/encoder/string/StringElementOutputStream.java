@@ -21,19 +21,14 @@
 package esa.mo.mal.encoder.string;
 
 import esa.mo.mal.encoder.gen.GENElementOutputStream;
-import java.io.IOException;
+import esa.mo.mal.encoder.gen.GENEncoder;
 import java.io.OutputStream;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.Element;
 
 /**
  * Implements the MALElementOutputStream interface for String encodings.
  */
-public class StringElementOutputStream implements GENElementOutputStream
+public class StringElementOutputStream extends GENElementOutputStream
 {
-  private final OutputStream dos;
-
   /**
    * Constructor.
    *
@@ -41,48 +36,12 @@ public class StringElementOutputStream implements GENElementOutputStream
    */
   public StringElementOutputStream(final OutputStream os)
   {
-    this.dos = os;
+    super(os);
   }
 
   @Override
-  public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException
+  protected GENEncoder createEncoder(OutputStream os)
   {
-    final StringEncoder enc = new StringEncoder();
-    enc.encodeNullableElement((Element) element);
-
-    try
-    {
-      dos.write(enc.toString().getBytes(StringDecoder.UTF8_CHARSET));
-    }
-    catch (Exception ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public void flush() throws MALException
-  {
-    try
-    {
-      dos.flush();
-    }
-    catch (IOException ex)
-    {
-      throw new MALException("IO exception flushing Element stream", ex);
-    }
-  }
-
-  @Override
-  public void close() throws MALException
-  {
-    try
-    {
-      dos.close();
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
+    return new StringEncoder(os);
   }
 }

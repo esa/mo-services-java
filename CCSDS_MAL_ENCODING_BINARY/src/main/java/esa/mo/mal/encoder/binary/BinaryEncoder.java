@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.binary;
 
+import esa.mo.mal.encoder.gen.GENEncoder;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
@@ -29,7 +30,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a binary encoding.
  */
-public class BinaryEncoder implements MALListEncoder
+public class BinaryEncoder extends GENEncoder
 {
   protected static final String ENCODING_EXCEPTION_STR = "Bad encoding";
   protected final StreamHolder outputStream;
@@ -689,7 +690,7 @@ public class BinaryEncoder implements MALListEncoder
   {
     try
     {
-      outputStream.directAdd(value.getTypeShortForm().byteValue());
+      outputStream.directAdd(internalEncodeAttributeType(value.getTypeShortForm().byteValue()));
       value.encode(this);
     }
     catch (IOException ex)

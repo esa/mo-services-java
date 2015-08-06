@@ -29,10 +29,11 @@ public class SPPBinaryElementInputStream extends esa.mo.mal.encoder.binary.fixed
    * Constructor.
    *
    * @param is Input stream to read from.
+   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryElementInputStream(final java.io.InputStream is)
+  public SPPBinaryElementInputStream(final java.io.InputStream is, final boolean smallLengthField)
   {
-    super(new SPPBinaryDecoder(is));
+    super(new SPPBinaryDecoder(is, smallLengthField));
   }
 
   /**
@@ -40,9 +41,10 @@ public class SPPBinaryElementInputStream extends esa.mo.mal.encoder.binary.fixed
    *
    * @param buf Byte buffer to read from.
    * @param offset Offset into buffer to start from.
+   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryElementInputStream(final byte[] buf, final int offset)
+  public SPPBinaryElementInputStream(final byte[] buf, final int offset, final boolean smallLengthField)
   {
-    super(new SPPBinaryDecoder(buf, offset));
+    super(new SPPBinaryDecoder(buf, offset, smallLengthField));
   }
 }
