@@ -25,6 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
  * This class holds the message to be sent in encoded format and a reply queue that the internal sender of the message
@@ -57,6 +58,10 @@ public class GENOutgoingMessageHolder
   /**
    * The encoded message
    */
+  private final MALMessage originalMessage;
+  /**
+   * The encoded message
+   */
   private final byte[] encodedMessage;
 
   /**
@@ -66,12 +71,14 @@ public class GENOutgoingMessageHolder
    * @param destinationURI The complete destination URI.
    * @param multiSendHandle The message handle for multi-send messages, may be NULL.
    * @param lastForHandle True if this is the last message in the multi-send for the supplied handle.
+   * @param originalMessage The un-encoded message to be sent
    * @param encodedMessage The encoded message to be sent
    */
   public GENOutgoingMessageHolder(final String destinationRootURI,
           final String destinationURI,
           final Object multiSendHandle,
           final boolean lastForHandle,
+          final MALMessage originalMessage,
           byte[] encodedMessage)
   {
     replyQueue = new LinkedBlockingQueue<Boolean>();
@@ -79,6 +86,7 @@ public class GENOutgoingMessageHolder
     this.destinationURI = destinationURI;
     this.multiSendHandle = multiSendHandle;
     this.lastForHandle = lastForHandle;
+    this.originalMessage = originalMessage;
     this.encodedMessage = encodedMessage;
   }
 
@@ -148,6 +156,16 @@ public class GENOutgoingMessageHolder
   public boolean isLastForHandle()
   {
     return lastForHandle;
+  }
+
+  /**
+   * Getter for the original message to be sent
+   *
+   * @return the original message
+   */
+  public MALMessage getOriginalMessage()
+  {
+    return originalMessage;
   }
 
   /**

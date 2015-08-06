@@ -45,15 +45,15 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
   /**
    * Reference to the transport
    */
-  private final GENTransport transport;
+  protected final GENTransport transport;
   /**
    * the low level message sender
    */
-  private final GENMessageSender messageSender;
+  protected final GENMessageSender messageSender;
   /**
    * the low level message receiver
    */
-  private final MessageAdapter messageReceiver;
+  protected final MessageAdapter messageReceiver;
   /**
    * the remote URI (client) this connection is associated to. This is volatile as it is potentially set by a different
    * thread after its creation
@@ -87,6 +87,21 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
     this.transport = transport;
     this.messageSender = messageSender;
     this.messageReceiver = new StreamAdapter(transport, this, messageReceiver);
+    setName(getClass().getName());
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param transport Message transport being used.
+   * @param messageSender The message sending interface associated to this connection.
+   * @param messageReceiver The message reception interface, used for pulling messaging into this transport.
+   */
+  protected GENMessagePoller(GENTransport transport, GENMessageSender messageSender, MessageAdapter messageReceiver)
+  {
+    this.transport = transport;
+    this.messageSender = messageSender;
+    this.messageReceiver = messageReceiver;
     setName(getClass().getName());
   }
 
@@ -204,10 +219,10 @@ public class GENMessagePoller extends Thread implements GENReceptionHandler
   /**
    * Internal interface for adapting from the message receivers to the relevant receive operation on the transport.
    */
-  private interface MessageAdapter
+  protected interface MessageAdapter
   {
     /**
-     * Takes the message from the recevier and passes it to the transport if not null.
+     * Takes the message from the receiver and passes it to the transport if not null.
      *
      * @throws IOException in case the encoded message cannot be read
      * @throws InterruptedException in case IO read is interrupted

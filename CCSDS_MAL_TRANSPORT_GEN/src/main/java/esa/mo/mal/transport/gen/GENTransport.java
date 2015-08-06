@@ -118,9 +118,13 @@ public abstract class GENTransport implements MALTransport
    */
   protected final String protocol;
   /**
-   * Map of string names to endpoints.
+   * Map of string MAL names to endpoints.
    */
-  protected final Map<String, GENEndpoint> endpointMap = new HashMap<String, GENEndpoint>();
+  protected final Map<String, GENEndpoint> endpointMalMap = new HashMap<String, GENEndpoint>();
+  /**
+   * Map of string transport routing names to endpoints.
+   */
+  protected final Map<String, GENEndpoint> endpointRoutingMap = new HashMap<String, GENEndpoint>();
   /**
    * Map of QoS properties.
    */
@@ -350,14 +354,15 @@ public abstract class GENTransport implements MALTransport
   @Override
   public MALEndpoint createEndpoint(final String localName, final Map qosProperties) throws MALException
   {
-    final String strLocalName = getLocalName(localName);
-    GENEndpoint endpoint = endpointMap.get(strLocalName);
+    final String strRoutingName = getLocalName(localName);
+    GENEndpoint endpoint = endpointRoutingMap.get(strRoutingName);
 
     if (null == endpoint)
     {
-      LOGGER.log(Level.INFO, "GEN Creating endpoint {0}", strLocalName);
-      endpoint = internalCreateEndpoint(strLocalName, qosProperties);
-      endpointMap.put(strLocalName, endpoint);
+      LOGGER.log(Level.INFO, "GEN Creating endpoint {0}", strRoutingName);
+      endpoint = internalCreateEndpoint(localName, strRoutingName, qosProperties);
+      endpointMalMap.put(localName, endpoint);
+      endpointRoutingMap.put(strRoutingName, endpoint);
     }
 
     return endpoint;
@@ -366,17 +371,15 @@ public abstract class GENTransport implements MALTransport
   @Override
   public MALEndpoint getEndpoint(final String localName) throws IllegalArgumentException
   {
-    return endpointMap.get(localName);
+    return endpointMalMap.get(localName);
   }
 
   @Override
   public MALEndpoint getEndpoint(final URI uri) throws IllegalArgumentException
   {
-    String endpointUriPart = uri.getValue();
-    final int iFirst = endpointUriPart.indexOf(serviceDelim);
-    endpointUriPart = endpointUriPart.substring(iFirst + 1, endpointUriPart.length());
+    String endpointUriPart = getRoutingPart(uri.getValue());
 
-    return endpointMap.get(endpointUriPart);
+    return endpointRoutingMap.get(endpointUriPart);
   }
 
   /**
@@ -437,9 +440,9 @@ public abstract class GENTransport implements MALTransport
           final GENMessage msg) throws MALTransmitErrorException
   {
     // first check if its actually a message to ourselves
-    String endpointUriPart = getRoutingPart(msg.getHeader().getURITo().getValue(), serviceDelim, routingDelim, supportsRouting);
+    String endpointUriPart = getRoutingPart(msg.getHeader().getURITo().getValue());
 
-    if (inProcessSupport && endpointMap.containsKey(endpointUriPart))
+    if (inProcessSupport && endpointRoutingMap.containsKey(endpointUriPart))
     {
       LOGGER.log(Level.FINE, "GEN routing msg internally to {0}", new Object[]
       {
@@ -549,12 +552,13 @@ public abstract class GENTransport implements MALTransport
   @Override
   public void deleteEndpoint(final String localName) throws MALException
   {
-    final GENEndpoint endpoint = endpointMap.get(localName);
+    final GENEndpoint endpoint = endpointMalMap.get(localName);
 
     if (null != endpoint)
     {
       LOGGER.log(Level.INFO, "GEN Deleting endpoint", localName);
-      endpointMap.remove(localName);
+      endpointMalMap.remove(localName);
+      endpointRoutingMap.remove(endpoint.getRoutingName());
       endpoint.close();
     }
   }
@@ -562,12 +566,13 @@ public abstract class GENTransport implements MALTransport
   @Override
   public void close() throws MALException
   {
-    for (Map.Entry<String, GENEndpoint> entry : endpointMap.entrySet())
+    for (Map.Entry<String, GENEndpoint> entry : endpointMalMap.entrySet())
     {
       entry.getValue().close();
     }
 
-    endpointMap.clear();
+    endpointMalMap.clear();
+    endpointRoutingMap.clear();
 
     asyncInputReceptionProcessor.shutdown();
     asyncInputDataProcessors.shutdown();
@@ -648,9 +653,9 @@ public abstract class GENTransport implements MALTransport
         msg.getHeader().getTransactionId(), smsg
       });
 
-      String endpointUriPart = getRoutingPart(msg.getHeader().getURITo().getValue(), serviceDelim, routingDelim, supportsRouting);
+      String endpointUriPart = getRoutingPart(msg.getHeader().getURITo().getValue());
 
-      final GENEndpoint oSkel = endpointMap.get(endpointUriPart);
+      final GENEndpoint oSkel = endpointRoutingMap.get(endpointUriPart);
 
       if (null != oSkel)
       {
@@ -718,9 +723,9 @@ public abstract class GENTransport implements MALTransport
       {
         final MALMessageHeader srcHdr = oriMsg.getHeader();
 
-        if ((null == ep) && (!endpointMap.isEmpty()))
+        if ((null == ep) && (!endpointMalMap.isEmpty()))
         {
-          GENEndpoint endpoint = endpointMap.entrySet().iterator().next().getValue();
+          GENEndpoint endpoint = endpointMalMap.entrySet().iterator().next().getValue();
 
           final GENMessage retMsg = (GENMessage) endpoint.createMessage(srcHdr.getAuthenticationId(),
                   srcHdr.getURIFrom(),
@@ -793,12 +798,9 @@ public abstract class GENTransport implements MALTransport
    * Returns the routing part of the URI.
    *
    * @param uriValue The URI value
-   * @param serviceDelim The service delimiter
-   * @param routingDelim The routing delimiter
-   * @param supportsRouting True if this URI scheme supporting routing
    * @return the routing part of the URI
    */
-  protected static String getRoutingPart(String uriValue, char serviceDelim, char routingDelim, boolean supportsRouting)
+  protected String getRoutingPart(String uriValue)
   {
     String endpointUriPart = uriValue;
     final int iFirst = endpointUriPart.indexOf(serviceDelim);
@@ -814,14 +816,15 @@ public abstract class GENTransport implements MALTransport
   /**
    * Overridable internal method for the creation of endpoints.
    *
-   * @param localName The local name to use.
+   * @param localName The local mal name to use.
+   * @param routingName The local routing name to use.
    * @param qosProperties the QoS properties.
    * @return The new endpoint
    * @throws MALException on Error.
    */
-  protected GENEndpoint internalCreateEndpoint(final String localName, final Map qosProperties) throws MALException
+  protected GENEndpoint internalCreateEndpoint(final String localName, final String routingName, final Map qosProperties) throws MALException
   {
-    return new GENEndpoint(this, localName, uriBase + localName, wrapBodyParts);
+    return new GENEndpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts);
   }
 
   /**
@@ -971,7 +974,7 @@ public abstract class GENTransport implements MALTransport
         targetURI, new PacketToString(data)
       });
 
-      return new GENOutgoingMessageHolder(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, data);
+      return new GENOutgoingMessageHolder(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, msg, data);
     }
     catch (MALException ex)
     {

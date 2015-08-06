@@ -39,6 +39,7 @@ public class GENEndpoint implements MALEndpoint
 {
   private final GENTransport transport;
   private final String localName;
+  private final String routingName;
   private final String localURI;
   private final boolean wrapBodyParts;
   private boolean active = false;
@@ -48,14 +49,16 @@ public class GENEndpoint implements MALEndpoint
    * Constructor.
    *
    * @param transport Parent transport.
-   * @param localName Endpoint local name.
+   * @param localName Endpoint local MAL name.
+   * @param routingName Endpoint local routing name.
    * @param uri The URI string for this end point.
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
    */
-  public GENEndpoint(final GENTransport transport, final String localName, final String uri, final boolean wrapBodyParts)
+  public GENEndpoint(final GENTransport transport, final String localName, final String routingName, final String uri, final boolean wrapBodyParts)
   {
     this.transport = transport;
     this.localName = localName;
+    this.routingName = routingName;
     this.localURI = uri;
     this.wrapBodyParts = wrapBodyParts;
   }
@@ -78,6 +81,11 @@ public class GENEndpoint implements MALEndpoint
   public String getLocalName()
   {
     return localName;
+  }
+
+  public String getRoutingName()
+  {
+    return routingName;
   }
 
   @Override

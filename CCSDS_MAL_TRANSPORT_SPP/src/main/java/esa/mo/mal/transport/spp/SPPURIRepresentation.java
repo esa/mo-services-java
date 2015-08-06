@@ -37,6 +37,22 @@ public interface SPPURIRepresentation
   short getApid(URI uri);
 
   /**
+   * Returns true if the supplied URI contains an APID qualifier
+   *
+   * @param uri The URI to interrogate
+   * @return True if there is an APID qualifier.
+   */
+  boolean hasQualifier(URI uri);
+
+  /**
+   * Returns the APID qualifier to encode for the supplied URI
+   *
+   * @param uri The URI to interrogate
+   * @return the SPP APID qualifier to use.
+   */
+  int getQualifier(URI uri);
+
+  /**
    * Returns true if the supplied URI contains a subId
    *
    * @param uri The URI to interrogate
@@ -55,9 +71,10 @@ public interface SPPURIRepresentation
   /**
    * Returns the URI from the APID and the subject id
    *
+   * @param qualifier The APID qualifier, null if not needed.
    * @param apid The APID
    * @param subId the subid. NULL if no subId present.
    * @return the URI to use.
    */
-  URI getURI(short apid, Short subId);
+  URI getURI(Integer qualifier, short apid, Short subId);
 }
