@@ -77,7 +77,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   /**
    * Internal class that implements the fixed length field decoding.
    */
-  protected static class FixedBufferHolder extends BufferHolder
+  protected static class FixedBufferHolder extends BinaryBufferHolder
   {
     /**
      * Constructor.

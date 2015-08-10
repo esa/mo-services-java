@@ -94,7 +94,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   /**
    * Extends BufferHolder to handle split binary encoding.s
    */
-  protected static class SplitBufferHolder extends BufferHolder
+  protected static class SplitBufferHolder extends BinaryBufferHolder
   {
     private boolean bitStoreLoaded = false;
     private BitGet bitStore = null;

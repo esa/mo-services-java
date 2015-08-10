@@ -51,7 +51,7 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
   /**
    * Extends the StreamHolder class for handling fixed length, non-zig-zag encoded, fields.
    */
-  protected static class FixedStreamHolder extends StreamHolder
+  public static class FixedStreamHolder extends BinaryStreamHolder
   {
     /**
      * Constructor.

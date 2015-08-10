@@ -20,6 +20,8 @@
  */
 package esa.mo.mal.encoder.spp;
 
+import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder.FixedStreamHolder;
+import esa.mo.mal.encoder.gen.GENEncoder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -37,9 +39,9 @@ import org.ccsds.moims.mo.mal.structures.URI;
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a SPP binary encoding.
  */
-public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder
+public class SPPBinaryEncoder extends GENEncoder
 {
-  protected static final byte[] PADDING =
+  private static final byte[] PADDING =
   {
     0, 0, 0, 0, 0, 0, 0, 0
   };
@@ -89,12 +91,12 @@ public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     {
       if (null != value)
       {
-        outputStream.addBoolTrue();
+        outputStream.addNotNull();
         encodeBoolean(value);
       }
       else
       {
-        outputStream.addBoolFalse();
+        outputStream.addIsNull();
       }
     }
     catch (IOException ex)
@@ -139,12 +141,12 @@ public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     {
       if (null != value)
       {
-        outputStream.addBoolTrue();
+        outputStream.addNotNull();
         encodeULong(value);
       }
       else
       {
-        outputStream.addBoolFalse();
+        outputStream.addIsNull();
       }
     }
     catch (IOException ex)
@@ -215,14 +217,16 @@ public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
   {
     try
     {
-      if (null != value)
+      if ((null != value)
+              && ((value.isURLBased() && (null != value.getURL()))
+              || (!value.isURLBased() && (null != value.getValue()))))
       {
-        outputStream.addBoolTrue();
+        outputStream.addNotNull();
         encodeBlob(value);
       }
       else
       {
-        outputStream.addBoolFalse();
+        outputStream.addIsNull();
       }
     }
     catch (IOException ex)
@@ -238,12 +242,12 @@ public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     {
       if (null != value)
       {
-        outputStream.addBoolTrue();
+        outputStream.addNotNull();
         encodeString(value);
       }
       else
       {
-        outputStream.addBoolFalse();
+        outputStream.addIsNull();
       }
     }
     catch (IOException ex)
@@ -259,12 +263,12 @@ public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     {
       if (null != value)
       {
-        outputStream.addBoolTrue();
+        outputStream.addNotNull();
         encodeIdentifier(value);
       }
       else
       {
-        outputStream.addBoolFalse();
+        outputStream.addIsNull();
       }
     }
     catch (IOException ex)
@@ -280,12 +284,12 @@ public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     {
       if (null != value)
       {
-        outputStream.addBoolTrue();
+        outputStream.addNotNull();
         encodeURI(value);
       }
       else
       {
-        outputStream.addBoolFalse();
+        outputStream.addIsNull();
       }
     }
     catch (IOException ex)
@@ -321,7 +325,7 @@ public class SPPBinaryEncoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     }
 
     @Override
-    public void add(byte[] val) throws IOException
+    public void addBytes(byte[] val) throws IOException
     {
       if (null == val)
       {

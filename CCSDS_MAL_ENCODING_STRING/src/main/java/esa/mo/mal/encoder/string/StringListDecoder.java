@@ -36,17 +36,16 @@ public class StringListDecoder extends StringDecoder implements MALListDecoder
    * Constructor.
    *
    * @param list List to decode into.
-   * @param inputStream Input stream to read from.
    * @param srcBuffer Buffer to manage.
    * @throws MALException If cannot decode size of list.
    */
-  public StringListDecoder(final List list, final java.io.InputStream inputStream, final BufferHolder srcBuffer)
+  public StringListDecoder(final List list, final BufferHolder srcBuffer)
           throws MALException
   {
-    super(inputStream, srcBuffer);
+    super(srcBuffer);
 
     this.list = list;
-    size = decodeInteger().intValue();
+    size = decodeInteger();
   }
 
   @Override

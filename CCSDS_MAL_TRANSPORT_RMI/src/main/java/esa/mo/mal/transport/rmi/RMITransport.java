@@ -82,12 +82,9 @@ public class RMITransport extends GENTransport
 
     String lhost = null;
 
-    if (properties != null)
+    if ((properties != null) && (properties.containsKey(RMI_HOSTNAME_PROPERTY)))
     {
-      if (properties.containsKey(RMI_HOSTNAME_PROPERTY))
-      {
-        lhost = (String) properties.get(RMI_HOSTNAME_PROPERTY);
-      }
+      lhost = (String) properties.get(RMI_HOSTNAME_PROPERTY);
     }
 
     this.serverHost = lhost;

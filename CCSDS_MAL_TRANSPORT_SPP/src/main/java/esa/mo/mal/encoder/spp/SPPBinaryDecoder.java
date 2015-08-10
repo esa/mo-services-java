@@ -112,7 +112,7 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
   {
     if (smallLengthField)
     {
-      return new Blob(sourceBuffer.get(sourceBuffer.getSignedShort()));
+      return new Blob(sourceBuffer.directGetBytes(sourceBuffer.getSignedShort()));
     }
 
     return super.decodeBlob();
@@ -137,7 +137,7 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
       0, 0, 0, 0, 0, 0, 0, 0, 0
     };
 
-    System.arraycopy(sourceBuffer.get(8), 0, buf, 1, 8);
+    System.arraycopy(sourceBuffer.directGetBytes(8), 0, buf, 1, 8);
 
     return new ULong(new BigInteger(buf));
   }
@@ -157,14 +157,13 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
   public Time decodeTime() throws MALException
   {
     long s = sourceBuffer.getUnsignedLong32() * 1000;
-    sourceBuffer.checkBuffer(3);
-    final int i = sourceBuffer.shiftOffsetAndReturnPrevious(3);
+    byte[] ss = sourceBuffer.directGetBytes(3);
 
     byte[] b = new byte[4];
     b[0] = 0;
-    b[1] = sourceBuffer.getBuf()[i];
-    b[2] = sourceBuffer.getBuf()[i + 1];
-    b[3] = sourceBuffer.getBuf()[i + 2];
+    b[1] = ss[0];
+    b[2] = ss[1];
+    b[3] = ss[2];
     int ms = java.nio.ByteBuffer.wrap(b).getInt();
 
     s += ms;
@@ -186,14 +185,13 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
   public FineTime decodeFineTime() throws MALException
   {
     long s = sourceBuffer.getUnsignedLong32() * 1000;
-    sourceBuffer.checkBuffer(3);
-    final int i = sourceBuffer.shiftOffsetAndReturnPrevious(3);
+    byte[] ss = sourceBuffer.directGetBytes(3);
 
     byte[] b = new byte[4];
     b[0] = 0;
-    b[1] = sourceBuffer.getBuf()[i];
-    b[2] = sourceBuffer.getBuf()[i + 1];
-    b[3] = sourceBuffer.getBuf()[i + 2];
+    b[1] = ss[0];
+    b[2] = ss[1];
+    b[3] = ss[2];
     int ms = java.nio.ByteBuffer.wrap(b).getInt();
 
     s += ms;
@@ -215,14 +213,13 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
   public Duration decodeDuration() throws MALException
   {
     long s = sourceBuffer.getUnsignedLong32() * 1000;
-    sourceBuffer.checkBuffer(3);
-    final int i = sourceBuffer.shiftOffsetAndReturnPrevious(3);
+    byte[] ss = sourceBuffer.directGetBytes(3);
 
     byte[] b = new byte[4];
     b[0] = 0;
-    b[1] = sourceBuffer.getBuf()[i];
-    b[2] = sourceBuffer.getBuf()[i + 1];
-    b[3] = sourceBuffer.getBuf()[i + 2];
+    b[1] = ss[0];
+    b[2] = ss[1];
+    b[3] = ss[2];
     int ms = java.nio.ByteBuffer.wrap(b).getInt();
 
     s += ms;

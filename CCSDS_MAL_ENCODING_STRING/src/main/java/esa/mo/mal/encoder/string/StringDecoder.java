@@ -38,8 +38,6 @@ public class StringDecoder extends GENDecoder
   private static final String STR_DELIM = "|";
   private static final String STR_NULL = "_";
   private static final int BLOCK_SIZE = 65536;
-  private final java.io.InputStream inputStream;
-  private final BufferHolder sourceBuffer;
 
   /**
    * Constructor.
@@ -48,8 +46,7 @@ public class StringDecoder extends GENDecoder
    */
   public StringDecoder(final String src)
   {
-    inputStream = null;
-    sourceBuffer = new BufferHolder(src, 0);
+    super(new StringBufferHolder(src, 0));
   }
 
   /**
@@ -59,636 +56,29 @@ public class StringDecoder extends GENDecoder
    */
   public StringDecoder(final java.io.InputStream is)
   {
-    inputStream = is;
-    sourceBuffer = new BufferHolder(null, 0);
+    super(new StringBufferHolder(is));
   }
 
   /**
    * Constructor.
    *
-   * @param is Source stream to read from.
    * @param src Source buffer holder to use..
    */
-  protected StringDecoder(final java.io.InputStream is, final BufferHolder src)
+  protected StringDecoder(final BufferHolder src)
   {
-    inputStream = is;
-    sourceBuffer = src;
+    super(src);
   }
 
   @Override
   public MALListDecoder createListDecoder(final List list) throws MALException
   {
-    return new StringListDecoder(list, inputStream, sourceBuffer);
-  }
-
-  @Override
-  public Identifier decodeIdentifier() throws MALException
-  {
-    return new Identifier(removeFirst());
-  }
-
-  @Override
-  public Identifier decodeNullableIdentifier() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return new Identifier(strVal);
-    }
-
-    return null;
-  }
-
-  @Override
-  public String decodeString() throws MALException
-  {
-    return removeFirst();
-  }
-
-  @Override
-  public String decodeNullableString() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return strVal;
-    }
-
-    return null;
-  }
-
-  @Override
-  public Integer decodeInteger() throws MALException
-  {
-    return internalDecodeInteger(removeFirst());
-  }
-
-  @Override
-  public Integer decodeNullableInteger() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeInteger(strVal);
-    }
-
-    return null;
-  }
-
-  private Integer internalDecodeInteger(final String strVal) throws MALException
-  {
-    try
-    {
-      return Integer.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public Boolean decodeBoolean() throws MALException
-  {
-    return internalDecodeBoolean(removeFirst());
-  }
-
-  @Override
-  public Boolean decodeNullableBoolean() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeBoolean(strVal);
-    }
-
-    return null;
-  }
-
-  private Boolean internalDecodeBoolean(final String strVal) throws MALException
-  {
-    try
-    {
-      return Boolean.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public Time decodeTime() throws MALException
-  {
-    return internalDecodeTime(removeFirst());
-  }
-
-  @Override
-  public Time decodeNullableTime() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeTime(strVal);
-    }
-
-    return null;
-  }
-
-  private Time internalDecodeTime(final String strVal) throws MALException
-  {
-    try
-    {
-      return new Time(Long.parseLong(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public FineTime decodeFineTime() throws MALException
-  {
-    return internalDecodeFineTime(removeFirst());
-  }
-
-  @Override
-  public FineTime decodeNullableFineTime() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeFineTime(strVal);
-    }
-
-    return null;
-  }
-
-  private FineTime internalDecodeFineTime(final String strVal) throws MALException
-  {
-    try
-    {
-      return new FineTime(Long.parseLong(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public Blob decodeBlob() throws MALException
-  {
-    return new Blob(hexStringToByteArray(removeFirst()));
-  }
-
-  @Override
-  public Blob decodeNullableBlob() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return new Blob(hexStringToByteArray(strVal));
-    }
-
-    return null;
-  }
-
-  @Override
-  public Duration decodeDuration() throws MALException
-  {
-    return internalDecodeDuration(removeFirst());
-  }
-
-  @Override
-  public Duration decodeNullableDuration() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeDuration(strVal);
-    }
-
-    return null;
-  }
-
-  private Duration internalDecodeDuration(final String strVal) throws MALException
-  {
-    try
-    {
-      return new Duration(Integer.parseInt(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public Float decodeFloat() throws MALException
-  {
-    return internalDecodeFloat(removeFirst());
-  }
-
-  @Override
-  public Float decodeNullableFloat() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeFloat(strVal);
-    }
-
-    return null;
-  }
-
-  private Float internalDecodeFloat(final String strVal) throws MALException
-  {
-    try
-    {
-      return Float.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public Double decodeDouble() throws MALException
-  {
-    return internalDecodeDouble(removeFirst());
-  }
-
-  @Override
-  public Double decodeNullableDouble() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeDouble(strVal);
-    }
-
-    return null;
-  }
-
-  private Double internalDecodeDouble(final String strVal) throws MALException
-  {
-    try
-    {
-      return Double.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public Long decodeLong() throws MALException
-  {
-    return internalDecodeLong(removeFirst());
-  }
-
-  @Override
-  public Long decodeNullableLong() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeLong(strVal);
-    }
-
-    return null;
-  }
-
-  private Long internalDecodeLong(final String strVal) throws MALException
-  {
-    try
-    {
-      return Long.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public Byte decodeOctet() throws MALException
-  {
-    return internalDecodeOctet(removeFirst());
-  }
-
-  @Override
-  public Byte decodeNullableOctet() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeOctet(strVal);
-    }
-
-    return null;
-  }
-
-  private Byte internalDecodeOctet(final String strVal) throws MALException
-  {
-    try
-    {
-      return Byte.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public Short decodeShort() throws MALException
-  {
-    return internalDecodeShort(removeFirst());
-  }
-
-  @Override
-  public Short decodeNullableShort() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeShort(strVal);
-    }
-
-    return null;
-  }
-
-  private Short internalDecodeShort(final String strVal) throws MALException
-  {
-    try
-    {
-      return Short.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public UInteger decodeUInteger() throws MALException
-  {
-    return internalDecodeUInteger(removeFirst());
-  }
-
-  @Override
-  public UInteger decodeNullableUInteger() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeUInteger(strVal);
-    }
-
-    return null;
-  }
-
-  private UInteger internalDecodeUInteger(final String strVal) throws MALException
-  {
-    try
-    {
-      return new UInteger(Long.parseLong(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public ULong decodeULong() throws MALException
-  {
-    return internalDecodeULong(removeFirst());
-  }
-
-  @Override
-  public ULong decodeNullableULong() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeULong(strVal);
-    }
-
-    return null;
-  }
-
-  private ULong internalDecodeULong(final String strVal) throws MALException
-  {
-    try
-    {
-      return new ULong(new BigInteger(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public UOctet decodeUOctet() throws MALException
-  {
-    return internalDecodeUOctet(removeFirst());
-  }
-
-  @Override
-  public UOctet decodeNullableUOctet() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeUOctet(strVal);
-    }
-
-    return null;
-  }
-
-  private UOctet internalDecodeUOctet(final String strVal) throws MALException
-  {
-    try
-    {
-      return new UOctet(Short.parseShort(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public UShort decodeUShort() throws MALException
-  {
-    return internalDecodeUShort(removeFirst());
-  }
-
-  @Override
-  public UShort decodeNullableUShort() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeUShort(strVal);
-    }
-
-    return null;
-  }
-
-  private UShort internalDecodeUShort(final String strVal) throws MALException
-  {
-    try
-    {
-      return new UShort(Integer.parseInt(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
-
-  @Override
-  public URI decodeURI() throws MALException
-  {
-    return new URI(removeFirst());
-  }
-
-  @Override
-  public URI decodeNullableURI() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return new URI(strVal);
-    }
-
-    return null;
-  }
-
-  @Override
-  public Attribute decodeAttribute() throws MALException
-  {
-    return internalDecodeAttribute(removeFirst());
-  }
-
-  @Override
-  public Attribute decodeNullableAttribute() throws MALException
-  {
-    final String strVal = removeFirst();
-
-    // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
-      return internalDecodeAttribute(strVal);
-    }
-
-    return null;
-  }
-
-  private Attribute internalDecodeAttribute(final String strVal) throws MALException
-  {
-    final int typeval = internalDecodeOctet(strVal);
-
-    // we should really precheck the area and service parts of the long before splitting out the type part
-    // ToDo
-    
-    switch (typeval)
-    {
-      case Attribute._BLOB_TYPE_SHORT_FORM:
-        return decodeBlob();
-      case Attribute._BOOLEAN_TYPE_SHORT_FORM:
-        return new Union(decodeBoolean());
-      case Attribute._DURATION_TYPE_SHORT_FORM:
-        return decodeDuration();
-      case Attribute._FLOAT_TYPE_SHORT_FORM:
-        return new Union(decodeFloat());
-      case Attribute._DOUBLE_TYPE_SHORT_FORM:
-        return new Union(decodeDouble());
-      case Attribute._IDENTIFIER_TYPE_SHORT_FORM:
-        return decodeIdentifier();
-      case Attribute._OCTET_TYPE_SHORT_FORM:
-        return new Union(decodeOctet());
-      case Attribute._UOCTET_TYPE_SHORT_FORM:
-        return decodeUOctet();
-      case Attribute._SHORT_TYPE_SHORT_FORM:
-        return new Union(decodeShort());
-      case Attribute._USHORT_TYPE_SHORT_FORM:
-        return decodeUShort();
-      case Attribute._INTEGER_TYPE_SHORT_FORM:
-        return new Union(decodeInteger());
-      case Attribute._UINTEGER_TYPE_SHORT_FORM:
-        return decodeUInteger();
-      case Attribute._LONG_TYPE_SHORT_FORM:
-        return new Union(decodeLong());
-      case Attribute._ULONG_TYPE_SHORT_FORM:
-        return decodeULong();
-      case Attribute._STRING_TYPE_SHORT_FORM:
-        return new Union(decodeString());
-      case Attribute._TIME_TYPE_SHORT_FORM:
-        return decodeTime();
-      case Attribute._FINETIME_TYPE_SHORT_FORM:
-        return decodeFineTime();
-      case Attribute._URI_TYPE_SHORT_FORM:
-        return decodeURI();
-      default:
-        throw new MALException("Unknown attribute type received: " + strVal);
-    }
-  }
-
-  @Override
-  public Element decodeElement(final Element element) throws IllegalArgumentException, MALException
-  {
-    return element.decode(this);
+    return new StringListDecoder(list, sourceBuffer);
   }
 
   @Override
   public Element decodeNullableElement(final Element element) throws MALException
   {
-    final String strVal = removeFirst();
+    final String strVal = sourceBuffer.getString();
 
     // Check if object is not null...
     if (!strVal.equals(STR_NULL))
@@ -702,100 +92,347 @@ public class StringDecoder extends GENDecoder
   @Override
   protected byte[] getRemainingEncodedData() throws MALException
   {
-    preLoadBuffer();
-    while (loadExtraBuffer())
+    StringBufferHolder dSourceBuffer = (StringBufferHolder) sourceBuffer;
+
+    dSourceBuffer.preLoadBuffer();
+    while (dSourceBuffer.loadExtraBuffer())
     {
       // do nothing, just loading in the complete message
     }
 
-    return sourceBuffer.buf.substring(sourceBuffer.offset).getBytes(UTF8_CHARSET);
+    return dSourceBuffer.buf.substring(dSourceBuffer.offset).getBytes(UTF8_CHARSET);
   }
 
-  private String removeFirst() throws MALException
+  /**
+   * Simple class for holding the source string and the offset into that string for the next read.
+   */
+  protected static class StringBufferHolder extends BufferHolder
   {
-    String rv;
+    private final java.io.InputStream inputStream;
+    private String buf;
+    private int offset;
 
-    final int index = findNextOffset();
-
-    // No more chars
-    if (-1 == index)
+    /**
+     * Constructor.
+     *
+     * @param buf The source buffer string.
+     * @param offset The current read offset.
+     */
+    public StringBufferHolder(final String buf, final int offset)
     {
-      rv = sourceBuffer.buf.substring(sourceBuffer.offset, sourceBuffer.buf.length());
-      sourceBuffer.offset = sourceBuffer.buf.length();
+      this.inputStream = null;
+      this.buf = buf;
+      this.offset = offset;
     }
-    else
+
+    /**
+     * Constructor.
+     *
+     * @param is Source stream to read from.
+     */
+    public StringBufferHolder(final java.io.InputStream is)
     {
-      rv = sourceBuffer.buf.substring(sourceBuffer.offset, index);
-      sourceBuffer.offset = index + 1;
+      this.inputStream = is;
+      this.buf = null;
+      this.offset = 0;
     }
 
-    return rv;
-  }
-
-  private int findNextOffset() throws MALException
-  {
-    preLoadBuffer();
-    int index = sourceBuffer.buf.indexOf(STR_DELIM, sourceBuffer.offset);
-
-    // ensure that we have loaded enough buffer from the input stream (if we are stream based) for the next read
-    if (-1 == index)
+    @Override
+    public String getString() throws MALException
     {
-      boolean needMore = true;
-      while (needMore)
+      return removeFirst();
+    }
+
+    @Override
+    public float getFloat() throws MALException
+    {
+      try
       {
-        final boolean haveMore = loadExtraBuffer();
-
-        index = sourceBuffer.buf.indexOf(STR_DELIM, sourceBuffer.offset);
-
-        needMore = haveMore && (-1 == index);
+        return Float.valueOf(removeFirst());
+      }
+      catch (NumberFormatException ex)
+      {
+        throw new MALException(ex.getLocalizedMessage(), ex);
       }
     }
 
-    return index;
-  }
-
-  private void preLoadBuffer() throws MALException
-  {
-    if ((null != inputStream) && (null == sourceBuffer.buf))
+    @Override
+    public double getDouble() throws MALException
     {
-      // need to load in some
-      final byte[] tbuf = new byte[BLOCK_SIZE];
+      try
+      {
+        return Double.valueOf(removeFirst());
+      }
+      catch (NumberFormatException ex)
+      {
+        throw new MALException(ex.getLocalizedMessage(), ex);
+      }
+    }
+
+    @Override
+    public BigInteger getBigInteger() throws MALException
+    {
+      try
+      {
+        return new BigInteger(removeFirst());
+      }
+      catch (NumberFormatException ex)
+      {
+        throw new MALException(ex.getLocalizedMessage(), ex);
+      }
+    }
+
+    @Override
+    public long getSignedLong() throws MALException
+    {
+      try
+      {
+        return Long.valueOf(removeFirst());
+      }
+      catch (NumberFormatException ex)
+      {
+        throw new MALException(ex.getLocalizedMessage(), ex);
+      }
+    }
+
+    @Override
+    public int getSignedInt() throws MALException
+    {
+      try
+      {
+        return Integer.valueOf(removeFirst());
+      }
+      catch (NumberFormatException ex)
+      {
+        throw new MALException(ex.getLocalizedMessage(), ex);
+      }
+    }
+
+    @Override
+    public short getSignedShort() throws MALException
+    {
+      try
+      {
+        return Short.valueOf(removeFirst());
+      }
+      catch (NumberFormatException ex)
+      {
+        throw new MALException(ex.getLocalizedMessage(), ex);
+      }
+    }
+
+    @Override
+    public long getUnsignedLong() throws MALException
+    {
+      return getSignedLong();
+    }
+
+    @Override
+    public long getUnsignedLong32() throws MALException
+    {
+      return getSignedLong();
+    }
+
+    @Override
+    public int getUnsignedInt() throws MALException
+    {
+      return getSignedInt();
+    }
+
+    @Override
+    public int getUnsignedInt16() throws MALException
+    {
+      return getSignedInt();
+    }
+
+    @Override
+    public int getUnsignedShort() throws MALException
+    {
+      return getSignedInt();
+    }
+
+    @Override
+    public short getUnsignedShort8() throws MALException
+    {
+      return getSignedShort();
+    }
+
+    @Override
+    public byte[] getBytes() throws MALException
+    {
+      return hexStringToByteArray(removeFirst());
+    }
+
+    @Override
+    public boolean getBool() throws MALException
+    {
+      try
+      {
+        return Boolean.valueOf(removeFirst());
+      }
+      catch (NumberFormatException ex)
+      {
+        throw new MALException(ex.getLocalizedMessage(), ex);
+      }
+    }
+
+    @Override
+    public byte get8() throws MALException
+    {
+      try
+      {
+        return Byte.valueOf(removeFirst());
+      }
+      catch (NumberFormatException ex)
+      {
+        throw new MALException(ex.getLocalizedMessage(), ex);
+      }
+    }
+
+    @Override
+    public boolean isNotNull() throws MALException
+    {
+      final String strVal = peekNext();
+
+      // Check if object is null...
+      if (strVal.equals(STR_NULL))
+      {
+        // its null so need to pop the null flag
+        popNext();
+        return false;
+      }
+
+      // its not null so leave index where they are
+      return true;
+    }
+
+    @Override
+    public byte[] directGetBytes(int length) throws MALException
+    {
+      // not supported/required for this encoding
+      return null;
+    }
+
+    private String removeFirst() throws MALException
+    {
+      String rv;
+
+      final int index = findNextOffset();
+
+      // No more chars
+      if (-1 == index)
+      {
+        rv = buf.substring(offset, buf.length());
+        offset = buf.length();
+      }
+      else
+      {
+        rv = buf.substring(offset, index);
+        offset = index + 1;
+      }
+
+      return rv;
+    }
+
+    private String peekNext() throws MALException
+    {
+      String rv;
+
+      final int index = findNextOffset();
+
+      // No more chars
+      if (-1 == index)
+      {
+        rv = buf.substring(offset, buf.length());
+      }
+      else
+      {
+        rv = buf.substring(offset, index);
+      }
+
+      return rv;
+    }
+
+    private void popNext() throws MALException
+    {
+      final int index = findNextOffset();
+
+      // No more chars
+      if (-1 == index)
+      {
+        offset = buf.length();
+      }
+      else
+      {
+        offset = index + 1;
+      }
+    }
+
+    private int findNextOffset() throws MALException
+    {
+      preLoadBuffer();
+      int index = buf.indexOf(STR_DELIM, offset);
+
+      // ensure that we have loaded enough buffer from the input stream (if we are stream based) for the next read
+      if (-1 == index)
+      {
+        boolean needMore = true;
+        while (needMore)
+        {
+          final boolean haveMore = loadExtraBuffer();
+
+          index = buf.indexOf(STR_DELIM, offset);
+
+          needMore = haveMore && (-1 == index);
+        }
+      }
+
+      return index;
+    }
+
+    private void preLoadBuffer() throws MALException
+    {
+      if ((null != inputStream) && (null == buf))
+      {
+        // need to load in some
+        final byte[] tbuf = new byte[BLOCK_SIZE];
+
+        try
+        {
+          final int length = inputStream.read(tbuf, 0, tbuf.length);
+          buf = new String(tbuf, 0, length, UTF8_CHARSET);
+          offset = 0;
+        }
+        catch (IOException ex)
+        {
+          throw new MALException("Unable to read required amount from source stream", ex);
+        }
+      }
+    }
+
+    private boolean loadExtraBuffer() throws MALException
+    {
+      boolean moreAvailable = false;
 
       try
       {
-        final int length = inputStream.read(tbuf, 0, tbuf.length);
-        sourceBuffer.buf = new String(tbuf, 0, length, UTF8_CHARSET);
-        sourceBuffer.offset = 0;
+        if (null != inputStream && (0 != inputStream.available()))
+        {
+          // need to load in some
+          final byte[] tbuf = new byte[BLOCK_SIZE];
+
+          final int length = inputStream.read(tbuf, 0, tbuf.length);
+          buf += new String(tbuf, 0, length, UTF8_CHARSET);
+          moreAvailable = 0 != inputStream.available();
+        }
       }
       catch (IOException ex)
       {
         throw new MALException("Unable to read required amount from source stream", ex);
       }
+
+      return moreAvailable;
     }
-  }
-
-  private boolean loadExtraBuffer() throws MALException
-  {
-    boolean moreAvailable = false;
-
-    try
-    {
-      if (null != inputStream && (0 != inputStream.available()))
-      {
-        // need to load in some
-        final byte[] tbuf = new byte[BLOCK_SIZE];
-
-        final int length = inputStream.read(tbuf, 0, tbuf.length);
-        sourceBuffer.buf += new String(tbuf, 0, length, UTF8_CHARSET);
-        moreAvailable = 0 != inputStream.available();
-      }
-    }
-    catch (IOException ex)
-    {
-      throw new MALException("Unable to read required amount from source stream", ex);
-    }
-
-    return moreAvailable;
   }
 
   private static byte[] hexStringToByteArray(final String s)
@@ -807,26 +444,5 @@ public class StringDecoder extends GENDecoder
       data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
     }
     return data;
-  }
-
-  /**
-   * Simple class for holding the source string and the offset into that string for the next read.
-   */
-  protected static class BufferHolder
-  {
-    private String buf;
-    private int offset;
-
-    /**
-     * Constructor.
-     *
-     * @param buf The source buffer string.
-     * @param offset The current read offset.
-     */
-    public BufferHolder(final String buf, final int offset)
-    {
-      this.buf = buf;
-      this.offset = offset;
-    }
   }
 }
