@@ -210,6 +210,36 @@
       </properties>
     </profile>
     <profile>
+      <id>ESA_TCPIP</id>
+      <dependencies>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL_TEST</artifactId>
+          <version>${esa.mal.test_api.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>MAL_IMPL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>TRANSPORT_TCPIP</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY_SPLIT</artifactId>
+        </dependency>
+      </dependencies>
+      <properties>
+        <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/esa-tcpip</org.ccsds.moims.mo.testbed.local.configuration.dir>
+        <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/esa-tcpip</org.ccsds.moims.mo.testbed.remote.configuration.dir>
+      </properties>
+    </profile>
+    <profile>
       <id>ESA_JMS</id>
       <dependencies>
         <dependency>
