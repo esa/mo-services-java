@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.jms;
 
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import java.util.logging.Level;
 import javax.jms.*;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -89,7 +89,7 @@ public class JMSQueueHandler implements MessageListener
           UShort s = new UShort(objMsg.getIntProperty(JMSEndpoint.SVC_PROPERTY));
           UShort o = new UShort(objMsg.getIntProperty(JMSEndpoint.OPN_PROPERTY));
 
-          endPoint.getJtransport().receive(createMessageReceiver(new JMSUpdate(d, n, a, s, o, (byte[]) dat)));
+          endPoint.getJtransport().receive(null, createMessageDecoder(new JMSUpdate(d, n, a, s, o, (byte[]) dat)));
         }
         else
         {
@@ -108,8 +108,8 @@ public class JMSQueueHandler implements MessageListener
     }
   }
 
-  protected GENTransport.GENIncomingMessageReceiverBase createMessageReceiver(JMSUpdate update)
+  protected GENIncomingMessageDecoder createMessageDecoder(JMSUpdate update)
   {
-    return new JMSIncomingMessageReceiver(endPoint.getJtransport(), update, null);
+    return new JMSIncomingMessageDecoder(endPoint.getJtransport(), update);
   }
 }

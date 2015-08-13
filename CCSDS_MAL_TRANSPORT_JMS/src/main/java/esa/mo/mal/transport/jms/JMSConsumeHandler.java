@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.jms.util.StructureHelper;
 
 /**
@@ -330,8 +330,8 @@ public class JMSConsumeHandler extends JMSQueueHandler
   }
 
   @Override
-  protected GENTransport.GENIncomingMessageReceiverBase createMessageReceiver(JMSUpdate update)
+  protected GENIncomingMessageDecoder createMessageDecoder(JMSUpdate update)
   {
-    return new JMSIncomingPSMessageReceiver(endPoint.getJtransport(), update, endPoint.getURI(), version, subId, URIFrom, level, priority, networkZone, session, sessionName, transactionId, null);
+    return new JMSIncomingPSMessageDecoder(endPoint.getJtransport(), update, endPoint.getURI(), version, subId, URIFrom, level, priority, networkZone, session, sessionName, transactionId);
   }
 }

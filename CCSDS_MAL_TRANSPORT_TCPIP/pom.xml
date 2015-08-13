@@ -25,7 +25,7 @@
   
   <artifactId>TRANSPORT_TCPIP</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <name>ESA MAL TCP/IP Java transport</name>
   <description>A Java TCP/IP transport for CCSDS MAL</description>
@@ -73,7 +73,8 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TRANSPORT_GEN</artifactId>
-    </dependency>	
+      <version>1.1.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
  
   <build>

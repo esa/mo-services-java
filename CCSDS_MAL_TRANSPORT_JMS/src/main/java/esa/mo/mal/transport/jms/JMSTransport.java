@@ -92,14 +92,14 @@ public class JMSTransport extends GENTransport implements MALTransport
   }
 
   @Override
-  protected GENEndpoint internalCreateEndpoint(String localName, Map qosProperties) throws MALException
+  protected GENEndpoint internalCreateEndpoint(String localName, String routingName, Map qosProperties) throws MALException
   {
     try
     {
       Session qs = getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
-      Queue q = getAdministrator().createQueue(qs, localName);
+      Queue q = getAdministrator().createQueue(qs, routingName);
 
-      return new JMSEndpoint(this, localName, uriBase, qs, q);
+      return new JMSEndpoint(this, localName, routingName, uriBase, qs, q);
     }
     catch (MALException ex)
     {

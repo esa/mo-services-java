@@ -82,7 +82,12 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
           if (null == sf)
           {
             // dirty check to see if we are trying to decode an abstract Attribute (and not a list of them either)
-            Object[] finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
+            Object[] finalEleShortForms = null;
+            if (null != ctx)
+            {
+              finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
+            }
+            
             if ((null != finalEleShortForms) && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length) && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0))
             {
               enc.encodeNullableOctet(enc.internalEncodeAttributeType(e.getTypeShortForm().byteValue()));
@@ -129,7 +134,6 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
-
 
   /**
    * Over-ridable factory function.

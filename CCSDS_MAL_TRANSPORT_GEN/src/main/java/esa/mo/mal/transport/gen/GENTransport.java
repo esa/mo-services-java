@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.gen;
 
+import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
 import esa.mo.mal.transport.gen.sending.GENConcurrentMessageSender;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
@@ -420,11 +421,12 @@ public abstract class GENTransport implements MALTransport
    * On reception of an IO stream this method should be called. This is the main reception entry point into the generic
    * transport for stream based transports.
    *
-   * @param receiver The message being received.
+   * @param receptionHandler The reception handler to pass them to.
+   * @param decoder The class responsible for decoding the message from the incoming connection
    */
-  public void receive(final GENIncomingMessageReceiverBase receiver)
+  public void receive(final GENReceptionHandler receptionHandler, final GENIncomingMessageDecoder decoder)
   {
-    asyncInputReceptionProcessor.submit(receiver);
+    asyncInputReceptionProcessor.submit(new GENIncomingMessageReceiver(this, receptionHandler, decoder));
   }
 
   /**
@@ -1006,21 +1008,26 @@ public abstract class GENTransport implements MALTransport
   /**
    * This Runnable task is responsible for decoding newly arrived MAL Messages and passing to the transport executor.
    */
-  public abstract static class GENIncomingMessageReceiverBase implements Runnable
+  private static class GENIncomingMessageReceiver implements Runnable
   {
     protected final GENTransport transport;
     protected final GENReceptionHandler receptionHandler;
+    protected final GENIncomingMessageDecoder decoder;
 
     /**
      * Constructor
      *
      * @param transport Containing transport.
      * @param receptionHandler The reception handler to pass them to.
+     * @param decoder The class responsible for decoding the message from the incoming connection
      */
-    protected GENIncomingMessageReceiverBase(final GENTransport transport, GENReceptionHandler receptionHandler)
+    protected GENIncomingMessageReceiver(final GENTransport transport,
+            final GENReceptionHandler receptionHandler,
+            final GENIncomingMessageDecoder decoder)
     {
       this.transport = transport;
       this.receptionHandler = receptionHandler;
+      this.decoder = decoder;
     }
 
     /**
@@ -1033,7 +1040,7 @@ public abstract class GENTransport implements MALTransport
     {
       try
       {
-        GENIncomingMessageHolder msg = decodeAndCreateMessage();
+        GENIncomingMessageHolder msg = decoder.decodeAndCreateMessage();
         GENTransport.LOGGER.log(Level.FINE, "GEN Receving message : {0} : {1}", new Object[]
         {
           msg.malMsg.getHeader().getTransactionId(), msg.smsg
@@ -1053,8 +1060,6 @@ public abstract class GENTransport implements MALTransport
         transport.communicationError(null, receptionHandler);
       }
     }
-
-    protected abstract GENIncomingMessageHolder decodeAndCreateMessage() throws MALException;
   }
 
   /**

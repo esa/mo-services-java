@@ -60,8 +60,13 @@ public abstract class GENElementInputStream implements MALElementInputStream
         Long shortForm;
 
         // dirty check to see if we are trying to decode an abstract Attribute (and not a list of them either)
-        Object[] finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
-        if ((null != finalEleShortForms) && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length) && ((((Long)finalEleShortForms[0]) & 0x800000L) == 0))
+        Object[] finalEleShortForms = null;
+        if (null != ctx)
+        {
+          finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
+        }
+        
+        if ((null != finalEleShortForms) && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length) && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0))
         {
           Byte sf = dec.decodeNullableOctet();
           if (null == sf)

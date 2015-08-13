@@ -45,7 +45,7 @@ import esa.mo.mal.transport.jms.util.StructureHelper;
 public class JMSPublishHandler
 {
   private final JMSTransport jtransport;
-  private final Set<PublisherKey> keySet = new TreeSet<PublisherKey>();
+  private final Set<JMSPublisherKey> keySet = new TreeSet<JMSPublisherKey>();
   private final QoSLevel registerQoS;
   private IdentifierList domain = null;
 
@@ -61,7 +61,7 @@ public class JMSPublishHandler
     keySet.clear();
     for (EntityKey l1 : l)
     {
-      keySet.add(new PublisherKey(l1));
+      keySet.add(new JMSPublisherKey(l1));
     }
   }
 
@@ -169,7 +169,7 @@ public class JMSPublishHandler
         UpdateHeader update = (UpdateHeader) updateList1;
         EntityKey updateKey = update.getKey();
         boolean matched = false;
-        for (PublisherKey key : keySet)
+        for (JMSPublisherKey key : keySet)
         {
           if (key.matches(updateKey))
           {

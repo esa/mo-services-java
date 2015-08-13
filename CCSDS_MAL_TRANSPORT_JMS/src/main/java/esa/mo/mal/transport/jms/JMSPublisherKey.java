@@ -26,7 +26,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 /**
  * Simple class that represents a MAL update key.
  */
-public final class PublisherKey implements Comparable
+public final class JMSPublisherKey implements Comparable
 {
   /**
    * Match all constant.
@@ -43,7 +43,7 @@ public final class PublisherKey implements Comparable
    * Constructor.
    * @param lst Entity key.
    */
-  public PublisherKey(final EntityKey lst)
+  public JMSPublisherKey(final EntityKey lst)
   {
     super();
 
@@ -64,7 +64,7 @@ public final class PublisherKey implements Comparable
     {
       return false;
     }
-    final PublisherKey other = (PublisherKey) obj;
+    final JMSPublisherKey other = (JMSPublisherKey) obj;
     if ((this.key1 == null) ? (other.key1 != null) : !this.key1.equals(other.key1))
     {
       return false;
@@ -95,7 +95,7 @@ public final class PublisherKey implements Comparable
   @Override
   public int compareTo(final Object o)
   {
-    final PublisherKey rhs = (PublisherKey) o;
+    final JMSPublisherKey rhs = (JMSPublisherKey) o;
     int rv = compareSubkey(this.key1, rhs.key1);
     if (0 == rv)
     {

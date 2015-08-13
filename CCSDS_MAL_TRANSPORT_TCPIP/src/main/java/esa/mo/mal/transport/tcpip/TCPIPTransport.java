@@ -23,6 +23,7 @@ package esa.mo.mal.transport.tcpip;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENTransport;
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
+import esa.mo.mal.transport.gen.receivers.GENIncomingByteMessageDecoderFactory;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.util.GENMessagePoller;
 import java.io.IOException;
@@ -290,7 +291,7 @@ public class TCPIPTransport extends GENTransport
 
       // create also a data reader thread for this socket in order to read messages from it 
       // no need to register this as it will automatically terminate when the uunderlying connection is terminated.
-      GENMessagePoller rcvr = new GENMessagePoller(this, trans, trans);
+      GENMessagePoller rcvr = new GENMessagePoller(this, trans, trans, new GENIncomingByteMessageDecoderFactory());
       rcvr.setRemoteURI(remoteRootURI);
       rcvr.start();
 

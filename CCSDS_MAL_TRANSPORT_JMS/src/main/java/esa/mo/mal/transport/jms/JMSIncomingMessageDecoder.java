@@ -1,10 +1,10 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2015      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Generic Transport Framework
+ * System                : CCSDS MO JMS Transport Framework
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,40 +18,40 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.gen.receivers;
+package esa.mo.mal.transport.jms;
 
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENReceptionHandler;
-import esa.mo.mal.transport.gen.GENTransport;
-import esa.mo.mal.transport.gen.GENTransport.GENIncomingMessageReceiverBase;
+import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport.PacketToString;
+import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
+import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
+import java.util.HashMap;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
- * Extension of the GENIncomingMessageReceiverBase class for newly arrived MAL Messages in byte array format.
+ * Responsible for decoding newly arrived MAL Messages.
  */
-public final class GENIncomingByteMessageReceiver extends GENIncomingMessageReceiverBase
+final class JMSIncomingMessageDecoder implements GENIncomingMessageDecoder
 {
-  private final byte[] rawMessage;
+  private final JMSTransport transport;
+  private final JMSUpdate jmsUpdate;
 
   /**
    * Constructor
    *
-   * @param transport Containing transport.
-   * @param rawMessage The raw message
-   * @param receptionHandler The reception handler to pass them to.
+   * @param transport The transport instance to use.
+   * @param jmsUpdate The raw message
    */
-  public GENIncomingByteMessageReceiver(final GENTransport transport, byte[] rawMessage, GENReceptionHandler receptionHandler)
+  public JMSIncomingMessageDecoder(final JMSTransport transport, JMSUpdate jmsUpdate)
   {
-    super(transport, receptionHandler);
-    this.rawMessage = rawMessage;
+    this.transport = transport;
+    this.jmsUpdate = jmsUpdate;
   }
 
   @Override
-  protected GENIncomingMessageHolder decodeAndCreateMessage() throws MALException
+  public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException
   {
-    GENTransport.PacketToString smsg = transport.new PacketToString(rawMessage);
-    GENMessage malMsg = transport.createMessage(rawMessage);
-    return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
+    GENMessage malMsg = new GENMessage(false, true, new GENMessageHeader(), new HashMap(), jmsUpdate.getDat(), transport.getStreamFactory());
+    return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, transport.new PacketToString(null));
   }
 }

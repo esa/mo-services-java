@@ -216,7 +216,7 @@ public class GENConcurrentMessageSender
     public void run()
     {
       boolean bContinue = true;
-      
+
       // read forever while not interrupted
       while (bContinue && !interrupted())
       {
@@ -233,6 +233,7 @@ public class GENConcurrentMessageSender
         catch (IOException e)
         {
           LOGGER.log(Level.WARNING, "Cannot send packet to destination:{0} informing transport", uriTo);
+          LOGGER.log(Level.FINE, "Cannot send packet to destination:{0} informing transport", e);
 
           //send back reply that the message was not sent successfully
           if (null != messageHolder)

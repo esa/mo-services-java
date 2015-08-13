@@ -1,19 +1,31 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* ----------------------------------------------------------------------------
+ * Copyright (C) 2015      European Space Agency
+ *                         European Space Operations Centre
+ *                         Darmstadt
+ *                         Germany
+ * ----------------------------------------------------------------------------
+ * System                : CCSDS MO JMS Transport Framework
+ * ----------------------------------------------------------------------------
+ * Licensed under the European Space Agency Public License, Version 2.0
+ * You may not use this file except in compliance with the License.
+ *
+ * Except as expressly set forth in this License, the Software is provided to
+ * You on an "as is" basis and without warranties of any kind, including without
+ * limitation merchantability, fitness for a particular purpose, absence of
+ * defects or errors, accuracy or non-infringement of intellectual property rights.
+ * 
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ * ----------------------------------------------------------------------------
  */
 package esa.mo.mal.transport.jms;
 
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENMessageHeader;
-import esa.mo.mal.transport.gen.GENReceptionHandler;
-import esa.mo.mal.transport.gen.GENTransport.GENIncomingMessageReceiverBase;
 import esa.mo.mal.transport.gen.GENTransport.PacketToString;
+import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
 import java.io.ByteArrayInputStream;
-import org.ccsds.moims.mo.mal.MALContextFactory;
-import org.ccsds.moims.mo.mal.MALElementFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
@@ -27,29 +39,28 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
- * This Runnable task is responsible for holding newly arrived MAL Messages (in raw format), decoding, and passing to
- * the transport executor.
+ * Responsible for decoding newly arrived PS MAL Messages.
  */
-final class JMSIncomingPSMessageReceiver extends GENIncomingMessageReceiverBase
+final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder
 {
-  private final JMSUpdate jmsUpdate;
-  private final URI uri;
-  private final UOctet version;
-  private final Identifier subId;
-  private final URI URIFrom;
-  private final QoSLevel level;
-  private final UInteger priority;
-  private final Identifier networkZone;
-  private final SessionType session;
-  private final Identifier sessionName;
-  private final Long transactionId;
+  private final JMSTransport transport;
+  final JMSUpdate jmsUpdate;
+  final URI uri;
+  final UOctet version;
+  final Identifier subId;
+  final URI URIFrom;
+  final QoSLevel level;
+  final UInteger priority;
+  final Identifier networkZone;
+  final SessionType session;
+  final Identifier sessionName;
+  final Long transactionId;
 
-  public JMSIncomingPSMessageReceiver(final JMSTransport transport, JMSUpdate jmsUpdate, URI uri, UOctet version, Identifier subId, URI URIFrom, QoSLevel level, UInteger priority, Identifier networkZone, SessionType session, Identifier sessionName, Long transactionId, GENReceptionHandler receptionHandler)
+  public JMSIncomingPSMessageDecoder(final JMSTransport transport, JMSUpdate jmsUpdate, URI uri, UOctet version, Identifier subId, URI URIFrom, QoSLevel level, UInteger priority, Identifier networkZone, SessionType session, Identifier sessionName, Long transactionId)
   {
-    super(transport, receptionHandler);
+    this.transport = transport;
     this.jmsUpdate = jmsUpdate;
     this.uri = uri;
     this.version = version;
@@ -64,7 +75,7 @@ final class JMSIncomingPSMessageReceiver extends GENIncomingMessageReceiverBase
   }
 
   @Override
-  protected GENIncomingMessageHolder decodeAndCreateMessage() throws MALException
+  public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException
   {
     // build header
     GENMessageHeader hdr = new GENMessageHeader();
@@ -84,23 +95,23 @@ final class JMSIncomingPSMessageReceiver extends GENIncomingMessageReceiverBase
     hdr.setTransactionId(transactionId);
     try
     {
-      ByteArrayInputStream baos = new ByteArrayInputStream(jmsUpdate.getDat());
+      byte[] data = jmsUpdate.getDat();
+      ByteArrayInputStream baos = new ByteArrayInputStream(data);
       MALElementInputStream enc = transport.getStreamFactory().createInputStream(baos);
-      UShort lstCount = (UShort) enc.readElement(new UShort(0), null);
+      UShort lstCount = (UShort) enc.readElement(null, null);
       Object[] new_objs = new Object[lstCount.getValue() + 1];
       new_objs[0] = subId;
       for (int i = 1; i < new_objs.length; i++)
       {
-        MALElementFactory factory = MALContextFactory.getElementFactoryRegistry().lookupElementFactory(((Union) enc.readElement(new Union(0L), null)).getLongValue());
-        new_objs[i] = enc.readElement(factory.createElement(), null);
+        new_objs[i] = enc.readElement(null, null);
       }
+      
       GENMessage malMsg = new GENMessage(false, new JMSMessageHeader(hdr, jmsUpdate), null, null, new_objs);
-      return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, transport.new PacketToString(null));
+      return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, transport.new PacketToString(data));
     }
     catch (Throwable ex)
     {
       throw new MALException("Internal error decoding message", ex);
     }
   }
-
 }

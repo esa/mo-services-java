@@ -62,9 +62,17 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
   private final Map<String, JMSPublishHandler> publishHandlerMap = new TreeMap<String, JMSPublishHandler>();
   final Object interruption = new Object();
 
-  public JMSEndpoint(JMSTransport transport, String localName, String baseuri, Session qs, Queue q) throws Exception
+  /**
+   * Constructor.
+   *
+   * @param transport Parent transport.
+   * @param localName Endpoint local MAL name.
+   * @param routingName Endpoint local routing name.
+   * @param baseuri The URI string for this end point.
+   */
+  public JMSEndpoint(final JMSTransport transport, final String localName, final String routingName, String baseuri, Session qs, Queue q) throws Exception
   {
-    super(transport, localName, baseuri + q.getQueueName(), false);
+    super(transport, localName, routingName, baseuri + q.getQueueName(), false);
 
     this.jtransport = transport;
     this.qs = qs;
@@ -413,7 +421,6 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
     Object e = srcList.get(index);
     List l = (List) ((Element) srcList).createElement();
     l.add(e);
-    enc.writeElement(new Union(((Element) l).getShortForm()), null);
     enc.writeElement(l, null);
   }
 
