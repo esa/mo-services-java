@@ -291,7 +291,7 @@ public class TCPIPTransport extends GENTransport
 
       // create also a data reader thread for this socket in order to read messages from it 
       // no need to register this as it will automatically terminate when the uunderlying connection is terminated.
-      GENMessagePoller rcvr = new GENMessagePoller(this, trans, trans, new GENIncomingByteMessageDecoderFactory());
+      GENMessagePoller rcvr = new GENMessagePoller<byte[]>(this, trans, trans, new GENIncomingByteMessageDecoderFactory());
       rcvr.setRemoteURI(remoteRootURI);
       rcvr.start();
 

@@ -53,7 +53,7 @@ public class GENMessagePoller<T> extends Thread implements GENReceptionHandler
   /**
    * the low level message receiver
    */
-  protected final MessageAdapter messageReceiver;
+  protected final MessageAdapter<T> messageReceiver;
   /**
    * the remote URI (client) this connection is associated to. This is volatile as it is potentially set by a different
    * thread after its creation
@@ -70,12 +70,12 @@ public class GENMessagePoller<T> extends Thread implements GENReceptionHandler
    */
   public GENMessagePoller(GENTransport transport,
           GENMessageSender messageSender,
-          GENMessageReceiver messageReceiver,
+          GENMessageReceiver<T> messageReceiver,
           GENIncomingMessageDecoderFactory<T> decoderFactory)
   {
     this.transport = transport;
     this.messageSender = messageSender;
-    this.messageReceiver = new MessageAdapter(transport, this, messageReceiver, decoderFactory);
+    this.messageReceiver = new MessageAdapter<T>(transport, this, messageReceiver, decoderFactory);
     setName(getClass().getName());
   }
 

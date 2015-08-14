@@ -84,7 +84,7 @@ public class TCPIPServerConnectionListener extends Thread
         // handle socket in separate thread
         TCPIPTransportDataTransceiver tc = transport.createDataTransceiver(socket);
 
-        GENMessagePoller poller = new GENMessagePoller(transport, tc, tc, new GENIncomingByteMessageDecoderFactory());
+        GENMessagePoller poller = new GENMessagePoller<byte[]>(transport, tc, tc, new GENIncomingByteMessageDecoderFactory());
         pollerThreads.add(poller);
         poller.start();
       }
