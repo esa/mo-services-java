@@ -292,6 +292,7 @@ public class MessageReceive implements MALMessageListener
   {
     try
     {
+      MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleSend for type {0}", address.handler);
       address.handler.handleSend(new SendInteractionImpl(sender, msg), msg.getBody());
     }
     catch (MALException ex)
@@ -307,6 +308,10 @@ public class MessageReceive implements MALMessageListener
 
     try
     {
+      MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleSubmit for {0} type {1}", new Object[]
+      {
+        transId, address.handler
+      });
       address.handler.handleSubmit(new SubmitInteractionImpl(sender, address, transId, msg), msg.getBody());
     }
     catch (MALException ex)
@@ -325,6 +330,10 @@ public class MessageReceive implements MALMessageListener
 
     try
     {
+      MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleRequest for {0} type {1}", new Object[]
+      {
+        transId, address.handler
+      });
       address.handler.handleRequest(new RequestInteractionImpl(sender, address, transId, msg), msg.getBody());
     }
     catch (MALException ex)
@@ -347,6 +356,10 @@ public class MessageReceive implements MALMessageListener
     {
       try
       {
+        MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleInvoke for {0} type {1}", new Object[]
+        {
+          transId, address.handler
+        });
         address.handler.handleInvoke(interaction, msg.getBody());
       }
       catch (MALInteractionException ex)
@@ -377,6 +390,10 @@ public class MessageReceive implements MALMessageListener
     {
       try
       {
+        MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleProgresss for {0} type {1}", new Object[]
+        {
+          transId, address.handler
+        });
         address.handler.handleProgress(interaction, msg.getBody());
       }
       catch (MALInteractionException ex)
@@ -719,7 +736,17 @@ public class MessageReceive implements MALMessageListener
   private Address lookupAddress(final MALEndpoint callingEndpoint, final MALMessage msg)
   {
     final EndPointPair key = new EndPointPair(callingEndpoint.getLocalName(), msg);
-    return providerEndpointMap.get(key);
+    Address addr = providerEndpointMap.get(key);
+
+    if (null == addr)
+    {
+      MALContextFactoryImpl.LOGGER.log(Level.WARNING, "lookupAddress failed to find local endpoint for {0}", new Object[]
+      {
+        key
+      });
+    }
+
+    return addr;
   }
 
   private UOctet calculateReturnStage(final MALMessageHeader srcHdr)
@@ -875,6 +902,12 @@ public class MessageReceive implements MALMessageListener
       hash = HASH_VALUE * hash + (this.first != null ? this.first.hashCode() : 0);
       hash = HASH_VALUE * hash + (this.second != null ? this.second.hashCode() : 0);
       return hash;
+    }
+
+    @Override
+    public String toString()
+    {
+      return "EndPointPair{" + "first=" + first + ", second=" + second + '}';
     }
   }
 }

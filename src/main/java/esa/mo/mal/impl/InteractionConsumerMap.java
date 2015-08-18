@@ -214,7 +214,10 @@ class InteractionConsumerMap
       }
       else
       {
-        MALContextFactoryImpl.LOGGER.log(Level.WARNING, "No key found in service maps to get listener! {0}", id);
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING, "No key found in service maps to get listener! {0} {1}", new Object[]
+        {
+          id, msg.getHeader()
+        });
       }
 
       if (null != handler)
@@ -256,7 +259,10 @@ class InteractionConsumerMap
       }
       else
       {
-        MALContextFactoryImpl.LOGGER.log(Level.WARNING, "No key found in service maps to get listener! {0}", id);
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING, "No key found in service maps to get listener! {0} {1}", new Object[]
+        {
+          id, hdr
+        });
       }
 
       if (null != handler)
