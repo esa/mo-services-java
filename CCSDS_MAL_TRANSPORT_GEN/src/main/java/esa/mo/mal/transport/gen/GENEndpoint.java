@@ -37,11 +37,11 @@ import org.ccsds.moims.mo.mal.transport.*;
  */
 public class GENEndpoint implements MALEndpoint
 {
-  private final GENTransport transport;
-  private final String localName;
-  private final String routingName;
-  private final String localURI;
-  private final boolean wrapBodyParts;
+  protected final GENTransport transport;
+  protected final String localName;
+  protected final String routingName;
+  protected final String localURI;
+  protected final boolean wrapBodyParts;
   private boolean active = false;
   private MALMessageListener messageListener = null;
 
