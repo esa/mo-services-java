@@ -147,7 +147,7 @@ public class BinaryDecoder extends GENDecoder
   }
 
   @Override
-  protected byte[] getRemainingEncodedData() throws MALException
+  public byte[] getRemainingEncodedData() throws MALException
   {
     BinaryBufferHolder dSourceBuffer = (BinaryBufferHolder)sourceBuffer;
     return Arrays.copyOfRange(dSourceBuffer.buf, dSourceBuffer.offset, dSourceBuffer.contentLength);

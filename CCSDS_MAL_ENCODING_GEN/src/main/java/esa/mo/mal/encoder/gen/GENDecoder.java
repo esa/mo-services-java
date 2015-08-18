@@ -441,7 +441,7 @@ public abstract class GENDecoder implements MALDecoder
    * @return the unused body data.
    * @throws MALException if there is an error.
    */
-  protected abstract byte[] getRemainingEncodedData() throws MALException;
+  public abstract byte[] getRemainingEncodedData() throws MALException;
 
   /**
    * Internal class that is used to hold the byte buffer. Derived classes should extend this (and replace it in the

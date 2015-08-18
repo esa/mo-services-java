@@ -90,7 +90,7 @@ public class StringDecoder extends GENDecoder
   }
 
   @Override
-  protected byte[] getRemainingEncodedData() throws MALException
+  public byte[] getRemainingEncodedData() throws MALException
   {
     StringBufferHolder dSourceBuffer = (StringBufferHolder) sourceBuffer;
 
