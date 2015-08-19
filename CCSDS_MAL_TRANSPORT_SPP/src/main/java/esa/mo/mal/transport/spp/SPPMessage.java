@@ -86,14 +86,17 @@ public class SPPMessage extends GENMessage
   }
 
   @Override
-  public void encodeMessage(MALElementStreamFactory streamFactory, MALElementOutputStream enc, OutputStream lowLevelOutputStream) throws MALException
+  public void encodeMessage(final MALElementStreamFactory streamFactory,
+          final MALElementOutputStream enc,
+          final OutputStream lowLevelOutputStream,
+          final boolean writeHeader) throws MALException
   {
     try
     {
       final ByteArrayOutputStream baos = new ByteArrayOutputStream();
       final MALElementOutputStream lenc = streamFactory.createOutputStream(baos);
 
-      super.encodeMessage(streamFactory, lenc, baos);
+      super.encodeMessage(streamFactory, lenc, baos, writeHeader);
 
       // encode the SPP packet, then set the CCSDS packet length to the correct value.
       byte[] buf = baos.toByteArray();

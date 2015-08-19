@@ -218,18 +218,20 @@ public class GENMessage implements MALMessage, java.io.Serializable
    * @param streamFactory The stream factory to use for encoder creation.
    * @param enc The output stream to use for encoding.
    * @param lowLevelOutputStream the stream to write to.
+   * @param writeHeader True if the header should be written to the output stream.
    * @throws MALException On encoding error.
    */
   public void encodeMessage(final MALElementStreamFactory streamFactory,
           final MALElementOutputStream enc,
-          final OutputStream lowLevelOutputStream) throws MALException
+          final OutputStream lowLevelOutputStream,
+          final boolean writeHeader) throws MALException
   {
     try
     {
       MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties, qosProperties);
 
       // if we have a header encode it
-      if (null != header)
+      if (writeHeader && (null != header))
       {
         enc.writeElement(header, ctx);
       }

@@ -967,7 +967,7 @@ public abstract class GENTransport implements MALTransport
     {
       final ByteArrayOutputStream baos = new ByteArrayOutputStream();
       final MALElementOutputStream enc = getStreamFactory().createOutputStream(baos);
-      msg.encodeMessage(getStreamFactory(), enc, baos);
+      msg.encodeMessage(getStreamFactory(), enc, baos, true);
       byte[] data = baos.toByteArray();
 
       // message is encoded!
