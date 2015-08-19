@@ -87,7 +87,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
             {
               finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
             }
-            
+
             if ((null != finalEleShortForms) && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length) && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0))
             {
               enc.encodeNullableOctet(enc.internalEncodeAttributeType(e.getTypeShortForm().byteValue()));
@@ -127,7 +127,10 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
     try
     {
       dos.close();
-      enc.close();
+      if (null != enc)
+      {
+        enc.close();
+      }
     }
     catch (IOException ex)
     {
