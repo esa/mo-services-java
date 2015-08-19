@@ -27,21 +27,45 @@ import java.util.Set;
  */
 abstract class InteractionTransaction
 {
-  private static volatile long transId = 0;
-  
+  private static final long FIRST_FIRST_TWENTY_FIFTEEN_IN_MS = 1420070400L;
+  private static final long MAX_OFFSET = 16777215L;
+  private static volatile long transMag;
+  private static volatile long transOffset;
+
   private InteractionTransaction()
   {
   }
 
+  static
+  {
+    recalculateTransactionIdMagnitude();
+  }
+
   static synchronized Long getTransactionId(Set<Long> keySet)
   {
-    long lt = ++transId;
-    
-    while(keySet.contains(lt))
+    long lt;
+
+    do
     {
-      lt = ++transId;
-    }
-    
+      ++transOffset;
+
+      if (transOffset > MAX_OFFSET)
+      {
+        recalculateTransactionIdMagnitude();
+      }
+      
+      lt = transMag + transOffset;
+    } while (keySet.contains(lt));
+
     return lt;
+  }
+
+  static private void recalculateTransactionIdMagnitude()
+  {
+    long ct = System.currentTimeMillis() - FIRST_FIRST_TWENTY_FIFTEEN_IN_MS;
+    ct = ct << 24;
+
+    transMag = ct;
+    transOffset = 0;
   }
 }
