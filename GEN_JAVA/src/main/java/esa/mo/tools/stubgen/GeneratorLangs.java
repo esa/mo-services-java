@@ -1664,6 +1664,8 @@ public abstract class GeneratorLangs extends GeneratorBase
     String hlp = createElementType(file, area.getName(), null, null, area.getName() + "Helper");
     String ns = convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
 
+    List<String> comObjectCalls = new ArrayList();
+    
     // auto-generate helper object for the COM extra features
     if (service instanceof ExtendedServiceType)
     {
@@ -1678,7 +1680,7 @@ public abstract class GeneratorLangs extends GeneratorBase
         {
           for (ModelObjectType obj : features.getObjects().getObject())
           {
-            createComObjectHelperDetails(file, ns, serviceVar, obj);
+            createComObjectHelperDetails(file, comObjectCalls, ns, serviceVar, obj);
           }
         }
 
@@ -1686,7 +1688,7 @@ public abstract class GeneratorLangs extends GeneratorBase
         {
           for (ModelObjectType obj : features.getEvents().getEvent())
           {
-            createComObjectHelperDetails(file, ns, serviceVar, obj);
+            createComObjectHelperDetails(file, comObjectCalls, ns, serviceVar, obj);
           }
         }
       }
@@ -1694,6 +1696,15 @@ public abstract class GeneratorLangs extends GeneratorBase
 
     MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false, true, null, "init", Arrays.asList(eleFactory), throwsMALException, "Registers all aspects of this service with the provided element factory", null, Arrays.asList(throwsMALException + " If cannot initialise this helper."));
     addServiceConstructor(method, serviceVar, String.valueOf(area.getVersion()), summary);
+
+    if (0 < comObjectCalls.size())
+    {
+      for (String objectCall : comObjectCalls)
+      {
+        method.addMethodStatement(createMethodCall(serviceVar + "_SERVICE.addCOMObject(" + objectCall + "_OBJECT)"));
+      }
+    }
+
     method.addMethodWithDependencyStatement(createMethodCall(ns + ".addService(" + serviceVar + "_SERVICE)"), ns, true);
 
     List<String> typeCalls = new LinkedList<String>();
@@ -1756,9 +1767,11 @@ public abstract class GeneratorLangs extends GeneratorBase
     file.flush();
   }
 
-  protected void createComObjectHelperDetails(ClassWriterProposed file, String areaHelperObject, String serviceVar, ModelObjectType obj) throws IOException
+  protected void createComObjectHelperDetails(ClassWriterProposed file, List<String> comObjectCalls, String areaHelperObject, String serviceVar, ModelObjectType obj) throws IOException
   {
       String objNameCaps = obj.getName().toUpperCase();
+      comObjectCalls.add(objNameCaps);
+      
       CompositeField _objNumberVar = createCompositeElementsDetails(file, false, "_" + objNameCaps + "_OBJECT_NUMBER", TypeUtils.createTypeReference(null, null, "int", false), false, true, "Literal for object " + objNameCaps);
       CompositeField objNumberVar = createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT_NUMBER", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, true, "Instance for object " + objNameCaps);
       CompositeField objectNameVar = createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT_NAME", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false), true, true, "Object name constant.");
