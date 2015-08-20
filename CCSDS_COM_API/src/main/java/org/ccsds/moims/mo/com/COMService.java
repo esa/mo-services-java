@@ -20,6 +20,9 @@
  */
 package org.ccsds.moims.mo.com;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -29,6 +32,9 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public class COMService extends MALService
 {
+  private final Map<Integer, COMObject> objectsByNumber = new HashMap<Integer, COMObject>();
+  private final Map<String, COMObject> objectsByName = new HashMap<String, COMObject>();
+  
   public COMService(UShort number, Identifier name)
   {
     super(number, name);
@@ -37,10 +43,45 @@ public class COMService extends MALService
   /**
    * Adds a COM object to this service specification.
    *
+   * @param object The new object to add.
    * @throws java.lang.IllegalArgumentException If the argument is null.
    */
   @Proposed
-  public void addCOMObject() throws java.lang.IllegalArgumentException
+  public void addCOMObject(COMObject object) throws java.lang.IllegalArgumentException
   {
+    objectsByNumber.put(object.getObjectType().getNumber().getValue(), object);
+    objectsByName.put(object.getObjectName().getValue(), object);
+  }
+
+  /**
+   * Return an object identified by its number.
+   *
+   * @param opNumber The number of the object.
+   * @return The found operation or null.
+   */
+  public COMObject getObjectByNumber(final UShort opNumber)
+  {
+    return objectsByNumber.get(opNumber.getValue());
+  }
+
+  /**
+   * Return an object identified by its name.
+   *
+   * @param opName The name of the object.
+   * @return The found operation or null.
+   */
+  public COMObject getObjectByName(final Identifier opName)
+  {
+    return objectsByName.get(opName.getValue());
+  }
+
+  /**
+   * Returns the set of objects.
+   *
+   * @return The set of objects or an empty array if none defined.
+   */
+  public COMObject[] getObjects()
+  {
+    return (COMObject[]) Arrays.asList(objectsByName.values()).toArray();
   }
 }
