@@ -705,7 +705,7 @@ public class GeneratorJava extends GeneratorLangs
   }
 
   @Override
-  protected ClassWriter createClassFile(File folder, String className) throws IOException
+  protected ClassWriterProposed createClassFile(File folder, String className) throws IOException
   {
     return new JavaClassWriter(folder, className);
   }
@@ -728,7 +728,7 @@ public class GeneratorJava extends GeneratorLangs
     return new JavaClassWriter(destinationFolderName, className);
   }
 
-  private class JavaClassWriter extends AbstractLanguageWriter implements ClassWriter, InterfaceWriter, MethodWriter
+  private class JavaClassWriter extends AbstractLanguageWriter implements ClassWriterProposed, InterfaceWriter, MethodWriter
   {
     private final Writer file;
 
@@ -802,9 +802,15 @@ public class GeneratorJava extends GeneratorLangs
     }
 
     @Override
+    public void addClassVariableProposed(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, String initialValue) throws IOException
+    {
+      addClassVariable(true, isStatic, isFinal, scope, arg, isObject, false, initialValue);
+    }
+
+    @Override
     public void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, String initialValue) throws IOException
     {
-      addClassVariable(isStatic, isFinal, scope, arg, isObject, false, initialValue);
+      addClassVariable(false, isStatic, isFinal, scope, arg, isObject, false, initialValue);
     }
 
     @Override
@@ -833,10 +839,10 @@ public class GeneratorJava extends GeneratorLangs
         val = "(" + iniVal.toString() + ")";
       }
 
-      addClassVariable(isStatic, isFinal, scope, arg, isObject, isArray, val);
+      addClassVariable(false, isStatic, isFinal, scope, arg, isObject, isArray, val);
     }
 
-    protected void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, String initialValue) throws IOException
+    protected void addClassVariable(boolean isProposed, boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, String initialValue) throws IOException
     {
       addMultilineComment(1, false, arg.getComment(), false);
 
@@ -883,6 +889,10 @@ public class GeneratorJava extends GeneratorLangs
         }
       }
 
+      if (isProposed)
+      {
+        file.append(addFileStatement(1, "@org.ccsds.moims.mo.com.Proposed", false));
+      }
       file.append(addFileStatement(1, buf.toString(), true));
     }
 
