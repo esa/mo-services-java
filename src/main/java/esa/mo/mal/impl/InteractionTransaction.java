@@ -28,12 +28,12 @@ import java.util.Set;
 abstract class InteractionTransaction
 {
   /**
-   * The following constant defines a time EPOC for the MAL transaction id. The date is 1st September 2010 which is when
+   * The following constant defines a time epoch for the MAL transaction id. The date is 1st September 2010 which is when
    * the MAL was first published. It is used to subtract from the UNIX time used as the seed for the transaction id. It
-   * gives us an effective time range for transaction values from the MAL EPOC until approximately year 2045. Hopefully
+   * gives us an effective time range for transaction values from the MAL epoch until approximately year 2045. Hopefully
    * we will have come up with a new algorithm before then...
    */
-  private static final long MAL_EPOC = 1283299200000L;
+  private static final long MAL_EPOCH = 1283299200000L;
   private static final long MAX_OFFSET = 16777215L;
   private static volatile long transMag;
   private static volatile long transOffset;
@@ -68,7 +68,7 @@ abstract class InteractionTransaction
 
   static private void recalculateTransactionIdMagnitude()
   {
-    transMag = (System.currentTimeMillis() - MAL_EPOC) << 24;
+    transMag = (System.currentTimeMillis() - MAL_EPOCH) << 24;
     transOffset = 0;
   }
 }
