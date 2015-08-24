@@ -360,7 +360,10 @@ public abstract class GENTransport implements MALTransport
 
     if (null == endpoint)
     {
-      LOGGER.log(Level.INFO, "GEN Creating endpoint {0}", strRoutingName);
+      LOGGER.log(Level.INFO, "GEN Creating endpoint {0} : {1}", new Object[]
+      {
+        localName, strRoutingName
+      });
       endpoint = internalCreateEndpoint(localName, strRoutingName, qosProperties);
       endpointMalMap.put(localName, endpoint);
       endpointRoutingMap.put(strRoutingName, endpoint);
@@ -661,12 +664,18 @@ public abstract class GENTransport implements MALTransport
 
       if (null != oSkel)
       {
-        LOGGER.log(Level.FINE, "GEN Passing to message handler " + oSkel.getLocalName() + " : {0}", smsg);
+        LOGGER.log(Level.FINE, "GEN Passing to message handler {0} : {1}", new Object[]
+        {
+          oSkel.getLocalName(), smsg
+        });
         oSkel.receiveMessage(msg);
       }
       else
       {
-        LOGGER.log(Level.WARNING, "GEN Message handler NOT FOUND " + endpointUriPart + " : {0}", smsg);
+        LOGGER.log(Level.WARNING, "GEN Message handler NOT FOUND {0} : {1}", new Object[]
+        {
+          endpointUriPart, smsg
+        });
         returnErrorMessage(null,
                 msg,
                 MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
@@ -751,6 +760,20 @@ public abstract class GENTransport implements MALTransport
 
           sendMessage(null, true, retMsg);
         }
+        else
+        {
+          LOGGER.log(Level.WARNING, "GEN Unable to return error number ({0}) as no endpoint supplied : {1}", new Object[]
+          {
+            errorNumber, oriMsg.getHeader()
+          });
+        }
+      }
+      else
+      {
+        LOGGER.log(Level.WARNING, "GEN Unable to return error number ({0}) as already a return message : {1}", new Object[]
+        {
+          errorNumber, oriMsg.getHeader()
+        });
       }
     }
     catch (MALTransmitErrorException ex)
@@ -782,7 +805,7 @@ public abstract class GENTransport implements MALTransport
    * @param fullURI the full URI, for example tcpip://10.0.0.1:61616-serviceXYZ
    * @return the root URI, for example tcpip://10.0.0.1:61616
    */
-  protected String getRootURI(String fullURI)
+  public String getRootURI(String fullURI)
   {
     // get the root URI, (e.g. tcpip://10.0.0.1:61616 )
     int serviceDelimPosition = fullURI.indexOf(serviceDelim);
@@ -802,7 +825,7 @@ public abstract class GENTransport implements MALTransport
    * @param uriValue The URI value
    * @return the routing part of the URI
    */
-  protected String getRoutingPart(String uriValue)
+  public String getRoutingPart(String uriValue)
   {
     String endpointUriPart = uriValue;
     final int iFirst = endpointUriPart.indexOf(serviceDelim);
