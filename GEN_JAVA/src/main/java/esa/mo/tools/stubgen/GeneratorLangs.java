@@ -1680,7 +1680,7 @@ public abstract class GeneratorLangs extends GeneratorBase
         {
           for (ModelObjectType obj : features.getObjects().getObject())
           {
-            createComObjectHelperDetails(file, comObjectCalls, ns, serviceVar, obj);
+            createComObjectHelperDetails(file, comObjectCalls, ns, serviceVar, obj, false);
           }
         }
 
@@ -1688,7 +1688,7 @@ public abstract class GeneratorLangs extends GeneratorBase
         {
           for (ModelObjectType obj : features.getEvents().getEvent())
           {
-            createComObjectHelperDetails(file, comObjectCalls, ns, serviceVar, obj);
+            createComObjectHelperDetails(file, comObjectCalls, ns, serviceVar, obj, true);
           }
         }
       }
@@ -1767,7 +1767,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     file.flush();
   }
 
-  protected void createComObjectHelperDetails(ClassWriterProposed file, List<String> comObjectCalls, String areaHelperObject, String serviceVar, ModelObjectType obj) throws IOException
+  protected void createComObjectHelperDetails(ClassWriterProposed file, List<String> comObjectCalls, String areaHelperObject, String serviceVar, ModelObjectType obj, boolean isEvent) throws IOException
   {
       String objNameCaps = obj.getName().toUpperCase();
       comObjectCalls.add(objNameCaps);
@@ -1791,7 +1791,7 @@ public abstract class GeneratorLangs extends GeneratorBase
 
       CompositeField objectInstVar = createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT", TypeUtils.createTypeReference(StdStrings.COM, null, "COMObject", false), false, true, "Object instance.");
       file.addClassVariableProposed(true, false, StdStrings.PUBLIC, objectInstVar, true,
-              "(" + objNameCaps + "_OBJECT_TYPE, " + objNameCaps + "_OBJECT_NAME, " + bodyShortForm + ", " + hasRelated + ", " + relatedShortForm + ", " + hasSource + ", " + sourceShortForm + ")");
+              "(" + objNameCaps + "_OBJECT_TYPE, " + objNameCaps + "_OBJECT_NAME, " + bodyShortForm + ", " + hasRelated + ", " + relatedShortForm + ", " + hasSource + ", " + sourceShortForm + ", " + isEvent + ")");
   }
 
   protected String getReferenceShortForm(AnyTypeReference ref)
