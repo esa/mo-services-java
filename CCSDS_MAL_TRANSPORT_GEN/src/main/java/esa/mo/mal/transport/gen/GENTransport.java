@@ -91,6 +91,10 @@ public abstract class GENTransport implements MALTransport
    */
   protected final char serviceDelim;
   /**
+   * If the protocol delimiter is the same as the service delimiter then we need a count to find the correct service delimiter.
+   */
+  protected final int serviceDelimCounter;
+  /**
    * Delimiter to use when holding routing information in a URL
    */
   protected final char routingDelim;
@@ -195,6 +199,15 @@ public abstract class GENTransport implements MALTransport
     this.qosProperties = properties;
     this.streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
 
+    if (protocolDelim.contains("" + serviceDelim))
+    {
+      serviceDelimCounter = protocolDelim.length() - protocolDelim.replace("" + serviceDelim, "").length();
+    }
+    else
+    {
+      serviceDelimCounter = 0;
+    }
+    
     LOGGER.log(Level.FINE, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
 
     // very crude and faulty test but it will do for testing
@@ -281,6 +294,15 @@ public abstract class GENTransport implements MALTransport
     this.qosProperties = properties;
     streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
 
+    if (protocolDelim.contains("" + serviceDelim))
+    {
+      serviceDelimCounter = protocolDelim.length() - protocolDelim.replace("" + serviceDelim, "").length();
+    }
+    else
+    {
+      serviceDelimCounter = 0;
+    }
+    
     LOGGER.log(Level.FINE, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
 
     // very crude and faulty test but it will do for testing
@@ -808,7 +830,7 @@ public abstract class GENTransport implements MALTransport
   public String getRootURI(String fullURI)
   {
     // get the root URI, (e.g. tcpip://10.0.0.1:61616 )
-    int serviceDelimPosition = fullURI.indexOf(serviceDelim);
+    int serviceDelimPosition = nthIndexOf(fullURI, serviceDelim, serviceDelimCounter);
 
     if (serviceDelimPosition < 0)
     {
@@ -828,7 +850,7 @@ public abstract class GENTransport implements MALTransport
   public String getRoutingPart(String uriValue)
   {
     String endpointUriPart = uriValue;
-    final int iFirst = endpointUriPart.indexOf(serviceDelim);
+    final int iFirst = nthIndexOf(endpointUriPart, serviceDelim, serviceDelimCounter);
     int iSecond = supportsRouting ? endpointUriPart.indexOf(routingDelim) : endpointUriPart.length();
     if (0 > iSecond)
     {
@@ -836,6 +858,33 @@ public abstract class GENTransport implements MALTransport
     }
 
     return endpointUriPart.substring(iFirst + 1, iSecond);
+  }
+
+  /**
+   * Returns the nth index of a character in a String
+   *
+   * @param uriValue The URI value
+   * @param delimiter the delimiter character
+   * @param count The number of occurrences to skip.
+   * @return the routing part of the URI
+   */
+  protected static int nthIndexOf(String uriValue, char delimiter, int count)
+  {
+    int index = -1;
+    
+    while (0 <= count)
+    {
+      index = uriValue.indexOf(delimiter, index + 1);
+      
+      if (-1 == index)
+      {
+        return index;
+      }
+      
+      --count;
+    }
+
+    return index;
   }
 
   /**
