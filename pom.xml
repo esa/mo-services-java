@@ -17,8 +17,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>int.esa.ccsds.mo</groupId>
   <artifactId>POM</artifactId>
-  <version>3</version>
+  <version>4-SNAPSHOT</version>
   <packaging>pom</packaging>
+  
   <name>ESA MO POM</name>
   <description>ESA top level POM for CCSDS MO based artifacts</description>
   <url>http://github.com/esa/CCSDS_MO_POM</url>
@@ -74,20 +75,22 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <ccsds.specification.version>1.0.1</ccsds.specification.version>
-    <esa.stubgen.version>1.2</esa.stubgen.version>
-    <esa.api.version>1.0.1</esa.api.version>
-    <esa.mal.version>1.0.3</esa.mal.version>
-    <esa.gen.encoder.version>1.0.1</esa.gen.encoder.version>
-    <esa.string.encoder.version>1.0.1</esa.string.encoder.version>
-    <esa.binary.encoder.version>1.0.2</esa.binary.encoder.version>
-    <esa.binary_fixed.encoder.version>1.0.2</esa.binary_fixed.encoder.version>
-    <esa.binary_split.encoder.version>1.0.2</esa.binary_split.encoder.version>
-    <esa.gen.transport.version>1.1</esa.gen.transport.version>
-    <esa.rmi.transport.version>1.1</esa.rmi.transport.version>
-    <esa.tcpip.transport.version>1.0</esa.tcpip.transport.version>
-    <esa.jms.transport.version>1.0</esa.jms.transport.version>
-    <esa.support.lib.mal.version>1.0.1</esa.support.lib.mal.version>
-    <esa.support.lib.com.version>1.1</esa.support.lib.com.version>
+    <esa.stubgen.version>1.3-SNAPSHOT</esa.stubgen.version>
+    <esa.api.mal.version>1.0.1</esa.api.mal.version>
+    <esa.api.com.version>1.1-SNAPSHOT</esa.api.com.version>
+    <esa.mal.version>1.0.4-SNAPSHOT</esa.mal.version>
+    <esa.gen.encoder.version>1.0.2-SNAPSHOT</esa.gen.encoder.version>
+    <esa.string.encoder.version>1.0.2-SNAPSHOT</esa.string.encoder.version>
+    <esa.binary.encoder.version>1.0.3-SNAPSHOT</esa.binary.encoder.version>
+    <esa.binary_fixed.encoder.version>1.0.3-SNAPSHOT</esa.binary_fixed.encoder.version>
+    <esa.binary_split.encoder.version>1.0.3-SNAPSHOT</esa.binary_split.encoder.version>
+    <esa.gen.transport.version>1.1.1-SNAPSHOT</esa.gen.transport.version>
+    <esa.rmi.transport.version>1.1.1-SNAPSHOT</esa.rmi.transport.version>
+    <esa.tcpip.transport.version>1.0.1-SNAPSHOT</esa.tcpip.transport.version>
+    <esa.jms.transport.version>1.0.1-SNAPSHOT</esa.jms.transport.version>
+    <esa.support.lib.mal.version>1.0.2-SNAPSHOT</esa.support.lib.mal.version>
+    <esa.support.lib.com.version>1.1.1-SNAPSHOT</esa.support.lib.com.version>
+    
     <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
     <ccsds.specification.download.group>${project.groupId}</ccsds.specification.download.group>
     <ccsds.specification.download.artifact>MOXML</ccsds.specification.download.artifact>
@@ -109,12 +112,12 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>API_MAL</artifactId>
-        <version>${esa.api.version}</version>
+        <version>${esa.api.mal.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>API_COM</artifactId>
-        <version>${esa.api.version}</version>
+        <version>${esa.api.com.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -358,6 +361,7 @@
             <descriptorRefs>
               <descriptorRef>jar-with-dependencies</descriptorRef>
             </descriptorRefs>
+            <finalName>${project.artifactId}</finalName>
           </configuration>
           <executions>
             <execution>
@@ -391,7 +395,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jaxb2-maven-plugin</artifactId>
-          <version>1.6</version>
+          <version>2.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
