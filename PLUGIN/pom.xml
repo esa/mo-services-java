@@ -19,12 +19,12 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>3</version>
+    <version>4-SNAPSHOT</version>
     <relativePath/>
   </parent>
   
   <artifactId>StubGenerator</artifactId>
-  <version>1.2</version>
+  <version>1.3-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   
   <name>ESA MO Stub Generator</name>
@@ -105,12 +105,12 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>StubGenerator_Interfaces</artifactId>
-      <version>1.2</version>
+      <version>1.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>XML_JAXB</artifactId>
-      <version>1.2</version>
+      <version>1.3-SNAPSHOT</version>
     </dependency>
   </dependencies>
   
