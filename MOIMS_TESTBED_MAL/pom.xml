@@ -91,7 +91,6 @@
     <fitnesse.toplevel.test>MalTests</fitnesse.toplevel.test>
     <esa.mal.test_api.version>1.0.1</esa.mal.test_api.version>
     <cnes.mal.test_api.version>3.1.1</cnes.mal.test_api.version>
-    <ccsds.testbed.util.version>1.0.2-SNAPSHOT</ccsds.testbed.util.version>
   </properties>
   
   <build>
@@ -164,6 +163,8 @@
             <ccsds.fitnesse.output.dir>${fitnesse.output.dir}</ccsds.fitnesse.output.dir>
             <slim.port>${fitnesse.port}</slim.port>
             <org.ccsds.moims.mo.testbed.remote.extra.args>${argLine}r</org.ccsds.moims.mo.testbed.remote.extra.args>
+<!--            <org.ccsds.moims.mo.testbed.remote.extra.args>-Djava.util.logging.config.file=logging.properties</org.ccsds.moims.mo.testbed.remote.extra.args>
+            <org.ccsds.moims.mo.testbed.remote.extra.args>-Djava.util.logging.config.file=logging.properties -agentlib:jdwp=transport=dt_socket,server=y,address=4000</org.ccsds.moims.mo.testbed.remote.extra.args>-->
             <org.ccsds.moims.mo.testbed.local.configuration.dir>${org.ccsds.moims.mo.testbed.local.configuration.dir}</org.ccsds.moims.mo.testbed.local.configuration.dir>
             <org.ccsds.moims.mo.testbed.remote.configuration.dir>${org.ccsds.moims.mo.testbed.remote.configuration.dir}</org.ccsds.moims.mo.testbed.remote.configuration.dir>
             <org.ccsds.moims.mo.testbed.remote.output.dir>${fitnesse.output.dir}</org.ccsds.moims.mo.testbed.remote.output.dir>
@@ -201,7 +202,19 @@
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_STRING</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>ENCODING_BINARY_SPLIT</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY_FIXED</artifactId>
         </dependency>
       </dependencies>
       <properties>
@@ -231,7 +244,15 @@
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>ENCODING_BINARY_SPLIT</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY_FIXED</artifactId>
         </dependency>
       </dependencies>
       <properties>
@@ -261,7 +282,19 @@
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_STRING</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>ENCODING_BINARY_SPLIT</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY_FIXED</artifactId>
         </dependency>
       </dependencies>
       <properties>
