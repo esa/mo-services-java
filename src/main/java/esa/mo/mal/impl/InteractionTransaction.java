@@ -66,7 +66,7 @@ abstract class InteractionTransaction
     return lt;
   }
 
-  static private void recalculateTransactionIdMagnitude()
+  private static void recalculateTransactionIdMagnitude()
   {
     transMag = (System.currentTimeMillis() - MAL_EPOCH) << 24;
     transOffset = 0;
