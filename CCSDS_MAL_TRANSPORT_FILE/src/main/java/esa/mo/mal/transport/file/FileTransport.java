@@ -23,6 +23,7 @@ package esa.mo.mal.transport.file;
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.receivers.GENIncomingStreamMessageDecoderFactory;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.util.GENMessagePoller;
 import java.io.IOException;
@@ -143,7 +144,7 @@ public class FileTransport extends GENTransport
       incomingDirectory.register(watcher, java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY);
       tc = new FileTransceiver(incomingDirectory, outgoingDirectory, watcher, transportString, filenameString, deleteFiles);
 
-      asyncPollThread = new GENMessagePoller(this, tc, tc);
+      asyncPollThread = new GENMessagePoller<>(this, tc, tc, new GENIncomingStreamMessageDecoderFactory());
     }
     catch (IOException ex)
     {
@@ -177,9 +178,9 @@ public class FileTransport extends GENTransport
   }
 
   @Override
-  protected GENEndpoint internalCreateEndpoint(final String localName, final Map qosProperties) throws MALException
+  protected GENEndpoint internalCreateEndpoint(String localName, String routingName, Map qosProperties) throws MALException
   {
-    return new GENEndpoint(this, localName, uriBase + localName, false);
+    return new GENEndpoint(this, localName, routingName, uriBase + localName, false);
   }
 
   @Override

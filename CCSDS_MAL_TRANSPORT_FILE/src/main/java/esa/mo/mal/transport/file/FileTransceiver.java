@@ -40,7 +40,7 @@ import java.util.Iterator;
 /**
  * File transmitter and receiver. Used by the GEN message poller class.
  */
-public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessagePoller.GENStreamMessageReceiver, GENMessageSender
+public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver<InputStream>, GENMessageSender
 {
   private final Path incomingDirectory;
   private final Path outgoingDirectory;
