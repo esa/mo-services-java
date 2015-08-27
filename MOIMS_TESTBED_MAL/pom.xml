@@ -19,7 +19,7 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>1.0.2-SNAPSHOt</version>
+    <version>1.0.2-SNAPSHOT</version>
     <relativePath/>
   </parent>
   
