@@ -19,7 +19,7 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>3</version>
+    <version>4-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
@@ -104,13 +104,6 @@
       <plugin>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>StubGenerator</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>StubGenerator_Java</artifactId>
-            <version>1.3-SNAPSHOT</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
