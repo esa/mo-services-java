@@ -83,6 +83,11 @@ public class GENEndpoint implements MALEndpoint
     return localName;
   }
 
+  /**
+   * Returns the routing name used by this endpoint.
+   *
+   * @return the routing name.
+   */
   public String getRoutingName()
   {
     return routingName;
@@ -117,7 +122,7 @@ public class GENEndpoint implements MALEndpoint
   {
     try
     {
-      return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
+      return new GENMessage(wrapBodyParts, createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -166,7 +171,7 @@ public class GENEndpoint implements MALEndpoint
   {
     try
     {
-      return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
+      return new GENMessage(wrapBodyParts, createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -211,7 +216,7 @@ public class GENEndpoint implements MALEndpoint
   {
     try
     {
-      return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
+      return new GENMessage(wrapBodyParts, createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -258,7 +263,7 @@ public class GENEndpoint implements MALEndpoint
   {
     try
     {
-      return new GENMessage(wrapBodyParts, new GENMessageHeader(getURI(),
+      return new GENMessage(wrapBodyParts, createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -433,5 +438,67 @@ public class GENEndpoint implements MALEndpoint
   protected void internalCloseMultiSendHandle(final Object multiSendHandle, final MALMessage[] msgList) throws Exception
   {
     // implemented in derived transport if it uses multi-send handles. 
+  }
+
+  /**
+   * Internal method for creating the correct message header type. Expected to be overridden in derived classes.
+   *
+   * @param uriFrom URI of the message source
+   * @param authenticationId Authentication identifier of the message
+   * @param uriTo URI of the message destination
+   * @param timestamp Timestamp of the message
+   * @param qosLevel QoS level of the message
+   * @param priority Priority of the message
+   * @param domain Domain of the service provider
+   * @param networkZone Network zone of the service provider
+   * @param session Session of the service provider
+   * @param sessionName Session name of the service provider
+   * @param interactionType Interaction type of the operation
+   * @param interactionStage Interaction stage of the interaction
+   * @param transactionId Transaction identifier of the interaction, may be null.
+   * @param serviceArea Area number of the service
+   * @param service Service number
+   * @param operation Operation number
+   * @param serviceVersion Service version number
+   * @param isErrorMessage Flag indicating if the message conveys an error
+   * @return the new message header.
+   */
+  public GENMessageHeader createMessageHeader(final URI uriFrom,
+          final Blob authenticationId,
+          final URI uriTo,
+          final Time timestamp,
+          final QoSLevel qosLevel,
+          final UInteger priority,
+          final IdentifierList domain,
+          final Identifier networkZone,
+          final SessionType session,
+          final Identifier sessionName,
+          final InteractionType interactionType,
+          final UOctet interactionStage,
+          final Long transactionId,
+          final UShort serviceArea,
+          final UShort service,
+          final UShort operation,
+          final UOctet serviceVersion,
+          final Boolean isErrorMessage)
+  {
+    return new GENMessageHeader(uriFrom,
+            authenticationId,
+            uriTo,
+            timestamp,
+            qosLevel,
+            priority,
+            domain,
+            networkZone,
+            session,
+            sessionName,
+            interactionType,
+            interactionStage,
+            transactionId,
+            serviceArea,
+            service,
+            operation,
+            serviceVersion,
+            isErrorMessage);
   }
 }
