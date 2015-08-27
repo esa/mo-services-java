@@ -19,7 +19,7 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>3</version>
+    <version>4-SNAPSHOT</version>
     <relativePath/>
   </parent>
   
@@ -80,6 +80,10 @@
       <artifactId>jaxb-impl</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>API_MAL</artifactId>
     </dependency>
@@ -126,7 +130,9 @@
         </executions>
         <configuration>
           <packageName>org.ccsds.moims.mo.xml.test</packageName>
-          <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+          <sources>
+            <source>src/main/resources/xsd</source>
+          </sources>
         </configuration>
       </plugin>
       <plugin>
