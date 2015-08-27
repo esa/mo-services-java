@@ -80,12 +80,6 @@ public abstract class GENDecoder implements MALDecoder
   }
 
   @Override
-  public String decodeNullableString() throws MALException
-  {
-    return sourceBuffer.getString();
-  }
-
-  @Override
   public Integer decodeInteger() throws MALException
   {
     return sourceBuffer.getSignedInt();
@@ -150,7 +144,7 @@ public abstract class GENDecoder implements MALDecoder
   {
     return new UShort(sourceBuffer.getUnsignedInt16());
   }
-  
+
   @Override
   public Float decodeFloat() throws MALException
   {
@@ -161,6 +155,17 @@ public abstract class GENDecoder implements MALDecoder
   public Double decodeDouble() throws MALException
   {
     return sourceBuffer.getDouble();
+  }
+
+  @Override
+  public String decodeNullableString() throws MALException
+  {
+    if (sourceBuffer.isNotNull())
+    {
+      return sourceBuffer.getString();
+    }
+
+    return null;
   }
 
   @Override
@@ -417,7 +422,7 @@ public abstract class GENDecoder implements MALDecoder
   {
     return element.decode(this);
   }
-  
+
   @Override
   public Element decodeNullableElement(final Element element) throws MALException
   {
@@ -464,7 +469,7 @@ public abstract class GENDecoder implements MALDecoder
      * @throws MALException If there is a problem with the decoding.
      */
     public abstract float getFloat() throws MALException;
-    
+
     /**
      * Gets a double from the incoming stream.
      *
@@ -480,7 +485,7 @@ public abstract class GENDecoder implements MALDecoder
      * @throws MALException If there is a problem with the decoding.
      */
     public abstract BigInteger getBigInteger() throws MALException;
-    
+
     /**
      * Gets a single signed long from the incoming stream.
      *
@@ -552,7 +557,7 @@ public abstract class GENDecoder implements MALDecoder
      * @throws MALException If there is a problem with the decoding.
      */
     public abstract short getUnsignedShort8() throws MALException;
-    
+
     /**
      * Gets a single byte from the incoming stream.
      *
@@ -560,7 +565,7 @@ public abstract class GENDecoder implements MALDecoder
      * @throws MALException If there is a problem with the decoding.
      */
     public abstract byte get8() throws MALException;
-    
+
     /**
      * Gets a byte array from the incoming stream.
      *
@@ -576,7 +581,7 @@ public abstract class GENDecoder implements MALDecoder
      * @throws MALException If there is a problem with the decoding.
      */
     public abstract boolean getBool() throws MALException;
-    
+
     /**
      * Returns true is the next value is not NULL.
      *
@@ -584,7 +589,7 @@ public abstract class GENDecoder implements MALDecoder
      * @throws MALException If there is a problem with the decoding.
      */
     public abstract boolean isNotNull() throws MALException;
-    
+
     /**
      * Gets a byte array from the incoming stream.
      *

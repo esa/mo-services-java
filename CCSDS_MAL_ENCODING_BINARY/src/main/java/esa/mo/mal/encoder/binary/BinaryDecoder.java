@@ -99,6 +99,12 @@ public class BinaryDecoder extends GENDecoder
   }
 
   @Override
+  public String decodeNullableString() throws MALException
+  {
+    return sourceBuffer.getString();
+  }
+
+  @Override
   public Identifier decodeNullableIdentifier() throws MALException
   {
     final String s = sourceBuffer.getString();
