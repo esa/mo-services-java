@@ -20,6 +20,8 @@
  */
 package org.ccsds.moims.mo.testbed.suite;
 
+import java.io.FileOutputStream;
+import java.util.Map;
 import java.util.Properties;
 
 import org.ccsds.moims.mo.mal.MALContext;
@@ -98,9 +100,30 @@ public abstract class BaseLocalMALInstance extends LoggingBase
       logMessage("Security manager system property set to: " + System.getProperty(Configuration.SECURITY_FACTORY_PROP_NAME));
 
       Properties envPrp = Configuration.getProperties("BaseLocalMALInstanceEnv.properties");
-      System.getProperties().putAll(envPrp);
+      envPrp.putAll(Configuration.getProperties(this.getClass().getSimpleName() + "Env.properties"));
 
-      envPrp = Configuration.getProperties(this.getClass().getSimpleName() + "Env.properties");
+      Properties overrideProps = new Properties();
+      
+      for (Map.Entry<Object, Object> entrySet : envPrp.entrySet())
+      {
+        String key = (String)entrySet.getKey();
+        Object value = entrySet.getValue();
+        
+        if (null != System.getProperty(key))
+        {
+          String sval = System.getProperty(key);
+          
+          if (!sval.equals(value))
+          {
+            logMessage("System property overriding setting: " + key);
+            overrideProps.setProperty(key, sval);
+          }
+        }
+      }
+      
+      envPrp.putAll(overrideProps);
+      overrideProps.store(new FileOutputStream("target/OverrideTestServiceProviderEnv.properties"), "");
+      
       System.getProperties().putAll(envPrp);
 
       malFactory = MALContextFactory.newFactory();
