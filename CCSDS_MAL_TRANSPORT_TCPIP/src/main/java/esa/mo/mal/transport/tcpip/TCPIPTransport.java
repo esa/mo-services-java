@@ -324,8 +324,15 @@ public class TCPIPTransport extends GENTransport
     }
     catch (UnknownHostException e)
     {
-      LOGGER.log(Level.WARNING, "TCPIP could not connect to :" + remoteRootURI, e);
+      LOGGER.log(Level.WARNING, "TCPIP could not find host :{0}", remoteRootURI);
+      LOGGER.log(Level.FINE, "TCPIP could not find host :" + remoteRootURI, e);
       throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
+    }
+    catch (java.net.ConnectException e)
+    {
+      LOGGER.log(Level.WARNING, "TCPIP could not connect to :{0}", remoteRootURI);
+      LOGGER.log(Level.FINE, "TCPIP could not connect to :" + remoteRootURI, e);
+      throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DESTINATION_TRANSIENT_ERROR_NUMBER, null), null);
     }
     catch (IOException e)
     {
