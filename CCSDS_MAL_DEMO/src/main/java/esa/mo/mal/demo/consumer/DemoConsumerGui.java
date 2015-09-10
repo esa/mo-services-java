@@ -73,7 +73,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
   private final Identifier network = new Identifier("GROUND");
   private final SessionType session = SessionType.LIVE;
   private final Identifier sessionName = new Identifier("LIVE");
-  private final ParameterLabel[] labels ;
+  private final ParameterLabel[] labels;
   private final Subscription subRequestWildcard;
   private final Subscription subRequestHalf;
   private final Subscription subRequestAll;
@@ -85,6 +85,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
   private MALConsumer tmConsumer = null;
   private BasicMonitorStub demoService = null;
   private boolean running = true;
+  private boolean registered = false;
 
   /**
    * Main command line entry point.
@@ -107,7 +108,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
 
       final String name = System.getProperty("application.name", "DemoServiceConsumer");
       final Integer parametersNum = Integer.parseInt(System.getProperty("esa.mo.mal.demo.consumer.numparams", "512"));
-      
+
       final DemoConsumerGui gui = new DemoConsumerGui(name, parametersNum);
       gui.init();
 
@@ -137,7 +138,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
    */
   public DemoConsumerGui(final String name, Integer parameterNum)
   {
-    labels  = new ParameterLabel[parameterNum];
+    labels = new ParameterLabel[parameterNum];
     initComponents();
 
     this.setTitle(name);
@@ -584,20 +585,24 @@ public class DemoConsumerGui extends javax.swing.JFrame
 
     private void deregMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_deregMenuItemActionPerformed
     {//GEN-HEADEREND:event_deregMenuItemActionPerformed
-      try
+      if (registered)
       {
-        final Identifier subscriptionId = new Identifier("SUB");
-        final IdentifierList subLst = new IdentifierList();
-        subLst.add(subscriptionId);
-        demoService.monitorDeregister(subLst);
-      }
-      catch (MALException ex)
-      {
-        Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      catch (MALInteractionException ex)
-      {
-        Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+        try
+        {
+          registered = false;
+          final Identifier subscriptionId = new Identifier("SUB");
+          final IdentifierList subLst = new IdentifierList();
+          subLst.add(subscriptionId);
+          demoService.monitorDeregister(subLst);
+        }
+        catch (MALException ex)
+        {
+          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (MALInteractionException ex)
+        {
+          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
       }
     }//GEN-LAST:event_deregMenuItemActionPerformed
 
@@ -614,6 +619,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
       try
       {
         demoService.monitorRegister(subRequestWildcard, adapter);
+        registered = true;
       }
       catch (MALException ex)
       {
@@ -630,6 +636,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
       try
       {
         demoService.monitorRegister(subRequestHalf, adapter);
+        registered = true;
       }
       catch (MALException ex)
       {
@@ -646,6 +653,7 @@ public class DemoConsumerGui extends javax.swing.JFrame
       try
       {
         demoService.monitorRegister(subRequestAll, adapter);
+        registered = true;
       }
       catch (MALException ex)
       {
