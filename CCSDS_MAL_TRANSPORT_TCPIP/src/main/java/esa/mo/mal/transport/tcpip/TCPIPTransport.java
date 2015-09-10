@@ -24,6 +24,7 @@ import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENTransport;
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 import esa.mo.mal.transport.gen.receivers.GENIncomingByteMessageDecoderFactory;
+import esa.mo.mal.transport.gen.sending.GENConcurrentMessageSender;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.util.GENMessagePoller;
 import java.io.IOException;
@@ -34,6 +35,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.server.UID;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -116,6 +119,11 @@ public class TCPIPTransport extends GENTransport
    * Holds the server connection listener
    */
   private TCPIPServerConnectionListener serverConnectionListener = null;
+
+  /**
+   * Holds the list of data poller threads
+   */
+  private final List<GENMessagePoller> pollerThreads = new ArrayList<GENMessagePoller>();
 
   /*
    * Constructor.
@@ -239,6 +247,16 @@ public class TCPIPTransport extends GENTransport
   @Override
   public void close() throws MALException
   {
+    synchronized (this)
+    {
+      for (GENMessagePoller entry : pollerThreads)
+      {
+        entry.close();
+      }
+
+      pollerThreads.clear();
+    }
+
     super.close();
 
     synchronized (this)
@@ -294,6 +312,8 @@ public class TCPIPTransport extends GENTransport
       GENMessagePoller rcvr = new GENMessagePoller<byte[]>(this, trans, trans, new GENIncomingByteMessageDecoderFactory());
       rcvr.setRemoteURI(remoteRootURI);
       rcvr.start();
+
+      pollerThreads.add(rcvr);
 
       return trans;
     }
