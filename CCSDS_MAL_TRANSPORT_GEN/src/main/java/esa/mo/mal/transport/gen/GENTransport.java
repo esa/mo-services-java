@@ -604,6 +604,7 @@ public abstract class GENTransport implements MALTransport
     asyncInputReceptionProcessor.shutdown();
     asyncInputDataProcessors.shutdown();
 
+    LOGGER.fine("Closing outgoing channels");
     for (Map.Entry<String, GENConcurrentMessageSender> entry : outgoingDataChannels.entrySet())
     {
       final GENConcurrentMessageSender sender = entry.getValue();
@@ -612,6 +613,7 @@ public abstract class GENTransport implements MALTransport
     }
 
     outgoingDataChannels.clear();
+    LOGGER.fine("Closed outgoing channels");
   }
 
   /**
