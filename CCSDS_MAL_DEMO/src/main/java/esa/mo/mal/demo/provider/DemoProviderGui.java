@@ -176,6 +176,13 @@ public class DemoProviderGui extends javax.swing.JFrame
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setName("Form"); // NOI18N
+    addWindowListener(new java.awt.event.WindowAdapter()
+    {
+      public void windowClosing(java.awt.event.WindowEvent evt)
+      {
+        formWindowClosing(evt);
+      }
+    });
 
     mainPanel.setName("mainPanel"); // NOI18N
     mainPanel.setLayout(new java.awt.BorderLayout());
@@ -408,6 +415,11 @@ public class DemoProviderGui extends javax.swing.JFrame
       genTMMenuItemActionPerformed(null);
     }
   }//GEN-LAST:event_transportSelected
+
+  private void formWindowClosing(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosing
+  {//GEN-HEADEREND:event_formWindowClosing
+    quitMenuItemActionPerformed(null);
+  }//GEN-LAST:event_formWindowClosing
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JSpinner blockSize;

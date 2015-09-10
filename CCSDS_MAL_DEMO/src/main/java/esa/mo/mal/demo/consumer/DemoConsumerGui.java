@@ -370,6 +370,13 @@ public class DemoConsumerGui extends javax.swing.JFrame
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setName("Form"); // NOI18N
+    addWindowListener(new java.awt.event.WindowAdapter()
+    {
+      public void windowClosing(java.awt.event.WindowEvent evt)
+      {
+        formWindowClosing(evt);
+      }
+    });
     getContentPane().setLayout(new java.awt.BorderLayout(0, 4));
 
     jToolBar1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
@@ -735,6 +742,12 @@ public class DemoConsumerGui extends javax.swing.JFrame
       Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
     }
   }//GEN-LAST:event_testSubmitActionPerformed
+
+  private void formWindowClosing(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosing
+  {//GEN-HEADEREND:event_formWindowClosing
+    quitMenuItemActionPerformed(null);
+  }//GEN-LAST:event_formWindowClosing
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JLabel delayLabel;
   private javax.swing.JMenuItem deregMenuItem;
