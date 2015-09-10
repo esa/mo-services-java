@@ -101,7 +101,7 @@
         <executions>
           <execution>
             <id>process-mo-xsd</id>
-            <phase>process-sources</phase>
+            <phase>generate-sources</phase>
             <goals>
               <goal>xjc</goal>
             </goals>
@@ -122,6 +122,24 @@
             <version>2.7.1</version>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>D:\stuff\Projects\CCSDS\working\code\07856_MO_STUBGEN\XML_JAXB\target/generated-sources/stub</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

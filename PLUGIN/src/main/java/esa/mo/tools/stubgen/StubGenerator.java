@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -112,9 +113,10 @@ public class StubGenerator extends AbstractMojo
    */
   protected Map<String, String> jaxbBindings;
   private static final Map<String, Generator> GENERATOR_MAP = new TreeMap<String, Generator>();
+  private static boolean generatorsLoaded = false;
 
   /**
-   * The main entry point when running outside Maven.
+   * The main entry point when running from the command line.
    *
    * @param args the command line arguments, run with -h option to see help.
    */
@@ -150,8 +152,14 @@ public class StubGenerator extends AbstractMojo
         else if ("-l".equalsIgnoreCase(arg))
         {
           // print out list of supported generators and exit
-          loadGenerators(new SystemStreamLog());
-          displayGenerators(System.out);
+          List<Map.Entry<String, String>> generators = getSupportedLanguages(new SystemStreamLog());
+
+          System.out.println("The following language generators are supported:");
+
+          for (Map.Entry<String, String> g : generators)
+          {
+            System.out.println(String.format("%8s", g.getKey()) + "  :  " + g.getValue());
+          }
 
           return;
         }
@@ -211,6 +219,143 @@ public class StubGenerator extends AbstractMojo
     }
   }
 
+  /**
+   * Returns a list of the currently supported generators in a list of name/description pairs. The name value is the one
+   * that should be passed to the generator via the setTargetLanguage method.
+   *
+   * @param logger The logger for the language generators to use when executing.
+   * @return The list of available generators.
+   */
+  public static List<Map.Entry<String, String>> getSupportedLanguages(final org.apache.maven.plugin.logging.Log logger)
+  {
+    loadGenerators(logger);
+
+    List<Map.Entry<String, String>> rv = new ArrayList<Map.Entry<String, String>>(GENERATOR_MAP.size());
+
+    for (Map.Entry<String, Generator> entry : GENERATOR_MAP.entrySet())
+    {
+      final Generator g = entry.getValue();
+
+      rv.add(new AbstractMap.SimpleEntry<String, String>(g.getShortName(), g.getDescription()));
+    }
+
+    return rv;
+  }
+
+  /**
+   * The main entry point when running the stub generator externally from Maven.
+   *
+   * @param xmlDirectory The directory for XML files
+   * @param xmlRefDirectory The directory for XML reference files
+   * @param xsdRefDirectory The directory for XSD type reference files
+   * @param outputDirectory The working directory to create the generated java source files
+   * @return the new stub generator instance
+   */
+  public static StubGenerator createStubGenerator(final File xmlDirectory,
+          final File xmlRefDirectory,
+          final File xsdRefDirectory,
+          final File outputDirectory)
+  {
+    final StubGenerator gen = new StubGenerator();
+
+    gen.setXmlDirectory(xmlDirectory);
+    gen.setXmlRefDirectory(xmlRefDirectory);
+    gen.setXsdRefDirectory(xsdRefDirectory);
+    gen.setOutputDirectory(outputDirectory);
+
+    return gen;
+  }
+
+  /**
+   * Sets the directory for XML files
+   *
+   * @param xmlDirectory The directory for XML files
+   */
+  public void setXmlDirectory(File xmlDirectory)
+  {
+    this.xmlDirectory = xmlDirectory;
+  }
+
+  /**
+   * Sets the directory for XML reference files
+   *
+   * @param xmlRefDirectory The directory for XML reference files
+   */
+  public void setXmlRefDirectory(File xmlRefDirectory)
+  {
+    this.xmlRefDirectory = xmlRefDirectory;
+  }
+
+  /**
+   * Sets the directory for XSD type reference files
+   *
+   * @param xsdRefDirectory The directory for XSD type reference files
+   */
+  public void setXsdRefDirectory(File xsdRefDirectory)
+  {
+    this.xsdRefDirectory = xsdRefDirectory;
+  }
+
+  /**
+   * Sets the working directory to create the generated java source files.
+   *
+   * @param outputDirectory The working directory to create the generated java source files.
+   */
+  public void setOutputDirectory(File outputDirectory)
+  {
+    this.outputDirectory = outputDirectory;
+  }
+
+  /**
+   * Sets the target languages to create.
+   *
+   * @param targetLanguages The target languages to create.
+   */
+  public void setTargetLanguages(String[] targetLanguages)
+  {
+    this.targetLanguages = targetLanguages;
+  }
+
+  /**
+   * Generate structures code.
+   *
+   * @param generateStructures If True, generate structure code.
+   */
+  public void setGenerateStructures(boolean generateStructures)
+  {
+    this.generateStructures = generateStructures;
+  }
+
+  /**
+   * Generate COM code.
+   *
+   * @param generateCOM If True, generate COM specific code.
+   */
+  public void setGenerateCOM(boolean generateCOM)
+  {
+    this.generateCOM = generateCOM;
+  }
+
+  /**
+   * Sets the extra generator specific properties, held in name/value pairs
+   *
+   * @param extraProperties Extra generator specific properties, held in name/value pairs
+   */
+  public void setExtraProperties(Map<String, String> extraProperties)
+  {
+    this.extraProperties = extraProperties;
+  }
+
+  /**
+   * Sets the JAXB bindings, held in URI/package pairs
+   *
+   * @param jaxbBindings
+   */
+  public void setJaxbBindings(Map<String, String> jaxbBindings)
+  {
+    this.jaxbBindings = jaxbBindings;
+  }
+
   @Override
   public void execute() throws MojoExecutionException
   {
@@ -235,7 +380,7 @@ public class StubGenerator extends AbstractMojo
         // load in the specifications
         final List<Map.Entry<SpecificationType, XmlSpecification>> specs = XmlHelper.loadSpecifications(xmlDirectory);
 
-      // run the specifications through each generator
+        // run the specifications through each generator
         // first process the list of languages to generate
         if ((null != targetLanguages) && (0 < targetLanguages.length))
         {
@@ -291,17 +436,6 @@ public class StubGenerator extends AbstractMojo
     out.println("    -? -h         Print this help message");
   }
 
-  private static void displayGenerators(java.io.PrintStream out)
-  {
-    out.println("The following language generators are supported:");
-
-    for (Map.Entry<String, Generator> entry : GENERATOR_MAP.entrySet())
-    {
-      final Generator g = entry.getValue();
-      out.println(String.format("%8s", g.getShortName()) + "  :  " + g.getDescription());
-    }
-  }
-
   private static List<Map.Entry<Schema, XmlSpecification>> loadXsdSpecifications(final File directory) throws IOException, JAXBException
   {
     final List<Map.Entry<Schema, XmlSpecification>> specList = new LinkedList<Map.Entry<Schema, XmlSpecification>>();
@@ -332,33 +466,38 @@ public class StubGenerator extends AbstractMojo
 
   private static void loadGenerators(final org.apache.maven.plugin.logging.Log logger)
   {
-    final Reflections reflections = new Reflections(new ConfigurationBuilder()
-            .setUrls(ClasspathHelper.forClassLoader())
-            .setScanners(new SubTypesScanner()));
-
-    final Set<Class<? extends Generator>> classes = reflections.getSubTypesOf(Generator.class);
-
-    for (Class<? extends Generator> cls : classes)
+    if (!generatorsLoaded)
     {
-      final int mods = cls.getModifiers();
-      if (!Modifier.isAbstract(mods))
-      {
-        try
-        {
-          final Generator g = (Generator) cls.getConstructor(new Class[]
-          {
-            org.apache.maven.plugin.logging.Log.class
-          })
-                  .newInstance(new Object[]
-                          {
-                            logger
-                  });
+      generatorsLoaded = true;
 
-          GENERATOR_MAP.put(g.getShortName().toLowerCase(), g);
-        }
-        catch (Exception ex)
+      final Reflections reflections = new Reflections(new ConfigurationBuilder()
+              .setUrls(ClasspathHelper.forClassLoader())
+              .setScanners(new SubTypesScanner()));
+
+      final Set<Class<? extends Generator>> classes = reflections.getSubTypesOf(Generator.class);
+
+      for (Class<? extends Generator> cls : classes)
+      {
+        final int mods = cls.getModifiers();
+        if (!Modifier.isAbstract(mods))
         {
-          logger.warn("Could not construct generator : " + cls.getName());
+          try
+          {
+            final Generator g = (Generator) cls.getConstructor(new Class[]
+            {
+              org.apache.maven.plugin.logging.Log.class
+            })
+                    .newInstance(new Object[]
+                            {
+                              logger
+                    });
+
+            GENERATOR_MAP.put(g.getShortName().toLowerCase(), g);
+          }
+          catch (Exception ex)
+          {
+            logger.warn("Could not construct generator : " + cls.getName());
+          }
         }
       }
     }

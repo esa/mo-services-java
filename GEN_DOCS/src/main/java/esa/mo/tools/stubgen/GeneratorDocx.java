@@ -49,10 +49,6 @@ public class GeneratorDocx extends GeneratorDocument
   };
   private static final int[] SERVICE_COM_TYPES_TABLE_WIDTHS = new int[]
   {
-    2250, 1685, 2801, 2370
-  };
-  private static final int[] SERVICE_EVENT_TABLE_WIDTHS = new int[]
-  {
     2250, 1685, 2801, 1185, 1185
   };
   private static final int[] OPERATION_OVERVIEW_TABLE_WIDTHS = new int[]
@@ -449,6 +445,7 @@ public class GeneratorDocx extends GeneratorDocument
           docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Number", HEADER_COLOUR);
           docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Body Type", HEADER_COLOUR);
           docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Related points to", HEADER_COLOUR);
+          docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Source points to", HEADER_COLOUR);
           docxFile.endRow();
 
           List<String> cmts = new LinkedList<String>();
@@ -458,6 +455,7 @@ public class GeneratorDocx extends GeneratorDocument
             docxFile.startRow();
             docxFile.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getName());
             docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, String.valueOf(obj.getNumber()));
+
             if (null != obj.getObjectType() && (null != obj.getObjectType().getAny()))
             {
               docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, includeMessageFieldNames, area, service, TypeUtils.getTypeListViaXSDAny(obj.getObjectType().getAny()), null);
@@ -466,21 +464,53 @@ public class GeneratorDocx extends GeneratorDocument
             {
               docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "No body");
             }
-            if (null != obj.getRelatedObject() && (null != obj.getRelatedObject().getObjectType()))
+
+            if (null != obj.getRelatedObject())
             {
-              docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, service, obj.getRelatedObject().getObjectType()), null);
-            }
-            else
-            {
-              if (null != obj.getRelatedObject() && (null != obj.getRelatedObject().getComment()))
+              if (null != obj.getRelatedObject().getObjectType())
               {
-                docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getRelatedObject().getComment(), null);
+                docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, service, obj.getRelatedObject().getObjectType()), null);
               }
               else
               {
-                docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Set to NULL");
+                if (null != obj.getRelatedObject().getComment())
+                {
+                  docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getRelatedObject().getComment(), null);
+                }
+                else
+                {
+                  docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Not specified");
+                }
               }
             }
+            else
+            {
+              docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Set to NULL", STD_COLOUR);
+            }
+
+            if (null != obj.getSourceObject())
+            {
+              if (null != obj.getSourceObject().getObjectType())
+              {
+                docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, service, obj.getSourceObject().getObjectType()), null);
+              }
+              else
+              {
+                if (null != obj.getSourceObject().getComment())
+                {
+                  docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getSourceObject().getComment(), null);
+                }
+                else
+                {
+                  docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Not specified");
+                }
+              }
+            }
+            else
+            {
+              docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Set to NULL");
+            }
+
             docxFile.endRow();
           }
 
@@ -498,73 +528,75 @@ public class GeneratorDocx extends GeneratorDocument
         evntTable.addTitle(3, "COM Event Service usage");
         evntTable.addNumberedComment(splitString(null, features.getEvents().getComment()));
 
-        evntTable.startTable(SERVICE_EVENT_TABLE_WIDTHS, service.getName() + " Service Events");
+        evntTable.startTable(SERVICE_COM_TYPES_TABLE_WIDTHS, service.getName() + " Service Events");
 
         evntTable.startRow();
-        evntTable.addCell(0, SERVICE_EVENT_TABLE_WIDTHS, "Event Name", HEADER_COLOUR);
-        evntTable.addCell(1, SERVICE_EVENT_TABLE_WIDTHS, "Object Number", HEADER_COLOUR);
-        evntTable.addCell(2, SERVICE_EVENT_TABLE_WIDTHS, "Object Body Type", HEADER_COLOUR);
-        evntTable.addCell(3, SERVICE_EVENT_TABLE_WIDTHS, "Related points to", HEADER_COLOUR);
-        evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, "Source points to", HEADER_COLOUR);
+        evntTable.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, "Event Name", HEADER_COLOUR);
+        evntTable.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Number", HEADER_COLOUR);
+        evntTable.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Body Type", HEADER_COLOUR);
+        evntTable.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Related points to", HEADER_COLOUR);
+        evntTable.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Source points to", HEADER_COLOUR);
         evntTable.endRow();
 
         for (ModelObjectType evnt : features.getEvents().getEvent())
         {
           evntTable.startRow();
-          evntTable.addCell(0, SERVICE_EVENT_TABLE_WIDTHS, evnt.getName(), STD_COLOUR);
-          evntTable.addCell(1, SERVICE_EVENT_TABLE_WIDTHS, String.valueOf(evnt.getNumber()), STD_COLOUR);
+          evntTable.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, evnt.getName(), STD_COLOUR);
+          evntTable.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, String.valueOf(evnt.getNumber()), STD_COLOUR);
+
           if (null != evnt.getObjectType())
           {
-            evntTable.addCell(2, SERVICE_EVENT_TABLE_WIDTHS, includeMessageFieldNames, area, service, TypeUtils.getTypeListViaXSDAny(evnt.getObjectType().getAny()), null);
+            evntTable.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, includeMessageFieldNames, area, service, TypeUtils.getTypeListViaXSDAny(evnt.getObjectType().getAny()), null);
           }
           else
           {
-            evntTable.addCell(2, SERVICE_EVENT_TABLE_WIDTHS, "No body", STD_COLOUR);
+            evntTable.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "No body", STD_COLOUR);
           }
+
           if (null != evnt.getRelatedObject())
           {
             if (null != evnt.getRelatedObject().getObjectType())
             {
-              evntTable.addCell(3, SERVICE_EVENT_TABLE_WIDTHS, createFQTypeName(area, service, evnt.getRelatedObject().getObjectType()), null);
+              evntTable.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, service, evnt.getRelatedObject().getObjectType()), null);
             }
             else
             {
               if (null != evnt.getRelatedObject().getComment())
               {
-                evntTable.addCell(3, SERVICE_EVENT_TABLE_WIDTHS, evnt.getRelatedObject().getComment(), null);
+                evntTable.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, evnt.getRelatedObject().getComment(), null);
               }
               else
               {
-                evntTable.addCell(3, SERVICE_EVENT_TABLE_WIDTHS, "Not specified");
+                evntTable.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Not specified");
               }
             }
           }
           else
           {
-            evntTable.addCell(3, SERVICE_EVENT_TABLE_WIDTHS, "Set to NULL", STD_COLOUR);
+            evntTable.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Set to NULL", STD_COLOUR);
           }
-          
+
           if (null != evnt.getSourceObject())
           {
             if (null != evnt.getSourceObject().getObjectType())
             {
-              evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, createFQTypeName(area, service, evnt.getSourceObject().getObjectType()), null);
+              evntTable.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, service, evnt.getSourceObject().getObjectType()), null);
             }
             else
             {
               if (null != evnt.getSourceObject().getComment())
               {
-                evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, evnt.getSourceObject().getComment(), null);
+                evntTable.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, evnt.getSourceObject().getComment(), null);
               }
               else
               {
-                evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, "Not specified");
+                evntTable.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Not specified");
               }
             }
           }
           else
           {
-            evntTable.addCell(4, SERVICE_EVENT_TABLE_WIDTHS, "Set to NULL");
+            evntTable.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Set to NULL");
           }
 
           evntTable.endRow();
