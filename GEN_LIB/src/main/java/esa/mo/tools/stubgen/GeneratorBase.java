@@ -165,6 +165,19 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   }
 
   @Override
+  public void reset()
+  {
+    enumTypesSet.clear();
+    abstractTypesSet.clear();
+    allTypesMap.clear();
+    compositeTypesMap.clear();
+    attributeTypesMap.clear();
+    nativeTypesMap.clear();
+    errorDefinitionMap.clear();
+    jaxbBindings.clear();
+  }
+
+  @Override
   public String getBasePackage()
   {
     return config.getBasePackage();

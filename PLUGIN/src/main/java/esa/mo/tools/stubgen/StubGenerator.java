@@ -510,6 +510,7 @@ public class StubGenerator extends AbstractMojo
   {
     try
     {
+      generator.reset();
       generator.init(outputDirectory.getPath(), generateStructures, generateCOM, extraProperties);
       generator.setJaxbBindings(jaxbBindings);
       generator.postinit(outputDirectory.getPath(), generateStructures, generateCOM, extraProperties);

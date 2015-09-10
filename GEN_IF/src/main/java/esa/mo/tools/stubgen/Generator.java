@@ -117,4 +117,10 @@ public interface Generator
    * @throws IOException If there are problems writing the files.
    */
   void close(String destinationFolderName) throws IOException;
+
+  /**
+   * Resets the generator allowing it to be reused.
+   *
+s   */
+  void reset();
 }
