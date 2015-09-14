@@ -19,12 +19,12 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>4-SNAPSHOT</version>
+    <version>2</version>
     <relativePath/>
   </parent>
 
   <artifactId>API_COM_TEST</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
 
   <name>ESA TEST COM Java API</name>
