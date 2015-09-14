@@ -135,7 +135,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>D:\stuff\Projects\CCSDS\working\code\07856_MO_STUBGEN\XML_JAXB\target/generated-sources/stub</source>
+                <source>target/generated-sources/stub</source>
               </sources>
             </configuration>
           </execution>
