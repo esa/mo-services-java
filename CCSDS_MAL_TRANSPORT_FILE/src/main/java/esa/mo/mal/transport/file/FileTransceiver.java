@@ -85,10 +85,15 @@ public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessage
 
     java.io.File tmpFile = new File(outgoingDirectory.toFile(), tmpname + ".tmp");
 
-    try (java.io.FileOutputStream fos = new FileOutputStream(tmpFile))
+    java.io.FileOutputStream fos = new FileOutputStream(tmpFile);
+    try
     {
       fos.write(packetData.getEncodedMessage());
       fos.flush();
+    }
+    finally
+    {
+      fos.close();
     }
 
     // rename file to correct file name

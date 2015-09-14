@@ -144,7 +144,7 @@ public class FileTransport extends GENTransport
       incomingDirectory.register(watcher, java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY);
       tc = new FileTransceiver(incomingDirectory, outgoingDirectory, watcher, transportString, filenameString, deleteFiles);
 
-      asyncPollThread = new GENMessagePoller<>(this, tc, tc, new GENIncomingStreamMessageDecoderFactory());
+      asyncPollThread = new GENMessagePoller<InputStream>(this, tc, tc, new GENIncomingStreamMessageDecoderFactory());
     }
     catch (IOException ex)
     {
