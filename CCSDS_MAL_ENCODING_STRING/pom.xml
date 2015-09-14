@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>4-SNAPSHOT</version>
+    <version>4</version>
     <relativePath/>
   </parent>
   
   <artifactId>ENCODING_STRING</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.2</version>
 
   <name>ESA MAL String Java encoder</name>
   <description>A simple Java String based encoder for the CCSDS MAL</description>

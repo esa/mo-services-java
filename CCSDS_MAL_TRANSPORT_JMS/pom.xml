@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>4-SNAPSHOT</version>
+    <version>4</version>
     <relativePath/>
   </parent>
   
   <artifactId>TRANSPORT_JMS</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
 
   <name>ESA MAL JMS transport framework</name>
   <description>A Java JMS transport framework for CCSDS MAL</description>
