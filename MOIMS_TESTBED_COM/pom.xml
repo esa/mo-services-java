@@ -81,7 +81,7 @@
   <properties>
     <fitnesse.toplevel.test>ComTests</fitnesse.toplevel.test>
     <ccsds.testbed.com.version>1.0.2-SNAPSHOT</ccsds.testbed.com.version>
-    <esa.com.test_api.version>1.0.2-SNAPSHOT</esa.com.test_api.version>
+    <esa.com.test_api.version>1.0.1</esa.com.test_api.version>
     <esa.com.test_provider.version>1.0.2-SNAPSHOT</esa.com.test_provider.version>
     <cnes.com.test_api.version>3.1.1</cnes.com.test_api.version>
     <joram.amqp.version>0.4</joram.amqp.version>

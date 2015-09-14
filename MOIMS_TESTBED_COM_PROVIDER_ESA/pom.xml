@@ -70,7 +70,7 @@
 
 
   <properties>
-    <esa.com.test_api.version>1.0.2-SNAPSHOT</esa.com.test_api.version>
+    <esa.com.test_api.version>1.0.1</esa.com.test_api.version>
     <ccsds.testbed.com.version>1.0.2-SNAPSHOT</ccsds.testbed.com.version>
   </properties>
   
