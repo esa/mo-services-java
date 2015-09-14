@@ -91,7 +91,8 @@ public abstract class GENTransport implements MALTransport
    */
   protected final char serviceDelim;
   /**
-   * If the protocol delimiter is the same as the service delimiter then we need a count to find the correct service delimiter.
+   * If the protocol delimiter is the same as the service delimiter then we need a count to find the correct service
+   * delimiter.
    */
   protected final int serviceDelimCounter;
   /**
@@ -207,7 +208,7 @@ public abstract class GENTransport implements MALTransport
     {
       serviceDelimCounter = 0;
     }
-    
+
     LOGGER.log(Level.FINE, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
 
     // very crude and faulty test but it will do for testing
@@ -302,7 +303,7 @@ public abstract class GENTransport implements MALTransport
     {
       serviceDelimCounter = 0;
     }
-    
+
     LOGGER.log(Level.FINE, "GEN Creating element stream : {0}", streamFactory.getClass().getName());
 
     // very crude and faulty test but it will do for testing
@@ -725,6 +726,26 @@ public abstract class GENTransport implements MALTransport
         LOGGER.log(Level.SEVERE, "GEN Error occurred when return error data : {0}", ex);
       }
     }
+    catch (Error e)
+    {
+      // This is bad, Java errors are serious, so inform the other side if we can
+      LOGGER.log(Level.SEVERE, "GEN Error occurred when processing message : {0}", e);
+
+      final StringWriter wrt = new StringWriter();
+      e.printStackTrace(new PrintWriter(wrt));
+
+      try
+      {
+        returnErrorMessage(null,
+                msg,
+                MALHelper.INTERNAL_ERROR_NUMBER,
+                "GEN Error occurred: " + e.toString() + " : " + wrt.toString());
+      }
+      catch (MALException ex)
+      {
+        LOGGER.log(Level.SEVERE, "GEN Error occurred when return error data : {0}", ex);
+      }
+    }
   }
 
   /**
@@ -873,16 +894,16 @@ public abstract class GENTransport implements MALTransport
   protected static int nthIndexOf(String uriValue, char delimiter, int count)
   {
     int index = -1;
-    
+
     while (0 <= count)
     {
       index = uriValue.indexOf(delimiter, index + 1);
-      
+
       if (-1 == index)
       {
         return index;
       }
-      
+
       --count;
     }
 
