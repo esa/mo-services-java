@@ -302,62 +302,70 @@
     <xsd:annotation>
       <xsd:documentation xml:lang="en">List that contains one or more data type definitions including those only allowed in the MAL Area.</xsd:documentation>
     </xsd:annotation>
-    <xsd:choice minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="fundamental" type="mal:FundamentalType">
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en">Only to be used for Element, Attribute, and Composite. Shall only be present in the MAL Area type definitions.</xsd:documentation>
-        </xsd:annotation>
-      </xsd:element>
-      <xsd:element name="attribute" type="mal:AttributeType">
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en">Shall only be present in the MAL Area type definitions.</xsd:documentation>
-        </xsd:annotation>
-      </xsd:element>
-      <xsd:element name="composite" type="mal:CompositeType">
-        <xsd:unique name="areaFieldName">
-          <xsd:annotation>
-            <xsd:documentation xml:lang="en">Field names inside a Composite must be unique.</xsd:documentation>
-          </xsd:annotation>
-          <xsd:selector xpath="mal:field"/>
-          <xsd:field    xpath="@name"/>
-        </xsd:unique>
-      </xsd:element>
-      <xsd:element name="enumeration" type="mal:EnumerationType">
-        <xsd:unique name="areaEnumerationItemNumber">
-          <xsd:annotation>
-            <xsd:documentation xml:lang="en">Item value numbers inside an Enumeration must be unique.</xsd:documentation>
-          </xsd:annotation>
-          <xsd:selector xpath="mal:item"/>
-          <xsd:field    xpath="@nvalue"/>
-        </xsd:unique>
-      </xsd:element>
-    </xsd:choice>
+    <xsd:complexContent>
+      <xsd:extension base="mal:DocumentationBaseType">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="fundamental" type="mal:FundamentalType">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Only to be used for Element, Attribute, and Composite. Shall only be present in the MAL Area type definitions.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="attribute" type="mal:AttributeType">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Shall only be present in the MAL Area type definitions.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="composite" type="mal:CompositeType">
+            <xsd:unique name="areaFieldName">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">Field names inside a Composite must be unique.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:selector xpath="mal:field"/>
+              <xsd:field    xpath="@name"/>
+            </xsd:unique>
+          </xsd:element>
+          <xsd:element name="enumeration" type="mal:EnumerationType">
+            <xsd:unique name="areaEnumerationItemNumber">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">Item value numbers inside an Enumeration must be unique.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:selector xpath="mal:item"/>
+              <xsd:field    xpath="@nvalue"/>
+            </xsd:unique>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="DataTypeList">
     <xsd:annotation>
       <xsd:documentation xml:lang="en">List that contains one or more data type definitions.</xsd:documentation>
     </xsd:annotation>
-    <xsd:choice minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="composite" type="mal:CompositeType">
-        <xsd:unique name="fieldName">
-          <xsd:annotation>
-            <xsd:documentation xml:lang="en">Field names inside a Composite must be unique.</xsd:documentation>
-          </xsd:annotation>
-          <xsd:selector xpath="mal:field"/>
-          <xsd:field    xpath="@name"/>
-        </xsd:unique>
-      </xsd:element>
-      <xsd:element name="enumeration" type="mal:EnumerationType">
-        <xsd:unique name="enumerationItemNumber">
-          <xsd:annotation>
-            <xsd:documentation xml:lang="en">Item value numbers inside an Enumeration must be unique.</xsd:documentation>
-          </xsd:annotation>
-          <xsd:selector xpath="mal:item"/>
-          <xsd:field    xpath="@nvalue"/>
-        </xsd:unique>
-      </xsd:element>
-    </xsd:choice>
+    <xsd:complexContent>
+      <xsd:extension base="mal:DocumentationBaseType">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="composite" type="mal:CompositeType">
+            <xsd:unique name="fieldName">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">Field names inside a Composite must be unique.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:selector xpath="mal:field"/>
+              <xsd:field    xpath="@name"/>
+            </xsd:unique>
+          </xsd:element>
+          <xsd:element name="enumeration" type="mal:EnumerationType">
+            <xsd:unique name="enumerationItemNumber">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">Item value numbers inside an Enumeration must be unique.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:selector xpath="mal:item"/>
+              <xsd:field    xpath="@nvalue"/>
+            </xsd:unique>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="OperationErrorList">
