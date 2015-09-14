@@ -73,7 +73,6 @@
     <module>CCSDS_MAL_TRANSPORT_JMS</module>
     <module>CCSDS_MAL_TRANSPORT_ACTIVEMQ</module>
     <module>CCSDS_MAL_TRANSPORT_SPP</module>
-    <module>CCSDS_MAL_TRANSPORT_FILE</module>
   </modules>
 
   <profiles>
@@ -85,6 +84,15 @@
           <artifactId>API_MAL</artifactId>
         </dependency>
       </dependencies>
+    </profile>
+    <profile>
+      <id>One-Oh-Seven-Needed</id>
+      <activation>
+        <jdk>[1.7,]</jdk>
+      </activation>
+      <modules>
+        <module>CCSDS_MAL_TRANSPORT_FILE</module>
+      </modules>  
     </profile>
   </profiles>
 </project>
