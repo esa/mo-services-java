@@ -31,7 +31,8 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
  */
 public abstract class SubscriptionSource
 {
-  private NotifyMessageSet.MessageHeaderDetails msgHeaderDetails;
+  private final NotifyMessageSet.MessageHeaderDetails msgHeaderDetails;
+  private int commsErrorCount = 0;
 
   /**
    * Constructor.
@@ -51,11 +52,39 @@ public abstract class SubscriptionSource
   }
 
   /**
+   * Returns the message header details for this subscription source.
+   *
    * @return the msgHeaderDetails
    */
   public NotifyMessageSet.MessageHeaderDetails getMsgHeaderDetails()
   {
     return msgHeaderDetails;
+  }
+
+  /**
+   * Increments the count of communication errors.
+   */
+  public void incCommsErrorCount()
+  {
+    ++commsErrorCount;
+  }
+
+  /**
+   * Returns the current communications error count.
+   *
+   * @return the error count.
+   */
+  public int getCommsErrorCount()
+  {
+    return commsErrorCount;
+  }
+
+  /**
+   * Resets the count of communication errors.
+   */
+  public void resetCommsErrorCount()
+  {
+    commsErrorCount = 0;
   }
 
   /**

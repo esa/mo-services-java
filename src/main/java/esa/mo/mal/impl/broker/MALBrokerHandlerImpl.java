@@ -46,6 +46,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 import org.ccsds.moims.mo.mal.transport.MALPublishRegisterBody;
 import org.ccsds.moims.mo.mal.transport.MALRegisterBody;
+import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 
 /**
  * Base implementation of the MALBrokerHandler class that should be extended by real broker implementations.
@@ -128,22 +129,31 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         {
           for (NotifyMessage notifyMessage : notifyMessageSet.messages)
           {
-            binding.sendNotify(notifyMessage.area,
-                    notifyMessage.service,
-                    notifyMessage.operation,
-                    notifyMessage.version,
-                    notifyMessageSet.details.uriTo,
-                    notifyMessageSet.details.transactionId,
-                    notifyMessage.domain,
-                    notifyMessage.networkZone,
-                    notifyMessageSet.details.sessionType,
-                    notifyMessageSet.details.sessionName,
-                    notifyMessageSet.details.qosLevel,
-                    notifyMessageSet.details.qosProps,
-                    notifyMessageSet.details.priority,
-                    notifyMessage.subscriptionId,
-                    notifyMessage.updateHeaderList,
-                    notifyMessage.updateList);
+            try
+            {
+              binding.sendNotify(notifyMessage.area,
+                      notifyMessage.service,
+                      notifyMessage.operation,
+                      notifyMessage.version,
+                      notifyMessageSet.details.uriTo,
+                      notifyMessageSet.details.transactionId,
+                      notifyMessage.domain,
+                      notifyMessage.networkZone,
+                      notifyMessageSet.details.sessionType,
+                      notifyMessageSet.details.sessionName,
+                      notifyMessageSet.details.qosLevel,
+                      notifyMessageSet.details.qosProps,
+                      notifyMessageSet.details.priority,
+                      notifyMessage.subscriptionId,
+                      notifyMessage.updateHeaderList,
+                      notifyMessage.updateList);
+            }
+            catch (MALTransmitErrorException ex)
+            {
+              MALBrokerImpl.LOGGER.log(Level.WARNING, "Exception raised during transmission of NOTIFY to consumer : {0}", notifyMessageSet.details.uriTo.getValue());
+
+              handleConsumerCommunicationError(key, notifyMessageSet);
+            }
           }
         }
         else
@@ -163,24 +173,12 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     final BrokerKey key = new BrokerKey(hdr);
 
     report(key);
+
     if ((null != hdr) && (null != lst) && !lst.isEmpty())
     {
-      final SubscriptionSource ent = getConsumerEntry(key, hdr, false);
-      if (null != ent)
-      {
-        ent.removeSubscriptions(lst);
-        if (!ent.active())
-        {
-          final Map<String, SubscriptionSource> rv = getConsumerMap(key);
-          rv.remove(ent.getSignature());
-
-          if (rv.isEmpty())
-          {
-            consumerMap.remove(key);
-          }
-        }
-      }
+      internalDeregisterSubscriptions(key, getConsumerEntry(key, hdr, false), lst);
     }
+
     report(key);
   }
 
@@ -327,6 +325,11 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     return ent;
   }
 
+  private SubscriptionSource getConsumerEntry(final BrokerKey key, final String consumerUri)
+  {
+    return getConsumerMap(key).get(consumerUri);
+  }
+
   private Map<StringPair, PublisherSource> getProviderMap(final BrokerKey key)
   {
     Map<StringPair, PublisherSource> rv = providerMap.get(key);
@@ -353,6 +356,42 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     }
 
     return details;
+  }
+
+  private void handleConsumerCommunicationError(final BrokerKey key, final NotifyMessageSet notifyMessageSet)
+  {
+    final SubscriptionSource ent = getConsumerEntry(key, notifyMessageSet.details.uriTo.getValue());
+
+    if (null != ent)
+    {
+      ent.incCommsErrorCount();
+
+      if (ent.getCommsErrorCount() > 2)
+      {
+        MALBrokerImpl.LOGGER.log(Level.WARNING, "Removing to consumer due to too many comms errors : {0}", notifyMessageSet.details.uriTo.getValue());
+
+        // three strikes and you're out!
+        internalDeregisterSubscriptions(key, ent, null);
+      }
+    }
+  }
+
+  private void internalDeregisterSubscriptions(final BrokerKey key, final SubscriptionSource ent, final IdentifierList subscriptions)
+  {
+    if (null != ent)
+    {
+      ent.removeSubscriptions(subscriptions);
+      if (!ent.active())
+      {
+        final Map<String, SubscriptionSource> rv = getConsumerMap(key);
+        rv.remove(ent.getSignature());
+
+        if (rv.isEmpty())
+        {
+          consumerMap.remove(key);
+        }
+      }
+    }
   }
 
   /**

@@ -44,6 +44,19 @@ public class BrokerKey implements Comparable
     this.sessionName = hdr.getSessionName().getValue();
   }
 
+  /**
+   * Constructor.
+   * @param uri Broker URI
+   * @param session Broker session enumeration ordinal
+   * @param sessionName Broker session name
+   */
+  public BrokerKey(String uri, int session, String sessionName)
+  {
+    this.uri = uri;
+    this.session = session;
+    this.sessionName = sessionName;
+  }
+
   @Override
   public boolean equals(final Object obj)
   {

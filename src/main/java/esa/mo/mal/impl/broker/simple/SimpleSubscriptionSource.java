@@ -109,8 +109,8 @@ class SimpleSubscriptionSource extends SubscriptionSource
 
     for (Map.Entry<String, SimpleSubscriptionDetails> ent : details.entrySet())
     {
-      final NotifyMessage subUpdate =
-              ent.getValue().populateNotifyList(srcHdr, srcDomainId, updateHeaderList, publishBody);
+      final NotifyMessage subUpdate
+              = ent.getValue().populateNotifyList(srcHdr, srcDomainId, updateHeaderList, publishBody);
       if (null != subUpdate)
       {
         msgs.add(subUpdate);
@@ -140,12 +140,21 @@ class SimpleSubscriptionSource extends SubscriptionSource
   @Override
   public void removeSubscriptions(final IdentifierList subscriptions)
   {
-    for (Identifier sub : subscriptions)
+    if (null != subscriptions)
     {
-      details.remove(sub.getValue());
-    }
+      for (Identifier sub : subscriptions)
+      {
+        details.remove(sub.getValue());
+      }
 
-    updateIds();
+      updateIds();
+    }
+    else
+    {
+      // remove all
+      details.clear();
+      required.clear();
+    }
   }
 
   private void updateIds()
