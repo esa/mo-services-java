@@ -38,6 +38,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 public class SPPMessageHeader extends GENMessageHeader
 {
   private final int primaryApidQualifier;
+  private final SPPConfiguration configuration;
   private final SPPURIRepresentation uriRepresentation;
   private final SPPSourceSequenceCounter ssCounter;
   private short ssc = -1;
@@ -50,8 +51,9 @@ public class SPPMessageHeader extends GENMessageHeader
    * @param ssCounter Interface used to get the SPP source sequence count
    *
    */
-  public SPPMessageHeader(int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter)
+  public SPPMessageHeader(SPPConfiguration configuration, int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter)
   {
+    this.configuration = configuration;
     this.primaryApidQualifier = primaryApidQualifier;
     this.uriRepresentation = uriRep;
     this.ssCounter = ssCounter;
@@ -82,10 +84,11 @@ public class SPPMessageHeader extends GENMessageHeader
    * @param serviceVersion Service version number
    * @param isErrorMessage Flag indicating if the message conveys an error
    */
-  public SPPMessageHeader(int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter, URI uriFrom, Blob authenticationId, URI uriTo, Time timestamp, QoSLevel qosLevel, UInteger priority, IdentifierList domain, Identifier networkZone, SessionType session, Identifier sessionName, InteractionType interactionType, UOctet interactionStage, Long transactionId, UShort serviceArea, UShort service, UShort operation, UOctet serviceVersion, Boolean isErrorMessage)
+  public SPPMessageHeader(SPPConfiguration configuration, int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter, URI uriFrom, Blob authenticationId, URI uriTo, Time timestamp, QoSLevel qosLevel, UInteger priority, IdentifierList domain, Identifier networkZone, SessionType session, Identifier sessionName, InteractionType interactionType, UOctet interactionStage, Long transactionId, UShort serviceArea, UShort service, UShort operation, UOctet serviceVersion, Boolean isErrorMessage)
   {
     super(uriFrom, authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone, session, sessionName, interactionType, interactionStage, transactionId, serviceArea, service, operation, serviceVersion, isErrorMessage);
 
+    this.configuration = configuration;
     this.primaryApidQualifier = primaryApidQualifier;
     this.uriRepresentation = uriRep;
     this.ssCounter = ssCounter;
@@ -94,7 +97,7 @@ public class SPPMessageHeader extends GENMessageHeader
   @Override
   public Element createElement()
   {
-    return new SPPMessageHeader(primaryApidQualifier, uriRepresentation, ssCounter);
+    return new SPPMessageHeader(configuration, primaryApidQualifier, uriRepresentation, ssCounter);
   }
 
   @Override
@@ -141,39 +144,55 @@ public class SPPMessageHeader extends GENMessageHeader
     encoder.encodeUShort(new UShort(secondaryApidQualifier));
     encoder.encodeLong(transactionId);
 
-    boolean hasSrcSubId = uriRepresentation.hasSubId(URIFrom);
-    boolean hasDstSubId = uriRepresentation.hasSubId(URITo);
+    encoder.encodeUOctet(new UOctet((short) configuration.getFlags()));
 
-    int flags = 0x10;
-    if (hasSrcSubId)
-    {
-      flags = flags | 0x80;
-    }
-    if (hasDstSubId)
-    {
-      flags = flags | 0x40;
-    }
-    encoder.encodeUOctet(new UOctet((short) flags));
-
-    if (hasSrcSubId)
+    if (configuration.isSrcSubId())
     {
       encoder.encodeUOctet(new UOctet(uriRepresentation.getSubId(URIFrom)));
     }
 
-    if (hasDstSubId)
+    if (configuration.isDstSubId())
     {
       encoder.encodeUOctet(new UOctet(uriRepresentation.getSubId(URITo)));
     }
 
-    encoder.encodeTime(timestamp);
+    if (configuration.isPriority())
+    {
+      encoder.encodeUInteger(priority);
+    }
+
+    if (configuration.isTimestamp())
+    {
+      encoder.encodeTime(timestamp);
+    }
+
+    if (configuration.isNetwork())
+    {
+      encoder.encodeIdentifier(networkZone);
+    }
+
+    if (configuration.isSession())
+    {
+      encoder.encodeIdentifier(sessionName);
+    }
+
+    if (configuration.isDomain())
+    {
+      encoder.encodeElement(domain);
+    }
+
+    if (configuration.isAuth())
+    {
+      encoder.encodeBlob(authenticationId);
+    }
   }
 
   @Override
   public Element decode(final MALDecoder decoder) throws MALException
   {
     // CCSDS packet header
-    int ccsdsHdrPt1 = decoder.decodeUShort().getValue();
-    int ccsdsHdrPt2 = decoder.decodeUShort().getValue();
+    final int ccsdsHdrPt1 = decoder.decodeUShort().getValue();
+    final int ccsdsHdrPt2 = decoder.decodeUShort().getValue();
     decoder.decodeUShort();
     ssc = (short) (ccsdsHdrPt2 & 0x3FFF);
 
@@ -183,7 +202,7 @@ public class SPPMessageHeader extends GENMessageHeader
     service = decoder.decodeUShort();
     operation = decoder.decodeUShort();
     areaVersion = decoder.decodeUOctet();
-    int moHdrPt1 = decoder.decodeUShort().getValue();
+    final int moHdrPt1 = decoder.decodeUShort().getValue();
     int apidQualifier = decoder.decodeUShort().getValue();
     transactionId = decoder.decodeLong();
     if (0 == transactionId)
@@ -201,6 +220,54 @@ public class SPPMessageHeader extends GENMessageHeader
     if (0 != (flags & 0x40))
     {
       destSubId = decoder.decodeUOctet().getValue();
+    }
+    if (0 != (flags & 0x20))
+    {
+      priority = decoder.decodeUInteger();
+    }
+    else
+    {
+      priority = new UInteger(0);
+    }
+    if (0 != (flags & 0x10))
+    {
+      timestamp = decoder.decodeTime();
+    }
+    else
+    {
+      timestamp = new Time(new Date().getTime());
+    }
+    if (0 != (flags & 0x08))
+    {
+      networkZone = decoder.decodeIdentifier();
+    }
+    else
+    {
+      networkZone = null;
+    }
+    if (0 != (flags & 0x04))
+    {
+      sessionName = decoder.decodeIdentifier();
+    }
+    else
+    {
+      sessionName = new Identifier("LIVE");
+    }
+    if (0 != (flags & 0x02))
+    {
+      domain = (IdentifierList) decoder.decodeElement(new IdentifierList());
+    }
+    else
+    {
+      domain = new IdentifierList();
+    }
+    if (0 != (flags & 0x01))
+    {
+      authenticationId = decoder.decodeBlob();
+    }
+    else
+    {
+      authenticationId = null;
     }
 
     boolean isTC = 0 != (0x00001000 & ccsdsHdrPt1);
@@ -227,24 +294,10 @@ public class SPPMessageHeader extends GENMessageHeader
     }
 
     URIFrom = uriRepresentation.getURI(sourceQualifier, sourceApid, sourceSubId);
-    authenticationId = null;
     URITo = uriRepresentation.getURI(destQualifier, destApid, destSubId);
 
-    if (0 != (flags & 0x10))
-    {
-      timestamp = decoder.decodeTime();
-    }
-    else
-    {
-      timestamp = new Time(new Date().getTime());
-    }
-
     QoSlevel = QoSLevel.fromOrdinal((moHdrPt1 & 0x6000) >> 13);
-    priority = new UInteger(0);
-    domain = new IdentifierList();
-    networkZone = null;
     session = SessionType.fromOrdinal((moHdrPt1 & 0x1800) >> 11);
-    sessionName = new Identifier("LIVE");
     interactionType = getInteractionType(sduType);
     interactionStage = getInteractionStage(sduType);
     isErrorMessage = 0 != (moHdrPt1 & 0x8000);
@@ -301,7 +354,7 @@ public class SPPMessageHeader extends GENMessageHeader
   {
     if (isError)
     {
-      return 0x0000F000;
+      return 0x00008000;
     }
 
     return 0;

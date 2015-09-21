@@ -4,6 +4,6 @@
  * protocol rather than a message transport so requires another technology to move the messages from A to B.
  *
  * Derived transports that use SPP should ensure that only SPPMessages are created by overriding the correct methods in
- * GENEndpoint and GENTransport.
+ * GENTransport.
  */
 package esa.mo.mal.transport.spp;
