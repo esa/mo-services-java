@@ -169,13 +169,13 @@ public class StubGenerator extends AbstractMojo
           i++;
           gen.xmlDirectory = new File(args[i]);
         }
-        else if ("-r".equalsIgnoreCase(arg))
+        else if ("-r".equals(arg))
         {
           // XML reference directory is held in next argument
           i++;
           gen.xmlRefDirectory = new File(args[i]);
         }
-        else if ("-R".equalsIgnoreCase(arg))
+        else if ("-R".equals(arg))
         {
           // XSD reference directory is held in next argument
           i++;
