@@ -2029,7 +2029,9 @@ public abstract class GeneratorLangs extends GeneratorBase
     String parentClass = null;
     TypeReference parentType = null;
     String parentInterface = createElementType(file, StdStrings.MAL, null, StdStrings.COMPOSITE);
-    if ((null != composite.getExtends()) && (!StdStrings.COMPOSITE.equals(composite.getExtends().getType().getName())))
+    if ((null != composite.getExtends())
+            && (!StdStrings.MAL.equals(composite.getExtends().getType().getArea()))
+            && (!StdStrings.COMPOSITE.equals(composite.getExtends().getType().getName())))
     {
       parentClass = createElementType(file, composite.getExtends().getType(), true);
       parentType = composite.getExtends().getType();
