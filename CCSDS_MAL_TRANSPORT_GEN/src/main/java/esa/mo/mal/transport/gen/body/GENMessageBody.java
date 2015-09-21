@@ -241,10 +241,14 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
         for (int i = 0; i < count; i++)
         {
           Object sf = null;
-          if ((null != ctx) && !ctx.getHeader().getIsErrorMessage())
+          if (null != ctx)
           {
             ctx.setBodyElementIndex(i);
-            sf = ctx.getOperation().getOperationStage(stage).getElementShortForms()[i];
+            
+            if (!ctx.getHeader().getIsErrorMessage())
+            {
+              sf = ctx.getOperation().getOperationStage(stage).getElementShortForms()[i];
+            }
           }
           encodeBodyPart(streamFactory, benc, wrappedBodyParts, sf, getBodyElement(i, null), ctx);
         }

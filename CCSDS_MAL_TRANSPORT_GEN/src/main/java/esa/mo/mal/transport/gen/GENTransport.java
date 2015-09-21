@@ -378,7 +378,7 @@ public abstract class GENTransport implements MALTransport
   @Override
   public MALEndpoint createEndpoint(final String localName, final Map qosProperties) throws MALException
   {
-    final String strRoutingName = getLocalName(localName);
+    final String strRoutingName = getLocalName(localName, qosProperties);
     GENEndpoint endpoint = endpointRoutingMap.get(strRoutingName);
 
     if (null == endpoint)
@@ -833,7 +833,8 @@ public abstract class GENTransport implements MALTransport
    * @param localName The existing local name string to check.
    * @return The local name to use.
    */
-  protected String getLocalName(String localName)
+  protected String getLocalName(String localName,
+          final java.util.Map properties)
   {
     if ((null == localName) || (0 == localName.length()))
     {

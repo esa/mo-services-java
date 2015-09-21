@@ -67,41 +67,33 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
       }
       else
       {
-        if (element instanceof Element)
+        if ((null != ctx) && ctx.getHeader().getIsErrorMessage())
         {
-          // encode the short form if it is not fixed in the operation
-          final Element e = (Element) element;
-
-          Object sf = null;
-          if ((null != ctx) && !ctx.getHeader().getIsErrorMessage())
+          // error messages have a standard format
+          if (0 == ctx.getBodyElementIndex())
           {
-            UOctet stage = ctx.getHeader().getInteractionStage();
-            sf = ctx.getOperation().getOperationStage(stage).getElementShortForms()[ctx.getBodyElementIndex()];
-          }
-
-          if (null == sf)
-          {
-            // dirty check to see if we are trying to decode an abstract Attribute (and not a list of them either)
-            Object[] finalEleShortForms = null;
-            if (null != ctx)
-            {
-              finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
-            }
-
-            if ((null != finalEleShortForms) && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length) && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0))
-            {
-              enc.encodeNullableOctet(enc.internalEncodeAttributeType(e.getTypeShortForm().byteValue()));
-            }
-            else
-            {
-              enc.encodeNullableLong(e.getShortForm());
-            }
-            // now encode the element
-            enc.encodeElement(e);
+            ((Element) element).encode(enc);
           }
           else
           {
-            enc.encodeNullableElement(e);
+            encodeSubElement((Element) element, null, null);
+          }
+        }
+        else
+        {
+          if (element instanceof Element)
+          {
+            // encode the short form if it is not fixed in the operation
+            final Element e = (Element) element;
+
+            Object sf = null;
+            if ((null != ctx) && !ctx.getHeader().getIsErrorMessage())
+            {
+              UOctet stage = ctx.getHeader().getInteractionStage();
+              sf = ctx.getOperation().getOperationStage(stage).getElementShortForms()[ctx.getBodyElementIndex()];
+            }
+
+            encodeSubElement(e, sf, ctx);
           }
         }
       }
@@ -135,6 +127,35 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
     catch (IOException ex)
     {
       throw new MALException(ex.getLocalizedMessage(), ex);
+    }
+  }
+
+  protected void encodeSubElement(final Element e, final Object sf, final MALEncodingContext ctx) throws MALException
+  {
+    if (null == sf)
+    {
+      // dirty check to see if we are trying to decode an abstract Attribute (and not a list of them either)
+      Object[] finalEleShortForms = null;
+      if (null != ctx)
+      {
+        finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
+      }
+
+      if ((null != finalEleShortForms) && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length) && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0))
+      {
+        enc.encodeNullableOctet(enc.internalEncodeAttributeType(e.getTypeShortForm().byteValue()));
+      }
+      else
+      {
+        enc.encodeNullableLong(e.getShortForm());
+      }
+
+      // now encode the element
+      enc.encodeElement(e);
+    }
+    else
+    {
+      enc.encodeNullableElement(e);
     }
   }
 

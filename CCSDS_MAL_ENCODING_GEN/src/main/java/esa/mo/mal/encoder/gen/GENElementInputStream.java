@@ -44,7 +44,7 @@ public abstract class GENElementInputStream implements MALElementInputStream
   {
     dec = pdec;
   }
-
+  
   @Override
   public Object readElement(final Object element, final MALEncodingContext ctx)
           throws IllegalArgumentException, MALException
@@ -57,44 +57,46 @@ public abstract class GENElementInputStream implements MALElementInputStream
     {
       if (null == element)
       {
-        Long shortForm;
-
-        // dirty check to see if we are trying to decode an abstract Attribute (and not a list of them either)
-        Object[] finalEleShortForms = null;
-        if (null != ctx)
+        if ((null != ctx) && ctx.getHeader().getIsErrorMessage())
         {
-          finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
-        }
-        
-        if ((null != finalEleShortForms) && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length) && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0))
-        {
-          Byte sf = dec.decodeNullableOctet();
-          if (null == sf)
+          // error messages have a standard format
+          if (0 == ctx.getBodyElementIndex())
           {
-            return null;
+            return dec.decodeUInteger();
           }
-
-          shortForm = Attribute.ABSOLUTE_AREA_SERVICE_NUMBER + dec.internalDecodeAttributeType(sf);
+          else
+          {
+            return decodeSubElement(dec.decodeNullableLong(), ctx);
+          }
         }
         else
         {
-          shortForm = dec.decodeNullableLong();
+          Long shortForm;
+
+          // dirty check to see if we are trying to decode an abstract Attribute (and not a list of them either)
+          Object[] finalEleShortForms = null;
+          if (null != ctx)
+          {
+            finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
+          }
+          
+          if ((null != finalEleShortForms) && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length) && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0))
+          {
+            Byte sf = dec.decodeNullableOctet();
+            if (null == sf)
+            {
+              return null;
+            }
+            
+            shortForm = Attribute.ABSOLUTE_AREA_SERVICE_NUMBER + dec.internalDecodeAttributeType(sf);
+          }
+          else
+          {
+            shortForm = dec.decodeNullableLong();
+          }
+          
+          return decodeSubElement(shortForm, ctx);
         }
-
-        if (null == shortForm)
-        {
-          return null;
-        }
-
-        final MALElementFactory ef
-                = MALContextFactory.getElementFactoryRegistry().lookupElementFactory(shortForm);
-
-        if (null == ef)
-        {
-          throw new MALException("GEN transport unable to find element factory for short type: " + shortForm);
-        }
-
-        return dec.decodeElement((Element) ef.createElement());
       }
       else
       {
@@ -114,10 +116,27 @@ public abstract class GENElementInputStream implements MALElementInputStream
   {
     return dec.getRemainingEncodedData();
   }
-
+  
   @Override
   public void close() throws MALException
   {
     // Nothing to do for this decoder
+  }
+  
+  protected Object decodeSubElement(final Long shortForm, final MALEncodingContext ctx) throws MALException
+  {
+    if (null == shortForm)
+    {
+      return null;
+    }
+    
+    final MALElementFactory ef = MALContextFactory.getElementFactoryRegistry().lookupElementFactory(shortForm);
+    
+    if (null == ef)
+    {
+      throw new MALException("GEN transport unable to find element factory for short type: " + shortForm);
+    }
+    
+    return dec.decodeElement((Element) ef.createElement());
   }
 }
