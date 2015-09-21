@@ -1984,27 +1984,20 @@ public abstract class GeneratorLangs extends GeneratorBase
     method.addMethodCloseStatement();
 
     // create encode method
-    long maxValue = 0;
-    for (Item itm : enumeration.getItem())
-    {
-      if (itm.getNvalue() > maxValue)
-      {
-        maxValue = itm.getNvalue();
-      }
-    }
+    long enumSize = enumeration.getItem().size();
 
     String enumOrdinalType = StdStrings.UINTEGER;
-    if (maxValue < 256)
+    if (enumSize < 256)
     {
       enumOrdinalType = StdStrings.UOCTET;
     }
-    else if (maxValue < 65536)
+    else if (enumSize < 65536)
     {
       enumOrdinalType = StdStrings.USHORT;
     }
 
-    String enumEncoderValue = getEnumEncoderValue(maxValue);
-    String enumDecoderValue = getEnumDecoderValue(maxValue);
+    String enumEncoderValue = getEnumEncoderValue(enumSize);
+    String enumDecoderValue = getEnumDecoderValue(enumSize);
     method = encodeMethodOpen(file);
     method.addMethodStatement(createMethodCall("encoder.encode") + enumOrdinalType + "(" + enumEncoderValue + ")");
     method.addMethodCloseStatement();
