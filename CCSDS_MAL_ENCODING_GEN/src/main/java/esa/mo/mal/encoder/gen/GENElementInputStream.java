@@ -32,6 +32,7 @@ import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 
 /**
  * Extends the MALElementInputStream interface to enable aware transport access to the encoded data stream.
@@ -82,6 +83,36 @@ public abstract class GENElementInputStream implements MALElementInputStream
             return dec.decodeElement(new EntityKeyList());
           case MALPubSubOperation._DEREGISTER_STAGE:
             return dec.decodeElement(new IdentifierList());
+          case MALPubSubOperation._PUBLISH_STAGE:
+          {
+            int idx = ctx.getBodyElementIndex();
+            if (0 == idx)
+            {
+              return dec.decodeElement(new UpdateHeaderList());
+            }
+            else
+            {
+              Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex() - 1];
+              return decodeSubElement((Long) sf, ctx);
+            }
+          }
+          case MALPubSubOperation._NOTIFY_STAGE:
+          {
+            int idx = ctx.getBodyElementIndex();
+            if (0 == idx)
+            {
+              return dec.decodeIdentifier();
+            }
+            else if (1 == idx)
+            {
+              return dec.decodeElement(new UpdateHeaderList());
+            }
+            else
+            {
+              Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex() - 2];
+              return decodeSubElement((Long) sf, ctx);
+            }
+          }
           default:
             return decodeSubElement(dec.decodeNullableLong(), ctx);
         }

@@ -90,6 +90,26 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
             case MALPubSubOperation._DEREGISTER_STAGE:
               ((Element) element).encode(enc);
               return;
+            case MALPubSubOperation._PUBLISH_STAGE:
+              if ((0 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex() - 1]))
+              {
+                encodeSubElement((Element) element, null, null);
+              }
+              else
+              {
+                ((Element) element).encode(enc);
+              }
+              return;
+            case MALPubSubOperation._NOTIFY_STAGE:
+              if ((1 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex() - 2]))
+              {
+                encodeSubElement((Element) element, null, null);
+              }
+              else
+              {
+                ((Element) element).encode(enc);
+              }
+              return;
             default:
               encodeSubElement((Element) element, null, null);
           }
