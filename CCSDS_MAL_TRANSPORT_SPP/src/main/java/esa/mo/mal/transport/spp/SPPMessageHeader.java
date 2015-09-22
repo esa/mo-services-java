@@ -509,23 +509,23 @@ public class SPPMessageHeader extends GENMessageHeader
         {
           case MALPubSubOperation._REGISTER_STAGE:
             return 12;
-          case MALPubSubOperation._DEREGISTER_STAGE:
+          case MALPubSubOperation._REGISTER_ACK_STAGE:
             return 13;
           case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
             return 14;
-          case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
-            return 15;
-          case MALPubSubOperation._REGISTER_ACK_STAGE:
-            return 16;
-          case MALPubSubOperation._DEREGISTER_ACK_STAGE:
-            return 17;
           case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
-            return 18;
-          case MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE:
-            return 19;
+            return 15;
           case MALPubSubOperation._PUBLISH_STAGE:
-            return 20;
+            return 16;
           case MALPubSubOperation._NOTIFY_STAGE:
+            return 17;
+          case MALPubSubOperation._DEREGISTER_STAGE:
+            return 18;
+          case MALPubSubOperation._DEREGISTER_ACK_STAGE:
+            return 19;
+          case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
+            return 20;
+          case MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE:
             return 21;
         }
       }
@@ -591,23 +591,23 @@ public class SPPMessageHeader extends GENMessageHeader
       case 12:
         return MALPubSubOperation.REGISTER_STAGE;
       case 13:
-        return MALPubSubOperation.DEREGISTER_STAGE;
+        return MALPubSubOperation.REGISTER_ACK_STAGE;
       case 14:
         return MALPubSubOperation.PUBLISH_REGISTER_STAGE;
       case 15:
-        return MALPubSubOperation.PUBLISH_DEREGISTER_STAGE;
-      case 16:
-        return MALPubSubOperation.REGISTER_ACK_STAGE;
-      case 17:
-        return MALPubSubOperation.DEREGISTER_ACK_STAGE;
-      case 18:
         return MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE;
-      case 19:
-        return MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE;
-      case 20:
+      case 16:
         return MALPubSubOperation.PUBLISH_STAGE;
-      case 21:
+      case 17:
         return MALPubSubOperation.NOTIFY_STAGE;
+      case 18:
+        return MALPubSubOperation.DEREGISTER_STAGE;
+      case 19:
+        return MALPubSubOperation.DEREGISTER_ACK_STAGE;
+      case 20:
+        return MALPubSubOperation.PUBLISH_DEREGISTER_STAGE;
+      case 21:
+        return MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE;
     }
 
     return null;
