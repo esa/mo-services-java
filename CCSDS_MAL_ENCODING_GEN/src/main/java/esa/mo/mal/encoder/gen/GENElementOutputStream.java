@@ -23,10 +23,12 @@ package esa.mo.mal.encoder.gen;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 
 /**
@@ -55,7 +57,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
       this.enc = createEncoder(dos);
     }
 
-    if ((null != ctx) && (element == ctx.getHeader()))
+    if (element == ctx.getHeader())
     {
       ((Element) element).encode(enc);
     }
@@ -67,7 +69,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
       }
       else
       {
-        if ((null != ctx) && ctx.getHeader().getIsErrorMessage())
+        if (ctx.getHeader().getIsErrorMessage())
         {
           // error messages have a standard format
           if (0 == ctx.getBodyElementIndex())
@@ -79,6 +81,19 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
             encodeSubElement((Element) element, null, null);
           }
         }
+        else if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal())
+        {
+          switch (ctx.getHeader().getInteractionStage().getValue())
+          {
+            case MALPubSubOperation._REGISTER_STAGE:
+            case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
+            case MALPubSubOperation._DEREGISTER_STAGE:
+              ((Element) element).encode(enc);
+              return;
+            default:
+              encodeSubElement((Element) element, null, null);
+          }
+        }
         else
         {
           if (element instanceof Element)
@@ -86,12 +101,8 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
             // encode the short form if it is not fixed in the operation
             final Element e = (Element) element;
 
-            Object sf = null;
-            if ((null != ctx) && !ctx.getHeader().getIsErrorMessage())
-            {
-              UOctet stage = ctx.getHeader().getInteractionStage();
-              sf = ctx.getOperation().getOperationStage(stage).getElementShortForms()[ctx.getBodyElementIndex()];
-            }
+            UOctet stage = ctx.getHeader().getInteractionStage();
+            Object sf = ctx.getOperation().getOperationStage(stage).getElementShortForms()[ctx.getBodyElementIndex()];
 
             encodeSubElement(e, sf, ctx);
           }

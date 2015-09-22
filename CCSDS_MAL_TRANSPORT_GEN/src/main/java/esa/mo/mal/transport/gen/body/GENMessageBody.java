@@ -267,7 +267,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
     enc.close();
   }
 
-  private void encodeBodyPart(final MALElementStreamFactory streamFactory,
+  protected void encodeBodyPart(final MALElementStreamFactory streamFactory,
           final MALElementOutputStream enc,
           final boolean wrapBodyParts,
           final Object sf, final Object o, final MALEncodingContext ctx) throws MALException
@@ -412,11 +412,14 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
           {
             GENTransport.LOGGER.log(Level.FINE, "GEN Message decoding body part : {0}", i);
             Object sf = null;
+
+            ctx.setBodyElementIndex(i);
+            
             if (!ctx.getHeader().getIsErrorMessage())
             {
-              ctx.setBodyElementIndex(i);
               sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[i];
             }
+
             messageParts[i] = decodeBodyPart(benc, ctx, sf);
           }
         }

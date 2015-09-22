@@ -23,10 +23,15 @@ package esa.mo.mal.encoder.gen;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALElementFactory;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.EntityKeyList;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.Subscription;
 
 /**
  * Extends the MALElementInputStream interface to enable aware transport access to the encoded data stream.
@@ -44,42 +49,52 @@ public abstract class GENElementInputStream implements MALElementInputStream
   {
     dec = pdec;
   }
-  
+
   @Override
   public Object readElement(final Object element, final MALEncodingContext ctx)
           throws IllegalArgumentException, MALException
   {
-    if ((null != ctx) && (element == ctx.getHeader()))
+    if (element == ctx.getHeader())
     {
       return dec.decodeElement((Element) element);
     }
     else
     {
-      if (null == element)
+      if (ctx.getHeader().getIsErrorMessage())
       {
-        if ((null != ctx) && ctx.getHeader().getIsErrorMessage())
+        // error messages have a standard format
+        if (0 == ctx.getBodyElementIndex())
         {
-          // error messages have a standard format
-          if (0 == ctx.getBodyElementIndex())
-          {
-            return dec.decodeUInteger();
-          }
-          else
-          {
-            return decodeSubElement(dec.decodeNullableLong(), ctx);
-          }
+          return dec.decodeUInteger();
         }
         else
+        {
+          return decodeSubElement(dec.decodeNullableLong(), ctx);
+        }
+      }
+      else if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal())
+      {
+        switch (ctx.getHeader().getInteractionStage().getValue())
+        {
+          case MALPubSubOperation._REGISTER_STAGE:
+            return dec.decodeElement(new Subscription());
+          case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
+            return dec.decodeElement(new EntityKeyList());
+          case MALPubSubOperation._DEREGISTER_STAGE:
+            return dec.decodeElement(new IdentifierList());
+          default:
+            return decodeSubElement(dec.decodeNullableLong(), ctx);
+        }
+      }
+      else
+      {
+        if (null == element)
         {
           Long shortForm;
 
           // dirty check to see if we are trying to decode an abstract Attribute (and not a list of them either)
-          Object[] finalEleShortForms = null;
-          if (null != ctx)
-          {
-            finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
-          }
-          
+          Object[] finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
+
           if ((null != finalEleShortForms) && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length) && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0))
           {
             Byte sf = dec.decodeNullableOctet();
@@ -87,20 +102,20 @@ public abstract class GENElementInputStream implements MALElementInputStream
             {
               return null;
             }
-            
+
             shortForm = Attribute.ABSOLUTE_AREA_SERVICE_NUMBER + dec.internalDecodeAttributeType(sf);
           }
           else
           {
             shortForm = dec.decodeNullableLong();
           }
-          
+
           return decodeSubElement(shortForm, ctx);
         }
-      }
-      else
-      {
-        return dec.decodeNullableElement((Element) element);
+        else
+        {
+          return dec.decodeNullableElement((Element) element);
+        }
       }
     }
   }
@@ -116,27 +131,27 @@ public abstract class GENElementInputStream implements MALElementInputStream
   {
     return dec.getRemainingEncodedData();
   }
-  
+
   @Override
   public void close() throws MALException
   {
     // Nothing to do for this decoder
   }
-  
+
   protected Object decodeSubElement(final Long shortForm, final MALEncodingContext ctx) throws MALException
   {
     if (null == shortForm)
     {
       return null;
     }
-    
+
     final MALElementFactory ef = MALContextFactory.getElementFactoryRegistry().lookupElementFactory(shortForm);
-    
+
     if (null == ef)
     {
       throw new MALException("GEN transport unable to find element factory for short type: " + shortForm);
     }
-    
+
     return dec.decodeElement((Element) ef.createElement());
   }
 }
