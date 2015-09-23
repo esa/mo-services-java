@@ -36,7 +36,7 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
  */
 public abstract class GENElementOutputStream implements MALElementOutputStream
 {
-  private final OutputStream dos;
+  protected final OutputStream dos;
   protected GENEncoder enc = null;
 
   /**
