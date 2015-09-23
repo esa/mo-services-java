@@ -84,7 +84,7 @@ public class SPPBinaryElementInputStream extends esa.mo.mal.encoder.binary.fixed
           }
           else
           {
-            Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex() - 1];
+            Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()];
             return decodePubSubPublishUpdate((Long) sf);
           }
         }
@@ -101,7 +101,7 @@ public class SPPBinaryElementInputStream extends esa.mo.mal.encoder.binary.fixed
           }
           else
           {
-            Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex() - 2];
+            Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()];
             return decodeSubElement((Long) sf, ctx);
           }
         }
