@@ -24,7 +24,7 @@
   </parent>
   
   <artifactId>StubGenerator_Docs</artifactId>
-  <version>1.3</version>
+  <version>1.4-SNAPSHOT</version>
   <packaging>jar</packaging>
   
   <name>ESA MO Stub Generator Plugin for Documentation</name>
