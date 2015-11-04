@@ -885,7 +885,23 @@ public class GeneratorDocx extends GeneratorDocument
         docxFile.addComment("The operation may return one of the following errors:");
       }
 
-      TreeMap<String, List<Object[]>> m = new TreeMap<String, List<Object[]>>();
+      TreeMap<String, List<Object[]>> m = new TreeMap<String, List<Object[]>>(new Comparator<String>() 
+      {
+        @Override
+        public int compare(String o1, String o2) 
+        {
+            try
+            {
+              Long value1 = Long.valueOf(o1);
+              Long value2 = Long.valueOf(o2);
+              return value1.compareTo(value2);
+            }
+            catch (java.lang.NumberFormatException e) 
+            {
+              return o1.compareTo(o2);
+            }
+        }
+      });
 
       for (Object object : errs.getErrorOrErrorRef())
       {
