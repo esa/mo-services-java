@@ -101,6 +101,12 @@ public class StubGenerator extends AbstractMojo
    */
   protected boolean generateCOM;
   /**
+   * Force generation
+   *
+   * @parameter default-value="false"
+   */
+  protected boolean forceGeneration;
+  /**
    * Extra generator specific properties, held in name/value pairs
    *
    * @parameter
@@ -380,21 +386,40 @@ public class StubGenerator extends AbstractMojo
         // load in the specifications
         final List<Map.Entry<SpecificationType, XmlSpecification>> specs = XmlHelper.loadSpecifications(xmlDirectory);
 
+        // work out the latest timestamp of the input files
+        long inputTimestamp = getLatestTimestamp(0, refSpecs);
+        inputTimestamp = getLatestSchemaTimestamp(inputTimestamp, refXsd);
+        inputTimestamp = getLatestTimestamp(inputTimestamp, specs);
+
         // run the specifications through each generator
         // first process the list of languages to generate
         if ((null != targetLanguages) && (0 < targetLanguages.length))
         {
-          for (String targetLanguage : targetLanguages)
+
+          if (forceGeneration || (outputDirectory.lastModified() < inputTimestamp))
           {
-            final Generator gen = GENERATOR_MAP.get(targetLanguage.toLowerCase());
-            if (null != gen)
+            if (forceGeneration)
             {
-              processWithGenerator(gen, refSpecs, refXsd, specs);
+              getLog().info("Generation being forced");
             }
-            else
+            for (String targetLanguage : targetLanguages)
             {
-              getLog().warn("Could not find generator for language: " + targetLanguage);
+              final Generator gen = GENERATOR_MAP.get(targetLanguage.toLowerCase());
+              if (null != gen)
+              {
+                processWithGenerator(gen, refSpecs, refXsd, specs);
+              }
+              else
+              {
+                getLog().warn("Could not find generator for language: " + targetLanguage);
+              }
             }
+
+            outputDirectory.setLastModified(System.currentTimeMillis());
+          }
+          else
+          {
+            getLog().info("No change in input files detected, generation skipped");
           }
         }
         else
@@ -585,5 +610,33 @@ public class StubGenerator extends AbstractMojo
     {
       throw new MojoExecutionException("Exception thrown during the closing of the generator", ex);
     }
+  }
+
+  private long getLatestTimestamp(long inputTimestamp, final List<Map.Entry<SpecificationType, XmlSpecification>> specs)
+  {
+    for (Map.Entry<SpecificationType, XmlSpecification> spec : specs)
+    {
+      long fileTimestamp = spec.getValue().file.lastModified();
+      if (fileTimestamp > inputTimestamp)
+      {
+        inputTimestamp = fileTimestamp;
+      }
+    }
+
+    return inputTimestamp;
+  }
+
+  private long getLatestSchemaTimestamp(long inputTimestamp, final List<Map.Entry<Schema, XmlSpecification>> specs)
+  {
+    for (Map.Entry<Schema, XmlSpecification> spec : specs)
+    {
+      long fileTimestamp = spec.getValue().file.lastModified();
+      if (fileTimestamp > inputTimestamp)
+      {
+        inputTimestamp = fileTimestamp;
+      }
+    }
+
+    return inputTimestamp;
   }
 }
