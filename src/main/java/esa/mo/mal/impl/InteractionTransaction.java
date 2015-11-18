@@ -34,11 +34,11 @@ abstract class InteractionTransaction
    * Hopefully we will have come up with a new algorithm before then...
    * 
    * The transaction number is made up as follows:
-   * <-- 40bits of time to milliseond resolution | 8 bits of salt | 16 bits of transaction counter -->
+   * <-- 40bits of time to millisecond resolution | 8 bits of RNG | 16 bits of transaction counter -->
    */
   private static final long MAL_EPOCH = 1283299200000L;
-  private static final long MAX_OFFSET = 16777215L;
-  private static final long SALT_MASK = 0xFFL;
+  private static final long MAX_OFFSET = 65535L;
+  private static final long RANDOM_MASK = 0xFFL;
 
   private static volatile long transMag;
   private static volatile long transOffset;
@@ -74,7 +74,7 @@ abstract class InteractionTransaction
   private static void recalculateTransactionIdMagnitude()
   {
     transMag = (System.currentTimeMillis() - MAL_EPOCH) << 24;
-    transMag += ((System.nanoTime()) & SALT_MASK) << 16;
+    transMag += ((System.nanoTime()) & RANDOM_MASK) << 16;
     transOffset = 0;
   }
 }
