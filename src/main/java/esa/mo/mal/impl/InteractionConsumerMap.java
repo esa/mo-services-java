@@ -33,12 +33,12 @@ import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
- * The interaction map is responsible for maintaining the state of consumer initiated interactions for a MAL instance.
- * New transactions are added using the creatTransaction methods. Synchronous consumer interactions are handled by
- * calling waitForResponse, and any message received is 'handled' using the handleStage method.
+ * The interaction map is responsible for maintaining the state of consumer initiated interactions for a MAL instance. New
+ * transactions are added using the creatTransaction methods. Synchronous consumer interactions are handled by calling
+ * waitForResponse, and any message received is 'handled' using the handleStage method.
  *
- * When a new interaction is created, an internal (to this class) interaction handler class is created which is
- * responsible for ensuring the correct stages are received in the correct order.
+ * When a new interaction is created, an internal (to this class) interaction handler class is created which is responsible for
+ * ensuring the correct stages are received in the correct order.
  */
 class InteractionConsumerMap
 {
@@ -423,13 +423,13 @@ class InteractionConsumerMap
         {
           logUnexpectedTransitionError(msg.getHeader().getInteractionType().getOrdinal(),
                   msg.getHeader().getInteractionStage().getValue());
-          return new MessageHandlerDetails(false, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+          return new MessageHandlerDetails(false, true, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
         }
       }
       else
       {
         logUnexpectedTransitionError(interactionType, interactionStage);
-        return new MessageHandlerDetails(false, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+        return new MessageHandlerDetails(false, true, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
       }
     }
 
@@ -554,6 +554,8 @@ class InteractionConsumerMap
   {
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
+    private boolean ackTaken = false;
+    private boolean responseTaken = false;
 
     protected InvokeOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
@@ -595,7 +597,7 @@ class InteractionConsumerMap
         {
           receivedResponse = true;
           logUnexpectedTransitionError(interactionType, interactionStage);
-          return new MessageHandlerDetails(true, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+          return new MessageHandlerDetails(true, true, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
         }
       }
       else if ((!receivedResponse) && (interactionType == InteractionType._INVOKE_INDEX)
@@ -609,7 +611,7 @@ class InteractionConsumerMap
       {
         logUnexpectedTransitionError(interactionType, interactionStage);
         receivedResponse = true;
-        return new MessageHandlerDetails(false, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+        return new MessageHandlerDetails(false, true, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
       }
     }
 
@@ -635,9 +637,15 @@ class InteractionConsumerMap
         {
           try
           {
+            ackTaken = true;
+
             if (isError)
             {
-              listener.invokeAckErrorReceived(details.msg.getHeader(), (MALErrorBody) details.msg.getBody(), details.msg.getQoSProperties());
+              if (!finished())
+              {
+                responseTaken = true;
+                listener.invokeAckErrorReceived(details.msg.getHeader(), (MALErrorBody) details.msg.getBody(), details.msg.getQoSProperties());
+              }
             }
             else
             {
@@ -657,10 +665,17 @@ class InteractionConsumerMap
         {
           if (isError)
           {
-            listener.invokeResponseErrorReceived(details.msg.getHeader(), (MALErrorBody) details.msg.getBody(), details.msg.getQoSProperties());
+            if (!finished())
+            {
+              responseTaken = true;
+
+              listener.invokeResponseErrorReceived(details.msg.getHeader(), (MALErrorBody) details.msg.getBody(), details.msg.getQoSProperties());
+            }
           }
           else
           {
+            responseTaken = true;
+
             listener.invokeResponseReceived(details.msg.getHeader(), details.msg.getBody(), details.msg.getQoSProperties());
           }
         }
@@ -703,9 +718,17 @@ class InteractionConsumerMap
     }
 
     @Override
+    protected synchronized MALMessage getResult()
+    {
+      ackTaken = true;
+
+      return super.getResult();
+    }
+
+    @Override
     protected synchronized boolean finished()
     {
-      return receivedResponse;
+      return ackTaken && responseTaken;
     }
   }
 
@@ -713,6 +736,8 @@ class InteractionConsumerMap
   {
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
+    private boolean ackTaken = false;
+    private boolean responseTaken = false;
 
     protected ProgressOperationHandler(final boolean syncOperation, final MALInteractionListener listener)
     {
@@ -759,7 +784,7 @@ class InteractionConsumerMap
           {
             receivedResponse = true;
             logUnexpectedTransitionError(interactionType, interactionStage);
-            return new MessageHandlerDetails(true, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+            return new MessageHandlerDetails(true, true, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
           }
         }
         else if ((!receivedResponse) && (interactionType == InteractionType._PROGRESS_INDEX)
@@ -784,7 +809,7 @@ class InteractionConsumerMap
         {
           receivedResponse = true;
           logUnexpectedTransitionError(interactionType, interactionStage);
-          return new MessageHandlerDetails(false, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+          return new MessageHandlerDetails(!receivedAck, true, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
         }
       }
     }
@@ -813,9 +838,15 @@ class InteractionConsumerMap
           }
           else
           {
+            ackTaken = true;
+
             if (isError)
             {
-              listener.progressAckErrorReceived(details.msg.getHeader(), (MALErrorBody) details.msg.getBody(), details.msg.getQoSProperties());
+              if (!finished())
+              {
+                responseTaken = true;
+                listener.progressAckErrorReceived(details.msg.getHeader(), (MALErrorBody) details.msg.getBody(), details.msg.getQoSProperties());
+              }
             }
             else
             {
@@ -837,6 +868,7 @@ class InteractionConsumerMap
           {
             if (isError)
             {
+              responseTaken = true;
               listener.progressUpdateErrorReceived(details.msg.getHeader(),
                       (MALErrorBody) details.msg.getBody(), details.msg.getQoSProperties());
             }
@@ -845,17 +877,19 @@ class InteractionConsumerMap
               listener.progressUpdateReceived(details.msg.getHeader(), details.msg.getBody(), details.msg.getQoSProperties());
             }
           }
-          else
+          else if (isError)
           {
-            if (isError)
+            if (!finished())
             {
+              responseTaken = true;
               listener.progressResponseErrorReceived(details.msg.getHeader(),
                       (MALErrorBody) details.msg.getBody(), details.msg.getQoSProperties());
             }
-            else
-            {
-              listener.progressResponseReceived(details.msg.getHeader(), details.msg.getBody(), details.msg.getQoSProperties());
-            }
+          }
+          else
+          {
+            responseTaken = true;
+            listener.progressResponseReceived(details.msg.getHeader(), details.msg.getBody(), details.msg.getQoSProperties());
           }
         }
         catch (MALException ex)
@@ -897,9 +931,17 @@ class InteractionConsumerMap
     }
 
     @Override
+    protected synchronized MALMessage getResult()
+    {
+      ackTaken = true;
+
+      return super.getResult();
+    }
+
+    @Override
     protected synchronized boolean finished()
     {
-      return receivedResponse;
+      return ackTaken && responseTaken;
     }
   }
 
@@ -937,17 +979,14 @@ class InteractionConsumerMap
       {
         listener.registerErrorReceived(msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());
       }
+      else if ((MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue())
+              || (MALPubSubOperation._REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue()))
+      {
+        listener.registerAckReceived(msg.getHeader(), msg.getQoSProperties());
+      }
       else
       {
-        if ((MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue())
-                || (MALPubSubOperation._REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue()))
-        {
-          listener.registerAckReceived(msg.getHeader(), msg.getQoSProperties());
-        }
-        else
-        {
-          listener.deregisterAckReceived(msg.getHeader(), msg.getQoSProperties());
-        }
+        listener.deregisterAckReceived(msg.getHeader(), msg.getQoSProperties());
       }
     }
   }
@@ -1114,17 +1153,20 @@ class InteractionConsumerMap
   private static final class MessageHandlerDetails
   {
     private final boolean ackStage;
+    private final boolean unexpectedTransition;
     private final MALMessage msg;
 
     protected MessageHandlerDetails(boolean isAckStage, MALMessage msg)
     {
       this.ackStage = isAckStage;
+      this.unexpectedTransition = false;
       this.msg = msg;
     }
 
-    protected MessageHandlerDetails(boolean isAckStage, MALMessage src, UInteger errNum)
+    protected MessageHandlerDetails(boolean isAckStage, boolean unexpectedTransition, MALMessage src, UInteger errNum)
     {
       this.ackStage = isAckStage;
+      this.unexpectedTransition = unexpectedTransition;
       src.getHeader().setIsErrorMessage(true);
       this.msg = new DummyMessage(src.getHeader(), new DummyErrorBody(new MALStandardError(errNum, null)), src.getQoSProperties());
     }
@@ -1132,6 +1174,11 @@ class InteractionConsumerMap
     protected boolean isAckStage()
     {
       return ackStage;
+    }
+
+    protected boolean isUnexpectedTransition()
+    {
+      return unexpectedTransition;
     }
 
     protected MALMessage getMsg()

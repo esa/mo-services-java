@@ -25,7 +25,7 @@
   
   <artifactId>MAL_IMPL</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.5</version>
+  <version>1.0.6-SNAPSHOT</version>
 
   <name>ESA MAL Java Implementation</name>
   <description>The ESA implementation of the CCSDS MAL in Java</description>
@@ -59,7 +59,7 @@
     <developer>
       <id>SamCooper</id>
       <name>Sam Cooper</name>
-      <email>sam.cooper@scisys.co.uk</email>
+      <email>sam@brightacension.com</email>
       <url>https://github.com/SamCooper</url>
     </developer>
   </developers>
