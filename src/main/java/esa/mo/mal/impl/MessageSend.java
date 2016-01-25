@@ -21,7 +21,7 @@
 package esa.mo.mal.impl;
 
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -779,7 +779,7 @@ public class MessageSend
               srcHdr.getOperation(),
               srcHdr.getAreaVersion(),
               true,
-              new Hashtable(),
+              new HashMap(),
               error.getErrorNumber(), error.getExtraInformation());
 
 

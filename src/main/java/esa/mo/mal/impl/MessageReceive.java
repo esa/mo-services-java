@@ -306,13 +306,22 @@ public class MessageReceive implements MALMessageListener
   {
     final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
 
+    SubmitInteractionImpl interaction = new SubmitInteractionImpl(sender, address, transId, msg);
+
     try
     {
-      MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleSubmit for {0} type {1}", new Object[]
+      try
       {
-        transId, address.handler
-      });
-      address.handler.handleSubmit(new SubmitInteractionImpl(sender, address, transId, msg), msg.getBody());
+        MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleSubmit for {0} type {1}", new Object[]
+        {
+          transId, address.handler
+        });
+        address.handler.handleSubmit(interaction, msg.getBody());
+      }
+      catch (MALInteractionException ex)
+      {
+        interaction.sendError(ex.getStandardError());
+      }
     }
     catch (MALException ex)
     {
@@ -328,13 +337,22 @@ public class MessageReceive implements MALMessageListener
   {
     final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
 
+    RequestInteractionImpl interaction = new RequestInteractionImpl(sender, address, transId, msg);
+
     try
     {
-      MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleRequest for {0} type {1}", new Object[]
+      try
       {
-        transId, address.handler
-      });
-      address.handler.handleRequest(new RequestInteractionImpl(sender, address, transId, msg), msg.getBody());
+        MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleRequest for {0} type {1}", new Object[]
+        {
+          transId, address.handler
+        });
+        address.handler.handleRequest(interaction, msg.getBody());
+      }
+      catch (MALInteractionException ex)
+      {
+        interaction.sendError(ex.getStandardError());
+      }
     }
     catch (MALException ex)
     {
