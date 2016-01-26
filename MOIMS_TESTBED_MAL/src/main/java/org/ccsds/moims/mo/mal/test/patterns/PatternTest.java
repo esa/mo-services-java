@@ -20,7 +20,7 @@
  */
 package org.ccsds.moims.mo.mal.test.patterns;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -127,9 +127,8 @@ public class PatternTest
 
     boolean seenGoodTransition = false;
     int expectedTransitionCount = 0;
-    for (int i = 0; i < transistions.length; i++)
+    for (String trans : transistions)
     {
-      String trans = transistions[i];
       IPTestTransitionType transition = IPTestTransitionTypeFromString(trans);
 
       if (trans.startsWith("_"))
@@ -149,8 +148,11 @@ public class PatternTest
       }
       else
       {
-        seenGoodTransition = true;
-        ++expectedTransitionCount;
+        if (initialFaultyTransList.isEmpty())
+        {
+          seenGoodTransition = true;
+          ++expectedTransitionCount;
+        }
       }
 
       transList.add(new IPTestTransition(transition, null));
@@ -167,7 +169,7 @@ public class PatternTest
             transList,
             new Time(System.currentTimeMillis()));
 
-    ResponseListener monitor = new ResponseListener(expectedTransitionCount);
+    ResponseListener monitor = new ResponseListener("PatternTest", expectedTransitionCount);
 
     setupInitialFaultyTransitions(initialFaultyTransList);
 
@@ -650,17 +652,17 @@ public class PatternTest
             srcHdr.getService(),
             srcHdr.getOperation(),
             srcHdr.getAreaVersion(),
-            Boolean.valueOf(isError));
+            isError);
 
     MALMessage brokenMessage;
     if (isError)
     {
       brokenMessage = ep.createTestMessage(brokenHeader,
-              new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), new Hashtable());
+              new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), new HashMap());
     }
     else
     {
-      brokenMessage = ep.createTestMessage(brokenHeader, (Element) null, new Hashtable());
+      brokenMessage = ep.createTestMessage(brokenHeader, (Element) null, new HashMap());
     }
     LoggingBase.logMessage("Sending brokenMessage = " + brokenMessage);
 
@@ -746,44 +748,51 @@ public class PatternTest
     return null;
   }
 
-  private static class ResponseListener extends IPTestAdapter
+  public static class ResponseListener extends IPTestAdapter
   {
     private final BooleanCondition cond = new BooleanCondition();
-    MALMessageHeader submitAckReceivedMsgHeader = null;
-    MALMessageHeader requestResponseReceivedMsgHeader = null;
-    MALMessageHeader invokeAckReceivedMsgHeader = null;
-    MALMessageHeader invokeResponseReceivedMsgHeader = null;
-    MALMessageHeader progressAckReceivedMsgHeader = null;
-    MALMessageHeader progressUpdate1ReceivedMsgHeader = null;
-    MALMessageHeader progressUpdate2ReceivedMsgHeader = null;
-    MALMessageHeader progressResponseReceivedMsgHeader = null;
-    MALMessageHeader submitErrorReceivedMsgHeader = null;
-    MALStandardError submitErrorReceivedError = null;
-    MALMessageHeader requestErrorReceivedMsgHeader = null;
-    MALStandardError requestErrorReceivedError = null;
-    MALMessageHeader invokeAckErrorReceivedMsgHeader = null;
-    MALStandardError invokeAckErrorReceivedError = null;
-    MALMessageHeader invokeResponseErrorReceivedMsgHeader = null;
-    MALStandardError invokeResponseErrorReceivedError = null;
-    MALMessageHeader progressAckErrorReceivedMsgHeader = null;
-    MALStandardError progressAckErrorReceivedError = null;
-    MALMessageHeader progressUpdateErrorReceivedMsgHeader = null;
-    MALStandardError progressUpdateErrorReceivedError = null;
-    MALMessageHeader progressResponseErrorReceivedMsgHeader = null;
-    MALStandardError progressResponseErrorReceivedError = null;
+    public MALMessageHeader submitAckReceivedMsgHeader = null;
+    public MALMessageHeader requestResponseReceivedMsgHeader = null;
+    public MALMessageHeader invokeAckReceivedMsgHeader = null;
+    public MALMessageHeader invokeResponseReceivedMsgHeader = null;
+    public MALMessageHeader progressAckReceivedMsgHeader = null;
+    public MALMessageHeader progressUpdate1ReceivedMsgHeader = null;
+    public MALMessageHeader progressUpdate2ReceivedMsgHeader = null;
+    public MALMessageHeader progressResponseReceivedMsgHeader = null;
+    public MALMessageHeader submitErrorReceivedMsgHeader = null;
+    public MALStandardError submitErrorReceivedError = null;
+    public MALMessageHeader requestErrorReceivedMsgHeader = null;
+    public MALStandardError requestErrorReceivedError = null;
+    public MALMessageHeader invokeAckErrorReceivedMsgHeader = null;
+    public MALStandardError invokeAckErrorReceivedError = null;
+    public MALMessageHeader invokeResponseErrorReceivedMsgHeader = null;
+    public MALStandardError invokeResponseErrorReceivedError = null;
+    public MALMessageHeader progressAckErrorReceivedMsgHeader = null;
+    public MALStandardError progressAckErrorReceivedError = null;
+    public MALMessageHeader progressUpdateErrorReceivedMsgHeader = null;
+    public MALStandardError progressUpdateErrorReceivedError = null;
+    public MALMessageHeader progressResponseErrorReceivedMsgHeader = null;
+    public MALStandardError progressResponseErrorReceivedError = null;
     int receivedMessages = 0;
+    final String loggingName;
     final int expectedMessages;
 
-    ResponseListener(int expectedMessages)
+    public ResponseListener(String loggingName, int expectedMessages)
     {
+      this.loggingName = loggingName;
       this.expectedMessages = expectedMessages;
+    }
+
+    public BooleanCondition getCond()
+    {
+      return cond;
     }
 
     public boolean checkCorrectNumberOfReceivedMessages()
     {
       if (!(expectedMessages == receivedMessages))
       {
-        LoggingBase.logMessage("PatternTest expected " + expectedMessages + " messages but received " + receivedMessages);
+        LoggingBase.logMessage(loggingName + " expected " + expectedMessages + " messages but received " + receivedMessages);
       }
       return expectedMessages == receivedMessages;
     }
@@ -1107,7 +1116,7 @@ public class PatternTest
 
     protected void checkTransactionId(MALMessageHeader msgHeader)
     {
-      LoggingBase.logMessage("PatternTest received T[" + msgHeader.getTransactionId() + " : " + msgHeader.getInteractionType().getOrdinal() + " : " + msgHeader.getInteractionStage().getValue() + "]");
+      LoggingBase.logMessage(loggingName + " received T[" + msgHeader.getTransactionId() + " : " + msgHeader.getInteractionType().getOrdinal() + " : " + msgHeader.getInteractionStage().getValue() + "]");
     }
   }
 }

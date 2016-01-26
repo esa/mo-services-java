@@ -162,6 +162,11 @@ public abstract class BaseLocalMALInstance extends LoggingBase
     }
   }
 
+  public MALConsumerManager getConsumerManager()
+  {
+      return defaultConsumerMgr;
+  }
+  
   public MALProviderManager getProviderManager()
   {
       return defaultProviderMgr;

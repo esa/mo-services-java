@@ -25,7 +25,7 @@
   
   <artifactId>TESTBED_UTIL</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.2</version>
+  <version>1.0.3-SNAPSHOT</version>
   <name>CCSDS MOIMS MO Testbed utilities</name>
 
   <organization>
@@ -61,7 +61,7 @@
     <developer>
       <id>SamCooper</id>
       <name>Sam Cooper</name>
-      <email>sam.cooper@scisys.co.uk</email>
+      <email>sam@brightascension.com</email>
       <url>https://github.com/SamCooper</url>
     </developer>
     <developer>

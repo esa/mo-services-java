@@ -25,7 +25,7 @@
   
   <artifactId>TESTBED_MAL</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.1</version>
+  <version>1.1.2-SNAPSHOT</version>
   <name>CCSDS MOIMS MO Testbed for MAL</name>
 
   <organization>
@@ -61,7 +61,7 @@
     <developer>
       <id>SamCooper</id>
       <name>Sam Cooper</name>
-      <email>sam.cooper@scisys.co.uk</email>
+      <email>sam@brightascension.com</email>
       <url>https://github.com/SamCooper</url>
     </developer>
     <developer>
@@ -76,6 +76,7 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TESTBED_UTIL</artifactId>
+      <version>1.0.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.fitnesse</groupId>
@@ -163,7 +164,7 @@
             <ccsds.fitnesse.output.dir>${fitnesse.output.dir}</ccsds.fitnesse.output.dir>
             <slim.port>${fitnesse.port}</slim.port>
             <org.ccsds.moims.mo.testbed.remote.extra.args>${argLine}r</org.ccsds.moims.mo.testbed.remote.extra.args>
-<!--            <org.ccsds.moims.mo.testbed.remote.extra.args>-Djava.util.logging.config.file=logging.properties</org.ccsds.moims.mo.testbed.remote.extra.args>
+            <!--            <org.ccsds.moims.mo.testbed.remote.extra.args>-Djava.util.logging.config.file=logging.properties</org.ccsds.moims.mo.testbed.remote.extra.args>
             <org.ccsds.moims.mo.testbed.remote.extra.args>-Djava.util.logging.config.file=logging.properties -agentlib:jdwp=transport=dt_socket,server=y,address=4000</org.ccsds.moims.mo.testbed.remote.extra.args>-->
             <org.ccsds.moims.mo.testbed.local.configuration.dir>${org.ccsds.moims.mo.testbed.local.configuration.dir}</org.ccsds.moims.mo.testbed.local.configuration.dir>
             <org.ccsds.moims.mo.testbed.remote.configuration.dir>${org.ccsds.moims.mo.testbed.remote.configuration.dir}</org.ccsds.moims.mo.testbed.remote.configuration.dir>
@@ -195,6 +196,7 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>MAL_IMPL</artifactId>
+          <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
