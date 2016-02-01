@@ -66,7 +66,7 @@ public class GeneratorJava extends GeneratorLangs
    */
   public GeneratorJava(org.apache.maven.plugin.logging.Log logger)
   {
-    super(logger, true, true, false, true, false, "/org/ccsds/moims/mo",
+    super(logger, true, true, false, true, false,
             new GeneratorConfiguration("org.ccsds.moims.mo.", "structures", "factory", "body", ".", "(Object[]) null",
                     "MALSendOperation",
                     "MALSubmitOperation",
@@ -89,9 +89,13 @@ public class GeneratorJava extends GeneratorLangs
   }
 
   @Override
-  public void init(String destinationFolderName, boolean generateStructures, boolean generateCOM, Map<String, String> extraProperties) throws IOException
+  public void init(String destinationFolderName,
+          boolean generateStructures,
+          boolean generateCOM,
+          Map<String, String> packageBindings,
+          Map<String, String> extraProperties) throws IOException
   {
-    super.init(destinationFolderName, generateStructures, generateCOM, extraProperties);
+    super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
     setRequiresDefaultConstructors(Boolean.valueOf(extraProperties.get("requiresDefaultConstructors")));
 
@@ -127,15 +131,14 @@ public class GeneratorJava extends GeneratorLangs
   }
 
   @Override
-  public void createRequiredPublisher(String destinationFolderName, String fqPublisherName, OperationSummary op) throws IOException
+  public void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher publisher) throws IOException
   {
     getLog().info("Creating publisher class " + fqPublisherName);
 
-    String publisherPackage = fqPublisherName.substring(0, fqPublisherName.lastIndexOf('.'));
     String publisherName = fqPublisherName.substring(fqPublisherName.lastIndexOf('.') + 1);
     ClassWriter file = createClassFile(destinationFolderName, fqPublisherName.replace('.', '/'));
 
-    file.addPackageStatement(publisherPackage.toLowerCase(), "");
+    file.addPackageStatement(publisher.area, publisher.service, PROVIDER_FOLDER);
 
     String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
     String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
@@ -143,7 +146,7 @@ public class GeneratorJava extends GeneratorLangs
     String throwsExceptions = "java.lang.IllegalArgumentException, " + throwsInteractionAndMALException;
     CompositeField publisherSetType = createCompositeElementsDetails(file, false, "publisherSet", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false), false, true, null);
 
-    file.addClassOpenStatement(publisherName, true, false, null, null, "Publisher class for the " + op.getName() + " operation.");
+    file.addClassOpenStatement(publisherName, true, false, null, null, "Publisher class for the " + publisher.operation.getName() + " operation.");
 
     file.addClassVariable(false, false, StdStrings.PRIVATE, publisherSetType, false, (String) null);
 
@@ -165,7 +168,7 @@ public class GeneratorJava extends GeneratorLangs
 
     List<CompositeField> argList = new LinkedList<CompositeField>();
     argList.add(createCompositeElementsDetails(file, true, "updateHeaderList", TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true, "updateHeaderList The headers of the updates being added"));
-    argList.addAll(createOperationArguments(getConfig(), file, op.getUpdateTypes(), true));
+    argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes(), true));
 
     String argNameList = "";
 
@@ -305,16 +308,13 @@ public class GeneratorJava extends GeneratorLangs
       {
         superTypeReference.setName(StdStrings.ATTRIBUTE);
       }
+      else if (isEnum(srcType))
+      {
+        superTypeReference.setName(StdStrings.ENUMERATION);
+      }
       else
       {
-        if (isEnum(srcType))
-        {
-          superTypeReference.setName(StdStrings.ENUMERATION);
-        }
-        else
-        {
-          superTypeReference.setName(StdStrings.COMPOSITE);
-        }
+        superTypeReference.setName(StdStrings.COMPOSITE);
       }
     }
 
@@ -414,11 +414,18 @@ public class GeneratorJava extends GeneratorLangs
   }
 
   @Override
-  protected void createServiceMessageBodyFolderComment(String baseFolder, String packageName) throws IOException
+  protected void createServiceMessageBodyFolderComment(String baseFolder, AreaType area, ServiceType service) throws IOException
   {
-    ClassWriter file = createClassFile(baseFolder, (packageName + "." + JAVA_PACKAGE_COMMENT_FILE_NAME).replace('.', '/'));
+    String basePackageName = getConfig().getAreaPackage(area.getName());
+    String packageName = basePackageName + "." + area.getName().toLowerCase();
+    if (null != service)
+    {
+      packageName += "." + service.getName().toLowerCase();
+    }
 
-    createFolderComment(file, null, null, packageName.substring(getConfig().getBasePackage().length()), "Package containing the types for holding compound messages.");
+    ClassWriter file = createClassFile(baseFolder, (packageName + "." + getConfig().getBodyFolder() + "." + JAVA_PACKAGE_COMMENT_FILE_NAME).replace('.', '/'));
+
+    createFolderComment(file, area, service, getConfig().getBodyFolder(), "Package containing the types for holding compound messages.");
   }
 
   @Override
@@ -469,29 +476,10 @@ public class GeneratorJava extends GeneratorLangs
    */
   protected void createFolderComment(ClassWriter file, AreaType area, ServiceType service, String extraPackage, String comment) throws IOException
   {
-    String packageName = "";
-
-    if (null != area)
-    {
-      packageName += area.getName().toLowerCase();
-    }
-    if (null != service)
-    {
-      packageName += "." + service.getName().toLowerCase();
-    }
-    if (null != extraPackage)
-    {
-      if (0 < packageName.length())
-      {
-        packageName += ".";
-      }
-      packageName += extraPackage;
-    }
-
     file.addStatement("/**");
     file.addStatement(comment);
     file.addStatement("*/");
-    file.addPackageStatement(packageName);
+    file.addPackageStatement(area, service, extraPackage);
 
     file.flush();
   }
@@ -538,44 +526,41 @@ public class GeneratorJava extends GeneratorLangs
         ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, encCall, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, newCall, comment);
       }
     }
+    else if (isAttributeType(elementType))
+    {
+      AttributeTypeDetails details = getAttributeDetails(elementType);
+      String fqTypeName = createElementType((LanguageWriter) file, elementType, isStructure);
+      ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(), canBeNull, false, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
+    }
     else
     {
-      if (isAttributeType(elementType))
+      TypeReference elementTypeIndir = elementType;
+
+      // have to work around the fact that JAXB does not replicate the XML type name into Java in all cases
+      if ("XML".equalsIgnoreCase(elementType.getArea()))
       {
-        AttributeTypeDetails details = getAttributeDetails(elementType);
-        String fqTypeName = createElementType((LanguageWriter) file, elementType, isStructure);
-        ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(), canBeNull, false, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
+        elementTypeIndir = TypeUtils.createTypeReference(elementType.getArea(), elementType.getService(), StubUtils.preCap(elementType.getName()), elementType.isList());
+      }
+
+      String fqTypeName = createElementType((LanguageWriter) file, elementTypeIndir, isStructure);
+
+      if (isEnum(elementType))
+      {
+        EnumerationType typ = getEnum(elementType);
+        String firstEle = fqTypeName + "." + typ.getItem().get(0).getValue();
+        ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, firstEle, comment);
+      }
+      else if (StdStrings.ATTRIBUTE.equals(typeName))
+      {
+        ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ATTRIBUTE, "(" + fqTypeName + ") ", StdStrings.ATTRIBUTE, false, "", comment);
+      }
+      else if (StdStrings.ELEMENT.equals(typeName))
+      {
+        ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, false, "", comment);
       }
       else
       {
-        TypeReference elementTypeIndir = elementType;
-
-        // have to work around the fact that JAXB does not replicate the XML type name into Java in all cases
-        if ("XML".equalsIgnoreCase(elementType.getArea()))
-        {
-          elementTypeIndir = TypeUtils.createTypeReference(elementType.getArea(), elementType.getService(), StubUtils.preCap(elementType.getName()), elementType.isList());
-        }
-
-        String fqTypeName = createElementType((LanguageWriter) file, elementTypeIndir, isStructure);
-
-        if (isEnum(elementType))
-        {
-          EnumerationType typ = getEnum(elementType);
-          String firstEle = fqTypeName + "." + typ.getItem().get(0).getValue();
-          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, firstEle, comment);
-        }
-        else if (StdStrings.ATTRIBUTE.equals(typeName))
-        {
-          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ATTRIBUTE, "(" + fqTypeName + ") ", StdStrings.ATTRIBUTE, false, "", comment);
-        }
-        else if (StdStrings.ELEMENT.equals(typeName))
-        {
-          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, false, "", comment);
-        }
-        else
-        {
-          ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, "new " + fqTypeName + "()", comment);
-        }
+        ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, "new " + fqTypeName + "()", comment);
       }
     }
 
@@ -754,12 +739,6 @@ public class GeneratorJava extends GeneratorLangs
     public JavaClassWriter(String destinationFolderName, String className) throws IOException
     {
       file = StubUtils.createLowLevelWriter(destinationFolderName, className, JAVA_FILE_EXT);
-    }
-
-    @Override
-    public void addPackageStatement(String packageName) throws IOException
-    {
-      addPackageStatement(packageName, getConfig().getBasePackage());
     }
 
     @Override
@@ -1004,9 +983,34 @@ public class GeneratorJava extends GeneratorLangs
     }
 
     @Override
-    public void addPackageStatement(String packageName, String prefix) throws IOException
+    public void addPackageStatement(AreaType area, ServiceType service, String extraPackage) throws IOException
     {
-      file.append(addFileStatement(0, "package " + prefix + packageName, true));
+      String packageName = "";
+
+      if (null == area)
+      {
+        packageName = getConfig().getAreaPackage("");
+      }
+      else
+      {
+        packageName += getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase();
+
+        if (null != service)
+        {
+          packageName += "." + service.getName().toLowerCase();
+        }
+      }
+
+      if (null != extraPackage)
+      {
+        if (0 < packageName.length())
+        {
+          packageName += ".";
+        }
+        packageName += extraPackage;
+      }
+
+      file.append(addFileStatement(0, "package " + packageName, true));
     }
 
     @Override

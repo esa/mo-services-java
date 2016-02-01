@@ -53,9 +53,13 @@ public class GeneratorGwt extends GeneratorJava
   }
 
   @Override
-  public void init(String destinationFolderName, boolean generateStructures, boolean generateCOM, Map<String, String> extraProperties) throws IOException
+  public void init(String destinationFolderName,
+          boolean generateStructures,
+          boolean generateCOM,
+          Map<String, String> packageBindings,
+          Map<String, String> extraProperties) throws IOException
   {
-    super.init(destinationFolderName, generateStructures, generateCOM, extraProperties);
+    super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
     
     addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, false, "Boolean", "Boolean.FALSE");
   }
@@ -264,7 +268,7 @@ public class GeneratorGwt extends GeneratorJava
   }
 
   @Override
-  protected void createServiceProviderSkeleton(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary, Map<String, OperationSummary> requiredPublishers) throws IOException
+  protected void createServiceProviderSkeleton(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException
   {
   }
 

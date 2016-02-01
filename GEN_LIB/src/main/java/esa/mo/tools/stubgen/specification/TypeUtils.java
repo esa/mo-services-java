@@ -58,7 +58,7 @@ public abstract class TypeUtils
     if (null != tr)
     {
       String argTypeStr = tiSource.createElementType(null, tr, true);
-      String argVersionStr = tiSource.getBasePackage() + tr.getArea().toLowerCase() + "." + tr.getArea() + "Helper." + tr.getArea().toUpperCase() + "_AREA_VERSION";
+      String argVersionStr = tiSource.getAreaPackage(tr.getArea()) + tr.getArea().toLowerCase() + "." + tr.getArea() + "Helper." + tr.getArea().toUpperCase() + "_AREA_VERSION";
       TypeInfo ti;
       if (tr.isList())
       {
@@ -71,7 +71,7 @@ public abstract class TypeUtils
         {
           if (tiSource.isAttributeNativeType(tr))
           {
-            String fqName = tiSource.getBasePackage() + "mal.structures." + tr.getName() + "List";
+            String fqName = tiSource.getAreaPackage(StdStrings.MAL) + "mal.structures." + tr.getName() + "List";
             ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName() + "List", fqName, false, fqName + ".SHORT_FORM", argVersionStr);
           }
           else
@@ -206,7 +206,7 @@ public abstract class TypeUtils
       {
         if (!type.isList() && tiSource.isAttributeType(type))
         {
-          return tiSource.convertToNamespace(tiSource.getBasePackage() + tiSource.convertToNamespace("mal.structures.Attribute.") + type.getName().toUpperCase() + "_SHORT_FORM");
+          return tiSource.convertToNamespace(tiSource.getAreaPackage(StdStrings.MAL) + tiSource.convertToNamespace("mal.structures.Attribute.") + type.getName().toUpperCase() + "_SHORT_FORM");
         }
 
         if (tiSource.convertToNamespace("org.ccsds.moims.mo.mal.structures.Element").equals(targetType))

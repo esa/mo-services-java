@@ -61,19 +61,6 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
     addMultilineComment(tabCount, preBlankLine, normaliseComment(new LinkedList<String>(), comment), postBlankLine);
   }
 
-  @Override
-  public void addPackageStatement(AreaType area, ServiceType service, String packageName) throws IOException
-  {
-    String cls = area.getName().toLowerCase() + ".";
-
-    if (null != service)
-    {
-      cls += service.getName().toLowerCase() + ".";
-    }
-
-    addPackageStatement(cls + packageName);
-  }
-
   /**
    * Processes a list of comments making sure they contain a full stop at the end.
    *

@@ -102,9 +102,13 @@ public class GeneratorDocx extends GeneratorDocument
   }
 
   @Override
-  public void init(String destinationFolderName, boolean generateStructures, boolean generateCOM, Map<String, String> extraProperties) throws IOException
+  public void init(String destinationFolderName,
+          boolean generateStructures,
+          boolean generateCOM,
+          Map<String, String> packageBindings,
+          Map<String, String> extraProperties) throws IOException
   {
-    super.init(destinationFolderName, generateStructures, generateCOM, extraProperties);
+    super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
     if (extraProperties.containsKey("docx.includeMessageFieldNames"))
     {

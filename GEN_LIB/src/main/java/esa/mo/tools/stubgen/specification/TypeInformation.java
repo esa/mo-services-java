@@ -61,11 +61,12 @@ public interface TypeInformation
   boolean isAttributeType(TypeReference type);
 
   /**
-   * Returns the base package all generated classes should be created in.
+   * Returns the package all generated classes for an area should be created in.
    *
-   * @return the base package.
+   * @param area the area to search.
+   * @return the package.
    */
-  String getBasePackage();
+  String getAreaPackage(String area);
 
   /**
    * Converts a standard type name to the language specific format.

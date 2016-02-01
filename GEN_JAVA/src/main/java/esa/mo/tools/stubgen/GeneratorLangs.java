@@ -74,11 +74,10 @@ public abstract class GeneratorLangs extends GeneratorBase
    * The folder that transport interfaces are held.
    */
   public static final String TRANSPORT_FOLDER = "transport";
-  private final String baseFolder;
   private final Map<TypeKey, ModelObjectType> comObjectMap = new HashMap<TypeKey, ModelObjectType>();
   private final Map<String, MultiReturnType> multiReturnTypeMap = new HashMap<String, MultiReturnType>();
   private final Map<String, String> reservedWordsMap = new HashMap<String, String>();
-  private final Map<String, OperationSummary> requiredPublishers = new HashMap<String, OperationSummary>();
+  private final Map<String, RequiredPublisher> requiredPublishers = new HashMap<String, RequiredPublisher>();
   private boolean supportsToString;
   private boolean supportsEquals;
   private boolean supportsToValue;
@@ -95,14 +94,12 @@ public abstract class GeneratorLangs extends GeneratorBase
    * @param supportsToValue True if should generate generic get value methods in types.
    * @param supportsAsync True if should generate async consumer methods.
    * @param requiresDefaultConstructors True if type require a default constructor.
-   * @param baseFolder Base folder that output should be generated in to.
    * @param config The generator configuration.
    */
-  public GeneratorLangs(Log logger, boolean supportsToString, boolean supportsEquals, boolean supportsToValue, boolean supportsAsync, boolean requiresDefaultConstructors, String baseFolder, GeneratorConfiguration config)
+  public GeneratorLangs(Log logger, boolean supportsToString, boolean supportsEquals, boolean supportsToValue, boolean supportsAsync, boolean requiresDefaultConstructors, GeneratorConfiguration config)
   {
     super(logger, config);
 
-    this.baseFolder = baseFolder;
     this.supportsToString = supportsToString;
     this.supportsEquals = supportsEquals;
     this.supportsToValue = supportsToValue;
@@ -111,17 +108,25 @@ public abstract class GeneratorLangs extends GeneratorBase
   }
 
   @Override
-  public void init(String destinationFolderName, boolean generateStructures, boolean generateCOM, Map<String, String> extraProperties) throws IOException
+  public void init(String destinationFolderName,
+          boolean generateStructures,
+          boolean generateCOM,
+          Map<String, String> packageBindings,
+          Map<String, String> extraProperties) throws IOException
   {
-    super.init(destinationFolderName, generateStructures, generateCOM, extraProperties);
+    super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
     this.generateStructures = generateStructures;
   }
 
   @Override
-  public void postinit(String destinationFolderName, boolean generateStructures, boolean generateCOM, Map<String, String> extraProperties) throws IOException
+  public void postinit(String destinationFolderName,
+          boolean generateStructures,
+          boolean generateCOM,
+          Map<String, String> packageBindings,
+          Map<String, String> extraProperties) throws IOException
   {
-    super.postinit(destinationFolderName, generateStructures, generateCOM, extraProperties);
+    super.postinit(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
     addAttributeType(StdStrings.XML, "hexBinary", getAttributeDetails(StdStrings.MAL, StdStrings.BLOB));
     addAttributeType(StdStrings.XML, "boolean", getAttributeDetails(StdStrings.MAL, StdStrings.BOOLEAN));
@@ -189,10 +194,9 @@ public abstract class GeneratorLangs extends GeneratorBase
   @Override
   public void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException
   {
-    File destFolder = StubUtils.createFolder(new File(destinationFolderName), baseFolder);
     for (AreaType area : spec.getArea())
     {
-      processArea(destFolder, area, requiredPublishers);
+      processArea(destinationFolderName, area, requiredPublishers);
     }
 
     for (Map.Entry<String, MultiReturnType> entry : multiReturnTypeMap.entrySet())
@@ -208,13 +212,13 @@ public abstract class GeneratorLangs extends GeneratorBase
   public void close(String destinationFolderName) throws IOException
   {
     // create any extra classes
-    for (Map.Entry<String, OperationSummary> ele : requiredPublishers.entrySet())
+    for (Map.Entry<String, RequiredPublisher> ele : requiredPublishers.entrySet())
     {
       String string = ele.getKey();
 
       if (!string.contains(".com.com.provider.") || generateCOM())
       {
-        createRequiredPublisher(destinationFolderName, string, requiredPublishers.get(string));
+        createRequiredPublisher(destinationFolderName, string, ele.getValue());
       }
     }
   }
@@ -361,17 +365,22 @@ public abstract class GeneratorLangs extends GeneratorBase
     reservedWordsMap.put(word, replacement);
   }
 
-  protected void processArea(File destinationFolder, AreaType area, Map<String, OperationSummary> requiredPublishers) throws IOException
+  protected void processArea(String destinationFolderName, AreaType area, Map<String, RequiredPublisher> requiredPublishers) throws IOException
   {
     if ((!area.getName().equalsIgnoreCase(StdStrings.COM)) || (generateCOM()))
     {
       getLog().info("Processing area: " + area.getName());
+
       // create folder
+      File destinationFolder = StubUtils.createFolder(new File(destinationFolderName), getConfig().getAreaPackage(area.getName()).replace('.', '/'));
       final File areaFolder = StubUtils.createFolder(destinationFolder, area.getName());
+
       // create a comment for the area folder if supported
       createAreaFolderComment(areaFolder, area);
+
       // create area helper
       createAreaHelperClass(areaFolder, area);
+
       // if area level types exist
       if (generateStructures && (null != area.getDataTypes()) && !area.getDataTypes().getFundamentalOrAttributeOrComposite().isEmpty())
       {
@@ -416,7 +425,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     }
   }
 
-  protected void processService(File areaFolder, AreaType area, ServiceType service, Map<String, OperationSummary> requiredPublishers) throws IOException
+  protected void processService(File areaFolder, AreaType area, ServiceType service, Map<String, RequiredPublisher> requiredPublishers) throws IOException
   {
     // create service folders
     File serviceFolder = StubUtils.createFolder(areaFolder, service.getName());
@@ -469,7 +478,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     createServiceConsumerStub(consumerFolder, area, service, summary);
   }
 
-  protected void createServiceProviderClasses(File serviceFolder, AreaType area, ServiceType service, ServiceSummary summary, Map<String, OperationSummary> requiredPublishers) throws IOException
+  protected void createServiceProviderClasses(File serviceFolder, AreaType area, ServiceType service, ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException
   {
     getLog().info("Creating provider classes: " + service.getName());
     File providerFolder = StubUtils.createFolder(serviceFolder, PROVIDER_FOLDER);
@@ -1167,7 +1176,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     }
   }
 
-  protected void createServiceProviderSkeleton(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary, Map<String, OperationSummary> requiredPublishers) throws IOException
+  protected void createServiceProviderSkeleton(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException
   {
     getLog().info("Creating provider skeleton interface: " + service.getName());
 
@@ -1192,8 +1201,8 @@ public abstract class GeneratorLangs extends GeneratorBase
       {
         case PUBSUB_OP:
         {
-          String updateType = getConfig().getBasePackage() + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + PROVIDER_FOLDER + "." + StubUtils.preCap(op.getName()) + "Publisher";
-          requiredPublishers.put(updateType, op);
+          String updateType = getConfig().getAreaPackage(area.getName()) + "." + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + PROVIDER_FOLDER + "." + StubUtils.preCap(op.getName()) + "Publisher";
+          requiredPublishers.put(updateType, new RequiredPublisher(area, service, op));
           file.addTypeDependency("Map<_String;_String>");
           CompositeField updateTypeField = createCompositeElementsDetails(file, false, "publisher", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false), false, true, null);
           file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, updateTypeField, "create" + StubUtils.preCap(op.getName()) + "Publisher", StubUtils.concatenateArguments(malDomId, malNetworkZone, malSession, malSessionName, malqos, malqosprops, malPriority), throwsMALException,
@@ -1367,7 +1376,7 @@ public abstract class GeneratorLangs extends GeneratorBase
         String opResp = delegateCall + op.getName() + "(" + opArgs + "interaction)";
         if ((1 == op.getRetTypes().size()) && (op.getRetTypes().get(0).isNativeType()))
         {
-          opResp = "new " + getConfig().getBasePackage() + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + opResp + ")";
+          opResp = "new " + getConfig().getAreaPackage(StdStrings.MAL) + ".mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + opResp + ")";
         }
         ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
         method.addMethodWithDependencyStatement("  case " + ns, ns, false);
@@ -1454,7 +1463,7 @@ public abstract class GeneratorLangs extends GeneratorBase
           }
           if (ti.isNativeType())
           {
-            buf.append("(").append(arg).append(".getBodyElement").append(i).append("()").append(" == null) ? null : new ").append(getConfig().getBasePackage()).append("mal.").append(getConfig().getStructureFolder()).append(".").append(StdStrings.UNION).append("(").append(arg).append(".getBodyElement").append(i).append("()").append(")");
+            buf.append("(").append(arg).append(".getBodyElement").append(i).append("()").append(" == null) ? null : new ").append(getConfig().getAreaPackage(StdStrings.MAL)).append(".mal.").append(getConfig().getStructureFolder()).append(".").append(StdStrings.UNION).append("(").append(arg).append(".getBodyElement").append(i).append("()").append(")");
           }
           else
           {
@@ -1481,9 +1490,8 @@ public abstract class GeneratorLangs extends GeneratorBase
 
     String areaName = area.getName();
     String areaNameCaps = area.getName().toUpperCase();
-    String areaPackageName = areaName.toLowerCase();
 
-    file.addPackageStatement(areaPackageName);
+    file.addPackageStatement(area, null, null);
 
     String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
     String identifierType = createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
@@ -1611,10 +1619,9 @@ public abstract class GeneratorLangs extends GeneratorBase
     ClassWriterProposed file = createClassFile(serviceFolder, service.getName() + "Helper");
 
     String serviceName = service.getName();
-    String servicePackageName = area.getName().toLowerCase() + "." + serviceName.toLowerCase();
     String serviceVar = serviceName.toUpperCase();
 
-    file.addPackageStatement(servicePackageName);
+    file.addPackageStatement(area, service, null);
 
     String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
     String identifierType = createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
@@ -2292,13 +2299,12 @@ public abstract class GeneratorLangs extends GeneratorBase
   {
     getLog().info("Creating multiple return class class " + returnTypeFqName);
 
-    String publisherPackage = returnTypeFqName.substring(0, returnTypeFqName.lastIndexOf('.'));
     // create a comment for the body folder if supported
-    createServiceMessageBodyFolderComment(destinationFolderName, publisherPackage.toLowerCase());
+    createServiceMessageBodyFolderComment(destinationFolderName, returnTypeInfo.getArea(), returnTypeInfo.getService());
 
     ClassWriter file = createClassFile(destinationFolderName, returnTypeFqName.replace('.', '/'));
 
-    file.addPackageStatement(publisherPackage.toLowerCase(), "");
+    file.addPackageStatement(returnTypeInfo.getArea(), returnTypeInfo.getService(), getConfig().getBodyFolder());
 
     file.addClassOpenStatement(returnTypeInfo.getShortName(), true, false, null, null, "Multi body return class for " + returnTypeInfo.getShortName() + ".");
 
@@ -2608,8 +2614,8 @@ public abstract class GeneratorLangs extends GeneratorBase
       if (ti.isNativeType())
       {
         AttributeTypeDetails details = getAttributeDetails(ti.getSourceType());
-        String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", new " + getConfig().getBasePackage() + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + details.getDefaultValue() + "))";
-        retStr += "(" + av + " == null) ? null : ((" + getConfig().getBasePackage() + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + ") " + av + ").get" + details.getMalType() + "Value()";
+        String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", new " + getConfig().getAreaPackage(StdStrings.MAL) + ".mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + details.getDefaultValue() + "))";
+        retStr += "(" + av + " == null) ? null : ((" + getConfig().getAreaPackage(StdStrings.MAL) + ".mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + ") " + av + ").get" + details.getMalType() + "Value()";
       }
       else
       {
@@ -2852,7 +2858,7 @@ public abstract class GeneratorLangs extends GeneratorBase
       else
       {
         String shortName = StubUtils.preCap(opName) + messageType;
-        String rt = getConfig().getBasePackage() + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + getConfig().getBodyFolder() + "." + shortName;
+        String rt = getConfig().getAreaPackage(area.getName()) + "." + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + getConfig().getBodyFolder() + "." + shortName;
         if (!multiReturnTypeMap.containsKey(rt))
         {
           multiReturnTypeMap.put(rt, new MultiReturnType(rt, area, service, shortName, returnTypes));
@@ -2899,8 +2905,8 @@ public abstract class GeneratorLangs extends GeneratorBase
           buf.append("(");
           buf.append(argName);
           buf.append(" == null) ? null : new ");
-          buf.append(getConfig().getBasePackage());
-          buf.append("mal.");
+          buf.append(getConfig().getAreaPackage(StdStrings.MAL));
+          buf.append(".mal.");
           buf.append(getConfig().getStructureFolder());
           buf.append(".");
           buf.append(StdStrings.UNION);
@@ -2969,7 +2975,7 @@ public abstract class GeneratorLangs extends GeneratorBase
   {
   }
 
-  protected void createServiceMessageBodyFolderComment(String baseFolder, String packageName) throws IOException
+  protected void createServiceMessageBodyFolderComment(String baseFolder, AreaType area, ServiceType service) throws IOException
   {
   }
 
@@ -2987,7 +2993,7 @@ public abstract class GeneratorLangs extends GeneratorBase
 
   protected abstract String createServiceHelperClassInitialValue(String serviceVar);
 
-  protected abstract void createRequiredPublisher(String destinationFolderName, String fqPublisherName, OperationSummary op) throws IOException;
+  protected abstract void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher op) throws IOException;
 
   protected abstract void addVectorAddStatement(LanguageWriter file, MethodWriter method, String variable, String parameter) throws IOException;
 

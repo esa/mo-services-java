@@ -59,7 +59,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   private final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new TreeMap<TypeKey, AttributeTypeDetails>();
   private final Map<String, NativeTypeDetails> nativeTypesMap = new TreeMap<String, NativeTypeDetails>();
   private final Map<String, ErrorDefinitionType> errorDefinitionMap = new TreeMap<String, ErrorDefinitionType>();
-  private final Map<String, String> jaxbBindings = new TreeMap<String, String>();
   private final Log logger;
   private boolean generateCOM;
 
@@ -79,37 +78,30 @@ public abstract class GeneratorBase implements Generator, TypeInformation
   public void init(String destinationFolderName,
           boolean generateStructures,
           boolean generateCOM,
+          Map<String, String> packageBindings,
           Map<String, String> extraProperties) throws IOException
   {
     this.generateCOM = generateCOM;
+    
+    if (null != packageBindings)
+    {
+      for (Map.Entry<String, String> entry : packageBindings.entrySet())
+      {
+        String area = entry.getKey();
+        String pack = entry.getValue();
+
+        this.config.addAreaPackage(area.toUpperCase(), pack);
+      }
+    }
   }
 
   @Override
   public void postinit(String destinationFolderName,
           boolean generateStructures,
           boolean generateCOM,
+          Map<String, String> packageBindings,
           Map<String, String> extraProperties) throws IOException
   {
-  }
-
-  @Override
-  public void setJaxbBindings(Map<String, String> jaxbBindings)
-  {
-    if (null != jaxbBindings)
-    {
-      for (Map.Entry<String, String> entry : jaxbBindings.entrySet())
-      {
-        String pack = entry.getKey();
-        String uri = entry.getValue();
-
-        String[] uris = uri.split(",");
-
-        for (String string : uris)
-        {
-          this.jaxbBindings.put(string, pack);
-        }
-      }
-    }
   }
 
   @Override
@@ -174,13 +166,13 @@ public abstract class GeneratorBase implements Generator, TypeInformation
     attributeTypesMap.clear();
     nativeTypesMap.clear();
     errorDefinitionMap.clear();
-    jaxbBindings.clear();
+    config.resetAreaPackages();
   }
 
   @Override
-  public String getBasePackage()
+  public String getAreaPackage(String area)
   {
-    return config.getBasePackage();
+    return config.getAreaPackage(area);
   }
 
   /**
@@ -433,11 +425,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation
       {
         if (StdStrings.XML.equals(area))
         {
-          retVal = jaxbBindings.get(service) + config.getNamingSeparator() + StubUtils.preCap(type);
+          retVal = config.getAreaPackage(service) + config.getNamingSeparator() + StubUtils.preCap(type);
         }
         else
         {
-          retVal += config.getBasePackage() + area.toLowerCase() + config.getNamingSeparator();
+          retVal += config.getAreaPackage(area) + area.toLowerCase() + config.getNamingSeparator();
 
           if (null != service)
           {

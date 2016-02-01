@@ -20,12 +20,16 @@
  */
 package esa.mo.tools.stubgen;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Holds the configuration of the generator when used to generate a programming language.
  */
 public class GeneratorConfiguration
 {
-  private final String basePackage;
+  private final String defaultPackage;
+  private final Map<String, String> areaPackages = new HashMap();
   private final String structureFolder;
   private final String factoryFolder;
   private final String bodyFolder;
@@ -41,7 +45,7 @@ public class GeneratorConfiguration
   /**
    * Constructor.
    *
-   * @param basePackage Base package all classes are contained in.
+   * @param defaultPackage Default package all classes are contained in.
    * @param structurePackage Folder used to hold generated type classes.
    * @param factoryPackage Folder used to hold generated type factory classes.
    * @param bodyPackage Folder used to hold generated message body classes.
@@ -54,9 +58,9 @@ public class GeneratorConfiguration
    * @param progressOpType Class used to represent a PROGRESS operation.
    * @param pubsubOpType Class used to represent a PUBSUB operation.
    */
-  public GeneratorConfiguration(String basePackage, String structurePackage, String factoryPackage, String bodyPackage, String separator, String nullValue, String sendOpType, String submitOpType, String requestOpType, String invokeOpType, String progressOpType, String pubsubOpType)
+  public GeneratorConfiguration(String defaultPackage, String structurePackage, String factoryPackage, String bodyPackage, String separator, String nullValue, String sendOpType, String submitOpType, String requestOpType, String invokeOpType, String progressOpType, String pubsubOpType)
   {
-    this.basePackage = basePackage;
+    this.defaultPackage = defaultPackage;
     this.structureFolder = structurePackage;
     this.factoryFolder = factoryPackage;
     this.bodyFolder = bodyPackage;
@@ -68,6 +72,26 @@ public class GeneratorConfiguration
     this.invokeOperationType = invokeOpType;
     this.progressOperationType = progressOpType;
     this.pubsubOperationType = pubsubOpType;
+  }
+
+  /**
+   * Add a new package specification for a specific area.
+   *
+   * @param area the area being set.
+   * @param newPackage the package to use.
+   */
+  public void addAreaPackage(String area, String newPackage)
+  {
+    areaPackages.put(area, newPackage + ".");
+  }
+
+  /**
+   * Resets package specification for specific areas.
+   *
+   */
+  public void resetAreaPackages()
+  {
+    areaPackages.clear();
   }
 
   /**
@@ -101,13 +125,16 @@ public class GeneratorConfiguration
   }
 
   /**
-   * Returns the base package.
+   * Returns the area package.
    *
-   * @return the base package
+   * @param area The area to return the package for.
+   * @return the area package
    */
-  public String getBasePackage()
+  public String getAreaPackage(String area)
   {
-    return basePackage;
+    String value = areaPackages.get(area.toUpperCase());
+
+    return (null == value) ? defaultPackage : value;
   }
 
   /**

@@ -113,11 +113,12 @@ public class StubGenerator extends AbstractMojo
    */
   protected Map<String, String> extraProperties;
   /**
-   * JAXB bindings, held in URI/package pairs
+   * Package bindings, held in AREA/package pairs
+   * For JAXB bindings, held in URI/package pairs
    *
    * @parameter
    */
-  protected Map<String, String> jaxbBindings;
+  protected Map<String, String> packageBindings;
   private static final Map<String, Generator> GENERATOR_MAP = new TreeMap<String, Generator>();
   private static boolean generatorsLoaded = false;
 
@@ -133,7 +134,7 @@ public class StubGenerator extends AbstractMojo
     gen.generateStructures = true;
     gen.generateCOM = true;
     gen.extraProperties = new TreeMap<String, String>();
-    gen.jaxbBindings = new TreeMap<String, String>();
+    gen.packageBindings = new TreeMap<String, String>();
 
     boolean printHelp = false;
 
@@ -353,13 +354,13 @@ public class StubGenerator extends AbstractMojo
   }
 
   /**
-   * Sets the JAXB bindings, held in URI/package pairs
+   * Sets the package bindings, held in AREA/package pairs or URI/package pairs for JAXB
    *
-   * @param jaxbBindings
+   * @param packageBindings
    */
-  public void setJaxbBindings(Map<String, String> jaxbBindings)
+  public void setPackageBindings(Map<String, String> packageBindings)
   {
-    this.jaxbBindings = jaxbBindings;
+    this.packageBindings = packageBindings;
   }
 
   @Override
@@ -536,9 +537,8 @@ public class StubGenerator extends AbstractMojo
     try
     {
       generator.reset();
-      generator.init(outputDirectory.getPath(), generateStructures, generateCOM, extraProperties);
-      generator.setJaxbBindings(jaxbBindings);
-      generator.postinit(outputDirectory.getPath(), generateStructures, generateCOM, extraProperties);
+      generator.init(outputDirectory.getPath(), generateStructures, generateCOM, packageBindings, extraProperties);
+      generator.postinit(outputDirectory.getPath(), generateStructures, generateCOM, packageBindings, extraProperties);
     }
     catch (IOException ex)
     {

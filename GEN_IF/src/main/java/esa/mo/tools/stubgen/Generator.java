@@ -52,12 +52,15 @@ public interface Generator
    * @param destinationFolderName The folder to generate into too.
    * @param generateStructures Whether to generate any data types in the specification.
    * @param generateCOM Whether to generate COM information.
+   * @param packageBindings Sets any binding information for when services are specified packages other than the default for that
+   * language. Held in AREA/package pairs, or URI/package for JAXB.
    * @param extraProperties Any generator specific properties.
    * @throws IOException If there is a problem initialising the generator.
    */
   void init(String destinationFolderName,
           boolean generateStructures,
           boolean generateCOM,
+          Map<String, String> packageBindings,
           Map<String, String> extraProperties) throws IOException;
 
   /**
@@ -66,20 +69,16 @@ public interface Generator
    * @param destinationFolderName The folder to generate into too.
    * @param generateStructures Whether to generate any data types in the specification.
    * @param generateCOM Whether to generate COM information.
+   * @param packageBindings Sets any binding information for when services are specified packages other than the default for that
+   * language. Held in AREA/package pairs, or URI/package for JAXB.
    * @param extraProperties Any generator specific properties.
    * @throws IOException If there is a problem initialising the generator.
    */
   void postinit(String destinationFolderName,
           boolean generateStructures,
           boolean generateCOM,
+          Map<String, String> packageBindings,
           Map<String, String> extraProperties) throws IOException;
-
-  /**
-   * Sets any JAXB binding information for when services are specified using XML Schema for the data type specification.
-   *
-   * @param jaxbBindings The JAXB bindings.
-   */
-  void setJaxbBindings(Map<String, String> jaxbBindings);
 
   /**
    * Pre process a specification to load in the type definitions.
@@ -121,6 +120,7 @@ public interface Generator
   /**
    * Resets the generator allowing it to be reused.
    *
-s   */
+   * s
+   */
   void reset();
 }

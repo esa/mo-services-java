@@ -49,23 +49,6 @@ public interface LanguageWriter extends TargetWriter
   void addPackageStatement(AreaType area, ServiceType service, String packageName) throws IOException;
 
   /**
-   * Add a package namespace declaration to the file.
-   *
-   * @param packageName The package name.
-   * @throws IOException If there is an IO error.
-   */
-  void addPackageStatement(String packageName) throws IOException;
-
-  /**
-   * Add a package namespace declaration to the file.
-   *
-   * @param packageName The package name.
-   * @param prefix Namespace prefix.
-   * @throws IOException If there is an IO error.
-   */
-  void addPackageStatement(String packageName, String prefix) throws IOException;
-
-  /**
    * Adds a multiline comment to the file.
    *
    * @param comment the comment.
