@@ -2189,14 +2189,19 @@ public abstract class GeneratorLangs extends GeneratorBase
       MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, strType, "toString", null, null, "Returns a String object representing this type's value.", "a string representation of the value of this object", null);
       method.addMethodStatement("StringBuilder buf = new StringBuilder()");
       method.addMethodStatement("buf.append('(')");
+      
+      String prefixSeparator = "";
+      
       if (null != parentClass)
       {
         method.addMethodStatement("buf.append(super.toString())");
+        prefixSeparator = ", ";
       }
       for (CompositeField element : compElements)
       {
-        method.addMethodStatement("buf.append(\"," + element.getFieldName() + "=\")");
+        method.addMethodStatement("buf.append(\"" + prefixSeparator + element.getFieldName() + "=\")");
         method.addMethodStatement("buf.append(" + element.getFieldName() + ")");
+        prefixSeparator = ", ";
       }
       method.addMethodStatement("buf.append(')')");
       method.addMethodStatement("return buf.toString()");
