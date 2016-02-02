@@ -338,6 +338,7 @@ public class GeneratorSvg extends GeneratorDocument
           TypeReference refType = typeInfo.getSourceType();
           refType.setList(Boolean.TRUE);
           types.add(TypeUtils.convertTypeReference(this, refType));
+          refType.setList(Boolean.FALSE);
         }
         drawOperationTypes(svgFile, summary, opNumber, "Notify telemetry report application data:", types, op.getRetComment(), op.getName(), "PUBSUB");
         break;
