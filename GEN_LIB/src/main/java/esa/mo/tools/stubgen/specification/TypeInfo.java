@@ -139,4 +139,10 @@ public class TypeInfo
   {
     return malVersionField;
   }
+
+  @Override
+  public String toString()
+  {
+    return "TypeInfo{" + "sourceType=" + sourceType + ", fieldName=" + fieldName + ", actualMalType=" + actualMalType + ", targetType=" + targetType + ", nativeType=" + nativeType + ", malShortFormField=" + malShortFormField + ", malVersionField=" + malVersionField + '}';
+  }
 }

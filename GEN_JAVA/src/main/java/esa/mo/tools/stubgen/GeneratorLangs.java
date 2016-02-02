@@ -688,17 +688,19 @@ public abstract class GeneratorLangs extends GeneratorBase
         String ns = convertToNamespace(serviceHelper + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
         method.addMethodWithDependencyStatement("  case " + ns, ns, false);
         List<TypeInfo> opTypes = null;
-        if (1 == opTypeIndex)
+        switch (opTypeIndex)
         {
-          opTypes = op.getAckTypes();
-        }
-        else if (2 == opTypeIndex)
-        {
-          opTypes = op.getUpdateTypes();
-        }
-        else if (3 == opTypeIndex)
-        {
-          opTypes = op.getRetTypes();
+          case 1:
+            opTypes = op.getAckTypes();
+            break;
+          case 2:
+            opTypes = op.getUpdateTypes();
+            break;
+          case 3:
+            opTypes = op.getRetTypes();
+            break;
+          default:
+            break;
         }
         String opArgs = createAdapterMethodsArgs(opTypes, "body", true, false);
         method.addMethodStatement("    " + op.getName() + subopPostname + "Received(msgHeader" + opArgs + ", qosProperties)");
@@ -1201,7 +1203,7 @@ public abstract class GeneratorLangs extends GeneratorBase
       {
         case PUBSUB_OP:
         {
-          String updateType = getConfig().getAreaPackage(area.getName()) + "." + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + PROVIDER_FOLDER + "." + StubUtils.preCap(op.getName()) + "Publisher";
+          String updateType = getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + PROVIDER_FOLDER + "." + StubUtils.preCap(op.getName()) + "Publisher";
           requiredPublishers.put(updateType, new RequiredPublisher(area, service, op));
           file.addTypeDependency("Map<_String;_String>");
           CompositeField updateTypeField = createCompositeElementsDetails(file, false, "publisher", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false), false, true, null);
@@ -1376,7 +1378,7 @@ public abstract class GeneratorLangs extends GeneratorBase
         String opResp = delegateCall + op.getName() + "(" + opArgs + "interaction)";
         if ((1 == op.getRetTypes().size()) && (op.getRetTypes().get(0).isNativeType()))
         {
-          opResp = "new " + getConfig().getAreaPackage(StdStrings.MAL) + ".mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + opResp + ")";
+          opResp = "new " + getConfig().getAreaPackage(StdStrings.MAL) + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + opResp + ")";
         }
         ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
         method.addMethodWithDependencyStatement("  case " + ns, ns, false);
@@ -1463,7 +1465,7 @@ public abstract class GeneratorLangs extends GeneratorBase
           }
           if (ti.isNativeType())
           {
-            buf.append("(").append(arg).append(".getBodyElement").append(i).append("()").append(" == null) ? null : new ").append(getConfig().getAreaPackage(StdStrings.MAL)).append(".mal.").append(getConfig().getStructureFolder()).append(".").append(StdStrings.UNION).append("(").append(arg).append(".getBodyElement").append(i).append("()").append(")");
+            buf.append("(").append(arg).append(".getBodyElement").append(i).append("()").append(" == null) ? null : new ").append(getConfig().getAreaPackage(StdStrings.MAL)).append("mal.").append(getConfig().getStructureFolder()).append(".").append(StdStrings.UNION).append("(").append(arg).append(".getBodyElement").append(i).append("()").append(")");
           }
           else
           {
@@ -2614,8 +2616,8 @@ public abstract class GeneratorLangs extends GeneratorBase
       if (ti.isNativeType())
       {
         AttributeTypeDetails details = getAttributeDetails(ti.getSourceType());
-        String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", new " + getConfig().getAreaPackage(StdStrings.MAL) + ".mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + details.getDefaultValue() + "))";
-        retStr += "(" + av + " == null) ? null : ((" + getConfig().getAreaPackage(StdStrings.MAL) + ".mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + ") " + av + ").get" + details.getMalType() + "Value()";
+        String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", new " + getConfig().getAreaPackage(StdStrings.MAL) + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + details.getDefaultValue() + "))";
+        retStr += "(" + av + " == null) ? null : ((" + getConfig().getAreaPackage(StdStrings.MAL) + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + ") " + av + ").get" + details.getMalType() + "Value()";
       }
       else
       {
@@ -2858,7 +2860,7 @@ public abstract class GeneratorLangs extends GeneratorBase
       else
       {
         String shortName = StubUtils.preCap(opName) + messageType;
-        String rt = getConfig().getAreaPackage(area.getName()) + "." + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + getConfig().getBodyFolder() + "." + shortName;
+        String rt = getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + getConfig().getBodyFolder() + "." + shortName;
         if (!multiReturnTypeMap.containsKey(rt))
         {
           multiReturnTypeMap.put(rt, new MultiReturnType(rt, area, service, shortName, returnTypes));
@@ -2906,7 +2908,7 @@ public abstract class GeneratorLangs extends GeneratorBase
           buf.append(argName);
           buf.append(" == null) ? null : new ");
           buf.append(getConfig().getAreaPackage(StdStrings.MAL));
-          buf.append(".mal.");
+          buf.append("mal.");
           buf.append(getConfig().getStructureFolder());
           buf.append(".");
           buf.append(StdStrings.UNION);
