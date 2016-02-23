@@ -91,7 +91,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
               ((Element) element).encode(enc);
               return;
             case MALPubSubOperation._PUBLISH_STAGE:
-              if ((0 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex() - 1]))
+              if ((0 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()]))
               {
                 encodeSubElement((Element) element, null, null);
               }
@@ -101,7 +101,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
               }
               return;
             case MALPubSubOperation._NOTIFY_STAGE:
-              if ((1 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex() - 2]))
+              if ((1 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()]))
               {
                 encodeSubElement((Element) element, null, null);
               }

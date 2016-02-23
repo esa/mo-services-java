@@ -92,7 +92,14 @@ public abstract class GENElementInputStream implements MALElementInputStream
             }
             else
             {
-              Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex() - 1];
+              Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()];
+
+              // element is defined as an abstract type
+              if (null == sf)
+              {
+                sf = dec.decodeNullableLong();
+              }
+              
               return decodeSubElement((Long) sf, ctx);
             }
           }
@@ -109,7 +116,14 @@ public abstract class GENElementInputStream implements MALElementInputStream
             }
             else
             {
-              Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex() - 2];
+              Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()];
+              
+              // element is defined as an abstract type
+              if (null == sf)
+              {
+                sf = dec.decodeNullableLong();
+              }
+              
               return decodeSubElement((Long) sf, ctx);
             }
           }
