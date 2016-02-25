@@ -45,8 +45,8 @@ import javax.xml.bind.JAXBException;
 import org.apache.maven.plugin.logging.Log;
 
 /**
- * Main generator class for programming languages. Iterates over the specification model drilling down into the parts of
- * the model and inspecting them. Generates stubs and skeletons appropriate to an object orientated language.
+ * Main generator class for programming languages. Iterates over the specification model drilling down into the parts of the model
+ * and inspecting them. Generates stubs and skeletons appropriate to an object orientated language.
  */
 public abstract class GeneratorLangs extends GeneratorBase
 {
@@ -84,6 +84,7 @@ public abstract class GeneratorLangs extends GeneratorBase
   private boolean supportsAsync;
   private boolean requiresDefaultConstructors;
   private boolean generateStructures;
+  private boolean supportPolymorphic;
 
   /**
    * Constructor.
@@ -105,6 +106,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     this.supportsToValue = supportsToValue;
     this.supportsAsync = supportsAsync;
     this.requiresDefaultConstructors = requiresDefaultConstructors;
+    this.supportPolymorphic = false;
   }
 
   @Override
@@ -352,6 +354,26 @@ public abstract class GeneratorLangs extends GeneratorBase
   public void setGenerateStructures(boolean generateStructures)
   {
     this.generateStructures = generateStructures;
+  }
+
+  /**
+   * Does the generator need to support fully polymorphic types.
+   *
+   * @return the supportPolymorphic
+   */
+  public boolean isFullyPolymorphic()
+  {
+    return supportPolymorphic;
+  }
+
+  /**
+   * Sets the support polymorphic value.
+   *
+   * @param supportPolymorphic the supportPolymorphic to set
+   */
+  public void setSupportFullyPolymorphicTypes(boolean supportPolymorphic)
+  {
+    this.supportPolymorphic = supportPolymorphic;
   }
 
   /**
@@ -2189,9 +2211,9 @@ public abstract class GeneratorLangs extends GeneratorBase
       MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, strType, "toString", null, null, "Returns a String object representing this type's value.", "a string representation of the value of this object", null);
       method.addMethodStatement("StringBuilder buf = new StringBuilder()");
       method.addMethodStatement("buf.append('(')");
-      
+
       String prefixSeparator = "";
-      
+
       if (null != parentClass)
       {
         method.addMethodStatement("buf.append(super.toString())");
@@ -2222,7 +2244,19 @@ public abstract class GeneratorLangs extends GeneratorBase
     }
     for (CompositeField element : compElements)
     {
-      method.addMethodStatement(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + element.getEncodeCall() + "(" + element.getFieldName() + ")"));
+      boolean isAbstract = isAbstract(element.getTypeReference());
+      if (isAbstract && !isFullyPolymorphic())
+      {
+        getLog().error("Type " + fqName + " has field " + element.getFieldName() + " that is an abstract type, this is not supported in the current configuration.");
+      }
+      else if (isAbstract && !element.isList())
+      {
+        method.addMethodStatement(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + "PolymorphicElement(" + element.getFieldName() + ")"));
+      }
+      else
+      {
+        method.addMethodStatement(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + element.getEncodeCall() + "(" + element.getFieldName() + ")"));
+      }
     }
     method.addMethodCloseStatement();
 
@@ -2234,7 +2268,19 @@ public abstract class GeneratorLangs extends GeneratorBase
     }
     for (CompositeField element : compElements)
     {
-      method.addMethodStatement(element.getFieldName() + " = " + element.getDecodeCast() + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + element.getDecodeCall() + "(" + (element.isDecodeNeedsNewCall() ? element.getNewCall() : "") + ")"));
+      boolean isAbstract = isAbstract(element.getTypeReference());
+      if (isAbstract && !isFullyPolymorphic())
+      {
+        // do nothing, already raised an error
+      }
+      else if (isAbstract && !element.isList())
+      {
+        method.addMethodStatement(element.getFieldName() + " = " + element.getDecodeCast() + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + "PolymorphicElement()"));
+      }
+      else
+      {
+        method.addMethodStatement(element.getFieldName() + " = " + element.getDecodeCast() + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + element.getDecodeCall() + "(" + (element.isDecodeNeedsNewCall() ? element.getNewCall() : "") + ")"));
+      }
     }
     method.addMethodStatement("return this");
     method.addMethodCloseStatement();

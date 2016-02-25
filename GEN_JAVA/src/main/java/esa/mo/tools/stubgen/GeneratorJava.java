@@ -97,7 +97,8 @@ public class GeneratorJava extends GeneratorLangs
   {
     super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
-    setRequiresDefaultConstructors(Boolean.valueOf(extraProperties.get("requiresDefaultConstructors")));
+    setRequiresDefaultConstructors(Boolean.valueOf(extraProperties.get("java.requiresDefaultConstructors")));
+    setSupportFullyPolymorphicTypes(Boolean.valueOf(extraProperties.get("java.supportFullyPolymorphicTypes")));
 
     addAttributeType(StdStrings.MAL, StdStrings.BLOB, false, "Blob", "");
     addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, true, "Boolean", "Boolean.FALSE");
@@ -517,7 +518,7 @@ public class GeneratorJava extends GeneratorLangs
 
         String newCall = null;
         String encCall = null;
-        if (!isAbstract(elementType))
+        if (!isAbstract(elementType) || isFullyPolymorphic())
         {
           newCall = "new " + fqTypeName + "()";
           encCall = StdStrings.ELEMENT;
