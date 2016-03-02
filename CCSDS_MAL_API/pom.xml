@@ -24,10 +24,10 @@
   </parent>
   
   <artifactId>API_MAL</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.1-FC</version>
   <packaging>jar</packaging>
   
-  <name>ESA MAL Java API</name>
+  <name>ESA MAL Java API (FC)</name>
   <description>An implementation of the Java API for the CCSDS MAL</description>
   <url>http://www.esa.int</url>
   

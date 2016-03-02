@@ -29,7 +29,7 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class Duration implements Attribute
 {
-  private int value;
+  private double value;
 
   /**
    * Default constructor.
@@ -44,7 +44,7 @@ public class Duration implements Attribute
    *
    * @param value Value to initialise with.
    */
-  public Duration(final int value)
+  public Duration(final double value)
   {
     this.value = value;
   }
@@ -60,7 +60,7 @@ public class Duration implements Attribute
    *
    * @return the value.
    */
-  public int getValue()
+  public double getValue()
   {
     return value;
   }
@@ -134,7 +134,7 @@ public class Duration implements Attribute
   @Override
   public int hashCode()
   {
-    return value;
+    return Double.valueOf(value).hashCode();
   }
 
   @Override
