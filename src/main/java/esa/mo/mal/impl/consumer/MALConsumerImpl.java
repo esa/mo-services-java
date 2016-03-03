@@ -61,6 +61,12 @@ class MALConsumerImpl extends MALClose implements MALConsumer
           final UInteger priority) throws MALException
   {
     super(parent);
+    
+    if (null == domain)
+    {
+      throw new IllegalArgumentException("Domain argument must not be null");
+    }
+    
     this.sender = impl.getSendingInterface();
 
     final MALEndpoint ep = TransportSingleton.instance(uriTo, impl.getInitialProperties())
@@ -107,6 +113,12 @@ class MALConsumerImpl extends MALClose implements MALConsumer
           final UInteger priority) throws MALException
   {
     super(parent);
+
+    if (null == domain)
+    {
+      throw new IllegalArgumentException("Domain argument must not be null");
+    }
+    
     this.sender = impl.getSendingInterface();
 
     endPoint.setMessageListener(impl.getReceivingInterface());
