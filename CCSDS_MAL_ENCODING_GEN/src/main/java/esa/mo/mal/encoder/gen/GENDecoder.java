@@ -100,7 +100,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Duration decodeDuration() throws MALException
   {
-    return new Duration(sourceBuffer.getSignedInt());
+    return new Duration(sourceBuffer.getDouble());
   }
 
   @Override

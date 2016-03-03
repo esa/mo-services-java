@@ -53,4 +53,10 @@ public class BinaryListDecoder extends BinaryDecoder implements MALListDecoder
   {
     return list.size() < size;
   }
+
+  @Override
+  public int size()
+  {
+    return size;
+  }
 }

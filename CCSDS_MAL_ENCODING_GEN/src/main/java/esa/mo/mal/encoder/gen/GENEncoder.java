@@ -626,7 +626,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
-      outputStream.addSignedInt(value.getValue());
+      outputStream.addDouble(value.getValue());
     }
     catch (IOException ex)
     {

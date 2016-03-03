@@ -45,12 +45,18 @@ public class StringListDecoder extends StringDecoder implements MALListDecoder
     super(srcBuffer);
 
     this.list = list;
-    size = decodeInteger();
+    size = sourceBuffer.getSignedInt();
   }
 
   @Override
   public boolean hasNext()
   {
     return list.size() < size;
+  }
+
+  @Override
+  public int size()
+  {
+    return size;
   }
 }

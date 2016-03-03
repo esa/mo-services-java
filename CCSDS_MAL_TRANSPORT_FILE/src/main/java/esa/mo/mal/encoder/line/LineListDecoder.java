@@ -54,4 +54,10 @@ public class LineListDecoder extends LineDecoder implements MALListDecoder
   {
     return list.size() < size;
   }
+
+  @Override
+  public int size()
+  {
+    return size;
+  }
 }

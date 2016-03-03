@@ -121,8 +121,7 @@ public abstract class SPPBaseTransport<T> extends GENTransport
   }
 
   @Override
-  protected String getLocalName(String localName,
-          final java.util.Map properties)
+  protected String getLocalName(String localName, final java.util.Map properties)
   {
     StringBuilder buf = new StringBuilder();
 

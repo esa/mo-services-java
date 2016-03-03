@@ -158,7 +158,7 @@ public class SPPBinaryEncoder extends GENEncoder
   @Override
   public void encodeDuration(Duration value) throws MALException
   {
-    long tm = value.getValue();
+    long tm = (long)(value.getValue() * 1000);
 
     int ms = (int) (tm % 1000);
     int s = (int) (tm / 1000);

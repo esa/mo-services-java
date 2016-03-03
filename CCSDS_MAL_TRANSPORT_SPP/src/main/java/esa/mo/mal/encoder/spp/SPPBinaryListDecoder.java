@@ -58,4 +58,10 @@ public class SPPBinaryListDecoder extends SPPBinaryDecoder implements org.ccsds.
   {
     return list.size() < size;
   }
+
+  @Override
+  public int size()
+  {
+    return size;
+  }
 }

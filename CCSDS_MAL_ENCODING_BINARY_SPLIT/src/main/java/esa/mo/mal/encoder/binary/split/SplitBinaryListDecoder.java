@@ -49,4 +49,10 @@ public class SplitBinaryListDecoder extends SplitBinaryDecoder implements org.cc
   {
     return list.size() < size;
   }
+
+  @Override
+  public int size()
+  {
+    return size;
+  }
 }

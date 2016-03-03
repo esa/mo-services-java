@@ -323,7 +323,7 @@ s   * @throws MALException on error.
     String strVal = STR_NULL;
     if (null != value)
     {
-      strVal = Integer.toString(value.getValue());
+      strVal = Double.toString(value.getValue());
     }
     add(name, strVal);
   }

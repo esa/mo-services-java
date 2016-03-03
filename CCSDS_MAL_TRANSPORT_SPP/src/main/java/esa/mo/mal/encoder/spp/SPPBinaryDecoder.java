@@ -223,7 +223,7 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
     int ms = java.nio.ByteBuffer.wrap(b).getInt();
 
     s += ms;
-    return new Duration((int) s);
+    return new Duration(((double) s)/1000.0);
   }
 
   @Override

@@ -49,4 +49,10 @@ public class FixedBinaryListDecoder extends FixedBinaryDecoder implements org.cc
   {
     return list.size() < size;
   }
+
+  @Override
+  public int size()
+  {
+    return size;
+  }
 }

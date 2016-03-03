@@ -831,10 +831,10 @@ public abstract class GENTransport implements MALTransport
    * Returns the local name or creates a random one if null.
    *
    * @param localName The existing local name string to check.
+   * @param properties The QoS properties.
    * @return The local name to use.
    */
-  protected String getLocalName(String localName,
-          final java.util.Map properties)
+  protected String getLocalName(String localName, final java.util.Map properties)
   {
     if ((null == localName) || (0 == localName.length()))
     {

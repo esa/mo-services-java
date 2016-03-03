@@ -21,6 +21,12 @@
 package esa.mo.mal.encoder.string;
 
 import esa.mo.mal.encoder.gen.GENDecoder;
+import static esa.mo.mal.encoder.string.StringEncoder.STR_DELIM;
+import static esa.mo.mal.encoder.string.StringEncoder.STR_DELIM_ESC;
+import static esa.mo.mal.encoder.string.StringEncoder.STR_ESC;
+import static esa.mo.mal.encoder.string.StringEncoder.STR_ESC_ESC;
+import static esa.mo.mal.encoder.string.StringEncoder.STR_NULL;
+import static esa.mo.mal.encoder.string.StringEncoder.STR_NULL_ESC;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -35,9 +41,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 public class StringDecoder extends GENDecoder
 {
   static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
-  private static final String STR_DELIM = "|";
-  private static final String STR_NULL = "_";
-  private static final int BLOCK_SIZE = 65536;
+  public static final int BLOCK_SIZE = 65536;
 
   /**
    * Constructor.
@@ -331,7 +335,7 @@ public class StringDecoder extends GENDecoder
         offset = index + 1;
       }
 
-      return rv;
+      return rv.replace(STR_DELIM_ESC, STR_DELIM).replace(STR_NULL_ESC, STR_NULL).replace(STR_ESC_ESC, STR_ESC);
     }
 
     private String peekNext() throws MALException
@@ -371,7 +375,7 @@ public class StringDecoder extends GENDecoder
     private int findNextOffset() throws MALException
     {
       preLoadBuffer();
-      int index = buf.indexOf(STR_DELIM, offset);
+      int index = findNextIndex();
 
       // ensure that we have loaded enough buffer from the input stream (if we are stream based) for the next read
       if (-1 == index)
@@ -381,13 +385,50 @@ public class StringDecoder extends GENDecoder
         {
           final boolean haveMore = loadExtraBuffer();
 
-          index = buf.indexOf(STR_DELIM, offset);
+          index = findNextIndex();
 
           needMore = haveMore && (-1 == index);
         }
       }
 
       return index;
+    }
+
+    private int findNextIndex() throws MALException
+    {
+      int index = buf.indexOf(STR_DELIM, offset);
+
+      while (-1 != index)
+      {
+        boolean isDelimiter = true;
+
+        if (0 < index)
+        {
+          // check for previous escape character
+          int lIndex = index - 1;
+          while ((0 <= lIndex) && ('\\' == buf.charAt(lIndex)))
+          {
+            lIndex--;
+            isDelimiter = !isDelimiter;
+          }
+        }
+
+        if (isDelimiter)
+        {
+          return index;
+        }
+
+        // did not find it in this segement
+        if (index == (buf.length() - 1))
+        {
+          return -1;
+        }
+
+        // didn't find delimiter and need to scan on from the next character
+        index = buf.indexOf(STR_DELIM, index + 1);
+      }
+
+      return -1;
     }
 
     private void preLoadBuffer() throws MALException

@@ -34,9 +34,13 @@ import org.ccsds.moims.mo.mal.structures.*;
  */
 public class StringEncoder extends GENEncoder
 {
-  private static final String STR_DELIM = "|";
-  private static final String STR_NULL = "_";
-  private static final int HEX_MASK = 0xFF;
+  public static final String STR_DELIM = "|";
+  public static final String STR_NULL = "_";
+  public static final String STR_ESC = "\\";
+  public static final String STR_DELIM_ESC = STR_ESC + STR_DELIM;
+  public static final String STR_NULL_ESC = STR_ESC + STR_NULL;
+  public static final String STR_ESC_ESC = STR_ESC + STR_ESC;
+  public static final int HEX_MASK = 0xFF;
 
   /**
    * Constructor.
@@ -193,7 +197,8 @@ public class StringEncoder extends GENEncoder
     @Override
     public void addIsNull() throws IOException
     {
-      add(STR_NULL);
+      buffer.append(STR_NULL);
+      buffer.append(STR_DELIM);
     }
 
     @Override
@@ -206,7 +211,7 @@ public class StringEncoder extends GENEncoder
 
     private void add(final String val) throws IOException
     {
-      buffer.append(val);
+      buffer.append(val.replace(STR_ESC, STR_ESC_ESC).replace(STR_NULL, STR_NULL_ESC).replace(STR_DELIM, STR_DELIM_ESC));
       buffer.append(STR_DELIM);
     }
 

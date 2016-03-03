@@ -39,6 +39,7 @@ import org.ccsds.moims.mo.mal.MALArea;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALElementFactory;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
@@ -244,7 +245,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
           if (null != ctx)
           {
             ctx.setBodyElementIndex(i);
-            
+
             if (!ctx.getHeader().getIsErrorMessage())
             {
               sf = ctx.getOperation().getOperationStage(stage).getElementShortForms()[i];
@@ -376,8 +377,34 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
             MALService service = area.getServiceByNumber(header.getService());
             if (null != service)
             {
-              ctx.setOperation(service.getOperationByNumber(header.getOperation()));
+              MALOperation op = service.getOperationByNumber(header.getOperation());
+
+              if (null != op)
+              {
+                ctx.setOperation(op);
+              }
+              else
+              {
+                GENTransport.LOGGER.log(Level.SEVERE, "Operation for unknown area/version/service/op received ({0}, {1}, {2}, {3})", new Object[]
+                {
+                  header.getServiceArea(), header.getAreaVersion(), header.getService(), header.getOperation()
+                });
+              }
             }
+            else
+            {
+              GENTransport.LOGGER.log(Level.SEVERE, "Operation for unknown area/version/service received ({0}, {1}, {2})", new Object[]
+              {
+                header.getServiceArea(), header.getAreaVersion(), header.getService()
+              });
+            }
+          }
+          else
+          {
+            GENTransport.LOGGER.log(Level.SEVERE, "Operation for unknown area/version received ({0}, {1})", new Object[]
+            {
+              header.getServiceArea(), header.getAreaVersion()
+            });
           }
         }
 
@@ -414,7 +441,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
             Object sf = null;
 
             ctx.setBodyElementIndex(i);
-            
+
             if (!ctx.getHeader().getIsErrorMessage())
             {
               sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[i];
