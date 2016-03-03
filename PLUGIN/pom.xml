@@ -19,12 +19,12 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>4</version>
+    <version>5</version>
     <relativePath/>
   </parent>
   
   <artifactId>StubGenerator</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.4</version>
   <packaging>maven-plugin</packaging>
   
   <name>ESA MO Stub Generator</name>
@@ -59,7 +59,7 @@
     <developer>
       <id>SamCooper</id>
       <name>Sam Cooper</name>
-      <email>sam.cooper@scisys.co.uk</email>
+      <email>sam@brightascension.com</email>
       <url>https://github.com/SamCooper</url>
     </developer>
   </developers>
@@ -89,13 +89,7 @@
     <dependency>
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
-      <version>0.9.9</version>
-      <exclusions>
-        <exclusion>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-      </exclusions>
+      <version>0.9.10</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
@@ -105,7 +99,7 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>StubGenerator_Interfaces</artifactId>
-      <version>1.4-SNAPSHOT</version>
+      <version>1.4</version>
     </dependency>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>

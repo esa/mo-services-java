@@ -913,7 +913,7 @@ public abstract class GeneratorLangs extends GeneratorBase
 
     file.addClassOpenStatement(className, false, false, null, createElementType(file, area.getName(), serviceName, CONSUMER_FOLDER, serviceName), "Consumer stub for " + serviceName + " service.");
 
-    file.addClassVariable(false, false, StdStrings.PRIVATE, consumerTypeVar, false, (String) null);
+    file.addClassVariable(false, true, StdStrings.PRIVATE, consumerTypeVar, false, (String) null);
 
     MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, createCompositeElementsDetails(file, false, "consumer", TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false), false, true, "consumer The MALConsumer to use in this stub."), false, null, "Wraps a MALconsumer connection with service specific methods that map from the high level service API to the generic MAL API.", null);
     method.addMethodStatement(createMethodCall("this.consumer = consumer"));
@@ -2244,7 +2244,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     }
     for (CompositeField element : compElements)
     {
-      boolean isAbstract = isAbstract(element.getTypeReference());
+      boolean isAbstract = isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
       if (isAbstract && !isFullyPolymorphic())
       {
         getLog().error("Type " + fqName + " has field " + element.getFieldName() + " that is an abstract type, this is not supported in the current configuration.");
@@ -2268,7 +2268,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     }
     for (CompositeField element : compElements)
     {
-      boolean isAbstract = isAbstract(element.getTypeReference());
+      boolean isAbstract = isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
       if (isAbstract && !isFullyPolymorphic())
       {
         // do nothing, already raised an error

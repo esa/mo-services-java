@@ -351,6 +351,11 @@ public class GeneratorJava extends GeneratorLangs
     // create decode method
     method = decodeMethodOpen(file, elementType);
     method.addMethodStatement("org.ccsds.moims.mo.mal.MALListDecoder listDecoder = decoder.createListDecoder(this)");
+    method.addMethodStatement("int decodedSize = listDecoder.size()");
+    method.addMethodStatement("if (decodedSize > 0)", false);
+    method.addMethodStatement("{", false);
+    method.addMethodStatement("  ensureCapacity(decodedSize)");
+    method.addMethodStatement("}", false);
     method.addMethodStatement("while (listDecoder.hasNext())", false);
     method.addMethodStatement("{", false);
     method.addMethodStatement("  add(" + listElement.getDecodeCast() + "listDecoder.decodeNullable" + listElement.getDecodeCall() + "(" + (listElement.isDecodeNeedsNewCall() ? listElement.getNewCall() : "") + "))");
@@ -538,7 +543,7 @@ public class GeneratorJava extends GeneratorLangs
       TypeReference elementTypeIndir = elementType;
 
       // have to work around the fact that JAXB does not replicate the XML type name into Java in all cases
-      if ("XML".equalsIgnoreCase(elementType.getArea()))
+      if (StdStrings.XML.equalsIgnoreCase(elementType.getArea()))
       {
         elementTypeIndir = TypeUtils.createTypeReference(elementType.getArea(), elementType.getService(), StubUtils.preCap(elementType.getName()), elementType.isList());
       }

@@ -20,6 +20,7 @@
  */
 package esa.mo.tools.stubgen;
 
+import esa.mo.tools.stubgen.specification.StdStrings;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,7 +83,15 @@ public class GeneratorConfiguration
    */
   public void addAreaPackage(String area, String newPackage)
   {
-    areaPackages.put(area, newPackage + ".");
+    if (StdStrings.XML.equalsIgnoreCase(area))
+    {
+      String[] strs = newPackage.split("\\|");
+      areaPackages.put(strs[1].toUpperCase(), strs[0] + ".");
+    }
+    else
+    {
+      areaPackages.put(area, newPackage + ".");
+    }
   }
 
   /**

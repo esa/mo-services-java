@@ -425,7 +425,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation
       {
         if (StdStrings.XML.equals(area))
         {
-          retVal = config.getAreaPackage(service) + config.getNamingSeparator() + StubUtils.preCap(type);
+          retVal = config.getAreaPackage(service) + StubUtils.preCap(type);
         }
         else
         {
