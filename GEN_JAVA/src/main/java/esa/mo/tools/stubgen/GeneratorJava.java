@@ -1037,7 +1037,7 @@ public class GeneratorJava extends GeneratorLangs
       String srtype = createLocalType(rtype);
       String argString = processArgs(args, true);
 
-      addMultilineComment(1, false, normaliseArgComments(comment, returnComment, args, throwsComment), false);
+      addMultilineComment(1, false, normaliseArgComments(comment, null == rtype ? null : returnComment, args, throwsComment), false);
 
       StringBuilder buf = new StringBuilder(srtype + " " + methodName + "(" + argString + ")");
 
