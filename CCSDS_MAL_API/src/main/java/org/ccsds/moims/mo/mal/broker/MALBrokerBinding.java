@@ -52,7 +52,7 @@ public interface MALBrokerBinding
 
   /**
    * The method enables a MALBrokerHandler to send a NOTIFY message to a subscriber. The allowed update list types shall
-   * be: a MAL element list; a List<MALEncodedElement> containing the encoded updates; a List defined by a specific Java
+   * be: a MAL element list; a {@code List<MALEncodedElement>} containing the encoded updates; a List defined by a specific Java
    * mapping extension.
    *
    * @param area Area of the NOTIFY message
@@ -98,7 +98,7 @@ public interface MALBrokerBinding
 
   /**
    * The method enables a MALBrokerHandler to send a NOTIFY message to a subscriber. The allowed update list types shall
-   * be: a MAL element list; a List<MALEncodedElement> containing the encoded updates; a List defined by a specific Java
+   * be: a MAL element list; a {@code List<MALEncodedElement>} containing the encoded updates; a List defined by a specific Java
    * mapping extension.
    *
    * @param op Operation of the NOTIFY message
