@@ -51,7 +51,7 @@ public abstract class TestData
   public static final UInteger testUInteger = new UInteger(4294967295L);
   public static final Long testLong = new Long(Long.MAX_VALUE);
   public static final Short testShort = new Short(Short.MAX_VALUE);
-  public static final String testString = "String test";
+  public static final String testString = "String test|\\\\|";
   public static final UOctet testUOctet = new UOctet((short)255);
   public static final ULong testULong = new ULong(new BigInteger("18446744073709551615"));
   public static final UShort testUShort = new UShort(65535);

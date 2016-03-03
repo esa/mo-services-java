@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <relativePath/>
   </parent>
   
   <artifactId>TESTBED_COM_FRAMEWORK</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <name>CCSDS MOIMS MO Testbed for COM Framework</name>
   
   <organization>
@@ -61,7 +61,7 @@
     <developer>
       <id>SamCooper</id>
       <name>Sam Cooper</name>
-      <email>sam.cooper@scisys.co.uk</email>
+      <email>sam@brightascension.com</email>
       <url>https://github.com/SamCooper</url>
     </developer>
     <developer>
@@ -79,7 +79,7 @@
   </developers>
   
   <properties>
-    <esa.com.test_api.version>1.0.1</esa.com.test_api.version>
+    <esa.com.test_api.version>1.0.2</esa.com.test_api.version>
     <cnes.com.test_api.version>3.1.1</cnes.com.test_api.version>
   </properties>
   

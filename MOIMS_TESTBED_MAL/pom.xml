@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <relativePath/>
   </parent>
   
   <artifactId>TESTBED_MAL</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.1.2</version>
   <name>CCSDS MOIMS MO Testbed for MAL</name>
 
   <organization>
@@ -76,7 +76,6 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TESTBED_UTIL</artifactId>
-      <version>1.0.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.fitnesse</groupId>
@@ -90,7 +89,7 @@
   
   <properties>
     <fitnesse.toplevel.test>MalTests</fitnesse.toplevel.test>
-    <esa.mal.test_api.version>1.0.1</esa.mal.test_api.version>
+    <esa.mal.test_api.version>1.0.2</esa.mal.test_api.version>
     <cnes.mal.test_api.version>3.1.1</cnes.mal.test_api.version>
   </properties>
   
@@ -196,7 +195,6 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>MAL_IMPL</artifactId>
-          <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
