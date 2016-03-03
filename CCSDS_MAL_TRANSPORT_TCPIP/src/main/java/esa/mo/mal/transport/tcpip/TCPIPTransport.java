@@ -24,7 +24,6 @@ import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENTransport;
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 import esa.mo.mal.transport.gen.receivers.GENIncomingByteMessageDecoderFactory;
-import esa.mo.mal.transport.gen.sending.GENConcurrentMessageSender;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.util.GENMessagePoller;
 import java.io.IOException;
@@ -57,12 +56,12 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  *
  * The following properties configure the transport:
  *
- * org.ccsds.moims.mo.mal.transport.tcpip.wrap org.ccsds.moims.mo.mal.transport.tcpip.debug ==> debug mode , affects
- * logging org.ccsds.moims.mo.mal.transport.tcpip.numconnections ==> number of connections to a different MAL (either
- * server / client) org.ccsds.moims.mo.mal.transport.tcpip.inputprocessors ==> number of threads processing in parallel
- * raw MAL messages org.ccsds.moims.mo.mal.transport.tcpip.host ==> adapter (host / IP Address) that the transport will
+ * org.ccsds.moims.mo.mal.transport.tcpip.wrap org.ccsds.moims.mo.mal.transport.tcpip.debug == debug mode , affects
+ * logging org.ccsds.moims.mo.mal.transport.tcpip.numconnections == number of connections to a different MAL (either
+ * server / client) org.ccsds.moims.mo.mal.transport.tcpip.inputprocessors == number of threads processing in parallel
+ * raw MAL messages org.ccsds.moims.mo.mal.transport.tcpip.host == adapter (host / IP Address) that the transport will
  * use for incoming connections. In case of a pure client (i.e. not offering any services) this property should be
- * omitted. org.ccsds.moims.mo.mal.transport.tcpip.port ==> port that the transport listens to. In case this is a pure
+ * omitted. org.ccsds.moims.mo.mal.transport.tcpip.port == port that the transport listens to. In case this is a pure
  * client, this property should be omitted.
  *
  * The general logic is the following : The transport at first initialises the server listen port (if this is a server,
@@ -83,10 +82,10 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  *
  * URIs:
  *
- * The TCPIP Transport, generates URIs, in the for of : tcpip://<host>:<port or client ID>-<service id>
- * There are two categories of URIs Client URIs, which are in the form of tcpip://<host>:<clientId>-<serviceId> , where
+ * The TCPIP Transport, generates URIs, in the for of : {@code tcpip://<host>:<port or client ID>-<service id>}
+ * There are two categories of URIs Client URIs, which are in the form of {@code tcpip://<host>:<clientId>-<serviceId>} , where
  * the client id is a unique identifier for the client on its host, for example : 4783fbc147ab7aa56e7fff and ServerURIs,
- * which are in the form of tcpip://<host>:<port>-<serviceId> and clients can actively connect to.
+ * which are in the form of {@code tcpip://<host>:<port>-<serviceId>} and clients can actively connect to.
  *
  * If a MAL instance does not offer any services then all of its endpoints get a Client URI. If a MAL instance offers at
  * least one service then all of its endpoints get a Server URI. A service provider communicates with a service consumer
