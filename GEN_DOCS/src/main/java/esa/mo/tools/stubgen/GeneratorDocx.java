@@ -744,7 +744,7 @@ public class GeneratorDocx extends GeneratorDocument
     docxFile.startRow();
     docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "Pattern Sequence", HEADER_COLOUR);
     docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, "Message", HEADER_COLOUR);
-    docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "Body Type", HEADER_COLOUR);
+    docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "Body Signature", HEADER_COLOUR);
     docxFile.endRow();
   }
 
