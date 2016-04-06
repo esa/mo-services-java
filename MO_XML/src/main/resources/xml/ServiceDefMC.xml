@@ -35,7 +35,7 @@ Each action submission shall include:
                 <mal:type name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="actionDetails"
-                         comment="The actionDetails part of the submission shall contain the argument values and related information of the action instance to be executed.&#xA;The SUBMIT acknowledgement shall be returned once the action has been accepted for execution but before execution starts.">
+                         comment="The actionDetails part of the submission shall contain the argument values and related information of the action instance to be executed.&#xA;If the defInstId of the supplied actionDetails field does not match a known ActionDefinition object then an UNKNOWN error shall be returned.&#xA;If the supplied arguments do not match the action definition then an INVALID error shall be returned.&#xA;If an error is raised then no action shall be executed.&#xA;The SUBMIT acknowledgement shall be returned once the action has been accepted for execution but before execution starts.">
                 <mal:type name="ActionInstanceDetails" service="Action" area="MC"/>
               </mal:field>
             </mal:submit>
@@ -83,7 +83,7 @@ Each action submission shall include:
       </mal:capabilitySet>
       <mal:capabilitySet number="2">
         <mal:requestIP name="listDefinition" number="3" supportInReplay="true"
-                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the ActionIdentity and ActionDefinition objects for the supported actions of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual ActionIdentity and ActionDefinition objects.">
+                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the ActionIdentity and ActionDefinition objects for the supported actions of the provider.">
           <mal:messages>
             <mal:request>
               <mal:field name="actionNames"
@@ -106,7 +106,7 @@ Each action submission shall include:
           <mal:messages>
             <mal:request>
               <mal:field name="actionDefDetails"
-                         comment="The actionDefDetails field shall hold the name and definitions to be added.&#xA;The name field must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique among all ActionIdentity objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.&#xA;The provider shall create a new ActionIdentity and ActionDefinition object and store it in the COM archive.">
+                         comment="The actionDefDetails field shall hold the name and definitions to be added.&#xA;The name field must not be the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique among all ActionIdentity objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.&#xA;The provider shall create a new ActionIdentity and ActionDefinition object and store it in the COM archive.">
                 <mal:type list="true" name="ActionCreationRequest" service="Action" area="MC"/>
               </mal:field>
             </mal:request>
@@ -118,13 +118,13 @@ Each action submission shall include:
             </mal:response>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="One of the supplied action contains an invalid action name.">
+            <mal:errorRef comment="One of the supplied ActionIdentity objects contains an invalid action name.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
-            <mal:errorRef comment="One or more of the actions being added has supplied an action name that is already in use in the domain.">
+            <mal:errorRef comment="One or more of the ActionIdentity objects being added has supplied an action name that is already in use in the domain.">
               <mal:type name="DUPLICATE" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating request list.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -137,7 +137,7 @@ Each action submission shall include:
           <mal:messages>
             <mal:request>
               <mal:field name="actionDefInstIds"
-                         comment="The actionInstIds field shall contain the list of object instance identifiers of the ActionIdentity objects to be updated.&#xA;The supplied object instance identifiers shall match existing identity objects, an UNKNOWN error shall be raised if this is not the case.&#xA;If the actionInstIds list contains either NULL or '0' an INVALID error shall be raised.">
+                         comment="The actionDefInstIds field shall contain the list of object instance identifiers of the ActionIdentity objects to be updated.&#xA;The supplied object instance identifiers shall match existing identity objects, an UNKNOWN error shall be raised if this is not the case.&#xA;If the actionInstIds list contains either NULL or '0' an INVALID error shall be raised.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="actionDefDetails"
@@ -147,7 +147,7 @@ Each action submission shall include:
             </mal:request>
             <mal:response>
               <mal:field name="newObjInstIds"
-                         comment="The response shall contain the list of object instance identifiers for the new ParameterDefinition objects.&#xA;The returned list shall maintain the same order as the submitted definitions.">
+                         comment="The response shall contain the list of object instance identifiers for the new ActionDefinition objects.&#xA;The returned list shall maintain the same order as the submitted definitions.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:response>
@@ -204,7 +204,8 @@ Each action submission shall include:
                      comment="Total number of steps that will be reported if PROGRESS reporting is selected in the sent Action. 0 if PROGRESS reporting is not used.">
             <mal:type name="UShort" area="MAL"/>
           </mal:field>
-          <mal:field name="arguments" canBeNull="false" comment="The list of argument definitions.">
+          <mal:field name="arguments"
+                     comment="The list of argument definitions. If no arguments are defined, then the complete list is replaced with a NULL.">
             <mal:type list="true" name="ArgumentDefinitionDetails" area="MC"/>
           </mal:field>
           <mal:field name="argumentIds"
@@ -373,12 +374,12 @@ Each action submission shall include:
             </com:sourceObject>
           </com:event>
         </com:events>
-        <com:archiveUsage comment="ActionIdentity objects should be stored in the COM archive.&#xA;ActionDefinition objects should be stored in the COM archive.&#xA;Before an action is sent with the submitAction operation, the ActionInstance object should be stored in the COM archive by the consumer.&#xA;The COM activity tracking events associated with the submission and execution of the action should be store in the COM archive.&#xA;Any ActionFailure COM event objects should be stored in the COM archive."/>
+        <com:archiveUsage comment="ActionIdentity objects should be stored in the COM archive.&#xA;ActionDefinition objects should be stored in the COM archive.&#xA;Before an action is sent with the submitAction operation, the ActionInstance object should be stored in the COM archive by the consumer.&#xA;The COM activity tracking events associated with the submission and execution of the action should be stored in the COM archive.&#xA;Any ActionFailure COM event objects should be stored in the COM archive."/>
         <com:activityUsage comment="The COM Activity service should be used to monitor the transfer and execution of the submitAction operation.&#xA;The COM Activity service should be used to monitor the transfer and execution of ActionInstance objects.&#xA;The COM activity events shall be generated as defined in the COM activity tracking service for the submitAction operation.&#xA;A Release activity event for the action instance shall be generated when an ActionInstance object is released from a consumer using the submitAction operation.&#xA;An Acceptance activity event for the ActionInstance object shall be generated when an action is received by the destination provider and after any pre-execution checks being performed as part of the submitAction operation.&#xA;The source link of the activity events for the ActionInstance shall be the ActionInstance object.&#xA;The related link of the activity events for the ActionInstance shall be set to NULL.&#xA;In all activity execution events for the action instance the ActivityExecution.stageCount field shall be set to 2 plus the total number of progress stages.&#xA;In the activity execution event, when notification of an action starting is requested, the ActivityExecution.executionStage field shall be set to 1.&#xA;In the activity execution event, when notification of an action progress is requested, the ActivityExecution.executionStage field shall be set to 1 plus the current progress stage. &#xA;In the activity execution event, when notification of an action completion is requested, the ActivityExecution.executionStage field shall be set to 2 plus the total number of progress stages."/>
       </com:features>
     </mal:service>
     <mal:service xsi:type="com:ExtendedServiceType" name="Parameter" number="2"
-                 comment="The parameter service allows the user to subscribe to parameter value updates and optionally be able to set new values. A single PUBSUB operation is provided for monitoring and publishing of parameter values.&#xA;A parameter values also contains a calculation of the validity of the parameter, the flow chart for this calculation is provided in Figure x-x:&#xA;&lt;&lt; validity calculation flow chart &gt;&gt;&#xA;&#xA;This standard supports the concept of non-standard invalidity states but the meaning and calculation of these is outside the scope of this standard.&#xA;The generation of value updates can be controlled using the enableGeneration operation, which supports the use of groups. Groups must reference parameter definitions or groups of parameter definitions only.&#xA;The parameter service does not include any value checking, this is delegated to the check service.&#xA;Parameter definitions are maintained using the operations defined in this service but storage of definitions is delegated to the COM archive.">
+                 comment="The parameter service allows the user to subscribe to parameter value updates and optionally be able to set new values. A single PUBSUB operation is provided for monitoring and publishing of parameter values.&#xA;A parameter values also contains a calculation of the validity of the parameter, the flow chart for this calculation is provided in Figure x-x:&#xA;&lt;&lt; validity calculation flow chart &gt;&gt;&#xA;&#xA;This standard supports the concept of non-standard invalidity states but the meaning and calculation of these is outside the scope of this standard.&#xA;The generation of value updates can be controlled using the enableGeneration operation, which supports the use of groups. Groups must reference parameter identities or groups of parameter identities only.&#xA;The parameter service does not include any value checking, this is delegated to the check service.&#xA;Parameter definitions are maintained using the operations defined in this service but storage of definitions is delegated to the COM archive.">
       <mal:documentation name="High Level Requirements" order="1">The parameter service shall provide:
 &lt;ol&gt;
  &lt;li&gt;the capability for periodic reporting of predefined parameter values;&lt;/li&gt;
@@ -423,7 +424,7 @@ It is supported that other, deployment specific, validityState values be used ho
           <mal:messages>
             <mal:publishNotify>
               <mal:field name="objId"
-                         comment="The MAL EntityKey.firstSubKey shall contain the parameter name.&#xA;The MAL EntityKey.secondSubKey shall contain the ParameterIdentity object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the ParameterDefinition object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall contain the ParameterValueInstance object instance identifier.&#xA;The timestamp of the ParameterValueInstance update shall be taken from the publish message.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then the ObjectId shall be replaced with a NULL.">
+                         comment="The MAL EntityKey.firstSubKey shall contain the parameter name.&#xA;The MAL EntityKey.secondSubKey shall contain the ParameterIdentity object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the ParameterDefinition object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall contain the new ParameterValueInstance object instance identifier.&#xA;The timestamp of the ParameterValueInstance update shall be taken from the publish message and shall be the time of the parameter value creation..&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then the ObjectId shall be replaced with a NULL.">
                 <mal:type name="ObjectId" area="COM"/>
               </mal:field>
               <mal:field name="newValue"
@@ -470,7 +471,7 @@ It is supported that other, deployment specific, validityState values be used ho
           <mal:messages>
             <mal:submit>
               <mal:field name="newRawValues"
-                         comment="The submitted list shall hold the ParameterIdentity object instance identifier and the respective raw value to be set.&#xA;If the paramDefInstId field contains the wildcard value of '0' then an INVALID error shall be returned.&#xA;If a requested ParameterIdentity is unknown then an UNKNOWN error shall be returned.&#xA;If a request ParameterIdentity is not settable due to it being read only then a READONLY error shall be returned.&#xA;The rawValue shall contain the new parameter raw value to be set.&#xA;If the supplied new parameter raw value does not match the defined type for the ParameterIdentity then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The service provider shall create new ParameterValueInstance objects for the updated parameter values.">
+                         comment="The submitted list shall hold the ParameterIdentity object instance identifier and the respective raw value to be set.&#xA;If the paramDefInstId field contains the wildcard value of '0' then an INVALID error shall be returned.&#xA;If a requested ParameterIdentity is unknown then an UNKNOWN error shall be returned.&#xA;If a request ParameterIdentity is not settable due to it being read only then a READONLY error shall be returned.&#xA;The rawValue shall contain the new parameter raw value to be set.&#xA;If the supplied new parameter raw value does not match the defined type for the ParameterIdentity then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The service provider shall create new ParameterValueInstance objects for the updated parameter value and store these in the COM Archive.">
                 <mal:type list="true" name="ParameterRawValue" service="Parameter" area="MC"/>
               </mal:field>
             </mal:submit>
@@ -503,7 +504,7 @@ It is supported that other, deployment specific, validityState values be used ho
           <mal:messages>
             <mal:submit>
               <mal:field name="isGroupIds"
-                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains ParameterIdentity object instance identifiers.&#xA;The ParameterIdentity objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the ParameterIdentity objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all ParameterIdentity objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then updates of matching ParameterIdentity objects shall be generated, a value of FALSE requests that updates will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field of the definition for a matched ParameterIdentity object i.e. enabling an already enabled parameter will not result in an error.&#xA;If a requested ParameterIdentity or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain ParameterIdentity objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider should create and store a new ParameterDefinition object in the COM archive if the generationEnabled field is changed.">
+                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains ParameterIdentity object instance identifiers.&#xA;The ParameterIdentity objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the ParameterIdentity objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all ParameterIdentity objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then updates of matching ParameterIdentity objects shall be generated, a value of FALSE requests that updates will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field of the definition for a matched ParameterIdentity object i.e. enabling an already enabled parameter will not result in an error.&#xA;If a requested ParameterIdentity or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain ParameterIdentity objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider shall create and store a new ParameterDefinition object in the COM archive if the generationEnabled field is changed.">
                 <mal:type name="Boolean" area="MAL"/>
               </mal:field>
               <mal:field name="enableInstances"
@@ -513,7 +514,7 @@ It is supported that other, deployment specific, validityState values be used ho
             </mal:submit>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="One or more of the requested parameters is unknown.">
+            <mal:errorRef comment="One or more of the requested parameters or groups is unknown.">
               <mal:type name="UNKNOWN" area="MAL"/>
               <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -530,7 +531,7 @@ It is supported that other, deployment specific, validityState values be used ho
       </mal:capabilitySet>
       <mal:capabilitySet number="5">
         <mal:requestIP name="listDefinition" number="5" supportInReplay="true"
-                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the ParameterIdentity and ParameterDefinition objects for the supported parameters of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual ParameterIdentity and ParameterDefinition objects.">
+                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the ParameterIdentity and ParameterDefinition objects for the supported parameters of the provider.">
           <mal:messages>
             <mal:request>
               <mal:field name="paramNames"
@@ -553,7 +554,7 @@ It is supported that other, deployment specific, validityState values be used ho
           <mal:messages>
             <mal:request>
               <mal:field name="paramDefDetails"
-                         comment="The paramDefDetails field shall hold the name and the ParameterDefinitionDetails to be added.&#xA;The name field must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique among all ParameterIdentity objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.&#xA;The provider shall create a new ParameterIdentity and ParameterDefinition object and store it in the COM archive.">
+                         comment="The paramDefDetails field shall hold the name and the ParameterDefinitionDetails to be added.&#xA;The name field must not be the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;If the supplied updateInterval value is not supported by the provider then an INVALID error shall be returned.&#xA;The supplied name must be unique among all ParameterIdentity objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.&#xA;The provider shall create a new ParameterIdentity and ParameterDefinition object and store it in the COM archive.">
                 <mal:type list="true" name="ParameterCreationRequest" service="Parameter" area="MC"/>
               </mal:field>
             </mal:request>
@@ -565,7 +566,7 @@ It is supported that other, deployment specific, validityState values be used ho
             </mal:response>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="One of the supplied ParameterIdentity objects contains an invalid name.">
+            <mal:errorRef comment="One of the supplied ParameterIdentity objects contains an invalid name or a supplied interval is not supported by the provider.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -588,7 +589,7 @@ It is supported that other, deployment specific, validityState values be used ho
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="paramDefDetails"
-                         comment="The paramDefDetails field shall contain the replacement ParameterDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create a new ParameterDefinition object and store it in the COM archive.">
+                         comment="The paramDefDetails field shall contain the replacement ParameterDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;If the supplied updateInterval value is not supported by the provider then an INVALID error shall be returned.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create a new ParameterDefinition object and store it in the COM archive.">
                 <mal:type list="true" name="ParameterDefinitionDetails" service="Parameter" area="MC"/>
               </mal:field>
             </mal:request>
@@ -600,7 +601,7 @@ It is supported that other, deployment specific, validityState values be used ho
             </mal:response>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="The supplied object instance identifiers list contains either a NULL or '0'.">
+            <mal:errorRef comment="The supplied object instance identifiers list contains either a NULL or '0' or a supplied interval is not supported by the provider.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -619,7 +620,7 @@ It is supported that other, deployment specific, validityState values be used ho
           <mal:messages>
             <mal:submit>
               <mal:field name="paramInstIds"
-                         comment="The paramInstIds field shall hold the object instance identifiers of the ParameterIdentity objects to be removed from the provider.&#xA;The list may contain the wildcard value of '0'.&#xA;If a provided ParameterIdentity object instance identifier does not include a wildcard and does not match an existing parameter identity object then this operation shall fail with an UNKNOWN error.&#xA;Matched ParameterIdentity objects shall not be removed from the COM archive only the list of ParameterIdentity objects in the provider.&#xA;If an error is raised then no parameters shall be removed as a result of this operation call.&#xA;If the operation succeeds then the provider shall not publish parameter values for the deleted ParameterIdentity objects anymore.">
+                         comment="The paramInstIds field shall hold the object instance identifiers of the ParameterIdentity objects to be removed from the provider.&#xA;The list may contain the wildcard value of '0'.&#xA;If a provided ParameterIdentity object instance identifier does not include a wildcard and does not match an existing parameter identity object then this operation shall fail with an UNKNOWN error.&#xA;Matched ParameterIdentity and ParameterDefinition objects shall not be removed from the COM archive only the list of ParameterIdentity and ParameterDefinition objects from the provider.&#xA;If an error is raised then no parameters shall be removed as a result of this operation call.&#xA;If the operation succeeds then the provider shall not publish parameter values for the deleted ParameterIdentity objects anymore.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:submit>
@@ -828,23 +829,21 @@ It is supported that other, deployment specific, validityState values be used ho
  &lt;li&gt;the capability for maintaining the list of alert definitions.&lt;/li&gt;
 &lt;/ol&gt;
 The alert reporting service shall provide the capability to enable and disable the generation of alert reports.
-It shall be possible to report the alert enabled/disabled status.
 It shall be possible to update, delete, and add alert definitions.
 By default generation of newly added alerts shall be disabled until specifically enabled.
-The list of the alert definitions may be requested.
-</mal:documentation>
+The list of the alert definitions may be requested.</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">The generation of alerts shall be controlled by the generationEnabled Boolean value in the AlertDefinitionDetails.
 Setting the generationEnabled field to TRUE shall enable generation of instances of that alert.
 The generationEnabled value can be set by using either the enableGeneration or updateDefinition operations.
 The alert instances shall be published as events using the COM event operations.
-</mal:documentation>
+For an Alert, the supplied argumentIds must be verified against the ones in the Definition before an Alert emission if the argumentIds field from the definition is not null.</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:submitIP name="enableGeneration" number="1" supportInReplay="false"
                       comment="The enableGeneration operation allows a consumer to control whether updates for specific alerts are generated or not. The operation allows the consumer to select the alerts directly or indirectly using groups.">
           <mal:messages>
             <mal:submit>
               <mal:field name="isGroupIds"
-                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains AlertIdentity object instance identifiers.&#xA;The AlertIdentity objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the AlertIdentity objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all AlertIdentity objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then instances of matching AlertIdentity objects shall be generated, a value of FALSE requests that instances will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field for an alert object i.e. enabling an already enabled alert will not result in an error.&#xA;If a requested AlertIdentity or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain AlertIdentity objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider should create and store a new AlertDefinition object in the COM archive if the generationEnabled field is changed.">
+                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains AlertIdentity object instance identifiers.&#xA;The AlertIdentity objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the AlertIdentity objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all AlertIdentity objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then instances of matching AlertIdentity objects shall be generated, a value of FALSE requests that instances will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field for an alert object i.e. enabling an already enabled alert will not result in an error.&#xA;If a requested AlertIdentity or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain AlertIdentity objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider shall create and store a new AlertDefinition object in the COM archive if the generationEnabled field is changed.">
                 <mal:type name="Boolean" area="MAL"/>
               </mal:field>
               <mal:field name="enableInstances">
@@ -870,7 +869,7 @@ The alert instances shall be published as events using the COM event operations.
       </mal:capabilitySet>
       <mal:capabilitySet number="2">
         <mal:requestIP name="listDefinition" number="2" supportInReplay="true"
-                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the AlertIdentity and AlertDefinition objects for the supported alerts of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual AlertIdentity and AlertDefinition objects.">
+                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the AlertIdentity and AlertDefinition objects for the supported alerts of the provider.">
           <mal:messages>
             <mal:request>
               <mal:field name="alertNames"
@@ -893,7 +892,7 @@ The alert instances shall be published as events using the COM event operations.
           <mal:messages>
             <mal:request>
               <mal:field name="alertDefDetails"
-                         comment="The alertDefDetails field shall hold the name and the AlertDefinitionDetails to be added.&#xA;The name field must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique among all AlertIdentity objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.&#xA;The provider shall create a new AlertIdentity and AlertDefinition object and store it in the COM archive.">
+                         comment="The alertDefDetails field shall hold the name and the AlertDefinitionDetails to be added.&#xA;The name field must not be the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique among all AlertIdentity objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.&#xA;The provider shall create a new AlertIdentity and AlertDefinition object and store it in the COM archive.">
                 <mal:type list="true" name="AlertCreationRequest" service="Alert" area="MC"/>
               </mal:field>
             </mal:request>
@@ -920,7 +919,7 @@ The alert instances shall be published as events using the COM event operations.
           </mal:errors>
         </mal:requestIP>
         <mal:requestIP name="updateDefinition" number="4" supportInReplay="false"
-                       comment="The updateDefinition operation allows a consumer to update a definition for one or more alerts.&#xA;This differs from deleting an existing alert and adding a new definition with the same alert name in the fact that the ParameterIdentity object is not changed between the two definitions.&#xA;The operation cannot be used to change the name of an existing alert, removal of the existing alerts and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive by the service provider.">
+                       comment="The updateDefinition operation allows a consumer to update a definition for one or more alerts.&#xA;This differs from deleting an existing alert and adding a new definition with the same alert name in the fact that the AlertIdentity object is not changed between the two definitions.&#xA;The operation cannot be used to change the name of an existing alert, removal of the existing alerts and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive by the service provider.">
           <mal:messages>
             <mal:request>
               <mal:field name="alertObjInstIds"
@@ -928,7 +927,7 @@ The alert instances shall be published as events using the COM event operations.
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="alertDefDetails"
-                         comment="The alertDefDetails field shall contain the replacement AlertDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;If the lists are not the same size an INVALID error shall be returned.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create a new AlertDefinition object and store it in the COM archive.">
+                         comment="The alertDefDetails field shall contain the replacement AlertDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;The number of entries in the two lists shall be the same size otherwise an INVALID error shall be returned.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create a new AlertDefinition object and store it in the COM archive.">
                 <mal:type list="true" name="AlertDefinitionDetails" service="Alert" area="MC"/>
               </mal:field>
             </mal:request>
@@ -994,7 +993,7 @@ The alert instances shall be published as events using the COM event operations.
             <mal:type list="true" name="ArgumentDefinitionDetails" area="MC"/>
           </mal:field>
           <mal:field name="argumentIds"
-                     comment="Optional list of argument definition identifiers. Allows the provider to verify that the correct arguments are being supplied.">
+                     comment="Optional list of argument definition identifiers. Allows the provider to verify that the correct arguments are being supplied. If null, the argument definition identifiers are not checked before the emission of an Alert Event.">
             <mal:type list="true" name="Identifier" area="MAL"/>
           </mal:field>
         </mal:composite>
@@ -1005,7 +1004,7 @@ The alert instances shall be published as events using the COM event operations.
           </mal:extends>
           <mal:field name="argumentValues"
                      comment="List containing the values of the arguments. The ordering of the list matches that of the definition. If a value for a particular entry is not being supplied, then its position is filled with a NULL value. If no arguments are defined, then the complete list is replaced with a NULL.">
-            <mal:type list="true" name="ArgumentValue" area="MC"/>
+            <mal:type list="true" name="AttributeValue" area="MC"/>
           </mal:field>
           <mal:field name="argumentIds"
                      comment="Optional list of argument definition identifiers. Allows the consumer to verify that the correct arguments are being supplied. The ordering of the list matches that of the argument list of the alert definition.">
@@ -1144,7 +1143,7 @@ The check may support the evaluation of the following check types:
 &lt;/ol&gt;
 When performing a limit check, the check service shall:
 &lt;ol&gt;
- &lt;li&gt;check that the value of a parameter lies within a pair of limit values if set to violate in range, or outside a pair of limits if set to violate outside the range;&lt;/li&gt;
+ &lt;li&gt;check that the value of a parameter lies within or on a pair of limit values if set to violate outside the range, or outside a pair of limits if set to violate in range;&lt;/li&gt;
  &lt;li&gt;declare the check successful when the expression evaluates to true for the correct number of successive valid samples.&lt;/li&gt;
 &lt;/ol&gt;
 When performing an constant check, the check service shall:
@@ -1160,7 +1159,7 @@ When performing a referenced check, the check service shall:
 When performing a delta check, the check service shall:
 &lt;ol&gt;
  &lt;li&gt;calculate the difference, i.e., the delta value, as either an absolute or percentage depending on the check definition between two parameter values;&lt;/li&gt;
- &lt;li&gt;check that the difference lies within a pair of threshold values if set to violate in range, or outside a pair of thresholds if set to violate outside the range;&lt;/li&gt;
+ &lt;li&gt;check that the difference lies within or on a pair of threshold values if set to violate in range, or outside a pair of thresholds if set to violate outside the range;&lt;/li&gt;
  &lt;li&gt;declare the check successful when the expression evaluates to true for the correct number of successive valid samples.&lt;/li&gt;
 &lt;/ol&gt;
 When performing a compound check, the check service shall:
@@ -1192,9 +1191,7 @@ Each check validity condition shall contain:
  &lt;li&gt;an expression operator;&lt;/li&gt;
  &lt;li&gt;a Boolean indicating whether the expression should apply to the raw or converted value;&lt;/li&gt;
  &lt;li&gt;a value to evaluate against.&lt;/li&gt;
-&lt;/ol&gt;
-
-</mal:documentation>
+&lt;/ol&gt;</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">Global check evaluation shall be controlled by the enableService operation.
 Disabling the check service globally shall pause all check evaluations.
 Enabling the check service globally shall resume all check evaluations as they were when they were paused.
@@ -1208,20 +1205,20 @@ If a check is required to be evaluated periodically, then the time between these
 For periodic check evaluations to occur the checkOnChange value must be FALSE, it is not possible to request periodic and change based checking concurrently.
 A checkInterval value of '0' shall mean that no periodic check evaluation shall be performed, and checks will be triggered by another mechanism in this case.
 The checkInterval value shall only be set when the CheckLink object is created.
-If an interval that is not supported by the provider is requested, then an INVALID error shall be returned, and the change shall be rejected.
+If a checkInterval or maxReportingInterval that is not supported by the provider is requested (both on creation and update of the check), then an INVALID error shall be returned, and the change shall be rejected.
 The check shall be evaluated if the CheckLink object is enabled, the check condition as defined in the check link evaluates to TRUE, and the checked parameter is in a valid state.
 The check execution may also be triggered by the triggerCheck operation.
 If there is a change in the result of the check evaluation then a CheckTransition event shall be published.
 If the check result cannot be determined, for example a getSummaryReport operation call for a CheckLink object that has not been evaluated yet, the associated CheckResult shall contain UNCHECKED for the check states and a checked value of NULL.
-In a CheckDefinitionDetails only one of nominalTime and nominalCount is permitted to be zero, an INVALID error shall be returned from the addDefinition operation if this is not the case.
-In a CheckDefinitionDetails only one of violationTime and violationCount is permitted to be zero, an INVALID error shall be returned from the addDefinition operation if this is not the case.
+In a CheckDefinitionDetails only one of nominalTime and nominalCount is permitted to be zero, an INVALID error shall be returned from the addDefinition or updateDefinition operation if this is not the case.
+In a CheckDefinitionDetails only one of violationTime and violationCount is permitted to be zero, an INVALID error shall be returned from the addDefinition or updateDefinition operation if this is not the case.
 Only when the nominalCount number of successive valid samples including the current one over a nominalTime time period of the checked parameter have consistently passed the check shall a new check result be calculated.
 Only when the violationCount number of successive valid samples including the current one over a violationTime time period of the checked parameter have consistently failed the check shall a new check result be calculated.
 For reference and delta checks it shall be possible to define the check to compare against a reference value.
 The reference value checked against shall be updated once validCount samples of that referenced parameter exist at deltaTime in the past from time now.
-For a delta check, the delta value shall be calculated as the difference between the reference value and the check parameter.
+For a delta check, the delta value shall be calculated as the difference between the reference value and the check parameter and supports both positive and negative deltas.
 For percentage based delta thresholds, the percentage is calculated as the arithmetic difference between the reference value and the parameter value, as a percentage of the first valid sample where the result of the calculation equal to 1.0 is interpreted as 100 per cent. For example, if the reference value is 8 and the parameter value is 14 then the calculation is (14 - 8) / 8 or 0.75 or 75%.
-For a constant check, the result of the constant check shall be declared successful only if the parameter value passes evaluation against the complete set of constant values in the definition.
+For a constant check, the result of the constant check shall be declared successful only if the parameter value passes evaluation against one of constant values in the definition.
 The result of constant or reference check evaluation shall be used to populate the checkEvaluation fields of the CheckResult.
 For a limit or delta check, if violateInRange is FALSE, the result shall be set to FALSE if the lower limit is violated or TRUE if the upper limited is violated and used to populate the checkEvaluation fields of the CheckResult.
 For a limit or delta check, if violateInRange is TRUE, the result shall be set to TRUE if either limit is violated and used to populate the checkEvaluation fields of the CheckResult.
@@ -1229,8 +1226,7 @@ For a compound check, if the minimumChecksInViolation field is greater than '0',
 For a compound check, if the minimumChecksInViolation field is set to '0', the result of the compound check shall be declared successful if any of the referenced CheckLink objects is nominal i.e. not currently in violation.
 If the maxReportingInterval is not zero and if a CheckResult has not been generated in that time a CheckResult with the current check states shall be generated.
 The maxReportingInterval value shall be set by using the updateDefinition operation.
-Each transition in the state of a check shall cause the generation of a CheckResult and a CheckTransition event.
-</mal:documentation>
+Each transition in the state of a check shall cause the generation of a CheckResult and a CheckTransition event.</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:progressIP name="getCurrentTransitionList" number="1" supportInReplay="true"
                         comment="The getCurrentTransitionList operation allows a consumer to obtain the current result of a number of checks filtering on check state.">
@@ -1250,7 +1246,7 @@ Each transition in the state of a check shall cause the generation of a CheckRes
             </mal:update>
             <mal:response>
               <mal:field name="responseSummaries"
-                         comment="The PROGRESS pattern is used to allow the possibly large list of current violations to be split into several updates.">
+                         comment="The PROGRESS pattern is used to allow the possibly large list of current filtered check results to be split into several updates.&#xA;The size of the lists returned in each update and final response is implementation specific.">
                 <mal:type list="true" name="CheckSummary" service="Check" area="MC"/>
               </mal:field>
             </mal:response>
@@ -1261,7 +1257,7 @@ Each transition in the state of a check shall cause the generation of a CheckRes
           <mal:messages>
             <mal:progress>
               <mal:field name="objInstIds"
-                         comment="The objInstIds field shall hold one or more CheckIdentity object instance identifiers of which a check report is required.&#xA;An empty list shall report on all checks.&#xA;If a requested check is unknown then an UNKNOWN error shall be returned.">
+                         comment="The objInstIds field shall hold one or more CheckIdentity object instance identifiers of which a check report is required.&#xA;A wildcard value of '0' shall report on all checks.&#xA;If a requested check is unknown then an UNKNOWN error shall be returned.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:progress>
@@ -1300,7 +1296,7 @@ Each transition in the state of a check shall cause the generation of a CheckRes
           <mal:messages>
             <mal:submit>
               <mal:field name="enableService"
-                         comment="If enableService is set to TRUE the service shall be enabled and evaluation and reporting of check will commence.&#xA;If enableService is set to FALSE then all evaluation of checks shall be suspended and no check transitions will be reported.">
+                         comment="If enableService is set to TRUE the service shall be enabled and evaluation and reporting of check will commence.&#xA;If enableService is set to FALSE then all evaluation of checks shall be suspended and no check transitions will be reported.&#xA;If the enableService value matches the current enabled state of the service then no change shall be made and no error reported. Enabling an already enabled service has no effect.">
                 <mal:type name="Boolean" area="MAL"/>
               </mal:field>
             </mal:submit>
@@ -1325,11 +1321,11 @@ Each transition in the state of a check shall cause the generation of a CheckRes
           <mal:messages>
             <mal:submit>
               <mal:field name="isGroupIds"
-                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains CheckLink object instance identifiers.&#xA;The CheckLink objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the CheckLink objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all CheckLink objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then evaluations of matching CheckLink objects shall be performed, a value of FALSE requests that evaluations will not be performed.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current checkEnabled field for a CheckLink object i.e. enabling an already enabled check will not result in an error.&#xA;If a requested CheckLink or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain CheckLink objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider should create and store a new CheckLink object in the COM archive if the checkEnabled field is changed.">
+                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains CheckLink object instance identifiers.&#xA;The CheckLink objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the CheckLink objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all CheckLink objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then evaluations of matching CheckLink objects shall be performed, a value of FALSE requests that evaluations will not be performed.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current checkEnabled field for a CheckLink object i.e. enabling an already enabled check will not result in an error.&#xA;If a requested CheckLink or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain CheckLink objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider shall create and store a new CheckLink object in the COM archive if the checkEnabled field is changed.">
                 <mal:type name="Boolean" area="MAL"/>
               </mal:field>
               <mal:field name="enableInstances"
-                         comment="If the generation of updates is being enabled, and the parameter is defined as being periodic, then the provider shall generate an update immediately and start the update interval from that update.">
+                         comment="If the check is being enabled, and the check is defined as being periodic in the check link, then the provider shall generate a check result immediately and start the checking interval from that check.">
                 <mal:type list="true" name="InstanceBooleanPair" area="COM"/>
               </mal:field>
             </mal:submit>
@@ -1369,7 +1365,7 @@ Each transition in the state of a check shall cause the generation of a CheckRes
       </mal:capabilitySet>
       <mal:capabilitySet number="5">
         <mal:requestIP name="listDefinition" number="7" supportInReplay="false"
-                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the CheckIdentity, CheckDefinition, and actual check defintion objects for the supported checks of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual check service objects.">
+                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the CheckIdentity, CheckDefinition, and actual check definition objects for the supported checks of the provider.">
           <mal:messages>
             <mal:request>
               <mal:field name="names"
@@ -1396,7 +1392,7 @@ Each transition in the state of a check shall cause the generation of a CheckRes
                 <mal:type list="true" name="String" area="MAL"/>
               </mal:field>
               <mal:field name="checkDefDetails"
-                         comment="The checkDefDetails field shall hold the CheckDefinitionDetails to be added.&#xA;The two lists shall be ordered the same.&#xA;The two lists shall be the same size otheriwse an INVALID error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.&#xA;The provider shall create a new CheckIdentity, CheckDefinition, and actual check definition objects and store them in the COM archive.">
+                         comment="The checkDefDetails field shall hold the CheckDefinitionDetails to be added.&#xA;The two lists shall be ordered the same.&#xA;The number of entries in the two lists shall be the same size otherwise an INVALID error shall be raised.&#xA;Only one of nominalTime and nominalCount is permitted to be zero, an INVALID error shall be returned if this is not the case.&#xA;Only one of violationTime and violationCount is permitted to be zero, an INVALID error shall be returned if this is not the case.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.&#xA;The provider shall create a new CheckIdentity, CheckDefinition, and actual check definition objects and store them in the COM archive.">
                 <mal:type list="true" name="CheckDefinitionDetails" service="Check" area="MC"/>
               </mal:field>
             </mal:request>
@@ -1408,7 +1404,7 @@ Each transition in the state of a check shall cause the generation of a CheckRes
             </mal:response>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="One of the supplied CheckIdentity objects contains an invalid name or the two lists are not the same size.">
+            <mal:errorRef comment="One of the supplied CheckIdentity objects contains an invalid name or the two lists are not the same size or there is an inconsistency in the time and count fields.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -1427,11 +1423,11 @@ Each transition in the state of a check shall cause the generation of a CheckRes
           <mal:messages>
             <mal:request>
               <mal:field name="objInstIds"
-                         comment="The checkInstIds field shall hold the object instance identifiers of the CheckIdentity objects to be updated.&#xA;If the checkInstIds list contains either NULL or '0' an INVALID error shall be raised.&#xA;The supplied object instance identifiers shall match existing identity objects, an UNKNOWN error shall be raised if this is not the case.">
+                         comment="The checkInstIds field shall hold the object instance identifiers of the CheckIdentity objects to be updated.&#xA;If the checkInstIds list contains either NULL or '0' an INVALID error shall be raised.&#xA;The supplied object instance identifiers shall match existing identity objects, an UNKNOWN error shall be raised if this is not the case.&#xA;If the check to be updated is currently being used by a CheckLink object, a REFERENCED error shall be raised.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="checkDefDetails"
-                         comment="The checkDefDetails field shall contain the replacement CheckDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create new CheckDefinition and actual check definition objects and store them in the COM archive.">
+                         comment="The checkDefDetails field shall contain the replacement CheckDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;The number of entries in the two lists shall be the same size otherwise an INVALID error shall be raised.&#xA;Only one of nominalTime and nominalCount is permitted to be zero, an INVALID error shall be returned if this is not the case.&#xA;Only one of violationTime and violationCount is permitted to be zero, an INVALID error shall be returned if this is not the case.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create new CheckDefinition and actual check definition objects and store them in the COM archive.">
                 <mal:type list="true" name="CheckDefinitionDetails" service="Check" area="MC"/>
               </mal:field>
             </mal:request>
@@ -1449,7 +1445,7 @@ Each transition in the state of a check shall cause the generation of a CheckRes
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
-            <mal:errorRef comment="The supplied object instance identifiers list contains either a NULL or '0'.">
+            <mal:errorRef comment="The supplied object instance identifiers list contains either a NULL or '0', or the two lists do not contain the same number of entries or there is an inconsistency in the time and count fields.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -1492,7 +1488,8 @@ Each transition in the state of a check shall cause the generation of a CheckRes
                          comment="The linkDetails field shall contain the new CheckLink details.&#xA;The linkRefs field shall contain the related and source links of the new CheckLink.&#xA;The related field of the ObjectDetails shall reference the object instance identifier of the CheckDefinition being used by the new CheckLink.&#xA;The source field of the ObjectDetails shall reference the ParameterDefinition that the check is being applied to.&#xA;The two lists must be ordered the same so that the correct ObjectDetails for a specific CheckLink can be determined.">
                 <mal:type list="true" name="CheckLinkDetails" service="Check" area="MC"/>
               </mal:field>
-              <mal:field name="linkRefs">
+              <mal:field name="linkRefs"
+                         comment="If the requested CheckDefinition and ParameterDefinition do not exist then an UNKNOWN error shall be returned.&#xA;The number of entries in the two lists shall be the same size otherwise an INVALID error shall be raised.&#xA;If an interval that is not supported by the provider is requested then an INVALID error shall be returned.&#xA;The provider shall create a new CheckLink object for each pair and store it in the COM archive.">
                 <mal:type list="true" name="ObjectDetails" area="COM"/>
               </mal:field>
             </mal:request>
@@ -1503,6 +1500,20 @@ Each transition in the state of a check shall cause the generation of a CheckRes
               </mal:field>
             </mal:response>
           </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="The supplied lists do not contain the same number of entries or the supplied interval is not supported by the provider.">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="One of the supplied object instance identifiers is unknown.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
         </mal:requestIP>
         <mal:submitIP name="removeParameterCheck" number="12" supportInReplay="false"
                       comment="The removeParameterCheck operation allows a consumer to remove one or more parameters from the list of parameters being checked by the check provider.&#xA;The operation does not remove the CheckLink object from the COM archive, merely removes the object from the provider. This permits existing CheckTransition events to continue to reference the correct check link/definition objects in the COM archive.">
@@ -1540,10 +1551,6 @@ Each transition in the state of a check shall cause the generation of a CheckRes
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="name" canBeNull="false"
-                     comment="The name of the check definition. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
-          </mal:field>
           <mal:field name="description" canBeNull="false"
                      comment="The description of the check. May be empty.">
             <mal:type name="String" area="MAL"/>
@@ -1583,15 +1590,15 @@ Each transition in the state of a check shall cause the generation of a CheckRes
             <mal:type name="Boolean" area="MAL"/>
           </mal:field>
           <mal:field name="checkOnChange" canBeNull="false"
-                     comment="If TRUE then any change to state or value of the parameter, or the check condition will trigger a check evaluation.">
+                     comment="If TRUE then any change to state or value of the parameter, or the check condition will trigger a check evaluation. Ignored for Compound checks.">
             <mal:type name="Boolean" area="MAL"/>
           </mal:field>
           <mal:field name="useConverted" canBeNull="false"
-                     comment="If set to TRUE the converted value field of the parameter value should be used, otherwise the raw value field should be used.">
+                     comment="If set to TRUE the converted value field of the parameter value should be used, otherwise the raw value field should be used. Ignored for Compound checks.">
             <mal:type name="Boolean" area="MAL"/>
           </mal:field>
           <mal:field name="checkInterval" canBeNull="false"
-                     comment="The interval that a check should be applied. Only applicable if checkOnChange is FALSE. If '0', then no periodic checking shall be performed, and a check will be triggered by another mechanism.">
+                     comment="The interval that a check should be applied. Only applicable if checkOnChange is FALSE. If '0', then no periodic checking shall be performed, and a check will be triggered by another mechanism. Ignored for Compound checks.">
             <mal:type name="Duration" area="MAL"/>
           </mal:field>
           <mal:field name="condition"
@@ -1613,7 +1620,7 @@ Each transition in the state of a check shall cause the generation of a CheckRes
             <mal:type name="CheckState" service="Check" area="MC"/>
           </mal:field>
           <mal:field name="checkedValue"
-                     comment="This is the value of the entity at the time of a check state transition, or if it is an update due to the CheckDefinition maxReportingInterval expiring, then it is the value of the entity when the interval expired.">
+                     comment="This is the value of the parameter or for a compound check the number of checks in violation at the time of a check state transition, or if it is an update due to the CheckDefinition maxReportingInterval expiring, then it is the value or the number when the interval expired.">
             <mal:type name="Attribute" area="MAL"/>
           </mal:field>
           <mal:field name="previousEvaluationResult"
@@ -1638,8 +1645,8 @@ Each transition in the state of a check shall cause the generation of a CheckRes
                      comment="The current enabled state of the check link.">
             <mal:type name="Boolean" area="MAL"/>
           </mal:field>
-          <mal:field name="parameterId" canBeNull="false"
-                     comment="The object instance key of the parameter definition being checked.">
+          <mal:field name="parameterId"
+                     comment="The object instance key of the parameter definition being checked. NULL only for Compound checks.">
             <mal:type name="ObjectKey" area="COM"/>
           </mal:field>
           <mal:field name="evaluationTime" canBeNull="false"
@@ -1656,11 +1663,11 @@ Each transition in the state of a check shall cause the generation of a CheckRes
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
           <mal:field name="checkFilter" canBeNull="false"
-                     comment="The list of check definition object instance identifiers to filter on. Empty list means match all.">
+                     comment="The list of check definition object instance identifiers to filter on. A value of '0' means match all.">
             <mal:type list="true" name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="parameterFilter" canBeNull="false"
-                     comment="List of parameter object instance identifiers to filter on. Empty list means match all.">
+                     comment="List of parameter object instance identifiers to filter on. A value of '0' means match all.">
             <mal:type list="true" name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="stateFilter" canBeNull="false"
@@ -1735,11 +1742,11 @@ Each transition in the state of a check shall cause the generation of a CheckRes
             <mal:type name="Boolean" area="MAL"/>
           </mal:field>
           <mal:field name="lowerThreshold"
-                     comment="The lower threshold of the delta value. Must be of the correct type for the entity being checked. Must be a Float if percentage threshold.">
+                     comment="The lower threshold of the delta value. Must be of the correct type for the entity being checked. Must be a Float if percentage threshold in the range (-1.0 to 1.0 representing +-100%).">
             <mal:type name="Attribute" area="MAL"/>
           </mal:field>
           <mal:field name="upperThreshold"
-                     comment="The upper threshold of the delta value. Must be of the correct type for the entity being checked. Must be a Float if percentage threshold.">
+                     comment="The upper threshold of the delta value. Must be of the correct type for the entity being checked. Must be a Float if percentage threshold in the range (-1.0 to 1.0 representing +-100%).">
             <mal:type name="Attribute" area="MAL"/>
           </mal:field>
         </mal:composite>
@@ -1775,28 +1782,34 @@ Each transition in the state of a check shall cause the generation of a CheckRes
             <mal:type list="true" name="Long" area="MAL"/>
           </mal:field>
         </mal:composite>
-        <mal:composite name="CheckInstanceTriple" shortFormPart="12" comment="">
+        <mal:composite name="CheckInstanceTriple" shortFormPart="12"
+                       comment="The CheckInstanceTriple structure is used to hold the three COM object instance identifiers that form the identity, the definition, and the body of the check definition.">
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="objIdentityInstanceId" canBeNull="false" comment="">
+          <mal:field name="objIdentityInstanceId" canBeNull="false"
+                     comment="The object instance identifier of the Identity object.">
             <mal:type name="Long" area="MAL"/>
           </mal:field>
-          <mal:field name="objDefInstanceId" canBeNull="false" comment="">
+          <mal:field name="objDefInstanceId" canBeNull="false"
+                     comment="The object instance identifier of the Definition object.">
             <mal:type name="Long" area="MAL"/>
           </mal:field>
-          <mal:field name="objDefCheckInstanceId" canBeNull="false" comment="">
+          <mal:field name="objDefCheckInstanceId" canBeNull="false"
+                     comment="The object instance identifier of the actual check definition object.">
             <mal:type name="Long" area="MAL"/>
           </mal:field>
         </mal:composite>
-        <mal:composite name="CheckInstanceTypedTriple" shortFormPart="13" comment="">
+        <mal:composite name="CheckInstanceTypedTriple" shortFormPart="13"
+                       comment="The CheckInstanceTypedTriple structure is used to hold the three COM object instance identifiers that form the identity, the definition, and the body of the check definition in combination with the COM object type of the check body definition.">
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="objDefCheckType" canBeNull="false" comment="">
+          <mal:field name="objDefCheckType" canBeNull="false"
+                     comment="The COM object type of the check body.">
             <mal:type name="ObjectType" area="COM"/>
           </mal:field>
-          <mal:field name="objInstIds" comment="">
+          <mal:field name="objInstIds" comment="The object instance identifiers.">
             <mal:type name="CheckInstanceTriple" service="Check" area="MC"/>
           </mal:field>
         </mal:composite>
@@ -2111,7 +2124,10 @@ The reportingInterval value shall be modified using the updateParameterEvaluatio
 If the reporting interval and the collection intervals align, for example report every minute with a five minute collection interval the fifth minute will align, then only a single report shall be generated in this case.
 For onboard parameters the link sampling interval should be a multiple of the minimum sampling interval of those parameters.
 If an interval that is not supported by the provider is requested, then an INVALID error shall be returned, and the change rejected.
-</mal:documentation>
+For the 'Maximum' statistics function, the highest value shall be reported, in the case of multiple samples matching that, the first occurrence shall be report.
+For the 'Minimum' statistics function, the smallest value shall be reported, in the case of multiple samples matching that, the first occurrence shall be report.
+For the 'Mean average' statistics function, when used with integer parameters the result shall be reported using a Double type.
+For the 'Standard deviation' statistics function, when used with integer parameters the result shall be reported using a Double type.</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:requestIP name="getStatistics" number="1" supportInReplay="true"
                        comment="The getStatistics operation returns the current value for a requested set of statistic evaluations.">
@@ -2142,11 +2158,11 @@ If an interval that is not supported by the provider is requested, then an INVAL
           <mal:messages>
             <mal:request>
               <mal:field name="isStatLinkGroup"
-                         comment="If the isStatLinkGroup field is TRUE then the objInstIds field shall contain Group object instance identifiers, otherwise the field shall contain StatisticFunction object instance identifiers.&#xA;The StatisticLink objects referenced, either indirectly via statistic functions or indirectly via groups, by the objInstIds field shall be the StatisticLink objects to match.">
+                         comment="If the isStatLinkGroup field is TRUE then the objInstIds field shall contain Group object instance identifiers, otherwise the field shall contain StatisticFunction object instance identifiers.&#xA;If the isStatLinkGroup field is TRUE, the requested Group, or the Group objects referenced by that Group, must contain StatisticLink objects otherwise an INVALID error shall be returned.&#xA;The StatisticLink objects referenced, either indirectly via statistic functions or indirectly via groups, by the objInstIds field shall be the StatisticLink objects to match.">
                 <mal:type name="Boolean" area="MAL"/>
               </mal:field>
               <mal:field name="objInstIds"
-                         comment="The objInstIds field shall support the wildcard value of '0' and matches all StatisticLink objects of the provider.&#xA;If a requested function or group is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain StatisticLink objects then an INVALID error shall be returned.">
+                         comment="The objInstIds field shall support the wildcard value of '0' and matches all StatisticLink objects of the provider.&#xA;If a requested function or group is unknown then an UNKNOWN error shall be returned.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="returnCurrentEval"
@@ -2182,7 +2198,7 @@ If an interval that is not supported by the provider is requested, then an INVAL
           <mal:messages>
             <mal:publishNotify>
               <mal:field name="sourceId"
-                         comment="The MAL EntityKey.firstSubKey shall contain the statistic function name.&#xA;The MAL EntityKey.secondSubKey shall contain the StatisticLink object instance identifier which is the related link of the StatisticValueInstance.&#xA;The MAL EntityKey.thirdSubKey shall contain the ParameterIdentity object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall contain the StatisticValueInstance object instance identifier.&#xA;The timestamp of the StatisticValueInstance update shall be taken from the publish message.&#xA;The source link of the StatisticValueInstance shall be held in the sourceId field.&#xA;If no source link is needed then the sourceId shall be set to NULL.">
+                         comment="The MAL EntityKey.firstSubKey shall contain the statistic function name.&#xA;The MAL EntityKey.secondSubKey shall contain the StatisticLink object instance identifier which is the related link of the StatisticValueInstance.&#xA;The MAL EntityKey.thirdSubKey shall contain the ParameterIdentity object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall contain the new StatisticValueInstance object instance identifier.&#xA;The timestamp of the StatisticValueInstance update shall be taken from the publish message.&#xA;The source link of the StatisticValueInstance shall be held in the sourceId field.&#xA;If no source link is needed then the sourceId shall be set to NULL.">
                 <mal:type name="ObjectId" area="COM"/>
               </mal:field>
               <mal:field name="statisticValue"
@@ -2224,7 +2240,7 @@ If an interval that is not supported by the provider is requested, then an INVAL
           <mal:messages>
             <mal:submit>
               <mal:field name="isGroupIds"
-                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains StatisticFunction object instance identifiers.&#xA;The StatisticLink objects referenced, either indirectly via StatisticFunction objects or indirectly via groups, by the enableInstances field shall be the StatisticLink objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all StatisticLink objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then updates of matching StatisticLink objects shall be generated, a value of FALSE requests that updates will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field for a StatisticLink object i.e. enabling an already enabled link will not result in an error.&#xA;If a requested StatisticFunction or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain StatisticLink objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider should create and store a new StatisticLink object in the COM archive if the generationEnabled field is changed.">
+                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains StatisticFunction object instance identifiers.&#xA;If the isGroupIds field is TRUE, the requested Group, or the Group objects referenced by that Group, must contain StatisticLink objects otherwise an INVALID error shall be returned.&#xA;The StatisticLink objects referenced, either indirectly via StatisticFunction objects or indirectly via groups, by the enableInstances field shall be the StatisticLink objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all StatisticLink objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then updates of matching StatisticLink objects shall be generated, a value of FALSE requests that updates will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field for a StatisticLink object i.e. enabling an already enabled link will not result in an error.&#xA;If a requested StatisticFunction or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider should create and store a new StatisticLink object in the COM archive if the generationEnabled field is changed.">
                 <mal:type name="Boolean" area="MAL"/>
               </mal:field>
               <mal:field name="enableInstances"
@@ -2282,7 +2298,7 @@ If an interval that is not supported by the provider is requested, then an INVAL
           </mal:errors>
         </mal:requestIP>
         <mal:requestIP name="updateParameterEvaluation" number="8" supportInReplay="false"
-                       comment="The updateParameterEvaluation operation allows a consumer to modify the intervals for one or more statistical evaluation links.&#xA;The replacement StatisticLink objects should be stored in the COM archive by the service provider.">
+                       comment="The updateParameterEvaluation operation allows a consumer to modify the intervals, reporting and reset Booleans for one or more statistical evaluation links.&#xA;The replacement StatisticLink objects should be stored in the COM archive by the service provider.">
           <mal:messages>
             <mal:request>
               <mal:field name="objInstIds"
@@ -2290,7 +2306,7 @@ If an interval that is not supported by the provider is requested, then an INVAL
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="newDetails"
-                         comment="The newDetails field shall contain the replacement StatisticLinkDetails.&#xA;The two lists shall be ordered the same.&#xA;If an error is raised then no links shall be updated as a result of this operation call.&#xA;The provider shall create a new StatisticLink object and store it in the COM archive.">
+                         comment="The newDetails field shall contain the replacement StatisticLinkDetails.&#xA;The two lists shall be ordered the same.&#xA;If an error is raised then no links shall be updated as a result of this operation call.&#xA;The provider shall create a new StatisticLink object and store it in the COM archive.&#xA;If the sampling interval is updated then the service shall sample with the new rate immediately.">
                 <mal:type list="true" name="StatisticLinkDetails" service="Statistic" area="MC"/>
               </mal:field>
             </mal:request>
@@ -2557,26 +2573,29 @@ Three modes of generating an aggregation value shall exist: periodic, ad-hoc, an
 </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">The generation of updates for an aggregation shall be controlled by the generationEnabled Boolean value in the AggregationDefinitionDetails structure.
 Setting the generationEnabled field to TRUE shall enable generation of updates for a specific aggregation.
+The generationEnabled values can be set by using the enableGeneration operation.
+The filtering of updates for an aggregation shall be controlled by the filterEnabled Boolean value in the AggregationDefinitionDetails structure.
+Setting the filterEnabled field to TRUE shall enable filtering of updates for a specific aggregation.
+The filterEnabled values can be set by using the enableFilter operation.
 If an aggregation is required to send periodic updates, then the time between these updates shall be controlled using the updateInterval Duration value in the AggregationDefinitionDetails structure.
 Periodic updates for aggregations shall set the generationMode field of the AggregationValueInstance to PERIODIC.
 No periodic updates shall be generated when the updateInterval field is set to '0' and updates will be triggered by another ad-hoc implementation-specific mechanism in this case.
 Ad-hoc updates for aggregations shall set the generationMode field of the AggregationValueInstance to ADHOC.
-If an aggregation is filtered, updates shall be generated only when the value of one or more parameters in the aggregation have changed by more than a given threshold since the previous generation.
+If an aggregation is filtered, updates shall be generated only when the value of one or more parameters in the aggregation have changed by more than a given threshold since the previous generated aggregation-update.
 The threshold for the filter shall be defined, on a per-parameter basis, either as a percentage or an (absolute) delta change in value.
 Parameters in an aggregation that do not have a filter specified in the aggregation definition shall be ignored by the filter comparison process.
 If filtering is enabled and a filtered timeout has been set for that aggregation, if no change has been detected in that time-out period, an aggregation value shall be generated with a generation mode of FILTERED_TIMEOUT. This measure ensures that extensive periods of time do not elapse without updates of an enabled aggregation.
-The generationEnabled, filteredTimeout and updateInterval values of an AggregationDefinition object can be set by using the updateDefinition operation.
-If the interval requested is not supported by the provider then an INVALID error shall be returned and the change rejected.
+The generationEnabled, filterEnabled, filteredTimeout, sendUnchanged and updateInterval values of an AggregationDefiniton object can be set by using the updateDefinition operation.
+If the filteredTimeout-Interval, updateInterval or one or more of the sampleIntervals requested are not supported by the provider then an INVALID error shall be returned and the creation or change rejected.
 If the sendUnchanged field in the AggregationDefinition object is FALSE then parameter values that have not changed since the previous update shall be replaced by a NULL in the values list of the AggregationSetValue composite.
-The ordering of the values in the AggregationValueInstance object shall match the ordering of parameters in the AggregationDefinitionDetails structure.
-</mal:documentation>
+The ordering of the values in the AggregationValueInstance object shall match the ordering of parameters in the AggregationDefinitionDetails structure.</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:pubsubIP name="monitorValue" number="1" supportInReplay="true"
                       comment="The monitorValue operation allows a consumer to subscribe for aggregation value updates.">
           <mal:messages>
             <mal:publishNotify>
               <mal:field name="objId"
-                         comment="The MAL EntityKey.firstSubKey shall contain the aggregation name.&#xA;The MAL EntityKey.secondSubKey shall contain the AggregationIdentity object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the AggregationDefinition object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall contain the AggregationValueInstance object instance identifier.&#xA;The timestamp of the AggregationValueInstance update shall be taken from the publish message.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then the ObjectId shall be replaced with a NULL.">
+                         comment="The MAL EntityKey.firstSubKey shall contain the aggregation name.&#xA;The MAL EntityKey.secondSubKey shall contain the AggregationIdentity object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the AggregationDefinition object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall contain the new AggregationValueInstance object instance identifier.&#xA;The timestamp of the AggregationValueInstance update shall be taken from the publish message.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then the ObjectId shall be replaced with a NULL.">
                 <mal:type name="ObjectId" area="COM"/>
               </mal:field>
               <mal:field name="newValue"
@@ -2623,7 +2642,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
           <mal:messages>
             <mal:submit>
               <mal:field name="isGroupIds"
-                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains AggregationIdentity object instance identifiers.&#xA;The AggregationIdentity objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the AggregationIdentity objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all AggregationIdentity objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then updates of matching AggregationIdentity objects shall be generated, a value of FALSE requests that updates will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field of the definition for a matched AggregationIdentity object i.e. enabling an already enabled aggregation will not result in an error.&#xA;If a requested AggregationIdentity or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain AggregationIdentity objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider should create and store a new AggregationDefinition object in the COM archive if the generationEnabled field is changed.">
+                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains AggregationIdentity object instance identifiers.&#xA;The AggregationIdentity objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the AggregationIdentity objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all AggregationIdentity objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then updates of matching AggregationIdentity objects shall be generated, a value of FALSE requests that updates will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field of the definition for a matched AggregationIdentity object i.e. enabling an already enabled aggregation will not result in an error.&#xA;If a requested AggregationIdentity or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain AggregationIdentity objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider shall create and store a new AggregationDefinition object in the COM archive if the generationEnabled field is changed.">
                 <mal:type name="Boolean" area="MAL"/>
               </mal:field>
               <mal:field name="enableInstances"
@@ -2633,7 +2652,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
             </mal:submit>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="One or more of the requested aggregations is unknown.">
+            <mal:errorRef comment="One or more of the requested aggregations or groups is unknown.">
               <mal:type name="UNKNOWN" area="MAL"/>
               <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -2652,7 +2671,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
           <mal:messages>
             <mal:submit>
               <mal:field name="isGroupIds"
-                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains AggregationIdentity object instance identifiers.&#xA;The AggregationIdentity objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the AggregationIdentity objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all AggregationIdentity objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then updates of matching AggregationIdentity objects shall be filtered, a value of FALSE requests that updates will not be filtered.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current filterEnabled field of the definition for a matched AggregationIdentity object i.e. filtering an already filtered aggregation will not result in an error.&#xA;If a requested AggregationIdentity or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain AggregationIdentity objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider should create and store a new AggregationDefinition object in the COM archive if the filterEnabled field is changed.">
+                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain Group object instance identifiers, otherwise the field contains AggregationIdentity object instance identifiers.&#xA;The AggregationIdentity objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the AggregationIdentity objects to match.&#xA;The enableInstances field shall support the wildcard value of '0' and matches all AggregationIdentity objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then updates of matching AggregationIdentity objects shall be filtered, a value of FALSE requests that updates will not be filtered.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current filterEnabled field of the definition for a matched AggregationIdentity object i.e. filtering an already filtered aggregation will not result in an error.&#xA;If a requested AggregationIdentity or Group object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain AggregationIdentity objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider shall create and store a new AggregationDefinition object in the COM archive if the filterEnabled field is changed.">
                 <mal:type name="Boolean" area="MAL"/>
               </mal:field>
               <mal:field name="enableInstances">
@@ -2667,7 +2686,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
-            <mal:errorRef comment="One or more of the requested aggregations is unknown.">
+            <mal:errorRef comment="One or more of the requested aggregations or groups is unknown.">
               <mal:type name="UNKNOWN" area="MAL"/>
               <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -2678,7 +2697,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
       </mal:capabilitySet>
       <mal:capabilitySet number="4">
         <mal:requestIP name="listDefinition" number="5" supportInReplay="true"
-                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the AggregationIdentity objects for the supported aggregations of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual AggregationIdentity objects.">
+                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the AggregationIdentity and AggregationDefinition objects for the supported aggregations of the provider.">
           <mal:messages>
             <mal:request>
               <mal:field name="aggNames"
@@ -2688,7 +2707,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
             </mal:request>
             <mal:response>
               <mal:field name="objInstIds"
-                         comment="The response shall contain a list of matching AggregationIdentity and ParameterDefinition object instance identifiers.&#xA;The returned list shall maintain the same order as the submitted list unless the wildcard value was included in the request.">
+                         comment="The response shall contain a list of matching AggregationIdentity and AggregationDefinition object instance identifiers.&#xA;The returned list shall maintain the same order as the submitted list unless the wildcard value was included in the request.">
                 <mal:type list="true" name="ObjectInstancePair" area="MC"/>
               </mal:field>
             </mal:response>
@@ -2697,18 +2716,18 @@ The ordering of the values in the AggregationValueInstance object shall match th
       </mal:capabilitySet>
       <mal:capabilitySet number="5">
         <mal:requestIP name="addDefinition" number="6" supportInReplay="false"
-                       comment="The addDefinition operation allows a consumer to define one or more aggregations that do not currently exist.&#xA;The new AggregationIdentity and AggregationDefinition objects are expected to be stored in the COM archive by the provider of the parameter service.">
+                       comment="The addDefinition operation allows a consumer to define one or more aggregations that do not currently exist.&#xA;The new AggregationIdentity and AggregationDefinition objects are expected to be stored in the COM archive by the provider of the aggregation service.">
           <mal:messages>
             <mal:request>
               <mal:field name="aggDefDetails"
-                         comment="The aggDefDetails field shall hold the name and the AggregationDefinitionDetails to be added.&#xA;The name field must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique among all AggregationIdentity objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.&#xA;The provider shall create a new AggregationIdentity and AggregationDefinition object and store it in the COM archive.">
+                         comment="The aggDefDetails field shall hold the name and the AggregationDefinitionDetails to be added.&#xA;The name field must not be the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;If the supplied updateInterval or sampleInterval values are not supported by the provider then an INVALID error shall be returned.&#xA;The supplied name must be unique among all AggregationIdentity objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.&#xA;The provider shall create a new AggregationIdentity and AggregationDefinition object and store it in the COM archive.">
                 <mal:type list="true" name="AggregationDefinitionDetails" service="Aggregation" area="MC"/>
               </mal:field>
             </mal:request>
             <mal:response>
               <mal:field name="newObjInstIds"
                          comment="The response shall contain the list of object instance identifiers for the new Aggregationdentity and AggregationDefinition objects.&#xA;The returned list shall maintain the same order as the submitted definitions.">
-                <mal:type list="true" name="Long" area="MAL"/>
+                <mal:type list="true" name="ObjectInstancePair" area="MC"/>
               </mal:field>
             </mal:response>
           </mal:messages>
@@ -2719,7 +2738,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
-            <mal:errorRef comment="One of the supplied aggregation contains an invalid name.">
+            <mal:errorRef comment="One of the supplied aggregation contains an invalid name or a supplied interval is not supported by the provider.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -2736,7 +2755,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="aggDefDetails"
-                         comment="The aggDefDetails field shall contain the replacement AggregationDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create a new AggregationDefinition object and store it in the COM archive.">
+                         comment="The aggDefDetails field shall contain the replacement AggregationDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;If the supplied updateInterval or sampleInterval values are not supported by the provider then an INVALID error shall be returned.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create a new AggregationDefinition object and store it in the COM archive.">
                 <mal:type list="true" name="AggregationDefinitionDetails" service="Aggregation" area="MC"/>
               </mal:field>
             </mal:request>
@@ -2754,7 +2773,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
-            <mal:errorRef comment="The supplied object instance identifiers list contains either a NULL or '0'.">
+            <mal:errorRef comment="The supplied object instance identifiers list contains either a NULL or '0' or a supplied interval is not supported by the provider.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -2767,7 +2786,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
           <mal:messages>
             <mal:submit>
               <mal:field name="aggInstIds"
-                         comment="The aggInstIds field shall hold the object instance identifiers of the AggregationIdentity objects to be removed from the provider.&#xA;The list may contain the wildcard value of '0'.&#xA;If a provided AggregationIdentity object instance identifier does not include a wildcard and does not match an existing aggregation then this operation shall fail with an UNKNOWN error.&#xA;Matched AggregationIdentity objects shall not be removed from the COM archive only the list of AggregationIdentity objects in the provider.&#xA;If an error is raised then no aggregations shall be removed as a result of this operation call.&#xA;If the operation succeeds then the provider shall not publish aggregation values for the deleted AggregationIdentity objects anymore.">
+                         comment="The aggInstIds field shall hold the object instance identifiers of the AggregationIdentity objects to be removed from the provider.&#xA;The list may contain the wildcard value of '0'.&#xA;If a provided AggregationIdentity object instance identifier does not include a wildcard and does not match an existing aggregation then this operation shall fail with an UNKNOWN error.&#xA;Matched AggregationIdentity and AggregationDefinition objects shall not be removed from the COM archive only the list of AggregationIdentity and AggregationDefinition objects in the provider.&#xA;If an error is raised then no aggregations shall be removed as a result of this operation call.&#xA;If the operation succeeds then the provider shall not publish aggregation values for the deleted AggregationIdentity objects anymore.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:submit>
@@ -2856,8 +2875,8 @@ The ordering of the values in the AggregationValueInstance object shall match th
                      comment="The interval between samples of the parameters in the set. If '0' then just a single sample of the parameters is required per aggregation update.">
             <mal:type name="Duration" area="MAL"/>
           </mal:field>
-          <mal:field name="periodicFilter"
-                     comment="If the AggregationParameterSet contains a single parameter then this field contains the filter to apply for filtered periodic updates when filters are applied. NULL if no filter required or this set contains more than one parameter.">
+          <mal:field name="updateFilter"
+                     comment="If the AggregationParameterSet contains a single parameter then this field contains the filter to apply for filtered updates when filters are applied. NULL if no filter required or this set contains more than one parameter.">
             <mal:type name="ThresholdFilter" service="Aggregation" area="MC"/>
           </mal:field>
         </mal:composite>
@@ -3279,7 +3298,7 @@ Updating a group definition shall be performed by adding a new group definition 
                       alignment-baseline="middle">MAL::Identifier</svg:text>
           </svg:svg>
         </mal:diagram>
-        <com:objects comment="Each group shall be represented by a GroupIdentity COM object.&#xA;The body of the GroupIdentity COM object shall hold the name of the group .&#xA;The definitions of the conversions shall be represented as GroupDefinition COM objects.&#xA;The GroupDefinition object shall use the related link to indicate which GroupIdentity object it uses.&#xA;The source link of the GroupIdentity object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;The source link of the GroupDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Other service objects shall reference instances of a group using the object instance identifier of the GroupDefinition.&#xA;Groups of groups shall reference instances of a group using the object instance identifier of the GroupDefinition.">
+        <com:objects comment="Each group shall be represented by a GroupIdentity COM object.&#xA;The body of the GroupIdentity COM object shall hold the name of the group.&#xA;The definitions of the groups shall be represented as GroupDefinition COM objects.&#xA;The GroupDefinition object shall use the related link to indicate which GroupIdentity object it uses.&#xA;The source link of the GroupIdentity object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;The source link of the GroupDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Other service objects shall reference instances of a group using the object instance identifier of the GroupDefinition.&#xA;Groups of groups shall reference instances of a group using the object instance identifier of the GroupDefinition.">
           <com:object name="GroupIdentity" number="1">
             <com:objectType>
               <mal:type name="Identifier" area="MAL"/>
@@ -3300,7 +3319,7 @@ Updating a group definition shall be performed by adding a new group definition 
     </mal:service>
     <mal:dataTypes>
       <mal:enumeration name="Severity" shortFormPart="6"
-                       comment="The severity enumeration holds the possible values for a severity. Normally, for checks, only the Warning and Critical ranges are used: the colour yellow is associated with Warning, and the colour red is associated with Critical.">
+                       comment="The severity enumeration holds the possible values for a severity. The numerical value represents the increasing severity, therefore CRITICAL is more severe than ALARM. Normally, for checks, only the Warning and Critical ranges are used: the colour yellow is associated with Warning, and the colour red is associated with Critical.">
         <mal:item value="INFORMATIONAL" nvalue="1"
                   comment="Indicates a nominal situation with no consequences."/>
         <mal:item value="WARNING" nvalue="2"
@@ -3393,14 +3412,17 @@ Updating a group definition shall be performed by adding a new group definition 
           <mal:type name="Attribute" area="MAL"/>
         </mal:field>
       </mal:composite>
-      <mal:composite name="ObjectInstancePair" shortFormPart="8" comment="">
+      <mal:composite name="ObjectInstancePair" shortFormPart="8"
+                     comment="The ObjectInstancePair structure is used to hold the object instance identifier of an Identity object with its associated Definition object.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
-        <mal:field name="objIdentityInstanceId" canBeNull="false" comment="">
+        <mal:field name="objIdentityInstanceId" canBeNull="false"
+                   comment="The object instance identifier of the Identity object.">
           <mal:type name="Long" area="MAL"/>
         </mal:field>
-        <mal:field name="objDefInstanceId" canBeNull="false" comment="">
+        <mal:field name="objDefInstanceId" canBeNull="false"
+                   comment="The object instance identifier of the Definition object.">
           <mal:type name="Long" area="MAL"/>
         </mal:field>
       </mal:composite>
