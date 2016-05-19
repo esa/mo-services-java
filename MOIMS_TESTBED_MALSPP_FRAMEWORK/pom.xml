@@ -47,7 +47,7 @@
   <groupId>int.esa.ccsds.mo</groupId>
   <artifactId>TESTBED_MALSPP_FRAMEWORK</artifactId>
   <packaging>jar</packaging>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
   <name>CCSDS MOIMS MO Testbed Framework for MAL/SPP Binding </name>
 
   <organization>
@@ -96,7 +96,7 @@
   
   <properties>
     <ccsds.testbed.mal.version>1.1.2</ccsds.testbed.mal.version>
-    <ccsds.testbed.util.spp.version>1.0-SNAPSHOT</ccsds.testbed.util.spp.version>
+    <ccsds.testbed.util.spp.version>1.0</ccsds.testbed.util.spp.version>
     <esa.mal.test_api.version>1.0.2</esa.mal.test_api.version>
     <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
     <orekit.version>6.1</orekit.version>
