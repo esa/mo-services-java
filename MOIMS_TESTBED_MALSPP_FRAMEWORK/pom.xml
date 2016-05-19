@@ -34,17 +34,17 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.0.3</version>
     <relativePath/>
   </parent>
   
-  <groupId>fr.cnes.ccsds.mo</groupId>
+  <groupId>int.esa.ccsds.mo</groupId>
   <artifactId>TESTBED_MALSPP_FRAMEWORK</artifactId>
   <packaging>jar</packaging>
   <version>1.1-SNAPSHOT</version>
@@ -95,8 +95,10 @@
   </developers>
   
   <properties>
-    <ccsds.testbed.mal.version>1.1.1-SNAPSHOT</ccsds.testbed.mal.version>
+    <ccsds.testbed.mal.version>1.1.2</ccsds.testbed.mal.version>
     <ccsds.testbed.util.spp.version>1.0-SNAPSHOT</ccsds.testbed.util.spp.version>
+    <esa.mal.test_api.version>1.0.2</esa.mal.test_api.version>
+    <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
     <orekit.version>6.1</orekit.version>
     <monolog.version>5.2.0</monolog.version>
   </properties>
@@ -127,9 +129,9 @@
           <artifactId>API_MAL</artifactId>
         </dependency>
         <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>API_MAL_TEST</artifactId>
-            <version>${esa.mal.test_api.version}</version>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL_TEST</artifactId>
+          <version>${esa.mal.test_api.version}</version>
         </dependency>
       </dependencies>
     </profile>
@@ -171,7 +173,7 @@
       <version>${orekit.version}</version>
     </dependency>
     <dependency>
-      <groupId>fr.cnes.ccsds.mo</groupId>
+      <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TESTBED_UTIL_SPP</artifactId>
       <version>${ccsds.testbed.util.spp.version}</version>
     </dependency>

@@ -40,11 +40,11 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.0.3</version>
     <relativePath/>
   </parent>
   
-  <groupId>fr.cnes.ccsds.mo</groupId>
+  <groupId>int.esa.ccsds.mo</groupId>
   <artifactId>TESTBED_MALSPP</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
@@ -98,6 +98,8 @@
     <fitnesse.toplevel.test>MalSppTests</fitnesse.toplevel.test>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <ccsds.testbed.malspp.version>1.1-SNAPSHOT</ccsds.testbed.malspp.version>
+    <esa.mal.test_api.version>1.0.2</esa.mal.test_api.version>
+    <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
   </properties>
   
   <dependencies>
@@ -106,7 +108,7 @@
       <artifactId>fitnesse</artifactId>
     </dependency>
     <dependency>
-      <groupId>fr.cnes.ccsds.mo</groupId>
+      <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TESTBED_MALSPP_FRAMEWORK</artifactId>
       <version>${ccsds.testbed.malspp.version}</version>
     </dependency>
@@ -132,7 +134,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
             <artifactId>wagon-maven-plugin</artifactId>
-            <version>1.0-beta-5</version>
+            <version>1.0</version>
             <executions>
               <execution>
                 <id>download-test-data</id>
@@ -144,7 +146,7 @@
                   <url>http://hpiers.obspm.fr/eoppc/bul/bulc</url>
                   <fromFile>UTC-TAI.history</fromFile>
                   <toDir>.</toDir>
-              <!--   <skip>true</skip> -->   
+                 <skip>true</skip>    
                 </configuration>
             </execution>
           </executions>
@@ -242,12 +244,12 @@
         <dependency>
           <groupId>de.dlr.gsoc</groupId>
           <artifactId>MO_MALSPP_TRANSPORT</artifactId>
-          <version>1.0.1</version>
+          <version>1.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>de.dlr.gsoc</groupId>
           <artifactId>MO_MALSPP_ENCODING</artifactId>
-          <version>1.0.1</version>
+          <version>1.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>org.ow2.joram</groupId>
@@ -294,11 +296,6 @@
           <version>${cnes.version}</version>
         </dependency>
         <dependency>
-          <groupId>org.ccsds.moims.mo</groupId>
-          <artifactId>cnes-malprototype-stubs</artifactId>
-          <version>${cnes.version}</version>
-        </dependency>
-        <dependency>
           <groupId>fr.cnes.malspp</groupId>
           <artifactId>mal-spp-transport</artifactId>
           <version>${cnes.version}</version>
@@ -336,11 +333,6 @@
         <dependency>
           <groupId>fr.cnes.maljoram</groupId>
           <artifactId>mal-joram-malencoding</artifactId>
-          <version>${cnes.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.ccsds.moims.mo</groupId>
-          <artifactId>cnes-malprototype-stubs</artifactId>
           <version>${cnes.version}</version>
         </dependency>
         <dependency>
