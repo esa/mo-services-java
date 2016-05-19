@@ -125,7 +125,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
   // Enum used to classify filter
   private enum FilterType
   {
-    NUMERIC, STRING, BLOB, INVALID
+    NUMERIC, DOUBLE, STRING, BLOB, INVALID
   };
 
   /**
@@ -396,6 +396,61 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
   }
 
   /**
+   * Performs filter check on a double
+   *
+   * @param numericVal the numeric value
+   * @param numericFilterVal the filter value
+   * @param operator the filter operator
+   * @return the result of the check
+   * @throws MALInteractionException
+   */
+  private boolean matchesFilter(Double numericVal, Double numericFilterVal,
+          ExpressionOperator operator) throws MALInteractionException
+  {
+    boolean bMatch;
+    LoggingBase.logMessage(CLS + ":matchesFilter:numeric:" + numericVal.longValue() + ":"
+            + ":" + operator.getOrdinal());
+    if (numericFilterVal != null)
+    {
+      switch (operator.getOrdinal())
+      {
+        case ExpressionOperator._EQUAL_INDEX:
+          bMatch = (numericVal.longValue() == numericFilterVal.longValue());
+          break;
+        case ExpressionOperator._DIFFER_INDEX:
+          bMatch = (numericVal.longValue() != numericFilterVal.longValue());
+          break;
+        case ExpressionOperator._GREATER_INDEX:
+          bMatch = (numericVal.longValue() > numericFilterVal.longValue());
+          break;
+        case ExpressionOperator._GREATER_OR_EQUAL_INDEX:
+          bMatch = (numericVal.longValue() >= numericFilterVal.longValue());
+          break;
+        case ExpressionOperator._LESS_INDEX:
+          bMatch = (numericVal.longValue() < numericFilterVal.longValue());
+          break;
+        case ExpressionOperator._LESS_OR_EQUAL_INDEX:
+          bMatch = (numericVal.longValue() <= numericFilterVal.longValue());
+          break;
+        default:
+          bMatch = false;
+          LoggingBase.logMessage(CLS + ":matchesFilter:Operator not suppported for numeric:"
+                  + operator);
+          break;
+      }
+    }
+    else
+    {
+      // NULL value not supported for numeric
+      throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+              null));
+    }
+
+    LoggingBase.logMessage(CLS + ":matchesFilter:numeric RET:" + bMatch);
+    return bMatch;
+  }
+
+  /**
    * Performs filter check on a string
    *
    * @param stringVal the numeric value
@@ -559,6 +614,8 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
     boolean bMatch = true;
     Long numericVal = null;
     Long numericFilterVal = null;
+    Double doubleVal = null;
+    Double doubleFilterVal = null;
     FilterType filterType = FilterType.INVALID;
     String stringVal = null;
     String stringFilterVal = null;
@@ -584,15 +641,15 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
           }
           else if (obj.getElement() instanceof Duration)
           {
-            numericFilterVal = ((UInteger) compositeFilter.getFieldValue()).getValue();
-            numericVal = new Long(((Duration) obj.getElement()).getValue());
+            doubleFilterVal = ((Union) compositeFilter.getFieldValue()).getDoubleValue();
+            doubleVal = ((Duration) obj.getElement()).getValue();
             filterType = FilterType.NUMERIC;
           }
           else if (obj.getElement() instanceof Long)
           {
             numericVal = (Long) obj.getElement();
             numericFilterVal = ((Union) compositeFilter.getFieldValue()).getLongValue();
-            filterType = FilterType.NUMERIC;
+            filterType = FilterType.DOUBLE;
           }
           else if (obj.getElement() instanceof String)
           {
@@ -714,6 +771,11 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
       if (filterType == FilterType.NUMERIC)
       {
         bMatch = matchesFilter(numericVal, numericFilterVal,
+                compositeFilter.getType());
+      }
+      else if (filterType == FilterType.DOUBLE)
+      {
+        bMatch = matchesFilter(doubleVal, doubleFilterVal,
                 compositeFilter.getType());
       }
       else if (filterType == FilterType.STRING)

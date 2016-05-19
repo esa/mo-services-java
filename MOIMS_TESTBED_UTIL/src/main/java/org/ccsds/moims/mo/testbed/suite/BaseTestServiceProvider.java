@@ -21,6 +21,7 @@
 package org.ccsds.moims.mo.testbed.suite;
 
 import java.io.Writer;
+import java.util.Map;
 import java.util.Properties;
 
 import org.ccsds.moims.mo.mal.MALContext;
@@ -31,6 +32,7 @@ import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.Executable;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
+import static org.ccsds.moims.mo.testbed.util.LoggingBase.logMessage;
 
 /**
  *
@@ -46,10 +48,9 @@ public abstract class BaseTestServiceProvider extends LoggingBase implements Exe
     try
     {
       Properties envPrp = Configuration.getProperties("BaseTestServiceProviderEnv.properties");
-      logMessage("Protocol: env props: " + envPrp);
-      System.getProperties().putAll(envPrp);
+      envPrp.putAll(Configuration.getProperties(this.getClass().getSimpleName() + "Env.properties"));
+      envPrp.putAll(Configuration.getProperties("target/OverrideTestServiceProviderEnv.properties", true));
 
-      envPrp = Configuration.getProperties(this.getClass().getSimpleName() + "Env.properties");
       logMessage("Protocol: env props: " + envPrp);
       System.getProperties().putAll(envPrp);
       

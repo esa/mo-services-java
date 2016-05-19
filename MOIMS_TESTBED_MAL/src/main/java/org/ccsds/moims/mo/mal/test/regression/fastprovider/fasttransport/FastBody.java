@@ -1,0 +1,59 @@
+/* ----------------------------------------------------------------------------
+ * Copyright (C) 2016      European Space Agency
+ *                         European Space Operations Centre
+ *                         Darmstadt
+ *                         Germany
+ * ----------------------------------------------------------------------------
+ * System                : CCSDS MO MAL Test bed
+ * ----------------------------------------------------------------------------
+ * Licensed under the European Space Agency Public License, Version 2.0
+ * You may not use this file except in compliance with the License.
+ *
+ * Except as expressly set forth in this License, the Software is provided to
+ * You on an "as is" basis and without warranties of any kind, including without
+ * limitation merchantability, fitness for a particular purpose, absence of
+ * defects or errors, accuracy or non-infringement of intellectual property rights.
+ * 
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ * ----------------------------------------------------------------------------
+ */
+package org.ccsds.moims.mo.mal.test.regression.fastprovider.fasttransport;
+
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
+import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+
+/**
+ *
+ */
+public class FastBody implements MALMessageBody
+{
+  protected final Object[] body;
+
+  public FastBody(Object[] body)
+  {
+    this.body = body;
+  }
+
+  public int getElementCount()
+  {
+    return body.length;
+  }
+
+  public Object getBodyElement(int i, Object o) throws MALException
+  {
+    return body[i];
+  }
+
+  public MALEncodedElement getEncodedBodyElement(int i) throws MALException
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public MALEncodedBody getEncodedBody() throws MALException
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+}

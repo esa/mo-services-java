@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>1.0.2-SNAPSHOt</version>
+    <version>1.0.3</version>
     <relativePath/>
   </parent>
   
   <artifactId>TESTBED_MAL</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.1.2</version>
   <name>CCSDS MOIMS MO Testbed for MAL</name>
 
   <organization>
@@ -61,7 +61,7 @@
     <developer>
       <id>SamCooper</id>
       <name>Sam Cooper</name>
-      <email>sam.cooper@scisys.co.uk</email>
+      <email>sam@brightascension.com</email>
       <url>https://github.com/SamCooper</url>
     </developer>
     <developer>
@@ -89,9 +89,8 @@
   
   <properties>
     <fitnesse.toplevel.test>MalTests</fitnesse.toplevel.test>
+    <esa.mal.test_api.version>1.0.2</esa.mal.test_api.version>
     <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
-    <esa.mal.test_api.version>1.0.1</esa.mal.test_api.version>
-    <ccsds.testbed.util.version>1.0.2-SNAPSHOT</ccsds.testbed.util.version>
   </properties>
   
   <build>
@@ -164,6 +163,8 @@
             <ccsds.fitnesse.output.dir>${fitnesse.output.dir}</ccsds.fitnesse.output.dir>
             <slim.port>${fitnesse.port}</slim.port>
             <org.ccsds.moims.mo.testbed.remote.extra.args>${argLine}r</org.ccsds.moims.mo.testbed.remote.extra.args>
+            <!--            <org.ccsds.moims.mo.testbed.remote.extra.args>-Djava.util.logging.config.file=logging.properties</org.ccsds.moims.mo.testbed.remote.extra.args>
+            <org.ccsds.moims.mo.testbed.remote.extra.args>-Djava.util.logging.config.file=logging.properties -agentlib:jdwp=transport=dt_socket,server=y,address=4000</org.ccsds.moims.mo.testbed.remote.extra.args>-->
             <org.ccsds.moims.mo.testbed.local.configuration.dir>${org.ccsds.moims.mo.testbed.local.configuration.dir}</org.ccsds.moims.mo.testbed.local.configuration.dir>
             <org.ccsds.moims.mo.testbed.remote.configuration.dir>${org.ccsds.moims.mo.testbed.remote.configuration.dir}</org.ccsds.moims.mo.testbed.remote.configuration.dir>
             <org.ccsds.moims.mo.testbed.remote.output.dir>${fitnesse.output.dir}</org.ccsds.moims.mo.testbed.remote.output.dir>
@@ -201,12 +202,62 @@
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_STRING</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>ENCODING_BINARY_SPLIT</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY_FIXED</artifactId>
         </dependency>
       </dependencies>
       <properties>
         <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/esa-rmi</org.ccsds.moims.mo.testbed.local.configuration.dir>
         <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/esa-rmi</org.ccsds.moims.mo.testbed.remote.configuration.dir>
+      </properties>
+    </profile>
+    <profile>
+      <id>ESA_TCPIP</id>
+      <dependencies>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL_TEST</artifactId>
+          <version>${esa.mal.test_api.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>MAL_IMPL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>TRANSPORT_TCPIP</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY_SPLIT</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY_FIXED</artifactId>
+        </dependency>
+      </dependencies>
+      <properties>
+        <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/esa-tcpip</org.ccsds.moims.mo.testbed.local.configuration.dir>
+        <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/esa-tcpip</org.ccsds.moims.mo.testbed.remote.configuration.dir>
       </properties>
     </profile>
     <profile>
@@ -231,7 +282,19 @@
         </dependency>
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_STRING</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>ENCODING_BINARY_SPLIT</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>ENCODING_BINARY_FIXED</artifactId>
         </dependency>
       </dependencies>
       <properties>

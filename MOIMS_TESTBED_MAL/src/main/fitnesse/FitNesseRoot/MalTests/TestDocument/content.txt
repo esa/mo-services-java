@@ -52,3 +52,4 @@
 !see TestScenarios.Section4Scenarios.TransportTestScenario.TransmitMultipleTestCase
 !see TestScenarios.Section4Scenarios.TransportTestScenario.ReceiveTestCase
 !see TestScenarios.Section4Scenarios.TransportTestScenario.ReceiveMultipleTestCase
+!see TestScenarios.RegressionScenarios.FastProvider
