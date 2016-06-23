@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mal.structures.*;
  */
 public class SPPMessageHeader extends GENMessageHeader
 {
+  private final Boolean forceTC;
   private final int primaryApidQualifier;
   private final SPPConfiguration configuration;
   private final SPPURIRepresentation uriRepresentation;
@@ -46,13 +47,16 @@ public class SPPMessageHeader extends GENMessageHeader
   /**
    * Constructor.
    *
+   * @param configuration The SPP configuration to use for this message header
+   * @param forceTC Should the SPP TC field value be forced. Used in TC to TC situations.
    * @param primaryApidQualifier The APID qualifier to use for the one that will be missing from the encoded packet
    * @param uriRep Interface used to convert from URI to SPP APID etc
    * @param ssCounter Interface used to get the SPP source sequence count
    *
    */
-  public SPPMessageHeader(SPPConfiguration configuration, int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter)
+  public SPPMessageHeader(SPPConfiguration configuration, Boolean forceTC, int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter)
   {
+    this.forceTC = forceTC;
     this.configuration = configuration;
     this.primaryApidQualifier = primaryApidQualifier;
     this.uriRepresentation = uriRep;
@@ -62,6 +66,8 @@ public class SPPMessageHeader extends GENMessageHeader
   /**
    * Constructor.
    *
+   * @param configuration
+   * @param forceTC Should the SPP TC field value be forced. Used in TC to TC situations.
    * @param primaryApidQualifier The APID qualifier to use for the one that will be missing from the encoded packet
    * @param uriRep Interface used to convert from URI to SPP APID etc
    * @param ssCounter Interface used to get the SPP source sequence count
@@ -84,10 +90,11 @@ public class SPPMessageHeader extends GENMessageHeader
    * @param serviceVersion Service version number
    * @param isErrorMessage Flag indicating if the message conveys an error
    */
-  public SPPMessageHeader(SPPConfiguration configuration, int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter, URI uriFrom, Blob authenticationId, URI uriTo, Time timestamp, QoSLevel qosLevel, UInteger priority, IdentifierList domain, Identifier networkZone, SessionType session, Identifier sessionName, InteractionType interactionType, UOctet interactionStage, Long transactionId, UShort serviceArea, UShort service, UShort operation, UOctet serviceVersion, Boolean isErrorMessage)
+  public SPPMessageHeader(SPPConfiguration configuration, Boolean forceTC, int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter, URI uriFrom, Blob authenticationId, URI uriTo, Time timestamp, QoSLevel qosLevel, UInteger priority, IdentifierList domain, Identifier networkZone, SessionType session, Identifier sessionName, InteractionType interactionType, UOctet interactionStage, Long transactionId, UShort serviceArea, UShort service, UShort operation, UOctet serviceVersion, Boolean isErrorMessage)
   {
     super(uriFrom, authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone, session, sessionName, interactionType, interactionStage, transactionId, serviceArea, service, operation, serviceVersion, isErrorMessage);
 
+    this.forceTC = forceTC;
     this.configuration = configuration;
     this.primaryApidQualifier = primaryApidQualifier;
     this.uriRepresentation = uriRep;
@@ -97,7 +104,7 @@ public class SPPMessageHeader extends GENMessageHeader
   @Override
   public Element createElement()
   {
-    return new SPPMessageHeader(configuration, primaryApidQualifier, uriRepresentation, ssCounter);
+    return new SPPMessageHeader(configuration, forceTC, primaryApidQualifier, uriRepresentation, ssCounter);
   }
 
   @Override
@@ -410,47 +417,54 @@ public class SPPMessageHeader extends GENMessageHeader
 
   public short getPacketType()
   {
-    switch (interactionType.getOrdinal())
+    if (null != forceTC)
     {
-      case InteractionType._SEND_INDEX:
-        return 0x00001000;
-      case InteractionType._SUBMIT_INDEX:
-        if (MALSubmitOperation._SUBMIT_STAGE == interactionStage.getValue())
-        {
-          return 0x00001000;
-        }
-        return 0;
-      case InteractionType._REQUEST_INDEX:
-        if (MALRequestOperation._REQUEST_STAGE == interactionStage.getValue())
-        {
-          return 0x00001000;
-        }
-        return 0;
-      case InteractionType._INVOKE_INDEX:
-        if (MALInvokeOperation._INVOKE_STAGE == interactionStage.getValue())
-        {
-          return 0x00001000;
-        }
-        return 0;
-      case InteractionType._PROGRESS_INDEX:
+      return forceTC ? 0x00001000 : (short)0;
+    }
+    else
+    {
+      switch (interactionType.getOrdinal())
       {
-        if (MALProgressOperation._PROGRESS_STAGE == interactionStage.getValue())
-        {
+        case InteractionType._SEND_INDEX:
           return 0x00001000;
-        }
-        return 0;
-      }
-      case InteractionType._PUBSUB_INDEX:
-      {
-        switch (interactionStage.getValue())
-        {
-          case MALPubSubOperation._REGISTER_STAGE:
-          case MALPubSubOperation._DEREGISTER_STAGE:
-          case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-          case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
+        case InteractionType._SUBMIT_INDEX:
+          if (MALSubmitOperation._SUBMIT_STAGE == interactionStage.getValue())
+          {
             return 0x00001000;
+          }
+          return 0;
+        case InteractionType._REQUEST_INDEX:
+          if (MALRequestOperation._REQUEST_STAGE == interactionStage.getValue())
+          {
+            return 0x00001000;
+          }
+          return 0;
+        case InteractionType._INVOKE_INDEX:
+          if (MALInvokeOperation._INVOKE_STAGE == interactionStage.getValue())
+          {
+            return 0x00001000;
+          }
+          return 0;
+        case InteractionType._PROGRESS_INDEX:
+        {
+          if (MALProgressOperation._PROGRESS_STAGE == interactionStage.getValue())
+          {
+            return 0x00001000;
+          }
+          return 0;
         }
-        return 0;
+        case InteractionType._PUBSUB_INDEX:
+        {
+          switch (interactionStage.getValue())
+          {
+            case MALPubSubOperation._REGISTER_STAGE:
+            case MALPubSubOperation._DEREGISTER_STAGE:
+            case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
+            case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
+              return 0x00001000;
+          }
+          return 0;
+        }
       }
     }
 

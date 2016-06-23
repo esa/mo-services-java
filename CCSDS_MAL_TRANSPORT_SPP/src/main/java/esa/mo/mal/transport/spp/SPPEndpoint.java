@@ -48,6 +48,7 @@ public class SPPEndpoint extends GENEndpoint
 {
   private final SPPConfiguration configuration;
   private final int apidQualifier;
+  private final Boolean forceTC;
   private final SPPURIRepresentation uriRep;
   private final SPPSourceSequenceCounter ssCounter;
 
@@ -61,8 +62,36 @@ public class SPPEndpoint extends GENEndpoint
   {
     super(transport, localName, routingName, uri, wrapBodyParts);
 
+    int aq = apidQualifier;
+
+    // decode configuration
+    if (properties != null)
+    {
+//      if (properties.containsKey("org.ccsds.moims.mo.malspp.apid"))
+//      {
+//        a = Integer.parseInt(properties.get("org.ccsds.moims.mo.malspp.apid").toString());
+//      }
+      if (properties.containsKey("org.ccsds.moims.mo.malspp.apidQualifier"))
+      {
+        aq = Integer.parseInt(properties.get("org.ccsds.moims.mo.malspp.apidQualifier").toString());
+      }
+
+      if (properties.containsKey("org.ccsds.moims.mo.malspp.isTcPacket"))
+      {
+        forceTC = Boolean.parseBoolean(properties.get("org.ccsds.moims.mo.malspp.isTcPacket").toString());
+      }
+      else
+      {
+        forceTC = null;
+      }
+    }
+    else
+    {
+      forceTC = null;
+    }
+
     this.configuration = configuration;
-    this.apidQualifier = apidQualifier;
+    this.apidQualifier = aq;
     this.uriRep = uriRep;
     this.ssCounter = ssCounter;
   }
@@ -279,7 +308,7 @@ public class SPPEndpoint extends GENEndpoint
           UOctet serviceVersion,
           Boolean isErrorMessage)
   {
-    return new SPPMessageHeader(configuration, apidQualifier, uriRep, ssCounter, getURI(),
+    return new SPPMessageHeader(configuration, forceTC, apidQualifier, uriRep, ssCounter, getURI(),
             authenticationId,
             uriTo,
             timestamp,

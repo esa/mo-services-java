@@ -163,35 +163,19 @@ public abstract class SPPBaseTransport<T> extends GENTransport
   @Override
   protected GENEndpoint internalCreateEndpoint(final String localName, final String routingName, final Map properties) throws MALException
   {
-    int a = apid;
-    int aq = apidQualifier;
-    
-    // decode configuration
-    if (properties != null)
-    {
-      if (properties.containsKey("org.ccsds.moims.mo.malspp.apid"))
-      {
-        a = Integer.parseInt(properties.get("org.ccsds.moims.mo.malspp.apid").toString());
-      }
-      if (properties.containsKey("org.ccsds.moims.mo.malspp.apidQualifier"))
-      {
-        aq = Integer.parseInt(properties.get("org.ccsds.moims.mo.malspp.apidQualifier").toString());
-      }
-    }
-    
-    return new SPPEndpoint(this, configuration, aq, uriRep, ssc, localName, routingName, uriBase + routingName, wrapBodyParts, qosProperties);
+    return new SPPEndpoint(this, configuration, apidQualifier, uriRep, ssc, localName, routingName, uriBase + routingName, wrapBodyParts, properties);
   }
 
   @Override
   public GENMessage createMessage(byte[] packet) throws MALException
   {
-    return new SPPMessage(wrapBodyParts, true, new SPPMessageHeader(configuration, apidQualifier, uriRep, ssc), qosProperties, packet, getStreamFactory());
+    return new SPPMessage(wrapBodyParts, true, new SPPMessageHeader(configuration, null, apidQualifier, uriRep, ssc), qosProperties, packet, getStreamFactory());
   }
 
   @Override
   public GENMessage createMessage(InputStream ios) throws MALException
   {
-    return new SPPMessage(wrapBodyParts, true, new SPPMessageHeader(configuration, apidQualifier, uriRep, ssc), qosProperties, ios, getStreamFactory());
+    return new SPPMessage(wrapBodyParts, true, new SPPMessageHeader(configuration, null, apidQualifier, uriRep, ssc), qosProperties, ios, getStreamFactory());
   }
 
   public abstract GENMessage createMessage(T packet) throws MALException;
