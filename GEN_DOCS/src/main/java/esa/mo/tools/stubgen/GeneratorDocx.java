@@ -761,7 +761,7 @@ public class GeneratorDocx extends GeneratorDocument
     }
     docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, message, FIXED_COLOUR);
 
-    if (null == types)
+    if ((null == types) || (0 == types.size()))
     {
       docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "Empty", FIXED_COLOUR);
     }
