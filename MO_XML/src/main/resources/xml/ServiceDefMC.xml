@@ -35,13 +35,13 @@ Each action submission shall include:
                 <mal:type name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="actionDetails"
-                         comment="The actionDetails part of the submission shall contain the argument values and related information of the action instance to be executed.&#xA;If the defInstId of the supplied actionDetails field does not match a known ActionDefinition object then an UNKNOWN error shall be returned.&#xA;If the ActionInstanceDetails structure contains an argumentIds field value then this shall be compared to the same field in the matched ActionDefinition object and must be the same size and contain the same values, an INVALID error shall be returned in this is not the case.&#xA;If the supplied argument values do not match the attribute type specified in the action definition then an INVALID error shall be returned.&#xA;A service provider may apply some deployment specific checks to the action instance and can return an INVALID error if they fail.&#xA;If an error is raised then no action shall be executed.&#xA;The SUBMIT acknowledgement shall be returned once the action has been accepted for execution but before execution starts.">
+                         comment="The actionDetails part of the submission shall contain the argument values and related information of the action instance to be executed.&#xA;If the defInstId of the supplied actionDetails field does not match a known ActionDefinition object then an UNKNOWN error shall be returned.&#xA;The size of the argumentValues list of the ActionInstanceDetails structure shall be compared to the size of the argument list in the matched ActionDefinition object and an INVALID error shall be returned if they are not the same.&#xA;If the ActionInstanceDetails structure contains an argumentIds field value then this shall be compared to the same field in the matched ActionDefinition object and must be the same size and contain the same values, an INVALID error shall be returned in this is not the case.&#xA;If the ActionInstanceDetails structure contains an isRawValue field value then the size of this list shall be compared to the size of the argument list in the matched ActionDefinition object and an INVALID error shall be returned if they are not the same.&#xA;If the supplied argument values do not match the attribute type specified in the action definition then an INVALID error shall be returned.&#xA;A service provider may apply some deployment specific checks to the action instance and can return an INVALID error if they fail.&#xA;If an error is raised then no action shall be executed.&#xA;The SUBMIT acknowledgement shall be returned once the action has been accepted for execution but before execution starts.">
                 <mal:type name="ActionInstanceDetails" service="Action" area="MC"/>
               </mal:field>
             </mal:submit>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="The argument list held in the ActionInstanceDetails contains one or more invalid arguments.">
+            <mal:errorRef comment="The list sizes held in the ActionInstanceDetails do not matched the argument definitions or it contains one or more invalid argument values.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -180,7 +180,7 @@ Each action submission shall include:
           <mal:messages>
             <mal:submit>
               <mal:field name="actionInstIds"
-                         comment="The actionInstIds field shall hold the object instance identifiers of the ActionIdentity objects to be removed from the provider.&#xA;The wildcard value of '0' in the list of object instance identifiers shall be supported and matches all actions of the provider.&#xA;The wildcard value should be checked for first, if found no other checks of supplied object instance identifiers shall be made.&#xA;If a provided ActionIdentity object instance identifier does not include a wildcard and does not match an existing ActionIdentity object then this operation shall fail with an UNKNOWN error.&#xA;If a matched definition is still being used by an executing action instance then this operation shall not fail because of this reason.&#xA;Matched ActionIdentity objects shall not be removed from the COM archive only the list of ActionIdentity objects in the provider.&#xA;Removed ActionInstance object shall not be allowed to be referenced by new action instances.&#xA;If an error is raised then no actions shall be removed as a result of this operation call.">
+                         comment="The actionInstIds field shall hold the object instance identifiers of the ActionIdentity objects to be removed from the provider.&#xA;The wildcard value of '0' in the list of object instance identifiers shall be supported and matches all actions of the provider.&#xA;The wildcard value should be checked for first, if found no other checks of supplied object instance identifiers shall be made.&#xA;If a provided ActionIdentity object instance identifier does not include a wildcard and does not match an existing ActionIdentity object then this operation shall fail with an UNKNOWN error.&#xA;If a matched definition is still being used by an executing action instance then this operation shall not fail because of this reason.&#xA;Matched ActionIdentity objects shall not be removed from the COM archive only the list of ActionIdentity objects in the provider.&#xA;Removed ActionIdentity object shall not be allowed to be referenced by new action instances.&#xA;If an error is raised then no actions shall be removed as a result of this operation call.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:submit>
@@ -608,7 +608,7 @@ It is supported that other, deployment specific, validityState values be used ho
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="paramDefDetails"
-                         comment="The paramDefDetails field shall contain the replacement ParameterDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;If the supplied reportInterval value is not supported by the provider then an INVALID error shall be returned.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create a new ParameterDefinition object and store it in the COM archive.&#xA;The new ParameterDefinition object shall be the current ParameterDefinition used for the specific ParameterIdentity.">
+                         comment="The paramDefDetails field shall contain the replacement ParameterDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;The number of entries in the two lists shall be the same size otherwise an INVALID error shall be returned.&#xA;If the supplied reportInterval value is not supported by the provider then an INVALID error shall be returned.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create a new ParameterDefinition object and store it in the COM archive.&#xA;The new ParameterDefinition object shall be the current ParameterDefinition used for the specific ParameterIdentity.">
                 <mal:type list="true" name="ParameterDefinitionDetails" service="Parameter" area="MC"/>
               </mal:field>
             </mal:request>
@@ -620,7 +620,7 @@ It is supported that other, deployment specific, validityState values be used ho
             </mal:response>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="The supplied object instance identifiers list contains either a NULL or '0' or a supplied interval is not supported by the provider.">
+            <mal:errorRef comment="The supplied object instance identifiers list contains either a NULL or '0' or the two supplied lists are not the same length or a supplied interval is not supported by the provider.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -853,8 +853,7 @@ The list of the alert definitions may be requested.</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">The generation of alerts shall be controlled by the generationEnabled Boolean value in the AlertDefinitionDetails.
 Setting the generationEnabled field to TRUE shall enable generation of instances of that alert.
 The generationEnabled value can be set by using either the enableGeneration or updateDefinition operations.
-The alert instances shall be published as events using the COM event operations.
-For an Alert, the supplied argumentIds must be verified against the ones in the Definition before an Alert emission if the argumentIds field from the definition is not null.</mal:documentation>
+The alert instances shall be published as events using the COM event operations.</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:submitIP name="enableGeneration" number="1" supportInReplay="false"
                       comment="The enableGeneration operation allows a consumer to control whether updates for specific alerts are generated or not. The operation allows the consumer to select the alerts directly or indirectly using groups.">
@@ -2213,7 +2212,7 @@ For the 'Standard deviation' statistics function, when used with integer paramet
                 <mal:type name="Boolean" area="MAL"/>
               </mal:field>
               <mal:field name="paramObjInstIds"
-                         comment="If the isGroup field is TRUE then the paramObjInstIds field shall contain GroupIdentity object instance identifiers, otherwise the field shall contain ParameterIdentity object instance identifiers.&#xA;The ParameterIdentity objects referenced, either directly or indirectly via groups, by the paramObjInstIds field shall be the parameters to match.&#xA;The paramObjInstIds field shall support the wildcard value of '0' and matches all parameters of the provider matched to the functions given in the funcObjInstIds field.&#xA;The wildcard value should be checked for first, if found no other checks of supplied object instance identifiers shall be made.&#xA;If a requested function, group or parameters is unknown then an UNKNOWN error shall be returned.">
+                         comment="If the isGroup field is TRUE then the paramObjInstIds field shall contain GroupIdentity object instance identifiers, otherwise the field shall contain ParameterIdentity object instance identifiers.&#xA;If the isGroup field is TRUE, the requested Group, or the Group objects referenced by that Group, must contain ParameterIdentity objects otherwise an INVALID error shall be returned.&#xA;The ParameterIdentity objects referenced, either directly or indirectly via groups, by the paramObjInstIds field shall be the parameters to match.&#xA;The paramObjInstIds field shall support the wildcard value of '0' and matches all parameters of the provider matched to the functions given in the funcObjInstIds field.&#xA;The wildcard value should be checked for first, if found no other checks of supplied object instance identifiers shall be made.&#xA;If a requested function, group or parameters is unknown then an UNKNOWN error shall be returned.">
                 <mal:type list="true" name="ObjectKey" area="COM"/>
               </mal:field>
             </mal:request>
@@ -2228,6 +2227,12 @@ For the 'Standard deviation' statistics function, when used with integer paramet
             <mal:errorRef comment="One or more of the requested groups, parameters, or functions is unknown.">
               <mal:type name="UNKNOWN" area="MAL"/>
               <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="One of the supplied groups is not a group of groups or ParameterIdentity objects.">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -2315,12 +2320,12 @@ For the 'Standard deviation' statistics function, when used with integer paramet
         </mal:requestIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="4">
-        <mal:submitIP name="enableGeneration" number="6" supportInReplay="false"
-                      comment="The enableGeneration operation allows a consumer to control whether reports for specific statistical functions are generated or not. The operation allows the consumer to select the functions directly or indirectly using groups.">
+        <mal:submitIP name="enableReporting" number="6" supportInReplay="false"
+                      comment="The enableReporting operation allows a consumer to control whether reports for specific statistical functions are generated or not. The operation allows the consumer to select the functions directly or indirectly using groups.">
           <mal:messages>
             <mal:submit>
               <mal:field name="isGroupIds"
-                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain GroupIdentity object instance identifiers, otherwise the field contains StatisticFunction object instance identifiers.&#xA;If the isGroupIds field is TRUE, the requested Group, or the Group objects referenced by that Group, must contain StatisticLink objects otherwise an INVALID error shall be returned.&#xA;The StatisticLink objects referenced, either indirectly via StatisticFunction objects or indirectly via groups, by the enableInstances field shall be the StatisticLink objects to match.&#xA;The id of the enableInstances field shall support the wildcard value of '0' and matches all StatisticLink objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then reports for matching StatisticLink objects shall be generated, a value of FALSE requests that reports will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field for a StatisticLink object i.e. enabling an already enabled link will not result in an error.&#xA;If a requested StatisticFunction or GroupIdentity object is unknown then an UNKNOWN error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider should create and store a new StatisticLinkDefinition object in the COM archive if the generationEnabled field is changed.">
+                         comment="If the isGroupIds field is TRUE then the enableInstances field shall contain GroupIdentity object instance identifiers, otherwise the field contains StatisticFunction object instance identifiers.&#xA;If the isGroupIds field is TRUE, the requested Group, or the Group objects referenced by that Group, must contain StatisticLink objects otherwise an INVALID error shall be returned.&#xA;The StatisticLink objects referenced, either indirectly via StatisticFunction objects or indirectly via groups, by the enableInstances field shall be the StatisticLink objects to match.&#xA;The id of the enableInstances field shall support the wildcard value of '0' and matches all StatisticLink objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then reports after the reporting and collection intervals for matching StatisticLink objects shall be generated, a value of FALSE requests that reports will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current reportingEnabled field for a StatisticLink object i.e. enabling an already enabled link will not result in an error.&#xA;If a requested StatisticFunction or GroupIdentity object is unknown then an UNKNOWN error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider should create and store a new StatisticLinkDefinition object in the COM archive if the reportingEnabled field is changed.">
                 <mal:type name="Boolean" area="MAL"/>
               </mal:field>
               <mal:field name="enableInstances"
@@ -2330,7 +2335,7 @@ For the 'Standard deviation' statistics function, when used with integer paramet
             </mal:submit>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="One or more of the requested StatisticLink is unknown.">
+            <mal:errorRef comment="One or more of the requested StatisticFunction or Group objects is unknown.">
               <mal:type name="UNKNOWN" area="MAL"/>
               <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -2352,13 +2357,13 @@ For the 'Standard deviation' statistics function, when used with integer paramet
             <mal:request>
               <mal:field name="statObjInstIds"
                          comment="The statObjInstIds field shall hold a list of StatisticFunction object instance identifiers to retrieve the StatsticLink object instance identifiers for.&#xA;The request may contain the wildcard value of '0' to return all supported statistic links.&#xA;The wildcard value should be checked for first, if found no other checks of supplied identifiers shall be made.&#xA;If a provided identifier does not include a wildcard and does not match an existing StatisticFunction object then this operation shall fail with an UNKNOWN error.">
-                <mal:type name="Long" area="MAL"/>
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:request>
             <mal:response>
               <mal:field name="statLinkObjInstIds"
                          comment="The response shall contain a list of StatisticLinkSummary that contain the object instance identifiers of the StatisticLink, StatisticFunction, and ParameterIdentity for the matched StatisticFunction objects.">
-                <mal:type name="StatisticLinkSummary" service="Statistic" area="MC"/>
+                <mal:type list="true" name="StatisticLinkSummary" service="Statistic" area="MC"/>
               </mal:field>
             </mal:response>
           </mal:messages>
@@ -2378,19 +2383,19 @@ For the 'Standard deviation' statistics function, when used with integer paramet
           <mal:messages>
             <mal:request>
               <mal:field name="newDetails"
-                         comment="The newDetails field shall hold a StatisticCreationRequest for each new parameter to be sampled.&#xA;The statFuncInstId field of the StatisticCreationRequest shall reference the object instance identifier of the StatisticFunction to be used.&#xA;If the statFuncInstId field does not match an existing StatisticFunction then an UNKNOWN error shall be raised.&#xA;The parameterId shall reference the ParameterIdentity that the function is being applied to.&#xA;If the parameterId field does not match an existing ParameterIdentity then an UNKNOWN error shall be raised.&#xA;The samplingInterval field shall contain the sampling duration interval for the parameter.&#xA;If the supplied samplingInterval is not supported for the requested parameter then an INVALID error shall be returned.&#xA;If an error is raised then no new StatisticLink object shall be created and stored as a result of this operation call.&#xA;If no error is to be raised then StatisticLink and StatisticLinkDefinition objects shall be created for each function/parameter link and stored in the COM archive.&#xA;Sampling of the referenced parameter shall begin immediately.">
+                         comment="The newDetails field shall hold a StatisticCreationRequest for each new parameter to be sampled.&#xA;The statFuncInstId field of the StatisticCreationRequest shall reference the object instance identifier of the StatisticFunction to be used.&#xA;If the statFuncInstId field does not match an existing StatisticFunction then an UNKNOWN error shall be raised.&#xA;The parameterId shall reference the ParameterIdentity that the function is being applied to.&#xA;If the parameterId field does not match an existing ParameterIdentity then an UNKNOWN error shall be raised.&#xA;If the type of the matched parameter is not supported by the matched statistical function, for example Mean average of a String parameter, then an INVALID error shall be returned.&#xA;The samplingInterval field shall contain the sampling duration interval for the parameter.&#xA;If the supplied samplingInterval is not supported for the requested parameter then an INVALID error shall be returned.&#xA;If an error is raised then no new StatisticLink object shall be created and stored as a result of this operation call.&#xA;If no error is to be raised then StatisticLink and StatisticLinkDefinition objects shall be created for each function/parameter link and stored in the COM archive.&#xA;The referenced parameter shall be sampled immediately and the sampling, reporting and collection intervals started.">
                 <mal:type list="true" name="StatisticCreationRequest" service="Statistic" area="MC"/>
               </mal:field>
             </mal:request>
             <mal:response>
               <mal:field name="newObjInstIds"
-                         comment="The response shall contain the list of object instance identifiers for the new StatisticLink and StatisticLinkDefinition objects.&#xA;The returned list shall maintain the same order as the submitted links.">
+                         comment="The response shall contain the list of object instance identifiers for the new StatisticLink and StatisticLinkDefinition objects.&#xA;The object instance identifiers of the StatisticLink and StatisticLinkDefinition objects shall be held in the first and second fields of the ObjectInstancePair structure respectively.&#xA;The returned list shall maintain the same order as the submitted links.">
                 <mal:type list="true" name="ObjectInstancePair" area="MC"/>
               </mal:field>
             </mal:response>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="One or more of the supplied StatisticLink is requesting an invalid sampling interval for the request parameter.">
+            <mal:errorRef comment="One or more of the supplied StatisticLink is either requesting an invalid sampling interval or invalid function for the request parameter.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -2413,7 +2418,7 @@ For the 'Standard deviation' statistics function, when used with integer paramet
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="newDetails"
-                         comment="The newDetails field shall contain the replacement StatisticLinkDetails.&#xA;The two lists shall be ordered the same.&#xA;If an error is raised then no links shall be updated as a result of this operation call.&#xA;The provider shall create a new StatisticLinkDefinition object and store it in the COM archive.&#xA;If the sampling interval is updated then the service shall sample with the new rate immediately.">
+                         comment="The newDetails field shall contain the replacement StatisticLinkDetails.&#xA;The two lists shall be ordered the same.&#xA;The number of entries in the two lists shall be the same size otherwise an INVALID error shall be returned.&#xA;If an error is raised then no links shall be updated as a result of this operation call.&#xA;The provider shall create a new StatisticLinkDefinition object and store it in the COM archive.&#xA;If any of the intervals are updated then the service shall reset the relevant timer use the new intervals immediately.">
                 <mal:type list="true" name="StatisticLinkDetails" service="Statistic" area="MC"/>
               </mal:field>
             </mal:request>
@@ -2431,7 +2436,7 @@ For the 'Standard deviation' statistics function, when used with integer paramet
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
-            <mal:errorRef comment="One or more of the supplied object instance identifiers list contains either a NULL or '0' or is requesting an invalid sampling interval for the request parameter.">
+            <mal:errorRef comment="One or more of the supplied object instance identifiers list contains either a NULL or '0' or the two supplied lists are not the same length or is requesting an invalid sampling interval for the request parameter.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -2672,7 +2677,7 @@ For the 'Standard deviation' statistics function, when used with integer paramet
                       alignment-baseline="middle">StatisticValue</svg:text>
           </svg:svg>
         </mal:diagram>
-        <com:objects comment="The statistic functions shall be represented as StatisticFunction COM objects.&#xA;For a 'Maximum' statistics function, the object instance identifier of '1' shall be used.&#xA;For a 'Minimum' statistics function, the object instance identifier of '2' shall be used.&#xA;For a 'Mean average' statistics function, the object instance identifier of '3' shall be used.&#xA;For a 'Standard deviation' statistics function, the object instance identifier of '4' shall be used.&#xA;For non-standard statistics functions, i.e. ones not listed here, the name and object instance identifier shall be communicated through an out-of-band agreement.&#xA;The link between which parameters are being evaluated for each function shall be represented as StatisticLink COM objects.&#xA;The details of a statistic link, such as reportingInterval, shall be represented as a StatisticLinkDefinition COM object.&#xA;Statistic evaluations for a specific parameter and statistic function shall be represented as StatisticValueInstance COM objects.&#xA;The StatisticLink object shall use the related link to indicate which StatisticFunction object it uses.&#xA;The StatisticLink object shall use the source link to indicate which ParameterIdentity object it uses.&#xA;The StatisticLinkDefinition object shall use the related link to indicate which StatisticLink object it uses.&#xA;The StatisticValueInstance object shall use the related link to indicate which StatisticLinkDefinition object it uses.&#xA;The StatisticValueInstance object shall use the source link to indicate what object (if any) caused it to be evaluated.&#xA;If the StatisticValueInstance object was a result of either a resetEvaluation or getStatistics operation call then the source link shall be the COM OperationActivity object of the operation.">
+        <com:objects comment="The statistic functions shall be represented as StatisticFunction COM objects.&#xA;For a 'Maximum' statistics function, the object instance identifier of '1' and name of 'MAX' shall be used.&#xA;For a 'Minimum' statistics function, the object instance identifier of '2' and name of 'MIN' shall be used.&#xA;For a 'Mean average' statistics function, the object instance identifier of '3' and name of 'MEAN' shall be used.&#xA;For a 'Standard deviation' statistics function, the object instance identifier of '4' and name of 'SD' shall be used.&#xA;For non-standard statistics functions, i.e. ones not listed here, the name and object instance identifier shall be communicated through an out-of-band agreement.&#xA;The link between which parameters are being evaluated for each function shall be represented as StatisticLink COM objects.&#xA;The details of a statistic link, such as reportingInterval, shall be represented as a StatisticLinkDefinition COM object.&#xA;Statistic evaluations for a specific parameter and statistic function shall be represented as StatisticValueInstance COM objects.&#xA;The StatisticLink object shall use the related link to indicate which StatisticFunction object it uses.&#xA;The StatisticLink object shall use the source link to indicate which ParameterIdentity object it uses.&#xA;The StatisticLinkDefinition object shall use the related link to indicate which StatisticLink object it uses.&#xA;The StatisticValueInstance object shall use the related link to indicate which StatisticLinkDefinition object it uses.&#xA;The StatisticValueInstance object shall use the source link to indicate what object (if any) caused it to be evaluated.&#xA;If the StatisticValueInstance object was a result of either a resetEvaluation or getStatistics operation call then the source link shall be the COM OperationActivity object of the operation.">
           <com:object name="StatisticFunction" number="1">
             <com:objectType>
               <mal:type name="StatisticFunctionDetails" service="Statistic" area="MC"/>
@@ -2914,7 +2919,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="aggDefDetails"
-                         comment="The aggDefDetails field shall contain the replacement AggregationDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;If the supplied reportInterval or sampleInterval values are not supported by the provider then an INVALID error shall be returned.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create a new AggregationDefinition object and store it in the COM archive.&#xA;The new AggregationDefinition object shall be the current AggregationDefinition used for the specific AggregationIdentity.">
+                         comment="The aggDefDetails field shall contain the replacement AggregationDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;The number of entries in the two lists shall be the same size otherwise an INVALID error shall be returned.&#xA;If the supplied reportInterval or sampleInterval values are not supported by the provider then an INVALID error shall be returned.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.&#xA;The provider shall create a new AggregationDefinition object and store it in the COM archive.&#xA;The new AggregationDefinition object shall be the current AggregationDefinition used for the specific AggregationIdentity.">
                 <mal:type list="true" name="AggregationDefinitionDetails" service="Aggregation" area="MC"/>
               </mal:field>
             </mal:request>
@@ -2932,7 +2937,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
-            <mal:errorRef comment="The supplied object instance identifiers list contains either a NULL or '0' or a supplied interval is not supported by the provider.">
+            <mal:errorRef comment="The supplied object instance identifiers list contains either a NULL or '0' or the two supplied lists are not the same length or a supplied interval is not supported by the provider.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
