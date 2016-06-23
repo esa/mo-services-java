@@ -378,7 +378,18 @@ public abstract class GENTransport implements MALTransport
   @Override
   public MALEndpoint createEndpoint(final String localName, final Map qosProperties) throws MALException
   {
-    final String strRoutingName = getLocalName(localName, qosProperties);
+    final Map localProperties = new HashMap();
+    
+    if (null != this.qosProperties)
+    {
+      localProperties.putAll(this.qosProperties);
+    }
+    if (null != qosProperties)
+    {
+      localProperties.putAll(qosProperties);
+    }
+    
+    final String strRoutingName = getLocalName(localName, localProperties);
     GENEndpoint endpoint = endpointRoutingMap.get(strRoutingName);
 
     if (null == endpoint)
@@ -387,7 +398,7 @@ public abstract class GENTransport implements MALTransport
       {
         localName, strRoutingName
       });
-      endpoint = internalCreateEndpoint(localName, strRoutingName, qosProperties);
+      endpoint = internalCreateEndpoint(localName, strRoutingName, localProperties);
       endpointMalMap.put(localName, endpoint);
       endpointRoutingMap.put(strRoutingName, endpoint);
     }
@@ -803,6 +814,8 @@ public abstract class GENTransport implements MALTransport
                   oriMsg.getQoSProperties(),
                   errorNumber, new Union(errorMsg));
 
+          retMsg.getHeader().setURIFrom(srcHdr.getURITo());
+          
           sendMessage(null, true, retMsg);
         }
         else
