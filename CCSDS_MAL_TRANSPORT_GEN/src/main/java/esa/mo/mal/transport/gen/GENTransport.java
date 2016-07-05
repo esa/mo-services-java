@@ -379,7 +379,7 @@ public abstract class GENTransport implements MALTransport
   public MALEndpoint createEndpoint(final String localName, final Map qosProperties) throws MALException
   {
     final Map localProperties = new HashMap();
-    
+
     if (null != this.qosProperties)
     {
       localProperties.putAll(this.qosProperties);
@@ -388,7 +388,7 @@ public abstract class GENTransport implements MALTransport
     {
       localProperties.putAll(qosProperties);
     }
-    
+
     final String strRoutingName = getLocalName(localName, localProperties);
     GENEndpoint endpoint = endpointRoutingMap.get(strRoutingName);
 
@@ -478,10 +478,14 @@ public abstract class GENTransport implements MALTransport
           final boolean lastForHandle,
           final GENMessage msg) throws MALTransmitErrorException
   {
-    // first check if its actually a message to ourselves
-    String endpointUriPart = getRoutingPart(msg.getHeader().getURITo().getValue());
+    // get the root URI, (e.g. tcpip://10.0.0.1:61616 )
+    String destinationURI = msg.getHeader().getURITo().getValue();
+    String remoteRootURI = getRootURI(destinationURI);
 
-    if (inProcessSupport && endpointRoutingMap.containsKey(endpointUriPart))
+    // first check if its actually a message to ourselves
+    String endpointUriPart = getRoutingPart(destinationURI);
+
+    if (inProcessSupport && uriBase.startsWith(remoteRootURI) && endpointRoutingMap.containsKey(endpointUriPart))
     {
       LOGGER.log(Level.FINE, "GEN routing msg internally to {0}", new Object[]
       {
@@ -495,10 +499,6 @@ public abstract class GENTransport implements MALTransport
     {
       try
       {
-        // get the root URI, (e.g. tcpip://10.0.0.1:61616 )
-        String destinationURI = msg.getHeader().getURITo().getValue();
-        String remoteRootURI = getRootURI(destinationURI);
-
         LOGGER.log(Level.FINE, "GEN sending msg. Target root URI: {0} full URI:{1}", new Object[]
         {
           remoteRootURI, destinationURI
@@ -815,7 +815,7 @@ public abstract class GENTransport implements MALTransport
                   errorNumber, new Union(errorMsg));
 
           retMsg.getHeader().setURIFrom(srcHdr.getURITo());
-          
+
           sendMessage(null, true, retMsg);
         }
         else
