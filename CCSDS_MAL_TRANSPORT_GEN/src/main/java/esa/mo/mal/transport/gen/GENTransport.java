@@ -163,7 +163,7 @@ public abstract class GENTransport implements MALTransport
   /**
    * Map of outgoing channels. This associates a URI to a transport resource that is able to send messages to this URI.
    */
-  private final Map<String, GENConcurrentMessageSender> outgoingDataChannels = Collections.synchronizedMap(new HashMap<String, GENConcurrentMessageSender>());
+  private final Map<String, GENConcurrentMessageSender> outgoingDataChannels = new HashMap<String, GENConcurrentMessageSender>();
   /**
    * The stream factory used for encoding and decoding messages.
    */
@@ -556,15 +556,24 @@ public abstract class GENTransport implements MALTransport
 
     if (localUriTo != null)
     {
-      GENConcurrentMessageSender commsChannel = outgoingDataChannels.get(localUriTo);
+      GENConcurrentMessageSender commsChannel;
+
+      synchronized (this)
+      {
+        commsChannel = outgoingDataChannels.get(localUriTo);
+        if (commsChannel != null)
+        {
+          outgoingDataChannels.remove(localUriTo);
+        }
+        else
+        {
+          LOGGER.log(Level.WARNING, "Could not locate associated data to close communications for URI : {0} ", localUriTo);
+        }
+      }
       if (commsChannel != null)
       {
+        // need to do this outside the sync block so that we do not affect other threads
         commsChannel.terminate();
-        outgoingDataChannels.remove(localUriTo);
-      }
-      else
-      {
-        LOGGER.log(Level.WARNING, "Could not locate associated data to close communications for URI : {0} ", localUriTo);
       }
     }
 
