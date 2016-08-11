@@ -33,6 +33,8 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.*;
@@ -62,6 +64,14 @@ public abstract class GENTransport implements MALTransport
    * System property to control the number of input processors.
    */
   public static final String INPUT_PROCESSORS_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.inputprocessors";
+  /**
+   * System property to control the number of input processors.
+   */
+  public static final String MIN_INPUT_PROCESSORS_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.mininputprocessors";
+  /**
+   * System property to control the number of input processors.
+   */
+  public static final String IDLE_INPUT_PROCESSORS_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.idleinputprocessors";
   /**
    * System property to control the number of connections per client.
    */
@@ -141,12 +151,6 @@ public abstract class GENTransport implements MALTransport
    */
   private final int numConnections;
   /**
-   * Number of processors that are capable of processing parallel input requests. This is the internal number of threads
-   * that process incoming messages arriving from MAL clients. It is the maximum parallel requests this MAL instance can
-   * concurrently serve.
-   */
-  private final int inputProcessorThreads;
-  /**
    * The thread that receives incoming message from the underlying transport. All incoming raw data packets are
    * processed by this thread.
    */
@@ -218,7 +222,6 @@ public abstract class GENTransport implements MALTransport
     boolean lLogFullDebug = false;
     boolean lWrapBodyParts = wrapBodyParts;
     boolean lInProcessSupport = true;
-    int lInputProcessorThreads = 100;
     int lNumConnections = 1;
 
     // decode configuration
@@ -239,12 +242,6 @@ public abstract class GENTransport implements MALTransport
         lInProcessSupport = Boolean.parseBoolean((String) properties.get(INPROC_PROPERTY));
       }
 
-      // number of internal threads that process incoming MAL packets
-      if (properties.containsKey(INPUT_PROCESSORS_PROPERTY))
-      {
-        lInputProcessorThreads = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
-      }
-
       // number of connections per client/server
       if (properties.containsKey(NUM_CLIENT_CONNS_PROPERTY))
       {
@@ -255,11 +252,10 @@ public abstract class GENTransport implements MALTransport
     this.logFullDebug = lLogFullDebug;
     this.wrapBodyParts = lWrapBodyParts;
     this.inProcessSupport = lInProcessSupport;
-    this.inputProcessorThreads = lInputProcessorThreads;
     this.numConnections = lNumConnections;
 
     this.asyncInputReceptionProcessor = Executors.newSingleThreadExecutor();
-    this.asyncInputDataProcessors = Executors.newFixedThreadPool(inputProcessorThreads);
+    this.asyncInputDataProcessors = createThreadPoolExecutor(properties);
 
     LOGGER.log(Level.FINE, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
   }
@@ -313,7 +309,6 @@ public abstract class GENTransport implements MALTransport
     boolean lLogFullDebug = false;
     boolean lWrapBodyParts = wrapBodyParts;
     boolean lInProcessSupport = true;
-    int lInputProcessorThreads = 100;
     int lNumConnections = 1;
 
     // decode configuration
@@ -334,12 +329,6 @@ public abstract class GENTransport implements MALTransport
         lInProcessSupport = Boolean.parseBoolean((String) properties.get(INPROC_PROPERTY));
       }
 
-      // number of internal threads that process incoming MAL packets
-      if (properties.containsKey(INPUT_PROCESSORS_PROPERTY))
-      {
-        lInputProcessorThreads = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
-      }
-
       // number of connections per client/server
       if (properties.containsKey(NUM_CLIENT_CONNS_PROPERTY))
       {
@@ -350,11 +339,10 @@ public abstract class GENTransport implements MALTransport
     this.logFullDebug = lLogFullDebug;
     this.wrapBodyParts = lWrapBodyParts;
     this.inProcessSupport = lInProcessSupport;
-    this.inputProcessorThreads = lInputProcessorThreads;
     this.numConnections = lNumConnections;
 
     asyncInputReceptionProcessor = Executors.newSingleThreadExecutor();
-    asyncInputDataProcessors = Executors.newFixedThreadPool(inputProcessorThreads);
+    this.asyncInputDataProcessors = createThreadPoolExecutor(properties);
 
     LOGGER.log(Level.FINE, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
   }
@@ -1306,5 +1294,52 @@ public abstract class GENTransport implements MALTransport
 
       return str;
     }
+  }
+  
+  private static ExecutorService createThreadPoolExecutor(final java.util.Map properties)
+  {
+    boolean needsTuning = false;
+    int lInputProcessorThreads = 100;
+    int lMinInputProcessorThreads = lInputProcessorThreads;
+    int lIdleTimeInSeconds = 0;
+    
+    if (null != properties)
+    {
+      // minium number of internal threads that process incoming MAL packets
+      if (properties.containsKey(MIN_INPUT_PROCESSORS_PROPERTY))
+      {
+        needsTuning = true;
+        lMinInputProcessorThreads = Integer.parseInt((String) properties.get(MIN_INPUT_PROCESSORS_PROPERTY));
+      }
+
+      // number of seconds for internal threads that process incoming MAL packets to be idle before being terminated
+      if (properties.containsKey(IDLE_INPUT_PROCESSORS_PROPERTY))
+      {
+        needsTuning = true;
+        lIdleTimeInSeconds = Integer.parseInt((String) properties.get(IDLE_INPUT_PROCESSORS_PROPERTY));
+      }
+
+      // number of internal threads that process incoming MAL packets
+      if (properties.containsKey(INPUT_PROCESSORS_PROPERTY))
+      {
+        lInputProcessorThreads = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
+      }
+    }
+    
+    ExecutorService rv = Executors.newFixedThreadPool(lInputProcessorThreads);
+    
+    // see if we can tune the thread pool
+    if (needsTuning)
+    {
+      if (rv instanceof ThreadPoolExecutor)
+      {
+        ThreadPoolExecutor tpe = (ThreadPoolExecutor)rv;
+        
+        tpe.setKeepAliveTime(lIdleTimeInSeconds, TimeUnit.SECONDS);
+        tpe.setCorePoolSize(lMinInputProcessorThreads);
+      }
+    }
+    
+    return rv;
   }
 }
