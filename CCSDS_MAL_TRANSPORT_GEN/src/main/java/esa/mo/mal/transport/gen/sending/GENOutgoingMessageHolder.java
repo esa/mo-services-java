@@ -25,6 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
+import java.util.concurrent.TimeUnit;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
@@ -98,7 +99,7 @@ public class GENOutgoingMessageHolder
    */
   public Boolean getResult() throws InterruptedException
   {
-    return replyQueue.take();
+    return replyQueue.poll(3, TimeUnit.DAYS);
   }
 
   /**

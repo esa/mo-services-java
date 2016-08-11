@@ -499,7 +499,7 @@ public abstract class GENTransport implements MALTransport
 
         dataSender.sendMessage(outgoingPacket);
 
-        if (!outgoingPacket.getResult())
+        if (!Boolean.TRUE.equals(outgoingPacket.getResult()))
         {
           // data was not sent succesfully, throw an exception for the
           // higher MAL layers
