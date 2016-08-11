@@ -66,27 +66,27 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
   {
     super(parent);
   }
-
+  
   @Override
   public void malInitialize(MALBrokerBinding brokerBinding)
   {
     bindings.add((MALBrokerBindingImpl) brokerBinding);
   }
-
+  
   @Override
   public void malFinalize(MALBrokerBinding brokerBinding)
   {
     bindings.remove((MALBrokerBindingImpl) brokerBinding);
   }
-
+  
   @Override
-  public void handleRegister(final MALInteraction interaction, final MALRegisterBody body)
+  public synchronized void handleRegister(final MALInteraction interaction, final MALRegisterBody body)
           throws MALInteractionException, MALException
   {
     final MALMessageHeader hdr = interaction.getMessageHeader();
     final Subscription lst = body.getSubscription();
     final BrokerKey key = new BrokerKey(hdr);
-
+    
     report(key);
     if ((null != hdr) && (null != lst))
     {
@@ -94,15 +94,15 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     }
     report(key);
   }
-
+  
   @Override
-  public void handlePublishRegister(final MALInteraction interaction, final MALPublishRegisterBody body)
+  public synchronized void handlePublishRegister(final MALInteraction interaction, final MALPublishRegisterBody body)
           throws MALInteractionException, MALException
   {
     final MALMessageHeader hdr = interaction.getMessageHeader();
     final EntityKeyList providerKeyList = body.getEntityKeyList();
     final BrokerKey key = new BrokerKey(hdr);
-
+    
     report(key);
     if ((null != hdr) && (null != providerKeyList))
     {
@@ -110,7 +110,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     }
     report(key);
   }
-
+  
   @Override
   public void handlePublish(final MALInteraction interaction, final MALPublishBody body)
           throws MALInteractionException, MALException
@@ -118,13 +118,13 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     final MALMessageHeader hdr = interaction.getMessageHeader();
     final BrokerKey key = new BrokerKey(hdr);
     final java.util.List<NotifyMessageSet> notifyList = createNotify(key, hdr, body);
-
+    
     if (!notifyList.isEmpty())
     {
       for (NotifyMessageSet notifyMessageSet : notifyList)
       {
         MALBrokerBinding binding = getBinding(notifyMessageSet.details.uriTo.getValue());
-
+        
         if (null != binding)
         {
           for (NotifyMessage notifyMessage : notifyMessageSet.messages)
@@ -151,7 +151,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
             catch (MALTransmitErrorException ex)
             {
               MALBrokerImpl.LOGGER.log(Level.WARNING, "Exception raised during transmission of NOTIFY to consumer : {0}", notifyMessageSet.details.uriTo.getValue());
-
+              
               handleConsumerCommunicationError(key, notifyMessageSet);
             }
           }
@@ -163,39 +163,39 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
       }
     }
   }
-
+  
   @Override
-  public void handleDeregister(final MALInteraction interaction, final MALDeregisterBody body)
+  public synchronized void handleDeregister(final MALInteraction interaction, final MALDeregisterBody body)
           throws MALInteractionException, MALException
   {
     final MALMessageHeader hdr = interaction.getMessageHeader();
     final IdentifierList lst = body.getIdentifierList();
     final BrokerKey key = new BrokerKey(hdr);
-
+    
     report(key);
-
+    
     if ((null != hdr) && (null != lst) && !lst.isEmpty())
     {
       internalDeregisterSubscriptions(key, getConsumerEntry(key, hdr, false), lst);
     }
-
+    
     report(key);
   }
-
+  
   @Override
-  public void handlePublishDeregister(final MALInteraction interaction)
+  public synchronized void handlePublishDeregister(final MALInteraction interaction)
           throws MALInteractionException, MALException
   {
     final MALMessageHeader hdr = interaction.getMessageHeader();
     final BrokerKey key = new BrokerKey(hdr);
-
+    
     report(key);
     final Map<StringPair, PublisherSource> rv = getProviderMap(key);
     if (null != rv.remove(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr))))
     {
       MALBrokerImpl.LOGGER.log(Level.FINE, "Removing publisher details: {0}", hdr);
     }
-
+    
     if (rv.isEmpty())
     {
       providerMap.remove(key);
@@ -213,17 +213,17 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
   {
     final BrokerKey key = new BrokerKey(hdr);
     final PublisherSource details = getProviderEntry(key, hdr, false);
-
+    
     if (null != details)
     {
       MALBrokerImpl.LOGGER.log(Level.FINE, "Getting publisher QoS details: {0}", hdr);
       return details.getQosLevel();
     }
-
+    
     return QoSLevel.BESTEFFORT;
   }
-
-  private MALBrokerBinding getBinding(String uriTo)
+  
+  private synchronized MALBrokerBinding getBinding(String uriTo)
   {
     for (MALBrokerBindingImpl binding : bindings)
     {
@@ -232,27 +232,27 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         return binding;
       }
     }
-
+    
     return null;
   }
-
+  
   private synchronized java.util.List<NotifyMessageSet> createNotify(final BrokerKey key, final MALMessageHeader hdr,
           final MALPublishBody publishBody) throws MALInteractionException, MALException
   {
     MALBrokerImpl.LOGGER.fine("Checking provider");
     final PublisherSource details = getProviderEntry(key, hdr, false);
-
+    
     if (null == details)
     {
       MALBrokerImpl.LOGGER.warning("Provider not known");
       throw new MALInteractionException(new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
     }
-
+    
     final UpdateHeaderList hl = publishBody.getUpdateHeaderList();
     details.checkPublish(hdr, hl);
-
+    
     final List<NotifyMessageSet> lst = new LinkedList<NotifyMessageSet>();
-
+    
     if (hl != null)
     {
       final Map<String, SubscriptionSource> rv = getConsumerMap(key);
@@ -261,31 +261,34 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         entry.getValue().populateNotifyList(hdr, lst, hl, publishBody);
       }
     }
-
+    
     return lst;
   }
-
+  
   private synchronized void report(final BrokerKey key)
   {
-    MALBrokerImpl.LOGGER.fine("START REPORT");
-
-    for (PublisherSource subscriptionSource : getProviderMap(key).values())
+    if (MALBrokerImpl.LOGGER.isLoggable(Level.FINE))
     {
-      subscriptionSource.report();
+      MALBrokerImpl.LOGGER.fine("START REPORT");
+      
+      for (PublisherSource subscriptionSource : getProviderMap(key).values())
+      {
+        subscriptionSource.report();
+      }
+      
+      for (SubscriptionSource subscriptionSource : getConsumerMap(key).values())
+      {
+        subscriptionSource.report();
+      }
+      
+      MALBrokerImpl.LOGGER.fine("END REPORT");
     }
-
-    for (SubscriptionSource subscriptionSource : getConsumerMap(key).values())
-    {
-      subscriptionSource.report();
-    }
-
-    MALBrokerImpl.LOGGER.fine("END REPORT");
   }
-
+  
   private static String createProviderKey(final MALMessageHeader details)
   {
     final StringBuilder buf = new StringBuilder();
-
+    
     buf.append(details.getSession());
     buf.append(':');
     buf.append(details.getSessionName());
@@ -293,79 +296,79 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     buf.append(details.getNetworkZone());
     buf.append(':');
     buf.append(details.getDomain());
-
+    
     return buf.toString();
   }
-
+  
   private Map<String, SubscriptionSource> getConsumerMap(final BrokerKey key)
   {
     Map<String, SubscriptionSource> rv = consumerMap.get(key);
-
+    
     if (null == rv)
     {
       rv = new HashMap();
       consumerMap.put(key, rv);
     }
-
+    
     return rv;
   }
-
+  
   private SubscriptionSource getConsumerEntry(final BrokerKey key, final MALMessageHeader hdr, final boolean create)
   {
     final Map<String, SubscriptionSource> rv = getConsumerMap(key);
     final String sig = hdr.getURIFrom().getValue();
     SubscriptionSource ent = rv.get(sig);
-
+    
     if ((null == ent) && (create))
     {
       ent = createEntry(hdr);
       rv.put(sig, ent);
     }
-
+    
     return ent;
   }
-
+  
   private SubscriptionSource getConsumerEntry(final BrokerKey key, final String consumerUri)
   {
     return getConsumerMap(key).get(consumerUri);
   }
-
+  
   private Map<StringPair, PublisherSource> getProviderMap(final BrokerKey key)
   {
     Map<StringPair, PublisherSource> rv = providerMap.get(key);
-
+    
     if (null == rv)
     {
       rv = new HashMap();
       providerMap.put(key, rv);
     }
-
+    
     return rv;
   }
-
+  
   private PublisherSource getProviderEntry(final BrokerKey key, final MALMessageHeader hdr, final boolean create)
   {
     final Map<StringPair, PublisherSource> rv = getProviderMap(key);
     PublisherSource details = rv.get(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr)));
-
+    
     if ((null == details) && create)
     {
       details = new PublisherSource(hdr.getURIFrom().getValue(), hdr.getQoSlevel());
       rv.put(new StringPair(hdr.getURIFrom().getValue(), createProviderKey(hdr)), details);
       MALBrokerImpl.LOGGER.log(Level.FINE, "New publisher registering: {0}", hdr);
     }
-
+    
     return details;
   }
-
+  
   private void handleConsumerCommunicationError(final BrokerKey key, final NotifyMessageSet notifyMessageSet)
   {
     final SubscriptionSource ent = getConsumerEntry(key, notifyMessageSet.details.uriTo.getValue());
-
+    
     if (null != ent)
     {
       ent.incCommsErrorCount();
-
+      
       if (ent.getCommsErrorCount() > 2)
       {
         MALBrokerImpl.LOGGER.log(Level.WARNING, "Removing to consumer due to too many comms errors : {0}", notifyMessageSet.details.uriTo.getValue());
@@ -375,7 +378,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
       }
     }
   }
-
+  
   private void internalDeregisterSubscriptions(final BrokerKey key, final SubscriptionSource ent, final IdentifierList subscriptions)
   {
     if (null != ent)
@@ -385,7 +388,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
       {
         final Map<String, SubscriptionSource> rv = getConsumerMap(key);
         rv.remove(ent.getSignature());
-
+        
         if (rv.isEmpty())
         {
           consumerMap.remove(key);
