@@ -56,4 +56,34 @@ public abstract class GENHelper
 
     return hexString.toString();
   }
+  
+  /**
+   * Creates a string version of byte buffer in hex.
+   *
+   * @param data the packet.
+   * @param offset the offset.
+   * @param length the length.
+   * @return the string representation.
+   */
+  public static String byteArrayToHexString(final byte[] data, int offset, int length)
+  {
+    final StringBuilder hexString = new StringBuilder();
+
+    if (null != data)
+    {
+      final int end = offset + length;
+      for (int i = offset; i < end; i++)
+      {
+        final String hex = Integer.toHexString(0xFF & data[i]);
+        if (hex.length() == 1)
+        {
+          // could use a for loop, but we're only dealing with a single byte
+          hexString.append('0');
+        }
+        hexString.append(hex);
+      }
+    }
+
+    return hexString.toString();
+  }
 }

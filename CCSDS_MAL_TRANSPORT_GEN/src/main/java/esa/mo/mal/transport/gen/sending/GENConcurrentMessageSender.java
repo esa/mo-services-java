@@ -250,6 +250,10 @@ public class GENConcurrentMessageSender
           // finish processing
           bContinue = false;
         }
+        catch (Throwable ex)
+        {
+          ex.printStackTrace();
+        }
       }
 
       // finished processing, close connection if not already closed

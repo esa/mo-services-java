@@ -41,6 +41,10 @@ public class GENOutgoingMessageHolder
   private final BlockingQueue<Boolean> replyQueue;
 
   /**
+   * The timeout in seconds to wait for confirmation of delivery
+   */
+  private final int timeout;
+  /**
    * The destination root URI, holds the connection level URI
    */
   private final String destinationRootURI;
@@ -68,6 +72,7 @@ public class GENOutgoingMessageHolder
   /**
    * Will construct a new object and create a new internal reply queue.
    *
+   * @param timeout The timeout in seconds to wait for confirmation of delivery.
    * @param destinationRootURI The destination root URI, holds the connection level URI.
    * @param destinationURI The complete destination URI.
    * @param multiSendHandle The message handle for multi-send messages, may be NULL.
@@ -75,7 +80,8 @@ public class GENOutgoingMessageHolder
    * @param originalMessage The un-encoded message to be sent
    * @param encodedMessage The encoded message to be sent
    */
-  public GENOutgoingMessageHolder(final String destinationRootURI,
+  public GENOutgoingMessageHolder(final int timeout,
+          final String destinationRootURI,
           final String destinationURI,
           final Object multiSendHandle,
           final boolean lastForHandle,
@@ -83,6 +89,7 @@ public class GENOutgoingMessageHolder
           byte[] encodedMessage)
   {
     replyQueue = new LinkedBlockingQueue<Boolean>();
+    this.timeout = timeout;
     this.destinationRootURI = destinationRootURI;
     this.destinationURI = destinationURI;
     this.multiSendHandle = multiSendHandle;
@@ -99,7 +106,7 @@ public class GENOutgoingMessageHolder
    */
   public Boolean getResult() throws InterruptedException
   {
-    return replyQueue.poll(3, TimeUnit.DAYS);
+    return replyQueue.poll(timeout, TimeUnit.SECONDS);
   }
 
   /**
