@@ -26,7 +26,7 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Implements the MALElementStreamFactory interface for a SPP binary encoding.
  */
-public class SPPBinaryStreamFactory extends esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory
+public class SPPFixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory
 {
   public static final String SMALL_LENGTH_FIELD = "esa.mo.mal.encoding.spp.smallLengthField";
   public static final String TIME_PFIELD_PROPERTY = "org.ccsds.moims.mo.malspp.timePfield";
@@ -105,7 +105,7 @@ public class SPPBinaryStreamFactory extends esa.mo.mal.encoder.binary.fixed.Fixe
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes, final int offset)
   {
-    return new SPPBinaryElementInputStream(bytes, offset,
+    return new SPPFixedBinaryElementInputStream(bytes, offset,
             smallLengthField, timeScaleIsUTC, timeEpoch, timeMajorUnitFieldLength, timeMinorUnitFieldLength,
             fineTimeScaleIsUTC, fineTimeEpoch, fineTimeMajorUnitFieldLength, fineTimeMinorUnitFieldLength);
   }
@@ -114,7 +114,7 @@ public class SPPBinaryStreamFactory extends esa.mo.mal.encoder.binary.fixed.Fixe
   public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final java.io.InputStream is)
           throws org.ccsds.moims.mo.mal.MALException
   {
-    return new SPPBinaryElementInputStream(is,
+    return new SPPFixedBinaryElementInputStream(is,
             smallLengthField, timeScaleIsUTC, timeEpoch, timeMajorUnitFieldLength, timeMinorUnitFieldLength,
             fineTimeScaleIsUTC, fineTimeEpoch, fineTimeMajorUnitFieldLength, fineTimeMinorUnitFieldLength);
   }
@@ -123,7 +123,7 @@ public class SPPBinaryStreamFactory extends esa.mo.mal.encoder.binary.fixed.Fixe
   public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(final java.io.OutputStream os)
           throws org.ccsds.moims.mo.mal.MALException
   {
-    return new SPPBinaryElementOutputStream(os,
+    return new SPPFixedBinaryElementOutputStream(os,
             smallLengthField,
             timeScaleIsUTC,
             timeEpoch,

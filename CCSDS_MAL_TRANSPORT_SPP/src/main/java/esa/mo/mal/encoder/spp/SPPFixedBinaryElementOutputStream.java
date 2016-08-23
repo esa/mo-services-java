@@ -34,7 +34,7 @@ import org.ccsds.moims.mo.mal.structures.InteractionType;
 /**
  * Implements the MALElementOutputStream interface for a fixed length binary encoding.
  */
-public class SPPBinaryElementOutputStream extends esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream
+public class SPPFixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream
 {
   private final boolean smallLengthField;
   private final boolean timeScaleIsUTC;
@@ -52,7 +52,7 @@ public class SPPBinaryElementOutputStream extends esa.mo.mal.encoder.binary.fixe
    * @param os Output stream to write to.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryElementOutputStream(final java.io.OutputStream os,
+  public SPPFixedBinaryElementOutputStream(final java.io.OutputStream os,
           final boolean smallLengthField,
           final boolean timeScaleIsUTC,
           final boolean timeEpoch,
@@ -79,7 +79,7 @@ public class SPPBinaryElementOutputStream extends esa.mo.mal.encoder.binary.fixe
   @Override
   protected GENEncoder createEncoder(java.io.OutputStream os)
   {
-    return new SPPBinaryEncoder(os, 
+    return new SPPFixedBinaryEncoder(os, 
             smallLengthField,
             timeScaleIsUTC,
             timeEpoch,

@@ -22,8 +22,7 @@ package esa.mo.mal.encoder.spp;
 
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder.FixedStreamHolder;
 import esa.mo.mal.encoder.gen.GENEncoder;
-import static esa.mo.mal.encoder.spp.SPPBinaryStreamFactory.FINETIME_EPOCH;
-import static esa.mo.mal.encoder.spp.SPPBinaryStreamFactory.SECONDS_FROM_CCSDS_TO_UNIX_EPOCH;
+import static esa.mo.mal.encoder.spp.SPPFixedBinaryStreamFactory.SECONDS_FROM_CCSDS_TO_UNIX_EPOCH;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -41,7 +40,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a SPP binary encoding.
  */
-public class SPPBinaryEncoder extends GENEncoder
+public class SPPFixedBinaryEncoder extends GENEncoder
 {
   private static final byte[] PADDING =
   {
@@ -65,7 +64,7 @@ public class SPPBinaryEncoder extends GENEncoder
    * @param os Output stream to write to.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryEncoder(final OutputStream os,
+  public SPPFixedBinaryEncoder(final OutputStream os,
           final boolean smallLengthField,
           final boolean timeScaleIsUTC,
           final boolean timeEpoch,
@@ -76,7 +75,7 @@ public class SPPBinaryEncoder extends GENEncoder
           final int fineTimeMajorUnitFieldLength,
           final int fineTimeMinorUnitFieldLength)
   {
-    super(new SPPStreamHolder(os, smallLengthField));
+    super(new SPPFixedStreamHolder(os, smallLengthField));
 
     this.smallLengthField = smallLengthField;
     this.timeScaleIsUTC = timeScaleIsUTC;
@@ -372,7 +371,7 @@ public class SPPBinaryEncoder extends GENEncoder
   /**
    * Extends the FixedStreamHolder class for handling SPP fields.
    */
-  protected static class SPPStreamHolder extends FixedStreamHolder
+  protected static class SPPFixedStreamHolder extends FixedStreamHolder
   {
     private final boolean smallLengthField;
 
@@ -382,7 +381,7 @@ public class SPPBinaryEncoder extends GENEncoder
      * @param outputStream The output stream to encode into.
      * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
      */
-    public SPPStreamHolder(OutputStream outputStream, final boolean smallLengthField)
+    public SPPFixedStreamHolder(OutputStream outputStream, final boolean smallLengthField)
     {
       super(outputStream);
 
