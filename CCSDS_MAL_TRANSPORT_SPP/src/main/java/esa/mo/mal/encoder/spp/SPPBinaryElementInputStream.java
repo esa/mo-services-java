@@ -44,9 +44,18 @@ public class SPPBinaryElementInputStream extends esa.mo.mal.encoder.binary.fixed
    * @param is Input stream to read from.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryElementInputStream(final java.io.InputStream is, final boolean smallLengthField)
+  public SPPBinaryElementInputStream(final java.io.InputStream is, final boolean smallLengthField,
+          final boolean timeScaleIsUTC,
+          final boolean timeEpoch,
+          final int timeMajorUnitFieldLength,
+          final int timeMinorUnitFieldLength,
+          final boolean fineTimeScaleIsUTC,
+          final boolean fineTimeEpoch,
+          final int fineTimeMajorUnitFieldLength,
+          final int fineTimeMinorUnitFieldLength)
   {
-    super(new SPPBinaryDecoder(is, smallLengthField));
+    super(new SPPBinaryDecoder(is, smallLengthField, timeScaleIsUTC, timeEpoch, timeMajorUnitFieldLength, timeMinorUnitFieldLength,
+            fineTimeScaleIsUTC, fineTimeEpoch, fineTimeMajorUnitFieldLength, fineTimeMinorUnitFieldLength));
   }
 
   /**
@@ -56,9 +65,18 @@ public class SPPBinaryElementInputStream extends esa.mo.mal.encoder.binary.fixed
    * @param offset Offset into buffer to start from.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryElementInputStream(final byte[] buf, final int offset, final boolean smallLengthField)
+  public SPPBinaryElementInputStream(final byte[] buf, final int offset, final boolean smallLengthField,
+          final boolean timeScaleIsUTC,
+          final boolean timeEpoch,
+          final int timeMajorUnitFieldLength,
+          final int timeMinorUnitFieldLength,
+          final boolean fineTimeScaleIsUTC,
+          final boolean fineTimeEpoch,
+          final int fineTimeMajorUnitFieldLength,
+          final int fineTimeMinorUnitFieldLength)
   {
-    super(new SPPBinaryDecoder(buf, offset, smallLengthField));
+    super(new SPPBinaryDecoder(buf, offset, smallLengthField, timeScaleIsUTC, timeEpoch, timeMajorUnitFieldLength, timeMinorUnitFieldLength,
+            fineTimeScaleIsUTC, fineTimeEpoch, fineTimeMajorUnitFieldLength, fineTimeMinorUnitFieldLength));
   }
 
   @Override

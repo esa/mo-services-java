@@ -22,6 +22,8 @@ package esa.mo.mal.encoder.spp;
 
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder.FixedStreamHolder;
 import esa.mo.mal.encoder.gen.GENEncoder;
+import static esa.mo.mal.encoder.spp.SPPBinaryStreamFactory.FINETIME_EPOCH;
+import static esa.mo.mal.encoder.spp.SPPBinaryStreamFactory.SECONDS_FROM_CCSDS_TO_UNIX_EPOCH;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -48,6 +50,14 @@ public class SPPBinaryEncoder extends GENEncoder
   protected static final BigInteger ZERO = new BigInteger("0");
   protected static final BigInteger MAX_ULONG = new BigInteger("18446744073709551615");
   private final boolean smallLengthField;
+  private final boolean timeScaleIsUTC;
+  private final boolean timeEpoch;
+  private final int timeMajorUnitFieldLength;
+  private final int timeMinorUnitFieldLength;
+  private final boolean fineTimeScaleIsUTC;
+  private final boolean fineTimeEpoch;
+  private final int fineTimeMajorUnitFieldLength;
+  private final int fineTimeMinorUnitFieldLength;
 
   /**
    * Constructor.
@@ -55,11 +65,28 @@ public class SPPBinaryEncoder extends GENEncoder
    * @param os Output stream to write to.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryEncoder(final OutputStream os, final boolean smallLengthField)
+  public SPPBinaryEncoder(final OutputStream os,
+          final boolean smallLengthField,
+          final boolean timeScaleIsUTC,
+          final boolean timeEpoch,
+          final int timeMajorUnitFieldLength,
+          final int timeMinorUnitFieldLength,
+          final boolean fineTimeScaleIsUTC,
+          final boolean fineTimeEpoch,
+          final int fineTimeMajorUnitFieldLength,
+          final int fineTimeMinorUnitFieldLength)
   {
     super(new SPPStreamHolder(os, smallLengthField));
 
     this.smallLengthField = smallLengthField;
+    this.timeScaleIsUTC = timeScaleIsUTC;
+    this.timeEpoch = timeEpoch;
+    this.timeMajorUnitFieldLength = timeMajorUnitFieldLength;
+    this.timeMinorUnitFieldLength = timeMinorUnitFieldLength;
+    this.fineTimeScaleIsUTC = fineTimeScaleIsUTC;
+    this.fineTimeEpoch = fineTimeEpoch;
+    this.fineTimeMajorUnitFieldLength = fineTimeMajorUnitFieldLength;
+    this.fineTimeMinorUnitFieldLength = fineTimeMinorUnitFieldLength;
   }
 
   @Override
@@ -158,7 +185,7 @@ public class SPPBinaryEncoder extends GENEncoder
   @Override
   public void encodeDuration(Duration value) throws MALException
   {
-    long tm = (long)(value.getValue() * 1000);
+    long tm = (long) (value.getValue() * 1000);
 
     int ms = (int) (tm % 1000);
     int s = (int) (tm / 1000);
@@ -179,13 +206,32 @@ public class SPPBinaryEncoder extends GENEncoder
   {
     long tm = value.getValue();
 
-    int ms = (int) (tm % 1000);
-    int s = (int) (tm / 1000);
+    long ms = (long) (tm % 1000000000000L);
+    long s = (long) (tm / 1000000000000L);
+
+    if (!fineTimeScaleIsUTC)
+    {
+      // TAI scale is 10s out from UTC at 1970
+      s += 10;
+    }
+
+    if (fineTimeEpoch)
+    {
+      // CCSDS time epoch is 1/1/1958
+      //s -= FINETIME_EPOCH;
+    }
 
     try
     {
-      outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(s).array(), 0, 4);
-      outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(ms).array(), 1, 3);
+      int ff = Math.min(4, fineTimeMajorUnitFieldLength);
+      outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt((int)s).array(), 4 - ff, ff);
+
+      double subseconds = ((double) ms) / 1000000000000.0;
+      for (int i = 0; i < fineTimeMinorUnitFieldLength; ++i)
+      {
+        subseconds = subseconds * 256.0;
+        outputStream.directAdd((byte) subseconds);
+      }
     }
     catch (IOException ex)
     {
@@ -201,10 +247,29 @@ public class SPPBinaryEncoder extends GENEncoder
     int ms = (int) (tm % 1000);
     int s = (int) (tm / 1000);
 
+    if (!timeScaleIsUTC)
+    {
+      // TAI scale is 10s out from UTC
+      s += 10;
+    }
+
+    if (timeEpoch)
+    {
+      // CCSDS time epoch is 1/1/1958
+      s += SECONDS_FROM_CCSDS_TO_UNIX_EPOCH;
+    }
+
     try
     {
-      outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(s).array(), 0, 4);
-      outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(ms).array(), 1, 3);
+      int ff = Math.min(4, timeMajorUnitFieldLength);
+      outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(s).array(), 4 - ff, ff);
+
+      double subseconds = ((double) ms) / 1000.0;
+      for (int i = 0; i < timeMinorUnitFieldLength; ++i)
+      {
+        subseconds = subseconds * 256.0;
+        outputStream.directAdd((byte) subseconds);
+      }
     }
     catch (IOException ex)
     {

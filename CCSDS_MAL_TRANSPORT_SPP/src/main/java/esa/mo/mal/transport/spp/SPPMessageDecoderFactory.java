@@ -67,7 +67,13 @@ public class SPPMessageDecoderFactory<T> implements GENIncomingMessageDecoderFac
     {
       GENTransport.PacketToString smsg = transport.new PacketToString(null);
       GENMessage malMsg = transport.createMessage(rawMessage);
-      return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
+      
+      if (null != malMsg)
+      {
+        return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
+      }
+      
+      return null;
     }
   }
 }

@@ -23,6 +23,10 @@ package esa.mo.mal.transport.spp;
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.APID_QUALIFIER_PROPERTY;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.IS_TC_PACKET_PROPERTY;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.SEGMENT_MAX_SIZE_PROPERTY;
+import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -48,9 +52,11 @@ public class SPPEndpoint extends GENEndpoint
 {
   private final SPPConfiguration configuration;
   private final int apidQualifier;
+  private final int segmentMaxSize;
   private final Boolean forceTC;
   private final SPPURIRepresentation uriRep;
   private final SPPSourceSequenceCounter ssCounter;
+  private final Map<SegmentIndex, SPPSegmentCounter> segmentCounterMap = new HashMap<SegmentIndex, SPPSegmentCounter>();
 
   public SPPEndpoint(GENTransport transport,
           SPPConfiguration configuration,
@@ -62,8 +68,10 @@ public class SPPEndpoint extends GENEndpoint
   {
     super(transport, localName, routingName, uri, wrapBodyParts);
 
-    int aq = apidQualifier;
+    this.configuration = new SPPConfiguration(configuration, properties);
 
+    int aq = apidQualifier;
+    int sms = 65530;
     // decode configuration
     if (properties != null)
     {
@@ -71,14 +79,20 @@ public class SPPEndpoint extends GENEndpoint
 //      {
 //        a = Integer.parseInt(properties.get("org.ccsds.moims.mo.malspp.apid").toString());
 //      }
-      if (properties.containsKey("org.ccsds.moims.mo.malspp.apidQualifier"))
+      if (properties.containsKey(APID_QUALIFIER_PROPERTY))
       {
-        aq = Integer.parseInt(properties.get("org.ccsds.moims.mo.malspp.apidQualifier").toString());
+        aq = Integer.parseInt(properties.get(APID_QUALIFIER_PROPERTY).toString());
       }
 
-      if (properties.containsKey("org.ccsds.moims.mo.malspp.isTcPacket"))
+      if (properties.containsKey(SEGMENT_MAX_SIZE_PROPERTY))
       {
-        forceTC = Boolean.parseBoolean(properties.get("org.ccsds.moims.mo.malspp.isTcPacket").toString());
+        sms = Integer.parseInt(properties.get(SEGMENT_MAX_SIZE_PROPERTY).toString());
+        System.out.println("Max segment size set to: " + aq + " : " + sms);
+      }
+
+      if (properties.containsKey(IS_TC_PACKET_PROPERTY))
+      {
+        forceTC = Boolean.parseBoolean(properties.get(IS_TC_PACKET_PROPERTY).toString());
       }
       else
       {
@@ -90,8 +104,8 @@ public class SPPEndpoint extends GENEndpoint
       forceTC = null;
     }
 
-    this.configuration = configuration;
     this.apidQualifier = aq;
+    this.segmentMaxSize = sms;
     this.uriRep = uriRep;
     this.ssCounter = ssCounter;
   }
@@ -119,7 +133,7 @@ public class SPPEndpoint extends GENEndpoint
   {
     try
     {
-      return new SPPMessage(false, createMessageHeader(getURI(),
+      GENMessageHeader hdr = createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -136,7 +150,10 @@ public class SPPEndpoint extends GENEndpoint
               service,
               operation,
               serviceVersion,
-              isErrorMessage),
+              isErrorMessage,
+              qosProperties);
+      
+      return new SPPMessage(segmentMaxSize, getMessageSegmentCounter(hdr), false, hdr,
               qosProperties, null, body);
     }
     catch (MALInteractionException ex)
@@ -168,7 +185,7 @@ public class SPPEndpoint extends GENEndpoint
   {
     try
     {
-      return new SPPMessage(false, createMessageHeader(getURI(),
+      GENMessageHeader hdr = createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -185,7 +202,10 @@ public class SPPEndpoint extends GENEndpoint
               service,
               operation,
               serviceVersion,
-              isErrorMessage),
+              isErrorMessage,
+              qosProperties);
+      
+      return new SPPMessage(segmentMaxSize, getMessageSegmentCounter(hdr), false, hdr,
               qosProperties, null, body);
     }
     catch (MALInteractionException ex)
@@ -213,7 +233,7 @@ public class SPPEndpoint extends GENEndpoint
   {
     try
     {
-      return new SPPMessage(false, createMessageHeader(getURI(),
+      GENMessageHeader hdr = createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -230,7 +250,10 @@ public class SPPEndpoint extends GENEndpoint
               op.getService().getNumber(),
               op.getNumber(),
               op.getService().getArea().getVersion(),
-              isErrorMessage),
+              isErrorMessage,
+              qosProperties);
+      
+      return new SPPMessage(segmentMaxSize, getMessageSegmentCounter(hdr), false, hdr,
               qosProperties,
               op,
               body);
@@ -260,7 +283,7 @@ public class SPPEndpoint extends GENEndpoint
   {
     try
     {
-      return new SPPMessage(false, createMessageHeader(getURI(),
+      GENMessageHeader hdr = createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -277,7 +300,10 @@ public class SPPEndpoint extends GENEndpoint
               op.getService().getNumber(),
               op.getNumber(),
               op.getService().getArea().getVersion(),
-              isErrorMessage),
+              isErrorMessage,
+              qosProperties);
+      
+      return new SPPMessage(segmentMaxSize, getMessageSegmentCounter(hdr), false, hdr,
               qosProperties,
               op,
               body);
@@ -306,9 +332,11 @@ public class SPPEndpoint extends GENEndpoint
           UShort service,
           UShort operation,
           UOctet serviceVersion,
-          Boolean isErrorMessage)
+          Boolean isErrorMessage,
+          Map qosProperties)
   {
-    return new SPPMessageHeader(configuration, forceTC, apidQualifier, uriRep, ssCounter, getURI(),
+    return new SPPMessageHeader(new SPPConfiguration(configuration, qosProperties),
+            forceTC, apidQualifier, uriRep, ssCounter, getURI(),
             authenticationId,
             uriTo,
             timestamp,
@@ -326,5 +354,131 @@ public class SPPEndpoint extends GENEndpoint
             operation,
             serviceVersion,
             isErrorMessage);
+  }
+
+  private SPPSegmentCounter getMessageSegmentCounter(GENMessageHeader hdr)
+  {
+    SegmentIndex idx = new SegmentIndex(hdr);
+    
+    SPPSegmentCounter cnt = segmentCounterMap.get(idx);
+    
+    if (null == cnt)
+    {
+      cnt = new SPPSegmentCounter();
+      segmentCounterMap.put(idx, cnt);
+    }
+    
+    return cnt;
+  }
+
+  private static class SegmentIndex
+  {
+    private final URI uriFrom;
+    private final URI uriTo;
+    private final IdentifierList domain;
+    private final Identifier networkZone;
+    private final SessionType session;
+    private final Identifier sessionName;
+    private final InteractionType interactionType;
+    private final Long transactionId;
+    private final UShort serviceArea;
+    private final UShort service;
+    private final UShort operation;
+
+    public SegmentIndex(GENMessageHeader hdr)
+    {
+      this.uriFrom = hdr.getURIFrom();
+      this.uriTo = hdr.getURITo();
+      this.domain = hdr.getDomain();
+      this.networkZone = hdr.getNetworkZone();
+      this.session = hdr.getSession();
+      this.sessionName = hdr.getSessionName();
+      this.interactionType = hdr.getInteractionType();
+      this.transactionId = hdr.getTransactionId();
+      this.serviceArea = hdr.getAreaNumber();
+      this.service = hdr.getService();
+      this.operation = hdr.getOperation();
+    }
+
+    @Override
+    public int hashCode()
+    {
+      int hash = 3;
+      hash = 47 * hash + (this.uriFrom != null ? this.uriFrom.hashCode() : 0);
+      hash = 47 * hash + (this.uriTo != null ? this.uriTo.hashCode() : 0);
+      hash = 47 * hash + (this.domain != null ? this.domain.hashCode() : 0);
+      hash = 47 * hash + (this.networkZone != null ? this.networkZone.hashCode() : 0);
+      hash = 47 * hash + (this.session != null ? this.session.hashCode() : 0);
+      hash = 47 * hash + (this.sessionName != null ? this.sessionName.hashCode() : 0);
+      hash = 47 * hash + (this.interactionType != null ? this.interactionType.hashCode() : 0);
+      hash = 47 * hash + (this.transactionId != null ? this.transactionId.hashCode() : 0);
+      hash = 47 * hash + (this.serviceArea != null ? this.serviceArea.hashCode() : 0);
+      hash = 47 * hash + (this.service != null ? this.service.hashCode() : 0);
+      hash = 47 * hash + (this.operation != null ? this.operation.hashCode() : 0);
+      return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (this == obj)
+      {
+        return true;
+      }
+      if (obj == null)
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass())
+      {
+        return false;
+      }
+      final SegmentIndex other = (SegmentIndex) obj;
+      if (this.uriFrom != other.uriFrom && (this.uriFrom == null || !this.uriFrom.equals(other.uriFrom)))
+      {
+        return false;
+      }
+      if (this.uriTo != other.uriTo && (this.uriTo == null || !this.uriTo.equals(other.uriTo)))
+      {
+        return false;
+      }
+      if (this.domain != other.domain && (this.domain == null || !this.domain.equals(other.domain)))
+      {
+        return false;
+      }
+      if (this.networkZone != other.networkZone && (this.networkZone == null || !this.networkZone.equals(other.networkZone)))
+      {
+        return false;
+      }
+      if (this.session != other.session && (this.session == null || !this.session.equals(other.session)))
+      {
+        return false;
+      }
+      if (this.sessionName != other.sessionName && (this.sessionName == null || !this.sessionName.equals(other.sessionName)))
+      {
+        return false;
+      }
+      if (this.interactionType != other.interactionType && (this.interactionType == null || !this.interactionType.equals(other.interactionType)))
+      {
+        return false;
+      }
+      if (this.transactionId != other.transactionId && (this.transactionId == null || !this.transactionId.equals(other.transactionId)))
+      {
+        return false;
+      }
+      if (this.serviceArea != other.serviceArea && (this.serviceArea == null || !this.serviceArea.equals(other.serviceArea)))
+      {
+        return false;
+      }
+      if (this.service != other.service && (this.service == null || !this.service.equals(other.service)))
+      {
+        return false;
+      }
+      if (this.operation != other.operation && (this.operation == null || !this.operation.equals(other.operation)))
+      {
+        return false;
+      }
+      return true;
+    }
   }
 }

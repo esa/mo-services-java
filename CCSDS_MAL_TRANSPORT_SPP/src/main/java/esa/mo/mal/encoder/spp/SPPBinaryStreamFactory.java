@@ -29,38 +29,109 @@ import org.ccsds.moims.mo.mal.MALException;
 public class SPPBinaryStreamFactory extends esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory
 {
   public static final String SMALL_LENGTH_FIELD = "esa.mo.mal.encoding.spp.smallLengthField";
+  public static final String TIME_PFIELD_PROPERTY = "org.ccsds.moims.mo.malspp.timePfield";
+  public static final String TIME_EPOCH_PROPERTY = "org.ccsds.moims.mo.malspp.timeEpoch";
+  public static final String TIME_SCALE_PROPERTY = "org.ccsds.moims.mo.malspp.timeScale";
+  public static final String FINETIME_PFIELD_PROPERTY = "org.ccsds.moims.mo.malspp.fineTimePfield";
+  public static final String FINETIME_EPOCH_PROPERTY = "org.ccsds.moims.mo.malspp.fineTimeEpoch";
+  public static final String FINETIME_SCALE_PROPERTY = "org.ccsds.moims.mo.malspp.fineTimeScale";
+  public static int SECONDS_FROM_CCSDS_TO_UNIX_EPOCH   = 378691208;
+  public static long FINETIME_EPOCH   = 9223372036854775807L;
+  
   private boolean smallLengthField = false;
+  private boolean timeScaleIsUTC = true;
+  private boolean timeEpoch = true;
+  private int timeMajorUnitFieldLength = 4;
+  private int timeMinorUnitFieldLength = 3;
+  private boolean fineTimeScaleIsUTC = true;
+  private boolean fineTimeEpoch = true;
+  private int fineTimeMajorUnitFieldLength = 4;
+  private int fineTimeMinorUnitFieldLength = 5;
 
   @Override
   protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException
   {
     super.init(protocol, properties);
 
-    if ((null != properties)
-            && properties.containsKey(SMALL_LENGTH_FIELD)
-            && Boolean.parseBoolean((String) properties.get(SMALL_LENGTH_FIELD)))
+    if (null != properties)
     {
-      smallLengthField = true;
+      if (properties.containsKey(SMALL_LENGTH_FIELD)
+              && Boolean.parseBoolean(properties.get(SMALL_LENGTH_FIELD).toString()))
+      {
+        smallLengthField = true;
+      }
+      
+      if (properties.containsKey(TIME_PFIELD_PROPERTY))
+      {
+        String hexStr = properties.get(TIME_PFIELD_PROPERTY).toString();
+        long bits = Long.parseLong(hexStr, 16);
+        int tcf;
+        int maj;
+        int min;
+
+        // check to see if two byte P-Field
+        if (0 != (bits & 0x8000))
+        {
+          // 16bit
+          tcf = (int) ((bits & 0x7000) >> 12);
+          maj = (int) ((bits & 0x0C00) >> 10) + (int) ((bits & 0x60) >> 5) + 1;
+          min = (int) ((bits & 0x0300) >> 8) + (int) ((bits & 0x1C) >> 2);
+        }
+        else
+        {
+          // 8bit
+          tcf = (int) ((bits & 0x70) >> 4);
+          maj = (int) ((bits & 0x0C) >> 8) + 1;
+          min = (int) ((bits & 0x03));
+        }
+
+        if (1 == tcf)
+        {
+          timeEpoch = true;
+          timeScaleIsUTC = false;
+        }
+        else
+        {
+          timeEpoch = true;
+          timeScaleIsUTC = true;
+        }
+        
+        timeMajorUnitFieldLength = maj;
+        timeMinorUnitFieldLength = min;
+      }
     }
   }
 
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes, final int offset)
   {
-    return new SPPBinaryElementInputStream(bytes, offset, smallLengthField);
+    return new SPPBinaryElementInputStream(bytes, offset,
+            smallLengthField, timeScaleIsUTC, timeEpoch, timeMajorUnitFieldLength, timeMinorUnitFieldLength,
+            fineTimeScaleIsUTC, fineTimeEpoch, fineTimeMajorUnitFieldLength, fineTimeMinorUnitFieldLength);
   }
 
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final java.io.InputStream is)
           throws org.ccsds.moims.mo.mal.MALException
   {
-    return new SPPBinaryElementInputStream(is, smallLengthField);
+    return new SPPBinaryElementInputStream(is,
+            smallLengthField, timeScaleIsUTC, timeEpoch, timeMajorUnitFieldLength, timeMinorUnitFieldLength,
+            fineTimeScaleIsUTC, fineTimeEpoch, fineTimeMajorUnitFieldLength, fineTimeMinorUnitFieldLength);
   }
 
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(final java.io.OutputStream os)
           throws org.ccsds.moims.mo.mal.MALException
   {
-    return new SPPBinaryElementOutputStream(os, smallLengthField);
+    return new SPPBinaryElementOutputStream(os,
+            smallLengthField,
+            timeScaleIsUTC,
+            timeEpoch,
+            timeMajorUnitFieldLength,
+            timeMinorUnitFieldLength,
+            fineTimeScaleIsUTC,
+            fineTimeEpoch,
+            fineTimeMajorUnitFieldLength,
+            fineTimeMinorUnitFieldLength);
   }
 }

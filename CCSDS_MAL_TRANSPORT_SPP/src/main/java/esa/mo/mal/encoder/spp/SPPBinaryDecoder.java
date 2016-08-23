@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.spp;
 
+import static esa.mo.mal.encoder.spp.SPPBinaryStreamFactory.SECONDS_FROM_CCSDS_TO_UNIX_EPOCH;
 import java.math.BigInteger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -36,6 +37,14 @@ import org.ccsds.moims.mo.mal.structures.URI;
 public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder
 {
   private final boolean smallLengthField;
+  private final boolean timeScaleIsUTC;
+  private final boolean timeEpoch;
+  private final int timeMajorUnitFieldLength;
+  private final int timeMinorUnitFieldLength;
+  private final boolean fineTimeScaleIsUTC;
+  private final boolean fineTimeEpoch;
+  private final int fineTimeMajorUnitFieldLength;
+  private final int fineTimeMinorUnitFieldLength;
 
   /**
    * Constructor.
@@ -43,11 +52,27 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
    * @param src Byte array to read from.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryDecoder(final byte[] src, final boolean smallLengthField)
+  public SPPBinaryDecoder(final byte[] src, final boolean smallLengthField,
+          final boolean timeScaleIsUTC,
+          final boolean timeEpoch,
+          final int timeMajorUnitFieldLength,
+          final int timeMinorUnitFieldLength,
+          final boolean fineTimeScaleIsUTC,
+          final boolean fineTimeEpoch,
+          final int fineTimeMajorUnitFieldLength,
+          final int fineTimeMinorUnitFieldLength)
   {
     super(new SPPBufferHolder(null, src, 0, src.length, smallLengthField));
 
     this.smallLengthField = smallLengthField;
+    this.timeScaleIsUTC = timeScaleIsUTC;
+    this.timeEpoch = timeEpoch;
+    this.timeMajorUnitFieldLength = timeMajorUnitFieldLength;
+    this.timeMinorUnitFieldLength = timeMinorUnitFieldLength;
+    this.fineTimeScaleIsUTC = fineTimeScaleIsUTC;
+    this.fineTimeEpoch = fineTimeEpoch;
+    this.fineTimeMajorUnitFieldLength = fineTimeMajorUnitFieldLength;
+    this.fineTimeMinorUnitFieldLength = fineTimeMinorUnitFieldLength;
   }
 
   /**
@@ -56,11 +81,27 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
    * @param is Input stream to read from.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryDecoder(final java.io.InputStream is, final boolean smallLengthField)
+  public SPPBinaryDecoder(final java.io.InputStream is, final boolean smallLengthField,
+          final boolean timeScaleIsUTC,
+          final boolean timeEpoch,
+          final int timeMajorUnitFieldLength,
+          final int timeMinorUnitFieldLength,
+          final boolean fineTimeScaleIsUTC,
+          final boolean fineTimeEpoch,
+          final int fineTimeMajorUnitFieldLength,
+          final int fineTimeMinorUnitFieldLength)
   {
     super(new SPPBufferHolder(is, null, 0, 0, smallLengthField));
 
     this.smallLengthField = smallLengthField;
+    this.timeScaleIsUTC = timeScaleIsUTC;
+    this.timeEpoch = timeEpoch;
+    this.timeMajorUnitFieldLength = timeMajorUnitFieldLength;
+    this.timeMinorUnitFieldLength = timeMinorUnitFieldLength;
+    this.fineTimeScaleIsUTC = fineTimeScaleIsUTC;
+    this.fineTimeEpoch = fineTimeEpoch;
+    this.fineTimeMajorUnitFieldLength = fineTimeMajorUnitFieldLength;
+    this.fineTimeMinorUnitFieldLength = fineTimeMinorUnitFieldLength;
   }
 
   /**
@@ -70,11 +111,27 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
    * @param offset index in array to start reading from.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryDecoder(final byte[] src, final int offset, final boolean smallLengthField)
+  public SPPBinaryDecoder(final byte[] src, final int offset, final boolean smallLengthField,
+          final boolean timeScaleIsUTC,
+          final boolean timeEpoch,
+          final int timeMajorUnitFieldLength,
+          final int timeMinorUnitFieldLength,
+          final boolean fineTimeScaleIsUTC,
+          final boolean fineTimeEpoch,
+          final int fineTimeMajorUnitFieldLength,
+          final int fineTimeMinorUnitFieldLength)
   {
     super(new SPPBufferHolder(null, src, offset, src.length, smallLengthField));
 
     this.smallLengthField = smallLengthField;
+    this.timeScaleIsUTC = timeScaleIsUTC;
+    this.timeEpoch = timeEpoch;
+    this.timeMajorUnitFieldLength = timeMajorUnitFieldLength;
+    this.timeMinorUnitFieldLength = timeMinorUnitFieldLength;
+    this.fineTimeScaleIsUTC = fineTimeScaleIsUTC;
+    this.fineTimeEpoch = fineTimeEpoch;
+    this.fineTimeMajorUnitFieldLength = fineTimeMajorUnitFieldLength;
+    this.fineTimeMinorUnitFieldLength = fineTimeMinorUnitFieldLength;
   }
 
   /**
@@ -83,17 +140,35 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
    * @param src Source buffer holder to use.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  protected SPPBinaryDecoder(final BufferHolder src, final boolean smallLengthField)
+  protected SPPBinaryDecoder(final BufferHolder src, final boolean smallLengthField,
+          final boolean timeScaleIsUTC,
+          final boolean timeEpoch,
+          final int timeMajorUnitFieldLength,
+          final int timeMinorUnitFieldLength,
+          final boolean fineTimeScaleIsUTC,
+          final boolean fineTimeEpoch,
+          final int fineTimeMajorUnitFieldLength,
+          final int fineTimeMinorUnitFieldLength)
   {
     super(src);
 
     this.smallLengthField = smallLengthField;
+    this.timeScaleIsUTC = timeScaleIsUTC;
+    this.timeEpoch = timeEpoch;
+    this.timeMajorUnitFieldLength = timeMajorUnitFieldLength;
+    this.timeMinorUnitFieldLength = timeMinorUnitFieldLength;
+    this.fineTimeScaleIsUTC = fineTimeScaleIsUTC;
+    this.fineTimeEpoch = fineTimeEpoch;
+    this.fineTimeMajorUnitFieldLength = fineTimeMajorUnitFieldLength;
+    this.fineTimeMinorUnitFieldLength = fineTimeMinorUnitFieldLength;
   }
 
   @Override
   public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final java.util.List list) throws MALException
   {
-    return new SPPBinaryListDecoder(list, sourceBuffer, smallLengthField);
+    return new SPPBinaryListDecoder(list, sourceBuffer,
+            smallLengthField, timeScaleIsUTC, timeEpoch, timeMajorUnitFieldLength, timeMinorUnitFieldLength,
+            fineTimeScaleIsUTC, fineTimeEpoch, fineTimeMajorUnitFieldLength, fineTimeMinorUnitFieldLength);
   }
 
   @Override
@@ -156,20 +231,46 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
   @Override
   public Time decodeTime() throws MALException
   {
-    long s = sourceBuffer.getUnsignedLong32() * 1000;
-    byte[] ss = sourceBuffer.directGetBytes(3);
+    long s = getIntFromBytes(timeMajorUnitFieldLength);
+    byte[] fs = sourceBuffer.directGetBytes(timeMinorUnitFieldLength);
 
-    byte[] b = new byte[4];
-    b[0] = 0;
-    b[1] = ss[0];
-    b[2] = ss[1];
-    b[3] = ss[2];
-    int ms = java.nio.ByteBuffer.wrap(b).getInt();
-
-    s += ms;
+    double subseconds = 0;
+    for (int i = fs.length - 1; i >= 0; --i) {
+      subseconds = (subseconds + (fs[i] & 0xFF)) / 256;
+    }
+    
+    if (!timeScaleIsUTC)
+    {
+      // TAI scale is 10s out from UTC
+      s -= 10;
+    }
+    
+    if (timeEpoch)
+    {
+      // CCSDS time epoch is 1/1/1958
+      s -= SECONDS_FROM_CCSDS_TO_UNIX_EPOCH;
+    }
+    
+    s *= 1000;
+    s +=  Math.round(subseconds * 1000.0);
+    
     return new Time(s);
   }
 
+  private int getIntFromBytes(int countToRead) throws MALException
+  {
+    byte[] fs = sourceBuffer.directGetBytes(countToRead);
+
+    byte[] b = new byte[4];
+    b[0] = 0;
+    b[1] = 0;
+    b[2] = 0;
+    b[3] = 0;
+    
+    System.arraycopy(fs, 0, b, 4 - countToRead, countToRead);
+    return java.nio.ByteBuffer.wrap(b).getInt();
+  }
+  
   @Override
   public Time decodeNullableTime() throws MALException
   {
@@ -184,17 +285,29 @@ public class SPPBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinar
   @Override
   public FineTime decodeFineTime() throws MALException
   {
-    long s = sourceBuffer.getUnsignedLong32() * 1000;
-    byte[] ss = sourceBuffer.directGetBytes(3);
+    long s = getIntFromBytes(fineTimeMajorUnitFieldLength);
+    byte[] fs = sourceBuffer.directGetBytes(fineTimeMinorUnitFieldLength);
 
-    byte[] b = new byte[4];
-    b[0] = 0;
-    b[1] = ss[0];
-    b[2] = ss[1];
-    b[3] = ss[2];
-    int ms = java.nio.ByteBuffer.wrap(b).getInt();
-
-    s += ms;
+    double subseconds = 0;
+    for (int i = fs.length - 1; i >= 0; --i) {
+      subseconds = (subseconds + (fs[i] & 0xFF)) / 256;
+    }
+    
+    if (!fineTimeScaleIsUTC)
+    {
+      // TAI scale is 10s out from UTC
+      s -= 10;
+    }
+    
+    if (fineTimeEpoch)
+    {
+      // CCSDS time epoch is 1/1/1958
+      //s -= SECONDS_FROM_CCSDS_TO_UNIX_EPOCH;
+    }
+    
+    s *= 1000000000000L;
+    s +=  Math.round(subseconds * 1000000000000.0);
+    
     return new FineTime(s);
   }
 

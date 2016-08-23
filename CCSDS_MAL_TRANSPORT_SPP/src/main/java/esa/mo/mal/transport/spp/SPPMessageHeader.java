@@ -21,7 +21,9 @@
 package esa.mo.mal.transport.spp;
 
 import esa.mo.mal.transport.gen.GENMessageHeader;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.util.Date;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
@@ -43,6 +45,8 @@ public class SPPMessageHeader extends GENMessageHeader
   private final SPPURIRepresentation uriRepresentation;
   private final SPPSourceSequenceCounter ssCounter;
   private short ssc = -1;
+  private int segmentFlags = 0x0000C000;
+  private long segmentCounter = 0;
 
   /**
    * Constructor.
@@ -138,7 +142,7 @@ public class SPPMessageHeader extends GENMessageHeader
       lssc = ssCounter.getNextSourceSequenceCount();
       ssc = (short) lssc;
     }
-    encoder.encodeUShort(new UShort(0x0000C000 | lssc));
+    encoder.encodeUShort(new UShort(segmentFlags | lssc));
     encoder.encodeUShort(new UShort(0));
 
     // MAL SPP Header
@@ -151,18 +155,26 @@ public class SPPMessageHeader extends GENMessageHeader
     encoder.encodeUShort(new UShort(secondaryApidQualifier));
     encoder.encodeLong(transactionId);
 
-    encoder.encodeUOctet(new UOctet((short) configuration.getFlags()));
+    boolean hasFromSubId = uriRepresentation.hasSubId(URIFrom);
+    boolean hasToSubId = uriRepresentation.hasSubId(URITo);
+    
+    encoder.encodeUOctet(new UOctet((short) configuration.getFlags(hasFromSubId, hasToSubId)));
 
-    if (configuration.isSrcSubId())
+    if (configuration.isSrcSubId() && hasFromSubId)
     {
       encoder.encodeUOctet(new UOctet(uriRepresentation.getSubId(URIFrom)));
     }
 
-    if (configuration.isDstSubId())
+    if (configuration.isDstSubId() && hasToSubId)
     {
       encoder.encodeUOctet(new UOctet(uriRepresentation.getSubId(URITo)));
     }
 
+    if (0xC000 != segmentFlags)
+    {
+      encoder.encodeUInteger(new UInteger(0));
+    }
+    
     if (configuration.isPriority())
     {
       encoder.encodeUInteger(priority);
@@ -202,6 +214,7 @@ public class SPPMessageHeader extends GENMessageHeader
     final int ccsdsHdrPt2 = decoder.decodeUShort().getValue();
     decoder.decodeUShort();
     ssc = (short) (ccsdsHdrPt2 & 0x3FFF);
+    segmentFlags = (ccsdsHdrPt2 & 0xC000);
 
     // MAL SPP Header
     short sduType = decoder.decodeUOctet().getValue();
@@ -224,10 +237,17 @@ public class SPPMessageHeader extends GENMessageHeader
     {
       sourceSubId = decoder.decodeUOctet().getValue();
     }
+    
     if (0 != (flags & 0x40))
     {
       destSubId = decoder.decodeUOctet().getValue();
     }
+    
+    if (0xC000 != segmentFlags)
+    {
+      segmentCounter = decoder.decodeUInteger().getValue();
+    }
+    
     if (0 != (flags & 0x20))
     {
       priority = decoder.decodeUInteger();
@@ -250,7 +270,7 @@ public class SPPMessageHeader extends GENMessageHeader
     }
     else
     {
-      networkZone = null;
+      networkZone = new Identifier("");
     }
     if (0 != (flags & 0x04))
     {
@@ -274,7 +294,7 @@ public class SPPMessageHeader extends GENMessageHeader
     }
     else
     {
-      authenticationId = null;
+      authenticationId = new Blob(new byte[0]);
     }
 
     boolean isTC = 0 != (0x00001000 & ccsdsHdrPt1);
@@ -471,6 +491,21 @@ public class SPPMessageHeader extends GENMessageHeader
     return 0;
   }
 
+  public byte getSegmentFlags()
+  {
+    return (byte)(segmentFlags >> 8);
+  }
+
+  public void setSegmentFlags(byte segmentFlags)
+  {
+    this.segmentFlags = ((int)segmentFlags) << 8;
+  }
+
+  public long getSegmentCounter()
+  {
+    return segmentCounter;
+  }
+
   protected static short getSDUType(InteractionType interactionType, UOctet interactionStage)
   {
     final short stage = (InteractionType._SEND_INDEX == interactionType.getOrdinal()) ? 0 : interactionStage.getValue();
@@ -624,6 +659,7 @@ public class SPPMessageHeader extends GENMessageHeader
         return MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE;
     }
 
+    LOGGER.log(Level.WARNING, "SPPMessageHeader: Unknown sdu value recieved during decoding of {0}", sduType);
     return null;
   }
 }

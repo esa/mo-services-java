@@ -30,7 +30,6 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
  * Implements the MALElementOutputStream interface for a fixed length binary encoding.
@@ -38,6 +37,14 @@ import org.ccsds.moims.mo.mal.structures.Union;
 public class SPPBinaryElementOutputStream extends esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream
 {
   private final boolean smallLengthField;
+  private final boolean timeScaleIsUTC;
+  private final boolean timeEpoch;
+  private final int timeMajorUnitFieldLength;
+  private final int timeMinorUnitFieldLength;
+  private final boolean fineTimeScaleIsUTC;
+  private final boolean fineTimeEpoch;
+  private final int fineTimeMajorUnitFieldLength;
+  private final int fineTimeMinorUnitFieldLength;
 
   /**
    * Constructor.
@@ -45,17 +52,43 @@ public class SPPBinaryElementOutputStream extends esa.mo.mal.encoder.binary.fixe
    * @param os Output stream to write to.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPBinaryElementOutputStream(final java.io.OutputStream os, final boolean smallLengthField)
+  public SPPBinaryElementOutputStream(final java.io.OutputStream os,
+          final boolean smallLengthField,
+          final boolean timeScaleIsUTC,
+          final boolean timeEpoch,
+          final int timeMajorUnitFieldLength,
+          final int timeMinorUnitFieldLength,
+          final boolean fineTimeScaleIsUTC,
+          final boolean fineTimeEpoch,
+          final int fineTimeMajorUnitFieldLength,
+          final int fineTimeMinorUnitFieldLength)
   {
     super(os);
 
     this.smallLengthField = smallLengthField;
+    this.timeScaleIsUTC = timeScaleIsUTC;
+    this.timeEpoch = timeEpoch;
+    this.timeMajorUnitFieldLength = timeMajorUnitFieldLength;
+    this.timeMinorUnitFieldLength = timeMinorUnitFieldLength;
+    this.fineTimeScaleIsUTC = fineTimeScaleIsUTC;
+    this.fineTimeEpoch = fineTimeEpoch;
+    this.fineTimeMajorUnitFieldLength = fineTimeMajorUnitFieldLength;
+    this.fineTimeMinorUnitFieldLength = fineTimeMinorUnitFieldLength;
   }
 
   @Override
   protected GENEncoder createEncoder(java.io.OutputStream os)
   {
-    return new SPPBinaryEncoder(os, smallLengthField);
+    return new SPPBinaryEncoder(os, 
+            smallLengthField,
+            timeScaleIsUTC,
+            timeEpoch,
+            timeMajorUnitFieldLength,
+            timeMinorUnitFieldLength,
+            fineTimeScaleIsUTC,
+            fineTimeEpoch,
+            fineTimeMajorUnitFieldLength,
+            fineTimeMinorUnitFieldLength);
   }
 
   @Override
@@ -141,7 +174,7 @@ public class SPPBinaryElementOutputStream extends esa.mo.mal.encoder.binary.fixe
         baos.reset();
       }
     }
-    
+
     listEncoder.close();
   }
 

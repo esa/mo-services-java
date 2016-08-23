@@ -20,6 +20,14 @@
  */
 package esa.mo.mal.transport.spp;
 
+import static esa.mo.mal.transport.spp.SPPBaseTransport.AUTHENTICATION_ID_FLAG;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.DOMAIN_FLAG;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.NETWORK_ZONE_FLAG;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.PRIORITY_FLAG;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.SESSION_NAME_FLAG;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.TIMESTAMP_FLAG;
+import java.util.Map;
+
 /**
  * Small class that holds the encoding configuration for out going messages.
  */
@@ -44,15 +52,6 @@ public class SPPConfiguration
           boolean hasDomain,
           boolean hasAuth)
   {
-    flags = hasSrcSubId ? (flags | 0x80) : flags;
-    flags = hasDstSubId ? (flags | 0x40) : flags;
-    flags = hasPriority ? (flags | 0x20) : flags;
-    flags = hasTimestamp ? (flags | 0x10) : flags;
-    flags = hasNetwork ? (flags | 0x08) : flags;
-    flags = hasSession ? (flags | 0x04) : flags;
-    flags = hasDomain ? (flags | 0x02) : flags;
-    flags = hasAuth ? (flags | 0x01) : flags;
-
     srcSubId = hasSrcSubId;
     dstSubId = hasDstSubId;
     priority = hasPriority;
@@ -61,11 +60,42 @@ public class SPPConfiguration
     session = hasSession;
     domain = hasDomain;
     auth = hasAuth;
+
+    updateFlags();
   }
 
-  public int getFlags()
+  public SPPConfiguration(SPPConfiguration other, final Map properties)
   {
-    return flags;
+    srcSubId = other.srcSubId;
+    dstSubId = other.dstSubId;
+    priority = getBooleanProperty(properties, PRIORITY_FLAG, other.priority);
+    timestamp = getBooleanProperty(properties, TIMESTAMP_FLAG, other.timestamp);
+    network = getBooleanProperty(properties, NETWORK_ZONE_FLAG, other.network);
+    session = getBooleanProperty(properties, SESSION_NAME_FLAG, other.session);
+    domain = getBooleanProperty(properties, DOMAIN_FLAG, other.domain);
+    auth = getBooleanProperty(properties, AUTHENTICATION_ID_FLAG, other.auth);
+    updateFlags();
+  }
+
+  private boolean getBooleanProperty(final Map properties, final String propertyName, boolean existingValue)
+  {
+    if ((null != properties) && properties.containsKey(propertyName))
+    {
+      return Boolean.parseBoolean(properties.get(propertyName).toString());
+    }
+
+    return existingValue;
+
+  }
+
+  public int getFlags(boolean hasFromSubId, boolean hasToSubId)
+  {
+    if ((hasFromSubId == srcSubId) && (hasToSubId == dstSubId))
+    {
+      return flags;
+    }
+
+    return calculateFlags(hasFromSubId, hasToSubId, priority, timestamp, network, session, domain, auth);
   }
 
   public boolean isSrcSubId()
@@ -106,5 +136,78 @@ public class SPPConfiguration
   public boolean isAuth()
   {
     return auth;
+  }
+
+  public void setSrcSubId(boolean srcSubId)
+  {
+    this.srcSubId = srcSubId;
+    updateFlags();
+  }
+
+  public void setDstSubId(boolean dstSubId)
+  {
+    this.dstSubId = dstSubId;
+    updateFlags();
+  }
+
+  public void setPriority(boolean priority)
+  {
+    this.priority = priority;
+    updateFlags();
+  }
+
+  public void setTimestamp(boolean timestamp)
+  {
+    this.timestamp = timestamp;
+    updateFlags();
+  }
+
+  public void setNetwork(boolean network)
+  {
+    this.network = network;
+    updateFlags();
+  }
+
+  public void setSession(boolean session)
+  {
+    this.session = session;
+    updateFlags();
+  }
+
+  public void setDomain(boolean domain)
+  {
+    this.domain = domain;
+    updateFlags();
+  }
+
+  public void setAuth(boolean auth)
+  {
+    this.auth = auth;
+    updateFlags();
+  }
+
+  private void updateFlags()
+  {
+    flags = calculateFlags(srcSubId, dstSubId, priority, timestamp, network, session, domain, auth);
+  }
+
+  private static int calculateFlags(boolean srcSubId,
+          boolean dstSubId,
+          boolean priority,
+          boolean timestamp,
+          boolean network,
+          boolean session,
+          boolean domain,
+          boolean auth)
+  {
+    int flags = 0;
+    flags = srcSubId ? (flags | 0x80) : flags;
+    flags = dstSubId ? (flags | 0x40) : flags;
+    flags = priority ? (flags | 0x20) : flags;
+    flags = timestamp ? (flags | 0x10) : flags;
+    flags = network ? (flags | 0x08) : flags;
+    flags = session ? (flags | 0x04) : flags;
+    flags = domain ? (flags | 0x02) : flags;
+    return auth ? (flags | 0x01) : flags;
   }
 }

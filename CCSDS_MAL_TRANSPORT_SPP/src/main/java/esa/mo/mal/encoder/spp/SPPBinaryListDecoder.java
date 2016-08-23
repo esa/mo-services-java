@@ -36,10 +36,19 @@ public class SPPBinaryListDecoder extends SPPBinaryDecoder implements org.ccsds.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    * @throws org.ccsds.moims.mo.mal.MALException If cannot decode list size.
    */
-  public SPPBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer, final boolean smallLengthField)
+  public SPPBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer, final boolean smallLengthField,
+          final boolean timeScaleIsUTC,
+          final boolean timeEpoch,
+          final int timeMajorUnitFieldLength,
+          final int timeMinorUnitFieldLength,
+          final boolean fineTimeScaleIsUTC,
+          final boolean fineTimeEpoch,
+          final int fineTimeMajorUnitFieldLength,
+          final int fineTimeMinorUnitFieldLength)
           throws org.ccsds.moims.mo.mal.MALException
   {
-    super(srcBuffer, smallLengthField);
+    super(srcBuffer, smallLengthField, timeScaleIsUTC, timeEpoch, timeMajorUnitFieldLength, timeMinorUnitFieldLength,
+            fineTimeScaleIsUTC, fineTimeEpoch, fineTimeMajorUnitFieldLength, fineTimeMinorUnitFieldLength);
 
     this.list = list;
 
