@@ -45,8 +45,10 @@ import org.ccsds.moims.mo.mal.transport.*;
 
 /**
  * A generic implementation of the transport interface.
+ * @param <I> The type of incoming message
+ * @param <O> The type of the outgoing encoded message
  */
-public abstract class GENTransport implements MALTransport
+public abstract class GENTransport<I, O> implements MALTransport
 {
   /**
    * System property to control whether message parts of wrapped in BLOBs.
@@ -439,6 +441,8 @@ public abstract class GENTransport implements MALTransport
     return streamFactory;
   }
 
+  public abstract GENMessage createMessage(I packet) throws MALException;
+  
   /**
    * Overridable internal method for the creation of receiving messages.
    *
@@ -1087,12 +1091,31 @@ public abstract class GENTransport implements MALTransport
    * @return The message holder for the outgoing message.
    * @throws Exception if an error.
    */
-  protected GENOutgoingMessageHolder internalEncodeMessage(final String destinationRootURI,
+  protected abstract GENOutgoingMessageHolder<O> internalEncodeMessage(final String destinationRootURI,
           final String destinationURI,
           final Object multiSendHandle,
           final boolean lastForHandle,
           final String targetURI,
-          final GENMessage msg) throws Exception
+          final GENMessage msg) throws Exception;
+
+  /**
+   * Internal method for encoding the message.
+   *
+   * @param destinationRootURI The destination root URI.
+   * @param destinationURI The complete destination URI.
+   * @param multiSendHandle Handle for multi send messages.
+   * @param lastForHandle true if last message in a multi send.
+   * @param targetURI The target URI.
+   * @param msg The message to send.
+   * @return The message holder for the outgoing message.
+   * @throws MALTransmitErrorException if an error.
+   */
+  protected byte[] internalEncodeByteMessage(final String destinationRootURI,
+          final String destinationURI,
+          final Object multiSendHandle,
+          final boolean lastForHandle,
+          final String targetURI,
+          final GENMessage msg) throws MALTransmitErrorException
   {
     // encode the message
     try
@@ -1108,13 +1131,7 @@ public abstract class GENTransport implements MALTransport
         targetURI, new PacketToString(data)
       });
 
-      return new GENOutgoingMessageHolder(deliveryTimeout,
-              destinationRootURI,
-              destinationURI,
-              multiSendHandle,
-              lastForHandle,
-              msg,
-              data);
+      return data;
     }
     catch (MALException ex)
     {

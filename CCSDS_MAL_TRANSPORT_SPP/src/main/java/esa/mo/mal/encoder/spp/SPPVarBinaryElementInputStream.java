@@ -34,9 +34,9 @@ import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElementList;
 
 /**
- * Implements the MALElementInputStream interface for a fixed length binary encoding.
+ * Implements the MALElementInputStream interface for a variable length binary encoding.
  */
-public class SPPFixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.fixed.FixedBinaryElementInputStream
+public class SPPVarBinaryElementInputStream extends esa.mo.mal.encoder.binary.BinaryElementInputStream
 {
   /**
    * Constructor.
@@ -44,11 +44,10 @@ public class SPPFixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.
    * @param is Input stream to read from.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPFixedBinaryElementInputStream(final java.io.InputStream is,
-          final boolean smallLengthField,
+  public SPPVarBinaryElementInputStream(final java.io.InputStream is, final boolean smallLengthField,
           final SPPTimeHandler timeHandler)
   {
-    super(new SPPFixedBinaryDecoder(is, smallLengthField, timeHandler));
+    super(new SPPVarBinaryDecoder(is, smallLengthField, timeHandler));
   }
 
   /**
@@ -58,21 +57,17 @@ public class SPPFixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.
    * @param offset Offset into buffer to start from.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPFixedBinaryElementInputStream(final byte[] buf,
-          final int offset,
-          final boolean smallLengthField,
+  public SPPVarBinaryElementInputStream(final byte[] buf, final int offset, final boolean smallLengthField,
           final SPPTimeHandler timeHandler)
   {
-    super(new SPPFixedBinaryDecoder(buf, offset, smallLengthField, timeHandler));
+    super(new SPPVarBinaryDecoder(buf, offset, smallLengthField, timeHandler));
   }
 
   @Override
   public Object readElement(final Object element, final MALEncodingContext ctx)
           throws IllegalArgumentException, MALException
   {
-    if ((element != ctx.getHeader())
-            && (!ctx.getHeader().getIsErrorMessage())
-            && (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()))
+    if ((element != ctx.getHeader()) && (!ctx.getHeader().getIsErrorMessage()) && (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()))
     {
       switch (ctx.getHeader().getInteractionStage().getValue())
       {

@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * Interface used to map to the low level transport specific send.
  */
-public interface GENMessageSender
+public interface GENMessageSender<O>
 {
   /**
    * Sends an encoded message to the client (MAL Message encoded as a byte array)
@@ -33,7 +33,7 @@ public interface GENMessageSender
    * @param encodedMessage the MALMessage
    * @throws IOException in case the message cannot be sent to the client
    */
-  void sendEncodedMessage(GENOutgoingMessageHolder encodedMessage) throws IOException;
+  void sendEncodedMessage(GENOutgoingMessageHolder<O> encodedMessage) throws IOException;
 
   /**
    * Closes any resources connected to the low level interface.

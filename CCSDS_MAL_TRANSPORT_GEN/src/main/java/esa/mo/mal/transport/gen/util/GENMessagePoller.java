@@ -38,9 +38,10 @@ import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
  *
  * Only transport adapter that pull messages from their transport layer will need to use this class.
  *
- * @param <T> The type of the encoded messages.
+ * @param <I> The type of the encoded messages.
+ * @param <O> The type of the outgoing messages.
  */
-public class GENMessagePoller<T> extends Thread implements GENReceptionHandler
+public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandler
 {
   /**
    * Reference to the transport
@@ -53,7 +54,7 @@ public class GENMessagePoller<T> extends Thread implements GENReceptionHandler
   /**
    * the low level message receiver
    */
-  protected final MessageAdapter<T> messageReceiver;
+  protected final MessageAdapter<I, O> messageReceiver;
   /**
    * the remote URI (client) this connection is associated to. This is volatile as it is potentially set by a different
    * thread after its creation
@@ -68,14 +69,14 @@ public class GENMessagePoller<T> extends Thread implements GENReceptionHandler
    * @param messageReceiver The message reception interface, used for pulling messaging into this transport.
    * @param decoderFactory The decoder factory to create message decoders from.
    */
-  public GENMessagePoller(GENTransport transport,
+  public GENMessagePoller(GENTransport<I, O> transport,
           GENMessageSender messageSender,
-          GENMessageReceiver<T> messageReceiver,
-          GENIncomingMessageDecoderFactory<T> decoderFactory)
+          GENMessageReceiver<I> messageReceiver,
+          GENIncomingMessageDecoderFactory<I, O> decoderFactory)
   {
     this.transport = transport;
     this.messageSender = messageSender;
-    this.messageReceiver = new MessageAdapter<T>(transport, this, messageReceiver, decoderFactory);
+    this.messageReceiver = new MessageAdapter<I, O>(transport, this, messageReceiver, decoderFactory);
     setName(getClass().getName());
   }
 
@@ -86,7 +87,7 @@ public class GENMessagePoller<T> extends Thread implements GENReceptionHandler
    * @param messageSender The message sending interface associated to this connection.
    * @param messageReceiver The message reception interface, used for pulling messaging into this transport.
    */
-  protected GENMessagePoller(GENTransport transport, GENMessageSender messageSender, MessageAdapter messageReceiver)
+  protected GENMessagePoller(GENTransport<I, O> transport, GENMessageSender messageSender, MessageAdapter messageReceiver)
   {
     this.transport = transport;
     this.messageSender = messageSender;
@@ -190,14 +191,14 @@ public class GENMessagePoller<T> extends Thread implements GENReceptionHandler
   /**
    * Internal class for adapting from the message receivers to the relevant receive operation on the transport.
    *
-   * @param <T> The type of the encoded messages.
+   * @param <I> The type of the encoded messages.
    */
-  protected static class MessageAdapter<T>
+  protected static class MessageAdapter<I, O>
   {
     private final GENTransport transport;
     private final GENReceptionHandler handler;
-    private final GENMessageReceiver<T> receiver;
-    private final GENIncomingMessageDecoderFactory<T> decoderFactory;
+    private final GENMessageReceiver<I> receiver;
+    private final GENIncomingMessageDecoderFactory<I, O> decoderFactory;
 
     /**
      * Constructor.
@@ -209,8 +210,8 @@ public class GENMessagePoller<T> extends Thread implements GENReceptionHandler
      */
     public MessageAdapter(GENTransport transport,
             GENReceptionHandler handler,
-            GENMessageReceiver<T> receiver,
-            GENIncomingMessageDecoderFactory<T> decoderFactory)
+            GENMessageReceiver<I> receiver,
+            GENIncomingMessageDecoderFactory<I, O> decoderFactory)
     {
       this.transport = transport;
       this.handler = handler;
@@ -226,7 +227,7 @@ public class GENMessagePoller<T> extends Thread implements GENReceptionHandler
      */
     public void receiveMessage() throws IOException, InterruptedException
     {
-      T msg = receiver.readEncodedMessage();
+      I msg = receiver.readEncodedMessage();
 
       if (null != msg)
       {

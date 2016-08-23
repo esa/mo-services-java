@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.spp;
 
+import esa.mo.mal.encoder.spp.SPPTimeHandler.TimeInputStream;
 import java.math.BigInteger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -33,7 +34,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 /**
  * Implements the MALDecoder interface for a SPP binary encoding.
  */
-public class SPPFixedBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder
+public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
 {
   private final boolean smallLengthField;
   private final SPPTimeHandler timeHandler;
@@ -45,10 +46,9 @@ public class SPPFixedBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.Fixed
    * @param src Byte array to read from.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPFixedBinaryDecoder(final byte[] src, final boolean smallLengthField,
-          final SPPTimeHandler timeHandler)
+  public SPPVarBinaryDecoder(final byte[] src, final boolean smallLengthField, final SPPTimeHandler timeHandler)
   {
-    super(new SPPBufferHolder(null, src, 0, src.length, smallLengthField));
+    super(new SPPVarBufferHolder(null, src, 0, src.length, smallLengthField));
 
     this.smallLengthField = smallLengthField;
     this.timeHandler = timeHandler;
@@ -60,10 +60,9 @@ public class SPPFixedBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.Fixed
    * @param is Input stream to read from.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPFixedBinaryDecoder(final java.io.InputStream is, final boolean smallLengthField,
-          final SPPTimeHandler timeHandler)
+  public SPPVarBinaryDecoder(final java.io.InputStream is, final boolean smallLengthField, final SPPTimeHandler timeHandler)
   {
-    super(new SPPBufferHolder(is, null, 0, 0, smallLengthField));
+    super(new SPPVarBufferHolder(is, null, 0, 0, smallLengthField));
 
     this.smallLengthField = smallLengthField;
     this.timeHandler = timeHandler;
@@ -76,10 +75,9 @@ public class SPPFixedBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.Fixed
    * @param offset index in array to start reading from.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPFixedBinaryDecoder(final byte[] src, final int offset, final boolean smallLengthField,
-          final SPPTimeHandler timeHandler)
+  public SPPVarBinaryDecoder(final byte[] src, final int offset, final boolean smallLengthField, final SPPTimeHandler timeHandler)
   {
-    super(new SPPBufferHolder(null, src, offset, src.length, smallLengthField));
+    super(new SPPVarBufferHolder(null, src, offset, src.length, smallLengthField));
 
     this.smallLengthField = smallLengthField;
     this.timeHandler = timeHandler;
@@ -91,8 +89,7 @@ public class SPPFixedBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.Fixed
    * @param src Source buffer holder to use.
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  protected SPPFixedBinaryDecoder(final BufferHolder src, final boolean smallLengthField,
-          final SPPTimeHandler timeHandler)
+  protected SPPVarBinaryDecoder(final BufferHolder src, final boolean smallLengthField, final SPPTimeHandler timeHandler)
   {
     super(src);
 
@@ -103,7 +100,7 @@ public class SPPFixedBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.Fixed
   @Override
   public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final java.util.List list) throws MALException
   {
-    return new SPPFixedBinaryListDecoder(list, sourceBuffer, smallLengthField, timeHandler);
+    return new SPPVarBinaryListDecoder(list, sourceBuffer, smallLengthField, timeHandler);
   }
 
   @Override
@@ -257,7 +254,7 @@ public class SPPFixedBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.Fixed
    * Extends the fixed length internal buffer holder to cope with the smaller size of the size field for Strings in SPP
    * packets.
    */
-  protected static class SPPBufferHolder extends FixedBufferHolder
+  protected static class SPPVarBufferHolder extends BinaryBufferHolder
   {
     private final boolean smallLengthField;
 
@@ -270,7 +267,7 @@ public class SPPFixedBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.Fixed
      * @param length Length of readable data held in the array, which may be larger.
      * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
      */
-    public SPPBufferHolder(final java.io.InputStream is,
+    public SPPVarBufferHolder(final java.io.InputStream is,
             final byte[] buf,
             final int offset,
             final int length,
@@ -306,7 +303,7 @@ public class SPPFixedBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.Fixed
     }
   }
   
-  private final class SPPTimeInputStream implements SPPTimeHandler.TimeInputStream
+  private final class SPPTimeInputStream implements TimeInputStream
   {
     public byte[] directGetBytes(int length) throws MALException
     {

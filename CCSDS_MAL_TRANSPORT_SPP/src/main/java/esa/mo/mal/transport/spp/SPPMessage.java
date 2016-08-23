@@ -185,7 +185,7 @@ public class SPPMessage extends GENMessage
       }
       else
       {
-        java.nio.ByteBuffer.wrap(hdrBuf).putShort(4, (short) (bodyBuf.length - 1));
+        java.nio.ByteBuffer.wrap(hdrBuf).putShort(4, (short) (bodyBuf.length + hdrBuf.length - 7));
         lowLevelOutputStream.write(hdrBuf);
         lowLevelOutputStream.write(bodyBuf);
       }

@@ -23,11 +23,13 @@ package esa.mo.mal.transport.spp;
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENTransport;
-import java.io.InputStream;
+import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
@@ -39,7 +41,7 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
-public abstract class SPPBaseTransport<T> extends GENTransport
+public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffer>>
 {
   /**
    * Logger
@@ -105,12 +107,7 @@ public abstract class SPPBaseTransport<T> extends GENTransport
     this.apidQualifier = aq;
     this.apid = a;
 
-    hdrStreamFactory = MALElementStreamFactory.newFactory("malspp_fixed", properties);
-
-    LOGGER.log(Level.INFO, "SPP APID qualifier set to : {0}", apidQualifier);
-    LOGGER.log(Level.INFO, "SPP APID           set to : {0}", apid);
-
-    LOGGER.log(Level.INFO, "SPP Wrapping body parts set to  : {0}", this.wrapBodyParts);
+    hdrStreamFactory = MALElementStreamFactory.newFactory("malspp_body", properties);
   }
 
   @Override
@@ -193,46 +190,80 @@ public abstract class SPPBaseTransport<T> extends GENTransport
   {
     return new SPPEndpoint(this, configuration, apidQualifier, uriRep, ssc, localName, routingName, uriBase + routingName, wrapBodyParts, properties);
   }
-
-  @Override
-  public GENMessage createMessage(byte[] packet) throws MALException
+  
+  protected GENOutgoingMessageHolder<List<ByteBuffer>> internalEncodeMessage(final String destinationRootURI,
+          final String destinationURI,
+          final Object multiSendHandle,
+          final boolean lastForHandle,
+          final String targetURI,
+          final GENMessage msg) throws Exception
   {
-    return new SPPMessage(65530, null, wrapBodyParts, true, new SPPMessageHeader(configuration, null, apidQualifier, uriRep, ssc), qosProperties, packet, getStreamFactory());
-  }
+    byte[] buf = internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg);
 
-  @Override
-  public GENMessage createMessage(InputStream ios) throws MALException
-  {
-    return new SPPMessage(65530, null, wrapBodyParts, true, new SPPMessageHeader(configuration, null, apidQualifier, uriRep, ssc), qosProperties, ios, getStreamFactory());
-  }
+    int sequenceFlags = (buf[2] & 0xC0) >> 6;
 
-  public abstract GENMessage createMessage(T packet) throws MALException;
-
-  protected GENMessage receiveSegement(int apidQualifier, int apid, int segmentFlags, byte[] packet) throws MALException
-  {
-    // find packet segment handler
-    SegmentHandler hdr = segmentHandlers.get(apid);
-
-    if (null == hdr)
+    List<ByteBuffer> encodedMessage = new ArrayList<ByteBuffer>();
+    
+    if (3 == sequenceFlags)
     {
-      hdr = new SegmentHandler();
-      segmentHandlers.put(apid, hdr);
+      encodedMessage.add(ByteBuffer.wrap(buf));
     }
-
-    hdr.addSegment(segmentFlags, packet);
-
-    if (hdr.messageComplete())
+    else
     {
-      byte[] c = hdr.getCompleteMessage();
-      segmentHandlers.remove(apid);
-
-      GENMessage msg = createMessage(c);
-
-      System.out.println("Decoded SPP segmented message: " + msg.getHeader());
-      return msg;
+      ByteBuffer buffer = ByteBuffer.wrap(buf);
+      int index = 0;
+      while ((buf.length - index) > 0)
+      {
+        short shortVal = buffer.getShort(index + 4);
+        int bodyLength = shortVal >= 0 ? shortVal : 0x10000 + shortVal;
+        bodyLength += 7;
+  
+        encodedMessage.add(ByteBuffer.wrap(buf, index, bodyLength));
+        index += bodyLength;
+      }
     }
+    
+      return new GENOutgoingMessageHolder<List<ByteBuffer>>(apid,
+              destinationRootURI,
+              destinationURI,
+              multiSendHandle,
+              lastForHandle,
+              msg,
+              encodedMessage);
+  }
+  
+  protected GENMessage internalCreateMessage(final int apidQualifier, final int apid, int sequenceFlags, final byte[] packet) throws MALException
+  {
+    if (3 == sequenceFlags)
+    {
+      return new SPPMessage(65530, null, wrapBodyParts, true, new SPPMessageHeader(configuration, null, apidQualifier, uriRep, ssc), qosProperties, packet, getStreamFactory());
+    }
+    else
+    {
+      // find packet segment handler
+      SegmentHandler hdr = segmentHandlers.get(apid);
 
-    return null;
+      if (null == hdr)
+      {
+        hdr = new SegmentHandler();
+        segmentHandlers.put(apid, hdr);
+      }
+
+      hdr.addSegment(sequenceFlags, packet);
+
+      if (hdr.messageComplete())
+      {
+        byte[] c = hdr.getCompleteMessage();
+        segmentHandlers.remove(apid);
+
+        GENMessage msg = internalCreateMessage(apidQualifier, apid, 3, c);
+
+        System.out.println("Decoded SPP segmented message: " + msg.getHeader());
+        return msg;
+      }
+
+      return null;
+    }
   }
 
   protected class SegmentHandler

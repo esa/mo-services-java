@@ -23,7 +23,7 @@ package esa.mo.mal.encoder.spp;
 /**
  * Implements the MALListDecoder interface for a SPP binary encoding.
  */
-public class SPPFixedBinaryListDecoder extends SPPFixedBinaryDecoder implements org.ccsds.moims.mo.mal.MALListDecoder
+public class SPPVarBinaryListDecoder extends SPPVarBinaryDecoder implements org.ccsds.moims.mo.mal.MALListDecoder
 {
   private final int size;
   private final java.util.List list;
@@ -36,8 +36,9 @@ public class SPPFixedBinaryListDecoder extends SPPFixedBinaryDecoder implements 
    * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    * @throws org.ccsds.moims.mo.mal.MALException If cannot decode list size.
    */
-  public SPPFixedBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer, final boolean smallLengthField,
-          final SPPTimeHandler timeHandler) throws org.ccsds.moims.mo.mal.MALException
+  public SPPVarBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer, final boolean smallLengthField,
+          final SPPTimeHandler timeHandler)
+          throws org.ccsds.moims.mo.mal.MALException
   {
     super(srcBuffer, smallLengthField, timeHandler);
 

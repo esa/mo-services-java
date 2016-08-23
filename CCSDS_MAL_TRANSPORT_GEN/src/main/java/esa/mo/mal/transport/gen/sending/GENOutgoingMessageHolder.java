@@ -32,8 +32,9 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  * This class holds the message to be sent in encoded format and a reply queue that the internal sender of the message
  * can listen to in order to be informed if the message was successfully sent or not.
  *
+ * @param <O> The type of the encoded message.
  */
-public class GENOutgoingMessageHolder
+public class GENOutgoingMessageHolder<O>
 {
   /**
    * The reply queue
@@ -67,7 +68,7 @@ public class GENOutgoingMessageHolder
   /**
    * The encoded message
    */
-  private final byte[] encodedMessage;
+  private final O encodedMessage;
 
   /**
    * Will construct a new object and create a new internal reply queue.
@@ -86,7 +87,7 @@ public class GENOutgoingMessageHolder
           final Object multiSendHandle,
           final boolean lastForHandle,
           final MALMessage originalMessage,
-          byte[] encodedMessage)
+          O encodedMessage)
   {
     replyQueue = new LinkedBlockingQueue<Boolean>();
     this.timeout = timeout;
@@ -181,7 +182,7 @@ public class GENOutgoingMessageHolder
    *
    * @return the encoded message
    */
-  public byte[] getEncodedMessage()
+  public O getEncodedMessage()
   {
     return encodedMessage;
   }

@@ -27,28 +27,30 @@ import esa.mo.mal.transport.gen.GENTransport.PacketToString;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoderFactory;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
+import java.nio.ByteBuffer;
+import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * Factory class for SPPMessage decoders.
- * @param <T>
+ * @param <I>
  */
-public class SPPMessageDecoderFactory<T> implements GENIncomingMessageDecoderFactory<T>
+public class SPPMessageDecoderFactory<I> implements GENIncomingMessageDecoderFactory<I, List<ByteBuffer>>
 {
   @Override
-  public GENIncomingMessageDecoder createDecoder(GENTransport transport, GENReceptionHandler receptionHandler, T messageSource)
+  public GENIncomingMessageDecoder createDecoder(GENTransport<I, List<ByteBuffer>> transport, GENReceptionHandler receptionHandler, I messageSource)
   {
-    return new SPPMessageDecoder((SPPBaseTransport<T>)transport, messageSource);
+    return new SPPMessageDecoder((SPPBaseTransport<I>)transport, messageSource);
   }
 
   /**
    * Implementation of the GENIncomingMessageDecoder class for newly arrived MAL Messages in SPPMessage format.
-   * @param <T>
+   * @param <I>
    */
-  public static final class SPPMessageDecoder<T> implements GENIncomingMessageDecoder
+  public static final class SPPMessageDecoder<I> implements GENIncomingMessageDecoder
   {
-    private final SPPBaseTransport<T> transport;
-    private final T rawMessage;
+    private final SPPBaseTransport<I> transport;
+    private final I rawMessage;
 
     /**
      * Constructor
@@ -56,7 +58,7 @@ public class SPPMessageDecoderFactory<T> implements GENIncomingMessageDecoderFac
      * @param transport Containing transport.
      * @param rawMessage The raw message
      */
-    public SPPMessageDecoder(SPPBaseTransport<T> transport, T rawMessage)
+    public SPPMessageDecoder(SPPBaseTransport<I> transport, I rawMessage)
     {
       this.transport = transport;
       this.rawMessage = rawMessage;

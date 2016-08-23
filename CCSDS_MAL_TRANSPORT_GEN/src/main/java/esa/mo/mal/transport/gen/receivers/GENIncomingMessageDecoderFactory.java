@@ -26,9 +26,10 @@ import esa.mo.mal.transport.gen.GENTransport;
 /**
  * Interface for factory classes used by the receivers for creating decoders.
  *
- * @param <T> The type of the encoded messages.
+ * @param <I> The type of the incoming messages.
+ * @param <O> The type of the outgoing messages.
  */
-public interface GENIncomingMessageDecoderFactory<T>
+public interface GENIncomingMessageDecoderFactory<I, O>
 {
   /**
    * Creates a decoder for the supplied message source.
@@ -38,5 +39,5 @@ public interface GENIncomingMessageDecoderFactory<T>
    * @param messageSource The message source to pass to the decoder.
    * @return the new message decoder.
    */
-  GENIncomingMessageDecoder createDecoder(final GENTransport transport, GENReceptionHandler receptionHandler, T messageSource);
+  GENIncomingMessageDecoder createDecoder(final GENTransport<I, O> transport, GENReceptionHandler receptionHandler, I messageSource);
 }

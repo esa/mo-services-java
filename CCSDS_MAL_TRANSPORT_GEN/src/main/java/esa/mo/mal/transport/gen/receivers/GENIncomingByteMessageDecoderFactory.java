@@ -28,10 +28,10 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Factory class for byte decoders.
  */
-public class GENIncomingByteMessageDecoderFactory implements GENIncomingMessageDecoderFactory<byte[]>
+public class GENIncomingByteMessageDecoderFactory<O> implements GENIncomingMessageDecoderFactory<byte[], O>
 {
   @Override
-  public GENIncomingMessageDecoder createDecoder(GENTransport transport, GENReceptionHandler receptionHandler, byte[] messageSource)
+  public GENIncomingMessageDecoder createDecoder(GENTransport<byte[], O> transport, GENReceptionHandler receptionHandler, byte[] messageSource)
   {
     return new GENIncomingByteMessageDecoder(transport, messageSource);
   }
@@ -39,9 +39,9 @@ public class GENIncomingByteMessageDecoderFactory implements GENIncomingMessageD
   /**
    * Implementation of the GENIncomingMessageDecoder class for newly arrived MAL Messages in byte array format.
    */
-  public static final class GENIncomingByteMessageDecoder implements GENIncomingMessageDecoder
+  public static final class GENIncomingByteMessageDecoder<O> implements GENIncomingMessageDecoder
   {
-    private final GENTransport transport;
+    private final GENTransport<byte[], O> transport;
     private final byte[] rawMessage;
 
     /**
@@ -50,7 +50,7 @@ public class GENIncomingByteMessageDecoderFactory implements GENIncomingMessageD
      * @param transport Containing transport.
      * @param rawMessage The raw message
      */
-    public GENIncomingByteMessageDecoder(final GENTransport transport, byte[] rawMessage)
+    public GENIncomingByteMessageDecoder(final GENTransport<byte[], O> transport, byte[] rawMessage)
     {
       this.transport = transport;
       this.rawMessage = rawMessage;
