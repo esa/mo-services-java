@@ -274,6 +274,7 @@ public class MessageReceive implements MALMessageListener
 
     if (!providerEndpointMap.containsKey(key))
     {
+      MALContextFactoryImpl.LOGGER.log(Level.FINE, "registerProviderEndpoint for {0}", key);
       providerEndpointMap.put(key, address);
     }
   }
@@ -284,6 +285,7 @@ public class MessageReceive implements MALMessageListener
 
     if (providerEndpointMap.containsKey(key))
     {
+      MALContextFactoryImpl.LOGGER.log(Level.FINE, "deregisterProviderEndpoint for {0}", key);
       providerEndpointMap.remove(key);
     }
   }
