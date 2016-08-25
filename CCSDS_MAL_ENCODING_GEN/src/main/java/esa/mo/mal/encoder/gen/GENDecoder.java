@@ -434,14 +434,30 @@ public abstract class GENDecoder implements MALDecoder
     return null;
   }
 
-  protected int internalDecodeAttributeType(byte value) throws MALException
+  /**
+   * Allows the decoding for the type of an abstract element to be over-ridded
+   *
+   * @param withNull If true encode a isNull field
+   * @return The type to decode
+   * @throws MALException if there is an error
+   */
+  public Long decodeAbstractElementType(boolean withNull) throws MALException
+  {
+    if (withNull)
+    {
+      return decodeNullableLong();
+    }
+
+    return decodeLong();
+  }
+
+  public int internalDecodeAttributeType(byte value) throws MALException
   {
     return value;
   }
 
   /**
-   * Returns the remaining data of the input stream that has not been used for decoding for wrapping in a MALEncodedBody
-   * class.
+   * Returns the remaining data of the input stream that has not been used for decoding for wrapping in a MALEncodedBody class.
    *
    * @return the unused body data.
    * @throws MALException if there is an error.
@@ -449,8 +465,8 @@ public abstract class GENDecoder implements MALDecoder
   public abstract byte[] getRemainingEncodedData() throws MALException;
 
   /**
-   * Internal class that is used to hold the byte buffer. Derived classes should extend this (and replace it in the
-   * constructors) if they encode the fields differently from this encoding.
+   * Internal class that is used to hold the byte buffer. Derived classes should extend this (and replace it in the constructors) if
+   * they encode the fields differently from this encoding.
    */
   public abstract static class BufferHolder
   {

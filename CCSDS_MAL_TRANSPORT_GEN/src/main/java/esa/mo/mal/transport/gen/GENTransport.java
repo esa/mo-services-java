@@ -444,30 +444,6 @@ public abstract class GENTransport<I, O> implements MALTransport
   public abstract GENMessage createMessage(I packet) throws MALException;
   
   /**
-   * Overridable internal method for the creation of receiving messages.
-   *
-   * @param ios The input stream to use.
-   * @return The new message.
-   * @throws MALException on Error.
-   */
-  public GENMessage createMessage(final java.io.InputStream ios) throws MALException
-  {
-    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, ios, getStreamFactory());
-  }
-
-  /**
-   * Overridable internal method for the creation of receiving messages.
-   *
-   * @param packet The input packet to use.
-   * @return The new message.
-   * @throws MALException on Error.
-   */
-  public GENMessage createMessage(final byte[] packet) throws MALException
-  {
-    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, packet, getStreamFactory());
-  }
-
-  /**
    * On reception of an IO stream this method should be called. This is the main reception entry point into the generic transport
    * for stream based transports.
    *

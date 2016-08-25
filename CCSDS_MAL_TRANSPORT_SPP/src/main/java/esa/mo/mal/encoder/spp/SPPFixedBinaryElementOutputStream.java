@@ -30,6 +30,8 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
+import org.ccsds.moims.mo.mal.transport.MALEncodedElementList;
 
 /**
  * Implements the MALElementOutputStream interface for a fixed length binary encoding.
@@ -53,6 +55,16 @@ public class SPPFixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary
 
     this.smallLengthField = smallLengthField;
     this.timeHandler = timeHandler;
+  }
+
+  public boolean isSmallLengthField()
+  {
+    return smallLengthField;
+  }
+
+  public SPPTimeHandler getTimeHandler()
+  {
+    return timeHandler;
   }
 
   @Override
@@ -94,7 +106,7 @@ public class SPPFixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary
         case MALPubSubOperation._NOTIFY_STAGE:
           if ((1 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex() - 2]))
           {
-            encodeSubElement((Element) element, null, null);
+            encodePubSubNotifyUpdate(element, ctx);
           }
           else
           {
@@ -115,9 +127,12 @@ public class SPPFixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary
   {
     ElementList<Element> updateList = (ElementList<Element>) element;
 
-    if (null == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()])
+    if (ctx.getBodyElementIndex() == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms().length - 1)
     {
-      enc.encodeLong(updateList.getShortForm());
+      if (null == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()])
+      {
+        enc.encodeAbstractElementType(updateList.getShortForm(), false);
+      }
     }
 
     MALListEncoder listEncoder = enc.createListEncoder(updateList);
@@ -146,6 +161,47 @@ public class SPPFixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary
     }
 
     listEncoder.close();
+  }
+
+  protected void encodePubSubNotifyUpdate(Object obj, MALEncodingContext ctx) throws MALException
+  {
+    if (obj instanceof MALEncodedElementList)
+    {
+      MALEncodedElementList encElemList = (MALEncodedElementList) obj;
+
+      Object sf = encElemList.getShortForm();
+
+      // dirty check to see if we are trying to decode an abstract Attribute (and not a list of them either)
+      Object[] finalEleShortForms = null;
+      if (null != ctx)
+      {
+        finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
+      }
+
+      if (null == finalEleShortForms)
+      {
+        enc.encodeAbstractElementType((Long) sf, true);
+      }
+
+      enc.encodeInteger(encElemList.size());
+
+      for (MALEncodedElement e : encElemList)
+      {
+        if (null == e)
+        {
+          enc.encodeNullableBlob(null);
+        }
+        else
+        {
+          enc.encodeBoolean(true);
+          enc.directEncodeBytes(e.getEncodedElement().getValue());
+        }
+      }
+    }
+    else
+    {
+      encodeSubElement((Element) obj, null, null);
+    }
   }
 
   protected static void encodeNativeType(final Object element, final GENEncoder updateEncoder) throws MALException

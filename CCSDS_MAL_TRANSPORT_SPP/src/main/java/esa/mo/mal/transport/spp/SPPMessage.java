@@ -20,14 +20,19 @@
  */
 package esa.mo.mal.transport.spp;
 
+import esa.mo.mal.encoder.spp.SPPFixedBinaryElementOutputStream;
+import esa.mo.mal.encoder.spp.SPPFixedBinaryEncoder;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENMessageHeader;
+import esa.mo.mal.transport.gen.util.GENHelper;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Map;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -42,13 +47,14 @@ import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
  */
 public class SPPMessage extends GENMessage
 {
+  private final MALElementStreamFactory hdrStreamFactory;
+  private final SPPConfiguration configuration;
   private final SPPSegmentCounter segmentCounter;
-  private final int segmentSize;
 
   /**
    * Constructor.
    *
-   * @param segmentSize The maximum data field segment size.
+   * @param configuration The SPP configuration to use for this message.
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
    * @param header The message header to use.
    * @param qosProperties The QoS properties for this message.
@@ -56,19 +62,23 @@ public class SPPMessage extends GENMessage
    * @param body the body of the message.
    * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation is unknown.
    */
-  public SPPMessage(final int segmentSize, final SPPSegmentCounter segmentCounter,
-          boolean wrapBodyParts, GENMessageHeader header, Map qosProperties, MALOperation operation, Object... body) throws MALInteractionException
+  public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
+          final SPPConfiguration configuration,
+          final SPPSegmentCounter segmentCounter,
+          boolean wrapBodyParts, GENMessageHeader header, Map qosProperties, MALOperation operation,
+          MALElementStreamFactory encFactory, Object... body) throws MALInteractionException
   {
-    super(wrapBodyParts, header, qosProperties, operation, body);
+    super(wrapBodyParts, header, qosProperties, operation, encFactory, body);
 
+    this.hdrStreamFactory = hdrStreamFactory;
+    this.configuration = configuration;
     this.segmentCounter = segmentCounter;
-    this.segmentSize = segmentSize;
   }
 
   /**
    * Constructor.
    *
-   * @param segmentSize The maximum data field segment size.
+   * @param configuration The SPP configuration to use for this message.
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
    * @param readHeader True if the header should be read from the packet.
    * @param header An instance of the header class to use.
@@ -77,19 +87,22 @@ public class SPPMessage extends GENMessage
    * @param encFactory The stream factory to use for decoding.
    * @throws MALException On decoding error.
    */
-  public SPPMessage(final int segmentSize, final SPPSegmentCounter segmentCounter,
+  public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
+          final SPPConfiguration configuration,
+          final SPPSegmentCounter segmentCounter,
           boolean wrapBodyParts, boolean readHeader, GENMessageHeader header, Map qosProperties, byte[] packet, MALElementStreamFactory encFactory) throws MALException
   {
     super(wrapBodyParts, readHeader, header, qosProperties, packet, encFactory);
 
+    this.hdrStreamFactory = hdrStreamFactory;
+    this.configuration = configuration;
     this.segmentCounter = segmentCounter;
-    this.segmentSize = segmentSize;
   }
 
   /**
    * Constructor.
    *
-   * @param segmentSize The maximum data field segment size.
+   * @param configuration The SPP configuration to use for this message.
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
    * @param readHeader True if the header should be read from the stream.
    * @param header An instance of the header class to use.
@@ -98,13 +111,16 @@ public class SPPMessage extends GENMessage
    * @param encFactory The stream factory to use for decoding.
    * @throws MALException On decoding error.
    */
-  public SPPMessage(final int segmentSize, final SPPSegmentCounter segmentCounter,
+  public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
+          final SPPConfiguration configuration,
+          final SPPSegmentCounter segmentCounter,
           boolean wrapBodyParts, boolean readHeader, GENMessageHeader header, Map qosProperties, InputStream ios, MALElementStreamFactory encFactory) throws MALException
   {
     super(wrapBodyParts, readHeader, header, qosProperties, ios, encFactory);
 
+    this.hdrStreamFactory = hdrStreamFactory;
+    this.configuration = configuration;
     this.segmentCounter = segmentCounter;
-    this.segmentSize = segmentSize;
   }
 
   @Override
@@ -115,43 +131,51 @@ public class SPPMessage extends GENMessage
   {
     try
     {
-      final ByteArrayOutputStream hdrBaos = new ByteArrayOutputStream();
-      final MALElementOutputStream hdrEnc = streamFactory.createOutputStream(hdrBaos);
-      final ByteArrayOutputStream bodyBaos = new ByteArrayOutputStream();
-      final MALElementOutputStream bodyEnc = streamFactory.createOutputStream(bodyBaos);
+      MALElementStreamFactory localBodyStreamFactory = hdrStreamFactory;
+      if (!configuration.isFixedBody())
+      {
+        localBodyStreamFactory = streamFactory;
+      }
 
-      super.encodeMessage(streamFactory, bodyEnc, bodyBaos, false);
+      final ByteArrayOutputStream hdrBaos = new ByteArrayOutputStream();
+      SPPFixedBinaryElementOutputStream hdrEnc = (SPPFixedBinaryElementOutputStream) hdrStreamFactory.createOutputStream(hdrBaos);
+      final ByteArrayOutputStream bodyBaos = new ByteArrayOutputStream();
+      final MALElementOutputStream bodyEnc = localBodyStreamFactory.createOutputStream(bodyBaos);
+
+      super.encodeMessage(localBodyStreamFactory, bodyEnc, bodyBaos, false);
 
       MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties, qosProperties);
       hdrEnc.writeElement(header, ctx);
+      SPPFixedBinaryEncoder fixedEnc = new SPPFixedBinaryEncoder(hdrBaos, hdrEnc.isSmallLengthField(), hdrEnc.getTimeHandler());
       byte[] hdrBuf = hdrBaos.toByteArray();
       byte[] bodyBuf = bodyBaos.toByteArray();
 
-      System.out.println("Check segmenting: Segment size is " + segmentSize + " and required length is " + (bodyBuf.length + hdrBuf.length - 6));
-      if ((bodyBuf.length + hdrBuf.length - 6) > segmentSize)
+      LOGGER.log(Level.FINE, "Check segmenting: Segment size is {0} and required length is {1}", new Object[]
       {
-        System.out.println("Segmenting: Non-segment header size is " + hdrBuf.length);
+        configuration.getSegmentSize(), bodyBuf.length + hdrBuf.length - 6
+      });
+      if ((bodyBuf.length + hdrBuf.length - 6) > configuration.getSegmentSize())
+      {
         // encode segmented header
         ((SPPMessageHeader) header).setSegmentFlags((byte) 0x40);
         hdrBaos.reset();
+        hdrEnc = (SPPFixedBinaryElementOutputStream) hdrStreamFactory.createOutputStream(hdrBaos);
         hdrEnc.writeElement(header, ctx);
         hdrBuf = hdrBaos.toByteArray();
 
-        System.out.println("Segmenting: Segmenting header size is " + hdrBuf.length);
-        final int adjustedSegmentSize = segmentSize - (hdrBuf.length - 6);
+        final int adjustedSegmentSize = configuration.getSegmentSize() - (hdrBuf.length - 6);
         // first check to see if we can actually fit any data in the body when we have a large header and small segment size
         if (0 >= adjustedSegmentSize)
         {
-          throw new MALException("SPP Segment size of " + segmentSize + " is too small for encoded MAL Message header or size " + (hdrBuf.length - 6),
+          throw new MALException("SPP Segment size of " + configuration.getSegmentSize() + " is too small for encoded MAL Message header or size " + (hdrBuf.length - 6),
                   new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null)));
         }
-        
+
         // segment data
         ByteBuffer hdrBytes = ByteBuffer.wrap(hdrBuf);
         int index = 0;
         int extra = (hdrBuf[26] & 0x80) != 0 ? 1 : 0;
         extra += (hdrBuf[26] & 0x40) != 0 ? 1 : 0;
-        System.out.println("Segment flags: " + hdrBuf[26] + " : " + extra);
         boolean first = true;
 
         while (index < bodyBuf.length)
@@ -177,7 +201,10 @@ public class SPPMessage extends GENMessage
           int count = segmentCounter.getNextSegmentCount();
           hdrBytes.putInt(27 + extra, count);
 
-          System.out.println("Segment: " + (hdrBuf[2] & 0xC0) + " : " + (packetSize + hdrBuf.length - 7) + " : " + count + " : " + index);
+          LOGGER.log(Level.FINE, "Segment: {0} : {1} : {2} : {3}", new Object[]
+          {
+            hdrBuf[2] & 0xC0, packetSize + hdrBuf.length - 7, count, index
+          });
           lowLevelOutputStream.write(hdrBuf);
           lowLevelOutputStream.write(bodyBuf, index, packetSize);
           index += packetSize;

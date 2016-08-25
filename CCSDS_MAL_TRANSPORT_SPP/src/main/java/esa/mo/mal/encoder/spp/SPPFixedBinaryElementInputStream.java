@@ -109,11 +109,15 @@ public class SPPFixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.
           else
           {
             Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()];
-            return decodeSubElement((Long) sf, ctx);
+            if (null == sf)
+            {
+              sf = dec.decodeAbstractElementType(true);
+            }
+            return decodePubSubPublishUpdate((Long) sf);
           }
         }
         default:
-          return decodeSubElement(dec.decodeNullableLong(), ctx);
+          return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
       }
     }
 
@@ -124,7 +128,7 @@ public class SPPFixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.
   {
     if (null == sf)
     {
-      sf = dec.decodeLong();
+      sf = dec.decodeAbstractElementType(false);
     }
 
     final Long sfv = (sf & ~0xFFFFFF) | (-(sf & 0xFFFFFF) & 0xFFFFFF);

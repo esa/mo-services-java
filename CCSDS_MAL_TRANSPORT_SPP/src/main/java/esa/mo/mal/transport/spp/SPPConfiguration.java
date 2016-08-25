@@ -22,8 +22,10 @@ package esa.mo.mal.transport.spp;
 
 import static esa.mo.mal.transport.spp.SPPBaseTransport.AUTHENTICATION_ID_FLAG;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.DOMAIN_FLAG;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.ENCODE_BODY_FIXED;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.NETWORK_ZONE_FLAG;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.PRIORITY_FLAG;
+import static esa.mo.mal.transport.spp.SPPBaseTransport.SEGMENT_MAX_SIZE_PROPERTY;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.SESSION_NAME_FLAG;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.TIMESTAMP_FLAG;
 import java.util.Map;
@@ -33,6 +35,8 @@ import java.util.Map;
  */
 public class SPPConfiguration
 {
+  private final boolean fixedBody;
+  private final int segmentSize;
   private int flags = 0x0;
   private boolean srcSubId;
   private boolean dstSubId;
@@ -43,7 +47,9 @@ public class SPPConfiguration
   private boolean domain;
   private boolean auth;
 
-  public SPPConfiguration(boolean hasSrcSubId,
+  public SPPConfiguration(boolean fixedBody,
+          int segmentSize,
+          boolean hasSrcSubId,
           boolean hasDstSubId,
           boolean hasPriority,
           boolean hasTimestamp,
@@ -52,20 +58,31 @@ public class SPPConfiguration
           boolean hasDomain,
           boolean hasAuth)
   {
-    srcSubId = hasSrcSubId;
-    dstSubId = hasDstSubId;
-    priority = hasPriority;
-    timestamp = hasTimestamp;
-    network = hasNetwork;
-    session = hasSession;
-    domain = hasDomain;
-    auth = hasAuth;
+    this.fixedBody = fixedBody;
+    this.segmentSize = segmentSize;
+    this.srcSubId = hasSrcSubId;
+    this.dstSubId = hasDstSubId;
+    this.priority = hasPriority;
+    this.timestamp = hasTimestamp;
+    this.network = hasNetwork;
+    this.session = hasSession;
+    this.domain = hasDomain;
+    this.auth = hasAuth;
 
     updateFlags();
   }
 
   public SPPConfiguration(SPPConfiguration other, final Map properties)
   {
+    fixedBody = getBooleanProperty(properties, ENCODE_BODY_FIXED, other.fixedBody);
+    
+    int sms = other.segmentSize;
+    if ((null != properties) && properties.containsKey(SEGMENT_MAX_SIZE_PROPERTY))
+    {
+      sms = Integer.parseInt(properties.get(SEGMENT_MAX_SIZE_PROPERTY).toString());
+    }
+
+    segmentSize = sms;
     srcSubId = other.srcSubId;
     dstSubId = other.dstSubId;
     priority = getBooleanProperty(properties, PRIORITY_FLAG, other.priority);
@@ -96,6 +113,16 @@ public class SPPConfiguration
     }
 
     return calculateFlags(hasFromSubId, hasToSubId, priority, timestamp, network, session, domain, auth);
+  }
+
+  public boolean isFixedBody()
+  {
+    return fixedBody;
+  }
+
+  public int getSegmentSize()
+  {
+    return segmentSize;
   }
 
   public boolean isSrcSubId()

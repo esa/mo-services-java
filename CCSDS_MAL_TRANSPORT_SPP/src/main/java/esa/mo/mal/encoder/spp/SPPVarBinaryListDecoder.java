@@ -33,25 +33,16 @@ public class SPPVarBinaryListDecoder extends SPPVarBinaryDecoder implements org.
    *
    * @param list List to decode into.
    * @param srcBuffer Buffer to manage.
-   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    * @throws org.ccsds.moims.mo.mal.MALException If cannot decode list size.
    */
-  public SPPVarBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer, final boolean smallLengthField,
-          final SPPTimeHandler timeHandler)
+  public SPPVarBinaryListDecoder(final java.util.List list, final BufferHolder srcBuffer, final SPPTimeHandler timeHandler)
           throws org.ccsds.moims.mo.mal.MALException
   {
-    super(srcBuffer, smallLengthField, timeHandler);
+    super(srcBuffer, timeHandler);
 
     this.list = list;
 
-    if (smallLengthField)
-    {
-      size = srcBuffer.getUnsignedShort();
-    }
-    else
-    {
-      size = srcBuffer.getUnsignedInt();
-    }
+    size = srcBuffer.getUnsignedInt();
   }
 
   @Override

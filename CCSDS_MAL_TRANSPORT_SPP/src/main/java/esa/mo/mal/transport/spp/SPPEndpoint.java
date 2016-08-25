@@ -25,7 +25,6 @@ import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.APID_QUALIFIER_PROPERTY;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.IS_TC_PACKET_PROPERTY;
-import static esa.mo.mal.transport.spp.SPPBaseTransport.SEGMENT_MAX_SIZE_PROPERTY;
 import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
@@ -52,7 +51,6 @@ public class SPPEndpoint extends GENEndpoint
 {
   private final SPPConfiguration configuration;
   private final int apidQualifier;
-  private final int segmentMaxSize;
   private final Boolean forceTC;
   private final SPPURIRepresentation uriRep;
   private final SPPSourceSequenceCounter ssCounter;
@@ -71,7 +69,6 @@ public class SPPEndpoint extends GENEndpoint
     this.configuration = new SPPConfiguration(configuration, properties);
 
     int aq = apidQualifier;
-    int sms = 65530;
     // decode configuration
     if (properties != null)
     {
@@ -82,12 +79,6 @@ public class SPPEndpoint extends GENEndpoint
       if (properties.containsKey(APID_QUALIFIER_PROPERTY))
       {
         aq = Integer.parseInt(properties.get(APID_QUALIFIER_PROPERTY).toString());
-      }
-
-      if (properties.containsKey(SEGMENT_MAX_SIZE_PROPERTY))
-      {
-        sms = Integer.parseInt(properties.get(SEGMENT_MAX_SIZE_PROPERTY).toString());
-        System.out.println("Max segment size set to: " + aq + " : " + sms);
       }
 
       if (properties.containsKey(IS_TC_PACKET_PROPERTY))
@@ -105,7 +96,6 @@ public class SPPEndpoint extends GENEndpoint
     }
 
     this.apidQualifier = aq;
-    this.segmentMaxSize = sms;
     this.uriRep = uriRep;
     this.ssCounter = ssCounter;
   }
@@ -133,7 +123,7 @@ public class SPPEndpoint extends GENEndpoint
   {
     try
     {
-      GENMessageHeader hdr = createMessageHeader(getURI(),
+      SPPMessageHeader hdr = (SPPMessageHeader)createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -153,8 +143,11 @@ public class SPPEndpoint extends GENEndpoint
               isErrorMessage,
               qosProperties);
       
-      return new SPPMessage(segmentMaxSize, getMessageSegmentCounter(hdr), false, hdr,
-              qosProperties, null, body);
+      return new SPPMessage(((SPPBaseTransport)transport).getHeaderStreamFactory(),
+              hdr.getConfiguration(),
+              getMessageSegmentCounter(hdr),
+              false, hdr,
+              qosProperties, null, transport.getStreamFactory(), body);
     }
     catch (MALInteractionException ex)
     {
@@ -185,7 +178,7 @@ public class SPPEndpoint extends GENEndpoint
   {
     try
     {
-      GENMessageHeader hdr = createMessageHeader(getURI(),
+      SPPMessageHeader hdr = (SPPMessageHeader)createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -205,8 +198,9 @@ public class SPPEndpoint extends GENEndpoint
               isErrorMessage,
               qosProperties);
       
-      return new SPPMessage(segmentMaxSize, getMessageSegmentCounter(hdr), false, hdr,
-              qosProperties, null, body);
+      return new SPPMessage(((SPPBaseTransport)transport).getHeaderStreamFactory(),
+              hdr.getConfiguration(), getMessageSegmentCounter(hdr), false, hdr,
+              qosProperties, null, transport.getStreamFactory(), body);
     }
     catch (MALInteractionException ex)
     {
@@ -233,7 +227,7 @@ public class SPPEndpoint extends GENEndpoint
   {
     try
     {
-      GENMessageHeader hdr = createMessageHeader(getURI(),
+      SPPMessageHeader hdr = (SPPMessageHeader)createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -253,10 +247,11 @@ public class SPPEndpoint extends GENEndpoint
               isErrorMessage,
               qosProperties);
       
-      return new SPPMessage(segmentMaxSize, getMessageSegmentCounter(hdr), false, hdr,
+      return new SPPMessage(((SPPBaseTransport)transport).getHeaderStreamFactory(),
+              hdr.getConfiguration(), getMessageSegmentCounter(hdr), false, hdr,
               qosProperties,
               op,
-              body);
+              transport.getStreamFactory(), body);
     }
     catch (MALInteractionException ex)
     {
@@ -283,7 +278,7 @@ public class SPPEndpoint extends GENEndpoint
   {
     try
     {
-      GENMessageHeader hdr = createMessageHeader(getURI(),
+      SPPMessageHeader hdr = (SPPMessageHeader)createMessageHeader(getURI(),
               authenticationId,
               uriTo,
               timestamp,
@@ -303,10 +298,11 @@ public class SPPEndpoint extends GENEndpoint
               isErrorMessage,
               qosProperties);
       
-      return new SPPMessage(segmentMaxSize, getMessageSegmentCounter(hdr), false, hdr,
+      return new SPPMessage(((SPPBaseTransport)transport).getHeaderStreamFactory(),
+              hdr.getConfiguration(), getMessageSegmentCounter(hdr), false, hdr,
               qosProperties,
               op,
-              body);
+              transport.getStreamFactory(), body);
     }
     catch (MALInteractionException ex)
     {
@@ -335,7 +331,8 @@ public class SPPEndpoint extends GENEndpoint
           Boolean isErrorMessage,
           Map qosProperties)
   {
-    return new SPPMessageHeader(new SPPConfiguration(configuration, qosProperties),
+    return new SPPMessageHeader(((SPPBaseTransport)transport).getHeaderStreamFactory(),
+            new SPPConfiguration(configuration, qosProperties),
             forceTC, apidQualifier, uriRep, ssCounter, getURI(),
             authenticationId,
             uriTo,

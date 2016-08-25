@@ -70,7 +70,7 @@ public abstract class GENElementInputStream implements MALElementInputStream
         }
         else
         {
-          return decodeSubElement(dec.decodeNullableLong(), ctx);
+          return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
         }
       }
       else if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal())
@@ -97,7 +97,7 @@ public abstract class GENElementInputStream implements MALElementInputStream
               // element is defined as an abstract type
               if (null == sf)
               {
-                sf = dec.decodeNullableLong();
+                sf = dec.decodeAbstractElementType(true);
               }
               
               return decodeSubElement((Long) sf, ctx);
@@ -121,14 +121,14 @@ public abstract class GENElementInputStream implements MALElementInputStream
               // element is defined as an abstract type
               if (null == sf)
               {
-                sf = dec.decodeNullableLong();
+                sf = dec.decodeAbstractElementType(true);
               }
               
               return decodeSubElement((Long) sf, ctx);
             }
           }
           default:
-            return decodeSubElement(dec.decodeNullableLong(), ctx);
+            return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
         }
       }
       else
@@ -152,7 +152,7 @@ public abstract class GENElementInputStream implements MALElementInputStream
           }
           else
           {
-            shortForm = dec.decodeNullableLong();
+            shortForm = dec.decodeAbstractElementType(true);
           }
 
           return decodeSubElement(shortForm, ctx);

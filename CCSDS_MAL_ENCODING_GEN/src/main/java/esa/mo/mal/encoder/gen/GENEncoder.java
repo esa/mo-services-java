@@ -765,13 +765,50 @@ public abstract class GENEncoder implements MALListEncoder
   }
 
   /**
+   * Allows the encoding of a byte array, usually for already encoded values
+   *
+   * @param value The type to encode
+   * @throws MALException if there is an error
+   */
+  public void directEncodeBytes(final byte[] value) throws MALException
+  {
+    try
+    {
+      outputStream.directAdd(value);
+    }
+    catch (IOException ex)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    }
+  }
+
+  /**
+   * Allows the encoding for the type of an abstract element to be over-ridded
+   *
+   * @param value The type to encode
+   * @param withNull If true encode a isNull field
+   * @throws MALException if there is an error
+   */
+  public void encodeAbstractElementType(final Long value, boolean withNull) throws MALException
+  {
+    if (withNull)
+    {
+      encodeNullableLong(value);
+    }
+    else
+    {
+      encodeLong(value);
+    }
+  }
+
+  /**
    * Converts the MAL representation of an Attribute type short form to the representation used by the encoding.
    *
    * @param value The Attribute type short form.
    * @return The byte value used by the encoding
    * @throws MALException On error.
    */
-  protected byte internalEncodeAttributeType(byte value) throws MALException
+  public byte internalEncodeAttributeType(byte value) throws MALException
   {
     return value;
   }

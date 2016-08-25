@@ -22,14 +22,17 @@ package esa.mo.mal.transport.spp;
 
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
+import esa.mo.mal.transport.gen.util.GENHelper;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
@@ -48,9 +51,10 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
    */
   public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.spp");
 
+  public static final String ENCODE_BODY_FIXED = "org.ccsds.moims.mo.malspp.isFixedBody";
   public static final String IS_TC_PACKET_PROPERTY = "org.ccsds.moims.mo.malspp.isTcPacket";
-  public static final String APID_QUALIFIER_PROPERTY = "org.ccsds.moims.mo.malspp.apidQualifier";
   public static final String SEGMENT_MAX_SIZE_PROPERTY = "org.ccsds.moims.mo.malspp.segmentMaxSize";
+  public static final String APID_QUALIFIER_PROPERTY = "org.ccsds.moims.mo.malspp.apidQualifier";
   public static final String APID_PROPERTY = "org.ccsds.moims.mo.malspp.apid";
   public static final String APPEND_ID_TO_URI = "org.ccsds.moims.mo.malspp.appendIdToUri";
   public static final String AUTHENTICATION_ID_FLAG = "org.ccsds.moims.mo.malspp.authenticationIdFlag";
@@ -60,11 +64,12 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
   public static final String SESSION_NAME_FLAG = "org.ccsds.moims.mo.malspp.sessionNameFlag";
   public static final String TIMESTAMP_FLAG = "org.ccsds.moims.mo.malspp.timestampFlag";
 
-  protected final SPPConfiguration configuration;
+  protected final SPPConfiguration defaultConfiguration;
   protected final SPPURIRepresentation uriRep;
   protected final SPPSourceSequenceCounterSimple ssc;
-  protected final int apidQualifier;
-  protected final int apid;
+  protected final int defaultApidQualifier;
+  protected final int defaultApid;
+  protected final Map<QualifiedApid, SPPConfiguration> apidConfigurations = new HashMap<QualifiedApid, SPPConfiguration>();
   protected final Map<Integer, SegmentHandler> segmentHandlers = new HashMap<Integer, SegmentHandler>();
   /**
    * The stream factory used for encoding and decoding message headers.
@@ -83,7 +88,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
   {
     super(protocol, protocolDelim, serviceDelim, routingDelim, supportsRouting, wrapBodyParts, factory, properties);
 
-    this.configuration = configuration;
+    this.defaultConfiguration = configuration;
     this.uriRep = uriRep;
     this.ssc = ssc;
 
@@ -104,10 +109,22 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
       }
     }
 
-    this.apidQualifier = aq;
-    this.apid = a;
+    this.defaultApidQualifier = aq;
+    this.defaultApid = a;
 
-    hdrStreamFactory = MALElementStreamFactory.newFactory("malspp_body", properties);
+    MALElementStreamFactory lsf = super.getStreamFactory();
+
+    try
+    {
+      lsf = MALElementStreamFactory.newFactory("malspp_header", properties);
+    }
+    catch (MALException ex)
+    {
+      // body and header should be the same encoder then
+      LOGGER.info("No separate stream encoder configured for SPP header");
+    }
+
+    hdrStreamFactory = lsf;
   }
 
   @Override
@@ -144,8 +161,8 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
   {
     StringBuilder buf = new StringBuilder();
 
-    int a = apid;
-    int aq = apidQualifier;
+    int a = defaultApid;
+    int aq = defaultApidQualifier;
 
     // decode configuration
     if (properties != null)
@@ -181,16 +198,15 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     String endpointUriPart = uriValue;
     int iFirst = endpointUriPart.indexOf(protocolDelim) + 1;
 
-    System.out.println("GRP: " + uriValue + "  :  " + endpointUriPart.substring(iFirst));
     return endpointUriPart.substring(iFirst);
   }
 
   @Override
   protected GENEndpoint internalCreateEndpoint(final String localName, final String routingName, final Map properties) throws MALException
   {
-    return new SPPEndpoint(this, configuration, apidQualifier, uriRep, ssc, localName, routingName, uriBase + routingName, wrapBodyParts, properties);
+    return new SPPEndpoint(this, defaultConfiguration, defaultApidQualifier, uriRep, ssc, localName, routingName, uriBase + routingName, wrapBodyParts, properties);
   }
-  
+
   protected GENOutgoingMessageHolder<List<ByteBuffer>> internalEncodeMessage(final String destinationRootURI,
           final String destinationURI,
           final Object multiSendHandle,
@@ -203,7 +219,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     int sequenceFlags = (buf[2] & 0xC0) >> 6;
 
     List<ByteBuffer> encodedMessage = new ArrayList<ByteBuffer>();
-    
+
     if (3 == sequenceFlags)
     {
       encodedMessage.add(ByteBuffer.wrap(buf));
@@ -217,53 +233,90 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
         short shortVal = buffer.getShort(index + 4);
         int bodyLength = shortVal >= 0 ? shortVal : 0x10000 + shortVal;
         bodyLength += 7;
-  
+
         encodedMessage.add(ByteBuffer.wrap(buf, index, bodyLength));
         index += bodyLength;
       }
     }
-    
-      return new GENOutgoingMessageHolder<List<ByteBuffer>>(apid,
-              destinationRootURI,
-              destinationURI,
-              multiSendHandle,
-              lastForHandle,
-              msg,
-              encodedMessage);
+
+    return new GENOutgoingMessageHolder<List<ByteBuffer>>(defaultApid,
+            destinationRootURI,
+            destinationURI,
+            multiSendHandle,
+            lastForHandle,
+            msg,
+            encodedMessage);
   }
-  
+
   protected GENMessage internalCreateMessage(final int apidQualifier, final int apid, int sequenceFlags, final byte[] packet) throws MALException
   {
     if (3 == sequenceFlags)
     {
-      return new SPPMessage(65530, null, wrapBodyParts, true, new SPPMessageHeader(configuration, null, apidQualifier, uriRep, ssc), qosProperties, packet, getStreamFactory());
+      SPPConfiguration configuration = apidConfigurations.get(new QualifiedApid(apidQualifier, apid));
+      if (null == configuration)
+      {
+        configuration = defaultConfiguration;
+      }
+
+      MALElementStreamFactory localBodyStreamFactory = hdrStreamFactory;
+      if (!configuration.isFixedBody())
+      {
+        localBodyStreamFactory = getStreamFactory();
+      }
+
+      // need to decode in two stages, first message header
+      SPPMessage dummyMessage = internalDecodeMessageHeader(apidQualifier, apid, packet);
+
+      // now full message including body
+      return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, false,
+              (GENMessageHeader) dummyMessage.getHeader(), qosProperties,
+              dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(), localBodyStreamFactory);
     }
     else
     {
       // find packet segment handler
-      SegmentHandler hdr = segmentHandlers.get(apid);
+      SegmentHandler segmentHandler = segmentHandlers.get(apid);
 
-      if (null == hdr)
+      if (null == segmentHandler)
       {
-        hdr = new SegmentHandler();
-        segmentHandlers.put(apid, hdr);
+        segmentHandler = new SegmentHandler();
+        segmentHandlers.put(apid, segmentHandler);
       }
 
-      hdr.addSegment(sequenceFlags, packet);
+      segmentHandler.addSegment(sequenceFlags, packet);
 
-      if (hdr.messageComplete())
+      if (segmentHandler.messageComplete())
       {
-        byte[] c = hdr.getCompleteMessage();
+        byte[] c = segmentHandler.getCompleteMessage(apidQualifier, apid);
         segmentHandlers.remove(apid);
 
         GENMessage msg = internalCreateMessage(apidQualifier, apid, 3, c);
 
-        System.out.println("Decoded SPP segmented message: " + msg.getHeader());
+        LOGGER.log(Level.FINE, "Decoded SPP segmented message: {0}", msg.getHeader());
         return msg;
       }
 
       return null;
     }
+  }
+
+  protected SPPMessage internalDecodeMessageHeader(final int apidQualifier, final int apid, final byte[] packet) throws MALException
+  {
+    SPPConfiguration configuration = apidConfigurations.get(new QualifiedApid(apidQualifier, apid));
+    if (null == configuration)
+    {
+      configuration = defaultConfiguration;
+    }
+
+    // need to decode in two stages, first message header
+    return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, true,
+            new SPPMessageHeader(hdrStreamFactory, configuration, null, apidQualifier, uriRep, ssc),
+            qosProperties, packet, hdrStreamFactory);
+  }
+
+  protected MALElementStreamFactory getHeaderStreamFactory()
+  {
+    return hdrStreamFactory;
   }
 
   protected class SegmentHandler
@@ -273,6 +326,11 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     private long firstIndex = -1;
     private boolean hadLast = false;
     Map<Long, byte[]> segmentMap = new TreeMap<Long, byte[]>(); // use TreeMap so that key is kept sorted
+
+    public int segmentCount()
+    {
+      return segmentMap.size();
+    }
 
     public void addSegment(int segmentFlags, byte[] packet)
     {
@@ -290,41 +348,40 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
         hadLast = true;
       }
 
-      System.out.println("Adding segment: " + apid + " : " + segmentIndex + " : " + segmentFlags + " : " + totalSize);
-
       segmentMap.put(segmentIndex, packet);
       totalSize += packet.length;
+
+      LOGGER.log(Level.FINE, "Adding segment: {0} : {1} : {2} : {3} : {4}", new Object[]{defaultApid, segmentIndex, segmentFlags, packet.length, totalSize});
     }
 
     public boolean messageComplete()
     {
       boolean bv = hadFirst && hadLast && noGaps();
 
-      System.out.println("Message complete: " + bv);
+      LOGGER.log(Level.FINE, "Message complete: {0}", bv);
 
       return bv;
     }
 
-    public byte[] getCompleteMessage() throws MALException
+    public byte[] getCompleteMessage(final int apidQualifier, final int apid) throws MALException
     {
       byte[] buf = new byte[totalSize];
 
       int index = 0;
-      int initialOffset = index;
 
       boolean first = true;
       for (byte[] packet : segmentMap.values())
       {
         if (!first)
         {
-          GENMessage msg = createMessage(packet);
+          SPPMessage msg = internalDecodeMessageHeader(apidQualifier, apid, packet);
           packet = msg.getBody().getEncodedBody().getEncodedBody().getValue();
-          initialOffset = 0;
         }
 
-        System.arraycopy(packet, initialOffset, buf, index, packet.length - initialOffset);
+        LOGGER.log(Level.FINE, "seg: {0} : {1} : {2}", new Object[]{index, packet.length, GENHelper.byteArrayToHexString(packet, 0, Math.min(100, packet.length))});
+        System.arraycopy(packet, 0, buf, index, packet.length);
 
-        index += (packet.length - initialOffset);
+        index += packet.length;
         first = false;
       }
 
@@ -344,6 +401,50 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
       }
 
       return true;
+    }
+  }
+
+  public static class QualifiedApid
+  {
+    public final int apidQualifier;
+    public final int apid;
+
+    public QualifiedApid(int apidQualifier, int apid)
+    {
+      this.apidQualifier = apidQualifier;
+      this.apid = apid;
+    }
+
+    @Override
+    public int hashCode()
+    {
+      int hash = 3;
+      hash = 29 * hash + this.apidQualifier;
+      hash = 29 * hash + this.apid;
+      return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (this == obj)
+      {
+        return true;
+      }
+      if (obj == null)
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass())
+      {
+        return false;
+      }
+      final QualifiedApid other = (QualifiedApid) obj;
+      if (this.apidQualifier != other.apidQualifier)
+      {
+        return false;
+      }
+      return this.apid == other.apid;
     }
   }
 }

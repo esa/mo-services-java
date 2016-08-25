@@ -42,12 +42,11 @@ public class SPPVarBinaryElementInputStream extends esa.mo.mal.encoder.binary.Bi
    * Constructor.
    *
    * @param is Input stream to read from.
-   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPVarBinaryElementInputStream(final java.io.InputStream is, final boolean smallLengthField,
+  public SPPVarBinaryElementInputStream(final java.io.InputStream is,
           final SPPTimeHandler timeHandler)
   {
-    super(new SPPVarBinaryDecoder(is, smallLengthField, timeHandler));
+    super(new SPPVarBinaryDecoder(is, timeHandler));
   }
 
   /**
@@ -55,12 +54,11 @@ public class SPPVarBinaryElementInputStream extends esa.mo.mal.encoder.binary.Bi
    *
    * @param buf Byte buffer to read from.
    * @param offset Offset into buffer to start from.
-   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPVarBinaryElementInputStream(final byte[] buf, final int offset, final boolean smallLengthField,
+  public SPPVarBinaryElementInputStream(final byte[] buf, final int offset,
           final SPPTimeHandler timeHandler)
   {
-    super(new SPPVarBinaryDecoder(buf, offset, smallLengthField, timeHandler));
+    super(new SPPVarBinaryDecoder(buf, offset, timeHandler));
   }
 
   @Override
@@ -104,11 +102,15 @@ public class SPPVarBinaryElementInputStream extends esa.mo.mal.encoder.binary.Bi
           else
           {
             Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()];
+            if (null == sf)
+            {
+              sf = dec.decodeAbstractElementType(true);
+            }
             return decodeSubElement((Long) sf, ctx);
           }
         }
         default:
-          return decodeSubElement(dec.decodeNullableLong(), ctx);
+          return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
       }
     }
 
@@ -119,7 +121,7 @@ public class SPPVarBinaryElementInputStream extends esa.mo.mal.encoder.binary.Bi
   {
     if (null == sf)
     {
-      sf = dec.decodeLong();
+      sf = dec.decodeAbstractElementType(false);
     }
 
     final Long sfv = (sf & ~0xFFFFFF) | (-(sf & 0xFFFFFF) & 0xFFFFFF);

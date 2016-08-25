@@ -25,7 +25,7 @@
   
   <artifactId>ENCODING_GEN</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.3</version>
+  <version>1.0.4-SNAPSHOT</version>
 
   <name>ESA MAL Generic Java encoding framework</name>
   <description>A base Java framework for CCSDS MAL encoders</description>

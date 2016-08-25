@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.spp;
 
+import esa.mo.mal.encoder.binary.BinaryEncoder.BinaryStreamHolder;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder.FixedStreamHolder;
 import esa.mo.mal.encoder.gen.GENEncoder;
 import esa.mo.mal.encoder.spp.SPPTimeHandler.TimeOutputStream;
@@ -284,8 +285,18 @@ public class SPPFixedBinaryEncoder extends GENEncoder
     }
   }
 
+  public SPPTimeHandler getTimeHandler()
+  {
+    return timeHandler;
+  }
+
+  public BinaryStreamHolder getStreamHolder()
+  {
+    return (BinaryStreamHolder)outputStream;
+  }
+
   @Override
-  protected byte internalEncodeAttributeType(byte value) throws MALException
+  public byte internalEncodeAttributeType(byte value) throws MALException
   {
     return (byte) (value - 1);
   }

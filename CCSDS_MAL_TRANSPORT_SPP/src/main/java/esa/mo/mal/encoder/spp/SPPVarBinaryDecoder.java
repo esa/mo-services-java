@@ -36,7 +36,6 @@ import org.ccsds.moims.mo.mal.structures.URI;
  */
 public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
 {
-  private final boolean smallLengthField;
   private final SPPTimeHandler timeHandler;
   private final SPPTimeInputStream timeInputStream = new SPPTimeInputStream();
 
@@ -44,13 +43,11 @@ public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    * Constructor.
    *
    * @param src Byte array to read from.
-   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPVarBinaryDecoder(final byte[] src, final boolean smallLengthField, final SPPTimeHandler timeHandler)
+  public SPPVarBinaryDecoder(final byte[] src, final SPPTimeHandler timeHandler)
   {
-    super(new SPPVarBufferHolder(null, src, 0, src.length, smallLengthField));
+    super(new SPPVarBufferHolder(null, src, 0, src.length));
 
-    this.smallLengthField = smallLengthField;
     this.timeHandler = timeHandler;
   }
 
@@ -58,13 +55,11 @@ public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    * Constructor.
    *
    * @param is Input stream to read from.
-   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPVarBinaryDecoder(final java.io.InputStream is, final boolean smallLengthField, final SPPTimeHandler timeHandler)
+  public SPPVarBinaryDecoder(final java.io.InputStream is, final SPPTimeHandler timeHandler)
   {
-    super(new SPPVarBufferHolder(is, null, 0, 0, smallLengthField));
+    super(new SPPVarBufferHolder(is, null, 0, 0));
 
-    this.smallLengthField = smallLengthField;
     this.timeHandler = timeHandler;
   }
 
@@ -73,40 +68,47 @@ public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    *
    * @param src Byte array to read from.
    * @param offset index in array to start reading from.
-   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPVarBinaryDecoder(final byte[] src, final int offset, final boolean smallLengthField, final SPPTimeHandler timeHandler)
+  public SPPVarBinaryDecoder(final byte[] src, final int offset, final SPPTimeHandler timeHandler)
   {
-    super(new SPPVarBufferHolder(null, src, offset, src.length, smallLengthField));
+    super(new SPPVarBufferHolder(null, src, offset, src.length));
 
-    this.smallLengthField = smallLengthField;
     this.timeHandler = timeHandler;
   }
 
   /**
    * Constructor.
    *
-   * @param src Source buffer holder to use.
-   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  protected SPPVarBinaryDecoder(final BufferHolder src, final boolean smallLengthField, final SPPTimeHandler timeHandler)
+  public SPPVarBinaryDecoder(SPPFixedBinaryDecoder fixedDecoder)
+  {
+    super(new SPPVarBufferHolder((BinaryBufferHolder) fixedDecoder.getSourceBuffer()));
+
+    this.timeHandler = fixedDecoder.getTimeHandler();
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param src Source buffer holder to use.
+   */
+  protected SPPVarBinaryDecoder(final BufferHolder src, final SPPTimeHandler timeHandler)
   {
     super(src);
 
-    this.smallLengthField = smallLengthField;
     this.timeHandler = timeHandler;
   }
 
   @Override
   public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final java.util.List list) throws MALException
   {
-    return new SPPVarBinaryListDecoder(list, sourceBuffer, smallLengthField, timeHandler);
+    return new SPPVarBinaryListDecoder(list, sourceBuffer, timeHandler);
   }
 
   @Override
   public Boolean decodeNullableBoolean() throws MALException
   {
-    if (sourceBuffer.getBool())
+    if (sourceBuffer.isNotNull())
     {
       return decodeBoolean();
     }
@@ -115,20 +117,9 @@ public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   }
 
   @Override
-  public Blob decodeBlob() throws MALException
-  {
-    if (smallLengthField)
-    {
-      return new Blob(sourceBuffer.directGetBytes(sourceBuffer.getSignedShort()));
-    }
-
-    return super.decodeBlob();
-  }
-
-  @Override
   public Blob decodeNullableBlob() throws MALException
   {
-    if (sourceBuffer.getBool())
+    if (sourceBuffer.isNotNull())
     {
       return decodeBlob();
     }
@@ -165,33 +156,11 @@ public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   {
     return timeHandler.decodeTime(timeInputStream);
   }
-  
-  @Override
-  public Time decodeNullableTime() throws MALException
-  {
-    if (sourceBuffer.getBool())
-    {
-      return decodeTime();
-    }
-
-    return null;
-  }
 
   @Override
   public FineTime decodeFineTime() throws MALException
   {
     return timeHandler.decodeFineTime(timeInputStream);
-  }
-
-  @Override
-  public FineTime decodeNullableFineTime() throws MALException
-  {
-    if (sourceBuffer.getBool())
-    {
-      return decodeFineTime();
-    }
-
-    return null;
   }
 
   @Override
@@ -201,20 +170,9 @@ public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   }
 
   @Override
-  public Duration decodeNullableDuration() throws MALException
-  {
-    if (sourceBuffer.getBool())
-    {
-      return decodeDuration();
-    }
-
-    return null;
-  }
-
-  @Override
   public String decodeNullableString() throws MALException
   {
-    if (sourceBuffer.getBool())
+    if (sourceBuffer.isNotNull())
     {
       return decodeString();
     }
@@ -225,7 +183,7 @@ public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   @Override
   public URI decodeNullableURI() throws MALException
   {
-    if (sourceBuffer.getBool())
+    if (sourceBuffer.isNotNull())
     {
       return decodeURI();
     }
@@ -236,7 +194,7 @@ public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   @Override
   public Identifier decodeNullableIdentifier() throws MALException
   {
-    if (sourceBuffer.getBool())
+    if (sourceBuffer.isNotNull())
     {
       return decodeIdentifier();
     }
@@ -245,19 +203,27 @@ public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   }
 
   @Override
-  protected int internalDecodeAttributeType(byte value) throws MALException
+  public Long decodeAbstractElementType(boolean withNull) throws MALException
+  {
+    if (!withNull || sourceBuffer.isNotNull())
+    {
+      return java.nio.ByteBuffer.wrap(sourceBuffer.directGetBytes(8)).getLong();
+    }
+
+    return null;
+  }
+
+  @Override
+  public int internalDecodeAttributeType(byte value) throws MALException
   {
     return value + 1;
   }
 
   /**
-   * Extends the fixed length internal buffer holder to cope with the smaller size of the size field for Strings in SPP
-   * packets.
+   * Extends the binary buffer holder to wrap an existing buffer holder and use their existing buffer.
    */
-  protected static class SPPVarBufferHolder extends BinaryBufferHolder
+  public static class SPPVarBufferHolder extends BinaryBufferHolder
   {
-    private final boolean smallLengthField;
-
     /**
      * Constructor.
      *
@@ -265,44 +231,78 @@ public class SPPVarBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
      * @param buf Source buffer to use.
      * @param offset Buffer offset to read from next.
      * @param length Length of readable data held in the array, which may be larger.
-     * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
      */
-    public SPPVarBufferHolder(final java.io.InputStream is,
-            final byte[] buf,
-            final int offset,
-            final int length,
-            final boolean smallLengthField)
+    public SPPVarBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
       super(is, buf, offset, length);
+    }
 
-      this.smallLengthField = smallLengthField;
+    /**
+     * Constructor.
+     *
+     * @param buffer Source buffer to use.
+     */
+    public SPPVarBufferHolder(final BinaryBufferHolder buffer)
+    {
+      super(buffer.getBuf());
     }
 
     @Override
     public String getString() throws MALException
     {
-      if (smallLengthField)
+      final int len = getUnsignedInt();
+
+      if (len >= 0)
       {
-        final int len = getSignedShort();
+        buf.checkBuffer(len);
 
-        if (len >= 0)
-        {
-          checkBuffer(len);
-
-          final String s = new String(buf, offset, len, UTF8_CHARSET);
-          offset += len;
-          return s;
-        }
-
-        return null;
+        final String s = new String(buf.getBuf(), buf.getOffset(), len, UTF8_CHARSET);
+        buf.shiftOffsetAndReturnPrevious(len);
+        return s;
       }
-      else
+      return null;
+    }
+
+    @Override
+    public float getFloat() throws MALException
+    {
+      return Float.intBitsToFloat(java.nio.ByteBuffer.wrap(directGetBytes(4)).getInt());
+    }
+
+    @Override
+    public double getDouble() throws MALException
+    {
+      return Double.longBitsToDouble(java.nio.ByteBuffer.wrap(directGetBytes(8)).getLong());
+    }
+
+    @Override
+    public BigInteger getBigInteger() throws MALException
+    {
+      BigInteger value = BigInteger.ZERO;
+      int i = 0;
+      byte b;
+      while (((b = get8()) & 0x80) != 0)
       {
-        return super.getString();
+        value = value.or(BigInteger.valueOf(b & 0x7f).shiftLeft(i));
+        i += 7;
       }
+
+      return value.or(BigInteger.valueOf(b).shiftLeft(i));
+    }
+
+    @Override
+    public short getUnsignedShort8() throws MALException
+    {
+      return (short) (get8() & 0xFF);
+    }
+
+    @Override
+    public byte[] getBytes() throws MALException
+    {
+      return directGetBytes(getUnsignedInt());
     }
   }
-  
+
   private final class SPPTimeInputStream implements TimeInputStream
   {
     public byte[] directGetBytes(int length) throws MALException

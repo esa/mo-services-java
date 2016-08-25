@@ -141,7 +141,7 @@ public class GENEndpoint implements MALEndpoint
               serviceVersion,
               isErrorMessage,
               qosProperties),
-              qosProperties, null, body);
+              qosProperties, null, transport.getStreamFactory(), body);
     }
     catch (MALInteractionException ex)
     {
@@ -191,7 +191,7 @@ public class GENEndpoint implements MALEndpoint
               serviceVersion,
               isErrorMessage,
               qosProperties),
-              qosProperties, null, body);
+              qosProperties, null, transport.getStreamFactory(), body);
     }
     catch (MALInteractionException ex)
     {
@@ -239,7 +239,7 @@ public class GENEndpoint implements MALEndpoint
               qosProperties),
               qosProperties,
               op,
-              body);
+              transport.getStreamFactory(), body);
     }
     catch (MALInteractionException ex)
     {
@@ -287,7 +287,7 @@ public class GENEndpoint implements MALEndpoint
               qosProperties),
               qosProperties,
               op,
-              body);
+              transport.getStreamFactory(), body);
     }
     catch (MALInteractionException ex)
     {

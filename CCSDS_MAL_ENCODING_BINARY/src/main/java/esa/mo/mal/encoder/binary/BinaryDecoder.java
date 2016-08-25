@@ -156,7 +156,7 @@ public class BinaryDecoder extends GENDecoder
   public byte[] getRemainingEncodedData() throws MALException
   {
     BinaryBufferHolder dSourceBuffer = (BinaryBufferHolder)sourceBuffer;
-    return Arrays.copyOfRange(dSourceBuffer.buf, dSourceBuffer.offset, dSourceBuffer.contentLength);
+    return Arrays.copyOfRange(dSourceBuffer.buf.buf, dSourceBuffer.buf.offset, dSourceBuffer.buf.contentLength);
   }
 
   /**
@@ -165,11 +165,7 @@ public class BinaryDecoder extends GENDecoder
    */
   protected static class BinaryBufferHolder extends BufferHolder
   {
-    protected final java.io.InputStream inputStream;
-    protected byte[] buf;
-    protected int offset;
-    protected int contentLength;
-    protected boolean forceRealloc = false;
+    protected final InputReader buf;
 
     /**
      * Constructor.
@@ -182,10 +178,23 @@ public class BinaryDecoder extends GENDecoder
     public BinaryBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
       super();
-      this.inputStream = is;
+      this.buf = new InputReader(is, buf, offset, length);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param buf Source buffer to use.
+     */
+    protected BinaryBufferHolder(final InputReader buf)
+    {
+      super();
       this.buf = buf;
-      this.offset = offset;
-      this.contentLength = length;
+    }
+
+    public InputReader getBuf()
+    {
+      return buf;
     }
 
     @Override
@@ -195,10 +204,10 @@ public class BinaryDecoder extends GENDecoder
 
       if (len >= 0)
       {
-        checkBuffer(len);
+        buf.checkBuffer(len);
 
-        final String s = new String(buf, offset, len, UTF8_CHARSET);
-        offset += len;
+        final String s = new String(buf.buf, buf.offset, len, UTF8_CHARSET);
+        buf.offset += len;
         return s;
       }
       return null;
@@ -281,9 +290,7 @@ public class BinaryDecoder extends GENDecoder
     @Override
     public byte get8() throws MALException
     {
-      checkBuffer(1);
-
-      return buf[offset++];
+      return buf.get8();
     }
 
     @Override
@@ -325,6 +332,44 @@ public class BinaryDecoder extends GENDecoder
     @Override
     public byte[] directGetBytes(final int size) throws MALException
     {
+      return buf.directGetBytes(size);
+    }
+  }
+
+  protected static class InputReader
+  {
+    protected final java.io.InputStream inputStream;
+    protected byte[] buf;
+    protected int offset;
+    protected int contentLength;
+    protected boolean forceRealloc = false;
+
+    /**
+     * Constructor.
+     *
+     * @param is Input stream to read from.
+     * @param buf Source buffer to use.
+     * @param offset Buffer offset to read from next.
+     * @param length Length of readable data held in the array, which may be larger.
+     */
+    public InputReader(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
+    {
+      super();
+      this.inputStream = is;
+      this.buf = buf;
+      this.offset = offset;
+      this.contentLength = length;
+    }
+
+    public byte get8() throws MALException
+    {
+      checkBuffer(1);
+
+      return buf[offset++];
+    }
+
+    public byte[] directGetBytes(final int size) throws MALException
+    {
       if (size >= 0)
       {
         checkBuffer(size);
@@ -343,7 +388,7 @@ public class BinaryDecoder extends GENDecoder
      * @param requiredLength number of bytes required.
      * @throws MALException if there is an error reading from the stream
      */
-    protected void checkBuffer(final int requiredLength) throws MALException
+    public void checkBuffer(final int requiredLength) throws MALException
     {
       if (null != inputStream)
       {
@@ -407,9 +452,14 @@ public class BinaryDecoder extends GENDecoder
      *
      * @return the byte buffer
      */
-    protected byte[] getBuf()
+    public byte[] getBuf()
     {
       return buf;
+    }
+
+    public int getOffset()
+    {
+      return offset;
     }
 
     /**
@@ -418,7 +468,7 @@ public class BinaryDecoder extends GENDecoder
      * @param delta the delta to apply
      * @return the previous offset
      */
-    protected int shiftOffsetAndReturnPrevious(int delta)
+    public int shiftOffsetAndReturnPrevious(int delta)
     {
       int i = offset;
       offset += delta;
@@ -431,7 +481,7 @@ public class BinaryDecoder extends GENDecoder
      *
      * @param oldSize the old buffer size
      */
-    protected void bufferRealloced(int oldSize)
+    public void bufferRealloced(int oldSize)
     {
       // no implementation for standard decoder
     }

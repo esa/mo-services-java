@@ -67,6 +67,7 @@ public class GENMessage implements MALMessage, java.io.Serializable
    * @param header The message header to use.
    * @param qosProperties The QoS properties for this message.
    * @param operation The details of the operation being encoding, can be null.
+   * @param encFactory The stream factory to use for decoding.
    * @param body the body of the message.
    * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation is unknown.
    */
@@ -74,6 +75,7 @@ public class GENMessage implements MALMessage, java.io.Serializable
           final GENMessageHeader header,
           final Map qosProperties,
           final MALOperation operation,
+          final MALElementStreamFactory encFactory,
           final Object... body) throws MALInteractionException
   {
     this.header = header;
@@ -101,7 +103,7 @@ public class GENMessage implements MALMessage, java.io.Serializable
     {
       this.operation = operation;
     }
-    this.body = createMessageBody(body);
+    this.body = createMessageBody(encFactory, body);
     this.qosProperties = qosProperties;
     this.wrapBodyParts = wrapBodyParts;
   }
@@ -127,7 +129,8 @@ public class GENMessage implements MALMessage, java.io.Serializable
     this.qosProperties = qosProperties;
     this.wrapBodyParts = wrapBodyParts;
 
-    final MALElementInputStream enc = encFactory.createInputStream(new ByteArrayInputStream(packet));
+    final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
+    final MALElementInputStream enc = encFactory.createInputStream(bais);
 
     if (readHeader)
     {
@@ -139,7 +142,7 @@ public class GENMessage implements MALMessage, java.io.Serializable
       this.header = header;
     }
 
-    this.body = createMessageBody(encFactory, enc);
+    this.body = createMessageBody(encFactory, bais, enc);
   }
 
   /**
@@ -175,7 +178,7 @@ public class GENMessage implements MALMessage, java.io.Serializable
       this.header = header;
     }
 
-    this.body = createMessageBody(encFactory, enc);
+    this.body = createMessageBody(encFactory, null, enc);
   }
 
   @Override
@@ -246,13 +249,13 @@ public class GENMessage implements MALMessage, java.io.Serializable
   }
 
   private GENMessageBody createMessageBody(final MALElementStreamFactory encFactory,
-          final MALElementInputStream encBodyElements)
+          final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements)
   {
     MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties, qosProperties);
 
     if (header.getIsErrorMessage())
     {
-      return new GENErrorBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+      return new GENErrorBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
     }
 
     if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal())
@@ -261,30 +264,31 @@ public class GENMessage implements MALMessage, java.io.Serializable
       switch (stage)
       {
         case MALPubSubOperation._REGISTER_STAGE:
-          return new GENRegisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+          return new GENRegisterBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
         case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-          return new GENPublishRegisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+          return new GENPublishRegisterBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
         case MALPubSubOperation._PUBLISH_STAGE:
-          return new GENPublishBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+          return new GENPublishBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
         case MALPubSubOperation._NOTIFY_STAGE:
-          return new GENNotifyBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+          return new GENNotifyBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
         case MALPubSubOperation._DEREGISTER_STAGE:
-          return new GENDeregisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+          return new GENDeregisterBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
         default:
-          return new GENMessageBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+          return new GENMessageBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
       }
     }
 
-    return new GENMessageBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+    return new GENMessageBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
   }
 
-  private GENMessageBody createMessageBody(final Object[] bodyElements)
+  private GENMessageBody createMessageBody(final MALElementStreamFactory encFactory,
+          final Object[] bodyElements)
   {
     MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties, qosProperties);
 
     if (header.getIsErrorMessage())
     {
-      return new GENErrorBody(ctx, bodyElements);
+      return new GENErrorBody(ctx, encFactory, bodyElements);
     }
 
     if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal())
@@ -293,20 +297,20 @@ public class GENMessage implements MALMessage, java.io.Serializable
       switch (stage)
       {
         case MALPubSubOperation._REGISTER_STAGE:
-          return new GENRegisterBody(ctx, bodyElements);
+          return new GENRegisterBody(ctx, encFactory, bodyElements);
         case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-          return new GENPublishRegisterBody(ctx, bodyElements);
+          return new GENPublishRegisterBody(ctx, encFactory, bodyElements);
         case MALPubSubOperation._PUBLISH_STAGE:
-          return new GENPublishBody(ctx, bodyElements);
+          return new GENPublishBody(ctx, encFactory, bodyElements);
         case MALPubSubOperation._NOTIFY_STAGE:
-          return new GENNotifyBody(ctx, bodyElements);
+          return new GENNotifyBody(ctx, encFactory, bodyElements);
         case MALPubSubOperation._DEREGISTER_STAGE:
-          return new GENDeregisterBody(ctx, bodyElements);
+          return new GENDeregisterBody(ctx, encFactory, bodyElements);
         default:
-          return new GENMessageBody(ctx, bodyElements);
+          return new GENMessageBody(ctx, encFactory, bodyElements);
       }
     }
 
-    return new GENMessageBody(ctx, bodyElements);
+    return new GENMessageBody(ctx, encFactory, bodyElements);
   }
 }

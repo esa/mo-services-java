@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.gen.body;
 
+import java.io.ByteArrayInputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
@@ -37,12 +38,14 @@ public class GENNotifyBody extends GENPublishBody implements MALNotifyBody
    * Constructor.
    *
    * @param ctx The encoding context to use.
+   * @param encFactory The encoder stream factory to use.
    * @param messageParts The message parts that compose the body.
    */
-  public GENNotifyBody(final MALEncodingContext ctx, 
+  public GENNotifyBody(final MALEncodingContext ctx,
+          final MALElementStreamFactory encFactory, 
           final Object[] messageParts)
   {
-    super(ctx, messageParts, 1);
+    super(ctx, encFactory, messageParts, 1);
   }
 
   /**
@@ -56,9 +59,10 @@ public class GENNotifyBody extends GENPublishBody implements MALNotifyBody
   public GENNotifyBody(final MALEncodingContext ctx, 
           final boolean wrappedBodyParts,
           final MALElementStreamFactory encFactory,
+          final ByteArrayInputStream encBodyBytes,
           final MALElementInputStream encBodyElements)
   {
-    super(ctx, wrappedBodyParts, encFactory, encBodyElements, 1);
+    super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements, 1);
   }
 
   @Override

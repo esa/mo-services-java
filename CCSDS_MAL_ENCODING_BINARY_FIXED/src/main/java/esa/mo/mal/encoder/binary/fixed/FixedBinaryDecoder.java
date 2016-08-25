@@ -95,42 +95,42 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     @Override
     public long getUnsignedLong() throws MALException
     {
-      checkBuffer(8);
-      final int i = shiftOffsetAndReturnPrevious(8);
-      return java.nio.ByteBuffer.wrap(getBuf(), i, 8).getLong();
+      buf.checkBuffer(8);
+      final int i = buf.shiftOffsetAndReturnPrevious(8);
+      return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 8).getLong();
     }
 
     @Override
     public long getUnsignedLong32() throws MALException
     {
-      checkBuffer(4);
+      buf.checkBuffer(4);
 
-      final int i = shiftOffsetAndReturnPrevious(4);
-      return java.nio.ByteBuffer.wrap(getBuf(), i, 4).getInt() & 0xFFFFFFFFL;
+      final int i = buf.shiftOffsetAndReturnPrevious(4);
+      return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 4).getInt() & 0xFFFFFFFFL;
     }
 
     @Override
     public int getUnsignedInt() throws MALException
     {
-      checkBuffer(4);
-      final int i = shiftOffsetAndReturnPrevious(4);
-      return java.nio.ByteBuffer.wrap(getBuf(), i, 4).getInt();
+      buf.checkBuffer(4);
+      final int i = buf.shiftOffsetAndReturnPrevious(4);
+      return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 4).getInt();
     }
 
     @Override
     public int getUnsignedInt16() throws MALException
     {
-      checkBuffer(2);
-      final int i = shiftOffsetAndReturnPrevious(2);
-      return java.nio.ByteBuffer.wrap(getBuf(), i, 2).getShort() & 0xFFFF;
+      buf.checkBuffer(2);
+      final int i = buf.shiftOffsetAndReturnPrevious(2);
+      return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 2).getShort() & 0xFFFF;
     }
 
     @Override
     public int getUnsignedShort() throws MALException
     {
-      checkBuffer(2);
-      final int i = shiftOffsetAndReturnPrevious(2);
-      return java.nio.ByteBuffer.wrap(getBuf(), i, 2).getShort();
+      buf.checkBuffer(2);
+      final int i = buf.shiftOffsetAndReturnPrevious(2);
+      return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 2).getShort();
     }
 
     @Override

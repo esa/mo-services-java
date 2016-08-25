@@ -41,13 +41,6 @@ import org.ccsds.moims.mo.mal.structures.URI;
  */
 public class SPPVarBinaryEncoder extends GENEncoder
 {
-  private static final byte[] PADDING =
-  {
-    0, 0, 0, 0, 0, 0, 0, 0
-  };
-  protected static final BigInteger ZERO = new BigInteger("0");
-  protected static final BigInteger MAX_ULONG = new BigInteger("18446744073709551615");
-  private final boolean smallLengthField;
   private final SPPTimeHandler timeHandler;
   private final SPPTimeOutputStream timeOutputStream = new SPPTimeOutputStream();
 
@@ -55,15 +48,11 @@ public class SPPVarBinaryEncoder extends GENEncoder
    * Constructor.
    *
    * @param os Output stream to write to.
-   * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
    */
-  public SPPVarBinaryEncoder(final OutputStream os,
-          final boolean smallLengthField,
-          final SPPTimeHandler timeHandler)
+  public SPPVarBinaryEncoder(final OutputStream os, final SPPTimeHandler timeHandler)
   {
-    super(new SPPVarStreamHolder(os, smallLengthField));
+    super(new SPPVarStreamHolder(os));
 
-    this.smallLengthField = smallLengthField;
     this.timeHandler = timeHandler;
   }
 
@@ -72,14 +61,7 @@ public class SPPVarBinaryEncoder extends GENEncoder
   {
     try
     {
-      if (smallLengthField)
-      {
-        outputStream.addUnsignedShort((short) value.size());
-      }
-      else
-      {
-        outputStream.addUnsignedInt((short) value.size());
-      }
+      outputStream.addUnsignedInt((short) value.size());
 
       return this;
     }
@@ -103,35 +85,6 @@ public class SPPVarBinaryEncoder extends GENEncoder
       {
         outputStream.addIsNull();
       }
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeULong(final ULong value) throws IllegalArgumentException, MALException
-  {
-    try
-    {
-      BigInteger v = value.getValue();
-      if (-1 == v.signum())
-      {
-        v = ZERO;
-      }
-      else if (0 > MAX_ULONG.compareTo(v))
-      {
-        v = MAX_ULONG;
-      }
-
-      byte[] buf = v.toByteArray();
-      int pad = 8 - (buf.length - 1);
-      if (0 < pad)
-      {
-        outputStream.directAdd(PADDING, 0, pad);
-      }
-      outputStream.directAdd(buf, 1, buf.length - 1);
     }
     catch (IOException ex)
     {
@@ -286,7 +239,35 @@ public class SPPVarBinaryEncoder extends GENEncoder
   }
 
   @Override
-  protected byte internalEncodeAttributeType(byte value) throws MALException
+  public void encodeAbstractElementType(Long value, boolean withNull) throws MALException
+  {
+    try
+    {
+      if (withNull)
+      {
+        if (null != value)
+        {
+          outputStream.addNotNull();
+          outputStream.directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array());
+        }
+        else
+        {
+          outputStream.addIsNull();
+        }
+      }
+      else
+      {
+        outputStream.directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array());
+      }
+    }
+    catch (IOException ex)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    }
+  }
+
+  @Override
+  public byte internalEncodeAttributeType(byte value) throws MALException
   {
     return (byte) (value - 1);
   }
@@ -296,50 +277,57 @@ public class SPPVarBinaryEncoder extends GENEncoder
    */
   protected static class SPPVarStreamHolder extends BinaryStreamHolder
   {
-    private final boolean smallLengthField;
+    static final BigInteger ULONG_MASK_NOT_7F = BigInteger.valueOf(0x7f).not();
+    static final BigInteger ULONG_MASK_7F = BigInteger.valueOf(0x7f);
+    static final BigInteger ULONG_MASK_80 = BigInteger.valueOf(0x80);
 
     /**
      * Constructor.
      *
      * @param outputStream The output stream to encode into.
-     * @param smallLengthField True if length field is 16bits, otherwise assumed to be 32bits.
      */
-    public SPPVarStreamHolder(OutputStream outputStream, final boolean smallLengthField)
+    public SPPVarStreamHolder(OutputStream outputStream)
     {
       super(outputStream);
-
-      this.smallLengthField = smallLengthField;
     }
 
     @Override
-    public void addBytes(byte[] val) throws IOException
+    public void addFloat(float value) throws IOException
     {
-      if (null == val)
+      directAdd(java.nio.ByteBuffer.allocate(4).putInt(Float.floatToRawIntBits(value)).array());
+    }
+
+    @Override
+    public void addDouble(double value) throws IOException
+    {
+      directAdd(java.nio.ByteBuffer.allocate(8).putLong(Double.doubleToRawLongBits(value)).array());
+    }
+
+    @Override
+    public void addBigInteger(BigInteger value) throws IOException
+    {
+      while (!(value.and(ULONG_MASK_NOT_7F)).equals(BigInteger.ZERO))
       {
-        if (smallLengthField)
-        {
-          addSignedShort((short) -1);
-        }
-        else
-        {
-          addSignedInt(-1);
-        }
+        directAdd(value.and(ULONG_MASK_7F).or(ULONG_MASK_80).byteValue());
+        value = value.shiftRight(7);
       }
-      else
-      {
-        if (smallLengthField)
-        {
-          addSignedShort((short) val.length);
-        }
-        else
-        {
-          addSignedInt(val.length);
-        }
-        directAdd(val);
-      }
+      directAdd(value.byteValue());
+    }
+
+    @Override
+    public void addUnsignedShort8(short value) throws IOException
+    {
+      directAdd((byte) value);
+    }
+
+    @Override
+    public void addBytes(final byte[] value) throws IOException
+    {
+      addUnsignedInt(value.length);
+      directAdd(value);
     }
   }
-  
+
   private final class SPPTimeOutputStream implements SPPTimeHandler.TimeOutputStream
   {
     public void directAdd(byte[] value, int os, int ln) throws IOException

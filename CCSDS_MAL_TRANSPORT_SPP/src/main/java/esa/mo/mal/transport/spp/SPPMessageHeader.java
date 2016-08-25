@@ -20,6 +20,11 @@
  */
 package esa.mo.mal.transport.spp;
 
+import esa.mo.mal.encoder.spp.SPPFixedBinaryDecoder;
+import esa.mo.mal.encoder.spp.SPPFixedBinaryEncoder;
+import esa.mo.mal.encoder.spp.SPPVarBinaryDecoder;
+import esa.mo.mal.encoder.spp.SPPVarBinaryEncoder;
+import esa.mo.mal.encoder.spp.SPPVarBinaryStreamFactory;
 import esa.mo.mal.transport.gen.GENMessageHeader;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.util.Date;
@@ -32,6 +37,7 @@ import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**
@@ -44,6 +50,7 @@ public class SPPMessageHeader extends GENMessageHeader
   private final SPPConfiguration configuration;
   private final SPPURIRepresentation uriRepresentation;
   private final SPPSourceSequenceCounter ssCounter;
+  private final MALElementStreamFactory secondaryFactory;
   private short ssc = -1;
   private int segmentFlags = 0x0000C000;
   private long segmentCounter = 0;
@@ -58,8 +65,9 @@ public class SPPMessageHeader extends GENMessageHeader
    * @param ssCounter Interface used to get the SPP source sequence count
    *
    */
-  public SPPMessageHeader(SPPConfiguration configuration, Boolean forceTC, int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter)
+  public SPPMessageHeader(final MALElementStreamFactory secondaryDecoder, SPPConfiguration configuration, Boolean forceTC, int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter)
   {
+    this.secondaryFactory = secondaryDecoder;
     this.forceTC = forceTC;
     this.configuration = configuration;
     this.primaryApidQualifier = primaryApidQualifier;
@@ -94,10 +102,11 @@ public class SPPMessageHeader extends GENMessageHeader
    * @param serviceVersion Service version number
    * @param isErrorMessage Flag indicating if the message conveys an error
    */
-  public SPPMessageHeader(SPPConfiguration configuration, Boolean forceTC, int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter, URI uriFrom, Blob authenticationId, URI uriTo, Time timestamp, QoSLevel qosLevel, UInteger priority, IdentifierList domain, Identifier networkZone, SessionType session, Identifier sessionName, InteractionType interactionType, UOctet interactionStage, Long transactionId, UShort serviceArea, UShort service, UShort operation, UOctet serviceVersion, Boolean isErrorMessage)
+  public SPPMessageHeader(final MALElementStreamFactory secondaryDecoder, SPPConfiguration configuration, Boolean forceTC, int primaryApidQualifier, SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter, URI uriFrom, Blob authenticationId, URI uriTo, Time timestamp, QoSLevel qosLevel, UInteger priority, IdentifierList domain, Identifier networkZone, SessionType session, Identifier sessionName, InteractionType interactionType, UOctet interactionStage, Long transactionId, UShort serviceArea, UShort service, UShort operation, UOctet serviceVersion, Boolean isErrorMessage)
   {
     super(uriFrom, authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone, session, sessionName, interactionType, interactionStage, transactionId, serviceArea, service, operation, serviceVersion, isErrorMessage);
 
+    this.secondaryFactory = secondaryDecoder;
     this.forceTC = forceTC;
     this.configuration = configuration;
     this.primaryApidQualifier = primaryApidQualifier;
@@ -108,7 +117,7 @@ public class SPPMessageHeader extends GENMessageHeader
   @Override
   public Element createElement()
   {
-    return new SPPMessageHeader(configuration, forceTC, primaryApidQualifier, uriRepresentation, ssCounter);
+    return new SPPMessageHeader(null, configuration, forceTC, primaryApidQualifier, uriRepresentation, ssCounter);
   }
 
   @Override
@@ -157,7 +166,7 @@ public class SPPMessageHeader extends GENMessageHeader
 
     boolean hasFromSubId = uriRepresentation.hasSubId(URIFrom);
     boolean hasToSubId = uriRepresentation.hasSubId(URITo);
-    
+
     encoder.encodeUOctet(new UOctet((short) configuration.getFlags(hasFromSubId, hasToSubId)));
 
     if (configuration.isSrcSubId() && hasFromSubId)
@@ -175,34 +184,42 @@ public class SPPMessageHeader extends GENMessageHeader
       encoder.encodeUInteger(new UInteger(0));
     }
     
+    // nasty hack for now
+    MALEncoder usurperEncoder = encoder;
+    if ((null != secondaryFactory) && (secondaryFactory instanceof SPPVarBinaryStreamFactory))
+    {
+      SPPFixedBinaryEncoder fixedEncoder = (SPPFixedBinaryEncoder)encoder;
+      usurperEncoder = new SPPVarBinaryEncoder(fixedEncoder.getStreamHolder().getOutputStream(), fixedEncoder.getTimeHandler());
+    }
+
     if (configuration.isPriority())
     {
-      encoder.encodeUInteger(priority);
+      usurperEncoder.encodeUInteger(priority);
     }
 
     if (configuration.isTimestamp())
     {
-      encoder.encodeTime(timestamp);
+      usurperEncoder.encodeTime(timestamp);
     }
 
     if (configuration.isNetwork())
     {
-      encoder.encodeIdentifier(networkZone);
+      usurperEncoder.encodeIdentifier(networkZone);
     }
 
     if (configuration.isSession())
     {
-      encoder.encodeIdentifier(sessionName);
+      usurperEncoder.encodeIdentifier(sessionName);
     }
 
     if (configuration.isDomain())
     {
-      encoder.encodeElement(domain);
+      usurperEncoder.encodeElement(domain);
     }
 
     if (configuration.isAuth())
     {
-      encoder.encodeBlob(authenticationId);
+      usurperEncoder.encodeBlob(authenticationId);
     }
   }
 
@@ -237,20 +254,28 @@ public class SPPMessageHeader extends GENMessageHeader
     {
       sourceSubId = decoder.decodeUOctet().getValue();
     }
-    
+
     if (0 != (flags & 0x40))
     {
       destSubId = decoder.decodeUOctet().getValue();
     }
-    
+
     if (0xC000 != segmentFlags)
     {
       segmentCounter = decoder.decodeUInteger().getValue();
     }
-    
+
+    // nasty hack for now
+    MALDecoder usurperDecoder = decoder;
+    if ((null != secondaryFactory) && (secondaryFactory instanceof SPPVarBinaryStreamFactory))
+    {
+      SPPFixedBinaryDecoder fixedDecoder = (SPPFixedBinaryDecoder)decoder;
+      usurperDecoder = new SPPVarBinaryDecoder(fixedDecoder);
+    }
+
     if (0 != (flags & 0x20))
     {
-      priority = decoder.decodeUInteger();
+      priority = usurperDecoder.decodeUInteger();
     }
     else
     {
@@ -258,7 +283,7 @@ public class SPPMessageHeader extends GENMessageHeader
     }
     if (0 != (flags & 0x10))
     {
-      timestamp = decoder.decodeTime();
+      timestamp = usurperDecoder.decodeTime();
     }
     else
     {
@@ -266,7 +291,7 @@ public class SPPMessageHeader extends GENMessageHeader
     }
     if (0 != (flags & 0x08))
     {
-      networkZone = decoder.decodeIdentifier();
+      networkZone = usurperDecoder.decodeIdentifier();
     }
     else
     {
@@ -274,7 +299,7 @@ public class SPPMessageHeader extends GENMessageHeader
     }
     if (0 != (flags & 0x04))
     {
-      sessionName = decoder.decodeIdentifier();
+      sessionName = usurperDecoder.decodeIdentifier();
     }
     else
     {
@@ -282,7 +307,7 @@ public class SPPMessageHeader extends GENMessageHeader
     }
     if (0 != (flags & 0x02))
     {
-      domain = (IdentifierList) decoder.decodeElement(new IdentifierList());
+      domain = (IdentifierList) usurperDecoder.decodeElement(new IdentifierList());
     }
     else
     {
@@ -290,7 +315,7 @@ public class SPPMessageHeader extends GENMessageHeader
     }
     if (0 != (flags & 0x01))
     {
-      authenticationId = decoder.decodeBlob();
+      authenticationId = usurperDecoder.decodeBlob();
     }
     else
     {
@@ -377,6 +402,11 @@ public class SPPMessageHeader extends GENMessageHeader
     return str.toString();
   }
 
+  public SPPConfiguration getConfiguration()
+  {
+    return configuration;
+  }
+
   protected static int getErrorFlag(boolean isError)
   {
     if (isError)
@@ -439,7 +469,7 @@ public class SPPMessageHeader extends GENMessageHeader
   {
     if (null != forceTC)
     {
-      return forceTC ? 0x00001000 : (short)0;
+      return forceTC ? 0x00001000 : (short) 0;
     }
     else
     {
@@ -493,12 +523,12 @@ public class SPPMessageHeader extends GENMessageHeader
 
   public byte getSegmentFlags()
   {
-    return (byte)(segmentFlags >> 8);
+    return (byte) (segmentFlags >> 8);
   }
 
   public void setSegmentFlags(byte segmentFlags)
   {
-    this.segmentFlags = ((int)segmentFlags) << 8;
+    this.segmentFlags = ((int) segmentFlags) << 8;
   }
 
   public long getSegmentCounter()

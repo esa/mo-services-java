@@ -317,5 +317,10 @@ public class BinaryEncoder extends GENEncoder
     {
       directAdd((byte) 0);
     }
+
+    public OutputStream getOutputStream()
+    {
+      return outputStream;
+    }
   }
 }

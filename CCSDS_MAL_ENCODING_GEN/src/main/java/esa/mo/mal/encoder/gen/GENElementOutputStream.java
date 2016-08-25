@@ -178,7 +178,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
       }
       else
       {
-        enc.encodeNullableLong(e.getShortForm());
+        enc.encodeAbstractElementType(e.getShortForm(), true);
       }
 
       // now encode the element

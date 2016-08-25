@@ -248,9 +248,19 @@ public class SPPFixedBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.Fixed
   }
 
   @Override
-  protected int internalDecodeAttributeType(byte value) throws MALException
+  public int internalDecodeAttributeType(byte value) throws MALException
   {
     return value + 1;
+  }
+
+  public BufferHolder getSourceBuffer()
+  {
+    return sourceBuffer;
+  }
+
+  public SPPTimeHandler getTimeHandler()
+  {
+    return timeHandler;
   }
 
   /**
@@ -290,10 +300,10 @@ public class SPPFixedBinaryDecoder extends esa.mo.mal.encoder.binary.fixed.Fixed
 
         if (len >= 0)
         {
-          checkBuffer(len);
+          buf.checkBuffer(len);
 
-          final String s = new String(buf, offset, len, UTF8_CHARSET);
-          offset += len;
+          final String s = new String(buf.getBuf(), buf.getOffset(), len, UTF8_CHARSET);
+          buf.shiftOffsetAndReturnPrevious(len);
           return s;
         }
 

@@ -29,7 +29,6 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class SPPVarBinaryStreamFactory extends esa.mo.mal.encoder.binary.BinaryStreamFactory
 {
-  private boolean smallLengthField = false;
   private SPPTimeHandler timeHandler = null;
 
   @Override
@@ -38,34 +37,25 @@ public class SPPVarBinaryStreamFactory extends esa.mo.mal.encoder.binary.BinaryS
     super.init(protocol, properties);
 
     timeHandler = new SPPTimeHandler(properties);
-    
-    if (null != properties)
-    {
-      if (properties.containsKey(SMALL_LENGTH_FIELD)
-              && Boolean.parseBoolean(properties.get(SMALL_LENGTH_FIELD).toString()))
-      {
-        smallLengthField = true;
-      }
-    }
   }
 
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes, final int offset)
   {
-    return new SPPVarBinaryElementInputStream(bytes, offset, smallLengthField, timeHandler);
+    return new SPPVarBinaryElementInputStream(bytes, offset, timeHandler);
   }
 
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final java.io.InputStream is)
           throws org.ccsds.moims.mo.mal.MALException
   {
-    return new SPPVarBinaryElementInputStream(is, smallLengthField, timeHandler);
+    return new SPPVarBinaryElementInputStream(is, timeHandler);
   }
 
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(final java.io.OutputStream os)
           throws org.ccsds.moims.mo.mal.MALException
   {
-    return new SPPVarBinaryElementOutputStream(os, smallLengthField, timeHandler);
+    return new SPPVarBinaryElementOutputStream(os, timeHandler);
   }
 }
