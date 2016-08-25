@@ -113,7 +113,7 @@ public class SPPFixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.
             {
               sf = dec.decodeAbstractElementType(true);
             }
-            return decodePubSubPublishUpdate((Long) sf);
+            return decodeSubElement((Long) sf, ctx);
           }
         }
         default:

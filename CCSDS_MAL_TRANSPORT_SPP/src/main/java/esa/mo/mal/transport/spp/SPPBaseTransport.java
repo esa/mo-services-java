@@ -29,8 +29,10 @@ import esa.mo.mal.transport.gen.util.GENHelper;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,6 +77,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
    * The stream factory used for encoding and decoding message headers.
    */
   private final MALElementStreamFactory hdrStreamFactory;
+  private final Set<Long> apidEndpointSet = new HashSet<Long>();
 
   /*
    * Constructor.
@@ -186,10 +189,28 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
             || Boolean.parseBoolean(properties.get(APPEND_ID_TO_URI).toString()))
     {
       buf.append('/');
-      buf.append(Math.abs((byte) RANDOM_NAME.nextInt()));
+      buf.append(Math.abs((byte) getNextSubId(aq, a)));
     }
 
     return buf.toString();
+  }
+
+  private int getNextSubId(long qualifier, int apid)
+  {
+    final long lookup = qualifier << 32 + apid << 16;
+
+    int rv = (byte) RANDOM_NAME.nextInt();
+
+    while (apidEndpointSet.contains(lookup + rv))
+    {
+      rv = (byte) RANDOM_NAME.nextInt();
+      
+      // need to check that all values have not been allocated otherwise we'll be stuck here forever
+    }
+    
+    apidEndpointSet.add(lookup + rv);
+    
+    return rv;
   }
 
   @Override
@@ -351,7 +372,10 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
       segmentMap.put(segmentIndex, packet);
       totalSize += packet.length;
 
-      LOGGER.log(Level.FINE, "Adding segment: {0} : {1} : {2} : {3} : {4}", new Object[]{defaultApid, segmentIndex, segmentFlags, packet.length, totalSize});
+      LOGGER.log(Level.FINE, "Adding segment: {0} : {1} : {2} : {3} : {4}", new Object[]
+      {
+        defaultApid, segmentIndex, segmentFlags, packet.length, totalSize
+      });
     }
 
     public boolean messageComplete()
@@ -378,7 +402,10 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
           packet = msg.getBody().getEncodedBody().getEncodedBody().getValue();
         }
 
-        LOGGER.log(Level.FINE, "seg: {0} : {1} : {2}", new Object[]{index, packet.length, GENHelper.byteArrayToHexString(packet, 0, Math.min(100, packet.length))});
+        LOGGER.log(Level.FINE, "seg: {0} : {1} : {2}", new Object[]
+        {
+          index, packet.length, GENHelper.byteArrayToHexString(packet, 0, Math.min(100, packet.length))
+        });
         System.arraycopy(packet, 0, buf, index, packet.length);
 
         index += packet.length;

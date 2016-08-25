@@ -186,8 +186,9 @@ public class SPPMessageHeader extends GENMessageHeader
     
     // nasty hack for now
     MALEncoder usurperEncoder = encoder;
-    if ((null != secondaryFactory) && (secondaryFactory instanceof SPPVarBinaryStreamFactory))
+    if (!configuration.isFixedBody())
     {
+      System.out.println("Encoding with variable");
       SPPFixedBinaryEncoder fixedEncoder = (SPPFixedBinaryEncoder)encoder;
       usurperEncoder = new SPPVarBinaryEncoder(fixedEncoder.getStreamHolder().getOutputStream(), fixedEncoder.getTimeHandler());
     }
@@ -267,7 +268,7 @@ public class SPPMessageHeader extends GENMessageHeader
 
     // nasty hack for now
     MALDecoder usurperDecoder = decoder;
-    if ((null != secondaryFactory) && (secondaryFactory instanceof SPPVarBinaryStreamFactory))
+    if (!configuration.isFixedBody())
     {
       SPPFixedBinaryDecoder fixedDecoder = (SPPFixedBinaryDecoder)decoder;
       usurperDecoder = new SPPVarBinaryDecoder(fixedDecoder);
