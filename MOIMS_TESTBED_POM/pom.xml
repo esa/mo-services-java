@@ -25,7 +25,7 @@
   
   <artifactId>TESTBED_POM</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.3</version>
+  <version>1.0.4-SNAPSHOT</version>
   <name>CCSDS MOIMS MO Testbed POM</name>
 
   <organization>
@@ -80,7 +80,7 @@
     <jacoco.version>0.7.1.201405082137</jacoco.version>
     <junit.version>4.8.1</junit.version>
     <fitnesse.output.dir>${project.build.directory}/surefire-reports</fitnesse.output.dir>
-    <ccsds.testbed.util.version>1.0.3</ccsds.testbed.util.version>
+    <ccsds.testbed.util.version>1.0.4-SNAPSHOT</ccsds.testbed.util.version>
     <cnes.version>3.2.2-SNAPSHOT</cnes.version>
     <joram.version>5.9.0</joram.version>
   </properties>
@@ -152,16 +152,6 @@
         <artifactId>joram-mom-amqp</artifactId>
         <version>${joram.version}</version>
       </dependency>
-	  <dependency>
-		<groupId>int.esa.ccsds.mo</groupId>
-		<artifactId>API_MAL</artifactId>
-		<version>${esa.api.version}</version>
-	  </dependency>
-	  <dependency>
-		<groupId>int.esa.ccsds.mo</groupId>
-		<artifactId>MAL_IMPL</artifactId>
-		<version>${esa.impl.version}</version>
-	  </dependency>
     </dependencies>
   </dependencyManagement>
   
