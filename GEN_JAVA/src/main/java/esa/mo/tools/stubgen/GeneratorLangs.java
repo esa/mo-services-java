@@ -1398,10 +1398,6 @@ public abstract class GeneratorLangs extends GeneratorBase
       {
         String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
         String opResp = delegateCall + op.getName() + "(" + opArgs + "interaction)";
-        if ((1 == op.getRetTypes().size()) && (op.getRetTypes().get(0).isNativeType()))
-        {
-          opResp = "new " + getConfig().getAreaPackage(StdStrings.MAL) + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + opResp + ")";
-        }
         ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
         method.addMethodWithDependencyStatement("  case " + ns, ns, false);
         createRequestResponseDecompose(method, op, opResp, createReturnType(file, area, service, op.getName(), "Response", op.getRetTypes()));
@@ -1471,7 +1467,18 @@ public abstract class GeneratorLangs extends GeneratorBase
     {
       if (1 == targetTypes.size())
       {
-        method.addMethodStatement(createMethodCall("    interaction.sendResponse(" + opCall + ")"));
+        if ((op.getRetTypes().get(0).isNativeType()))
+        {
+          String arg = op.getName() + "Rt";
+          method.addMethodStatement("    " + opRetType.getTypeName() + " " + arg + " = " + opCall);
+          StringBuilder buf = new StringBuilder();
+          buf.append("(").append(arg).append(" == null) ? null : new ").append(getConfig().getAreaPackage(StdStrings.MAL)).append("mal.").append(getConfig().getStructureFolder()).append(".").append(StdStrings.UNION).append("(").append(arg).append(")");
+          method.addMethodStatement(createMethodCall("    interaction.sendResponse(" + buf.toString() + ")"));
+        }
+        else
+        {
+          method.addMethodStatement(createMethodCall("    interaction.sendResponse(" + opCall + ")"));
+        }
       }
       else
       {
@@ -1996,7 +2003,7 @@ public abstract class GeneratorLangs extends GeneratorBase
 
     CompositeField nvType = createCompositeElementsDetails(file, false, "value", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, false, "value The numeric value to search for.");
     method = file.addMethodOpenStatement(false, false, false, true, StdStrings.PUBLIC, false, false, enumType, "fromNumericValue", Arrays.asList(nvType), null, "Returns the enumeration element represented by the supplied numeric value, or null if not matched.", "The matched enumeration value, or null if not matched.", null);
-    method.addMethodStatement("for (int i = 0; i < " + highestIndex + "; i++)", false);
+    method.addMethodStatement("for (int i = 0; i < _ENUMERATION_NUMERIC_VALUES.length; i++)", false);
     method.addMethodStatement("{", false);
     method.addMethodStatement("  if (" + getEnumValueCompare("_ENUMERATION_NUMERIC_VALUES[i]", "value") + ")", false);
     method.addMethodStatement("  {", false);
