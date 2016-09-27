@@ -41,7 +41,7 @@ Each action submission shall include:
             </mal:submit>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="The list sizes held in the ActionInstanceDetails do not matched the argument definitions or it contains one or more invalid argument values.&#xA;If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.">
+            <mal:errorRef comment="The list sizes held in the ActionInstanceDetails do not match the argument definitions or it contains one or more invalid argument values.&#xA;If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
@@ -1446,7 +1446,7 @@ Each transition in the state or the result of a check shall cause the generation
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="linkObjInstIds"
-                         comment="The linkObjInstIds field shall hold a list of CheckLink object instance identifiers to trigger the evaluation of.&#xA;The wildcard value of '0' shall be permitted in either list.&#xA;The wildcard value should be checked for first, if found no other checks of supplied object instance identifiers shall be made.&#xA;If a requested CheckIdentity or CheckLink object is unknown then an UNKNOWN error shall be returned.&#xA;If an error is raised then no evaluations shall be made as a result of this operation call.&#xA;The two lists shall be combined using 'OR' logic, where a CheckLink is evaluated if the identity of a check is in the first list or if the link is directly listed in the second list.&#xA;Triggering a check shall ignore the nominalTime, nominalCount, violationTime and violationCount fields and requests an immediate evaluation of the checks.&#xA;Triggering a check during a periodic check shall not influence the periodic check (e.g. it does not reset the checkInterval timer, the successive valid samples that passed/violated the check or the maxReportingInterval timer).">
+                         comment="The linkObjInstIds field shall hold a list of CheckLink object instance identifiers to trigger the evaluation of.&#xA;The wildcard value of '0' shall be permitted in either list.&#xA;The wildcard value should be checked for first, if found no other checks of supplied object instance identifiers shall be made.&#xA;If a requested CheckIdentity or CheckLink object is unknown then an UNKNOWN error shall be returned.&#xA;If an error is raised then no evaluations shall be made as a result of this operation call.&#xA;Either list may be empty in which case filtering on that aspect, check identity or specific check link, shall be ignored.&#xA;The two lists shall be combined using 'OR' logic, where a CheckLink is evaluated if the identity of a check is in the first list or if the link is directly listed in the second list.&#xA;Triggering a check shall ignore the nominalTime, nominalCount, violationTime and violationCount fields and requests an immediate evaluation of the checks.&#xA;Triggering a check during a periodic check shall not influence the periodic check (e.g. it does not reset the checkInterval timer, the successive valid samples that passed/violated the check or the maxReportingInterval timer).">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:submit>
@@ -1885,7 +1885,7 @@ Each transition in the state or the result of a check shall cause the generation
           </mal:field>
         </mal:composite>
         <mal:composite name="DeltaCheckDefinition" shortFormPart="10"
-                       comment="The DeltaCheckDefinition defines a delta transition check. It can be time-based or sample-based.">
+                       comment="The DeltaCheckDefinition defines a delta transition check.">
           <mal:extends>
             <mal:type name="CheckDefinitionDetails" service="Check" area="MC"/>
           </mal:extends>
@@ -1958,159 +1958,159 @@ Each transition in the state or the result of a check shall cause the generation
       </mal:dataTypes>
       <com:features>
         <mal:diagram name="CheckObjects">
-          <svg:svg width="750" height="770" version="1.1">
-            <svg:rect x="260" y="370" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
+          <svg:svg width="750" height="780" version="1.1">
+            <svg:rect x="260" y="380" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
                       height="70"/>
-            <svg:text x="350" y="388" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="398" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM OBJECT</svg:text>
-            <svg:text x="350" y="410" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="420" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">CheckLink</svg:text>
-            <svg:text x="350" y="422" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="432" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">2</svg:text>
-            <svg:text x="350" y="434" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="444" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle"/>
-            <svg:rect x="550" y="370" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
+            <svg:rect x="550" y="380" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
                       height="70"/>
-            <svg:text x="640" y="388" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="640" y="398" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM OBJECT</svg:text>
-            <svg:text x="640" y="410" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="640" y="420" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">ParameterIdentity</svg:text>
-            <svg:text x="640" y="422" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="640" y="432" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">1</svg:text>
-            <svg:text x="640" y="434" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="640" y="444" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">MAL::Identifier</svg:text>
-            <svg:rect x="20" y="320" fill="#FCF2E3" stroke="black" stroke-width="2" width="150"
+            <svg:rect x="20" y="330" fill="#FCF2E3" stroke="black" stroke-width="2" width="150"
                       height="70"/>
-            <svg:text x="95" y="338" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="348" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM OBJECT</svg:text>
-            <svg:text x="95" y="360" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="370" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">CompoundCheck</svg:text>
-            <svg:text x="95" y="372" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="382" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">9</svg:text>
-            <svg:text x="95" y="384" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="394" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">CompoundCheckDefinition</svg:text>
-            <svg:rect x="260" y="180" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
+            <svg:rect x="260" y="190" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
                       height="70"/>
-            <svg:text x="350" y="198" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="208" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM OBJECT</svg:text>
-            <svg:text x="350" y="220" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="230" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">CheckIdentity</svg:text>
-            <svg:text x="350" y="232" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="242" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">1</svg:text>
-            <svg:text x="350" y="244" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="254" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">MAL::Identifier</svg:text>
-            <svg:rect x="260" y="680" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
+            <svg:rect x="260" y="690" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
                       height="70"/>
-            <svg:text x="350" y="698" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="708" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM EVENT</svg:text>
-            <svg:text x="350" y="720" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="730" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">CheckTransition</svg:text>
-            <svg:text x="350" y="732" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="742" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">4</svg:text>
-            <svg:text x="350" y="744" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="754" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">CheckResult</svg:text>
-            <svg:rect x="20" y="240" fill="#FCF2E3" stroke="black" stroke-width="2" width="150"
+            <svg:rect x="20" y="250" fill="#FCF2E3" stroke="black" stroke-width="2" width="150"
                       height="70"/>
-            <svg:text x="95" y="258" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="268" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM OBJECT</svg:text>
-            <svg:text x="95" y="280" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="290" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">LimitCheck</svg:text>
-            <svg:text x="95" y="292" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="302" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">8</svg:text>
-            <svg:text x="95" y="304" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="314" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">LimitCheckDefinition</svg:text>
-            <svg:rect x="20" y="160" fill="#FCF2E3" stroke="black" stroke-width="2" width="150"
+            <svg:rect x="20" y="170" fill="#FCF2E3" stroke="black" stroke-width="2" width="150"
                       height="70"/>
-            <svg:text x="95" y="178" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="188" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM OBJECT</svg:text>
-            <svg:text x="95" y="200" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="210" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">DeltaCheck</svg:text>
-            <svg:text x="95" y="212" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="222" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">7</svg:text>
-            <svg:text x="95" y="224" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="234" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">DeltaCheckDefinition</svg:text>
-            <svg:rect x="20" y="80" fill="#FCF2E3" stroke="black" stroke-width="2" width="150"
+            <svg:rect x="20" y="90" fill="#FCF2E3" stroke="black" stroke-width="2" width="150"
                       height="70"/>
-            <svg:text x="95" y="98" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="108" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM OBJECT</svg:text>
-            <svg:text x="95" y="120" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="130" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">ReferenceCheck</svg:text>
-            <svg:text x="95" y="132" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="142" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">6</svg:text>
-            <svg:text x="95" y="144" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="154" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">ReferenceCheckDefinition</svg:text>
-            <svg:rect x="20" y="0" fill="#FCF2E3" stroke="black" stroke-width="2" width="150"
+            <svg:rect x="20" y="10" fill="#FCF2E3" stroke="black" stroke-width="2" width="150"
                       height="70"/>
-            <svg:text x="95" y="18" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="28" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM OBJECT</svg:text>
-            <svg:text x="95" y="40" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="50" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">ConstantCheck</svg:text>
-            <svg:text x="95" y="52" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="62" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">5</svg:text>
-            <svg:text x="95" y="64" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="95" y="74" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">ConstantCheckDefinition</svg:text>
-            <svg:rect x="260" y="530" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
+            <svg:rect x="260" y="540" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
                       height="70"/>
-            <svg:text x="350" y="548" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="558" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM OBJECT</svg:text>
-            <svg:text x="350" y="570" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="580" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">CheckLinkDefinition</svg:text>
-            <svg:text x="350" y="582" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="592" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">3</svg:text>
-            <svg:text x="350" y="594" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="350" y="604" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">CheckLinkDetails</svg:text>
-            <svg:rect x="550" y="680" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
+            <svg:rect x="550" y="690" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
                       height="70"/>
-            <svg:text x="640" y="698" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="640" y="708" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM_UNSPECIFIED</svg:text>
-            <svg:text x="640" y="720" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="640" y="730" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM::UNSPECIFIED_OBJECT</svg:text>
-            <svg:text x="640" y="732" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="640" y="742" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle"/>
-            <svg:text x="640" y="744" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="640" y="754" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle"/>
           </svg:svg>
@@ -2478,7 +2478,7 @@ For the 'Standard deviation' statistics function, when used with integer paramet
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="newDetails"
-                         comment="The newDetails field shall contain the replacement StatisticLinkDetails.&#xA;The two lists shall be ordered the same.&#xA;The number of entries in the two lists shall be the same size otherwise an INVALID error shall be returned.&#xA;If an error is raised then no links shall be updated as a result of this operation call.&#xA;The provider shall create a new StatisticLinkDefinition object and store it in the COM archive.&#xA;If any of the intervals are updated then the service shall reset the relevant timer use the new intervals immediately.">
+                         comment="The newDetails field shall contain the replacement StatisticLinkDetails.&#xA;The two lists shall be ordered the same.&#xA;The number of entries in the two lists shall be the same size otherwise an INVALID error shall be returned.&#xA;If an error is raised then no links shall be updated as a result of this operation call.&#xA;The provider shall create a new StatisticLinkDefinition object and store it in the COM archive.&#xA;If any of the intervals are updated then the service shall reset the relevant timer and use the new intervals immediately.">
                 <mal:type list="true" name="StatisticLinkDetails" service="Statistic" area="MC"/>
               </mal:field>
             </mal:request>
@@ -2496,7 +2496,7 @@ For the 'Standard deviation' statistics function, when used with integer paramet
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
-            <mal:errorRef comment="One or more of the supplied object instance identifiers list contains either a NULL or '0' or the two supplied lists are not the same length or is requesting an invalid sampling interval for the request parameter.&#xA;If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.">
+            <mal:errorRef comment="One or more of the supplied object instance identifiers list contains either a NULL or '0' or is requesting an invalid sampling interval for the request parameter or the two supplied lists are not the same length.&#xA;If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
                 <mal:type list="true" name="UInteger" area="MAL"/>
