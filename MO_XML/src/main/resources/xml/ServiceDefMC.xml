@@ -279,6 +279,20 @@ Each action submission shall include:
       <com:features>
         <mal:diagram name="ActionObjects">
           <svg:svg width="717" height="390" version="1.1">
+            <svg:rect x="390" y="70" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
+                      height="70"/>
+            <svg:text x="480" y="88" font-family="Verdana" font-size="12" fill="navy"
+                      text-anchor="middle"
+                      alignment-baseline="middle">COM_UNSPECIFIED</svg:text>
+            <svg:text x="480" y="110" font-family="Verdana" font-size="12" fill="navy"
+                      text-anchor="middle"
+                      alignment-baseline="middle">COM::UNSPECIFIED_OBJECT</svg:text>
+            <svg:text x="480" y="122" font-family="Verdana" font-size="12" fill="navy"
+                      text-anchor="middle"
+                      alignment-baseline="middle"/>
+            <svg:text x="480" y="134" font-family="Verdana" font-size="12" fill="navy"
+                      text-anchor="middle"
+                      alignment-baseline="middle"/>
             <svg:rect x="20" y="170" fill="#FCF2E3" stroke="black" stroke-width="2" width="137"
                       height="60"/>
             <svg:text x="88.5" y="188" font-family="Verdana" font-size="12" fill="navy"
@@ -356,6 +370,7 @@ Each action submission shall include:
             <com:objectType>
               <mal:type name="Identifier" area="MAL"/>
             </com:objectType>
+            <com:sourceObject comment="The object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used"/>
           </com:object>
           <com:object name="ActionDefinition" number="2">
             <com:objectType>
@@ -364,6 +379,7 @@ Each action submission shall include:
             <com:relatedObject>
               <com:objectType number="1" service="Action" area="MC"/>
             </com:relatedObject>
+            <com:sourceObject comment="The object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used"/>
           </com:object>
           <com:object name="ActionInstance" number="3">
             <com:objectType>
@@ -372,6 +388,7 @@ Each action submission shall include:
             <com:relatedObject>
               <com:objectType number="2" service="Action" area="MC"/>
             </com:relatedObject>
+            <com:sourceObject comment="The object that caused it to be created, most likely a COM OperationActivity object if created by the submitAction operation"/>
           </com:object>
         </com:objects>
         <com:events comment="Execution progress of an action shall be reported using COM ActivityTracking Execution events.&#xA;The Execution event may be reported many times as it is used to report each stage in the execution of the action. It is implementation specific when a progress step is reached and the Execution event will be reported.&#xA;If the execution of an action fails then that failure shall be reported using the normal COM ActivityTracking event pattern, specifically an ActivityTracking Execution event with the success field set to FALSE.&#xA;If the execution of an action fails with an error code then that error code shall be reported using an ActionFailure COM event in addition to the ActivityTracking event used to report the action failure.&#xA;The source of the ActionFailure event shall be the ActivityTracking Execution event that represents the failure stage of the action execution.&#xA;The related field of the ActionFailure event shall link to the ActionInstance object that failed.&#xA;The body of the event shall hold a numeric failure code that is either a MAL error number or a deployment specific code.&#xA;The specification of the deployment specific failure code is outside the scope of this specification and is expected to be agreed out of band.">
@@ -782,7 +799,21 @@ It is supported that other, deployment specific, validityState values be used ho
       </mal:dataTypes>
       <com:features>
         <mal:diagram name="ParameterObjects">
-          <svg:svg width="210" height="400" version="1.1">
+          <svg:svg width="560" height="400" version="1.1">
+            <svg:rect x="360" y="170" fill="#FCF2E3" stroke="black" stroke-width="2" width="180"
+                      height="70"/>
+            <svg:text x="450" y="188" font-family="Verdana" font-size="12" fill="navy"
+                      text-anchor="middle"
+                      alignment-baseline="middle">COM_UNSPECIFIED</svg:text>
+            <svg:text x="450" y="210" font-family="Verdana" font-size="12" fill="navy"
+                      text-anchor="middle"
+                      alignment-baseline="middle">COM::UNSPECIFIED_OBJECT</svg:text>
+            <svg:text x="450" y="222" font-family="Verdana" font-size="12" fill="navy"
+                      text-anchor="middle"
+                      alignment-baseline="middle"/>
+            <svg:text x="450" y="234" font-family="Verdana" font-size="12" fill="navy"
+                      text-anchor="middle"
+                      alignment-baseline="middle"/>
             <svg:rect x="20" y="170" fill="#FCF2E3" stroke="black" stroke-width="2" width="170"
                       height="70"/>
             <svg:text x="105" y="188" font-family="Verdana" font-size="12" fill="navy"
@@ -832,6 +863,7 @@ It is supported that other, deployment specific, validityState values be used ho
             <com:objectType>
               <mal:type name="Identifier" area="MAL"/>
             </com:objectType>
+            <com:sourceObject comment="The object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used"/>
           </com:object>
           <com:object name="ParameterDefinition" number="2">
             <com:objectType>
@@ -840,6 +872,7 @@ It is supported that other, deployment specific, validityState values be used ho
             <com:relatedObject>
               <com:objectType number="1" service="Parameter" area="MC"/>
             </com:relatedObject>
+            <com:sourceObject comment="The object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used"/>
           </com:object>
           <com:object name="ParameterValueInstance" number="3">
             <com:objectType>
@@ -848,6 +881,7 @@ It is supported that other, deployment specific, validityState values be used ho
             <com:relatedObject>
               <com:objectType number="2" service="Parameter" area="MC"/>
             </com:relatedObject>
+            <com:sourceObject comment="The object that caused the value to be generated or NULL for periodic reports"/>
           </com:object>
         </com:objects>
         <com:archiveUsage comment="ParameterIdentity and ParameterDefinition objects should be stored in the COM archive.&#xA;When a parameter value report is published, the ParameterValueInstance object should be stored in the COM archive."/>
@@ -1067,7 +1101,7 @@ The alert instances shall be published as events using the COM event operations.
       </mal:dataTypes>
       <com:features>
         <mal:diagram name="AlertObjects">
-          <svg:svg width="500" height="380" version="1.1">
+          <svg:svg width="520" height="370" version="1.1">
             <svg:rect x="20" y="150" fill="#FCF2E3" stroke="black" stroke-width="2" width="137"
                       height="60"/>
             <svg:text x="88.5" y="168" font-family="Verdana" font-size="12" fill="navy"
@@ -1082,18 +1116,18 @@ The alert instances shall be published as events using the COM event operations.
             <svg:text x="88.5" y="214" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">AlertDefinitionDetails</svg:text>
-            <svg:rect x="290" y="280" fill="#FCF2E3" stroke="black" stroke-width="2" width="190"
+            <svg:rect x="310" y="140" fill="#FCF2E3" stroke="black" stroke-width="2" width="190"
                       height="80"/>
-            <svg:text x="385" y="298" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="405" y="158" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM_UNSPECIFIED</svg:text>
-            <svg:text x="385" y="320" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="405" y="180" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle">COM::UNSPECIFIED_OBJECT</svg:text>
-            <svg:text x="385" y="332" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="405" y="192" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle"/>
-            <svg:text x="385" y="344" font-family="Verdana" font-size="12" fill="navy"
+            <svg:text x="405" y="204" font-family="Verdana" font-size="12" fill="navy"
                       text-anchor="middle"
                       alignment-baseline="middle"/>
             <svg:rect x="20" y="290" fill="#FCF2E3" stroke="black" stroke-width="2" width="137"
@@ -1131,6 +1165,7 @@ The alert instances shall be published as events using the COM event operations.
             <com:objectType>
               <mal:type name="Identifier" area="MAL"/>
             </com:objectType>
+            <com:sourceObject comment="The object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used"/>
           </com:object>
           <com:object name="AlertDefinition" number="2">
             <com:objectType>
@@ -1139,6 +1174,7 @@ The alert instances shall be published as events using the COM event operations.
             <com:relatedObject>
               <com:objectType number="1" service="Alert" area="MC"/>
             </com:relatedObject>
+            <com:sourceObject comment="The object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used"/>
           </com:object>
         </com:objects>
         <com:events comment="When an alert is generated it shall be represented as a COM event.&#xA;The event shall be published using the COM event service.&#xA;The source link of the AlertEvent object shall be the object that caused the event to be generated.">
@@ -1150,7 +1186,7 @@ The alert instances shall be published as events using the COM event operations.
             <com:relatedObject>
               <com:objectType number="2" service="Alert" area="MC"/>
             </com:relatedObject>
-            <com:sourceObject comment="The source of the Alert."/>
+            <com:sourceObject comment="The object that caused the event to be generated"/>
           </com:event>
         </com:events>
         <com:archiveUsage comment="AlertIdentity and AlertDefinition objects should be stored in the COM archive.&#xA;When an alert event is published, the AlertEvent object should be stored in the COM archive by the publisher."/>
@@ -3236,7 +3272,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
             <com:objectType>
               <mal:type name="Identifier" area="MAL"/>
             </com:objectType>
-            <com:sourceObject/>
+            <com:sourceObject comment="The object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used"/>
           </com:object>
           <com:object name="AggregationDefinition" number="2">
             <com:objectType>
@@ -3245,7 +3281,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
             <com:relatedObject>
               <com:objectType number="1" service="Aggregation" area="MC"/>
             </com:relatedObject>
-            <com:sourceObject/>
+            <com:sourceObject comment="The object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used"/>
           </com:object>
           <com:object name="AggregationValueInstance" number="3">
             <com:objectType>
@@ -3254,7 +3290,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
             <com:relatedObject>
               <com:objectType number="2" service="Aggregation" area="MC"/>
             </com:relatedObject>
-            <com:sourceObject/>
+            <com:sourceObject comment="The object that caused the value to be generated or NULL for periodic reports"/>
           </com:object>
         </com:objects>
         <com:archiveUsage comment="AggregationIdentity and AggregationDefinition objects should be stored in the COM archive.&#xA;When an aggregation value report is published, the AggregationValueInstance object should be stored in the COM archive."/>
@@ -3536,7 +3572,7 @@ Updating a group definition shall be performed by adding a new group definition 
             <com:objectType>
               <mal:type name="Identifier" area="MAL"/>
             </com:objectType>
-            <com:sourceObject/>
+            <com:sourceObject comment="The object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used."/>
           </com:object>
           <com:object name="GroupDefinition" number="2">
             <com:objectType>
@@ -3545,6 +3581,7 @@ Updating a group definition shall be performed by adding a new group definition 
             <com:relatedObject>
               <com:objectType number="1" service="Group" area="MC"/>
             </com:relatedObject>
+            <com:sourceObject comment="The object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used."/>
           </com:object>
         </com:objects>
         <com:archiveUsage comment="GroupIdentity and GroupDefinition objects should be stored in the COM archive.&#xA;The COM archive service operations shall be used to add, update and remove groups.&#xA;Other services should monitor the archive service for changes to groups they reference."/>
