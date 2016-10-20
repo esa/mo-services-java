@@ -20,15 +20,26 @@
  */
 package org.ccsds.moims.mo.testbed.suite;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
-import org.ccsds.moims.mo.testbed.util.Configuration;
+import java.util.logging.LogManager;
 
+import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 public class SuiteManagement extends LoggingBase
 {
   public boolean suiteSetup() throws Exception
   {
+	  /*
+	  System.err.println("DEBUG: "+System.getProperties());
+		// Change logger configuration
+		URL properties = this.getClass().getResource("/logging.properties");
+		System.err.println("DEBUG: logging.properties "+properties);
+	    LogManager.getLogManager().readConfiguration(properties.openStream()); 
+	  */
+	  
     // load deployment specific properties
     Properties prp = Configuration.getProperties(this.getClass().getSimpleName() + "Env.properties");
     System.getProperties().putAll(prp);
@@ -36,7 +47,16 @@ public class SuiteManagement extends LoggingBase
     // load test specific properties
     prp = Configuration.getProperties(this.getClass().getSimpleName() + ".properties", true);
     System.getProperties().putAll(prp);
-
+    
+    final String loggingCfg = System.getProperty("java.util.logging.config.file");
+    if (loggingCfg != null) {
+	    try {
+	    	LogManager.getLogManager().readConfiguration();
+	    } catch(IOException ex) {
+	    	logMessage("Failed to load configuration file for java.util.logging: "+ex.getLocalizedMessage());
+	    }
+    }
+    
     if (MOMServer.isRequired())
     {
       // Start the MOM server if needed
