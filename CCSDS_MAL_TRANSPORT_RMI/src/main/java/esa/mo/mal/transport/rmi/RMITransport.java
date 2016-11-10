@@ -21,8 +21,10 @@
 package esa.mo.mal.transport.rmi;
 
 import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
+import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -50,7 +52,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 /**
  * An implementation of the transport interface for the RMI protocol.
  */
-public class RMITransport extends GENTransport
+public class RMITransport extends GENTransport<byte[], byte[]>
 {
   /**
    * Logger
@@ -202,7 +204,7 @@ public class RMITransport extends GENTransport
   }
 
   @Override
-  protected GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException
+  protected GENMessageSender<byte[]> createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException
   {
     RLOGGER.log(Level.INFO, "RMI received request to create connections to URI:{0}", remoteRootURI);
 
@@ -222,6 +224,29 @@ public class RMITransport extends GENTransport
       RLOGGER.log(Level.WARNING, "RMI could not connect to :" + remoteRootURI, e);
       throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
     }
+  }
+
+  @Override
+  public GENMessage createMessage(byte[] packet) throws MALException
+  {
+    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, packet, getStreamFactory());
+  }
+
+  @Override
+  protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(String destinationRootURI,
+          String destinationURI,
+          Object multiSendHandle,
+          boolean lastForHandle,
+          String targetURI,
+          GENMessage msg) throws Exception
+  {
+    return new GENOutgoingMessageHolder<byte[]>(10,
+            destinationRootURI,
+            destinationURI,
+            multiSendHandle,
+            lastForHandle,
+            msg,
+            internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg));
   }
 
   /**

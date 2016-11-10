@@ -31,7 +31,7 @@ import java.rmi.RemoteException;
 /**
  * implementation of the GENMessageSender information for RMI transport.
  */
-public class RMIMessageSender implements GENMessageSender
+public class RMIMessageSender implements GENMessageSender<byte[]>
 {
   private final String remoteURI;
   private boolean closed = false;
@@ -52,7 +52,7 @@ public class RMIMessageSender implements GENMessageSender
   }
 
   @Override
-  public void sendEncodedMessage(GENOutgoingMessageHolder packetData) throws IOException
+  public void sendEncodedMessage(GENOutgoingMessageHolder<byte[]> packetData) throws IOException
   {
     try
     {
@@ -66,7 +66,7 @@ public class RMIMessageSender implements GENMessageSender
     }
   }
 
-  private void internalSendMessage(GENOutgoingMessageHolder packetData) throws MalformedURLException, RemoteException, IOException
+  private void internalSendMessage(GENOutgoingMessageHolder<byte[]> packetData) throws MalformedURLException, RemoteException, IOException
   {
     if (!closed)
     {
