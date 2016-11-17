@@ -412,6 +412,11 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
         {
           return false;
         }
+        
+        if (index  > 16383)
+        {
+          index = 0;
+        }
       }
 
       return true;
