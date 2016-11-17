@@ -44,7 +44,6 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation
     {
       j = val.length();
     }
-    System.out.println("URIREP: " + val + " : " + i + " : " + j);
     return Short.valueOf(val.substring(i, j));
   }
 
