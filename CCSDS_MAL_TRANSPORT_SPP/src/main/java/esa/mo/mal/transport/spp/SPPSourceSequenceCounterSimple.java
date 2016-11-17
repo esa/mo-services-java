@@ -34,7 +34,7 @@ public class SPPSourceSequenceCounterSimple implements SPPSourceSequenceCounter
 
     synchronized (this)
     {
-      i = ++sequenceCount;
+      i = sequenceCount++;
 
       if (sequenceCount > 16383)
       {
