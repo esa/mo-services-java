@@ -405,7 +405,7 @@ public abstract class GENTransport<I, O> implements MALTransport
 
     if (null == endpoint)
     {
-      LOGGER.log(Level.INFO, "GEN Creating endpoint {0} : {1}", new Object[]
+      LOGGER.log(Level.FINE, "GEN Creating endpoint {0} : {1}", new Object[]
       {
         localName, strRoutingName
       });
