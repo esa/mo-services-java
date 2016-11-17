@@ -77,7 +77,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
    * The stream factory used for encoding and decoding message headers.
    */
   private final MALElementStreamFactory hdrStreamFactory;
-  private final Set<Long> apidEndpointSet = new HashSet<Long>();
+  private final AtomicInteger uniqueIdGenerator = new AtomicInteger(0);
 
   /*
    * Constructor.
@@ -197,20 +197,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
 
   private int getNextSubId(long qualifier, int apid)
   {
-    final long lookup = qualifier << 32 + apid << 16;
-
-    int rv = (byte) RANDOM_NAME.nextInt();
-
-    while (apidEndpointSet.contains(lookup + rv))
-    {
-      rv = (byte) RANDOM_NAME.nextInt();
-      
-      // need to check that all values have not been allocated otherwise we'll be stuck here forever
-    }
-    
-    apidEndpointSet.add(lookup + rv);
-    
-    return rv;
+    return (byte) uniqueIdGenerator.getAndIncrement();
   }
 
   @Override
