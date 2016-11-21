@@ -248,7 +248,7 @@ public class SPPFixedBinaryEncoder extends GENEncoder
   {
     try
     {
-      if (null != value)
+      if ((null != value) && (value.getValue() != null))
       {
         outputStream.addNotNull();
         encodeIdentifier(value);
