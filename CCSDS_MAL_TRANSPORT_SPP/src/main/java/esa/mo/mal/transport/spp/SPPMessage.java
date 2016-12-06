@@ -21,10 +21,8 @@
 package esa.mo.mal.transport.spp;
 
 import esa.mo.mal.encoder.spp.SPPFixedBinaryElementOutputStream;
-import esa.mo.mal.encoder.spp.SPPFixedBinaryEncoder;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENMessageHeader;
-import esa.mo.mal.transport.gen.util.GENHelper;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -146,7 +144,6 @@ public class SPPMessage extends GENMessage
 
       MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties, qosProperties);
       hdrEnc.writeElement(header, ctx);
-      SPPFixedBinaryEncoder fixedEnc = new SPPFixedBinaryEncoder(hdrBaos, hdrEnc.isSmallLengthField(), hdrEnc.getTimeHandler());
       byte[] hdrBuf = hdrBaos.toByteArray();
       byte[] bodyBuf = bodyBaos.toByteArray();
 
@@ -178,6 +175,8 @@ public class SPPMessage extends GENMessage
         extra += (hdrBuf[26] & 0x40) != 0 ? 1 : 0;
         boolean first = true;
 
+        SPPSegmentCounter localSegmentCounter = new SPPSegmentCounter();
+        
         while (index < bodyBuf.length)
         {
           int packetSize = Math.min(adjustedSegmentSize, bodyBuf.length - index);
@@ -198,7 +197,7 @@ public class SPPMessage extends GENMessage
 
           // increment the SSC
           hdrBytes.putShort(4, (short) (packetSize + hdrBuf.length - 7));
-          int count = segmentCounter.getNextSegmentCount();
+          int count = localSegmentCounter.getNextSegmentCount();
           hdrBytes.putInt(27 + extra, count);
 
           LOGGER.log(Level.FINE, "Segment: {0} : {1} : {2} : {3}", new Object[]

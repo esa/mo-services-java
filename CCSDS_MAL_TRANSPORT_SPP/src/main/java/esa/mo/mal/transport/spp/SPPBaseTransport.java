@@ -25,15 +25,12 @@ import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
-import esa.mo.mal.transport.gen.util.GENHelper;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
@@ -72,7 +69,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
   protected final int defaultApidQualifier;
   protected final int defaultApid;
   protected final Map<QualifiedApid, SPPConfiguration> apidConfigurations = new HashMap<QualifiedApid, SPPConfiguration>();
-  protected final Map<Integer, SegmentHandler> segmentHandlers = new HashMap<Integer, SegmentHandler>();
+  protected final Map<QualifiedApid, Map<Long, SPPSegmentsHandler>> segmentHandlers = new HashMap<QualifiedApid, Map<Long, SPPSegmentsHandler>>();
   /**
    * The stream factory used for encoding and decoding message headers.
    */
@@ -283,23 +280,39 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     else
     {
       // find packet segment handler
-      SegmentHandler segmentHandler = segmentHandlers.get(apid);
+      final Long transactionId = (long) java.nio.ByteBuffer.wrap(packet).getLong(18);
+
+      Map<Long, SPPSegmentsHandler> map = segmentHandlers.get(new QualifiedApid(apidQualifier, apid));
+      
+      if (null == map)
+      {
+        map = new HashMap<Long, SPPSegmentsHandler>();
+        segmentHandlers.put(new QualifiedApid(apidQualifier, apid), map);
+      }
+
+      SPPSegmentsHandler segmentHandler = map.get(transactionId);
 
       if (null == segmentHandler)
       {
-        segmentHandler = new SegmentHandler();
-        segmentHandlers.put(apid, segmentHandler);
+        segmentHandler = new SPPSegmentsHandler(this, apidQualifier, apid);
+        map.put(transactionId, segmentHandler);
       }
 
       segmentHandler.addSegment(sequenceFlags, packet);
-
-      if (segmentHandler.messageComplete())
+      byte[] sppRaw = segmentHandler.getNextMessage();
+      
+      if (sppRaw != null)
       {
-        byte[] c = segmentHandler.getCompleteMessage(apidQualifier, apid);
-        segmentHandlers.remove(apid);
-
-        GENMessage msg = internalCreateMessage(apidQualifier, apid, 3, c);
-
+        if(map.get(transactionId).isEmpty()){
+            map.remove(transactionId);
+        }
+        
+        // We don't remove the map from the segmentHandlers because we are not expecting
+        // to have a big number of different consumers connected. Removing it and
+        // re-adding it from/to the map every time we have a new message would
+        // make things go slower. The map won't grow like crazy, no worries...
+        
+        GENMessage msg = internalCreateMessage(apidQualifier, apid, 3, sppRaw);
         LOGGER.log(Level.FINE, "Decoded SPP segmented message: {0}", msg.getHeader());
         return msg;
       }
@@ -325,102 +338,6 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
   protected MALElementStreamFactory getHeaderStreamFactory()
   {
     return hdrStreamFactory;
-  }
-
-  protected class SegmentHandler
-  {
-    private int totalSize = 0;
-    private boolean hadFirst = false;
-    private long firstIndex = -1;
-    private boolean hadLast = false;
-    Map<Long, byte[]> segmentMap = new TreeMap<Long, byte[]>(); // use TreeMap so that key is kept sorted
-
-    public int segmentCount()
-    {
-      return segmentMap.size();
-    }
-
-    public void addSegment(int segmentFlags, byte[] packet)
-    {
-      int extra = (packet[26] & 0x80) != 0 ? 1 : 0;
-      extra += (packet[26] & 0x40) != 0 ? 1 : 0;
-      long segmentIndex = java.nio.ByteBuffer.wrap(packet).getInt(27 + extra);
-
-      if (1 == segmentFlags)
-      {
-        hadFirst = true;
-        firstIndex = segmentIndex;
-      }
-      else if (2 == segmentFlags)
-      {
-        hadLast = true;
-      }
-
-      segmentMap.put(segmentIndex, packet);
-      totalSize += packet.length;
-
-      LOGGER.log(Level.FINE, "Adding segment: {0} : {1} : {2} : {3} : {4}", new Object[]
-      {
-        defaultApid, segmentIndex, segmentFlags, packet.length, totalSize
-      });
-    }
-
-    public boolean messageComplete()
-    {
-      boolean bv = hadFirst && hadLast && noGaps();
-
-      LOGGER.log(Level.FINE, "Message complete: {0}", bv);
-
-      return bv;
-    }
-
-    public byte[] getCompleteMessage(final int apidQualifier, final int apid) throws MALException
-    {
-      byte[] buf = new byte[totalSize];
-
-      int index = 0;
-
-      boolean first = true;
-      for (byte[] packet : segmentMap.values())
-      {
-        if (!first)
-        {
-          SPPMessage msg = internalDecodeMessageHeader(apidQualifier, apid, packet);
-          packet = msg.getBody().getEncodedBody().getEncodedBody().getValue();
-        }
-
-        LOGGER.log(Level.FINE, "seg: {0} : {1} : {2}", new Object[]
-        {
-          index, packet.length, GENHelper.byteArrayToHexString(packet, 0, Math.min(100, packet.length))
-        });
-        System.arraycopy(packet, 0, buf, index, packet.length);
-
-        index += packet.length;
-        first = false;
-      }
-
-      return buf;
-    }
-
-    protected boolean noGaps()
-    {
-      long index = firstIndex;
-
-      for (long key : segmentMap.keySet())
-      {
-        if (key != index++)
-        {
-          return false;
-        }
-        
-        if (index  > 16383)
-        {
-          index = 0;
-        }
-      }
-
-      return true;
-    }
   }
 
   public static class QualifiedApid

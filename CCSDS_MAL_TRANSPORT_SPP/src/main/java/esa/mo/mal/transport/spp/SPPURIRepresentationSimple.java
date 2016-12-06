@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.transport.spp;
 
-import esa.mo.mal.transport.spp.SPPURIRepresentation;
 import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
