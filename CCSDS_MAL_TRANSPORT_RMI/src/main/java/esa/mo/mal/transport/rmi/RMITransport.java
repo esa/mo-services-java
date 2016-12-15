@@ -206,7 +206,7 @@ public class RMITransport extends GENTransport<byte[], byte[]>
   @Override
   protected GENMessageSender<byte[]> createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException
   {
-    RLOGGER.log(Level.INFO, "RMI received request to create connections to URI:{0}", remoteRootURI);
+    RLOGGER.log(Level.FINE, "RMI received request to create connections to URI:{0}", remoteRootURI);
 
     try
     {
