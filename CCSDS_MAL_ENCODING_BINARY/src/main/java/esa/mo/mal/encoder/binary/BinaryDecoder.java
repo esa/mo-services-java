@@ -361,6 +361,11 @@ public class BinaryDecoder extends GENDecoder
       this.contentLength = length;
     }
 
+    public void setForceRealloc(boolean forceRealloc)
+    {
+      this.forceRealloc = forceRealloc;
+    }
+    
     public byte get8() throws MALException
     {
       checkBuffer(1);
