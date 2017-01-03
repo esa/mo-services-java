@@ -141,7 +141,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker
     if (null == broker)
     {
       broker = new SimpleBrokerHandler(this);
-      MALBrokerImpl.LOGGER.info("Creating internal MAL Broker handler: SimpleBrokerHandler");
+      MALBrokerImpl.LOGGER.fine("Creating internal MAL Broker handler: SimpleBrokerHandler");
     }
 
     return broker;
