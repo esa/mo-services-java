@@ -80,6 +80,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addDouble(value);
     }
     catch (IOException ex)
@@ -114,6 +115,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addSignedInt(value);
     }
     catch (IOException ex)
@@ -148,6 +150,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addSignedLong(value);
     }
     catch (IOException ex)
@@ -182,6 +185,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addByte(value);
     }
     catch (IOException ex)
@@ -216,6 +220,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addSignedShort(value);
     }
     catch (IOException ex)
@@ -250,6 +255,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addUnsignedLong32(value.getValue());
     }
     catch (IOException ex)
@@ -284,6 +290,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addBigInteger(value.getValue());
     }
     catch (IOException ex)
@@ -318,6 +325,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addUnsignedShort8(value.getValue());
     }
     catch (IOException ex)
@@ -352,6 +360,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addUnsignedInt16(value.getValue());
     }
     catch (IOException ex)
@@ -386,6 +395,8 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
+      checkForNull(value.getValue());
       outputStream.addString(value.getValue());
     }
     catch (IOException ex)
@@ -420,6 +431,8 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
+      checkForNull(value.getValue());
       outputStream.addString(value.getValue());
     }
     catch (IOException ex)
@@ -454,6 +467,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addString(value);
     }
     catch (IOException ex)
@@ -488,6 +502,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addBool(value);
     }
     catch (IOException ex)
@@ -522,6 +537,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addUnsignedLong(value.getValue());
     }
     catch (IOException ex)
@@ -556,6 +572,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addUnsignedLong(value.getValue());
     }
     catch (IOException ex)
@@ -590,6 +607,15 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
+      if (value.isURLBased())
+      {
+        checkForNull(value.getURL());
+      }
+      else
+      {
+        checkForNull(value.getValue());
+      }
       outputStream.addBytes(value.getValue());
     }
     catch (IOException ex)
@@ -626,6 +652,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addDouble(value.getValue());
     }
     catch (IOException ex)
@@ -660,6 +687,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addFloat(value);
     }
     catch (IOException ex)
@@ -694,6 +722,7 @@ public abstract class GENEncoder implements MALListEncoder
   {
     try
     {
+      checkForNull(value);
       outputStream.addByte(internalEncodeAttributeType(value.getTypeShortForm().byteValue()));
       value.encode(this);
     }
@@ -727,6 +756,7 @@ public abstract class GENEncoder implements MALListEncoder
   @Override
   public void encodeElement(final Element value) throws MALException
   {
+    checkForNull(value);
     value.encode(this);
   }
 
@@ -811,6 +841,20 @@ public abstract class GENEncoder implements MALListEncoder
   public byte internalEncodeAttributeType(byte value) throws MALException
   {
     return value;
+  }
+
+  /**
+   * Throws a MALException when supplied with a NULL value
+   *
+   * @param value The value to check
+   * @throws MALException if value is NULL
+   */
+  protected void checkForNull(Object value) throws MALException
+  {
+    if (null == value)
+    {
+      throw new MALException("Null value supplied in a non-nullable field");
+    }
   }
 
   /**
