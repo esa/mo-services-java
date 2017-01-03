@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>5</version>
+    <version>6</version>
     <relativePath/>
   </parent>
   
   <artifactId>ENCODING_GEN</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.4-SNAPSHOT</version>
+  <version>1.0.4</version>
 
   <name>ESA MAL Generic Java encoding framework</name>
   <description>A base Java framework for CCSDS MAL encoders</description>
