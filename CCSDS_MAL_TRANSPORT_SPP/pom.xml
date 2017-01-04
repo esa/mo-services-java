@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>5</version>
+    <version>6</version>
     <relativePath/>
   </parent>
   
   <artifactId>TRANSPORT_SPP</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
 
   <name>ESA MAL SPP transport</name>
   <description>A Java SPP transport for CCSDS MAL</description>
@@ -74,48 +74,10 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TRANSPORT_GEN</artifactId>
-      <version>1.1.4-SNAPSHOT</version>
-      <exclusions>
-        <exclusion>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>ENCODING_GEN</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>ENCODING_GEN</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>ENCODING_BINARY_FIXED</artifactId>
-      <version>1.0.5-SNAPSHOT</version>
-      <exclusions>
-        <exclusion>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>ENCODING_GEN</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>ENCODING_BINARY</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>ENCODING_BINARY</artifactId>
-      <version>1.0.5-SNAPSHOT</version>
-      <exclusions>
-        <exclusion>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>ENCODING_GEN</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>ENCODING_GEN</artifactId>
-      <version>1.0.4-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
