@@ -22,13 +22,13 @@
     <version>6</version>
     <relativePath/>
   </parent>
-  
-  <artifactId>API_MAL_TEST</artifactId>
-  <version>1.2</version>
+
+  <artifactId>API_MC_TEST</artifactId>
+  <version>1.0</version>
   <packaging>jar</packaging>
 
-  <name>ESA TEST MAL Java API</name>
-  <description>The CCSDS MAL test bed API</description>
+  <name>ESA TEST MC Java API</name>
+  <description>The CCSDS MC test bed API</description>
   <url>http://www.esa.int</url>
   
   <organization>
@@ -69,14 +69,23 @@
     <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
     <ccsds.specification.download.artifact>MOXML_Extra</ccsds.specification.download.artifact>
     <ccsds.specification.download.version>${extra.specification.version}</ccsds.specification.download.version>
-    <ccsds.specification.download.filter>**/MALPrototype.xml</ccsds.specification.download.filter>
+    <ccsds.specification.download.filter>**/MCPrototype.xml</ccsds.specification.download.filter>
     <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
+    <ccsds.specification.download.ref-filter>**/ServiceDefMAL.xml, **/ServiceDefCOM.xml</ccsds.specification.download.ref-filter>
   </properties>
   
   <dependencies>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>API_MAL</artifactId>
+    </dependency>
+    <dependency> 
+      <groupId>int.esa.ccsds.mo</groupId>
+      <artifactId>API_COM</artifactId>
+    </dependency>
+    <dependency> 
+      <groupId>int.esa.ccsds.mo</groupId>
+      <artifactId>API_MC</artifactId>
     </dependency>
   </dependencies>
 
@@ -106,13 +115,6 @@
       <plugin>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>StubGenerator</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>StubGenerator_Java</artifactId>
-            <version>1.5-SNAPSHOT</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

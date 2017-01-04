@@ -57,8 +57,8 @@ public abstract class MALContextFactory
       throw new IllegalArgumentException("NULL area argument");
     }
 
-    final Integer num = area.getNumber().getValue();
-    final Short ver = area.getVersion().getValue();
+    final int num = area.getNumber().getValue();
+    final short ver = area.getVersion().getValue();
     final VersionizedAreaNumber verArea = new VersionizedAreaNumber(num, ver);
     final MALArea currentMapping = _VERSIONIZED_AREA_NUMBER_MAP.get(verArea);
 
@@ -66,10 +66,11 @@ public abstract class MALContextFactory
     {
       throw new MALException("MALArea already registered with a different instance");
     }
-    
+
     Integer currentNum = _AREA_NAME_MAP.get(area.getName().getValue());
-    
-    if(currentNum != null && currentNum.shortValue() != num){
+
+    if (currentNum != null && currentNum.shortValue() != num)
+    {
       throw new MALException("Trying to register the same 'Area Name' with a different 'Area Number'");
     }
 
@@ -127,11 +128,12 @@ public abstract class MALContextFactory
     }
 
     final Integer num = _AREA_NAME_MAP.get(areaName.getValue());
-    
-    if(num == null){
-        return null;
+
+    if (num == null)
+    {
+      return null;
     }
-    
+
     return (MALArea) _VERSIONIZED_AREA_NUMBER_MAP.get(new VersionizedAreaNumber(num, version.getValue()));
   }
 
@@ -179,8 +181,7 @@ public abstract class MALContextFactory
   }
 
   /**
-   * Allows a specific implementation of this class to be registered where multiple class loaders can cause
-   * instantiation problems.
+   * Allows a specific implementation of this class to be registered where multiple class loaders can cause instantiation problems.
    *
    * @param factoryClass The factory class to register.
    * @throws IllegalArgumentException if the parameter does not extend MALContextFactory or is null.
@@ -275,8 +276,8 @@ public abstract class MALContextFactory
    * @throws MALException If there is a problem instantiating the new instance.
    */
   public abstract MALContext createMALContext(java.util.Map props) throws MALException;
-  
-  public static class VersionizedAreaNumber
+
+  protected static class VersionizedAreaNumber
   {
     public final int areaNumber;
     public final short version;
@@ -319,5 +320,4 @@ public abstract class MALContextFactory
       return this.version == other.version;
     }
   }
-  
 }

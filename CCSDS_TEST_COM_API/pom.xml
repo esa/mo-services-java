@@ -65,7 +65,7 @@
   </developers>
 
   <properties>
-    <extra.specification.version>1.0.1</extra.specification.version>
+    <extra.specification.version>1.1</extra.specification.version>
     <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
     <ccsds.specification.download.artifact>MOXML_Extra</ccsds.specification.download.artifact>
     <ccsds.specification.download.version>${extra.specification.version}</ccsds.specification.download.version>
