@@ -21,10 +21,12 @@
 package esa.mo.mal.transport.tcpip;
 
 import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 import esa.mo.mal.transport.gen.receivers.GENIncomingByteMessageDecoderFactory;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
+import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
 import esa.mo.mal.transport.gen.util.GENMessagePoller;
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -92,7 +94,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  * with the communication channel that the service consumer initiated (uses bidirectional TCP/IP communication).
  *
  */
-public class TCPIPTransport extends GENTransport
+public class TCPIPTransport extends GENTransport<byte[], byte[]>
 {
   /**
    * Logger
@@ -308,7 +310,7 @@ public class TCPIPTransport extends GENTransport
 
       // create also a data reader thread for this socket in order to read messages from it 
       // no need to register this as it will automatically terminate when the uunderlying connection is terminated.
-      GENMessagePoller rcvr = new GENMessagePoller<byte[]>(this, trans, trans, new GENIncomingByteMessageDecoderFactory());
+      GENMessagePoller rcvr = new GENMessagePoller<byte[], byte[]>(this, trans, trans, new GENIncomingByteMessageDecoderFactory());
       rcvr.setRemoteURI(remoteRootURI);
       rcvr.start();
 
@@ -341,6 +343,29 @@ public class TCPIPTransport extends GENTransport
       //rethrow for higher MAL leyers
       throw new MALException("IO Exception", e);
     }
+  }
+
+  @Override
+  public GENMessage createMessage(byte[] packet) throws MALException
+  {
+    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, packet, getStreamFactory());
+  }
+
+  @Override
+  protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(String destinationRootURI,
+          String destinationURI,
+          Object multiSendHandle,
+          boolean lastForHandle,
+          String targetURI,
+          GENMessage msg) throws Exception
+  {
+    return new GENOutgoingMessageHolder<byte[]>(10,
+            destinationRootURI,
+            destinationURI,
+            multiSendHandle,
+            lastForHandle,
+            msg,
+            internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg));
   }
 
   /**

@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.ccsds.moims.mo.mal.MALException;
@@ -413,7 +414,8 @@ public class BinaryDecoder extends GENDecoder
         // check to see if currently loaded data covers the required data size
         if (existingContentRemaining < requiredLength)
         {
-          LOGGER.fine("Not enought bytes available. Expecting " + requiredLength);
+          LOGGER.log(Level.FINER, "Not enought bytes available. Expecting {0}", requiredLength);
+          
           // ok, check to see if we have enough space left in the current buffer for what we need to load
           if ((existingBufferLength - this.offset) < requiredLength)
           {
@@ -445,10 +447,10 @@ public class BinaryDecoder extends GENDecoder
           try
           {
             // read into the empty space of the buffer
-            LOGGER.fine("Reading from input stream: " + (existingBufferLength - this.contentLength));
+            LOGGER.log(Level.FINER, "Reading from input stream: {0}", (existingBufferLength - this.contentLength));
             final int read = inputStream.read(this.buf,
                     this.contentLength, existingBufferLength - this.contentLength);
-            LOGGER.fine("Read from input stream: " + read);
+            LOGGER.log(Level.FINER, "Read from input stream: {0}", read);
             if (read < 0) {
               throw new MALException("Unable to read required amount from source stream: end of file.");
             }

@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>5</version>
+    <version>6</version>
     <relativePath/>
   </parent>
   
   <artifactId>ENCODING_BINARY_FIXED</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.5-SNAPSHOT</version>
+  <version>1.0.5</version>
 
   <name>ESA MAL Fixed length binary Java encoder</name>
   <description>A simple fixed length binary encoder for the CCSDS MAL</description>
@@ -67,19 +67,7 @@
   <dependencies>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>ENCODING_GEN</artifactId>
-      <version>1.0.4-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>ENCODING_BINARY</artifactId>
-      <version>1.0.5-SNAPSHOT</version>
-      <exclusions>
-        <exclusion>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>ENCODING_GEN</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 
