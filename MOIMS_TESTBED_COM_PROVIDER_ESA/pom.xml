@@ -19,12 +19,12 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.4</version>
     <relativePath/>
   </parent>
   
   <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
-  <version>1.0.4-SNAPSHOT</version>
+  <version>1.0.4</version>
   <packaging>jar</packaging>
   
   <name>ESA MOIMS MO Testbed COM Provider</name>
@@ -68,10 +68,9 @@
     </developer>
   </developers>
 
-
   <properties>
-    <esa.com.test_api.version>1.0.2</esa.com.test_api.version>
-    <ccsds.testbed.com.version>1.0.4-SNAPSHOT</ccsds.testbed.com.version>
+    <esa.com.test_api.version>1.2</esa.com.test_api.version>
+    <ccsds.testbed.com.version>1.0.4</ccsds.testbed.com.version>
   </properties>
   
   <dependencies>
