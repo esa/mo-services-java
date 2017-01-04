@@ -38,8 +38,8 @@ public abstract class MALContextFactory
    */
   public static final String MAL_DEFAULT_FACTORY = "esa.mo.mal.impl.MALContextFactoryImpl";
   private static final Map<String, Class> _FACTORY_MAP = new HashMap<String, Class>();
-  private static final Map<String, MALArea> _AREA_MAP = new HashMap<String, MALArea>();
-  private static final Map<Integer, MALArea> _AREA_NUMBER_MAP = new HashMap<Integer, MALArea>();
+  private static final Map<VersionizedAreaNumber, MALArea> _VERSIONIZED_AREA_NUMBER_MAP = new HashMap<VersionizedAreaNumber, MALArea>();
+  private static final Map<String, Integer> _AREA_NAME_MAP = new HashMap<String, Integer>();
   private static final Map<Long, Identifier> _ERROR_MAP = new HashMap<Long, Identifier>();
   private static final MALElementFactoryRegistry _FACTORY_REGISTRY = new MALElementFactoryRegistry();
 
@@ -58,15 +58,23 @@ public abstract class MALContextFactory
     }
 
     final Integer num = area.getNumber().getValue();
-    final MALArea currentMapping = _AREA_NUMBER_MAP.get(num);
+    final Short ver = area.getVersion().getValue();
+    final VersionizedAreaNumber verArea = new VersionizedAreaNumber(num, ver);
+    final MALArea currentMapping = _VERSIONIZED_AREA_NUMBER_MAP.get(verArea);
 
     if ((null != currentMapping) && (currentMapping != area))
     {
       throw new MALException("MALArea already registered with a different instance");
     }
+    
+    Integer currentNum = _AREA_NAME_MAP.get(area.getName().getValue());
+    
+    if(currentNum != null && currentNum.shortValue() != num){
+      throw new MALException("Trying to register the same 'Area Name' with a different 'Area Number'");
+    }
 
-    _AREA_MAP.put(area.getName().getValue(), area);
-    _AREA_NUMBER_MAP.put(num, area);
+    _AREA_NAME_MAP.put(area.getName().getValue(), num);
+    _VERSIONIZED_AREA_NUMBER_MAP.put(verArea, area);
   }
 
   /**
@@ -118,7 +126,13 @@ public abstract class MALContextFactory
       throw new IllegalArgumentException("NULL version argument");
     }
 
-    return (MALArea) _AREA_MAP.get(areaName.getValue());
+    final Integer num = _AREA_NAME_MAP.get(areaName.getValue());
+    
+    if(num == null){
+        return null;
+    }
+    
+    return (MALArea) _VERSIONIZED_AREA_NUMBER_MAP.get(new VersionizedAreaNumber(num, version.getValue()));
   }
 
   /**
@@ -140,7 +154,7 @@ public abstract class MALContextFactory
       throw new IllegalArgumentException("NULL version argument");
     }
 
-    return (MALArea) _AREA_NUMBER_MAP.get(areaNumber.getValue());
+    return (MALArea) _VERSIONIZED_AREA_NUMBER_MAP.get(new VersionizedAreaNumber(areaNumber.getValue(), version.getValue()));
   }
 
   /**
@@ -261,4 +275,49 @@ public abstract class MALContextFactory
    * @throws MALException If there is a problem instantiating the new instance.
    */
   public abstract MALContext createMALContext(java.util.Map props) throws MALException;
+  
+  public static class VersionizedAreaNumber
+  {
+    public final int areaNumber;
+    public final short version;
+
+    public VersionizedAreaNumber(int areaNumber, short version)
+    {
+      this.areaNumber = areaNumber;
+      this.version = version;
+    }
+
+    @Override
+    public int hashCode()
+    {
+      int hash = 3;
+      hash = 29 * hash + this.areaNumber;
+      hash = 29 * hash + this.version;
+      return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (this == obj)
+      {
+        return true;
+      }
+      if (obj == null)
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass())
+      {
+        return false;
+      }
+      final VersionizedAreaNumber other = (VersionizedAreaNumber) obj;
+      if (this.areaNumber != other.areaNumber)
+      {
+        return false;
+      }
+      return this.version == other.version;
+    }
+  }
+  
 }
