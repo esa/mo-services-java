@@ -106,13 +106,6 @@
       <plugin>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>StubGenerator</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>StubGenerator_Java</artifactId>
-            <version>1.5-SNAPSHOT</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
