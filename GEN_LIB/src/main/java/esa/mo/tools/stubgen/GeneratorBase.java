@@ -52,13 +52,13 @@ public abstract class GeneratorBase implements Generator, TypeInformation
    * The configuration of the generator.
    */
   private final GeneratorConfiguration config;
-  private final Set<TypeKey> enumTypesSet = new TreeSet<TypeKey>();
-  private final Set<TypeKey> abstractTypesSet = new TreeSet<TypeKey>();
-  private final Map<TypeKey, Object> allTypesMap = new TreeMap<TypeKey, Object>();
-  private final Map<TypeKey, CompositeType> compositeTypesMap = new TreeMap<TypeKey, CompositeType>();
-  private final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new TreeMap<TypeKey, AttributeTypeDetails>();
-  private final Map<String, NativeTypeDetails> nativeTypesMap = new TreeMap<String, NativeTypeDetails>();
-  private final Map<String, ErrorDefinitionType> errorDefinitionMap = new TreeMap<String, ErrorDefinitionType>();
+  protected final Set<TypeKey> enumTypesSet = new TreeSet<TypeKey>();
+  protected final Set<TypeKey> abstractTypesSet = new TreeSet<TypeKey>();
+  protected final Map<TypeKey, Object> allTypesMap = new TreeMap<TypeKey, Object>();
+  protected final Map<TypeKey, CompositeType> compositeTypesMap = new TreeMap<TypeKey, CompositeType>();
+  protected final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new TreeMap<TypeKey, AttributeTypeDetails>();
+  protected final Map<String, NativeTypeDetails> nativeTypesMap = new TreeMap<String, NativeTypeDetails>();
+  protected final Map<String, ErrorDefinitionType> errorDefinitionMap = new TreeMap<String, ErrorDefinitionType>();
   private final Log logger;
   private boolean generateCOM;
 
@@ -870,6 +870,32 @@ public abstract class GeneratorBase implements Generator, TypeInformation
       buf.append(type.getName());
 
       return buf.toString();
+    }
+    
+    public TypeReference getTypeReference(boolean isList)
+    {
+    	StringTokenizer st = new StringTokenizer(key, ":");
+    	String area = st.nextToken();
+    	if (! st.hasMoreTokens())
+    	{
+    		throw new IllegalStateException("missing : delimiters in key " + key);
+    	}
+    	String service = st.nextToken();
+    	if (! st.hasMoreTokens())
+    	{
+    		throw new IllegalStateException("missing : delimiters in key " + key);
+    	}
+    	String name = st.nextToken();
+    	if (st.hasMoreTokens())
+    	{
+    		throw new IllegalStateException("too many : delimiters in key " + key);
+    	}
+    	TypeReference typeRef = new TypeReference();
+    	typeRef.setList(isList);
+    	typeRef.setArea(area);
+    	typeRef.setService("_".equals(service) ? null : service);
+    	typeRef.setName(name);
+    	return typeRef;
     }
   }
 
