@@ -115,7 +115,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker
       final Class cls = Thread.currentThread().getContextClassLoader().loadClass(clsName);
 
       broker = (MALBrokerHandlerImpl) cls.getConstructor(MALClose.class).newInstance(this);
-      MALBrokerImpl.LOGGER.log(Level.INFO, "Creating internal MAL Broker handler: {0}", cls.getSimpleName());
+      MALBrokerImpl.LOGGER.log(Level.FINE, "Creating internal MAL Broker handler: {0}", cls.getSimpleName());
     }
     catch (ClassNotFoundException ex)
     {
@@ -141,7 +141,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker
     if (null == broker)
     {
       broker = new SimpleBrokerHandler(this);
-      MALBrokerImpl.LOGGER.info("Creating internal MAL Broker handler: SimpleBrokerHandler");
+      MALBrokerImpl.LOGGER.fine("Creating internal MAL Broker handler: SimpleBrokerHandler");
     }
 
     return broker;
