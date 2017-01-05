@@ -987,7 +987,7 @@ public abstract class GENTransport<I, O> implements MALTransport
       {
         // we do not have any channel for this URI
         // try to create a set of connections to this URI 
-        LOGGER.log(Level.INFO, "GEN received request to create connections to URI:{0}", remoteRootURI);
+        LOGGER.log(Level.INFO, "Establishing connection to remote root URI: {0}", remoteRootURI);
 
         try
         {
