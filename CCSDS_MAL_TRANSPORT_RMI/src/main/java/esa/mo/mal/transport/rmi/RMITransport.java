@@ -113,7 +113,7 @@ public class RMITransport extends GENTransport<byte[], byte[]>
     }
 
     portNumber = iRmiPort;
-    RLOGGER.log(Level.INFO, "RMI Creating registory on port {0}", portNumber);
+    RLOGGER.log(Level.FINE, "RMI Creating registry on port {0}", portNumber);
 
     super.init();
 
@@ -121,7 +121,7 @@ public class RMITransport extends GENTransport<byte[], byte[]>
     {
       ourRMIinterface = new RMIReceiveImpl(this);
       registry.rebind(String.valueOf(portNumber), ourRMIinterface);
-      RLOGGER.log(Level.INFO, "RMI Bound to registory on port {0}", portNumber);
+      RLOGGER.log(Level.INFO, "RMI Bound to registry on port {0}", portNumber);
     }
     catch (RemoteException ex)
     {
