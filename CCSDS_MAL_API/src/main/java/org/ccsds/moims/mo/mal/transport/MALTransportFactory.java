@@ -23,6 +23,8 @@ package org.ccsds.moims.mo.mal.transport;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 
@@ -102,8 +104,8 @@ public abstract class MALTransportFactory
         else
         {
           factoryClass = Class.forName(className);
-
           registerFactoryClass(factoryClass);
+          Logger.getLogger(MALTransportFactory.class.getName()).log(Level.INFO, "New transport factory registered with classname: {0}", className);
         }
 
         return (MALTransportFactory) factoryClass.getConstructor(new Class[]
