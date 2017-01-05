@@ -67,7 +67,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
     this.brokerImpl = parent;
     this.endpoint.startMessageDelivery();
 
-    MALBrokerImpl.LOGGER.log(Level.INFO,
+    MALBrokerImpl.LOGGER.log(Level.FINE,
             "Creating internal MAL Broker for localName: {0} on protocol: {1} with URI: {2}", new Object[]
             {
               localName, protocol, this.localUri
