@@ -22,6 +22,8 @@ package org.ccsds.moims.mo.mal.encoding;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Blob;
 
@@ -94,6 +96,7 @@ public abstract class MALElementStreamFactory
         {
           factoryClass = Class.forName(className);
           registerFactoryClass(factoryClass);
+          Logger.getLogger(MALElementStreamFactory.class.getName()).log(Level.INFO, "New encoding factory registered with classname: {0}", className);
         }
 
         final MALElementStreamFactory factory = (MALElementStreamFactory) factoryClass.newInstance();
