@@ -45,10 +45,11 @@ public class Identifier implements Attribute
    */
   public Identifier(final String value)
   {
-    if(null == value){
+    if(null == value)
+    {
       Logger.getLogger(Identifier.class.getName()).log(Level.WARNING, 
-        "The Identifier has been initialized with an invalid null value. Problems might occur while encoding the element.",
-        new MALException());
+          "The Identifier has been initialized with an invalid null value. Problems might occur while encoding the element.",
+          new MALException());
     }
     
     this.value = value;
