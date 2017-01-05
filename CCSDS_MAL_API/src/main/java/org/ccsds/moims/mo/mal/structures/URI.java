@@ -45,6 +45,12 @@ public class URI implements Attribute
    */
   public URI(final String value)
   {
+    if(null == value){
+      Logger.getLogger(URI.class.getName()).log(Level.WARNING, 
+        "The URI has been initialized with an invalid null value. Problems might occur while encoding the element.",
+        new MALException());
+    }
+
     this.value = value;
   }
 
