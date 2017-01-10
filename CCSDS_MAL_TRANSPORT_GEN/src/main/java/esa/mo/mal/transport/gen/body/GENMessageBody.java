@@ -147,7 +147,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
     }
     catch (MALException ex)
     {
-      Logger.getLogger(GENMessageBody.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(GENMessageBody.class.getName()).log(Level.SEVERE, "MAL encoded body encoding error", ex);
     }
     
     return bodyPartCount;
