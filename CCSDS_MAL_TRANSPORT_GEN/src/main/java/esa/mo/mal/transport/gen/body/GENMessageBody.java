@@ -502,7 +502,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
       catch (MALException ex)
       {
         GENTransport.LOGGER.log(Level.WARNING, "GEN Message body ERROR on decode : {0}", ex);
-        throw new MALException("GEN Message body ERROR on decode : {0}", ex);
+        throw ex;
       }
     }
   }
