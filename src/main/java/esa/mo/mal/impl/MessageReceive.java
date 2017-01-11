@@ -268,9 +268,9 @@ public class MessageReceive implements MALMessageListener
     }
   }
 
-  void registerProviderEndpoint(final String localName, final MALService service, final Address address)
+  void registerProviderEndpoint(final String localURI, final MALService service, final Address address)
   {
-    final EndPointPair key = new EndPointPair(localName, service);
+    final EndPointPair key = new EndPointPair(localURI, service);
 
     if (!providerEndpointMap.containsKey(key))
     {
@@ -279,9 +279,9 @@ public class MessageReceive implements MALMessageListener
     }
   }
 
-  void deregisterProviderEndpoint(final String localName, final MALService service)
+  void deregisterProviderEndpoint(final String localURI, final MALService service)
   {
-    final EndPointPair key = new EndPointPair(localName, service);
+    final EndPointPair key = new EndPointPair(localURI, service);
 
     if (providerEndpointMap.containsKey(key))
     {
@@ -755,7 +755,7 @@ public class MessageReceive implements MALMessageListener
 
   private Address lookupAddress(final MALEndpoint callingEndpoint, final MALMessage msg)
   {
-    final EndPointPair key = new EndPointPair(callingEndpoint.getLocalName(), msg);
+    final EndPointPair key = new EndPointPair(callingEndpoint.getURI().getValue(), msg);
     Address addr = providerEndpointMap.get(key);
 
     if (null == addr)
@@ -835,9 +835,9 @@ public class MessageReceive implements MALMessageListener
     private final String first;
     private final Long second;
 
-    protected EndPointPair(final String localName, final MALService service)
+    protected EndPointPair(final String localURI, final MALService service)
     {
-      first = localName;
+      first = localURI;
       if (null != service)
       {
         second = (((long) service.getArea().getNumber().getValue()) << 32) + ((long) service.getNumber().getValue());
@@ -848,9 +848,9 @@ public class MessageReceive implements MALMessageListener
       }
     }
 
-    protected EndPointPair(final String localName, final MALMessage msg)
+    protected EndPointPair(final String localURI, final MALMessage msg)
     {
-      first = localName;
+      first = localURI;
 
       if (null != msg)
       {

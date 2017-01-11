@@ -108,7 +108,7 @@ public abstract class ServiceComponentImpl extends MALClose
     this.endpoint = transport.createEndpoint(localName, defaultQoSProperties);
     this.localUri = this.endpoint.getURI();
     this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
-    this.receiveHandler.registerProviderEndpoint(localName, service, this.msgAddress);
+    this.receiveHandler.registerProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
     this.endpoint.setMessageListener(this.receiveHandler);
     this.endpoint.startMessageDelivery();
   }
@@ -167,7 +167,7 @@ public abstract class ServiceComponentImpl extends MALClose
     this.transport = TransportSingleton.instance(endpoint.getURI(), impl.getInitialProperties());
     this.localUri = this.endpoint.getURI();
     this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
-    this.receiveHandler.registerProviderEndpoint(localName, service, this.msgAddress);
+    this.receiveHandler.registerProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
     this.endpoint.setMessageListener(this.receiveHandler);
   }
 
@@ -226,7 +226,7 @@ public abstract class ServiceComponentImpl extends MALClose
   {
     super.thisObjectClose();
 
-    this.receiveHandler.deregisterProviderEndpoint(localName, service);
+    this.receiveHandler.deregisterProviderEndpoint(endpoint.getURI().getValue(), service);
     endpoint.stopMessageDelivery();
     endpoint.close();
   }
