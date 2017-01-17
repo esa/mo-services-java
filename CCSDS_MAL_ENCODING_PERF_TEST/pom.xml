@@ -19,7 +19,7 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>5</version>
+    <version>6</version>
     <relativePath/>
   </parent>
   
@@ -192,11 +192,6 @@
         <dependency>
           <groupId>int.esa.ccsds.mo</groupId>
           <artifactId>ENCODING_BINARY_FIXED</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>TRANSPORT_FILE</artifactId>
-          <version>1.0-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>

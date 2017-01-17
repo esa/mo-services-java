@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>5</version>
+    <version>6</version>
     <relativePath/>
   </parent>
   
   <artifactId>MAL_DEMO</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
 
   <name>ESA MAL Java Demo</name>
   <description>A Demo Java application for the CCSDS MAL</description>
@@ -86,10 +86,6 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>TRANSPORT_TCPIP</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>TRANSPORT_ACTIVEMQ</artifactId>
     </dependency>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
