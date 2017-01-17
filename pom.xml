@@ -90,8 +90,8 @@
     <esa.tcpip.transport.version>1.0.3</esa.tcpip.transport.version>
     <esa.jms.transport.version>1.0.2</esa.jms.transport.version>
     <esa.spp.transport.version>1.0</esa.spp.transport.version>
-    <esa.support.lib.mal.version>1.0.3</esa.support.lib.mal.version>
-    <esa.support.lib.com.version>1.1.2</esa.support.lib.com.version>
+    <esa.support.lib.mal.version>1.0.4</esa.support.lib.mal.version>
+    <esa.support.lib.com.version>1.1.3</esa.support.lib.com.version>
     
     <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
     <ccsds.specification.download.group>${project.groupId}</ccsds.specification.download.group>
