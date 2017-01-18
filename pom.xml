@@ -75,6 +75,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <ccsds.specification.version>1.1</ccsds.specification.version>
+    <extra.specification.version>1.1</extra.specification.version>
     <esa.stubgen.version>1.5</esa.stubgen.version>
     <esa.api.mal.version>1.2</esa.api.mal.version>
     <esa.api.com.version>1.2</esa.api.com.version>
