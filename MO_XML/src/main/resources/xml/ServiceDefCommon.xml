@@ -529,7 +529,7 @@ Providers that wish to use the shared broker shall reference it by using its obj
           </mal:errors>
         </mal:requestIP>
         <mal:requestIP name="getCurrent" number="3" supportInReplay="false"
-                       comment="The getCurrent operation returns the currently selected configuration of a &lt;Service/Provider/Composite&gt;.">
+                       comment="The getCurrent operation returns the currently selected configuration of a Service/Provider/Composite.">
           <mal:messages>
             <mal:request>
               <mal:field name="service"
