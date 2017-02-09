@@ -23,6 +23,7 @@ package esa.mo.mal.transport.spp;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.util.HashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
@@ -76,7 +77,16 @@ public class SPPSegmentsHandler {
         assembler.addSegment(segmentIndex, segment);
     }
 
-    public byte[] getNextMessage() throws MALException 
+    /**
+     * Checks if any of the assemblers contains all the segments of its message
+     * and returns the assembled message. If none is ready, a null will be 
+     * returned.
+     * If the header of a segment is damaged, the exception will be logged and
+     * the assembler will be removed from this handler.
+     * 
+     * @return The assembled message or null if none available.
+     */
+    public byte[] getNextMessage()
     {
         synchronized (segmentsAssemblerMap) 
         {
@@ -84,7 +94,14 @@ public class SPPSegmentsHandler {
             {
                 if (assembler.isReady()) 
                 {
-                    byte[] out = assembler.getCompleteMessage(transport, apid, apidQualifier);
+                    byte[] out = null;
+                    try {
+                        out = assembler.getCompleteMessage(transport, apid, apidQualifier);
+                    } catch (MALException ex) {
+                        Logger.getLogger(SPPBaseTransport.class.getName()).log(Level.SEVERE, 
+                        "The message could not be assembled. One of the segments header could not be decoded. "
+                                + "The whole message will be discarded.", ex);
+                    }
                     segmentsAssemblerMap.remove(assembler.getSequenceIndex());
                     return out;
                 }

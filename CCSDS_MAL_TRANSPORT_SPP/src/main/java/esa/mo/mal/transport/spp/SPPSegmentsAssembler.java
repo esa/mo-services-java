@@ -89,6 +89,13 @@ public class SPPSegmentsAssembler
         totalSize += segment.getPacket().length;
     }
 
+    /**
+    * Tries to get a message if there is one that can be assembled from the 
+    * segments. Returns null if the message is still not available.
+    * 
+    * @return A new message or null if there are none available.
+    * @throws MALException if any of the segments header could not be decoded.
+    */
     public byte[] getCompleteMessage(final SPPBaseTransport transport,
             final int apid, final int apidQualifier) throws MALException 
     {
