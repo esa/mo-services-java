@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.binary.split;
 
+import java.io.InputStream;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
@@ -96,9 +97,8 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
    */
   protected static class SplitBufferHolder extends BinaryBufferHolder
   {
-    private boolean bitStoreLoaded = false;
-    private BitGet bitStore = null;
-
+    protected final SplitInputReader sbuf;
+    
     /**
      * Constructor.
      *
@@ -109,8 +109,33 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
      */
     public SplitBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
-      super(is, buf, offset, length);
+      super(new SplitInputReader(is, buf, offset, length));
+      
+      sbuf = (SplitInputReader)super.buf;
+    }
 
+    @Override
+    public boolean getBool() throws MALException
+    {
+      // ensure that the bit buffer has been loaded first
+      if (!sbuf.bitStoreLoaded)
+      {
+        sbuf.loadBitStore();
+      }
+
+      return sbuf.bitStore.pop();
+    }
+  }
+
+  protected static class SplitInputReader extends InputReader
+  {
+    private boolean bitStoreLoaded = false;
+    private BitGet bitStore = null;
+
+    public SplitInputReader(InputStream is, byte[] buf, int offset, int length)
+    {
+      super(is, buf, offset, length);
+      
       forceRealloc = true;
     }
 
@@ -127,24 +152,12 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     }
 
     @Override
-    protected void bufferRealloced(int oldSize)
+    public void bufferRealloced(int oldSize)
     {
       if (0 < oldSize)
       {
-        forceRealloc = false;
+        setForceRealloc(false);
       }
-    }
-
-    @Override
-    public boolean getBool() throws MALException
-    {
-      // ensure that the bit buffer has been loaded first
-      if (!bitStoreLoaded)
-      {
-        loadBitStore();
-      }
-
-      return bitStore.pop();
     }
 
     /**
@@ -169,6 +182,19 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
       {
         bitStore = new BitGet(null, 0, 0);
       }
+    }
+
+    protected int getUnsignedInt() throws MALException
+    {
+      int value = 0;
+      int i = 0;
+      int b;
+      while (((b = get8()) & 0x80) != 0)
+      {
+        value |= (b & 0x7F) << i;
+        i += 7;
+      }
+      return value | (b << i);
     }
   }
 

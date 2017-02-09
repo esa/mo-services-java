@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -140,7 +141,15 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
   @Override
   public int getElementCount()
   {
-    decodeMessageBody();
+    try
+    {
+      decodeMessageBody();
+    }
+    catch (MALException ex)
+    {
+      Logger.getLogger(GENMessageBody.class.getName()).log(Level.SEVERE, "MAL encoded body encoding error", ex);
+    }
+    
     return bodyPartCount;
   }
 
@@ -395,8 +404,9 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
 
   /**
    * Decodes the message body.
+   * @throws MALException if any error detected.
    */
-  protected void decodeMessageBody()
+  protected void decodeMessageBody() throws MALException
   {
     if (!decodedBody)
     {
@@ -492,6 +502,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
       catch (MALException ex)
       {
         GENTransport.LOGGER.log(Level.WARNING, "GEN Message body ERROR on decode : {0}", ex);
+        throw ex;
       }
     }
   }

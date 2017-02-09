@@ -34,7 +34,7 @@ import java.net.Socket;
  * If the protocol uses a different message encoding this class can be replaced in the TCPIPTransport.
  *
  */
-public class TCPIPTransportDataTransceiver implements esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver<byte[]>, GENMessageSender
+public class TCPIPTransportDataTransceiver implements esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver<byte[]>, GENMessageSender<byte[]>
 {
   protected final Socket socket;
   protected final DataOutputStream socketWriteIf;
@@ -54,7 +54,7 @@ public class TCPIPTransportDataTransceiver implements esa.mo.mal.transport.gen.u
   }
 
   @Override
-  public void sendEncodedMessage(GENOutgoingMessageHolder packetData) throws IOException
+  public void sendEncodedMessage(GENOutgoingMessageHolder<byte[]> packetData) throws IOException
   {
     // write packet length and then the packet
     socketWriteIf.writeInt(packetData.getEncodedMessage().length);

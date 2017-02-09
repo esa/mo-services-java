@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>5</version>
+    <version>6</version>
     <relativePath/>
   </parent>
   
   <artifactId>ENCODING_BINARY_SPLIT</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
 
   <name>ESA MAL Split Binary Java encoder</name>
   <description>A simple split binary Java encoder for the CCSDS MAL</description>
@@ -65,10 +65,6 @@
   </developers>
 
   <dependencies>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>ENCODING_GEN</artifactId>
-    </dependency>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>ENCODING_BINARY</artifactId>
