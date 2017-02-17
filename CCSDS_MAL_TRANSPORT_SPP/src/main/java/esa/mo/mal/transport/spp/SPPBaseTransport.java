@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -273,9 +274,21 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
       SPPMessage dummyMessage = internalDecodeMessageHeader(apidQualifier, apid, packet);
 
       // now full message including body
-      return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, false,
-              (GENMessageHeader) dummyMessage.getHeader(), qosProperties,
-              dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(), localBodyStreamFactory);
+      try
+      {
+        return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, false,
+                (GENMessageHeader) dummyMessage.getHeader(), qosProperties,
+                dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(), localBodyStreamFactory);
+      }
+      catch(MALException ex)
+      {
+        returnErrorMessage(null, 
+                dummyMessage, 
+                MALHelper.INTERNAL_ERROR_NUMBER, 
+                "The message body could not be decoded. The message will be discarded!");
+        
+        return null;
+      }
     }
     else
     {
