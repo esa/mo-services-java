@@ -42,42 +42,40 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
    * Constructor.
    * @param sender Used to return the messages.
    * @param address Details of this endpoint.
-   * @param internalTransId Internal transaction identifier.
    * @param msg The source message.
    * @throws MALInteractionException if the received message operation is unknown.
    */
   public InvokeInteractionImpl(final MessageSend sender,
           final Address address,
-          final Long internalTransId,
           final MALMessage msg) throws MALInteractionException
   {
-    super(sender, address, internalTransId, msg);
+    super(sender, address, msg);
   }
 
   @Override
   public MALMessage sendAcknowledgement(final Object... result) throws MALInteractionException, MALException
   {
     ackSent = true;
-    return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, false, result);
+    return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, result);
   }
 
   @Override
   public MALMessage sendAcknowledgement(final MALEncodedBody body) throws MALInteractionException, MALException
   {
     ackSent = true;
-    return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, false, body);
+    return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, body);
   }
 
   @Override
   public MALMessage sendResponse(final Object... result) throws MALInteractionException, MALException
   {
-    return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, true, result);
+    return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
   }
 
   @Override
   public MALMessage sendResponse(final MALEncodedBody body) throws MALInteractionException, MALException
   {
-    return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, true, body);
+    return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, body);
   }
 
   @Override

@@ -35,15 +35,13 @@ public class PubSubInteractionImpl extends BaseInteractionImpl
    *
    * @param sender Used to return the messages.
    * @param address Details of this endpoint.
-   * @param internalTransId Internal transaction identifier.
    * @param msg The source message.
    * @throws MALInteractionException if the received message operation is unknown.
    */
   public PubSubInteractionImpl(final MessageSend sender,
           final Address address,
-          final Long internalTransId,
           final MALMessage msg) throws MALInteractionException
   {
-    super(sender, address, internalTransId, msg);
+    super(sender, address, msg);
   }
 }

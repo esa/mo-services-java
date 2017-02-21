@@ -50,20 +50,17 @@ public class MessageReceive implements MALMessageListener
   private final InteractionConsumerMap icmap;
   private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
   private final Map<EndPointPair, Address> providerEndpointMap = new HashMap();
-  private final InteractionProviderMap ipmap;
   private final InteractionPubSubMap ipsmap;
 
   MessageReceive(final MessageSend sender,
           final MALAccessControl securityManager,
           final InteractionConsumerMap imap,
-          final InteractionProviderMap pmap,
           final InteractionPubSubMap psmap,
           final Map<String, MALBrokerBindingImpl> brokerBindingMap)
   {
     this.sender = sender;
     this.securityManager = securityManager;
     this.icmap = imap;
-    this.ipmap = pmap;
     this.ipsmap = psmap;
     this.brokerBindingMap = brokerBindingMap;
   }
@@ -241,7 +238,6 @@ public class MessageReceive implements MALMessageListener
       else
       {
         sender.returnError(address,
-                msg.getHeader().getTransactionId(),
                 msg.getHeader(),
                 rspnInteractionStage,
                 ex.getStandardError());
@@ -263,7 +259,7 @@ public class MessageReceive implements MALMessageListener
       }
       else
       {
-        sender.returnError(address, msg.getHeader().getTransactionId(), msg.getHeader(), rspnInteractionStage, ex);
+        sender.returnError(address, msg.getHeader(), rspnInteractionStage, ex);
       }
     }
   }
@@ -306,9 +302,7 @@ public class MessageReceive implements MALMessageListener
 
   private void internalHandleSubmit(final MALMessage msg, final Address address) throws MALInteractionException
   {
-    final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
-
-    SubmitInteractionImpl interaction = new SubmitInteractionImpl(sender, address, transId, msg);
+    SubmitInteractionImpl interaction = new SubmitInteractionImpl(sender, address, msg);
 
     try
     {
@@ -316,7 +310,7 @@ public class MessageReceive implements MALMessageListener
       {
         MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleSubmit for {0} type {1}", new Object[]
         {
-          transId, address.handler
+          msg.getHeader().getTransactionId(), address.handler
         });
         address.handler.handleSubmit(interaction, msg.getBody());
       }
@@ -328,7 +322,6 @@ public class MessageReceive implements MALMessageListener
     catch (MALException ex)
     {
       sender.returnError(address,
-              transId,
               msg.getHeader(),
               MALSubmitOperation.SUBMIT_ACK_STAGE,
               ex);
@@ -337,9 +330,7 @@ public class MessageReceive implements MALMessageListener
 
   private void internalHandleRequest(final MALMessage msg, final Address address) throws MALInteractionException
   {
-    final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
-
-    RequestInteractionImpl interaction = new RequestInteractionImpl(sender, address, transId, msg);
+    RequestInteractionImpl interaction = new RequestInteractionImpl(sender, address, msg);
 
     try
     {
@@ -347,7 +338,7 @@ public class MessageReceive implements MALMessageListener
       {
         MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleRequest for {0} type {1}", new Object[]
         {
-          transId, address.handler
+          msg.getHeader().getTransactionId(), address.handler
         });
         address.handler.handleRequest(interaction, msg.getBody());
       }
@@ -359,7 +350,6 @@ public class MessageReceive implements MALMessageListener
     catch (MALException ex)
     {
       sender.returnError(address,
-              transId,
               msg.getHeader(),
               MALRequestOperation.REQUEST_RESPONSE_STAGE,
               ex);
@@ -368,9 +358,7 @@ public class MessageReceive implements MALMessageListener
 
   private void internalHandleInvoke(final MALMessage msg, final Address address) throws MALInteractionException
   {
-    final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
-
-    InvokeInteractionImpl interaction = new InvokeInteractionImpl(sender, address, transId, msg);
+    InvokeInteractionImpl interaction = new InvokeInteractionImpl(sender, address, msg);
 
     try
     {
@@ -378,7 +366,7 @@ public class MessageReceive implements MALMessageListener
       {
         MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleInvoke for {0} type {1}", new Object[]
         {
-          transId, address.handler
+          msg.getHeader().getTransactionId(), address.handler
         });
         address.handler.handleInvoke(interaction, msg.getBody());
       }
@@ -402,9 +390,7 @@ public class MessageReceive implements MALMessageListener
 
   private void internalHandleProgress(final MALMessage msg, final Address address) throws MALInteractionException
   {
-    final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
-
-    ProgressInteractionImpl interaction = new ProgressInteractionImpl(sender, address, transId, msg);
+    ProgressInteractionImpl interaction = new ProgressInteractionImpl(sender, address, msg);
 
     try
     {
@@ -412,7 +398,7 @@ public class MessageReceive implements MALMessageListener
       {
         MALContextFactoryImpl.LOGGER.log(Level.FINE, "internalHandleProgresss for {0} type {1}", new Object[]
         {
-          transId, address.handler
+          msg.getHeader().getTransactionId(), address.handler
         });
         address.handler.handleProgress(interaction, msg.getBody());
       }
@@ -437,8 +423,6 @@ public class MessageReceive implements MALMessageListener
   private void internalHandleRegister(final MALMessage msg, final Address address)
           throws MALInteractionException, MALException
   {
-    final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
-
     // find relevant broker
     final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
 
@@ -447,17 +431,15 @@ public class MessageReceive implements MALMessageListener
       if (msg.getBody() instanceof MALRegisterBody)
       {
         // update register list
-        final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
+        final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
         brokerHandler.addSubscriber(msg.getHeader().getURIFrom().getValue());
         brokerHandler.getBrokerImpl().getHandler().handleRegister(interaction, (MALRegisterBody) msg.getBody());
 
         // because we don't pass this upwards, we have to generate the ack
         sender.returnResponse(address,
-                transId,
                 msg.getHeader(),
                 msg.getHeader().getQoSlevel(),
                 MALPubSubOperation.REGISTER_ACK_STAGE,
-                true,
                 interaction.getOperation(),
                 interaction.getQoSProperties(),
                 (Object[]) null);
@@ -465,7 +447,6 @@ public class MessageReceive implements MALMessageListener
       else
       {
         sender.returnError(address,
-                transId,
                 msg.getHeader(),
                 MALPubSubOperation.REGISTER_ACK_STAGE,
                 new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER,
@@ -475,7 +456,6 @@ public class MessageReceive implements MALMessageListener
     else
     {
       sender.returnError(address,
-              transId,
               msg.getHeader(),
               MALPubSubOperation.REGISTER_ACK_STAGE,
               new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
@@ -486,8 +466,6 @@ public class MessageReceive implements MALMessageListener
   private void internalHandlePublishRegister(final MALMessage msg, final Address address)
           throws MALInteractionException, MALException
   {
-    final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
-
     // find relevant broker
     final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
 
@@ -496,7 +474,7 @@ public class MessageReceive implements MALMessageListener
       if (msg.getBody() instanceof MALPublishRegisterBody)
       {
         // update register list
-        final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
+        final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
         brokerHandler.getBrokerImpl().getHandler().handlePublishRegister(interaction, (MALPublishRegisterBody) msg.getBody());
 
         // need to use QOSlevel and priority from original publish register
@@ -504,15 +482,14 @@ public class MessageReceive implements MALMessageListener
 
         // because we don't pass this upwards, we have to generate the ack
         sender.returnResponse(address,
-                transId,
                 msg.getHeader(),
                 lvl,
-                MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE, true, interaction.getOperation(), interaction.getQoSProperties(), (Object[]) null);
+                MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE,
+                interaction.getOperation(), interaction.getQoSProperties(), (Object[]) null);
       }
       else
       {
         sender.returnError(address,
-                transId,
                 msg.getHeader(),
                 MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE,
                 new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER,
@@ -522,7 +499,6 @@ public class MessageReceive implements MALMessageListener
     else
     {
       sender.returnError(address,
-              transId,
               msg.getHeader(),
               MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE,
               new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
@@ -569,16 +545,13 @@ public class MessageReceive implements MALMessageListener
         {
           try
           {
-            final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(),
-                    msg.getHeader().getTransactionId());
             final MALInteraction interaction
-                    = new PubSubInteractionImpl(sender, address, transId, msg);
+                    = new PubSubInteractionImpl(sender, address, msg);
             brokerHandler.getBrokerImpl().getHandler().handlePublish(interaction, (MALPublishBody) msg.getBody());
           }
           catch (MALInteractionException ex)
           {
             sender.returnError(address,
-                    msg.getHeader().getTransactionId(),
                     msg.getHeader(),
                     MALPubSubOperation.PUBLISH_STAGE,
                     ex.getStandardError());
@@ -586,7 +559,6 @@ public class MessageReceive implements MALMessageListener
           catch (MALException ex)
           {
             sender.returnError(address,
-                    msg.getHeader().getTransactionId(),
                     msg.getHeader(),
                     MALPubSubOperation.PUBLISH_STAGE,
                     ex);
@@ -597,7 +569,6 @@ public class MessageReceive implements MALMessageListener
           MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                   "Unexpected body type for PUBLISH: {0}", msg.getHeader().getURITo());
           sender.returnError(address,
-                  msg.getHeader().getTransactionId(),
                   msg.getHeader(),
                   MALPubSubOperation.PUBLISH_STAGE,
                   new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER,
@@ -607,7 +578,6 @@ public class MessageReceive implements MALMessageListener
       else
       {
         sender.returnError(address,
-                msg.getHeader().getTransactionId(),
                 msg.getHeader(),
                 MALPubSubOperation.PUBLISH_STAGE,
                 new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
@@ -670,8 +640,6 @@ public class MessageReceive implements MALMessageListener
 
   private void internalHandleDeregister(final MALMessage msg, final Address address) throws MALInteractionException
   {
-    final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
-
     // find relevant broker
     final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
 
@@ -680,17 +648,15 @@ public class MessageReceive implements MALMessageListener
       try
       {
         // update register list
-        final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
+        final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
         brokerHandler.getBrokerImpl().getHandler().handleDeregister(interaction, (MALDeregisterBody) msg.getBody());
         brokerHandler.removeSubscriber(msg.getHeader().getURIFrom().getValue());
 
         // because we don't pass this upwards, we have to generate the ack
         sender.returnResponse(address,
-                transId,
                 msg.getHeader(),
                 msg.getHeader().getQoSlevel(),
                 MALPubSubOperation.DEREGISTER_ACK_STAGE,
-                true,
                 interaction.getOperation(),
                 interaction.getQoSProperties(),
                 (Object[]) null);
@@ -698,7 +664,6 @@ public class MessageReceive implements MALMessageListener
       catch (MALException ex)
       {
         sender.returnError(address,
-                transId,
                 msg.getHeader(),
                 MALPubSubOperation.DEREGISTER_ACK_STAGE, ex);
       }
@@ -706,7 +671,6 @@ public class MessageReceive implements MALMessageListener
     else
     {
       sender.returnError(address,
-              transId,
               msg.getHeader(),
               MALPubSubOperation.DEREGISTER_ACK_STAGE,
               new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
@@ -717,8 +681,6 @@ public class MessageReceive implements MALMessageListener
   private void internalHandlePublishDeregister(final MALMessage msg, final Address address)
           throws MALInteractionException, MALException
   {
-    final Long transId = ipmap.addTransactionSource(msg.getHeader().getURIFrom(), msg.getHeader().getTransactionId());
-
     // find relevant broker
     final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
 
@@ -732,20 +694,19 @@ public class MessageReceive implements MALMessageListener
       }
 
       // update register list
-      final MALInteraction interaction = new PubSubInteractionImpl(sender, address, transId, msg);
+      final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
       brokerHandler.getBrokerImpl().getHandler().handlePublishDeregister(interaction);
 
       // because we don't pass this upwards, we have to generate the ack
       sender.returnResponse(address,
-              transId,
               msg.getHeader(),
               lvl,
-              MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE, true, interaction.getOperation(), interaction.getQoSProperties(), (Object[]) null);
+              MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE,
+              interaction.getOperation(), interaction.getQoSProperties(), (Object[]) null);
     }
     else
     {
       sender.returnError(address,
-              transId,
               msg.getHeader(),
               MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE,
               new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,

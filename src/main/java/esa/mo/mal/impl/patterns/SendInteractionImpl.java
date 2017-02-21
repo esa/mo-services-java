@@ -37,6 +37,6 @@ public class SendInteractionImpl extends BaseInteractionImpl
    */
   public SendInteractionImpl(final MessageSend sender, final MALMessage msg) throws MALInteractionException
   {
-    super(sender, null, null, msg);
+    super(sender, null, msg);
   }
 }

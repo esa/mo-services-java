@@ -39,17 +39,14 @@ public class MessageSend
 {
   private final MALAccessControl securityManager;
   private final InteractionConsumerMap icmap;
-  private final InteractionProviderMap ipmap;
   private final InteractionPubSubMap ipsmap;
 
   MessageSend(final MALAccessControl securityManager,
           final InteractionConsumerMap imap,
-          final InteractionProviderMap pmap,
           final InteractionPubSubMap psmap)
   {
     this.securityManager = securityManager;
     this.icmap = imap;
-    this.ipmap = pmap;
     this.ipsmap = psmap;
   }
 
@@ -438,22 +435,18 @@ public class MessageSend
    * Send return response method.
    *
    * @param msgAddress Address structure to use for return message.
-   * @param internalTransId Internal transaction identifier.
    * @param srcHdr Message header to use as reference for return messages header.
    * @param lvl The QoS level to use.
    * @param rspnInteractionStage Interaction stage to use on the response.
    * @param rspn Response message body.
-   * @param isFinalStage True if this the final stage of the interaction.
    * @param qosProperties The QoS properties.
    * @param operation The operation.
    * @return The sent MAL message.
    */
   public MALMessage returnResponse(final Address msgAddress,
-          final Long internalTransId,
           final MALMessageHeader srcHdr,
           final QoSLevel lvl,
           final UOctet rspnInteractionStage,
-          final boolean isFinalStage,
           final MALOperation operation,
           final Map qosProperties,
           final Object... rspn)
@@ -477,11 +470,6 @@ public class MessageSend
               rspnInteractionStage,
               qosProperties,
               rspn);
-
-      if (isFinalStage)
-      {
-        ipmap.removeTransactionSource(internalTransId);
-      }
 
       msgAddress.endpoint.sendMessage(msg);
     }
@@ -508,22 +496,18 @@ public class MessageSend
    * Send return response method.
    *
    * @param msgAddress Address structure to use for return message.
-   * @param internalTransId Internal transaction identifier.
    * @param srcHdr Message header to use as reference for return messages header.
    * @param lvl The QoS level to use.
    * @param rspnInteractionStage Interaction stage to use on the response.
    * @param rspn Response encoded message body.
-   * @param isFinalStage True if this the final stage of the interaction.
    * @param qosProperties The QoS properties.
    * @param operation The operation.
    * @return The sent MAL message.
    */
   public MALMessage returnResponse(final Address msgAddress,
-          final Long internalTransId,
           final MALMessageHeader srcHdr,
           final QoSLevel lvl,
           final UOctet rspnInteractionStage,
-          final boolean isFinalStage,
           final MALOperation operation,
           final Map qosProperties,
           final MALEncodedBody rspn)
@@ -547,11 +531,6 @@ public class MessageSend
               rspnInteractionStage,
               qosProperties,
               rspn);
-
-      if (isFinalStage)
-      {
-        ipmap.removeTransactionSource(internalTransId);
-      }
 
       msgAddress.endpoint.sendMessage(msg);
     }
@@ -578,20 +557,17 @@ public class MessageSend
    * Send return error method.
    *
    * @param msgAddress Address structure to use for return message.
-   * @param internalTransId Internal transaction identifier.
    * @param srcHdr Message header to use as reference for return messages header.
    * @param rspnInteractionStage Interaction stage to use on the response.
    * @param error Response message error.
    * @return The sent MAL message.
    */
   public MALMessage returnError(final Address msgAddress,
-          final Long internalTransId,
           final MALMessageHeader srcHdr,
           final UOctet rspnInteractionStage,
           final MALException error)
   {
     return initiateReturnError(msgAddress,
-            internalTransId,
             srcHdr,
             srcHdr.getQoSlevel(),
             rspnInteractionStage,
@@ -602,20 +578,17 @@ public class MessageSend
    * Send return error method.
    *
    * @param msgAddress Address structure to use for return message.
-   * @param internalTransId Internal transaction identifier.
    * @param srcHdr Message header to use as reference for return messages header.
    * @param rspnInteractionStage Interaction stage to use on the response.
    * @param error Response message error.
    * @return The sent MAL message.
    */
   public MALMessage returnError(final Address msgAddress,
-          final Long internalTransId,
           final MALMessageHeader srcHdr,
           final UOctet rspnInteractionStage,
           final MALStandardError error)
   {
     return initiateReturnError(msgAddress,
-            internalTransId,
             srcHdr,
             srcHdr.getQoSlevel(),
             rspnInteractionStage,
@@ -747,7 +720,6 @@ public class MessageSend
   }
 
   private MALMessage initiateReturnError(final Address msgAddress,
-          final Long internalTransId,
           final MALMessageHeader srcHdr,
           QoSLevel level,
           final UOctet rspnInteractionStage,
@@ -781,9 +753,6 @@ public class MessageSend
               true,
               new HashMap(),
               error.getErrorNumber(), error.getExtraInformation());
-
-
-      ipmap.removeTransactionSource(internalTransId);
 
       msgAddress.endpoint.sendMessage(msg);
     }

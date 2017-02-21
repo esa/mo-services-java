@@ -38,22 +38,20 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
    * Constructor.
    * @param sender Used to return the messages.
    * @param address Details of this endpoint.
-   * @param internalTransId Internal transaction identifier.
    * @param msg The source message.
    * @throws MALInteractionException if the received message operation is unknown.
    */
   public SubmitInteractionImpl(final MessageSend sender,
           final Address address,
-          final Long internalTransId,
           final MALMessage msg) throws MALInteractionException
   {
-    super(sender, address, internalTransId, msg);
+    super(sender, address, msg);
   }
 
   @Override
   public MALMessage sendAcknowledgement() throws MALException
   {
-    return returnResponse(MALSubmitOperation.SUBMIT_ACK_STAGE, true, (Object[]) null);
+    return returnResponse(MALSubmitOperation.SUBMIT_ACK_STAGE, (Object[]) null);
   }
 
   @Override

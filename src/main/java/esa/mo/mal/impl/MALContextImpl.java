@@ -48,7 +48,6 @@ public class MALContextImpl extends MALClose implements MALContext
   private final Map initialProperties;
   private final MALAccessControl securityManager;
   private final InteractionConsumerMap icmap = new InteractionConsumerMap();
-  private final InteractionProviderMap ipmap = new InteractionProviderMap();
   private final InteractionPubSubMap ipsmap = new InteractionPubSubMap();
   private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<String, MALBrokerBindingImpl>();
   private final MessageReceive receiver;
@@ -75,8 +74,8 @@ public class MALContextImpl extends MALClose implements MALContext
       securityManager = new NullSecurityManager();
     }
 
-    sender = new MessageSend(securityManager, icmap, ipmap, ipsmap);
-    receiver = new MessageReceive(sender, securityManager, icmap, ipmap, ipsmap, brokerBindingMap);
+    sender = new MessageSend(securityManager, icmap, ipsmap);
+    receiver = new MessageReceive(sender, securityManager, icmap, ipsmap, brokerBindingMap);
   }
 
   @Override

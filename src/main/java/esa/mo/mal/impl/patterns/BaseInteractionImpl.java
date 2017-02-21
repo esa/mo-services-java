@@ -39,19 +39,16 @@ public abstract class BaseInteractionImpl implements MALInteraction
 {
   private final MessageSend sender;
   private final Address address;
-  private final Long internalTransId;
   private final MALMessage msg;
   private final MALOperation operation;
   private final Map qosProperties = new HashMap();
 
   BaseInteractionImpl(final MessageSend sender,
           final Address address,
-          final Long internalTransId,
           final MALMessage msg) throws MALInteractionException
   {
     this.sender = sender;
     this.address = address;
-    this.internalTransId = internalTransId;
     this.msg = msg;
     this.operation = MALContextFactory.lookupArea(msg.getHeader().getServiceArea(), msg.getHeader().getAreaVersion())
             .getServiceByNumber(msg.getHeader().getService())
@@ -110,21 +107,17 @@ public abstract class BaseInteractionImpl implements MALInteraction
    * Returns a response to the consumer.
    *
    * @param stage Stage to use.
-   * @param isFinalStage true is this is the final stage of the interaction.
    * @param result Message body.
    * @return the sent message.
    * @throws MALException On error.
    */
   protected MALMessage returnResponse(final UOctet stage,
-          final boolean isFinalStage,
           final Object... result) throws MALException
   {
     return sender.returnResponse(address,
-            internalTransId,
             msg.getHeader(),
             msg.getHeader().getQoSlevel(),
             stage,
-            isFinalStage,
             operation,
             qosProperties,
             result);
@@ -134,21 +127,17 @@ public abstract class BaseInteractionImpl implements MALInteraction
    * Returns an encoded response to the consumer.
    *
    * @param stage Stage to use.
-   * @param isFinalStage true is this is the final stage of the interaction.
    * @param body Encoded message body.
    * @return the sent message.
    * @throws MALException On error.
    */
   protected MALMessage returnResponse(final UOctet stage,
-          final boolean isFinalStage,
           final MALEncodedBody body) throws MALException
   {
     return sender.returnResponse(address,
-            internalTransId,
             msg.getHeader(),
             msg.getHeader().getQoSlevel(),
             stage,
-            isFinalStage,
             operation,
             qosProperties,
             body);
@@ -165,6 +154,6 @@ public abstract class BaseInteractionImpl implements MALInteraction
   protected MALMessage returnError(final UOctet stage,
           final MALStandardError error) throws MALException
   {
-    return sender.returnError(address, internalTransId, msg.getHeader(), stage, error);
+    return sender.returnError(address, msg.getHeader(), stage, error);
   }
 }
