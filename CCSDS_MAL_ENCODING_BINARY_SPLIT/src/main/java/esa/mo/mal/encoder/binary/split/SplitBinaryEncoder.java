@@ -41,6 +41,17 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
     super(new SplitStreamHolder(os));
   }
 
+  /**
+   * Constructor for derived classes that have their own stream holder
+   * implementation that should be used.
+   *
+   * @param os Output stream to write to.
+   */
+  protected SplitBinaryEncoder(final StreamHolder os)
+  {
+    super(os);
+  }
+
   @Override
   public org.ccsds.moims.mo.mal.MALListEncoder createListEncoder(final java.util.List value) throws MALException
   {

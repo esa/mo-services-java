@@ -45,4 +45,14 @@ public class SplitBinaryElementInputStream extends esa.mo.mal.encoder.binary.Bin
   {
     super(new SplitBinaryDecoder(buf, offset));
   }
+
+  /**
+   * Sub class constructor.
+   *
+   * @param dec Decoder to use.
+   */
+  protected SplitBinaryElementInputStream(SplitBinaryDecoder dec)
+  {
+    super(dec);
+  }
 }
