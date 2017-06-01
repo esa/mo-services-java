@@ -167,7 +167,7 @@ public class BinaryDecoder extends GENDecoder
    * Internal class that is used to hold the byte buffer. Derived classes should extend this (and replace it in the
    * constructors) if they encode the fields differently from this encoding.
    */
-  protected static class BinaryBufferHolder extends BufferHolder
+  public static class BinaryBufferHolder extends BufferHolder
   {
     protected final InputReader buf;
 
