@@ -22,13 +22,23 @@ package esa.mo.mal.encoder.binary.split;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.ULong;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
- * Implements the MALEncoder and MALListEncoder interfaces for a split binary encoding.
+ * Implements the MALEncoder and MALListEncoder interfaces for a split binary
+ * encoding.
  */
 public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
 {
+
   private int openCount = 1;
 
   /**
@@ -53,11 +63,61 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
   }
 
   @Override
-  public org.ccsds.moims.mo.mal.MALListEncoder createListEncoder(final java.util.List value) throws MALException
+  public org.ccsds.moims.mo.mal.MALListEncoder createListEncoder(
+          final java.util.List value) throws MALException
   {
     ++openCount;
 
     return super.createListEncoder(value);
+  }
+
+  /**
+   * A MAL string is encoded as follows: - String Length: UInteger - Character:
+   * UTF-8, variable size, multiple of octet The field 'string length' shall be
+   * assigned with the number of octets required to encode the character of the
+   * string
+   *
+   * @param val The string to encode
+   * @throws MALException if the string to encode is too large
+   */
+  @Override
+  public void encodeString(String val) throws MALException
+  {
+
+    try
+    {
+      outputStream.addString(val);
+    }
+    catch (IOException e)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, e);
+    }
+  }
+
+  @Override
+  public void encodeNullableString(String value) throws MALException
+  {
+
+    try
+    {
+      if (value != null)
+      {
+        // encode presence flag
+        outputStream.addNotNull();
+        // encode element as String
+        encodeString(value);
+      }
+      else
+      {
+        // encode presence flag
+        outputStream.addIsNull();
+
+      }
+    }
+    catch (IOException e)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, e);
+    }
   }
 
   @Override
@@ -74,8 +134,64 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
   }
 
   @Override
+  public void encodeTime(final Time value) throws MALException
+  {
+    try
+    {
+      ((SplitStreamHolder) outputStream).addFixedUnsignedLong(value
+              .getValue());
+    }
+    catch (IOException ex)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    }
+  }
+
+  @Override
+  public void encodeFineTime(final FineTime value) throws MALException
+  {
+    try
+    {
+      ((SplitStreamHolder) outputStream).addFixedUnsignedLong(value
+              .getValue());
+    }
+    catch (IOException ex)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    }
+  }
+
+  @Override
+  public void encodeNullableBlob(final Blob value) throws MALException
+  {
+
+    try
+    {
+      if (value != null)
+      {
+        // encode presence flag
+        outputStream.addNotNull();
+        // encode element as String
+        encodeBlob(value);
+      }
+      else
+      {
+        // encode presence flag
+        outputStream.addIsNull();
+
+      }
+    }
+    catch (IOException e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  @Override
   public void encodeNullableBoolean(final Boolean value) throws MALException
   {
+
     try
     {
       if (null != value)
@@ -87,6 +203,100 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
       {
         outputStream.addIsNull();
       }
+    }
+    catch (IOException ex)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    }
+  }
+
+  @Override
+  public void encodeNullableIdentifier(final Identifier value) throws MALException
+  {
+
+    try
+    {
+      if (value != null && value.getValue() != null)
+      {
+        outputStream.addNotNull();
+        encodeIdentifier(value);
+      }
+      else
+      {
+        outputStream.addIsNull();
+      }
+    }
+    catch (IOException ex)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    }
+  }
+
+  @Override
+  public void encodeNullableULong(final ULong value) throws MALException
+  {
+
+    try
+    {
+      if (null != value)
+      {
+        outputStream.addNotNull();
+        encodeULong(value);
+      }
+      else
+      {
+        outputStream.addIsNull();
+      }
+    }
+    catch (IOException ex)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    }
+  }
+
+  @Override
+  public void encodeNullableURI(final URI value) throws MALException
+  {
+
+    try
+    {
+      if (null != value)
+      {
+        outputStream.addNotNull();
+        encodeURI(value);
+      }
+      else
+      {
+        outputStream.addIsNull();
+      }
+    }
+    catch (IOException ex)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    }
+  }
+
+  @Override
+  public void encodeOctet(final Byte value) throws MALException
+  {
+
+    try
+    {
+      outputStream.addByte(value);
+    }
+    catch (IOException ex)
+    {
+      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    }
+  }
+
+  @Override
+  public void encodeUOctet(final UOctet value) throws MALException
+  {
+
+    try
+    {
+      outputStream.addByte((byte) value.getValue());
     }
     catch (IOException ex)
     {
@@ -113,10 +323,12 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
   }
 
   /**
-   * Extends the StreamHolder class for handling splitting out the Boolean values.
+   * Extends the StreamHolder class for handling splitting out the Boolean
+   * values.
    */
   public static class SplitStreamHolder extends BinaryStreamHolder
   {
+
     private static final int BIT_BYTES_BLOCK_SIZE = 1024;
     private final java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
     private byte[] bitBytes = new byte[BIT_BYTES_BLOCK_SIZE];
@@ -139,6 +351,13 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
       streamAddUnsignedInt(outputStream, bitBytesInUse);
       outputStream.write(bitBytes, 0, bitBytesInUse);
       baos.writeTo(outputStream);
+    }
+
+    @Override
+    public void addString(String value) throws IOException
+    {
+
+      addBytes(value.getBytes(UTF8_CHARSET));
     }
 
     @Override
@@ -187,6 +406,60 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
       os.write(value & 0x7F);
     }
 
+    @Override
+    public void addByte(byte value) throws IOException
+    {
+
+      directAdd(value);
+    }
+
+    @Override
+    public void addBytes(final byte[] value) throws IOException
+    {
+
+      if (null == value)
+      {
+        streamAddUnsignedInt(baos, 0);
+
+        throw new IOException("StreamHolder.addBytes: null value supplied!!");
+
+      }
+      else
+      {
+        streamAddUnsignedInt(baos, value.length);
+        baos.write(value);
+      }
+    }
+
+    public void addUnsignedVarint4(int value) throws IOException
+    {
+      streamAddUnsignedInt(baos, value);
+    }
+
+    @Override
+    public void addUnsignedInt(int value) throws IOException
+    {
+      streamAddUnsignedInt(baos, value);
+    }
+
+    @Override
+    public void addUnsignedLong(long value) throws IOException
+    {
+
+      while ((value & 0xFFFFFFFFFFFFFF80L) != 0L)
+      {
+        int byteToWrite = (int) ((value & 0x7F) | 0x80);
+        baos.write(byteToWrite);
+        value >>>= 7;
+      }
+      baos.write((int) (value & 0x7F));
+    }
+
+    public void addFixedUnsignedLong(long value) throws IOException
+    {
+      directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array());
+    }
+
     private void setBit(int bitIndex)
     {
       int byteIndex = bitIndex / 8;
@@ -196,7 +469,9 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
       {
         if (bitBytes.length < bytesRequired)
         {
-          bitBytes = java.util.Arrays.copyOf(bitBytes, ((bytesRequired / BIT_BYTES_BLOCK_SIZE) + 1) * BIT_BYTES_BLOCK_SIZE);
+          bitBytes = java.util.Arrays.copyOf(bitBytes,
+                  ((bytesRequired / BIT_BYTES_BLOCK_SIZE) + 1)
+                  * BIT_BYTES_BLOCK_SIZE);
         }
 
         bitBytesInUse = bytesRequired;
@@ -204,6 +479,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
 
       bitIndex %= 8;
       bitBytes[byteIndex] |= (1 << bitIndex);
+
     }
   }
 }

@@ -175,6 +175,10 @@ public class BinaryEncoder extends GENEncoder
    */
   public static class BinaryStreamHolder extends StreamHolder
   {
+
+    private static final BigInteger B_127 = new BigInteger("127");
+    private static final BigInteger B_128 = new BigInteger("128");
+
     /**
      * Constructor.
      *
@@ -220,8 +224,16 @@ public class BinaryEncoder extends GENEncoder
     @Override
     public void addBigInteger(BigInteger value) throws IOException
     {
-      addBytes(value.toByteArray());
+      while (value.and(B_127.not()).compareTo(BigInteger.ZERO) == 1)
+      {
+        byte byteToWrite = (value.and(B_127)).or(B_128).byteValue();
+        directAdd(byteToWrite);
+        value = value.shiftRight(7);
+      }
+      BigInteger encoded = value.and(B_127);
+      directAdd(encoded.byteValue());
     }
+
 
     @Override
     public void addSignedLong(final long value) throws IOException

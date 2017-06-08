@@ -90,6 +90,13 @@ public class BinaryDecoder extends GENDecoder
   }
 
   @Override
+  public UOctet decodeUOctet() throws MALException
+  {
+    // Prevent sign extension from the byte
+    return new UOctet((short) (sourceBuffer.get8() & (0xFF)));
+  }
+
+  @Override
   public Boolean decodeNullableBoolean() throws MALException
   {
     final byte b = sourceBuffer.get8();
@@ -170,6 +177,8 @@ public class BinaryDecoder extends GENDecoder
   public static class BinaryBufferHolder extends BufferHolder
   {
     protected final InputReader buf;
+    private static final BigInteger B_127 = new BigInteger("127");
+
 
     /**
      * Constructor.
@@ -204,7 +213,7 @@ public class BinaryDecoder extends GENDecoder
     @Override
     public String getString() throws MALException
     {
-      final int len = getSignedInt();
+      final int len = getUnsignedInt();
 
       if (len >= 0)
       {
@@ -330,8 +339,19 @@ public class BinaryDecoder extends GENDecoder
     @Override
     public BigInteger getBigInteger() throws MALException
     {
-      return new BigInteger(directGetBytes(getSignedInt()));
-    }
+      int i = 0;
+      int b;
+
+      BigInteger rv = BigInteger.ZERO;
+      while (((b = get8()) & 0x80) != 0)
+      {
+        rv = rv.or((new BigInteger(Integer.toString(b)).and(B_127)).shiftLeft(i));
+        i += 7;
+      }
+      rv = rv.or(new BigInteger(Integer.toString(b)).shiftLeft(i));
+
+      return rv;
+   }
 
     @Override
     public byte[] directGetBytes(final int size) throws MALException
