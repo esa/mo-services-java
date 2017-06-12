@@ -38,6 +38,7 @@ import org.ccsds.moims.mo.mal.structures.*;
  */
 public class BinaryDecoder extends GENDecoder
 {
+
   protected static final java.util.logging.Logger LOGGER = Logger.getLogger(BinaryDecoder.class.getName());
   protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
   protected static final int BLOCK_SIZE = 65536;
@@ -90,95 +91,22 @@ public class BinaryDecoder extends GENDecoder
   }
 
   @Override
-  public UOctet decodeUOctet() throws MALException
-  {
-    // Prevent sign extension from the byte
-    return new UOctet((short) (sourceBuffer.get8() & (0xFF)));
-  }
-
-  @Override
-  public Boolean decodeNullableBoolean() throws MALException
-  {
-    final byte b = sourceBuffer.get8();
-
-    if (2 == b)
-    {
-      return null;
-    }
-
-    return 1 == b ? Boolean.TRUE : Boolean.FALSE;
-  }
-
-  @Override
-  public String decodeNullableString() throws MALException
-  {
-    return sourceBuffer.getString();
-  }
-
-  @Override
-  public Identifier decodeNullableIdentifier() throws MALException
-  {
-    final String s = sourceBuffer.getString();
-    if (null != s)
-    {
-      return new Identifier(s);
-    }
-
-    return null;
-  }
-
-  @Override
-  public URI decodeNullableURI() throws MALException
-  {
-    final String s = sourceBuffer.getString();
-    if (null != s)
-    {
-      return new URI(s);
-    }
-
-    return null;
-  }
-
-  @Override
-  public Blob decodeNullableBlob() throws MALException
-  {
-    final int len = sourceBuffer.getSignedInt();
-    if (len >= 0)
-    {
-      return new Blob(sourceBuffer.directGetBytes(len));
-    }
-
-    return null;
-  }
-
-  @Override
-  public ULong decodeNullableULong() throws MALException
-  {
-    final int len = sourceBuffer.getSignedInt();
-    if (len >= 0)
-    {
-      return new ULong(new BigInteger(sourceBuffer.directGetBytes(len)));
-    }
-
-    return null;
-  }
-
-  @Override
   public byte[] getRemainingEncodedData() throws MALException
   {
-    BinaryBufferHolder dSourceBuffer = (BinaryBufferHolder)sourceBuffer;
+    BinaryBufferHolder dSourceBuffer = (BinaryBufferHolder) sourceBuffer;
     return Arrays.copyOfRange(dSourceBuffer.buf.buf, dSourceBuffer.buf.offset, dSourceBuffer.buf.contentLength);
   }
 
   /**
-   * Internal class that is used to hold the byte buffer. Derived classes should extend this (and replace it in the
-   * constructors) if they encode the fields differently from this encoding.
+   * Internal class that is used to hold the byte buffer. Derived classes should
+   * extend this (and replace it in the constructors) if they encode the fields
+   * differently from this encoding.
    */
   public static class BinaryBufferHolder extends BufferHolder
   {
+
     protected final InputReader buf;
     private static final BigInteger B_127 = new BigInteger("127");
-
 
     /**
      * Constructor.
@@ -186,7 +114,8 @@ public class BinaryDecoder extends GENDecoder
      * @param is Input stream to read from.
      * @param buf Source buffer to use.
      * @param offset Buffer offset to read from next.
-     * @param length Length of readable data held in the array, which may be larger.
+     * @param length Length of readable data held in the array, which may be
+     * larger.
      */
     public BinaryBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
@@ -297,7 +226,7 @@ public class BinaryDecoder extends GENDecoder
     @Override
     public short getUnsignedShort8() throws MALException
     {
-      return (short) getUnsignedShort();
+      return (short) (get8() & 0xFF);
     }
 
     @Override
@@ -309,7 +238,7 @@ public class BinaryDecoder extends GENDecoder
     @Override
     public byte[] getBytes() throws MALException
     {
-      return directGetBytes(getSignedInt());
+      return directGetBytes(getUnsignedInt());
     }
 
     @Override
@@ -351,7 +280,7 @@ public class BinaryDecoder extends GENDecoder
       rv = rv.or(new BigInteger(Integer.toString(b)).shiftLeft(i));
 
       return rv;
-   }
+    }
 
     @Override
     public byte[] directGetBytes(final int size) throws MALException
@@ -362,6 +291,7 @@ public class BinaryDecoder extends GENDecoder
 
   protected static class InputReader
   {
+
     protected final java.io.InputStream inputStream;
     protected byte[] buf;
     protected int offset;
@@ -374,7 +304,8 @@ public class BinaryDecoder extends GENDecoder
      * @param is Input stream to read from.
      * @param buf Source buffer to use.
      * @param offset Buffer offset to read from next.
-     * @param length Length of readable data held in the array, which may be larger.
+     * @param length Length of readable data held in the array, which may be
+     * larger.
      */
     public InputReader(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
@@ -389,7 +320,7 @@ public class BinaryDecoder extends GENDecoder
     {
       this.forceRealloc = forceRealloc;
     }
-    
+
     public byte get8() throws MALException
     {
       checkBuffer(1);
@@ -412,7 +343,8 @@ public class BinaryDecoder extends GENDecoder
     }
 
     /**
-     * Ensures that we have loaded enough buffer from the input stream (if we are stream based) for the next read.
+     * Ensures that we have loaded enough buffer from the input stream (if we
+     * are stream based) for the next read.
      *
      * @param requiredLength number of bytes required.
      * @throws MALException if there is an error reading from the stream
@@ -435,13 +367,13 @@ public class BinaryDecoder extends GENDecoder
         if (existingContentRemaining < requiredLength)
         {
           LOGGER.log(Level.FINER, "Not enought bytes available. Expecting {0}", requiredLength);
-          
+
           // ok, check to see if we have enough space left in the current buffer for what we need to load
           if ((existingBufferLength - this.offset) < requiredLength)
           {
             byte[] destBuf = this.buf;
 
-            // its not big enough, we need to check if we need a bigger buffer or in case we know the existing 
+            // its not big enough, we need to check if we need a bigger buffer or in case we know the existing
             // buffer is still required.
             if (forceRealloc || (existingBufferLength < requiredLength))
             {
@@ -471,7 +403,8 @@ public class BinaryDecoder extends GENDecoder
             final int read = inputStream.read(this.buf,
                     this.contentLength, existingBufferLength - this.contentLength);
             LOGGER.log(Level.FINER, "Read from input stream: {0}", read);
-            if (read < 0) {
+            if (read < 0)
+            {
               throw new MALException("Unable to read required amount from source stream: end of file.");
             }
             this.contentLength += read;
@@ -511,10 +444,10 @@ public class BinaryDecoder extends GENDecoder
       offset += delta;
       return i;
     }
-    
+
     /**
-     * Notification method that can be used by derived classes to notify them that the internal buffer has been
-     * reallocated.
+     * Notification method that can be used by derived classes to notify them
+     * that the internal buffer has been reallocated.
      *
      * @param oldSize the old buffer size
      */

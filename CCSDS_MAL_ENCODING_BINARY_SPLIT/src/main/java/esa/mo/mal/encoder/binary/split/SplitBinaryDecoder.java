@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.binary.split;
 
+import java.io.InputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.FineTime;
@@ -90,116 +91,6 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   }
 
   @Override
-  public Boolean decodeNullableBoolean() throws MALException
-  {
-
-    boolean isNotNull = decodeBoolean();
-
-    Boolean rv = null;
-
-    // decode one element, or add null if presence flag indicates no element
-    if (isNotNull)
-    {
-      rv = decodeBoolean();
-    }
-
-    return rv;
-  }
-
-  @Override
-  public String decodeString() throws MALException
-  {
-
-    return sourceBuffer.getString();
-  }
-
-  @Override
-  public String decodeNullableString() throws MALException
-  {
-
-    // decode presence flag
-    boolean isNotNull = decodeBoolean();
-
-    String rv = null;
-
-    // decode one element, or add null if presence flag indicates no element
-    if (isNotNull)
-    {
-      rv = decodeString();
-    }
-
-    return rv;
-  }
-
-  @Override
-  public Blob decodeNullableBlob() throws MALException
-  {
-
-    // decode presence flag
-    boolean isNotNull = decodeBoolean();
-
-    // decode one element, or add null if presence flag indicates no element
-    if (isNotNull)
-    {
-      return decodeBlob();
-    }
-
-    return null;
-  }
-
-  @Override
-  public Identifier decodeNullableIdentifier() throws MALException
-  {
-
-    // decode presence flag
-    boolean isNotNull = decodeBoolean();
-
-    Identifier rv = null;
-
-    // decode one element, or add null if presence flag indicates no element
-    if (isNotNull)
-    {
-      rv = decodeIdentifier();
-    }
-
-    return rv;
-  }
-
-  @Override
-  public URI decodeNullableURI() throws MALException
-  {
-
-    // decode presence flag
-    boolean isNotNull = decodeBoolean();
-
-    // decode one element, or add null if presence flag indicates no element
-    if (isNotNull)
-    {
-      return decodeURI();
-    }
-
-    return null;
-  }
-
-  @Override
-  public ULong decodeNullableULong() throws MALException
-  {
-
-    // decode presence flag
-    boolean isNotNull = decodeBoolean();
-
-    ULong rv = null;
-
-    // decode one element, or add null if presence flag indicates no element
-    if (isNotNull)
-    {
-      rv = decodeULong();
-    }
-
-    return rv;
-  }
-
-  @Override
   public Time decodeTime() throws MALException
   {
     return new Time(((SplitBufferHolder) sourceBuffer).getFixedUnsignedLong());
@@ -217,9 +108,6 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
   protected static class SplitBufferHolder extends BinaryBufferHolder
   {
 
-    private boolean bitStoreLoaded = false;
-    private BitGet bitStore = null;
-
     /**
      * Constructor.
      *
@@ -232,11 +120,51 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     public SplitBufferHolder(final java.io.InputStream is,
             final byte[] buf, final int offset, final int length)
     {
-      super(is, buf, offset, length);
+      super(new SplitInputReader(is, buf, offset, length));
 
-      super.buf.setForceRealloc(true);
+      this.buf.setForceRealloc(true);
     }
 
+    public SplitInputReader getSplitInputReader()
+    {
+      return (SplitInputReader) getBuf();
+    }
+
+    @Override
+    public boolean getBool() throws MALException
+    {
+      // ensure that the bit buffer has been loaded first
+      if (!getSplitInputReader().bitStoreLoaded)
+      {
+        getSplitInputReader().loadBitStore();
+      }
+
+      return getSplitInputReader().bitStore.pop();
+    }
+
+    public long getFixedUnsignedLong() throws MALException
+    {
+      buf.checkBuffer(8);
+
+      final int i = buf.shiftOffsetAndReturnPrevious(8);
+      return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 8).getLong();
+    }
+  }
+
+  protected static class SplitInputReader extends InputReader
+  {
+
+    protected boolean bitStoreLoaded = false;
+    protected BitGet bitStore = null;
+
+    public SplitInputReader(InputStream is, byte[] buf, int offset, int length)
+    {
+      super(is, buf, offset, length);
+
+      forceRealloc = true;
+    }
+
+    @Override
     public void checkBuffer(final int requiredLength) throws MALException
     {
       // ensure that the bit buffer has been loaded first
@@ -245,63 +173,16 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
         loadBitStore();
       }
 
-      super.buf.checkBuffer(requiredLength);
+      super.checkBuffer(requiredLength);
     }
 
-    protected void bufferRealloced(int oldSize)
+    @Override
+    public void bufferRealloced(int oldSize)
     {
       if (0 < oldSize)
       {
-        super.buf.setForceRealloc(false);
+        setForceRealloc(false);
       }
-    }
-
-    @Override
-    public String getString() throws MALException
-    {
-
-      // ensure that the bit buffer has been loaded first
-      if (!bitStoreLoaded)
-      {
-        loadBitStore();
-      }
-
-      final int len = getUnsignedInt();
-
-      if (len >= 0)
-      {
-        checkBuffer(len);
-
-        final String s = new String(buf.getBuf(), buf.getOffset(), len, UTF8_CHARSET);
-        buf.shiftOffsetAndReturnPrevious((int) len);
-        return s;
-      }
-      return null;
-    }
-
-    @Override
-    public byte[] getBytes() throws MALException
-    {
-
-      // ensure that the bit buffer has been loaded first
-      if (!bitStoreLoaded)
-      {
-        loadBitStore();
-      }
-
-      return directGetBytes(getUnsignedInt());
-    }
-
-    @Override
-    public boolean getBool() throws MALException
-    {
-      // ensure that the bit buffer has been loaded first
-      if (!bitStoreLoaded)
-      {
-        loadBitStore();
-      }
-
-      return bitStore.pop();
     }
 
     /**
@@ -313,14 +194,14 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
     {
       // ensure that the bit buffer has been loaded first
       bitStoreLoaded = true;
-      int size = super.getUnsignedInt();
+      int size = getUnsignedInt();
 
       if (size >= 0)
       {
-        super.buf.checkBuffer(size);
+        super.checkBuffer(size);
 
-        bitStore = new BitGet(buf.getBuf(), buf.getOffset(), size);
-        buf.shiftOffsetAndReturnPrevious((int) size);
+        bitStore = new BitGet(buf, offset, size);
+        offset += size;
       }
       else
       {
@@ -328,18 +209,8 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
       }
     }
 
-    /**
-     * Decode an unsigned int using a split-binary approach
-     */
-    @Override
-    public int getUnsignedInt() throws MALException
+    protected int getUnsignedInt() throws MALException
     {
-
-      if (!bitStoreLoaded)
-      {
-        loadBitStore();
-      }
-
       int value = 0;
       int i = 0;
       int b;
@@ -349,38 +220,6 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
         i += 7;
       }
       return value | (b << i);
-    }
-
-    /**
-     * Decode an unsigned long using a split-binary approach
-     */
-    @Override
-    public long getUnsignedLong() throws MALException
-    {
-
-      if (!bitStoreLoaded)
-      {
-        loadBitStore();
-      }
-
-      long value = 0;
-      int i = 0;
-      long b;
-      while (((b = get8()) & 0x80) != 0)
-      {
-        value |= (b & 0x7F) << i;
-        i += 7;
-      }
-      return value | (b << i);
-    }
-
-    public long getFixedUnsignedLong() throws MALException
-    {
-
-      checkBuffer(8);
-
-      final int i = super.buf.shiftOffsetAndReturnPrevious(8);
-      return java.nio.ByteBuffer.wrap(super.buf.getBuf(), i, 8).getLong();
     }
   }
 
