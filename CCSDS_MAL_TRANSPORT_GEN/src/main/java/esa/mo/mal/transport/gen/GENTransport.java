@@ -564,7 +564,7 @@ public abstract class GENTransport<I, O> implements MALTransport
         }
         else
         {
-          LOGGER.log(Level.WARNING, "Could not locate associated data to close communications for URI : {0} ", localUriTo);
+          LOGGER.log(Level.WARNING, "Could not locate associated data channel to close communications, perhaps it was closed before. URI : {0} ", localUriTo);
         }
       }
       if (commsChannel != null)
@@ -623,14 +623,17 @@ public abstract class GENTransport<I, O> implements MALTransport
     asyncInputDataProcessors.shutdown();
 
     LOGGER.fine("Closing outgoing channels");
-    for (Map.Entry<String, GENConcurrentMessageSender> entry : outgoingDataChannels.entrySet())
+    synchronized (this)
     {
-      final GENConcurrentMessageSender sender = entry.getValue();
+      for (Map.Entry<String, GENConcurrentMessageSender> entry : outgoingDataChannels.entrySet())
+      {
+        final GENConcurrentMessageSender sender = entry.getValue();
 
-      sender.terminate();
+        sender.terminate();
+      }
+
+      outgoingDataChannels.clear();
     }
-
-    outgoingDataChannels.clear();
     LOGGER.fine("Closed outgoing channels");
   }
 
