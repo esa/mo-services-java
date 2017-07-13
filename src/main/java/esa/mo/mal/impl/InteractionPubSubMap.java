@@ -84,7 +84,7 @@ class InteractionPubSubMap
       }
       MALContextFactoryImpl.LOGGER.fine("End of dump of publisher map");
     }
-    synchronized (errorMap)
+    synchronized (notifyMap)
     {
       MALContextFactoryImpl.LOGGER.fine("Starting dump of error map");
       for (String e : errorMap.keySet())
@@ -92,9 +92,7 @@ class InteractionPubSubMap
         MALContextFactoryImpl.LOGGER.log(Level.FINE, "  {0}", e);
       }
       MALContextFactoryImpl.LOGGER.fine("End of dump of error map");
-    }
-    synchronized (notifyMap)
-    {
+
       MALContextFactoryImpl.LOGGER.fine("Starting dump of notify map");
       for (StringPair e : notifyMap.keySet())
       {
