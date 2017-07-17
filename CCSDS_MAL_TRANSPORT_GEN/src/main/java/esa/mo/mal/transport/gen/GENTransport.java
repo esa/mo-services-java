@@ -31,6 +31,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -185,6 +186,14 @@ public abstract class GENTransport<I, O> implements MALTransport
    * The base string for URL for this protocol.
    */
   protected String uriBase;
+  /**
+   * Map of cachedRoutingParts. This associates a URI to its Routing part.
+   */
+  private final ConcurrentHashMap<String, String> cachedRoutingParts = new ConcurrentHashMap<String, String>();
+  /**
+   * Map of cachedRootURIs. This associates a full URI to its root URI.
+   */
+  private final ConcurrentHashMap<String, String> cachedRootURIs = new ConcurrentHashMap<String, String>();
 
   /**
    * Constructor.
@@ -873,16 +882,22 @@ public abstract class GENTransport<I, O> implements MALTransport
    */
   public String getRootURI(String fullURI)
   {
-    // get the root URI, (e.g. tcpip://10.0.0.1:61616 )
-    int serviceDelimPosition = nthIndexOf(fullURI, serviceDelim, serviceDelimCounter);
+    String rootURI = cachedRootURIs.get(fullURI);
+      
+    if(rootURI == null){
+      int serviceDelimPosition = nthIndexOf(fullURI, serviceDelim, serviceDelimCounter);
 
-    if (serviceDelimPosition < 0)
-    {
-      // does not exist, return as is      
-      return fullURI;
+      if (serviceDelimPosition < 0)
+      {
+        // does not exist, return as is      
+        return fullURI;
+      }
+
+      rootURI = fullURI.substring(0, serviceDelimPosition);
+      cachedRootURIs.put(fullURI, rootURI);
     }
-
-    return fullURI.substring(0, serviceDelimPosition);
+    
+    return rootURI;
   }
 
   /**
@@ -893,15 +908,22 @@ public abstract class GENTransport<I, O> implements MALTransport
    */
   public String getRoutingPart(String uriValue)
   {
-    String endpointUriPart = uriValue;
-    final int iFirst = nthIndexOf(endpointUriPart, serviceDelim, serviceDelimCounter);
-    int iSecond = supportsRouting ? endpointUriPart.indexOf(routingDelim) : endpointUriPart.length();
-    if (0 > iSecond)
-    {
-      iSecond = endpointUriPart.length();
+    String routingPart = cachedRoutingParts.get(uriValue);
+      
+    if(routingPart == null){
+      String endpointUriPart = uriValue;
+      final int iFirst = nthIndexOf(endpointUriPart, serviceDelim, serviceDelimCounter);
+      int iSecond = supportsRouting ? endpointUriPart.indexOf(routingDelim) : endpointUriPart.length();
+      if (0 > iSecond)
+      {
+        iSecond = endpointUriPart.length();
+      }
+    
+      routingPart = endpointUriPart.substring(iFirst + 1, iSecond);
+      cachedRoutingParts.put(uriValue, routingPart);
     }
-
-    return endpointUriPart.substring(iFirst + 1, iSecond);
+    
+    return routingPart;
   }
 
   /**
