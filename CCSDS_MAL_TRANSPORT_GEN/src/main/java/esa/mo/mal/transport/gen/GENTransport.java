@@ -1269,7 +1269,7 @@ public abstract class GENTransport<I, O> implements MALTransport
      *
      * @return True if finished processing queue.
      */
-    public boolean isFinished()
+    public synchronized boolean isFinished()
     {
       return finished;
     }
