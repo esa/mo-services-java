@@ -222,10 +222,6 @@ Each action submission shall include:
                      comment="The list of argument definitions. If no arguments are defined, then the complete list is replaced with a NULL.">
             <mal:type list="true" name="ArgumentDefinitionDetails" area="MC"/>
           </mal:field>
-          <mal:field name="argumentIds"
-                     comment="Optional list of argument definition identifiers. Allows the provider to verify that the correct arguments are being supplied when using the same field in the action instance.">
-            <mal:type list="true" name="Identifier" area="MAL"/>
-          </mal:field>
         </mal:composite>
         <mal:composite name="ActionInstanceDetails" shortFormPart="2"
                        comment="The ActionInstanceDetails structure holds the information required for an instance of an Action such as the argument values to use.">
@@ -524,10 +520,10 @@ It is supported that other, deployment specific, validityState values be used ho
         </mal:submitIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="4">
-        <mal:submitIP name="enableGeneration" number="4" supportInReplay="false"
-                      comment="The enableGeneration operation allows a consumer to control whether reports for specific parameters are generated or not. The operation allows the consumer to select the parameters directly or indirectly using groups.">
+        <mal:requestIP name="enableGeneration" number="4" supportInReplay="false"
+                       comment="The enableGeneration operation allows a consumer to control whether reports for specific parameters are generated or not. The operation allows the consumer to select the parameters directly or indirectly using groups.">
           <mal:messages>
-            <mal:submit>
+            <mal:request>
               <mal:field name="isGroupIds"
                          comment="If the isGroupIds field is TRUE then the enableInstances field shall contain GroupIdentity object instance identifiers, otherwise the field contains ParameterIdentity object instance identifiers.&#xA;The ParameterIdentity objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the ParameterIdentity objects to match.&#xA;The id of the enableInstances field shall support the wildcard value of '0' and matches all ParameterIdentity objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then reports for matching ParameterIdentity objects shall be generated, a value of FALSE requests that reports will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field of the definition for a matched ParameterIdentity object i.e. enabling an already enabled parameter will not result in an error.&#xA;If a requested ParameterIdentity or GroupIdentity object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain ParameterIdentity objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider shall create and store a new ParameterDefinition object in the COM archive if the generationEnabled field is changed.&#xA;If a new ParameterDefinition object is created then that new object shall be the current ParameterDefinition used for the specific ParameterIdentity.">
                 <mal:type name="Boolean" area="MAL"/>
@@ -536,7 +532,13 @@ It is supported that other, deployment specific, validityState values be used ho
                          comment="If the generation of reports is being enabled, and the parameter is defined as being periodic, then the provider shall generate a report immediately and start the report interval from that report.">
                 <mal:type list="true" name="InstanceBooleanPair" area="COM"/>
               </mal:field>
-            </mal:submit>
+            </mal:request>
+            <mal:response>
+              <mal:field name="newObjInstIds"
+                         comment="The response shall contain the list of object instance identifiers for the new ParameterDefinition objects.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:response>
           </mal:messages>
           <mal:errors>
             <mal:errorRef comment="One or more of the requested parameters or groups is unknown.">
@@ -552,7 +554,7 @@ It is supported that other, deployment specific, validityState values be used ho
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
-        </mal:submitIP>
+        </mal:requestIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="5">
         <mal:requestIP name="listDefinition" number="5" supportInReplay="true"
@@ -903,10 +905,10 @@ Setting the generationEnabled field to TRUE shall enable generation of instances
 The generationEnabled value can be set by using either the enableGeneration or updateDefinition operations.
 The alert instances shall be published as events using the COM event operations.</mal:documentation>
       <mal:capabilitySet number="1">
-        <mal:submitIP name="enableGeneration" number="1" supportInReplay="false"
-                      comment="The enableGeneration operation allows a consumer to control whether updates for specific alerts are generated or not. The operation allows the consumer to select the alerts directly or indirectly using groups.">
+        <mal:requestIP name="enableGeneration" number="1" supportInReplay="false"
+                       comment="The enableGeneration operation allows a consumer to control whether updates for specific alerts are generated or not. The operation allows the consumer to select the alerts directly or indirectly using groups.">
           <mal:messages>
-            <mal:submit>
+            <mal:request>
               <mal:field name="isGroupIds"
                          comment="If the isGroupIds field is TRUE then the enableInstances field shall contain GroupIdentity object instance identifiers, otherwise the field contains AlertIdentity object instance identifiers.&#xA;The AlertIdentity objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the AlertIdentity objects to match.&#xA;The id of the enableInstances field shall support the wildcard value of '0' and matches all AlertIdentity objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then instances of matching AlertIdentity objects shall be generated, a value of FALSE requests that instances will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field for an alert object i.e. enabling an already enabled alert will not result in an error.&#xA;If a requested AlertIdentity or GroupIdentity object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain AlertIdentity objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider shall create and store a new AlertDefinition object in the COM archive if the generationEnabled field is changed.&#xA;If a new AlertDefinition object is created then that new object shall be the current AlertDefinition used for the specific AlertIdentity.">
                 <mal:type name="Boolean" area="MAL"/>
@@ -914,7 +916,13 @@ The alert instances shall be published as events using the COM event operations.
               <mal:field name="enableInstances">
                 <mal:type list="true" name="InstanceBooleanPair" area="COM"/>
               </mal:field>
-            </mal:submit>
+            </mal:request>
+            <mal:response>
+              <mal:field name="newObjInstIds"
+                         comment="The response shall contain the list of object instance identifiers for the new AlertDefinition objects.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:response>
           </mal:messages>
           <mal:errors>
             <mal:errorRef comment="One of the supplied groups is either not a group of groups or a group of AlertIdentity objects.">
@@ -930,7 +938,7 @@ The alert instances shall be published as events using the COM event operations.
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
-        </mal:submitIP>
+        </mal:requestIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="2">
         <mal:requestIP name="listDefinition" number="2" supportInReplay="true"
@@ -1064,10 +1072,6 @@ The alert instances shall be published as events using the COM event operations.
           </mal:field>
           <mal:field name="arguments" canBeNull="false" comment="The list of argument definitions.">
             <mal:type list="true" name="ArgumentDefinitionDetails" area="MC"/>
-          </mal:field>
-          <mal:field name="argumentIds"
-                     comment="Optional list of argument definition identifiers. Allows the provider to verify that the correct arguments are being supplied. If null, the argument definition identifiers are not checked before the emission of an Alert Event.">
-            <mal:type list="true" name="Identifier" area="MAL"/>
           </mal:field>
         </mal:composite>
         <mal:composite name="AlertEventDetails" shortFormPart="2"
@@ -2193,7 +2197,7 @@ Each transition in the state or the result of a check shall cause the generation
       </com:features>
     </mal:service>
     <mal:service xsi:type="com:ExtendedServiceType" name="Statistic" number="5"
-                 comment="The statistic service allows the consumer to monitor and control the statistical evaluation (e.g., average) of parameters.&#xA;The statistic service allows the consumer to link the statistic function to a parameter to be evaluated. Figure 3-9 shows the nominal sequence of operations for the statistic service:&#xA;---- nominal sequence diag ----&#xA;Statistic service nominal sequence&#xA;For each statistics link the service allows a consumer to specify a sampling interval, a reporting interval, and a collection interval. &#xA;The sampling interval defines the interval between samples of the linked parameter, the reporting interval defines the interval between reports of the current statistic evaluation value, and the collection interval defines the period of time which parameter values are collected for the statistic function.&#xA;A consumer can create several links to the same parameter with different intervals, for example for the function 'Mean', a consumer might define two links with different collection intervals, one for an hour (D0) and one for four hours (D1). The consumer might also specify the reporting interval of half an hour for the first link and two hours for the second link. This would mean that the service provider would produce reports as shown in Figure 3-10.&#xA;--- timeline chart ---&#xA;Example Statistic interval reporting&#xA;If a statistic is defined to reset on collection interval expiration the currently calculated value, and any input collection of values, for the parameter being sampled is reset every collection interval, so if an hourly collection interval is defined for the function 'Mean' then every hour the current mean average value is reset (this does not affect the value reported by the Parameter service itself or any other links for the same function and parameter), the set of values used to calculate that mean average is cleared, and a report is generated containing the final value of the function just before the reset.&#xA;If a statistic is defined not to reset every collection interval, then the statistic maintains a moving evaluation for the collection interval. For example, if a collection interval of an hour is defined with a reset Boolean of FALSE for the function 'Maximum' then the evaluation will hold the maximum value obtained in the last hour.&#xA;The consumer is also able to define the sampling interval of the parameter for a link. This is independent of both the collection interval and the reporting interval. It makes sense for the sampling interval to be smaller than both the collection and reporting interval however it is perfectly possible to specify other values, as this is a deployment decision.&#xA;For the statistic service, the list of possible statistics functions is deployment-dependent, as any function would have to be implemented in the service provider. There are no operations for the creation, modification, or deletion of the statistic functions.">
+                 comment="The statistic service allows the consumer to monitor and control the statistical evaluation (e.g., average) of parameters.&#xA;The statistic service allows the consumer to link the statistic function to a parameter to be evaluated. Figure 3-9 shows the nominal sequence of operations for the statistic service:&#xA;---- nominal sequence diag ----&#xA;Statistic service nominal sequence&#xA;For each statistics link the service allows a consumer to specify a sampling interval, a reporting interval, and a collection interval. &#xA;The sampling interval defines the interval between samples of the linked parameter, the reporting interval defines the interval between reports of the current statistic evaluation value, and the collection interval defines the period of time which parameter values are collected for the statistic function.&#xA;A consumer can create several links to the same parameter with different intervals, for example for the function 'Mean', a consumer might define two links with different collection intervals, one for an hour (D0) and one for four hours (D1). The consumer might also specify the reporting interval of half an hour for the first link and two hours for the second link. This would mean that the service provider would produce reports as shown in Figure 3-10.&#xA;--- timeline chart ---&#xA;Example Statistic interval reporting&#xA;If a statistic is defined to reset on collection interval expiration the currently calculated value, and any input collection of values, for the parameter being sampled is reset every collection interval, so if an hourly collection interval is defined for the function 'Mean' then every hour the current mean average value is reset (this does not affect the value reported by the Parameter service itself or any other links for the same function and parameter), the set of values used to calculate that mean average is cleared, and a report is generated containing the final value of the function just before the reset.&#xA;If a statistic is defined not to reset every collection interval, then the statistic maintains a moving evaluation for the collection interval. For example, if a collection interval of an hour is defined with a reset Boolean of FALSE for the function 'Maximum' then the evaluation will hold the maximum value obtained in the last hour.&#xA;The consumer is also able to define the sampling interval of the parameter for a link. This is independent of both the collection interval and the reporting interval. It makes sense for the sampling interval to be smaller than both the collection and reporting interval however it is perfectly possible to specify other values, as this is a deployment decision.&#xA;For the statistic service, the list of possible statistics functions is deployment-dependent, as any function would have to be implemented in the service provider. There are no operations for the creation, modification, or deletion of the statistic functions. The statistic service defines the evaluation of minimum, maximum, mean, and standard deviation functions, however the service supports the addition of other statistical functions by implementations.&#xA;NOTE: To ensure deterministic behaviour, implementations should endeavour to respect Nyquistï¿½s theorem.">
       <mal:documentation name="High Level Requirements" order="1">The statistics service may provide the following capabilities:
 &lt;ol&gt;
  &lt;li&gt;the capability for requesting the current statistics evaluation;&lt;/li&gt;
@@ -2854,10 +2858,10 @@ The ordering of the values in the AggregationValueInstance object shall match th
         </mal:requestIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="3">
-        <mal:submitIP name="enableGeneration" number="3" supportInReplay="false"
-                      comment="The enableGeneration operation allows a consumer to control whether reports for specific aggregations are generated or not. The operation allows the consumer to select the aggregations directly or indirectly using groups. This affects all types of aggregations, periodic, filtered and ad-hoc.">
+        <mal:requestIP name="enableGeneration" number="3" supportInReplay="false"
+                       comment="The enableGeneration operation allows a consumer to control whether reports for specific aggregations are generated or not. The operation allows the consumer to select the aggregations directly or indirectly using groups. This affects all types of aggregations, periodic, filtered and ad-hoc.">
           <mal:messages>
-            <mal:submit>
+            <mal:request>
               <mal:field name="isGroupIds"
                          comment="If the isGroupIds field is TRUE then the enableInstances field shall contain GroupIdentity object instance identifiers, otherwise the field contains AggregationIdentity object instance identifiers.&#xA;The AggregationIdentity objects referenced, either directly or indirectly via groups, by the enableInstances field shall be the AggregationIdentity objects to match.&#xA;The id of the enableInstances field shall support the wildcard value of '0' and matches all AggregationIdentity objects of the provider.&#xA;The service provider shall check for the wildcard value in the list of object instance identifiers in the enableInstances field first and if found no other checks of supplied object instance identifiers shall be made.&#xA;If the enableInstances field contains a value of TRUE then reports of matching AggregationIdentity objects shall be generated, a value of FALSE requests that reports will not be generated.&#xA;No error shall be raised if the enableInstances Boolean value supplied is the same as the current generationEnabled field of the definition for a matched AggregationIdentity object i.e. enabling an already enabled aggregation will not result in an error.&#xA;If a requested AggregationIdentity or GroupIdentity object is unknown then an UNKNOWN error shall be returned.&#xA;If a requested Group, or the Group objects referenced by that Group, does not contain AggregationIdentity objects then an INVALID error shall be returned.&#xA;If an error is raised then no modifications shall be made as a result of this operation call.&#xA;The provider shall create and store a new AggregationDefinition object in the COM archive if the generationEnabled field is changed.&#xA;If a new AggregationDefinition object is created then that new object shall be the current AggregationDefinition used for the specific AggregationIdentity.">
                 <mal:type name="Boolean" area="MAL"/>
@@ -2866,7 +2870,13 @@ The ordering of the values in the AggregationValueInstance object shall match th
                          comment="If the generation of reports is being enabled, and the aggregation is defined as being periodic, then the provider shall generate a report immediately and start the report interval from that report.">
                 <mal:type list="true" name="InstanceBooleanPair" area="COM"/>
               </mal:field>
-            </mal:submit>
+            </mal:request>
+            <mal:response>
+              <mal:field name="newObjInstIds"
+                         comment="The response shall contain the list of object instance identifiers for the new AggregationDefinition objects.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:response>
           </mal:messages>
           <mal:errors>
             <mal:errorRef comment="One or more of the requested aggregations or groups is unknown.">
@@ -2882,7 +2892,7 @@ The ordering of the values in the AggregationValueInstance object shall match th
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
-        </mal:submitIP>
+        </mal:requestIP>
         <mal:submitIP name="enableFilter" number="4" supportInReplay="false"
                       comment="The enableFilter operation allows a consumer to control whether reports for specific aggregations are filtered or not. The operation allows the consumer to select the aggregations directly or indirectly using groups. This affects both periodic and ad-hoc aggregations.">
           <mal:messages>
@@ -3606,6 +3616,13 @@ Updating a group definition shall be performed by adding a new group definition 
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
+        <mal:field name="argId" canBeNull="false"
+                   comment="Holds the argument definition identifier. Allows the provider to verify that the correct arguments are being supplied when using the same field in the action instance.">
+          <mal:type name="Identifier" area="MAL"/>
+        </mal:field>
+        <mal:field name="description" comment="Optional argument description">
+          <mal:type name="String" area="MAL"/>
+        </mal:field>
         <mal:field name="rawType" canBeNull="false"
                    comment="Holds the attribute short form part of the raw type of the argument, e.g., for a MAL::String argument it shall hold 15.">
           <mal:type name="Octet" area="MAL"/>
