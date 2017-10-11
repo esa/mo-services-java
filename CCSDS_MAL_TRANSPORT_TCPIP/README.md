@@ -2,7 +2,7 @@
 This is an implementation for a MAL transport binding using the TCP/IP protocol. This quick start guide provides information on how to run a MAL application using the tcpip bind
 
 ## Getting started
-In order to start using this transport binding, one has to set the properties `org.ccsds.moims.mo.mal.transport.tcpip.host` and `org.ccsds.moims.mo.mal.transport.tcpip.port` in the configuration file that is used by a consumer or provider. Moreover, one has pass the protocol `maltcp` when instantiating a consumer or provider, in order to ensure that the TCPIP transport is used. See below for a full list of configuration parameters.
+In order to start using this transport binding, one has to set the properties `org.ccsds.moims.mo.mal.transport.tcpip.host` and `org.ccsds.moims.mo.mal.transport.tcpip.port` in the configuration file that is used by a consumer or provider. Another option is to use the `org.ccsds.moims.mo.mal.transport.tcpip.autohost` property to automatically assign the host and a port. Moreover, one has pass the protocol `maltcp` when instantiating a consumer or provider, in order to ensure that the TCPIP transport is used. See below for a full list of configuration parameters.
 
 The demo apps, found in the [CCSDS_MO_APPS](https://github.com/esa/CCSDS_MO_APPS) git repository, prove an excellent base to test and understand the transport binding. To use the apps in combination with this binding, ensure that the following configuration parameters are set. Moreover, ensure to replace `<LOCAL IP ADDRESS>` by your actual local ip address.
 
@@ -13,10 +13,12 @@ org.ccsds.moims.mo.mal.transport.default.protocol = maltcp://
 
 # TCPIP protocol properties
 org.ccsds.moims.mo.mal.transport.protocol.maltcp=esa.mo.mal.transport.tcpip.TCPIPTransportFactoryImpl
-org.ccsds.moims.mo.mal.transport.tcpip.port=61617
-org.ccsds.moims.mo.mal.transport.tcpip.host=<LOCAL IP ADDRESS>
+org.ccsds.moims.mo.mal.encoding.protocol.maltcp=esa.mo.mal.encoder.binary.BinaryStreamFactory
+org.ccsds.moims.mo.mal.transport.tcpip.autohost=true
+#org.ccsds.moims.mo.mal.transport.tcpip.host=xxx.xxx.xxx.xxx
+#org.ccsds.moims.mo.mal.transport.tcpip.port=54321
+#org.ccsds.moims.mo.mal.transport.tcpip.isServer=true
 org.ccsds.moims.mo.mal.transport.tcpip.debug=FINEST
-org.ccsds.moims.mo.mal.encoding.protocol.maltcp=esa.mo.mal.encoder.tcpip.TCPIPSplitBinaryStreamFactory
 ```
 
 demoConsumer.properties:
@@ -24,8 +26,9 @@ demoConsumer.properties:
 org.ccsds.moims.mo.mal.transport.default.protocol = maltcp://
 # TCPIP protocol properties
 org.ccsds.moims.mo.mal.transport.protocol.maltcp=esa.mo.mal.transport.tcpip.TCPIPTransportFactoryImpl
+org.ccsds.moims.mo.mal.encoding.protocol.maltcp=esa.mo.mal.encoder.binary.BinaryStreamFactory
+org.ccsds.moims.mo.mal.transport.tcpip.autohost=true
 org.ccsds.moims.mo.mal.transport.tcpip.debug=FINEST
-org.ccsds.moims.mo.mal.encoding.protocol.maltcp=esa.mo.mal.encoder.tcpip.TCPIPSplitBinaryStreamFactory
 ```
 
 demoServiceURI.properties:
