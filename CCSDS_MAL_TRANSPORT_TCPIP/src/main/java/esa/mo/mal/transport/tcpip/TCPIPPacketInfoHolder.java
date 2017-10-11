@@ -20,43 +20,60 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import java.util.Map;
-import org.ccsds.moims.mo.mal.MALContext;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.transport.MALTransport;
-import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
+import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
- * Instance of the transport factory for a TCP/IP transport.
+ * A container class which keeps the raw packet data of an incoming message, as
+ * well as the TCP/IP address of both the source and the destination.
+ *
+ * @author Rian van Gijlswijk
+ *
  */
-public class TCPIPTransportFactoryImpl extends MALTransportFactory {
-
-    private static final Object MUTEX = new Object();
-    private TCPIPTransport transport = null;
+public class TCPIPPacketInfoHolder {
 
     /**
-     * Service delimiter
+     * The raw packet data of an incoming message
      */
-    public static final char SERVICE_DELIMITER = '/';
+    private byte[] packetData;
 
     /**
-     * Constructor.
-     *
-     * @param protocol The protocol string.
+     * The TCP/IP address of the source
      */
-    public TCPIPTransportFactoryImpl(final String protocol) {
-        super(protocol);
+    private URI tcpipFrom;
+
+    /**
+     * The TCP/IP address of the destination
+     */
+    private URI tcpipTo;
+
+    public TCPIPPacketInfoHolder(byte[] packetData, URI from, URI to) {
+        this.packetData = packetData;
+        this.tcpipFrom = from;
+        this.tcpipTo = to;
     }
 
-    @Override
-    public MALTransport createTransport(final MALContext malContext, final Map properties) throws MALException {
-        synchronized (MUTEX) {
-            if (null == transport) {
-                transport = new TCPIPTransport(getProtocol(), SERVICE_DELIMITER, true, this, properties);
-                transport.init();
-            }
-
-            return transport;
-        }
+    public byte[] getPacketData() {
+        return packetData;
     }
+
+    public void setPacketData(byte[] packetData) {
+        this.packetData = packetData;
+    }
+
+    public URI getUriFrom() {
+        return tcpipFrom;
+    }
+
+    public void setUriFrom(URI uriFrom) {
+        this.tcpipFrom = uriFrom;
+    }
+
+    public URI getUriTo() {
+        return tcpipTo;
+    }
+
+    public void setUriTo(URI uriTo) {
+        this.tcpipTo = uriTo;
+    }
+
 }
