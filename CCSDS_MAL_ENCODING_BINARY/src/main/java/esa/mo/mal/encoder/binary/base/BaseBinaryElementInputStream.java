@@ -18,45 +18,42 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary;
+package esa.mo.mal.encoder.binary.base;
 
-import java.util.List;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListDecoder;
 
 /**
- * Implements the MALListDecoder interface for a binary encoding.
+ * Implements the MALElementInputStream interface for a binary encoding.
  */
-public class BinaryListDecoder extends BinaryDecoder implements MALListDecoder
+public abstract class BaseBinaryElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream
 {
-  private final int size;
-  private final List list;
+  /**
+   * Constructor.
+   *
+   * @param is Input stream to read from.
+   */
+  public BaseBinaryElementInputStream(final java.io.InputStream is)
+  {
+    super(new BaseBinaryDecoder(is));
+  }
 
   /**
    * Constructor.
    *
-   * @param list List to decode into.
-   * @param srcBuffer Buffer to manage.
-   * @throws MALException If cannot decode list size.
+   * @param buf Byte buffer to read from.
+   * @param offset Offset into buffer to start from.
    */
-  public BinaryListDecoder(final List list, final BufferHolder srcBuffer)
-          throws MALException
+  public BaseBinaryElementInputStream(final byte[] buf, final int offset)
   {
-    super(srcBuffer);
-
-    this.list = list;
-    size = srcBuffer.getUnsignedInt();
+    super(new BaseBinaryDecoder(buf, offset));
   }
 
-  @Override
-  public boolean hasNext()
+  /**
+   * Sub class constructor.
+   *
+   * @param dec Decoder to use.
+   */
+  protected BaseBinaryElementInputStream(BaseBinaryDecoder dec)
   {
-    return list.size() < size;
-  }
-
-  @Override
-  public int size()
-  {
-    return size;
+    super(dec);
   }
 }

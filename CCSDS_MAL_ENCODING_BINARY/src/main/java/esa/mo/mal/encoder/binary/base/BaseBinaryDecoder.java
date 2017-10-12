@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary;
+package esa.mo.mal.encoder.binary.base;
 
 import esa.mo.mal.encoder.gen.GENDecoder;
 import java.io.IOException;
@@ -36,10 +36,10 @@ import org.ccsds.moims.mo.mal.structures.*;
 /**
  * Implements the MALDecoder interface for a binary encoding.
  */
-public class BinaryDecoder extends GENDecoder
+public abstract class BaseBinaryDecoder extends GENDecoder
 {
 
-  protected static final java.util.logging.Logger LOGGER = Logger.getLogger(BinaryDecoder.class.getName());
+  protected static final java.util.logging.Logger LOGGER = Logger.getLogger(BaseBinaryDecoder.class.getName());
   protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
   protected static final int BLOCK_SIZE = 65536;
 
@@ -48,7 +48,7 @@ public class BinaryDecoder extends GENDecoder
    *
    * @param src Byte array to read from.
    */
-  public BinaryDecoder(final byte[] src)
+  public BaseBinaryDecoder(final byte[] src)
   {
     super(new BinaryBufferHolder(null, src, 0, src.length));
   }
@@ -58,7 +58,7 @@ public class BinaryDecoder extends GENDecoder
    *
    * @param is Input stream to read from.
    */
-  public BinaryDecoder(final java.io.InputStream is)
+  public BaseBinaryDecoder(final java.io.InputStream is)
   {
     super(new BinaryBufferHolder(is, null, 0, 0));
   }
@@ -69,7 +69,7 @@ public class BinaryDecoder extends GENDecoder
    * @param src Byte array to read from.
    * @param offset index in array to start reading from.
    */
-  public BinaryDecoder(final byte[] src, final int offset)
+  public BaseBinaryDecoder(final byte[] src, final int offset)
   {
     super(new BinaryBufferHolder(null, src, offset, src.length));
   }
@@ -79,7 +79,7 @@ public class BinaryDecoder extends GENDecoder
    *
    * @param src Source buffer holder to use.
    */
-  protected BinaryDecoder(final BufferHolder src)
+  protected BaseBinaryDecoder(final BufferHolder src)
   {
     super(src);
   }
@@ -87,7 +87,7 @@ public class BinaryDecoder extends GENDecoder
   @Override
   public MALListDecoder createListDecoder(final List list) throws MALException
   {
-    return new BinaryListDecoder(list, sourceBuffer);
+    return new BaseBinaryListDecoder(list, sourceBuffer);
   }
 
   @Override

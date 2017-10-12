@@ -36,7 +36,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
  * Implements the MALEncoder and MALListEncoder interfaces for a split binary
  * encoding.
  */
-public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
+public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinaryEncoder
 {
 
   private int openCount = 1;

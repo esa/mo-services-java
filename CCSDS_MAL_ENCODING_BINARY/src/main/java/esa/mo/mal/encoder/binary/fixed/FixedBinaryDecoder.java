@@ -25,7 +25,7 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Implements the MALDecoder interface for a fixed length binary encoding.
  */
-public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
+public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinaryDecoder
 {
   /**
    * Constructor.

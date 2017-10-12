@@ -18,42 +18,27 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary;
+package esa.mo.mal.encoder.binary.base;
 
 
 /**
  * Implements the MALElementInputStream interface for a binary encoding.
  */
-public class BinaryElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream
+public abstract class BaseBinaryElementOutputStream extends esa.mo.mal.encoder.gen.GENElementOutputStream
 {
   /**
    * Constructor.
    *
-   * @param is Input stream to read from.
+   * @param os Output stream to write to.
    */
-  public BinaryElementInputStream(final java.io.InputStream is)
+  public BaseBinaryElementOutputStream(final java.io.OutputStream os)
   {
-    super(new BinaryDecoder(is));
+    super(os);
   }
 
-  /**
-   * Constructor.
-   *
-   * @param buf Byte buffer to read from.
-   * @param offset Offset into buffer to start from.
-   */
-  public BinaryElementInputStream(final byte[] buf, final int offset)
+  @Override
+  protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os)
   {
-    super(new BinaryDecoder(buf, offset));
-  }
-
-  /**
-   * Sub class constructor.
-   *
-   * @param dec Decoder to use.
-   */
-  protected BinaryElementInputStream(BinaryDecoder dec)
-  {
-    super(dec);
+    return new BaseBinaryEncoder(os);
   }
 }

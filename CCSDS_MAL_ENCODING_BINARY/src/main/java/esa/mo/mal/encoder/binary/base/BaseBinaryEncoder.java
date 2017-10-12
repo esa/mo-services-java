@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary;
+package esa.mo.mal.encoder.binary.base;
 
 import esa.mo.mal.encoder.gen.GENEncoder;
 import java.io.IOException;
@@ -33,14 +33,14 @@ import org.ccsds.moims.mo.mal.structures.URI;
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a binary encoding.
  */
-public class BinaryEncoder extends GENEncoder
+public abstract class BaseBinaryEncoder extends GENEncoder
 {
   /**
    * Constructor.
    *
    * @param os Output stream to write to.
    */
-  public BinaryEncoder(final OutputStream os)
+  public BaseBinaryEncoder(final OutputStream os)
   {
     super(new BinaryStreamHolder(os));
   }
@@ -50,7 +50,7 @@ public class BinaryEncoder extends GENEncoder
    *
    * @param os Output stream to write to.
    */
-  protected BinaryEncoder(final StreamHolder os)
+  protected BaseBinaryEncoder(final StreamHolder os)
   {
     super(os);
   }

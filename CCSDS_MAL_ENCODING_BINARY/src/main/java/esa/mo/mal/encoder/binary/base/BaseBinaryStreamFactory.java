@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary;
+package esa.mo.mal.encoder.binary.base;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -34,7 +34,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 /**
  * Implements the MALElementStreamFactory interface for a binary encoding.
  */
-public class BinaryStreamFactory extends MALElementStreamFactory
+public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory
 {
   @Override
   protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException
@@ -45,19 +45,19 @@ public class BinaryStreamFactory extends MALElementStreamFactory
   @Override
   public MALElementInputStream createInputStream(final byte[] bytes, final int offset)
   {
-    return new BinaryElementInputStream(bytes, offset);
+    return new BaseBinaryElementInputStream(bytes, offset);
   }
 
   @Override
   public MALElementInputStream createInputStream(final InputStream is) throws MALException
   {
-    return new BinaryElementInputStream(is);
+    return new BaseBinaryElementInputStream(is);
   }
 
   @Override
   public MALElementOutputStream createOutputStream(final OutputStream os) throws MALException
   {
-    return new BinaryElementOutputStream(os);
+    return new BaseBinaryElementOutputStream(os);
   }
 
   @Override

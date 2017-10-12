@@ -23,7 +23,7 @@ package esa.mo.mal.encoder.binary.fixed;
 /**
  * Implements the MALElementOutputStream interface for a fixed length binary encoding.
  */
-public class FixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary.BinaryElementOutputStream
+public class FixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementOutputStream
 {
   /**
    * Constructor.

@@ -18,27 +18,45 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary;
+package esa.mo.mal.encoder.binary.base;
 
+import java.util.List;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALListDecoder;
 
 /**
- * Implements the MALElementInputStream interface for a binary encoding.
+ * Implements the MALListDecoder interface for a binary encoding.
  */
-public class BinaryElementOutputStream extends esa.mo.mal.encoder.gen.GENElementOutputStream
+public abstract class BaseBinaryListDecoder extends BaseBinaryDecoder implements MALListDecoder
 {
+  private final int size;
+  private final List list;
+
   /**
    * Constructor.
    *
-   * @param os Output stream to write to.
+   * @param list List to decode into.
+   * @param srcBuffer Buffer to manage.
+   * @throws MALException If cannot decode list size.
    */
-  public BinaryElementOutputStream(final java.io.OutputStream os)
+  public BaseBinaryListDecoder(final List list, final BufferHolder srcBuffer)
+          throws MALException
   {
-    super(os);
+    super(srcBuffer);
+
+    this.list = list;
+    size = srcBuffer.getUnsignedInt();
   }
 
   @Override
-  protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os)
+  public boolean hasNext()
   {
-    return new BinaryEncoder(os);
+    return list.size() < size;
+  }
+
+  @Override
+  public int size()
+  {
+    return size;
   }
 }

@@ -23,7 +23,7 @@ package esa.mo.mal.encoder.binary.fixed;
 /**
  * Implements the MALElementStreamFactory interface for a fixed length binary encoding.
  */
-public class FixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.BinaryStreamFactory
+public class FixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.BaseBinaryStreamFactory
 {
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes, final int offset)

@@ -23,7 +23,7 @@ package esa.mo.mal.encoder.binary.split;
 /**
  * Implements the MALElementStreamFactory interface for a split binary encoding.
  */
-public class SplitBinaryStreamFactory extends esa.mo.mal.encoder.binary.BinaryStreamFactory
+public class SplitBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.BaseBinaryStreamFactory
 {
   @Override
   public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes, final int offset)

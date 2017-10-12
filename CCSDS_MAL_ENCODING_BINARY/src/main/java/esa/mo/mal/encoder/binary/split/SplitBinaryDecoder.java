@@ -28,7 +28,7 @@ import org.ccsds.moims.mo.mal.structures.Time;
 /**
  * Implements the MALDecoder interface for a split binary encoding.
  */
-public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.BinaryDecoder
+public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinaryDecoder
 {
 
   /**

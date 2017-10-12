@@ -26,7 +26,7 @@ import java.io.OutputStream;
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a fixed length binary encoding.
  */
-public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.BinaryEncoder
+public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinaryEncoder
 {
   /**
    * Constructor.
