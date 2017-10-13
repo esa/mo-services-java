@@ -36,12 +36,22 @@ import org.ccsds.moims.mo.mal.structures.*;
 /**
  * Implements the MALDecoder interface for a binary encoding.
  */
-public abstract class BaseBinaryDecoder extends GENDecoder
+public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDecoder
 {
 
   protected static final java.util.logging.Logger LOGGER = Logger.getLogger(BaseBinaryDecoder.class.getName());
   protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
   protected static final int BLOCK_SIZE = 65536;
+
+  /**
+   * List decoder interface list size
+   */
+  private final int size;
+  /**
+   * List decoder interface decoded list object
+   *
+   */
+  private final List list;
 
   /**
    * Constructor.
@@ -51,6 +61,8 @@ public abstract class BaseBinaryDecoder extends GENDecoder
   public BaseBinaryDecoder(final byte[] src)
   {
     super(new BinaryBufferHolder(null, src, 0, src.length));
+    this.size = -1;
+    this.list = null;
   }
 
   /**
@@ -61,6 +73,8 @@ public abstract class BaseBinaryDecoder extends GENDecoder
   public BaseBinaryDecoder(final java.io.InputStream is)
   {
     super(new BinaryBufferHolder(is, null, 0, 0));
+    this.size = -1;
+    this.list = null;
   }
 
   /**
@@ -72,6 +86,8 @@ public abstract class BaseBinaryDecoder extends GENDecoder
   public BaseBinaryDecoder(final byte[] src, final int offset)
   {
     super(new BinaryBufferHolder(null, src, offset, src.length));
+    this.size = -1;
+    this.list = null;
   }
 
   /**
@@ -82,12 +98,46 @@ public abstract class BaseBinaryDecoder extends GENDecoder
   protected BaseBinaryDecoder(final BufferHolder src)
   {
     super(src);
+    this.size = -1;
+    this.list = null;
   }
 
-  @Override
-  public MALListDecoder createListDecoder(final List list) throws MALException
+  /**
+   * MALListDecoder constructor implementation.
+   *
+   * @param list List to decode into.
+   * @param srcBuffer Buffer to manage.
+   * @throws MALException If cannot decode list size.
+   */
+  public BaseBinaryDecoder(final List list, final BufferHolder srcBuffer)
+          throws MALException
   {
-    return new BaseBinaryListDecoder(list, sourceBuffer);
+    super(srcBuffer);
+
+    this.list = list;
+    size = srcBuffer.getUnsignedInt();
+  }
+
+  /**
+   * MALListDecoder hasNext implementation.
+   *
+   * @return true if there is more list elements to decode
+   */
+  @Override
+  public boolean hasNext()
+  {
+    return list.size() < size;
+  }
+
+  /**
+   * MALListDecoder size implementation.
+   *
+   * @return total numbers of list elements
+   */
+  @Override
+  public int size()
+  {
+    return size;
   }
 
   @Override

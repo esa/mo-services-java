@@ -25,23 +25,8 @@ package esa.mo.mal.encoder.binary.variable;
  */
 public class VariableBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.BaseBinaryStreamFactory
 {
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes, final int offset)
+  public VariableBinaryStreamFactory()
   {
-    return new VariableBinaryElementInputStream(bytes, offset);
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final java.io.InputStream is)
-          throws org.ccsds.moims.mo.mal.MALException
-  {
-    return new VariableBinaryElementInputStream(is);
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(final java.io.OutputStream os)
-          throws org.ccsds.moims.mo.mal.MALException
-  {
-    return new VariableBinaryElementOutputStream(os);
+    super(VariableBinaryElementInputStream.class, VariableBinaryElementOutputStream.class);
   }
 }

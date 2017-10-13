@@ -23,6 +23,7 @@ package esa.mo.mal.encoder.binary.base;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
@@ -36,28 +37,58 @@ import org.ccsds.moims.mo.mal.structures.Blob;
  */
 public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory
 {
+  Class inputStreamImpl;
+  Class outputStreamImpl;
+
+  protected BaseBinaryStreamFactory(final Class inputStreamImpl, final Class outputStreamImpl)
+  {
+    this.inputStreamImpl = inputStreamImpl;
+    this.outputStreamImpl = outputStreamImpl;
+  }
+
   @Override
-  protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException
+  protected void init(final String protocol, final Map properties) throws MALException
   {
     // nothing required here
   }
 
   @Override
-  public MALElementInputStream createInputStream(final byte[] bytes, final int offset)
+  public MALElementInputStream createInputStream(final byte[] bytes, final int offset) throws java.lang.IllegalArgumentException, MALException
   {
-    return new BaseBinaryElementInputStream(bytes, offset);
+    try
+    {
+      return (MALElementInputStream) inputStreamImpl.getDeclaredConstructor(byte[].class, int.class).newInstance(bytes, offset);
+    }
+    catch (Exception ex)
+    {
+      throw new MALException("Error when creating input stream.", ex);
+    }
   }
 
   @Override
   public MALElementInputStream createInputStream(final InputStream is) throws MALException
   {
-    return new BaseBinaryElementInputStream(is);
+    try
+    {
+      return (MALElementInputStream) inputStreamImpl.getDeclaredConstructor(InputStream.class).newInstance(is);
+    }
+    catch (Exception ex)
+    {
+      throw new MALException("Error when creating input stream.", ex);
+    }
   }
 
   @Override
   public MALElementOutputStream createOutputStream(final OutputStream os) throws MALException
   {
-    return new BaseBinaryElementOutputStream(os);
+    try
+    {
+      return (MALElementOutputStream) outputStreamImpl.getDeclaredConstructor(OutputStream.class).newInstance(os);
+    }
+    catch (Exception ex)
+    {
+      throw new MALException("Error when creating output stream.", ex);
+    }
   }
 
   @Override
@@ -67,9 +98,9 @@ public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory
 
     final MALElementOutputStream os = createOutputStream(baos);
 
-    for (int i = 0; i < elements.length; i++)
+    for (Object element : elements)
     {
-      os.writeElement(elements[i], ctx);
+      os.writeElement(element, ctx);
     }
 
     os.flush();

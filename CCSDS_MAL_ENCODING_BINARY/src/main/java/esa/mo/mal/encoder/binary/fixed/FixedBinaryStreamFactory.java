@@ -25,23 +25,9 @@ package esa.mo.mal.encoder.binary.fixed;
  */
 public class FixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.BaseBinaryStreamFactory
 {
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes, final int offset)
-  {
-    return new FixedBinaryElementInputStream(bytes, offset);
-  }
 
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final java.io.InputStream is)
-          throws org.ccsds.moims.mo.mal.MALException
+  public FixedBinaryStreamFactory()
   {
-    return new FixedBinaryElementInputStream(is);
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(final java.io.OutputStream os)
-          throws org.ccsds.moims.mo.mal.MALException
-  {
-    return new FixedBinaryElementOutputStream(os);
+    super(FixedBinaryElementInputStream.class, FixedBinaryElementOutputStream.class);
   }
 }

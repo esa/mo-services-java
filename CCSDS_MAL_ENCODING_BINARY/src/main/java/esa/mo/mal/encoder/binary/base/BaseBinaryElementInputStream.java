@@ -20,33 +20,13 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
+import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * Implements the MALElementInputStream interface for a binary encoding.
  */
 public abstract class BaseBinaryElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream
 {
-  /**
-   * Constructor.
-   *
-   * @param is Input stream to read from.
-   */
-  public BaseBinaryElementInputStream(final java.io.InputStream is)
-  {
-    super(new BaseBinaryDecoder(is));
-  }
-
-  /**
-   * Constructor.
-   *
-   * @param buf Byte buffer to read from.
-   * @param offset Offset into buffer to start from.
-   */
-  public BaseBinaryElementInputStream(final byte[] buf, final int offset)
-  {
-    super(new BaseBinaryDecoder(buf, offset));
-  }
-
   /**
    * Sub class constructor.
    *

@@ -25,23 +25,9 @@ package esa.mo.mal.encoder.binary.split;
  */
 public class SplitBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.BaseBinaryStreamFactory
 {
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes, final int offset)
-  {
-    return new SplitBinaryElementInputStream(bytes, offset);
-  }
 
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final java.io.InputStream is)
-          throws org.ccsds.moims.mo.mal.MALException
+  public SplitBinaryStreamFactory()
   {
-    return new SplitBinaryElementInputStream(is);
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(final java.io.OutputStream os)
-          throws org.ccsds.moims.mo.mal.MALException
-  {
-    return new SplitBinaryElementOutputStream(os);
+    super(SplitBinaryElementInputStream.class, SplitBinaryElementOutputStream.class);
   }
 }

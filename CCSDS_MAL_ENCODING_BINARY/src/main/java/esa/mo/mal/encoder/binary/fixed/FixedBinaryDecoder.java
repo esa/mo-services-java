@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.binary.fixed;
 
+import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
@@ -68,10 +69,23 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     super(src);
   }
 
-  @Override
-  public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final java.util.List list) throws MALException
+  /**
+   * MALListDecoder constructor implementation.
+   *
+   * @param list List to decode into.
+   * @param srcBuffer Buffer to manage.
+   * @throws MALException If cannot decode list size.
+   */
+  public FixedBinaryDecoder(final List list, final BufferHolder srcBuffer)
+          throws MALException
   {
-    return new FixedBinaryListDecoder(list, sourceBuffer);
+    super(list, srcBuffer);
+  }
+
+  @Override
+  public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final List list) throws MALException
+  {
+    return new FixedBinaryDecoder(list, sourceBuffer);
   }
 
   /**

@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
+import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * Implements the MALElementInputStream interface for a binary encoding.
@@ -34,11 +35,5 @@ public abstract class BaseBinaryElementOutputStream extends esa.mo.mal.encoder.g
   public BaseBinaryElementOutputStream(final java.io.OutputStream os)
   {
     super(os);
-  }
-
-  @Override
-  protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os)
-  {
-    return new BaseBinaryEncoder(os);
   }
 }
