@@ -35,7 +35,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    */
   public FixedBinaryDecoder(final byte[] src)
   {
-    super(new FixedBufferHolder(null, src, 0, src.length));
+    super(new FixedBinaryBufferHolder(null, src, 0, src.length));
   }
 
   /**
@@ -45,7 +45,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    */
   public FixedBinaryDecoder(final java.io.InputStream is)
   {
-    super(new FixedBufferHolder(is, null, 0, 0));
+    super(new FixedBinaryBufferHolder(is, null, 0, 0));
   }
 
   /**
@@ -56,7 +56,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    */
   public FixedBinaryDecoder(final byte[] src, final int offset)
   {
-    super(new FixedBufferHolder(null, src, offset, src.length));
+    super(new FixedBinaryBufferHolder(null, src, offset, src.length));
   }
 
   /**
@@ -91,7 +91,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
   /**
    * Internal class that implements the fixed length field decoding.
    */
-  protected static class FixedBufferHolder extends BinaryBufferHolder
+  protected static class FixedBinaryBufferHolder extends BaseBinaryBufferHolder
   {
     /**
      * Constructor.
@@ -101,7 +101,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
      * @param offset Buffer offset to read from next.
      * @param length Length of readable data held in the array, which may be larger.
      */
-    public FixedBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
+    public FixedBinaryBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
       super(is, buf, offset, length);
     }

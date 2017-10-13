@@ -35,7 +35,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
    */
   public VariableBinaryDecoder(final byte[] src)
   {
-    super(new VariableBufferHolder(null, src, 0, src.length));
+    super(new VariableBinaryBufferHolder(null, src, 0, src.length));
   }
 
   /**
@@ -45,7 +45,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
    */
   public VariableBinaryDecoder(final java.io.InputStream is)
   {
-    super(new VariableBufferHolder(is, null, 0, 0));
+    super(new VariableBinaryBufferHolder(is, null, 0, 0));
   }
 
   /**
@@ -56,7 +56,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
    */
   public VariableBinaryDecoder(final byte[] src, final int offset)
   {
-    super(new VariableBufferHolder(null, src, offset, src.length));
+    super(new VariableBinaryBufferHolder(null, src, offset, src.length));
   }
 
   /**
@@ -91,7 +91,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
   /**
    * Internal class that implements the fixed length field decoding.
    */
-  protected static class VariableBufferHolder extends BinaryBufferHolder
+  protected static class VariableBinaryBufferHolder extends BaseBinaryBufferHolder
   {
     /**
      * Constructor.
@@ -101,7 +101,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
      * @param offset Buffer offset to read from next.
      * @param length Length of readable data held in the array, which may be larger.
      */
-    public VariableBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
+    public VariableBinaryBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
       super(is, buf, offset, length);
     }

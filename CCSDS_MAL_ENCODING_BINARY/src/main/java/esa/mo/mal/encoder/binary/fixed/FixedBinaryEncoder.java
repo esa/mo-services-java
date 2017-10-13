@@ -35,7 +35,7 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    */
   public FixedBinaryEncoder(final OutputStream os)
   {
-    super(new FixedStreamHolder(os));
+    super(new FixedBinaryStreamHolder(os));
   }
 
   /**
@@ -51,14 +51,14 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
   /**
    * Extends the StreamHolder class for handling fixed length, non-zig-zag encoded, fields.
    */
-  public static class FixedStreamHolder extends BinaryStreamHolder
+  public static class FixedBinaryStreamHolder extends BaseBinaryStreamHolder
   {
     /**
      * Constructor.
      * 
      * @param outputStream The output stream to encode into.
      */
-    public FixedStreamHolder(OutputStream outputStream)
+    public FixedBinaryStreamHolder(OutputStream outputStream)
     {
       super(outputStream);
     }

@@ -40,10 +40,10 @@ public abstract class BaseBinaryEncoder extends GENEncoder
    *
    * @param os Output stream to write to.
    */
-  public BaseBinaryEncoder(final OutputStream os)
+  /*public BaseBinaryEncoder(final OutputStream os)
   {
-    super(new BinaryStreamHolder(os));
-  }
+    super(new BaseBinaryStreamHolder(os));
+  }*/
 
   /**
    * Constructor for derived classes that have their own stream holder implementation that should be used.
@@ -171,9 +171,10 @@ public abstract class BaseBinaryEncoder extends GENEncoder
   }
 
   /**
-   * Internal class for accessing the binary stream. Overridden by sub-classes to alter the low level encoding.
+   * Internal class for accessing the output stream. Overridden by sub-classes
+   * to alter the low level encoding.
    */
-  public static class BinaryStreamHolder extends StreamHolder
+  public static class BaseBinaryStreamHolder extends StreamHolder
   {
 
     private static final BigInteger B_127 = new BigInteger("127");
@@ -184,7 +185,7 @@ public abstract class BaseBinaryEncoder extends GENEncoder
      *
      * @param outputStream the stream to encode in to.
      */
-    public BinaryStreamHolder(OutputStream outputStream)
+    public BaseBinaryStreamHolder(OutputStream outputStream)
     {
       super(outputStream);
     }

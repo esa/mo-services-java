@@ -34,7 +34,7 @@ public class VariableBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBi
    */
   public VariableBinaryEncoder(final OutputStream os)
   {
-    super(new VariableStreamHolder(os));
+    super(new VariableBinaryStreamHolder(os));
   }
 
   /**
@@ -50,14 +50,14 @@ public class VariableBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBi
   /**
    * Extends the StreamHolder class for handling fixed length, non-zig-zag encoded, fields.
    */
-  public static class VariableStreamHolder extends BinaryStreamHolder
+  public static class VariableBinaryStreamHolder extends BaseBinaryStreamHolder
   {
     /**
      * Constructor.
      * 
      * @param outputStream The output stream to encode into.
      */
-    public VariableStreamHolder(OutputStream outputStream)
+    public VariableBinaryStreamHolder(OutputStream outputStream)
     {
       super(outputStream);
     }

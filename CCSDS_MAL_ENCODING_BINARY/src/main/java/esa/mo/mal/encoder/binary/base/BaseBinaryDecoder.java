@@ -60,7 +60,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
    */
   public BaseBinaryDecoder(final byte[] src)
   {
-    super(new BinaryBufferHolder(null, src, 0, src.length));
+    super(new BaseBinaryBufferHolder(null, src, 0, src.length));
     this.size = -1;
     this.list = null;
   }
@@ -72,7 +72,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
    */
   public BaseBinaryDecoder(final java.io.InputStream is)
   {
-    super(new BinaryBufferHolder(is, null, 0, 0));
+    super(new BaseBinaryBufferHolder(is, null, 0, 0));
     this.size = -1;
     this.list = null;
   }
@@ -85,7 +85,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
    */
   public BaseBinaryDecoder(final byte[] src, final int offset)
   {
-    super(new BinaryBufferHolder(null, src, offset, src.length));
+    super(new BaseBinaryBufferHolder(null, src, offset, src.length));
     this.size = -1;
     this.list = null;
   }
@@ -143,7 +143,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
   @Override
   public byte[] getRemainingEncodedData() throws MALException
   {
-    BinaryBufferHolder dSourceBuffer = (BinaryBufferHolder) sourceBuffer;
+    BaseBinaryBufferHolder dSourceBuffer = (BaseBinaryBufferHolder) sourceBuffer;
     return Arrays.copyOfRange(dSourceBuffer.buf.buf, dSourceBuffer.buf.offset, dSourceBuffer.buf.contentLength);
   }
 
@@ -152,7 +152,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
    * extend this (and replace it in the constructors) if they encode the fields
    * differently from this encoding.
    */
-  public static class BinaryBufferHolder extends BufferHolder
+  public static class BaseBinaryBufferHolder extends BufferHolder
   {
 
     protected final InputReader buf;
@@ -167,7 +167,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
      * @param length Length of readable data held in the array, which may be
      * larger.
      */
-    public BinaryBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
+    public BaseBinaryBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
       super();
       this.buf = new InputReader(is, buf, offset, length);
@@ -178,7 +178,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
      *
      * @param buf Source buffer to use.
      */
-    protected BinaryBufferHolder(final InputReader buf)
+    protected BaseBinaryBufferHolder(final InputReader buf)
     {
       super();
       this.buf = buf;

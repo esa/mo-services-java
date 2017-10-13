@@ -48,7 +48,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    */
   public SplitBinaryEncoder(final OutputStream os)
   {
-    super(new SplitStreamHolder(os));
+    super(new SplitBinaryStreamHolder(os));
   }
 
   /**
@@ -138,7 +138,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
   {
     try
     {
-      ((SplitStreamHolder) outputStream).addFixedUnsignedLong(value
+      ((SplitBinaryStreamHolder) outputStream).addFixedUnsignedLong(value
               .getValue());
     }
     catch (IOException ex)
@@ -152,7 +152,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
   {
     try
     {
-      ((SplitStreamHolder) outputStream).addFixedUnsignedLong(value
+      ((SplitBinaryStreamHolder) outputStream).addFixedUnsignedLong(value
               .getValue());
     }
     catch (IOException ex)
@@ -313,7 +313,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     {
       try
       {
-        ((SplitStreamHolder) outputStream).close();
+        ((SplitBinaryStreamHolder) outputStream).close();
       }
       catch (IOException ex)
       {
@@ -326,7 +326,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    * Extends the StreamHolder class for handling splitting out the Boolean
    * values.
    */
-  public static class SplitStreamHolder extends BinaryStreamHolder
+  public static class SplitBinaryStreamHolder extends BaseBinaryStreamHolder
   {
 
     private static final int BIT_BYTES_BLOCK_SIZE = 1024;
@@ -340,7 +340,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
      *
      * @param outputStream The output stream to encode into.
      */
-    public SplitStreamHolder(OutputStream outputStream)
+    public SplitBinaryStreamHolder(OutputStream outputStream)
     {
       super(outputStream);
     }

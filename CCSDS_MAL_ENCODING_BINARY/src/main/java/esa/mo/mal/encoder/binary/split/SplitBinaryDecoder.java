@@ -39,7 +39,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    */
   public SplitBinaryDecoder(final byte[] src)
   {
-    super(new SplitBufferHolder(null, src, 0, src.length));
+    super(new SplitBinaryBufferHolder(null, src, 0, src.length));
   }
 
   /**
@@ -49,7 +49,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    */
   public SplitBinaryDecoder(final java.io.InputStream is)
   {
-    super(new SplitBufferHolder(is, null, 0, 0));
+    super(new SplitBinaryBufferHolder(is, null, 0, 0));
   }
 
   /**
@@ -60,7 +60,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    */
   public SplitBinaryDecoder(final byte[] src, final int offset)
   {
-    super(new SplitBufferHolder(null, src, offset, src.length));
+    super(new SplitBinaryBufferHolder(null, src, offset, src.length));
   }
 
   /**
@@ -101,19 +101,19 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
   @Override
   public Time decodeTime() throws MALException
   {
-    return new Time(((SplitBufferHolder) sourceBuffer).getFixedUnsignedLong());
+    return new Time(((SplitBinaryBufferHolder) sourceBuffer).getFixedUnsignedLong());
   }
 
   @Override
   public FineTime decodeFineTime() throws MALException
   {
-    return new FineTime(((SplitBufferHolder) sourceBuffer).getFixedUnsignedLong());
+    return new FineTime(((SplitBinaryBufferHolder) sourceBuffer).getFixedUnsignedLong());
   }
 
   /**
    * Extends BufferHolder to handle split binary encoding.
    */
-  protected static class SplitBufferHolder extends BinaryBufferHolder
+  protected static class SplitBinaryBufferHolder extends BaseBinaryBufferHolder
   {
 
     /**
@@ -125,7 +125,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
      * @param length Length of readable data held in the array, which may be
      * larger.
      */
-    public SplitBufferHolder(final java.io.InputStream is,
+    public SplitBinaryBufferHolder(final java.io.InputStream is,
             final byte[] buf, final int offset, final int length)
     {
       super(new SplitInputReader(is, buf, offset, length));
