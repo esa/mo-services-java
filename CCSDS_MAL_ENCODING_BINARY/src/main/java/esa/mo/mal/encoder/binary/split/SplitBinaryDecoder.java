@@ -29,7 +29,7 @@ import org.ccsds.moims.mo.mal.structures.Time;
 /**
  * Implements the MALDecoder interface for a split binary encoding.
  */
-public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinaryDecoder
+public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.variable.VariableBinaryDecoder
 {
 
   /**
@@ -93,12 +93,6 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
   }
 
   @Override
-  public Boolean decodeBoolean() throws MALException
-  {
-    return sourceBuffer.getBool();
-  }
-
-  @Override
   public Time decodeTime() throws MALException
   {
     return new Time(((SplitBinaryBufferHolder) sourceBuffer).getFixedUnsignedLong());
@@ -113,7 +107,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
   /**
    * Extends BufferHolder to handle split binary encoding.
    */
-  protected static class SplitBinaryBufferHolder extends BaseBinaryBufferHolder
+  protected static class SplitBinaryBufferHolder extends VariableBinaryBufferHolder
   {
 
     /**
@@ -128,14 +122,14 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     public SplitBinaryBufferHolder(final java.io.InputStream is,
             final byte[] buf, final int offset, final int length)
     {
-      super(new SplitInputReader(is, buf, offset, length));
+      super(new SplitBinaryInputReader(is, buf, offset, length));
 
       this.buf.setForceRealloc(true);
     }
 
-    public SplitInputReader getSplitInputReader()
+    public SplitBinaryInputReader getSplitInputReader()
     {
-      return (SplitInputReader) getBuf();
+      return (SplitBinaryInputReader) getBuf();
     }
 
     @Override
@@ -159,13 +153,13 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     }
   }
 
-  protected static class SplitInputReader extends InputReader
+  protected static class SplitBinaryInputReader extends VariableBinaryInputReader
   {
 
     protected boolean bitStoreLoaded = false;
     protected BitGet bitStore = null;
 
-    public SplitInputReader(InputStream is, byte[] buf, int offset, int length)
+    public SplitBinaryInputReader(InputStream is, byte[] buf, int offset, int length)
     {
       super(is, buf, offset, length);
 

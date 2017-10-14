@@ -22,7 +22,6 @@ package esa.mo.mal.encoder.binary.base;
 
 import esa.mo.mal.encoder.gen.GENDecoder;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +30,6 @@ import java.util.logging.Logger;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
-import org.ccsds.moims.mo.mal.structures.*;
 
 /**
  * Implements the MALDecoder interface for a binary encoding.
@@ -54,44 +52,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
   private final List list;
 
   /**
-   * Constructor.
-   *
-   * @param src Byte array to read from.
-   */
-  public BaseBinaryDecoder(final byte[] src)
-  {
-    super(new BaseBinaryBufferHolder(null, src, 0, src.length));
-    this.size = -1;
-    this.list = null;
-  }
-
-  /**
-   * Constructor.
-   *
-   * @param is Input stream to read from.
-   */
-  public BaseBinaryDecoder(final java.io.InputStream is)
-  {
-    super(new BaseBinaryBufferHolder(is, null, 0, 0));
-    this.size = -1;
-    this.list = null;
-  }
-
-  /**
-   * Constructor.
-   *
-   * @param src Byte array to read from.
-   * @param offset index in array to start reading from.
-   */
-  public BaseBinaryDecoder(final byte[] src, final int offset)
-  {
-    super(new BaseBinaryBufferHolder(null, src, offset, src.length));
-    this.size = -1;
-    this.list = null;
-  }
-
-  /**
-   * Constructor.
+   * Constructor allowing child classes to use own BufferHolder
    *
    * @param src Source buffer holder to use.
    */
@@ -149,14 +110,12 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
 
   /**
    * Internal class that is used to hold the byte buffer. Derived classes should
-   * extend this (and replace it in the constructors) if they encode the fields
-   * differently from this encoding.
+   * extend this (and replace it in the constructors).
    */
-  public static class BaseBinaryBufferHolder extends BufferHolder
+  public static abstract class BaseBinaryBufferHolder extends BufferHolder
   {
 
-    protected final InputReader buf;
-    private static final BigInteger B_127 = new BigInteger("127");
+    protected final BaseBinaryInputReader buf;
 
     /**
      * Constructor.
@@ -170,21 +129,21 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
     public BaseBinaryBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
       super();
-      this.buf = new InputReader(is, buf, offset, length);
+      this.buf = new BaseBinaryInputReader(is, buf, offset, length);
     }
 
     /**
-     * Constructor.
+     * Constructor allowing child classes to introduce its own input reader
      *
      * @param buf Source buffer to use.
      */
-    protected BaseBinaryBufferHolder(final InputReader buf)
+    protected BaseBinaryBufferHolder(final BaseBinaryInputReader buf)
     {
       super();
       this.buf = buf;
     }
 
-    public InputReader getBuf()
+    public BaseBinaryInputReader getBuf()
     {
       return buf;
     }
@@ -203,80 +162,6 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
         return s;
       }
       return null;
-    }
-
-    @Override
-    public long getSignedLong() throws MALException
-    {
-      final long raw = getUnsignedLong();
-      final long temp = (((raw << 63) >> 63) ^ raw) >> 1;
-      return temp ^ (raw & (1L << 63));
-    }
-
-    @Override
-    public int getSignedInt() throws MALException
-    {
-      final int raw = getUnsignedInt();
-      final int temp = (((raw << 31) >> 31) ^ raw) >> 1;
-      return temp ^ (raw & (1 << 31));
-    }
-
-    @Override
-    public short getSignedShort() throws MALException
-    {
-      return (short) getSignedInt();
-    }
-
-    @Override
-    public long getUnsignedLong() throws MALException
-    {
-      long value = 0L;
-      int i = 0;
-      long b;
-      while (((b = get8()) & 0x80L) != 0)
-      {
-        value |= (b & 0x7F) << i;
-        i += 7;
-      }
-      return value | (b << i);
-    }
-
-    @Override
-    public long getUnsignedLong32() throws MALException
-    {
-      return getUnsignedLong();
-    }
-
-    @Override
-    public int getUnsignedInt() throws MALException
-    {
-      int value = 0;
-      int i = 0;
-      int b;
-      while (((b = get8()) & 0x80) != 0)
-      {
-        value |= (b & 0x7F) << i;
-        i += 7;
-      }
-      return value | (b << i);
-    }
-
-    @Override
-    public int getUnsignedInt16() throws MALException
-    {
-      return getUnsignedInt();
-    }
-
-    @Override
-    public int getUnsignedShort() throws MALException
-    {
-      return getUnsignedInt();
-    }
-
-    @Override
-    public short getUnsignedShort8() throws MALException
-    {
-      return (short) (get8() & 0xFF);
     }
 
     @Override
@@ -316,30 +201,13 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
     }
 
     @Override
-    public BigInteger getBigInteger() throws MALException
-    {
-      int i = 0;
-      int b;
-
-      BigInteger rv = BigInteger.ZERO;
-      while (((b = get8()) & 0x80) != 0)
-      {
-        rv = rv.or((new BigInteger(Integer.toString(b)).and(B_127)).shiftLeft(i));
-        i += 7;
-      }
-      rv = rv.or(new BigInteger(Integer.toString(b)).shiftLeft(i));
-
-      return rv;
-    }
-
-    @Override
     public byte[] directGetBytes(final int size) throws MALException
     {
       return buf.directGetBytes(size);
     }
   }
 
-  protected static class InputReader
+  protected static class BaseBinaryInputReader
   {
 
     protected final java.io.InputStream inputStream;
@@ -357,7 +225,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
      * @param length Length of readable data held in the array, which may be
      * larger.
      */
-    public InputReader(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
+    public BaseBinaryInputReader(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
     {
       super();
       this.inputStream = is;

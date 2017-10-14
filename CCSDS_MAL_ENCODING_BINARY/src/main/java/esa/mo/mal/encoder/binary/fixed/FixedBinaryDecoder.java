@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.binary.fixed;
 
+import java.math.BigInteger;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 
@@ -169,6 +170,15 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     public long getSignedLong() throws MALException
     {
       return getUnsignedLong();
+    }
+
+    @Override
+    public BigInteger getBigInteger() throws MALException
+    {
+      // Make sure that sign bit is always 0
+      byte[] readBuf = new byte[9];
+      System.arraycopy(buf.directGetBytes(8), 0, readBuf, 1, 8);
+      return new BigInteger(readBuf);
     }
   }
 }

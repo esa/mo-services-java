@@ -22,6 +22,7 @@ package esa.mo.mal.encoder.binary.fixed;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigInteger;
 
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a fixed length binary encoding.
@@ -53,6 +54,8 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    */
   public static class FixedBinaryStreamHolder extends BaseBinaryStreamHolder
   {
+
+    private static final BigInteger B_255 = new BigInteger("255");
     /**
      * Constructor.
      * 
@@ -115,6 +118,27 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     public void addUnsignedShort8(short value) throws IOException
     {
       directAdd(java.nio.ByteBuffer.allocate(2).putShort(value).array()[1]);
+    }
+
+    @Override
+    public void addBigInteger(BigInteger value) throws IOException
+    {
+      byte[] valueBytes = value.toByteArray();
+      int arrayLength = valueBytes.length;
+      int arrayOffset = 0;
+      // Strip sign bit if it is the only bit overflowing 8 bytes buffer
+      if (valueBytes[0] == 0 && arrayLength == 9)
+      {
+        arrayOffset = 1;
+        arrayLength--;
+      }
+      if (arrayLength > 8)
+      {
+        throw new IOException("Adding big integer larger than 8 bytes (size = " + valueBytes.length + " bytes, value = " + value + ")");
+      }
+      java.nio.ByteBuffer buf = java.nio.ByteBuffer.allocate(8);
+      buf.position(8 - arrayLength);
+      directAdd(buf.put(valueBytes, arrayOffset, arrayLength).array());
     }
   }
 }

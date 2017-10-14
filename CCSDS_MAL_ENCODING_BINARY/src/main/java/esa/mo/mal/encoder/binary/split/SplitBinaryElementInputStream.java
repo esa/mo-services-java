@@ -23,7 +23,7 @@ package esa.mo.mal.encoder.binary.split;
 /**
  * Implements the MALElementInputStream interface for a split binary encoding.
  */
-public class SplitBinaryElementInputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementInputStream
+public class SplitBinaryElementInputStream extends esa.mo.mal.encoder.binary.variable.VariableBinaryElementInputStream
 {
   /**
    * Constructor.

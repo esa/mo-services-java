@@ -28,22 +28,16 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.ULong;
+import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
- * Implements the MALEncoder and MALListEncoder interfaces for a binary encoding.
+ * Implements the MALEncoder and MALListEncoder interfaces for a binary
+ * encoding.
+ *
  */
 public abstract class BaseBinaryEncoder extends GENEncoder
 {
-  /**
-   * Constructor.
-   *
-   * @param os Output stream to write to.
-   */
-  /*public BaseBinaryEncoder(final OutputStream os)
-  {
-    super(new BaseBinaryStreamHolder(os));
-  }*/
 
   /**
    * Constructor for derived classes that have their own stream holder implementation that should be used.
@@ -56,113 +50,11 @@ public abstract class BaseBinaryEncoder extends GENEncoder
   }
 
   @Override
-  public void encodeNullableBlob(final Blob value) throws MALException
+  public void encodeUOctet(final UOctet value) throws MALException
   {
     try
     {
-      if ((null != value)
-              && ((value.isURLBased() && (null != value.getURL()))
-              || (!value.isURLBased() && (null != value.getValue()))))
-      {
-        encodeBlob(value);
-      }
-      else
-      {
-        outputStream.addBytes((byte[]) null);
-      }
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeNullableBoolean(final Boolean value) throws MALException
-  {
-    if (null != value)
-    {
-      encodeBoolean(value);
-    }
-    else
-    {
-      encodeOctet((byte) 2);
-    }
-  }
-
-  @Override
-  public void encodeNullableULong(final ULong value) throws MALException
-  {
-    try
-    {
-      if (null != value)
-      {
-        encodeULong(value);
-      }
-      else
-      {
-        outputStream.addBytes((byte[]) null);
-      }
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeNullableURI(final URI value) throws MALException
-  {
-    try
-    {
-      if ((null != value) && (null != value.getValue()))
-      {
-        encodeURI(value);
-      }
-      else
-      {
-        outputStream.addBytes((byte[]) null);
-      }
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeNullableIdentifier(final Identifier value) throws MALException
-  {
-    try
-    {
-      if ((null != value) && (null != value.getValue()))
-      {
-        encodeIdentifier(value);
-      }
-      else
-      {
-        outputStream.addBytes((byte[]) null);
-      }
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeNullableString(final String value) throws MALException
-  {
-    try
-    {
-      if (null != value)
-      {
-        encodeString(value);
-      }
-      else
-      {
-        outputStream.addBytes((byte[]) null);
-      }
+      outputStream.addByte((byte) value.getValue());
     }
     catch (IOException ex)
     {
@@ -174,12 +66,8 @@ public abstract class BaseBinaryEncoder extends GENEncoder
    * Internal class for accessing the output stream. Overridden by sub-classes
    * to alter the low level encoding.
    */
-  public static class BaseBinaryStreamHolder extends StreamHolder
+  public static abstract class BaseBinaryStreamHolder extends StreamHolder
   {
-
-    private static final BigInteger B_127 = new BigInteger("127");
-    private static final BigInteger B_128 = new BigInteger("128");
-
     /**
      * Constructor.
      *
@@ -193,13 +81,15 @@ public abstract class BaseBinaryEncoder extends GENEncoder
     @Override
     public void addBytes(final byte[] value) throws IOException
     {
+
       if (null == value)
       {
-        addSignedInt(-1);
+        addUnsignedInt(0);
+        throw new IOException("StreamHolder.addBytes: null value supplied!!");
       }
       else
       {
-        addSignedInt(value.length);
+        addUnsignedInt(value.length);
         directAdd(value);
       }
     }
@@ -223,84 +113,6 @@ public abstract class BaseBinaryEncoder extends GENEncoder
     }
 
     @Override
-    public void addBigInteger(BigInteger value) throws IOException
-    {
-      while (value.and(B_127.not()).compareTo(BigInteger.ZERO) == 1)
-      {
-        byte byteToWrite = (value.and(B_127)).or(B_128).byteValue();
-        directAdd(byteToWrite);
-        value = value.shiftRight(7);
-      }
-      BigInteger encoded = value.and(B_127);
-      directAdd(encoded.byteValue());
-    }
-
-
-    @Override
-    public void addSignedLong(final long value) throws IOException
-    {
-      addUnsignedLong((value << 1) ^ (value >> 63));
-    }
-
-    @Override
-    public void addSignedInt(final int value) throws IOException
-    {
-      addUnsignedInt((value << 1) ^ (value >> 31));
-    }
-
-    @Override
-    public void addSignedShort(final short value) throws IOException
-    {
-      addUnsignedInt((value << 1) ^ (value >> 31));
-    }
-
-    @Override
-    public void addUnsignedLong(long value) throws IOException
-    {
-      while ((value & -128L) != 0L)
-      {
-        directAdd((byte) (((int) value & 127) | 128));
-        value >>>= 7;
-      }
-      directAdd((byte) ((int) value & 127));
-    }
-
-    @Override
-    public void addUnsignedLong32(long value) throws IOException
-    {
-      addUnsignedLong(value);
-    }
-
-    @Override
-    public void addUnsignedInt(int value) throws IOException
-    {
-      while ((value & -128) != 0L)
-      {
-        directAdd((byte) ((value & 127) | 128));
-        value >>>= 7;
-      }
-      directAdd((byte) (value & 127));
-    }
-
-    @Override
-    public void addUnsignedInt16(int value) throws IOException
-    {
-      addUnsignedInt(value);
-    }
-
-    @Override
-    public void addUnsignedShort(int value) throws IOException
-    {
-      addUnsignedInt(value);
-    }
-
-    @Override
-    public void addUnsignedShort8(short value) throws IOException
-    {
-      addUnsignedShort(value);
-    }
-
-    @Override
     public void addByte(byte value) throws IOException
     {
       directAdd(value);
@@ -311,11 +123,11 @@ public abstract class BaseBinaryEncoder extends GENEncoder
     {
       if (value)
       {
-        addNotNull();
+        directAdd((byte) 1);
       }
       else
       {
-        addIsNull();
+        directAdd((byte) 0);
       }
     }
 

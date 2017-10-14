@@ -20,6 +20,8 @@
  */
 package esa.mo.mal.encoder.binary.variable;
 
+import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 
@@ -93,6 +95,9 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
    */
   protected static class VariableBinaryBufferHolder extends BaseBinaryBufferHolder
   {
+
+    private static final BigInteger B_127 = new BigInteger("127");
+
     /**
      * Constructor.
      *
@@ -102,6 +107,114 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
      * @param length Length of readable data held in the array, which may be larger.
      */
     public VariableBinaryBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
+    {
+      super(is, buf, offset, length);
+    }
+
+    /**
+     * Constructor allowing child classes to introduce its own input reader
+     *
+     * @param buf Source buffer to use.
+     */
+    protected VariableBinaryBufferHolder(final VariableBinaryInputReader buf)
+    {
+      super(buf);
+    }
+
+    @Override
+    public long getSignedLong() throws MALException
+    {
+      final long raw = getUnsignedLong();
+      final long temp = (((raw << 63) >> 63) ^ raw) >> 1;
+      return temp ^ (raw & (1L << 63));
+    }
+
+    @Override
+    public int getSignedInt() throws MALException
+    {
+      final int raw = getUnsignedInt();
+      final int temp = (((raw << 31) >> 31) ^ raw) >> 1;
+      return temp ^ (raw & (1 << 31));
+    }
+
+    @Override
+    public short getSignedShort() throws MALException
+    {
+      return (short) getSignedInt();
+    }
+
+    @Override
+    public long getUnsignedLong() throws MALException
+    {
+      long value = 0L;
+      int i = 0;
+      long b;
+      while (((b = get8()) & 128L) != 0)
+      {
+        value |= (b & 127) << i;
+        i += 7;
+      }
+      return value | (b << i);
+    }
+
+    @Override
+    public long getUnsignedLong32() throws MALException
+    {
+      return getUnsignedLong();
+    }
+
+    @Override
+    public int getUnsignedInt() throws MALException
+    {
+      int value = 0;
+      int i = 0;
+      int b;
+      while (((b = get8()) & 128) != 0)
+      {
+        value |= (b & 127) << i;
+        i += 7;
+      }
+      return value | (b << i);
+    }
+
+    @Override
+    public int getUnsignedInt16() throws MALException
+    {
+      return getUnsignedInt();
+    }
+
+    @Override
+    public int getUnsignedShort() throws MALException
+    {
+      return getUnsignedInt();
+    }
+
+    @Override
+    public short getUnsignedShort8() throws MALException
+    {
+      return (short) (get8() & 255);
+    }
+
+    @Override
+    public BigInteger getBigInteger() throws MALException
+    {
+      int i = 0;
+      int b;
+      BigInteger rv = BigInteger.ZERO;
+      while (((b = get8()) & 128) != 0)
+      {
+        rv = rv.or((new BigInteger(Integer.toString(b)).and(B_127)).shiftLeft(i));
+        i += 7;
+      }
+      rv = rv.or(new BigInteger(Integer.toString(b)).shiftLeft(i));
+      return rv;
+    }
+  }
+
+  protected static class VariableBinaryInputReader extends BaseBinaryInputReader
+  {
+
+    public VariableBinaryInputReader(InputStream is, byte[] buf, int offset, int length)
     {
       super(is, buf, offset, length);
     }

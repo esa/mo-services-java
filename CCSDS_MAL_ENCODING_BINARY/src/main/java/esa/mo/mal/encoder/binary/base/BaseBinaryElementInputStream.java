@@ -20,8 +20,6 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
-import org.ccsds.moims.mo.mal.MALException;
-
 /**
  * Implements the MALElementInputStream interface for a binary encoding.
  */

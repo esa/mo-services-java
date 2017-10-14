@@ -36,7 +36,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
  * Implements the MALEncoder and MALListEncoder interfaces for a split binary
  * encoding.
  */
-public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinaryEncoder
+public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.VariableBinaryEncoder
 {
 
   private int openCount = 1;
@@ -121,19 +121,6 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
   }
 
   @Override
-  public void encodeBoolean(final Boolean value) throws MALException
-  {
-    try
-    {
-      outputStream.addBool(value);
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
   public void encodeTime(final Time value) throws MALException
   {
     try
@@ -154,149 +141,6 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     {
       ((SplitBinaryStreamHolder) outputStream).addFixedUnsignedLong(value
               .getValue());
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeNullableBlob(final Blob value) throws MALException
-  {
-
-    try
-    {
-      if (value != null)
-      {
-        // encode presence flag
-        outputStream.addNotNull();
-        // encode element as String
-        encodeBlob(value);
-      }
-      else
-      {
-        // encode presence flag
-        outputStream.addIsNull();
-
-      }
-    }
-    catch (IOException e)
-    {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-  }
-
-  @Override
-  public void encodeNullableBoolean(final Boolean value) throws MALException
-  {
-
-    try
-    {
-      if (null != value)
-      {
-        outputStream.addNotNull();
-        outputStream.addBool(value);
-      }
-      else
-      {
-        outputStream.addIsNull();
-      }
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeNullableIdentifier(final Identifier value) throws MALException
-  {
-
-    try
-    {
-      if (value != null && value.getValue() != null)
-      {
-        outputStream.addNotNull();
-        encodeIdentifier(value);
-      }
-      else
-      {
-        outputStream.addIsNull();
-      }
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeNullableULong(final ULong value) throws MALException
-  {
-
-    try
-    {
-      if (null != value)
-      {
-        outputStream.addNotNull();
-        encodeULong(value);
-      }
-      else
-      {
-        outputStream.addIsNull();
-      }
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeNullableURI(final URI value) throws MALException
-  {
-
-    try
-    {
-      if (null != value)
-      {
-        outputStream.addNotNull();
-        encodeURI(value);
-      }
-      else
-      {
-        outputStream.addIsNull();
-      }
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeOctet(final Byte value) throws MALException
-  {
-
-    try
-    {
-      outputStream.addByte(value);
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeUOctet(final UOctet value) throws MALException
-  {
-
-    try
-    {
-      outputStream.addByte((byte) value.getValue());
     }
     catch (IOException ex)
     {
@@ -326,7 +170,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    * Extends the StreamHolder class for handling splitting out the Boolean
    * values.
    */
-  public static class SplitBinaryStreamHolder extends BaseBinaryStreamHolder
+  public static class SplitBinaryStreamHolder extends VariableBinaryStreamHolder
   {
 
     private static final int BIT_BYTES_BLOCK_SIZE = 1024;
@@ -354,20 +198,12 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     }
 
     @Override
-    public void addString(String value) throws IOException
-    {
-
-      addBytes(value.getBytes(UTF8_CHARSET));
-    }
-
-    @Override
     public void addBool(boolean value) throws IOException
     {
       if (value)
       {
         setBit(bitIndex);
       }
-
       ++bitIndex;
     }
 
@@ -382,6 +218,12 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     {
       setBit(bitIndex);
       ++bitIndex;
+    }
+
+    @Override
+    public void directAdd(final byte[] value, int os, int ln) throws IOException
+    {
+      baos.write(value, os, ln);
     }
 
     @Override
@@ -404,55 +246,6 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
         value >>>= 7;
       }
       os.write(value & 0x7F);
-    }
-
-    @Override
-    public void addByte(byte value) throws IOException
-    {
-
-      directAdd(value);
-    }
-
-    @Override
-    public void addBytes(final byte[] value) throws IOException
-    {
-
-      if (null == value)
-      {
-        streamAddUnsignedInt(baos, 0);
-
-        throw new IOException("StreamHolder.addBytes: null value supplied!!");
-
-      }
-      else
-      {
-        streamAddUnsignedInt(baos, value.length);
-        baos.write(value);
-      }
-    }
-
-    public void addUnsignedVarint4(int value) throws IOException
-    {
-      streamAddUnsignedInt(baos, value);
-    }
-
-    @Override
-    public void addUnsignedInt(int value) throws IOException
-    {
-      streamAddUnsignedInt(baos, value);
-    }
-
-    @Override
-    public void addUnsignedLong(long value) throws IOException
-    {
-
-      while ((value & 0xFFFFFFFFFFFFFF80L) != 0L)
-      {
-        int byteToWrite = (int) ((value & 0x7F) | 0x80);
-        baos.write(byteToWrite);
-        value >>>= 7;
-      }
-      baos.write((int) (value & 0x7F));
     }
 
     public void addFixedUnsignedLong(long value) throws IOException

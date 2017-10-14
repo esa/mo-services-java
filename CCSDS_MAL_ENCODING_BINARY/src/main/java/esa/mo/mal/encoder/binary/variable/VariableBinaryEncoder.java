@@ -20,7 +20,9 @@
  */
 package esa.mo.mal.encoder.binary.variable;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigInteger;
 
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a fixed length binary encoding.
@@ -52,6 +54,10 @@ public class VariableBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBi
    */
   public static class VariableBinaryStreamHolder extends BaseBinaryStreamHolder
   {
+
+    private static final BigInteger B_127 = new BigInteger("127");
+    private static final BigInteger B_128 = new BigInteger("128");
+
     /**
      * Constructor.
      * 
@@ -60,6 +66,83 @@ public class VariableBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBi
     public VariableBinaryStreamHolder(OutputStream outputStream)
     {
       super(outputStream);
+    }
+
+    @Override
+    public void addUnsignedInt(int value) throws IOException
+    {
+      while ((value & -128) != 0L)
+      {
+        directAdd((byte) ((value & 127) | 128));
+        value >>>= 7;
+      }
+      directAdd((byte) (value & 127));
+    }
+
+    @Override
+    public void addUnsignedLong(long value) throws IOException
+    {
+      while ((value & -128L) != 0L)
+      {
+        directAdd((byte) (((int) value & 127) | 128));
+        value >>>= 7;
+      }
+      directAdd((byte) ((int) value & 127));
+    }
+
+    @Override
+    public void addSignedLong(final long value) throws IOException
+    {
+      addUnsignedLong((value << 1) ^ (value >> 63));
+    }
+
+    @Override
+    public void addSignedInt(final int value) throws IOException
+    {
+      addUnsignedInt((value << 1) ^ (value >> 31));
+    }
+
+    @Override
+    public void addSignedShort(final short value) throws IOException
+    {
+      addUnsignedInt((value << 1) ^ (value >> 31));
+    }
+
+    @Override
+    public void addBigInteger(BigInteger value) throws IOException
+    {
+      while (value.and(B_127.not()).compareTo(BigInteger.ZERO) == 1)
+      {
+        byte byteToWrite = (value.and(B_127)).or(B_128).byteValue();
+        directAdd(byteToWrite);
+        value = value.shiftRight(7);
+      }
+      BigInteger encoded = value.and(B_127);
+      directAdd(encoded.byteValue());
+    }
+
+    @Override
+    public void addUnsignedLong32(long value) throws IOException
+    {
+      addUnsignedLong(value);
+    }
+
+    @Override
+    public void addUnsignedInt16(int value) throws IOException
+    {
+      addUnsignedInt(value);
+    }
+
+    @Override
+    public void addUnsignedShort(int value) throws IOException
+    {
+      addUnsignedInt(value);
+    }
+
+    @Override
+    public void addUnsignedShort8(short value) throws IOException
+    {
+      directAdd(java.nio.ByteBuffer.allocate(2).putShort(value).array()[1]);
     }
   }
 }
