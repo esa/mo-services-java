@@ -23,14 +23,10 @@ package esa.mo.mal.encoder.binary.split;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.FineTime;
-import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.ULong;
-import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a split binary
@@ -45,10 +41,11 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
    * Constructor.
    *
    * @param os Output stream to write to.
+   * @param timeHandler Time handler to use.
    */
-  public SplitBinaryEncoder(final OutputStream os)
+  public SplitBinaryEncoder(final OutputStream os, final BinaryTimeHandler timeHandler)
   {
-    super(new SplitBinaryStreamHolder(os));
+    super(new SplitBinaryStreamHolder(os), timeHandler);
   }
 
   /**
@@ -56,10 +53,11 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
    * implementation that should be used.
    *
    * @param os Output stream to write to.
+   * @param timeHandler Time handler to use.
    */
-  protected SplitBinaryEncoder(final StreamHolder os)
+  protected SplitBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler)
   {
-    super(os);
+    super(os, timeHandler);
   }
 
   @Override
@@ -117,34 +115,6 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
     catch (IOException e)
     {
       throw new MALException(ENCODING_EXCEPTION_STR, e);
-    }
-  }
-
-  @Override
-  public void encodeTime(final Time value) throws MALException
-  {
-    try
-    {
-      ((SplitBinaryStreamHolder) outputStream).addFixedUnsignedLong(value
-              .getValue());
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
-  }
-
-  @Override
-  public void encodeFineTime(final FineTime value) throws MALException
-  {
-    try
-    {
-      ((SplitBinaryStreamHolder) outputStream).addFixedUnsignedLong(value
-              .getValue());
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
     }
   }
 

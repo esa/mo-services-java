@@ -23,8 +23,7 @@ package esa.mo.mal.encoder.binary.split;
 import java.io.InputStream;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.structures.FineTime;
-import org.ccsds.moims.mo.mal.structures.Time;
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 
 /**
  * Implements the MALDecoder interface for a split binary encoding.
@@ -36,20 +35,22 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.variable.Varia
    * Constructor.
    *
    * @param src Byte array to read from.
+   * @param timeHandler Time handler to use.
    */
-  public SplitBinaryDecoder(final byte[] src)
+  public SplitBinaryDecoder(final byte[] src, final BinaryTimeHandler timeHandler)
   {
-    super(new SplitBinaryBufferHolder(null, src, 0, src.length));
+    super(new SplitBinaryBufferHolder(null, src, 0, src.length), timeHandler);
   }
 
   /**
    * Constructor.
    *
    * @param is Input stream to read from.
+   * @param timeHandler Time handler to use.
    */
-  public SplitBinaryDecoder(final java.io.InputStream is)
+  public SplitBinaryDecoder(final java.io.InputStream is, final BinaryTimeHandler timeHandler)
   {
-    super(new SplitBinaryBufferHolder(is, null, 0, 0));
+    super(new SplitBinaryBufferHolder(is, null, 0, 0), timeHandler);
   }
 
   /**
@@ -57,57 +58,28 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.variable.Varia
    *
    * @param src Byte array to read from.
    * @param offset index in array to start reading from.
+   * @param timeHandler Time handler to use.
    */
-  public SplitBinaryDecoder(final byte[] src, final int offset)
+  public SplitBinaryDecoder(final byte[] src, final int offset, final BinaryTimeHandler timeHandler)
   {
-    super(new SplitBinaryBufferHolder(null, src, offset, src.length));
+    super(new SplitBinaryBufferHolder(null, src, offset, src.length), timeHandler);
   }
 
   /**
    * Constructor.
    *
    * @param src Source buffer holder to use.
+   * @param timeHandler Time handler to use.
    */
-  protected SplitBinaryDecoder(final BufferHolder src)
+  protected SplitBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler)
   {
-    super(src);
-  }
-
-  /**
-   * MALListDecoder constructor implementation.
-   *
-   * @param list List to decode into.
-   * @param srcBuffer Buffer to manage.
-   * @throws MALException If cannot decode list size.
-   */
-  public SplitBinaryDecoder(final List list, final BufferHolder srcBuffer)
-          throws MALException
-  {
-    super(list, srcBuffer);
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final List list) throws MALException
-  {
-    return new SplitBinaryDecoder(list, sourceBuffer);
-  }
-
-  @Override
-  public Time decodeTime() throws MALException
-  {
-    return new Time(((SplitBinaryBufferHolder) sourceBuffer).getFixedUnsignedLong());
-  }
-
-  @Override
-  public FineTime decodeFineTime() throws MALException
-  {
-    return new FineTime(((SplitBinaryBufferHolder) sourceBuffer).getFixedUnsignedLong());
+    super(src, timeHandler);
   }
 
   /**
    * Extends BufferHolder to handle split binary encoding.
    */
-  protected static class SplitBinaryBufferHolder extends VariableBinaryBufferHolder
+  public static class SplitBinaryBufferHolder extends VariableBinaryBufferHolder
   {
 
     /**

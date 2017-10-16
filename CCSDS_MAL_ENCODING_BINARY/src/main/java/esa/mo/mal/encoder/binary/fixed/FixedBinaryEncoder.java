@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.binary.fixed;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -33,20 +34,22 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    * Constructor.
    *
    * @param os Output stream to write to.
+   * @param timeHandler Time handler to use.
    */
-  public FixedBinaryEncoder(final OutputStream os)
+  public FixedBinaryEncoder(final OutputStream os, final BinaryTimeHandler timeHandler)
   {
-    super(new FixedBinaryStreamHolder(os));
+    super(new FixedBinaryStreamHolder(os), timeHandler);
   }
 
   /**
    * Constructor for derived classes that have their own stream holder implementation that should be used.
    *
    * @param os Output stream to write to.
+   * @param timeHandler Time handler to use.
    */
-  protected FixedBinaryEncoder(final StreamHolder os)
+  protected FixedBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler)
   {
-    super(os);
+    super(os, timeHandler);
   }
 
   /**

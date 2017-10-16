@@ -30,6 +30,9 @@ import java.util.logging.Logger;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.Time;
 
 /**
  * Implements the MALDecoder interface for a binary encoding.
@@ -41,42 +44,64 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
   protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
   protected static final int BLOCK_SIZE = 65536;
 
+  protected final BinaryTimeHandler timeHandler;
+
   /**
    * List decoder interface list size
    */
-  private final int size;
+  protected int listSize;
   /**
    * List decoder interface decoded list object
-   *
    */
-  private final List list;
+  protected List list;
 
   /**
    * Constructor allowing child classes to use own BufferHolder
    *
    * @param src Source buffer holder to use.
+   * @param timeHandler Time handler to use.
    */
-  protected BaseBinaryDecoder(final BufferHolder src)
+  protected BaseBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler)
   {
     super(src);
-    this.size = -1;
+    this.listSize = -1;
     this.list = null;
+    this.timeHandler = timeHandler;
   }
 
   /**
-   * MALListDecoder constructor implementation.
+   * MALListDecoder setup
    *
    * @param list List to decode into.
-   * @param srcBuffer Buffer to manage.
    * @throws MALException If cannot decode list size.
    */
-  public BaseBinaryDecoder(final List list, final BufferHolder srcBuffer)
+  protected void startListDecoding(final List list)
           throws MALException
   {
-    super(srcBuffer);
-
+    this.listSize = 0;
     this.list = list;
-    size = srcBuffer.getUnsignedInt();
+    this.listSize = sourceBuffer.getUnsignedInt();
+  }
+
+  /**
+   * Creates a list decoder for decoding a list element. Initialises list
+   * decoding process.
+   *
+   * @param list The list to decode, java.lang.IllegalArgumentException
+   * exception thrown if null.
+   * @return The new list decoder.
+   * @throws java.lang.IllegalArgumentException If the list argument is null.
+   * @throws MALException If an error detected during list decoder creation.
+   */
+  @Override
+  public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final List list) throws java.lang.IllegalArgumentException, MALException
+  {
+    if (list == null)
+    {
+      throw new java.lang.IllegalArgumentException("null list pointer");
+    }
+    startListDecoding(list);
+    return this;
   }
 
   /**
@@ -87,7 +112,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
   @Override
   public boolean hasNext()
   {
-    return list.size() < size;
+    return list.size() < listSize;
   }
 
   /**
@@ -98,7 +123,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
   @Override
   public int size()
   {
-    return size;
+    return listSize;
   }
 
   @Override
@@ -106,6 +131,24 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
   {
     BaseBinaryBufferHolder dSourceBuffer = (BaseBinaryBufferHolder) sourceBuffer;
     return Arrays.copyOfRange(dSourceBuffer.buf.buf, dSourceBuffer.buf.offset, dSourceBuffer.buf.contentLength);
+  }
+
+  @Override
+  public Duration decodeDuration() throws MALException
+  {
+    return timeHandler.decodeDuration((BaseBinaryBufferHolder) sourceBuffer);
+  }
+
+  @Override
+  public Time decodeTime() throws MALException
+  {
+    return timeHandler.decodeTime((BaseBinaryBufferHolder) sourceBuffer);
+  }
+
+  @Override
+  public FineTime decodeFineTime() throws MALException
+  {
+    return timeHandler.decodeFineTime((BaseBinaryBufferHolder) sourceBuffer);
   }
 
   /**

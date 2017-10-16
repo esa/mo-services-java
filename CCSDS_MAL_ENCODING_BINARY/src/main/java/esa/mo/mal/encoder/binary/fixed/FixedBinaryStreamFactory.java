@@ -20,6 +20,8 @@
  */
 package esa.mo.mal.encoder.binary.fixed;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+
 /**
  * Implements the MALElementStreamFactory interface for a fixed length binary encoding.
  */
@@ -28,6 +30,6 @@ public class FixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.Bas
 
   public FixedBinaryStreamFactory()
   {
-    super(FixedBinaryElementInputStream.class, FixedBinaryElementOutputStream.class);
+    super(FixedBinaryElementInputStream.class, FixedBinaryElementOutputStream.class, new BinaryTimeHandler());
   }
 }

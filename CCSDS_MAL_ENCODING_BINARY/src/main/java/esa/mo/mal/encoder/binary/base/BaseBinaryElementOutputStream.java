@@ -26,12 +26,18 @@ package esa.mo.mal.encoder.binary.base;
 public abstract class BaseBinaryElementOutputStream extends esa.mo.mal.encoder.gen.GENElementOutputStream
 {
   /**
+   * Time handler to encode time with.
+   */
+  protected final BinaryTimeHandler timeHandler;
+  /**
    * Constructor.
    *
    * @param os Output stream to write to.
+   * @param timeHandler Time handler to use.
    */
-  public BaseBinaryElementOutputStream(final java.io.OutputStream os)
+  public BaseBinaryElementOutputStream(final java.io.OutputStream os, final BinaryTimeHandler timeHandler)
   {
     super(os);
+    this.timeHandler = timeHandler;
   }
 }

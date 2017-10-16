@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.binary.fixed;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.math.BigInteger;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
@@ -33,20 +34,22 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    * Constructor.
    *
    * @param src Byte array to read from.
+   * @param timeHandler Time handler to use.
    */
-  public FixedBinaryDecoder(final byte[] src)
+  public FixedBinaryDecoder(final byte[] src, final BinaryTimeHandler timeHandler)
   {
-    super(new FixedBinaryBufferHolder(null, src, 0, src.length));
+    super(new FixedBinaryBufferHolder(null, src, 0, src.length), timeHandler);
   }
 
   /**
    * Constructor.
    *
    * @param is Input stream to read from.
+   * @param timeHandler Time handler to use.
    */
-  public FixedBinaryDecoder(final java.io.InputStream is)
+  public FixedBinaryDecoder(final java.io.InputStream is, final BinaryTimeHandler timeHandler)
   {
-    super(new FixedBinaryBufferHolder(is, null, 0, 0));
+    super(new FixedBinaryBufferHolder(is, null, 0, 0), timeHandler);
   }
 
   /**
@@ -54,45 +57,28 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    *
    * @param src Byte array to read from.
    * @param offset index in array to start reading from.
+   * @param timeHandler Time handler to use.
    */
-  public FixedBinaryDecoder(final byte[] src, final int offset)
+  public FixedBinaryDecoder(final byte[] src, final int offset, final BinaryTimeHandler timeHandler)
   {
-    super(new FixedBinaryBufferHolder(null, src, offset, src.length));
+    super(new FixedBinaryBufferHolder(null, src, offset, src.length), timeHandler);
   }
 
   /**
    * Constructor.
    *
    * @param src Source buffer holder to use.
+   * @param timeHandler Time handler to use.
    */
-  protected FixedBinaryDecoder(final BufferHolder src)
+  protected FixedBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler)
   {
-    super(src);
-  }
-
-  /**
-   * MALListDecoder constructor implementation.
-   *
-   * @param list List to decode into.
-   * @param srcBuffer Buffer to manage.
-   * @throws MALException If cannot decode list size.
-   */
-  public FixedBinaryDecoder(final List list, final BufferHolder srcBuffer)
-          throws MALException
-  {
-    super(list, srcBuffer);
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final List list) throws MALException
-  {
-    return new FixedBinaryDecoder(list, sourceBuffer);
+    super(src, timeHandler);
   }
 
   /**
    * Internal class that implements the fixed length field decoding.
    */
-  protected static class FixedBinaryBufferHolder extends BaseBinaryBufferHolder
+  public static class FixedBinaryBufferHolder extends BaseBinaryBufferHolder
   {
     /**
      * Constructor.

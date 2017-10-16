@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.binary.variable;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -33,20 +34,22 @@ public class VariableBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBi
    * Constructor.
    *
    * @param os Output stream to write to.
+   * @param timeHandler Time handler to use.
    */
-  public VariableBinaryEncoder(final OutputStream os)
+  public VariableBinaryEncoder(final OutputStream os, final BinaryTimeHandler timeHandler)
   {
-    super(new VariableBinaryStreamHolder(os));
+    super(new VariableBinaryStreamHolder(os), timeHandler);
   }
 
   /**
    * Constructor for derived classes that have their own stream holder implementation that should be used.
    *
    * @param os Output stream to write to.
+   * @param timeHandler Time handler to use.
    */
-  protected VariableBinaryEncoder(final StreamHolder os)
+  protected VariableBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler)
   {
-    super(os);
+    super(os, timeHandler);
   }
 
   /**

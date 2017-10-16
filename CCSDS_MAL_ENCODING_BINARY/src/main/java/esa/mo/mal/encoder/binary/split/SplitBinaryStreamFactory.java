@@ -20,6 +20,8 @@
  */
 package esa.mo.mal.encoder.binary.split;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+
 /**
  * Implements the MALElementStreamFactory interface for a split binary encoding.
  */
@@ -28,6 +30,6 @@ public class SplitBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.Bas
 
   public SplitBinaryStreamFactory()
   {
-    super(SplitBinaryElementInputStream.class, SplitBinaryElementOutputStream.class);
+    super(SplitBinaryElementInputStream.class, SplitBinaryElementOutputStream.class, new BinaryTimeHandler());
   }
 }

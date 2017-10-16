@@ -26,7 +26,10 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.ULong;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -39,27 +42,39 @@ import org.ccsds.moims.mo.mal.structures.URI;
 public abstract class BaseBinaryEncoder extends GENEncoder
 {
 
+  protected BinaryTimeHandler timeHandler;
+
   /**
    * Constructor for derived classes that have their own stream holder implementation that should be used.
    *
    * @param os Output stream to write to.
+   * @param timeHandler Time handler to use.
    */
-  protected BaseBinaryEncoder(final StreamHolder os)
+  protected BaseBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler)
   {
     super(os);
+    this.timeHandler = timeHandler;
   }
 
   @Override
-  public void encodeUOctet(final UOctet value) throws MALException
+  public void encodeDuration(final Duration value) throws MALException
   {
-    try
-    {
-      outputStream.addByte((byte) value.getValue());
-    }
-    catch (IOException ex)
-    {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
-    }
+    checkForNull(value);
+    timeHandler.encodeDuration((BaseBinaryStreamHolder) outputStream, value);
+  }
+
+  @Override
+  public void encodeTime(final Time value) throws MALException
+  {
+    checkForNull(value);
+    timeHandler.encodeTime((BaseBinaryStreamHolder) outputStream, value);
+  }
+
+  @Override
+  public void encodeFineTime(final FineTime value) throws MALException
+  {
+    checkForNull(value);
+    timeHandler.encodeFineTime((BaseBinaryStreamHolder) outputStream, value);
   }
 
   /**

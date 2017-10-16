@@ -20,6 +20,8 @@
  */
 package esa.mo.mal.encoder.binary.variable;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+
 /**
  * Implements the MALElementInputStream interface for a fixed length binary encoding.
  */
@@ -29,10 +31,11 @@ public class VariableBinaryElementInputStream extends esa.mo.mal.encoder.binary.
    * Constructor.
    *
    * @param is Input stream to read from.
+   * @param timeHandler Time handler to use.
    */
-  public VariableBinaryElementInputStream(final java.io.InputStream is)
+  public VariableBinaryElementInputStream(final java.io.InputStream is, final BinaryTimeHandler timeHandler)
   {
-    super(new VariableBinaryDecoder(is));
+    super(new VariableBinaryDecoder(is, timeHandler));
   }
 
   /**
@@ -40,10 +43,11 @@ public class VariableBinaryElementInputStream extends esa.mo.mal.encoder.binary.
    *
    * @param buf Byte buffer to read from.
    * @param offset Offset into buffer to start from.
+   * @param timeHandler Time handler to use.
    */
-  public VariableBinaryElementInputStream(final byte[] buf, final int offset)
+  public VariableBinaryElementInputStream(final byte[] buf, final int offset, final BinaryTimeHandler timeHandler)
   {
-    super(new VariableBinaryDecoder(buf, offset));
+    super(new VariableBinaryDecoder(buf, offset, timeHandler));
   }
 
   /**

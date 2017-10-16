@@ -32,17 +32,30 @@ import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
 
 /**
- * Implements the MALElementStreamFactory interface for a binary encoding.
+ * Implements the MALElementStreamFactory interface for a binary encoding. It
+ * uses reflection to allow child classes - e.g. Fixed, Variable and Split
+ * encodings stream factories, to implement the necessary methods with minimal
+ * code, given that respective MAL Element I/O streams implement the required
+ * constructors.
  */
 public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory
 {
-  Class inputStreamImpl;
-  Class outputStreamImpl;
+  protected final Class inputStreamImpl;
+  protected final Class outputStreamImpl;
+  protected BinaryTimeHandler timeHandler;
 
-  protected BaseBinaryStreamFactory(final Class inputStreamImpl, final Class outputStreamImpl)
+  /**
+   * Constructor allowing child classes to reuse
+   *
+   * @param inputStreamImpl
+   * @param outputStreamImpl
+   * @param timeHandler
+   */
+  protected BaseBinaryStreamFactory(final Class inputStreamImpl, final Class outputStreamImpl, final BinaryTimeHandler timeHandler)
   {
     this.inputStreamImpl = inputStreamImpl;
     this.outputStreamImpl = outputStreamImpl;
+    this.timeHandler = timeHandler;
   }
 
   @Override
@@ -56,7 +69,12 @@ public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory
   {
     try
     {
-      return (MALElementInputStream) inputStreamImpl.getDeclaredConstructor(byte[].class, int.class).newInstance(bytes, offset);
+      return (MALElementInputStream) inputStreamImpl.getDeclaredConstructor(
+              byte[].class, int.class, BinaryTimeHandler.class).newInstance(bytes, offset, timeHandler);
+    }
+    catch (NoSuchMethodException ex)
+    {
+      throw new MALException("Error when creating input stream. Cannot find " + inputStreamImpl.getName() + "(byte[], int) constructor.", ex);
     }
     catch (Exception ex)
     {
@@ -69,7 +87,12 @@ public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory
   {
     try
     {
-      return (MALElementInputStream) inputStreamImpl.getDeclaredConstructor(InputStream.class).newInstance(is);
+      return (MALElementInputStream) inputStreamImpl.getDeclaredConstructor(
+              InputStream.class, BinaryTimeHandler.class).newInstance(is, timeHandler);
+    }
+    catch (NoSuchMethodException ex)
+    {
+      throw new MALException("Error when creating input stream. Cannot find " + inputStreamImpl.getName() + "(InputStream) constructor.", ex);
     }
     catch (Exception ex)
     {
@@ -82,7 +105,12 @@ public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory
   {
     try
     {
-      return (MALElementOutputStream) outputStreamImpl.getDeclaredConstructor(OutputStream.class).newInstance(os);
+      return (MALElementOutputStream) outputStreamImpl.getDeclaredConstructor(
+              OutputStream.class, BinaryTimeHandler.class).newInstance(os, timeHandler);
+    }
+    catch (NoSuchMethodException ex)
+    {
+      throw new MALException("Error when creating output stream. Cannot find " + inputStreamImpl.getName() + "(OutputStream) constructor.", ex);
     }
     catch (Exception ex)
     {

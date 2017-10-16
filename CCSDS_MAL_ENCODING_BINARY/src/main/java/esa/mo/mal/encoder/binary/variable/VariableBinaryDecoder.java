@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.binary.variable;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
@@ -34,20 +35,22 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
    * Constructor.
    *
    * @param src Byte array to read from.
+   * @param timeHandler Time handler to use.
    */
-  public VariableBinaryDecoder(final byte[] src)
+  public VariableBinaryDecoder(final byte[] src, final BinaryTimeHandler timeHandler)
   {
-    super(new VariableBinaryBufferHolder(null, src, 0, src.length));
+    super(new VariableBinaryBufferHolder(null, src, 0, src.length), timeHandler);
   }
 
   /**
    * Constructor.
    *
    * @param is Input stream to read from.
+   * @param timeHandler Time handler to use.
    */
-  public VariableBinaryDecoder(final java.io.InputStream is)
+  public VariableBinaryDecoder(final java.io.InputStream is, final BinaryTimeHandler timeHandler)
   {
-    super(new VariableBinaryBufferHolder(is, null, 0, 0));
+    super(new VariableBinaryBufferHolder(is, null, 0, 0), timeHandler);
   }
 
   /**
@@ -55,45 +58,28 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
    *
    * @param src Byte array to read from.
    * @param offset index in array to start reading from.
+   * @param timeHandler Time handler to use.
    */
-  public VariableBinaryDecoder(final byte[] src, final int offset)
+  public VariableBinaryDecoder(final byte[] src, final int offset, final BinaryTimeHandler timeHandler)
   {
-    super(new VariableBinaryBufferHolder(null, src, offset, src.length));
+    super(new VariableBinaryBufferHolder(null, src, offset, src.length), timeHandler);
   }
 
   /**
    * Constructor.
    *
    * @param src Source buffer holder to use.
+   * @param timeHandler Time handler to use.
    */
-  protected VariableBinaryDecoder(final BufferHolder src)
+  protected VariableBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler)
   {
-    super(src);
-  }
-
-  /**
-   * MALListDecoder constructor implementation.
-   *
-   * @param list List to decode into.
-   * @param srcBuffer Buffer to manage.
-   * @throws MALException If cannot decode list size.
-   */
-  public VariableBinaryDecoder(final List list, final BufferHolder srcBuffer)
-          throws MALException
-  {
-    super(list, srcBuffer);
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final List list) throws MALException
-  {
-    return new VariableBinaryDecoder(list, sourceBuffer);
+    super(src, timeHandler);
   }
 
   /**
    * Internal class that implements the fixed length field decoding.
    */
-  protected static class VariableBinaryBufferHolder extends BaseBinaryBufferHolder
+  public static class VariableBinaryBufferHolder extends BaseBinaryBufferHolder
   {
 
     private static final BigInteger B_127 = new BigInteger("127");
@@ -192,7 +178,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
     @Override
     public short getUnsignedShort8() throws MALException
     {
-      return (short) (get8() & 255);
+      return (short) (get8() & 0xFF);
     }
 
     @Override

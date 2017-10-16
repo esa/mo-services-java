@@ -20,6 +20,8 @@
  */
 package esa.mo.mal.encoder.binary.variable;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+
 /**
  * Implements the MALElementStreamFactory interface for a fixed length binary encoding.
  */
@@ -27,6 +29,6 @@ public class VariableBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.
 {
   public VariableBinaryStreamFactory()
   {
-    super(VariableBinaryElementInputStream.class, VariableBinaryElementOutputStream.class);
+    super(VariableBinaryElementInputStream.class, VariableBinaryElementOutputStream.class, new BinaryTimeHandler());
   }
 }
