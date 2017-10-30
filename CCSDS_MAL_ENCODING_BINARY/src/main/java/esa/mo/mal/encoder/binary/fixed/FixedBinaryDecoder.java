@@ -22,7 +22,6 @@ package esa.mo.mal.encoder.binary.fixed;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.math.BigInteger;
-import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
@@ -35,10 +34,14 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    *
    * @param src Byte array to read from.
    * @param timeHandler Time handler to use.
+   * @param shortLengthField True if length field is 16-bit wide, otherwise
+   * assumed to be 32-bit.
    */
-  public FixedBinaryDecoder(final byte[] src, final BinaryTimeHandler timeHandler)
+  public FixedBinaryDecoder(final byte[] src,
+          final BinaryTimeHandler timeHandler,
+          final boolean shortLengthField)
   {
-    super(new FixedBinaryBufferHolder(null, src, 0, src.length), timeHandler);
+    super(new FixedBinaryBufferHolder(null, src, 0, src.length, shortLengthField), timeHandler);
   }
 
   /**
@@ -46,10 +49,14 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    *
    * @param is Input stream to read from.
    * @param timeHandler Time handler to use.
+   * @param shortLengthField True if length field is 16-bit wide, otherwise
+   * assumed to be 32-bit.
    */
-  public FixedBinaryDecoder(final java.io.InputStream is, final BinaryTimeHandler timeHandler)
+  public FixedBinaryDecoder(final java.io.InputStream is,
+          final BinaryTimeHandler timeHandler,
+          final boolean shortLengthField)
   {
-    super(new FixedBinaryBufferHolder(is, null, 0, 0), timeHandler);
+    super(new FixedBinaryBufferHolder(is, null, 0, 0, shortLengthField), timeHandler);
   }
 
   /**
@@ -58,10 +65,15 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    * @param src Byte array to read from.
    * @param offset index in array to start reading from.
    * @param timeHandler Time handler to use.
+   * @param shortLengthField True if length field is 16-bit wide, otherwise
+   * assumed to be 32-bit.
    */
-  public FixedBinaryDecoder(final byte[] src, final int offset, final BinaryTimeHandler timeHandler)
+  public FixedBinaryDecoder(final byte[] src,
+          final int offset,
+          final BinaryTimeHandler timeHandler,
+          final boolean shortLengthField)
   {
-    super(new FixedBinaryBufferHolder(null, src, offset, src.length), timeHandler);
+    super(new FixedBinaryBufferHolder(null, src, offset, src.length, shortLengthField), timeHandler);
   }
 
   /**
@@ -70,7 +82,8 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    * @param src Source buffer holder to use.
    * @param timeHandler Time handler to use.
    */
-  protected FixedBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler)
+  protected FixedBinaryDecoder(final BufferHolder src,
+          final BinaryTimeHandler timeHandler)
   {
     super(src, timeHandler);
   }
@@ -80,17 +93,30 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    */
   public static class FixedBinaryBufferHolder extends BaseBinaryBufferHolder
   {
+
+    /**
+     * 16-bit length field encoding enabled
+     */
+    protected final boolean shortLengthField;
     /**
      * Constructor.
      *
      * @param is Input stream to read from.
      * @param buf Source buffer to use.
      * @param offset Buffer offset to read from next.
-     * @param length Length of readable data held in the array, which may be larger.
+     * @param length Length of readable data held in the array, which may be
+     * larger.
+     * @param shortLengthField True if length field is 16-bit wide, otherwise
+     * assumed to be 32-bit.
      */
-    public FixedBinaryBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
+    public FixedBinaryBufferHolder(final java.io.InputStream is,
+            final byte[] buf,
+            final int offset,
+            final int length,
+            final boolean shortLengthField)
     {
       super(is, buf, offset, length);
+      this.shortLengthField = shortLengthField;
     }
 
     @Override
@@ -165,6 +191,41 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
       byte[] readBuf = new byte[9];
       System.arraycopy(buf.directGetBytes(8), 0, readBuf, 1, 8);
       return new BigInteger(readBuf);
+    }
+
+    @Override
+    public String getString() throws MALException
+    {
+      int len;
+      if (shortLengthField)
+      {
+        len = getUnsignedShort();
+      }
+      else
+      {
+        len = getUnsignedInt();
+      }
+
+      if (len >= 0)
+      {
+        buf.checkBuffer(len);
+        final String s = new String(buf.getBuf(), buf.shiftOffsetAndReturnPrevious(len), len, UTF8_CHARSET);
+        return s;
+      }
+      return null;
+    }
+
+    @Override
+    public byte[] getBytes() throws MALException
+    {
+      if (shortLengthField)
+      {
+        return directGetBytes(getUnsignedShort());
+      }
+      else
+      {
+        return directGetBytes(getUnsignedInt());
+      }
     }
   }
 }

@@ -23,16 +23,10 @@ package esa.mo.mal.encoder.binary.base;
 import esa.mo.mal.encoder.gen.GENEncoder;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.math.BigInteger;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
-import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.ULong;
-import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a binary

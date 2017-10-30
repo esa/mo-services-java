@@ -27,16 +27,19 @@ import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
  */
 public class FixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementInputStream
 {
-
   /**
    * Constructor.
    *
    * @param is Input stream to read from.
    * @param timeHandler Time handler to use.
+   * @param shortLengthField True if length field is 16-bit wide, otherwise
+   * assumed to be 32-bit.
    */
-  public FixedBinaryElementInputStream(final java.io.InputStream is, final BinaryTimeHandler timeHandler)
+  public FixedBinaryElementInputStream(final java.io.InputStream is,
+          final BinaryTimeHandler timeHandler,
+          final boolean shortLengthField)
   {
-    super(new FixedBinaryDecoder(is, timeHandler));
+    super(new FixedBinaryDecoder(is, timeHandler, shortLengthField));
   }
 
   /**
@@ -45,12 +48,16 @@ public class FixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.bas
    * @param buf Byte buffer to read from.
    * @param offset Offset into buffer to start from.
    * @param timeHandler Time handler to use.
+   * @param shortLengthField True if length field is 16-bit wide, otherwise
+   * assumed to be 32-bit.
    */
-  public FixedBinaryElementInputStream(final byte[] buf, final int offset, final BinaryTimeHandler timeHandler)
+  public FixedBinaryElementInputStream(final byte[] buf,
+          final int offset,
+          final BinaryTimeHandler timeHandler,
+          final boolean shortLengthField)
   {
-    super(new FixedBinaryDecoder(buf, offset, timeHandler));
+    super(new FixedBinaryDecoder(buf, offset, timeHandler, shortLengthField));
   }
-
   /**
    * Sub class constructor.
    *
