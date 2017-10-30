@@ -18,45 +18,46 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.tcpip;
+package esa.mo.mal.encoder.tcpip;
 
-import java.util.Map;
-import org.ccsds.moims.mo.mal.MALContext;
+import java.util.List;
+
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.transport.MALTransport;
-import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
+import org.ccsds.moims.mo.mal.MALListDecoder;
 
 /**
- * Instance of the transport factory for a TCP/IP transport.
+ * Decode a list of elements
+ *
+ * @author Rian van Gijlswijk
+ *
  */
-public class TCPIPTransportFactoryImpl extends MALTransportFactory {
+public class TCPIPFixedBinaryListDecoder extends TCPIPFixedBinaryDecoder implements MALListDecoder {
 
-    private static final Object MUTEX = new Object();
-    private TCPIPTransport transport = null;
+    private final int size;
+    private final List list;
+
+    protected TCPIPFixedBinaryListDecoder(List list, final BufferHolder srcBuffer) throws MALException {
+        super(srcBuffer);
+        this.list = list;
+
+        // decode number of elements in list
+        this.size = (int) decodeUInteger().getValue();
+    }
 
     /**
-     * Service delimiter
+     * Returns false once the list is filled with a number of elements equalling
+     * the expected size. The expected size is set at the beginning of the
+     * output stream. As soon as this occurs, all elements are read from the
+     * outputstream.
      */
-    public static final char SERVICE_DELIMITER = '/';
-
-    /**
-     * Constructor.
-     *
-     * @param protocol The protocol string.
-     */
-    public TCPIPTransportFactoryImpl(final String protocol) {
-        super(protocol);
+    @Override
+    public boolean hasNext() {
+        return list.size() < size;
     }
 
     @Override
-    public MALTransport createTransport(final MALContext malContext, final Map properties) throws MALException {
-        synchronized (MUTEX) {
-            if (null == transport) {
-                transport = new TCPIPTransport(getProtocol(), SERVICE_DELIMITER, true, this, properties);
-                transport.init();
-            }
-
-            return transport;
-        }
+    public int size() {
+        return size;
     }
+
 }
