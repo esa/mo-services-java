@@ -288,7 +288,7 @@ class MALPublisherImpl implements MALPublisher
   private static class AddressKey implements Comparable
   {
     private final String uri;
-    private final String domain;
+    private final IdentifierList domain;
     private final String networkZone;
     private final int session;
     private final String sessionName;
@@ -309,7 +309,7 @@ class MALPublisherImpl implements MALPublisher
             final String sessionName)
     {
       this.uri = uri.getValue();
-      this.domain = StructureHelper.domainToString(domain);
+      this.domain = domain;
       this.networkZone = networkZone;
       this.session = session.getOrdinal();
       this.sessionName = sessionName;
@@ -323,7 +323,7 @@ class MALPublisherImpl implements MALPublisher
     public AddressKey(final MALMessageHeader hdr)
     {
       this.uri = hdr.getURITo().getValue();
-      this.domain = StructureHelper.domainToString(hdr.getDomain());
+      this.domain = hdr.getDomain();
       this.networkZone = hdr.getNetworkZone().getValue();
       this.session = hdr.getSession().getOrdinal();
       this.sessionName = hdr.getSessionName().getValue();
@@ -446,7 +446,7 @@ class MALPublisherImpl implements MALPublisher
         }
         else
         {
-          return domain.compareTo(other.domain);
+          return (StructureHelper.domainToString(domain)).compareTo(StructureHelper.domainToString(other.domain));
         }
       }
       else
