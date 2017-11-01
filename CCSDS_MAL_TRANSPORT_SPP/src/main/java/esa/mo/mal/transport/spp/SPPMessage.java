@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.spp;
 
-import esa.mo.mal.encoder.spp.SPPFixedBinaryElementOutputStream;
+import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENMessageHeader;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
@@ -136,7 +136,7 @@ public class SPPMessage extends GENMessage
       }
 
       final ByteArrayOutputStream hdrBaos = new ByteArrayOutputStream();
-      SPPFixedBinaryElementOutputStream hdrEnc = (SPPFixedBinaryElementOutputStream) hdrStreamFactory.createOutputStream(hdrBaos);
+      FixedBinaryElementOutputStream hdrEnc = (FixedBinaryElementOutputStream) hdrStreamFactory.createOutputStream(hdrBaos);
       final ByteArrayOutputStream bodyBaos = new ByteArrayOutputStream();
       final MALElementOutputStream bodyEnc = localBodyStreamFactory.createOutputStream(bodyBaos);
 
@@ -156,7 +156,7 @@ public class SPPMessage extends GENMessage
         // encode segmented header
         ((SPPMessageHeader) header).setSegmentFlags((byte) 0x40);
         hdrBaos.reset();
-        hdrEnc = (SPPFixedBinaryElementOutputStream) hdrStreamFactory.createOutputStream(hdrBaos);
+        hdrEnc = (FixedBinaryElementOutputStream) hdrStreamFactory.createOutputStream(hdrBaos);
         hdrEnc.writeElement(header, ctx);
         hdrBuf = hdrBaos.toByteArray();
 

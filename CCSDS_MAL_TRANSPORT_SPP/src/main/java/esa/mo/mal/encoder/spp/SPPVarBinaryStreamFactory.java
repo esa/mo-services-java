@@ -20,42 +20,21 @@
  */
 package esa.mo.mal.encoder.spp;
 
-import static esa.mo.mal.encoder.spp.SPPFixedBinaryStreamFactory.SMALL_LENGTH_FIELD;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * Implements the MALElementStreamFactory interface for a SPP binary encoding.
  */
-public class SPPVarBinaryStreamFactory extends esa.mo.mal.encoder.binary.BinaryStreamFactory
+public class SPPVarBinaryStreamFactory extends esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory
 {
-  private SPPTimeHandler timeHandler = null;
 
   @Override
   protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException
   {
     super.init(protocol, properties);
 
+    // Override default binary time encoding handler
     timeHandler = new SPPTimeHandler(properties);
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes, final int offset)
-  {
-    return new SPPVarBinaryElementInputStream(bytes, offset, timeHandler);
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final java.io.InputStream is)
-          throws org.ccsds.moims.mo.mal.MALException
-  {
-    return new SPPVarBinaryElementInputStream(is, timeHandler);
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(final java.io.OutputStream os)
-          throws org.ccsds.moims.mo.mal.MALException
-  {
-    return new SPPVarBinaryElementOutputStream(os, timeHandler);
   }
 }
