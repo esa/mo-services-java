@@ -71,7 +71,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.variable.Varia
    * @param src Source buffer holder to use.
    * @param timeHandler Time handler to use.
    */
-  protected SplitBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler)
+  public SplitBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler)
   {
     super(src, timeHandler);
   }

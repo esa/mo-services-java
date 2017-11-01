@@ -71,6 +71,16 @@ public abstract class BaseBinaryEncoder extends GENEncoder
     timeHandler.encodeFineTime((BaseBinaryStreamHolder) outputStream, value);
   }
 
+  public BaseBinaryStreamHolder getStreamHolder()
+  {
+    return (BaseBinaryStreamHolder) outputStream;
+  }
+
+  public BinaryTimeHandler getTimeHandler()
+  {
+    return timeHandler;
+  }
+
   /**
    * Internal class for accessing the output stream. Overridden by sub-classes
    * to alter the low level encoding.

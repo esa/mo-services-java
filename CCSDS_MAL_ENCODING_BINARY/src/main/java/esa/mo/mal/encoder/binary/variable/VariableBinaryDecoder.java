@@ -71,7 +71,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
    * @param src Source buffer holder to use.
    * @param timeHandler Time handler to use.
    */
-  protected VariableBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler)
+  public VariableBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler)
   {
     super(src, timeHandler);
   }

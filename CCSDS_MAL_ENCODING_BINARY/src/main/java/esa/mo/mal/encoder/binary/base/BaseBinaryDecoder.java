@@ -151,6 +151,16 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
     return timeHandler.decodeFineTime((BaseBinaryBufferHolder) sourceBuffer);
   }
 
+  public BaseBinaryBufferHolder getBufferHolder()
+  {
+    return (BaseBinaryBufferHolder) sourceBuffer;
+  }
+
+  public BinaryTimeHandler getTimeHandler()
+  {
+    return timeHandler;
+  }
+
   /**
    * Internal class that is used to hold the byte buffer. Derived classes should
    * extend this (and replace it in the constructors).

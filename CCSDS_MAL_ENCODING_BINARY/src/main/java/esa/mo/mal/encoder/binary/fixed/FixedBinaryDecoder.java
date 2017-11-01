@@ -82,7 +82,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    * @param src Source buffer holder to use.
    * @param timeHandler Time handler to use.
    */
-  protected FixedBinaryDecoder(final BufferHolder src,
+  public FixedBinaryDecoder(final BufferHolder src,
           final BinaryTimeHandler timeHandler)
   {
     super(src, timeHandler);
