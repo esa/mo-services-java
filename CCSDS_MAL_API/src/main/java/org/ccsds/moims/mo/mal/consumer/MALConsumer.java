@@ -44,6 +44,23 @@ public interface MALConsumer
   URI getURI();
 
   /**
+   * Returns the consumers local authentication identifier used by the consumer during all the interactions with the service
+   * provider
+   *
+   * @return The authentication identifier.
+   */
+  Blob getAuthenticationId();
+
+  /**
+   * Sets the consumers local authentication identifier used by the consumer during all the interactions with the service
+   * provider
+   *
+   * @param newAuthenticationId The new authentication identifier.
+   * @return The previous authentication identifier.
+   */
+  Blob setAuthenticationId(Blob newAuthenticationId);
+
+  /**
    * The method initiates a synchronous SEND interaction.
    *
    * @param op The operation being initiated.

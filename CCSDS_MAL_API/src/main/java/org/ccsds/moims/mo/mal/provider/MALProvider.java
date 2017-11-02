@@ -44,6 +44,21 @@ public interface MALProvider
   URI getURI();
 
   /**
+   * Returns the providers authentication identifier.
+   *
+   * @return The authentication identifier.
+   */
+  Blob getAuthenticationId();
+
+  /**
+   * Sets the providers authentication identifier.
+   *
+   * @param newAuthenticationId The new authentication identifier.
+   * @return The previous authentication identifier.
+   */
+  Blob setAuthenticationId(Blob newAuthenticationId);
+
+  /**
    * Indicates whether the provider can publish updates or not.
    *
    * @return True if a publisher.
@@ -63,6 +78,14 @@ public interface MALProvider
    * @return The authentication identifier, null if not a publisher.
    */
   Blob getBrokerAuthenticationId();
+
+  /**
+   * Sets the authentication identifier of the private broker.
+   *
+   * @param newAuthenticationId The new authentication identifier.
+   * @return The previous authentication identifier.
+   */
+  Blob setBrokerAuthenticationId(Blob newAuthenticationId);
 
   /**
    * Returns the MALService provided by this MALProvider.
