@@ -232,6 +232,16 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     return null;
   }
 
+  public Blob setBrokerAuthenticationId(Blob newAuthenticationId)
+  {
+    if (isPublisher() && (null == sharedBrokerUri))
+    {
+      return this.localBrokerBinding.setAuthenticationId(newAuthenticationId);
+    }
+
+    return null;
+  }
+
   @Override
   public void setTransmitErrorListener(final MALTransmitErrorListener plistener) throws MALException
   {

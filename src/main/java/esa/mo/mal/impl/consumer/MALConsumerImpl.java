@@ -144,6 +144,19 @@ class MALConsumerImpl extends MALClose implements MALConsumer
     return details.endpoint.getURI();
   }
 
+  public Blob getAuthenticationId()
+  {
+    return details.authenticationId;
+  }
+
+  public Blob setAuthenticationId(Blob newAuthenticationId)
+  {
+    Blob rv = details.authenticationId;
+    details.authenticationId = newAuthenticationId;
+    
+    return rv;
+  }
+
   @Override
   public MALMessage send(final MALSendOperation op, final Object... requestBody)
           throws java.lang.IllegalArgumentException, MALInteractionException, MALException

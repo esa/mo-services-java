@@ -107,12 +107,6 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
   }
 
   @Override
-  public Blob getAuthenticationId()
-  {
-    return authenticationId;
-  }
-
-  @Override
   public MALMessage sendNotify(final UShort area,
           final UShort service,
           final UShort operation,

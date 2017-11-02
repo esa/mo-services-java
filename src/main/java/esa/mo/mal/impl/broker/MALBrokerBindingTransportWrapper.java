@@ -60,6 +60,12 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
   }
 
   @Override
+  public Blob setAuthenticationId(Blob newAuthenticationId)
+  {
+    return transportDelegate.setAuthenticationId(newAuthenticationId);
+  }
+
+  @Override
   public URI getURI()
   {
     return transportDelegate.getURI();

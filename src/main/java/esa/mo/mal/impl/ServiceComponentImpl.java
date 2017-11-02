@@ -43,7 +43,7 @@ public abstract class ServiceComponentImpl extends MALClose
   protected final MALInteractionHandler handler;
   protected final String localName;
   protected final MALService service;
-  protected final Blob authenticationId;
+  protected Blob authenticationId;
   protected final QoSLevel[] expectedQos;
   protected final UInteger priorityLevelNumber;
   protected final Map defaultQoSProperties;
@@ -209,6 +209,20 @@ public abstract class ServiceComponentImpl extends MALClose
   public Blob getAuthenticationId()
   {
     return authenticationId;
+  }
+
+  /**
+   * Sets the authentication identifier used by this component.
+   *
+   * @param newAuthenticationId the new authentication identifier to use.
+   * @return the Authentication Id.
+   */
+  public Blob setAuthenticationId(Blob newAuthenticationId)
+  {
+    Blob rv = this.authenticationId;
+    this.authenticationId = newAuthenticationId;
+    
+    return rv;
   }
 
   /**
