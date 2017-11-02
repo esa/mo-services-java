@@ -3617,10 +3617,10 @@ Updating a group definition shall be performed by adding a new group definition 
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
         <mal:field name="argId" canBeNull="false"
-                   comment="Holds the argument definition identifier. Allows the provider to verify that the correct arguments are being supplied when using the same field in the action instance.">
+                   comment="Holds the argument definition identifier.">
           <mal:type name="Identifier" area="MAL"/>
         </mal:field>
-        <mal:field name="description" comment="Optional argument description">
+        <mal:field name="description" comment="Optional argument description.">
           <mal:type name="String" area="MAL"/>
         </mal:field>
         <mal:field name="rawType" canBeNull="false"
