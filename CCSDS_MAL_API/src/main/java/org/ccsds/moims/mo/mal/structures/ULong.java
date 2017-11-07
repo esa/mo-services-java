@@ -33,6 +33,12 @@ public class ULong implements Attribute
   private java.math.BigInteger value;
 
   /**
+   * A constant holding the maximum value a {@code ULong} can
+   * have, 2<sup>64</sup>-1.
+   */
+  public static final BigInteger MAX_VALUE = new BigInteger("18446744073709551615");
+
+  /**
    * Default constructor.
    */
   public ULong()
@@ -54,6 +60,10 @@ public class ULong implements Attribute
     if (0 > value.signum())
     {
       throw new IllegalArgumentException("ULong argument must not be negative");
+    }
+    if (ULong.MAX_VALUE.compareTo(value) < 0)
+    {
+      throw new IllegalArgumentException("ULong argument must not be greater than " + ULong.MAX_VALUE);
     }
     this.value = value;
   }
