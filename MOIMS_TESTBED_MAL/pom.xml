@@ -741,6 +741,33 @@
         <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/dlr</org.ccsds.moims.mo.testbed.remote.configuration.dir>
       </properties>
     </profile>
+    <profile>
+      <id>ESA_ZMTP</id>
+      <dependencies>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL_TEST</artifactId>
+          <version>${esa.mal.test_api.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>MAL_IMPL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>TRANSPORT_ZMTP</artifactId>
+          <version>1.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+      <properties>
+        <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/esa-zmtp</org.ccsds.moims.mo.testbed.local.configuration.dir>
+        <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/esa-zmtp</org.ccsds.moims.mo.testbed.remote.configuration.dir>
+      </properties>
+    </profile>
   </profiles>
 </project>
 
