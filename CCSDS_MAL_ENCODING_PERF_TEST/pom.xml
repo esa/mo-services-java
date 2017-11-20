@@ -19,7 +19,7 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>6</version>
+    <version>7</version>
     <relativePath/>
   </parent>
   
@@ -177,23 +177,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>One-Oh-Seven-Needed</id>
-      <activation>
-        <jdk>[1.7,]</jdk>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>ENCODING_BINARY_SPLIT</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>ENCODING_BINARY_FIXED</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
 </project>

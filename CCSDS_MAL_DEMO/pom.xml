@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>6</version>
+    <version>7</version>
     <relativePath/>
   </parent>
   
   <artifactId>MAL_DEMO</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.5</version>
+  <version>1.7</version>
 
   <name>ESA MAL Java Demo</name>
   <description>A Demo Java application for the CCSDS MAL</description>
@@ -94,14 +94,6 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>ENCODING_BINARY</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>ENCODING_BINARY_SPLIT</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>ENCODING_BINARY_FIXED</artifactId>
     </dependency>
   </dependencies>
 
