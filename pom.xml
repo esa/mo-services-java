@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>6</version>
+    <version>7</version>
     <relativePath/>
   </parent>
   
   <artifactId>MAL_IMPL</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.8-SNAPSHOT</version>
+  <version>1.7</version>
 
   <name>ESA MAL Java Implementation</name>
   <description>The ESA implementation of the CCSDS MAL in Java</description>
@@ -68,7 +68,7 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>API_MAL</artifactId>
-      <version>1.3-SNAPSHOT</version>
+      <version>1.7</version>
     </dependency>
   </dependencies>
 
