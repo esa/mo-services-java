@@ -36,6 +36,12 @@ public class UOctet implements Attribute
   private short value;
 
   /**
+   * A constant holding the maximum value a {@code UOctet} can
+   * have, 2<sup>8</sup>-1.
+   */
+  public static final short MAX_VALUE = 255;
+
+  /**
    * Default constructor.
    */
   public UOctet()
@@ -53,6 +59,10 @@ public class UOctet implements Attribute
     if (0 > value)
     {
       throw new IllegalArgumentException("UOctet argument must not be negative");
+    }
+    if (UOctet.MAX_VALUE < value)
+    {
+      throw new IllegalArgumentException("UOctet argument must not be greater than " + UOctet.MAX_VALUE);
     }
     this.value = value;
   }

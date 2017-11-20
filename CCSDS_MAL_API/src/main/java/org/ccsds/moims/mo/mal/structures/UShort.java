@@ -40,6 +40,12 @@ public class UShort implements Attribute
   private int value;
 
   /**
+   * A constant holding the maximum value a {@code UShort} can
+   * have, 2<sup>16</sup>-1.
+   */
+  public static final int MAX_VALUE = 65535;
+
+  /**
    * Default constructor.
    */
   public UShort()
@@ -57,6 +63,10 @@ public class UShort implements Attribute
     if (0 > value)
     {
       throw new IllegalArgumentException("UShort argument must not be negative");
+    }
+    if (UShort.MAX_VALUE < value)
+    {
+      throw new IllegalArgumentException("UShort argument must not be greater than " + UShort.MAX_VALUE);
     }
     this.value = value;
   }

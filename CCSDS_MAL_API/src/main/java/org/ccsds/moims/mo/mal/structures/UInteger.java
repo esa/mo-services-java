@@ -32,6 +32,12 @@ public class UInteger implements Attribute
   private long value;
 
   /**
+   * A constant holding the maximum value a {@code UInteger} can
+   * have, 2<sup>32</sup>-1.
+   */
+  public static final long MAX_VALUE = 4294967295L;
+
+  /**
    * Default constructor.
    */
   public UInteger()
@@ -49,6 +55,10 @@ public class UInteger implements Attribute
     if (0 > value)
     {
       throw new IllegalArgumentException("UInteger argument must not be negative");
+    }
+    if (UInteger.MAX_VALUE < value)
+    {
+      throw new IllegalArgumentException("UInteger argument must not be greater than " + UInteger.MAX_VALUE);
     }
     this.value = value;
   }
