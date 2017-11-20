@@ -24,7 +24,7 @@
   </parent>
   
   <artifactId>StubGenerator</artifactId>
-  <version>1.6</version>
+  <version>1.7</version>
   <packaging>maven-plugin</packaging>
   
   <name>ESA MO Stub Generator</name>

@@ -24,7 +24,7 @@
   </parent>
   
   <artifactId>StubGenerator_Java</artifactId>
-  <version>1.6</version>
+  <version>1.7</version>
   <packaging>jar</packaging>
   
   <name>ESA MO Stub Generator Plugin for Java</name>
@@ -68,7 +68,7 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>StubGenerator_Lib</artifactId>
-      <version>1.6</version>
+      <version>1.7</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
