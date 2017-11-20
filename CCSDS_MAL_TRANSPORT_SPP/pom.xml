@@ -19,13 +19,13 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>6</version>
+    <version>7</version>
     <relativePath/>
   </parent>
   
   <artifactId>TRANSPORT_SPP</artifactId>
   <packaging>jar</packaging>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.7</version>
 
   <name>ESA MAL SPP transport</name>
   <description>A Java SPP transport for CCSDS MAL</description>
