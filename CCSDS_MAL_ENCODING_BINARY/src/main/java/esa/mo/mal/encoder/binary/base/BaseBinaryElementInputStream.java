@@ -1,10 +1,10 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2015      European Space Agency
+ * Copyright (C) 2013      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO SPP Transport Framework
+ * System                : CCSDS MO Binary encoder
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,23 +18,20 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.spp;
-
-import java.util.Map;
-import org.ccsds.moims.mo.mal.MALException;
+package esa.mo.mal.encoder.binary.base;
 
 /**
- * Implements the MALElementStreamFactory interface for a SPP binary encoding.
+ * Implements the MALElementInputStream interface for a binary encoding.
  */
-public class SPPVarBinaryStreamFactory extends esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory
+public abstract class BaseBinaryElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream
 {
-
-  @Override
-  protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException
+  /**
+   * Sub class constructor.
+   *
+   * @param dec Decoder to use.
+   */
+  protected BaseBinaryElementInputStream(BaseBinaryDecoder dec)
   {
-    super.init(protocol, properties);
-
-    // Override default binary time encoding handler
-    timeHandler = new SPPTimeHandler(properties);
+    super(dec);
   }
 }

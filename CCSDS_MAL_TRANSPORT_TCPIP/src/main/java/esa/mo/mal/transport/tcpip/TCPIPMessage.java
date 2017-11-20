@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryStreamFactory;
+import esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -79,7 +79,7 @@ public class TCPIPMessage extends GENMessage {
         ByteArrayOutputStream bodyBaos = new ByteArrayOutputStream();
         MALElementOutputStream bodyEncoder = bodyStreamFactory.createOutputStream(bodyBaos);
         // Header must be always Fixed Binary
-        final MALElementStreamFactory headerStreamFactory = new TCPIPFixedBinaryStreamFactory();
+        final MALElementStreamFactory headerStreamFactory = new FixedBinaryStreamFactory();
 
         super.encodeMessage(headerStreamFactory, headerStreamFactory.createOutputStream(hdrBaos), hdrBaos, true);
         super.encodeMessage(bodyStreamFactory, bodyEncoder, bodyBaos, false);
