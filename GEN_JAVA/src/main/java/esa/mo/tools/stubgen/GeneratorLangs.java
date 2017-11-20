@@ -1889,6 +1889,7 @@ public abstract class GeneratorLangs extends GeneratorBase
   protected void createEnumerationClass(File folder, AreaType area, ServiceType service, EnumerationType enumeration) throws IOException
   {
     String enumName = enumeration.getName();
+    long enumSize = enumeration.getItem().size();
 
     getLog().info("Creating enumeration class " + enumName);
 
@@ -1916,7 +1917,7 @@ public abstract class GeneratorLangs extends GeneratorBase
 
     // create attributes
     String highestIndex = "";
-    for (int i = 0; i < enumeration.getItem().size(); i++)
+    for (int i = 0; i < enumSize; i++)
     {
       Item item = enumeration.getItem().get(i);
       String value = item.getValue();
@@ -1934,7 +1935,7 @@ public abstract class GeneratorLangs extends GeneratorBase
     List<String> opStr = new LinkedList<String>();
     List<String> stStr = new LinkedList<String>();
     List<String> vaStr = new LinkedList<String>();
-    for (int i = 0; i < enumeration.getItem().size(); i++)
+    for (int i = 0; i < enumSize; i++)
     {
       opStr.add(enumeration.getItem().get(i).getValue());
       stStr.add("\"" + enumeration.getItem().get(i).getValue() + "\"");
@@ -2013,17 +2014,6 @@ public abstract class GeneratorLangs extends GeneratorBase
     method.addMethodStatement("return " + getNullValue());
     method.addMethodCloseStatement();
 
-    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, uintType, "getNumericValue", null, null, "Returns the numeric value of the enumeration element.", "The numeric value", null);
-    method.addArrayMethodStatement("_ENUMERATION_NUMERIC_VALUES", "ordinal", highestIndex);
-    method.addMethodCloseStatement();
-
-    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, elementType, "createElement", null, null, "Returns an instance of this type using the first element of the enumeration. It is a generic factory method but just returns an existing element of the enumeration as new values of enumerations cannot be created at runtime.", "The first element of the enumeration.", null);
-    method.addMethodStatement("return _ENUMERATIONS[0]");
-    method.addMethodCloseStatement();
-
-    // create encode method
-    long enumSize = enumeration.getItem().size();
-
     String enumOrdinalType = StdStrings.UINTEGER;
     if (enumSize < 256)
     {
@@ -2036,6 +2026,24 @@ public abstract class GeneratorLangs extends GeneratorBase
 
     String enumEncoderValue = getEnumEncoderValue(enumSize);
     String enumDecoderValue = getEnumDecoderValue(enumSize);
+
+    if (enumSize < 256)
+    {
+      CompositeField encodedType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false), true, true, null);
+      method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, encodedType, "getOrdinalUOctet", null, null, "Returns the index of the enumerated item as a {@code UOctet}.", "the index of the enumerated item as a {@code UOctet}.", null);
+      method.addMethodStatement("return " + enumEncoderValue);
+      method.addMethodCloseStatement();
+    }
+
+    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, uintType, "getNumericValue", null, null, "Returns the numeric value of the enumeration element.", "The numeric value", null);
+    method.addArrayMethodStatement("_ENUMERATION_NUMERIC_VALUES", "ordinal", highestIndex);
+    method.addMethodCloseStatement();
+
+    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, elementType, "createElement", null, null, "Returns an instance of this type using the first element of the enumeration. It is a generic factory method but just returns an existing element of the enumeration as new values of enumerations cannot be created at runtime.", "The first element of the enumeration.", null);
+    method.addMethodStatement("return _ENUMERATIONS[0]");
+    method.addMethodCloseStatement();
+
+    // create encode method
     method = encodeMethodOpen(file);
     method.addMethodStatement(createMethodCall("encoder.encode") + enumOrdinalType + "(" + enumEncoderValue + ")");
     method.addMethodCloseStatement();
