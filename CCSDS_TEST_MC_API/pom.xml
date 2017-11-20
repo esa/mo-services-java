@@ -19,12 +19,12 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>6</version>
+    <version>7</version>
     <relativePath/>
   </parent>
 
   <artifactId>API_MC_TEST</artifactId>
-  <version>1.0</version>
+  <version>1.7</version>
   <packaging>jar</packaging>
 
   <name>ESA TEST MC Java API</name>
@@ -70,7 +70,7 @@
     <ccsds.specification.download.version>${extra.specification.version}</ccsds.specification.download.version>
     <ccsds.specification.download.filter>**/MCPrototype.xml</ccsds.specification.download.filter>
     <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
-    <ccsds.specification.download.ref-filter>**/ServiceDefMAL.xml, **/ServiceDefCOM.xml</ccsds.specification.download.ref-filter>
+    <ccsds.specification.download.ref-filter>**/ServiceDefMAL.xml, **/ServiceDefCOM.xml, **/ServiceDefMC.xml</ccsds.specification.download.ref-filter>
   </properties>
   
   <dependencies>
