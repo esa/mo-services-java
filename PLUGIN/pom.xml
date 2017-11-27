@@ -99,12 +99,12 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>StubGenerator_Interfaces</artifactId>
-      <version>1.6</version>
+      <version>1.7</version>
     </dependency>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>XML_JAXB</artifactId>
-      <version>1.6</version>
+      <version>1.7</version>
     </dependency>
   </dependencies>
   
