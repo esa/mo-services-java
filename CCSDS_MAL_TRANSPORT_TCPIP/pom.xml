@@ -86,7 +86,7 @@
     </dependency>
     <dependency>
     	<groupId>int.esa.ccsds.mo</groupId>
-    	<artifactId>ENCODING_BINARY_FIXED</artifactId>
+        <artifactId>ENCODING_BINARY</artifactId>
     </dependency>
   </dependencies>
  

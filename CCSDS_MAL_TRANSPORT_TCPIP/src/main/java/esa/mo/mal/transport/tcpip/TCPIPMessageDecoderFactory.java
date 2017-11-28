@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.tcpip;
+package esa.mo.mal.transport.tcpip;
 
 import org.ccsds.moims.mo.mal.MALException;
 import esa.mo.mal.transport.gen.GENMessage;

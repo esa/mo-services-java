@@ -20,11 +20,12 @@
  */
 package esa.mo.mal.encoder.tcpip;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import esa.mo.mal.encoder.gen.GENElementOutputStream;
 import esa.mo.mal.encoder.gen.GENEncoder;
 import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
 
@@ -38,15 +39,16 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
  * @author Rian van Gijlswijk
  *
  */
-public class TCPIPFixedBinaryElementOutputStream extends GENElementOutputStream {
+public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutputStream {
 
     /**
      * Logger
      */
     public static final java.util.logging.Logger RLOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.encoding.tcpip");
 
-    public TCPIPFixedBinaryElementOutputStream(OutputStream os) {
-        super(os);
+    public TCPIPFixedBinaryElementOutputStream(OutputStream os,
+          final BinaryTimeHandler timeHandler) {
+        super(os, timeHandler, false);
     }
 
     /**
@@ -54,8 +56,7 @@ public class TCPIPFixedBinaryElementOutputStream extends GENElementOutputStream 
      */
     @Override
     protected GENEncoder createEncoder(OutputStream os) {
-        RLOGGER.log(Level.FINEST, "TCPIPHeaderElementOutputStream.createEncoder()");
-        return new TCPIPFixedBinaryEncoder(os);
+        return new TCPIPFixedBinaryEncoder(os, timeHandler);
     }
 
     /**
