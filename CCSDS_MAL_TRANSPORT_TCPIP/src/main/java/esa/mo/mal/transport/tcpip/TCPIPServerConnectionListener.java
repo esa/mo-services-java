@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.tcpip;
 
+import esa.mo.mal.encoder.tcpip.TCPIPMessageDecoderFactory;
 import esa.mo.mal.transport.gen.util.GENMessagePoller;
 import java.io.IOException;
 import java.net.ServerSocket;
