@@ -24,12 +24,10 @@ import esa.mo.mal.encoder.gen.GENDecoder;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListDecoder;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -37,7 +35,7 @@ import org.ccsds.moims.mo.mal.structures.Time;
 /**
  * Implements the MALDecoder interface for a binary encoding.
  */
-public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDecoder
+public abstract class BaseBinaryDecoder extends GENDecoder
 {
 
   protected static final java.util.logging.Logger LOGGER = Logger.getLogger(BaseBinaryDecoder.class.getName());
@@ -45,15 +43,6 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
   protected static final int BLOCK_SIZE = 65536;
 
   protected final BinaryTimeHandler timeHandler;
-
-  /**
-   * List decoder interface list size
-   */
-  protected int listSize;
-  /**
-   * List decoder interface decoded list object
-   */
-  protected List list;
 
   /**
    * Constructor allowing child classes to use own BufferHolder
@@ -64,66 +53,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder implements MALListDec
   protected BaseBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler)
   {
     super(src);
-    this.listSize = -1;
-    this.list = null;
     this.timeHandler = timeHandler;
-  }
-
-  /**
-   * MALListDecoder setup
-   *
-   * @param list List to decode into.
-   * @throws MALException If cannot decode list size.
-   */
-  protected void startListDecoding(final List list)
-          throws MALException
-  {
-    this.listSize = 0;
-    this.list = list;
-    this.listSize = sourceBuffer.getUnsignedInt();
-  }
-
-  /**
-   * Creates a list decoder for decoding a list element. Initialises list
-   * decoding process.
-   *
-   * @param list The list to decode, java.lang.IllegalArgumentException
-   * exception thrown if null.
-   * @return The new list decoder.
-   * @throws java.lang.IllegalArgumentException If the list argument is null.
-   * @throws MALException If an error detected during list decoder creation.
-   */
-  @Override
-  public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final List list) throws java.lang.IllegalArgumentException, MALException
-  {
-    if (list == null)
-    {
-      throw new java.lang.IllegalArgumentException("null list pointer");
-    }
-    startListDecoding(list);
-    return this;
-  }
-
-  /**
-   * MALListDecoder hasNext implementation.
-   *
-   * @return true if there is more list elements to decode
-   */
-  @Override
-  public boolean hasNext()
-  {
-    return list.size() < listSize;
-  }
-
-  /**
-   * MALListDecoder size implementation.
-   *
-   * @return total numbers of list elements
-   */
-  @Override
-  public int size()
-  {
-    return listSize;
   }
 
   @Override

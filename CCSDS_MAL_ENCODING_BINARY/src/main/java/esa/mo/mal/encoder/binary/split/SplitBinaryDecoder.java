@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import org.ccsds.moims.mo.mal.MALListDecoder;
 
 /**
  * Implements the MALDecoder interface for a split binary encoding.
@@ -76,6 +77,11 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.variable.Varia
     super(src, timeHandler);
   }
 
+  @Override
+  public MALListDecoder createListDecoder(final List list) throws MALException
+  {
+    return new SplitBinaryListDecoder(list, sourceBuffer, timeHandler);
+  }
   /**
    * Extends BufferHolder to handle split binary encoding.
    */
