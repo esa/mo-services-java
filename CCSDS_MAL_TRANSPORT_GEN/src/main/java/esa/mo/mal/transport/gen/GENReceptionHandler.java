@@ -38,7 +38,7 @@ public interface GENReceptionHandler
   /**
    * Setter method for the remote URI of this handler
    *
-   * @param newURI the remote root URI, i.e. tcpip://10.0.0.1:61617
+   * @param newURI the remote root URI, i.e. maltcp://10.0.0.1:61617
    */
   public void setRemoteURI(String newURI);
 
