@@ -60,7 +60,7 @@ public class TestEncoder
     //results.add(new Results("esa.mo.mal.encoder.line.LineStreamFactory", false, true, size));
     results.add(new Results("esa.mo.mal.encoder.string.StringStreamFactory", false, false, pktsPerReport, paramsPerPkt, timestamp));
     //results.add(new Results("fr.cnes.maljoram.malencoding.JORAMElementStreamFactory", false, false, pktsPerReport, paramsPerPkt, timestamp));
-    results.add(new Results("esa.mo.mal.encoder.binary.BinaryStreamFactory", false, false, pktsPerReport, paramsPerPkt, timestamp));
+    results.add(new Results("esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory", false, false, pktsPerReport, paramsPerPkt, timestamp));
     results.add(new Results("esa.mo.mal.encoder.binary.split.SplitBinaryStreamFactory", false, false, pktsPerReport, paramsPerPkt, timestamp));
     results.add(new Results("esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory", false, false, pktsPerReport, paramsPerPkt, timestamp));
     
@@ -68,7 +68,7 @@ public class TestEncoder
     //results.add(new Results("esa.mo.mal.encoder.line.LineStreamFactory", true, false, size));
     results.add(new Results("esa.mo.mal.encoder.string.StringStreamFactory", true, false, pktsPerReport, paramsPerPkt, timestamp));
     //results.add(new Results("fr.cnes.maljoram.malencoding.JORAMElementStreamFactory", true, false, pktsPerReport, paramsPerPkt, timestamp));
-    results.add(new Results("esa.mo.mal.encoder.binary.BinaryStreamFactory", true, false, pktsPerReport, paramsPerPkt, timestamp));
+    results.add(new Results("esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory", true, false, pktsPerReport, paramsPerPkt, timestamp));
     results.add(new Results("esa.mo.mal.encoder.binary.split.SplitBinaryStreamFactory", true, false, pktsPerReport, paramsPerPkt, timestamp));
     results.add(new Results("esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory", true, false, pktsPerReport, paramsPerPkt, timestamp));
 

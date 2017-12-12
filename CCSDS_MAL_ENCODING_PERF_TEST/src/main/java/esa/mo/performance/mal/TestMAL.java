@@ -60,7 +60,7 @@ public class TestMAL
     
     System.setProperty("org.ccsds.moims.mo.mal.factory.class", "esa.mo.mal.impl.MALContextFactoryImpl");
     System.setProperty("org.ccsds.moims.mo.mal.transport.protocol.rmi", "esa.mo.mal.transport.rmi.RMITransportFactoryImpl");
-    System.setProperty("org.ccsds.moims.mo.mal.encoding.protocol.rmi", "esa.mo.mal.encoder.binary.BinaryStreamFactory");
+    System.setProperty("org.ccsds.moims.mo.mal.encoding.protocol.rmi", "esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory");
     System.setProperty("org.ccsds.moims.mo.mal.transport.gen.debug", "false");
     System.setProperty("org.ccsds.moims.mo.mal.transport.gen.wrap", "false");
     System.setProperty("org.ccsds.moims.mo.mal.transport.gen.fastInProcessMessages", "true");
