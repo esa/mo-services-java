@@ -47,9 +47,9 @@ public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory
   /**
    * Constructor allowing child classes to reuse
    *
-   * @param inputStreamImpl
-   * @param outputStreamImpl
-   * @param timeHandler
+   * @param inputStreamImpl The class of the input stream
+   * @param outputStreamImpl The class of the output stream
+   * @param timeHandler The time handler to use.
    */
   protected BaseBinaryStreamFactory(final Class inputStreamImpl, final Class outputStreamImpl, final BinaryTimeHandler timeHandler)
   {

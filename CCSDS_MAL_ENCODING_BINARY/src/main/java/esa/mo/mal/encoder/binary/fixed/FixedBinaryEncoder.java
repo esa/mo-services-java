@@ -51,8 +51,6 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
    *
    * @param os Output stream to write to.
    * @param timeHandler Time handler to use.
-   * @param shortLengthField True if length field is 16-bit wide, otherwise
-   * assumed to be 32-bit.
    */
   protected FixedBinaryEncoder(final StreamHolder os,
           final BinaryTimeHandler timeHandler)

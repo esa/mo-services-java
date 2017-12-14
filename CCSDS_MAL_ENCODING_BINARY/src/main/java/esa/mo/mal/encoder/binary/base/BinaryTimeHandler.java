@@ -48,7 +48,7 @@ public class BinaryTimeHandler
    *
    * @param streamHolder Associated binary encoder stream holder
    * @param value Time to be encoded
-   * @throws MALException
+   * @throws MALException if there is an error
    */
   public void encodeTime(final BaseBinaryEncoder.BaseBinaryStreamHolder streamHolder, Time value) throws MALException
   {
@@ -81,7 +81,7 @@ public class BinaryTimeHandler
    *
    * @param streamHolder Associated binary encoder stream holder
    * @param value FineTime to be encoded
-   * @throws MALException
+   * @throws MALException if there is an error
    */
   public void encodeFineTime(final BaseBinaryEncoder.BaseBinaryStreamHolder streamHolder, FineTime value) throws MALException
   {
@@ -114,7 +114,7 @@ public class BinaryTimeHandler
    *
    * @param streamHolder Associated binary encoder stream holder
    * @param value Duration to be encoded
-   * @throws MALException
+   * @throws MALException if there is an error
    */
   public void encodeDuration(final BaseBinaryEncoder.BaseBinaryStreamHolder streamHolder, Duration value) throws MALException
   {
@@ -134,7 +134,7 @@ public class BinaryTimeHandler
    *
    * @param inputBufferHolder Associated binary decoder buffer holder
    * @return Time object
-   * @throws MALException
+   * @throws MALException if there is an error
    */
   public Time decodeTime(final BaseBinaryDecoder.BaseBinaryBufferHolder inputBufferHolder) throws MALException
   {
@@ -153,7 +153,7 @@ public class BinaryTimeHandler
    *
    * @param inputBufferHolder Associated binary decoder buffer holder
    * @return FineTime object
-   * @throws MALException
+   * @throws MALException if there is an error
    */
   public FineTime decodeFineTime(final BaseBinaryDecoder.BaseBinaryBufferHolder inputBufferHolder) throws MALException
   {
@@ -173,7 +173,7 @@ public class BinaryTimeHandler
    *
    * @param inputBufferHolder Associated binary decoder buffer holder
    * @return Duration object
-   * @throws MALException
+   * @throws MALException if there is an error
    */
   public Duration decodeDuration(final BaseBinaryDecoder.BaseBinaryBufferHolder inputBufferHolder) throws MALException
   {
