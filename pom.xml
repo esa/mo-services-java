@@ -95,13 +95,13 @@
     <esa.support.lib.com.version>1.7</esa.support.lib.com.version>
     
     <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
-    <ccsds.specification.download.group>${project.groupId}</ccsds.specification.download.group>
+    <ccsds.specification.download.group>int.esa.ccsds.mo</ccsds.specification.download.group>
     <ccsds.specification.download.artifact>MOXML</ccsds.specification.download.artifact>
     <ccsds.specification.download.version>${ccsds.specification.version}</ccsds.specification.download.version>
     <ccsds.specification.download.directory>${project.build.directory}/xml</ccsds.specification.download.directory>
     <ccsds.specification.download.filter></ccsds.specification.download.filter>
     <ccsds.specification.download.ref-skip>true</ccsds.specification.download.ref-skip>
-    <ccsds.specification.download.ref-group>${project.groupId}</ccsds.specification.download.ref-group>
+    <ccsds.specification.download.ref-group>int.esa.ccsds.mo</ccsds.specification.download.ref-group>
     <ccsds.specification.download.ref-artifact>MOXML</ccsds.specification.download.ref-artifact>
     <ccsds.specification.download.ref-version>${ccsds.specification.version}</ccsds.specification.download.ref-version>
     <ccsds.specification.download.ref-directory>${project.build.directory}/xml-ref</ccsds.specification.download.ref-directory>
@@ -113,87 +113,87 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>API_MAL</artifactId>
         <version>${esa.api.mal.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>API_COM</artifactId>
         <version>${esa.api.com.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>API_MC</artifactId>
         <version>${esa.api.mc.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>MAL_IMPL</artifactId>
         <version>${esa.mal.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>ENCODING_GEN</artifactId>
         <version>${esa.gen.encoder.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>ENCODING_STRING</artifactId>
         <version>${esa.string.encoder.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>ENCODING_BINARY</artifactId>
         <version>${esa.binary.encoder.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>ENCODING_BINARY_FIXED</artifactId>
         <version>${esa.binary_fixed.encoder.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>ENCODING_BINARY_SPLIT</artifactId>
         <version>${esa.binary_split.encoder.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>TRANSPORT_GEN</artifactId>
         <version>${esa.gen.transport.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>TRANSPORT_RMI</artifactId>
         <version>${esa.rmi.transport.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>TRANSPORT_TCPIP</artifactId>
         <version>${esa.tcpip.transport.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>TRANSPORT_JMS</artifactId>
         <version>${esa.jms.transport.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>TRANSPORT_ACTIVEMQ</artifactId>
         <version>${esa.jms.transport.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>TRANSPORT_SPP</artifactId>
         <version>${esa.spp.transport.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>SUPPORT_LIB_MAL</artifactId>
         <version>${esa.support.lib.mal.version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>SUPPORT_LIB_COM</artifactId>
         <version>${esa.support.lib.com.version}</version>
       </dependency>
