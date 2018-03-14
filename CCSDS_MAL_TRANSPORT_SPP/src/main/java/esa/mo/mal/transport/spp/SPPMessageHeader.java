@@ -20,11 +20,10 @@
  */
 package esa.mo.mal.transport.spp;
 
-import esa.mo.mal.encoder.spp.SPPFixedBinaryDecoder;
-import esa.mo.mal.encoder.spp.SPPFixedBinaryEncoder;
-import esa.mo.mal.encoder.spp.SPPVarBinaryDecoder;
-import esa.mo.mal.encoder.spp.SPPVarBinaryEncoder;
-import esa.mo.mal.encoder.spp.SPPVarBinaryStreamFactory;
+import esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder;
+import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
+import esa.mo.mal.encoder.binary.variable.VariableBinaryDecoder;
+import esa.mo.mal.encoder.binary.variable.VariableBinaryEncoder;
 import esa.mo.mal.transport.gen.GENMessageHeader;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.util.Date;
@@ -189,8 +188,8 @@ public class SPPMessageHeader extends GENMessageHeader
     if (!configuration.isFixedBody())
     {
       System.out.println("Encoding with variable");
-      SPPFixedBinaryEncoder fixedEncoder = (SPPFixedBinaryEncoder)encoder;
-      usurperEncoder = new SPPVarBinaryEncoder(fixedEncoder.getStreamHolder().getOutputStream(), fixedEncoder.getTimeHandler());
+      FixedBinaryEncoder fixedEncoder = (FixedBinaryEncoder) encoder;
+      usurperEncoder = new VariableBinaryEncoder(fixedEncoder.getStreamHolder().getOutputStream(), fixedEncoder.getTimeHandler());
     }
 
     if (configuration.isPriority())
@@ -270,8 +269,8 @@ public class SPPMessageHeader extends GENMessageHeader
     MALDecoder usurperDecoder = decoder;
     if (!configuration.isFixedBody())
     {
-      SPPFixedBinaryDecoder fixedDecoder = (SPPFixedBinaryDecoder)decoder;
-      usurperDecoder = new SPPVarBinaryDecoder(fixedDecoder);
+      FixedBinaryDecoder fixedDecoder = (FixedBinaryDecoder) decoder;
+      usurperDecoder = new VariableBinaryDecoder(fixedDecoder.getBufferHolder(), fixedDecoder.getTimeHandler());
     }
 
     if (0 != (flags & 0x20))

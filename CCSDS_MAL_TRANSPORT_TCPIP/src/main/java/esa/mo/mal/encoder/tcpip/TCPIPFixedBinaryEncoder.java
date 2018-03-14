@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.tcpip;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -40,8 +41,9 @@ import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
  */
 public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
 
-    public TCPIPFixedBinaryEncoder(final OutputStream os) {
-        super(new TCPIPStreamHolder(os));
+    public TCPIPFixedBinaryEncoder(final OutputStream os,
+          final BinaryTimeHandler timeHandler) {
+        super(new TCPIPStreamHolder(os), timeHandler);
     }
 
     @Override
@@ -156,10 +158,10 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
         }
     }
 
-    public static class TCPIPStreamHolder extends FixedStreamHolder {
+    public static class TCPIPStreamHolder extends FixedBinaryStreamHolder {
 
         public TCPIPStreamHolder(OutputStream outputStream) {
-            super(outputStream);
+            super(outputStream, false);
         }
 
         /**

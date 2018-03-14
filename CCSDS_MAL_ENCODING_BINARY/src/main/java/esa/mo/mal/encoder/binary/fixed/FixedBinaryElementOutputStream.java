@@ -1,10 +1,10 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2014      European Space Agency
+ * Copyright (C) 2013      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO TCP/IP Transport Framework
+ * System                : CCSDS MO Fixed Length Binary encoder
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,22 +18,39 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.tcpip;
+package esa.mo.mal.encoder.binary.fixed;
 
-import esa.mo.mal.encoder.binary.base.BaseBinaryStreamFactory;
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 
 /**
- * A factory implementation for the generation of input and output stream
- * classes, which manage decoding and encoding, respectively.
- *
- * @author Rian van Gijlswijk
- *
+ * Implements the MALElementOutputStream interface for a fixed length binary encoding.
  */
-public class TCPIPFixedBinaryStreamFactory extends BaseBinaryStreamFactory {
+public class FixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementOutputStream
+{
 
-  public TCPIPFixedBinaryStreamFactory()
+  /**
+   * 16-bit length field encoding enabled
+   */
+  protected final boolean shortLengthField;
+  /**
+   * Constructor.
+   *
+   * @param os Output stream to write to.
+   * @param timeHandler Time handler to use.
+   * @param shortLengthField True if length field is 16-bit wide, otherwise
+   * assumed to be 32-bit.
+   */
+  public FixedBinaryElementOutputStream(final java.io.OutputStream os,
+          final BinaryTimeHandler timeHandler,
+          final boolean shortLengthField)
   {
-    super(TCPIPFixedBinaryElementInputStream.class, TCPIPFixedBinaryElementOutputStream.class, new BinaryTimeHandler());
+    super(os, timeHandler);
+    this.shortLengthField = shortLengthField;
+  }
+
+  @Override
+  protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os)
+  {
+    return new FixedBinaryEncoder(os, timeHandler, shortLengthField);
   }
 }

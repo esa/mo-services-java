@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.tcpip;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.util.logging.Level;
 
 import org.ccsds.moims.mo.mal.MALException;
@@ -30,7 +31,7 @@ import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
-import esa.mo.mal.encoder.binary.BinaryElementInputStream;
+import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementInputStream;
 import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -44,16 +45,19 @@ import org.ccsds.moims.mo.mal.structures.Blob;
  * @author Rian van Gijlswijk
  *
  */
-public class TCPIPFixedBinaryElementInputStream extends BinaryElementInputStream {
+public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputStream
+{
 
-    public TCPIPFixedBinaryElementInputStream(final java.io.InputStream is) {
-        super(new TCPIPFixedBinaryDecoder(is));
-        RLOGGER.log(Level.FINEST, "TCPIPHeaderElementInputStream constructor 1");
+  public TCPIPFixedBinaryElementInputStream(final java.io.InputStream is,
+          final BinaryTimeHandler timeHandler)
+  {
+    super(new TCPIPFixedBinaryDecoder(is, timeHandler));
     }
 
-    protected TCPIPFixedBinaryElementInputStream(final byte[] src, final int offset) {
-        super(new TCPIPFixedBinaryDecoder(src, offset));
-        RLOGGER.log(Level.FINEST, "TCPIPHeaderElementInputStream constructor 2");
+  protected TCPIPFixedBinaryElementInputStream(final byte[] src, final int offset,
+          final BinaryTimeHandler timeHandler)
+  {
+    super(new TCPIPFixedBinaryDecoder(src, offset, timeHandler));
     }
 
     /**
@@ -61,8 +65,8 @@ public class TCPIPFixedBinaryElementInputStream extends BinaryElementInputStream
      */
     @Override
     public Object readElement(final Object element, final MALEncodingContext ctx)
-            throws IllegalArgumentException, MALException {
-        RLOGGER.log(Level.FINEST, "TCPIPHeaderElementInputStream.readElement()");
+          throws IllegalArgumentException, MALException
+  {
 
         if (element == ctx.getHeader()) {
             // header is decoded using custom tcpip decoder

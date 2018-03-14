@@ -22,7 +22,6 @@ package esa.mo.mal.transport.tcpip;
 
 import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryStreamFactory;
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
-import esa.mo.mal.encoder.tcpip.TCPIPMessageDecoderFactory;
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENMessageHeader;

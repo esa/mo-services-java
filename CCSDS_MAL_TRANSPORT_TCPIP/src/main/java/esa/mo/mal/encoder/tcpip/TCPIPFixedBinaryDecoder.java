@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.tcpip;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.io.InputStream;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder;
+import org.ccsds.moims.mo.mal.MALListDecoder;
 
 /**
  * TCPIP Header decoder
@@ -38,20 +40,28 @@ import esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder;
  */
 public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
 
-    protected TCPIPFixedBinaryDecoder(java.io.InputStream is) {
-        super(new TCPIPBufferHolder(is, null, 0, 0));
+    protected TCPIPFixedBinaryDecoder(java.io.InputStream is,
+            final BinaryTimeHandler timeHandler)
+    {
+      super(new TCPIPBufferHolder(is, null, 0, 0), timeHandler);
     }
 
-    public TCPIPFixedBinaryDecoder(final BufferHolder srcBuffer) {
-        super(srcBuffer);
+    public TCPIPFixedBinaryDecoder(byte[] buf, int offset,
+            final BinaryTimeHandler timeHandler)
+    {
+      super(new TCPIPBufferHolder(null, buf, offset, 0), timeHandler);
     }
 
-    public TCPIPFixedBinaryDecoder(byte[] buf, int offset) {
-        super(new TCPIPBufferHolder(null, buf, offset, 0));
+    public TCPIPFixedBinaryDecoder(final BufferHolder srcBuffer,
+            final BinaryTimeHandler timeHandler)
+    {
+      super(srcBuffer, timeHandler);
     }
 
-    public org.ccsds.moims.mo.mal.MALListDecoder createListDecoder(final List list) throws MALException {
-        return new TCPIPFixedBinaryListDecoder(list, sourceBuffer);
+    @Override
+    public MALListDecoder createListDecoder(final List list) throws MALException
+    {
+      return new TCPIPFixedBinaryListDecoder(list, sourceBuffer, timeHandler);
     }
 
     @Override
@@ -107,10 +117,10 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
     /**
      * Internal class that implements the fixed length field decoding.
      */
-    protected static class TCPIPBufferHolder extends FixedBufferHolder {
+    protected static class TCPIPBufferHolder extends FixedBinaryBufferHolder {
 
         public TCPIPBufferHolder(InputStream is, byte[] buf, int offset, int length) {
-            super(is, buf, offset, length);
+            super(is, buf, offset, length, false);
         }
 
         @Override

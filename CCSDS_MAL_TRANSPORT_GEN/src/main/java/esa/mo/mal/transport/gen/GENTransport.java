@@ -482,7 +482,7 @@ public abstract class GENTransport<I, O> implements MALTransport
               new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, "URI To field must not be null"), qosProperties);
     }
     
-    // get the root URI, (e.g. tcpip://10.0.0.1:61616 )
+    // get the root URI, (e.g. maltcp://10.0.0.1:61616 )
     String destinationURI = msg.getHeader().getURITo().getValue();
     String remoteRootURI = getRootURI(destinationURI);
 
@@ -877,8 +877,8 @@ public abstract class GENTransport<I, O> implements MALTransport
    * Returns the "root" URI from the full URI. The root URI only contains the protocol and the main destination and is something
    * unique for all URIs of the same MAL.
    *
-   * @param fullURI the full URI, for example tcpip://10.0.0.1:61616-serviceXYZ
-   * @return the root URI, for example tcpip://10.0.0.1:61616
+   * @param fullURI the full URI, for example maltcp://10.0.0.1:61616-serviceXYZ
+   * @return the root URI, for example maltcp://10.0.0.1:61616
    */
   public String getRootURI(String fullURI)
   {
@@ -1269,7 +1269,7 @@ public abstract class GENTransport<I, O> implements MALTransport
      *
      * @return True if finished processing queue.
      */
-    public boolean isFinished()
+    public synchronized boolean isFinished()
     {
       return finished;
     }

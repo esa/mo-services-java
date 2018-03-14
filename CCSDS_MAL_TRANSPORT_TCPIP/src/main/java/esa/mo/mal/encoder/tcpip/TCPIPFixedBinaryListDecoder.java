@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.tcpip;
 
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.util.List;
 
 import org.ccsds.moims.mo.mal.MALException;
@@ -36,8 +37,8 @@ public class TCPIPFixedBinaryListDecoder extends TCPIPFixedBinaryDecoder impleme
     private final int size;
     private final List list;
 
-    protected TCPIPFixedBinaryListDecoder(List list, final BufferHolder srcBuffer) throws MALException {
-        super(srcBuffer);
+    protected TCPIPFixedBinaryListDecoder(List list, final BufferHolder srcBuffer, final BinaryTimeHandler timeHandler) throws MALException {
+        super(srcBuffer, timeHandler);
         this.list = list;
 
         // decode number of elements in list

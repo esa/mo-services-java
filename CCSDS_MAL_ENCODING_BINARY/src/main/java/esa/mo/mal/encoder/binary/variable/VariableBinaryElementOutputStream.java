@@ -1,10 +1,10 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2015      European Space Agency
+ * Copyright (C) 2013      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO SPP Transport Framework
+ * System                : CCSDS MO Fixed Length Binary encoder
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -18,23 +18,29 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.spp;
+package esa.mo.mal.encoder.binary.variable;
 
-import java.util.Map;
-import org.ccsds.moims.mo.mal.MALException;
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 
 /**
- * Implements the MALElementStreamFactory interface for a SPP binary encoding.
+ * Implements the MALElementOutputStream interface for a fixed length binary encoding.
  */
-public class SPPVarBinaryStreamFactory extends esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory
+public class VariableBinaryElementOutputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementOutputStream
 {
+  /**
+   * Constructor.
+   *
+   * @param os Output stream to write to.
+   * @param timeHandler Time handler to use.
+   */
+  public VariableBinaryElementOutputStream(final java.io.OutputStream os, final BinaryTimeHandler timeHandler)
+  {
+    super(os, timeHandler);
+  }
 
   @Override
-  protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException
+  protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os)
   {
-    super.init(protocol, properties);
-
-    // Override default binary time encoding handler
-    timeHandler = new SPPTimeHandler(properties);
+    return new VariableBinaryEncoder(os, timeHandler);
   }
 }

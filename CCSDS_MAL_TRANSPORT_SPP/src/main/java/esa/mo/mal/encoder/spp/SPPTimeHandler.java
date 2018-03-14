@@ -20,6 +20,9 @@
  */
 package esa.mo.mal.encoder.spp;
 
+import esa.mo.mal.encoder.binary.base.BaseBinaryDecoder;
+import esa.mo.mal.encoder.binary.base.BaseBinaryEncoder;
+import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import static esa.mo.mal.encoder.spp.SPPFixedBinaryStreamFactory.SECONDS_FROM_CCSDS_TO_UNIX_EPOCH;
 import static esa.mo.mal.encoder.spp.SPPFixedBinaryStreamFactory.TIME_PFIELD_PROPERTY;
 import java.io.IOException;
@@ -32,8 +35,9 @@ import org.ccsds.moims.mo.mal.structures.Time;
 /**
  * Small class for handling time encoding/decoding.
  */
-public class SPPTimeHandler
+public class SPPTimeHandler extends BinaryTimeHandler
 {
+
   private final boolean timeScaleIsUTC;
   private final boolean timeEpoch;
   private final int timeMajorUnitFieldLength;
@@ -106,7 +110,8 @@ public class SPPTimeHandler
     fineTimeMinorUnitFieldLength = lfineTimeMinorUnitFieldLength;
   }
 
-  public Duration decodeDuration(final TimeInputStream sourceBuffer) throws MALException
+  @Override
+  public Duration decodeDuration(final BaseBinaryDecoder.BaseBinaryBufferHolder sourceBuffer) throws MALException
   {
     long s = getIntFromBytes(sourceBuffer, 4) * 1000;
     byte[] ss = sourceBuffer.directGetBytes(3);
@@ -122,18 +127,25 @@ public class SPPTimeHandler
     return new Duration(((double) s) / 1000.0);
   }
 
-  public void encodeDuration(final TimeOutputStream outputStream, final Duration value) throws IOException
+  public void encodeDuration(final BaseBinaryEncoder.BaseBinaryStreamHolder outputStream, final Duration value) throws MALException
   {
-    long tm = (long) (value.getValue() * 1000);
+    try
+    {
+      long tm = (long) (value.getValue() * 1000);
 
-    int ms = (int) (tm % 1000);
-    int s = (int) (tm / 1000);
+      int ms = (int) (tm % 1000);
+      int s = (int) (tm / 1000);
 
-    outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(s).array(), 0, 4);
-    outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(ms).array(), 1, 3);
+      outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(s).array(), 0, 4);
+      outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(ms).array(), 1, 3);
+    }
+    catch (IOException ex)
+    {
+      throw new MALException(IO_EXCEPTION_STR, ex);
+    }
   }
 
-  public Time decodeTime(final TimeInputStream sourceBuffer) throws MALException
+  public Time decodeTime(final BaseBinaryDecoder.BaseBinaryBufferHolder sourceBuffer) throws MALException
   {
     long s = getIntFromBytes(sourceBuffer, timeMajorUnitFieldLength);
     byte[] fs = sourceBuffer.directGetBytes(timeMinorUnitFieldLength);
@@ -162,37 +174,44 @@ public class SPPTimeHandler
     return new Time(s);
   }
 
-  public void encodeTime(final TimeOutputStream outputStream, final Time value) throws IOException
+  public void encodeTime(final BaseBinaryEncoder.BaseBinaryStreamHolder outputStream, final Time value) throws MALException
   {
-    long tm = value.getValue();
-
-    int ms = (int) (tm % 1000);
-    int s = (int) (tm / 1000);
-
-    if (!timeScaleIsUTC)
+    try
     {
-      // TAI scale is 10s out from UTC
-      s += 10;
+      long tm = value.getValue();
+
+      int ms = (int) (tm % 1000);
+      int s = (int) (tm / 1000);
+
+      if (!timeScaleIsUTC)
+      {
+        // TAI scale is 10s out from UTC
+        s += 10;
+      }
+
+      if (timeEpoch)
+      {
+        // CCSDS time epoch is 1/1/1958
+        s += SECONDS_FROM_CCSDS_TO_UNIX_EPOCH;
+      }
+
+      int ff = Math.min(4, timeMajorUnitFieldLength);
+      outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(s).array(), 4 - ff, ff);
+
+      double subseconds = ((double) ms) / 1000.0;
+      for (int i = 0; i < timeMinorUnitFieldLength; ++i)
+      {
+        subseconds = subseconds * 256.0;
+        outputStream.directAdd((byte) subseconds);
+      }
     }
-
-    if (timeEpoch)
+    catch (IOException ex)
     {
-      // CCSDS time epoch is 1/1/1958
-      s += SECONDS_FROM_CCSDS_TO_UNIX_EPOCH;
-    }
-
-    int ff = Math.min(4, timeMajorUnitFieldLength);
-    outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(s).array(), 4 - ff, ff);
-
-    double subseconds = ((double) ms) / 1000.0;
-    for (int i = 0; i < timeMinorUnitFieldLength; ++i)
-    {
-      subseconds = subseconds * 256.0;
-      outputStream.directAdd((byte) subseconds);
+      throw new MALException(IO_EXCEPTION_STR, ex);
     }
   }
 
-  public FineTime decodeFineTime(final TimeInputStream sourceBuffer) throws MALException
+  public FineTime decodeFineTime(final BaseBinaryDecoder.BaseBinaryBufferHolder sourceBuffer) throws MALException
   {
     long s = getIntFromBytes(sourceBuffer, fineTimeMajorUnitFieldLength);
     byte[] fs = sourceBuffer.directGetBytes(fineTimeMinorUnitFieldLength);
@@ -221,37 +240,44 @@ public class SPPTimeHandler
     return new FineTime(s);
   }
 
-  public void encodeFineTime(final TimeOutputStream outputStream, final FineTime value) throws IOException
+  public void encodeFineTime(final BaseBinaryEncoder.BaseBinaryStreamHolder outputStream, final FineTime value) throws MALException
   {
-    long tm = value.getValue();
-
-    long ms = (long) (tm % 1000000000000L);
-    long s = (long) (tm / 1000000000000L);
-
-    if (!fineTimeScaleIsUTC)
+    try
     {
-      // TAI scale is 10s out from UTC at 1970
-      s += 10;
+      long tm = value.getValue();
+
+      long ms = (long) (tm % 1000000000000L);
+      long s = (long) (tm / 1000000000000L);
+
+      if (!fineTimeScaleIsUTC)
+      {
+        // TAI scale is 10s out from UTC at 1970
+        s += 10;
+      }
+
+      if (fineTimeEpoch)
+      {
+        // CCSDS time epoch is 1/1/1958
+        //s -= FINETIME_EPOCH;
+      }
+
+      int ff = Math.min(4, fineTimeMajorUnitFieldLength);
+      outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt((int) s).array(), 4 - ff, ff);
+
+      double subseconds = ((double) ms) / 1000000000000.0;
+      for (int i = 0; i < fineTimeMinorUnitFieldLength; ++i)
+      {
+        subseconds = subseconds * 256.0;
+        outputStream.directAdd((byte) subseconds);
+      }
     }
-
-    if (fineTimeEpoch)
+    catch (IOException ex)
     {
-      // CCSDS time epoch is 1/1/1958
-      //s -= FINETIME_EPOCH;
-    }
-
-    int ff = Math.min(4, fineTimeMajorUnitFieldLength);
-    outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt((int) s).array(), 4 - ff, ff);
-
-    double subseconds = ((double) ms) / 1000000000000.0;
-    for (int i = 0; i < fineTimeMinorUnitFieldLength; ++i)
-    {
-      subseconds = subseconds * 256.0;
-      outputStream.directAdd((byte) subseconds);
+      throw new MALException(IO_EXCEPTION_STR, ex);
     }
   }
 
-  private int getIntFromBytes(final TimeInputStream sourceBuffer, int countToRead) throws MALException
+  private int getIntFromBytes(final BaseBinaryDecoder.BaseBinaryBufferHolder sourceBuffer, int countToRead) throws MALException
   {
     byte[] fs = sourceBuffer.directGetBytes(countToRead);
 
@@ -263,38 +289,5 @@ public class SPPTimeHandler
 
     System.arraycopy(fs, 0, b, 4 - countToRead, countToRead);
     return java.nio.ByteBuffer.wrap(b).getInt();
-  }
-
-  protected interface TimeInputStream
-  {
-    /**
-     * Gets a byte array from the incoming stream.
-     *
-     * @param length The number of bytes to retrieve
-     * @return the extracted byte.
-     * @throws MALException If there is a problem with the decoding.
-     */
-    public abstract byte[] directGetBytes(int length) throws MALException;
-  }
-
-  protected interface TimeOutputStream
-  {
-    /**
-     * Low level byte array write to the output stream.
-     *
-     * @param value the value to encode.
-     * @param os offset into array.
-     * @param ln length to add.
-     * @throws IOException is there is a problem adding the value to the stream.
-     */
-    void directAdd(final byte[] value, int os, int ln) throws IOException;
-
-    /**
-     * Low level byte write to the output stream.
-     *
-     * @param value the value to encode.
-     * @throws IOException is there is a problem adding the value to the stream.
-     */
-    void directAdd(final byte value) throws IOException;
   }
 }
