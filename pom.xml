@@ -17,7 +17,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>int.esa.ccsds.mo</groupId>
   <artifactId>POM</artifactId>
-  <version>7</version>
+  <version>8-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <name>ESA MO POM</name>
