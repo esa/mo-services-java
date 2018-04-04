@@ -24,7 +24,7 @@
   </parent>
 
   <artifactId>API_COMMON</artifactId>
-  <version>1.0-RC2</version>
+  <version>1.0-RC3</version>
   <packaging>jar</packaging>
 
   <name>ESA Common Java API</name>
@@ -65,6 +65,7 @@
   </developers>
 
   <properties>
+    <ccsds.specification.version>1.7.1-SNAPSHOT</ccsds.specification.version>
     <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
     <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
     <ccsds.specification.download.filter>**/ServiceDefCommon.xml</ccsds.specification.download.filter>
