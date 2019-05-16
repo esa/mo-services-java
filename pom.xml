@@ -71,6 +71,7 @@
     <module>CCSDS_MAL_TRANSPORT_JMS</module>
     <module>CCSDS_MAL_TRANSPORT_ACTIVEMQ</module>
     <module>CCSDS_MAL_TRANSPORT_SPP</module>
+    <module>CCSDS_MAL_TRANSPORT_ZMTP</module>
   </modules>
 
   <profiles>
