@@ -22,20 +22,14 @@ package esa.mo.mal.transport.gen.body;
 
 import esa.mo.mal.encoder.gen.GENElementInputStream;
 import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.util.GENMarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
 import org.ccsds.moims.mo.mal.MALArea;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALElementFactory;
@@ -355,16 +349,9 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
       {
         // get the XML tags for the object
         final String ssf = (String) sf;
-        final String schemaURN = ssf.substring(0, ssf.lastIndexOf(':'));
-        final String schemaEle = ssf.substring(ssf.lastIndexOf(':') + 1);
-
-        // create the marshaller
-        final JAXBContext jc = JAXBContext.newInstance(o.getClass().getPackage().getName());
-        final Marshaller marshaller = jc.createMarshaller();
-
-        // encode the XML into a string
-        final StringWriter ow = new StringWriter();
-        marshaller.marshal(new JAXBElement(new QName(schemaURN, schemaEle), o.getClass(), null, o), ow);
+        // Marshal the element!
+        StringWriter ow = GENMarshaller.marshall(ssf, o);
+        
         GENTransport.LOGGER.log(Level.FINE, "GEN Message encoding XML body part : {0}", ow.toString());
 
         MALElementOutputStream lenc = enc;
@@ -391,7 +378,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
           enc.writeElement(new Blob(lbaos.toByteArray()), null);
         }
       }
-      catch (JAXBException ex)
+      catch (MALException ex)
       {
         throw new MALException("XML Encoding error", ex);
       }
@@ -590,24 +577,9 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
       {
         final String shortForm = u.getStringValue();
         GENTransport.LOGGER.log(Level.FINER, "GEN Message decoding XML body part : Type = {0}", shortForm);
-
-        try
-        {
-          final String schemaURN = shortForm.substring(0, shortForm.lastIndexOf(':'));
-          final String packageName = (String) ctx.getEndpointQosProperties().get(schemaURN);
-
-          final JAXBContext jc = JAXBContext.newInstance(packageName);
-          final Unmarshaller unmarshaller = jc.createUnmarshaller();
-
-          final String srcString = ((Union) lenc.readElement(new Union(""), null)).getStringValue();
-          final StringReader ir = new StringReader(srcString);
-          final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(ir);
-          rv = rootElement.getValue();
-        }
-        catch (JAXBException ex)
-        {
-          throw new MALException("XML Decoding error", ex);
-        }
+        
+        // Unmarshal the object
+        rv = GENMarshaller.unmarshall(shortForm, ctx, lenc);
       }
     }
 

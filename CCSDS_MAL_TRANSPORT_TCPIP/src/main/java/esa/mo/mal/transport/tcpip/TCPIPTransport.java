@@ -624,7 +624,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             Logger.getLogger(TCPIPTransport.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        throw new MALException("Could not determine local host address");
+        // Bind on the localhost
+        return "127.0.0.1";
     }
 
     public char getServiceDelim() {
