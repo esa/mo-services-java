@@ -308,38 +308,34 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
       }
     } // else if it is a JAXB XML object
     else if (o.getClass().isAnnotationPresent(javax.xml.bind.annotation.XmlType.class)) {
-      try {
-        // get the XML tags for the object
-        final String ssf = (String) sf;
-        // Marshal the element!
-        StringWriter ow = GENMarshaller.marshall(ssf, o);
+      // get the XML tags for the object
+      final String ssf = (String) sf;
+      // Marshal the element!
+      StringWriter ow = GENMarshaller.marshall(ssf, o);
 
-        GENTransport.LOGGER.log(Level.FINE, "GEN Message encoding XML body part : {0}",
-            ow.toString());
+      GENTransport.LOGGER.log(Level.FINE, "GEN Message encoding XML body part : {0}",
+          ow.toString());
 
-        MALElementOutputStream lenc = enc;
-        ByteArrayOutputStream lbaos = null;
+      MALElementOutputStream lenc = enc;
+      ByteArrayOutputStream lbaos = null;
 
-        if (wrapBodyParts) {
-          // we encode it into a byte buffer so that it can be extracted as a MALEncodedElement if required
-          lbaos = new ByteArrayOutputStream();
-          lenc = streamFactory.createOutputStream(lbaos);
-        }
+      if (wrapBodyParts) {
+        // we encode it into a byte buffer so that it can be extracted as a MALEncodedElement if required
+        lbaos = new ByteArrayOutputStream();
+        lenc = streamFactory.createOutputStream(lbaos);
+      }
 
-        // encode the short form
-        lenc.writeElement(new Union(ssf), null);
-        // now encode the element
-        lenc.writeElement(new Union(ow.toString()), null);
+      // encode the short form
+      lenc.writeElement(new Union(ssf), null);
+      // now encode the element
+      lenc.writeElement(new Union(ow.toString()), null);
 
-        if (wrapBodyParts) {
-          lenc.flush();
-          lenc.close();
+      if (wrapBodyParts) {
+        lenc.flush();
+        lenc.close();
 
-          // write the encoded blob to the stream
-          enc.writeElement(new Blob(lbaos.toByteArray()), null);
-        }
-      } catch (MALException ex) {
-        throw new MALException("XML Encoding error", ex);
+        // write the encoded blob to the stream
+        enc.writeElement(new Blob(lbaos.toByteArray()), null);
       }
     } else {
       throw new MALException(
