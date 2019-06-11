@@ -25,7 +25,7 @@
   
   <artifactId>TRANSPORT_FILE</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.8.0-SNAPSHOT</version>
 
   <name>ESA MAL File Java transport</name>
   <description>A Java File based transport for CCSDS MAL</description>
