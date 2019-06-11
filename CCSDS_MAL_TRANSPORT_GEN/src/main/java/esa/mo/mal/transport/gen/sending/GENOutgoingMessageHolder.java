@@ -29,13 +29,15 @@ import java.util.concurrent.TimeUnit;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * This class holds the message to be sent in encoded format and a reply queue that the internal sender of the message
- * can listen to in order to be informed if the message was successfully sent or not.
+ * This class holds the message to be sent in encoded format and a reply queue that the internal
+ * sender of the message can listen to in order to be informed if the message was successfully sent
+ * or not.
  *
  * @param <O> The type of the encoded message.
  */
 public class GENOutgoingMessageHolder<O>
 {
+
   /**
    * The reply queue
    */
@@ -73,21 +75,22 @@ public class GENOutgoingMessageHolder<O>
   /**
    * Will construct a new object and create a new internal reply queue.
    *
-   * @param timeout The timeout in seconds to wait for confirmation of delivery.
+   * @param timeout            The timeout in seconds to wait for confirmation of delivery.
    * @param destinationRootURI The destination root URI, holds the connection level URI.
-   * @param destinationURI The complete destination URI.
-   * @param multiSendHandle The message handle for multi-send messages, may be NULL.
-   * @param lastForHandle True if this is the last message in the multi-send for the supplied handle.
-   * @param originalMessage The un-encoded message to be sent
-   * @param encodedMessage The encoded message to be sent
+   * @param destinationURI     The complete destination URI.
+   * @param multiSendHandle    The message handle for multi-send messages, may be NULL.
+   * @param lastForHandle      True if this is the last message in the multi-send for the supplied
+   *                           handle.
+   * @param originalMessage    The un-encoded message to be sent
+   * @param encodedMessage     The encoded message to be sent
    */
   public GENOutgoingMessageHolder(final int timeout,
-          final String destinationRootURI,
-          final String destinationURI,
-          final Object multiSendHandle,
-          final boolean lastForHandle,
-          final MALMessage originalMessage,
-          O encodedMessage)
+      final String destinationRootURI,
+      final String destinationURI,
+      final Object multiSendHandle,
+      final boolean lastForHandle,
+      final MALMessage originalMessage,
+      O encodedMessage)
   {
     replyQueue = new LinkedBlockingQueue<Boolean>();
     this.timeout = timeout;
@@ -102,7 +105,8 @@ public class GENOutgoingMessageHolder<O>
   /**
    * This method blocks until there is an attempt to send the message.
    *
-   * @return TRUE if the message was successfully sent and FALSE if there was a communication or internal problem.
+   * @return TRUE if the message was successfully sent and FALSE if there was a communication or
+   * internal problem.
    * @throws InterruptedException in case of shutting down or internal error
    */
   public Boolean getResult() throws InterruptedException
@@ -113,13 +117,13 @@ public class GENOutgoingMessageHolder<O>
   /**
    * Sets the result indicating if the message was sent successfully.
    *
-   * @param result TRUE if the message was successfully sent and FALSE if there was a communication or internal problem.
+   * @param result TRUE if the message was successfully sent and FALSE if there was a communication
+   *               or internal problem.
    */
   public void setResult(Boolean result)
   {
     boolean inserted = replyQueue.add(result);
-    if (!inserted)
-    {
+    if (!inserted) {
       // log error. According to the specification (see *add* call
       // documentation) this will always return true, or throw an
       // exception

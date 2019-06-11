@@ -56,6 +56,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class GENMessageBody implements MALMessageBody, java.io.Serializable
 {
+
   /**
    * Factory used to create encoders/decoders.
    */
@@ -87,21 +88,18 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
   /**
    * Constructor.
    *
-   * @param ctx The encoding context to use.
-   * @param encFactory The encoder stream factory to use.
+   * @param ctx          The encoding context to use.
+   * @param encFactory   The encoder stream factory to use.
    * @param messageParts The message body parts.
    */
   public GENMessageBody(final MALEncodingContext ctx,
-          final MALElementStreamFactory encFactory,
-          final Object[] messageParts)
+      final MALElementStreamFactory encFactory,
+      final Object[] messageParts)
   {
     wrappedBodyParts = false;
-    if (null != messageParts)
-    {
+    if (null != messageParts) {
       this.bodyPartCount = messageParts.length;
-    }
-    else
-    {
+    } else {
       this.bodyPartCount = 0;
     }
 
@@ -114,16 +112,16 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
   /**
    * Constructor.
    *
-   * @param ctx The encoding context to use.
+   * @param ctx              The encoding context to use.
    * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
-   * @param encFactory The encoder stream factory to use.
-   * @param encBodyElements The input stream that holds the encoded body parts.
+   * @param encFactory       The encoder stream factory to use.
+   * @param encBodyElements  The input stream that holds the encoded body parts.
    */
   public GENMessageBody(final MALEncodingContext ctx,
-          final boolean wrappedBodyParts,
-          final MALElementStreamFactory encFactory,
-          final ByteArrayInputStream encBodyBytes,
-          final MALElementInputStream encBodyElements)
+      final boolean wrappedBodyParts,
+      final MALElementStreamFactory encFactory,
+      final ByteArrayInputStream encBodyBytes,
+      final MALElementInputStream encBodyElements)
   {
     this.ctx = ctx;
     this.wrappedBodyParts = wrappedBodyParts;
@@ -135,57 +133,51 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
   @Override
   public int getElementCount()
   {
-    try
-    {
+    try {
       decodeMessageBody();
+    } catch (MALException ex) {
+      Logger.getLogger(GENMessageBody.class.getName()).log(Level.SEVERE,
+          "MAL encoded body encoding error", ex);
     }
-    catch (MALException ex)
-    {
-      Logger.getLogger(GENMessageBody.class.getName()).log(Level.SEVERE, "MAL encoded body encoding error", ex);
-    }
-    
+
     return bodyPartCount;
   }
 
   @Override
   public MALEncodedBody getEncodedBody() throws MALException
   {
-    if (!decodedBody && (encBodyElements instanceof GENElementInputStream))
-    {
+    if (!decodedBody && (encBodyElements instanceof GENElementInputStream)) {
       byte[] rd = ((GENElementInputStream) encBodyElements).getRemainingEncodedData();
-      if ((null != encBodyBytes) && (0 < encBodyBytes.available()))
-      {
+      if ((null != encBodyBytes) && (0 < encBodyBytes.available())) {
         byte[] c = new byte[rd.length + encBodyBytes.available()];
         System.arraycopy(rd, 0, c, 0, rd.length);
         encBodyBytes.mark(0);
         encBodyBytes.read(c, rd.length, encBodyBytes.available());
         encBodyBytes.reset();
-        
+
         rd = c;
       }
       return new MALEncodedBody(new Blob(rd));
-    }
-    else
-    {
+    } else {
       throw new UnsupportedOperationException("Not supported yet.");
     }
   }
 
   @Override
-  public Object getBodyElement(final int index, final Object element) throws IllegalArgumentException, MALException
+  public Object getBodyElement(final int index, final Object element) throws
+      IllegalArgumentException, MALException
   {
     decodeMessageBody();
 
     Object rv = messageParts[index];
 
-    if (rv instanceof MALEncodedElementList)
-    {
-      System.out.println("getBodyElement requesting encoded body list : " + this.decodedBody + " : " + ((MALEncodedElementList) rv).getShortForm());
+    if (rv instanceof MALEncodedElementList) {
+      System.out.println(
+          "getBodyElement requesting encoded body list : " + this.decodedBody + " : " + ((MALEncodedElementList) rv).getShortForm());
       rv = decodeEncodedElementListBodyPart(((MALEncodedElementList) rv));
       messageParts[index] = rv;
     }
-    if (rv instanceof MALEncodedElement)
-    {
+    if (rv instanceof MALEncodedElement) {
       System.out.println("getBodyElement requesting encoded body : " + this.decodedBody);
     }
 
@@ -195,13 +187,10 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
   @Override
   public MALEncodedElement getEncodedBodyElement(final int index) throws MALException
   {
-    if (-1 == index)
-    {
+    if (-1 == index) {
       // want the complete message body
       return new MALEncodedElement((Blob) encBodyElements.readElement(new Blob(), null));
-    }
-    else
-    {
+    } else {
       return null;
     }
   }
@@ -209,68 +198,53 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
   /**
    * Encodes the contents of the message body into the provided stream
    *
-   * @param streamFactory The stream factory to use for encoder creation.
-   * @param enc The output stream to use for encoding.
+   * @param streamFactory        The stream factory to use for encoder creation.
+   * @param enc                  The output stream to use for encoding.
    * @param lowLevelOutputStream Low level output stream to use when have an already encoded body.
-   * @param stage The operation stage being encoded.
-   * @param ctx The encoding context.
+   * @param stage                The operation stage being encoded.
+   * @param ctx                  The encoding context.
    * @throws MALException On encoding error.
    */
   public void encodeMessageBody(final MALElementStreamFactory streamFactory,
-          final MALElementOutputStream enc,
-          final OutputStream lowLevelOutputStream,
-          final UOctet stage,
-          final MALEncodingContext ctx) throws MALException
+      final MALElementOutputStream enc,
+      final OutputStream lowLevelOutputStream,
+      final UOctet stage,
+      final MALEncodingContext ctx) throws MALException
   {
     // first check to see if we have an already encoded body
-    if ((null != messageParts) && (1 == messageParts.length) && (messageParts[0] instanceof MALEncodedBody))
-    {
+    if ((null != messageParts) && (1 == messageParts.length) && (messageParts[0] instanceof MALEncodedBody)) {
       enc.flush();
 
-      try
-      {
+      try {
         lowLevelOutputStream.write(((MALEncodedBody) messageParts[0]).getEncodedBody().getValue());
         lowLevelOutputStream.flush();
-      }
-      catch (IOException ex)
-      {
+      } catch (IOException ex) {
         throw new MALException("MAL encoded body encoding error", ex);
       }
-    }
-    else if (!decodedBody)
-    {
+    } else if (!decodedBody) {
       enc.flush();
 
-      try
-      {
+      try {
         lowLevelOutputStream.write(getEncodedBody().getEncodedBody().getValue());
         lowLevelOutputStream.flush();
-      }
-      catch (IOException ex)
-      {
+      } catch (IOException ex) {
         throw new MALException("MAL encoded body encoding error", ex);
       }
-    }
-    else
-    {
+    } else {
       final int count = getElementCount();
 
       GENTransport.LOGGER.log(Level.FINE, "GEN Message encoding body ... pc ({0})", count);
 
       // if we only have a single body part then encode that directly
-      if (count == 1)
-      {
+      if (count == 1) {
         ctx.setBodyElementIndex(0);
         Object sf = ctx.getOperation().getOperationStage(stage).getElementShortForms()[0];
         encodeBodyPart(streamFactory, enc, wrappedBodyParts, sf, getBodyElement(0, null), ctx);
-      }
-      else if (count > 1)
-      {
+      } else if (count > 1) {
         MALElementOutputStream benc = enc;
         ByteArrayOutputStream bbaos = null;
 
-        if (wrappedBodyParts)
-        {
+        if (wrappedBodyParts) {
           // we have more than one body part, therefore encode each part into a separate byte buffer, and then encode
           // that byte buffer as a whole. This allows use to be able to return the complete body of the message as a
           // single unit if required.
@@ -278,23 +252,19 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
           benc = streamFactory.createOutputStream(bbaos);
         }
 
-        for (int i = 0; i < count; i++)
-        {
+        for (int i = 0; i < count; i++) {
           Object sf = null;
-          if (null != ctx)
-          {
+          if (null != ctx) {
             ctx.setBodyElementIndex(i);
 
-            if (!ctx.getHeader().getIsErrorMessage())
-            {
+            if (!ctx.getHeader().getIsErrorMessage()) {
               sf = ctx.getOperation().getOperationStage(stage).getElementShortForms()[i];
             }
           }
           encodeBodyPart(streamFactory, benc, wrappedBodyParts, sf, getBodyElement(i, null), ctx);
         }
 
-        if (wrappedBodyParts)
-        {
+        if (wrappedBodyParts) {
           benc.flush();
           benc.close();
 
@@ -308,23 +278,19 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
   }
 
   protected void encodeBodyPart(final MALElementStreamFactory streamFactory,
-          final MALElementOutputStream enc,
-          final boolean wrapBodyParts,
-          final Object sf, final Object o, final MALEncodingContext ctx) throws MALException
+      final MALElementOutputStream enc,
+      final boolean wrapBodyParts,
+      final Object sf, final Object o, final MALEncodingContext ctx) throws MALException
   {
     // if it is already an encoded element then just write it directly
-    if (o instanceof MALEncodedElement)
-    {
+    if (o instanceof MALEncodedElement) {
       enc.writeElement(((MALEncodedElement) o).getEncodedElement(), ctx);
-    }
-    // else if it is a MAL data type object
-    else if ((null == o) || (o instanceof Element))
-    {
+    } // else if it is a MAL data type object
+    else if ((null == o) || (o instanceof Element)) {
       MALElementOutputStream lenc = enc;
       ByteArrayOutputStream lbaos = null;
 
-      if (wrapBodyParts)
-      {
+      if (wrapBodyParts) {
         // we encode it into a byte buffer so that it can be extracted as a MALEncodedElement if required
         lbaos = new ByteArrayOutputStream();
         lenc = streamFactory.createOutputStream(lbaos);
@@ -333,32 +299,28 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
       // now encode the element
       lenc.writeElement((Element) o, ctx);
 
-      if (wrapBodyParts)
-      {
+      if (wrapBodyParts) {
         lenc.flush();
         lenc.close();
 
         // write the encoded blob to the stream
         enc.writeElement(new Blob(lbaos.toByteArray()), null);
       }
-    }
-    // else if it is a JAXB XML object
-    else if (o.getClass().isAnnotationPresent(javax.xml.bind.annotation.XmlType.class))
-    {
-      try
-      {
+    } // else if it is a JAXB XML object
+    else if (o.getClass().isAnnotationPresent(javax.xml.bind.annotation.XmlType.class)) {
+      try {
         // get the XML tags for the object
         final String ssf = (String) sf;
         // Marshal the element!
         StringWriter ow = GENMarshaller.marshall(ssf, o);
-        
-        GENTransport.LOGGER.log(Level.FINE, "GEN Message encoding XML body part : {0}", ow.toString());
+
+        GENTransport.LOGGER.log(Level.FINE, "GEN Message encoding XML body part : {0}",
+            ow.toString());
 
         MALElementOutputStream lenc = enc;
         ByteArrayOutputStream lbaos = null;
 
-        if (wrapBodyParts)
-        {
+        if (wrapBodyParts) {
           // we encode it into a byte buffer so that it can be extracted as a MALEncodedElement if required
           lbaos = new ByteArrayOutputStream();
           lenc = streamFactory.createOutputStream(lbaos);
@@ -369,115 +331,98 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
         // now encode the element
         lenc.writeElement(new Union(ow.toString()), null);
 
-        if (wrapBodyParts)
-        {
+        if (wrapBodyParts) {
           lenc.flush();
           lenc.close();
 
           // write the encoded blob to the stream
           enc.writeElement(new Blob(lbaos.toByteArray()), null);
         }
-      }
-      catch (MALException ex)
-      {
+      } catch (MALException ex) {
         throw new MALException("XML Encoding error", ex);
       }
-    }
-    else
-    {
-      throw new MALException("ERROR: Unable to encode body object of type: " + o.getClass().getSimpleName());
+    } else {
+      throw new MALException(
+          "ERROR: Unable to encode body object of type: " + o.getClass().getSimpleName());
     }
   }
 
   /**
    * Decodes the message body.
+   *
    * @throws MALException if any error detected.
    */
   protected void decodeMessageBody() throws MALException
   {
-    if (!decodedBody)
-    {
+    if (!decodedBody) {
       decodedBody = true;
 
-      try
-      {
-        if (null == ctx.getOperation())
-        {
+      try {
+        if (null == ctx.getOperation()) {
           MALMessageHeader header = ctx.getHeader();
-          MALArea area = MALContextFactory.lookupArea(header.getServiceArea(), header.getAreaVersion());
-          if (null != area)
-          {
+          MALArea area = MALContextFactory.lookupArea(header.getServiceArea(),
+              header.getAreaVersion());
+          if (null != area) {
             MALService service = area.getServiceByNumber(header.getService());
-            if (null != service)
-            {
+            if (null != service) {
               MALOperation op = service.getOperationByNumber(header.getOperation());
 
-              if (null != op)
-              {
+              if (null != op) {
                 ctx.setOperation(op);
+              } else {
+                GENTransport.LOGGER.log(Level.SEVERE,
+                    "Operation for unknown area/version/service/op received ({0}, {1}, {2}, {3})",
+                    new Object[]{
+                      header.getServiceArea(), header.getAreaVersion(), header.getService(),
+                      header.getOperation()
+                    });
               }
-              else
-              {
-                GENTransport.LOGGER.log(Level.SEVERE, "Operation for unknown area/version/service/op received ({0}, {1}, {2}, {3})", new Object[]
-                {
-                  header.getServiceArea(), header.getAreaVersion(), header.getService(), header.getOperation()
+            } else {
+              GENTransport.LOGGER.log(Level.SEVERE,
+                  "Operation for unknown area/version/service received ({0}, {1}, {2})",
+                  new Object[]{
+                    header.getServiceArea(), header.getAreaVersion(), header.getService()
+                  });
+            }
+          } else {
+            GENTransport.LOGGER.log(Level.SEVERE,
+                "Operation for unknown area/version received ({0}, {1})", new Object[]{
+                  header.getServiceArea(), header.getAreaVersion()
                 });
-              }
-            }
-            else
-            {
-              GENTransport.LOGGER.log(Level.SEVERE, "Operation for unknown area/version/service received ({0}, {1}, {2})", new Object[]
-              {
-                header.getServiceArea(), header.getAreaVersion(), header.getService()
-              });
-            }
-          }
-          else
-          {
-            GENTransport.LOGGER.log(Level.SEVERE, "Operation for unknown area/version received ({0}, {1})", new Object[]
-            {
-              header.getServiceArea(), header.getAreaVersion()
-            });
           }
         }
 
-        if (ctx.getHeader().getIsErrorMessage())
-        {
+        if (ctx.getHeader().getIsErrorMessage()) {
           bodyPartCount = 2;
-        }
-        else
-        {
-          bodyPartCount = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms().length;
+        } else {
+          bodyPartCount
+              = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms().length;
         }
         GENTransport.LOGGER.log(Level.FINE, "GEN Message decoding body ... pc ({0})", bodyPartCount);
         messageParts = new Object[bodyPartCount];
 
-        if (bodyPartCount == 1)
-        {
-          Object sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[0];
+        if (bodyPartCount == 1) {
+          Object sf
+              = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[0];
           messageParts[0] = decodeBodyPart(encBodyElements, ctx, sf);
-        }
-        else if (bodyPartCount > 1)
-        {
+        } else if (bodyPartCount > 1) {
           MALElementInputStream benc = encBodyElements;
-          if (wrappedBodyParts)
-          {
+          if (wrappedBodyParts) {
             GENTransport.LOGGER.fine("GEN Message decoding body wrapper");
             final Blob body = (Blob) encBodyElements.readElement(new Blob(), null);
             final ByteArrayInputStream bais = new ByteArrayInputStream(body.getValue());
             benc = encFactory.createInputStream(bais);
           }
 
-          for (int i = 0; i < bodyPartCount; i++)
-          {
+          for (int i = 0; i < bodyPartCount; i++) {
             GENTransport.LOGGER.log(Level.FINE, "GEN Message decoding body part : {0}", i);
             Object sf = null;
 
             ctx.setBodyElementIndex(i);
 
-            if (!ctx.getHeader().getIsErrorMessage())
-            {
-              sf = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[i];
+            if (!ctx.getHeader().getIsErrorMessage()) {
+              sf
+                  = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[i];
             }
 
             messageParts[i] = decodeBodyPart(benc, ctx, sf);
@@ -485,9 +430,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
         }
 
         GENTransport.LOGGER.fine("GEN Message decoded body");
-      }
-      catch (MALException ex)
-      {
+      } catch (MALException ex) {
         GENTransport.LOGGER.log(Level.WARNING, "GEN Message body ERROR on decode : {0}", ex);
         throw ex;
       }
@@ -501,24 +444,26 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
    * @return The decoded chunk.
    * @throws MALException if any error detected.
    */
-  protected Object decodeEncodedElementListBodyPart(final MALEncodedElementList meel) throws MALException
+  protected Object decodeEncodedElementListBodyPart(final MALEncodedElementList meel) throws
+      MALException
   {
     long sf = (Long) meel.getShortForm();
 
-    final MALElementFactory ef = MALContextFactory.getElementFactoryRegistry().lookupElementFactory(sf);
-    if (null == ef)
-    {
+    final MALElementFactory ef = MALContextFactory.getElementFactoryRegistry().lookupElementFactory(
+        sf);
+    if (null == ef) {
       throw new MALException("GEN transport unable to find element factory for short type: " + sf);
     }
 
     // create list of correct type
     long lsf = (-((sf) & 0xFFFFFFL)) & 0xFFFFFFL + (sf & 0xFFFFFFFFFF000000L);
 
-    ElementList rv = (ElementList) MALContextFactory.getElementFactoryRegistry().lookupElementFactory(lsf).createElement();
+    ElementList rv
+        = (ElementList) MALContextFactory.getElementFactoryRegistry().lookupElementFactory(lsf).createElement();
 
-    for (MALEncodedElement ele : meel)
-    {
-      final ByteArrayInputStream lbais = new ByteArrayInputStream(ele.getEncodedElement().getValue());
+    for (MALEncodedElement ele : meel) {
+      final ByteArrayInputStream lbais
+          = new ByteArrayInputStream(ele.getEncodedElement().getValue());
       MALElementInputStream lenc = encFactory.createInputStream(lbais);
 
       rv.add(lenc.readElement(ef.createElement(), ctx));
@@ -531,53 +476,48 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable
    * Decodes a single part of the message body.
    *
    * @param decoder The decoder to use.
-   * @param ctx The encoding context to use.
-   * @param sf The type short form.
+   * @param ctx     The encoding context to use.
+   * @param sf      The type short form.
    * @return The decoded chunk.
    * @throws MALException if any error detected.
    */
-  protected Object decodeBodyPart(final MALElementInputStream decoder, MALEncodingContext ctx, Object sf) throws MALException
+  protected Object decodeBodyPart(final MALElementInputStream decoder, MALEncodingContext ctx,
+      Object sf) throws MALException
   {
     Object rv = null;
 
     MALElementInputStream lenc = decoder;
-    if (wrappedBodyParts)
-    {
+    if (wrappedBodyParts) {
       final Blob ele = (Blob) decoder.readElement(new Blob(), null);
       final ByteArrayInputStream lbais = new ByteArrayInputStream(ele.getValue());
       lenc = encFactory.createInputStream(lbais);
     }
 
     // work out whether it is a MAL element or JAXB element we have received
-    if (!(sf instanceof String))
-    {
+    if (!(sf instanceof String)) {
       Object element = null;
-      if (null != sf)
-      {
+      if (null != sf) {
         Long shortForm = (Long) sf;
-        GENTransport.LOGGER.log(Level.FINER, "GEN Message decoding body part : Type = {0}", shortForm);
+        GENTransport.LOGGER.log(Level.FINER, "GEN Message decoding body part : Type = {0}",
+            shortForm);
         final MALElementFactory ef
-                = MALContextFactory.getElementFactoryRegistry().lookupElementFactory(shortForm);
-        if (null != ef)
-        {
+            = MALContextFactory.getElementFactoryRegistry().lookupElementFactory(shortForm);
+        if (null != ef) {
           element = (Element) ef.createElement();
-        }
-        else
-        {
-          throw new MALException("GEN transport unable to find element factory for short type: " + shortForm);
+        } else {
+          throw new MALException(
+              "GEN transport unable to find element factory for short type: " + shortForm);
         }
       }
 
       rv = lenc.readElement(element, ctx);
-    }
-    else
-    {
+    } else {
       final Union u = (Union) lenc.readElement(new Union(""), null);
-      if (null != u)
-      {
+      if (null != u) {
         final String shortForm = u.getStringValue();
-        GENTransport.LOGGER.log(Level.FINER, "GEN Message decoding XML body part : Type = {0}", shortForm);
-        
+        GENTransport.LOGGER.log(Level.FINER, "GEN Message decoding XML body part : Type = {0}",
+            shortForm);
+
         // Unmarshal the object
         rv = GENMarshaller.unmarshall(shortForm, ctx, lenc);
       }

@@ -31,6 +31,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class GENMessageHeader implements MALMessageHeader, Composite
 {
+
   protected URI URIFrom;
   protected Blob authenticationId;
   protected URI URITo;
@@ -61,43 +62,43 @@ public class GENMessageHeader implements MALMessageHeader, Composite
   /**
    * Constructor.
    *
-   * @param uriFrom URI of the message source
+   * @param uriFrom          URI of the message source
    * @param authenticationId Authentication identifier of the message
-   * @param uriTo URI of the message destination
-   * @param timestamp Timestamp of the message
-   * @param qosLevel QoS level of the message
-   * @param priority Priority of the message
-   * @param domain Domain of the service provider
-   * @param networkZone Network zone of the service provider
-   * @param session Session of the service provider
-   * @param sessionName Session name of the service provider
-   * @param interactionType Interaction type of the operation
+   * @param uriTo            URI of the message destination
+   * @param timestamp        Timestamp of the message
+   * @param qosLevel         QoS level of the message
+   * @param priority         Priority of the message
+   * @param domain           Domain of the service provider
+   * @param networkZone      Network zone of the service provider
+   * @param session          Session of the service provider
+   * @param sessionName      Session name of the service provider
+   * @param interactionType  Interaction type of the operation
    * @param interactionStage Interaction stage of the interaction
-   * @param transactionId Transaction identifier of the interaction, may be null.
-   * @param serviceArea Area number of the service
-   * @param service Service number
-   * @param operation Operation number
-   * @param serviceVersion Service version number
-   * @param isErrorMessage Flag indicating if the message conveys an error
+   * @param transactionId    Transaction identifier of the interaction, may be null.
+   * @param serviceArea      Area number of the service
+   * @param service          Service number
+   * @param operation        Operation number
+   * @param serviceVersion   Service version number
+   * @param isErrorMessage   Flag indicating if the message conveys an error
    */
   public GENMessageHeader(final URI uriFrom,
-          final Blob authenticationId,
-          final URI uriTo,
-          final Time timestamp,
-          final QoSLevel qosLevel,
-          final UInteger priority,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType session,
-          final Identifier sessionName,
-          final InteractionType interactionType,
-          final UOctet interactionStage,
-          final Long transactionId,
-          final UShort serviceArea,
-          final UShort service,
-          final UShort operation,
-          final UOctet serviceVersion,
-          final Boolean isErrorMessage)
+      final Blob authenticationId,
+      final URI uriTo,
+      final Time timestamp,
+      final QoSLevel qosLevel,
+      final UInteger priority,
+      final IdentifierList domain,
+      final Identifier networkZone,
+      final SessionType session,
+      final Identifier sessionName,
+      final InteractionType interactionType,
+      final UOctet interactionStage,
+      final Long transactionId,
+      final UShort serviceArea,
+      final UShort service,
+      final UShort operation,
+      final UOctet serviceVersion,
+      final Boolean isErrorMessage)
   {
     this.URIFrom = uriFrom;
     this.authenticationId = authenticationId;

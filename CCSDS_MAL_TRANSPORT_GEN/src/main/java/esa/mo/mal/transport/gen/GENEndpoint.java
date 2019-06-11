@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mal.transport.*;
  */
 public class GENEndpoint implements MALEndpoint
 {
+
   protected final GENTransport transport;
   protected final String localName;
   protected final String routingName;
@@ -48,13 +49,14 @@ public class GENEndpoint implements MALEndpoint
   /**
    * Constructor.
    *
-   * @param transport Parent transport.
-   * @param localName Endpoint local MAL name.
-   * @param routingName Endpoint local routing name.
-   * @param uri The URI string for this end point.
+   * @param transport     Parent transport.
+   * @param localName     Endpoint local MAL name.
+   * @param routingName   Endpoint local routing name.
+   * @param uri           The URI string for this end point.
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
    */
-  public GENEndpoint(final GENTransport transport, final String localName, final String routingName, final String uri, final boolean wrapBodyParts)
+  public GENEndpoint(final GENTransport transport, final String localName, final String routingName,
+      final String uri, final boolean wrapBodyParts)
   {
     this.transport = transport;
     this.localName = localName;
@@ -101,196 +103,184 @@ public class GENEndpoint implements MALEndpoint
 
   @Override
   public MALMessage createMessage(final Blob authenticationId,
-          final URI uriTo,
-          final Time timestamp,
-          final QoSLevel qosLevel,
-          final UInteger priority,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType session,
-          final Identifier sessionName,
-          final InteractionType interactionType,
-          final UOctet interactionStage,
-          final Long transactionId,
-          final UShort serviceArea,
-          final UShort service,
-          final UShort operation,
-          final UOctet serviceVersion,
-          final Boolean isErrorMessage,
-          final Map qosProperties,
-          final Object... body) throws IllegalArgumentException, MALException
+      final URI uriTo,
+      final Time timestamp,
+      final QoSLevel qosLevel,
+      final UInteger priority,
+      final IdentifierList domain,
+      final Identifier networkZone,
+      final SessionType session,
+      final Identifier sessionName,
+      final InteractionType interactionType,
+      final UOctet interactionStage,
+      final Long transactionId,
+      final UShort serviceArea,
+      final UShort service,
+      final UShort operation,
+      final UOctet serviceVersion,
+      final Boolean isErrorMessage,
+      final Map qosProperties,
+      final Object... body) throws IllegalArgumentException, MALException
   {
-    try
-    {
+    try {
       return new GENMessage(wrapBodyParts, createMessageHeader(getURI(),
-              authenticationId,
-              uriTo,
-              timestamp,
-              qosLevel,
-              priority,
-              domain,
-              networkZone,
-              session,
-              sessionName,
-              interactionType,
-              interactionStage,
-              transactionId,
-              serviceArea,
-              service,
-              operation,
-              serviceVersion,
-              isErrorMessage,
-              qosProperties),
-              qosProperties, null, transport.getStreamFactory(), body);
-    }
-    catch (MALInteractionException ex)
-    {
+          authenticationId,
+          uriTo,
+          timestamp,
+          qosLevel,
+          priority,
+          domain,
+          networkZone,
+          session,
+          sessionName,
+          interactionType,
+          interactionStage,
+          transactionId,
+          serviceArea,
+          service,
+          operation,
+          serviceVersion,
+          isErrorMessage,
+          qosProperties),
+          qosProperties, null, transport.getStreamFactory(), body);
+    } catch (MALInteractionException ex) {
       throw new MALException("Error creating message", ex);
     }
   }
 
   @Override
   public MALMessage createMessage(final Blob authenticationId,
-          final URI uriTo,
-          final Time timestamp,
-          final QoSLevel qosLevel,
-          final UInteger priority,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType session,
-          final Identifier sessionName,
-          final InteractionType interactionType,
-          final UOctet interactionStage,
-          final Long transactionId,
-          final UShort serviceArea,
-          final UShort service,
-          final UShort operation,
-          final UOctet serviceVersion,
-          final Boolean isErrorMessage,
-          final Map qosProperties,
-          final MALEncodedBody body) throws IllegalArgumentException, MALException
+      final URI uriTo,
+      final Time timestamp,
+      final QoSLevel qosLevel,
+      final UInteger priority,
+      final IdentifierList domain,
+      final Identifier networkZone,
+      final SessionType session,
+      final Identifier sessionName,
+      final InteractionType interactionType,
+      final UOctet interactionStage,
+      final Long transactionId,
+      final UShort serviceArea,
+      final UShort service,
+      final UShort operation,
+      final UOctet serviceVersion,
+      final Boolean isErrorMessage,
+      final Map qosProperties,
+      final MALEncodedBody body) throws IllegalArgumentException, MALException
   {
-    try
-    {
+    try {
       return new GENMessage(wrapBodyParts, createMessageHeader(getURI(),
-              authenticationId,
-              uriTo,
-              timestamp,
-              qosLevel,
-              priority,
-              domain,
-              networkZone,
-              session,
-              sessionName,
-              interactionType,
-              interactionStage,
-              transactionId,
-              serviceArea,
-              service,
-              operation,
-              serviceVersion,
-              isErrorMessage,
-              qosProperties),
-              qosProperties, null, transport.getStreamFactory(), body);
-    }
-    catch (MALInteractionException ex)
-    {
+          authenticationId,
+          uriTo,
+          timestamp,
+          qosLevel,
+          priority,
+          domain,
+          networkZone,
+          session,
+          sessionName,
+          interactionType,
+          interactionStage,
+          transactionId,
+          serviceArea,
+          service,
+          operation,
+          serviceVersion,
+          isErrorMessage,
+          qosProperties),
+          qosProperties, null, transport.getStreamFactory(), body);
+    } catch (MALInteractionException ex) {
       throw new MALException("Error creating message", ex);
     }
   }
 
   @Override
   public MALMessage createMessage(final Blob authenticationId,
-          final URI uriTo,
-          final Time timestamp,
-          final QoSLevel qosLevel,
-          final UInteger priority,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType session,
-          final Identifier sessionName,
-          final Long transactionId,
-          final Boolean isErrorMessage,
-          final MALOperation op,
-          final UOctet interactionStage,
-          final Map qosProperties,
-          final MALEncodedBody body) throws IllegalArgumentException, MALException
+      final URI uriTo,
+      final Time timestamp,
+      final QoSLevel qosLevel,
+      final UInteger priority,
+      final IdentifierList domain,
+      final Identifier networkZone,
+      final SessionType session,
+      final Identifier sessionName,
+      final Long transactionId,
+      final Boolean isErrorMessage,
+      final MALOperation op,
+      final UOctet interactionStage,
+      final Map qosProperties,
+      final MALEncodedBody body) throws IllegalArgumentException, MALException
   {
-    try
-    {
+    try {
       return new GENMessage(wrapBodyParts, createMessageHeader(getURI(),
-              authenticationId,
-              uriTo,
-              timestamp,
-              qosLevel,
-              priority,
-              domain,
-              networkZone,
-              session,
-              sessionName,
-              op.getInteractionType(),
-              interactionStage,
-              transactionId,
-              op.getService().getArea().getNumber(),
-              op.getService().getNumber(),
-              op.getNumber(),
-              op.getService().getArea().getVersion(),
-              isErrorMessage,
-              qosProperties),
-              qosProperties,
-              op,
-              transport.getStreamFactory(), body);
-    }
-    catch (MALInteractionException ex)
-    {
+          authenticationId,
+          uriTo,
+          timestamp,
+          qosLevel,
+          priority,
+          domain,
+          networkZone,
+          session,
+          sessionName,
+          op.getInteractionType(),
+          interactionStage,
+          transactionId,
+          op.getService().getArea().getNumber(),
+          op.getService().getNumber(),
+          op.getNumber(),
+          op.getService().getArea().getVersion(),
+          isErrorMessage,
+          qosProperties),
+          qosProperties,
+          op,
+          transport.getStreamFactory(), body);
+    } catch (MALInteractionException ex) {
       throw new MALException("Error creating message", ex);
     }
   }
 
   @Override
   public MALMessage createMessage(final Blob authenticationId,
-          final URI uriTo,
-          final Time timestamp,
-          final QoSLevel qosLevel,
-          final UInteger priority,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType session,
-          final Identifier sessionName,
-          final Long transactionId,
-          final Boolean isErrorMessage,
-          final MALOperation op,
-          final UOctet interactionStage,
-          final Map qosProperties,
-          final Object... body) throws IllegalArgumentException, MALException
+      final URI uriTo,
+      final Time timestamp,
+      final QoSLevel qosLevel,
+      final UInteger priority,
+      final IdentifierList domain,
+      final Identifier networkZone,
+      final SessionType session,
+      final Identifier sessionName,
+      final Long transactionId,
+      final Boolean isErrorMessage,
+      final MALOperation op,
+      final UOctet interactionStage,
+      final Map qosProperties,
+      final Object... body) throws IllegalArgumentException, MALException
   {
-    try
-    {
+    try {
       return new GENMessage(wrapBodyParts, createMessageHeader(getURI(),
-              authenticationId,
-              uriTo,
-              timestamp,
-              qosLevel,
-              priority,
-              domain,
-              networkZone,
-              session,
-              sessionName,
-              op.getInteractionType(),
-              interactionStage,
-              transactionId,
-              op.getService().getArea().getNumber(),
-              op.getService().getNumber(),
-              op.getNumber(),
-              op.getService().getArea().getVersion(),
-              isErrorMessage,
-              qosProperties),
-              qosProperties,
-              op,
-              transport.getStreamFactory(), body);
-    }
-    catch (MALInteractionException ex)
-    {
+          authenticationId,
+          uriTo,
+          timestamp,
+          qosLevel,
+          priority,
+          domain,
+          networkZone,
+          session,
+          sessionName,
+          op.getInteractionType(),
+          interactionStage,
+          transactionId,
+          op.getService().getArea().getNumber(),
+          op.getService().getNumber(),
+          op.getNumber(),
+          op.getService().getArea().getVersion(),
+          isErrorMessage,
+          qosProperties),
+          qosProperties,
+          op,
+          transport.getStreamFactory(), body);
+    } catch (MALInteractionException ex) {
       throw new MALException("Error creating message", ex);
     }
   }
@@ -306,32 +296,25 @@ public class GENEndpoint implements MALEndpoint
   {
     final List<MALTransmitErrorException> v = new LinkedList<MALTransmitErrorException>();
 
-    try
-    {
+    try {
       final Object multiSendHandle = internalCreateMultiSendHandle(msgList);
 
-      for (int idx = 0; idx < msgList.length; idx++)
-      {
-        try
-        {
-          internalSendMessage(multiSendHandle, idx == (msgList.length - 1), (GENMessage) msgList[idx]);
-        }
-        catch (MALTransmitErrorException ex)
-        {
+      for (int idx = 0; idx < msgList.length; idx++) {
+        try {
+          internalSendMessage(multiSendHandle, idx == (msgList.length - 1),
+              (GENMessage) msgList[idx]);
+        } catch (MALTransmitErrorException ex) {
           v.add(ex);
         }
       }
 
       internalCloseMultiSendHandle(multiSendHandle, msgList);
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       v.add(new MALTransmitErrorException(null,
-              new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, new Union(ex.getMessage())), null));
+          new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, new Union(ex.getMessage())), null));
     }
 
-    if (!v.isEmpty())
-    {
+    if (!v.isEmpty()) {
       throw new MALTransmitMultipleErrorException(v.toArray(new MALTransmitErrorException[v.size()]));
     }
   }
@@ -360,18 +343,14 @@ public class GENEndpoint implements MALEndpoint
    */
   public void receiveMessage(final MALMessage pmsg) throws MALException
   {
-    if (active && (null != messageListener))
-    {
+    if (active && (null != messageListener)) {
       messageListener.onMessage(this, pmsg);
-    }
-    else
-    {
+    } else {
       GENTransport.LOGGER.log(Level.WARNING,
-              "GENEndpoint ({0}) Discarding message active({1}) listener({2}) {3}",
-              new Object[]
-              {
-                localName, active, messageListener, pmsg.toString()
-              });
+          "GENEndpoint ({0}) Discarding message active({1}) listener({2}) {3}",
+          new Object[]{
+            localName, active, messageListener, pmsg.toString()
+          });
     }
   }
 
@@ -383,18 +362,14 @@ public class GENEndpoint implements MALEndpoint
    */
   public void receiveMessages(final GENMessage[] pmsgs) throws MALException
   {
-    if (active && (null != messageListener))
-    {
+    if (active && (null != messageListener)) {
       messageListener.onMessages(this, pmsgs);
-    }
-    else
-    {
+    } else {
       GENTransport.LOGGER.log(Level.WARNING,
-              "GENEndpoint ({0}) Discarding messages active({1}) listener({2})",
-              new Object[]
-              {
-                localName, active, messageListener
-              });
+          "GENEndpoint ({0}) Discarding messages active({1}) listener({2})",
+          new Object[]{
+            localName, active, messageListener
+          });
     }
   }
 
@@ -408,13 +383,13 @@ public class GENEndpoint implements MALEndpoint
    * Used to send a message from this end point.
    *
    * @param multiSendHandle Multi send context handle object that is passed to the transport.
-   * @param lastForHandle Is this the last message in a multi message send?
-   * @param msg the message to send.
+   * @param lastForHandle   Is this the last message in a multi message send?
+   * @param msg             the message to send.
    * @throws MALTransmitErrorException On a transmit error.
    */
   protected void internalSendMessage(final Object multiSendHandle,
-          final boolean lastForHandle,
-          final GENMessage msg) throws MALTransmitErrorException
+      final boolean lastForHandle,
+      final GENMessage msg) throws MALTransmitErrorException
   {
     transport.sendMessage(multiSendHandle, lastForHandle, msg);
   }
@@ -436,75 +411,77 @@ public class GENEndpoint implements MALEndpoint
    * Closes a multi send context handle.
    *
    * @param multiSendHandle The multi send context handle.
-   * @param msgList The sent message list.
+   * @param msgList         The sent message list.
    * @throws Exception On error.
    */
-  protected void internalCloseMultiSendHandle(final Object multiSendHandle, final MALMessage[] msgList) throws Exception
+  protected void internalCloseMultiSendHandle(final Object multiSendHandle,
+      final MALMessage[] msgList) throws Exception
   {
     // implemented in derived transport if it uses multi-send handles. 
   }
 
   /**
-   * Internal method for creating the correct message header type. Expected to be overridden in derived classes.
+   * Internal method for creating the correct message header type. Expected to be overridden in
+   * derived classes.
    *
-   * @param uriFrom URI of the message source
+   * @param uriFrom          URI of the message source
    * @param authenticationId Authentication identifier of the message
-   * @param uriTo URI of the message destination
-   * @param timestamp Timestamp of the message
-   * @param qosLevel QoS level of the message
-   * @param priority Priority of the message
-   * @param domain Domain of the service provider
-   * @param networkZone Network zone of the service provider
-   * @param session Session of the service provider
-   * @param sessionName Session name of the service provider
-   * @param interactionType Interaction type of the operation
+   * @param uriTo            URI of the message destination
+   * @param timestamp        Timestamp of the message
+   * @param qosLevel         QoS level of the message
+   * @param priority         Priority of the message
+   * @param domain           Domain of the service provider
+   * @param networkZone      Network zone of the service provider
+   * @param session          Session of the service provider
+   * @param sessionName      Session name of the service provider
+   * @param interactionType  Interaction type of the operation
    * @param interactionStage Interaction stage of the interaction
-   * @param transactionId Transaction identifier of the interaction, may be null.
-   * @param serviceArea Area number of the service
-   * @param service Service number
-   * @param operation Operation number
-   * @param serviceVersion Service version number
-   * @param isErrorMessage Flag indicating if the message conveys an error
-   * @param qosProperties QoS properties of the message, may be null.
+   * @param transactionId    Transaction identifier of the interaction, may be null.
+   * @param serviceArea      Area number of the service
+   * @param service          Service number
+   * @param operation        Operation number
+   * @param serviceVersion   Service version number
+   * @param isErrorMessage   Flag indicating if the message conveys an error
+   * @param qosProperties    QoS properties of the message, may be null.
    * @return the new message header.
    */
   public GENMessageHeader createMessageHeader(final URI uriFrom,
-          final Blob authenticationId,
-          final URI uriTo,
-          final Time timestamp,
-          final QoSLevel qosLevel,
-          final UInteger priority,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType session,
-          final Identifier sessionName,
-          final InteractionType interactionType,
-          final UOctet interactionStage,
-          final Long transactionId,
-          final UShort serviceArea,
-          final UShort service,
-          final UShort operation,
-          final UOctet serviceVersion,
-          final Boolean isErrorMessage,
-          final Map qosProperties)
+      final Blob authenticationId,
+      final URI uriTo,
+      final Time timestamp,
+      final QoSLevel qosLevel,
+      final UInteger priority,
+      final IdentifierList domain,
+      final Identifier networkZone,
+      final SessionType session,
+      final Identifier sessionName,
+      final InteractionType interactionType,
+      final UOctet interactionStage,
+      final Long transactionId,
+      final UShort serviceArea,
+      final UShort service,
+      final UShort operation,
+      final UOctet serviceVersion,
+      final Boolean isErrorMessage,
+      final Map qosProperties)
   {
     return new GENMessageHeader(uriFrom,
-            authenticationId,
-            uriTo,
-            timestamp,
-            qosLevel,
-            priority,
-            domain,
-            networkZone,
-            session,
-            sessionName,
-            interactionType,
-            interactionStage,
-            transactionId,
-            serviceArea,
-            service,
-            operation,
-            serviceVersion,
-            isErrorMessage);
+        authenticationId,
+        uriTo,
+        timestamp,
+        qosLevel,
+        priority,
+        domain,
+        networkZone,
+        session,
+        sessionName,
+        interactionType,
+        interactionStage,
+        transactionId,
+        serviceArea,
+        service,
+        operation,
+        serviceVersion,
+        isErrorMessage);
   }
 }

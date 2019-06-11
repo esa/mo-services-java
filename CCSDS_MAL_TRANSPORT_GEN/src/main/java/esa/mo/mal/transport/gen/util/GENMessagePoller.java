@@ -30,9 +30,9 @@ import java.util.logging.Level;
 import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 
 /**
- * This utility class creates a thread to pull encoded messages from a transceiver. It receives messages from it and
- * then forwards the incoming message to an asynchronous processor in order to return immediately and not hold the
- * calling thread while the message is processed.
+ * This utility class creates a thread to pull encoded messages from a transceiver. It receives
+ * messages from it and then forwards the incoming message to an asynchronous processor in order to
+ * return immediately and not hold the calling thread while the message is processed.
  *
  * In case of a communication problem it informs the transport and/or closes the resource
  *
@@ -43,6 +43,7 @@ import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
  */
 public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandler
 {
+
   /**
    * Reference to the transport
    */
@@ -56,38 +57,42 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
    */
   protected final MessageAdapter<I, O> messageReceiver;
   /**
-   * the remote URI (client) this connection is associated to. This is volatile as it is potentially set by a different
-   * thread after its creation
+   * the remote URI (client) this connection is associated to. This is volatile as it is potentially
+   * set by a different thread after its creation
    */
   private volatile String remoteURI = null;
 
   /**
    * Constructor.
    *
-   * @param transport Message transport being used.
-   * @param messageSender The message sending interface associated to this connection.
-   * @param messageReceiver The message reception interface, used for pulling messaging into this transport.
-   * @param decoderFactory The decoder factory to create message decoders from.
+   * @param transport       Message transport being used.
+   * @param messageSender   The message sending interface associated to this connection.
+   * @param messageReceiver The message reception interface, used for pulling messaging into this
+   *                        transport.
+   * @param decoderFactory  The decoder factory to create message decoders from.
    */
   public GENMessagePoller(GENTransport<I, O> transport,
-          GENMessageSender messageSender,
-          GENMessageReceiver<I> messageReceiver,
-          GENIncomingMessageDecoderFactory<I, O> decoderFactory)
+      GENMessageSender messageSender,
+      GENMessageReceiver<I> messageReceiver,
+      GENIncomingMessageDecoderFactory<I, O> decoderFactory)
   {
     this.transport = transport;
     this.messageSender = messageSender;
-    this.messageReceiver = new MessageAdapter<I, O>(transport, this, messageReceiver, decoderFactory);
+    this.messageReceiver
+        = new MessageAdapter<I, O>(transport, this, messageReceiver, decoderFactory);
     setName(getClass().getName());
   }
 
   /**
    * Constructor.
    *
-   * @param transport Message transport being used.
-   * @param messageSender The message sending interface associated to this connection.
-   * @param messageReceiver The message reception interface, used for pulling messaging into this transport.
+   * @param transport       Message transport being used.
+   * @param messageSender   The message sending interface associated to this connection.
+   * @param messageReceiver The message reception interface, used for pulling messaging into this
+   *                        transport.
    */
-  protected GENMessagePoller(GENTransport<I, O> transport, GENMessageSender messageSender, MessageAdapter messageReceiver)
+  protected GENMessagePoller(GENTransport<I, O> transport, GENMessageSender messageSender,
+      MessageAdapter messageReceiver)
   {
     this.transport = transport;
     this.messageSender = messageSender;
@@ -101,14 +106,10 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
     boolean bContinue = true;
 
     // handles message reads from this client
-    while (bContinue && !interrupted())
-    {
-      try
-      {
+    while (bContinue && !interrupted()) {
+      try {
         messageReceiver.receiveMessage();
-      }
-      catch (InterruptedException ex)
-      {
+      } catch (InterruptedException ex) {
         LOGGER.log(Level.INFO, "Client closing connection: {0}", remoteURI);
 
         transport.closeConnection(remoteURI, this);
@@ -116,9 +117,7 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
 
         //and terminate
         bContinue = false;
-      }
-      catch (EOFException ex)
-      {
+      } catch (EOFException ex) {
         LOGGER.log(Level.INFO, "Client closing connection: {0}", remoteURI);
 
         transport.closeConnection(remoteURI, this);
@@ -126,9 +125,7 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
 
         //and terminate
         bContinue = false;
-      }
-      catch (IOException e)
-      {
+      } catch (IOException e) {
         LOGGER.log(Level.WARNING, "Cannot read message from client", e);
 
         transport.communicationError(remoteURI, this);
@@ -167,16 +164,19 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
   }
 
   /**
-   * Simple interface for reading encoded messages from a low level transport. Used by the message poller class.
+   * Simple interface for reading encoded messages from a low level transport. Used by the message
+   * poller class.
    *
    * @param <T> The type of the encoded messages.
    */
   public static interface GENMessageReceiver<T>
   {
+
     /**
      * Reads an encoded MALMessage.
      *
-     * @return the object containing the encoded MAL Message, may be null if nothing to read at this time
+     * @return the object containing the encoded MAL Message, may be null if nothing to read at this
+     * time
      * @throws IOException in case the encoded message cannot be read
      * @throws InterruptedException in case IO read is interrupted
      */
@@ -189,12 +189,14 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
   }
 
   /**
-   * Internal class for adapting from the message receivers to the relevant receive operation on the transport.
+   * Internal class for adapting from the message receivers to the relevant receive operation on the
+   * transport.
    *
    * @param <I> The type of the encoded messages.
    */
   protected static class MessageAdapter<I, O>
   {
+
     private final GENTransport transport;
     private final GENReceptionHandler handler;
     private final GENMessageReceiver<I> receiver;
@@ -203,15 +205,15 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
     /**
      * Constructor.
      *
-     * @param transport Transport to pass messages to.
-     * @param handler The reception handler.
-     * @param receiver The receiver to pull messages from.
+     * @param transport      Transport to pass messages to.
+     * @param handler        The reception handler.
+     * @param receiver       The receiver to pull messages from.
      * @param decoderFactory The decoder factory to create message decoders from.
      */
     public MessageAdapter(GENTransport transport,
-            GENReceptionHandler handler,
-            GENMessageReceiver<I> receiver,
-            GENIncomingMessageDecoderFactory<I, O> decoderFactory)
+        GENReceptionHandler handler,
+        GENMessageReceiver<I> receiver,
+        GENIncomingMessageDecoderFactory<I, O> decoderFactory)
     {
       this.transport = transport;
       this.handler = handler;
@@ -229,8 +231,7 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
     {
       I msg = receiver.readEncodedMessage();
 
-      if (null != msg)
-      {
+      if (null != msg) {
         transport.receive(handler, decoderFactory.createDecoder(transport, handler, msg));
       }
     }

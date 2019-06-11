@@ -21,11 +21,12 @@
 package esa.mo.mal.transport.spp;
 
 /**
- * Small interface that is used to get the next source sequence counter for a SPP source. It usually makes sense to have
- * one of these per endpoint.
+ * Small interface that is used to get the next source sequence counter for a SPP source. It usually
+ * makes sense to have one of these per endpoint.
  */
 public interface SPPSourceSequenceCounter
 {
+
   /**
    * Returns the next value in the sequence count.
    *

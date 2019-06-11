@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public class JMSUpdate
 {
+
   private final IdentifierList domain;
   private final Identifier network;
   private final UShort serviceArea;
@@ -36,7 +37,8 @@ public class JMSUpdate
   private final UShort operation;
   private final byte[] dat;
 
-  public JMSUpdate(IdentifierList domain, Identifier network, UShort serviceArea, UShort service, UShort operation, byte[] dat)
+  public JMSUpdate(IdentifierList domain, Identifier network, UShort serviceArea, UShort service,
+      UShort operation, byte[] dat)
   {
     this.domain = domain;
     this.network = network;

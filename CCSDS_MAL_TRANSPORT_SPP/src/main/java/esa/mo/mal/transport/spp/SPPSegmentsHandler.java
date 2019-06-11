@@ -30,88 +30,83 @@ import org.ccsds.moims.mo.mal.MALException;
  *
  * @author Cesar Coelho
  */
-public class SPPSegmentsHandler {
+public class SPPSegmentsHandler
+{
 
-    private final HashMap<Long, SPPSegmentsAssembler> segmentsAssemblerMap = new HashMap<Long, SPPSegmentsAssembler>(); // use TreeMap so that key is kept sorted
-    private final int apidQualifier;
-    private final int apid;
-    private final SPPBaseTransport transport;
+  private final HashMap<Long, SPPSegmentsAssembler> segmentsAssemblerMap
+      = new HashMap<Long, SPPSegmentsAssembler>(); // use TreeMap so that key is kept sorted
+  private final int apidQualifier;
+  private final int apid;
+  private final SPPBaseTransport transport;
 
-    SPPSegmentsHandler(SPPBaseTransport transport, int apidQualifier, int apid) 
-    {
-        this.transport = transport;
-        this.apid = apid;
-        this.apidQualifier = apidQualifier;
+  SPPSegmentsHandler(SPPBaseTransport transport, int apidQualifier, int apid)
+  {
+    this.transport = transport;
+    this.apid = apid;
+    this.apidQualifier = apidQualifier;
+  }
+
+  public void addSegment(int segmentFlags, byte[] packet)
+  {
+    long localSSC = java.nio.ByteBuffer.wrap(packet).getShort(2) & 0x3FFF; // Mask to remove the sequence Flags
+
+    int extra = (packet[26] & 0x80) != 0 ? 1 : 0; // Flags
+    extra += (packet[26] & 0x40) != 0 ? 1 : 0; // Flags
+    long segmentIndex = java.nio.ByteBuffer.wrap(packet).getInt(27 + extra);
+    LOGGER.log(Level.FINE, "Segment index: " + segmentIndex + " - Local SSC: " + localSSC);
+
+    long segAssemblerIndex = localSSC - segmentIndex;
+
+    if (segAssemblerIndex < 0) {  // Cope with transition zone
+      segAssemblerIndex += 16384;
     }
 
-    public void addSegment(int segmentFlags, byte[] packet) 
-    {
-        long localSSC = java.nio.ByteBuffer.wrap(packet).getShort(2) & 0x3FFF; // Mask to remove the sequence Flags
-        
-        int extra = (packet[26] & 0x80) != 0 ? 1 : 0; // Flags
-        extra += (packet[26] & 0x40) != 0 ? 1 : 0; // Flags
-        long segmentIndex = java.nio.ByteBuffer.wrap(packet).getInt(27 + extra);
-        LOGGER.log(Level.FINE, "Segment index: " + segmentIndex + " - Local SSC: " + localSSC);
+    SPPSegmentsAssembler assembler;
 
-        long segAssemblerIndex = localSSC - segmentIndex;
+    synchronized (segmentsAssemblerMap) {
+      assembler = segmentsAssemblerMap.get(segAssemblerIndex);
 
-        if (segAssemblerIndex < 0) 
-        {  // Cope with transition zone
-            segAssemblerIndex += 16384;
+      if (assembler == null) {
+        assembler = new SPPSegmentsAssembler(segAssemblerIndex);
+        segmentsAssemblerMap.put(segAssemblerIndex, assembler);
+      }
+    }
+
+    SPPSegment segment = new SPPSegment(segmentIndex, segmentFlags, localSSC, packet);
+    assembler.addSegment(segmentIndex, segment);
+  }
+
+  /**
+   * Checks if any of the assemblers contains all the segments of its message and returns the
+   * assembled message. If none is ready, a null will be returned. If the header of a segment is
+   * damaged, the exception will be logged and the assembler will be removed from this handler.
+   *
+   * @return The assembled message or null if none available.
+   */
+  public byte[] getNextMessage()
+  {
+    synchronized (segmentsAssemblerMap) {
+      for (SPPSegmentsAssembler assembler : segmentsAssemblerMap.values()) {
+        if (assembler.isReady()) {
+          byte[] out = null;
+          try {
+            out = assembler.getCompleteMessage(transport, apid, apidQualifier);
+          } catch (MALException ex) {
+            Logger.getLogger(SPPBaseTransport.class.getName()).log(Level.SEVERE,
+                "The message could not be assembled. One of the segments header could not be decoded. "
+                + "The whole message will be discarded.", ex);
+          }
+          segmentsAssemblerMap.remove(assembler.getSequenceIndex());
+          return out;
         }
-
-        SPPSegmentsAssembler assembler;
-
-        synchronized (segmentsAssemblerMap) 
-        {
-            assembler = segmentsAssemblerMap.get(segAssemblerIndex);
-
-            if (assembler == null) 
-            {
-                assembler = new SPPSegmentsAssembler(segAssemblerIndex);
-                segmentsAssemblerMap.put(segAssemblerIndex, assembler);
-            }
-        }
-
-        SPPSegment segment = new SPPSegment(segmentIndex, segmentFlags, localSSC, packet);
-        assembler.addSegment(segmentIndex, segment);
+      }
     }
 
-    /**
-     * Checks if any of the assemblers contains all the segments of its message
-     * and returns the assembled message. If none is ready, a null will be 
-     * returned.
-     * If the header of a segment is damaged, the exception will be logged and
-     * the assembler will be removed from this handler.
-     * 
-     * @return The assembled message or null if none available.
-     */
-    public byte[] getNextMessage()
-    {
-        synchronized (segmentsAssemblerMap) 
-        {
-            for (SPPSegmentsAssembler assembler : segmentsAssemblerMap.values()) 
-            {
-                if (assembler.isReady()) 
-                {
-                    byte[] out = null;
-                    try {
-                        out = assembler.getCompleteMessage(transport, apid, apidQualifier);
-                    } catch (MALException ex) {
-                        Logger.getLogger(SPPBaseTransport.class.getName()).log(Level.SEVERE, 
-                        "The message could not be assembled. One of the segments header could not be decoded. "
-                                + "The whole message will be discarded.", ex);
-                    }
-                    segmentsAssemblerMap.remove(assembler.getSequenceIndex());
-                    return out;
-                }
-            }
-        }
+    return null;  // No messages found!
+  }
 
-        return null;  // No messages found!
-    }
-
-    public boolean isEmpty() {
-        return segmentsAssemblerMap.isEmpty();
-    }
+  public boolean isEmpty()
+  {
+    return segmentsAssemblerMap.isEmpty();
+  }
 }

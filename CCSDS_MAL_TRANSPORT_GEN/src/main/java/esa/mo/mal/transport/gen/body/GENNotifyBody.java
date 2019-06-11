@@ -33,17 +33,19 @@ import org.ccsds.moims.mo.mal.transport.MALNotifyBody;
  */
 public class GENNotifyBody extends GENPublishBody implements MALNotifyBody
 {
+
   private static final long serialVersionUID = 222222222222226L;
+
   /**
    * Constructor.
    *
-   * @param ctx The encoding context to use.
-   * @param encFactory The encoder stream factory to use.
+   * @param ctx          The encoding context to use.
+   * @param encFactory   The encoder stream factory to use.
    * @param messageParts The message parts that compose the body.
    */
   public GENNotifyBody(final MALEncodingContext ctx,
-          final MALElementStreamFactory encFactory, 
-          final Object[] messageParts)
+      final MALElementStreamFactory encFactory,
+      final Object[] messageParts)
   {
     super(ctx, encFactory, messageParts, 1);
   }
@@ -51,16 +53,16 @@ public class GENNotifyBody extends GENPublishBody implements MALNotifyBody
   /**
    * Constructor.
    *
-   * @param ctx The encoding context to use.
+   * @param ctx              The encoding context to use.
    * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
-   * @param encFactory The encoder stream factory to use.
-   * @param encBodyElements The input stream that holds the encoded body parts.
+   * @param encFactory       The encoder stream factory to use.
+   * @param encBodyElements  The input stream that holds the encoded body parts.
    */
-  public GENNotifyBody(final MALEncodingContext ctx, 
-          final boolean wrappedBodyParts,
-          final MALElementStreamFactory encFactory,
-          final ByteArrayInputStream encBodyBytes,
-          final MALElementInputStream encBodyElements)
+  public GENNotifyBody(final MALEncodingContext ctx,
+      final boolean wrappedBodyParts,
+      final MALElementStreamFactory encFactory,
+      final ByteArrayInputStream encBodyBytes,
+      final MALElementInputStream encBodyElements)
   {
     super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements, 1);
   }

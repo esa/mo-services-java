@@ -25,6 +25,7 @@ package esa.mo.mal.encoder.binary.base;
  */
 public abstract class BaseBinaryElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream
 {
+
   /**
    * Sub class constructor.
    *

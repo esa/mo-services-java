@@ -27,6 +27,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
  */
 public class SPPURIRepresentationSimple implements SPPURIRepresentation
 {
+
   public SPPURIRepresentationSimple()
   {
   }
@@ -39,8 +40,7 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation
     int i = val.indexOf('/') + 1;
     int j = val.indexOf('/', i);
 
-    if (-1 == j)
-    {
+    if (-1 == j) {
       j = val.length();
     }
     return Short.valueOf(val.substring(i, j));
@@ -64,8 +64,7 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation
     int i = val.indexOf(':') + 1;
     int j = val.indexOf('/', i);
 
-    if (-1 == j)
-    {
+    if (-1 == j) {
       j = val.length();
     }
     return Integer.valueOf(val.substring(i, j));
@@ -95,16 +94,14 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation
   public URI getURI(Integer apidQualifier, short apid, Short subId)
   {
     StringBuilder buf = new StringBuilder("malspp:");
-    if (null != apidQualifier)
-    {
+    if (null != apidQualifier) {
       buf.append(apidQualifier);
     }
 
     buf.append('/');
     buf.append(apid);
 
-    if (null != subId)
-    {
+    if (null != subId) {
       buf.append('/');
       buf.append(subId);
     }

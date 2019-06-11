@@ -42,6 +42,7 @@ import org.ccsds.moims.mo.mal.structures.Union;
  */
 public abstract class GENDecoder implements MALDecoder
 {
+
   protected final BufferHolder sourceBuffer;
 
   protected GENDecoder(BufferHolder sourceBuffer)
@@ -160,8 +161,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public String decodeNullableString() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return sourceBuffer.getString();
     }
 
@@ -171,8 +171,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Identifier decodeNullableIdentifier() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeIdentifier();
     }
 
@@ -182,8 +181,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public URI decodeNullableURI() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeURI();
     }
 
@@ -193,8 +191,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Blob decodeNullableBlob() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeBlob();
     }
 
@@ -204,8 +201,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Boolean decodeNullableBoolean() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeBoolean();
     }
 
@@ -215,8 +211,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Time decodeNullableTime() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeTime();
     }
 
@@ -226,8 +221,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public FineTime decodeNullableFineTime() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeFineTime();
     }
 
@@ -237,8 +231,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Duration decodeNullableDuration() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeDuration();
     }
 
@@ -248,8 +241,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Float decodeNullableFloat() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeFloat();
     }
 
@@ -259,8 +251,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Double decodeNullableDouble() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeDouble();
     }
 
@@ -270,8 +261,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Long decodeNullableLong() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeLong();
     }
 
@@ -281,8 +271,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Integer decodeNullableInteger() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeInteger();
     }
 
@@ -292,8 +281,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Short decodeNullableShort() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeShort();
     }
 
@@ -303,8 +291,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Byte decodeNullableOctet() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeOctet();
     }
 
@@ -314,8 +301,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public ULong decodeNullableULong() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeULong();
     }
 
@@ -325,8 +311,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public UInteger decodeNullableUInteger() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeUInteger();
     }
 
@@ -336,8 +321,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public UShort decodeNullableUShort() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeUShort();
     }
 
@@ -347,8 +331,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public UOctet decodeNullableUOctet() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeUOctet();
     }
 
@@ -364,8 +347,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Attribute decodeNullableAttribute() throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return decodeAttribute();
     }
 
@@ -374,8 +356,7 @@ public abstract class GENDecoder implements MALDecoder
 
   protected Attribute internalDecodeAttribute(final int typeval) throws MALException
   {
-    switch (typeval)
-    {
+    switch (typeval) {
       case Attribute._BLOB_TYPE_SHORT_FORM:
         return decodeBlob();
       case Attribute._BOOLEAN_TYPE_SHORT_FORM:
@@ -426,8 +407,7 @@ public abstract class GENDecoder implements MALDecoder
   @Override
   public Element decodeNullableElement(final Element element) throws MALException
   {
-    if (sourceBuffer.isNotNull())
-    {
+    if (sourceBuffer.isNotNull()) {
       return element.decode(this);
     }
 
@@ -443,8 +423,7 @@ public abstract class GENDecoder implements MALDecoder
    */
   public Long decodeAbstractElementType(boolean withNull) throws MALException
   {
-    if (withNull)
-    {
+    if (withNull) {
       return decodeNullableLong();
     }
 
@@ -457,7 +436,8 @@ public abstract class GENDecoder implements MALDecoder
   }
 
   /**
-   * Returns the remaining data of the input stream that has not been used for decoding for wrapping in a MALEncodedBody class.
+   * Returns the remaining data of the input stream that has not been used for decoding for wrapping
+   * in a MALEncodedBody class.
    *
    * @return the unused body data.
    * @throws MALException if there is an error.
@@ -465,11 +445,12 @@ public abstract class GENDecoder implements MALDecoder
   public abstract byte[] getRemainingEncodedData() throws MALException;
 
   /**
-   * Internal class that is used to hold the byte buffer. Derived classes should extend this (and replace it in the constructors) if
-   * they encode the fields differently from this encoding.
+   * Internal class that is used to hold the byte buffer. Derived classes should extend this (and
+   * replace it in the constructors) if they encode the fields differently from this encoding.
    */
   public abstract static class BufferHolder
   {
+
     /**
      * Gets a string from the incoming stream.
      *

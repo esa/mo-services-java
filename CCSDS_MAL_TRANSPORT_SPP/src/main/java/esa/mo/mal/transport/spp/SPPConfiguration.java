@@ -35,6 +35,7 @@ import java.util.Map;
  */
 public class SPPConfiguration
 {
+
   private final boolean fixedBody;
   private final int segmentSize;
   private int flags = 0x0;
@@ -48,15 +49,15 @@ public class SPPConfiguration
   private boolean auth;
 
   public SPPConfiguration(boolean fixedBody,
-          int segmentSize,
-          boolean hasSrcSubId,
-          boolean hasDstSubId,
-          boolean hasPriority,
-          boolean hasTimestamp,
-          boolean hasNetwork,
-          boolean hasSession,
-          boolean hasDomain,
-          boolean hasAuth)
+      int segmentSize,
+      boolean hasSrcSubId,
+      boolean hasDstSubId,
+      boolean hasPriority,
+      boolean hasTimestamp,
+      boolean hasNetwork,
+      boolean hasSession,
+      boolean hasDomain,
+      boolean hasAuth)
   {
     this.fixedBody = fixedBody;
     this.segmentSize = segmentSize;
@@ -75,10 +76,9 @@ public class SPPConfiguration
   public SPPConfiguration(SPPConfiguration other, final Map properties)
   {
     fixedBody = getBooleanProperty(properties, ENCODE_BODY_FIXED, other.fixedBody);
-    
+
     int sms = other.segmentSize;
-    if ((null != properties) && properties.containsKey(SEGMENT_MAX_SIZE_PROPERTY))
-    {
+    if ((null != properties) && properties.containsKey(SEGMENT_MAX_SIZE_PROPERTY)) {
       sms = Integer.parseInt(properties.get(SEGMENT_MAX_SIZE_PROPERTY).toString());
     }
 
@@ -94,10 +94,10 @@ public class SPPConfiguration
     updateFlags();
   }
 
-  private boolean getBooleanProperty(final Map properties, final String propertyName, boolean existingValue)
+  private boolean getBooleanProperty(final Map properties, final String propertyName,
+      boolean existingValue)
   {
-    if ((null != properties) && properties.containsKey(propertyName))
-    {
+    if ((null != properties) && properties.containsKey(propertyName)) {
       return Boolean.parseBoolean(properties.get(propertyName).toString());
     }
 
@@ -107,12 +107,12 @@ public class SPPConfiguration
 
   public int getFlags(boolean hasFromSubId, boolean hasToSubId)
   {
-    if ((hasFromSubId == srcSubId) && (hasToSubId == dstSubId))
-    {
+    if ((hasFromSubId == srcSubId) && (hasToSubId == dstSubId)) {
       return flags;
     }
 
-    return calculateFlags(hasFromSubId, hasToSubId, priority, timestamp, network, session, domain, auth);
+    return calculateFlags(hasFromSubId, hasToSubId, priority, timestamp, network, session, domain,
+        auth);
   }
 
   public boolean isFixedBody()
@@ -219,13 +219,13 @@ public class SPPConfiguration
   }
 
   private static int calculateFlags(boolean srcSubId,
-          boolean dstSubId,
-          boolean priority,
-          boolean timestamp,
-          boolean network,
-          boolean session,
-          boolean domain,
-          boolean auth)
+      boolean dstSubId,
+      boolean priority,
+      boolean timestamp,
+      boolean network,
+      boolean session,
+      boolean domain,
+      boolean auth)
   {
     int flags = 0;
     flags = srcSubId ? (flags | 0x80) : flags;

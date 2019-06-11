@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.structures.*;
  */
 public class LineEncoder
 {
+
   private static final String STR_DELIM = "\n";
   private static final String STR_NULL = "_";
   private static final int HEX_MASK = 0xFF;
@@ -43,7 +44,7 @@ public class LineEncoder
   /**
    * Encode the top level element.
    *
-   * @param name field name
+   * @param name  field name
    * @param value field value
    * @throws MALException on error.
    */
@@ -55,26 +56,23 @@ public class LineEncoder
   /**
    * Encodes a specific field.
    *
-   * @param name Field name
+   * @param name         Field name
    * @param declaredType Declare field type
-   * @param value field value
+   * @param value        field value
    * @throws MALException on error.
    */
-  public void encodeField(final String name, final Class declaredType, final Object value) throws MALException
+  public void encodeField(final String name, final Class declaredType, final Object value) throws
+      MALException
   {
-    if (null != value)
-    {
+    if (null != value) {
       boolean isAbstract = true;
 
-      if (declaredType == value.getClass())
-      {
+      if (declaredType == value.getClass()) {
         isAbstract = false;
       }
 
       internalEncodeField(isAbstract, name, declaredType, value);
-    }
-    else
-    {
+    } else {
       add(name, STR_NULL);
     }
   }
@@ -82,67 +80,41 @@ public class LineEncoder
   /**
    * Encodes a specific field.
    *
-   * @param isAbstract Is Field abstract
-   * @param name Field name
+   * @param isAbstract   Is Field abstract
+   * @param name         Field name
    * @param declaredType Declare field type
-   * @param value field value
-s   * @throws MALException on error.
+   * @param value        field value s * @throws MALException on error.
    */
-  public void internalEncodeField(final boolean isAbstract, final String name, final Class declaredType, final Object value) throws MALException
+  public void internalEncodeField(final boolean isAbstract, final String name,
+      final Class declaredType, final Object value) throws MALException
   {
-    if (null != value)
-    {
-      if (value instanceof List)
-      {
+    if (null != value) {
+      if (value instanceof List) {
         encodeList(isAbstract, name, (List) value);
-      }
-      else if (value instanceof Enumeration)
-      {
+      } else if (value instanceof Enumeration) {
         encodeEnumeration(isAbstract, name, (Enumeration) value);
-      }
-      else if (value instanceof Composite)
-      {
+      } else if (value instanceof Composite) {
         encodeComposite(isAbstract, name, value.getClass(), (Composite) value);
-      }
-      else if (value instanceof Attribute)
-      {
+      } else if (value instanceof Attribute) {
         encodeAttribute(isAbstract, name, (Attribute) value);
-      }
-      else if (value instanceof Boolean)
-      {
+      } else if (value instanceof Boolean) {
         encodeBoolean(name, (Boolean) value);
-      }
-      else if (value instanceof Double)
-      {
+      } else if (value instanceof Double) {
         encodeDouble(name, (Double) value);
-      }
-      else if (value instanceof Float)
-      {
+      } else if (value instanceof Float) {
         encodeFloat(name, (Float) value);
-      }
-      else if (value instanceof Integer)
-      {
+      } else if (value instanceof Integer) {
         encodeInteger(name, (Integer) value);
-      }
-      else if (value instanceof Long)
-      {
+      } else if (value instanceof Long) {
         encodeLong(name, (Long) value);
-      }
-      else if (value instanceof Byte)
-      {
+      } else if (value instanceof Byte) {
         encodeOctet(name, (Byte) value);
-      }
-      else if (value instanceof Short)
-      {
+      } else if (value instanceof Short) {
         encodeShort(name, (Short) value);
-      }
-      else if (value instanceof String)
-      {
+      } else if (value instanceof String) {
         encodeString(name, (String) value);
       }
-    }
-    else
-    {
+    } else {
       add(name, STR_NULL);
     }
   }
@@ -156,8 +128,7 @@ s   * @throws MALException on error.
   private void encodeDouble(final String name, final Double value) throws MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = value.toString();
     }
     add(name, strVal);
@@ -166,8 +137,7 @@ s   * @throws MALException on error.
   private void encodeLong(final String name, final Long value) throws MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = value.toString();
     }
     add(name, strVal);
@@ -176,8 +146,7 @@ s   * @throws MALException on error.
   private void encodeOctet(final String name, final Byte value) throws MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = value.toString();
     }
     add(name, strVal);
@@ -186,48 +155,47 @@ s   * @throws MALException on error.
   private void encodeShort(final String name, final Short value) throws MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = value.toString();
     }
     add(name, strVal);
   }
 
-  private void encodeUInteger(final String name, final UInteger value) throws IllegalArgumentException, MALException
+  private void encodeUInteger(final String name, final UInteger value) throws
+      IllegalArgumentException, MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = Long.toString(value.getValue());
     }
     add(name, strVal);
   }
 
-  private void encodeULong(final String name, final ULong value) throws IllegalArgumentException, MALException
+  private void encodeULong(final String name, final ULong value) throws IllegalArgumentException,
+      MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = value.getValue().toString();
     }
     add(name, strVal);
   }
 
-  private void encodeUOctet(final String name, final UOctet value) throws IllegalArgumentException, MALException
+  private void encodeUOctet(final String name, final UOctet value) throws IllegalArgumentException,
+      MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = Short.toString(value.getValue());
     }
     add(name, strVal);
   }
 
-  private void encodeUShort(final String name, final UShort value) throws IllegalArgumentException, MALException
+  private void encodeUShort(final String name, final UShort value) throws IllegalArgumentException,
+      MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = Integer.toString(value.getValue());
     }
     add(name, strVal);
@@ -236,8 +204,7 @@ s   * @throws MALException on error.
   private void encodeURI(final String name, final URI value) throws MALException
   {
     String strVal = STR_NULL;
-    if ((null != value) && (null != value.getValue()))
-    {
+    if ((null != value) && (null != value.getValue())) {
       strVal = value.getValue();
     }
     add(name, strVal);
@@ -246,8 +213,7 @@ s   * @throws MALException on error.
   private void encodeIdentifier(final String name, final Identifier value) throws MALException
   {
     String strVal = STR_NULL;
-    if ((null != value) && (null != value.getValue()))
-    {
+    if ((null != value) && (null != value.getValue())) {
       strVal = value.getValue();
     }
     add(name, strVal);
@@ -256,8 +222,7 @@ s   * @throws MALException on error.
   private void encodeString(final String name, final String value) throws MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = value;
     }
     add(name, strVal);
@@ -266,8 +231,7 @@ s   * @throws MALException on error.
   private void encodeInteger(final String name, final Integer value) throws MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = value.toString();
     }
     add(name, strVal);
@@ -276,8 +240,7 @@ s   * @throws MALException on error.
   private void encodeBoolean(final String name, final Boolean value) throws MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = value.toString();
     }
     add(name, strVal);
@@ -286,8 +249,7 @@ s   * @throws MALException on error.
   private void encodeTime(final String name, final Time value) throws MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = Long.toString(value.getValue());
     }
     add(name, strVal);
@@ -296,8 +258,7 @@ s   * @throws MALException on error.
   private void encodeFineTime(final String name, final FineTime value) throws MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = Long.toString(value.getValue());
     }
     add(name, strVal);
@@ -307,13 +268,10 @@ s   * @throws MALException on error.
   {
     //should encode to 64 bit char string
     if ((null == value)
-            || (value.isURLBased() && (null == value.getURL()))
-            || (!value.isURLBased() && (null == value.getValue())))
-    {
+        || (value.isURLBased() && (null == value.getURL()))
+        || (!value.isURLBased() && (null == value.getValue()))) {
       add(name, STR_NULL);
-    }
-    else
-    {
+    } else {
       add(name, byteArrayToHexString(value.getValue()));
     }
   }
@@ -321,8 +279,7 @@ s   * @throws MALException on error.
   private void encodeDuration(final String name, final Duration value) throws MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = Double.toString(value.getValue());
     }
     add(name, strVal);
@@ -331,24 +288,21 @@ s   * @throws MALException on error.
   private void encodeFloat(final String name, final Float value) throws MALException
   {
     String strVal = STR_NULL;
-    if (null != value)
-    {
+    if (null != value) {
       strVal = value.toString();
     }
     add(name, strVal);
   }
 
-  private void encodeAttribute(final boolean isAbstract, final String name, final Attribute value) throws IllegalArgumentException, MALException
+  private void encodeAttribute(final boolean isAbstract, final String name, final Attribute value)
+      throws IllegalArgumentException, MALException
   {
-    if (null != value)
-    {
-      if (isAbstract)
-      {
+    if (null != value) {
+      if (isAbstract) {
         add(name + ".type", Byte.toString(value.getShortForm().byteValue()));
       }
 
-      switch (value.getTypeShortForm())
-      {
+      switch (value.getTypeShortForm()) {
         case Attribute._BOOLEAN_TYPE_SHORT_FORM:
           encodeBoolean(name, ((Union) value).getBooleanValue());
           break;
@@ -406,73 +360,64 @@ s   * @throws MALException on error.
 
         default:
       }
-    }
-    else
-    {
+    } else {
       add(name, STR_NULL);
     }
   }
 
-  private void encodeList(final boolean isAbstract, final String name, final List value) throws MALException
+  private void encodeList(final boolean isAbstract, final String name, final List value) throws
+      MALException
   {
     boolean namePushed = pushName(name);
 
-    if (isAbstract)
-    {
+    if (isAbstract) {
       add("type", String.valueOf(((Element) value).getShortForm()));
     }
 
     encodeInteger("listSize", value.size());
 
-    for (int i = 0; i < value.size(); i++)
-    {
+    for (int i = 0; i < value.size(); i++) {
       internalEncodeField(false, String.valueOf(i), List.class, value.get(i));
     }
 
     popName(namePushed);
   }
 
-  private void encodeEnumeration(final boolean isAbstract, final String name, final Enumeration value) throws MALException
+  private void encodeEnumeration(final boolean isAbstract, final String name,
+      final Enumeration value) throws MALException
   {
-    if (isAbstract)
-    {
+    if (isAbstract) {
       add(name + ".type", String.valueOf(((Element) value).getShortForm()));
     }
 
     encodeInteger(name, value.getOrdinal());
   }
 
-  private void encodeComposite(final boolean isAbstract, final String name, final Class cls, final Composite value) throws MALException
+  private void encodeComposite(final boolean isAbstract, final String name, final Class cls,
+      final Composite value) throws MALException
   {
     boolean namePushed = pushName(name);
 
-    if (isAbstract)
-    {
+    if (isAbstract) {
       add(name + ".type", String.valueOf(value.getShortForm()));
     }
 
     Class superCls = cls.getSuperclass();
 
-    if (!"Object".equals(superCls.getSimpleName()))
-    {
+    if (!"Object".equals(superCls.getSimpleName())) {
       encodeComposite(false, null, superCls, value);
     }
 
     Field[] fields = cls.getDeclaredFields();
 
-    for (Field field : fields)
-    {
+    for (Field field : fields) {
       final int mods = field.getModifiers();
-      if (!Modifier.isStatic(mods))
-      {
-        try
-        {
+      if (!Modifier.isStatic(mods)) {
+        try {
           Method method = cls.getDeclaredMethod("get" + preCap(field.getName()));
 
           encodeField(field.getName(), field.getType(), method.invoke(value, (Object[]) null));
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
           // nothing
         }
       }
@@ -483,8 +428,7 @@ s   * @throws MALException on error.
 
   private static String preCap(String str)
   {
-    if ((null != str) && (0 < str.length()))
-    {
+    if ((null != str) && (0 < str.length())) {
       str = String.valueOf(str.charAt(0)).toUpperCase() + str.substring(1);
     }
 
@@ -493,8 +437,7 @@ s   * @throws MALException on error.
 
   private boolean pushName(String val)
   {
-    if (null != val)
-    {
+    if (null != val) {
       nameStack.addLast(val);
       return true;
     }
@@ -503,8 +446,7 @@ s   * @throws MALException on error.
 
   private void popName(boolean namePushed)
   {
-    if (namePushed)
-    {
+    if (namePushed) {
       nameStack.removeLast();
     }
   }
@@ -513,8 +455,7 @@ s   * @throws MALException on error.
   {
     StringBuilder buf = new StringBuilder();
 
-    for (String name : nameStack)
-    {
+    for (String name : nameStack) {
       buf.append(name);
       buf.append('.');
     }
@@ -535,11 +476,9 @@ s   * @throws MALException on error.
   private static String byteArrayToHexString(final byte[] data)
   {
     final StringBuilder hexString = new StringBuilder();
-    for (int i = 0; i < data.length; i++)
-    {
+    for (int i = 0; i < data.length; i++) {
       final String hex = Integer.toHexString(HEX_MASK & data[i]);
-      if (hex.length() == 1)
-      {
+      if (hex.length() == 1) {
         hexString.append('0');
       }
       hexString.append(hex);

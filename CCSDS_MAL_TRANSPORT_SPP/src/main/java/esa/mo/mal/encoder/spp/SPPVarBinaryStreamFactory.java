@@ -30,7 +30,8 @@ public class SPPVarBinaryStreamFactory extends esa.mo.mal.encoder.binary.variabl
 {
 
   @Override
-  protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException
+  protected void init(final String protocol, final Map properties) throws IllegalArgumentException,
+      MALException
   {
     super.init(protocol, properties);
 

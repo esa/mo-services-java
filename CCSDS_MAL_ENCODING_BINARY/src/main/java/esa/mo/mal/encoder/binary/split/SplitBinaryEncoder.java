@@ -29,8 +29,7 @@ import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;
 
 /**
- * Implements the MALEncoder and MALListEncoder interfaces for a split binary
- * encoding.
+ * Implements the MALEncoder and MALListEncoder interfaces for a split binary encoding.
  */
 public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.VariableBinaryEncoder
 {
@@ -40,7 +39,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
   /**
    * Constructor.
    *
-   * @param os Output stream to write to.
+   * @param os          Output stream to write to.
    * @param timeHandler Time handler to use.
    */
   public SplitBinaryEncoder(final OutputStream os, final BinaryTimeHandler timeHandler)
@@ -49,10 +48,10 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
   }
 
   /**
-   * Constructor for derived classes that have their own stream holder
-   * implementation that should be used.
+   * Constructor for derived classes that have their own stream holder implementation that should be
+   * used.
    *
-   * @param os Output stream to write to.
+   * @param os          Output stream to write to.
    * @param timeHandler Time handler to use.
    */
   protected SplitBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler)
@@ -62,7 +61,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
 
   @Override
   public org.ccsds.moims.mo.mal.MALListEncoder createListEncoder(
-          final java.util.List value) throws MALException
+      final java.util.List value) throws MALException
   {
     ++openCount;
 
@@ -70,10 +69,9 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
   }
 
   /**
-   * A MAL string is encoded as follows: - String Length: UInteger - Character:
-   * UTF-8, variable size, multiple of octet The field 'string length' shall be
-   * assigned with the number of octets required to encode the character of the
-   * string
+   * A MAL string is encoded as follows: - String Length: UInteger - Character: UTF-8, variable
+   * size, multiple of octet The field 'string length' shall be assigned with the number of octets
+   * required to encode the character of the string
    *
    * @param val The string to encode
    * @throws MALException if the string to encode is too large
@@ -82,12 +80,9 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
   public void encodeString(String val) throws MALException
   {
 
-    try
-    {
+    try {
       outputStream.addString(val);
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
       throw new MALException(ENCODING_EXCEPTION_STR, e);
     }
   }
@@ -96,24 +91,18 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
   public void encodeNullableString(String value) throws MALException
   {
 
-    try
-    {
-      if (value != null)
-      {
+    try {
+      if (value != null) {
         // encode presence flag
         outputStream.addNotNull();
         // encode element as String
         encodeString(value);
-      }
-      else
-      {
+      } else {
         // encode presence flag
         outputStream.addIsNull();
 
       }
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
       throw new MALException(ENCODING_EXCEPTION_STR, e);
     }
   }
@@ -123,22 +112,17 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
   {
     --openCount;
 
-    if (1 > openCount)
-    {
-      try
-      {
+    if (1 > openCount) {
+      try {
         ((SplitBinaryStreamHolder) outputStream).close();
-      }
-      catch (IOException ex)
-      {
+      } catch (IOException ex) {
         // do nothing
       }
     }
   }
 
   /**
-   * Extends the StreamHolder class for handling splitting out the Boolean
-   * values.
+   * Extends the StreamHolder class for handling splitting out the Boolean values.
    */
   public static class SplitBinaryStreamHolder extends VariableBinaryStreamHolder
   {
@@ -170,8 +154,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
     @Override
     public void addBool(boolean value) throws IOException
     {
-      if (value)
-      {
+      if (value) {
         setBit(bitIndex);
       }
       ++bitIndex;
@@ -210,8 +193,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
 
     private static void streamAddUnsignedInt(java.io.OutputStream os, int value) throws IOException
     {
-      while ((value & 0xFFFFFF80) != 0L)
-      {
+      while ((value & 0xFFFFFF80) != 0L) {
         os.write((value & 0x7F) | 0x80);
         value >>>= 7;
       }
@@ -228,13 +210,11 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
       int byteIndex = bitIndex / 8;
 
       int bytesRequired = byteIndex + 1;
-      if (bitBytesInUse < bytesRequired)
-      {
-        if (bitBytes.length < bytesRequired)
-        {
+      if (bitBytesInUse < bytesRequired) {
+        if (bitBytes.length < bytesRequired) {
           bitBytes = java.util.Arrays.copyOf(bitBytes,
-                  ((bytesRequired / BIT_BYTES_BLOCK_SIZE) + 1)
-                  * BIT_BYTES_BLOCK_SIZE);
+              ((bytesRequired / BIT_BYTES_BLOCK_SIZE) + 1)
+              * BIT_BYTES_BLOCK_SIZE);
         }
 
         bitBytesInUse = bytesRequired;

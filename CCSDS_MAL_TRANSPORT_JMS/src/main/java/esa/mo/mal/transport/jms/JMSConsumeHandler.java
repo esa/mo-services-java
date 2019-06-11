@@ -38,6 +38,7 @@ import esa.mo.mal.transport.jms.util.StructureHelper;
  */
 public class JMSConsumeHandler extends JMSQueueHandler
 {
+
   private final List<MessageConsumer> consumerList = new LinkedList<MessageConsumer>();
   private final UOctet version;
   private Identifier subId = null;
@@ -49,14 +50,17 @@ public class JMSConsumeHandler extends JMSQueueHandler
   private Identifier sessionName = null;
   private Long transactionId = null;
 
-  public JMSConsumeHandler(JMSEndpoint endPoint, Object interruption, Session qs, Topic messageSource, String sourceName, UShort area, UShort service, UShort operation, UOctet version) throws Exception
+  public JMSConsumeHandler(JMSEndpoint endPoint, Object interruption, Session qs,
+      Topic messageSource, String sourceName, UShort area, UShort service, UShort operation,
+      UOctet version) throws Exception
   {
     super(endPoint, interruption, qs, messageSource, sourceName);
 
     this.version = version;
   }
 
-  public void register(JMSTransport transport, final String providerExchangeName, final GENMessage msg, final Subscription subscription) throws Exception
+  public void register(JMSTransport transport, final String providerExchangeName,
+      final GENMessage msg, final Subscription subscription) throws Exception
   {
     // remove old subscriptions
     deregister(false);
@@ -70,8 +74,7 @@ public class JMSConsumeHandler extends JMSQueueHandler
     session = hdr.getSession();
     sessionName = hdr.getSessionName();
 
-    if (null == transactionId)
-    {
+    if (null == transactionId) {
       transactionId = hdr.getTransactionId();
     }
 
@@ -85,76 +88,66 @@ public class JMSConsumeHandler extends JMSQueueHandler
 
     String sdomain = StructureHelper.domainToString(msg.getHeader().getDomain());
 
-    for (EntityRequest entitie : entities)
-    {
+    for (EntityRequest entitie : entities) {
       EntityRequest rqst = (EntityRequest) entitie;
       buf.append('(');
       // insert request specific filters
       StringBuilder pbuf = new StringBuilder();
       boolean pvalueSet;
       IdentifierList sdl = rqst.getSubDomain();
-      if ((null != sdl) && (0 < sdl.size()))
-      {
+      if ((null != sdl) && (0 < sdl.size())) {
         boolean wildcard = false;
         int trunc = 0;
-        if (sdl.get(sdl.size() - 1).getValue().equals("*"))
-        {
+        if (sdl.get(sdl.size() - 1).getValue().equals("*")) {
           wildcard = true;
           trunc = 1;
         }
 
         String subdomain = StructureHelper.domainToString(sdl, trunc);
 
-        if (0 < subdomain.length())
-        {
+        if (0 < subdomain.length()) {
           subdomain = sdomain + "." + subdomain;
-        }
-        else
-        {
+        } else {
           subdomain = sdomain;
         }
 
-        pvalueSet = createRoutingKeyString(pbuf, JMSEndpoint.DOM_PROPERTY, subdomain, wildcard, false);
-      }
-      else
-      {
+        pvalueSet = createRoutingKeyString(pbuf, JMSEndpoint.DOM_PROPERTY, subdomain, wildcard,
+            false);
+      } else {
         pvalueSet = createRoutingKeyString(pbuf, JMSEndpoint.DOM_PROPERTY, sdomain, false, false);
       }
-      if (!rqst.getAllAreas())
-      {
-        pvalueSet = createRoutingKeyLong(pbuf, JMSEndpoint.ARR_PROPERTY, (long)msg.getHeader().getServiceArea().getValue(), pvalueSet);
+      if (!rqst.getAllAreas()) {
+        pvalueSet = createRoutingKeyLong(pbuf, JMSEndpoint.ARR_PROPERTY,
+            (long) msg.getHeader().getServiceArea().getValue(), pvalueSet);
       }
-      if (!rqst.getAllServices())
-      {
-        pvalueSet = createRoutingKeyLong(pbuf, JMSEndpoint.SVC_PROPERTY, (long)msg.getHeader().getService().getValue(), pvalueSet);
+      if (!rqst.getAllServices()) {
+        pvalueSet = createRoutingKeyLong(pbuf, JMSEndpoint.SVC_PROPERTY,
+            (long) msg.getHeader().getService().getValue(), pvalueSet);
       }
-      if (!rqst.getAllOperations())
-      {
-        pvalueSet = createRoutingKeyLong(pbuf, JMSEndpoint.OPN_PROPERTY, (long)msg.getHeader().getOperation().getValue(), pvalueSet);
+      if (!rqst.getAllOperations()) {
+        pvalueSet = createRoutingKeyLong(pbuf, JMSEndpoint.OPN_PROPERTY,
+            (long) msg.getHeader().getOperation().getValue(), pvalueSet);
       }
-      if (rqst.getOnlyOnChange())
-      {
+      if (rqst.getOnlyOnChange()) {
         createRoutingKeyBoolean(pbuf, JMSEndpoint.MOD_PROPERTY, true, pvalueSet);
       }
       buf.append(pbuf);
       StringBuilder ebuf = new StringBuilder();
       EntityKeyList entityKeys = rqst.getEntityKeys();
-      for (EntityKey entityKey : entityKeys)
-      {
+      for (EntityKey entityKey : entityKeys) {
         EntityKey id = (EntityKey) entityKey;
         StringBuilder lbuf = new StringBuilder();
-        boolean valueSet = createRoutingKeyIdentifier(lbuf, JMSEndpoint.EID_PROPERTY, id.getFirstSubKey());
-        valueSet = createRoutingKeyLong(lbuf, JMSEndpoint.DID_PROPERTY, id.getSecondSubKey(), valueSet);
-        valueSet = createRoutingKeyLong(lbuf, JMSEndpoint.OID_PROPERTY, id.getThirdSubKey(), valueSet);
+        boolean valueSet = createRoutingKeyIdentifier(lbuf, JMSEndpoint.EID_PROPERTY,
+            id.getFirstSubKey());
+        valueSet = createRoutingKeyLong(lbuf, JMSEndpoint.DID_PROPERTY, id.getSecondSubKey(),
+            valueSet);
+        valueSet = createRoutingKeyLong(lbuf, JMSEndpoint.OID_PROPERTY, id.getThirdSubKey(),
+            valueSet);
         createRoutingKeyLong(lbuf, JMSEndpoint.SID_PROPERTY, id.getFourthSubKey(), valueSet);
-        if (lbuf.length() > 0)
-        {
-          if (notFirst)
-          {
+        if (lbuf.length() > 0) {
+          if (notFirst) {
             ebuf.append(" OR ");
-          }
-          else
-          {
+          } else {
             notFirst = true;
           }
 
@@ -163,35 +156,28 @@ public class JMSConsumeHandler extends JMSQueueHandler
           ebuf.append(')');
         }
       }
-      if (0 < ebuf.length())
-      {
-        if (0 < pbuf.length())
-        {
+      if (0 < ebuf.length()) {
+        if (0 < pbuf.length()) {
           buf.append(" AND (");
         }
 
         buf.append(ebuf);
 
-        if (0 < pbuf.length())
-        {
+        if (0 < pbuf.length()) {
           buf.append(')');
         }
       }
       buf.append(')');
     }
-    JMSTransport.RLOGGER.log(Level.FINE, "JMS Registering to {0} for {1}", new Object[]
-    {
+    JMSTransport.RLOGGER.log(Level.FINE, "JMS Registering to {0} for {1}", new Object[]{
       providerExchangeName, buf.toString()
     });
 
-    try
-    {
+    try {
       MessageConsumer consumer = queueSession.createConsumer(messageSource, buf.toString());
       consumer.setMessageListener(this);
       consumerList.add(consumer);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       JMSTransport.RLOGGER.log(Level.WARNING, "JMS Error occurred when subscribing {0}", e);
     }
   }
@@ -199,30 +185,25 @@ public class JMSConsumeHandler extends JMSQueueHandler
   public void deregister(boolean clearTransId) throws MALException
   {
     // remove old subscriptions
-    for (MessageConsumer consumer : consumerList)
-    {
-      try
-      {
+    for (MessageConsumer consumer : consumerList) {
+      try {
         consumer.close();
-      }
-      catch (Exception e)
-      {
+      } catch (Exception e) {
         JMSTransport.RLOGGER.log(Level.WARNING, "JMS Error occurred when unsubscribing {0}", e);
       }
     }
 
     consumerList.clear();
 
-    if (clearTransId)
-    {
+    if (clearTransId) {
       transactionId = null;
     }
   }
 
-  protected static boolean createRoutingKeyIdentifier(StringBuilder buf, String propertyId, Identifier id)
+  protected static boolean createRoutingKeyIdentifier(StringBuilder buf, String propertyId,
+      Identifier id)
   {
-    if ((null != id) && (null != id.getValue()) && (!"*".equals(id.getValue())))
-    {
+    if ((null != id) && (null != id.getValue()) && (!"*".equals(id.getValue()))) {
       buf.append(propertyId);
       buf.append(" = '");
       buf.append(id.getValue());
@@ -234,14 +215,12 @@ public class JMSConsumeHandler extends JMSQueueHandler
     return false;
   }
 
-  protected static boolean createRoutingKeyLong(StringBuilder buf, String propertyId, Long i, boolean withPrevious)
+  protected static boolean createRoutingKeyLong(StringBuilder buf, String propertyId, Long i,
+      boolean withPrevious)
   {
-    if (null != i)
-    {
-      if (0 != i)
-      {
-        if (withPrevious)
-        {
+    if (null != i) {
+      if (0 != i) {
+        if (withPrevious) {
           buf.append(" AND ");
         }
         buf.append(propertyId);
@@ -250,11 +229,8 @@ public class JMSConsumeHandler extends JMSQueueHandler
 
         withPrevious = true;
       }
-    }
-    else
-    {
-      if (withPrevious)
-      {
+    } else {
+      if (withPrevious) {
         buf.append(" AND ");
       }
       buf.append(propertyId);
@@ -266,39 +242,30 @@ public class JMSConsumeHandler extends JMSQueueHandler
     return withPrevious;
   }
 
-  protected static boolean createRoutingKeyString(StringBuilder buf, String propertyId, String i, boolean substringMatch, boolean withPrevious)
+  protected static boolean createRoutingKeyString(StringBuilder buf, String propertyId, String i,
+      boolean substringMatch, boolean withPrevious)
   {
-    if (null != i)
-    {
-      if (!i.contentEquals(""))
-      {
-        if (withPrevious)
-        {
+    if (null != i) {
+      if (!i.contentEquals("")) {
+        if (withPrevious) {
           buf.append(" AND ");
         }
         buf.append(propertyId);
-        if (substringMatch)
-        {
+        if (substringMatch) {
           buf.append(" LIKE '");
-        }
-        else
-        {
+        } else {
           buf.append(" = '");
         }
         buf.append(i);
-        if (substringMatch)
-        {
+        if (substringMatch) {
           buf.append("%");
         }
         buf.append('\'');
 
         withPrevious = true;
       }
-    }
-    else
-    {
-      if (withPrevious)
-      {
+    } else {
+      if (withPrevious) {
         buf.append(" AND ");
       }
       buf.append(propertyId);
@@ -310,19 +277,16 @@ public class JMSConsumeHandler extends JMSQueueHandler
     return withPrevious;
   }
 
-  protected static boolean createRoutingKeyBoolean(StringBuilder buf, String propertyId, boolean b, boolean withPrevious)
+  protected static boolean createRoutingKeyBoolean(StringBuilder buf, String propertyId, boolean b,
+      boolean withPrevious)
   {
-    if (withPrevious)
-    {
+    if (withPrevious) {
       buf.append(" AND ");
     }
     buf.append(propertyId);
-    if (b)
-    {
+    if (b) {
       buf.append(" = TRUE");
-    }
-    else
-    {
+    } else {
       buf.append(" = FALSE");
     }
 
@@ -332,6 +296,7 @@ public class JMSConsumeHandler extends JMSQueueHandler
   @Override
   protected GENIncomingMessageDecoder createMessageDecoder(JMSUpdate update)
   {
-    return new JMSIncomingPSMessageDecoder(endPoint.getJtransport(), update, endPoint.getURI(), version, subId, URIFrom, level, priority, networkZone, session, sessionName, transactionId);
+    return new JMSIncomingPSMessageDecoder(endPoint.getJtransport(), update, endPoint.getURI(),
+        version, subId, URIFrom, level, priority, networkZone, session, sessionName, transactionId);
   }
 }

@@ -27,6 +27,7 @@ import java.io.IOException;
  */
 public interface GENMessageSender<O>
 {
+
   /**
    * Sends an encoded message to the client (MAL Message encoded as a byte array)
    *

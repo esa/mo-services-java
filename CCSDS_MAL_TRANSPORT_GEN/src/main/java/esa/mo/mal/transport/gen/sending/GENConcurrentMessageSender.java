@@ -33,20 +33,22 @@ import java.io.IOException;
 import static java.lang.Thread.interrupted;
 
 /**
- * This class manages a set of threads that are able to send messages via transceivers. It uses a blocking queue from
- * where all threads consume messages to be sent. The worker threads are created via the addProcessor method which is
- * called when a new connection is associated to a given URI by the transport.
+ * This class manages a set of threads that are able to send messages via transceivers. It uses a
+ * blocking queue from where all threads consume messages to be sent. The worker threads are created
+ * via the addProcessor method which is called when a new connection is associated to a given URI by
+ * the transport.
  *
  * Each object of this class is associated with a URI at the transport level.
  *
  * There is normally a numConnections (transport configuration item) number of threads.
  *
- * It accepts requests to send the message, which is done via the worker threads. A reply is provided indicating if the
- * message was sent successfully or not.
+ * It accepts requests to send the message, which is done via the worker threads. A reply is
+ * provided indicating if the message was sent successfully or not.
  *
  */
 public class GENConcurrentMessageSender
 {
+
   /**
    * input message queue
    */
@@ -82,16 +84,16 @@ public class GENConcurrentMessageSender
   }
 
   /**
-   * This method will try to send the message via one of the available connections and provide a reply through the
-   * GENOutgoingMessageHolder object if the message was successful or not. Users of this method should call getResult to
-   * block waiting for an indication if the message was sent successfully or not.
+   * This method will try to send the message via one of the available connections and provide a
+   * reply through the GENOutgoingMessageHolder object if the message was successful or not. Users
+   * of this method should call getResult to block waiting for an indication if the message was sent
+   * successfully or not.
    *
    * @param message the message to be sent.
    */
   public void sendMessage(GENOutgoingMessageHolder message)
   {
-    if (processingThreads.isEmpty())
-    {
+    if (processingThreads.isEmpty()) {
       //this should never happen. Only possibly in boundary cases where this object is asked
       //to terminate and there is another thread trying to send message in parallel.
       LOGGER.log(Level.SEVERE, "No active processors in this processing queue!");
@@ -101,8 +103,7 @@ public class GENConcurrentMessageSender
     }
 
     boolean inserted = outgoingQueue.add(message);
-    if (!inserted)
-    {
+    if (!inserted) {
       // log error. According to the specification (see *add* call
       // documentation) this will always return true, or throw an
       // exception
@@ -115,7 +116,7 @@ public class GENConcurrentMessageSender
    * Adds a processor which is able to send messages to a specific URI
    *
    * @param messageSender the socket that this processor will use
-   * @param uriTo the target URI
+   * @param uriTo         the target URI
    * @return number of active processors
    */
   public synchronized int addProcessor(GENMessageSender messageSender, String uriTo)
@@ -129,8 +130,7 @@ public class GENConcurrentMessageSender
     // start thread
     procThread.start();
 
-    LOGGER.log(Level.FINE, "Adding processor for URI:{0} total processors:{1}", new Object[]
-    {
+    LOGGER.log(Level.FINE, "Adding processor for URI:{0} total processors:{1}", new Object[]{
       uriTo, processingThreads.size()
     });
 
@@ -159,17 +159,17 @@ public class GENConcurrentMessageSender
   }
 
   /**
-   * This method will shutdown all processing threads (by calling their interrupt method) which will result in all of
-   * them closing their sockets and terminating their processing.
+   * This method will shutdown all processing threads (by calling their interrupt method) which will
+   * result in all of them closing their sockets and terminating their processing.
    *
-   * Typically Called by the transport in order to shutdown all processing threads and close all remote connections.
+   * Typically Called by the transport in order to shutdown all processing threads and close all
+   * remote connections.
    */
   public synchronized void terminate()
   {
     LOGGER.log(Level.INFO, "Terminating all processing threads for sender for URI:{0}", targetURI);
 
-    for (GENSenderThread t : processingThreads)
-    {
+    for (GENSenderThread t : processingThreads) {
       // this will cause all threads to terminate
       LOGGER.log(Level.FINE, "Terminating sender processing thread for URI:{0}", t.getUriTo());
       t.interrupt();
@@ -180,15 +180,16 @@ public class GENConcurrentMessageSender
   }
 
   /**
-   * This thread will listen for outgoing messages through a blocking queue and send them through a transceiver. In case
-   * of communication problems it will inform the transport and terminate.
+   * This thread will listen for outgoing messages through a blocking queue and send them through a
+   * transceiver. In case of communication problems it will inform the transport and terminate.
    *
-   * In any case, a reply is send back to the originator of the request using a blocking queue from the outgoing
-   * message.
+   * In any case, a reply is send back to the originator of the request using a blocking queue from
+   * the outgoing message.
    *
    */
   private class GENSenderThread extends Thread
   {
+
     /**
      * The destination URI
      */
@@ -218,40 +219,32 @@ public class GENConcurrentMessageSender
       boolean bContinue = true;
 
       // read forever while not interrupted
-      while (bContinue && !interrupted())
-      {
+      while (bContinue && !interrupted()) {
         GENOutgoingMessageHolder messageHolder = null;
-        try
-        {
+        try {
           messageHolder = outgoingQueue.take();
 
           messageSender.sendEncodedMessage(messageHolder);
 
           //send back reply that the message was sent succesfully
           messageHolder.setResult(Boolean.TRUE);
-        }
-        catch (IOException e)
-        {
-          LOGGER.log(Level.WARNING, "Cannot send packet to destination:{0} informing transport", uriTo);
+        } catch (IOException e) {
+          LOGGER.log(Level.WARNING, "Cannot send packet to destination:{0} informing transport",
+              uriTo);
           LOGGER.log(Level.FINE, "Cannot send packet to destination:{0} informing transport", e);
 
           //send back reply that the message was not sent successfully
-          if (null != messageHolder)
-          {
+          if (null != messageHolder) {
             messageHolder.setResult(Boolean.FALSE);
           }
 
           //inform transport about communication error 
           transport.communicationError(uriTo, null);
           bContinue = false;
-        }
-        catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
           // finish processing
           bContinue = false;
-        }
-        catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
           ex.printStackTrace();
         }
       }

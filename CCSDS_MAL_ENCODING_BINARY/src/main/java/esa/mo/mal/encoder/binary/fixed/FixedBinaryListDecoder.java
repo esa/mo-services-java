@@ -38,15 +38,15 @@ public class FixedBinaryListDecoder extends FixedBinaryDecoder implements MALLis
   /**
    * Constructor.
    *
-   * @param list List to decode into.
+   * @param list         List to decode into.
    * @param sourceBuffer Buffer to reuse.
-   * @param timeHandler Time handler to reuse.
+   * @param timeHandler  Time handler to reuse.
    * @throws MALException If cannot decode size of list.
    */
   public FixedBinaryListDecoder(final List list,
-          final BufferHolder sourceBuffer,
-          final BinaryTimeHandler timeHandler)
-          throws MALException
+      final BufferHolder sourceBuffer,
+      final BinaryTimeHandler timeHandler)
+      throws MALException
   {
     super(sourceBuffer, timeHandler);
 

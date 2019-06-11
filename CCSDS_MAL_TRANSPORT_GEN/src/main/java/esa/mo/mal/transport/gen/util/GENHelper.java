@@ -25,11 +25,12 @@ package esa.mo.mal.transport.gen.util;
  */
 public abstract class GENHelper
 {
+
   private GENHelper()
   {
     // private contructor as not a real class but a place for static methods
   }
-  
+
   /**
    * Creates a string version of byte buffer in hex.
    *
@@ -40,13 +41,10 @@ public abstract class GENHelper
   {
     final StringBuilder hexString = new StringBuilder();
 
-    if (null != data)
-    {
-      for (int i = 0; i < data.length; i++)
-      {
+    if (null != data) {
+      for (int i = 0; i < data.length; i++) {
         final String hex = Integer.toHexString(0xFF & data[i]);
-        if (hex.length() == 1)
-        {
+        if (hex.length() == 1) {
           // could use a for loop, but we're only dealing with a single byte
           hexString.append('0');
         }
@@ -56,11 +54,11 @@ public abstract class GENHelper
 
     return hexString.toString();
   }
-  
+
   /**
    * Creates a string version of byte buffer in hex.
    *
-   * @param data the packet.
+   * @param data   the packet.
    * @param offset the offset.
    * @param length the length.
    * @return the string representation.
@@ -69,14 +67,11 @@ public abstract class GENHelper
   {
     final StringBuilder hexString = new StringBuilder();
 
-    if (null != data)
-    {
+    if (null != data) {
       final int end = offset + length;
-      for (int i = offset; i < end; i++)
-      {
+      for (int i = offset; i < end; i++) {
         final String hex = Integer.toHexString(0xFF & data[i]);
-        if (hex.length() == 1)
-        {
+        if (hex.length() == 1) {
           // could use a for loop, but we're only dealing with a single byte
           hexString.append('0');
         }

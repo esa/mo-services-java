@@ -33,6 +33,7 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 final class JMSIncomingMessageDecoder implements GENIncomingMessageDecoder
 {
+
   private final JMSTransport transport;
   private final JMSUpdate jmsUpdate;
 
@@ -51,7 +52,9 @@ final class JMSIncomingMessageDecoder implements GENIncomingMessageDecoder
   @Override
   public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException
   {
-    GENMessage malMsg = new GENMessage(false, true, new GENMessageHeader(), new HashMap(), jmsUpdate.getDat(), transport.getStreamFactory());
-    return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, transport.new PacketToString(null));
+    GENMessage malMsg = new GENMessage(false, true, new GENMessageHeader(), new HashMap(),
+        jmsUpdate.getDat(), transport.getStreamFactory());
+    return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg,
+        transport.new PacketToString(null));
   }
 }

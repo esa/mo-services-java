@@ -29,19 +29,24 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Factory class for IO stream decoders.
  */
-public class GENIncomingStreamMessageDecoderFactory<O> implements GENIncomingMessageDecoderFactory<InputStream, O>
+public class GENIncomingStreamMessageDecoderFactory<O> implements
+    GENIncomingMessageDecoderFactory<InputStream, O>
 {
+
   @Override
-  public GENIncomingMessageDecoder createDecoder(GENTransport<InputStream, O> transport, GENReceptionHandler receptionHandler, InputStream messageSource)
+  public GENIncomingMessageDecoder createDecoder(GENTransport<InputStream, O> transport,
+      GENReceptionHandler receptionHandler, InputStream messageSource)
   {
     return new GENIncomingStreamMessageDecoder(transport, messageSource);
   }
 
   /**
-   * Implementation of the GENIncomingMessageDecoder class for newly arrived MAL Messages in stream format.
+   * Implementation of the GENIncomingMessageDecoder class for newly arrived MAL Messages in stream
+   * format.
    */
   public static final class GENIncomingStreamMessageDecoder<O> implements GENIncomingMessageDecoder
   {
+
     private final GENTransport<InputStream, O> transport;
     private final InputStream ios;
 
@@ -49,9 +54,10 @@ public class GENIncomingStreamMessageDecoderFactory<O> implements GENIncomingMes
      * Constructor
      *
      * @param transport Containing transport.
-     * @param ios The stream message
+     * @param ios       The stream message
      */
-    public GENIncomingStreamMessageDecoder(final GENTransport<InputStream, O> transport, InputStream ios)
+    public GENIncomingStreamMessageDecoder(final GENTransport<InputStream, O> transport,
+        InputStream ios)
     {
       this.transport = transport;
       this.ios = ios;

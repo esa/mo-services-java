@@ -25,6 +25,7 @@ package esa.mo.mal.transport.spp;
  */
 public class SPPSourceSequenceCounterSimple implements SPPSourceSequenceCounter
 {
+
   private int sequenceCount = 0;
 
   @Override
@@ -32,12 +33,10 @@ public class SPPSourceSequenceCounterSimple implements SPPSourceSequenceCounter
   {
     int i;
 
-    synchronized (this)
-    {
+    synchronized (this) {
       i = sequenceCount++;
 
-      if (sequenceCount > 16383)
-      {
+      if (sequenceCount > 16383) {
         sequenceCount = 0;
       }
     }

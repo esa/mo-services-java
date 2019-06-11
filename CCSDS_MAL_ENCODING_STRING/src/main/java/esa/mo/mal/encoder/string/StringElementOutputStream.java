@@ -29,6 +29,7 @@ import java.io.OutputStream;
  */
 public class StringElementOutputStream extends GENElementOutputStream
 {
+
   /**
    * Constructor.
    *

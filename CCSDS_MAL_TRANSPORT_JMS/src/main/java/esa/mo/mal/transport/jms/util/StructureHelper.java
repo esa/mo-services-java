@@ -23,9 +23,9 @@ package esa.mo.mal.transport.jms.util;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 
-
 public abstract class StructureHelper
 {
+
   /**
    * Converts a identifier list version of a domain name to a single, dot delimited, String.
    *
@@ -40,7 +40,7 @@ public abstract class StructureHelper
   /**
    * Converts a identifier list version of a domain name to a single, dot delimited, String.
    *
-   * @param domain The list of identifiers to concatenate.
+   * @param domain        The list of identifiers to concatenate.
    * @param truncateCount The number of elements of the list to ignore off the end.
    * @return The dot delimited version of the domain name.
    */
@@ -48,15 +48,12 @@ public abstract class StructureHelper
   {
     String retVal = null;
 
-    if (null != domain)
-    {
+    if (null != domain) {
       final StringBuilder buf = new StringBuilder();
       int i = 0;
       final int e = domain.size() - truncateCount;
-      while (i < e)
-      {
-        if (0 < i)
-        {
+      while (i < e) {
+        if (0 < i) {
           buf.append('.');
         }
 
@@ -81,13 +78,11 @@ public abstract class StructureHelper
   {
     IdentifierList rv = null;
 
-    if (null != domain)
-    {
+    if (null != domain) {
       final String[] parts = domain.split("\\.");
 
       rv = new IdentifierList(parts.length);
-      for (int i = 0; i < parts.length; i++)
-      {
+      for (int i = 0; i < parts.length; i++) {
         rv.add(new Identifier(parts[i]));
       }
     }
@@ -96,27 +91,25 @@ public abstract class StructureHelper
   }
 
   /**
-   * Determines if one domain is a sub-domain, or the same domain, of another. For example, a.b.c is a sub-domain of a.b
+   * Determines if one domain is a sub-domain, or the same domain, of another. For example, a.b.c is
+   * a sub-domain of a.b
    *
-   * @param srcDomain The main domain.
+   * @param srcDomain  The main domain.
    * @param testDomain The sub-domain.
    * @return True if tesDomain is a sub-domain of srcDomain, else false.
    */
-  public static boolean isSubDomainOf(final IdentifierList srcDomain, final IdentifierList testDomain)
+  public static boolean isSubDomainOf(final IdentifierList srcDomain,
+      final IdentifierList testDomain)
   {
-    if ((null != srcDomain) && (null != testDomain))
-    {
-      if (srcDomain.size() <= testDomain.size())
-      {
+    if ((null != srcDomain) && (null != testDomain)) {
+      if (srcDomain.size() <= testDomain.size()) {
         int i = 0;
         final int e = srcDomain.size();
-        while (i < e)
-        {
+        while (i < e) {
           final Identifier sId = srcDomain.get(i);
           final Identifier tId = testDomain.get(i);
 
-          if ((sId == null) ? (tId != null) : !sId.equals(tId))
-          {
+          if ((sId == null) ? (tId != null) : !sId.equals(tId)) {
             return false;
           }
 
@@ -125,11 +118,8 @@ public abstract class StructureHelper
 
         return true;
       }
-    }
-    else
-    {
-      if ((null == srcDomain) && (null == testDomain))
-      {
+    } else {
+      if ((null == srcDomain) && (null == testDomain)) {
         return true;
       }
     }

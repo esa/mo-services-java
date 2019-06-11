@@ -31,13 +31,15 @@ import esa.mo.mal.transport.gen.GENTransport;
  */
 public interface GENIncomingMessageDecoderFactory<I, O>
 {
+
   /**
    * Creates a decoder for the supplied message source.
    *
-   * @param transport Transport to pass messages to.
+   * @param transport        Transport to pass messages to.
    * @param receptionHandler The reception handler.
-   * @param messageSource The message source to pass to the decoder.
+   * @param messageSource    The message source to pass to the decoder.
    * @return the new message decoder.
    */
-  GENIncomingMessageDecoder createDecoder(final GENTransport<I, O> transport, GENReceptionHandler receptionHandler, I messageSource);
+  GENIncomingMessageDecoder createDecoder(final GENTransport<I, O> transport,
+      GENReceptionHandler receptionHandler, I messageSource);
 }

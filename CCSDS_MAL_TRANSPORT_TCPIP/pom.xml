@@ -85,8 +85,8 @@
       <artifactId>TRANSPORT_GEN</artifactId>
     </dependency>
     <dependency>
-    	<groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>ENCODING_BINARY</artifactId>
+      <groupId>int.esa.ccsds.mo</groupId>
+      <artifactId>ENCODING_BINARY</artifactId>
     </dependency>
   </dependencies>
  

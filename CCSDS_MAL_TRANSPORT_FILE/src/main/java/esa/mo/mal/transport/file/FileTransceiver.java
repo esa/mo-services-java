@@ -40,8 +40,10 @@ import java.util.Iterator;
 /**
  * File transmitter and receiver. Used by the GEN message poller class.
  */
-public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver<InputStream>, GENMessageSender
+public class FileTransceiver implements
+    esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver<InputStream>, GENMessageSender
 {
+
   private final Path incomingDirectory;
   private final Path outgoingDirectory;
   private final WatchService watcher;
@@ -57,12 +59,13 @@ public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessage
    *
    * @param incomingDirectory The directory that incoming messages will appear in.
    * @param outgoingDirectory The directory that outgoing messages will be written into.
-   * @param watcher The file watcher.
-   * @param transportString The filename string to match for incoming messages
-   * @param filenameString The file prefix for outgoing messages
-   * @param deleteFiles True if files should be auto deleted after being read.
+   * @param watcher           The file watcher.
+   * @param transportString   The filename string to match for incoming messages
+   * @param filenameString    The file prefix for outgoing messages
+   * @param deleteFiles       True if files should be auto deleted after being read.
    */
-  public FileTransceiver(Path incomingDirectory, Path outgoingDirectory, WatchService watcher, String transportString, String filenameString, boolean deleteFiles)
+  public FileTransceiver(Path incomingDirectory, Path outgoingDirectory, WatchService watcher,
+      String transportString, String filenameString, boolean deleteFiles)
   {
     this.incomingDirectory = incomingDirectory;
     this.outgoingDirectory = outgoingDirectory;
@@ -77,22 +80,19 @@ public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessage
   {
     // create tmp file name
     String tmpname = FileTransport.FILE_PREFIX
-            + packetData.getDestinationURI().substring(7)
-            + "-"
-            + filenameString
-            + "-"
-            + String.format("%07d", ++msgCount);
+        + packetData.getDestinationURI().substring(7)
+        + "-"
+        + filenameString
+        + "-"
+        + String.format("%07d", ++msgCount);
 
     java.io.File tmpFile = new File(outgoingDirectory.toFile(), tmpname + ".tmp");
 
     java.io.FileOutputStream fos = new FileOutputStream(tmpFile);
-    try
-    {
+    try {
       fos.write(packetData.getEncodedMessage());
       fos.flush();
-    }
-    finally
-    {
+    } finally {
       fos.close();
     }
 
@@ -103,21 +103,18 @@ public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessage
   @Override
   public InputStream readEncodedMessage() throws IOException, InterruptedException
   {
-    if (null == key)
-    {
+    if (null == key) {
       // wait for key to be signalled
       key = watcher.take();
       events = key.pollEvents().iterator();
     }
 
-    if (events.hasNext())
-    {
+    if (events.hasNext()) {
       WatchEvent event = events.next();
       WatchEvent.Kind kind = event.kind();
 
       // TBD - provide example of how OVERFLOW event is handled
-      if (kind == java.nio.file.StandardWatchEventKinds.OVERFLOW)
-      {
+      if (kind == java.nio.file.StandardWatchEventKinds.OVERFLOW) {
         return null;
       }
 
@@ -126,39 +123,29 @@ public class FileTransceiver implements esa.mo.mal.transport.gen.util.GENMessage
       Path name = ev.context();
       Path child = incomingDirectory.resolve(name);
 
-      if (Files.isRegularFile(child, LinkOption.NOFOLLOW_LINKS))
-      {
+      if (Files.isRegularFile(child, LinkOption.NOFOLLOW_LINKS)) {
         String subname = child.getFileName().toString();
-        if (subname.startsWith(transportString) && subname.endsWith(".msg"))
-        {
+        if (subname.startsWith(transportString) && subname.endsWith(".msg")) {
           System.out.println("Found file : " + child.getFileName());
-          try
-          {
+          try {
             FileChannel fc;
-            if (deleteFiles)
-            {
-              fc = FileChannel.open(child, StandardOpenOption.READ, StandardOpenOption.DELETE_ON_CLOSE);
-            }
-            else
-            {
+            if (deleteFiles) {
+              fc = FileChannel.open(child, StandardOpenOption.READ,
+                  StandardOpenOption.DELETE_ON_CLOSE);
+            } else {
               fc = FileChannel.open(child, StandardOpenOption.READ);
             }
 
             return Channels.newInputStream(fc);
-          }
-          catch (IOException ex)
-          {
+          } catch (IOException ex) {
             ex.printStackTrace();
           }
         }
       }
-    }
-    else
-    {
+    } else {
       // reset the key
       boolean valid = key.reset();
-      if (!valid)
-      {
+      if (!valid) {
         // object no longer registered
         System.out.println("Not registered : " + incomingDirectory.toString());
       }

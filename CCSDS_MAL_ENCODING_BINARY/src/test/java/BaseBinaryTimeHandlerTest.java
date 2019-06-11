@@ -35,9 +35,9 @@ import static org.junit.Assert.*;
 
 /**
  * Tests of BinaryTimeHandler
-
- FixedBinaryStreamHolder and FixedBinaryBufferHolder are used to hold data
- because BaseBinaryStreamHolder and BaseBinaryBufferHolder are abstract
+ *
+ * FixedBinaryStreamHolder and FixedBinaryBufferHolder are used to hold data because
+ * BaseBinaryStreamHolder and BaseBinaryBufferHolder are abstract
  */
 public class BaseBinaryTimeHandlerTest
 {
@@ -77,11 +77,13 @@ public class BaseBinaryTimeHandlerTest
     BinaryTimeHandler timeHandler = new BinaryTimeHandler();
     System.out.println("BaseBinaryTimeHandler.encodeTime & BaseBinaryTimeHandler.decodeTime test");
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    FixedBinaryEncoder.FixedBinaryStreamHolder streamHolder = new FixedBinaryEncoder.FixedBinaryStreamHolder(baos, false);
+    FixedBinaryEncoder.FixedBinaryStreamHolder streamHolder
+        = new FixedBinaryEncoder.FixedBinaryStreamHolder(baos, false);
     Time value = new Time((long) (Math.random() * Long.MAX_VALUE / 10000000));
     timeHandler.encodeTime(streamHolder, value);
     FixedBinaryDecoder.FixedBinaryBufferHolder inputBufferHolder;
-    inputBufferHolder = new FixedBinaryDecoder.FixedBinaryBufferHolder(new ByteArrayInputStream(baos.toByteArray()), baos.toByteArray(), 0, 0, false);
+    inputBufferHolder = new FixedBinaryDecoder.FixedBinaryBufferHolder(new ByteArrayInputStream(
+        baos.toByteArray()), baos.toByteArray(), 0, 0, false);
     Time decodedValue = timeHandler.decodeTime(inputBufferHolder);
     assertEquals("Time encoded value == decoded value", value.getValue(), decodedValue.getValue());
 
@@ -96,15 +98,19 @@ public class BaseBinaryTimeHandlerTest
   public void testEncodeFineTime() throws Exception
   {
     BinaryTimeHandler timeHandler = new BinaryTimeHandler();
-    System.out.println("BaseBinaryTimeHandler.encodeFineTime & BaseBinaryTimeHandler.decodeFineTime test");
+    System.out.println(
+        "BaseBinaryTimeHandler.encodeFineTime & BaseBinaryTimeHandler.decodeFineTime test");
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    FixedBinaryEncoder.FixedBinaryStreamHolder streamHolder = new FixedBinaryEncoder.FixedBinaryStreamHolder(baos, false);
+    FixedBinaryEncoder.FixedBinaryStreamHolder streamHolder
+        = new FixedBinaryEncoder.FixedBinaryStreamHolder(baos, false);
     FineTime value = new FineTime((long) (Math.random() * Long.MAX_VALUE / 10));
     timeHandler.encodeFineTime(streamHolder, value);
     FixedBinaryDecoder.FixedBinaryBufferHolder inputBufferHolder;
-    inputBufferHolder = new FixedBinaryDecoder.FixedBinaryBufferHolder(new ByteArrayInputStream(baos.toByteArray()), baos.toByteArray(), 0, 0, false);
+    inputBufferHolder = new FixedBinaryDecoder.FixedBinaryBufferHolder(new ByteArrayInputStream(
+        baos.toByteArray()), baos.toByteArray(), 0, 0, false);
     FineTime decodedValue = timeHandler.decodeFineTime(inputBufferHolder);
-    assertEquals("FineTime encoded value == decoded value", value.getValue(), decodedValue.getValue());
+    assertEquals("FineTime encoded value == decoded value", value.getValue(),
+        decodedValue.getValue());
   }
 
 }

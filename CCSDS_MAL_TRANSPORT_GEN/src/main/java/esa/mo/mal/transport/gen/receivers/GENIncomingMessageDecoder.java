@@ -27,6 +27,7 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public interface GENIncomingMessageDecoder
 {
+
   /**
    * Decodes and returns a new incoming message holder.
    *

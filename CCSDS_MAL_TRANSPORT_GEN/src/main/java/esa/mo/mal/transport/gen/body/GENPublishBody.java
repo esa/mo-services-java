@@ -35,6 +35,7 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
  */
 public class GENPublishBody extends GENMessageBody implements MALPublishBody
 {
+
   private static final long serialVersionUID = 222222222222227L;
   private final int offset;
   private UpdateHeaderList hdrList = null;
@@ -42,13 +43,13 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody
   /**
    * Constructor.
    *
-   * @param ctx The encoding context to use.
-   * @param encFactory The encoder stream factory to use.
+   * @param ctx          The encoding context to use.
+   * @param encFactory   The encoder stream factory to use.
    * @param messageParts The message parts that compose the body.
    */
   public GENPublishBody(final MALEncodingContext ctx,
-          final MALElementStreamFactory encFactory, 
-          final Object[] messageParts)
+      final MALElementStreamFactory encFactory,
+      final Object[] messageParts)
   {
     super(ctx, encFactory, messageParts);
     offset = 0;
@@ -57,14 +58,14 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody
   /**
    * Constructor.
    *
-   * @param ctx The encoding context to use.
-   * @param encFactory The encoder stream factory to use.
+   * @param ctx          The encoding context to use.
+   * @param encFactory   The encoder stream factory to use.
    * @param messageParts The message parts that compose the body.
-   * @param offset The offset in the message parts where the updates start.
+   * @param offset       The offset in the message parts where the updates start.
    */
   public GENPublishBody(final MALEncodingContext ctx,
-          final MALElementStreamFactory encFactory, 
-          final Object[] messageParts, final int offset)
+      final MALElementStreamFactory encFactory,
+      final Object[] messageParts, final int offset)
   {
     super(ctx, encFactory, messageParts);
     this.offset = offset;
@@ -73,16 +74,16 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody
   /**
    * Constructor.
    *
-   * @param ctx The encoding context to use.
+   * @param ctx              The encoding context to use.
    * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
-   * @param encFactory The encoder stream factory to use.
-   * @param encBodyElements The input stream that holds the encoded body parts.
+   * @param encFactory       The encoder stream factory to use.
+   * @param encBodyElements  The input stream that holds the encoded body parts.
    */
-  public GENPublishBody(final MALEncodingContext ctx, 
-          final boolean wrappedBodyParts,
-          final MALElementStreamFactory encFactory,
-          final ByteArrayInputStream encBodyBytes,
-          final MALElementInputStream encBodyElements)
+  public GENPublishBody(final MALEncodingContext ctx,
+      final boolean wrappedBodyParts,
+      final MALElementStreamFactory encFactory,
+      final ByteArrayInputStream encBodyBytes,
+      final MALElementInputStream encBodyElements)
   {
     super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
     offset = 0;
@@ -91,18 +92,18 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody
   /**
    * Constructor.
    *
-   * @param ctx The encoding context to use.
+   * @param ctx              The encoding context to use.
    * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
-   * @param encFactory The encoder stream factory to use.
-   * @param encBodyElements The input stream that holds the encoded body parts.
-   * @param offset The offset in the message parts where the updates start.
+   * @param encFactory       The encoder stream factory to use.
+   * @param encBodyElements  The input stream that holds the encoded body parts.
+   * @param offset           The offset in the message parts where the updates start.
    */
-  public GENPublishBody(final MALEncodingContext ctx, 
-          final boolean wrappedBodyParts,
-          final MALElementStreamFactory encFactory,
-          final ByteArrayInputStream encBodyBytes,
-          final MALElementInputStream encBodyElements,
-          final int offset)
+  public GENPublishBody(final MALEncodingContext ctx,
+      final boolean wrappedBodyParts,
+      final MALElementStreamFactory encFactory,
+      final ByteArrayInputStream encBodyBytes,
+      final MALElementInputStream encBodyElements,
+      final int offset)
   {
     super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
     this.offset = offset;
@@ -111,8 +112,7 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody
   @Override
   public int getUpdateCount() throws MALException
   {
-    if (null == hdrList)
-    {
+    if (null == hdrList) {
       getUpdateHeaderList();
     }
 
@@ -139,8 +139,7 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody
 
     final List[] rv = new List[messageParts.length - offset - 1];
 
-    for (int i = 0; i < rv.length; i++)
-    {
+    for (int i = 0; i < rv.length; i++) {
       rv[i] = (List) messageParts[i + offset + 1];
     }
 
@@ -156,7 +155,8 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody
   }
 
   @Override
-  public MALEncodedElement getEncodedUpdate(final int listIndex, final int updateIndex) throws MALException
+  public MALEncodedElement getEncodedUpdate(final int listIndex, final int updateIndex) throws
+      MALException
   {
     //ToDo
     throw new MALException("Not supported yet.");

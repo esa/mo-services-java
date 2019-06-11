@@ -23,11 +23,12 @@ package esa.mo.mal.transport.spp;
 import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
- * Simple interface that allows the method of conversion of a URI to SPP API and subtype shorts to be delegated to the
- * actual transport used.
+ * Simple interface that allows the method of conversion of a URI to SPP API and subtype shorts to
+ * be delegated to the actual transport used.
  */
 public interface SPPURIRepresentation
 {
+
   /**
    * Returns the APID to encode for the supplied URI
    *
@@ -72,8 +73,8 @@ public interface SPPURIRepresentation
    * Returns the URI from the APID and the subject id
    *
    * @param qualifier The APID qualifier, null if not needed.
-   * @param apid The APID
-   * @param subId the subid. NULL if no subId present.
+   * @param apid      The APID
+   * @param subId     the subid. NULL if no subId present.
    * @return the URI to use.
    */
   URI getURI(Integer qualifier, short apid, Short subId);

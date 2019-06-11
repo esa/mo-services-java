@@ -32,17 +32,17 @@ public class FixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary.ba
    * 16-bit length field encoding enabled
    */
   protected final boolean shortLengthField;
+
   /**
    * Constructor.
    *
-   * @param os Output stream to write to.
-   * @param timeHandler Time handler to use.
-   * @param shortLengthField True if length field is 16-bit wide, otherwise
-   * assumed to be 32-bit.
+   * @param os               Output stream to write to.
+   * @param timeHandler      Time handler to use.
+   * @param shortLengthField True if length field is 16-bit wide, otherwise assumed to be 32-bit.
    */
   public FixedBinaryElementOutputStream(final java.io.OutputStream os,
-          final BinaryTimeHandler timeHandler,
-          final boolean shortLengthField)
+      final BinaryTimeHandler timeHandler,
+      final boolean shortLengthField)
   {
     super(os, timeHandler);
     this.shortLengthField = shortLengthField;

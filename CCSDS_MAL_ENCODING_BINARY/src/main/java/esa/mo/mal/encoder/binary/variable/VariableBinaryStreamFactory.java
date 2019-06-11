@@ -27,8 +27,10 @@ import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
  */
 public class VariableBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.BaseBinaryStreamFactory
 {
+
   public VariableBinaryStreamFactory()
   {
-    super(VariableBinaryElementInputStream.class, VariableBinaryElementOutputStream.class, new BinaryTimeHandler());
+    super(VariableBinaryElementInputStream.class, VariableBinaryElementOutputStream.class,
+        new BinaryTimeHandler());
   }
 }

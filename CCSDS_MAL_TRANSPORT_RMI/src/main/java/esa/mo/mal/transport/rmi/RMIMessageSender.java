@@ -33,6 +33,7 @@ import java.rmi.RemoteException;
  */
 public class RMIMessageSender implements GENMessageSender<byte[]>
 {
+
   private final String remoteURI;
   private boolean closed = false;
   private RMIReceiveInterface destinationRMI;
@@ -45,7 +46,8 @@ public class RMIMessageSender implements GENMessageSender<byte[]>
    * @throws MalformedURLException If URI not correct.
    * @throws RemoteException If there is a remote error.
    */
-  public RMIMessageSender(String remoteRootURI) throws NotBoundException, MalformedURLException, RemoteException
+  public RMIMessageSender(String remoteRootURI) throws NotBoundException, MalformedURLException,
+      RemoteException
   {
     this.remoteURI = remoteRootURI;
     destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteURI);
@@ -54,38 +56,30 @@ public class RMIMessageSender implements GENMessageSender<byte[]>
   @Override
   public void sendEncodedMessage(GENOutgoingMessageHolder<byte[]> packetData) throws IOException
   {
-    try
-    {
+    try {
       internalSendMessage(packetData);
-    }
-    catch (RemoteException ex)
-    {
+    } catch (RemoteException ex) {
       // this can be thrown if we have a cached interface that has expired, so we clear the interface and try again
       destinationRMI = null;
       internalSendMessage(packetData);
     }
   }
 
-  private void internalSendMessage(GENOutgoingMessageHolder<byte[]> packetData) throws MalformedURLException, RemoteException, IOException
+  private void internalSendMessage(GENOutgoingMessageHolder<byte[]> packetData) throws
+      MalformedURLException, RemoteException, IOException
   {
-    if (!closed)
-    {
-      if (null == destinationRMI)
-      {
-        try
-        {
+    if (!closed) {
+      if (null == destinationRMI) {
+        try {
           destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteURI);
-        }
-        catch (NotBoundException ex)
-        {
+        } catch (NotBoundException ex) {
           throw new IOException("Remote URI no known " + remoteURI, ex);
         }
       }
 
       RMIReceiveInterface remoteIf = destinationRMI;
 
-      if (null != remoteIf)
-      {
+      if (null != remoteIf) {
         remoteIf.receive(packetData.getEncodedMessage());
       }
     }

@@ -36,6 +36,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
  */
 public class JMSBrokerBinding implements MALBrokerBinding
 {
+
   private final URI uri;
   private final String localName;
   private final Blob authenticationId;
@@ -43,7 +44,8 @@ public class JMSBrokerBinding implements MALBrokerBinding
   private final UInteger priorityLevelNumber;
   private MALTransmitErrorListener listener = null;
 
-  public JMSBrokerBinding(URI uri, String localName, Blob authenticationId, QoSLevel[] expectedQos, UInteger priorityLevelNumber)
+  public JMSBrokerBinding(URI uri, String localName, Blob authenticationId, QoSLevel[] expectedQos,
+      UInteger priorityLevelNumber)
   {
     this.uri = uri;
     this.localName = localName;
@@ -51,7 +53,7 @@ public class JMSBrokerBinding implements MALBrokerBinding
     this.expectedQos = expectedQos;
     this.priorityLevelNumber = priorityLevelNumber;
   }
-  
+
   public Blob getAuthenticationId()
   {
     return authenticationId;
@@ -72,37 +74,58 @@ public class JMSBrokerBinding implements MALBrokerBinding
     return listener;
   }
 
-  public MALMessage sendNotify(UShort area, UShort service, UShort operation, UOctet version, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, Identifier subscriptionId, UpdateHeaderList updateHeaderList, List... updateList) throws IllegalArgumentException, MALInteractionException, MALException
+  public MALMessage sendNotify(UShort area, UShort service, UShort operation, UOctet version,
+      URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone,
+      SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps,
+      UInteger notifyPriority, Identifier subscriptionId, UpdateHeaderList updateHeaderList,
+      List... updateList) throws IllegalArgumentException, MALInteractionException, MALException
   {
     JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendNotify1");
     return null;
   }
 
-  public MALMessage sendNotify(MALOperation op, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, Identifier subscriptionId, UpdateHeaderList updateHeaderList, List... updateList) throws IllegalArgumentException, MALInteractionException, MALException
+  public MALMessage sendNotify(MALOperation op, URI subscriber, Long transactionId,
+      IdentifierList domainId, Identifier networkZone, SessionType sessionType,
+      Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority,
+      Identifier subscriptionId, UpdateHeaderList updateHeaderList, List... updateList) throws
+      IllegalArgumentException, MALInteractionException, MALException
   {
     JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendNotify2");
     return null;
   }
 
-  public MALMessage sendNotifyError(UShort area, UShort service, UShort operation, UOctet version, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  public MALMessage sendNotifyError(UShort area, UShort service, UShort operation, UOctet version,
+      URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone,
+      SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps,
+      UInteger notifyPriority, MALStandardError error) throws IllegalArgumentException,
+      MALInteractionException, MALException
   {
     JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendNotifyError1");
     return null;
   }
 
-  public MALMessage sendNotifyError(MALOperation op, URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  public MALMessage sendNotifyError(MALOperation op, URI subscriber, Long transactionId,
+      IdentifierList domainId, Identifier networkZone, SessionType sessionType,
+      Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority,
+      MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
   {
     JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendNotifyError2");
     return null;
   }
 
-  public MALMessage sendPublishError(UShort area, UShort service, UShort operation, UOctet version, URI publisher, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  public MALMessage sendPublishError(UShort area, UShort service, UShort operation, UOctet version,
+      URI publisher, Long transactionId, IdentifierList domainId, Identifier networkZone,
+      SessionType sessionType, Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority,
+      MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
   {
     JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendPublishError1");
     return null;
   }
 
-  public MALMessage sendPublishError(MALOperation op, URI publisher, Long transactionId, IdentifierList domainId, Identifier networkZone, SessionType sessionType, Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority, MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException
+  public MALMessage sendPublishError(MALOperation op, URI publisher, Long transactionId,
+      IdentifierList domainId, Identifier networkZone, SessionType sessionType,
+      Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority, MALStandardError error)
+      throws IllegalArgumentException, MALInteractionException, MALException
   {
     JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendPublishError2");
     return null;

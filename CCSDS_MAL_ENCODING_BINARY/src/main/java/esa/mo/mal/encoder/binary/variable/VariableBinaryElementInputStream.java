@@ -27,13 +27,15 @@ import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
  */
 public class VariableBinaryElementInputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementInputStream
 {
+
   /**
    * Constructor.
    *
-   * @param is Input stream to read from.
+   * @param is          Input stream to read from.
    * @param timeHandler Time handler to use.
    */
-  public VariableBinaryElementInputStream(final java.io.InputStream is, final BinaryTimeHandler timeHandler)
+  public VariableBinaryElementInputStream(final java.io.InputStream is,
+      final BinaryTimeHandler timeHandler)
   {
     super(new VariableBinaryDecoder(is, timeHandler));
   }
@@ -41,11 +43,12 @@ public class VariableBinaryElementInputStream extends esa.mo.mal.encoder.binary.
   /**
    * Constructor.
    *
-   * @param buf Byte buffer to read from.
-   * @param offset Offset into buffer to start from.
+   * @param buf         Byte buffer to read from.
+   * @param offset      Offset into buffer to start from.
    * @param timeHandler Time handler to use.
    */
-  public VariableBinaryElementInputStream(final byte[] buf, final int offset, final BinaryTimeHandler timeHandler)
+  public VariableBinaryElementInputStream(final byte[] buf, final int offset,
+      final BinaryTimeHandler timeHandler)
   {
     super(new VariableBinaryDecoder(buf, offset, timeHandler));
   }

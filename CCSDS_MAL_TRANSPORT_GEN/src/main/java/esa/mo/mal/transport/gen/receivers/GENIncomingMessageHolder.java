@@ -28,6 +28,7 @@ import esa.mo.mal.transport.gen.GENTransport;
  */
 public final class GENIncomingMessageHolder
 {
+
   /**
    * The transaction id of this message.
    */
@@ -45,10 +46,11 @@ public final class GENIncomingMessageHolder
    * Constructor.
    *
    * @param transactionId the message transaction id.
-   * @param malMsg The decoded MAL message.
-   * @param smsg A string representation for debug tracing.
+   * @param malMsg        The decoded MAL message.
+   * @param smsg          A string representation for debug tracing.
    */
-  public GENIncomingMessageHolder(final Long transactionId, final GENMessage malMsg, final GENTransport.PacketToString smsg)
+  public GENIncomingMessageHolder(final Long transactionId, final GENMessage malMsg,
+      final GENTransport.PacketToString smsg)
   {
     this.transactionId = transactionId;
     this.malMsg = malMsg;

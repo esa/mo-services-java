@@ -31,17 +31,17 @@ import org.ccsds.moims.mo.mal.MALListDecoder;
  */
 public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinaryDecoder
 {
+
   /**
    * Constructor.
    *
-   * @param src Byte array to read from.
-   * @param timeHandler Time handler to use.
-   * @param shortLengthField True if length field is 16-bit wide, otherwise
-   * assumed to be 32-bit.
+   * @param src              Byte array to read from.
+   * @param timeHandler      Time handler to use.
+   * @param shortLengthField True if length field is 16-bit wide, otherwise assumed to be 32-bit.
    */
   public FixedBinaryDecoder(final byte[] src,
-          final BinaryTimeHandler timeHandler,
-          final boolean shortLengthField)
+      final BinaryTimeHandler timeHandler,
+      final boolean shortLengthField)
   {
     super(new FixedBinaryBufferHolder(null, src, 0, src.length, shortLengthField), timeHandler);
   }
@@ -49,14 +49,13 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
   /**
    * Constructor.
    *
-   * @param is Input stream to read from.
-   * @param timeHandler Time handler to use.
-   * @param shortLengthField True if length field is 16-bit wide, otherwise
-   * assumed to be 32-bit.
+   * @param is               Input stream to read from.
+   * @param timeHandler      Time handler to use.
+   * @param shortLengthField True if length field is 16-bit wide, otherwise assumed to be 32-bit.
    */
   public FixedBinaryDecoder(final java.io.InputStream is,
-          final BinaryTimeHandler timeHandler,
-          final boolean shortLengthField)
+      final BinaryTimeHandler timeHandler,
+      final boolean shortLengthField)
   {
     super(new FixedBinaryBufferHolder(is, null, 0, 0, shortLengthField), timeHandler);
   }
@@ -64,16 +63,15 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
   /**
    * Constructor.
    *
-   * @param src Byte array to read from.
-   * @param offset index in array to start reading from.
-   * @param timeHandler Time handler to use.
-   * @param shortLengthField True if length field is 16-bit wide, otherwise
-   * assumed to be 32-bit.
+   * @param src              Byte array to read from.
+   * @param offset           index in array to start reading from.
+   * @param timeHandler      Time handler to use.
+   * @param shortLengthField True if length field is 16-bit wide, otherwise assumed to be 32-bit.
    */
   public FixedBinaryDecoder(final byte[] src,
-          final int offset,
-          final BinaryTimeHandler timeHandler,
-          final boolean shortLengthField)
+      final int offset,
+      final BinaryTimeHandler timeHandler,
+      final boolean shortLengthField)
   {
     super(new FixedBinaryBufferHolder(null, src, offset, src.length, shortLengthField), timeHandler);
   }
@@ -81,11 +79,11 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
   /**
    * Constructor.
    *
-   * @param src Source buffer holder to use.
+   * @param src         Source buffer holder to use.
    * @param timeHandler Time handler to use.
    */
   public FixedBinaryDecoder(final BufferHolder src,
-          final BinaryTimeHandler timeHandler)
+      final BinaryTimeHandler timeHandler)
   {
     super(src, timeHandler);
   }
@@ -106,22 +104,21 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
      * 16-bit length field encoding enabled
      */
     protected final boolean shortLengthField;
+
     /**
      * Constructor.
      *
-     * @param is Input stream to read from.
-     * @param buf Source buffer to use.
-     * @param offset Buffer offset to read from next.
-     * @param length Length of readable data held in the array, which may be
-     * larger.
-     * @param shortLengthField True if length field is 16-bit wide, otherwise
-     * assumed to be 32-bit.
+     * @param is               Input stream to read from.
+     * @param buf              Source buffer to use.
+     * @param offset           Buffer offset to read from next.
+     * @param length           Length of readable data held in the array, which may be larger.
+     * @param shortLengthField True if length field is 16-bit wide, otherwise assumed to be 32-bit.
      */
     public FixedBinaryBufferHolder(final java.io.InputStream is,
-            final byte[] buf,
-            final int offset,
-            final int length,
-            final boolean shortLengthField)
+        final byte[] buf,
+        final int offset,
+        final int length,
+        final boolean shortLengthField)
     {
       super(is, buf, offset, length);
       this.shortLengthField = shortLengthField;
@@ -177,7 +174,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     @Override
     public short getSignedShort() throws MALException
     {
-      return (short)getUnsignedShort();
+      return (short) getUnsignedShort();
     }
 
     @Override
@@ -205,19 +202,16 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     public String getString() throws MALException
     {
       int len;
-      if (shortLengthField)
-      {
+      if (shortLengthField) {
         len = getUnsignedShort();
-      }
-      else
-      {
+      } else {
         len = getUnsignedInt();
       }
 
-      if (len >= 0)
-      {
+      if (len >= 0) {
         buf.checkBuffer(len);
-        final String s = new String(buf.getBuf(), buf.shiftOffsetAndReturnPrevious(len), len, UTF8_CHARSET);
+        final String s = new String(buf.getBuf(), buf.shiftOffsetAndReturnPrevious(len), len,
+            UTF8_CHARSET);
         return s;
       }
       return null;
@@ -226,12 +220,9 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     @Override
     public byte[] getBytes() throws MALException
     {
-      if (shortLengthField)
-      {
+      if (shortLengthField) {
         return directGetBytes(getUnsignedShort());
-      }
-      else
-      {
+      } else {
         return directGetBytes(getUnsignedInt());
       }
     }

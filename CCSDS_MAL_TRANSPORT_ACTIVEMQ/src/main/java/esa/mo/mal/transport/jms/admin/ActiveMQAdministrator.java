@@ -45,6 +45,7 @@ import java.util.logging.Level;
  */
 public class ActiveMQAdministrator extends JMSAbstractAdministrator
 {
+
   public String amqJmxUrl = "service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi";
   private String brokerURL = "localhost";
 
@@ -58,7 +59,8 @@ public class ActiveMQAdministrator extends JMSAbstractAdministrator
   {
     super.init(transport, namingContextEnv);
 
-    amqJmxUrl = System.getProperty("java.jmx.provider.url", "service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi");
+    amqJmxUrl = System.getProperty("java.jmx.provider.url",
+        "service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi");
     brokerURL = System.getProperty("java.naming.provider.url", "localhost");
   }
 
@@ -113,16 +115,15 @@ public class ActiveMQAdministrator extends JMSAbstractAdministrator
 
     String brokerNameQuery = "org.apache.activemq:type=Broker,brokerName=localhost";
     String removeTopicOperationName = "removeQueue";
-    Object[] params =
-    {
+    Object[] params = {
       queue.getQueueName()
     };
-    String[] sig =
-    {
+    String[] sig = {
       "java.lang.String"
     };
 
-    doTopicCrud(conn, queue.getQueueName(), brokerNameQuery, removeTopicOperationName, params, sig, "remov");
+    doTopicCrud(conn, queue.getQueueName(), brokerNameQuery, removeTopicOperationName, params, sig,
+        "remov");
   }
 
   @Override
@@ -132,16 +133,15 @@ public class ActiveMQAdministrator extends JMSAbstractAdministrator
 
     String brokerNameQuery = "org.apache.activemq:type=Broker,brokerName=localhost";
     String removeTopicOperationName = "removeTopic";
-    Object[] params =
-    {
+    Object[] params = {
       topic.getTopicName()
     };
-    String[] sig =
-    {
+    String[] sig = {
       "java.lang.String"
     };
 
-    doTopicCrud(conn, topic.getTopicName(), brokerNameQuery, removeTopicOperationName, params, sig, "remov");
+    doTopicCrud(conn, topic.getTopicName(), brokerNameQuery, removeTopicOperationName, params, sig,
+        "remov");
   }
 
   public MBeanServerConnection connect() throws IOException
@@ -154,25 +154,19 @@ public class ActiveMQAdministrator extends JMSAbstractAdministrator
     String password = "";
 
     Map env = new HashMap();
-    String[] credentials = new String[]
-    {
+    String[] credentials = new String[]{
       username, password
     };
     env.put(JMXConnector.CREDENTIALS, credentials);
 
-    try
-    {
+    try {
       connector = JMXConnectorFactory.newJMXConnector(new JMXServiceURL(amqJmxUrl), env);
       connector.connect();
       connection = connector.getMBeanServerConnection();
-    }
-    catch (MalformedURLException e)
-    {
+    } catch (MalformedURLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
@@ -181,56 +175,40 @@ public class ActiveMQAdministrator extends JMSAbstractAdministrator
   }
 
   private void doTopicCrud(MBeanServerConnection conn, String topicName,
-          String brokerNameQuery, String operationName, Object[] params, String[] sig, String verb)
-          throws IOException
+      String brokerNameQuery, String operationName, Object[] params, String[] sig, String verb)
+      throws IOException
   {
-    if (null != conn)
-    {
-      try
-      {
-        GENTransport.LOGGER.log(Level.INFO, "{0}ing new topic: [{1}]", new Object[]
-        {
+    if (null != conn) {
+      try {
+        GENTransport.LOGGER.log(Level.INFO, "{0}ing new topic: [{1}]", new Object[]{
           verb, topicName
         });
         ObjectName brokerObjName = new ObjectName(brokerNameQuery);
         conn.invoke(brokerObjName, operationName, params, sig);
-        GENTransport.LOGGER.log(Level.INFO, "Topic [{0}] has been {1}ed", new Object[]
-        {
+        GENTransport.LOGGER.log(Level.INFO, "Topic [{0}] has been {1}ed", new Object[]{
           topicName, verb
         });
-      }
-      catch (MalformedObjectNameException e)
-      {
+      } catch (MalformedObjectNameException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (NullPointerException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (InstanceNotFoundException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (MBeanException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (ReflectionException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-      catch (NullPointerException e)
-      {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      catch (InstanceNotFoundException e)
-      {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      catch (MBeanException e)
-      {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      catch (ReflectionException e)
-      {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
-    else
-    {
-      GENTransport.LOGGER.log(Level.WARNING, "Unable to {0}e topic: [{1}] as no connection to JMX configured", new Object[]
-      {
-        verb, topicName
-      });
+    } else {
+      GENTransport.LOGGER.log(Level.WARNING,
+          "Unable to {0}e topic: [{1}] as no connection to JMX configured", new Object[]{
+            verb, topicName
+          });
     }
   }
 }

@@ -53,6 +53,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class GENMessage implements MALMessage, java.io.Serializable
 {
+
   protected final GENMessageHeader header;
   protected final GENMessageBody body;
   protected final Map qosProperties;
@@ -64,43 +65,41 @@ public class GENMessage implements MALMessage, java.io.Serializable
    * Constructor.
    *
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
-   * @param header The message header to use.
+   * @param header        The message header to use.
    * @param qosProperties The QoS properties for this message.
-   * @param operation The details of the operation being encoding, can be null.
-   * @param encFactory The stream factory to use for decoding.
-   * @param body the body of the message.
+   * @param operation     The details of the operation being encoding, can be null.
+   * @param encFactory    The stream factory to use for decoding.
+   * @param body          the body of the message.
    * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation is unknown.
    */
   public GENMessage(final boolean wrapBodyParts,
-          final GENMessageHeader header,
-          final Map qosProperties,
-          final MALOperation operation,
-          final MALElementStreamFactory encFactory,
-          final Object... body) throws MALInteractionException
+      final GENMessageHeader header,
+      final Map qosProperties,
+      final MALOperation operation,
+      final MALElementStreamFactory encFactory,
+      final Object... body) throws MALInteractionException
   {
     this.header = header;
-    if (null == operation)
-    {
-      MALArea area = MALContextFactory.lookupArea(this.header.getServiceArea(), this.header.getAreaVersion());
-      if (null == area)
-      {
-        throw new MALInteractionException(new MALStandardError(MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER, null));
+    if (null == operation) {
+      MALArea area = MALContextFactory.lookupArea(this.header.getServiceArea(),
+          this.header.getAreaVersion());
+      if (null == area) {
+        throw new MALInteractionException(new MALStandardError(
+            MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER, null));
       }
 
       MALService service = area.getServiceByNumber(this.header.getService());
-      if (null == service)
-      {
-        throw new MALInteractionException(new MALStandardError(MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
+      if (null == service) {
+        throw new MALInteractionException(new MALStandardError(
+            MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
       }
 
       this.operation = service.getOperationByNumber(this.header.getOperation());
-      if (null == this.operation)
-      {
-        throw new MALInteractionException(new MALStandardError(MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
+      if (null == this.operation) {
+        throw new MALInteractionException(new MALStandardError(
+            MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
       }
-    }
-    else
-    {
+    } else {
       this.operation = operation;
     }
     this.body = createMessageBody(encFactory, body);
@@ -112,19 +111,19 @@ public class GENMessage implements MALMessage, java.io.Serializable
    * Constructor.
    *
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
-   * @param readHeader True if the header should be read from the packet.
-   * @param header An instance of the header class to use.
+   * @param readHeader    True if the header should be read from the packet.
+   * @param header        An instance of the header class to use.
    * @param qosProperties The QoS properties for this message.
-   * @param packet The message in encoded form.
-   * @param encFactory The stream factory to use for decoding.
+   * @param packet        The message in encoded form.
+   * @param encFactory    The stream factory to use for decoding.
    * @throws MALException On decoding error.
    */
   public GENMessage(final boolean wrapBodyParts,
-          final boolean readHeader,
-          final GENMessageHeader header,
-          final Map qosProperties,
-          final byte[] packet,
-          final MALElementStreamFactory encFactory) throws MALException
+      final boolean readHeader,
+      final GENMessageHeader header,
+      final Map qosProperties,
+      final byte[] packet,
+      final MALElementStreamFactory encFactory) throws MALException
   {
     this.qosProperties = qosProperties;
     this.wrapBodyParts = wrapBodyParts;
@@ -132,13 +131,10 @@ public class GENMessage implements MALMessage, java.io.Serializable
     final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
     final MALElementInputStream enc = encFactory.createInputStream(bais);
 
-    if (readHeader)
-    {
+    if (readHeader) {
       MALEncodingContext ctx = new MALEncodingContext(header, null, 0, qosProperties, qosProperties);
       this.header = (GENMessageHeader) enc.readElement(header, ctx);
-    }
-    else
-    {
+    } else {
       this.header = header;
     }
 
@@ -149,32 +145,29 @@ public class GENMessage implements MALMessage, java.io.Serializable
    * Constructor.
    *
    * @param wrapBodyParts True if the encoded body parts should be wrapped in BLOBs.
-   * @param readHeader True if the header should be read from the stream.
-   * @param header An instance of the header class to use.
+   * @param readHeader    True if the header should be read from the stream.
+   * @param header        An instance of the header class to use.
    * @param qosProperties The QoS properties for this message.
-   * @param ios The message in encoded form.
-   * @param encFactory The stream factory to use for decoding.
+   * @param ios           The message in encoded form.
+   * @param encFactory    The stream factory to use for decoding.
    * @throws MALException On decoding error.
    */
   public GENMessage(final boolean wrapBodyParts,
-          final boolean readHeader,
-          final GENMessageHeader header,
-          final Map qosProperties,
-          final java.io.InputStream ios,
-          final MALElementStreamFactory encFactory) throws MALException
+      final boolean readHeader,
+      final GENMessageHeader header,
+      final Map qosProperties,
+      final java.io.InputStream ios,
+      final MALElementStreamFactory encFactory) throws MALException
   {
     this.qosProperties = qosProperties;
     this.wrapBodyParts = wrapBodyParts;
 
     final MALElementInputStream enc = encFactory.createInputStream(ios);
 
-    if (readHeader)
-    {
+    if (readHeader) {
       MALEncodingContext ctx = new MALEncodingContext(header, null, 0, qosProperties, qosProperties);
       this.header = (GENMessageHeader) enc.readElement(header, ctx);
-    }
-    else
-    {
+    } else {
       this.header = header;
     }
 
@@ -218,55 +211,52 @@ public class GENMessage implements MALMessage, java.io.Serializable
   /**
    * Encodes the contents of the message into the provided stream
    *
-   * @param streamFactory The stream factory to use for encoder creation.
-   * @param enc The output stream to use for encoding.
+   * @param streamFactory        The stream factory to use for encoder creation.
+   * @param enc                  The output stream to use for encoding.
    * @param lowLevelOutputStream the stream to write to.
-   * @param writeHeader True if the header should be written to the output stream.
+   * @param writeHeader          True if the header should be written to the output stream.
    * @throws MALException On encoding error.
    */
   public void encodeMessage(final MALElementStreamFactory streamFactory,
-          final MALElementOutputStream enc,
-          final OutputStream lowLevelOutputStream,
-          final boolean writeHeader) throws MALException
+      final MALElementOutputStream enc,
+      final OutputStream lowLevelOutputStream,
+      final boolean writeHeader) throws MALException
   {
-    try
-    {
-      MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties, qosProperties);
+    try {
+      MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties,
+          qosProperties);
 
       // if we have a header encode it
-      if (writeHeader && (null != header))
-      {
+      if (writeHeader && (null != header)) {
         enc.writeElement(header, ctx);
       }
 
       // now encode the body
-      body.encodeMessageBody(streamFactory, enc, lowLevelOutputStream, header.getInteractionStage(), ctx);
-    }
-    catch (Exception ex)
-    {
+      body.encodeMessageBody(streamFactory, enc, lowLevelOutputStream, header.getInteractionStage(),
+          ctx);
+    } catch (Exception ex) {
       throw new MALException("Internal error encoding message", ex);
     }
   }
 
   private GENMessageBody createMessageBody(final MALElementStreamFactory encFactory,
-          final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements)
+      final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements)
   {
-    MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties, qosProperties);
+    MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties,
+        qosProperties);
 
-    if (header.getIsErrorMessage())
-    {
+    if (header.getIsErrorMessage()) {
       return new GENErrorBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
     }
 
-    if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal())
-    {
+    if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal()) {
       final short stage = header.getInteractionStage().getValue();
-      switch (stage)
-      {
+      switch (stage) {
         case MALPubSubOperation._REGISTER_STAGE:
           return new GENRegisterBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
         case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-          return new GENPublishRegisterBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
+          return new GENPublishRegisterBody(ctx, wrapBodyParts, encFactory, encBodyBytes,
+              encBodyElements);
         case MALPubSubOperation._PUBLISH_STAGE:
           return new GENPublishBody(ctx, wrapBodyParts, encFactory, encBodyBytes, encBodyElements);
         case MALPubSubOperation._NOTIFY_STAGE:
@@ -282,20 +272,18 @@ public class GENMessage implements MALMessage, java.io.Serializable
   }
 
   private GENMessageBody createMessageBody(final MALElementStreamFactory encFactory,
-          final Object[] bodyElements)
+      final Object[] bodyElements)
   {
-    MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties, qosProperties);
+    MALEncodingContext ctx = new MALEncodingContext(header, operation, 0, qosProperties,
+        qosProperties);
 
-    if (header.getIsErrorMessage())
-    {
+    if (header.getIsErrorMessage()) {
       return new GENErrorBody(ctx, encFactory, bodyElements);
     }
 
-    if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal())
-    {
+    if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal()) {
       final short stage = header.getInteractionStage().getValue();
-      switch (stage)
-      {
+      switch (stage) {
         case MALPubSubOperation._REGISTER_STAGE:
           return new GENRegisterBody(ctx, encFactory, bodyElements);
         case MALPubSubOperation._PUBLISH_REGISTER_STAGE:

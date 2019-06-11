@@ -33,29 +33,36 @@ import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * Factory class for SPPMessage decoders.
+ *
  * @param <I>
  */
-public class SPPMessageDecoderFactory<I> implements GENIncomingMessageDecoderFactory<I, List<ByteBuffer>>
+public class SPPMessageDecoderFactory<I> implements
+    GENIncomingMessageDecoderFactory<I, List<ByteBuffer>>
 {
+
   @Override
-  public GENIncomingMessageDecoder createDecoder(GENTransport<I, List<ByteBuffer>> transport, GENReceptionHandler receptionHandler, I messageSource)
+  public GENIncomingMessageDecoder createDecoder(GENTransport<I, List<ByteBuffer>> transport,
+      GENReceptionHandler receptionHandler, I messageSource)
   {
-    return new SPPMessageDecoder((SPPBaseTransport<I>)transport, messageSource);
+    return new SPPMessageDecoder((SPPBaseTransport<I>) transport, messageSource);
   }
 
   /**
-   * Implementation of the GENIncomingMessageDecoder class for newly arrived MAL Messages in SPPMessage format.
+   * Implementation of the GENIncomingMessageDecoder class for newly arrived MAL Messages in
+   * SPPMessage format.
+   *
    * @param <I>
    */
   public static final class SPPMessageDecoder<I> implements GENIncomingMessageDecoder
   {
+
     private final SPPBaseTransport<I> transport;
     private final I rawMessage;
 
     /**
      * Constructor
      *
-     * @param transport Containing transport.
+     * @param transport  Containing transport.
      * @param rawMessage The raw message
      */
     public SPPMessageDecoder(SPPBaseTransport<I> transport, I rawMessage)
@@ -69,12 +76,11 @@ public class SPPMessageDecoderFactory<I> implements GENIncomingMessageDecoderFac
     {
       GENTransport.PacketToString smsg = transport.new PacketToString(null);
       GENMessage malMsg = transport.createMessage(rawMessage);
-      
-      if (null != malMsg)
-      {
+
+      if (null != malMsg) {
         return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
       }
-      
+
       return null;
     }
   }

@@ -27,12 +27,12 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
-
 /**
  *
  */
 public class JMSTransportFactoryImpl extends MALTransportFactory
 {
+
   private static final String JMS_ADMIN_CLASS = "org.ccsds.moims.mo.jms.admin.class";
   private static final String AMQP_ADMIN_CLASS = "org.ccsds.moims.mo.jms.amqp.admin.class";
   private static final String JMSPS = "ccsdsjms";
@@ -48,8 +48,7 @@ public class JMSTransportFactoryImpl extends MALTransportFactory
   @Override
   public MALTransport createTransport(MALContext ctx, Map properties) throws MALException
   {
-    synchronized (mutex)
-    {
+    synchronized (mutex) {
       init(properties);
 
       return transport;
@@ -58,53 +57,39 @@ public class JMSTransportFactoryImpl extends MALTransportFactory
 
   protected void init(Map properties) throws MALException
   {
-    if (null == transport)
-    {
-      try
-      {
+    if (null == transport) {
+      try {
         String prot = getProtocol();
-        if (JMSPS.equals(prot))
-        {
+        if (JMSPS.equals(prot)) {
           transport = new JMSTransport(this, prot, getAdministrator(false), properties);
-        }
-        else if (AMQPPS.equals(prot))
-        {
+        } else if (AMQPPS.equals(prot)) {
           transport = new JMSTransport(this, prot, getAdministrator(true), properties);
-        }
-        else
-        {
+        } else {
           throw new MALException("Unknown JMS transport required! " + prot);
         }
 
         transport.init();
-      }
-      catch (Exception ex)
-      {
-        JMSTransport.RLOGGER.log(Level.SEVERE, "Exception thrown during the creation of the JMSTransport: {0}", ex);
+      } catch (Exception ex) {
+        JMSTransport.RLOGGER.log(Level.SEVERE,
+            "Exception thrown during the creation of the JMSTransport: {0}", ex);
       }
     }
   }
 
   private JMSAbstractAdministrator getAdministrator(boolean amqp) throws MALException
   {
-    try
-    {
+    try {
       String adminClassName;
 
-      if (amqp)
-      {
+      if (amqp) {
         adminClassName = System.getProperty(AMQP_ADMIN_CLASS);
-      }
-      else
-      {
+      } else {
         adminClassName = System.getProperty(JMS_ADMIN_CLASS);
       }
 
       Class adminClass = Class.forName(adminClassName);
       return (JMSAbstractAdministrator) adminClass.newInstance();
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new MALException("Unable to create JMS adminstration class", e);
     }
   }

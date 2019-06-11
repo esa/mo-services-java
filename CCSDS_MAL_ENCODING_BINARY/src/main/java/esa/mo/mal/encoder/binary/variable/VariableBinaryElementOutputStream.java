@@ -27,13 +27,15 @@ import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
  */
 public class VariableBinaryElementOutputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementOutputStream
 {
+
   /**
    * Constructor.
    *
-   * @param os Output stream to write to.
+   * @param os          Output stream to write to.
    * @param timeHandler Time handler to use.
    */
-  public VariableBinaryElementOutputStream(final java.io.OutputStream os, final BinaryTimeHandler timeHandler)
+  public VariableBinaryElementOutputStream(final java.io.OutputStream os,
+      final BinaryTimeHandler timeHandler)
   {
     super(os, timeHandler);
   }

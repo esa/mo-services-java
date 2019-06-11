@@ -29,19 +29,21 @@ import org.ccsds.moims.mo.mal.MALListDecoder;
  */
 public class LineListDecoder extends LineDecoder implements MALListDecoder
 {
+
   private final int size;
   private final List list;
 
   /**
    * Constructor.
    *
-   * @param list List to decode into.
+   * @param list        List to decode into.
    * @param inputStream Input stream to read from.
-   * @param srcBuffer Buffer to manage.
+   * @param srcBuffer   Buffer to manage.
    * @throws MALException If cannot decode size of list.
    */
-  public LineListDecoder(final List list, final java.io.InputStream inputStream, final BufferHolder srcBuffer)
-          throws MALException
+  public LineListDecoder(final List list, final java.io.InputStream inputStream,
+      final BufferHolder srcBuffer)
+      throws MALException
   {
     super(inputStream, srcBuffer);
 

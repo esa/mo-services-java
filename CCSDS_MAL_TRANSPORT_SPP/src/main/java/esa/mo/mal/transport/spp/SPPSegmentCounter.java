@@ -25,18 +25,17 @@ package esa.mo.mal.transport.spp;
  */
 public class SPPSegmentCounter
 {
+
   private int sequenceCount = 0;
 
   public int getNextSegmentCount()
   {
     int i;
 
-    synchronized (this)
-    {
+    synchronized (this) {
       i = sequenceCount++;
 
-      if (sequenceCount < 0)
-      {
+      if (sequenceCount < 0) {
         sequenceCount = 0;
       }
     }

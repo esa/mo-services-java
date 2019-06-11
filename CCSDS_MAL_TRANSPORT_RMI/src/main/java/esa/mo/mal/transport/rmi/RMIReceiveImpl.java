@@ -25,10 +25,12 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
- * The implementation of the RMIReceiveInterface interface. Holds a reference to the transport instance that created it.
+ * The implementation of the RMIReceiveInterface interface. Holds a reference to the transport
+ * instance that created it.
  */
 public class RMIReceiveImpl extends UnicastRemoteObject implements RMIReceiveInterface
 {
+
   private static final long serialVersionUID = 0x1000001111100L;
   private final transient RMITransport transport;
 

@@ -54,10 +54,12 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  */
 public class RMITransport extends GENTransport<byte[], byte[]>
 {
+
   /**
    * Logger
    */
-  public static final java.util.logging.Logger RLOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.rmi");
+  public static final java.util.logging.Logger RLOGGER = Logger.getLogger(
+      "org.ccsds.moims.mo.mal.transport.rmi");
   /**
    * System property to set the host name used locally.
    */
@@ -71,21 +73,20 @@ public class RMITransport extends GENTransport<byte[], byte[]>
   /**
    * Constructor.
    *
-   * @param protocol The protocol string.
-   * @param factory The factory that created us.
+   * @param protocol   The protocol string.
+   * @param factory    The factory that created us.
    * @param properties The QoS properties.
    * @throws MALException On error.
    */
   public RMITransport(final String protocol,
-          final MALTransportFactory factory,
-          final java.util.Map properties) throws MALException
+      final MALTransportFactory factory,
+      final java.util.Map properties) throws MALException
   {
     super(protocol, '-', true, true, factory, properties);
 
     String lhost = null;
 
-    if ((properties != null) && (properties.containsKey(RMI_HOSTNAME_PROPERTY)))
-    {
+    if ((properties != null) && (properties.containsKey(RMI_HOSTNAME_PROPERTY))) {
       lhost = (String) properties.get(RMI_HOSTNAME_PROPERTY);
     }
 
@@ -97,16 +98,12 @@ public class RMITransport extends GENTransport<byte[], byte[]>
   {
     // Port numbers above 1023 are up for grabs on any machine....
     int iRmiPort = 1024;
-    while (true)
-    {
-      try
-      {
+    while (true) {
+      try {
         registry = java.rmi.registry.LocateRegistry.createRegistry(iRmiPort);
         // Got a valid port number, lets get out of here...
         break;
-      }
-      catch (RemoteException e)
-      {
+      } catch (RemoteException e) {
         // Port already in use, lets try the next one...
         ++iRmiPort;
       }
@@ -117,14 +114,11 @@ public class RMITransport extends GENTransport<byte[], byte[]>
 
     super.init();
 
-    try
-    {
+    try {
       ourRMIinterface = new RMIReceiveImpl(this);
       registry.rebind(String.valueOf(portNumber), ourRMIinterface);
       RLOGGER.log(Level.INFO, "RMI Bound to registry on port {0}", portNumber);
-    }
-    catch (RemoteException ex)
-    {
+    } catch (RemoteException ex) {
       throw new MALException("Error initialising RMI connection", ex);
     }
   }
@@ -145,10 +139,10 @@ public class RMITransport extends GENTransport<byte[], byte[]>
 
   @Override
   public MALBrokerBinding createBroker(final String localName,
-          final Blob authenticationId,
-          final QoSLevel[] expectedQos,
-          final UInteger priorityLevelNumber,
-          final Map defaultQoSProperties) throws MALException
+      final Blob authenticationId,
+      final QoSLevel[] expectedQos,
+      final UInteger priorityLevelNumber,
+      final Map defaultQoSProperties) throws MALException
   {
     // not support by RMI transport
     return null;
@@ -156,10 +150,10 @@ public class RMITransport extends GENTransport<byte[], byte[]>
 
   @Override
   public MALBrokerBinding createBroker(final MALEndpoint endpoint,
-          final Blob authenticationId,
-          final QoSLevel[] qosLevels,
-          final UInteger priorities,
-          final Map properties) throws MALException
+      final Blob authenticationId,
+      final QoSLevel[] qosLevels,
+      final UInteger priorities,
+      final Map properties) throws MALException
   {
     // not support by RMI transport
     return null;
@@ -184,18 +178,13 @@ public class RMITransport extends GENTransport<byte[], byte[]>
   {
     super.close();
 
-    try
-    {
+    try {
       registry.unbind(String.valueOf(portNumber));
       UnicastRemoteObject.unexportObject(ourRMIinterface, true);
       UnicastRemoteObject.unexportObject(registry, true);
-    }
-    catch (java.rmi.NotBoundException ex)
-    {
+    } catch (java.rmi.NotBoundException ex) {
       // NoOp
-    }
-    catch (RemoteException ex)
-    {
+    } catch (RemoteException ex) {
       // NoOp
     }
 
@@ -204,83 +193,77 @@ public class RMITransport extends GENTransport<byte[], byte[]>
   }
 
   @Override
-  protected GENMessageSender<byte[]> createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException
+  protected GENMessageSender<byte[]> createMessageSender(GENMessage msg, String remoteRootURI)
+      throws MALException, MALTransmitErrorException
   {
     RLOGGER.log(Level.FINE, "RMI received request to create connections to URI:{0}", remoteRootURI);
 
-    try
-    {
+    try {
       // create new sender for this URI
       return new RMIMessageSender(remoteRootURI);
-    }
-    catch (NotBoundException e)
-    {
+    } catch (NotBoundException e) {
       RLOGGER.log(Level.WARNING, "RMI could not connect to :" + remoteRootURI, e);
-      throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
+      throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
+          MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
 
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
       RLOGGER.log(Level.WARNING, "RMI could not connect to :" + remoteRootURI, e);
-      throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
+      throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
+          MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
     }
   }
 
   @Override
   public GENMessage createMessage(byte[] packet) throws MALException
   {
-    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, packet, getStreamFactory());
+    return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, packet,
+        getStreamFactory());
   }
 
   @Override
   protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(String destinationRootURI,
-          String destinationURI,
-          Object multiSendHandle,
-          boolean lastForHandle,
-          String targetURI,
-          GENMessage msg) throws Exception
+      String destinationURI,
+      Object multiSendHandle,
+      boolean lastForHandle,
+      String targetURI,
+      GENMessage msg) throws Exception
   {
     return new GENOutgoingMessageHolder<byte[]>(10,
-            destinationRootURI,
-            destinationURI,
-            multiSendHandle,
-            lastForHandle,
-            msg,
-            internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg));
+        destinationRootURI,
+        destinationURI,
+        multiSendHandle,
+        lastForHandle,
+        msg,
+        internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle,
+            targetURI, msg));
   }
 
   /**
    * Provide an IP address for this host
    *
-   * @param preferredHostname The preferred host name, may be NULL in which case the name will be calculated.
+   * @param preferredHostname The preferred host name, may be NULL in which case the name will be
+   *                          calculated.
    * @return The transport specific address part.
    * @throws MALException On error
    */
   private static String getHostName(String preferredHostname) throws MALException
   {
-    if (null == preferredHostname)
-    {
-      try
-      {
+    if (null == preferredHostname) {
+      try {
         // Build RMI url string
         final InetAddress addr = Inet4Address.getLocalHost();
         final StringBuilder hostAddress = new StringBuilder();
-        if (addr instanceof Inet6Address)
-        {
+        if (addr instanceof Inet6Address) {
           RLOGGER.fine("RMI Address class is IPv6");
           hostAddress.append('[');
           hostAddress.append(addr.getHostAddress());
           hostAddress.append(']');
-        }
-        else
-        {
+        } else {
           hostAddress.append(addr.getHostAddress());
         }
 
         return hostAddress.toString();
-      }
-      catch (UnknownHostException ex)
-      {
+      } catch (UnknownHostException ex) {
         throw new MALException("Could not determine local host address", ex);
       }
     }

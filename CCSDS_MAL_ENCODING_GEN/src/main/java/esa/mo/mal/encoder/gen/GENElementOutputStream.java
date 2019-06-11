@@ -32,10 +32,12 @@ import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 
 /**
- * Extends the MALElementOutputStream interface to enable aware transport access to the encoded data stream.
+ * Extends the MALElementOutputStream interface to enable aware transport access to the encoded data
+ * stream.
  */
 public abstract class GENElementOutputStream implements MALElementOutputStream
 {
+
   protected final OutputStream dos;
   protected GENEncoder enc = null;
 
@@ -52,77 +54,57 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
   @Override
   public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException
   {
-    if (null == enc)
-    {
+    if (null == enc) {
       this.enc = createEncoder(dos);
     }
 
-    if (element == ctx.getHeader())
-    {
+    if (element == ctx.getHeader()) {
       ((Element) element).encode(enc);
-    }
-    else
-    {
-      if (null == element)
-      {
+    } else {
+      if (null == element) {
         enc.encodeNullableElement(null);
-      }
-      else
-      {
-        if (ctx.getHeader().getIsErrorMessage())
-        {
+      } else {
+        if (ctx.getHeader().getIsErrorMessage()) {
           // error messages have a standard format
-          if (0 == ctx.getBodyElementIndex())
-          {
+          if (0 == ctx.getBodyElementIndex()) {
             ((Element) element).encode(enc);
-          }
-          else
-          {
+          } else {
             encodeSubElement((Element) element, null, null);
           }
-        }
-        else if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal())
-        {
-          switch (ctx.getHeader().getInteractionStage().getValue())
-          {
+        } else if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
+          switch (ctx.getHeader().getInteractionStage().getValue()) {
             case MALPubSubOperation._REGISTER_STAGE:
             case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
             case MALPubSubOperation._DEREGISTER_STAGE:
               ((Element) element).encode(enc);
               return;
             case MALPubSubOperation._PUBLISH_STAGE:
-              if ((0 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()]))
-              {
+              if ((0 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(
+                  ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()])) {
                 encodeSubElement((Element) element, null, null);
-              }
-              else
-              {
+              } else {
                 ((Element) element).encode(enc);
               }
               return;
             case MALPubSubOperation._NOTIFY_STAGE:
-              if ((1 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()]))
-              {
+              if ((1 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(
+                  ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()])) {
                 encodeSubElement((Element) element, null, null);
-              }
-              else
-              {
+              } else {
                 ((Element) element).encode(enc);
               }
               return;
             default:
               encodeSubElement((Element) element, null, null);
           }
-        }
-        else
-        {
-          if (element instanceof Element)
-          {
+        } else {
+          if (element instanceof Element) {
             // encode the short form if it is not fixed in the operation
             final Element e = (Element) element;
 
             UOctet stage = ctx.getHeader().getInteractionStage();
-            Object sf = ctx.getOperation().getOperationStage(stage).getElementShortForms()[ctx.getBodyElementIndex()];
+            Object sf
+                = ctx.getOperation().getOperationStage(stage).getElementShortForms()[ctx.getBodyElementIndex()];
 
             encodeSubElement(e, sf, ctx);
           }
@@ -134,12 +116,9 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
   @Override
   public void flush() throws MALException
   {
-    try
-    {
+    try {
       dos.flush();
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       throw new MALException("IO exception flushing Element stream", ex);
     }
   }
@@ -147,45 +126,36 @@ public abstract class GENElementOutputStream implements MALElementOutputStream
   @Override
   public void close() throws MALException
   {
-    try
-    {
+    try {
       dos.close();
-      if (null != enc)
-      {
+      if (null != enc) {
         enc.close();
       }
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
 
-  protected void encodeSubElement(final Element e, final Object sf, final MALEncodingContext ctx) throws MALException
+  protected void encodeSubElement(final Element e, final Object sf, final MALEncodingContext ctx)
+      throws MALException
   {
-    if (null == sf)
-    {
+    if (null == sf) {
       // dirty check to see if we are trying to decode an abstract Attribute (and not a list of them either)
       Object[] finalEleShortForms = null;
-      if (null != ctx)
-      {
-        finalEleShortForms = ctx.getOperation().getOperationStage(ctx.getHeader().getInteractionStage()).getLastElementShortForms();
+      if (null != ctx) {
+        finalEleShortForms = ctx.getOperation().getOperationStage(
+            ctx.getHeader().getInteractionStage()).getLastElementShortForms();
       }
 
-      if ((null != finalEleShortForms) && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length) && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0))
-      {
+      if ((null != finalEleShortForms) && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length) && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0)) {
         enc.encodeNullableOctet(enc.internalEncodeAttributeType(e.getTypeShortForm().byteValue()));
-      }
-      else
-      {
+      } else {
         enc.encodeAbstractElementType(e.getShortForm(), true);
       }
 
       // now encode the element
       enc.encodeElement(e);
-    }
-    else
-    {
+    } else {
       enc.encodeNullableElement(e);
     }
   }

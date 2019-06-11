@@ -29,8 +29,7 @@ import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;
 
 /**
- * Implements the MALEncoder and MALListEncoder interfaces for a binary
- * encoding.
+ * Implements the MALEncoder and MALListEncoder interfaces for a binary encoding.
  *
  */
 public abstract class BaseBinaryEncoder extends GENEncoder
@@ -39,9 +38,10 @@ public abstract class BaseBinaryEncoder extends GENEncoder
   protected BinaryTimeHandler timeHandler;
 
   /**
-   * Constructor for derived classes that have their own stream holder implementation that should be used.
+   * Constructor for derived classes that have their own stream holder implementation that should be
+   * used.
    *
-   * @param os Output stream to write to.
+   * @param os          Output stream to write to.
    * @param timeHandler Time handler to use.
    */
   protected BaseBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler)
@@ -82,11 +82,12 @@ public abstract class BaseBinaryEncoder extends GENEncoder
   }
 
   /**
-   * Internal class for accessing the output stream. Overridden by sub-classes
-   * to alter the low level encoding.
+   * Internal class for accessing the output stream. Overridden by sub-classes to alter the low
+   * level encoding.
    */
   public static abstract class BaseBinaryStreamHolder extends StreamHolder
   {
+
     /**
      * Constructor.
      *
@@ -101,13 +102,10 @@ public abstract class BaseBinaryEncoder extends GENEncoder
     public void addBytes(final byte[] value) throws IOException
     {
 
-      if (null == value)
-      {
+      if (null == value) {
         addUnsignedInt(0);
         throw new IOException("StreamHolder.addBytes: null value supplied!!");
-      }
-      else
-      {
+      } else {
         addUnsignedInt(value.length);
         directAdd(value);
       }
@@ -140,12 +138,9 @@ public abstract class BaseBinaryEncoder extends GENEncoder
     @Override
     public void addBool(boolean value) throws IOException
     {
-      if (value)
-      {
+      if (value) {
         directAdd((byte) 1);
-      }
-      else
-      {
+      } else {
         directAdd((byte) 0);
       }
     }

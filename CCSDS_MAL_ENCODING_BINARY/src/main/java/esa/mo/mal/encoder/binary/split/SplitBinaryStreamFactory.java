@@ -30,6 +30,7 @@ public class SplitBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.Bas
 
   public SplitBinaryStreamFactory()
   {
-    super(SplitBinaryElementInputStream.class, SplitBinaryElementOutputStream.class, new BinaryTimeHandler());
+    super(SplitBinaryElementInputStream.class, SplitBinaryElementOutputStream.class,
+        new BinaryTimeHandler());
   }
 }

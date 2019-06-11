@@ -28,6 +28,7 @@ import java.rmi.RemoteException;
  */
 public interface RMIReceiveInterface extends Remote
 {
+
   /**
    * Used to pass an encoded message to a RMI Transport instance.
    *

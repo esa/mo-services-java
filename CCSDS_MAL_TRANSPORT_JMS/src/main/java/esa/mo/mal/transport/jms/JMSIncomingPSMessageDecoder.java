@@ -45,6 +45,7 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder
 {
+
   private final JMSTransport transport;
   final JMSUpdate jmsUpdate;
   final URI uri;
@@ -58,7 +59,9 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder
   final Identifier sessionName;
   final Long transactionId;
 
-  public JMSIncomingPSMessageDecoder(final JMSTransport transport, JMSUpdate jmsUpdate, URI uri, UOctet version, Identifier subId, URI URIFrom, QoSLevel level, UInteger priority, Identifier networkZone, SessionType session, Identifier sessionName, Long transactionId)
+  public JMSIncomingPSMessageDecoder(final JMSTransport transport, JMSUpdate jmsUpdate, URI uri,
+      UOctet version, Identifier subId, URI URIFrom, QoSLevel level, UInteger priority,
+      Identifier networkZone, SessionType session, Identifier sessionName, Long transactionId)
   {
     this.transport = transport;
     this.jmsUpdate = jmsUpdate;
@@ -93,24 +96,22 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder
     hdr.setSession(session);
     hdr.setSessionName(sessionName);
     hdr.setTransactionId(transactionId);
-    try
-    {
+    try {
       byte[] data = jmsUpdate.getDat();
       ByteArrayInputStream baos = new ByteArrayInputStream(data);
       MALElementInputStream enc = transport.getStreamFactory().createInputStream(baos);
       UShort lstCount = (UShort) enc.readElement(null, null);
       Object[] new_objs = new Object[lstCount.getValue() + 1];
       new_objs[0] = subId;
-      for (int i = 1; i < new_objs.length; i++)
-      {
+      for (int i = 1; i < new_objs.length; i++) {
         new_objs[i] = enc.readElement(null, null);
       }
-      
-      GENMessage malMsg = new GENMessage(false, new JMSMessageHeader(hdr, jmsUpdate), null, null, new_objs);
-      return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, transport.new PacketToString(data));
-    }
-    catch (Throwable ex)
-    {
+
+      GENMessage malMsg = new GENMessage(false, new JMSMessageHeader(hdr, jmsUpdate), null, null,
+          new_objs);
+      return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg,
+          transport.new PacketToString(data));
+    } catch (Throwable ex) {
       throw new MALException("Internal error decoding message", ex);
     }
   }

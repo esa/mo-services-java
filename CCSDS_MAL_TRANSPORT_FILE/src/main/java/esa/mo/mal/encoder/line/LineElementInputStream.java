@@ -31,10 +31,12 @@ import org.ccsds.moims.mo.mal.structures.Element;
  */
 public class LineElementInputStream implements MALElementInputStream
 {
+
   private final LineDecoder dec;
 
   /**
    * Constructor.
+   *
    * @param is Input stream to read from.
    */
   public LineElementInputStream(final InputStream is)
@@ -44,7 +46,7 @@ public class LineElementInputStream implements MALElementInputStream
 
   @Override
   public Object readElement(final Object element, final MALEncodingContext ctx)
-          throws IllegalArgumentException, MALException
+      throws IllegalArgumentException, MALException
   {
     return dec.decodeNullableElement((Element) element);
   }

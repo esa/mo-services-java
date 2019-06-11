@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.structures.*;
  */
 public class StringEncoder extends GENEncoder
 {
+
   public static final String STR_DELIM = "|";
   public static final String STR_NULL = "_";
   public static final String STR_ESC = "\\";
@@ -55,30 +56,26 @@ public class StringEncoder extends GENEncoder
   @Override
   public void encodeNullableElement(final Element value) throws MALException
   {
-    try
-    {
-      if (null != value)
-      {
+    try {
+      if (null != value) {
         // Initial delim to represent not-null
         outputStream.addString("");
         value.encode(this);
-      }
-      else
-      {
+      } else {
         outputStream.addIsNull();
       }
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       throw new MALException(ENCODING_EXCEPTION_STR, ex);
     }
   }
 
   /**
-   * Internal class for accessing the string stream. Overridden by sub-classes to alter the low level encoding.
+   * Internal class for accessing the string stream. Overridden by sub-classes to alter the low
+   * level encoding.
    */
   public static class StringStreamHolder extends StreamHolder
   {
+
     private final Writer buffer;
 
     /**
@@ -205,24 +202,23 @@ public class StringEncoder extends GENEncoder
     public void close() throws IOException
     {
       buffer.flush();
-      
+
       super.close();
     }
 
     private void add(final String val) throws IOException
     {
-      buffer.append(val.replace(STR_ESC, STR_ESC_ESC).replace(STR_NULL, STR_NULL_ESC).replace(STR_DELIM, STR_DELIM_ESC));
+      buffer.append(val.replace(STR_ESC, STR_ESC_ESC).replace(STR_NULL, STR_NULL_ESC).replace(
+          STR_DELIM, STR_DELIM_ESC));
       buffer.append(STR_DELIM);
     }
 
     private static String byteArrayToHexString(final byte[] data)
     {
       final StringBuilder hexString = new StringBuilder();
-      for (int i = 0; i < data.length; i++)
-      {
+      for (int i = 0; i < data.length; i++) {
         final String hex = Integer.toHexString(HEX_MASK & data[i]);
-        if (hex.length() == 1)
-        {
+        if (hex.length() == 1) {
           hexString.append('0');
         }
         hexString.append(hex);

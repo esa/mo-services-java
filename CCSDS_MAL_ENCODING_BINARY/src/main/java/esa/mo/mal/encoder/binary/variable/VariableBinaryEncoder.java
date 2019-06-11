@@ -30,10 +30,11 @@ import java.math.BigInteger;
  */
 public class VariableBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinaryEncoder
 {
+
   /**
    * Constructor.
    *
-   * @param os Output stream to write to.
+   * @param os          Output stream to write to.
    * @param timeHandler Time handler to use.
    */
   public VariableBinaryEncoder(final OutputStream os, final BinaryTimeHandler timeHandler)
@@ -42,9 +43,10 @@ public class VariableBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBi
   }
 
   /**
-   * Constructor for derived classes that have their own stream holder implementation that should be used.
+   * Constructor for derived classes that have their own stream holder implementation that should be
+   * used.
    *
-   * @param os Output stream to write to.
+   * @param os          Output stream to write to.
    * @param timeHandler Time handler to use.
    */
   protected VariableBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler)
@@ -63,7 +65,7 @@ public class VariableBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBi
 
     /**
      * Constructor.
-     * 
+     *
      * @param outputStream The output stream to encode into.
      */
     public VariableBinaryStreamHolder(OutputStream outputStream)
@@ -74,8 +76,7 @@ public class VariableBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBi
     @Override
     public void addUnsignedInt(int value) throws IOException
     {
-      while ((value & -128) != 0L)
-      {
+      while ((value & -128) != 0L) {
         directAdd((byte) ((value & 127) | 128));
         value >>>= 7;
       }
@@ -85,8 +86,7 @@ public class VariableBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBi
     @Override
     public void addUnsignedLong(long value) throws IOException
     {
-      while ((value & -128L) != 0L)
-      {
+      while ((value & -128L) != 0L) {
         directAdd((byte) (((int) value & 127) | 128));
         value >>>= 7;
       }
@@ -114,8 +114,7 @@ public class VariableBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBi
     @Override
     public void addBigInteger(BigInteger value) throws IOException
     {
-      while (value.and(B_127.not()).compareTo(BigInteger.ZERO) == 1)
-      {
+      while (value.and(B_127.not()).compareTo(BigInteger.ZERO) == 1) {
         byte byteToWrite = (value.and(B_127)).or(B_128).byteValue();
         directAdd(byteToWrite);
         value = value.shiftRight(7);

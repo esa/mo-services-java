@@ -33,6 +33,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class LineElementOutputStream implements MALElementOutputStream
 {
+
   private final OutputStream dos;
 
   /**
@@ -50,21 +51,15 @@ public class LineElementOutputStream implements MALElementOutputStream
   {
     final LineEncoder enc = new LineEncoder();
 
-    if (element instanceof MALMessageHeader)
-    {
+    if (element instanceof MALMessageHeader) {
       enc.encodeTopLevelElement("Header", (Element) element);
-    }
-    else
-    {
+    } else {
       enc.encodeTopLevelElement("Body", (Element) element);
     }
 
-    try
-    {
+    try {
       dos.write(enc.toString().getBytes(LineDecoder.UTF8_CHARSET));
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -72,12 +67,9 @@ public class LineElementOutputStream implements MALElementOutputStream
   @Override
   public void flush() throws MALException
   {
-    try
-    {
+    try {
       dos.flush();
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       throw new MALException("IO exception flushing Element stream", ex);
     }
   }
@@ -85,12 +77,9 @@ public class LineElementOutputStream implements MALElementOutputStream
   @Override
   public void close() throws MALException
   {
-    try
-    {
+    try {
       dos.close();
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }

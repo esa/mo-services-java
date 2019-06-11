@@ -48,10 +48,12 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
  */
 public class JMSTransport extends GENTransport implements MALTransport
 {
+
   /**
    * Logger
    */
-  public static final java.util.logging.Logger RLOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.jms");
+  public static final java.util.logging.Logger RLOGGER = Logger.getLogger(
+      "org.ccsds.moims.mo.mal.transport.jms");
   public static final byte[] authId = "JMS".getBytes();
   public static final char JMS_SERVICE_DELIM = '_';
   public static final char JMS_BROKER_DELIM = '[';
@@ -59,7 +61,8 @@ public class JMSTransport extends GENTransport implements MALTransport
   private Connection queueConnection;
   private final Hashtable namingContextEnv;
 
-  public JMSTransport(MALTransportFactory factory, String protocol, JMSAbstractAdministrator administrator, java.util.Map properties) throws Exception
+  public JMSTransport(MALTransportFactory factory, String protocol,
+      JMSAbstractAdministrator administrator, java.util.Map properties) throws Exception
   {
     super(protocol, JMS_SERVICE_DELIM, true, true, factory, properties);
 
@@ -68,11 +71,11 @@ public class JMSTransport extends GENTransport implements MALTransport
     namingContextEnv = new Hashtable();
 
     namingContextEnv.put("java.naming.factory.initial",
-            System.getProperty("java.naming.factory.initial"));
+        System.getProperty("java.naming.factory.initial"));
     namingContextEnv.put("java.naming.factory.host",
-            System.getProperty("java.naming.factory.host"));
+        System.getProperty("java.naming.factory.host"));
     namingContextEnv.put("java.naming.factory.port",
-            System.getProperty("java.naming.factory.port"));
+        System.getProperty("java.naming.factory.port"));
   }
 
   @Override
@@ -81,48 +84,47 @@ public class JMSTransport extends GENTransport implements MALTransport
     super.init();
 
     // initialization of the jms administrator
-    try
-    {
+    try {
       getAdministrator().init(this, namingContextEnv);
-    }
-    catch (Exception ex)
-    {
-      throw new MALException("Error on creating and initialising the JMS administration interface", ex);
+    } catch (Exception ex) {
+      throw new MALException("Error on creating and initialising the JMS administration interface",
+          ex);
     }
   }
 
   @Override
-  protected GENEndpoint internalCreateEndpoint(String localName, String routingName, Map qosProperties) throws MALException
+  protected GENEndpoint internalCreateEndpoint(String localName, String routingName,
+      Map qosProperties) throws MALException
   {
-    try
-    {
+    try {
       Session qs = getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
       Queue q = getAdministrator().createQueue(qs, routingName);
 
       return new JMSEndpoint(this, localName, routingName, uriBase, qs, q);
-    }
-    catch (MALException ex)
-    {
+    } catch (MALException ex) {
       throw ex;
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       RLOGGER.log(Level.SEVERE, "Error occurred when attempting to create end point {0}", ex);
     }
 
     return null;
   }
 
-  public MALBrokerBinding createBroker(String localName, Blob authenticationId, QoSLevel[] expectedQos, UInteger priorityLevelNumber, Map defaultQoSProperties) throws MALException
+  public MALBrokerBinding createBroker(String localName, Blob authenticationId,
+      QoSLevel[] expectedQos, UInteger priorityLevelNumber, Map defaultQoSProperties) throws
+      MALException
   {
     // not support by transport
-    return new JMSBrokerBinding(new URI(uriBase + localName), localName, authenticationId, expectedQos, priorityLevelNumber);
+    return new JMSBrokerBinding(new URI(uriBase + localName), localName, authenticationId,
+        expectedQos, priorityLevelNumber);
   }
 
-  public MALBrokerBinding createBroker(MALEndpoint endpoint, Blob authenticationId, QoSLevel[] qosLevels, UInteger priorities, Map properties) throws MALException
+  public MALBrokerBinding createBroker(MALEndpoint endpoint, Blob authenticationId,
+      QoSLevel[] qosLevels, UInteger priorities, Map properties) throws MALException
   {
     // not support by transport
-    return new JMSBrokerBinding(new URI(uriBase + endpoint.getLocalName()), endpoint.getLocalName(), authenticationId, qosLevels, priorities);
+    return new JMSBrokerBinding(new URI(uriBase + endpoint.getLocalName()), endpoint.getLocalName(),
+        authenticationId, qosLevels, priorities);
   }
 
   public boolean isSupportedInteractionType(InteractionType type)
@@ -152,8 +154,7 @@ public class JMSTransport extends GENTransport implements MALTransport
 
   public Connection getCurrentConnection() throws Exception
   {
-    if (queueConnection == null)
-    {
+    if (queueConnection == null) {
       ConnectionFactory qcf = getAdministrator().getConnectionFactory();
 
       queueConnection = qcf.createConnection();
@@ -170,7 +171,8 @@ public class JMSTransport extends GENTransport implements MALTransport
   }
 
   @Override
-  protected GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws MALException, MALTransmitErrorException
+  protected GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws
+      MALException, MALTransmitErrorException
   {
     RLOGGER.log(Level.FINE, "JMS received request to create connections to URI:{0}", remoteRootURI);
 
@@ -183,12 +185,9 @@ public class JMSTransport extends GENTransport implements MALTransport
   {
     RLOGGER.info("Transport closing");
 
-    try
-    {
+    try {
       getCurrentConnection().close();
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       RLOGGER.log(Level.WARNING, "Transport closing exception", e);
     }
 
@@ -197,6 +196,7 @@ public class JMSTransport extends GENTransport implements MALTransport
 
   private class JMSMessageSender implements GENMessageSender
   {
+
     private final String remoteRootURI;
 
     public JMSMessageSender(String remoteRootURI)
@@ -208,30 +208,25 @@ public class JMSTransport extends GENTransport implements MALTransport
     {
       String sendRoutingKey = tmsg.getDestinationURI().substring(remoteRootURI.length() + 1);
 
-      RLOGGER.log(Level.FINE, "Attempting to send to {0}", new Object[]
-      {
+      RLOGGER.log(Level.FINE, "Attempting to send to {0}", new Object[]{
         remoteRootURI
       });
 
       Session lqs = (Session) tmsg.getMultiSendHandle();
 
-      try
-      {
+      try {
         // get the queue
         Queue destQueue = null;
-        try
-        {
+        try {
           destQueue = getAdministrator().getQueue(lqs, sendRoutingKey);
-        }
-        catch (NameNotFoundException e)
-        {
+        } catch (NameNotFoundException e) {
           RLOGGER.log(Level.SEVERE, "Remote JMS queue name not found {0}", sendRoutingKey);
 
-          throw new MALInteractionException(new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
+          throw new MALInteractionException(new MALStandardError(
+              MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
         }
 
-        if (null != destQueue)
-        {
+        if (null != destQueue) {
           ObjectMessage objMsg = lqs.createObjectMessage();
           objMsg.setIntProperty(JMSEndpoint.ARR_PROPERTY, 1);
           objMsg.setIntProperty(JMSEndpoint.SVC_PROPERTY, 1);
@@ -245,52 +240,41 @@ public class JMSTransport extends GENTransport implements MALTransport
 
           sender.close();
 
-          RLOGGER.log(Level.FINE, "Sending data to {0} : {2}", new Object[]
-          {
+          RLOGGER.log(Level.FINE, "Sending data to {0} : {2}", new Object[]{
             sendRoutingKey, tmsg.getEncodedMessage()
           });
 
-          if (tmsg.isLastForHandle())
-          {
-            if (lqs.getTransacted())
-            {
+          if (tmsg.isLastForHandle()) {
+            if (lqs.getTransacted()) {
               RLOGGER.fine("Commiting transaction");
               lqs.commit();
             }
 
             lqs.close();
           }
-          RLOGGER.log(Level.FINE, "Sent data to {0}", new Object[]
-          {
+          RLOGGER.log(Level.FINE, "Sent data to {0}", new Object[]{
             sendRoutingKey
           });
-        }
-        else
-        {
+        } else {
           RLOGGER.log(Level.WARNING, "Remote JMS queue name resolved to NULL {0}", sendRoutingKey);
 
-          throw new MALInteractionException(new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
+          throw new MALInteractionException(new MALStandardError(
+              MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
         }
-      }
-      catch (Throwable e)
-      {
-        RLOGGER.log(Level.SEVERE, "Error occurred when sending data to " + sendRoutingKey + " : {0}", e);
+      } catch (Throwable e) {
+        RLOGGER.log(Level.SEVERE, "Error occurred when sending data to " + sendRoutingKey + " : {0}",
+            e);
 
-        try
-        {
-          if (tmsg.isLastForHandle())
-          {
-            if (lqs.getTransacted())
-            {
+        try {
+          if (tmsg.isLastForHandle()) {
+            if (lqs.getTransacted()) {
               RLOGGER.fine("Rolling back transaction");
               lqs.rollback();
             }
 
             lqs.close();
           }
-        }
-        catch (JMSException ex)
-        {
+        } catch (JMSException ex) {
           ex.printStackTrace();
         }
       }

@@ -32,10 +32,11 @@ import org.ccsds.moims.mo.mal.MALListDecoder;
  */
 public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinaryDecoder
 {
+
   /**
    * Constructor.
    *
-   * @param src Byte array to read from.
+   * @param src         Byte array to read from.
    * @param timeHandler Time handler to use.
    */
   public VariableBinaryDecoder(final byte[] src, final BinaryTimeHandler timeHandler)
@@ -46,7 +47,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
   /**
    * Constructor.
    *
-   * @param is Input stream to read from.
+   * @param is          Input stream to read from.
    * @param timeHandler Time handler to use.
    */
   public VariableBinaryDecoder(final java.io.InputStream is, final BinaryTimeHandler timeHandler)
@@ -57,11 +58,12 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
   /**
    * Constructor.
    *
-   * @param src Byte array to read from.
-   * @param offset index in array to start reading from.
+   * @param src         Byte array to read from.
+   * @param offset      index in array to start reading from.
    * @param timeHandler Time handler to use.
    */
-  public VariableBinaryDecoder(final byte[] src, final int offset, final BinaryTimeHandler timeHandler)
+  public VariableBinaryDecoder(final byte[] src, final int offset,
+      final BinaryTimeHandler timeHandler)
   {
     super(new VariableBinaryBufferHolder(null, src, offset, src.length), timeHandler);
   }
@@ -69,7 +71,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
   /**
    * Constructor.
    *
-   * @param src Source buffer holder to use.
+   * @param src         Source buffer holder to use.
    * @param timeHandler Time handler to use.
    */
   public VariableBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler)
@@ -94,12 +96,13 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
     /**
      * Constructor.
      *
-     * @param is Input stream to read from.
-     * @param buf Source buffer to use.
+     * @param is     Input stream to read from.
+     * @param buf    Source buffer to use.
      * @param offset Buffer offset to read from next.
      * @param length Length of readable data held in the array, which may be larger.
      */
-    public VariableBinaryBufferHolder(final java.io.InputStream is, final byte[] buf, final int offset, final int length)
+    public VariableBinaryBufferHolder(final java.io.InputStream is, final byte[] buf,
+        final int offset, final int length)
     {
       super(is, buf, offset, length);
     }
@@ -142,8 +145,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
       long value = 0L;
       int i = 0;
       long b;
-      while (((b = get8()) & 128L) != 0)
-      {
+      while (((b = get8()) & 128L) != 0) {
         value |= (b & 127) << i;
         i += 7;
       }
@@ -162,8 +164,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
       int value = 0;
       int i = 0;
       int b;
-      while (((b = get8()) & 128) != 0)
-      {
+      while (((b = get8()) & 128) != 0) {
         value |= (b & 127) << i;
         i += 7;
       }
@@ -194,8 +195,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
       int i = 0;
       int b;
       BigInteger rv = BigInteger.ZERO;
-      while (((b = get8()) & 128) != 0)
-      {
+      while (((b = get8()) & 128) != 0) {
         rv = rv.or((new BigInteger(Integer.toString(b)).and(B_127)).shiftLeft(i));
         i += 7;
       }

@@ -33,17 +33,19 @@ import org.ccsds.moims.mo.mal.transport.MALDeregisterBody;
  */
 public class GENDeregisterBody extends GENMessageBody implements MALDeregisterBody
 {
+
   private static final long serialVersionUID = 222222222222224L;
+
   /**
    * Constructor.
    *
-   * @param ctx The encoding context to use.
-   * @param encFactory The encoder stream factory to use.
+   * @param ctx          The encoding context to use.
+   * @param encFactory   The encoder stream factory to use.
    * @param messageParts The message parts that compose the body.
    */
   public GENDeregisterBody(final MALEncodingContext ctx,
-          final MALElementStreamFactory encFactory, 
-          final Object[] messageParts)
+      final MALElementStreamFactory encFactory,
+      final Object[] messageParts)
   {
     super(ctx, encFactory, messageParts);
   }
@@ -51,16 +53,16 @@ public class GENDeregisterBody extends GENMessageBody implements MALDeregisterBo
   /**
    * Constructor.
    *
-   * @param ctx The encoding context to use.
+   * @param ctx              The encoding context to use.
    * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
-   * @param encFactory The encoder stream factory to use.
-   * @param encBodyElements The input stream that holds the encoded body parts.
+   * @param encFactory       The encoder stream factory to use.
+   * @param encBodyElements  The input stream that holds the encoded body parts.
    */
-  public GENDeregisterBody(final MALEncodingContext ctx, 
-          final boolean wrappedBodyParts,
-          final MALElementStreamFactory encFactory,
-          final ByteArrayInputStream encBodyBytes,
-          final MALElementInputStream encBodyElements)
+  public GENDeregisterBody(final MALEncodingContext ctx,
+      final boolean wrappedBodyParts,
+      final MALElementStreamFactory encFactory,
+      final ByteArrayInputStream encBodyBytes,
+      final MALElementInputStream encBodyElements)
   {
     super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
   }

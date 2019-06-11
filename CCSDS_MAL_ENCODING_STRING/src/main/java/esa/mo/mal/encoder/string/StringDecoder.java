@@ -40,6 +40,7 @@ import org.ccsds.moims.mo.mal.structures.*;
  */
 public class StringDecoder extends GENDecoder
 {
+
   static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
   public static final int BLOCK_SIZE = 65536;
 
@@ -85,8 +86,7 @@ public class StringDecoder extends GENDecoder
     final String strVal = sourceBuffer.getString();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return element.decode(this);
     }
 
@@ -99,8 +99,7 @@ public class StringDecoder extends GENDecoder
     StringBufferHolder dSourceBuffer = (StringBufferHolder) sourceBuffer;
 
     dSourceBuffer.preLoadBuffer();
-    while (dSourceBuffer.loadExtraBuffer())
-    {
+    while (dSourceBuffer.loadExtraBuffer()) {
       // do nothing, just loading in the complete message
     }
 
@@ -112,6 +111,7 @@ public class StringDecoder extends GENDecoder
    */
   protected static class StringBufferHolder extends BufferHolder
   {
+
     private final java.io.InputStream inputStream;
     private String buf;
     private int offset;
@@ -119,7 +119,7 @@ public class StringDecoder extends GENDecoder
     /**
      * Constructor.
      *
-     * @param buf The source buffer string.
+     * @param buf    The source buffer string.
      * @param offset The current read offset.
      */
     public StringBufferHolder(final String buf, final int offset)
@@ -150,12 +150,9 @@ public class StringDecoder extends GENDecoder
     @Override
     public float getFloat() throws MALException
     {
-      try
-      {
+      try {
         return Float.valueOf(removeFirst());
-      }
-      catch (NumberFormatException ex)
-      {
+      } catch (NumberFormatException ex) {
         throw new MALException(ex.getLocalizedMessage(), ex);
       }
     }
@@ -163,12 +160,9 @@ public class StringDecoder extends GENDecoder
     @Override
     public double getDouble() throws MALException
     {
-      try
-      {
+      try {
         return Double.valueOf(removeFirst());
-      }
-      catch (NumberFormatException ex)
-      {
+      } catch (NumberFormatException ex) {
         throw new MALException(ex.getLocalizedMessage(), ex);
       }
     }
@@ -176,12 +170,9 @@ public class StringDecoder extends GENDecoder
     @Override
     public BigInteger getBigInteger() throws MALException
     {
-      try
-      {
+      try {
         return new BigInteger(removeFirst());
-      }
-      catch (NumberFormatException ex)
-      {
+      } catch (NumberFormatException ex) {
         throw new MALException(ex.getLocalizedMessage(), ex);
       }
     }
@@ -189,12 +180,9 @@ public class StringDecoder extends GENDecoder
     @Override
     public long getSignedLong() throws MALException
     {
-      try
-      {
+      try {
         return Long.valueOf(removeFirst());
-      }
-      catch (NumberFormatException ex)
-      {
+      } catch (NumberFormatException ex) {
         throw new MALException(ex.getLocalizedMessage(), ex);
       }
     }
@@ -202,12 +190,9 @@ public class StringDecoder extends GENDecoder
     @Override
     public int getSignedInt() throws MALException
     {
-      try
-      {
+      try {
         return Integer.valueOf(removeFirst());
-      }
-      catch (NumberFormatException ex)
-      {
+      } catch (NumberFormatException ex) {
         throw new MALException(ex.getLocalizedMessage(), ex);
       }
     }
@@ -215,12 +200,9 @@ public class StringDecoder extends GENDecoder
     @Override
     public short getSignedShort() throws MALException
     {
-      try
-      {
+      try {
         return Short.valueOf(removeFirst());
-      }
-      catch (NumberFormatException ex)
-      {
+      } catch (NumberFormatException ex) {
         throw new MALException(ex.getLocalizedMessage(), ex);
       }
     }
@@ -270,12 +252,9 @@ public class StringDecoder extends GENDecoder
     @Override
     public boolean getBool() throws MALException
     {
-      try
-      {
+      try {
         return Boolean.valueOf(removeFirst());
-      }
-      catch (NumberFormatException ex)
-      {
+      } catch (NumberFormatException ex) {
         throw new MALException(ex.getLocalizedMessage(), ex);
       }
     }
@@ -283,12 +262,9 @@ public class StringDecoder extends GENDecoder
     @Override
     public byte get8() throws MALException
     {
-      try
-      {
+      try {
         return Byte.valueOf(removeFirst());
-      }
-      catch (NumberFormatException ex)
-      {
+      } catch (NumberFormatException ex) {
         throw new MALException(ex.getLocalizedMessage(), ex);
       }
     }
@@ -299,8 +275,7 @@ public class StringDecoder extends GENDecoder
       final String strVal = peekNext();
 
       // Check if object is null...
-      if (strVal.equals(STR_NULL))
-      {
+      if (strVal.equals(STR_NULL)) {
         // its null so need to pop the null flag
         popNext();
         return false;
@@ -324,18 +299,16 @@ public class StringDecoder extends GENDecoder
       final int index = findNextOffset();
 
       // No more chars
-      if (-1 == index)
-      {
+      if (-1 == index) {
         rv = buf.substring(offset, buf.length());
         offset = buf.length();
-      }
-      else
-      {
+      } else {
         rv = buf.substring(offset, index);
         offset = index + 1;
       }
 
-      return rv.replace(STR_DELIM_ESC, STR_DELIM).replace(STR_NULL_ESC, STR_NULL).replace(STR_ESC_ESC, STR_ESC);
+      return rv.replace(STR_DELIM_ESC, STR_DELIM).replace(STR_NULL_ESC, STR_NULL).replace(
+          STR_ESC_ESC, STR_ESC);
     }
 
     private String peekNext() throws MALException
@@ -345,12 +318,9 @@ public class StringDecoder extends GENDecoder
       final int index = findNextOffset();
 
       // No more chars
-      if (-1 == index)
-      {
+      if (-1 == index) {
         rv = buf.substring(offset, buf.length());
-      }
-      else
-      {
+      } else {
         rv = buf.substring(offset, index);
       }
 
@@ -362,12 +332,9 @@ public class StringDecoder extends GENDecoder
       final int index = findNextOffset();
 
       // No more chars
-      if (-1 == index)
-      {
+      if (-1 == index) {
         offset = buf.length();
-      }
-      else
-      {
+      } else {
         offset = index + 1;
       }
     }
@@ -378,11 +345,9 @@ public class StringDecoder extends GENDecoder
       int index = findNextIndex();
 
       // ensure that we have loaded enough buffer from the input stream (if we are stream based) for the next read
-      if (-1 == index)
-      {
+      if (-1 == index) {
         boolean needMore = true;
-        while (needMore)
-        {
+        while (needMore) {
           final boolean haveMore = loadExtraBuffer();
 
           index = findNextIndex();
@@ -398,29 +363,24 @@ public class StringDecoder extends GENDecoder
     {
       int index = buf.indexOf(STR_DELIM, offset);
 
-      while (-1 != index)
-      {
+      while (-1 != index) {
         boolean isDelimiter = true;
 
-        if (0 < index)
-        {
+        if (0 < index) {
           // check for previous escape character
           int lIndex = index - 1;
-          while ((0 <= lIndex) && ('\\' == buf.charAt(lIndex)))
-          {
+          while ((0 <= lIndex) && ('\\' == buf.charAt(lIndex))) {
             lIndex--;
             isDelimiter = !isDelimiter;
           }
         }
 
-        if (isDelimiter)
-        {
+        if (isDelimiter) {
           return index;
         }
 
         // did not find it in this segement
-        if (index == (buf.length() - 1))
-        {
+        if (index == (buf.length() - 1)) {
           return -1;
         }
 
@@ -433,19 +393,15 @@ public class StringDecoder extends GENDecoder
 
     private void preLoadBuffer() throws MALException
     {
-      if ((null != inputStream) && (null == buf))
-      {
+      if ((null != inputStream) && (null == buf)) {
         // need to load in some
         final byte[] tbuf = new byte[BLOCK_SIZE];
 
-        try
-        {
+        try {
           final int length = inputStream.read(tbuf, 0, tbuf.length);
           buf = new String(tbuf, 0, length, UTF8_CHARSET);
           offset = 0;
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
           throw new MALException("Unable to read required amount from source stream", ex);
         }
       }
@@ -455,10 +411,8 @@ public class StringDecoder extends GENDecoder
     {
       boolean moreAvailable = false;
 
-      try
-      {
-        if (null != inputStream && (0 != inputStream.available()))
-        {
+      try {
+        if (null != inputStream && (0 != inputStream.available())) {
           // need to load in some
           final byte[] tbuf = new byte[BLOCK_SIZE];
 
@@ -466,9 +420,7 @@ public class StringDecoder extends GENDecoder
           buf += new String(tbuf, 0, length, UTF8_CHARSET);
           moreAvailable = 0 != inputStream.available();
         }
-      }
-      catch (IOException ex)
-      {
+      } catch (IOException ex) {
         throw new MALException("Unable to read required amount from source stream", ex);
       }
 
@@ -480,9 +432,9 @@ public class StringDecoder extends GENDecoder
   {
     final int len = s.length();
     final byte[] data = new byte[len / 2];
-    for (int i = 0; i < len; i += 2)
-    {
-      data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
+    for (int i = 0; i < len; i += 2) {
+      data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(
+          s.charAt(i + 1), 16));
     }
     return data;
   }

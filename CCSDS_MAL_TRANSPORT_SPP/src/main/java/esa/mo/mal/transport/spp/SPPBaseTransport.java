@@ -46,10 +46,12 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
 public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffer>>
 {
+
   /**
    * Logger
    */
-  public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.spp");
+  public static final java.util.logging.Logger LOGGER = Logger.getLogger(
+      "org.ccsds.moims.mo.mal.transport.spp");
 
   public static final String ENCODE_BODY_FIXED = "org.ccsds.moims.mo.malspp.isFixedBody";
   public static final String IS_TC_PACKET_PROPERTY = "org.ccsds.moims.mo.malspp.isTcPacket";
@@ -57,7 +59,8 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
   public static final String APID_QUALIFIER_PROPERTY = "org.ccsds.moims.mo.malspp.apidQualifier";
   public static final String APID_PROPERTY = "org.ccsds.moims.mo.malspp.apid";
   public static final String APPEND_ID_TO_URI = "org.ccsds.moims.mo.malspp.appendIdToUri";
-  public static final String AUTHENTICATION_ID_FLAG = "org.ccsds.moims.mo.malspp.authenticationIdFlag";
+  public static final String AUTHENTICATION_ID_FLAG
+      = "org.ccsds.moims.mo.malspp.authenticationIdFlag";
   public static final String DOMAIN_FLAG = "org.ccsds.moims.mo.malspp.domainFlag";
   public static final String NETWORK_ZONE_FLAG = "org.ccsds.moims.mo.malspp.networkZoneFlag";
   public static final String PRIORITY_FLAG = "org.ccsds.moims.mo.malspp.priorityFlag";
@@ -69,8 +72,10 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
   protected final SPPSourceSequenceCounterSimple ssc;
   protected final int defaultApidQualifier;
   protected final int defaultApid;
-  protected final Map<QualifiedApid, SPPConfiguration> apidConfigurations = new HashMap<QualifiedApid, SPPConfiguration>();
-  protected final Map<QualifiedApid, Map<Long, SPPSegmentsHandler>> segmentHandlers = new HashMap<QualifiedApid, Map<Long, SPPSegmentsHandler>>();
+  protected final Map<QualifiedApid, SPPConfiguration> apidConfigurations
+      = new HashMap<QualifiedApid, SPPConfiguration>();
+  protected final Map<QualifiedApid, Map<Long, SPPSegmentsHandler>> segmentHandlers
+      = new HashMap<QualifiedApid, Map<Long, SPPSegmentsHandler>>();
   /**
    * The stream factory used for encoding and decoding message headers.
    */
@@ -85,9 +90,13 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
    * @param properties The QoS properties.
    * @throws MALException On error.
    */
-  public SPPBaseTransport(SPPConfiguration configuration, SPPURIRepresentation uriRep, SPPSourceSequenceCounterSimple ssc, String protocol, String protocolDelim, char serviceDelim, char routingDelim, boolean supportsRouting, boolean wrapBodyParts, MALTransportFactory factory, Map properties) throws MALException
+  public SPPBaseTransport(SPPConfiguration configuration, SPPURIRepresentation uriRep,
+      SPPSourceSequenceCounterSimple ssc, String protocol, String protocolDelim, char serviceDelim,
+      char routingDelim, boolean supportsRouting, boolean wrapBodyParts, MALTransportFactory factory,
+      Map properties) throws MALException
   {
-    super(protocol, protocolDelim, serviceDelim, routingDelim, supportsRouting, wrapBodyParts, factory, properties);
+    super(protocol, protocolDelim, serviceDelim, routingDelim, supportsRouting, wrapBodyParts,
+        factory, properties);
 
     this.defaultConfiguration = configuration;
     this.uriRep = uriRep;
@@ -97,15 +106,12 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     int a = 1;
 
     // decode configuration
-    if (properties != null)
-    {
-      if (properties.containsKey(APID_QUALIFIER_PROPERTY))
-      {
+    if (properties != null) {
+      if (properties.containsKey(APID_QUALIFIER_PROPERTY)) {
         aq = Integer.parseInt((String) properties.get(APID_QUALIFIER_PROPERTY));
       }
 
-      if (properties.containsKey(APID_PROPERTY))
-      {
+      if (properties.containsKey(APID_PROPERTY)) {
         a = Integer.parseInt((String) properties.get(APID_PROPERTY));
       }
     }
@@ -115,12 +121,9 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
 
     MALElementStreamFactory lsf = super.getStreamFactory();
 
-    try
-    {
+    try {
       lsf = MALElementStreamFactory.newFactory("malspp_header", properties);
-    }
-    catch (MALException ex)
-    {
+    } catch (MALException ex) {
       // body and header should be the same encoder then
       LOGGER.info("No separate stream encoder configured for SPP header");
     }
@@ -129,14 +132,18 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
   }
 
   @Override
-  public MALBrokerBinding createBroker(final String localName, final Blob authenticationId, final QoSLevel[] expectedQos, final UInteger priorityLevelNumber, final Map defaultQoSProperties) throws MALException
+  public MALBrokerBinding createBroker(final String localName, final Blob authenticationId,
+      final QoSLevel[] expectedQos, final UInteger priorityLevelNumber,
+      final Map defaultQoSProperties) throws MALException
   {
     // not support by SPP transport
     return null;
   }
 
   @Override
-  public MALBrokerBinding createBroker(final MALEndpoint endpoint, final Blob authenticationId, final QoSLevel[] qosLevels, final UInteger priorities, final Map properties) throws MALException
+  public MALBrokerBinding createBroker(final MALEndpoint endpoint, final Blob authenticationId,
+      final QoSLevel[] qosLevels, final UInteger priorities, final Map properties) throws
+      MALException
   {
     // not support by SPP transport
     return null;
@@ -166,14 +173,11 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     int aq = defaultApidQualifier;
 
     // decode configuration
-    if (properties != null)
-    {
-      if (properties.containsKey(APID_PROPERTY))
-      {
+    if (properties != null) {
+      if (properties.containsKey(APID_PROPERTY)) {
         a = Integer.parseInt(properties.get(APID_PROPERTY).toString());
       }
-      if (properties.containsKey(APID_QUALIFIER_PROPERTY))
-      {
+      if (properties.containsKey(APID_QUALIFIER_PROPERTY)) {
         aq = Integer.parseInt(properties.get(APID_QUALIFIER_PROPERTY).toString());
       }
     }
@@ -183,9 +187,8 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     buf.append(a);
 
     if ((properties == null)
-            || !properties.containsKey(APPEND_ID_TO_URI)
-            || Boolean.parseBoolean(properties.get(APPEND_ID_TO_URI).toString()))
-    {
+        || !properties.containsKey(APPEND_ID_TO_URI)
+        || Boolean.parseBoolean(properties.get(APPEND_ID_TO_URI).toString())) {
       buf.append('/');
       buf.append(Math.abs((byte) getNextSubId(aq, a)));
     }
@@ -208,34 +211,34 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
   }
 
   @Override
-  protected GENEndpoint internalCreateEndpoint(final String localName, final String routingName, final Map properties) throws MALException
+  protected GENEndpoint internalCreateEndpoint(final String localName, final String routingName,
+      final Map properties) throws MALException
   {
-    return new SPPEndpoint(this, defaultConfiguration, defaultApidQualifier, uriRep, ssc, localName, routingName, uriBase + routingName, wrapBodyParts, properties);
+    return new SPPEndpoint(this, defaultConfiguration, defaultApidQualifier, uriRep, ssc, localName,
+        routingName, uriBase + routingName, wrapBodyParts, properties);
   }
 
-  protected GENOutgoingMessageHolder<List<ByteBuffer>> internalEncodeMessage(final String destinationRootURI,
-          final String destinationURI,
-          final Object multiSendHandle,
-          final boolean lastForHandle,
-          final String targetURI,
-          final GENMessage msg) throws Exception
+  protected GENOutgoingMessageHolder<List<ByteBuffer>> internalEncodeMessage(
+      final String destinationRootURI,
+      final String destinationURI,
+      final Object multiSendHandle,
+      final boolean lastForHandle,
+      final String targetURI,
+      final GENMessage msg) throws Exception
   {
-    byte[] buf = internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg);
+    byte[] buf = internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle,
+        lastForHandle, targetURI, msg);
 
     int sequenceFlags = (buf[2] & 0xC0) >> 6;
 
     List<ByteBuffer> encodedMessage = new ArrayList<ByteBuffer>();
 
-    if (3 == sequenceFlags)
-    {
+    if (3 == sequenceFlags) {
       encodedMessage.add(ByteBuffer.wrap(buf));
-    }
-    else
-    {
+    } else {
       ByteBuffer buffer = ByteBuffer.wrap(buf);
       int index = 0;
-      while ((buf.length - index) > 0)
-      {
+      while ((buf.length - index) > 0) {
         short shortVal = buffer.getShort(index + 4);
         int bodyLength = shortVal >= 0 ? shortVal : 0x10000 + shortVal;
         bodyLength += 7;
@@ -246,27 +249,26 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     }
 
     return new GENOutgoingMessageHolder<List<ByteBuffer>>(defaultApid,
-            destinationRootURI,
-            destinationURI,
-            multiSendHandle,
-            lastForHandle,
-            msg,
-            encodedMessage);
+        destinationRootURI,
+        destinationURI,
+        multiSendHandle,
+        lastForHandle,
+        msg,
+        encodedMessage);
   }
 
-  protected GENMessage internalCreateMessage(final int apidQualifier, final int apid, int sequenceFlags, final byte[] packet) throws MALException
+  protected GENMessage internalCreateMessage(final int apidQualifier, final int apid,
+      int sequenceFlags, final byte[] packet) throws MALException
   {
-    if (3 == sequenceFlags)
-    {
-      SPPConfiguration configuration = apidConfigurations.get(new QualifiedApid(apidQualifier, apid));
-      if (null == configuration)
-      {
+    if (3 == sequenceFlags) {
+      SPPConfiguration configuration
+          = apidConfigurations.get(new QualifiedApid(apidQualifier, apid));
+      if (null == configuration) {
         configuration = defaultConfiguration;
       }
 
       MALElementStreamFactory localBodyStreamFactory = hdrStreamFactory;
-      if (!configuration.isFixedBody())
-      {
+      if (!configuration.isFixedBody()) {
         localBodyStreamFactory = getStreamFactory();
       }
 
@@ -274,57 +276,50 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
       SPPMessage dummyMessage = internalDecodeMessageHeader(apidQualifier, apid, packet);
 
       // now full message including body
-      try
-      {
+      try {
         return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, false,
-                (GENMessageHeader) dummyMessage.getHeader(), qosProperties,
-                dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(), localBodyStreamFactory);
-      }
-      catch(MALException ex)
-      {
-        returnErrorMessage(null, 
-                dummyMessage, 
-                MALHelper.INTERNAL_ERROR_NUMBER, 
-                "The message body could not be decoded. The message will be discarded!");
-        
+            (GENMessageHeader) dummyMessage.getHeader(), qosProperties,
+            dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(),
+            localBodyStreamFactory);
+      } catch (MALException ex) {
+        returnErrorMessage(null,
+            dummyMessage,
+            MALHelper.INTERNAL_ERROR_NUMBER,
+            "The message body could not be decoded. The message will be discarded!");
+
         return null;
       }
-    }
-    else
-    {
+    } else {
       // find packet segment handler
       final Long transactionId = (long) java.nio.ByteBuffer.wrap(packet).getLong(18);
 
-      Map<Long, SPPSegmentsHandler> map = segmentHandlers.get(new QualifiedApid(apidQualifier, apid));
-      
-      if (null == map)
-      {
+      Map<Long, SPPSegmentsHandler> map
+          = segmentHandlers.get(new QualifiedApid(apidQualifier, apid));
+
+      if (null == map) {
         map = new HashMap<Long, SPPSegmentsHandler>();
         segmentHandlers.put(new QualifiedApid(apidQualifier, apid), map);
       }
 
       SPPSegmentsHandler segmentHandler = map.get(transactionId);
 
-      if (null == segmentHandler)
-      {
+      if (null == segmentHandler) {
         segmentHandler = new SPPSegmentsHandler(this, apidQualifier, apid);
         map.put(transactionId, segmentHandler);
       }
 
       segmentHandler.addSegment(sequenceFlags, packet);
       byte[] sppRaw = segmentHandler.getNextMessage();
-      
-      if (sppRaw != null)
-      {
-        if(map.get(transactionId).isEmpty()){
-            map.remove(transactionId);
+
+      if (sppRaw != null) {
+        if (map.get(transactionId).isEmpty()) {
+          map.remove(transactionId);
         }
-        
+
         // We don't remove the map from the segmentHandlers because we are not expecting
         // to have a big number of different consumers connected. Removing it and
         // re-adding it from/to the map every time we have a new message would
         // make things go slower. The map won't grow like crazy, no worries...
-        
         GENMessage msg = internalCreateMessage(apidQualifier, apid, 3, sppRaw);
         LOGGER.log(Level.FINE, "Decoded SPP segmented message: {0}", msg.getHeader());
         return msg;
@@ -334,18 +329,18 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     }
   }
 
-  protected SPPMessage internalDecodeMessageHeader(final int apidQualifier, final int apid, final byte[] packet) throws MALException
+  protected SPPMessage internalDecodeMessageHeader(final int apidQualifier, final int apid,
+      final byte[] packet) throws MALException
   {
     SPPConfiguration configuration = apidConfigurations.get(new QualifiedApid(apidQualifier, apid));
-    if (null == configuration)
-    {
+    if (null == configuration) {
       configuration = defaultConfiguration;
     }
 
     // need to decode in two stages, first message header
     return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, true,
-            new SPPMessageHeader(hdrStreamFactory, configuration, null, apidQualifier, uriRep, ssc),
-            qosProperties, packet, hdrStreamFactory);
+        new SPPMessageHeader(hdrStreamFactory, configuration, null, apidQualifier, uriRep, ssc),
+        qosProperties, packet, hdrStreamFactory);
   }
 
   protected MALElementStreamFactory getHeaderStreamFactory()
@@ -355,6 +350,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
 
   public static class QualifiedApid
   {
+
     public final int apidQualifier;
     public final int apid;
 
@@ -376,21 +372,17 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     @Override
     public boolean equals(Object obj)
     {
-      if (this == obj)
-      {
+      if (this == obj) {
         return true;
       }
-      if (obj == null)
-      {
+      if (obj == null) {
         return false;
       }
-      if (getClass() != obj.getClass())
-      {
+      if (getClass() != obj.getClass()) {
         return false;
       }
       final QualifiedApid other = (QualifiedApid) obj;
-      if (this.apidQualifier != other.apidQualifier)
-      {
+      if (this.apidQualifier != other.apidQualifier) {
         return false;
       }
       return this.apid == other.apid;

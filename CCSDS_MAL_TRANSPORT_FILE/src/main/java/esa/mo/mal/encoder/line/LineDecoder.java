@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.structures.*;
  */
 public class LineDecoder implements MALDecoder
 {
+
   static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
   private static final String STR_DELIM = "\n";
   private static final String STR_NULL = "_";
@@ -66,7 +67,7 @@ public class LineDecoder implements MALDecoder
   /**
    * Constructor.
    *
-   * @param is Source stream to read from.
+   * @param is  Source stream to read from.
    * @param src Source buffer holder to use..
    */
   protected LineDecoder(final java.io.InputStream is, final BufferHolder src)
@@ -93,8 +94,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return new Identifier(strVal);
     }
 
@@ -113,8 +113,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return strVal;
     }
 
@@ -133,8 +132,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeInteger(strVal);
     }
 
@@ -143,12 +141,9 @@ public class LineDecoder implements MALDecoder
 
   private Integer internalDecodeInteger(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return Integer.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -165,8 +160,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeBoolean(strVal);
     }
 
@@ -175,12 +169,9 @@ public class LineDecoder implements MALDecoder
 
   private Boolean internalDecodeBoolean(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return Boolean.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -197,8 +188,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeTime(strVal);
     }
 
@@ -207,12 +197,9 @@ public class LineDecoder implements MALDecoder
 
   private Time internalDecodeTime(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return new Time(Long.parseLong(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -229,8 +216,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeFineTime(strVal);
     }
 
@@ -239,12 +225,9 @@ public class LineDecoder implements MALDecoder
 
   private FineTime internalDecodeFineTime(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return new FineTime(Long.parseLong(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -261,8 +244,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return new Blob(hexStringToByteArray(strVal));
     }
 
@@ -281,8 +263,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeDuration(strVal);
     }
 
@@ -291,12 +272,9 @@ public class LineDecoder implements MALDecoder
 
   private Duration internalDecodeDuration(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return new Duration(Double.parseDouble(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -313,8 +291,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeFloat(strVal);
     }
 
@@ -323,12 +300,9 @@ public class LineDecoder implements MALDecoder
 
   private Float internalDecodeFloat(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return Float.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -345,8 +319,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeDouble(strVal);
     }
 
@@ -355,12 +328,9 @@ public class LineDecoder implements MALDecoder
 
   private Double internalDecodeDouble(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return Double.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -377,8 +347,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeLong(strVal);
     }
 
@@ -387,12 +356,9 @@ public class LineDecoder implements MALDecoder
 
   private Long internalDecodeLong(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return Long.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -409,8 +375,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeOctet(strVal);
     }
 
@@ -419,12 +384,9 @@ public class LineDecoder implements MALDecoder
 
   private Byte internalDecodeOctet(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return Byte.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -441,8 +403,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeShort(strVal);
     }
 
@@ -451,12 +412,9 @@ public class LineDecoder implements MALDecoder
 
   private Short internalDecodeShort(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return Short.valueOf(strVal);
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -473,8 +431,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeUInteger(strVal);
     }
 
@@ -483,12 +440,9 @@ public class LineDecoder implements MALDecoder
 
   private UInteger internalDecodeUInteger(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return new UInteger(Long.parseLong(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -505,8 +459,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeULong(strVal);
     }
 
@@ -515,12 +468,9 @@ public class LineDecoder implements MALDecoder
 
   private ULong internalDecodeULong(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return new ULong(new BigInteger(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -537,8 +487,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeUOctet(strVal);
     }
 
@@ -547,12 +496,9 @@ public class LineDecoder implements MALDecoder
 
   private UOctet internalDecodeUOctet(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return new UOctet(Short.parseShort(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -569,8 +515,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeUShort(strVal);
     }
 
@@ -579,12 +524,9 @@ public class LineDecoder implements MALDecoder
 
   private UShort internalDecodeUShort(final String strVal) throws MALException
   {
-    try
-    {
+    try {
       return new UShort(Integer.parseInt(strVal));
-    }
-    catch (NumberFormatException ex)
-    {
+    } catch (NumberFormatException ex) {
       throw new MALException(ex.getLocalizedMessage(), ex);
     }
   }
@@ -601,8 +543,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return new URI(strVal);
     }
 
@@ -621,8 +562,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       return internalDecodeAttribute(strVal);
     }
 
@@ -635,9 +575,7 @@ public class LineDecoder implements MALDecoder
 
     // we should really precheck the area and service parts of the long before splitting out the type part
     // ToDo
-
-    switch (typeval)
-    {
+    switch (typeval) {
       case Attribute._BLOB_TYPE_SHORT_FORM:
         return decodeBlob();
       case Attribute._BOOLEAN_TYPE_SHORT_FORM:
@@ -691,8 +629,7 @@ public class LineDecoder implements MALDecoder
     final String strVal = removeFirst();
 
     // Check if object is not null...
-    if (!strVal.equals(STR_NULL))
-    {
+    if (!strVal.equals(STR_NULL)) {
       pushBack(strVal);
       return element.decode(this);
     }
@@ -709,39 +646,31 @@ public class LineDecoder implements MALDecoder
   {
     String rv;
 
-    if (null == sourceBuffer.head)
-    {
+    if (null == sourceBuffer.head) {
       final int index = findNextOffset();
 
       // No more chars
-      if (-1 == index)
-      {
+      if (-1 == index) {
         rv = sourceBuffer.buf.substring(sourceBuffer.offset, sourceBuffer.buf.length());
         sourceBuffer.offset = sourceBuffer.buf.length();
-      }
-      else
-      {
+      } else {
         rv = sourceBuffer.buf.substring(sourceBuffer.offset, index);
         sourceBuffer.offset = index + 1;
       }
 
       // trim off initial property set part
-      if (null != rv)
-      {
+      if (null != rv) {
         final int eindex = rv.indexOf('=');
 
-        if (-1 != eindex)
-        {
+        if (-1 != eindex) {
           rv = rv.substring(eindex + 1);
         }
       }
-    }
-    else
-    {
+    } else {
       rv = sourceBuffer.head;
       sourceBuffer.head = null;
     }
-    
+
     return rv;
   }
 
@@ -751,11 +680,9 @@ public class LineDecoder implements MALDecoder
     int index = sourceBuffer.buf.indexOf(STR_DELIM, sourceBuffer.offset);
 
     // ensure that we have loaded enough buffer from the input stream (if we are stream based) for the next read
-    if (-1 == index)
-    {
+    if (-1 == index) {
       boolean needMore = true;
-      while (needMore)
-      {
+      while (needMore) {
         final boolean haveMore = loadExtraBuffer();
 
         index = sourceBuffer.buf.indexOf(STR_DELIM, sourceBuffer.offset);
@@ -769,19 +696,15 @@ public class LineDecoder implements MALDecoder
 
   private void preLoadBuffer() throws MALException
   {
-    if ((null != inputStream) && (null == sourceBuffer.buf))
-    {
+    if ((null != inputStream) && (null == sourceBuffer.buf)) {
       // need to load in some
       final byte[] tbuf = new byte[BLOCK_SIZE];
 
-      try
-      {
+      try {
         final int length = inputStream.read(tbuf, 0, tbuf.length);
         sourceBuffer.buf = new String(tbuf, 0, length, UTF8_CHARSET);
         sourceBuffer.offset = 0;
-      }
-      catch (IOException ex)
-      {
+      } catch (IOException ex) {
         throw new MALException("Unable to read required amount from source stream", ex);
       }
     }
@@ -791,19 +714,15 @@ public class LineDecoder implements MALDecoder
   {
     boolean moreAvailable = false;
 
-    if (null != inputStream)
-    {
+    if (null != inputStream) {
       // need to load in some
       final byte[] tbuf = new byte[BLOCK_SIZE];
 
-      try
-      {
+      try {
         final int length = inputStream.read(tbuf, 0, tbuf.length);
         sourceBuffer.buf += new String(tbuf, 0, length, UTF8_CHARSET);
         moreAvailable = 0 != inputStream.available();
-      }
-      catch (IOException ex)
-      {
+      } catch (IOException ex) {
         throw new MALException("Unable to read required amount from source stream", ex);
       }
     }
@@ -815,9 +734,9 @@ public class LineDecoder implements MALDecoder
   {
     final int len = s.length();
     final byte[] data = new byte[len / 2];
-    for (int i = 0; i < len; i += 2)
-    {
-      data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
+    for (int i = 0; i < len; i += 2) {
+      data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(
+          s.charAt(i + 1), 16));
     }
     return data;
   }
@@ -827,6 +746,7 @@ public class LineDecoder implements MALDecoder
    */
   protected static class BufferHolder
   {
+
     private String buf;
     private int offset;
     private String head = null;

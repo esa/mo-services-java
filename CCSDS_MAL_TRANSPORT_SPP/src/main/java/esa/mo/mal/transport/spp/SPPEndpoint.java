@@ -49,20 +49,22 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  */
 public class SPPEndpoint extends GENEndpoint
 {
+
   private final SPPConfiguration configuration;
   private final int apidQualifier;
   private final Boolean forceTC;
   private final SPPURIRepresentation uriRep;
   private final SPPSourceSequenceCounter ssCounter;
-  private final Map<SegmentIndex, SPPSegmentCounter> segmentCounterMap = new HashMap<SegmentIndex, SPPSegmentCounter>();
+  private final Map<SegmentIndex, SPPSegmentCounter> segmentCounterMap
+      = new HashMap<SegmentIndex, SPPSegmentCounter>();
 
   public SPPEndpoint(GENTransport transport,
-          SPPConfiguration configuration,
-          int apidQualifier,
-          SPPURIRepresentation uriRep,
-          SPPSourceSequenceCounter ssCounter,
-          String localName, String routingName, String uri, boolean wrapBodyParts,
-          final Map properties)
+      SPPConfiguration configuration,
+      int apidQualifier,
+      SPPURIRepresentation uriRep,
+      SPPSourceSequenceCounter ssCounter,
+      String localName, String routingName, String uri, boolean wrapBodyParts,
+      final Map properties)
   {
     super(transport, localName, routingName, uri, wrapBodyParts);
 
@@ -70,28 +72,21 @@ public class SPPEndpoint extends GENEndpoint
 
     int aq = apidQualifier;
     // decode configuration
-    if (properties != null)
-    {
+    if (properties != null) {
 //      if (properties.containsKey("org.ccsds.moims.mo.malspp.apid"))
 //      {
 //        a = Integer.parseInt(properties.get("org.ccsds.moims.mo.malspp.apid").toString());
 //      }
-      if (properties.containsKey(APID_QUALIFIER_PROPERTY))
-      {
+      if (properties.containsKey(APID_QUALIFIER_PROPERTY)) {
         aq = Integer.parseInt(properties.get(APID_QUALIFIER_PROPERTY).toString());
       }
 
-      if (properties.containsKey(IS_TC_PACKET_PROPERTY))
-      {
+      if (properties.containsKey(IS_TC_PACKET_PROPERTY)) {
         forceTC = Boolean.parseBoolean(properties.get(IS_TC_PACKET_PROPERTY).toString());
-      }
-      else
-      {
+      } else {
         forceTC = null;
       }
-    }
-    else
-    {
+    } else {
       forceTC = null;
     }
 
@@ -102,274 +97,262 @@ public class SPPEndpoint extends GENEndpoint
 
   @Override
   public MALMessage createMessage(final Blob authenticationId,
-          final URI uriTo,
-          final Time timestamp,
-          final QoSLevel qosLevel,
-          final UInteger priority,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType session,
-          final Identifier sessionName,
-          final InteractionType interactionType,
-          final UOctet interactionStage,
-          final Long transactionId,
-          final UShort serviceArea,
-          final UShort service,
-          final UShort operation,
-          final UOctet serviceVersion,
-          final Boolean isErrorMessage,
-          final Map qosProperties,
-          final Object... body) throws MALException
+      final URI uriTo,
+      final Time timestamp,
+      final QoSLevel qosLevel,
+      final UInteger priority,
+      final IdentifierList domain,
+      final Identifier networkZone,
+      final SessionType session,
+      final Identifier sessionName,
+      final InteractionType interactionType,
+      final UOctet interactionStage,
+      final Long transactionId,
+      final UShort serviceArea,
+      final UShort service,
+      final UShort operation,
+      final UOctet serviceVersion,
+      final Boolean isErrorMessage,
+      final Map qosProperties,
+      final Object... body) throws MALException
   {
-    try
-    {
-      SPPMessageHeader hdr = (SPPMessageHeader)createMessageHeader(getURI(),
-              authenticationId,
-              uriTo,
-              timestamp,
-              qosLevel,
-              priority,
-              domain,
-              networkZone,
-              session,
-              sessionName,
-              interactionType,
-              interactionStage,
-              transactionId,
-              serviceArea,
-              service,
-              operation,
-              serviceVersion,
-              isErrorMessage,
-              qosProperties);
-      
-      return new SPPMessage(((SPPBaseTransport)transport).getHeaderStreamFactory(),
-              hdr.getConfiguration(),
-              getMessageSegmentCounter(hdr),
-              false, hdr,
-              qosProperties, null, transport.getStreamFactory(), body);
-    }
-    catch (MALInteractionException ex)
-    {
+    try {
+      SPPMessageHeader hdr = (SPPMessageHeader) createMessageHeader(getURI(),
+          authenticationId,
+          uriTo,
+          timestamp,
+          qosLevel,
+          priority,
+          domain,
+          networkZone,
+          session,
+          sessionName,
+          interactionType,
+          interactionStage,
+          transactionId,
+          serviceArea,
+          service,
+          operation,
+          serviceVersion,
+          isErrorMessage,
+          qosProperties);
+
+      return new SPPMessage(((SPPBaseTransport) transport).getHeaderStreamFactory(),
+          hdr.getConfiguration(),
+          getMessageSegmentCounter(hdr),
+          false, hdr,
+          qosProperties, null, transport.getStreamFactory(), body);
+    } catch (MALInteractionException ex) {
       throw new MALException("Error creating message", ex);
     }
   }
 
   @Override
   public MALMessage createMessage(final Blob authenticationId,
-          final URI uriTo,
-          final Time timestamp,
-          final QoSLevel qosLevel,
-          final UInteger priority,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType session,
-          final Identifier sessionName,
-          final InteractionType interactionType,
-          final UOctet interactionStage,
-          final Long transactionId,
-          final UShort serviceArea,
-          final UShort service,
-          final UShort operation,
-          final UOctet serviceVersion,
-          final Boolean isErrorMessage,
-          final Map qosProperties,
-          final MALEncodedBody body) throws MALException
+      final URI uriTo,
+      final Time timestamp,
+      final QoSLevel qosLevel,
+      final UInteger priority,
+      final IdentifierList domain,
+      final Identifier networkZone,
+      final SessionType session,
+      final Identifier sessionName,
+      final InteractionType interactionType,
+      final UOctet interactionStage,
+      final Long transactionId,
+      final UShort serviceArea,
+      final UShort service,
+      final UShort operation,
+      final UOctet serviceVersion,
+      final Boolean isErrorMessage,
+      final Map qosProperties,
+      final MALEncodedBody body) throws MALException
   {
-    try
-    {
-      SPPMessageHeader hdr = (SPPMessageHeader)createMessageHeader(getURI(),
-              authenticationId,
-              uriTo,
-              timestamp,
-              qosLevel,
-              priority,
-              domain,
-              networkZone,
-              session,
-              sessionName,
-              interactionType,
-              interactionStage,
-              transactionId,
-              serviceArea,
-              service,
-              operation,
-              serviceVersion,
-              isErrorMessage,
-              qosProperties);
-      
-      return new SPPMessage(((SPPBaseTransport)transport).getHeaderStreamFactory(),
-              hdr.getConfiguration(), getMessageSegmentCounter(hdr), false, hdr,
-              qosProperties, null, transport.getStreamFactory(), body);
-    }
-    catch (MALInteractionException ex)
-    {
+    try {
+      SPPMessageHeader hdr = (SPPMessageHeader) createMessageHeader(getURI(),
+          authenticationId,
+          uriTo,
+          timestamp,
+          qosLevel,
+          priority,
+          domain,
+          networkZone,
+          session,
+          sessionName,
+          interactionType,
+          interactionStage,
+          transactionId,
+          serviceArea,
+          service,
+          operation,
+          serviceVersion,
+          isErrorMessage,
+          qosProperties);
+
+      return new SPPMessage(((SPPBaseTransport) transport).getHeaderStreamFactory(),
+          hdr.getConfiguration(), getMessageSegmentCounter(hdr), false, hdr,
+          qosProperties, null, transport.getStreamFactory(), body);
+    } catch (MALInteractionException ex) {
       throw new MALException("Error creating message", ex);
     }
   }
 
   @Override
   public MALMessage createMessage(final Blob authenticationId,
-          final URI uriTo,
-          final Time timestamp,
-          final QoSLevel qosLevel,
-          final UInteger priority,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType session,
-          final Identifier sessionName,
-          final Long transactionId,
-          final Boolean isErrorMessage,
-          final MALOperation op,
-          final UOctet interactionStage,
-          final Map qosProperties,
-          final MALEncodedBody body) throws MALException
+      final URI uriTo,
+      final Time timestamp,
+      final QoSLevel qosLevel,
+      final UInteger priority,
+      final IdentifierList domain,
+      final Identifier networkZone,
+      final SessionType session,
+      final Identifier sessionName,
+      final Long transactionId,
+      final Boolean isErrorMessage,
+      final MALOperation op,
+      final UOctet interactionStage,
+      final Map qosProperties,
+      final MALEncodedBody body) throws MALException
   {
-    try
-    {
-      SPPMessageHeader hdr = (SPPMessageHeader)createMessageHeader(getURI(),
-              authenticationId,
-              uriTo,
-              timestamp,
-              qosLevel,
-              priority,
-              domain,
-              networkZone,
-              session,
-              sessionName,
-              op.getInteractionType(),
-              interactionStage,
-              transactionId,
-              op.getService().getArea().getNumber(),
-              op.getService().getNumber(),
-              op.getNumber(),
-              op.getService().getArea().getVersion(),
-              isErrorMessage,
-              qosProperties);
-      
-      return new SPPMessage(((SPPBaseTransport)transport).getHeaderStreamFactory(),
-              hdr.getConfiguration(), getMessageSegmentCounter(hdr), false, hdr,
-              qosProperties,
-              op,
-              transport.getStreamFactory(), body);
-    }
-    catch (MALInteractionException ex)
-    {
+    try {
+      SPPMessageHeader hdr = (SPPMessageHeader) createMessageHeader(getURI(),
+          authenticationId,
+          uriTo,
+          timestamp,
+          qosLevel,
+          priority,
+          domain,
+          networkZone,
+          session,
+          sessionName,
+          op.getInteractionType(),
+          interactionStage,
+          transactionId,
+          op.getService().getArea().getNumber(),
+          op.getService().getNumber(),
+          op.getNumber(),
+          op.getService().getArea().getVersion(),
+          isErrorMessage,
+          qosProperties);
+
+      return new SPPMessage(((SPPBaseTransport) transport).getHeaderStreamFactory(),
+          hdr.getConfiguration(), getMessageSegmentCounter(hdr), false, hdr,
+          qosProperties,
+          op,
+          transport.getStreamFactory(), body);
+    } catch (MALInteractionException ex) {
       throw new MALException("Error creating message", ex);
     }
   }
 
   @Override
   public MALMessage createMessage(final Blob authenticationId,
-          final URI uriTo,
-          final Time timestamp,
-          final QoSLevel qosLevel,
-          final UInteger priority,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType session,
-          final Identifier sessionName,
-          final Long transactionId,
-          final Boolean isErrorMessage,
-          final MALOperation op,
-          final UOctet interactionStage,
-          final Map qosProperties,
-          final Object... body) throws MALException
+      final URI uriTo,
+      final Time timestamp,
+      final QoSLevel qosLevel,
+      final UInteger priority,
+      final IdentifierList domain,
+      final Identifier networkZone,
+      final SessionType session,
+      final Identifier sessionName,
+      final Long transactionId,
+      final Boolean isErrorMessage,
+      final MALOperation op,
+      final UOctet interactionStage,
+      final Map qosProperties,
+      final Object... body) throws MALException
   {
-    try
-    {
-      SPPMessageHeader hdr = (SPPMessageHeader)createMessageHeader(getURI(),
-              authenticationId,
-              uriTo,
-              timestamp,
-              qosLevel,
-              priority,
-              domain,
-              networkZone,
-              session,
-              sessionName,
-              op.getInteractionType(),
-              interactionStage,
-              transactionId,
-              op.getService().getArea().getNumber(),
-              op.getService().getNumber(),
-              op.getNumber(),
-              op.getService().getArea().getVersion(),
-              isErrorMessage,
-              qosProperties);
-      
-      return new SPPMessage(((SPPBaseTransport)transport).getHeaderStreamFactory(),
-              hdr.getConfiguration(), getMessageSegmentCounter(hdr), false, hdr,
-              qosProperties,
-              op,
-              transport.getStreamFactory(), body);
-    }
-    catch (MALInteractionException ex)
-    {
+    try {
+      SPPMessageHeader hdr = (SPPMessageHeader) createMessageHeader(getURI(),
+          authenticationId,
+          uriTo,
+          timestamp,
+          qosLevel,
+          priority,
+          domain,
+          networkZone,
+          session,
+          sessionName,
+          op.getInteractionType(),
+          interactionStage,
+          transactionId,
+          op.getService().getArea().getNumber(),
+          op.getService().getNumber(),
+          op.getNumber(),
+          op.getService().getArea().getVersion(),
+          isErrorMessage,
+          qosProperties);
+
+      return new SPPMessage(((SPPBaseTransport) transport).getHeaderStreamFactory(),
+          hdr.getConfiguration(), getMessageSegmentCounter(hdr), false, hdr,
+          qosProperties,
+          op,
+          transport.getStreamFactory(), body);
+    } catch (MALInteractionException ex) {
       throw new MALException("Error creating message", ex);
     }
   }
 
   @Override
   public GENMessageHeader createMessageHeader(URI uriFrom,
-          Blob authenticationId,
-          URI uriTo,
-          Time timestamp,
-          QoSLevel qosLevel,
-          UInteger priority,
-          IdentifierList domain,
-          Identifier networkZone,
-          SessionType session,
-          Identifier sessionName,
-          InteractionType interactionType,
-          UOctet interactionStage,
-          Long transactionId,
-          UShort serviceArea,
-          UShort service,
-          UShort operation,
-          UOctet serviceVersion,
-          Boolean isErrorMessage,
-          Map qosProperties)
+      Blob authenticationId,
+      URI uriTo,
+      Time timestamp,
+      QoSLevel qosLevel,
+      UInteger priority,
+      IdentifierList domain,
+      Identifier networkZone,
+      SessionType session,
+      Identifier sessionName,
+      InteractionType interactionType,
+      UOctet interactionStage,
+      Long transactionId,
+      UShort serviceArea,
+      UShort service,
+      UShort operation,
+      UOctet serviceVersion,
+      Boolean isErrorMessage,
+      Map qosProperties)
   {
-    return new SPPMessageHeader(((SPPBaseTransport)transport).getHeaderStreamFactory(),
-            new SPPConfiguration(configuration, qosProperties),
-            forceTC, apidQualifier, uriRep, ssCounter, getURI(),
-            authenticationId,
-            uriTo,
-            timestamp,
-            qosLevel,
-            priority,
-            domain,
-            networkZone,
-            session,
-            sessionName,
-            interactionType,
-            interactionStage,
-            transactionId,
-            serviceArea,
-            service,
-            operation,
-            serviceVersion,
-            isErrorMessage);
+    return new SPPMessageHeader(((SPPBaseTransport) transport).getHeaderStreamFactory(),
+        new SPPConfiguration(configuration, qosProperties),
+        forceTC, apidQualifier, uriRep, ssCounter, getURI(),
+        authenticationId,
+        uriTo,
+        timestamp,
+        qosLevel,
+        priority,
+        domain,
+        networkZone,
+        session,
+        sessionName,
+        interactionType,
+        interactionStage,
+        transactionId,
+        serviceArea,
+        service,
+        operation,
+        serviceVersion,
+        isErrorMessage);
   }
 
   private SPPSegmentCounter getMessageSegmentCounter(GENMessageHeader hdr)
   {
     SegmentIndex idx = new SegmentIndex(hdr);
-    
+
     SPPSegmentCounter cnt = segmentCounterMap.get(idx);
-    
-    if (null == cnt)
-    {
+
+    if (null == cnt) {
       cnt = new SPPSegmentCounter();
       segmentCounterMap.put(idx, cnt);
     }
-    
+
     return cnt;
   }
 
   private static class SegmentIndex
   {
+
     private final URI uriFrom;
     private final URI uriTo;
     private final IdentifierList domain;
@@ -418,61 +401,56 @@ public class SPPEndpoint extends GENEndpoint
     @Override
     public boolean equals(Object obj)
     {
-      if (this == obj)
-      {
+      if (this == obj) {
         return true;
       }
-      if (obj == null)
-      {
+      if (obj == null) {
         return false;
       }
-      if (getClass() != obj.getClass())
-      {
+      if (getClass() != obj.getClass()) {
         return false;
       }
       final SegmentIndex other = (SegmentIndex) obj;
-      if (this.uriFrom != other.uriFrom && (this.uriFrom == null || !this.uriFrom.equals(other.uriFrom)))
-      {
+      if (this.uriFrom != other.uriFrom && (this.uriFrom == null || !this.uriFrom.equals(
+          other.uriFrom))) {
         return false;
       }
-      if (this.uriTo != other.uriTo && (this.uriTo == null || !this.uriTo.equals(other.uriTo)))
-      {
+      if (this.uriTo != other.uriTo && (this.uriTo == null || !this.uriTo.equals(other.uriTo))) {
         return false;
       }
-      if (this.domain != other.domain && (this.domain == null || !this.domain.equals(other.domain)))
-      {
+      if (this.domain != other.domain && (this.domain == null || !this.domain.equals(other.domain))) {
         return false;
       }
-      if (this.networkZone != other.networkZone && (this.networkZone == null || !this.networkZone.equals(other.networkZone)))
-      {
+      if (this.networkZone != other.networkZone && (this.networkZone == null || !this.networkZone.equals(
+          other.networkZone))) {
         return false;
       }
-      if (this.session != other.session && (this.session == null || !this.session.equals(other.session)))
-      {
+      if (this.session != other.session && (this.session == null || !this.session.equals(
+          other.session))) {
         return false;
       }
-      if (this.sessionName != other.sessionName && (this.sessionName == null || !this.sessionName.equals(other.sessionName)))
-      {
+      if (this.sessionName != other.sessionName && (this.sessionName == null || !this.sessionName.equals(
+          other.sessionName))) {
         return false;
       }
-      if (this.interactionType != other.interactionType && (this.interactionType == null || !this.interactionType.equals(other.interactionType)))
-      {
+      if (this.interactionType != other.interactionType && (this.interactionType == null || !this.interactionType.equals(
+          other.interactionType))) {
         return false;
       }
-      if (this.transactionId != other.transactionId && (this.transactionId == null || !this.transactionId.equals(other.transactionId)))
-      {
+      if (this.transactionId != other.transactionId && (this.transactionId == null || !this.transactionId.equals(
+          other.transactionId))) {
         return false;
       }
-      if (this.serviceArea != other.serviceArea && (this.serviceArea == null || !this.serviceArea.equals(other.serviceArea)))
-      {
+      if (this.serviceArea != other.serviceArea && (this.serviceArea == null || !this.serviceArea.equals(
+          other.serviceArea))) {
         return false;
       }
-      if (this.service != other.service && (this.service == null || !this.service.equals(other.service)))
-      {
+      if (this.service != other.service && (this.service == null || !this.service.equals(
+          other.service))) {
         return false;
       }
-      if (this.operation != other.operation && (this.operation == null || !this.operation.equals(other.operation)))
-      {
+      if (this.operation != other.operation && (this.operation == null || !this.operation.equals(
+          other.operation))) {
         return false;
       }
       return true;

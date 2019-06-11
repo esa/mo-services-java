@@ -32,6 +32,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  */
 public class FileTransportFactoryImpl extends MALTransportFactory
 {
+
   private static final Object MUTEX = new Object();
   private GENTransport transport = null;
 
@@ -46,12 +47,11 @@ public class FileTransportFactoryImpl extends MALTransportFactory
   }
 
   @Override
-  public MALTransport createTransport(final MALContext malContext, final Map properties) throws MALException
+  public MALTransport createTransport(final MALContext malContext, final Map properties) throws
+      MALException
   {
-    synchronized (MUTEX)
-    {
-      if (null == transport)
-      {
+    synchronized (MUTEX) {
+      if (null == transport) {
         transport = new FileTransport(getProtocol(), this, properties);
         transport.init();
       }

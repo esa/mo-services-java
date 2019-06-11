@@ -29,18 +29,19 @@ import org.ccsds.moims.mo.mal.MALListDecoder;
  */
 public class StringListDecoder extends StringDecoder implements MALListDecoder
 {
+
   private final int size;
   private final List list;
 
   /**
    * Constructor.
    *
-   * @param list List to decode into.
+   * @param list      List to decode into.
    * @param srcBuffer Buffer to manage.
    * @throws MALException If cannot decode size of list.
    */
   public StringListDecoder(final List list, final BufferHolder srcBuffer)
-          throws MALException
+      throws MALException
   {
     super(srcBuffer);
 

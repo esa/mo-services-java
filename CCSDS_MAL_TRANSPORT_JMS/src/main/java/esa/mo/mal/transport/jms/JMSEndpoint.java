@@ -43,6 +43,7 @@ import esa.mo.mal.transport.gen.GENMessageHeader;
  */
 public class JMSEndpoint extends GENEndpoint implements MALEndpoint
 {
+
   public static final String DOM_PROPERTY = "DOM";
   public static final String NET_PROPERTY = "NET";
   public static final String ARR_PROPERTY = "ARR";
@@ -58,19 +59,22 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
   private final Queue messageSink;
   private final Session qs;
   private final JMSQueueHandler rspnHandler;
-  private final Map<String, JMSConsumeHandler> consumeHandlerMap = new TreeMap<String, JMSConsumeHandler>();
-  private final Map<String, JMSPublishHandler> publishHandlerMap = new TreeMap<String, JMSPublishHandler>();
+  private final Map<String, JMSConsumeHandler> consumeHandlerMap
+      = new TreeMap<String, JMSConsumeHandler>();
+  private final Map<String, JMSPublishHandler> publishHandlerMap
+      = new TreeMap<String, JMSPublishHandler>();
   final Object interruption = new Object();
 
   /**
    * Constructor.
    *
-   * @param transport Parent transport.
-   * @param localName Endpoint local MAL name.
+   * @param transport   Parent transport.
+   * @param localName   Endpoint local MAL name.
    * @param routingName Endpoint local routing name.
-   * @param baseuri The URI string for this end point.
+   * @param baseuri     The URI string for this end point.
    */
-  public JMSEndpoint(final JMSTransport transport, final String localName, final String routingName, String baseuri, Session qs, Queue q) throws Exception
+  public JMSEndpoint(final JMSTransport transport, final String localName, final String routingName,
+      String baseuri, Session qs, Queue q) throws Exception
   {
     super(transport, localName, routingName, baseuri + q.getQueueName(), false);
 
@@ -79,13 +83,11 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
     this.messageSink = q;
     this.queueName = messageSink.getQueueName();
 
-    try
-    {
+    try {
       jtransport.getAdministrator().bindQueue(qs, q);
-    }
-    catch (NameNotFoundException e)
-    {
-      JMSTransport.RLOGGER.log(Level.WARNING, "JMS: unable to register queue name in JNDI: {0}", this.queueName);
+    } catch (NameNotFoundException e) {
+      JMSTransport.RLOGGER.log(Level.WARNING, "JMS: unable to register queue name in JNDI: {0}",
+          this.queueName);
       throw e;
     }
 
@@ -103,22 +105,19 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
   public void close() throws MALException
   {
     JMSTransport.RLOGGER.log(Level.INFO, "Closing endpoint: {0}", this.queueName);
-    
-    try
-    {
-      for (JMSConsumeHandler handler : consumeHandlerMap.values())
-      {
+
+    try {
+      for (JMSConsumeHandler handler : consumeHandlerMap.values()) {
         handler.deregister(true);
       }
 
       consumeHandlerMap.clear();
-      
+
       jtransport.getAdministrator().deleteQueue(qs, messageSink);
       qs.close();
-    }
-    catch (Exception e)
-    {
-      JMSTransport.RLOGGER.log(Level.WARNING, "JMS: issues closing JMS connection: " + this.queueName + " : {0}", e);
+    } catch (Exception e) {
+      JMSTransport.RLOGGER.log(Level.WARNING,
+          "JMS: issues closing JMS connection: " + this.queueName + " : {0}", e);
     }
   }
 
@@ -133,8 +132,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
   {
     Session lqs = (Session) handle;
 
-    if (lqs.getTransacted())
-    {
+    if (lqs.getTransacted()) {
       JMSTransport.RLOGGER.fine("Commiting transaction");
       lqs.commit();
     }
@@ -143,21 +141,17 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
   }
 
   @Override
-  protected void internalSendMessage(Object handle, boolean lastForHandle, GENMessage msg) throws MALTransmitErrorException
+  protected void internalSendMessage(Object handle, boolean lastForHandle, GENMessage msg) throws
+      MALTransmitErrorException
   {
-    try
-    {
+    try {
       Session lqs = (Session) handle;
       boolean localSession = false;
 
-      if (msg.getHeader().getInteractionType() == InteractionType.PUBSUB)
-      {
-        switch (msg.getHeader().getInteractionStage().getValue())
-        {
-          case MALPubSubOperation._REGISTER_STAGE:
-          {
-            if (null == lqs)
-            {
+      if (msg.getHeader().getInteractionType() == InteractionType.PUBSUB) {
+        switch (msg.getHeader().getInteractionStage().getValue()) {
+          case MALPubSubOperation._REGISTER_STAGE: {
+            if (null == lqs) {
               lqs = jtransport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
               localSession = true;
             }
@@ -165,10 +159,8 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
             internalHandleRegister(msg, lqs);
             break;
           }
-          case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-          {
-            if (null == lqs)
-            {
+          case MALPubSubOperation._PUBLISH_REGISTER_STAGE: {
+            if (null == lqs) {
               lqs = jtransport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
               localSession = true;
             }
@@ -176,30 +168,24 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
             internalHandlePublishRegister(msg, lqs);
             break;
           }
-          case MALPubSubOperation._PUBLISH_STAGE:
-          {
-            if (null == lqs)
-            {
+          case MALPubSubOperation._PUBLISH_STAGE: {
+            if (null == lqs) {
               lqs = jtransport.getCurrentConnection().createSession(true, Session.AUTO_ACKNOWLEDGE);
               localSession = true;
             }
 
             internalHandlePublish(msg, lqs);
 
-            if (localSession)
-            {
-              if (lqs.getTransacted())
-              {
+            if (localSession) {
+              if (lqs.getTransacted()) {
                 JMSTransport.RLOGGER.fine("Commiting transaction");
                 lqs.commit();
               }
             }
             break;
           }
-          case MALPubSubOperation._DEREGISTER_STAGE:
-          {
-            if (null == lqs)
-            {
+          case MALPubSubOperation._DEREGISTER_STAGE: {
+            if (null == lqs) {
               lqs = jtransport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
               localSession = true;
             }
@@ -207,10 +193,8 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
             internalHandleDeregister(msg, lqs);
             break;
           }
-          case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
-          {
-            if (null == lqs)
-            {
+          case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE: {
+            if (null == lqs) {
               lqs = jtransport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
               localSession = true;
             }
@@ -218,40 +202,34 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
             internalHandlePublishDeregister(msg, lqs);
             break;
           }
-          default:
-          {
-            throw new UnsupportedOperationException("JMS should not be sending this PubSub message stage.: " + msg.getHeader().getInteractionStage().getValue());
+          default: {
+            throw new UnsupportedOperationException(
+                "JMS should not be sending this PubSub message stage.: " + msg.getHeader().getInteractionStage().getValue());
           }
         }
-      }
-      else
-      {
-        if (null == lqs)
-        {
+      } else {
+        if (null == lqs) {
           lqs = jtransport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
         }
 
         super.internalSendMessage(lqs, lastForHandle, msg);
       }
 
-      if (localSession)
-      {
+      if (localSession) {
         lqs.close();
       }
-    }
-    catch (MALTransmitErrorException e)
-    {
+    } catch (MALTransmitErrorException e) {
       throw e;
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       JMSTransport.RLOGGER.log(Level.WARNING, "JMS Error occurred {0}", e);
 
-      throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, new Union(e.getMessage())), null);
+      throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
+          MALHelper.INTERNAL_ERROR_NUMBER, new Union(e.getMessage())), null);
     }
   }
 
-  protected void internalHandleRegister(final GENMessage msg, Session lqs) throws MALException, MALInteractionException
+  protected void internalHandleRegister(final GENMessage msg, Session lqs) throws MALException,
+      MALInteractionException
   {
     // get components parts of messsage
     Subscription subscription = (Subscription) msg.getBody().getBodyElement(0, new Subscription());
@@ -259,63 +237,58 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
     final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
     final String providerExchangeName = strURL.substring(iSecond + 1);
 
-    String subscriptionKey = queueName + "::" + providerExchangeName + "::" + subscription.getSubscriptionId().getValue();
+    String subscriptionKey
+        = queueName + "::" + providerExchangeName + "::" + subscription.getSubscriptionId().getValue();
 
     JMSConsumeHandler handler;
-    if (consumeHandlerMap.containsKey(subscriptionKey))
-    {
+    if (consumeHandlerMap.containsKey(subscriptionKey)) {
       handler = consumeHandlerMap.get(subscriptionKey);
       //handler.deregister();
-    }
-    else
-    {
-      try
-      {
+    } else {
+      try {
         // get the queue
-        String exchangeName = providerExchangeName + ":" + msg.getHeader().getSession().toString() + ":" + msg.getHeader().getSessionName();
+        String exchangeName
+            = providerExchangeName + ":" + msg.getHeader().getSession().toString() + ":" + msg.getHeader().getSessionName();
         Topic dest = jtransport.getAdministrator().getTopic(lqs, exchangeName);
 
-        handler = new JMSConsumeHandler(this, interruption, qs, dest, subscriptionKey, msg.getHeader().getServiceArea(), msg.getHeader().getService(), msg.getHeader().getOperation(), msg.getHeader().getAreaVersion());
+        handler = new JMSConsumeHandler(this, interruption, qs, dest, subscriptionKey,
+            msg.getHeader().getServiceArea(), msg.getHeader().getService(),
+            msg.getHeader().getOperation(), msg.getHeader().getAreaVersion());
         consumeHandlerMap.put(subscriptionKey, handler);
-      }
-      catch (NameNotFoundException e)
-      {
-        JMSTransport.RLOGGER.log(Level.WARNING, "JMS: remote topic name not found {0}", providerExchangeName);
+      } catch (NameNotFoundException e) {
+        JMSTransport.RLOGGER.log(Level.WARNING, "JMS: remote topic name not found {0}",
+            providerExchangeName);
 
         throw new MALException("MALException.DESTINATION_TRANSIENT", null);
-      }
-      catch (Exception e)
-      {
+      } catch (Exception e) {
         JMSTransport.RLOGGER.log(Level.WARNING, "JMS Error occurred when registering {0}", e);
 
         throw new MALException("MALException.INTERNAL_FAILURE", null);
       }
     }
-    
-    try
-    {
+
+    try {
       handler.register(jtransport, providerExchangeName, msg, subscription);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       JMSTransport.RLOGGER.log(Level.WARNING, "JMS Error occurred when registering {0}", e);
 
       throw new MALException("MALException.INTERNAL_FAILURE", null);
     }
 
     // create response and do callback
-    GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), null, null, (Object[]) null);
+    GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), null, null,
+        (Object[]) null);
     receiveMessage(returnMsg);
   }
 
-  protected void internalHandlePublishRegister(final GENMessage msg, Session lqs) throws MALException, MALInteractionException
+  protected void internalHandlePublishRegister(final GENMessage msg, Session lqs) throws
+      MALException, MALInteractionException
   {
     MALMessageHeader hdr = msg.getHeader();
 
     JMSPublishHandler details = publishHandlerMap.get(createProviderKey(hdr));
 
-    if (null == details)
-    {
+    if (null == details) {
       details = new JMSPublishHandler(jtransport, msg);
       publishHandlerMap.put(createProviderKey(hdr), details);
       JMSTransport.RLOGGER.log(Level.FINE, "New JMS publisher registering: {0}", hdr);
@@ -324,29 +297,31 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
     details.setKeyList(hdr, ((MALPublishRegisterBody) msg.getBody()).getEntityKeyList());
 
     // create response and do callback
-    GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), null, null, (Object[]) null);
+    GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), null, null,
+        (Object[]) null);
     receiveMessage(returnMsg);
   }
 
-  protected void internalHandlePublish(final GENMessage msg, Session lqs) throws MALException, MALInteractionException, MALTransmitErrorException
+  protected void internalHandlePublish(final GENMessage msg, Session lqs) throws MALException,
+      MALInteractionException, MALTransmitErrorException
   {
     JMSTransport.RLOGGER.fine("Starting PUBLISH");
     JMSPublishHandler details = publishHandlerMap.get(createProviderKey(msg.getHeader()));
 
-    if (null == details)
-    {
+    if (null == details) {
       JMSTransport.RLOGGER.warning("JMS : ERR Provider not known");
-      throw new MALInteractionException(new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+      throw new MALInteractionException(new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER,
+          null));
     }
 
     GENMessage rMsg = details.publish(msg, lqs);
-    if (null != rMsg)
-    {
+    if (null != rMsg) {
       receiveMessage(rMsg);
     }
   }
 
-  protected void internalHandleDeregister(final GENMessage msg, Session lqs) throws MALException, MALInteractionException
+  protected void internalHandleDeregister(final GENMessage msg, Session lqs) throws MALException,
+      MALInteractionException
   {
     // get components parts of messsage
     IdentifierList subList = (IdentifierList) msg.getBody().getBodyElement(0, new IdentifierList());
@@ -354,34 +329,33 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
     final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
     final String providerExchangeName = strURL.substring(iSecond + 1);
 
-    for (int i = 0; i < subList.size(); ++i)
-    {
+    for (int i = 0; i < subList.size(); ++i) {
       String subscriptionKey = queueName + "::" + providerExchangeName + "::" + subList.get(i);
 
-      if (consumeHandlerMap.containsKey(subscriptionKey))
-      {
+      if (consumeHandlerMap.containsKey(subscriptionKey)) {
         JMSConsumeHandler handler = consumeHandlerMap.get(subscriptionKey);
         consumeHandlerMap.remove(subscriptionKey);
         handler.deregister(true);
-      }
-      else
-      {
-        JMSTransport.RLOGGER.log(Level.WARNING, "JMS Error deregistering for unregistered subscription {0}", subscriptionKey);
+      } else {
+        JMSTransport.RLOGGER.log(Level.WARNING,
+            "JMS Error deregistering for unregistered subscription {0}", subscriptionKey);
       }
     }
 
     // create response and do callback
-    GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), null, null, (Object[]) null);
+    GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), null, null,
+        (Object[]) null);
     receiveMessage(returnMsg);
   }
 
-  protected void internalHandlePublishDeregister(final GENMessage msg, Session lqs) throws MALException, MALInteractionException
+  protected void internalHandlePublishDeregister(final GENMessage msg, Session lqs) throws
+      MALException, MALInteractionException
   {
-    GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), null, null, (Object[]) null);
-    
+    GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), null, null,
+        (Object[]) null);
+
     JMSPublishHandler hdlr = publishHandlerMap.remove(createProviderKey(msg.getHeader()));
-    if (null != hdlr)
-    {
+    if (null != hdlr) {
       hdlr.deregister(returnMsg);
       JMSTransport.RLOGGER.log(Level.FINE, "Removing JMS publisher details: {0}", msg.getHeader());
     }
@@ -390,18 +364,17 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
     receiveMessage(returnMsg);
   }
 
-  public static byte[] createExchangeMessage(int index, UpdateHeaderList headerList, List[] valueLists, MALElementStreamFactory streamFactory) throws MALException
+  public static byte[] createExchangeMessage(int index, UpdateHeaderList headerList,
+      List[] valueLists, MALElementStreamFactory streamFactory) throws MALException
   {
-    try
-    {
+    try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       MALElementOutputStream enc = streamFactory.createOutputStream(baos);
 
       enc.writeElement(new UShort(valueLists.length + 1), null);
       writeListElement(index, headerList, enc);
 
-      for (List valueList : valueLists)
-      {
+      for (List valueList : valueLists) {
         writeListElement(index, valueList, enc);
       }
 
@@ -409,14 +382,13 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
       enc.close();
 
       return baos.toByteArray();
-    }
-    catch (Throwable ex)
-    {
+    } catch (Throwable ex) {
       throw new MALException("Internal error encoding message", ex);
     }
   }
 
-  public static void writeListElement(int index, List srcList, MALElementOutputStream enc) throws MALException
+  public static void writeListElement(int index, List srcList, MALElementOutputStream enc) throws
+      MALException
   {
     Object e = srcList.get(index);
     List l = (List) ((Element) srcList).createElement();
@@ -426,7 +398,8 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
 
   static GENMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError)
   {
-    return createReturnHeader(sourceMessage, isError, (short) (sourceMessage.getHeader().getInteractionStage().getValue() + 1));
+    return createReturnHeader(sourceMessage, isError,
+        (short) (sourceMessage.getHeader().getInteractionStage().getValue() + 1));
   }
 
   static GENMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError, short stage)
@@ -473,6 +446,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
 
   protected static class PublishEntry
   {
+
     public final EntityKey eKey;
     public final boolean isModification;
     public final byte[] update;
@@ -487,6 +461,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint
 
   protected static class MessageContext
   {
+
     public final Session lqs;
     public final boolean closeSession;
 

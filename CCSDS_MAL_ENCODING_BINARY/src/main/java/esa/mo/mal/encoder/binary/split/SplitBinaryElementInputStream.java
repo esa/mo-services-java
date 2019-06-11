@@ -27,13 +27,15 @@ import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
  */
 public class SplitBinaryElementInputStream extends esa.mo.mal.encoder.binary.variable.VariableBinaryElementInputStream
 {
+
   /**
    * Constructor.
    *
-   * @param is Input stream to read from.
+   * @param is          Input stream to read from.
    * @param timeHandler Time handler to use.
    */
-  public SplitBinaryElementInputStream(final java.io.InputStream is, final BinaryTimeHandler timeHandler)
+  public SplitBinaryElementInputStream(final java.io.InputStream is,
+      final BinaryTimeHandler timeHandler)
   {
     super(new SplitBinaryDecoder(is, timeHandler));
   }
@@ -41,11 +43,12 @@ public class SplitBinaryElementInputStream extends esa.mo.mal.encoder.binary.var
   /**
    * Constructor.
    *
-   * @param buf Byte buffer to read from.
-   * @param offset Offset into buffer to start from.
+   * @param buf         Byte buffer to read from.
+   * @param offset      Offset into buffer to start from.
    * @param timeHandler Time handler to use.
    */
-  public SplitBinaryElementInputStream(final byte[] buf, final int offset, final BinaryTimeHandler timeHandler)
+  public SplitBinaryElementInputStream(final byte[] buf, final int offset,
+      final BinaryTimeHandler timeHandler)
   {
     super(new SplitBinaryDecoder(buf, offset, timeHandler));
   }

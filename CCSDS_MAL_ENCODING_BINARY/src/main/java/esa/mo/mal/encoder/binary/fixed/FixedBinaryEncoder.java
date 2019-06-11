@@ -30,37 +30,36 @@ import java.math.BigInteger;
  */
 public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinaryEncoder
 {
+
   /**
    * Constructor.
    *
-   * @param os Output stream to write to.
-   * @param timeHandler Time handler to use.
-   * @param shortLengthField True if length field is 16-bit wide, otherwise
-   * assumed to be 32-bit.
+   * @param os               Output stream to write to.
+   * @param timeHandler      Time handler to use.
+   * @param shortLengthField True if length field is 16-bit wide, otherwise assumed to be 32-bit.
    */
   public FixedBinaryEncoder(final OutputStream os,
-          final BinaryTimeHandler timeHandler,
-          final boolean shortLengthField)
+      final BinaryTimeHandler timeHandler,
+      final boolean shortLengthField)
   {
     super(new FixedBinaryStreamHolder(os, shortLengthField), timeHandler);
   }
 
   /**
-   * Constructor for derived classes that have their own stream holder
-   * implementation that should be used.
+   * Constructor for derived classes that have their own stream holder implementation that should be
+   * used.
    *
-   * @param os Output stream to write to.
+   * @param os          Output stream to write to.
    * @param timeHandler Time handler to use.
    */
   protected FixedBinaryEncoder(final StreamHolder os,
-          final BinaryTimeHandler timeHandler)
+      final BinaryTimeHandler timeHandler)
   {
     super(os, timeHandler);
   }
 
   /**
-   * Extends the StreamHolder class for handling fixed length, non-zig-zag
-   * encoded fields.
+   * Extends the StreamHolder class for handling fixed length, non-zig-zag encoded fields.
    */
   public static class FixedBinaryStreamHolder extends BaseBinaryStreamHolder
   {
@@ -71,15 +70,15 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     protected final boolean shortLengthField;
 
     private static final BigInteger B_255 = new BigInteger("255");
+
     /**
      * Constructor.
-     * 
-     * @param outputStream The output stream to encode into.
-     * @param shortLengthField True if length field is 16-bit wide, otherwise
-     * assumed to be 32-bit.
+     *
+     * @param outputStream     The output stream to encode into.
+     * @param shortLengthField True if length field is 16-bit wide, otherwise assumed to be 32-bit.
      */
     public FixedBinaryStreamHolder(OutputStream outputStream,
-            final boolean shortLengthField)
+        final boolean shortLengthField)
     {
       super(outputStream);
       this.shortLengthField = shortLengthField;
@@ -130,7 +129,7 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     @Override
     public void addUnsignedShort(int value) throws IOException
     {
-      directAdd(java.nio.ByteBuffer.allocate(2).putShort((short)value).array());
+      directAdd(java.nio.ByteBuffer.allocate(2).putShort((short) value).array());
     }
 
     @Override
@@ -146,14 +145,13 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
       int arrayLength = valueBytes.length;
       int arrayOffset = 0;
       // Strip sign bit if it is the only bit overflowing 8 bytes buffer
-      if (valueBytes[0] == 0 && arrayLength == 9)
-      {
+      if (valueBytes[0] == 0 && arrayLength == 9) {
         arrayOffset = 1;
         arrayLength--;
       }
-      if (arrayLength > 8)
-      {
-        throw new IOException("Adding big integer larger than 8 bytes (size = " + valueBytes.length + " bytes, value = " + value + ")");
+      if (arrayLength > 8) {
+        throw new IOException(
+            "Adding big integer larger than 8 bytes (size = " + valueBytes.length + " bytes, value = " + value + ")");
       }
       java.nio.ByteBuffer buf = java.nio.ByteBuffer.allocate(8);
       buf.position(8 - arrayLength);
@@ -163,26 +161,17 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
     @Override
     public void addBytes(final byte[] value) throws IOException
     {
-      if (null == value)
-      {
-        if (shortLengthField)
-        {
+      if (null == value) {
+        if (shortLengthField) {
           addUnsignedShort(0);
-        }
-        else
-        {
+        } else {
           addUnsignedInt(0);
         }
         throw new IOException("StreamHolder.addBytes: null value supplied!!");
-      }
-      else
-      {
-        if (shortLengthField)
-        {
+      } else {
+        if (shortLengthField) {
           addUnsignedShort(value.length);
-        }
-        else
-        {
+        } else {
           addUnsignedInt(value.length);
         }
         directAdd(value);

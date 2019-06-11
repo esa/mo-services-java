@@ -23,11 +23,12 @@ package esa.mo.mal.transport.gen;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 
 /**
- * The GENReceptionHandler interface defines the methods needed for a receiver managing incoming data from a
- * communication channel.
+ * The GENReceptionHandler interface defines the methods needed for a receiver managing incoming
+ * data from a communication channel.
  */
 public interface GENReceptionHandler
 {
+
   /**
    * Returns the remote URI for this reception handler.
    *
@@ -45,7 +46,8 @@ public interface GENReceptionHandler
   /**
    * Returns the message sender for this reception handler.
    *
-   * @return the message sender for this receiver. Null if this receiver does not support sending messages
+   * @return the message sender for this receiver. Null if this receiver does not support sending
+   * messages
    */
   public GENMessageSender getMessageSender();
 
