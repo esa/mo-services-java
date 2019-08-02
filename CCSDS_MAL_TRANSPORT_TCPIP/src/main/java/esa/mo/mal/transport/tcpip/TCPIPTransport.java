@@ -225,12 +225,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]>
                 serverSocket = new ServerSocket(portNumber, 0, serverHostAddr);
                 break;
               } catch (Exception ex) {
-                if (autohost) {
-                  RLOGGER.log(Level.FINE, "Port " + portNumber + " already in use...");
-                  portNumber += 1;
-                } else {
-                  throw new MALException("Error initialising TCP Server", ex);
-                }
+                RLOGGER.log(Level.FINE, "Port " + portNumber + " already in use...");
+                portNumber += 1;
               }
             }
             this.serverPort = portNumber;
