@@ -38,6 +38,7 @@ public class URI implements Attribute
    */
   public URI()
   {
+    this.value = "";
   }
 
   /**
@@ -52,9 +53,10 @@ public class URI implements Attribute
       Logger.getLogger(URI.class.getName()).log(Level.WARNING, 
           "The URI has been initialized with an invalid null value. Problems might occur while encoding the element.", 
           new MALException());
+      this.value = "";
+    } else {
+      this.value = value;
     }
-
-    this.value = value;
   }
 
   @Override

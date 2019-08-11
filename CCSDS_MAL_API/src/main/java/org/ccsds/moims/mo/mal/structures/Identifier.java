@@ -38,6 +38,7 @@ public class Identifier implements Attribute
    */
   public Identifier()
   {
+    this.value = "";
   }
 
   /**
@@ -47,14 +48,17 @@ public class Identifier implements Attribute
    */
   public Identifier(final String value)
   {
-    if(null == value)
+    if (null == value)
     {
-      Logger.getLogger(Identifier.class.getName()).log(Level.WARNING, 
+      Logger.getLogger(Identifier.class.getName()).log(Level.WARNING,
           "The Identifier has been initialized with an invalid null value. Problems might occur while encoding the element.",
           new MALException());
+      this.value = "";
     }
-    
-    this.value = value;
+    else
+    {
+      this.value = value;
+    }
   }
 
   @Override
@@ -78,7 +82,6 @@ public class Identifier implements Attribute
 //  {
 //    this.value = value;
 //  }
-
   @Override
   public Long getShortForm()
   {
@@ -110,13 +113,13 @@ public class Identifier implements Attribute
   }
 
   @Override
- public void encode(final MALEncoder encoder) throws MALException
+  public void encode(final MALEncoder encoder) throws MALException
   {
     encoder.encodeIdentifier(this);
   }
 
   @Override
- public Element decode(final MALDecoder decoder) throws MALException
+  public Element decode(final MALDecoder decoder) throws MALException
   {
     return decoder.decodeIdentifier();
   }
