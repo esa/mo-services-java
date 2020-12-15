@@ -1,0 +1,16 @@
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.mal.test.transport|
+
+*******!
+!4 Test procedure: receive interaction
+An IPTest consumer is created and a Request interaction is initiated by calling the operation 'request'.
+The test checks that the primitive 'TRANSMIT Request' has been called once by the MAL with a message which interaction stage is '2' (Request response coming from the actual transport).
+
+|script| receive test procedure |
+|ensure |create consumer |
+|ensure |initiate interaction|
+|check|receive count |1|
+|check|is request response|true|

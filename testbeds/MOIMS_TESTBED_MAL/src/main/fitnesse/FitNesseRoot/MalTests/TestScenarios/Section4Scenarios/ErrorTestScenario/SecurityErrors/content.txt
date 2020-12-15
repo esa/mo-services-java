@@ -1,0 +1,64 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO MAL Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.mal.test.errors|
+
+*******!
+!3 Test Case: Security errors
+The test security module raises specific errors depending on the operation called:
+
+|Comment|
+|Service|	Operation|	Error to raise|
+|!-ErrorTest-!|	!-testAuthenticationFailure-! |	AUTHENTICATION_FAIL|
+|!-ErrorTest-!|	!-testAuthorisationFailure-! |	AUTHORISATION_FAIL|
+
+This test checks that they are rejected locally first and then remotely.
+
+!4 Test procedure: authentication failure
+The !-ErrorTest-! consumer calls the operation !-testAuthenticationFail-! and checks that the error AUTHENTICATION_FAIL is returned.
+
+|script| Access control error scenario|
+|ensure| security manager has been created|
+|switch on local rejections|
+|ensure|a !-testAuthenticationFailure-! interaction fails|
+|ensure|error type is |AUTHENTICATION_FAIL|
+|ensure|error source is |local|
+|switch off local rejections|
+|ensure|a !-testAuthenticationFailure-! interaction fails|
+|ensure|error type is |AUTHENTICATION_FAIL|
+|ensure|error source is |remote|
+
+!4 Test procedure: authorization failure
+The !-ErrorTest-! consumer calls the operation !-testAuthorisationFail-! and checks that the error AUTHORISATION_FAIL is returned.
+
+|script| Access control error scenario|
+|ensure| security manager has been created|
+|switch on local rejections|
+|ensure|a !-testAuthorisationFail-! interaction fails|
+|ensure|error type is |AUTHORISATION_FAIL|
+|ensure|error source is |local|
+|switch off local rejections|
+|ensure|a !-testAuthorisationFail-! interaction fails|
+|ensure|error type is |AUTHORISATION_FAIL|
+|ensure|error source is |remote|

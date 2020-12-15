@@ -1,5 +1,0 @@
-!*< Hidden
-!define TEST_SYSTEM {slim}
-*!
-!2 Transport test scenario
-These tests check the Transport interface. A test transport module is used in order to check that the interactions between the MAL and the transport are correctly done. This test transport is described in annex C.

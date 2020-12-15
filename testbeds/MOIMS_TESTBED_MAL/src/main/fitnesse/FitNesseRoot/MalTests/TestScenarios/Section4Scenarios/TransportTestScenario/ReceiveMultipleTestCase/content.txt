@@ -1,0 +1,18 @@
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.mal.test.transport|
+
+*******!
+!4 Test procedure: receive multiple interaction
+As it is not possible to make the assumption that a transport module uses this interaction, the test transport module has to be enhanced with an operation enabling to trigger a RECEIVEMULTIPLE Indication.
+An IPTest consumer is created. It is registered to the IPTest Pub/Sub operation. One update is published by calling the operation 'publishUpdate'. The Notify message is received by the consumer.
+Then the test procedure copies this message twice, making two Notify messages and directly injects them into the test transport module in order to trigger a RECEIVEMULTIPLE Indication.
+The test checks that two Notify messages are received by the consumer.
+
+|script| receive multiple test procedure |
+|ensure |create consumer |
+|ensure |publish initial message|
+|ensure |receive initial notify message|
+|ensure |receive multiple notify messages|
