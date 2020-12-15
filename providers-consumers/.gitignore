@@ -1,0 +1,15 @@
+*/target/
+*/nbactions*.xml
+*/*.uri
+*/*URI.properties
+*/server.log*
+*/nb-*.xml
+*/*.zip
+*/*.xls
+*/.settings/
+*/.classpath
+*/.project
+.project
+*/bin
+.settings/
+/target/
