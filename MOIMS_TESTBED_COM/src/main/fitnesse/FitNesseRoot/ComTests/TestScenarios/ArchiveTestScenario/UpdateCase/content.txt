@@ -1,0 +1,365 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.com.test.archive|
+
+*!
+!3 Update operation test case
+This tests each prescriptive statement defined for the operation 'update'.
+
+!4 General update
+Checks the following statements:
+* a) The first part of the request shall contain the type of object being updated.
+* b) The second part of the request shall contain the domain of the objects being updated.
+* c) The third part of the request shall contain the list of !-ArchiveDetails-!.
+* d) The object instance identifier contained in the !-ArchiveDetails-!, combined with the object type and domain from the request, shall be used to match objects.
+* f) The remainder of the !-ArchiveDetails-! shall be used to update the matched objects.
+* g) The fourth part of the request shall contain the list of objects to replace the matched objects with.
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects with different object types |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set source id | 11 |
+|ensure| create object details | 12 |
+|ensure| add archive details with instance id | 1 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 3 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 345 |
+|ensure| set object type with area | 201 | and service | 1 | and version | 1  | and number | 1 |
+|ensure| set domain | spacecraftA.aocs |
+|ensure| store | false |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set source id | 11 |
+|ensure| create object details | 12 |
+|ensure| add archive details with instance id | 1 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 3 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 4 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 237 | and sub composite | true | and int | 345 |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 1 |
+|ensure| set domain | spacecraftA.aocs |
+|ensure| store | false |
+|note| Store some objects in a different domain |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set source id | 11 |
+|ensure| create object details | 12 |
+|ensure| add archive details with instance id | 1 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 3 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 4 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 237 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 5 | and network | network | and timestamp | 60 | and provider uri | aaa:provider |
+|ensure| add object payload with int | 238 | and sub composite | true | and int | 345 |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 1 |
+|ensure| set domain | spacecraftA.payload |
+|ensure| store | false |
+| note | Update the objects 1 and 3 from area 201 and domain aocs |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set source id | 21 |
+|ensure| create object details | 22 |
+|ensure| add archive details with instance id | 1 | and network | network2 | and timestamp | 120 | and provider uri | bbb:provider |
+|ensure| add object payload with int | 244 | and sub composite | true | and int | 355 |
+|ensure| add archive details with instance id | 3 | and network | network3 | and timestamp | 121 | and provider uri | ccc:provider |
+|ensure| add object payload with int | 246 | and sub composite | true | and int | 355 |
+|ensure| set object type with area | 201 | and service | 1 | and version | 1  | and number | 1  |
+|ensure| set domain | spacecraftA.aocs |
+|ensure| update |
+|ensure| no returned error |
+|ensure| clear archive query list |
+|ensure| add archive query with domain | spacecraftA.aocs | and sorting order | TRUE | and field | integerField |
+|ensure| set null query filter list |
+|ensure| set object type with area | 201 | and service | 1 | and version | 1  | and number | 1  |
+|ensure| query | true |
+|ensure| queried archive details list size is | 3 |
+|ensure| queried object list size is | 3 |
+|ensure| queried object at index | 0 | has instance id | 2 |
+|ensure| queried object at index | 0 | has integer value | 235 |
+|ensure| queried object at index | 0 | has source instance id | 11 |
+|ensure| queried object at index | 0 | has related | 12 |
+|ensure| queried object at index | 0 | has network | network |
+|ensure| queried object at index | 0 | has timestamp | 60 |
+|ensure| queried object at index | 0 | has provider uri | aaa:provider |
+|ensure| queried object at index | 1 | has instance id | 1 |
+|ensure| queried object at index | 1 | has integer value | 244 |
+|ensure| queried object at index | 1 | has source instance id | 21 |
+|ensure| queried object at index | 1 | has related | 22 |
+|ensure| queried object at index | 1 | has network | network2 |
+|ensure| queried object at index | 1 | has timestamp | 120 |
+|ensure| queried object at index | 1 | has provider uri | bbb:provider |
+|ensure| queried object at index | 2 | has instance id | 3 |
+|ensure| queried object at index | 2 | has integer value | 246 |
+|ensure| queried object at index | 2 | has source instance id | 21 |
+|ensure| queried object at index | 2 | has related | 22 |
+|ensure| queried object at index | 2 | has network | network3 |
+|ensure| queried object at index | 2 | has timestamp | 121 |
+|ensure| queried object at index | 2 | has provider uri | ccc:provider |
+|ensure| clear archive query list |
+|ensure| add archive query with domain | spacecraftA.aocs | and sorting order | TRUE | and field | integerField |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 1  |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried archive details list size is | 4 |
+|ensure| queried object list size is | 4 |
+|ensure| queried object at index | 0 | has instance id | 1 |
+|ensure| queried object at index | 0 | has integer value | 234 |
+|ensure| queried object at index | 0 | has source instance id | 11 |
+|ensure| queried object at index | 0 | has related | 12 |
+|ensure| queried object at index | 0 | has network | network |
+|ensure| queried object at index | 0 | has timestamp | 60 |
+|ensure| queried object at index | 0 | has provider uri | aaa:provider |
+|ensure| queried object at index | 1 | has instance id | 2 |
+|ensure| queried object at index | 1 | has integer value | 235 |
+|ensure| queried object at index | 1 | has source instance id | 11 |
+|ensure| queried object at index | 1 | has related | 12 |
+|ensure| queried object at index | 1 | has network | network |
+|ensure| queried object at index | 1 | has timestamp | 60 |
+|ensure| queried object at index | 1 | has provider uri | aaa:provider |
+|ensure| queried object at index | 2 | has instance id | 3 |
+|ensure| queried object at index | 2 | has integer value | 236 |
+|ensure| queried object at index | 2 | has source instance id | 11 |
+|ensure| queried object at index | 2 | has related | 12 |
+|ensure| queried object at index | 2 | has network | network |
+|ensure| queried object at index | 2 | has timestamp | 60 |
+|ensure| queried object at index | 2 | has provider uri | aaa:provider |
+|ensure| queried object at index | 3 | has instance id | 4 |
+|ensure| queried object at index | 3 | has integer value | 237 |
+|ensure| queried object at index | 3 | has source instance id | 11 |
+|ensure| queried object at index | 3 | has related | 12 |
+|ensure| queried object at index | 3 | has network | network |
+|ensure| queried object at index | 3 | has timestamp | 60 |
+|ensure| queried object at index | 3 | has provider uri | aaa:provider |
+|ensure| clear archive query list |
+|ensure| add archive query with domain | spacecraftA.payload | and sorting order | TRUE | and field | integerField |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 1  |
+|ensure| query | true |
+|ensure| queried archive details list size is | 5 |
+|ensure| queried object list size is | 5 |
+|ensure| queried object at index | 0 | has instance id | 1 |
+|ensure| queried object at index | 0 | has integer value | 234 |
+|ensure| queried object at index | 0 | has source instance id | 11 |
+|ensure| queried object at index | 0 | has related | 12 |
+|ensure| queried object at index | 0 | has network | network |
+|ensure| queried object at index | 0 | has timestamp | 60 |
+|ensure| queried object at index | 0 | has provider uri | aaa:provider |
+|ensure| queried object at index | 1 | has instance id | 2 |
+|ensure| queried object at index | 1 | has integer value | 235 |
+|ensure| queried object at index | 1 | has source instance id | 11 |
+|ensure| queried object at index | 1 | has related | 12 |
+|ensure| queried object at index | 1 | has network | network |
+|ensure| queried object at index | 1 | has timestamp | 60 |
+|ensure| queried object at index | 1 | has provider uri | aaa:provider |
+|ensure| queried object at index | 2 | has instance id | 3 |
+|ensure| queried object at index | 2 | has integer value | 236 |
+|ensure| queried object at index | 2 | has source instance id | 11 |
+|ensure| queried object at index | 2 | has related | 12 |
+|ensure| queried object at index | 2 | has timestamp | 60 |
+|ensure| queried object at index | 2 | has provider uri | aaa:provider |
+|ensure| queried object at index | 3 | has instance id | 4 |
+|ensure| queried object at index | 3 | has integer value | 237 |
+|ensure| queried object at index | 3 | has source instance id | 11 |
+|ensure| queried object at index | 3 | has related | 12 |
+|ensure| queried object at index | 3 | has network | network |
+|ensure| queried object at index | 3 | has timestamp | 60 |
+|ensure| queried object at index | 3 | has provider uri | aaa:provider |
+|ensure| queried object at index | 4 | has instance id | 5 |
+|ensure| queried object at index | 4 | has integer value | 238 |
+|ensure| queried object at index | 4 | has source instance id | 11 |
+|ensure| queried object at index | 4 | has related | 12 |
+|ensure| queried object at index | 4 | has network | network |
+|ensure| queried object at index | 4 | has timestamp | 60 |
+|ensure| queried object at index | 4 | has provider uri | aaa:provider |
+
+!4 Unknown update
+Checks the following statements:
+* e) If requested object cannot be matched then an UNKNOWN error shall be returned and nothing will be updated.
+* UNKNOWN.a) One or more of the requested objects specified in the operation do not exist and therefore cannot be found.
+* UNKNOWN.b) The indexes of the error values shall be contained in the extra information field.
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects with different object types |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set source id | 11 |
+|ensure| create object details | 12 |
+|ensure| add archive details with instance id | 1 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 3 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 345 |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 1  |
+|ensure| set domain | spacecraftA.aocs |
+|ensure| store | false |
+| note | Update an unknown object '4' |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set source id | 21 |
+|ensure| create object details | 22 |
+|ensure| add archive details with instance id | 1 | and network | network |
+|ensure| add object payload with int | 244 | and sub composite | true | and int | 355 |
+|ensure| add archive details with instance id | 4 | and network | network |
+|ensure| add object payload with int | 247 | and sub composite | true | and int | 355 |
+|ensure| add archive details with instance id | 3 | and network | network |
+|ensure| add object payload with int | 246 | and sub composite | true | and int | 355 |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 1  |
+|ensure| set domain | spacecraftA.aocs |
+|ensure| update |
+|ensure| returned error is unknown |
+|ensure| unknown update index at | 0 | is | 1 |
+| note | Check that no object has been updated |
+|ensure| add archive query with domain | spacecraftA.aocs | and sorting order | TRUE | and field | integerField |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 1  |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried archive details list size is | 3 |
+|ensure| queried object list size is | 3 |
+|ensure| queried object at index | 0 | has instance id | 1 |
+|ensure| queried object at index | 0 | has integer value | 234 |
+|ensure| queried object at index | 0 | has source instance id | 11 |
+|ensure| queried object at index | 0 | has related | 12 |
+|ensure| queried object at index | 1 | has instance id | 2 |
+|ensure| queried object at index | 1 | has integer value | 235 |
+|ensure| queried object at index | 1 | has source instance id | 11 |
+|ensure| queried object at index | 1 | has related | 12 |
+|ensure| queried object at index | 2 | has instance id | 3 |
+|ensure| queried object at index | 2 | has integer value | 236 |
+|ensure| queried object at index | 2 | has source instance id | 11 |
+|ensure| queried object at index | 2 | has related | 12 |
+
+!4 No wildcard
+Checks the following statements:
+* h) No wildcard values shall be accepted in the object type, the domain, and the object instance identifier, an INVALID error is returned in this case and no objects are updated.
+* INVALID.a) One or more of the objects being updated contains a wildcard value in the object identifier fields.
+* INVALID.b) The extra information field contains the indexes of the erroneous values from the originating list supplied.
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects with different object types |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set source id | 11 |
+|ensure| create object details | 12 |
+|ensure| add archive details with instance id | 1 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 2 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 3 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 345 |
+|ensure| set object type with area | 201 | and service | 1 | and version | 1  | and number | 1  |
+|ensure| set domain | spacecraftA.aocs |
+|ensure| store | false |
+| note | Update with an invalid object type |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set source id | 21 |
+|ensure| create object details | 22 |
+|ensure| add archive details with instance id | 1 | and network | network |
+|ensure| add object payload with int | 244 | and sub composite | true | and int | 355 |
+|ensure| add archive details with instance id | 3 | and network | network |
+|ensure| add object payload with int | 246 | and sub composite | true | and int | 355 |
+|ensure| set object type with area | 0 | and service | 1 | and version | 1  | and number | 1  |
+|ensure| set domain | spacecraftA.aocs |
+|ensure| update |
+|ensure| returned error is invalid |
+| note | Update with an invalid domain |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set source id | 21 |
+|ensure| create object details | 22 |
+|ensure| add archive details with instance id | 1 | and network | network |
+|ensure| add object payload with int | 244 | and sub composite | true | and int | 355 |
+|ensure| add archive details with instance id | 3 | and network | network |
+|ensure| add object payload with int | 246 | and sub composite | true | and int | 355 |
+|ensure| set object type with area | 201 | and service | 1 | and version | 1  | and number | 1  |
+|ensure| set domain | spacecraftA.* |
+|ensure| update |
+|ensure| returned error is invalid |
+| note | Update with an invalid object instance id |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| set source id | 21 |
+|ensure| create object details | 22 |
+|ensure| add archive details with instance id | 1 | and network | network |
+|ensure| add object payload with int | 244 | and sub composite | true | and int | 355 |
+|ensure| add archive details with instance id | 0 | and network | network |
+|ensure| add object payload with int | 246 | and sub composite | true | and int | 355 |
+|ensure| set object type with area | 201 | and service | 1 | and version | 1  | and number | 1  |
+|ensure| set domain | spacecraftA.aocs |
+|ensure| update |
+|ensure| returned error is invalid |
+|ensure| invalid update index at | 0 | is | 1 |
+| note | Check that no object has been updated |
+|ensure| add archive query with domain | spacecraftA.aocs | and sorting order | TRUE | and field | integerField |
+|ensure| set object type with area | 201 | and service | 1 | and version | 1  | and number | 1  |
+|ensure| set null query filter list |
+|ensure| query | true |
+|ensure| queried archive details list size is | 3 |
+|ensure| queried object list size is | 3 |
+|ensure| queried object at index | 0 | has instance id | 1 |
+|ensure| queried object at index | 0 | has integer value | 234 |
+|ensure| queried object at index | 0 | has source instance id | 11 |
+|ensure| queried object at index | 0 | has related | 12 |
+|ensure| queried object at index | 1 | has instance id | 2 |
+|ensure| queried object at index | 1 | has integer value | 235 |
+|ensure| queried object at index | 1 | has source instance id | 11 |
+|ensure| queried object at index | 1 | has related | 12 |
+|ensure| queried object at index | 2 | has instance id | 3 |
+|ensure| queried object at index | 2 | has integer value | 236 |
+|ensure| queried object at index | 2 | has source instance id | 11 |
+|ensure| queried object at index | 2 | has related | 12 |
+
+

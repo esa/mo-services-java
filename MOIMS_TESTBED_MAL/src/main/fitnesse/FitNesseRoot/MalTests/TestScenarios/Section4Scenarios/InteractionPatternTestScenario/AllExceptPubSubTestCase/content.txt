@@ -1,0 +1,49 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO MAL Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+*******!
+!3 Test case: all patterns except Pub/Sub
+The consumer initiates the patterns by calling the following operations provided by the service IPTest:
+ * send
+ * submit
+ * request
+ * invoke
+ * progress
+Those operations shall be called once for each !-QoS-! level and session type. It is not necessary to test each combination of !-QoS-! and session. One call for each !-QoS-! level and session type is enough.
+
+The following parameters are used to make the calls:
+|comment|
+|authenticationId|	{0x00, 0x01}|
+|qos|	Best Effort, Assured, Queued, Timely|
+|priority|	1|
+|domain|	{"Test", "Domain"}|
+|networkZone|	"!-TestNetwork-!"|
+|session|	Live, Simulation, Replay|
+|session name|!{Live:"LIVE", Replay:"R1", Simulation:"S1"}|
+
+The consumer has to execute the following test procedure for every possible header values (!-QoS-! and session fields) and every possible transitions. The name of the procedure is built from the parameters:
+ * ip: name of the tested IP
+ * qos: !-QoS-! level to be used
+ * session: session type to be used
+ * transition list id: identifier of the IPTestTransitionList that is expected by the consumer (see table above).
+

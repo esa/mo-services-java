@@ -1,0 +1,70 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.mal.test.patterns.pubsub|
+
+*******!
+!4 Test procedure: subscription domain
+This test checks that the domain specified by a Register is correctly interpreted by the broker.
+
+A provider is publishing a set of updates with the following domains (the dot notation is used to separate the sub-domains):
+ *	spacecraftA 
+ *	spacecraftA.aocs 
+ *	spacecraftA.aocs.thrustA 
+ *	spacecraftA.payload
+ *	spacecraftA.payload.cameraA.tempB
+ *	spacecraftB
+ *	agency.spacecraftA
+
+Therefore a subscription message with the domain of spacecraftA and a NULL subDomain field would only match the first update.
+A subscription message with the domain of spacecraftA and a subDomain field set to aocs would only match the second update.
+A subscription message with the domain of spacecraftA and a subDomain field set to aocs.* would match the second and third updates.
+A subscription message with the domain of spacecraftA and a subDomain field set to * would match updates 1 to 5.
+
+!*> Sub scenario definitions
+|scenario| subscription domain | shared |
+|ensure |initiate publisher with domains | spacecraftA,spacecraftA.aocs,spacecraftA.aocs.thrustA,spacecraftA.payload,spacecraftA.payload.cameraA.tempB,spacecraftB,agency.spacecraftA | and shared broker | @shared |
+|ensure |subscribe to domain | spacecraftA | and subdomain | NULL | and expected domains | spacecraftA |
+|ensure |subscribe to domain | spacecraftA | and subdomain | aocs | and expected domains | spacecraftA.aocs |
+|ensure |subscribe to domain | spacecraftA | and subdomain | aocs.* | and expected domains | spacecraftA.aocs,spacecraftA.aocs.thrustA |
+|ensure |subscribe to domain | spacecraftA | and subdomain | * | and expected domains | spacecraftA,spacecraftA.aocs,spacecraftA.aocs.thrustA,spacecraftA.payload,spacecraftA.payload.cameraA.tempB |
+|ensure |publish deregister |
+***********!
+
+|script| subscription domain test procedure |
+|subscription domain | false |
+|subscription domain | true |

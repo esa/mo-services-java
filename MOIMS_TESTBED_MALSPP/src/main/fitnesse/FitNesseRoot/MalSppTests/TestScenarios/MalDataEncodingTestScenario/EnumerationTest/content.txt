@@ -1,0 +1,120 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+
+!2 Enumeration test scenario
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.malspp.test.datatype|
+
+*!
+Reuse the data type MAL test scenario.
+
+!*> Sub scenario definitions
+
+|scenario| check first element in an enumeration |
+|check| enumerations work| OK|
+| note | Interaction type SEND |
+|ensure|select sent packet at| 1 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 19 |
+|check | enumerated is | 0 |
+|ensure|reset spp interceptor|
+
+|scenario| check first and second elements in an enumeration |
+|check| enumerations work| OK|
+| note | Interaction type SUBMIT |
+|ensure|select sent packet at| 2 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 19 |
+|check | enumerated is | 1 |
+| note | Interaction type REQUEST |
+|ensure|select sent packet at| 3 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 19 |
+|check | enumerated is | 2 |
+|ensure|reset spp interceptor|
+
+|scenario| check an enumerated sent as a !-MAL::Element-! |
+|check| enumerations work| OK|
+| note | Interaction type SEND |
+|ensure|select sent packet at| 1 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 19 |
+|check | enumerated is | 0 |
+| note | Interaction type SUBMIT |
+|ensure|select sent packet at| 2 |
+|check | presence flag is | 1 |
+|check short form area | 1  | and service | 0 | and type | 19 |
+|check | enumerated is | 1 |
+|ensure|reset spp interceptor|
+
+|scenario| check a medium enumeration |
+|ensure| test medium enumeration |
+|ensure| select sent packet at| 0 |
+|check | presence flag is | 1 |
+| note | !-MediumEnumeration-! type is 7FFFFE |
+|check short form area | 100 | and service | 0 | and type | 8388606 |
+| note | Interaction type SUBMIT |
+| note | !-LargeEnumeration-! value is FFF |
+|check | medium enumerated is | 4095 |
+|ensure|reset spp interceptor|
+
+|scenario| check a large enumeration |
+|ensure| test large enumeration |
+|ensure| select sent packet at| 0 |
+|check | presence flag is | 1 |
+| note | !-LargeEnumeration-! type is 7FFFFF |
+|check short form area | 100 | and service | 0 | and type | 8388607 |
+| note | Interaction type SUBMIT |
+| note | !-LargeEnumeration-! value is FFFFFF |
+|check | large enumerated is | 16777215 |
+|ensure|reset spp interceptor|
+
+|scenario| check short form area | area | and service | service | and type | type |
+|check | area number is | @area |
+|check | service number is | @service |
+|check | version is | 1 |
+|check | type number is | @type |
+
+***********!
+
+|script| mal spp data type test|
+|check first element in an enumeration |
+|check first and second elements in an enumeration |
+|check an enumerated sent as a !-MAL::Element-! |
+|check a medium enumeration |
+|check a large enumeration |
+

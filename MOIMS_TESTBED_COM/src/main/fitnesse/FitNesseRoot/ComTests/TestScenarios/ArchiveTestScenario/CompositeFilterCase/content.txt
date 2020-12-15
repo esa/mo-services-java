@@ -1,0 +1,650 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.com.test.archive|
+
+*!
+!3 !-CompositeFilter-! structure test case
+This tests each prescriptive statement defined for the structure 'CompositeFilter' in the contexts of the operation 'query' and 'count' (when appropriate).
+
+!4 Field name
+* !-CompositeFilter-!.fieldName) The name of the field in the object body (MAL::Composite) to match against. It is specified by referring to the name of the field.
+* !-CompositeFilter-!.fieldName) If the field does not exist in the Composite then the filter shall evaluate to false.
+* !-CompositeFilter-!.fieldName) If the field is nested inside another Composite, it can be referenced by separating the field names by a '.' character; for example the field 'instId' or the source of an !-ArchiveDetails-! composite would be referenced using "details.source.key.instId". 
+* !-CompositeFilter-!.fieldName) If the body is not a Composite but an Attribute or Enumeration then it can be referred to by using a blank ("") string value here.
+* !-CompositeFilter-!.fieldName) Accessing values from lists is not supported by this method.
+
+!5 Name of the field to match against
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 232 | and sub composite | true | and int | 347 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 233 | and sub composite | true | and int | 343 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 62 |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 344 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 3 |
+|note| one-level field |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field | NULL |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name | integerField | and operator | DIFFER | and integer | 232 |
+|ensure| add composite filter set |
+|ensure| query | false |
+|ensure| queried archive details list size is | 2 |
+|ensure| queried object list is null |
+|ensure| queried object at index | 0 | has timestamp | 61 |
+|ensure| queried object at index | 1 | has timestamp | 62 |
+|ensure| count |
+|ensure| count at index | 0 | is | 2 |
+
+!5 Field not existing
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 232 | and sub composite | false | and int | 0 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 233 | and sub composite | true | and int | 343 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 344 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 3 |
+|note| Query with a field that does not exist |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | FALSE | and field |  |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name | foo | and operator | DIFFER | and integer | 343 |
+|ensure| add composite filter set |
+|ensure| query | true |
+|ensure| no returned error |
+|ensure| queried archive details list is null |
+|ensure| queried object list is null |
+|ensure| count |
+|ensure| count at index | 0 | is | 0 |
+|note| Query with a composite field that is null in one object instance |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field | compositeField.integerField |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name | compositeField.integerField | and operator | DIFFER | and integer | 343 |
+|ensure| add composite filter set |
+|ensure| query | true |
+|ensure| queried archive details list size is | 1 |
+|ensure| queried object list size is | 1 |
+|ensure| queried object at index | 0 | has composite integer value | 344 |
+|ensure| count |
+|ensure| count at index | 0 | is | 1 |
+
+!5 Field nested inside another Composite
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 232 | and sub composite | true | and int | 347 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 233 | and sub composite | true | and int | 343 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 62 |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 344 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 3 |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field | NULL |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name | compositeField.integerField | and operator | DIFFER | and integer | 343 |
+|ensure| add composite filter set |
+|ensure| query | false |
+|ensure| queried archive details list size is | 2 |
+|ensure| queried object list is null |
+|ensure| queried object at index | 0 | has timestamp | 60 |
+|ensure| queried object at index | 1 | has timestamp | 62 |
+|ensure| count |
+|ensure| count at index | 0 | is | 2 |
+
+!5 Attribute object filtering
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add integer payload | 235 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add integer payload | 233 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 53 |
+|ensure| add integer payload | 236 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 59 |
+|ensure| add integer payload | 232 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 65 |
+|ensure| set object type with area | 202 | and service | 1 | and version | 1  | and number | 1  |
+|ensure| add integer payload | 231 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field |  |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name |  | and operator | GREATER | and integer | 233 |
+|ensure| add composite filter set |
+|ensure| query | true |
+|ensure| queried object list size is | 2 |
+|ensure| queried object at index | 0 | is int | 235 |
+|ensure| queried object at index | 1 | is int | 236 |
+|ensure| count |
+|ensure| count at index | 0 | is | 2 |
+
+!5 Enumerated object filtering
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add enumerated payload | OBJECT3 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add enumerated payload | OBJECT1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 53 |
+|ensure| add enumerated payload | OBJECT2 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 59 |
+|ensure| add enumerated payload | OBJECT3 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 65 |
+|ensure| add enumerated payload | OBJECT1 |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 3  |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field |  |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name |  | and operator | GREATER | and uinteger | 0 |
+|ensure| add composite filter set |
+|ensure| query | true |
+|ensure| queried object list size is | 3 |
+|ensure| queried object at index | 0 | is enumerated | OBJECT2 |
+|ensure| queried object at index | 1 | is enumerated | OBJECT3 |
+|ensure| queried object at index | 2 | is enumerated | OBJECT3 |
+|ensure| count |
+|ensure| count at index | 0 | is | 3 |
+
+!4 Type and field value
+* !-CompositeFilter-!.type) The type of the filter to apply.
+* !-CompositeFilter-!.fieldValue) The value to compare with. Must not contain NULL for expression operators CONTAINS, ICONTAINS, GREATER, GREATER_OR_EQUAL, LESS, or LESS_OR_EQUAL otherwise an INVALID error should be returned. 
+* !-CompositeFilter-!.fieldValue) Must contain a UInteger ordinal value if the field being matched is an Enumeration.
+* !-CompositeFilter-!.fieldValue) Blob fields can only be used with EQUAL/DIFFER. 
+* !-CompositeFilter-!.fieldValue) Must contain a String value if operator is CONTAINS or ICONTAINS otherwise an INVALID error should be returned.
+
+!5 Compare integer values
+
+|scenario| query with filter | operator | and field | fieldName | and value | value | and check count | count |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field | @fieldName |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name | @fieldName | and operator | @operator | and integer | @value |
+|ensure| add composite filter set |
+|ensure| query | true |
+|ensure| queried archive details list size is | @count |
+|ensure| count |
+|ensure| count at index | 0 | is | @count |
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 232 | and sub composite | true | and int | 347 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 233 | and sub composite | true | and int | 347 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 346 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 235 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 236 | and sub composite | true | and int | 345 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|note| one-level composite field |
+| query with filter | EQUAL | and field | integerField | and value | 233 | and check count | 1 |
+|ensure| queried object at index | 0 | has integer value | 233 |
+| query with filter | DIFFER | and field | integerField | and value | 233 | and check count | 4 |
+|ensure| queried object at index | 0 | has integer value | 232 |
+|ensure| queried object at index | 1 | has integer value | 234 |
+|ensure| queried object at index | 2 | has integer value | 235 |
+|ensure| queried object at index | 3 | has integer value | 236 |
+| query with filter | GREATER | and field | integerField | and value | 233 | and check count | 3 |
+|ensure| queried object at index | 0 | has integer value | 234 |
+|ensure| queried object at index | 1 | has integer value | 235 |
+|ensure| queried object at index | 2 | has integer value | 236 |
+| query with filter | GREATER_OR_EQUAL | and field | integerField | and value | 233 | and check count | 4 |
+|ensure| queried object at index | 0 | has integer value | 233 |
+|ensure| queried object at index | 1 | has integer value | 234 |
+|ensure| queried object at index | 2 | has integer value | 235 |
+|ensure| queried object at index | 3 | has integer value | 236 |
+| query with filter | LESS | and field | integerField | and value | 233 | and check count | 1 |
+|ensure| queried object at index | 0 | has integer value | 232 |
+| query with filter | LESS_OR_EQUAL | and field | integerField | and value | 233 | and check count | 2 |
+|ensure| queried object at index | 0 | has integer value | 232 |
+|ensure| queried object at index | 1 | has integer value | 233 |
+|note| two-level composite field |
+| query with filter | EQUAL | and field | compositeField.integerField | and value | 346 | and check count | 1 |
+|ensure| queried object at index | 0 | has composite integer value | 346 |
+| query with filter | DIFFER | and field | compositeField.integerField | and value | 346 | and check count | 4 |
+|ensure| queried object at index | 0 | has composite integer value | 345 |
+|ensure| queried object at index | 1 | has composite integer value | 345 |
+|ensure| queried object at index | 2 | has composite integer value | 347 |
+|ensure| queried object at index | 3 | has composite integer value | 347 |
+| query with filter | GREATER | and field | compositeField.integerField | and value | 346 | and check count | 2 |
+|ensure| queried object at index | 0 | has composite integer value | 347 |
+|ensure| queried object at index | 1 | has composite integer value | 347 |
+| query with filter | GREATER_OR_EQUAL | and field | compositeField.integerField | and value | 346 | and check count | 3 |
+|ensure| queried object at index | 0 | has composite integer value | 346 |
+|ensure| queried object at index | 1 | has composite integer value | 347 |
+|ensure| queried object at index | 2 | has composite integer value | 347 |
+| query with filter | LESS | and field | compositeField.integerField | and value | 346 | and check count | 2 |
+|ensure| queried object at index | 0 | has composite integer value | 345 |
+|ensure| queried object at index | 1 | has composite integer value | 345 |
+| query with filter | LESS_OR_EQUAL | and field | compositeField.integerField | and value | 346 | and check count | 3 |
+|ensure| queried object at index | 0 | has composite integer value | 345 |
+|ensure| queried object at index | 1 | has composite integer value | 345 |
+|ensure| queried object at index | 2 | has composite integer value | 346 |
+
+!5 Containment operators (String)
+
+|scenario| containment with operator | operator | and value | value |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with string | Object1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with string | object2 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 2 |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field | stringField |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name | stringField | and operator | @operator | and string | @value |
+|ensure| add composite filter set |
+|ensure| query | true |
+
+|script| archive scenario |
+| containment with operator | CONTAINS | and value | object |
+|ensure| queried object list size is | 1 |
+|ensure| queried object at index | 0 | has string value | object2 |
+|ensure| count |
+|ensure| count at index | 0 | is | 1 |
+| containment with operator | ICONTAINS | and value | object |
+|ensure| queried object list size is | 2 |
+|ensure| queried object at index | 0 | has string value | Object1 |
+|ensure| queried object at index | 1 | has string value | object2 |
+|ensure| count |
+|ensure| count at index | 0 | is | 2 |
+| containment with operator | ICONTAINS | and value | Object |
+|ensure| queried object list size is | 2 |
+|ensure| queried object at index | 0 | has string value | Object1 |
+|ensure| queried object at index | 1 | has string value | object2 |
+|ensure| count |
+|ensure| count at index | 0 | is | 2 |
+
+!5 Containment operators (Identifier and URI)
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects that cannot be tested with a containment operator |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 232 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 233 | and sub composite | true | and int | 344 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 62 |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 343 |
+|ensure| store | true |
+| note | store Identifier objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 63 |
+|ensure| add identifier payload | identifier1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 64 |
+|ensure| add identifier payload | identifier2 |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 6  |
+|ensure| store | true |
+| note | store URI objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 65 |
+|ensure| add uri payload | proto://identifier1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 66 |
+|ensure| add uri payload | proto://identifier2 |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 7  |
+|ensure| store | true |
+|ensure| returned instance id list size is | 2 |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field |  |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name |  | and operator | CONTAINS | and string | identifier |
+|ensure| add composite filter set |
+|ensure| set object type with area | 0 | and service | 0 | and version | 0  | and number | 0  |
+|ensure| query | true |
+|ensure| queried archive details list size is | 4 |
+|ensure| queried object list contains timestamp | 63 |
+|ensure| queried object list contains timestamp | 64 |
+|ensure| queried object list contains timestamp | 65 |
+|ensure| queried object list contains timestamp | 66 |
+|ensure| count |
+|ensure| count at index | 0 | is | 4 |
+
+!5 Allowed NULL
+
+|scenario| allowed null with operator | operator |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with string | NULL |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with string | NULL |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 62 |
+|ensure| add object payload with string | Object1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 63 |
+|ensure| add object payload with string | object2 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 4 |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field | NULL |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name | stringField | and operator | @operator | and string | NULL |
+|ensure| add composite filter set |
+|ensure| query | true |
+
+|script| archive scenario |
+| allowed null with operator | EQUAL |
+|ensure| queried object list size is | 2 |
+|ensure| queried object at index | 0 | has timestamp | 60 |
+|ensure| queried object at index | 1 | has timestamp | 61 |
+|ensure| count |
+|ensure| count at index | 0 | is | 2 |
+| allowed null with operator | DIFFER |
+|ensure| queried object list size is | 2 |
+|ensure| queried object at index | 0 | has timestamp | 62 |
+|ensure| queried object at index | 1 | has timestamp | 63 |
+|ensure| count |
+|ensure| count at index | 0 | is | 2 |
+
+!5 Invalid NULL
+
+|scenario| invalid null with operator | operator |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with string | object1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with string | object2 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 2 |
+|ensure| clear archive query list |
+|ensure| add archive query with wildcards |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name | stringField | and operator | @operator | and string | NULL |
+|ensure| add composite filter set |
+|ensure| query | true |
+|ensure| returned error is invalid |
+|ensure| count |
+|ensure| returned error is invalid |
+
+|script| archive scenario |
+| invalid null with operator | CONTAINS |
+| invalid null with operator | ICONTAINS |
+| invalid null with operator | GREATER |
+| invalid null with operator | GREATER_OR_EQUAL |
+| invalid null with operator | LESS |
+| invalid null with operator | LESS_OR_EQUAL |
+
+!5 Invalid CONTAINS
+
+|scenario| invalid contains | operator |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add object payload with int | 232 | and sub composite | true | and int | 345 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add object payload with int | 233 | and sub composite | true | and int | 344 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 62 |
+|ensure| add object payload with int | 234 | and sub composite | true | and int | 343 |
+|ensure| store | true |
+|ensure| returned instance id list size is | 3 |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add identifier payload | identifier1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add identifier payload | identifier2 |
+|ensure| set object type with area | 201 | and service | 1 | and version | 1  | and number | 1  |
+|ensure| store | true |
+|ensure| returned instance id list size is | 2 |
+|ensure| clear archive query list |
+|ensure| add archive query with wildcards |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name | compositeField.integerField | and operator | @operator | and integer | 343 |
+|ensure| add composite filter set |
+|ensure| query | true |
+|ensure| returned error is invalid |
+|ensure| clear archive query list |
+|ensure| add archive query with wildcards |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name |  | and operator | @operator | and identifier | identifier |
+|ensure| add composite filter set |
+|ensure| set object type with area | 0 | and service | 0 | and version | 0  | and number | 0  |
+|ensure| query | true |
+|ensure| returned error is invalid |
+|ensure| count |
+|ensure| returned error is invalid |
+
+|script| archive scenario |
+| invalid contains | CONTAINS |
+| invalid contains | ICONTAINS |
+
+!5 Allowed Blob
+
+|scenario| query blob | operator |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store some objects |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add blob payload | Blob1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add blob payload | Blob2 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 62 |
+|ensure| add blob payload | Blob3 |
+|ensure| set object type with area | 200 | and service | 6 | and version | 1  | and number | 4  |
+|ensure| store | true |
+|ensure| returned instance id list size is | 3 |
+|ensure| clear archive query list |
+|ensure| add archive query with wildcards |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+|ensure| add composite filter with field name |  | and operator | @operator | and blob | Blob2 |
+|ensure| add composite filter set |
+|ensure| query | true |
+
+|script| archive scenario |
+| query blob | EQUAL |
+|ensure| queried archive details list size is | 1 |
+|ensure| queried object list size is | 1 |
+|ensure| queried object at index | 0 | has timestamp | 61 |
+|ensure| count |
+|ensure| count at index | 0 | is | 1 |
+| query blob | DIFFER |
+|ensure| queried archive details list size is | 2 |
+|ensure| queried object list size is | 2 |
+|ensure| queried object at index | 0 | has timestamp | 60 |
+|ensure| queried object at index | 1 | has timestamp | 62 |
+|ensure| count |
+|ensure| count at index | 0 | is | 2 |
+
+!5 Invalid Blob
+
+|script| archive scenario |
+| query blob | LESS |
+|ensure| returned error is invalid |
+|ensure| count |
+|ensure| returned error is invalid |
+| query blob | LESS_OR_EQUAL |
+|ensure| returned error is invalid |
+|ensure| count |
+|ensure| returned error is invalid |
+| query blob | GREATER |
+|ensure| returned error is invalid |
+|ensure| count |
+|ensure| returned error is invalid |
+| query blob | GREATER_OR_EQUAL |
+|ensure| returned error is invalid |
+|ensure| count |
+|ensure| returned error is invalid |
+| query blob | CONTAINS |
+|ensure| returned error is invalid |
+|ensure| count |
+|ensure| returned error is invalid |
+| query blob | ICONTAINS |
+|ensure| returned error is invalid |
+|ensure| count |
+|ensure| returned error is invalid |
+
+!5 Filtering of an enumerated with an integer (not unsigned)
+
+|script| archive scenario |
+|ensure| reset archive scenario |
+|ensure| test archive client has been created |
+|ensure| call reset test on service provider |
+|note| Store an object |
+|ensure| clear archive details list |
+|ensure| clear test object payload list |
+|ensure| create object details | 1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 60 |
+|ensure| add enumerated payload | OBJECT3 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 61 |
+|ensure| add enumerated payload | OBJECT1 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 53 |
+|ensure| add enumerated payload | OBJECT2 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 59 |
+|ensure| add enumerated payload | OBJECT3 |
+|ensure| add archive details with instance id | 0 | and network | network | and timestamp | 65 |
+|ensure| add enumerated payload | OBJECT1 |
+|ensure| set object type with area | 201 | and service | 1 | and version | 1  | and number | 1  |
+|ensure| store | true |
+|ensure| returned instance id list size is | 5 |
+|ensure| clear archive query list |
+|ensure| add archive query with sorting order | TRUE | and field |  |
+|ensure| reset composite filter set list |
+|ensure| reset composite filter set |
+| note | compare with an integer instead of a uinteger |
+|ensure| add composite filter with field name |  | and operator | GREATER | and integer | 0 |
+|ensure| add composite filter set |
+|ensure| query | true |
+|ensure| no returned error |
+|ensure| queried archive details list is null |
+|ensure| count |
+|ensure| count at index | 0 | is | 0 |

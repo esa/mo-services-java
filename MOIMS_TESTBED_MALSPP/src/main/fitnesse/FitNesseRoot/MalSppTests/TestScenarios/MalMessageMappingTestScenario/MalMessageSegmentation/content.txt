@@ -1,0 +1,270 @@
+#
+# MAL/SPP Binding for CCSDS Mission Operations Framework
+# Copyright (C) 2015, Deutsches Zentrum für Luft- und Raumfahrt e.V.,
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+
+!2 MAL message segmentation test scenario
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.malspp.test.segmentation|
+
+*!
+All test services are extensions of other MAL/SPP services and/or MAL services.
+
+Message segmentation is tested using three providers and three consumers:
+- APID qualifier/APID 248/2: DataTest service provider - configured to maximum packet size
+- APID qualifier/APID 247/1: DataTest service consumer
+- APID qualifier/APID 648/2: DataTest service provider - configured to limited packet size
+- APID qualifier/APID 647/1: DataTest service consumer
+- APID qualifier/APID 648/4: IPTest service provider - configured to medium packet size
+- APID qualifier/APID 647/3: IPTest service consumer
+
+The testData operation of the DataTest service is used to check proper sending and reception of
+a Blob that encodes to a packet smaller than PACKET_DATA_FIELD_SIZE_LIMIT of 65536 bytes (the
+maximum).
+
+The testBlobData operation of the DataTest service is used to check proper sending and reception of
+a Blob that encodes to three fully filled and one partially filled packet for the maximum possible
+value of PACKET_DATA_FIELD_SIZE_LIMIT.
+
+In both cases the Blob is statically known to the provider and consumer side.
+
+The testStringData operation of the DataTest service is used with endpoints configured for a limited
+packet data field size of 27 bytes. Three cases are tested:
+- secondary header: 23 bytes; body: 2 bytes; one packet, no error expected.
+- secondary header: 23 bytes + 4 bytes for counter (because of message segmentation); body: 6 bytes; INTERNAL error expected.
+- secondary header: 24 bytes + 4 bytes for counter (because of message segmentation); body: 6 bytes; INTERNAL error expected.
+Secondary header size is set by per-message QoS property flag Priority. All other flags (except
+Source and Destination id flag) are set to false.
+
+Correct sequencing of Space Packets is ensured by scrambling outgoing packets in certain patterns.
+Packets are either scrambled on the consumer side, on the provider side or on both sides. In order
+to enabling scrambling on the provider side the IPTest submitMulti operation is invoked with the
+scramble pattern. Scrambling is realized in the packet interceptor by collecting packets for an
+interval of one second starting with the first packet. These are scrambled according to a cyclic
+pattern given by the test. This pattern gives the indices of the packets that shall be sent out
+next. Indices referring to non-existent packets (because less packets were collected during the
+interval) are skipped. A negative index means to drop the packet. For test purposes it is assumed
+that a mission-defined timeout is longer than the one second collection interval.
+
+The procedure to test for correct counter selection does not need to scramble packets. The
+progressNulti operation of the IPTest service is used to check correct selection of segment counters
+by invoking the pattern twice and triggering updates and responses using the sendMulti operation
+of the same service. By invoking the pattern twice on the same service the only difference is in
+the transaction id. It is checked that different counters are used, when transaction ids are
+different and that same counters are used when all fields of clause 4.4.9e are the same.
+
+!*> Sub scenario definitions
+
+| scenario | check mal message header mapping to primary header fields |
+| ensure | same packet version number |
+| ensure | same packet type |
+| ensure | same secondary header flag |
+| ensure | same apid |
+
+| scenario | check mal message header mapping to secondary header fields |
+| ensure | same version number |
+| ensure | same sdu type |
+| ensure | same service area |
+| ensure | same service |
+| ensure | same operation |
+| ensure | same area version |
+| ensure | same is error message |
+| ensure | same qos level |
+| ensure | same session |
+| ensure | same secondary apid |
+| ensure | same secondary apid qualifier |
+| ensure | same transaction id |
+| ensure | same source id flag |
+| ensure | same destination id flag |
+| ensure | same priority flag |
+| ensure | same timestamp flag |
+| ensure | same network zone flag |
+| ensure | same session name flag |
+| ensure | same domain flag |
+| ensure | same authentication id flag |
+| ensure | same source id |
+| ensure | same destination id |
+| ensure | same priority |
+| ensure | same timestamp |
+| ensure | same network zone |
+| ensure | same session name |
+| ensure | same domain |
+| ensure | same authenticationId |
+
+| scenario | check sent packet at | index | with sequence flags | sequence | and segment counter | counter |
+| ensure | select sent packet at | @index |
+| note | 4.4.9c |
+| ensure | mal message header mapping compares packet at | @index | to first packet |
+| check mal message header mapping to primary header fields |
+| check mal message header mapping to secondary header fields |
+| note | 4.4.9f, g, h, 3.4.2.5 |
+| check | primary header sequence flags are | @sequence |
+| note | 3.4.2.6 |
+| check | primary header sequence counter is initial counter plus | @counter |
+| note | 4.4.9d, 3.4.3.3 |
+| check | secondary header segment counter is | @counter |
+| note | 4.4.9a |
+| ensure | packet data length is consistent with | @sequence |
+
+| scenario | check small blob |
+| ensure | reset spp interceptor |
+| note | 4.6.4 |
+| check | small blob works | OK |
+| note | 4.4.8a |
+| check | number of sent packets is | 1 |
+| ensure | select sent packet at | 0 |
+| note | 4.4.8b, 3.4.2.5 |
+| check | primary header sequence flags are | 3 |
+| ensure | reset spp interceptor |
+
+| scenario | check large blob | 
+| ensure | reset spp interceptor |
+| note | 4.6.5 |
+| check | large blob works | OK |
+| note | 4.4.9b |
+| check | number of sent packets is | 4 |
+| check sent packet at | 0 | with sequence flags | 1 | and segment counter | 0 |
+| check sent packet at | 1 | with sequence flags | 0 | and segment counter | 1 |
+| check sent packet at | 2 | with sequence flags | 0 | and segment counter | 2 |
+| check sent packet at | 3 | with sequence flags | 2 | and segment counter | 3 |
+| ensure | reset spp interceptor |
+
+| scenario | secondary header | comparison | packet data field size limit | result |
+| note | small header for 'smaller' and 'equal', large header for 'larger' |
+| ensure | per message qos properties for | @comparison | secondary header |
+| note | small body for 'smaller' and 'larger', large body for 'equals' |
+| ensure | string body for | @comparison | secondary header |
+| check | string test | @result |
+
+| scenario | check packet data field size limits |
+| ensure | reset spp interceptor |
+| note | 4.4.10 |
+| secondary header | smaller | packet data field size limit | OK |
+| check | number of sent packets is | 1 |
+| ensure | reset spp interceptor |
+| secondary header | equal | packet data field size limit | generates internal error |
+| secondary header | larger | packet data field size limit | generates internal error |
+
+| scenario | check received packet at | index | has segment counter | counter |
+| ensure | select received packet at | @index |
+| check | secondary header segment counter is | @counter |
+
+| scenario | check segment counter selection |
+| note | 4.4.9e |
+| ensure | reset spp interceptor |
+| ensure | establish progress ip | A |
+| ensure | establish progress ip | B |
+| ensure | trigger update for | A | generating | 3 | packets |
+| ensure | trigger update for | A | generating | 1 | packets |
+| ensure | trigger update for | B | generating | 2 | packets |
+| ensure | trigger update for | A | generating | 2 | packets |
+| ensure | trigger update for | B | generating | 2 | packets |
+| note | two packets for progress ack and 10 packets for updates |
+| ensure | wait | 2 | seconds for packet delivery |
+| check | number of received packets is | 12 |
+| check | number of received updates for | A | is | 3 |
+| check | number of received updates for | B | is | 2 |
+| check | update | 1 | for | A | is | OK |
+| check | update | 2 | for | A | is | OK |
+| check | update | 3 | for | A | is | OK |
+| check | update | 1 | for | B | is | OK |
+| check | update | 2 | for | B | is | OK |
+| check received packet at | 2 | has segment counter | 0 |
+| check received packet at | 3 | has segment counter | 1 |
+| check received packet at | 4 | has segment counter | 2 |
+| note | packet at index 5 has no segment counter |
+| check received packet at | 6 | has segment counter | 0 |
+| check received packet at | 7 | has segment counter | 1 |
+| check received packet at | 8 | has segment counter | 3 |
+| check received packet at | 9 | has segment counter | 4 |
+| check received packet at | 10 | has segment counter | 2 |
+| check received packet at | 11 | has segment counter | 3 |
+| ensure | reset spp interceptor |
+| ensure | trigger response for | A |
+| ensure | trigger response for | B |
+| check | number of received packets is | 2 |
+| ensure | response received for | A |
+| ensure | response received for | B |
+| ensure | reset spp interceptor |
+
+| scenario | set scrambling for remote reception to | remotepattern | and for local reception to | localpattern |
+| ensure | local reception scrambling pattern | @localpattern |
+| ensure | remote reception scrambling pattern | @remotepattern |
+
+| scenario | check reception and limits |
+| note | 4.4.8 |
+| check small blob |
+| note | 4.4.9 |
+| check large blob |
+| note | 4.4.10 |
+| check packet data field size limits |
+
+| scenario | test message segmentation with scrambling pattern | pattern |
+| set scrambling for remote reception to | @pattern | and for local reception to | [] |
+| check reception and limits |
+| set scrambling for remote reception to | [] | and for local reception to | @pattern |
+| check reception and limits |
+| set scrambling for remote reception to | @pattern | and for local reception to | @pattern |
+| check reception and limits |
+
+| scenario | check timeout with | delay | seconds delay and expect | number | updates |
+| note | 4.6.5e |
+| ensure | establish progress ip | A |
+| ensure | trigger update for | A | generating | 2 | packets |
+| ensure | delay reception of next packet at index | 2 | by | @delay | seconds |
+| ensure | reset spp interceptor |
+| ensure | trigger update for | A | generating | 3 | packets |
+| ensure | wait | 10 | seconds for packet delivery |
+| ensure | trigger response for | A |
+| check | number of received packets is | 4 |
+| check | number of received updates for | A | is | @number |
+| ensure | response received for | A |
+| ensure | no reception delay |
+| ensure | reset spp interceptor |
+
+| scenario | check dropped packet |
+| note | 4.6.5c |
+| ensure | establish progress ip | A |
+| ensure | trigger update for | A | generating | 2 | packets |
+| set scrambling for remote reception to | [] | and for local reception to | [0, 1, -2, 3] |
+| ensure | reset spp interceptor |
+| ensure | trigger update for | A | generating | 3 | packets |
+| ensure | trigger response for | A |
+| note | mission-defined timeout is assumed to be less than 8 seconds |
+| ensure | wait | 10 | seconds for packet delivery |
+| check | number of received packets is | 3 |
+| check | number of received updates for | A | is | 1 |
+| ensure | response received for | A |
+| set scrambling for remote reception to | [] | and for local reception to | [] |
+| ensure | reset spp interceptor |
+
+***********!
+
+| script | mal spp segmentation test |
+| test message segmentation with scrambling pattern | [] |
+| test message segmentation with scrambling pattern | [1, 0] |
+| test message segmentation with scrambling pattern | [9, 0, 4, 3, 6, 1, 2, 8, 7, 5] |
+| set scrambling for remote reception to | [] | and for local reception to | [] |
+| check segment counter selection |
+| check dropped packet |
+| note | mission-defined timeout is assumed to be less than 8 seconds |
+| check timeout with | 8 | seconds delay and expect | 1 | updates |
+| check timeout with | 2 | seconds delay and expect | 2 | updates |

@@ -1,0 +1,102 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO COM Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.com.test.activity|
+
+*!
+!4 Monitoring a Multi hop activity test procedure
+This tests that activities can be monitored in a multi hop situation, specifically for each pattern type:
+* That relays return the correct messages
+* That the returned messages have the correct header fields
+* That the returned messages have the correct body fields
+* That the originating pattern is failed by the relays if appropriate
+
+
+!*> Sub scenario definitions
+
+|scenario| test interaction pattern | interaction | via | relay | with transport activity | transactivity | and execution activity | exeactivity |
+|ensure| clear received activity reports list |
+|$MON= | pattern initiation for| @interaction | via| @relay | with transport activity | @transactivity | and execution activity | @exeactivity |
+|ensure| pattern | $MON | completes as expected |@transactivity || @exeactivity |
+|ensure| received | $MON | expected transport activity | @transactivity | 
+|ensure| received | $MON | expected execution activity | @exeactivity | 
+|ensure| received | $MON | event details valid |@transactivity || @exeactivity | 
+
+|scenario| test interaction pattern | interaction | via | relay | for correct transport activity |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE_ERROR] | and execution activity | [] |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION_ERROR(!-RelayA-!)] | and execution activity | [] |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION(!-RelayA-!), FORWARD_ERROR(!-RelayA-!)] | and execution activity | [] |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION(!-RelayA-!), FORWARD(!-RelayA-!), RECEPTION_ERROR(!-RelayB-!)] | and execution activity | [] |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION(!-RelayA-!), FORWARD(!-RelayA-!), RECEPTION(!-RelayB-!), FORWARD_ERROR(!-RelayB-!)] | and execution activity | [] |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION(!-RelayA-!), FORWARD(!-RelayA-!), RECEPTION(!-RelayB-!), FORWARD(!-RelayB-!), RECEPTION_ERROR(!-RelayC-!)] | and execution activity | [] |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION(!-RelayA-!), FORWARD(!-RelayA-!), RECEPTION(!-RelayB-!), FORWARD(!-RelayB-!), RECEPTION(!-RelayC-!), FORWARD_ERROR(!-RelayC-!)] | and execution activity | [] |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION(!-RelayA-!), FORWARD(!-RelayA-!), RECEPTION(!-RelayB-!), FORWARD(!-RelayB-!), RECEPTION(!-RelayC-!), FORWARD(!-RelayC-!), RECEPTION_ERROR(!-RelayD-!)] | and execution activity | [] |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION(!-RelayA-!), FORWARD(!-RelayA-!), RECEPTION(!-RelayB-!), FORWARD(!-RelayB-!), RECEPTION(!-RelayC-!), FORWARD(!-RelayC-!), RECEPTION(!-RelayD-!), FORWARD_ERROR(!-RelayD-!)] | and execution activity | [] |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION(!-RelayA-!), FORWARD(!-RelayA-!), RECEPTION(!-RelayB-!), FORWARD(!-RelayB-!), RECEPTION(!-RelayC-!), FORWARD(!-RelayC-!), RECEPTION(!-RelayD-!), FORWARD(!-RelayD-!), ACCEPTANCE_ERROR] | and execution activity | [] |
+
+|scenario| test interaction pattern | interaction | via | relay | with execution activity | exeactivity |
+|test interaction pattern | @interaction | via | @relay | with transport activity | [RELEASE, RECEPTION(!-RelayA-!), FORWARD(!-RelayA-!), RECEPTION(!-RelayB-!), FORWARD(!-RelayB-!), RECEPTION(!-RelayC-!), FORWARD(!-RelayC-!), RECEPTION(!-RelayD-!), FORWARD(!-RelayD-!), ACCEPTANCE] | and execution activity | @exeactivity |
+
+***********!
+
+|script| monitor activity scenario| !-MultiHop-! |
+|ensure| test activity service client has been created|
+|ensure| test activity relay management service client has been created|
+|ensure| call reset test on service provider |
+|ensure| call reset test on relay management service provider |
+|ensure| create activity service relay called | !-RelayD-! | to relay to | Provider |
+|ensure| create activity service relay called | !-RelayC-! | to relay to | !-RelayD-! |
+|ensure| create activity service relay called | !-RelayB-! | to relay to | !-RelayC-! |
+|ensure| create activity service relay called | !-RelayA-! | to relay to | !-RelayB-! |
+|ensure| call reset test on relay service provider | !-RelayD-! |
+|ensure| call reset test on relay service provider | !-RelayC-! |
+|ensure| call reset test on relay service provider | !-RelayB-! |
+|ensure| call reset test on relay service provider | !-RelayA-! |
+|ensure| subscribe for activity events from | !-RelayA-! |
+|note| test correct behaviour for each pattern type |
+|test interaction pattern | Send | via | !-RelayA-! | for correct transport activity |
+|test interaction pattern | Send | via | !-RelayA-! | with execution activity | [] |
+|test interaction pattern | Submit | via | !-RelayA-! | for correct transport activity |
+|test interaction pattern | Submit | via | !-RelayA-! | with execution activity | [ACK_ERROR] |
+|test interaction pattern | Submit | via | !-RelayA-! | with execution activity | [ACK] |
+|test interaction pattern | Request | via | !-RelayA-! | for correct transport activity |
+|test interaction pattern | Request | via | !-RelayA-! | with execution activity | [RESPONSE_ERROR] |
+|test interaction pattern | Request | via | !-RelayA-! | with execution activity | [RESPONSE] |
+|test interaction pattern | Invoke | via | !-RelayA-! | for correct transport activity |
+|test interaction pattern | Invoke | via | !-RelayA-! | with execution activity | [ACK_ERROR] |
+|test interaction pattern | Invoke | via | !-RelayA-! | with execution activity | [ACK, RESPONSE_ERROR] |
+|test interaction pattern | Invoke | via | !-RelayA-! | with execution activity | [ACK, RESPONSE] |
+|test interaction pattern | Progress | via | !-RelayA-! | for correct transport activity |
+|test interaction pattern | Progress | via | !-RelayA-! | with execution activity | [ACK_ERROR] |
+|test interaction pattern | Progress | via | !-RelayA-! | with execution activity | [ACK, RESPONSE_ERROR] |
+|test interaction pattern | Progress | via | !-RelayA-! | with execution activity | [ACK, RESPONSE] |
+|test interaction pattern | Progress | via | !-RelayA-! | with execution activity | [ACK, UPDATE, UPDATE, UPDATE_ERROR] |
+|test interaction pattern | Progress | via | !-RelayA-! | with execution activity | [ACK, UPDATE, UPDATE, RESPONSE_ERROR] |
+|test interaction pattern | Progress | via | !-RelayA-! | with execution activity | [ACK, UPDATE, UPDATE, RESPONSE] |
+|ensure| unsubscribe for activity events from | !-RelayA-! |
+|close relay service provider | !-RelayA-! |
+|close relay service provider | !-RelayB-! |
+|close relay service provider | !-RelayC-! |
+|close relay service provider | !-RelayD-! |
+|close test activity service client|

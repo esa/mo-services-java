@@ -1,0 +1,115 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.malspp.test.patterns|
+
+*******!
+!3 Source/Destination identifier test case
+
+This test uses the Request interaction pattern in order to test that the source 
+and destination identifiers can be omitted in the MAL message header fields 
+'URI From' and 'URI To' and that the source and destination id flags are set to 
+false in this case.
+
+The consumer is configured in order not to append the optional identifier at the 
+end of its URI. A TC/TC !-REQUEST-! interaction is initiated and the 
+source/destination id flags are checked in the request and response 
+MAL messages:
+- the source id flag should be down in the request and up in the 
+response.
+- the destination id flag should be up in the request and down in the 
+response. 
+
+!*> Sub scenario definitions
+
+|scenario| secondary header sdu type | sdu | and source id flag | srcIdFlag | and destination id flag | dstIdFlag |
+|check  | version is | 0 |
+|check  | sdu type is | @sdu |
+|check  | area is | 100 |
+|check  | service is | 1 |
+|check  | operation is | 102 |
+|check  | area version is | 1 |
+|check  | error flag is | 0 |
+|ensure | check qos | Assured |
+|ensure | check session | Live |
+|ensure | check secondary apid |
+|ensure | check secondary apid qualifier |
+|ensure | check transaction id |
+|check  | source id flag is | @srcIdFlag |
+|check  | destination id flag is | @dstIdFlag |
+|check  | priority flag is | 1 |
+|check  | timestamp flag is | 1 |
+|check  | network zone flag is | 1 |
+|check  | session name flag is | 1 |
+|check  | domain flag is | 1 |
+|check  | authentication id flag is | 1 |
+|ensure | read source id |
+|ensure | read destination id |
+|ensure | check uri from |
+|ensure | check uri to |
+|check  | priority is | 1 |
+|ensure | check timestamp |
+|check  | network zone is | !-NetworkZone-! |
+
+|scenario | primary header |
+|check  | packet version number is | 0 |
+|check space packet type |
+|check  | secondary header flag is | 1 |
+|ensure | packet data length is length of packet data field minus one |
+
+***********!
+
+|script| source dest id test |
+|ensure | reset spp interceptor |
+|ensure |consumer packet is tc| true |
+|ensure |provider packet is tc| true |
+|ensure |pattern initiation for| Request | with multi| false | with empty body | false | and qos| Assured | and session | Live | and transistions | [RESPONSE] | and behaviour id | 1 | test |
+|ensure|select sent packet at| 0 |
+|primary header |
+|secondary header sdu type | 3 | and source id flag | 0 | and destination id flag | 1 |
+|ensure|select received packet at| 0 |
+|primary header |
+|secondary header sdu type | 4 | and source id flag | 1 | and destination id flag | 0 |
+|ensure|reset spp interceptor|
+
+
+
+
+
+
+
+

@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!--
+    Copyright or © or Copr. CNES
+  
+    This software is a computer program whose purpose is to provide a 
+    framework for the CCSDS Mission Operations services.
+  
+    This software is governed by the CeCILL-C license under French law and
+    abiding by the rules of distribution of free software.  You can  use, 
+    modify and/ or redistribute the software under the terms of the CeCILL-C
+    license as circulated by CEA, CNRS and INRIA at the following URL
+    "http://www.cecill.info". 
+  
+    As a counterpart to the access to the source code and  rights to copy,
+    modify and redistribute granted by the license, users are provided only
+    with a limited warranty  and the software's author,  the holder of the
+    economic rights,  and the successive licensors  have only  limited
+    liability. 
+  
+    In this respect, the user's attention is drawn to the risks associated
+    with loading,  using,  modifying and/or developing or reproducing the
+    software by the user in light of its specific status of free software,
+    that may mean  that it is complicated to manipulate,  and  that  also
+    therefore means  that it is reserved for developers  and  experienced
+    professionals having in-depth computer knowledge. Users are therefore
+    encouraged to load and test the software's suitability as regards their
+    requirements in conditions enabling the security of their systems and/or 
+    data to be ensured and,  more generally, to use and operate it in the 
+    same conditions as regards security. 
+  
+    The fact that you are presently reading this means that you have had
+    knowledge of the CeCILL-C license and that you accept its terms.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>int.esa.ccsds.mo</groupId>
+    <artifactId>TESTBED_POM</artifactId>
+    <version>1.0.3</version>
+    <relativePath/>
+  </parent>
+  
+  <groupId>int.esa.ccsds.mo</groupId>
+  <artifactId>TESTBED_MALSPP</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>CCSDS MOIMS MO Testbed for MAL/SPP Binding</name>
+
+  <organization>
+    <name>CCSDS</name>
+    <url>http://www.ccsds.org</url>
+  </organization>
+  
+  <licenses>
+    <license>
+      <name>CeCILL-C FREE SOFTWARE LICENSE AGREEMENT</name>
+      <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_CNES.md</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>GNU Lesser General Public License</name>
+      <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_DLR.md</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</connection>
+    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</developerConnection>
+    <url>https://github.com/esa/CCSDS_MO_TESTBEDS</url>
+  </scm>
+  
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/esa/CCSDS_MO_TESTBEDS/issues</url>
+  </issueManagement>
+  
+  <developers>
+    <developer>
+      <id>DavidFeliot</id>
+      <name>David Feliot</name>
+      <email>david.feliot@scalagent.com</email>
+      <url>https://github.com/DavidFeliot</url>
+    </developer>
+    <developer>
+      <id>S-Gaertner</id>
+      <name>Stefan Gärtner</name>
+      <email>stefan.gaertner@dlr.de</email>
+      <url>https://github.com/S-Gaertner</url>
+    </developer>
+  </developers>
+
+  <properties>
+    <fitnesse.toplevel.test>MalSppTests</fitnesse.toplevel.test>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <ccsds.testbed.malspp.version>1.1</ccsds.testbed.malspp.version>
+    <esa.mal.test_api.version>1.0.2</esa.mal.test_api.version>
+    <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.fitnesse</groupId>
+      <artifactId>fitnesse</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>int.esa.ccsds.mo</groupId>
+      <artifactId>TESTBED_MALSPP_FRAMEWORK</artifactId>
+      <version>${ccsds.testbed.malspp.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/..</directory>
+        <includes>
+          <include>LICENCE_ESA.md</include>
+          <include>LICENCE_CNES.md</include>
+          <include>LICENCE_DLR.md</include>
+        </includes>
+      </resource>
+    </resources>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+            <artifactId>wagon-maven-plugin</artifactId>
+            <version>1.0</version>
+            <executions>
+              <execution>
+                <id>download-test-data</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>download-single</goal>
+                </goals>
+                <configuration>
+                  <url>http://hpiers.obspm.fr/eoppc/bul/bulc</url>
+                  <fromFile>UTC-TAI.history</fromFile>
+                  <toDir>.</toDir>
+                 <skip>true</skip>    
+                </configuration>
+            </execution>
+          </executions>
+       </plugin>      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+        <executions>
+          <execution>
+            <id>copy-res</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/deployment</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources/deployment</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <useSystemClassLoader>false</useSystemClassLoader>
+          <failIfNoTests>false</failIfNoTests>
+          <systemPropertyVariables>
+            <ccsds.fitnesse.output.dir>${fitnesse.output.dir}</ccsds.fitnesse.output.dir>
+            <slim.port>${fitnesse.port}</slim.port>
+            <org.ccsds.moims.mo.testbed.remote.extra.args>${argLine}r</org.ccsds.moims.mo.testbed.remote.extra.args>
+            <org.ccsds.moims.mo.testbed.local.configuration.dir>${org.ccsds.moims.mo.testbed.local.configuration.dir}</org.ccsds.moims.mo.testbed.local.configuration.dir>
+            <org.ccsds.moims.mo.testbed.remote.configuration.dir>${org.ccsds.moims.mo.testbed.remote.configuration.dir}</org.ccsds.moims.mo.testbed.remote.configuration.dir>
+            <org.ccsds.moims.mo.testbed.remote.output.dir>${fitnesse.output.dir}</org.ccsds.moims.mo.testbed.remote.output.dir>
+            <org.ccsds.moims.mo.testbed.remote.classpath.filter>${org.ccsds.moims.mo.testbed.remote.classpath.filter}</org.ccsds.moims.mo.testbed.remote.classpath.filter>
+            <org.ccsds.moims.mo.testbed.remote.classpath.extra>${org.ccsds.moims.mo.testbed.remote.classpath.extra}</org.ccsds.moims.mo.testbed.remote.classpath.extra>
+            <org.ccsds.moims.mo.testbed.remote.classpath.maven>${org.ccsds.moims.mo.testbed.remote.classpath.maven}</org.ccsds.moims.mo.testbed.remote.classpath.maven>
+            <org.ccsds.moims.mo.testbed.mom.classpath.filter>${org.ccsds.moims.mo.testbed.mom.classpath.filter}</org.ccsds.moims.mo.testbed.mom.classpath.filter>
+            <org.ccsds.moims.mo.testbed.mom.classpath.extra>${org.ccsds.moims.mo.testbed.mom.classpath.extra}</org.ccsds.moims.mo.testbed.mom.classpath.extra>
+            <org.ccsds.moims.mo.testbed.mom.classpath.maven>${org.ccsds.moims.mo.testbed.mom.classpath.maven}</org.ccsds.moims.mo.testbed.mom.classpath.maven>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <profiles>
+    <profile>
+      <id>DLR</id>
+      <dependencies>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL_TEST</artifactId>
+          <version>${esa.mal.test_api.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>MAL_IMPL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>de.dlr.gsoc</groupId>
+          <artifactId>MO_MALSPP_TRANSPORT</artifactId>
+          <version>1.0.2</version>
+        </dependency>
+        <dependency>
+          <groupId>de.dlr.gsoc</groupId>
+          <artifactId>MO_MALSPP_ENCODING</artifactId>
+          <version>1.0.2</version>
+        </dependency>
+        <dependency>
+          <groupId>org.ow2.joram</groupId>
+          <artifactId>a3-common</artifactId>
+          <version>${joram.version}</version>
+        </dependency>
+      </dependencies>
+      <properties>
+        <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/dlr</org.ccsds.moims.mo.testbed.local.configuration.dir>
+        <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/dlr</org.ccsds.moims.mo.testbed.remote.configuration.dir>
+      </properties>
+    </profile>
+    <profile>
+      <id>CNES</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.ccsds.moims.mo</groupId>
+          <artifactId>cnes-mal-api</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.mal</groupId>
+          <artifactId>mal-impl-broker</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.mal</groupId>
+          <artifactId>mal-impl-base</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.mal</groupId>
+          <artifactId>mal-impl-security</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.maljoram</groupId>
+          <artifactId>mal-joram-malencoding</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.ccsds.moims.mo</groupId>
+          <artifactId>cnes-malprototype-stubs</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.malspp</groupId>
+          <artifactId>mal-spp-transport</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.malspp</groupId>
+          <artifactId>mal-spp-encoding</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+      </dependencies>
+      <properties>
+        <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/cnes</org.ccsds.moims.mo.testbed.local.configuration.dir>
+        <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/cnes</org.ccsds.moims.mo.testbed.remote.configuration.dir>
+      </properties>
+    </profile>
+    <profile>
+      <id>CNES_to_DLR</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.ccsds.moims.mo</groupId>
+          <artifactId>cnes-mal-api</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.mal</groupId>
+          <artifactId>mal-impl-broker</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.mal</groupId>
+          <artifactId>mal-impl-base</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.mal</groupId>
+          <artifactId>mal-impl-security</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.maljoram</groupId>
+          <artifactId>mal-joram-malencoding</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.ccsds.moims.mo</groupId>
+          <artifactId>cnes-malprototype-stubs</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.malspp</groupId>
+          <artifactId>mal-spp-transport</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>fr.cnes.malspp</groupId>
+          <artifactId>mal-spp-encoding</artifactId>
+          <version>${cnes.version}</version>
+        </dependency>
+      </dependencies>
+      <properties>
+        <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/cnes</org.ccsds.moims.mo.testbed.local.configuration.dir>
+        <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/dlr</org.ccsds.moims.mo.testbed.remote.configuration.dir>
+        <org.ccsds.moims.mo.testbed.remote.classpath.filter>cnes-mal</org.ccsds.moims.mo.testbed.remote.classpath.filter>
+        <org.ccsds.moims.mo.testbed.remote.classpath.maven>int.esa.ccsds.mo:API_MAL:${esa.api.version},int.esa.ccsds.mo:MAL_IMPL:${esa.impl.version},int.esa.ccsds.mo:API_MAL_TEST:${esa.mal.test_api.version},de.dlr.gsoc:MO_MALSPP_TRANSPORT:1.0.2,de.dlr.gsoc:MO_MALSPP_ENCODING:1.0.2</org.ccsds.moims.mo.testbed.remote.classpath.maven>
+      </properties>
+    </profile>
+    <profile>
+      <id>DLR_to_CNES</id>
+      <dependencies>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL_TEST</artifactId>
+          <version>${esa.mal.test_api.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>API_MAL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>int.esa.ccsds.mo</groupId>
+          <artifactId>MAL_IMPL</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>de.dlr.gsoc</groupId>
+          <artifactId>MO_MALSPP_TRANSPORT</artifactId>
+          <version>1.0.2</version>
+        </dependency>
+        <dependency>
+          <groupId>de.dlr.gsoc</groupId>
+          <artifactId>MO_MALSPP_ENCODING</artifactId>
+          <version>1.0.2</version>
+        </dependency>
+        <dependency>
+          <groupId>org.ow2.joram</groupId>
+          <artifactId>a3-common</artifactId>
+          <version>${joram.version}</version>
+        </dependency>
+      </dependencies>
+      <properties>
+        <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/dlr</org.ccsds.moims.mo.testbed.local.configuration.dir>
+        <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/cnes</org.ccsds.moims.mo.testbed.remote.configuration.dir>
+        <org.ccsds.moims.mo.testbed.remote.classpath.filter>API_MAL</org.ccsds.moims.mo.testbed.remote.classpath.filter>
+        <org.ccsds.moims.mo.testbed.remote.classpath.maven>fr.cnes.maljoram:mal-joram-encoding:${cnes.version},fr.cnes.maljoram:mal-joram-malencoding:${cnes.version},fr.cnes.malspp:mal-spp-transport:${cnes.version},fr.cnes.malspp:mal-spp-encoding:${cnes.version},fr.cnes.mal:mal-impl-broker:${cnes.version},fr.cnes.mal:mal-impl-base:${cnes.version},fr.cnes.mal:mal-impl-security:${cnes.version},org.ccsds.moims.mo:cnes-mal-api:${cnes.version},org.ccsds.moims.mo:cnes-malprototype-stubs:${cnes.version},org.objectweb.monolog:monolog:5.2.0,org.ow2.joram:a3-common:${joram.version},org.osgi:org.osgi:3.0.0</org.ccsds.moims.mo.testbed.remote.classpath.maven>
+      </properties>
+    </profile>
+  </profiles>
+</project>

@@ -1,0 +1,26 @@
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.mal.test.transport|
+
+*******!
+!4 Test procedure: transmit error
+An !-ErrorTest-! consumer is created. Each operation provided by the !-ErrorTest-! and leading to a Transport error is called.
+The test transport error intercepts the IP initiation message and raises a Transmit Error.
+The test checks that the error (MALTransmitErrorException) is raised at the MAL level.
+
+|script| transmit error test procedure |
+|ensure |create consumer |
+|ensure |raise error | DELIVERY_FAILED |
+|ensure |raise error | DELIVERY_TIMEDOUT |
+|ensure |raise error | DELIVERY_DELAYED |
+|ensure |raise error | DESTINATION_UNKNOWN |
+|ensure |raise error | DESTINATION_TRANSIENT |
+|ensure |raise error | DESTINATION_LOST |
+|ensure |raise error | ENCRYPTION_FAIL |
+|ensure |raise error | UNSUPPORTED_AREA |
+|ensure |raise error | UNSUPPORTED_OPERATION |
+|ensure |raise error | UNSUPPORTED_VERSION |
+|ensure |raise error | BAD_ENCODING |
+|ensure |raise error | UNKNOWN |

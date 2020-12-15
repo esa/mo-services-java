@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!--
+    Licensed under the European Space Agency Public License, Version 2.0
+    You may not use this file except in compliance with the License.
+
+    Except as expressly set forth in this License, the Software is provided to
+    You on an "as is" basis and without warranties of any kind, including without
+    limitation merchantability, fitness for a particular purpose, absence of
+    defects or errors, accuracy or non-infringement of intellectual property rights.
+ 
+    See the License for the specific language governing permissions and limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>int.esa.ccsds.mo</groupId>
+    <artifactId>POM</artifactId>
+    <version>6</version>
+    <relativePath/>
+  </parent>
+  
+  <artifactId>REACTOR_TESTBEDS</artifactId>
+  <version>1.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>ESA CCSDS Testbed reactor build</name>
+
+  <organization>
+    <name>ESA</name>
+    <url>http://www.esa.int</url>
+  </organization>
+  
+  <licenses>
+    <license>
+      <name>The European Space Agency Public License, Version 2.0</name>
+      <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_ESA.md</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</connection>
+    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</developerConnection>
+    <url>https://github.com/esa/CCSDS_MO_TESTBEDS</url>
+  </scm>
+  
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/esa/CCSDS_MO_TESTBEDS/issues</url>
+  </issueManagement>
+  
+  <developers>
+    <developer>
+      <id>SamCooper</id>
+      <name>Sam Cooper</name>
+      <email>sam@brightascension.com</email>
+      <url>https://github.com/SamCooper</url>
+    </developer>
+  </developers>
+
+  <modules>
+    <module>MOIMS_TESTBED_POM</module>
+    <module>MOIMS_TESTBED_UTIL</module>
+    <module>MOIMS_TESTBED_MAL</module>
+    <module>MOIMS_TESTBED_COM_FRAMEWORK</module>
+    <module>MOIMS_TESTBED_COM_PROVIDER_ESA</module>
+    <module>MOIMS_TESTBED_COM</module>
+<!--
+    <module>MOIMS_TESTBED_UTIL_SPP</module>
+    <module>MOIMS_TESTBED_MALSPP_FRAMEWORK</module>
+    <module>MOIMS_TESTBED_MALSPP</module>
+-->
+  </modules>
+  
+  <profiles>
+    <profile>
+      <id>ESA</id>
+    </profile>
+  </profiles>
+</project>

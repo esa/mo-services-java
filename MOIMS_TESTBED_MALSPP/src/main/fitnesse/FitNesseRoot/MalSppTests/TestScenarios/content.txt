@@ -1,0 +1,154 @@
+#
+# Copyright or © or Copr. CNES
+#
+# This software is a computer program whose purpose is to provide a 
+# framework for the CCSDS Mission Operations services.
+#
+# This software is governed by the CeCILL-C license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL-C
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+#
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+#
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+#
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL-C license and that you accept its terms.
+#
+!*< Hidden
+!define TEST_SYSTEM {slim}
+*!
+
+!1 Test Scenarios
+
+!2 Compliance matrix
+| Comment |
+| Statements | Test scenarios | Test cases | Test methods |
+| 3.2.1x     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-!, !-UriTest-! | check uri from, check uri to, check uri from format, check uri to format |
+| 3.3.2.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from |
+| 3.2.2      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | implicit check |
+| 3.2.3      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | implicit check |
+| 3.3.2.5    | !-MalMessageMapping-! | !-SourceDestIdTest-! | source id flag is, check uri from |
+| 3.3.3.1    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check authentication id |
+| 3.3.3.2    | !-MalMessageMapping-! | !-QoSProperties-!               | check authentication id is left out |
+| 3.3.4.x    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri to |
+| 3.3.4.5    | !-MalMessageMapping-! | !-SourceDestIdTest-! | destination id flag is, check uri to |
+| 3.3.5.1    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check timestamp |
+| 3.3.5.2    | !-MalMessageMapping-! | !-QoSProperties-!               | check timestamp is left out |
+| 3.3.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check qos |
+| 3.3.7.1    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | priority is |
+| 3.3.7.2    | !-MalMessageMapping-! | !-QoSProperties-!               | check priority is left out |
+| 3.3.8.1    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check domain id |
+| 3.3.8.2    | !-MalMessageMapping-! | !-QoSProperties-!               | check domain is left out |
+| 3.3.9.1    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | network zone is |
+| 3.3.9.2    | !-MalMessageMapping-! | !-QoSProperties-!               | check network zone is left out |
+| 3.3.10     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check session |
+| 3.3.11.1   | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | session name is |
+| 3.3.11.2   | !-MalMessageMapping-! | !-QoSProperties-!               | check session name is left out |
+| 3.3.12     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | sdu type is |
+| 3.3.13     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check transaction id |
+| 3.3.14     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | area is |
+| 3.3.15     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | service is |
+| 3.3.16     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | operation is |
+| 3.3.17     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | area version is |
+| 3.3.18     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | error flag is |
+| 3.4.2.2    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | packet version number is |
+| 3.4.2.3    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check space packet type |
+| 3.4.2.4    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | secondary header flag is |
+| 3.4.2.5    | !-MalMessageMapping-! | !-MalMessageSegmentation-! | primary header sequence flags are |
+| 3.4.2.6    | !-MalMessageMapping-! | !-MalMessageSegmentation-! | primary header sequence counter is initial counter plus |
+| 3.4.2.7    | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | packet data length is length of packet data field minus one |
+| 3.4.3.2.x  | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | version is |
+| 3.4.3.3    | !-MalMessageMapping-! | !-MalMessageSegmentation-! | secondary header segment counter is, test message segmentation with scrambling pattern |
+| 3.5.3.2.1  | !-MalMessageMapping-!   | !-MalMessageBodyMapping-! | check body element order |
+| 3.5.3.2.2  | !-MalMessageMapping-!   | !-EmptyBody-! | mal message body is empty |
+| 3.5.3.3.1  | !-MalMessageMapping-! | !-PubSub-! | testPublishAndSessionAndSessionNameAndDomain, testPublishWithAndSessionAndSessionNameAndDomain |
+| 3.5.3.3.3-7| !-MalMessageMapping-! | !-PubSub-! | check element short form area and service and type |
+| 3.5.3.3.4  | !-MalMessageMapping-! | !-PubSub-! | body element abstract service defined encoded for publish message |
+| 3.5.3.3.5  | !-MalMessageMapping-! | !-PubSub-! | body element abstract non-service defined encoded for publish message |
+| 3.5.3.3.8  | !-MalMessageMapping-! | !-PubSub-! | body element encoded as element |
+| 3.5.3.3.9  | !-MalMessageMapping-! | !-PubSub-! | body element encoded as nullable element |
+| 3.5.3.3.10 | !-MalMessageMapping-! | !-PubSub-! | body element encoded as element |
+| 3.5.3.3.11 | !-MalMessageMapping-! | !-PubSub-! | body element encoded as element |
+| 3.5.3.3.12a| !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | body element encoded as uinteger |
+| 3.5.3.3.12b| !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | body element encoded as nullable element, body element null encoded as nullable element |
+| 3.5.3.3.13 | !-MalMessageMapping-! | !-AllExceptPubSub-! | body element encoded as nullable element |
+| 3.5.3.4    | !-MalMessageMapping-! | !-PubSub-! | publish update list is for update value type |
+| 3.5.3.5    | !-MalMessageMapping-! | !-PubSub-! | read publish update for concrete/abstract service-defined/abstract non-service defined update value type with value |
+| 4.2.x      | !-MalMessageMapping-!   | !-MalSppTransport-! | supports qos level |
+| 4.3.x      | !-MalMessageMapping-!   | !-MalSppTransport-! | supports interaction type |
+| 4.4.1      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select sent packet at |
+| 4.4.2      | !-MalMessageMapping-! | !-TransmitRequest-! | send message with null mal header field and expect |
+| 4.4.3      | See statements 3.x |
+| 4.4.4      | !-MalMessageMapping-! | !-TransmitRequest-! | send message from uri to uri and expect |
+| 4.4.5      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
+| 4.4.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
+| 4.4.7      | !-MalMessageMapping-! | !-TransmitQosProperties-! | check transmit qos properties |
+| 4.4.8      | !-MalMessageMapping-! | !-MalMessageSegmentation-! | check small blob |
+| 4.4.9a     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | packet data length is consistent with |
+| 4.4.9b     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | number of sent packets is |
+| 4.4.9c     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | mal message header mapping compares packet at index to first packet |
+| 4.4.9d     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | secondary header segment counter is |
+| 4.4.9e     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | check segment counter selection |
+| 4.4.9f,g,h | !-MalMessageMapping-! | !-MalMessageSegmentation-! | primary header sequence flags are |
+| 4.4.10     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | check packet data field size limits |
+| 4.4.11     | !-MalMessageMapping-! | !-TransmitRequest-! | check space packet sending request error |
+| 4.4.12     | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | implicit check |
+| 4.5.1      | !-MalMessageMapping-! | !-TransmitRequest-! | check transmit multiple |
+| 4.5.2      | !-MalMessageMapping-! | !-TransmitRequest-! | check transmit multiple error |
+| 4.6.1      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | select received packet at |
+| 4.6.2      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-!, !-MalMessageSegmentation-! | select received packet at, small blob works, large blob works |
+| 4.6.3      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | check uri from, check uri to |
+| 4.6.4x     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | small blob works |
+| 4.6.5a     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | large blob works |
+| 4.6.5b,c   | !-MalMessageMapping-! | !-MalMessageSegmentation-! | test message segmentation with scrambling pattern, check dropped packet |
+| 4.6.5d     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | large blob works, test message segmentation with scrambling pattern |
+| 4.6.5e     | !-MalMessageMapping-! | !-MalMessageSegmentation-! | check timeout with |
+| 4.6.6      | !-MalMessageMapping-! | !-AllExceptPubSub-!, !-PubSub-! | test interaction pattern with unknown uri to, test stage with unknown uri to |
+| 5.2.1-2    | !-MalDataEncoding-! | !-ElementTest-! | check a composite with a field typed !-MAL::Attribute-!, attribute tag is |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite sent as a !-MAL::Element-!, check short form |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite sent as a !-MAL::Composite-! |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite sent as an abstract composite |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check an attribute sent as a !-MAL::Element-!, check short form |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check an attribute sent as a !-MAL::Attribute-!, check an attribute list sent as a !-MAL::Element-! list, check an attribute list sent as a !-MAL::Attribute-! list |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check an attribute list sent as a !-MAL::Composite-! |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite list sent as a !-MAL::Element-! list |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite list sent as a !-MAL::Composite-! list |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite list sent as an abstract composite list |
+| 5.2.3,4,7,8| !-MalDataEncoding-! | !-ElementTest-! | check a composite list sent as a !-MAL::Composite-! |
+| 5.2.5      | !-MalDataEncoding-! | !-ElementTest-! | check a composite defined by a service and sent as a !-MAL::Element-! |
+| 5.2.6      | !-MalDataEncoding-! | !-ElementTest-! | check an attribute sent as a !-MAL::Element-!, check short form |
+| 5.2.9a     | !-MalDataEncoding-! | !-ElementTest-! | check every attribute |
+| 5.2.9b     | !-MalDataEncoding-! | !-ElementTest-! | check an enumerated sent as a !-MAL::Element-! |
+| 5.2.9c     | !-MalDataEncoding-! | !-ElementTest-! | check a composite with a field typed as a list |
+| 5.2.9d     | !-MalDataEncoding-! | !-ElementTest-! | check a composite sent as a !-MAL::Element-! |
+| 5.3.1      | !-MalDataEncoding-! | !-EnumerationTest-! | check first element in an enumeration |
+| 5.3.2      | !-MalDataEncoding-! | !-EnumerationTest-! | check second and third elements in an enumeration |
+| 5.3.3      | !-MalDataEncoding-! | !-EnumerationTest-! | check an enumerated sent as a !-MAL::Element-! |
+| 5.3.4      | !-MalDataEncoding-! | !-EnumerationTest-! | check a medium enumeration |
+| 5.3.5      | !-MalDataEncoding-! | !-EnumerationTest-! | check a large enumeration |
+| 5.4.1      | !-MalDataEncoding-! | !-CompositeTest-! | check field order |
+| 5.4.2      | !-MalDataEncoding-! | !-CompositeTest-! | check presence flag |
+| 5.4.3      | !-MalDataEncoding-! | !-CompositeTest-! | check composite inheritance |
+| 5.5.1-3    | !-MalDataEncoding-! | !-ListTest-! | check list format and elements order |
+| 5.6.1-2    | !-MalDataEncoding-! | !-NullableElementTest-! | check presence flag |
+| 5.7-28     | !-MalDataEncoding-! | !-AttributeTest-! | check every attribute |
+| 5.15-20    | !-MalDataEncoding-! | !-VarintSupportedTest-! | check every attribute affected by varintSupported |
+| 5.15-20    | !-MalMessageMapping-! | !-AllExceptPubSub-! | priority is, check domain id, network zone is, session name is, check authentication id |
+| 5.22-23    | !-MalDataEncoding-! | !-TimeCodeFormatTest-! | check every attribute affected by time code formats |
+| 5.22-23    | !-MalMessageMapping-! | !-AllExceptPubSub-! | check timestamp |

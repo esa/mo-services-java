@@ -1,0 +1,32 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO COM Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+*!
+!2 Activity test scenario
+The COM Activity service test scenario is split into several test cases, each testing a specific aspect of the Activity service.
+The cases are split according to the following:
+* Test the use of the Activity service in a configuration in which the test service provider communicates directly with the client
+* Test the use of the Activity service in a configuration in which the test service provider communicates with the client via a single relay
+* Test the use of the Activity service in a configuration in which the test service provider communicates with the client via a number of relays
+
+The test service provider is required to implement the !-ActivityTest-! service, and support all capability sets of the !-Activity-! service.
+Each of the test cases details the required behaviour of the test service provider and also the test client.
