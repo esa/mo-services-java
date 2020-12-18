@@ -47,11 +47,11 @@
     </properties>
     <modules>
         <module>pom</module>
+        <module>stubs-generator</module>
         <module>apis</module>
         <module>mal-impl</module>
         <module>bindings</module>
         <module>providers-consumers</module>
-        <module>stubs-generator</module>
         <module>support-libs</module>
         <!-- <module>testbeds</module> -->
     </modules>
