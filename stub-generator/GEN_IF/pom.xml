@@ -94,6 +94,49 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>wagon-maven-plugin</artifactId>
+            <version>1.0</version>
+            <executions>
+              <execution>
+                <id>get-xsd</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>download-single</goal>
+                </goals>
+                <configuration>
+                  <url>http://www.w3.org/2009/XMLSchema</url>
+                  <fromFile>XMLSchema.xsd</fromFile>
+                  <toDir>${project.build.directory}/xsd-ref</toDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>get-dtd</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>download-single</goal>
+                </goals>
+                <configuration>
+                  <url>http://www.w3.org/2009/XMLSchema</url>
+                  <fromFile>XMLSchema.dtd</fromFile>
+                  <toDir>${project.build.directory}/xsd-ref</toDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>get-dtd-types</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>download-single</goal>
+                </goals>
+                <configuration>
+                  <url>http://www.w3.org/2009/XMLSchema</url>
+                  <fromFile>datatypes.dtd</fromFile>
+                  <toDir>${project.build.directory}/xsd-ref</toDir>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>            
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jaxb2-maven-plugin</artifactId>
@@ -143,6 +186,7 @@
       </activation>
       <build>
         <plugins>
+            <!--
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>wagon-maven-plugin</artifactId>
@@ -186,6 +230,7 @@
               </execution>
             </executions>
           </plugin>            
+          -->
         </plugins>
       </build>
     </profile>
