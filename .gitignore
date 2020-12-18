@@ -4,3 +4,4 @@
 /stub-generator/generator-lib/target/
 /stub-generator/generator-if/target/
 /stub-generator/xml-jaxb/target/
+/stub-generator/plugin-temp/target/
