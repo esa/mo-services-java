@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+  <name>ESA MO Stub Generator</name>
+  <description>Generates technology bindings for CCSDS MAL service specifications</description>
+  <groupId>int.esa.ccsds.mo</groupId>
+  <artifactId>StubGenerator</artifactId>
+  <version>1.7</version>
+  <goalPrefix>StubGenerator</goalPrefix>
+  <isolatedRealm>false</isolatedRealm>
+  <inheritedByDefault>true</inheritedByDefault>
+  <mojos>
+    <mojo>
+      <goal>generate</goal>
+      <description>Generates stubs and skeletons for CCSDS MO Service specifications.</description>
+      <requiresDirectInvocation>false</requiresDirectInvocation>
+      <requiresProject>true</requiresProject>
+      <requiresReports>false</requiresReports>
+      <aggregator>false</aggregator>
+      <requiresOnline>false</requiresOnline>
+      <inheritedByDefault>true</inheritedByDefault>
+      <phase>generate-sources</phase>
+      <implementation>esa.mo.tools.stubgen.StubGenerator</implementation>
+      <language>java</language>
+      <instantiationStrategy>per-lookup</instantiationStrategy>
+      <executionStrategy>once-per-session</executionStrategy>
+      <threadSafe>false</threadSafe>
+      <parameters>
+        <parameter>
+          <name>extraProperties</name>
+          <type>java.util.Map</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Extra generator specific properties, held in name/value pairs</description>
+        </parameter>
+        <parameter>
+          <name>forceGeneration</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Force generation</description>
+        </parameter>
+        <parameter>
+          <name>generateCOM</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Generate COM code?</description>
+        </parameter>
+        <parameter>
+          <name>generateStructures</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Generate structures code?</description>
+        </parameter>
+        <parameter>
+          <name>outputDirectory</name>
+          <type>java.io.File</type>
+          <required>true</required>
+          <editable>true</editable>
+          <description>The working directory to create the generated java source files.</description>
+        </parameter>
+        <parameter>
+          <name>packageBindings</name>
+          <type>java.util.Map</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Package bindings, held in AREA/package pairs
+For JAXB bindings, held in URI/package pairs</description>
+        </parameter>
+        <parameter>
+          <name>targetLanguages</name>
+          <type>java.lang.String[]</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>The target language to create.</description>
+        </parameter>
+        <parameter>
+          <name>xmlDirectory</name>
+          <type>java.io.File</type>
+          <required>true</required>
+          <editable>true</editable>
+          <description>The directory for XML files</description>
+        </parameter>
+        <parameter>
+          <name>xmlRefDirectory</name>
+          <type>java.io.File</type>
+          <required>true</required>
+          <editable>true</editable>
+          <description>The directory for XML reference files</description>
+        </parameter>
+        <parameter>
+          <name>xsdRefDirectory</name>
+          <type>java.io.File</type>
+          <required>true</required>
+          <editable>true</editable>
+          <description>The directory for XSD type reference files</description>
+        </parameter>
+      </parameters>
+      <configuration>
+        <forceGeneration implementation="boolean" default-value="false"/>
+        <generateCOM implementation="boolean" default-value="true"/>
+        <generateStructures implementation="boolean" default-value="true"/>
+        <outputDirectory implementation="java.io.File" default-value="${project.build.directory}/generated-sources/stub"/>
+        <xmlDirectory implementation="java.io.File" default-value="${basedir}/src/main/xml"/>
+        <xmlRefDirectory implementation="java.io.File" default-value="${basedir}/src/main/xml-ref"/>
+        <xsdRefDirectory implementation="java.io.File" default-value="${basedir}/src/main/xsd-ref"/>
+      </configuration>
+    </mojo>
+  </mojos>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <type>jar</type>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <type>jar</type>
+      <version>2.2.12</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <type>jar</type>
+      <version>2.2.11</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+      <type>jar</type>
+      <version>2.2.11</version>
+    </dependency>
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <type>jar</type>
+      <version>0.9.10</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <type>jar</type>
+      <version>15.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <type>jar</type>
+      <version>3.19.0-GA</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>annotations</artifactId>
+      <type>jar</type>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <type>jar</type>
+      <version>1.3.04</version>
+    </dependency>
+    <dependency>
+      <groupId>int.esa.ccsds.mo</groupId>
+      <artifactId>StubGenerator_Interfaces</artifactId>
+      <type>jar</type>
+      <version>1.7</version>
+    </dependency>
+    <dependency>
+      <groupId>int.esa.ccsds.mo</groupId>
+      <artifactId>XML_JAXB</artifactId>
+      <type>jar</type>
+      <version>1.7</version>
+    </dependency>
+  </dependencies>
+</plugin>

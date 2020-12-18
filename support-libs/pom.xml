@@ -62,8 +62,8 @@
   </developers>
 
   <modules>
-    <module>CCSDS_MAL_SUPPORT</module>
-    <module>CCSDS_COM_SUPPORT</module>
-    <!-- <module>CCSDS_COMMON_SUPPORT</module> -->
+    <module>support-mal</module>
+    <module>support-com</module>
+    <!-- <module>support-common</module> -->
   </modules>
 </project>

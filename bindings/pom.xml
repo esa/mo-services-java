@@ -26,7 +26,7 @@
   <artifactId>REACTOR_TRANSPORTS</artifactId>
   <version>1.8-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>ESA CCSDS Java Transport reactor build</name>
+  <name>ESA CCSDS Java Bindings (Encoding/Transport) reactor build</name>
 
   <organization>
     <name>ESA</name>
@@ -62,16 +62,16 @@
   </developers>
 
   <modules>
-    <module>CCSDS_MAL_ENCODING_GEN</module>
-    <module>CCSDS_MAL_ENCODING_STRING</module>
-    <module>CCSDS_MAL_ENCODING_BINARY</module>
-    <module>CCSDS_MAL_TRANSPORT_GEN</module>
-    <module>CCSDS_MAL_TRANSPORT_RMI</module>
-    <module>CCSDS_MAL_TRANSPORT_TCPIP</module>
-    <module>CCSDS_MAL_TRANSPORT_JMS</module>
-    <module>CCSDS_MAL_TRANSPORT_ACTIVEMQ</module>
-    <module>CCSDS_MAL_TRANSPORT_SPP</module>
-    <module>CCSDS_MAL_TRANSPORT_ZMTP</module>
+    <module>encoding-generic</module>
+    <module>encoding-string</module>
+    <module>encoding-binary</module>
+    <module>transport-generic</module>
+    <module>transport-rmi</module>
+    <module>transport-tcpip</module>
+    <module>transport-jms</module>
+    <module>transport-activemq</module>
+    <module>transport-spp</module>
+    <module>transport-zmtp</module>
   </modules>
 
   <profiles>
@@ -90,7 +90,7 @@
         <jdk>[1.7,]</jdk>
       </activation>
       <modules>
-        <module>CCSDS_MAL_TRANSPORT_FILE</module>
+        <module>transport-file</module>
       </modules>  
     </profile>
   </profiles>

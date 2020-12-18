@@ -62,12 +62,12 @@
   </developers>
 
   <modules>
-    <module>CCSDS_MAL_API</module>
-    <module>CCSDS_COM_API</module>
-    <module>CCSDS_COMMON_API</module>
-    <module>CCSDS_MC_API</module>
-    <module>CCSDS_TEST_MAL_API</module>
-    <module>CCSDS_TEST_COM_API</module>
-    <module>CCSDS_TEST_MC_API</module>
+    <module>api-mal</module>
+    <module>api-com</module>
+    <module>api-common</module>
+    <module>api-mc</module>
+    <module>test-api-mal</module>
+    <module>test-api-com</module>
+    <module>test-api-mc</module>
   </modules>
 </project>

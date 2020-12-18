@@ -62,11 +62,11 @@
   </developers>
 
   <modules>
-    <module>XML_JAXB</module>
-    <module>GEN_IF</module>
-    <module>GEN_LIB</module>
-    <module>GEN_JAVA</module>
-    <module>GEN_DOCS</module>
-    <module>PLUGIN</module>
+    <module>xml-jaxb</module>
+    <module>generator-if</module>
+    <module>generator-lib</module>
+    <module>generator-java</module>
+    <module>generator-docs</module>
+    <module>plugin</module>
   </modules>
 </project>
