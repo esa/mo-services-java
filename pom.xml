@@ -20,7 +20,7 @@
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>POM</artifactId>
         <version>8-SNAPSHOT</version>
-        <relativePath>pom/pom.xml</relativePath>
+        <relativePath>parent/pom.xml</relativePath>
     </parent>
   
     <groupId>int.esa.ccsds.mo</groupId>
@@ -46,8 +46,8 @@
         <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
     </properties>
     <modules>
-        <module>pom</module>
-        <module>stubs-generator</module>
+        <module>parent</module>
+        <module>stub-generator</module>
         <module>apis</module>
         <module>mal-impl</module>
         <module>bindings</module>
