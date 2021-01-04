@@ -74,25 +74,26 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <ccsds.specification.version>1.7</ccsds.specification.version>
+    <ccsds.specification.version>1.7.1-SNAPSHOT</ccsds.specification.version>
     <extra.specification.version>1.7</extra.specification.version>
-    <esa.stubgen.version>1.7</esa.stubgen.version>
-    <esa.api.mal.version>1.7</esa.api.mal.version>
-    <esa.api.com.version>1.7</esa.api.com.version>
-    <esa.api.mc.version>1.7</esa.api.mc.version>
-    <esa.mal.version>1.7</esa.mal.version>
-    <esa.gen.encoder.version>1.7</esa.gen.encoder.version>
-    <esa.string.encoder.version>1.7</esa.string.encoder.version>
-    <esa.binary.encoder.version>1.7</esa.binary.encoder.version>
-    <esa.binary_fixed.encoder.version>1.7</esa.binary_fixed.encoder.version>
-    <esa.binary_split.encoder.version>1.7</esa.binary_split.encoder.version>
-    <esa.gen.transport.version>1.7</esa.gen.transport.version>
-    <esa.rmi.transport.version>1.7</esa.rmi.transport.version>
-    <esa.tcpip.transport.version>1.7</esa.tcpip.transport.version>
+    <esa.stubgen.version>8.0-SNAPSHOT</esa.stubgen.version>
+    <esa.api.mal.version>8.0-SNAPSHOT</esa.api.mal.version>
+    <esa.api.com.version>8.0-SNAPSHOT</esa.api.com.version>
+    <esa.api.mc.version>8.0-SNAPSHOT</esa.api.mc.version>
+    <esa.api.common.version>8.0-SNAPSHOT</esa.api.common.version>
+    <esa.mal.version>8.0-SNAPSHOT</esa.mal.version>
+    <esa.gen.encoder.version>8.0-SNAPSHOT</esa.gen.encoder.version>
+    <esa.string.encoder.version>8.0-SNAPSHOT</esa.string.encoder.version>
+    <esa.binary.encoder.version>8.0-SNAPSHOT</esa.binary.encoder.version>
+    <esa.binary_fixed.encoder.version>8.0-SNAPSHOT</esa.binary_fixed.encoder.version>
+    <esa.binary_split.encoder.version>8.0-SNAPSHOT</esa.binary_split.encoder.version>
+    <esa.gen.transport.version>8.0-SNAPSHOT</esa.gen.transport.version>
+    <esa.rmi.transport.version>8.0-SNAPSHOT</esa.rmi.transport.version>
+    <esa.tcpip.transport.version>8.0-SNAPSHOT</esa.tcpip.transport.version>
     <esa.jms.transport.version>1.0.2</esa.jms.transport.version>
-    <esa.spp.transport.version>1.7</esa.spp.transport.version>
-    <esa.support.lib.mal.version>1.7</esa.support.lib.mal.version>
-    <esa.support.lib.com.version>1.7</esa.support.lib.com.version>
+    <esa.spp.transport.version>8.0-SNAPSHOT</esa.spp.transport.version>
+    <esa.support.lib.mal.version>8.0-SNAPSHOT</esa.support.lib.mal.version>
+    <esa.support.lib.com.version>8.0-SNAPSHOT</esa.support.lib.com.version>
     
     <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
     <ccsds.specification.download.group>int.esa.ccsds.mo</ccsds.specification.download.group>
@@ -475,7 +476,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
 
   <profiles>
     <profile>

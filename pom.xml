@@ -25,7 +25,7 @@
   
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>mo-services-reactor</artifactId>
-    <name>MO services - Reactor</name>
+    <name>ESA CCSDS MO services - Reactor</name>
   
     <packaging>pom</packaging>
     <description>Maven Reactor for MO services</description>
