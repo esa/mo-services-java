@@ -19,8 +19,8 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>TESTBED_POM</artifactId>
-    <version>8.0-SNAPSHOT</version>
-    <relativePath/>
+    <version>8-SNAPSHOT</version>
+    <relativePath>../MOIMS_TESTBED_POM/pom.xml</relativePath>
   </parent>
   
   <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
@@ -69,8 +69,8 @@
   </developers>
 
   <properties>
-    <esa.com.test_api.version>1.7</esa.com.test_api.version>
-    <ccsds.testbed.com.version>1.7</ccsds.testbed.com.version>
+    <esa.com.test_api.version>8.0-SNAPSHOT</esa.com.test_api.version>
+    <ccsds.testbed.com.version>8.0-SNAPSHOT</ccsds.testbed.com.version>
   </properties>
   
   <dependencies>
