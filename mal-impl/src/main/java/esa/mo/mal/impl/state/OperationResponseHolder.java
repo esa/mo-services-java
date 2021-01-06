@@ -36,254 +36,206 @@ import org.ccsds.moims.mo.mal.transport.MALNotifyBody;
 /**
  * This small class is used to hold the response to interactions for a consumer.
  */
-public class OperationResponseHolder
-{
-  private final BooleanHolder responseSignal = new BooleanHolder();
-  private final MALInteractionListener listener;
-  private boolean inError = false;
-  private MALMessage result = null;
+public class OperationResponseHolder {
 
-  public OperationResponseHolder(MALInteractionListener listener)
-  {
-    this.listener = listener;
-  }
+    private final BooleanHolder responseSignal = new BooleanHolder();
+    private final MALInteractionListener listener;
+    private boolean inError = false;
+    private MALMessage result = null;
 
-  public OperationResponseHolder(MALPublishInteractionListener listener)
-  {
-    this.listener = new InteractionListenerPublishAdapter(listener);
-  }
+    public OperationResponseHolder(MALInteractionListener listener) {
+        this.listener = listener;
+    }
 
-  public MALInteractionListener getListener()
-  {
-    return listener;
-  }
+    public OperationResponseHolder(MALPublishInteractionListener listener) {
+        this.listener = new InteractionListenerPublishAdapter(listener);
+    }
 
-  public void waitForResponseSignal()
-  {
-    // wait for the bat signal
-    synchronized (responseSignal)
-    {
-      while (!responseSignal.getValue())
-      {
-        try
-        {
-          responseSignal.wait();
+    public MALInteractionListener getListener() {
+        return listener;
+    }
+
+    public void waitForResponseSignal() {
+        // wait for the bat signal
+        synchronized (responseSignal) {
+            while (!responseSignal.getValue()) {
+                try {
+                    responseSignal.wait();
+                } catch (InterruptedException ex) {
+                    MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                            "Interrupted waiting for handler lock ", ex);
+                }
+            }
         }
-        catch (InterruptedException ex)
-        {
-          MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Interrupted waiting for handler lock ", ex);
+    }
+
+    public void signalResponse(final boolean isError, final MALMessage msg) {
+        this.inError = isError;
+        this.result = msg;
+
+        synchronized (responseSignal) {
+            responseSignal.setValue();
+            responseSignal.notifyAll();
         }
-      }
-    }
-  }
-
-  public void signalResponse(final boolean isError, final MALMessage msg)
-  {
-    this.inError = isError;
-    this.result = msg;
-
-    synchronized (responseSignal)
-    {
-      responseSignal.setValue();
-      responseSignal.notifyAll();
-    }
-  }
-
-  public MALMessage getResult() throws MALInteractionException, MALException
-  {
-    if (inError)
-    {
-      throw new MALInteractionException(((MALErrorBody) result.getBody()).getError());
     }
 
-    return result;
-  }
+    public MALMessage getResult() throws MALInteractionException, MALException {
+        if (inError) {
+            throw new MALInteractionException(((MALErrorBody) result.getBody()).getError());
+        }
 
-  /**
-   * Small class to hold a boolean value. Can be used for signalling purposes as can be synchronised on and have its value set.
-   */
-  private static final class BooleanHolder
-  {
-    private boolean value = false;
-
-    /**
-     * Returns the current value.
-     *
-     * @return the current value.
-     */
-    public synchronized boolean getValue()
-    {
-      return value;
+        return result;
     }
 
     /**
-     * Sets the held value to true.
+     * Small class to hold a boolean value. Can be used for signalling purposes
+     * as can be synchronised on and have its value set.
      */
-    public synchronized void setValue()
-    {
-      value = true;
-    }
-  }
+    private static final class BooleanHolder {
 
-  /**
-   * Wrapper class to allow an PubSub interaction to be processed by common code.
-   */
-  private static final class InteractionListenerPublishAdapter implements MALInteractionListener
-  {
-    private final MALPublishInteractionListener delegate;
+        private boolean value = false;
 
-    protected InteractionListenerPublishAdapter(final MALPublishInteractionListener delegate)
-    {
-      this.delegate = delegate;
-    }
+        /**
+         * Returns the current value.
+         *
+         * @return the current value.
+         */
+        public synchronized boolean getValue() {
+            return value;
+        }
 
-    @Override
-    public void registerAckReceived(final MALMessageHeader header, final Map qosProperties)
-            throws MALException
-    {
-      delegate.publishRegisterAckReceived(header, qosProperties);
+        /**
+         * Sets the held value to true.
+         */
+        public synchronized void setValue() {
+            value = true;
+        }
     }
 
-    @Override
-    public void registerErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
-            throws MALException
-    {
-      delegate.publishRegisterErrorReceived(header, body, qosProperties);
-    }
+    /**
+     * Wrapper class to allow an PubSub interaction to be processed by common
+     * code.
+     */
+    private static final class InteractionListenerPublishAdapter implements MALInteractionListener {
 
-    @Override
-    public void deregisterAckReceived(final MALMessageHeader header, final Map qosProperties)
-            throws MALException
-    {
-      delegate.publishDeregisterAckReceived(header, qosProperties);
-    }
+        private final MALPublishInteractionListener delegate;
 
-    @Override
-    public void invokeAckErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        protected InteractionListenerPublishAdapter(final MALPublishInteractionListener delegate) {
+            this.delegate = delegate;
+        }
 
-    @Override
-    public void invokeAckReceived(final MALMessageHeader header, final MALMessageBody body, final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void registerAckReceived(final MALMessageHeader header,
+                final Map qosProperties) throws MALException {
+            delegate.publishRegisterAckReceived(header, qosProperties);
+        }
 
-    @Override
-    public void invokeResponseErrorReceived(final MALMessageHeader header,
-            final MALErrorBody body,
-            final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void registerErrorReceived(final MALMessageHeader header,
+                final MALErrorBody body, final Map qosProperties) throws MALException {
+            delegate.publishRegisterErrorReceived(header, body, qosProperties);
+        }
 
-    @Override
-    public void invokeResponseReceived(final MALMessageHeader header,
-            final MALMessageBody body,
-            final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void deregisterAckReceived(final MALMessageHeader header,
+                final Map qosProperties) throws MALException {
+            delegate.publishDeregisterAckReceived(header, qosProperties);
+        }
 
-    @Override
-    public void notifyErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void invokeAckErrorReceived(final MALMessageHeader header,
+                final MALErrorBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
 
-    @Override
-    public void notifyReceived(final MALMessageHeader header, final MALNotifyBody body, final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void invokeAckReceived(final MALMessageHeader header,
+                final MALMessageBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
 
-    @Override
-    public void progressAckErrorReceived(final MALMessageHeader header,
-            final MALErrorBody body,
-            final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void invokeResponseErrorReceived(final MALMessageHeader header,
+                final MALErrorBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
 
-    @Override
-    public void progressAckReceived(final MALMessageHeader header, final MALMessageBody body, final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void invokeResponseReceived(final MALMessageHeader header,
+                final MALMessageBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
 
-    @Override
-    public void progressResponseErrorReceived(final MALMessageHeader header,
-            final MALErrorBody body,
-            final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void notifyErrorReceived(final MALMessageHeader header,
+                final MALErrorBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
 
-    @Override
-    public void progressResponseReceived(final MALMessageHeader header,
-            final MALMessageBody body,
-            final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void notifyReceived(final MALMessageHeader header,
+                final MALNotifyBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
 
-    @Override
-    public void progressUpdateErrorReceived(final MALMessageHeader header,
-            final MALErrorBody body,
-            final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void progressAckErrorReceived(final MALMessageHeader header,
+                final MALErrorBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
 
-    @Override
-    public void progressUpdateReceived(final MALMessageHeader header,
-            final MALMessageBody body,
-            final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void progressAckReceived(final MALMessageHeader header,
+                final MALMessageBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
 
-    @Override
-    public void requestErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void progressResponseErrorReceived(final MALMessageHeader header,
+                final MALErrorBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
 
-    @Override
-    public void requestResponseReceived(final MALMessageHeader header,
-            final MALMessageBody body,
-            final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void progressResponseReceived(final MALMessageHeader header,
+                final MALMessageBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
 
-    @Override
-    public void submitAckReceived(final MALMessageHeader header, final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
-    }
+        @Override
+        public void progressUpdateErrorReceived(final MALMessageHeader header,
+                final MALErrorBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
 
-    @Override
-    public void submitErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties)
-            throws MALException
-    {
-      // nothing to do here
+        @Override
+        public void progressUpdateReceived(final MALMessageHeader header,
+                final MALMessageBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
+
+        @Override
+        public void requestErrorReceived(final MALMessageHeader header,
+                final MALErrorBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
+
+        @Override
+        public void requestResponseReceived(final MALMessageHeader header,
+                final MALMessageBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
+
+        @Override
+        public void submitAckReceived(final MALMessageHeader header,
+                final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
+
+        @Override
+        public void submitErrorReceived(final MALMessageHeader header,
+                final MALErrorBody body, final Map qosProperties) throws MALException {
+            // nothing to do here
+        }
     }
-  }
 }

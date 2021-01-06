@@ -32,30 +32,30 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  *
  */
-public abstract class BaseOperationHandler
-{
-  protected final boolean syncOperation;
-  protected final OperationResponseHolder responseHolder;
+public abstract class BaseOperationHandler {
 
-  protected BaseOperationHandler(final boolean syncOperation, final OperationResponseHolder responseHolder)
-  {
-    this.syncOperation = syncOperation;
-    this.responseHolder = responseHolder;
-  }
+    protected final boolean syncOperation;
+    protected final OperationResponseHolder responseHolder;
 
-  public abstract MessageHandlerDetails handleStage(final MALMessage msg) throws MALInteractionException;
+    protected BaseOperationHandler(final boolean syncOperation,
+            final OperationResponseHolder responseHolder) {
+        this.syncOperation = syncOperation;
+        this.responseHolder = responseHolder;
+    }
 
-  public abstract void processStage(final MessageHandlerDetails details) throws MALInteractionException;
+    public abstract MessageHandlerDetails handleStage(final MALMessage msg) throws MALInteractionException;
 
-  public abstract void handleError(final MALMessageHeader hdr, final MALStandardError err, final Map qosMap);
+    public abstract void processStage(final MessageHandlerDetails details) throws MALInteractionException;
 
-  public abstract boolean finished();
+    public abstract void handleError(final MALMessageHeader hdr, final MALStandardError err, final Map qosMap);
 
-  protected static void logUnexpectedTransitionError(final int interactionType, final int interactionStage)
-  {
-    MALContextFactoryImpl.LOGGER.log(Level.WARNING, "Unexpected transition IP({0}) Stage({1})", new Object[]
-    {
-      InteractionType.fromOrdinal(interactionType), interactionStage
-    });
-  }
+    public abstract boolean finished();
+
+    protected static void logUnexpectedTransitionError(final int interactionType, final int interactionStage) {
+        MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                "Unexpected transition IP({0}) Stage({1})",
+                new Object[]{
+                    InteractionType.fromOrdinal(interactionType), interactionStage
+                });
+    }
 }

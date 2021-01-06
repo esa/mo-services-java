@@ -34,79 +34,75 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Progress interaction class.
  */
-public class ProgressInteractionImpl extends BaseInteractionImpl implements MALProgress
-{
-  private boolean ackSent = false;
+public class ProgressInteractionImpl extends BaseInteractionImpl implements MALProgress {
 
-  /**
-   * Constructor.
-   *
-   * @param sender Used to return the messages.
-   * @param address Details of this endpoint.
-   * @param msg The source message.
-   * @throws MALInteractionException if the received message operation is unknown.
-   */
-  public ProgressInteractionImpl(final MessageSend sender,
-          final Address address,
-          final MALMessage msg) throws MALInteractionException
-  {
-    super(sender, address, msg);
-  }
+    private boolean ackSent = false;
 
-  @Override
-  public MALMessage sendAcknowledgement(final Object... result) throws MALInteractionException, MALException
-  {
-    ackSent = true;
-    return returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, result);
-  }
-
-  @Override
-  public MALMessage sendAcknowledgement(final MALEncodedBody body) throws MALInteractionException, MALException
-  {
-    ackSent = true;
-    return returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, body);
-  }
-
-  @Override
-  public MALMessage sendUpdate(final Object... update) throws MALException
-  {
-    return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, update);
-  }
-
-  @Override
-  public MALMessage sendUpdate(final MALEncodedBody body) throws MALInteractionException, MALException
-  {
-    return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, body);
-  }
-
-  @Override
-  public MALMessage sendResponse(final Object... result) throws MALInteractionException, MALException
-  {
-    return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, result);
-  }
-
-  @Override
-  public MALMessage sendResponse(final MALEncodedBody body) throws MALInteractionException, MALException
-  {
-    return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, body);
-  }
-
-  @Override
-  public MALMessage sendError(final MALStandardError error) throws MALException
-  {
-    UOctet stage = MALProgressOperation.PROGRESS_ACK_STAGE;
-
-    if (ackSent)
-    {
-      stage = MALProgressOperation.PROGRESS_RESPONSE_STAGE;
+    /**
+     * Constructor.
+     *
+     * @param sender Used to return the messages.
+     * @param address Details of this endpoint.
+     * @param msg The source message.
+     * @throws MALInteractionException if the received message operation is
+     * unknown.
+     */
+    public ProgressInteractionImpl(final MessageSend sender,
+            final Address address,
+            final MALMessage msg) throws MALInteractionException {
+        super(sender, address, msg);
     }
 
-    return returnError(stage, error);
-  }
+    @Override
+    public MALMessage sendAcknowledgement(final Object... result)
+            throws MALInteractionException, MALException {
+        ackSent = true;
+        return returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, result);
+    }
 
-  @Override
-  public MALMessage sendUpdateError(final MALStandardError error) throws MALException
-  {
-    return returnError(MALProgressOperation.PROGRESS_UPDATE_STAGE, error);
-  }
+    @Override
+    public MALMessage sendAcknowledgement(final MALEncodedBody body)
+            throws MALInteractionException, MALException {
+        ackSent = true;
+        return returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, body);
+    }
+
+    @Override
+    public MALMessage sendUpdate(final Object... update) throws MALException {
+        return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, update);
+    }
+
+    @Override
+    public MALMessage sendUpdate(final MALEncodedBody body)
+            throws MALInteractionException, MALException {
+        return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, body);
+    }
+
+    @Override
+    public MALMessage sendResponse(final Object... result)
+            throws MALInteractionException, MALException {
+        return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, result);
+    }
+
+    @Override
+    public MALMessage sendResponse(final MALEncodedBody body)
+            throws MALInteractionException, MALException {
+        return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, body);
+    }
+
+    @Override
+    public MALMessage sendError(final MALStandardError error) throws MALException {
+        UOctet stage = MALProgressOperation.PROGRESS_ACK_STAGE;
+
+        if (ackSent) {
+            stage = MALProgressOperation.PROGRESS_RESPONSE_STAGE;
+        }
+
+        return returnError(stage, error);
+    }
+
+    @Override
+    public MALMessage sendUpdateError(final MALStandardError error) throws MALException {
+        return returnError(MALProgressOperation.PROGRESS_UPDATE_STAGE, error);
+    }
 }

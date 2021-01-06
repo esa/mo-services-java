@@ -29,39 +29,42 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Handles the state machine for a consumer for an REQUEST operation.
  */
-public final class RequestOperationHandler extends SubmitOperationHandler
-{
-  /**
-   * Constructor.
-   *
-   * @param syncOperation true if this is a synchronous call.
-   * @param responseHolder The response holder.
-   */
-  public RequestOperationHandler(final boolean syncOperation, final OperationResponseHolder responseHolder)
-  {
-    super(InteractionType._REQUEST_INDEX, MALRequestOperation._REQUEST_RESPONSE_STAGE, syncOperation, responseHolder);
-  }
+public final class RequestOperationHandler extends SubmitOperationHandler {
 
-  /**
-   * Constructor.
-   *
-   * @param responseHolder The response holder.
-   */
-  public RequestOperationHandler(final OperationResponseHolder responseHolder)
-  {
-    super(InteractionType._REQUEST_INDEX, MALRequestOperation._REQUEST_RESPONSE_STAGE, false, responseHolder);
-  }
+    /**
+     * Constructor.
+     *
+     * @param syncOperation true if this is a synchronous call.
+     * @param responseHolder The response holder.
+     */
+    public RequestOperationHandler(final boolean syncOperation,
+            final OperationResponseHolder responseHolder) {
+        super(InteractionType._REQUEST_INDEX,
+                MALRequestOperation._REQUEST_RESPONSE_STAGE,
+                syncOperation,
+                responseHolder);
+    }
 
-  @Override
-  protected void informListener(final MALMessage msg) throws MALException
-  {
-    if (msg.getHeader().getIsErrorMessage())
-    {
-      responseHolder.getListener().requestErrorReceived(msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());
+    /**
+     * Constructor.
+     *
+     * @param responseHolder The response holder.
+     */
+    public RequestOperationHandler(final OperationResponseHolder responseHolder) {
+        super(InteractionType._REQUEST_INDEX,
+                MALRequestOperation._REQUEST_RESPONSE_STAGE,
+                false,
+                responseHolder);
     }
-    else
-    {
-      responseHolder.getListener().requestResponseReceived(msg.getHeader(), msg.getBody(), msg.getQoSProperties());
+
+    @Override
+    protected void informListener(final MALMessage msg) throws MALException {
+        if (msg.getHeader().getIsErrorMessage()) {
+            responseHolder.getListener().requestErrorReceived(
+                    msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());
+        } else {
+            responseHolder.getListener().requestResponseReceived(
+                    msg.getHeader(), msg.getBody(), msg.getQoSProperties());
+        }
     }
-  }
 }

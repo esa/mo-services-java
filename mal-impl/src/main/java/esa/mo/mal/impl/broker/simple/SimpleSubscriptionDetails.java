@@ -37,180 +37,147 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 /**
  * A SimpleSubscriptionDetails is keyed on subscription Id
  */
-class SimpleSubscriptionDetails
-{
-  private final String subscriptionId;
-  private Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
-  private Set<SubscriptionKey> onAll = new TreeSet<SubscriptionKey>();
-  private Set<SubscriptionKey> onChange = new TreeSet<SubscriptionKey>();
+class SimpleSubscriptionDetails {
 
-  SimpleSubscriptionDetails(final String subscriptionId)
-  {
-    this.subscriptionId = subscriptionId;
-  }
+    private final String subscriptionId;
+    private Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
+    private Set<SubscriptionKey> onAll = new TreeSet<SubscriptionKey>();
+    private Set<SubscriptionKey> onChange = new TreeSet<SubscriptionKey>();
 
-  void report()
-  {
-    MALBrokerImpl.LOGGER.log(Level.FINE, "    START Subscription ( {0} )", subscriptionId);
-    MALBrokerImpl.LOGGER.log(Level.FINE, "     Required: {0}", required.size());
-    for (SubscriptionKey key : required)
-    {
-      MALBrokerImpl.LOGGER.log(Level.FINE, "            : Rqd : {0}", key);
+    SimpleSubscriptionDetails(final String subscriptionId) {
+        this.subscriptionId = subscriptionId;
     }
-    for (SubscriptionKey key : onAll)
-    {
-      MALBrokerImpl.LOGGER.log(Level.FINE, "            : All : {0}", key);
-    }
-    for (SubscriptionKey key : onChange)
-    {
-      MALBrokerImpl.LOGGER.log(Level.FINE, "            : Chg : {0}", key);
-    }
-    MALBrokerImpl.LOGGER.log(Level.FINE, "    END Subscription ( {0} )", subscriptionId);
-  }
 
-  void setIds(final MALMessageHeader srcHdr, final EntityRequestList lst)
-  {
-    required.clear();
-    onAll.clear();
-    onChange.clear();
-    for (EntityRequest rqst : lst)
-    {
-      final EntityKeyList keyList = rqst.getEntityKeys();
-      final boolean bOnChange = rqst.getOnlyOnChange();
-
-      for (EntityKey id : keyList)
-      {
-        final SubscriptionKey key = new SubscriptionKey(srcHdr, rqst, id);
-        required.add(key);
-        if (bOnChange)
-        {
-          onChange.add(key);
+    public void report() {
+        MALBrokerImpl.LOGGER.log(Level.FINE, "    START Subscription ( {0} )", subscriptionId);
+        MALBrokerImpl.LOGGER.log(Level.FINE, "     Required: {0}", required.size());
+        for (SubscriptionKey key : required) {
+            MALBrokerImpl.LOGGER.log(Level.FINE, "            : Rqd : {0}", key);
         }
-        else
-        {
-          onAll.add(key);
+        for (SubscriptionKey key : onAll) {
+            MALBrokerImpl.LOGGER.log(Level.FINE, "            : All : {0}", key);
         }
-      }
-    }
-  }
-
-  NotifyMessage populateNotifyList(final MALMessageHeader srcHdr,
-          final String srcDomainId,
-          final UpdateHeaderList updateHeaderList,
-          final MALPublishBody publishBody) throws MALException
-  {
-    MALBrokerImpl.LOGGER.fine("Checking SimSubDetails");
-
-    final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
-
-    final List[] updateLists = publishBody.getUpdateLists((List[]) null);
-    final List[] notifyLists;
-
-    // have to check for the case where the pubsub message does not contain a body
-    if (null == updateLists)
-    {
-      notifyLists = null;
-    }
-    else
-    {
-      notifyLists = new List[updateLists.length];
-
-      for (int i = 0; i < notifyLists.length; i++)
-      {
-        if (null != updateLists[i])
-        {
-          if (updateLists[i] instanceof MALEncodedElementList)
-          {
-            MALEncodedElementList encodedElementList = (MALEncodedElementList) updateLists[i];
-            notifyLists[i] = new MALEncodedElementList(encodedElementList.getShortForm(), encodedElementList.size());
-          }
-          else
-          {
-            notifyLists[i] = (List) ((Element) updateLists[i]).createElement();
-          }
+        for (SubscriptionKey key : onChange) {
+            MALBrokerImpl.LOGGER.log(Level.FINE, "            : Chg : {0}", key);
         }
-        else
-        {
-          // publishing an empty list
-          notifyLists[i] = null;
+        MALBrokerImpl.LOGGER.log(Level.FINE, "    END Subscription ( {0} )", subscriptionId);
+    }
+
+    public void setIds(final MALMessageHeader srcHdr, final EntityRequestList lst) {
+        required.clear();
+        onAll.clear();
+        onChange.clear();
+        for (EntityRequest rqst : lst) {
+            final EntityKeyList keyList = rqst.getEntityKeys();
+            final boolean bOnChange = rqst.getOnlyOnChange();
+
+            for (EntityKey id : keyList) {
+                final SubscriptionKey key = new SubscriptionKey(srcHdr, rqst, id);
+                required.add(key);
+                if (bOnChange) {
+                    onChange.add(key);
+                } else {
+                    onAll.add(key);
+                }
+            }
         }
-      }
     }
 
-    for (int i = 0; i < updateHeaderList.size(); ++i)
-    {
-      populateNotifyList(srcHdr, srcDomainId, updateHeaderList.get(i), updateLists, i, notifyHeaders, notifyLists);
-    }
+    public NotifyMessage populateNotifyList(final MALMessageHeader srcHdr,
+            final String srcDomainId,
+            final UpdateHeaderList updateHeaderList,
+            final MALPublishBody publishBody) throws MALException {
+        MALBrokerImpl.LOGGER.fine("Checking SimSubDetails");
 
-    NotifyMessage retVal = null;
-    if (!notifyHeaders.isEmpty())
-    {
-      retVal = new NotifyMessage();
-      retVal.subscriptionId = new Identifier(subscriptionId);
-      retVal.updateHeaderList = notifyHeaders;
-      retVal.updateList = notifyLists;
-    }
+        final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
 
-    return retVal;
-  }
+        final List[] updateLists = publishBody.getUpdateLists((List[]) null);
+        final List[] notifyLists;
 
-  private void populateNotifyList(final MALMessageHeader srcHdr,
-          final String srcDomainId,
-          final UpdateHeader updateHeader,
-          final List[] updateLists,
-          final int index,
-          final UpdateHeaderList notifyHeaders,
-          final List[] notifyLists) throws MALException
-  {
-    final UpdateKey key = new UpdateKey(srcHdr, srcDomainId, updateHeader.getKey());
-    MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0}", key);
-    boolean updateRequired = matchedUpdate(key, onAll);
+        // have to check for the case where the pubsub message does not contain a body
+        if (null == updateLists) {
+            notifyLists = null;
+        } else {
+            notifyLists = new List[updateLists.length];
 
-    if (!updateRequired && (updateHeader.getUpdateType().getOrdinal() != UpdateType._UPDATE_INDEX))
-    {
-      updateRequired = matchedUpdate(key, onChange);
-    }
-
-    if (updateRequired)
-    {
-      // add update for this consumer/subscription
-      notifyHeaders.add(updateHeader);
-
-      if (null != notifyLists)
-      {
-        for (int i = 0; i < notifyLists.length; i++)
-        {
-          if ((null != notifyLists[i]) && (null != updateLists[i]))
-          {
-            notifyLists[i].add(updateLists[i].get(index));
-          }
+            for (int i = 0; i < notifyLists.length; i++) {
+                if (null != updateLists[i]) {
+                    if (updateLists[i] instanceof MALEncodedElementList) {
+                        MALEncodedElementList encodedElementList = (MALEncodedElementList) updateLists[i];
+                        notifyLists[i] = new MALEncodedElementList(
+                                encodedElementList.getShortForm(), encodedElementList.size());
+                    } else {
+                        notifyLists[i] = (List) ((Element) updateLists[i]).createElement();
+                    }
+                } else {
+                    // publishing an empty list
+                    notifyLists[i] = null;
+                }
+            }
         }
-      }
-    }
-  }
 
-  private static boolean matchedUpdate(final UpdateKey key, final Set<SubscriptionKey> searchSet)
-  {
-    boolean matched = false;
-    for (SubscriptionKey subscriptionKey : searchSet)
-    {
-      MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0} against {1}", new Object[]
-      {
-        key, subscriptionKey
-      });
-      if (subscriptionKey.matchesWithWildcard(key))
-      {
-        MALBrokerImpl.LOGGER.fine("    : Matched");
-        matched = true;
-        break;
-      }
-      MALBrokerImpl.LOGGER.fine("    : No match");
-    }
-    return matched;
-  }
+        for (int i = 0; i < updateHeaderList.size(); ++i) {
+            populateNotifyList(srcHdr, srcDomainId, updateHeaderList.get(i),
+                    updateLists, i, notifyHeaders, notifyLists);
+        }
 
-  void appendIds(final Set<SubscriptionKey> subSet)
-  {
-    subSet.addAll(required);
-  }
+        NotifyMessage retVal = null;
+        if (!notifyHeaders.isEmpty()) {
+            retVal = new NotifyMessage();
+            retVal.subscriptionId = new Identifier(subscriptionId);
+            retVal.updateHeaderList = notifyHeaders;
+            retVal.updateList = notifyLists;
+        }
+
+        return retVal;
+    }
+
+    private void populateNotifyList(final MALMessageHeader srcHdr,
+            final String srcDomainId,
+            final UpdateHeader updateHeader,
+            final List[] updateLists,
+            final int index,
+            final UpdateHeaderList notifyHeaders,
+            final List[] notifyLists) throws MALException {
+        final UpdateKey key = new UpdateKey(srcHdr, srcDomainId, updateHeader.getKey());
+        MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0}", key);
+        boolean updateRequired = matchedUpdate(key, onAll);
+
+        if (!updateRequired && (updateHeader.getUpdateType().getOrdinal() != UpdateType._UPDATE_INDEX)) {
+            updateRequired = matchedUpdate(key, onChange);
+        }
+
+        if (updateRequired) {
+            // add update for this consumer/subscription
+            notifyHeaders.add(updateHeader);
+
+            if (null != notifyLists) {
+                for (int i = 0; i < notifyLists.length; i++) {
+                    if ((null != notifyLists[i]) && (null != updateLists[i])) {
+                        notifyLists[i].add(updateLists[i].get(index));
+                    }
+                }
+            }
+        }
+    }
+
+    private static boolean matchedUpdate(final UpdateKey key, final Set<SubscriptionKey> searchSet) {
+        boolean matched = false;
+        for (SubscriptionKey subscriptionKey : searchSet) {
+            MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0} against {1}",
+                    new Object[]{key, subscriptionKey});
+            
+            if (subscriptionKey.matchesWithWildcard(key)) {
+                MALBrokerImpl.LOGGER.fine("    : Matched");
+                matched = true;
+                break;
+            }
+            MALBrokerImpl.LOGGER.fine("    : No match");
+        }
+        return matched;
+    }
+
+    public void appendIds(final Set<SubscriptionKey> subSet) {
+        subSet.addAll(required);
+    }
 }

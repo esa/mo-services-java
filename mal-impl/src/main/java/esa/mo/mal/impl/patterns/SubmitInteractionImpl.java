@@ -32,31 +32,30 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Submit interaction class.
  */
-public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSubmit
-{
-  /**
-   * Constructor.
-   * @param sender Used to return the messages.
-   * @param address Details of this endpoint.
-   * @param msg The source message.
-   * @throws MALInteractionException if the received message operation is unknown.
-   */
-  public SubmitInteractionImpl(final MessageSend sender,
-          final Address address,
-          final MALMessage msg) throws MALInteractionException
-  {
-    super(sender, address, msg);
-  }
+public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSubmit {
 
-  @Override
-  public MALMessage sendAcknowledgement() throws MALException
-  {
-    return returnResponse(MALSubmitOperation.SUBMIT_ACK_STAGE, (Object[]) null);
-  }
+    /**
+     * Constructor.
+     *
+     * @param sender Used to return the messages.
+     * @param address Details of this endpoint.
+     * @param msg The source message.
+     * @throws MALInteractionException if the received message operation is
+     * unknown.
+     */
+    public SubmitInteractionImpl(final MessageSend sender,
+            final Address address,
+            final MALMessage msg) throws MALInteractionException {
+        super(sender, address, msg);
+    }
 
-  @Override
-  public MALMessage sendError(final MALStandardError error) throws MALException
-  {
-    return returnError(MALSubmitOperation.SUBMIT_ACK_STAGE, error);
-  }
+    @Override
+    public MALMessage sendAcknowledgement() throws MALException {
+        return returnResponse(MALSubmitOperation.SUBMIT_ACK_STAGE, (Object[]) null);
+    }
+
+    @Override
+    public MALMessage sendError(final MALStandardError error) throws MALException {
+        return returnError(MALSubmitOperation.SUBMIT_ACK_STAGE, error);
+    }
 }

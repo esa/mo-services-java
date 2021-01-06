@@ -38,257 +38,223 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 /**
  * MALProvider implementation.
  */
-class MALProviderImpl extends ServiceComponentImpl implements MALProvider
-{
-  private final boolean isPublisher;
-  private final Map<String, MALPublisher> publishers = new HashMap<String, MALPublisher>();
-  private final URI sharedBrokerUri;
-  private final MALBrokerBinding localBrokerBinding;
-  private final URI localBrokerUri;
-  private MALTransmitErrorListener listener;
+class MALProviderImpl extends ServiceComponentImpl implements MALProvider {
 
-  MALProviderImpl(final MALProviderManagerImpl parent,
-          final MALContextImpl impl,
-          final String localName,
-          final String protocol,
-          final MALService service,
-          final Blob authenticationId,
-          final MALInteractionHandler handler,
-          final QoSLevel[] expectedQos,
-          final UInteger priorityLevelNumber,
-          final Map defaultQoSProperties,
-          final Boolean isPublisher,
-          final URI sharedBrokerUri) throws MALException
-  {
-    super(parent,
-            impl,
-            localName,
-            protocol,
-            service,
-            authenticationId,
-            expectedQos,
-            priorityLevelNumber,
-            defaultQoSProperties,
-            handler);
+    private final boolean isPublisher;
+    private final Map<String, MALPublisher> publishers = new HashMap<String, MALPublisher>();
+    private final URI sharedBrokerUri;
+    private final MALBrokerBinding localBrokerBinding;
+    private final URI localBrokerUri;
+    private MALTransmitErrorListener listener;
 
-    this.isPublisher = isPublisher;
-    this.sharedBrokerUri = sharedBrokerUri;
-
-    if (this.isPublisher)
-    {
-      this.handler.malInitialize(this);
-
-      if (null == this.sharedBrokerUri)
-      {
-        this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(null,
-                localName + "InternalBroker",
+    MALProviderImpl(final MALProviderManagerImpl parent,
+            final MALContextImpl impl,
+            final String localName,
+            final String protocol,
+            final MALService service,
+            final Blob authenticationId,
+            final MALInteractionHandler handler,
+            final QoSLevel[] expectedQos,
+            final UInteger priorityLevelNumber,
+            final Map defaultQoSProperties,
+            final Boolean isPublisher,
+            final URI sharedBrokerUri) throws MALException {
+        super(parent,
+                impl,
+                localName,
                 protocol,
+                service,
                 authenticationId,
                 expectedQos,
                 priorityLevelNumber,
-                defaultQoSProperties);
-        this.localBrokerUri = this.localBrokerBinding.getURI();
-      }
-      else
-      {
-        this.localBrokerBinding = null;
-        this.localBrokerUri = null;
-      }
+                defaultQoSProperties,
+                handler);
+
+        this.isPublisher = isPublisher;
+        this.sharedBrokerUri = sharedBrokerUri;
+
+        if (this.isPublisher) {
+            this.handler.malInitialize(this);
+
+            if (this.sharedBrokerUri == null) {
+                this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(
+                        null,
+                        localName + "InternalBroker",
+                        protocol,
+                        authenticationId,
+                        expectedQos,
+                        priorityLevelNumber,
+                        defaultQoSProperties);
+                this.localBrokerUri = this.localBrokerBinding.getURI();
+            } else {
+                this.localBrokerBinding = null;
+                this.localBrokerUri = null;
+            }
+        } else {
+            this.localBrokerBinding = null;
+            this.localBrokerUri = null;
+        }
     }
-    else
-    {
-      this.localBrokerBinding = null;
-      this.localBrokerUri = null;
-    }
-  }
 
-  MALProviderImpl(final MALProviderManagerImpl parent,
-          final MALContextImpl impl,
-          final MALEndpoint endPoint,
-          final MALService service,
-          final Blob authenticationId,
-          final MALInteractionHandler handler,
-          final QoSLevel[] expectedQos,
-          final UInteger priorityLevelNumber,
-          final Map defaultQoSProperties,
-          final Boolean isPublisher,
-          final URI sharedBrokerUri) throws MALException
-  {
-    super(parent,
-            impl,
-            endPoint,
-            service,
-            authenticationId,
-            expectedQos,
-            priorityLevelNumber,
-            defaultQoSProperties,
-            handler);
-
-    this.isPublisher = isPublisher;
-    this.sharedBrokerUri = sharedBrokerUri;
-
-    if (this.isPublisher)
-    {
-      this.handler.malInitialize(this);
-
-      if (null == this.sharedBrokerUri)
-      {
-        this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(
-                impl.createBrokerManager().createBroker(),
+    MALProviderImpl(final MALProviderManagerImpl parent,
+            final MALContextImpl impl,
+            final MALEndpoint endPoint,
+            final MALService service,
+            final Blob authenticationId,
+            final MALInteractionHandler handler,
+            final QoSLevel[] expectedQos,
+            final UInteger priorityLevelNumber,
+            final Map defaultQoSProperties,
+            final Boolean isPublisher,
+            final URI sharedBrokerUri) throws MALException {
+        super(parent,
+                impl,
                 endPoint,
+                service,
                 authenticationId,
                 expectedQos,
                 priorityLevelNumber,
-                defaultQoSProperties);
-        this.localBrokerUri = this.localBrokerBinding.getURI();
-      }
-      else
-      {
-        this.localBrokerBinding = null;
-        this.localBrokerUri = null;
-      }
-    }
-    else
-    {
-      this.localBrokerBinding = null;
-      this.localBrokerUri = null;
-    }
-  }
+                defaultQoSProperties,
+                handler);
 
-  @Override
-  public boolean isPublisher()
-  {
-    return isPublisher;
-  }
+        this.isPublisher = isPublisher;
+        this.sharedBrokerUri = sharedBrokerUri;
 
-  @Override
-  public MALService getService()
-  {
-    return service;
-  }
+        if (this.isPublisher) {
+            this.handler.malInitialize(this);
 
-  @Override
-  public synchronized MALPublisher createPublisher(final MALPubSubOperation op,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType sessionType,
-          final Identifier sessionName,
-          final QoSLevel remotePublisherQos,
-          final Map remotePublisherQosProps,
-          final UInteger remotePublisherPriority) throws IllegalArgumentException, MALException
-  {
-    final String key = createPublisherKey(op,
-            domain,
-            networkZone,
-            sessionType,
-            sessionName,
-            remotePublisherQos,
-            remotePublisherPriority);
-    MALPublisher pub = publishers.get(key);
-
-    if (null == pub)
-    {
-      pub = new MALPublisherImpl(this,
-              sendHandler,
-              op, domain,
-              networkZone,
-              sessionType,
-              sessionName,
-              remotePublisherQos,
-              remotePublisherQosProps,
-              remotePublisherPriority);
-      publishers.put(key, pub);
+            if (this.sharedBrokerUri == null) {
+                this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(
+                        impl.createBrokerManager().createBroker(),
+                        endPoint,
+                        authenticationId,
+                        expectedQos,
+                        priorityLevelNumber,
+                        defaultQoSProperties);
+                this.localBrokerUri = this.localBrokerBinding.getURI();
+            } else {
+                this.localBrokerBinding = null;
+                this.localBrokerUri = null;
+            }
+        } else {
+            this.localBrokerBinding = null;
+            this.localBrokerUri = null;
+        }
     }
 
-    return pub;
-  }
-
-  @Override
-  public URI getBrokerURI()
-  {
-    if (isPublisher())
-    {
-      if (null != sharedBrokerUri)
-      {
-        return this.sharedBrokerUri;
-      }
-      else
-      {
-        return this.localBrokerUri;
-      }
+    @Override
+    public boolean isPublisher() {
+        return isPublisher;
     }
 
-    return null;
-  }
-
-  @Override
-  public Blob getBrokerAuthenticationId()
-  {
-    if (isPublisher() && (null == sharedBrokerUri))
-    {
-      return this.localBrokerBinding.getAuthenticationId();
+    @Override
+    public MALService getService() {
+        return service;
     }
 
-    return null;
-  }
+    @Override
+    public synchronized MALPublisher createPublisher(final MALPubSubOperation op,
+            final IdentifierList domain,
+            final Identifier networkZone,
+            final SessionType sessionType,
+            final Identifier sessionName,
+            final QoSLevel remotePublisherQos,
+            final Map remotePublisherQosProps,
+            final UInteger remotePublisherPriority)
+            throws IllegalArgumentException, MALException {
+        final String key = createPublisherKey(op,
+                domain,
+                networkZone,
+                sessionType,
+                sessionName,
+                remotePublisherQos,
+                remotePublisherPriority);
+        MALPublisher pub = publishers.get(key);
 
-  public Blob setBrokerAuthenticationId(Blob newAuthenticationId)
-  {
-    if (isPublisher() && (null == sharedBrokerUri))
-    {
-      return this.localBrokerBinding.setAuthenticationId(newAuthenticationId);
+        if (null == pub) {
+            pub = new MALPublisherImpl(this,
+                    sendHandler,
+                    op, domain,
+                    networkZone,
+                    sessionType,
+                    sessionName,
+                    remotePublisherQos,
+                    remotePublisherQosProps,
+                    remotePublisherPriority);
+            publishers.put(key, pub);
+        }
+
+        return pub;
     }
 
-    return null;
-  }
+    @Override
+    public URI getBrokerURI() {
+        if (isPublisher()) {
+            return (sharedBrokerUri != null) ? sharedBrokerUri : localBrokerUri;
+        }
 
-  @Override
-  public void setTransmitErrorListener(final MALTransmitErrorListener plistener) throws MALException
-  {
-    listener = plistener;
-  }
-
-  @Override
-  public MALTransmitErrorListener getTransmitErrorListener() throws MALException
-  {
-    return listener;
-  }
-
-  @Override
-  public void close() throws MALException
-  {
-    super.close();
-
-    this.handler.malFinalize(this);
-  }
-
-  @Override
-  protected void thisObjectClose() throws MALException
-  {
-    super.thisObjectClose();
-
-    if (null != localBrokerBinding)
-    {
-      localBrokerBinding.close();
+        return null;
     }
-  }
 
-  String createPublisherKey(final MALPubSubOperation op,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType sessionType,
-          final Identifier sessionName,
-          final QoSLevel remotePublisherQos,
-          final UInteger remotePublisherPriority)
-  {
-    final StringBuilder buf = new StringBuilder();
-    buf.append(op.getNumber());
-    buf.append(domain);
-    buf.append(networkZone);
-    buf.append(sessionType);
-    buf.append(sessionName);
-    buf.append(remotePublisherQos);
-    buf.append(remotePublisherPriority);
-    return buf.toString();
-  }
+    @Override
+    public Blob getBrokerAuthenticationId() {
+        if (isPublisher() && (sharedBrokerUri == null)) {
+            return this.localBrokerBinding.getAuthenticationId();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Blob setBrokerAuthenticationId(Blob newAuthenticationId) {
+        if (isPublisher() && (null == sharedBrokerUri)) {
+            return this.localBrokerBinding.setAuthenticationId(newAuthenticationId);
+        }
+
+        return null;
+    }
+
+    @Override
+    public void setTransmitErrorListener(final MALTransmitErrorListener plistener) throws MALException {
+        listener = plistener;
+    }
+
+    @Override
+    public MALTransmitErrorListener getTransmitErrorListener() throws MALException {
+        return listener;
+    }
+
+    @Override
+    public void close() throws MALException {
+        super.close();
+
+        this.handler.malFinalize(this);
+    }
+
+    @Override
+    protected void thisObjectClose() throws MALException {
+        super.thisObjectClose();
+
+        if (localBrokerBinding != null) {
+            localBrokerBinding.close();
+        }
+    }
+
+    String createPublisherKey(final MALPubSubOperation op,
+            final IdentifierList domain,
+            final Identifier networkZone,
+            final SessionType sessionType,
+            final Identifier sessionName,
+            final QoSLevel remotePublisherQos,
+            final UInteger remotePublisherPriority) {
+        final StringBuilder buf = new StringBuilder();
+        buf.append(op.getNumber());
+        buf.append(domain);
+        buf.append(networkZone);
+        buf.append(sessionType);
+        buf.append(sessionName);
+        buf.append(remotePublisherQos);
+        buf.append(remotePublisherPriority);
+        return buf.toString();
+    }
 }

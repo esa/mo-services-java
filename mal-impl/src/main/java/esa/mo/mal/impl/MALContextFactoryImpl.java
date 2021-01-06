@@ -32,49 +32,46 @@ import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControlFactory;
 /**
  * Implementation of the MALContextFactory abstract class.
  */
-public class MALContextFactoryImpl extends MALContextFactory
-{
-  /**
-   * Logger
-   */
-  public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl");
-  /**
-   * The property that contains the file to load MAL properties from.
-   */
-  public static final String MAL_CONFIG_FILE_PROPERTY = "org.ccsds.moims.mo.mal.properties";
-  /**
-   * The default property file location.
-   */
-  public static final String MAL_CONFIG_FILE_DEFAULT = "org/ccsds/moims/mo/mal.properties";
-  private final MALAccessControlFactory securityFactory;
+public class MALContextFactoryImpl extends MALContextFactory {
 
-  /**
-   * Constructor.
-   *
-   * @throws MALException On error.
-   */
-  public MALContextFactoryImpl() throws MALException
-  {
-    init();
+    /**
+     * Logger
+     */
+    public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl");
+    /**
+     * The property that contains the file to load MAL properties from.
+     */
+    public static final String MAL_CONFIG_FILE_PROPERTY = "org.ccsds.moims.mo.mal.properties";
+    /**
+     * The default property file location.
+     */
+    public static final String MAL_CONFIG_FILE_DEFAULT = "org/ccsds/moims/mo/mal.properties";
+    private final MALAccessControlFactory securityFactory;
 
-    securityFactory = MALAccessControlFactory.newFactory();
-  }
+    /**
+     * Constructor.
+     *
+     * @throws MALException On error.
+     */
+    public MALContextFactoryImpl() throws MALException {
+        init();
 
-  private void init()
-  {
-    final String configFile = System.getProperty(MAL_CONFIG_FILE_PROPERTY, MAL_CONFIG_FILE_DEFAULT);
-    final java.util.Properties props = StructureHelper.loadProperties(configFile, MAL_CONFIG_FILE_PROPERTY);
+        securityFactory = MALAccessControlFactory.newFactory();
+    }
 
-    final java.util.Properties sysProps = System.getProperties();
-    sysProps.putAll(props);
-    System.setProperties(sysProps);
+    private void init() {
+        final String configFile = System.getProperty(MAL_CONFIG_FILE_PROPERTY, MAL_CONFIG_FILE_DEFAULT);
+        final java.util.Properties props = StructureHelper.loadProperties(configFile, MAL_CONFIG_FILE_PROPERTY);
 
-    TransportSingleton.init();
-  }
+        final java.util.Properties sysProps = System.getProperties();
+        sysProps.putAll(props);
+        System.setProperties(sysProps);
 
-  @Override
-  public MALContext createMALContext(final Map properties) throws MALException
-  {
-    return new MALContextImpl(securityFactory, properties);
-  }
+        TransportSingleton.init();
+    }
+
+    @Override
+    public MALContext createMALContext(final Map properties) throws MALException {
+        return new MALContextImpl(securityFactory, properties);
+    }
 }

@@ -29,59 +29,55 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Handles the state machine for a consumer for a PUBSUB operation.
  */
-public final class PubSubOperationHandler extends SubmitOperationHandler
-{
-  /**
-   * Constructor.
-   *
-   * @param syncOperation true if this is a synchronous call.
-   * @param responseHolder The response holder.
-   */
-  public PubSubOperationHandler(final boolean syncOperation, final OperationResponseHolder responseHolder)
-  {
-    super(InteractionType._PUBSUB_INDEX, 0, syncOperation, responseHolder);
-  }
+public final class PubSubOperationHandler extends SubmitOperationHandler {
 
-  /**
-   * Constructor.
-   *
-   * @param responseHolder The response holder.
-   */
-  public PubSubOperationHandler(final OperationResponseHolder responseHolder)
-  {
-    super(InteractionType._PUBSUB_INDEX, 0, false, responseHolder);
-  }
+    /**
+     * Constructor.
+     *
+     * @param syncOperation true if this is a synchronous call.
+     * @param responseHolder The response holder.
+     */
+    public PubSubOperationHandler(final boolean syncOperation,
+            final OperationResponseHolder responseHolder) {
+        super(InteractionType._PUBSUB_INDEX, 0, syncOperation, responseHolder);
+    }
 
-  @Override
-  protected boolean checkStage(final int stage)
-  {
-    switch (stage)
-    {
-      case MALPubSubOperation._REGISTER_ACK_STAGE:
-      case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
-      case MALPubSubOperation._DEREGISTER_ACK_STAGE:
-      case MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE:
-        return true;
-      default:
-        return true;
+    /**
+     * Constructor.
+     *
+     * @param responseHolder The response holder.
+     */
+    public PubSubOperationHandler(final OperationResponseHolder responseHolder) {
+        super(InteractionType._PUBSUB_INDEX, 0, false, responseHolder);
     }
-  }
 
-  @Override
-  protected void informListener(final MALMessage msg) throws MALException
-  {
-    if (msg.getHeader().getIsErrorMessage())
-    {
-      responseHolder.getListener().registerErrorReceived(msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());
+    @Override
+    protected boolean checkStage(final int stage) {
+        switch (stage) {
+            case MALPubSubOperation._REGISTER_ACK_STAGE:
+            case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
+            case MALPubSubOperation._DEREGISTER_ACK_STAGE:
+            case MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE:
+                return true;
+            default:
+                return true;
+        }
     }
-    else if ((MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue())
-            || (MALPubSubOperation._REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue()))
-    {
-      responseHolder.getListener().registerAckReceived(msg.getHeader(), msg.getQoSProperties());
+
+    @Override
+    protected void informListener(final MALMessage msg) throws MALException {
+        if (msg.getHeader().getIsErrorMessage()) {
+            responseHolder.getListener().registerErrorReceived(
+                    msg.getHeader(), 
+                    (MALErrorBody) msg.getBody(), 
+                    msg.getQoSProperties());
+        } else if ((MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue())
+                || (MALPubSubOperation._REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue())) {
+            responseHolder.getListener().registerAckReceived(
+                    msg.getHeader(), msg.getQoSProperties());
+        } else {
+            responseHolder.getListener().deregisterAckReceived(
+                    msg.getHeader(), msg.getQoSProperties());
+        }
     }
-    else
-    {
-      responseHolder.getListener().deregisterAckReceived(msg.getHeader(), msg.getQoSProperties());
-    }
-  }
 }

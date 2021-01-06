@@ -43,127 +43,117 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 /**
  * Implementation of the MALContext.
  */
-public class MALContextImpl extends MALClose implements MALContext
-{
-  private final Map initialProperties;
-  private final MALAccessControl securityManager;
-  private final InteractionConsumerMap icmap = new InteractionConsumerMap();
-  private final InteractionPubSubMap ipsmap = new InteractionPubSubMap();
-  private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<String, MALBrokerBindingImpl>();
-  private final MessageReceive receiver;
-  private final MessageSend sender;
+public class MALContextImpl extends MALClose implements MALContext {
 
-  /**
-   * Constructor.
-   * @param securityFactory The security factory.
-   * @param properties initial qos properties.
-   * @throws MALException on error.
-   */
-  public MALContextImpl(final MALAccessControlFactory securityFactory, final Map properties) throws MALException
-  {
-    super(null);
+    private final Map initialProperties;
+    private final MALAccessControl securityManager;
+    private final InteractionConsumerMap icmap = new InteractionConsumerMap();
+    private final InteractionPubSubMap ipsmap = new InteractionPubSubMap();
+    private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<String, MALBrokerBindingImpl>();
+    private final MessageReceive receiver;
+    private final MessageSend sender;
 
-    initialProperties = properties;
+    /**
+     * Constructor.
+     *
+     * @param securityFactory The security factory.
+     * @param properties initial qos properties.
+     * @throws MALException on error.
+     */
+    public MALContextImpl(final MALAccessControlFactory securityFactory, 
+            final Map properties) throws MALException {
+        super(null);
 
-    if (null != securityFactory)
-    {
-      securityManager = securityFactory.createAccessControl(initialProperties);
+        initialProperties = properties;
+
+        if (null != securityFactory) {
+            securityManager = securityFactory.createAccessControl(initialProperties);
+        } else {
+            securityManager = new NullSecurityManager();
+        }
+
+        sender = new MessageSend(securityManager, icmap, ipsmap);
+        receiver = new MessageReceive(sender, securityManager, icmap, ipsmap, brokerBindingMap);
     }
-    else
-    {
-      securityManager = new NullSecurityManager();
-    }
 
-    sender = new MessageSend(securityManager, icmap, ipsmap);
-    receiver = new MessageReceive(sender, securityManager, icmap, ipsmap, brokerBindingMap);
-  }
-
-  @Override
-  public MALConsumerManager createConsumerManager() throws MALException
-  {
-    return (MALConsumerManager) addChild(new MALConsumerManagerImpl(this));
-  }
-
-  @Override
-  public MALProviderManager createProviderManager() throws MALException
-  {
-    return (MALProviderManager) addChild(new MALProviderManagerImpl(this));
-  }
-
-  @Override
-  public MALBrokerManager createBrokerManager() throws MALException
-  {
-    return (MALBrokerManager) addChild(new MALBrokerManagerImpl(this, brokerBindingMap));
-  }
-
-  @Override
-  public MALTransport getTransport(final URI uri) throws MALException
-  {
-    return TransportSingleton.instance(uri, initialProperties);
-  }
-
-  @Override
-  public MALTransport getTransport(final String protocol) throws MALException
-  {
-    return TransportSingleton.instance(protocol, initialProperties);
-  }
-
-  @Override
-  public MALAccessControl getAccessControl() throws MALException
-  {
-    return securityManager;
-  }
-
-  @Override
-  public void close() throws MALException
-  {
-    super.close();
-
-    esa.mo.mal.impl.transport.TransportSingleton.close();
-  }
-
-  /**
-   * Returns the qos properties used in the creation of this MALContext.
-   * @return the QOS properties.
-   */
-  public Map getInitialProperties()
-  {
-    return initialProperties;
-  }
-
-  /**
-   * Returns the sending class.
-   * @return The sender.
-   */
-  public MessageSend getSendingInterface()
-  {
-    return sender;
-  }
-
-  /**
-   * Returns the receiving class.
-   * @return The receiver.
-   */
-  public MessageReceive getReceivingInterface()
-  {
-    return receiver;
-  }
-
-  /**
-   * Returns the active security manager.
-   * @return the security manager.
-   */
-  public MALAccessControl getSecurityManager()
-  {
-    return securityManager;
-  }
-
-  private static final class NullSecurityManager implements MALAccessControl
-  {
     @Override
-    public MALMessage check(final MALMessage msg) throws IllegalArgumentException, MALCheckErrorException
-    {
-      return msg;
+    public MALConsumerManager createConsumerManager() throws MALException {
+        return (MALConsumerManager) addChild(new MALConsumerManagerImpl(this));
     }
-  }
+
+    @Override
+    public MALProviderManager createProviderManager() throws MALException {
+        return (MALProviderManager) addChild(new MALProviderManagerImpl(this));
+    }
+
+    @Override
+    public MALBrokerManager createBrokerManager() throws MALException {
+        return (MALBrokerManager) addChild(new MALBrokerManagerImpl(this, brokerBindingMap));
+    }
+
+    @Override
+    public MALTransport getTransport(final URI uri) throws MALException {
+        return TransportSingleton.instance(uri, initialProperties);
+    }
+
+    @Override
+    public MALTransport getTransport(final String protocol) throws MALException {
+        return TransportSingleton.instance(protocol, initialProperties);
+    }
+
+    @Override
+    public MALAccessControl getAccessControl() throws MALException {
+        return securityManager;
+    }
+
+    @Override
+    public void close() throws MALException {
+        super.close();
+
+        esa.mo.mal.impl.transport.TransportSingleton.close();
+    }
+
+    /**
+     * Returns the qos properties used in the creation of this MALContext.
+     *
+     * @return the QOS properties.
+     */
+    public Map getInitialProperties() {
+        return initialProperties;
+    }
+
+    /**
+     * Returns the sending class.
+     *
+     * @return The sender.
+     */
+    public MessageSend getSendingInterface() {
+        return sender;
+    }
+
+    /**
+     * Returns the receiving class.
+     *
+     * @return The receiver.
+     */
+    public MessageReceive getReceivingInterface() {
+        return receiver;
+    }
+
+    /**
+     * Returns the active security manager.
+     *
+     * @return the security manager.
+     */
+    public MALAccessControl getSecurityManager() {
+        return securityManager;
+    }
+
+    private static final class NullSecurityManager implements MALAccessControl {
+
+        @Override
+        public MALMessage check(final MALMessage msg) throws IllegalArgumentException, MALCheckErrorException {
+            return msg;
+        }
+    }
 }

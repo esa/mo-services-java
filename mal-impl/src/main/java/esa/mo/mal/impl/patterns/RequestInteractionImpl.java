@@ -33,37 +33,35 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Request interaction class.
  */
-public class RequestInteractionImpl extends BaseInteractionImpl implements MALRequest
-{
-  /**
-   * Constructor.
-   * @param sender Used to return the messages.
-   * @param address Details of this endpoint.
-   * @param msg The source message.
-   * @throws MALInteractionException if the received message operation is unknown.
-   */
-  public RequestInteractionImpl(final MessageSend sender,
-          final Address address,
-          final MALMessage msg) throws MALInteractionException
-  {
-    super(sender, address, msg);
-  }
+public class RequestInteractionImpl extends BaseInteractionImpl implements MALRequest {
 
-  @Override
-  public MALMessage sendResponse(final Object... result) throws MALInteractionException, MALException
-  {
-    return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, result);
-  }
+    /**
+     * Constructor.
+     *
+     * @param sender Used to return the messages.
+     * @param address Details of this endpoint.
+     * @param msg The source message.
+     * @throws MALInteractionException if the received message operation is
+     * unknown.
+     */
+    public RequestInteractionImpl(final MessageSend sender,
+            final Address address,
+            final MALMessage msg) throws MALInteractionException {
+        super(sender, address, msg);
+    }
 
-  @Override
-  public MALMessage sendResponse(final MALEncodedBody body) throws MALInteractionException, MALException
-  {
-    return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, body);
-  }
+    @Override
+    public MALMessage sendResponse(final Object... result) throws MALInteractionException, MALException {
+        return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, result);
+    }
 
-  @Override
-  public MALMessage sendError(final MALStandardError error) throws MALException
-  {
-    return returnError(MALRequestOperation.REQUEST_RESPONSE_STAGE, error);
-  }
+    @Override
+    public MALMessage sendResponse(final MALEncodedBody body) throws MALInteractionException, MALException {
+        return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, body);
+    }
+
+    @Override
+    public MALMessage sendError(final MALStandardError error) throws MALException {
+        return returnError(MALRequestOperation.REQUEST_RESPONSE_STAGE, error);
+    }
 }

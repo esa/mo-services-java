@@ -25,41 +25,40 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * Wrapper class to hold message details when passing from a reception handler to process handler.
+ * Wrapper class to hold message details when passing from a reception handler
+ * to process handler.
  */
-public final class MessageHandlerDetails
-{
-  private final boolean ackStage;
-  private final MALMessage message;
-  private final boolean needToReturnAnException;
+public final class MessageHandlerDetails {
 
-  protected MessageHandlerDetails(boolean isAckStage, MALMessage msg)
-  {
-    this.ackStage = isAckStage;
-    this.message = msg;
-    this.needToReturnAnException = false;
-  }
+    private final boolean ackStage;
+    private final MALMessage message;
+    private final boolean needToReturnAnException;
 
-  protected MessageHandlerDetails(boolean isAckStage, MALMessage src, UInteger errNum)
-  {
-    this.ackStage = isAckStage;
-    src.getHeader().setIsErrorMessage(true);
-    this.message = new DummyMessage(src.getHeader(), new DummyErrorBody(new MALStandardError(errNum, null)), src.getQoSProperties());
-    this.needToReturnAnException = true;
-  }
+    protected MessageHandlerDetails(boolean isAckStage, MALMessage msg) {
+        this.ackStage = isAckStage;
+        this.message = msg;
+        this.needToReturnAnException = false;
+    }
 
-  protected boolean isAckStage()
-  {
-    return ackStage;
-  }
+    protected MessageHandlerDetails(boolean isAckStage, MALMessage src, UInteger errNum) {
+        this.ackStage = isAckStage;
+        src.getHeader().setIsErrorMessage(true);
+        this.message = new DummyMessage(
+                src.getHeader(),
+                new DummyErrorBody(new MALStandardError(errNum, null)),
+                src.getQoSProperties());
+        this.needToReturnAnException = true;
+    }
 
-  protected MALMessage getMessage()
-  {
-    return message;
-  }
+    protected boolean isAckStage() {
+        return ackStage;
+    }
 
-  public boolean isNeedToReturnAnException()
-  {
-    return needToReturnAnException;
-  }
+    protected MALMessage getMessage() {
+        return message;
+    }
+
+    public boolean isNeedToReturnAnException() {
+        return needToReturnAnException;
+    }
 }

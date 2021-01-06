@@ -36,212 +36,191 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 /**
  * Base class that is used by service providers, both providers and Brokers.
  */
-public abstract class ServiceComponentImpl extends MALClose
-{
-  protected final MessageSend sendHandler;
-  protected final MessageReceive receiveHandler;
-  protected final MALInteractionHandler handler;
-  protected final String localName;
-  protected final MALService service;
-  protected Blob authenticationId;
-  protected final QoSLevel[] expectedQos;
-  protected final UInteger priorityLevelNumber;
-  protected final Map defaultQoSProperties;
-  protected final URI localUri;
-  protected final MALTransport transport;
-  protected final MALEndpoint endpoint;
-  protected final Address msgAddress;
+public abstract class ServiceComponentImpl extends MALClose {
 
-  /**
-   * Constructor.
-   *
-   * @param parent Parent object.
-   * @param impl MAL impl.
-   * @param localName Local name of this component.
-   * @param protocol The protocol to use.
-   * @param service The service.
-   * @param authenticationId Authentication identifier.
-   * @param expectedQosA Expected QoS.
-   * @param priorityLevelNumber Number of priority levels.
-   * @param defaultQoSProperties Default QOS properties.
-   * @param handler Service interaction handler.
-   * @throws MALException on error.
-   */
-  public ServiceComponentImpl(final MALClose parent,
-          final MALContextImpl impl,
-          final String localName,
-          final String protocol,
-          final MALService service,
-          final Blob authenticationId,
-          final QoSLevel[] expectedQosA,
-          final UInteger priorityLevelNumber,
-          final Map defaultQoSProperties,
-          final MALInteractionHandler handler) throws MALException
-  {
-    super(parent);
+    protected final MessageSend sendHandler;
+    protected final MessageReceive receiveHandler;
+    protected final MALInteractionHandler handler;
+    protected final String localName;
+    protected final MALService service;
+    protected Blob authenticationId;
+    protected final QoSLevel[] expectedQos;
+    protected final UInteger priorityLevelNumber;
+    protected final Map defaultQoSProperties;
+    protected final URI localUri;
+    protected final MALTransport transport;
+    protected final MALEndpoint endpoint;
+    protected final Address msgAddress;
 
-    this.sendHandler = impl.getSendingInterface();
-    this.receiveHandler = impl.getReceivingInterface();
-    this.handler = handler;
-    this.localName = localName;
-    this.service = service;
-    this.authenticationId = authenticationId;
-    if (null != expectedQosA)
-    {
-      this.expectedQos = java.util.Arrays.copyOf(expectedQosA, expectedQosA.length);
-    }
-    else
-    {
-      this.expectedQos = null;
-    }
-    this.priorityLevelNumber = priorityLevelNumber;
-    if (null != defaultQoSProperties)
-    {
-      this.defaultQoSProperties = defaultQoSProperties;
-    }
-    else
-    {
-      this.defaultQoSProperties = null;
-    }
+    /**
+     * Constructor.
+     *
+     * @param parent Parent object.
+     * @param impl MAL impl.
+     * @param localName Local name of this component.
+     * @param protocol The protocol to use.
+     * @param service The service.
+     * @param authenticationId Authentication identifier.
+     * @param expectedQosA Expected QoS.
+     * @param priorityLevelNumber Number of priority levels.
+     * @param defaultQoSProperties Default QOS properties.
+     * @param handler Service interaction handler.
+     * @throws MALException on error.
+     */
+    public ServiceComponentImpl(final MALClose parent,
+            final MALContextImpl impl,
+            final String localName,
+            final String protocol,
+            final MALService service,
+            final Blob authenticationId,
+            final QoSLevel[] expectedQosA,
+            final UInteger priorityLevelNumber,
+            final Map defaultQoSProperties,
+            final MALInteractionHandler handler) throws MALException {
+        super(parent);
 
-    this.transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
-    this.endpoint = transport.createEndpoint(localName, defaultQoSProperties);
-    this.localUri = this.endpoint.getURI();
-    this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
-    this.receiveHandler.registerProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
-    this.endpoint.setMessageListener(this.receiveHandler);
-    this.endpoint.startMessageDelivery();
-  }
+        this.sendHandler = impl.getSendingInterface();
+        this.receiveHandler = impl.getReceivingInterface();
+        this.handler = handler;
+        this.localName = localName;
+        this.service = service;
+        this.authenticationId = authenticationId;
+        if (null != expectedQosA) {
+            this.expectedQos = java.util.Arrays.copyOf(expectedQosA, expectedQosA.length);
+        } else {
+            this.expectedQos = null;
+        }
+        this.priorityLevelNumber = priorityLevelNumber;
+        if (null != defaultQoSProperties) {
+            this.defaultQoSProperties = defaultQoSProperties;
+        } else {
+            this.defaultQoSProperties = null;
+        }
 
-  /**
-   * Constructor.
-   *
-   * @param parent Parent object.
-   * @param impl MAL impl.
-   * @param endPoint The endpoint to use.
-   * @param service The service.
-   * @param authenticationId Authentication identifier.
-   * @param expectedQosA Expected QoS.
-   * @param priorityLevelNumber Number of priority levels.
-   * @param defaultQoSProperties Default QOS properties.
-   * @param handler Service interaction handler.
-   * @throws MALException on error.
-   */
-  public ServiceComponentImpl(final MALClose parent,
-          final MALContextImpl impl,
-          final MALEndpoint endPoint,
-          final MALService service,
-          final Blob authenticationId,
-          final QoSLevel[] expectedQosA,
-          final UInteger priorityLevelNumber,
-          final Map defaultQoSProperties,
-          final MALInteractionHandler handler) throws MALException
-  {
-    super(parent);
-
-    this.sendHandler = impl.getSendingInterface();
-    this.receiveHandler = impl.getReceivingInterface();
-    this.handler = handler;
-    this.localName = endPoint.getLocalName();
-    this.service = service;
-    this.authenticationId = authenticationId;
-    if (null != expectedQosA)
-    {
-      this.expectedQos = java.util.Arrays.copyOf(expectedQosA, expectedQosA.length);
-    }
-    else
-    {
-      this.expectedQos = null;
-    }
-    this.priorityLevelNumber = priorityLevelNumber;
-    if (null != defaultQoSProperties)
-    {
-      this.defaultQoSProperties = defaultQoSProperties;
-    }
-    else
-    {
-      this.defaultQoSProperties = null;
+        this.transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
+        this.endpoint = transport.createEndpoint(localName, defaultQoSProperties);
+        this.localUri = this.endpoint.getURI();
+        this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
+        this.receiveHandler.registerProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
+        this.endpoint.setMessageListener(this.receiveHandler);
+        this.endpoint.startMessageDelivery();
     }
 
-    this.endpoint = endPoint;
-    this.transport = TransportSingleton.instance(endpoint.getURI(), impl.getInitialProperties());
-    this.localUri = this.endpoint.getURI();
-    this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
-    this.receiveHandler.registerProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
-    this.endpoint.setMessageListener(this.receiveHandler);
-  }
+    /**
+     * Constructor.
+     *
+     * @param parent Parent object.
+     * @param impl MAL impl.
+     * @param endPoint The endpoint to use.
+     * @param service The service.
+     * @param authenticationId Authentication identifier.
+     * @param expectedQosA Expected QoS.
+     * @param priorityLevelNumber Number of priority levels.
+     * @param defaultQoSProperties Default QOS properties.
+     * @param handler Service interaction handler.
+     * @throws MALException on error.
+     */
+    public ServiceComponentImpl(final MALClose parent,
+            final MALContextImpl impl,
+            final MALEndpoint endPoint,
+            final MALService service,
+            final Blob authenticationId,
+            final QoSLevel[] expectedQosA,
+            final UInteger priorityLevelNumber,
+            final Map defaultQoSProperties,
+            final MALInteractionHandler handler) throws MALException {
+        super(parent);
 
-  /**
-   * Returns the URI of this component.
-   *
-   * @return the URI.
-   */
-  public URI getURI()
-  {
-    return this.localUri;
-  }
+        this.sendHandler = impl.getSendingInterface();
+        this.receiveHandler = impl.getReceivingInterface();
+        this.handler = handler;
+        this.localName = endPoint.getLocalName();
+        this.service = service;
+        this.authenticationId = authenticationId;
+        if (null != expectedQosA) {
+            this.expectedQos = java.util.Arrays.copyOf(expectedQosA, expectedQosA.length);
+        } else {
+            this.expectedQos = null;
+        }
+        this.priorityLevelNumber = priorityLevelNumber;
+        if (null != defaultQoSProperties) {
+            this.defaultQoSProperties = defaultQoSProperties;
+        } else {
+            this.defaultQoSProperties = null;
+        }
 
-  /**
-   * Returns the interaction handler for messages received by this component.
-   *
-   * @return the interaction handler.
-   */
-  public MALInteractionHandler getHandler()
-  {
-    return handler;
-  }
+        this.endpoint = endPoint;
+        this.transport = TransportSingleton.instance(endpoint.getURI(), impl.getInitialProperties());
+        this.localUri = this.endpoint.getURI();
+        this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
+        this.receiveHandler.registerProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
+        this.endpoint.setMessageListener(this.receiveHandler);
+    }
 
-  /**
-   * Returns the Endpoint for sending messages from this component.
-   *
-   * @return the Endpoint.
-   */
-  public MALEndpoint getEndpoint()
-  {
-    return endpoint;
-  }
+    /**
+     * Returns the URI of this component.
+     *
+     * @return the URI.
+     */
+    public URI getURI() {
+        return this.localUri;
+    }
 
-  /**
-   * Returns the authentication identifier used by this component.
-   *
-   * @return the Authentication Id.
-   */
-  public Blob getAuthenticationId()
-  {
-    return authenticationId;
-  }
+    /**
+     * Returns the interaction handler for messages received by this component.
+     *
+     * @return the interaction handler.
+     */
+    public MALInteractionHandler getHandler() {
+        return handler;
+    }
 
-  /**
-   * Sets the authentication identifier used by this component.
-   *
-   * @param newAuthenticationId the new authentication identifier to use.
-   * @return the Authentication Id.
-   */
-  public Blob setAuthenticationId(Blob newAuthenticationId)
-  {
-    Blob rv = this.authenticationId;
-    this.authenticationId = newAuthenticationId;
-    
-    return rv;
-  }
+    /**
+     * Returns the Endpoint for sending messages from this component.
+     *
+     * @return the Endpoint.
+     */
+    public MALEndpoint getEndpoint() {
+        return endpoint;
+    }
 
-  /**
-   * Returns the Address structure used by this component.
-   *
-   * @return the Address structure.
-   */
-  public Address getMsgAddress()
-  {
-    return msgAddress;
-  }
+    /**
+     * Returns the authentication identifier used by this component.
+     *
+     * @return the Authentication Id.
+     */
+    public Blob getAuthenticationId() {
+        return authenticationId;
+    }
 
-  @Override
-  protected void thisObjectClose() throws MALException
-  {
-    super.thisObjectClose();
+    /**
+     * Sets the authentication identifier used by this component.
+     *
+     * @param newAuthenticationId the new authentication identifier to use.
+     * @return the Authentication Id.
+     */
+    public Blob setAuthenticationId(Blob newAuthenticationId) {
+        Blob rv = this.authenticationId;
+        this.authenticationId = newAuthenticationId;
 
-    this.receiveHandler.deregisterProviderEndpoint(endpoint.getURI().getValue(), service);
-    endpoint.stopMessageDelivery();
-    endpoint.close();
-  }
+        return rv;
+    }
+
+    /**
+     * Returns the Address structure used by this component.
+     *
+     * @return the Address structure.
+     */
+    public Address getMsgAddress() {
+        return msgAddress;
+    }
+
+    @Override
+    protected void thisObjectClose() throws MALException {
+        super.thisObjectClose();
+
+        this.receiveHandler.deregisterProviderEndpoint(endpoint.getURI().getValue(), service);
+        endpoint.stopMessageDelivery();
+        endpoint.close();
+    }
 }

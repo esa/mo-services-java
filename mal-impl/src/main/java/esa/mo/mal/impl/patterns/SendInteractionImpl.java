@@ -27,16 +27,17 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Send interaction class.
  */
-public class SendInteractionImpl extends BaseInteractionImpl
-{
-  /**
-   * Constructor.
-   * @param sender Used to return the messages.
-   * @param msg The source message.
-   * @throws MALInteractionException if the received message operation is unknown.
-   */
-  public SendInteractionImpl(final MessageSend sender, final MALMessage msg) throws MALInteractionException
-  {
-    super(sender, null, msg);
-  }
+public class SendInteractionImpl extends BaseInteractionImpl {
+
+    /**
+     * Constructor.
+     *
+     * @param sender Used to return the messages.
+     * @param msg The source message.
+     * @throws MALInteractionException if the received message operation is
+     * unknown.
+     */
+    public SendInteractionImpl(final MessageSend sender, final MALMessage msg) throws MALInteractionException {
+        super(sender, null, msg);
+    }
 }

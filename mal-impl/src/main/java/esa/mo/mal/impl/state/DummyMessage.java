@@ -29,47 +29,42 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Used when returning an internally generated error.
  */
-public final class DummyMessage implements MALMessage
-{
-  private final MALMessageHeader header;
-  private final MALMessageBody body;
-  private final Map qoSProperties;
+public final class DummyMessage implements MALMessage {
 
-  /**
-   * Constructor.
-   *
-   * @param header Message header.
-   * @param body Message body.
-   * @param qoSProperties Message QoS properties.
-   */
-  protected DummyMessage(MALMessageHeader header, MALMessageBody body, Map qoSProperties)
-  {
-    this.header = header;
-    this.body = body;
-    this.qoSProperties = qoSProperties;
-  }
+    private final MALMessageHeader header;
+    private final MALMessageBody body;
+    private final Map qoSProperties;
 
-  @Override
-  public MALMessageHeader getHeader()
-  {
-    return header;
-  }
+    /**
+     * Constructor.
+     *
+     * @param header Message header.
+     * @param body Message body.
+     * @param qoSProperties Message QoS properties.
+     */
+    protected DummyMessage(MALMessageHeader header, MALMessageBody body, Map qoSProperties) {
+        this.header = header;
+        this.body = body;
+        this.qoSProperties = qoSProperties;
+    }
 
-  @Override
-  public MALMessageBody getBody()
-  {
-    return body;
-  }
+    @Override
+    public MALMessageHeader getHeader() {
+        return header;
+    }
 
-  @Override
-  public Map getQoSProperties()
-  {
-    return qoSProperties;
-  }
+    @Override
+    public MALMessageBody getBody() {
+        return body;
+    }
 
-  @Override
-  public void free() throws MALException
-  {
-    // nothing to do
-  }
+    @Override
+    public Map getQoSProperties() {
+        return qoSProperties;
+    }
+
+    @Override
+    public void free() throws MALException {
+        // nothing to do
+    }
 }

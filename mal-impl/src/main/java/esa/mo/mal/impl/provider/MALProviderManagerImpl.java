@@ -37,70 +37,67 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 /**
  * Implementation of the MALProviderManager interface.
  */
-public class MALProviderManagerImpl extends MALClose implements MALProviderManager
-{
-  private final MALContextImpl impl;
+public class MALProviderManagerImpl extends MALClose implements MALProviderManager {
 
-  /**
-   * Creates a provider manager.
-   *
-   * @param impl The MAL implementation.
-   */
-  public MALProviderManagerImpl(final MALContextImpl impl)
-  {
-    super(impl);
-    this.impl = impl;
-  }
+    private final MALContextImpl impl;
 
-  @Override
-  public MALProvider createProvider(
-          final String localName,
-          final String protocol,
-          final MALService service,
-          final Blob authenticationId,
-          final MALInteractionHandler handler,
-          final QoSLevel[] expectedQos,
-          final UInteger priorityLevelNumber,
-          final Map defaultQoSProperties,
-          final Boolean isPublisher,
-          final URI sharedBrokerUri) throws MALException
-  {
-    return (MALProvider) addChild(new MALProviderImpl(this,
-            impl,
-            localName,
-            protocol,
-            service,
-            authenticationId,
-            handler,
-            expectedQos,
-            priorityLevelNumber,
-            defaultQoSProperties,
-            isPublisher,
-            sharedBrokerUri));
-  }
+    /**
+     * Creates a provider manager.
+     *
+     * @param impl The MAL implementation.
+     */
+    public MALProviderManagerImpl(final MALContextImpl impl) {
+        super(impl);
+        this.impl = impl;
+    }
 
-  @Override
-  public MALProvider createProvider(
-          final MALEndpoint endPoint,
-          final MALService service,
-          final Blob authenticationId,
-          final MALInteractionHandler handler,
-          final QoSLevel[] expectedQos,
-          final UInteger priorityLevelNumber,
-          final Map defaultQoSProperties,
-          final Boolean isPublisher,
-          final URI sharedBrokerUri) throws MALException
-  {
-    return (MALProvider) addChild(new MALProviderImpl(this,
-            impl,
-            endPoint,
-            service,
-            authenticationId,
-            handler,
-            expectedQos,
-            priorityLevelNumber,
-            defaultQoSProperties,
-            isPublisher,
-            sharedBrokerUri));
-  }
+    @Override
+    public MALProvider createProvider(
+            final String localName,
+            final String protocol,
+            final MALService service,
+            final Blob authenticationId,
+            final MALInteractionHandler handler,
+            final QoSLevel[] expectedQos,
+            final UInteger priorityLevelNumber,
+            final Map defaultQoSProperties,
+            final Boolean isPublisher,
+            final URI sharedBrokerUri) throws MALException {
+        return (MALProvider) addChild(new MALProviderImpl(this,
+                impl,
+                localName,
+                protocol,
+                service,
+                authenticationId,
+                handler,
+                expectedQos,
+                priorityLevelNumber,
+                defaultQoSProperties,
+                isPublisher,
+                sharedBrokerUri));
+    }
+
+    @Override
+    public MALProvider createProvider(
+            final MALEndpoint endPoint,
+            final MALService service,
+            final Blob authenticationId,
+            final MALInteractionHandler handler,
+            final QoSLevel[] expectedQos,
+            final UInteger priorityLevelNumber,
+            final Map defaultQoSProperties,
+            final Boolean isPublisher,
+            final URI sharedBrokerUri) throws MALException {
+        return (MALProvider) addChild(new MALProviderImpl(this,
+                impl,
+                endPoint,
+                service,
+                authenticationId,
+                handler,
+                expectedQos,
+                priorityLevelNumber,
+                defaultQoSProperties,
+                isPublisher,
+                sharedBrokerUri));
+    }
 }

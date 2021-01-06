@@ -32,80 +32,67 @@ import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * Represents a publisher (provider) in a broker, so contains the list of entities it is allowed to publish.
+ * Represents a publisher (provider) in a broker, so contains the list of
+ * entities it is allowed to publish.
  */
-public final class PublisherSource
-{
-  private final String uri;
-  private final QoSLevel qosLevel;
-  private final Set<PublisherKey> keySet = new TreeSet<PublisherKey>();
-  private IdentifierList domain = null;
+public final class PublisherSource {
 
-  PublisherSource(final String uri, final QoSLevel qosLevel)
-  {
-    super();
-    this.uri = uri;
-    this.qosLevel = qosLevel;
-  }
+    private final String uri;
+    private final QoSLevel qosLevel;
+    private final Set<PublisherKey> keySet = new TreeSet<PublisherKey>();
+    private IdentifierList domain = null;
 
-  QoSLevel getQosLevel()
-  {
-    return qosLevel;
-  }
-
-  void report()
-  {
-    MALBrokerImpl.LOGGER.log(Level.FINE, "  START Provider ( {0} )", uri);
-    MALBrokerImpl.LOGGER.log(Level.FINE, "    Domain : {0}", StructureHelper.domainToString(domain));
-    for (PublisherKey key : keySet)
-    {
-      MALBrokerImpl.LOGGER.log(Level.FINE, "    Allowed: {0}", key);
+    PublisherSource(final String uri, final QoSLevel qosLevel) {
+        super();
+        this.uri = uri;
+        this.qosLevel = qosLevel;
     }
-    MALBrokerImpl.LOGGER.log(Level.FINE, "  END Provider ( {0} )", uri);
-  }
 
-  void setKeyList(final MALMessageHeader hdr, final EntityKeyList l)
-  {
-    domain = hdr.getDomain();
-    keySet.clear();
-    for (EntityKey entityKey : l)
-    {
-      keySet.add(new PublisherKey(entityKey));
+    public QoSLevel getQosLevel() {
+        return qosLevel;
     }
-  }
 
-  void checkPublish(final MALMessageHeader hdr, final UpdateHeaderList updateList) throws MALInteractionException
-  {
-    if (StructureHelper.isSubDomainOf(domain, hdr.getDomain()))
-    {
-      final EntityKeyList lst = new EntityKeyList();
-      for (final UpdateHeader update : updateList)
-      {
-        final EntityKey updateKey = update.getKey();
-        boolean matched = false;
-        for (PublisherKey key : keySet)
-        {
-          if (key.matchesWithWildcard(updateKey))
-          {
-            matched = true;
-            break;
-          }
+    public void report() {
+        MALBrokerImpl.LOGGER.log(Level.FINE, "  START Provider ( {0} )", uri);
+        MALBrokerImpl.LOGGER.log(Level.FINE, "    Domain : {0}", StructureHelper.domainToString(domain));
+        for (PublisherKey key : keySet) {
+            MALBrokerImpl.LOGGER.log(Level.FINE, "    Allowed: {0}", key);
         }
-        if (!matched)
-        {
-          lst.add(updateKey);
+        MALBrokerImpl.LOGGER.log(Level.FINE, "  END Provider ( {0} )", uri);
+    }
+
+    public void setKeyList(final MALMessageHeader hdr, final EntityKeyList l) {
+        domain = hdr.getDomain();
+        keySet.clear();
+        for (EntityKey entityKey : l) {
+            keySet.add(new PublisherKey(entityKey));
         }
-      }
-      if (!lst.isEmpty())
-      {
-        MALBrokerImpl.LOGGER.warning("Provider not allowed to publish some keys");
-        throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, lst));
-      }
     }
-    else
-    {
-      MALBrokerImpl.LOGGER.warning("Provider not allowed to publish to the domain");
-      throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null));
+
+    public void checkPublish(final MALMessageHeader hdr, 
+            final UpdateHeaderList updateList) throws MALInteractionException {
+        if (StructureHelper.isSubDomainOf(domain, hdr.getDomain())) {
+            final EntityKeyList lst = new EntityKeyList();
+            for (final UpdateHeader update : updateList) {
+                final EntityKey updateKey = update.getKey();
+                boolean matched = false;
+                for (PublisherKey key : keySet) {
+                    if (key.matchesWithWildcard(updateKey)) {
+                        matched = true;
+                        break;
+                    }
+                }
+                if (!matched) {
+                    lst.add(updateKey);
+                }
+            }
+            if (!lst.isEmpty()) {
+                MALBrokerImpl.LOGGER.warning("Provider not allowed to publish some keys");
+                throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, lst));
+            }
+        } else {
+            MALBrokerImpl.LOGGER.warning("Provider not allowed to publish to the domain");
+            throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null));
+        }
     }
-  }
 }

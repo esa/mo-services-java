@@ -33,79 +33,77 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 /**
  * Implements the MALConsumerManager interface.
  */
-public class MALConsumerManagerImpl extends MALClose implements MALConsumerManager
-{
-  private final MALContextImpl impl;
+public class MALConsumerManagerImpl extends MALClose implements MALConsumerManager {
 
-  /**
-   * Constructor.
-   *
-   * @param impl MAL implementation.
-   */
-  public MALConsumerManagerImpl(final MALContextImpl impl)
-  {
-    super(impl);
+    private final MALContextImpl impl;
 
-    this.impl = impl;
-  }
+    /**
+     * Constructor.
+     *
+     * @param impl MAL implementation.
+     */
+    public MALConsumerManagerImpl(final MALContextImpl impl) {
+        super(impl);
 
-  @Override
-  public MALConsumer createConsumer(final String localName,
-          final URI uriTo,
-          final URI brokerUri,
-          final MALService service,
-          final Blob authenticationId,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType sessionType,
-          final Identifier sessionName,
-          final QoSLevel qosLevel,
-          final Map qosProps,
-          final UInteger priority) throws MALException
-  {
-    return (MALConsumer) addChild(new MALConsumerImpl(impl,
-            this,
-            localName,
-            uriTo,
-            brokerUri,
-            service,
-            authenticationId,
-            domain,
-            networkZone,
-            sessionType,
-            sessionName,
-            qosLevel,
-            qosProps,
-            priority));
-  }
+        this.impl = impl;
+    }
 
-  @Override
-  public MALConsumer createConsumer(final MALEndpoint endPoint,
-          final URI uriTo,
-          final URI brokerUri,
-          final MALService service,
-          final Blob authenticationId,
-          final IdentifierList domain,
-          final Identifier networkZone,
-          final SessionType sessionType,
-          final Identifier sessionName,
-          final QoSLevel qosLevel,
-          final Map qosProps,
-          final UInteger priority) throws IllegalArgumentException, MALException
-  {
-    return (MALConsumer) addChild(new MALConsumerImpl(impl,
-            this,
-            endPoint,
-            uriTo,
-            brokerUri,
-            service,
-            authenticationId,
-            domain,
-            networkZone,
-            sessionType,
-            sessionName,
-            qosLevel,
-            qosProps,
-            priority));
-  }
+    @Override
+    public MALConsumer createConsumer(final String localName,
+            final URI uriTo,
+            final URI brokerUri,
+            final MALService service,
+            final Blob authenticationId,
+            final IdentifierList domain,
+            final Identifier networkZone,
+            final SessionType sessionType,
+            final Identifier sessionName,
+            final QoSLevel qosLevel,
+            final Map qosProps,
+            final UInteger priority) throws MALException {
+        return (MALConsumer) addChild(new MALConsumerImpl(impl,
+                this,
+                localName,
+                uriTo,
+                brokerUri,
+                service,
+                authenticationId,
+                domain,
+                networkZone,
+                sessionType,
+                sessionName,
+                qosLevel,
+                qosProps,
+                priority));
+    }
+
+    @Override
+    public MALConsumer createConsumer(final MALEndpoint endPoint,
+            final URI uriTo,
+            final URI brokerUri,
+            final MALService service,
+            final Blob authenticationId,
+            final IdentifierList domain,
+            final Identifier networkZone,
+            final SessionType sessionType,
+            final Identifier sessionName,
+            final QoSLevel qosLevel,
+            final Map qosProps,
+            final UInteger priority) 
+            throws IllegalArgumentException, MALException {
+        return (MALConsumer) addChild(new MALConsumerImpl(impl,
+                this,
+                endPoint,
+                uriTo,
+                brokerUri,
+                service,
+                authenticationId,
+                domain,
+                networkZone,
+                sessionType,
+                sessionName,
+                qosLevel,
+                qosProps,
+                priority));
+    }
 }

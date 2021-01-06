@@ -28,20 +28,20 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * PubSub interaction class.
  */
-public class PubSubInteractionImpl extends BaseInteractionImpl
-{
-  /**
-   * Constructor.
-   *
-   * @param sender Used to return the messages.
-   * @param address Details of this endpoint.
-   * @param msg The source message.
-   * @throws MALInteractionException if the received message operation is unknown.
-   */
-  public PubSubInteractionImpl(final MessageSend sender,
-          final Address address,
-          final MALMessage msg) throws MALInteractionException
-  {
-    super(sender, address, msg);
-  }
+public class PubSubInteractionImpl extends BaseInteractionImpl {
+
+    /**
+     * Constructor.
+     *
+     * @param sender Used to return the messages.
+     * @param address Details of this endpoint.
+     * @param msg The source message.
+     * @throws MALInteractionException if the received message operation is
+     * unknown.
+     */
+    public PubSubInteractionImpl(final MessageSend sender,
+            final Address address,
+            final MALMessage msg) throws MALInteractionException {
+        super(sender, address, msg);
+    }
 }

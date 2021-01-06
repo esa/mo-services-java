@@ -29,47 +29,41 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 /**
  * Used when returning an internally generated error.
  */
-public final class DummyErrorBody implements MALErrorBody
-{
-  private final MALStandardError error;
+public final class DummyErrorBody implements MALErrorBody {
 
-  /**
-   * Constructor.
-   *
-   * @param error Error.
-   */
-  protected DummyErrorBody(MALStandardError error)
-  {
-    this.error = error;
-  }
+    private final MALStandardError error;
 
-  @Override
-  public MALStandardError getError() throws MALException
-  {
-    return error;
-  }
+    /**
+     * Constructor.
+     *
+     * @param error Error.
+     */
+    protected DummyErrorBody(MALStandardError error) {
+        this.error = error;
+    }
 
-  @Override
-  public int getElementCount()
-  {
-    return 1;
-  }
+    @Override
+    public MALStandardError getError() throws MALException {
+        return error;
+    }
 
-  @Override
-  public Object getBodyElement(int index, Object element) throws MALException
-  {
-    return error;
-  }
+    @Override
+    public int getElementCount() {
+        return 1;
+    }
 
-  @Override
-  public MALEncodedElement getEncodedBodyElement(int index) throws MALException
-  {
-    return null;
-  }
+    @Override
+    public Object getBodyElement(int index, Object element) throws MALException {
+        return error;
+    }
 
-  @Override
-  public MALEncodedBody getEncodedBody() throws MALException
-  {
-    return null;
-  }
+    @Override
+    public MALEncodedElement getEncodedBodyElement(int index) throws MALException {
+        return null;
+    }
+
+    @Override
+    public MALEncodedBody getEncodedBody() throws MALException {
+        return null;
+    }
 }

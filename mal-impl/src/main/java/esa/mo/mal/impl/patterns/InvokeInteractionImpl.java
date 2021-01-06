@@ -34,60 +34,60 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Invoke interaction class.
  */
-public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInvoke
-{
-  private boolean ackSent = false;
-  
-  /**
-   * Constructor.
-   * @param sender Used to return the messages.
-   * @param address Details of this endpoint.
-   * @param msg The source message.
-   * @throws MALInteractionException if the received message operation is unknown.
-   */
-  public InvokeInteractionImpl(final MessageSend sender,
-          final Address address,
-          final MALMessage msg) throws MALInteractionException
-  {
-    super(sender, address, msg);
-  }
+public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInvoke {
 
-  @Override
-  public MALMessage sendAcknowledgement(final Object... result) throws MALInteractionException, MALException
-  {
-    ackSent = true;
-    return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, result);
-  }
+    private boolean ackSent = false;
 
-  @Override
-  public MALMessage sendAcknowledgement(final MALEncodedBody body) throws MALInteractionException, MALException
-  {
-    ackSent = true;
-    return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, body);
-  }
-
-  @Override
-  public MALMessage sendResponse(final Object... result) throws MALInteractionException, MALException
-  {
-    return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
-  }
-
-  @Override
-  public MALMessage sendResponse(final MALEncodedBody body) throws MALInteractionException, MALException
-  {
-    return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, body);
-  }
-
-  @Override
-  public MALMessage sendError(final MALStandardError error) throws MALException
-  {
-    UOctet stage = MALInvokeOperation.INVOKE_ACK_STAGE;
-
-    if (ackSent)
-    {
-      stage = MALInvokeOperation.INVOKE_RESPONSE_STAGE;
+    /**
+     * Constructor.
+     *
+     * @param sender Used to return the messages.
+     * @param address Details of this endpoint.
+     * @param msg The source message.
+     * @throws MALInteractionException if the received message operation is
+     * unknown.
+     */
+    public InvokeInteractionImpl(final MessageSend sender,
+            final Address address,
+            final MALMessage msg) throws MALInteractionException {
+        super(sender, address, msg);
     }
 
-    return returnError(stage, error);
-  }
+    @Override
+    public MALMessage sendAcknowledgement(final Object... result)
+            throws MALInteractionException, MALException {
+        ackSent = true;
+        return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, result);
+    }
+
+    @Override
+    public MALMessage sendAcknowledgement(final MALEncodedBody body)
+            throws MALInteractionException, MALException {
+        ackSent = true;
+        return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, body);
+    }
+
+    @Override
+    public MALMessage sendResponse(final Object... result)
+            throws MALInteractionException, MALException {
+        return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
+    }
+
+    @Override
+    public MALMessage sendResponse(final MALEncodedBody body)
+            throws MALInteractionException, MALException {
+        return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, body);
+    }
+
+    @Override
+    public MALMessage sendError(final MALStandardError error)
+            throws MALException {
+        UOctet stage = MALInvokeOperation.INVOKE_ACK_STAGE;
+
+        if (ackSent) {
+            stage = MALInvokeOperation.INVOKE_RESPONSE_STAGE;
+        }
+
+        return returnError(stage, error);
+    }
 }

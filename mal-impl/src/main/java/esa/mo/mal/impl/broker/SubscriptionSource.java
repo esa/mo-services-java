@@ -29,109 +29,105 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 /**
  * Base class for subscription sources.
  */
-public abstract class SubscriptionSource
-{
-  private final NotifyMessageSet.MessageHeaderDetails msgHeaderDetails;
-  private int commsErrorCount = 0;
+public abstract class SubscriptionSource {
 
-  /**
-   * Constructor.
-   *
-   * @param hdr Source message.
-   * @param uriTo The URI to send updates too.
-   */
-  public SubscriptionSource(final MALMessageHeader hdr, final URI uriTo)
-  {
-    msgHeaderDetails = new NotifyMessageSet.MessageHeaderDetails(uriTo,
-            hdr.getTransactionId(),
-            hdr.getSession(),
-            hdr.getSessionName(),
-            hdr.getQoSlevel(),
-            null,
-            hdr.getPriority());
-  }
+    private final NotifyMessageSet.MessageHeaderDetails msgHeaderDetails;
+    private int commsErrorCount = 0;
 
-  /**
-   * Returns the message header details for this subscription source.
-   *
-   * @return the msgHeaderDetails
-   */
-  public NotifyMessageSet.MessageHeaderDetails getMsgHeaderDetails()
-  {
-    return msgHeaderDetails;
-  }
+    /**
+     * Constructor.
+     *
+     * @param hdr Source message.
+     * @param uriTo The URI to send updates too.
+     */
+    public SubscriptionSource(final MALMessageHeader hdr, final URI uriTo) {
+        msgHeaderDetails = new NotifyMessageSet.MessageHeaderDetails(uriTo,
+                hdr.getTransactionId(),
+                hdr.getSession(),
+                hdr.getSessionName(),
+                hdr.getQoSlevel(),
+                null,
+                hdr.getPriority());
+    }
 
-  /**
-   * Increments the count of communication errors.
-   */
-  public void incCommsErrorCount()
-  {
-    ++commsErrorCount;
-  }
+    /**
+     * Returns the message header details for this subscription source.
+     *
+     * @return the msgHeaderDetails
+     */
+    public NotifyMessageSet.MessageHeaderDetails getMsgHeaderDetails() {
+        return msgHeaderDetails;
+    }
 
-  /**
-   * Returns the current communications error count.
-   *
-   * @return the error count.
-   */
-  public int getCommsErrorCount()
-  {
-    return commsErrorCount;
-  }
+    /**
+     * Increments the count of communication errors.
+     */
+    public void incCommsErrorCount() {
+        ++commsErrorCount;
+    }
 
-  /**
-   * Resets the count of communication errors.
-   */
-  public void resetCommsErrorCount()
-  {
-    commsErrorCount = 0;
-  }
+    /**
+     * Returns the current communications error count.
+     *
+     * @return the error count.
+     */
+    public int getCommsErrorCount() {
+        return commsErrorCount;
+    }
 
-  /**
-   * Returns the signature for this source.
-   *
-   * @return signature.
-   */
-  public abstract String getSignature();
+    /**
+     * Resets the count of communication errors.
+     */
+    public void resetCommsErrorCount() {
+        commsErrorCount = 0;
+    }
 
-  /**
-   * Determines if this source is active.
-   *
-   * @return true if this source is active.
-   */
-  public abstract boolean active();
+    /**
+     * Returns the signature for this source.
+     *
+     * @return signature.
+     */
+    public abstract String getSignature();
 
-  /**
-   * Debugging report.
-   */
-  public abstract void report();
+    /**
+     * Determines if this source is active.
+     *
+     * @return true if this source is active.
+     */
+    public abstract boolean active();
 
-  /**
-   * Adds a subscription to this source.
-   *
-   * @param srcHdr Source message.
-   * @param subscription New subscription.
-   */
-  public abstract void addSubscription(final MALMessageHeader srcHdr, final Subscription subscription);
+    /**
+     * Debugging report.
+     */
+    public abstract void report();
 
-  /**
-   * Adds messages to the list of notify messages to be sent out.
-   *
-   * @param srcHdr Source publish message.
-   * @param lst List of broker messages.
-   * @param updateHeaderList The update header list.
-   * @param publishBody The publish message body.
-   * @throws MALException On error.
-   */
-  public abstract void populateNotifyList(final MALMessageHeader srcHdr,
-          final List<NotifyMessageSet> lst,
-          final UpdateHeaderList updateHeaderList,
-          final MALPublishBody publishBody) throws MALException;
+    /**
+     * Adds a subscription to this source.
+     *
+     * @param srcHdr Source message.
+     * @param subscription New subscription.
+     */
+    public abstract void addSubscription(final MALMessageHeader srcHdr, 
+            final Subscription subscription);
 
-  /**
-   * Removes a subscription.
-   *
-   * @param subscriptions List of subscription identifiers to remove.
-   */
-  public abstract void removeSubscriptions(final IdentifierList subscriptions);
+    /**
+     * Adds messages to the list of notify messages to be sent out.
+     *
+     * @param srcHdr Source publish message.
+     * @param lst List of broker messages.
+     * @param updateHeaderList The update header list.
+     * @param publishBody The publish message body.
+     * @throws MALException On error.
+     */
+    public abstract void populateNotifyList(final MALMessageHeader srcHdr,
+            final List<NotifyMessageSet> lst,
+            final UpdateHeaderList updateHeaderList,
+            final MALPublishBody publishBody) throws MALException;
+
+    /**
+     * Removes a subscription.
+     *
+     * @param subscriptions List of subscription identifiers to remove.
+     */
+    public abstract void removeSubscriptions(final IdentifierList subscriptions);
 }

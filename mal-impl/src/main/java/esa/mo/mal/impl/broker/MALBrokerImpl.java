@@ -37,113 +37,99 @@ import org.ccsds.moims.mo.mal.transport.*;
 /**
  * Implementation of the MALBroker interface.
  */
-public class MALBrokerImpl extends MALClose implements MALBroker
-{
-  /**
-   * Logger
-   */
-  public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl.broker");
-  private final MALBrokerHandler handler;
-  private final boolean handlerIsLocalType;
-  private final List<MALBrokerBindingImpl> bindings = new LinkedList<MALBrokerBindingImpl>();
+public class MALBrokerImpl extends MALClose implements MALBroker {
 
-  MALBrokerImpl(final MALClose parent) throws MALException
-  {
-    super(parent);
-    this.handler = (MALBrokerHandlerImpl) addChild(createBrokerHandler());
-    handlerIsLocalType = true;
-  }
+    /**
+     * Logger
+     */
+    public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl.broker");
+    private final MALBrokerHandler handler;
+    private final boolean handlerIsLocalType;
+    private final List<MALBrokerBindingImpl> bindings = new LinkedList<MALBrokerBindingImpl>();
 
-  MALBrokerImpl(final MALClose parent, MALBrokerHandler handler) throws MALException
-  {
-    super(parent);
-    this.handler = handler;
-    handlerIsLocalType = false;
-  }
-
-  /**
-   * Returns the broker handler for this broker.
-   *
-   * @return the handler.
-   */
-  public MALBrokerHandler getHandler()
-  {
-    return handler;
-  }
-
-  @Override
-  public MALBrokerBinding[] getBindings()
-  {
-    return bindings.toArray(new MALBrokerBinding[bindings.size()]);
-  }
-
-  /**
-   * Returns the QoS used when contacting the provider.
-   *
-   * @param hdr The supplied header message.
-   * @return The required QoS level.
-   */
-  public QoSLevel getProviderQoSLevel(final MALMessageHeader hdr)
-  {
-    if (handlerIsLocalType)
-    {
-      return ((MALBrokerHandlerImpl) handler).getProviderQoSLevel(hdr);
+    MALBrokerImpl(final MALClose parent) throws MALException {
+        super(parent);
+        this.handler = (MALBrokerHandlerImpl) addChild(createBrokerHandler());
+        handlerIsLocalType = true;
     }
 
-    return QoSLevel.BESTEFFORT;
-  }
-
-  /**
-   * Adds a binding implementation to this broker.
-   *
-   * @param binding The new binding.
-   */
-  protected void addBinding(MALBrokerBindingImpl binding)
-  {
-    bindings.add(binding);
-    handler.malInitialize(binding);
-  }
-
-  private MALBrokerHandlerImpl createBrokerHandler()
-  {
-    final String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class",
-            SimpleBrokerHandler.class.getName());
-
-    MALBrokerHandlerImpl broker = null;
-    try
-    {
-      final Class cls = Thread.currentThread().getContextClassLoader().loadClass(clsName);
-
-      broker = (MALBrokerHandlerImpl) cls.getConstructor(MALClose.class).newInstance(this);
-      MALBrokerImpl.LOGGER.log(Level.FINE, "Creating internal MAL Broker handler: {0}", cls.getSimpleName());
-    }
-    catch (ClassNotFoundException ex)
-    {
-      MALBrokerImpl.LOGGER.log(Level.WARNING, "Unable to find MAL Broker handler class: {0}", clsName);
-    }
-    catch (InstantiationException ex)
-    {
-      MALBrokerImpl.LOGGER.log(Level.WARNING, "Unable to instantiate MAL Broker handler: {0}", clsName);
-    }
-    catch (NoSuchMethodException ex)
-    {
-      MALBrokerImpl.LOGGER.log(Level.WARNING, "Unable to instantiate MAL Broker handler: {0}", clsName);
-    }
-    catch (InvocationTargetException ex)
-    {
-      MALBrokerImpl.LOGGER.log(Level.WARNING, "InvocationTargetExceptionUnable when instantiating MAL Broker handler class: {0}", clsName);
-    }
-    catch (IllegalAccessException ex)
-    {
-      MALBrokerImpl.LOGGER.log(Level.WARNING, "IllegalAccessException when instantiating MAL Broker handler class: {0}", clsName);
+    MALBrokerImpl(final MALClose parent, MALBrokerHandler handler) throws MALException {
+        super(parent);
+        this.handler = handler;
+        handlerIsLocalType = false;
     }
 
-    if (null == broker)
-    {
-      broker = new SimpleBrokerHandler(this);
-      MALBrokerImpl.LOGGER.fine("Creating internal MAL Broker handler: SimpleBrokerHandler");
+    /**
+     * Returns the broker handler for this broker.
+     *
+     * @return the handler.
+     */
+    public MALBrokerHandler getHandler() {
+        return handler;
     }
 
-    return broker;
-  }
+    @Override
+    public MALBrokerBinding[] getBindings() {
+        return bindings.toArray(new MALBrokerBinding[bindings.size()]);
+    }
+
+    /**
+     * Returns the QoS used when contacting the provider.
+     *
+     * @param hdr The supplied header message.
+     * @return The required QoS level.
+     */
+    public QoSLevel getProviderQoSLevel(final MALMessageHeader hdr) {
+        if (handlerIsLocalType) {
+            return ((MALBrokerHandlerImpl) handler).getProviderQoSLevel(hdr);
+        }
+
+        return QoSLevel.BESTEFFORT;
+    }
+
+    /**
+     * Adds a binding implementation to this broker.
+     *
+     * @param binding The new binding.
+     */
+    protected void addBinding(MALBrokerBindingImpl binding) {
+        bindings.add(binding);
+        handler.malInitialize(binding);
+    }
+
+    private MALBrokerHandlerImpl createBrokerHandler() {
+        final String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class",
+                SimpleBrokerHandler.class.getName());
+
+        MALBrokerHandlerImpl broker = null;
+        try {
+            final Class cls = Thread.currentThread().getContextClassLoader().loadClass(clsName);
+
+            broker = (MALBrokerHandlerImpl) cls.getConstructor(MALClose.class).newInstance(this);
+            MALBrokerImpl.LOGGER.log(Level.FINE, 
+                    "Creating internal MAL Broker handler: {0}", cls.getSimpleName());
+        } catch (ClassNotFoundException ex) {
+            MALBrokerImpl.LOGGER.log(Level.WARNING, 
+                    "Unable to find MAL Broker handler class: {0}", clsName);
+        } catch (InstantiationException ex) {
+            MALBrokerImpl.LOGGER.log(Level.WARNING, 
+                    "Unable to instantiate MAL Broker handler: {0}", clsName);
+        } catch (NoSuchMethodException ex) {
+            MALBrokerImpl.LOGGER.log(Level.WARNING, 
+                    "Unable to instantiate MAL Broker handler: {0}", clsName);
+        } catch (InvocationTargetException ex) {
+            MALBrokerImpl.LOGGER.log(Level.WARNING, 
+                    "InvocationTargetExceptionUnable when instantiating MAL Broker handler class: {0}", clsName);
+        } catch (IllegalAccessException ex) {
+            MALBrokerImpl.LOGGER.log(Level.WARNING, 
+                    "IllegalAccessException when instantiating MAL Broker handler class: {0}", clsName);
+        }
+
+        if (null == broker) {
+            broker = new SimpleBrokerHandler(this);
+            MALBrokerImpl.LOGGER.fine("Creating internal MAL Broker handler: SimpleBrokerHandler");
+        }
+
+        return broker;
+    }
 }
