@@ -37,355 +37,356 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Generates stubs and skeletons for CCSDS MO Service specifications for the Java Google Web Toolkit API.
- * Experimental.
+ * Generates stubs and skeletons for CCSDS MO Service specifications for the
+ * Java Google Web Toolkit API. Experimental.
  */
-public class GeneratorGwt extends GeneratorJava
-{
-  /**
-   * Constructor.
-   *
-   * @param logger The logger to use.
-   */
-  public GeneratorGwt(org.apache.maven.plugin.logging.Log logger)
-  {
-    super(logger);
-  }
+public class GeneratorGwt extends GeneratorJava {
 
-  @Override
-  public void init(String destinationFolderName,
-          boolean generateStructures,
-          boolean generateCOM,
-          Map<String, String> packageBindings,
-          Map<String, String> extraProperties) throws IOException
-  {
-    super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
-    
-    addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, false, "Boolean", "Boolean.FALSE");
-  }
-
-  @Override
-  public String getShortName()
-  {
-    return "GWT";
-  }
-
-  @Override
-  public String getDescription()
-  {
-    return "Experimental: Generates a GWT compatible Java language mapping.";
-  }
-
-  @Override
-  protected void createAreaHelperClass(File areaFolder, AreaType area) throws IOException
-  {
-  }
-
-  @Override
-  protected void createServiceHelperClass(File serviceFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException
-  {
-  }
-
-  @Override
-  protected void createServiceConsumerInterface(File consumerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException
-  {
-    getLog().info("Creating consumer interface: " + service.getName());
-
-    InterfaceWriter file = createInterfaceFile(consumerFolder, service.getName() + "GWT");
-
-    String serviceName = service.getName();
-
-    file.addPackageStatement(area, service, CONSUMER_FOLDER);
-
-    file.addStatement("@com.google.gwt.user.client.rpc.RemoteServiceRelativePath(\"" + service.getName() + "GWT\")");
-    file.addInterfaceOpenStatement(serviceName + "GWT", "com.google.gwt.user.client.rpc.RemoteService", null);
-
-    String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-    CompositeField msgType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false), false, true, null);
-
-    for (OperationSummary op : summary.getOperations())
-    {
-      List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
-      switch (op.getPattern())
-      {
-        case SEND_OP:
-        {
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, op.getName(), opArgs, throwsMALException, null, null, null);
-          break;
-        }
-        case SUBMIT_OP:
-        {
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), opArgs, throwsMALException, null, null, null);
-          break;
-        }
-        case REQUEST_OP:
-        {
-          CompositeField opRetType = createOperationReturnType(file, area, service, op);
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs, throwsMALException, null, null, null);
-          break;
-        }
-        case INVOKE_OP:
-        {
-          break;
-        }
-        case PROGRESS_OP:
-        {
-          break;
-        }
-        case PUBSUB_OP:
-        {
-          break;
-        }
-      }
+    /**
+     * Constructor.
+     *
+     * @param logger The logger to use.
+     */
+    public GeneratorGwt(org.apache.maven.plugin.logging.Log logger) {
+        super(logger);
     }
 
-    file.addInterfaceCloseStatement();
+    @Override
+    public void init(String destinationFolderName,
+            boolean generateStructures,
+            boolean generateCOM,
+            Map<String, String> packageBindings,
+            Map<String, String> extraProperties) throws IOException {
+        super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
-    file.flush();
-  }
+        addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, false, "Boolean", "Boolean.FALSE");
+    }
 
-  @Override
-  protected void createServiceConsumerStub(File consumerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException
-  {
-  }
-  
-  protected void createServiceConsumerStub2(File consumerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException
-  {
-    getLog().info("Creating consumer stub: " + service.getName());
+    @Override
+    public String getShortName() {
+        return "GWT";
+    }
 
-    String serviceName = service.getName();
+    @Override
+    public String getDescription() {
+        return "Experimental: Generates a GWT compatible Java language mapping.";
+    }
 
-    InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName + "GWTAsync");
+    @Override
+    protected void createAreaHelperClass(File areaFolder, AreaType area) throws IOException {
+    }
 
-    file.addPackageStatement(area, service, CONSUMER_FOLDER);
+    @Override
+    protected void createServiceHelperClass(File serviceFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
+    }
 
-    file.addInterfaceOpenStatement(serviceName + "GWTAsync", null, null);
+    @Override
+    protected void createServiceConsumerInterface(File consumerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
+        getLog().info("Creating consumer interface: " + service.getName());
 
-    for (OperationSummary op : summary.getOperations())
-    {
-      List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
-      switch (op.getPattern())
-      {
-        case SEND_OP:
-        {
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), opArgs, null, null, null, null);
-          break;
+        InterfaceWriter file = createInterfaceFile(consumerFolder, service.getName() + "GWT");
+        String serviceName = service.getName();
+        file.addPackageStatement(area, service, CONSUMER_FOLDER);
+
+        file.addStatement("@com.google.gwt.user.client.rpc.RemoteServiceRelativePath(\"" + service.getName() + "GWT\")");
+        file.addInterfaceOpenStatement(serviceName + "GWT", "com.google.gwt.user.client.rpc.RemoteService", null);
+
+        String throwsMALException = createElementType(file,
+                StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        CompositeField msgType = createCompositeElementsDetails(file, false,
+                "return", TypeUtils.createTypeReference(StdStrings.MAL,
+                        TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
+                false, true, null);
+
+        for (OperationSummary op : summary.getOperations()) {
+            List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
+            switch (op.getPattern()) {
+                case SEND_OP: {
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType,
+                            op.getName(), opArgs, throwsMALException, null, null, null);
+                    break;
+                }
+                case SUBMIT_OP: {
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
+                            op.getName(), opArgs, throwsMALException, null, null, null);
+                    break;
+                }
+                case REQUEST_OP: {
+                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType,
+                            op.getName(), opArgs, throwsMALException, null, null, null);
+                    break;
+                }
+                case INVOKE_OP: {
+                    break;
+                }
+                case PROGRESS_OP: {
+                    break;
+                }
+                case PUBSUB_OP: {
+                    break;
+                }
+            }
         }
-        case SUBMIT_OP:
-        {
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), opArgs, null, null, null, null);
-          break;
-        }
-        case REQUEST_OP:
-        {
+
+        file.addInterfaceCloseStatement();
+
+        file.flush();
+    }
+
+    @Override
+    protected void createServiceConsumerStub(File consumerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
+    }
+
+    protected void createServiceConsumerStub2(File consumerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
+        getLog().info("Creating consumer stub: " + service.getName());
+
+        String serviceName = service.getName();
+
+        InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName + "GWTAsync");
+        file.addPackageStatement(area, service, CONSUMER_FOLDER);
+        file.addInterfaceOpenStatement(serviceName + "GWTAsync", null, null);
+
+        for (OperationSummary op : summary.getOperations()) {
+            List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
+            switch (op.getPattern()) {
+                case SEND_OP: {
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC,
+                            null, op.getName(), opArgs, null, null, null, null);
+                    break;
+                }
+                case SUBMIT_OP: {
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC,
+                            null, op.getName(), opArgs, null, null, null, null);
+                    break;
+                }
+                case REQUEST_OP: {
 //          CompositeField opRetType = createOperationReturnType(file, area, service, op);
 //          String asyncOpArgs = StubUtils.concatenateArguments(opArgs, "com.google.gwt.user.client.rpc.AsyncCallback<" + opRetType + "> _callback");
 //          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), asyncOpArgs, null, null, null, null);
-          break;
+                    break;
+                }
+                case INVOKE_OP: {
+                    break;
+                }
+                case PROGRESS_OP: {
+                    break;
+                }
+                case PUBSUB_OP: {
+                    break;
+                }
+            }
         }
-        case INVOKE_OP:
-        {
-          break;
-        }
-        case PROGRESS_OP:
-        {
-          break;
-        }
-        case PUBSUB_OP:
-        {
-          break;
-        }
-      }
+
+        file.addInterfaceCloseStatement();
+
+        file.flush();
     }
 
-    file.addInterfaceCloseStatement();
-
-    file.flush();
-  }
-
-  @Override
-  protected void createServiceConsumerAdapter(File consumerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException
-  {
-  }
-
-  @Override
-  protected void createServiceProviderHandler(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException
-  {
-    getLog().info("Creating provider handler interface: " + service.getName());
-
-    String handlerName = service.getName() + "Handler";
-    InterfaceWriter file = createInterfaceFile(providerFolder, handlerName);
-
-    file.addPackageStatement(area, service, PROVIDER_FOLDER);
-
-    file.addInterfaceOpenStatement(handlerName, null, null);
-
-    CompositeField intHandlerStr = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false), false, true, "interaction The MAL object representing the interaction in the provider.");
-    String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-    for (OperationSummary op : summary.getOperations())
-    {
-      List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
-      switch (op.getPattern())
-      {
-        case SEND_OP:
-        {
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
-          break;
-        }
-        case SUBMIT_OP:
-        {
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
-          break;
-        }
-        case REQUEST_OP:
-        {
-          CompositeField opRetType = createOperationReturnType(file, area, service, op);
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
-          break;
-        }
-        case INVOKE_OP:
-        {
-          CompositeField serviceHandlerStr = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false), false, true, "interaction The MAL object representing the interaction in the provider.");
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr), throwsMALException, null, null, null);
-          break;
-        }
-        case PROGRESS_OP:
-        {
-          CompositeField serviceHandlerStr = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false), false, true, "interaction The MAL object representing the interaction in the provider.");
-          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr), throwsMALException, null, null, null);
-          break;
-        }
-        case PUBSUB_OP:
-        {
-          break;
-        }
-      }
+    @Override
+    protected void createServiceConsumerAdapter(File consumerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
     }
 
-    file.addInterfaceCloseStatement();
+    @Override
+    protected void createServiceProviderHandler(File providerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
+        getLog().info("Creating provider handler interface: " + service.getName());
 
-    file.flush();
-  }
+        String handlerName = service.getName() + "Handler";
+        InterfaceWriter file = createInterfaceFile(providerFolder, handlerName);
+        file.addPackageStatement(area, service, PROVIDER_FOLDER);
+        file.addInterfaceOpenStatement(handlerName, null, null);
 
-  @Override
-  protected void createServiceProviderSkeleton(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException
-  {
-  }
+        CompositeField intHandlerStr = createCompositeElementsDetails(file, false,
+                "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false),
+                false, true, "interaction The MAL object representing the interaction in the provider.");
 
-  @Override
-  protected void createServiceProviderInteractions(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException
-  {
-  }
+        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        for (OperationSummary op : summary.getOperations()) {
+            List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
+            switch (op.getPattern()) {
+                case SEND_OP: {
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
+                            op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr),
+                            throwsMALException, null, null, null);
+                    break;
+                }
+                case SUBMIT_OP: {
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
+                            op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr),
+                            throwsMALException, null, null, null);
+                    break;
+                }
+                case REQUEST_OP: {
+                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
+                            StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
+                    break;
+                }
+                case INVOKE_OP: {
+                    CompositeField serviceHandlerStr = createCompositeElementsDetails(
+                            file, false, "interaction",
+                            TypeUtils.createTypeReference(area.getName(), service.getName()
+                                    + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName())
+                                    + "Interaction", false), false, true,
+                            "interaction The MAL object representing the interaction in the provider.");
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
+                            op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr),
+                            throwsMALException, null, null, null);
+                    break;
+                }
+                case PROGRESS_OP: {
+                    CompositeField serviceHandlerStr = createCompositeElementsDetails(
+                            file, false, "interaction",
+                            TypeUtils.createTypeReference(area.getName(), service.getName()
+                                    + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName())
+                                    + "Interaction", false), false, true,
+                            "interaction The MAL object representing the interaction in the provider.");
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
+                            op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr),
+                            throwsMALException, null, null, null);
+                    break;
+                }
+                case PUBSUB_OP: {
+                    break;
+                }
+            }
+        }
 
-  @Override
-  protected void createServiceProviderSkeletonHandler(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary, boolean isDelegate) throws IOException
-  {
-    String className = service.getName();
-    String comment;
-    if (isDelegate)
-    {
-      className += "DelegationSkeletonGWT";
-      comment = "Provider Delegation skeleton for " + className + " service.";
+        file.addInterfaceCloseStatement();
+
+        file.flush();
     }
-    else
-    {
-      className += "InheritanceSkeletonGWT";
-      comment = "Provider Inheritance skeleton for " + className + " service.";
+
+    @Override
+    protected void createServiceProviderSkeleton(File providerFolder,
+            AreaType area, ServiceType service, ServiceSummary summary,
+            Map<String, RequiredPublisher> requiredPublishers) throws IOException {
     }
 
-    ClassWriter file = createClassFile(providerFolder, className);
-
-    file.addPackageStatement(area, service, PROVIDER_FOLDER);
-
-    String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-
-    String implementsList = createElementType(file, area.getName(), service.getName(), CONSUMER_FOLDER, service.getName() + "GWT");
-    if (!isDelegate)
-    {
-      implementsList += ", " + createElementType(file, area.getName(), service.getName(), PROVIDER_FOLDER, service.getName() + "Handler");
+    @Override
+    protected void createServiceProviderInteractions(File providerFolder,
+            AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
     }
 
-    file.addClassOpenStatement(className, false, !isDelegate, "com.google.gwt.user.server.rpc.RemoteServiceServlet", implementsList, comment);
+    @Override
+    protected void createServiceProviderSkeletonHandler(File providerFolder,
+            AreaType area, ServiceType service, ServiceSummary summary,
+            boolean isDelegate) throws IOException {
+        String className = service.getName();
+        String comment;
+        if (isDelegate) {
+            className += "DelegationSkeletonGWT";
+            comment = "Provider Delegation skeleton for " + className + " service.";
+        } else {
+            className += "InheritanceSkeletonGWT";
+            comment = "Provider Inheritance skeleton for " + className + " service.";
+        }
 
-    if (isDelegate)
-    {
-      CompositeField handlerName = createCompositeElementsDetails(file, false, "delegate", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), false, true, null);
-      file.addClassVariable(false, false, StdStrings.PRIVATE, handlerName, false, (String) null);
-    }
+        ClassWriter file = createClassFile(providerFolder, className);
 
-    if (isDelegate)
-    {
-      MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, createCompositeElementsDetails(file, false, "delegate", TypeUtils.createTypeReference(area.getName(), service.getName().toLowerCase() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), false, false, null), false, null, null, null);
-      method.addMethodStatement(createMethodCall("this.delegate = delegate"));
-      method.addMethodCloseStatement();
-    }
-    else
-    {
+        file.addPackageStatement(area, service, PROVIDER_FOLDER);
+
+        String throwsMALException = createElementType(file,
+                StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+
+        String implementsList = createElementType(file, area.getName(),
+                service.getName(), CONSUMER_FOLDER, service.getName() + "GWT");
+        if (!isDelegate) {
+            implementsList += ", " + createElementType(file, area.getName(),
+                    service.getName(), PROVIDER_FOLDER, service.getName() + "Handler");
+        }
+
+        file.addClassOpenStatement(className, false, !isDelegate,
+                "com.google.gwt.user.server.rpc.RemoteServiceServlet", implementsList, comment);
+
+        if (isDelegate) {
+            CompositeField handlerName = createCompositeElementsDetails(file, false, "delegate",
+                    TypeUtils.createTypeReference(area.getName(), service.getName()
+                            + "." + PROVIDER_FOLDER, service.getName() + "Handler", false),
+                    false, true, null);
+            file.addClassVariable(false, false, StdStrings.PRIVATE, handlerName, false, (String) null);
+        }
+
+        if (isDelegate) {
+            MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className,
+                    createCompositeElementsDetails(file, false, "delegate",
+                            TypeUtils.createTypeReference(area.getName(),
+                                    service.getName().toLowerCase() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false),
+                            false, false, null), false, null, null, null);
+            method.addMethodStatement(createMethodCall("this.delegate = delegate"));
+            method.addMethodCloseStatement();
+        } else {
 //      CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "skeleton Not used in the inheritance pattern (the skeleton is 'this'");
 //      MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "setSkeleton", Arrays.asList(skeletonName), null);
 //      method.addMethodStatement("// Not used in the inheritance pattern (the skeleton is 'this')");
 //      method.addMethodCloseStatement();
+        }
+
+        // for each IP type add handler code
+        String delegateCall = "";
+        if (isDelegate) {
+            delegateCall = createMethodCall("delegate.");
+        }
+
+        for (OperationSummary op : summary.getOperations()) {
+            switch (op.getPattern()) {
+                case SEND_OP: {
+                    MethodWriter method = file.addMethodOpenStatement(false, false,
+                            StdStrings.PUBLIC, false, true, null, op.getName(),
+                            createOperationArguments(getConfig(), file,
+                                    op.getArgTypes()), throwsMALException);
+
+                    String opArgs = createArgNameOrNull(op.getArgTypes());
+                    method.addMethodStatement(
+                            createMethodCall(delegateCall + op.getName() + "(" + opArgs + ", null)"));
+
+                    method.addMethodCloseStatement();
+                    break;
+                }
+                case SUBMIT_OP: {
+                    MethodWriter method = file.addMethodOpenStatement(false,
+                            false, StdStrings.PUBLIC, false, true, null, op.getName(),
+                            createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
+
+                    String opArgs = createArgNameOrNull(op.getArgTypes());
+                    method.addMethodStatement(
+                            createMethodCall(delegateCall + op.getName() + "(" + opArgs + ", null)"));
+
+                    method.addMethodCloseStatement();
+                    break;
+                }
+                case REQUEST_OP: {
+                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
+                    MethodWriter method = file.addMethodOpenStatement(false, false,
+                            StdStrings.PUBLIC, false, true, opRetType, op.getName(),
+                            createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
+
+                    String opArgs = createArgNameOrNull(op.getArgTypes());
+                    method.addMethodStatement(createMethodCall("return " + delegateCall + op.getName() + "(" + opArgs + ", null)"));
+
+                    method.addMethodCloseStatement();
+                    break;
+                }
+                case INVOKE_OP: {
+                    break;
+                }
+                case PROGRESS_OP: {
+                    break;
+                }
+                case PUBSUB_OP: {
+                    break;
+                }
+            }
+        }
+
+        file.addClassCloseStatement();
+
+        file.flush();
     }
-
-    // for each IP type add handler code
-    String delegateCall = "";
-    if (isDelegate)
-    {
-      delegateCall = createMethodCall("delegate.");
-    }
-
-    for (OperationSummary op : summary.getOperations())
-    {
-      switch (op.getPattern())
-      {
-        case SEND_OP:
-        {
-          MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, op.getName(), createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
-
-          String opArgs = createArgNameOrNull(op.getArgTypes());
-          method.addMethodStatement(createMethodCall(delegateCall + op.getName() + "(" + opArgs + ", null)"));
-
-          method.addMethodCloseStatement();
-          break;
-        }
-        case SUBMIT_OP:
-        {
-          MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, op.getName(), createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
-
-          String opArgs = createArgNameOrNull(op.getArgTypes());
-          method.addMethodStatement(createMethodCall(delegateCall + op.getName() + "(" + opArgs + ", null)"));
-
-          method.addMethodCloseStatement();
-          break;
-        }
-        case REQUEST_OP:
-        {
-          CompositeField opRetType = createOperationReturnType(file, area, service, op);
-          MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, opRetType, op.getName(), createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
-
-          String opArgs = createArgNameOrNull(op.getArgTypes());
-          method.addMethodStatement(createMethodCall("return " + delegateCall + op.getName() + "(" + opArgs + ", null)"));
-
-          method.addMethodCloseStatement();
-          break;
-        }
-        case INVOKE_OP:
-        {
-          break;
-        }
-        case PROGRESS_OP:
-        {
-          break;
-        }
-        case PUBSUB_OP:
-        {
-          break;
-        }
-      }
-    }
-
-    file.addClassCloseStatement();
-
-    file.flush();
-  }
 }

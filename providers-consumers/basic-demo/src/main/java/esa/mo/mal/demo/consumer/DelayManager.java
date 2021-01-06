@@ -23,62 +23,55 @@ package esa.mo.mal.demo.consumer;
 import javax.swing.JLabel;
 
 /**
- * A simple class that sums the transmission delay over a set of parameter updates and puts the average in a supplied
- * label.
+ * A simple class that sums the transmission delay over a set of parameter
+ * updates and puts the average in a supplied label.
  *
  */
-class DelayManager
-{
-  private final JLabel label;
-  private final long[] delays;
-  private long totalDelay = 0;
-  private int index = 0;
+class DelayManager {
 
-  public DelayManager(final JLabel label, final int size)
-  {
-    super();
+    private final JLabel label;
+    private final long[] delays;
+    private long totalDelay = 0;
+    private int index = 0;
 
-    this.label = label;
-    delays = new long[size];
+    public DelayManager(final JLabel label, final int size) {
+        super();
 
-    // cl;ear the delay set
-    for (int i = 0; i < delays.length; i++)
-    {
-      delays[i] = 0;
-    }
-  }
+        this.label = label;
+        delays = new long[size];
 
-  public synchronized void addDelay(final boolean displayTotal, final long delay)
-  {
-    final int i = index++;
-
-    if (index >= delays.length)
-    {
-      index = 0;
+        // cl;ear the delay set
+        for (int i = 0; i < delays.length; i++) {
+            delays[i] = 0;
+        }
     }
 
-    // update the circular delay array and the total delay calculation
-    final long oldDelay = delays[i];
-    delays[i] = delay;
-    totalDelay -= oldDelay;
-    totalDelay += delay;
+    public synchronized void addDelay(final boolean displayTotal, final long delay) {
+        final int i = index++;
 
-    if (displayTotal)
-    {
-      // turn the delay into mseconds and display
-      final double del = ((double) totalDelay) / (1000.0 * delays.length);
-      label.setText(String.valueOf(del));
+        if (index >= delays.length) {
+            index = 0;
+        }
+
+        // update the circular delay array and the total delay calculation
+        final long oldDelay = delays[i];
+        delays[i] = delay;
+        totalDelay -= oldDelay;
+        totalDelay += delay;
+
+        if (displayTotal) {
+            // turn the delay into mseconds and display
+            final double del = ((double) totalDelay) / (1000.0 * delays.length);
+            label.setText(String.valueOf(del));
+        }
     }
-  }
 
-  public synchronized void resetDelay()
-  {
-    totalDelay = 0;
-    index = 0;
+    public synchronized void resetDelay() {
+        totalDelay = 0;
+        index = 0;
 
-    for (int i = 0; i < delays.length; i++)
-    {
-      delays[i] = 0;
+        for (int i = 0; i < delays.length; i++) {
+            delays[i] = 0;
+        }
     }
-  }
 }

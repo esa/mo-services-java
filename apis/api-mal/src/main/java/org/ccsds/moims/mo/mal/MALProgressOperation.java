@@ -28,102 +28,105 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 /**
  * Class representing a Progress operation.
  */
-public class MALProgressOperation extends MALOperation
-{
-  /**
-   * Literal representing the PROGRESS stage.
-   */
-  public static final byte _PROGRESS_STAGE = (byte) 0x1;
-  /**
-   * MAL UOctet representing the PROGRESS stage.
-   */
-  public static final UOctet PROGRESS_STAGE = new UOctet(_PROGRESS_STAGE);
-  /**
-   * Literal representing the PROGRESS_ACK stage.
-   */
-  public static final byte _PROGRESS_ACK_STAGE = (byte) 0x2;
-  /**
-   * MAL UOctet representing the PROGRESS_ACK stage.
-   */
-  public static final UOctet PROGRESS_ACK_STAGE = new UOctet(_PROGRESS_ACK_STAGE);
-  /**
-   * Literal representing the PROGRESS_UPDATE stage.
-   */
-  public static final byte _PROGRESS_UPDATE_STAGE = (byte) 0x3;
-  /**
-   * MAL UOctet representing the PROGRESS_UPDATE stage.
-   */
-  public static final UOctet PROGRESS_UPDATE_STAGE = new UOctet(_PROGRESS_UPDATE_STAGE);
-  /**
-   * Literal representing the PROGRESS_RESPONSE stage.
-   */
-  public static final byte _PROGRESS_RESPONSE_STAGE = (byte) 0x4;
-  /**
-   * MAL UOctet representing the PROGRESS_RESPONSE stage.
-   */
-  public static final UOctet PROGRESS_RESPONSE_STAGE = new UOctet(_PROGRESS_RESPONSE_STAGE);
+public class MALProgressOperation extends MALOperation {
 
-  private final MALOperationStage progressStage;
-  private final MALOperationStage progressAckStage;
-  private final MALOperationStage progressUpdateStage;
-  private final MALOperationStage progressResponseStage;
+    /**
+     * Literal representing the PROGRESS stage.
+     */
+    public static final byte _PROGRESS_STAGE = (byte) 0x1;
+    /**
+     * MAL UOctet representing the PROGRESS stage.
+     */
+    public static final UOctet PROGRESS_STAGE = new UOctet(_PROGRESS_STAGE);
+    /**
+     * Literal representing the PROGRESS_ACK stage.
+     */
+    public static final byte _PROGRESS_ACK_STAGE = (byte) 0x2;
+    /**
+     * MAL UOctet representing the PROGRESS_ACK stage.
+     */
+    public static final UOctet PROGRESS_ACK_STAGE = new UOctet(_PROGRESS_ACK_STAGE);
+    /**
+     * Literal representing the PROGRESS_UPDATE stage.
+     */
+    public static final byte _PROGRESS_UPDATE_STAGE = (byte) 0x3;
+    /**
+     * MAL UOctet representing the PROGRESS_UPDATE stage.
+     */
+    public static final UOctet PROGRESS_UPDATE_STAGE = new UOctet(_PROGRESS_UPDATE_STAGE);
+    /**
+     * Literal representing the PROGRESS_RESPONSE stage.
+     */
+    public static final byte _PROGRESS_RESPONSE_STAGE = (byte) 0x4;
+    /**
+     * MAL UOctet representing the PROGRESS_RESPONSE stage.
+     */
+    public static final UOctet PROGRESS_RESPONSE_STAGE = new UOctet(_PROGRESS_RESPONSE_STAGE);
 
-  /**
-   * Initialises the internal variables with the supplied values.
-   * @param number Number of the operation.
-   * @param name Name of the operation.
-   * @param replayable Boolean that indicates whether the operation is replayable or not
-   * @param capabilitySet Capability set of the operation.
-   * @param progressStage The stage information for the PROGRESS stage.
-   * @param progressAckStage The stage information for the PROGRESS_ACK stage.
-   * @param progressUpdateStage The stage information for the PROGRESS_UPDATE stage.
-   * @param progressResponseStage The stage information for the PROGRESS_RESPONSE stage.
-   * @throws java.lang.IllegalArgumentException If any argument is null, except the operation stage arguments.
-   */
-  public MALProgressOperation(final UShort number,
-          final Identifier name,
-          final Boolean replayable,
-          final UShort capabilitySet,
-          final MALOperationStage progressStage,
-          final MALOperationStage progressAckStage,
-          final MALOperationStage progressUpdateStage,
-          final MALOperationStage progressResponseStage) throws java.lang.IllegalArgumentException
-  {
-    super(number, name, replayable, InteractionType.PROGRESS, capabilitySet);
+    private final MALOperationStage progressStage;
+    private final MALOperationStage progressAckStage;
+    private final MALOperationStage progressUpdateStage;
+    private final MALOperationStage progressResponseStage;
 
-    this.progressStage = progressStage;
-    this.progressAckStage = progressAckStage;
-    this.progressUpdateStage = progressUpdateStage;
-    this.progressResponseStage = progressResponseStage;
-  }
+    /**
+     * Initialises the internal variables with the supplied values.
+     *
+     * @param number Number of the operation.
+     * @param name Name of the operation.
+     * @param replayable Boolean that indicates whether the operation is
+     * replayable or not
+     * @param capabilitySet Capability set of the operation.
+     * @param progressStage The stage information for the PROGRESS stage.
+     * @param progressAckStage The stage information for the PROGRESS_ACK stage.
+     * @param progressUpdateStage The stage information for the PROGRESS_UPDATE
+     * stage.
+     * @param progressResponseStage The stage information for the
+     * PROGRESS_RESPONSE stage.
+     * @throws java.lang.IllegalArgumentException If any argument is null,
+     * except the operation stage arguments.
+     */
+    public MALProgressOperation(final UShort number,
+            final Identifier name,
+            final Boolean replayable,
+            final UShort capabilitySet,
+            final MALOperationStage progressStage,
+            final MALOperationStage progressAckStage,
+            final MALOperationStage progressUpdateStage,
+            final MALOperationStage progressResponseStage) throws java.lang.IllegalArgumentException {
+        super(number, name, replayable, InteractionType.PROGRESS, capabilitySet);
 
-  /**
-   * Returns the operation stage for the supplied stage number.
-   * @param stageNumber The stage number to return.
-   * @return The operation stage.
-   * @throws java.lang.IllegalArgumentException if the supplied argument is null or stage does not exist for this
-   * pattern.
-   */
-  @Override
-  public MALOperationStage getOperationStage(final UOctet stageNumber) throws IllegalArgumentException
-  {
-    if (stageNumber == null)
-    {
-      throw new IllegalArgumentException("Supplied stage number must not be NULL");
+        this.progressStage = progressStage;
+        this.progressAckStage = progressAckStage;
+        this.progressUpdateStage = progressUpdateStage;
+        this.progressResponseStage = progressResponseStage;
     }
-    
-    switch(stageNumber.getValue())
-    {
-      case _PROGRESS_STAGE:
-        return progressStage;
-      case _PROGRESS_ACK_STAGE:
-        return progressAckStage;
-      case _PROGRESS_UPDATE_STAGE:
-        return progressUpdateStage;
-      case _PROGRESS_RESPONSE_STAGE:
-        return progressResponseStage;
-      default:
-        throw new IllegalArgumentException("Supplied stage number not supported by interaction pattern");
+
+    /**
+     * Returns the operation stage for the supplied stage number.
+     *
+     * @param stageNumber The stage number to return.
+     * @return The operation stage.
+     * @throws java.lang.IllegalArgumentException if the supplied argument is
+     * null or stage does not exist for this pattern.
+     */
+    @Override
+    public MALOperationStage getOperationStage(final UOctet stageNumber) throws IllegalArgumentException {
+        if (stageNumber == null) {
+            throw new IllegalArgumentException("Supplied stage number must not be NULL");
+        }
+
+        switch (stageNumber.getValue()) {
+            case _PROGRESS_STAGE:
+                return progressStage;
+            case _PROGRESS_ACK_STAGE:
+                return progressAckStage;
+            case _PROGRESS_UPDATE_STAGE:
+                return progressUpdateStage;
+            case _PROGRESS_RESPONSE_STAGE:
+                return progressResponseStage;
+            default:
+                throw new IllegalArgumentException(
+                        "Supplied stage number not supported by interaction pattern");
+        }
     }
-  }
 }

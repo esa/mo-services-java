@@ -23,48 +23,47 @@ package esa.mo.mal.encoder.binary.fixed;
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 
 /**
- * Implements the MALElementInputStream interface for a fixed length binary encoding.
+ * Implements the MALElementInputStream interface for a fixed length binary
+ * encoding.
  */
-public class FixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementInputStream
-{
+public class FixedBinaryElementInputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementInputStream {
 
-  /**
-   * Constructor.
-   *
-   * @param is               Input stream to read from.
-   * @param timeHandler      Time handler to use.
-   * @param shortLengthField True if length field is 16-bit wide, otherwise assumed to be 32-bit.
-   */
-  public FixedBinaryElementInputStream(final java.io.InputStream is,
-      final BinaryTimeHandler timeHandler,
-      final boolean shortLengthField)
-  {
-    super(new FixedBinaryDecoder(is, timeHandler, shortLengthField));
-  }
+    /**
+     * Constructor.
+     *
+     * @param is Input stream to read from.
+     * @param timeHandler Time handler to use.
+     * @param shortLengthField True if length field is 16-bit wide, otherwise
+     * assumed to be 32-bit.
+     */
+    public FixedBinaryElementInputStream(final java.io.InputStream is,
+            final BinaryTimeHandler timeHandler,
+            final boolean shortLengthField) {
+        super(new FixedBinaryDecoder(is, timeHandler, shortLengthField));
+    }
 
-  /**
-   * Constructor.
-   *
-   * @param buf              Byte buffer to read from.
-   * @param offset           Offset into buffer to start from.
-   * @param timeHandler      Time handler to use.
-   * @param shortLengthField True if length field is 16-bit wide, otherwise assumed to be 32-bit.
-   */
-  public FixedBinaryElementInputStream(final byte[] buf,
-      final int offset,
-      final BinaryTimeHandler timeHandler,
-      final boolean shortLengthField)
-  {
-    super(new FixedBinaryDecoder(buf, offset, timeHandler, shortLengthField));
-  }
+    /**
+     * Constructor.
+     *
+     * @param buf Byte buffer to read from.
+     * @param offset Offset into buffer to start from.
+     * @param timeHandler Time handler to use.
+     * @param shortLengthField True if length field is 16-bit wide, otherwise
+     * assumed to be 32-bit.
+     */
+    public FixedBinaryElementInputStream(final byte[] buf,
+            final int offset,
+            final BinaryTimeHandler timeHandler,
+            final boolean shortLengthField) {
+        super(new FixedBinaryDecoder(buf, offset, timeHandler, shortLengthField));
+    }
 
-  /**
-   * Sub class constructor.
-   *
-   * @param pdec Decoder to use.
-   */
-  protected FixedBinaryElementInputStream(FixedBinaryDecoder pdec)
-  {
-    super(pdec);
-  }
+    /**
+     * Sub class constructor.
+     *
+     * @param pdec Decoder to use.
+     */
+    protected FixedBinaryElementInputStream(FixedBinaryDecoder pdec) {
+        super(pdec);
+    }
 }

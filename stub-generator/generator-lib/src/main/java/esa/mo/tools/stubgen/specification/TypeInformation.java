@@ -26,86 +26,87 @@ import esa.mo.xsd.TypeReference;
 /**
  * Interface for querying basic type information.
  */
-public interface TypeInformation
-{
-  /**
-   * Returns true if the type is abstract.
-   *
-   * @param type the type to look for.
-   * @return true if abstract.
-   */
-  boolean isAbstract(TypeReference type);
+public interface TypeInformation {
 
-  /**
-   * Returns true if the type is an enumeration.
-   *
-   * @param type the type to look for.
-   * @return true if an enumeration.
-   */
-  boolean isEnum(TypeReference type);
+    /**
+     * Returns true if the type is abstract.
+     *
+     * @param type the type to look for.
+     * @return true if abstract.
+     */
+    boolean isAbstract(TypeReference type);
 
-  /**
-   * Returns true if the type is a native type.
-   *
-   * @param type the type to look for.
-   * @return true if native.
-   */
-  boolean isAttributeNativeType(TypeReference type);
+    /**
+     * Returns true if the type is an enumeration.
+     *
+     * @param type the type to look for.
+     * @return true if an enumeration.
+     */
+    boolean isEnum(TypeReference type);
 
-  /**
-   * Returns true if the type is an attribute.
-   *
-   * @param type the type to look for.
-   * @return true if an attribute.
-   */
-  boolean isAttributeType(TypeReference type);
+    /**
+     * Returns true if the type is a native type.
+     *
+     * @param type the type to look for.
+     * @return true if native.
+     */
+    boolean isAttributeNativeType(TypeReference type);
 
-  /**
-   * Returns the package all generated classes for an area should be created in.
-   *
-   * @param area the area to search.
-   * @return the package.
-   */
-  String getAreaPackage(String area);
+    /**
+     * Returns true if the type is an attribute.
+     *
+     * @param type the type to look for.
+     * @return true if an attribute.
+     */
+    boolean isAttributeType(TypeReference type);
 
-  /**
-   * Converts a standard type name to the language specific format.
-   *
-   * @param targetType the type to convert.
-   * @return the converted type.
-   */
-  String convertToNamespace(String targetType);
+    /**
+     * Returns the package all generated classes for an area should be created
+     * in.
+     *
+     * @param area the area to search.
+     * @return the package.
+     */
+    String getAreaPackage(String area);
 
-  /**
-   * Converts a class name to a language specific version. Useful when a language native type is used to represent a MAL
-   * type.
-   *
-   * @param call the source type.
-   * @return the converted type.
-   */
-  String convertClassName(String call);
+    /**
+     * Converts a standard type name to the language specific format.
+     *
+     * @param targetType the type to convert.
+     * @return the converted type.
+     */
+    String convertToNamespace(String targetType);
 
-  /**
-   * Creates the full name of a structure type from the supplied details.
-   *
-   * @param file The writer to add any type dependencies to.
-   * @param type The type.
-   * @param isStructure True if the type is a structure type.
-   * @return the full name of the type.
-   */
-  String createElementType(TargetWriter file, TypeReference type, boolean isStructure);
+    /**
+     * Converts a class name to a language specific version. Useful when a
+     * language native type is used to represent a MAL type.
+     *
+     * @param call the source type.
+     * @return the converted type.
+     */
+    String convertClassName(String call);
 
-  /**
-   * Creates the full name of a structure type from the supplied details.
-   *
-   * @param file The writer to add any type dependencies to.
-   * @param area The area of the type.
-   * @param service The service of the type, may be null.
-   * @param type The type.
-   * @return the full name of the type.
-   */
-  String createElementType(TargetWriter file,
-          String area,
-          String service,
-          String type);
+    /**
+     * Creates the full name of a structure type from the supplied details.
+     *
+     * @param file The writer to add any type dependencies to.
+     * @param type The type.
+     * @param isStructure True if the type is a structure type.
+     * @return the full name of the type.
+     */
+    String createElementType(TargetWriter file, TypeReference type, boolean isStructure);
+
+    /**
+     * Creates the full name of a structure type from the supplied details.
+     *
+     * @param file The writer to add any type dependencies to.
+     * @param area The area of the type.
+     * @param service The service of the type, may be null.
+     * @param type The type.
+     * @return the full name of the type.
+     */
+    String createElementType(TargetWriter file,
+            String area,
+            String service,
+            String type);
 }

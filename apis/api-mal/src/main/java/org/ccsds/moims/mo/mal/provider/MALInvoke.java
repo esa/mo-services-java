@@ -27,26 +27,30 @@ import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 /**
  * The MALInvoke interface represents an INVOKE interaction handling context.
  */
-public interface MALInvoke extends MALRequest
-{
-  /**
-   * The method sends an ACK message.
-   *
-   * @param body Message body to be transmitted to the consumer
-   * @return the MALMessage that has been sent
-   * @throws MALInteractionException if the interaction is in the incorrect state.
-   * @throws MALException If an error occurs
-   */
-  org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement(Object... body)
-          throws MALInteractionException, MALException;
-  /**
-   * The method sends an ACK message.
-   *
-   * @param body The already encoded message body to be transmitted to the consumer
-   * @return the MALMessage that has been sent
-   * @throws MALInteractionException if the interaction is in the incorrect state.
-   * @throws MALException If an error occurs
-   */
-  org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement(MALEncodedBody body)
-          throws MALInteractionException, MALException;
+public interface MALInvoke extends MALRequest {
+
+    /**
+     * The method sends an ACK message.
+     *
+     * @param body Message body to be transmitted to the consumer
+     * @return the MALMessage that has been sent
+     * @throws MALInteractionException if the interaction is in the incorrect
+     * state.
+     * @throws MALException If an error occurs
+     */
+    org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement(Object... body)
+            throws MALInteractionException, MALException;
+
+    /**
+     * The method sends an ACK message.
+     *
+     * @param body The already encoded message body to be transmitted to the
+     * consumer
+     * @return the MALMessage that has been sent
+     * @throws MALInteractionException if the interaction is in the incorrect
+     * state.
+     * @throws MALException If an error occurs
+     */
+    org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement(MALEncodedBody body)
+            throws MALInteractionException, MALException;
 }

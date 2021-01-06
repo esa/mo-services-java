@@ -25,204 +25,186 @@ import java.io.OutputStream;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.structures.FineTime;
-import org.ccsds.moims.mo.mal.structures.Time;
 
 /**
- * Implements the MALEncoder and MALListEncoder interfaces for a split binary encoding.
+ * Implements the MALEncoder and MALListEncoder interfaces for a split binary
+ * encoding.
  */
-public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.VariableBinaryEncoder
-{
+public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.VariableBinaryEncoder {
 
-  private int openCount = 1;
-
-  /**
-   * Constructor.
-   *
-   * @param os          Output stream to write to.
-   * @param timeHandler Time handler to use.
-   */
-  public SplitBinaryEncoder(final OutputStream os, final BinaryTimeHandler timeHandler)
-  {
-    super(new SplitBinaryStreamHolder(os), timeHandler);
-  }
-
-  /**
-   * Constructor for derived classes that have their own stream holder implementation that should be
-   * used.
-   *
-   * @param os          Output stream to write to.
-   * @param timeHandler Time handler to use.
-   */
-  protected SplitBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler)
-  {
-    super(os, timeHandler);
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.MALListEncoder createListEncoder(
-      final java.util.List value) throws MALException
-  {
-    ++openCount;
-
-    return super.createListEncoder(value);
-  }
-
-  /**
-   * A MAL string is encoded as follows: - String Length: UInteger - Character: UTF-8, variable
-   * size, multiple of octet The field 'string length' shall be assigned with the number of octets
-   * required to encode the character of the string
-   *
-   * @param val The string to encode
-   * @throws MALException if the string to encode is too large
-   */
-  @Override
-  public void encodeString(String val) throws MALException
-  {
-
-    try {
-      outputStream.addString(val);
-    } catch (IOException e) {
-      throw new MALException(ENCODING_EXCEPTION_STR, e);
-    }
-  }
-
-  @Override
-  public void encodeNullableString(String value) throws MALException
-  {
-
-    try {
-      if (value != null) {
-        // encode presence flag
-        outputStream.addNotNull();
-        // encode element as String
-        encodeString(value);
-      } else {
-        // encode presence flag
-        outputStream.addIsNull();
-
-      }
-    } catch (IOException e) {
-      throw new MALException(ENCODING_EXCEPTION_STR, e);
-    }
-  }
-
-  @Override
-  public void close()
-  {
-    --openCount;
-
-    if (1 > openCount) {
-      try {
-        ((SplitBinaryStreamHolder) outputStream).close();
-      } catch (IOException ex) {
-        // do nothing
-      }
-    }
-  }
-
-  /**
-   * Extends the StreamHolder class for handling splitting out the Boolean values.
-   */
-  public static class SplitBinaryStreamHolder extends VariableBinaryStreamHolder
-  {
-
-    private static final int BIT_BYTES_BLOCK_SIZE = 1024;
-    private final java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-    private byte[] bitBytes = new byte[BIT_BYTES_BLOCK_SIZE];
-    private int bitBytesInUse = 0;
-    private int bitIndex = 0;
+    private int openCount = 1;
 
     /**
      * Constructor.
      *
-     * @param outputStream The output stream to encode into.
+     * @param os Output stream to write to.
+     * @param timeHandler Time handler to use.
      */
-    public SplitBinaryStreamHolder(OutputStream outputStream)
-    {
-      super(outputStream);
+    public SplitBinaryEncoder(final OutputStream os, final BinaryTimeHandler timeHandler) {
+        super(new SplitBinaryStreamHolder(os), timeHandler);
+    }
+
+    /**
+     * Constructor for derived classes that have their own stream holder
+     * implementation that should be used.
+     *
+     * @param os Output stream to write to.
+     * @param timeHandler Time handler to use.
+     */
+    protected SplitBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler) {
+        super(os, timeHandler);
     }
 
     @Override
-    public void close() throws IOException
-    {
-      streamAddUnsignedInt(outputStream, bitBytesInUse);
-      outputStream.write(bitBytes, 0, bitBytesInUse);
-      baos.writeTo(outputStream);
+    public org.ccsds.moims.mo.mal.MALListEncoder createListEncoder(
+            final java.util.List value) throws MALException {
+        ++openCount;
+
+        return super.createListEncoder(value);
+    }
+
+    /**
+     * A MAL string is encoded as follows: - String Length: UInteger -
+     * Character: UTF-8, variable size, multiple of octet The field 'string
+     * length' shall be assigned with the number of octets required to encode
+     * the character of the string
+     *
+     * @param val The string to encode
+     * @throws MALException if the string to encode is too large
+     */
+    @Override
+    public void encodeString(String val) throws MALException {
+
+        try {
+            outputStream.addString(val);
+        } catch (IOException e) {
+            throw new MALException(ENCODING_EXCEPTION_STR, e);
+        }
     }
 
     @Override
-    public void addBool(boolean value) throws IOException
-    {
-      if (value) {
-        setBit(bitIndex);
-      }
-      ++bitIndex;
+    public void encodeNullableString(String value) throws MALException {
+
+        try {
+            if (value != null) {
+                // encode presence flag
+                outputStream.addNotNull();
+                // encode element as String
+                encodeString(value);
+            } else {
+                // encode presence flag
+                outputStream.addIsNull();
+
+            }
+        } catch (IOException e) {
+            throw new MALException(ENCODING_EXCEPTION_STR, e);
+        }
     }
 
     @Override
-    public void addIsNull() throws IOException
-    {
-      ++bitIndex;
+    public void close() {
+        --openCount;
+
+        if (1 > openCount) {
+            try {
+                ((SplitBinaryStreamHolder) outputStream).close();
+            } catch (IOException ex) {
+                // do nothing
+            }
+        }
     }
 
-    @Override
-    public void addNotNull() throws IOException
-    {
-      setBit(bitIndex);
-      ++bitIndex;
-    }
+    /**
+     * Extends the StreamHolder class for handling splitting out the Boolean
+     * values.
+     */
+    public static class SplitBinaryStreamHolder extends VariableBinaryStreamHolder {
 
-    @Override
-    public void directAdd(final byte[] value, int os, int ln) throws IOException
-    {
-      baos.write(value, os, ln);
-    }
+        private static final int BIT_BYTES_BLOCK_SIZE = 1024;
+        private final java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        private byte[] bitBytes = new byte[BIT_BYTES_BLOCK_SIZE];
+        private int bitBytesInUse = 0;
+        private int bitIndex = 0;
 
-    @Override
-    public void directAdd(final byte[] val) throws IOException
-    {
-      baos.write(val);
-    }
-
-    @Override
-    public void directAdd(final byte val) throws IOException
-    {
-      baos.write(val);
-    }
-
-    private static void streamAddUnsignedInt(java.io.OutputStream os, int value) throws IOException
-    {
-      while ((value & 0xFFFFFF80) != 0L) {
-        os.write((value & 0x7F) | 0x80);
-        value >>>= 7;
-      }
-      os.write(value & 0x7F);
-    }
-
-    public void addFixedUnsignedLong(long value) throws IOException
-    {
-      directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array());
-    }
-
-    private void setBit(int bitIndex)
-    {
-      int byteIndex = bitIndex / 8;
-
-      int bytesRequired = byteIndex + 1;
-      if (bitBytesInUse < bytesRequired) {
-        if (bitBytes.length < bytesRequired) {
-          bitBytes = java.util.Arrays.copyOf(bitBytes,
-              ((bytesRequired / BIT_BYTES_BLOCK_SIZE) + 1)
-              * BIT_BYTES_BLOCK_SIZE);
+        /**
+         * Constructor.
+         *
+         * @param outputStream The output stream to encode into.
+         */
+        public SplitBinaryStreamHolder(OutputStream outputStream) {
+            super(outputStream);
         }
 
-        bitBytesInUse = bytesRequired;
-      }
+        @Override
+        public void close() throws IOException {
+            streamAddUnsignedInt(outputStream, bitBytesInUse);
+            outputStream.write(bitBytes, 0, bitBytesInUse);
+            baos.writeTo(outputStream);
+        }
 
-      bitIndex %= 8;
-      bitBytes[byteIndex] |= (1 << bitIndex);
+        @Override
+        public void addBool(boolean value) throws IOException {
+            if (value) {
+                setBit(bitIndex);
+            }
+            ++bitIndex;
+        }
 
+        @Override
+        public void addIsNull() throws IOException {
+            ++bitIndex;
+        }
+
+        @Override
+        public void addNotNull() throws IOException {
+            setBit(bitIndex);
+            ++bitIndex;
+        }
+
+        @Override
+        public void directAdd(final byte[] value, int os, int ln) throws IOException {
+            baos.write(value, os, ln);
+        }
+
+        @Override
+        public void directAdd(final byte[] val) throws IOException {
+            baos.write(val);
+        }
+
+        @Override
+        public void directAdd(final byte val) throws IOException {
+            baos.write(val);
+        }
+
+        private static void streamAddUnsignedInt(java.io.OutputStream os, int value) throws IOException {
+            while ((value & 0xFFFFFF80) != 0L) {
+                os.write((value & 0x7F) | 0x80);
+                value >>>= 7;
+            }
+            os.write(value & 0x7F);
+        }
+
+        public void addFixedUnsignedLong(long value) throws IOException {
+            directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array());
+        }
+
+        private void setBit(int bitIndex) {
+            int byteIndex = bitIndex / 8;
+
+            int bytesRequired = byteIndex + 1;
+            if (bitBytesInUse < bytesRequired) {
+                if (bitBytes.length < bytesRequired) {
+                    bitBytes = java.util.Arrays.copyOf(bitBytes,
+                            ((bytesRequired / BIT_BYTES_BLOCK_SIZE) + 1)
+                            * BIT_BYTES_BLOCK_SIZE);
+                }
+
+                bitBytesInUse = bytesRequired;
+            }
+
+            bitIndex %= 8;
+            bitBytes[byteIndex] |= (1 << bitIndex);
+
+        }
     }
-  }
 }

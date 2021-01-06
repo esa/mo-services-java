@@ -23,24 +23,22 @@ package esa.mo.mal.transport.spp;
 /**
  * Small class that implements a simple SSC.
  */
-public class SPPSourceSequenceCounterSimple implements SPPSourceSequenceCounter
-{
+public class SPPSourceSequenceCounterSimple implements SPPSourceSequenceCounter {
 
-  private int sequenceCount = 0;
+    private int sequenceCount = 0;
 
-  @Override
-  public int getNextSourceSequenceCount()
-  {
-    int i;
+    @Override
+    public int getNextSourceSequenceCount() {
+        int i;
 
-    synchronized (this) {
-      i = sequenceCount++;
+        synchronized (this) {
+            i = sequenceCount++;
 
-      if (sequenceCount > 16383) {
-        sequenceCount = 0;
-      }
+            if (sequenceCount > 16383) {
+                sequenceCount = 0;
+            }
+        }
+
+        return i;
     }
-
-    return i;
-  }
 }

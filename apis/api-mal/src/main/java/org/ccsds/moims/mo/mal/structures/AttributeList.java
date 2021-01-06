@@ -23,8 +23,8 @@ package org.ccsds.moims.mo.mal.structures;
 /**
  * List interface for Attributes.
  *
- * @param <T> The type of the list, no requirement to extend Attribute so that native Java types can be used.
+ * @param <T> The type of the list, no requirement to extend Attribute so that
+ * native Java types can be used.
  */
-public interface AttributeList<T> extends ElementList<T>
-{
+public interface AttributeList<T> extends ElementList<T> {
 }

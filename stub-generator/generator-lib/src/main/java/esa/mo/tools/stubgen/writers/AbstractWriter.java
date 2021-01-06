@@ -21,65 +21,60 @@
 package esa.mo.tools.stubgen.writers;
 
 /**
- * Basic implementation of the base writer that adds a few extra support methods.
+ * Basic implementation of the base writer that adds a few extra support
+ * methods.
  */
-public abstract class AbstractWriter implements TargetWriter
-{
-  private final String lineSeparator;
+public abstract class AbstractWriter implements TargetWriter {
 
-  /**
-   * Constructor.
-   *
-   * @param lineSeparator The line separator to use.
-   */
-  public AbstractWriter(String lineSeparator)
-  {
-    this.lineSeparator = lineSeparator;
-  }
+    private final String lineSeparator;
 
-  /**
-   * Constructor.
-   */
-  public AbstractWriter()
-  {
-    this.lineSeparator = "\n";
-  }
-
-  @Override
-  public String getLineSeparator()
-  {
-    return lineSeparator;
-  }
-
-  @Override
-  public void addTypeDependency(String typeName)
-  {
-  }
-
-  /**
-   * Creates a String indented correctly with a semicolon at the end if required.
-   *
-   * @param tabCount Indentation level.
-   * @param statement The file statement.
-   * @param addSemi True if a trailing semicolon is required.
-   * @return the created string.
-   */
-  public String addFileStatement(int tabCount, String statement, boolean addSemi)
-  {
-    StringBuilder buf = new StringBuilder();
-    for (int i = 0; i < tabCount; i++)
-    {
-      buf.append("  ");
+    /**
+     * Constructor.
+     *
+     * @param lineSeparator The line separator to use.
+     */
+    public AbstractWriter(String lineSeparator) {
+        this.lineSeparator = lineSeparator;
     }
 
-    buf.append(statement);
-    if (addSemi)
-    {
-      buf.append(";");
+    /**
+     * Constructor.
+     */
+    public AbstractWriter() {
+        this.lineSeparator = "\n";
     }
 
-    buf.append(lineSeparator);
+    @Override
+    public String getLineSeparator() {
+        return lineSeparator;
+    }
 
-    return buf.toString();
-  }
+    @Override
+    public void addTypeDependency(String typeName) {
+    }
+
+    /**
+     * Creates a String indented correctly with a semicolon at the end if
+     * required.
+     *
+     * @param tabCount Indentation level.
+     * @param statement The file statement.
+     * @param addSemi True if a trailing semicolon is required.
+     * @return the created string.
+     */
+    public String addFileStatement(int tabCount, String statement, boolean addSemi) {
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < tabCount; i++) {
+            buf.append("  ");
+        }
+
+        buf.append(statement);
+        if (addSemi) {
+            buf.append(";");
+        }
+
+        buf.append(lineSeparator);
+
+        return buf.toString();
+    }
 }

@@ -28,87 +28,91 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 /**
  * Class representing an Invoke operation.
  */
-public class MALInvokeOperation extends MALOperation
-{
-  /**
-   * Literal representing the INVOKE stage.
-   */
-  public static final byte _INVOKE_STAGE = (byte) 0x1;
-  /**
-   * MAL UOctet representing the INVOKE stage.
-   */
-  public static final UOctet INVOKE_STAGE = new UOctet(_INVOKE_STAGE);
-  /**
-   * Literal representing the INVOKE_ACK stage.
-   */
-  public static final byte _INVOKE_ACK_STAGE = (byte) 0x2;
-  /**
-   * MAL UOctet representing the INVOKE_ACK stage.
-   */
-  public static final UOctet INVOKE_ACK_STAGE = new UOctet(_INVOKE_ACK_STAGE);
-  /**
-   * Literal representing the INVOKE_RESPONSE stage.
-   */
-  public static final byte _INVOKE_RESPONSE_STAGE = (byte) 0x3;
-  /**
-   * MAL UOctet representing the INVOKE_RESPONSE stage.
-   */
-  public static final UOctet INVOKE_RESPONSE_STAGE = new UOctet(_INVOKE_RESPONSE_STAGE);
-  private final MALOperationStage invokeStage;
-  private final MALOperationStage invokeAckStage;
-  private final MALOperationStage invokeResponseStage;
+public class MALInvokeOperation extends MALOperation {
 
-  /**
-   * Initialises the internal variables with the supplied values.
-   * @param number Number of the operation.
-   * @param name Name of the operation.
-   * @param replayable Boolean that indicates whether the operation is replayable or not
-   * @param capabilitySet Capability set of the operation.
-   * @param invokeStage The stage information for the INVOKE stage.
-   * @param invokeAckStage The stage information for the INVOKE_ACK stage.
-   * @param invokeResponseStage The stage information for the INVOKE_RESPONSE stage.
-   * @throws java.lang.IllegalArgumentException If any argument is null, except the operation stage arguments.
-   */
-  public MALInvokeOperation(final UShort number,
-          final Identifier name,
-          final Boolean replayable,
-          final UShort capabilitySet,
-          final MALOperationStage invokeStage,
-          final MALOperationStage invokeAckStage,
-          final MALOperationStage invokeResponseStage) throws java.lang.IllegalArgumentException
-  {
-    super(number, name, replayable, InteractionType.INVOKE, capabilitySet);
+    /**
+     * Literal representing the INVOKE stage.
+     */
+    public static final byte _INVOKE_STAGE = (byte) 0x1;
+    /**
+     * MAL UOctet representing the INVOKE stage.
+     */
+    public static final UOctet INVOKE_STAGE = new UOctet(_INVOKE_STAGE);
+    /**
+     * Literal representing the INVOKE_ACK stage.
+     */
+    public static final byte _INVOKE_ACK_STAGE = (byte) 0x2;
+    /**
+     * MAL UOctet representing the INVOKE_ACK stage.
+     */
+    public static final UOctet INVOKE_ACK_STAGE = new UOctet(_INVOKE_ACK_STAGE);
+    /**
+     * Literal representing the INVOKE_RESPONSE stage.
+     */
+    public static final byte _INVOKE_RESPONSE_STAGE = (byte) 0x3;
+    /**
+     * MAL UOctet representing the INVOKE_RESPONSE stage.
+     */
+    public static final UOctet INVOKE_RESPONSE_STAGE = new UOctet(_INVOKE_RESPONSE_STAGE);
+    private final MALOperationStage invokeStage;
+    private final MALOperationStage invokeAckStage;
+    private final MALOperationStage invokeResponseStage;
 
-    this.invokeStage = invokeStage;
-    this.invokeAckStage = invokeAckStage;
-    this.invokeResponseStage = invokeResponseStage;
-  }
+    /**
+     * Initialises the internal variables with the supplied values.
+     *
+     * @param number Number of the operation.
+     * @param name Name of the operation.
+     * @param replayable Boolean that indicates whether the operation is
+     * replayable or not
+     * @param capabilitySet Capability set of the operation.
+     * @param invokeStage The stage information for the INVOKE stage.
+     * @param invokeAckStage The stage information for the INVOKE_ACK stage.
+     * @param invokeResponseStage The stage information for the INVOKE_RESPONSE
+     * stage.
+     * @throws java.lang.IllegalArgumentException If any argument is null,
+     * except the operation stage arguments.
+     */
+    public MALInvokeOperation(final UShort number,
+            final Identifier name,
+            final Boolean replayable,
+            final UShort capabilitySet,
+            final MALOperationStage invokeStage,
+            final MALOperationStage invokeAckStage,
+            final MALOperationStage invokeResponseStage)
+            throws java.lang.IllegalArgumentException {
+        super(number, name, replayable, InteractionType.INVOKE, capabilitySet);
 
-  /**
-   * Returns the operation stage for the supplied stage number.
-   * @param stageNumber The stage number to return.
-   * @return The operation stage.
-   * @throws java.lang.IllegalArgumentException if the supplied argument is null or stage does not exist for this
-   * pattern.
-   */
-  @Override
-  public MALOperationStage getOperationStage(final UOctet stageNumber) throws IllegalArgumentException
-  {
-    if (stageNumber == null)
-    {
-      throw new IllegalArgumentException("Supplied stage number must not be NULL");
+        this.invokeStage = invokeStage;
+        this.invokeAckStage = invokeAckStage;
+        this.invokeResponseStage = invokeResponseStage;
     }
-    
-    switch(stageNumber.getValue())
-    {
-      case _INVOKE_STAGE:
-        return invokeStage;
-      case _INVOKE_ACK_STAGE:
-        return invokeAckStage;
-      case _INVOKE_RESPONSE_STAGE:
-        return invokeResponseStage;
-      default:
-        throw new IllegalArgumentException("Supplied stage number not supported by interaction pattern");
+
+    /**
+     * Returns the operation stage for the supplied stage number.
+     *
+     * @param stageNumber The stage number to return.
+     * @return The operation stage.
+     * @throws java.lang.IllegalArgumentException if the supplied argument is
+     * null or stage does not exist for this pattern.
+     */
+    @Override
+    public MALOperationStage getOperationStage(final UOctet stageNumber)
+            throws IllegalArgumentException {
+        if (stageNumber == null) {
+            throw new IllegalArgumentException("Supplied stage number must not be NULL");
+        }
+
+        switch (stageNumber.getValue()) {
+            case _INVOKE_STAGE:
+                return invokeStage;
+            case _INVOKE_ACK_STAGE:
+                return invokeAckStage;
+            case _INVOKE_RESPONSE_STAGE:
+                return invokeResponseStage;
+            default:
+                throw new IllegalArgumentException(
+                        "Supplied stage number not supported by interaction pattern");
+        }
     }
-  }
 }

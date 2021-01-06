@@ -30,33 +30,30 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 /**
  * Instance of the transport factory for the RMI protocol.
  */
-public class RMITransportFactoryImpl extends MALTransportFactory
-{
+public class RMITransportFactoryImpl extends MALTransportFactory {
 
-  private static final Object MUTEX = new Object();
-  private GENTransport transport = null;
+    private static final Object MUTEX = new Object();
+    private GENTransport transport = null;
 
-  /**
-   * Constructor.
-   *
-   * @param protocol The protocol string.
-   */
-  public RMITransportFactoryImpl(final String protocol)
-  {
-    super(protocol);
-  }
-
-  @Override
-  public MALTransport createTransport(final MALContext malContext, final Map properties) throws
-      MALException
-  {
-    synchronized (MUTEX) {
-      if (null == transport) {
-        transport = new RMITransport(getProtocol(), this, properties);
-        transport.init();
-      }
-
-      return transport;
+    /**
+     * Constructor.
+     *
+     * @param protocol The protocol string.
+     */
+    public RMITransportFactoryImpl(final String protocol) {
+        super(protocol);
     }
-  }
+
+    @Override
+    public MALTransport createTransport(final MALContext malContext, 
+            final Map properties) throws MALException {
+        synchronized (MUTEX) {
+            if (null == transport) {
+                transport = new RMITransport(getProtocol(), this, properties);
+                transport.init();
+            }
+
+            return transport;
+        }
+    }
 }

@@ -28,74 +28,78 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 /**
  * Class representing a Request operation.
  */
-public class MALRequestOperation extends MALOperation
-{
-  /**
-   * Literal representing the REQUEST stage.
-   */
-  public static final byte _REQUEST_STAGE = (byte) 0x1;
-  /**
-   * MAL UOctet representing the REQUEST stage.
-   */
-  public static final UOctet REQUEST_STAGE = new UOctet(_REQUEST_STAGE);
-  /**
-   * Literal representing the REQUEST_RESPONSE stage.
-   */
-  public static final byte _REQUEST_RESPONSE_STAGE = (byte) 0x2;
-  /**
-   * MAL UOctet representing the REQUEST_RESPONSE stage.
-   */
-  public static final UOctet REQUEST_RESPONSE_STAGE = new UOctet(_REQUEST_RESPONSE_STAGE);
+public class MALRequestOperation extends MALOperation {
 
-  private final MALOperationStage requestStage;
-  private final MALOperationStage responseStage;
+    /**
+     * Literal representing the REQUEST stage.
+     */
+    public static final byte _REQUEST_STAGE = (byte) 0x1;
+    /**
+     * MAL UOctet representing the REQUEST stage.
+     */
+    public static final UOctet REQUEST_STAGE = new UOctet(_REQUEST_STAGE);
+    /**
+     * Literal representing the REQUEST_RESPONSE stage.
+     */
+    public static final byte _REQUEST_RESPONSE_STAGE = (byte) 0x2;
+    /**
+     * MAL UOctet representing the REQUEST_RESPONSE stage.
+     */
+    public static final UOctet REQUEST_RESPONSE_STAGE = new UOctet(_REQUEST_RESPONSE_STAGE);
 
-  /**
-   * Initialises the internal variables with the supplied values.
-   * @param number Number of the operation.
-   * @param name Name of the operation.
-   * @param replayable Boolean that indicates whether the operation is replayable or not
-   * @param capabilitySet Capability set of the operation.
-   * @param requestStage The stage information for the REQUEST stage.
-   * @param responseStage The stage information for the REQUEST_RESPONSE stage.
-   * @throws java.lang.IllegalArgumentException If any argument is null, except the operation stage arguments.
-   */
-  public MALRequestOperation(final UShort number,
-          final Identifier name,
-          final Boolean replayable,
-          final UShort capabilitySet,
-          final MALOperationStage requestStage,
-          final MALOperationStage responseStage) throws java.lang.IllegalArgumentException
-  {
-    super(number, name, replayable, InteractionType.REQUEST, capabilitySet);
+    private final MALOperationStage requestStage;
+    private final MALOperationStage responseStage;
 
-    this.requestStage = requestStage;
-    this.responseStage = responseStage;
-  }
+    /**
+     * Initialises the internal variables with the supplied values.
+     *
+     * @param number Number of the operation.
+     * @param name Name of the operation.
+     * @param replayable Boolean that indicates whether the operation is
+     * replayable or not
+     * @param capabilitySet Capability set of the operation.
+     * @param requestStage The stage information for the REQUEST stage.
+     * @param responseStage The stage information for the REQUEST_RESPONSE
+     * stage.
+     * @throws java.lang.IllegalArgumentException If any argument is null,
+     * except the operation stage arguments.
+     */
+    public MALRequestOperation(final UShort number,
+            final Identifier name,
+            final Boolean replayable,
+            final UShort capabilitySet,
+            final MALOperationStage requestStage,
+            final MALOperationStage responseStage)
+            throws java.lang.IllegalArgumentException {
+        super(number, name, replayable, InteractionType.REQUEST, capabilitySet);
 
-  /**
-   * Returns the operation stage for the supplied stage number.
-   * @param stageNumber The stage number to return.
-   * @return The operation stage.
-   * @throws java.lang.IllegalArgumentException if the supplied argument is null or stage does not exist for this
-   * pattern.
-   */
-  @Override
-  public MALOperationStage getOperationStage(final UOctet stageNumber) throws IllegalArgumentException
-  {
-    if (stageNumber == null)
-    {
-      throw new IllegalArgumentException("Supplied stage number must not be NULL");
+        this.requestStage = requestStage;
+        this.responseStage = responseStage;
     }
-    
-    switch(stageNumber.getValue())
-    {
-      case _REQUEST_STAGE:
-        return requestStage;
-      case _REQUEST_RESPONSE_STAGE:
-        return responseStage;
-      default:
-        throw new IllegalArgumentException("Supplied stage number not supported by interaction pattern");
+
+    /**
+     * Returns the operation stage for the supplied stage number.
+     *
+     * @param stageNumber The stage number to return.
+     * @return The operation stage.
+     * @throws java.lang.IllegalArgumentException if the supplied argument is
+     * null or stage does not exist for this pattern.
+     */
+    @Override
+    public MALOperationStage getOperationStage(final UOctet stageNumber)
+            throws IllegalArgumentException {
+        if (stageNumber == null) {
+            throw new IllegalArgumentException("Supplied stage number must not be NULL");
+        }
+
+        switch (stageNumber.getValue()) {
+            case _REQUEST_STAGE:
+                return requestStage;
+            case _REQUEST_RESPONSE_STAGE:
+                return responseStage;
+            default:
+                throw new IllegalArgumentException(
+                        "Supplied stage number not supported by interaction pattern");
+        }
     }
-  }
 }

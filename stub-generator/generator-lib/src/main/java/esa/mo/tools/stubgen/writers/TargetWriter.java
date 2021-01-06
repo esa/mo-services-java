@@ -25,26 +25,26 @@ import java.io.IOException;
 /**
  * The basic class that all writers extend.
  */
-public interface TargetWriter
-{
-  /**
-   * Adds a dependency on a supplied type to the file.
-   *
-   * @param typeName The type to depend on.
-   */
-  void addTypeDependency(String typeName);
+public interface TargetWriter {
 
-  /**
-   * Returns the current line separator.
-   *
-   * @return the line separator.
-   */
-  String getLineSeparator();
+    /**
+     * Adds a dependency on a supplied type to the file.
+     *
+     * @param typeName The type to depend on.
+     */
+    void addTypeDependency(String typeName);
 
-  /**
-   * Flushes the contents of the writer.
-   *
-   * @throws IOException if there is an IO problem.
-   */
-  void flush() throws IOException;
+    /**
+     * Returns the current line separator.
+     *
+     * @return the line separator.
+     */
+    String getLineSeparator();
+
+    /**
+     * Flushes the contents of the writer.
+     *
+     * @throws IOException if there is an IO problem.
+     */
+    void flush() throws IOException;
 }

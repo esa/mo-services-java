@@ -25,20 +25,24 @@ import esa.mo.tools.stubgen.writers.ClassWriter;
 import java.io.IOException;
 
 /**
- * Small extension to the standard ClassWriter interface to add methods for proposed features.
+ * Small extension to the standard ClassWriter interface to add methods for
+ * proposed features.
  */
-public interface ClassWriterProposed extends ClassWriter
-{
-  /**
-   * Adds a proposed member variable to the class.
-   *
-   * @param isStatic True if the variable is static.
-   * @param isFinal True if the variable may not be modified.
-   * @param scope Scope of the variable.
-   * @param type Type of the variable.
-   * @param isObject True if the variable is an object rather than native type.
-   * @param initialValue The initial value of the variable.
-   * @throws IOException If there is an IO error.
-   */
-  void addClassVariableProposed(boolean isStatic, boolean isFinal, String scope, CompositeField type, boolean isObject, String initialValue) throws IOException;
+public interface ClassWriterProposed extends ClassWriter {
+
+    /**
+     * Adds a proposed member variable to the class.
+     *
+     * @param isStatic True if the variable is static.
+     * @param isFinal True if the variable may not be modified.
+     * @param scope Scope of the variable.
+     * @param type Type of the variable.
+     * @param isObject True if the variable is an object rather than native
+     * type.
+     * @param initialValue The initial value of the variable.
+     * @throws IOException If there is an IO error.
+     */
+    void addClassVariableProposed(boolean isStatic, boolean isFinal, 
+            String scope, CompositeField type, boolean isObject, 
+            String initialValue) throws IOException;
 }

@@ -29,129 +29,111 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Class representing MAL Identifier type.
  */
-public class Identifier implements Attribute
-{
-  private String value;
+public class Identifier implements Attribute {
 
-  /**
-   * Default constructor.
-   */
-  public Identifier()
-  {
-    this.value = "";
-  }
+    private String value;
 
-  /**
-   * Initialiser constructor.
-   *
-   * @param value Value to initialise with.
-   */
-  public Identifier(final String value)
-  {
-    if (null == value)
-    {
-      Logger.getLogger(Identifier.class.getName()).log(Level.WARNING,
-          "The Identifier has been initialized with an invalid null value. Problems might occur while encoding the element.",
-          new MALException());
-      this.value = "";
+    /**
+     * Default constructor.
+     */
+    public Identifier() {
+        this.value = "";
     }
-    else
-    {
-      this.value = value;
+
+    /**
+     * Initialiser constructor.
+     *
+     * @param value Value to initialise with.
+     */
+    public Identifier(final String value) {
+        if (null == value) {
+            Logger.getLogger(Identifier.class.getName()).log(
+                    Level.WARNING,
+                    "The Identifier has been initialized with an invalid null value. "
+                            + "Problems might occur while encoding the element.",
+                    new MALException());
+            this.value = "";
+        } else {
+            this.value = value;
+        }
     }
-  }
 
-  @Override
-  public Element createElement()
-  {
-    return new Identifier();
-  }
+    @Override
+    public Element createElement() {
+        return new Identifier();
+    }
 
-  /**
-   * Returns the value of this type.
-   *
-   * @return the value.
-   */
-  public String getValue()
-  {
-    return value;
-  }
+    /**
+     * Returns the value of this type.
+     *
+     * @return the value.
+     */
+    public String getValue() {
+        return value;
+    }
 
 //  This might be required for XML serialisation and technologies that use that.  
 //  public void setValue(String value)
 //  {
 //    this.value = value;
 //  }
-  @Override
-  public Long getShortForm()
-  {
-    return Attribute.IDENTIFIER_SHORT_FORM;
-  }
-
-  @Override
-  public Integer getTypeShortForm()
-  {
-    return Attribute.IDENTIFIER_TYPE_SHORT_FORM;
-  }
-
-  @Override
-  public UShort getAreaNumber()
-  {
-    return UShort.ATTRIBUTE_AREA_NUMBER;
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion()
-  {
-    return UOctet.AREA_VERSION;
-  }
-
-  @Override
-  public UShort getServiceNumber()
-  {
-    return UShort.ATTRIBUTE_SERVICE_NUMBER;
-  }
-
-  @Override
-  public void encode(final MALEncoder encoder) throws MALException
-  {
-    encoder.encodeIdentifier(this);
-  }
-
-  @Override
-  public Element decode(final MALDecoder decoder) throws MALException
-  {
-    return decoder.decodeIdentifier();
-  }
-
-  @Override
-  public boolean equals(final Object obj)
-  {
-    if (null == obj)
-    {
-      return false;
+    @Override
+    public Long getShortForm() {
+        return Attribute.IDENTIFIER_SHORT_FORM;
     }
-    if (this == obj)
-    {
-      return true;
-    }
-    if (!(obj instanceof Identifier))
-    {
-      return false;
-    }
-    return this.value.equals(((Identifier) obj).value);
-  }
 
-  @Override
-  public int hashCode()
-  {
-    return value.hashCode();
-  }
+    @Override
+    public Integer getTypeShortForm() {
+        return Attribute.IDENTIFIER_TYPE_SHORT_FORM;
+    }
 
-  @Override
-  public String toString()
-  {
-    return value;
-  }
-  private static final long serialVersionUID = Attribute.IDENTIFIER_SHORT_FORM;
+    @Override
+    public UShort getAreaNumber() {
+        return UShort.ATTRIBUTE_AREA_NUMBER;
+    }
+
+    @Override
+    public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion() {
+        return UOctet.AREA_VERSION;
+    }
+
+    @Override
+    public UShort getServiceNumber() {
+        return UShort.ATTRIBUTE_SERVICE_NUMBER;
+    }
+
+    @Override
+    public void encode(final MALEncoder encoder) throws MALException {
+        encoder.encodeIdentifier(this);
+    }
+
+    @Override
+    public Element decode(final MALDecoder decoder) throws MALException {
+        return decoder.decodeIdentifier();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (null == obj) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Identifier)) {
+            return false;
+        }
+        return this.value.equals(((Identifier) obj).value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
+    private static final long serialVersionUID = Attribute.IDENTIFIER_SHORT_FORM;
 }

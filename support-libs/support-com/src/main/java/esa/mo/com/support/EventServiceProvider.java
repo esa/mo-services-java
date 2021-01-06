@@ -46,128 +46,128 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * Small class that wraps up access to the COM Event service such that clients of it can just call the publish operation
- * and have the event published.
+ * Small class that wraps up access to the COM Event service such that clients
+ * of it can just call the publish operation and have the event published.
  */
-public class EventServiceProvider extends EventInheritanceSkeleton
-{
-  private final MALPublishInteractionListener eventPublishListener;
-  private MonitorEventPublisher monitorEventPublisher = null;
+public class EventServiceProvider extends EventInheritanceSkeleton {
 
-  /**
-   * Constructor
-   *
-   * @param eventPublishListener The publish event listener.
-   */
-  public EventServiceProvider(MALPublishInteractionListener eventPublishListener)
-  {
-    this.eventPublishListener = eventPublishListener;
-  }
+    private final MALPublishInteractionListener eventPublishListener;
+    private MonitorEventPublisher monitorEventPublisher = null;
 
-  /**
-   * Initialises the event publisher. Must be called before any events are published.
-   *
-   * @param domain The domain of the events.
-   * @param network The network of the events.
-   * @throws MALInteractionException On error.
-   * @throws MALException On error.
-   */
-  public void init(final IdentifierList domain, final Identifier network) throws MALInteractionException, MALException
-  {
-    BaseMalServer.LOGGER.fine("EventServiceHandler:init");
-
-    if (null == monitorEventPublisher)
-    {
-      BaseMalServer.LOGGER.fine("EventServiceHandler:creating event publisher");
-
-      monitorEventPublisher = createMonitorEventPublisher(null == domain ? new IdentifierList() : domain,
-              null == network ? new Identifier("SPACE") : network,
-              SessionType.LIVE,
-              new Identifier("LIVE"),
-              QoSLevel.BESTEFFORT,
-              null,
-              new UInteger(0));
-      final EntityKeyList lst = new EntityKeyList();
-      lst.add(new EntityKey(new Identifier("*"), (long) 0, (long) 0, (long) 0));
-
-      monitorEventPublisher.register(lst, eventPublishListener);
-    }
-  }
-
-  /**
-   * Publishes a set of COM events.
-   *
-   * @param updateHeaderList The update headers
-   * @param eventLinks The COM event links.
-   * @param eventBody The Com event bodies.
-   * @throws MALInteractionException On error.
-   * @throws MALException On error.
-   */
-  public void publishEvents(final UpdateHeaderList updateHeaderList,
-          final ObjectDetailsList eventLinks,
-          final ElementList eventBody)
-          throws MALInteractionException, MALException
-  {
-    monitorEventPublisher.publish(updateHeaderList, eventLinks, eventBody);
-  }
-
-  /**
-   * Publishes a single COM event.
-   *
-   * @param updateHeader The update header
-   * @param eventLink The COM event links.
-   * @param eventBody The Com event body.
-   * @throws MALInteractionException On error.
-   * @throws MALException On error.
-   */
-  public void publishSingleEvent(final UpdateHeader updateHeader,
-          final ObjectDetails eventLink,
-          final Element eventBody)
-          throws MALInteractionException, MALException
-  {
-    // Produce header
-    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    updateHeaderList.add(updateHeader);
-
-    // Produce ObjectDetails
-    ObjectDetailsList eventLinks = new ObjectDetailsList();
-    eventLinks.add(eventLink);
-
-    // Produce ActivityTransferList
-    ElementList eventBodies = StructureHelper.elementToElementList(eventBody);
-    eventBodies.add(eventBody);
-
-    // We can now publish the event
-    monitorEventPublisher.publish(updateHeaderList, eventLinks, eventBodies);
-  }
-
-  /**
-   * Simple default implementation of the event publish listener for publish callbacks.
-   */
-  public static class EventPublisher implements MALPublishInteractionListener
-  {
-    @Override
-    public void publishRegisterAckReceived(final MALMessageHeader header, final Map qosProperties) throws MALException
-    {
-      // do nothing
+    /**
+     * Constructor
+     *
+     * @param eventPublishListener The publish event listener.
+     */
+    public EventServiceProvider(MALPublishInteractionListener eventPublishListener) {
+        this.eventPublishListener = eventPublishListener;
     }
 
-    @Override
-    public void publishRegisterErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties) throws MALException
-    {
-      // do nothing
+    /**
+     * Initialises the event publisher. Must be called before any events are
+     * published.
+     *
+     * @param domain The domain of the events.
+     * @param network The network of the events.
+     * @throws MALInteractionException On error.
+     * @throws MALException On error.
+     */
+    public void init(final IdentifierList domain, final Identifier network)
+            throws MALInteractionException, MALException {
+        BaseMalServer.LOGGER.fine("EventServiceHandler:init");
+
+        if (null == monitorEventPublisher) {
+            BaseMalServer.LOGGER.fine("EventServiceHandler:creating event publisher");
+
+            monitorEventPublisher = createMonitorEventPublisher(
+                    null == domain ? new IdentifierList() : domain,
+                    null == network ? new Identifier("SPACE") : network,
+                    SessionType.LIVE,
+                    new Identifier("LIVE"),
+                    QoSLevel.BESTEFFORT,
+                    null,
+                    new UInteger(0));
+            final EntityKeyList lst = new EntityKeyList();
+            lst.add(new EntityKey(new Identifier("*"), (long) 0, (long) 0, (long) 0));
+
+            monitorEventPublisher.register(lst, eventPublishListener);
+        }
     }
 
-    @Override
-    public void publishErrorReceived(final MALMessageHeader header, final MALErrorBody body, final Map qosProperties) throws MALException
-    {
-      BaseMalServer.LOGGER.log(Level.WARNING, "EventPublisher:publishErrorReceived - {0}", body.toString());
+    /**
+     * Publishes a set of COM events.
+     *
+     * @param updateHeaderList The update headers
+     * @param eventLinks The COM event links.
+     * @param eventBody The Com event bodies.
+     * @throws MALInteractionException On error.
+     * @throws MALException On error.
+     */
+    public void publishEvents(final UpdateHeaderList updateHeaderList,
+            final ObjectDetailsList eventLinks,
+            final ElementList eventBody)
+            throws MALInteractionException, MALException {
+        monitorEventPublisher.publish(updateHeaderList, eventLinks, eventBody);
     }
 
-    @Override
-    public void publishDeregisterAckReceived(final MALMessageHeader header, final Map qosProperties) throws MALException
-    {
-      // do nothing
+    /**
+     * Publishes a single COM event.
+     *
+     * @param updateHeader The update header
+     * @param eventLink The COM event links.
+     * @param eventBody The Com event body.
+     * @throws MALInteractionException On error.
+     * @throws MALException On error.
+     */
+    public void publishSingleEvent(final UpdateHeader updateHeader,
+            final ObjectDetails eventLink,
+            final Element eventBody)
+            throws MALInteractionException, MALException {
+        // Produce header
+        UpdateHeaderList updateHeaderList = new UpdateHeaderList();
+        updateHeaderList.add(updateHeader);
+
+        // Produce ObjectDetails
+        ObjectDetailsList eventLinks = new ObjectDetailsList();
+        eventLinks.add(eventLink);
+
+        // Produce ActivityTransferList
+        ElementList eventBodies = StructureHelper.elementToElementList(eventBody);
+        eventBodies.add(eventBody);
+
+        // We can now publish the event
+        monitorEventPublisher.publish(updateHeaderList, eventLinks, eventBodies);
     }
-  }
+
+    /**
+     * Simple default implementation of the event publish listener for publish
+     * callbacks.
+     */
+    public static class EventPublisher implements MALPublishInteractionListener {
+
+        @Override
+        public void publishRegisterAckReceived(final MALMessageHeader header,
+                final Map qosProperties) throws MALException {
+            // do nothing
+        }
+
+        @Override
+        public void publishRegisterErrorReceived(final MALMessageHeader header,
+                final MALErrorBody body, final Map qosProperties) throws MALException {
+            // do nothing
+        }
+
+        @Override
+        public void publishErrorReceived(final MALMessageHeader header,
+                final MALErrorBody body, final Map qosProperties) throws MALException {
+            BaseMalServer.LOGGER.log(Level.WARNING,
+                    "EventPublisher:publishErrorReceived - {0}", body.toString());
+        }
+
+        @Override
+        public void publishDeregisterAckReceived(final MALMessageHeader header,
+                final Map qosProperties) throws MALException {
+            // do nothing
+        }
+    }
 }

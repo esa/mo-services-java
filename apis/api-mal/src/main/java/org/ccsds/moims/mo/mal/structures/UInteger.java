@@ -27,134 +27,115 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Class representing MAL UInteger type.
  */
-public class UInteger implements Attribute
-{
-  private long value;
+public class UInteger implements Attribute {
 
-  /**
-   * A constant holding the maximum value a {@code UInteger} can
-   * have, 2<sup>32</sup>-1.
-   */
-  public static final long MAX_VALUE = 4294967295L;
+    private long value;
 
-  /**
-   * Default constructor.
-   */
-  public UInteger()
-  {
-    value = 0;
-  }
+    /**
+     * A constant holding the maximum value a {@code UInteger} can have,
+     * 2<sup>32</sup>-1.
+     */
+    public static final long MAX_VALUE = 4294967295L;
 
-  /**
-   * Initialiser constructor.
-   *
-   * @param value Value to initialise with.
-   */
-  public UInteger(final long value)
-  {
-    if (0 > value)
-    {
-      throw new IllegalArgumentException("UInteger argument must not be negative");
+    /**
+     * Default constructor.
+     */
+    public UInteger() {
+        value = 0;
     }
-    if (UInteger.MAX_VALUE < value)
-    {
-      throw new IllegalArgumentException("UInteger argument must not be greater than " + UInteger.MAX_VALUE);
+
+    /**
+     * Initialiser constructor.
+     *
+     * @param value Value to initialise with.
+     */
+    public UInteger(final long value) {
+        if (0 > value) {
+            throw new IllegalArgumentException("UInteger argument must not be negative");
+        }
+        if (UInteger.MAX_VALUE < value) {
+            throw new IllegalArgumentException(
+                    "UInteger argument must not be greater than " + UInteger.MAX_VALUE);
+        }
+        this.value = value;
     }
-    this.value = value;
-  }
 
-  @Override
-  public Element createElement()
-  {
-    return new UInteger();
-  }
+    @Override
+    public Element createElement() {
+        return new UInteger();
+    }
 
-  /**
-   * Returns the value of this type.
-   *
-   * @return the value.
-   */
-  public long getValue()
-  {
-    return value;
-  }
+    /**
+     * Returns the value of this type.
+     *
+     * @return the value.
+     */
+    public long getValue() {
+        return value;
+    }
 
 //  This might be required for XML serialisation and technologies that use that.  
 //  public void setValue(long value)
 //  {
 //    this.value = value;
 //  }
-
-  @Override
-  public Long getShortForm()
-  {
-    return Attribute.UINTEGER_SHORT_FORM;
-  }
-
-  @Override
-  public Integer getTypeShortForm()
-  {
-    return Attribute.UINTEGER_TYPE_SHORT_FORM;
-  }
-
-  @Override
-  public UShort getAreaNumber()
-  {
-    return UShort.ATTRIBUTE_AREA_NUMBER;
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion()
-  {
-    return UOctet.AREA_VERSION;
-  }
-
-  @Override
-  public UShort getServiceNumber()
-  {
-    return UShort.ATTRIBUTE_SERVICE_NUMBER;
-  }
-
-  @Override
-  public void encode(final MALEncoder encoder) throws MALException
-  {
-    encoder.encodeUInteger(this);
-  }
-
-  @Override
-  public Element decode(final MALDecoder decoder) throws MALException
-  {
-    return decoder.decodeUInteger();
-  }
-
-  @Override
-  public boolean equals(final Object obj)
-  {
-    if (null == obj)
-    {
-      return false;
+    @Override
+    public Long getShortForm() {
+        return Attribute.UINTEGER_SHORT_FORM;
     }
-    if (this == obj)
-    {
-      return true;
-    }
-    if (!(obj instanceof UInteger))
-    {
-      return false;
-    }
-    return this.value == (((UInteger) obj).value);
-  }
 
-  @Override
-  public int hashCode()
-  {
-    return (int) value;
-  }
+    @Override
+    public Integer getTypeShortForm() {
+        return Attribute.UINTEGER_TYPE_SHORT_FORM;
+    }
 
-  @Override
-  public String toString()
-  {
-    return String.valueOf(value);
-  }
-  private static final long serialVersionUID = Attribute.UINTEGER_SHORT_FORM;
+    @Override
+    public UShort getAreaNumber() {
+        return UShort.ATTRIBUTE_AREA_NUMBER;
+    }
+
+    @Override
+    public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion() {
+        return UOctet.AREA_VERSION;
+    }
+
+    @Override
+    public UShort getServiceNumber() {
+        return UShort.ATTRIBUTE_SERVICE_NUMBER;
+    }
+
+    @Override
+    public void encode(final MALEncoder encoder) throws MALException {
+        encoder.encodeUInteger(this);
+    }
+
+    @Override
+    public Element decode(final MALDecoder decoder) throws MALException {
+        return decoder.decodeUInteger();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (null == obj) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof UInteger)) {
+            return false;
+        }
+        return this.value == (((UInteger) obj).value);
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
+    private static final long serialVersionUID = Attribute.UINTEGER_SHORT_FORM;
 }

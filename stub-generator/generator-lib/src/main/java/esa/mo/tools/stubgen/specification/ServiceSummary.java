@@ -27,51 +27,47 @@ import java.util.List;
 /**
  * Holds summary information about the operations of a service.
  */
-public final class ServiceSummary
-{
-  private final ServiceType service;
-  private final boolean comService;
-  private final List<OperationSummary> operations = new LinkedList<OperationSummary>();
+public final class ServiceSummary {
 
-  /**
-   * Constructor.
-   *
-   * @param service The XML service.
-   * @param isComService True if the COM service.
-   */
-  public ServiceSummary(ServiceType service, boolean isComService)
-  {
-    this.service = service;
-    this.comService = isComService;
-  }
+    private final ServiceType service;
+    private final boolean comService;
+    private final List<OperationSummary> operations = new LinkedList<OperationSummary>();
 
-  /**
-   * Returns true if is the COM service.
-   *
-   * @return TYrue if the COM service.
-   */
-  public boolean isComService()
-  {
-    return comService;
-  }
+    /**
+     * Constructor.
+     *
+     * @param service The XML service.
+     * @param isComService True if the COM service.
+     */
+    public ServiceSummary(ServiceType service, boolean isComService) {
+        this.service = service;
+        this.comService = isComService;
+    }
 
-  /**
-   * Returns the original service definition.
-   *
-   * @return the service.
-   */
-  public ServiceType getService()
-  {
-    return service;
-  }
+    /**
+     * Returns true if is the COM service.
+     *
+     * @return TYrue if the COM service.
+     */
+    public boolean isComService() {
+        return comService;
+    }
 
-  /**
-   * Returns the operations of the service.
-   *
-   * @return the operations.
-   */
-  public List<OperationSummary> getOperations()
-  {
-    return operations;
-  }
+    /**
+     * Returns the original service definition.
+     *
+     * @return the service.
+     */
+    public ServiceType getService() {
+        return service;
+    }
+
+    /**
+     * Returns the operations of the service.
+     *
+     * @return the operations.
+     */
+    public List<OperationSummary> getOperations() {
+        return operations;
+    }
 }

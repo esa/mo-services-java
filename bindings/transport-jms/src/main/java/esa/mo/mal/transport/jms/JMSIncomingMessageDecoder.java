@@ -31,30 +31,27 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Responsible for decoding newly arrived MAL Messages.
  */
-final class JMSIncomingMessageDecoder implements GENIncomingMessageDecoder
-{
+final class JMSIncomingMessageDecoder implements GENIncomingMessageDecoder {
 
-  private final JMSTransport transport;
-  private final JMSUpdate jmsUpdate;
+    private final JMSTransport transport;
+    private final JMSUpdate jmsUpdate;
 
-  /**
-   * Constructor
-   *
-   * @param transport The transport instance to use.
-   * @param jmsUpdate The raw message
-   */
-  public JMSIncomingMessageDecoder(final JMSTransport transport, JMSUpdate jmsUpdate)
-  {
-    this.transport = transport;
-    this.jmsUpdate = jmsUpdate;
-  }
+    /**
+     * Constructor
+     *
+     * @param transport The transport instance to use.
+     * @param jmsUpdate The raw message
+     */
+    public JMSIncomingMessageDecoder(final JMSTransport transport, JMSUpdate jmsUpdate) {
+        this.transport = transport;
+        this.jmsUpdate = jmsUpdate;
+    }
 
-  @Override
-  public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException
-  {
-    GENMessage malMsg = new GENMessage(false, true, new GENMessageHeader(), new HashMap(),
-        jmsUpdate.getDat(), transport.getStreamFactory());
-    return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg,
-        transport.new PacketToString(null));
-  }
+    @Override
+    public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
+        GENMessage malMsg = new GENMessage(false, true, new GENMessageHeader(), 
+                new HashMap(), jmsUpdate.getDat(), transport.getStreamFactory());
+        return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), 
+                malMsg, transport.new PacketToString(null));
+    }
 }

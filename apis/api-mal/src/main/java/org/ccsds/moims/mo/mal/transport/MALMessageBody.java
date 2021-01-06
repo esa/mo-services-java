@@ -25,40 +25,41 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * The MALMessageBody interface gives a generic access to the MAL message body.
  */
-public interface MALMessageBody
-{
-  /**
-   * The method returns the number of elements contained in the MAL message body.
-   *
-   * @return The element count.
-   */
-  int getElementCount();
+public interface MALMessageBody {
 
-  /**
-   * The method gets a body element.
-   *
-   * @param index Index of the element in the body, starts from 0.
-   * @param element An instance of the Element to be decoded
-   * @return The element, may not be the same as the parameter ‘element’.
-   * @throws MALException If an error occurs
-   */
-  Object getBodyElement(int index, Object element) throws MALException;
+    /**
+     * The method returns the number of elements contained in the MAL message
+     * body.
+     *
+     * @return The element count.
+     */
+    int getElementCount();
 
-  /**
-   * The method gets an encoded body element.
-   *
-   * @param index Index of the element in the body, starts from 0, the index of -1 returns the complete encoded
-   * body.
-   * @return The encoded element.
-   * @throws MALException If an error occurs
-   */
-  MALEncodedElement getEncodedBodyElement(int index) throws MALException;
+    /**
+     * The method gets a body element.
+     *
+     * @param index Index of the element in the body, starts from 0.
+     * @param element An instance of the Element to be decoded
+     * @return The element, may not be the same as the parameter ‘element’.
+     * @throws MALException If an error occurs
+     */
+    Object getBodyElement(int index, Object element) throws MALException;
 
-  /**
-   * The method gets an encoded body.
-   *
-   * @return The encoded body.
-   * @throws MALException If an error occurs
-   */
-  MALEncodedBody getEncodedBody() throws MALException;
+    /**
+     * The method gets an encoded body element.
+     *
+     * @param index Index of the element in the body, starts from 0, the index
+     * of -1 returns the complete encoded body.
+     * @return The encoded element.
+     * @throws MALException If an error occurs
+     */
+    MALEncodedElement getEncodedBodyElement(int index) throws MALException;
+
+    /**
+     * The method gets an encoded body.
+     *
+     * @return The encoded body.
+     * @throws MALException If an error occurs
+     */
+    MALEncodedBody getEncodedBody() throws MALException;
 }

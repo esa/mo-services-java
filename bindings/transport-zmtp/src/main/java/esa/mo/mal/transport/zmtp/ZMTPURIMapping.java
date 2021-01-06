@@ -27,128 +27,124 @@ import java.net.URISyntaxException;
 /**
  * This class implements default MAL-ZMTP URI mapping.
  *
- * An alternative mapping can be used by overriding this class and ZMTPTransportFactoryImpl
+ * An alternative mapping can be used by overriding this class and
+ * ZMTPTransportFactoryImpl
  */
-public class ZMTPURIMapping
-{
+public class ZMTPURIMapping {
 
-  public static final String USE_MULTICAST_KEY = "esa.mo.mal.transport.zmtp.usemulticast";
+    public static final String USE_MULTICAST_KEY = "esa.mo.mal.transport.zmtp.usemulticast";
 
-  /**
-   * True if multicast transport channel is used in addition to P2P channel Otherwise mapping
-   * functions return null for multicast URIs
-   */
-  private final boolean useMulticast;
+    /**
+     * True if multicast transport channel is used in addition to P2P channel
+     * Otherwise mapping functions return null for multicast URIs
+     */
+    private final boolean useMulticast;
 
-  /**
-   * Default ZMTP URI Mapping constructor
-   *
-   * @param properties Mapping properties
-   */
-  public ZMTPURIMapping(final java.util.Map properties)
-  {
-    if (properties.containsKey(USE_MULTICAST_KEY)) {
-      this.useMulticast = Boolean.parseBoolean((String) properties.get(USE_MULTICAST_KEY));
-    } else {
-      this.useMulticast = false; // default to P2P only
-    }
-  }
-
-  /**
-   * Maps a local MAL URI to a P2P ZMTP URI
-   *
-   * @param MalUri Local MAL URI
-   * @return ZMTP URI the ZMQ P2P channel destination socket should bind to
-   * @throws MALException if passed MAL URI is invalid
-   */
-  public String getLocalPtpZmtpUri(String MalUri) throws MALException
-  {
-    try {
-      URI uri = new URI(MalUri);
-      if (uri.getPort() == -1) {
-        throw new MALException("Malformed URI (missing port): " + MalUri);
-      }
-      // The URI that ZMTP binds to
-      String localURI = "tcp://*:" + Integer.toString(uri.getPort());
-      return localURI;
-    } catch (URISyntaxException e) {
-      throw new MALException("Malformed URI: " + MalUri);
-    }
-  }
-
-  /**
-   * Maps a local MAL URI to a multicast ZMTP URI (if enabled)
-   *
-   * @param MalUri Local MAL URI
-   * @return ZMTP URI the ZMQ multicast channel destination socket should bind to, null if multicast
-   * is not supported
-   * @throws MALException if passed MAL URI is invalid
-   */
-  public String getLocalMcastZmtpUri(String MalUri) throws MALException
-  {
-    if (!this.useMulticast) {
-      return null;
-    } else {
-      try {
-        URI uri = new URI(MalUri);
-        if (uri.getPort() == -1) {
-          throw new MALException("Malformed URI (missing port): " + MalUri);
+    /**
+     * Default ZMTP URI Mapping constructor
+     *
+     * @param properties Mapping properties
+     */
+    public ZMTPURIMapping(final java.util.Map properties) {
+        if (properties.containsKey(USE_MULTICAST_KEY)) {
+            this.useMulticast = Boolean.parseBoolean((String) properties.get(USE_MULTICAST_KEY));
+        } else {
+            this.useMulticast = false; // default to P2P only
         }
-        // The URI that ZMTP binds to
-        String localURI = "tcp://*:" + Integer.toString(uri.getPort() + 1);
-        return localURI;
-      } catch (URISyntaxException e) {
-        throw new MALException("Malformed URI: " + MalUri);
-      }
     }
-  }
 
-  /**
-   * Maps a remote MAL URI to a P2P ZMTP URI
-   *
-   * @param MalUri MAL URI corresponding to MAL header field 'URI To'
-   * @return ZMTP URI the ZMQ P2P channel source socket should connect to
-   * @throws MALException if passed MAL URI is invalid
-   */
-  public String getRemotePtpZmtpUri(String MalUri) throws MALException
-  {
-    try {
-      URI uri = new URI(MalUri);
-      if (uri.getPort() == -1) {
-        throw new MALException("Malformed URI (missing port): " + MalUri);
-      }
-      // The URI that ZMTP connects to
-      String remoteURI = "tcp://" + uri.getHost() + ":" + Integer.toString(uri.getPort());
-      return remoteURI;
-    } catch (URISyntaxException e) {
-      throw new MALException("Malformed URI: " + MalUri);
-    }
-  }
-
-  /**
-   * Maps a remote MAL URI to a multicast ZMTP URI (if enabled)
-   *
-   * @param MalUri MAL URI corresponding to MAL header field 'URI To'
-   * @return ZMTP URI the ZMQ multicast channel source socket should connect to, null if multicast
-   * is not supported
-   * @throws MALException if passed MAL URI is invalid
-   */
-  public String getRemoteMcastZmtpUri(String MalUri) throws MALException
-  {
-    if (!this.useMulticast) {
-      return null;
-    } else {
-      try {
-        URI uri = new URI(MalUri);
-        if (uri.getPort() == -1) {
-          throw new MALException("Malformed URI (missing port): " + MalUri);
+    /**
+     * Maps a local MAL URI to a P2P ZMTP URI
+     *
+     * @param MalUri Local MAL URI
+     * @return ZMTP URI the ZMQ P2P channel destination socket should bind to
+     * @throws MALException if passed MAL URI is invalid
+     */
+    public String getLocalPtpZmtpUri(String MalUri) throws MALException {
+        try {
+            URI uri = new URI(MalUri);
+            if (uri.getPort() == -1) {
+                throw new MALException("Malformed URI (missing port): " + MalUri);
+            }
+            // The URI that ZMTP binds to
+            String localURI = "tcp://*:" + Integer.toString(uri.getPort());
+            return localURI;
+        } catch (URISyntaxException e) {
+            throw new MALException("Malformed URI: " + MalUri);
         }
-        // The URI that ZMTP connects to
-        String remoteURI = "tcp://" + uri.getHost() + ":" + Integer.toString(uri.getPort() + 1);
-        return remoteURI;
-      } catch (URISyntaxException e) {
-        throw new MALException("Malformed URI: " + MalUri);
-      }
     }
-  }
+
+    /**
+     * Maps a local MAL URI to a multicast ZMTP URI (if enabled)
+     *
+     * @param MalUri Local MAL URI
+     * @return ZMTP URI the ZMQ multicast channel destination socket should bind
+     * to, null if multicast is not supported
+     * @throws MALException if passed MAL URI is invalid
+     */
+    public String getLocalMcastZmtpUri(String MalUri) throws MALException {
+        if (!this.useMulticast) {
+            return null;
+        } else {
+            try {
+                URI uri = new URI(MalUri);
+                if (uri.getPort() == -1) {
+                    throw new MALException("Malformed URI (missing port): " + MalUri);
+                }
+                // The URI that ZMTP binds to
+                String localURI = "tcp://*:" + Integer.toString(uri.getPort() + 1);
+                return localURI;
+            } catch (URISyntaxException e) {
+                throw new MALException("Malformed URI: " + MalUri);
+            }
+        }
+    }
+
+    /**
+     * Maps a remote MAL URI to a P2P ZMTP URI
+     *
+     * @param MalUri MAL URI corresponding to MAL header field 'URI To'
+     * @return ZMTP URI the ZMQ P2P channel source socket should connect to
+     * @throws MALException if passed MAL URI is invalid
+     */
+    public String getRemotePtpZmtpUri(String MalUri) throws MALException {
+        try {
+            URI uri = new URI(MalUri);
+            if (uri.getPort() == -1) {
+                throw new MALException("Malformed URI (missing port): " + MalUri);
+            }
+            // The URI that ZMTP connects to
+            String remoteURI = "tcp://" + uri.getHost() + ":" + Integer.toString(uri.getPort());
+            return remoteURI;
+        } catch (URISyntaxException e) {
+            throw new MALException("Malformed URI: " + MalUri);
+        }
+    }
+
+    /**
+     * Maps a remote MAL URI to a multicast ZMTP URI (if enabled)
+     *
+     * @param MalUri MAL URI corresponding to MAL header field 'URI To'
+     * @return ZMTP URI the ZMQ multicast channel source socket should connect
+     * to, null if multicast is not supported
+     * @throws MALException if passed MAL URI is invalid
+     */
+    public String getRemoteMcastZmtpUri(String MalUri) throws MALException {
+        if (!this.useMulticast) {
+            return null;
+        } else {
+            try {
+                URI uri = new URI(MalUri);
+                if (uri.getPort() == -1) {
+                    throw new MALException("Malformed URI (missing port): " + MalUri);
+                }
+                // The URI that ZMTP connects to
+                String remoteURI = "tcp://" + uri.getHost() + ":"
+                        + Integer.toString(uri.getPort() + 1);
+                return remoteURI;
+            } catch (URISyntaxException e) {
+                throw new MALException("Malformed URI: " + MalUri);
+            }
+        }
+    }
 }

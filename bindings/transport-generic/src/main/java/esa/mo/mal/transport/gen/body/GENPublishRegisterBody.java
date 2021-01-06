@@ -31,45 +31,43 @@ import org.ccsds.moims.mo.mal.transport.MALPublishRegisterBody;
 /**
  * Implementation of the MALPublishRegisterBody interface.
  */
-public class GENPublishRegisterBody extends GENMessageBody implements MALPublishRegisterBody
-{
+public class GENPublishRegisterBody extends GENMessageBody implements MALPublishRegisterBody {
 
-  private static final long serialVersionUID = 222222222222228L;
+    private static final long serialVersionUID = 222222222222228L;
 
-  /**
-   * Constructor.
-   *
-   * @param ctx          The encoding context to use.
-   * @param encFactory   The encoder stream factory to use.
-   * @param messageParts The message parts that compose the body.
-   */
-  public GENPublishRegisterBody(final MALEncodingContext ctx,
-      final MALElementStreamFactory encFactory,
-      final Object[] messageParts)
-  {
-    super(ctx, encFactory, messageParts);
-  }
+    /**
+     * Constructor.
+     *
+     * @param ctx The encoding context to use.
+     * @param encFactory The encoder stream factory to use.
+     * @param messageParts The message parts that compose the body.
+     */
+    public GENPublishRegisterBody(final MALEncodingContext ctx,
+            final MALElementStreamFactory encFactory,
+            final Object[] messageParts) {
+        super(ctx, encFactory, messageParts);
+    }
 
-  /**
-   * Constructor.
-   *
-   * @param ctx              The encoding context to use.
-   * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
-   * @param encFactory       The encoder stream factory to use.
-   * @param encBodyElements  The input stream that holds the encoded body parts.
-   */
-  public GENPublishRegisterBody(final MALEncodingContext ctx,
-      final boolean wrappedBodyParts,
-      final MALElementStreamFactory encFactory,
-      final ByteArrayInputStream encBodyBytes,
-      final MALElementInputStream encBodyElements)
-  {
-    super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
-  }
+    /**
+     * Constructor.
+     *
+     * @param ctx The encoding context to use.
+     * @param wrappedBodyParts True if the encoded body parts are wrapped in
+     * BLOBs.
+     * @param encFactory The encoder stream factory to use.
+     * @param encBodyElements The input stream that holds the encoded body
+     * parts.
+     */
+    public GENPublishRegisterBody(final MALEncodingContext ctx,
+            final boolean wrappedBodyParts,
+            final MALElementStreamFactory encFactory,
+            final ByteArrayInputStream encBodyBytes,
+            final MALElementInputStream encBodyElements) {
+        super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
+    }
 
-  @Override
-  public EntityKeyList getEntityKeyList() throws MALException
-  {
-    return (EntityKeyList) getBodyElement(0, new EntityKeyList());
-  }
+    @Override
+    public EntityKeyList getEntityKeyList() throws MALException {
+        return (EntityKeyList) getBodyElement(0, new EntityKeyList());
+    }
 }

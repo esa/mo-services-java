@@ -32,51 +32,49 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 /**
  * Implementation of the MALErrorBody interface.
  */
-public class GENErrorBody extends GENMessageBody implements MALErrorBody
-{
+public class GENErrorBody extends GENMessageBody implements MALErrorBody {
 
-  private static final long serialVersionUID = 222222222222225L;
+    private static final long serialVersionUID = 222222222222225L;
 
-  /**
-   * Constructor.
-   *
-   * @param ctx          The encoding context to use.
-   * @param encFactory   The encoder stream factory to use.
-   * @param messageParts The message parts that compose the body.
-   */
-  public GENErrorBody(final MALEncodingContext ctx,
-      final MALElementStreamFactory encFactory,
-      final Object[] messageParts)
-  {
-    super(ctx, encFactory, messageParts);
-  }
-
-  /**
-   * Constructor.
-   *
-   * @param ctx              The encoding context to use.
-   * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
-   * @param encFactory       The encoder stream factory to use.
-   * @param encBodyElements  The input stream that holds the encoded body parts.
-   */
-  public GENErrorBody(final MALEncodingContext ctx,
-      final boolean wrappedBodyParts,
-      final MALElementStreamFactory encFactory,
-      final ByteArrayInputStream encBodyBytes,
-      final MALElementInputStream encBodyElements)
-  {
-    super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
-  }
-
-  @Override
-  public MALStandardError getError() throws MALException
-  {
-    decodeMessageBody();
-
-    if (1 < messageParts.length) {
-      return new MALStandardError((UInteger) messageParts[0], messageParts[1]);
-    } else {
-      return new MALStandardError((UInteger) messageParts[0], null);
+    /**
+     * Constructor.
+     *
+     * @param ctx The encoding context to use.
+     * @param encFactory The encoder stream factory to use.
+     * @param messageParts The message parts that compose the body.
+     */
+    public GENErrorBody(final MALEncodingContext ctx,
+            final MALElementStreamFactory encFactory,
+            final Object[] messageParts) {
+        super(ctx, encFactory, messageParts);
     }
-  }
+
+    /**
+     * Constructor.
+     *
+     * @param ctx The encoding context to use.
+     * @param wrappedBodyParts True if the encoded body parts are wrapped in
+     * BLOBs.
+     * @param encFactory The encoder stream factory to use.
+     * @param encBodyElements The input stream that holds the encoded body
+     * parts.
+     */
+    public GENErrorBody(final MALEncodingContext ctx,
+            final boolean wrappedBodyParts,
+            final MALElementStreamFactory encFactory,
+            final ByteArrayInputStream encBodyBytes,
+            final MALElementInputStream encBodyElements) {
+        super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
+    }
+
+    @Override
+    public MALStandardError getError() throws MALException {
+        decodeMessageBody();
+
+        if (1 < messageParts.length) {
+            return new MALStandardError((UInteger) messageParts[0], messageParts[1]);
+        } else {
+            return new MALStandardError((UInteger) messageParts[0], null);
+        }
+    }
 }

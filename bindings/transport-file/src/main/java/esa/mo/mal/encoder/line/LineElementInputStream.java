@@ -29,31 +29,27 @@ import org.ccsds.moims.mo.mal.structures.Element;
 /**
  * Implements the MALElementInputStream interface for the line encodings.
  */
-public class LineElementInputStream implements MALElementInputStream
-{
+public class LineElementInputStream implements MALElementInputStream {
 
-  private final LineDecoder dec;
+    private final LineDecoder dec;
 
-  /**
-   * Constructor.
-   *
-   * @param is Input stream to read from.
-   */
-  public LineElementInputStream(final InputStream is)
-  {
-    dec = new LineDecoder(is);
-  }
+    /**
+     * Constructor.
+     *
+     * @param is Input stream to read from.
+     */
+    public LineElementInputStream(final InputStream is) {
+        dec = new LineDecoder(is);
+    }
 
-  @Override
-  public Object readElement(final Object element, final MALEncodingContext ctx)
-      throws IllegalArgumentException, MALException
-  {
-    return dec.decodeNullableElement((Element) element);
-  }
+    @Override
+    public Object readElement(final Object element, final MALEncodingContext ctx)
+            throws IllegalArgumentException, MALException {
+        return dec.decodeNullableElement((Element) element);
+    }
 
-  @Override
-  public void close() throws MALException
-  {
-    // nothing to do here
-  }
+    @Override
+    public void close() throws MALException {
+        // nothing to do here
+    }
 }

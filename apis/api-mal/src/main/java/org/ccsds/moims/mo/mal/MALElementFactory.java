@@ -23,11 +23,12 @@ package org.ccsds.moims.mo.mal;
 /**
  * Interface used to create instances of MAL elements.
  */
-public interface MALElementFactory
-{
-  /**
-   * Creates an instance of the element.
-   * @return The new object instance.
-   */
-  Object createElement();
+public interface MALElementFactory {
+
+    /**
+     * Creates an instance of the element.
+     *
+     * @return The new object instance.
+     */
+    Object createElement();
 }

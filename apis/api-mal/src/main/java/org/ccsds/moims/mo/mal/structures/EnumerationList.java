@@ -25,6 +25,5 @@ package org.ccsds.moims.mo.mal.structures;
  *
  * @param <T> The type of the list, must extend Enumeration.
  */
-public interface EnumerationList<T extends Enumeration> extends ElementList<T>
-{
+public interface EnumerationList<T extends Enumeration> extends ElementList<T> {
 }

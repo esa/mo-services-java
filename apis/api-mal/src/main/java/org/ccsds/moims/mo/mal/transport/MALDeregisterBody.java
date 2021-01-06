@@ -24,16 +24,16 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 
 /**
- * The MALDeregisterBody interface gives access to the body of the DEREGISTER message defined by the IP
- * PUBLISH-SUBSCRIBE.
+ * The MALDeregisterBody interface gives access to the body of the DEREGISTER
+ * message defined by the IP PUBLISH-SUBSCRIBE.
  */
-public interface MALDeregisterBody extends MALMessageBody
-{
-  /**
-   * The method returns the IdentifierList from the DEREGISTER message.
-   *
-   * @return The decoded identifier list.
-   * @throws MALException If an error occurs
-   */
-  IdentifierList getIdentifierList() throws MALException;
+public interface MALDeregisterBody extends MALMessageBody {
+
+    /**
+     * The method returns the IdentifierList from the DEREGISTER message.
+     *
+     * @return The decoded identifier list.
+     * @throws MALException If an error occurs
+     */
+    IdentifierList getIdentifierList() throws MALException;
 }

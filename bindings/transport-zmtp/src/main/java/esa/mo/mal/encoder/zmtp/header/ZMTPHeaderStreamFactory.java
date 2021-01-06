@@ -26,49 +26,42 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
- * Implements the MALElementStreamFactory interface for ZMTP header binary encoding.
+ * Implements the MALElementStreamFactory interface for ZMTP header binary
+ * encoding.
  */
-public class ZMTPHeaderStreamFactory extends esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory
-{
+public class ZMTPHeaderStreamFactory extends esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory {
 
-  /**
-   * Parent transport
-   */
-  ZMTPTransport transport;
+    /**
+     * Parent transport
+     */
+    ZMTPTransport transport;
 
-  public ZMTPHeaderStreamFactory(ZMTPTransport transport)
-  {
-    this.transport = transport;
-    this.timeHandler = new BinaryTimeHandler();
-  }
+    public ZMTPHeaderStreamFactory(ZMTPTransport transport) {
+        this.transport = transport;
+        this.timeHandler = new BinaryTimeHandler();
+    }
 
-  @Override
-  protected void init(final String protocol, final Map properties) throws IllegalArgumentException,
-      MALException
-  {
-    super.init(protocol, properties);
-  }
+    @Override
+    protected void init(final String protocol, final Map properties) 
+            throws IllegalArgumentException, MALException {
+        super.init(protocol, properties);
+    }
 
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(final byte[] bytes,
-      final int offset)
-  {
-    return new ZMTPHeaderElementInputStream(bytes, offset, transport, timeHandler);
-  }
+    @Override
+    public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(
+            final byte[] bytes, final int offset) {
+        return new ZMTPHeaderElementInputStream(bytes, offset, transport, timeHandler);
+    }
 
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(
-      final java.io.InputStream is)
-      throws org.ccsds.moims.mo.mal.MALException
-  {
-    return new ZMTPHeaderElementInputStream(is, transport, timeHandler);
-  }
+    @Override
+    public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(
+            final java.io.InputStream is) throws org.ccsds.moims.mo.mal.MALException {
+        return new ZMTPHeaderElementInputStream(is, transport, timeHandler);
+    }
 
-  @Override
-  public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(
-      final java.io.OutputStream os)
-      throws org.ccsds.moims.mo.mal.MALException
-  {
-    return new ZMTPHeaderElementOutputStream(os, transport, timeHandler);
-  }
+    @Override
+    public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(
+            final java.io.OutputStream os) throws org.ccsds.moims.mo.mal.MALException {
+        return new ZMTPHeaderElementOutputStream(os, transport, timeHandler);
+    }
 }

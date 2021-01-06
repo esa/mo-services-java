@@ -27,40 +27,36 @@ import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
 
-public class ZMTPHeaderListDecoder extends ZMTPHeaderDecoder implements MALListDecoder
-{
+public class ZMTPHeaderListDecoder extends ZMTPHeaderDecoder implements MALListDecoder {
 
-  private final int listSize;
-  private final List list;
+    private final int listSize;
+    private final List list;
 
-  /**
-   * MALListDecoder setup. It needs special handling, because most of the header fields are fixed
-   * length fields. But list length is not.
-   *
-   * @param list        List to decode to
-   * @param srcBuffer   Source buffer shared with the parent decoder
-   * @param transport   Parent ZMTP transport
-   * @param timeHandler Implementation of the time encoding to use
-   * @throws MALException If cannot decode list size.
-   */
-  protected ZMTPHeaderListDecoder(List list, final FixedBinaryBufferHolder srcBuffer,
-      final ZMTPTransport transport, final BinaryTimeHandler timeHandler) throws MALException
-  {
-    super(srcBuffer, transport, timeHandler);
-    this.list = list;
-    this.listSize = (int) getVariableUnsigned();
-  }
+    /**
+     * MALListDecoder setup. It needs special handling, because most of the
+     * header fields are fixed length fields. But list length is not.
+     *
+     * @param list List to decode to
+     * @param srcBuffer Source buffer shared with the parent decoder
+     * @param transport Parent ZMTP transport
+     * @param timeHandler Implementation of the time encoding to use
+     * @throws MALException If cannot decode list size.
+     */
+    protected ZMTPHeaderListDecoder(List list, final FixedBinaryBufferHolder srcBuffer,
+            final ZMTPTransport transport, final BinaryTimeHandler timeHandler) throws MALException {
+        super(srcBuffer, transport, timeHandler);
+        this.list = list;
+        this.listSize = (int) getVariableUnsigned();
+    }
 
-  @Override
-  public boolean hasNext()
-  {
-    return list.size() < listSize;
-  }
+    @Override
+    public boolean hasNext() {
+        return list.size() < listSize;
+    }
 
-  @Override
-  public int size()
-  {
-    return listSize;
-  }
+    @Override
+    public int size() {
+        return listSize;
+    }
 
 }

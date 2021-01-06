@@ -28,64 +28,66 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * The Element interface represents the MAL Element type.
  */
-public interface Element extends Serializable
-{
-  /**
-   * Returns the absolute short form of the element type.
-   *
-   * @return the absolute short form.
-   */
-  Long getShortForm();
+public interface Element extends Serializable {
 
-  /**
-   * Returns the number of the area this element type belongs to.
-   *
-   * @return the area number.
-   */
-  UShort getAreaNumber();
+    /**
+     * Returns the absolute short form of the element type.
+     *
+     * @return the absolute short form.
+     */
+    Long getShortForm();
 
-  /**
-   * Returns the version of the area this element type belongs to.
-   *
-   * @return the area version.
-   */
-  UOctet getAreaVersion();
-  
-  /**
-   * Returns the number of the service this element type belongs to.
-   *
-   * @return the service number.
-   */
-  UShort getServiceNumber();
+    /**
+     * Returns the number of the area this element type belongs to.
+     *
+     * @return the area number.
+     */
+    UShort getAreaNumber();
 
-  /**
-   * Return the relative short form of the element type.
-   *
-   * @return the relative short form.
-   */
-  Integer getTypeShortForm();
+    /**
+     * Returns the version of the area this element type belongs to.
+     *
+     * @return the area version.
+     */
+    UOctet getAreaVersion();
 
-  /**
-   * The method allows the creation of an element in a generic way, i.e., using the MAL Element polymorphism.
-   *
-   * @return A new instance.
-   */
-  Element createElement();
+    /**
+     * Returns the number of the service this element type belongs to.
+     *
+     * @return the service number.
+     */
+    UShort getServiceNumber();
 
-  /**
-   * Encodes this element using the supplied encoder.
-   *
-   * @param encoder The encoder to use, must not be null.
-   * @throws MALException If an error occurs
-   */
-  void encode(MALEncoder encoder) throws MALException;
+    /**
+     * Return the relative short form of the element type.
+     *
+     * @return the relative short form.
+     */
+    Integer getTypeShortForm();
 
-  /**
-   * Decodes an instance of this element type using the supplied decoder.
-   *
-   * @param decoder The decoder to use, must not be null.
-   * @return the decoded instance, may be not the same instance as this Element.
-   * @throws MALException If an error occurs
-   */
-  Element decode(MALDecoder decoder) throws MALException;
+    /**
+     * The method allows the creation of an element in a generic way, i.e.,
+     * using the MAL Element polymorphism.
+     *
+     * @return A new instance.
+     */
+    Element createElement();
+
+    /**
+     * Encodes this element using the supplied encoder.
+     *
+     * @param encoder The encoder to use, must not be null.
+     * @throws MALException If an error occurs
+     */
+    void encode(MALEncoder encoder) throws MALException;
+
+    /**
+     * Decodes an instance of this element type using the supplied decoder.
+     *
+     * @param decoder The decoder to use, must not be null.
+     * @return the decoded instance, may be not the same instance as this
+     * Element.
+     * @throws MALException If an error occurs
+     */
+    Element decode(MALDecoder decoder) throws MALException;
 }

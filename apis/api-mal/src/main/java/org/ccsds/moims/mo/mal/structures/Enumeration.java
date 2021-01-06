@@ -21,70 +21,66 @@
 package org.ccsds.moims.mo.mal.structures;
 
 /**
- * The abstract class represents the MAL Enumeration type. The class is extended by the classes representing MAL
- * enumeration types.
+ * The abstract class represents the MAL Enumeration type. The class is extended
+ * by the classes representing MAL enumeration types.
  *
  */
-public abstract class Enumeration implements Element
-{
-  /**
-   * The index of the enumerated item, i.e. its position in the enumeration declaration starting from zero.
-   */
-  protected Integer ordinal;
+public abstract class Enumeration implements Element {
 
-  /**
-   * Returns the index of the enumerated item.
-   *
-   * @return the index of the enumerated item.
-   */
-  public final int getOrdinal()
-  {
-    return ordinal;
-  }
+    /**
+     * The index of the enumerated item, i.e. its position in the enumeration
+     * declaration starting from zero.
+     */
+    protected Integer ordinal;
 
-  /**
-   * Returns the numeric value of the enumerated item.
-   *
-   * @return the numeric value of the enumerated item.
-   */
-  public abstract UInteger getNumericValue();
-
-  @Override
-  public int hashCode()
-  {
-    return ordinal;
-  }
-
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (o == null)
-    {
-      return false;
+    /**
+     * Returns the index of the enumerated item.
+     *
+     * @return the index of the enumerated item.
+     */
+    public final int getOrdinal() {
+        return ordinal;
     }
 
-    if (o == this)
-    {
-      return true;
+    /**
+     * Returns the numeric value of the enumerated item.
+     *
+     * @return the numeric value of the enumerated item.
+     */
+    public abstract UInteger getNumericValue();
+
+    @Override
+    public int hashCode() {
+        return ordinal;
     }
 
-    if (o instanceof Enumeration)
-    {
-      return 0 == ordinal.compareTo(((Enumeration) o).ordinal);
-    }
-    return false;
-  }
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null) {
+            return false;
+        }
 
-  /**
-   * The ordinal constructor, takes as a parameter the index of the enumerated item, i.e. its position in the
-   * enumeration declaration starting from zero.
-   *
-   * @param ordinal The index of the enumerated item.
-   */
-  protected Enumeration(final int ordinal)
-  {
-    this.ordinal = ordinal;
-  }
+        if (o == this) {
+            return true;
+        }
+
+        if (o instanceof Enumeration) {
+            return 0 == ordinal.compareTo(((Enumeration) o).ordinal);
+        }
+        return false;
+    }
+
+    /**
+     * The ordinal constructor, takes as a parameter the index of the enumerated
+     * item, i.e. its position in the enumeration declaration starting from
+     * zero.
+     *
+     * @param ordinal The index of the enumerated item.
+     */
+    protected Enumeration(final int ordinal) {
+        this.ordinal = ordinal;
+    }
+    
 //  This might be required for XML serialisation and technologies that use that.  
 //  public final void setOrdinal(int ordinal)
 //  {

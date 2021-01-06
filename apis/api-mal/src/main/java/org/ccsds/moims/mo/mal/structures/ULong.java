@@ -28,137 +28,118 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Class representing MAL ULong type.
  */
-public class ULong implements Attribute
-{
-  private java.math.BigInteger value;
+public class ULong implements Attribute {
 
-  /**
-   * A constant holding the maximum value a {@code ULong} can
-   * have, 2<sup>64</sup>-1.
-   */
-  public static final BigInteger MAX_VALUE = new BigInteger("18446744073709551615");
+    private java.math.BigInteger value;
 
-  /**
-   * Default constructor.
-   */
-  public ULong()
-  {
-    value = BigInteger.ZERO;
-  }
+    /**
+     * A constant holding the maximum value a {@code ULong} can have,
+     * 2<sup>64</sup>-1.
+     */
+    public static final BigInteger MAX_VALUE = new BigInteger("18446744073709551615");
 
-  /**
-   * Initialiser constructor.
-   *
-   * @param value Value to initialise with.
-   */
-  public ULong(final java.math.BigInteger value)
-  {
-    if (null == value)
-    {
-      throw new IllegalArgumentException("ULong argument must not be null");
+    /**
+     * Default constructor.
+     */
+    public ULong() {
+        value = BigInteger.ZERO;
     }
-    if (0 > value.signum())
-    {
-      throw new IllegalArgumentException("ULong argument must not be negative");
-    }
-    if (ULong.MAX_VALUE.compareTo(value) < 0)
-    {
-      throw new IllegalArgumentException("ULong argument must not be greater than " + ULong.MAX_VALUE);
-    }
-    this.value = value;
-  }
 
-  @Override
-  public Element createElement()
-  {
-    return new ULong();
-  }
+    /**
+     * Initialiser constructor.
+     *
+     * @param value Value to initialise with.
+     */
+    public ULong(final java.math.BigInteger value) {
+        if (null == value) {
+            throw new IllegalArgumentException("ULong argument must not be null");
+        }
+        if (0 > value.signum()) {
+            throw new IllegalArgumentException("ULong argument must not be negative");
+        }
+        if (ULong.MAX_VALUE.compareTo(value) < 0) {
+            throw new IllegalArgumentException(
+                    "ULong argument must not be greater than " + ULong.MAX_VALUE);
+        }
+        this.value = value;
+    }
 
-  /**
-   * Returns the value of this type.
-   *
-   * @return the value.
-   */
-  public java.math.BigInteger getValue()
-  {
-    return value;
-  }
+    @Override
+    public Element createElement() {
+        return new ULong();
+    }
+
+    /**
+     * Returns the value of this type.
+     *
+     * @return the value.
+     */
+    public java.math.BigInteger getValue() {
+        return value;
+    }
 
 //  This might be required for XML serialisation and technologies that use that.  
 //  public void setValue(java.math.BigInteger value)
 //  {
 //    this.value = value;
 //  }
-  @Override
-  public Long getShortForm()
-  {
-    return Attribute.ULONG_SHORT_FORM;
-  }
-
-  @Override
-  public Integer getTypeShortForm()
-  {
-    return Attribute.ULONG_TYPE_SHORT_FORM;
-  }
-
-  @Override
-  public UShort getAreaNumber()
-  {
-    return UShort.ATTRIBUTE_AREA_NUMBER;
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion()
-  {
-    return UOctet.AREA_VERSION;
-  }
-
-  @Override
-  public UShort getServiceNumber()
-  {
-    return UShort.ATTRIBUTE_SERVICE_NUMBER;
-  }
-
-  @Override
-  public void encode(final MALEncoder encoder) throws MALException
-  {
-    encoder.encodeULong(this);
-  }
-
-  @Override
-  public Element decode(final MALDecoder decoder) throws MALException
-  {
-    return decoder.decodeULong();
-  }
-
-  @Override
-  public boolean equals(final Object obj)
-  {
-    if (null == obj)
-    {
-      return false;
+    @Override
+    public Long getShortForm() {
+        return Attribute.ULONG_SHORT_FORM;
     }
-    if (this == obj)
-    {
-      return true;
-    }
-    if (!(obj instanceof ULong))
-    {
-      return false;
-    }
-    return this.value.equals(((ULong) obj).value);
-  }
 
-  @Override
-  public int hashCode()
-  {
-    return value.hashCode();
-  }
+    @Override
+    public Integer getTypeShortForm() {
+        return Attribute.ULONG_TYPE_SHORT_FORM;
+    }
 
-  @Override
-  public String toString()
-  {
-    return String.valueOf(value);
-  }
-  private static final long serialVersionUID = Attribute.ULONG_SHORT_FORM;
+    @Override
+    public UShort getAreaNumber() {
+        return UShort.ATTRIBUTE_AREA_NUMBER;
+    }
+
+    @Override
+    public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion() {
+        return UOctet.AREA_VERSION;
+    }
+
+    @Override
+    public UShort getServiceNumber() {
+        return UShort.ATTRIBUTE_SERVICE_NUMBER;
+    }
+
+    @Override
+    public void encode(final MALEncoder encoder) throws MALException {
+        encoder.encodeULong(this);
+    }
+
+    @Override
+    public Element decode(final MALDecoder decoder) throws MALException {
+        return decoder.decodeULong();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (null == obj) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof ULong)) {
+            return false;
+        }
+        return this.value.equals(((ULong) obj).value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
+    private static final long serialVersionUID = Attribute.ULONG_SHORT_FORM;
 }

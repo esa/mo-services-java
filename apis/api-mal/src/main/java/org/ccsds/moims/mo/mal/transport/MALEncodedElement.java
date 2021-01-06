@@ -23,32 +23,32 @@ package org.ccsds.moims.mo.mal.transport;
 import org.ccsds.moims.mo.mal.structures.Blob;
 
 /**
- * The MALEncodedElement class represents an encoded element. It can only be used to represent an encoded body element
- * or an encoded element contained in a body element typed as a list. The type MALEncodedElementList must be used when
- * representing a body element typed as a list and containing encoded elements.
+ * The MALEncodedElement class represents an encoded element. It can only be
+ * used to represent an encoded body element or an encoded element contained in
+ * a body element typed as a list. The type MALEncodedElementList must be used
+ * when representing a body element typed as a list and containing encoded
+ * elements.
  *
  */
-public class MALEncodedElement
-{
-  private final Blob encodedElement;
+public class MALEncodedElement {
 
-  /**
-   * Constructor.
-   *
-   * @param encodedElement The encoded element.
-   */
-  public MALEncodedElement(final Blob encodedElement)
-  {
-    this.encodedElement = encodedElement;
-  }
+    private final Blob encodedElement;
 
-  /**
-   * Gets the encoded element.
-   *
-   * @return The encoded element.
-   */
-  public Blob getEncodedElement()
-  {
-    return encodedElement;
-  }
+    /**
+     * Constructor.
+     *
+     * @param encodedElement The encoded element.
+     */
+    public MALEncodedElement(final Blob encodedElement) {
+        this.encodedElement = encodedElement;
+    }
+
+    /**
+     * Gets the encoded element.
+     *
+     * @return The encoded element.
+     */
+    public Blob getEncodedElement() {
+        return encodedElement;
+    }
 }

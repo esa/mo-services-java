@@ -29,137 +29,120 @@ import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;
 
 /**
- * Implements the MALEncoder and MALListEncoder interfaces for a binary encoding.
+ * Implements the MALEncoder and MALListEncoder interfaces for a binary
+ * encoding.
  *
  */
-public abstract class BaseBinaryEncoder extends GENEncoder
-{
+public abstract class BaseBinaryEncoder extends GENEncoder {
 
-  protected BinaryTimeHandler timeHandler;
-
-  /**
-   * Constructor for derived classes that have their own stream holder implementation that should be
-   * used.
-   *
-   * @param os          Output stream to write to.
-   * @param timeHandler Time handler to use.
-   */
-  protected BaseBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler)
-  {
-    super(os);
-    this.timeHandler = timeHandler;
-  }
-
-  @Override
-  public void encodeDuration(final Duration value) throws MALException
-  {
-    checkForNull(value);
-    timeHandler.encodeDuration((BaseBinaryStreamHolder) outputStream, value);
-  }
-
-  @Override
-  public void encodeTime(final Time value) throws MALException
-  {
-    checkForNull(value);
-    timeHandler.encodeTime((BaseBinaryStreamHolder) outputStream, value);
-  }
-
-  @Override
-  public void encodeFineTime(final FineTime value) throws MALException
-  {
-    checkForNull(value);
-    timeHandler.encodeFineTime((BaseBinaryStreamHolder) outputStream, value);
-  }
-
-  public BaseBinaryStreamHolder getStreamHolder()
-  {
-    return (BaseBinaryStreamHolder) outputStream;
-  }
-
-  public BinaryTimeHandler getTimeHandler()
-  {
-    return timeHandler;
-  }
-
-  /**
-   * Internal class for accessing the output stream. Overridden by sub-classes to alter the low
-   * level encoding.
-   */
-  public static abstract class BaseBinaryStreamHolder extends StreamHolder
-  {
+    protected BinaryTimeHandler timeHandler;
 
     /**
-     * Constructor.
+     * Constructor for derived classes that have their own stream holder
+     * implementation that should be used.
      *
-     * @param outputStream the stream to encode in to.
+     * @param os Output stream to write to.
+     * @param timeHandler Time handler to use.
      */
-    public BaseBinaryStreamHolder(OutputStream outputStream)
-    {
-      super(outputStream);
+    protected BaseBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler) {
+        super(os);
+        this.timeHandler = timeHandler;
     }
 
     @Override
-    public void addBytes(final byte[] value) throws IOException
-    {
-
-      if (null == value) {
-        addUnsignedInt(0);
-        throw new IOException("StreamHolder.addBytes: null value supplied!!");
-      } else {
-        addUnsignedInt(value.length);
-        directAdd(value);
-      }
+    public void encodeDuration(final Duration value) throws MALException {
+        checkForNull(value);
+        timeHandler.encodeDuration((BaseBinaryStreamHolder) outputStream, value);
     }
 
     @Override
-    public void addString(String value) throws IOException
-    {
-      addBytes(value.getBytes(UTF8_CHARSET));
+    public void encodeTime(final Time value) throws MALException {
+        checkForNull(value);
+        timeHandler.encodeTime((BaseBinaryStreamHolder) outputStream, value);
     }
 
     @Override
-    public void addFloat(float value) throws IOException
-    {
-      addSignedInt(Float.floatToRawIntBits(value));
+    public void encodeFineTime(final FineTime value) throws MALException {
+        checkForNull(value);
+        timeHandler.encodeFineTime((BaseBinaryStreamHolder) outputStream, value);
     }
 
-    @Override
-    public void addDouble(double value) throws IOException
-    {
-      addSignedLong(Double.doubleToRawLongBits(value));
+    public BaseBinaryStreamHolder getStreamHolder() {
+        return (BaseBinaryStreamHolder) outputStream;
     }
 
-    @Override
-    public void addByte(byte value) throws IOException
-    {
-      directAdd(value);
+    public BinaryTimeHandler getTimeHandler() {
+        return timeHandler;
     }
 
-    @Override
-    public void addBool(boolean value) throws IOException
-    {
-      if (value) {
-        directAdd((byte) 1);
-      } else {
-        directAdd((byte) 0);
-      }
-    }
+    /**
+     * Internal class for accessing the output stream. Overridden by sub-classes
+     * to alter the low level encoding.
+     */
+    public static abstract class BaseBinaryStreamHolder extends StreamHolder {
 
-    @Override
-    public void addNotNull() throws IOException
-    {
-      directAdd((byte) 1);
-    }
+        /**
+         * Constructor.
+         *
+         * @param outputStream the stream to encode in to.
+         */
+        public BaseBinaryStreamHolder(OutputStream outputStream) {
+            super(outputStream);
+        }
 
-    @Override
-    public void addIsNull() throws IOException
-    {
-      directAdd((byte) 0);
-    }
+        @Override
+        public void addBytes(final byte[] value) throws IOException {
 
-    public OutputStream getOutputStream()
-    {
-      return outputStream;
+            if (null == value) {
+                addUnsignedInt(0);
+                throw new IOException("StreamHolder.addBytes: null value supplied!");
+            } else {
+                addUnsignedInt(value.length);
+                directAdd(value);
+            }
+        }
+
+        @Override
+        public void addString(String value) throws IOException {
+            addBytes(value.getBytes(UTF8_CHARSET));
+        }
+
+        @Override
+        public void addFloat(float value) throws IOException {
+            addSignedInt(Float.floatToRawIntBits(value));
+        }
+
+        @Override
+        public void addDouble(double value) throws IOException {
+            addSignedLong(Double.doubleToRawLongBits(value));
+        }
+
+        @Override
+        public void addByte(byte value) throws IOException {
+            directAdd(value);
+        }
+
+        @Override
+        public void addBool(boolean value) throws IOException {
+            if (value) {
+                directAdd((byte) 1);
+            } else {
+                directAdd((byte) 0);
+            }
+        }
+
+        @Override
+        public void addNotNull() throws IOException {
+            directAdd((byte) 1);
+        }
+
+        @Override
+        public void addIsNull() throws IOException {
+            directAdd((byte) 0);
+        }
+
+        public OutputStream getOutputStream() {
+            return outputStream;
+        }
     }
-  }
 }

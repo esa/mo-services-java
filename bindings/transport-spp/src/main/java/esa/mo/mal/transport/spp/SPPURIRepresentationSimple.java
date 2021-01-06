@@ -25,87 +25,79 @@ import org.ccsds.moims.mo.mal.structures.URI;
 /**
  *
  */
-public class SPPURIRepresentationSimple implements SPPURIRepresentation
-{
+public class SPPURIRepresentationSimple implements SPPURIRepresentation {
 
-  public SPPURIRepresentationSimple()
-  {
-  }
-
-  @Override
-  public short getApid(URI uri)
-  {
-    String val = uri.getValue();
-
-    int i = val.indexOf('/') + 1;
-    int j = val.indexOf('/', i);
-
-    if (-1 == j) {
-      j = val.length();
-    }
-    return Short.valueOf(val.substring(i, j));
-  }
-
-  @Override
-  public boolean hasQualifier(URI uri)
-  {
-    String val = uri.getValue();
-    int i = val.indexOf(':');
-    int j = val.indexOf('/');
-
-    return 1 < j - i;
-  }
-
-  @Override
-  public int getQualifier(URI uri)
-  {
-    String val = uri.getValue();
-
-    int i = val.indexOf(':') + 1;
-    int j = val.indexOf('/', i);
-
-    if (-1 == j) {
-      j = val.length();
-    }
-    return Integer.valueOf(val.substring(i, j));
-  }
-
-  @Override
-  public boolean hasSubId(URI uri)
-  {
-    String val = uri.getValue();
-    int i = val.indexOf('/') + 1;
-
-    return -1 != val.indexOf('/', i);
-  }
-
-  @Override
-  public short getSubId(URI uri)
-  {
-    String val = uri.getValue();
-
-    int i = val.indexOf('/') + 1;
-    int j = val.indexOf('/', i) + 1;
-
-    return Short.valueOf(val.substring(j, val.length()));
-  }
-
-  @Override
-  public URI getURI(Integer apidQualifier, short apid, Short subId)
-  {
-    StringBuilder buf = new StringBuilder("malspp:");
-    if (null != apidQualifier) {
-      buf.append(apidQualifier);
+    public SPPURIRepresentationSimple() {
     }
 
-    buf.append('/');
-    buf.append(apid);
+    @Override
+    public short getApid(URI uri) {
+        String val = uri.getValue();
 
-    if (null != subId) {
-      buf.append('/');
-      buf.append(subId);
+        int i = val.indexOf('/') + 1;
+        int j = val.indexOf('/', i);
+
+        if (-1 == j) {
+            j = val.length();
+        }
+        return Short.valueOf(val.substring(i, j));
     }
 
-    return new URI(buf.toString());
-  }
+    @Override
+    public boolean hasQualifier(URI uri) {
+        String val = uri.getValue();
+        int i = val.indexOf(':');
+        int j = val.indexOf('/');
+
+        return 1 < j - i;
+    }
+
+    @Override
+    public int getQualifier(URI uri) {
+        String val = uri.getValue();
+
+        int i = val.indexOf(':') + 1;
+        int j = val.indexOf('/', i);
+
+        if (-1 == j) {
+            j = val.length();
+        }
+        return Integer.valueOf(val.substring(i, j));
+    }
+
+    @Override
+    public boolean hasSubId(URI uri) {
+        String val = uri.getValue();
+        int i = val.indexOf('/') + 1;
+
+        return -1 != val.indexOf('/', i);
+    }
+
+    @Override
+    public short getSubId(URI uri) {
+        String val = uri.getValue();
+
+        int i = val.indexOf('/') + 1;
+        int j = val.indexOf('/', i) + 1;
+
+        return Short.valueOf(val.substring(j, val.length()));
+    }
+
+    @Override
+    public URI getURI(Integer apidQualifier, short apid, Short subId) {
+        StringBuilder buf = new StringBuilder("malspp:");
+        if (null != apidQualifier) {
+            buf.append(apidQualifier);
+        }
+
+        buf.append('/');
+        buf.append(apid);
+
+        if (null != subId) {
+            buf.append('/');
+            buf.append(subId);
+        }
+
+        return new URI(buf.toString());
+    }
 }

@@ -24,16 +24,16 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALStandardError;
 
 /**
- * The MALErrorBody interface gives access to the body of an ERROR message, i.e., a MAL message which header field
- * ‘isError’ is TRUE.
+ * The MALErrorBody interface gives access to the body of an ERROR message,
+ * i.e., a MAL message which header field ‘isError’ is TRUE.
  */
-public interface MALErrorBody extends MALMessageBody
-{
-  /**
-   * The method returns the error from the ERROR message.
-   *
-   * @return The decoded standard error.
-   * @throws MALException If an error occurs
-   */
-  MALStandardError getError() throws MALException;
+public interface MALErrorBody extends MALMessageBody {
+
+    /**
+     * The method returns the error from the ERROR message.
+     *
+     * @return The decoded standard error.
+     * @throws MALException If an error occurs
+     */
+    MALStandardError getError() throws MALException;
 }

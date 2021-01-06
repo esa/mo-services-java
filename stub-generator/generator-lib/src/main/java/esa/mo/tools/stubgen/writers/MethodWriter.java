@@ -25,58 +25,60 @@ import java.io.IOException;
 /**
  * Writer for creating a method block.
  */
-public interface MethodWriter
-{
-  /**
-   * Add a call to the super class.
-   *
-   * @param method The method name.
-   * @param args the arguments to supply.
-   * @throws IOException If there is an IO error.
-   */
-  void addSuperMethodStatement(String method, String args) throws IOException;
+public interface MethodWriter {
 
-  /**
-   * Adds a statement to the method.
-   *
-   * @param statement The statement to add.
-   * @throws IOException If there is an IO error.
-   */
-  void addMethodStatement(String statement) throws IOException;
+    /**
+     * Add a call to the super class.
+     *
+     * @param method The method name.
+     * @param args the arguments to supply.
+     * @throws IOException If there is an IO error.
+     */
+    void addSuperMethodStatement(String method, String args) throws IOException;
 
-  /**
-   * Adds a statement to the method.
-   *
-   * @param statement The statement to add.
-   * @param addSemi True if adding a semicolon to the statement.
-   * @throws IOException If there is an IO error.
-   */
-  void addMethodStatement(String statement, boolean addSemi) throws IOException;
+    /**
+     * Adds a statement to the method.
+     *
+     * @param statement The statement to add.
+     * @throws IOException If there is an IO error.
+     */
+    void addMethodStatement(String statement) throws IOException;
 
-  /**
-   * Adds a statement to the method with type dependency.
-   *
-   * @param statement The statement to add.
-   * @param dependency the types to depend on.
-   * @param addSemi True if adding a semicolon to the statement.
-   * @throws IOException If there is an IO error.
-   */
-  void addMethodWithDependencyStatement(String statement, String dependency, boolean addSemi) throws IOException;
+    /**
+     * Adds a statement to the method.
+     *
+     * @param statement The statement to add.
+     * @param addSemi True if adding a semicolon to the statement.
+     * @throws IOException If there is an IO error.
+     */
+    void addMethodStatement(String statement, boolean addSemi) throws IOException;
 
-  /**
-   * Adds a set of statements to the method that index an array.
-   *
-   * @param arrayVariable The variable that contains the array.
-   * @param indexVariable The index variable.
-   * @param arrayMaxSize The array maximum size.
-   * @throws IOException If there is an IO error.
-   */
-  void addArrayMethodStatement(String arrayVariable, String indexVariable, String arrayMaxSize) throws IOException;
+    /**
+     * Adds a statement to the method with type dependency.
+     *
+     * @param statement The statement to add.
+     * @param dependency the types to depend on.
+     * @param addSemi True if adding a semicolon to the statement.
+     * @throws IOException If there is an IO error.
+     */
+    void addMethodWithDependencyStatement(String statement,
+            String dependency, boolean addSemi) throws IOException;
 
-  /**
-   * Adds statement to close the method.
-   *
-   * @throws IOException If there is an IO error.
-   */
-  void addMethodCloseStatement() throws IOException;
+    /**
+     * Adds a set of statements to the method that index an array.
+     *
+     * @param arrayVariable The variable that contains the array.
+     * @param indexVariable The index variable.
+     * @param arrayMaxSize The array maximum size.
+     * @throws IOException If there is an IO error.
+     */
+    void addArrayMethodStatement(String arrayVariable,
+            String indexVariable, String arrayMaxSize) throws IOException;
+
+    /**
+     * Adds statement to close the method.
+     *
+     * @throws IOException If there is an IO error.
+     */
+    void addMethodCloseStatement() throws IOException;
 }

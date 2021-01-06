@@ -23,43 +23,40 @@ package esa.mo.mal.encoder.binary.variable;
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 
 /**
- * Implements the MALElementInputStream interface for a fixed length binary encoding.
+ * Implements the MALElementInputStream interface for a fixed length binary
+ * encoding.
  */
-public class VariableBinaryElementInputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementInputStream
-{
+public class VariableBinaryElementInputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementInputStream {
 
-  /**
-   * Constructor.
-   *
-   * @param is          Input stream to read from.
-   * @param timeHandler Time handler to use.
-   */
-  public VariableBinaryElementInputStream(final java.io.InputStream is,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(new VariableBinaryDecoder(is, timeHandler));
-  }
+    /**
+     * Constructor.
+     *
+     * @param is Input stream to read from.
+     * @param timeHandler Time handler to use.
+     */
+    public VariableBinaryElementInputStream(final java.io.InputStream is,
+            final BinaryTimeHandler timeHandler) {
+        super(new VariableBinaryDecoder(is, timeHandler));
+    }
 
-  /**
-   * Constructor.
-   *
-   * @param buf         Byte buffer to read from.
-   * @param offset      Offset into buffer to start from.
-   * @param timeHandler Time handler to use.
-   */
-  public VariableBinaryElementInputStream(final byte[] buf, final int offset,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(new VariableBinaryDecoder(buf, offset, timeHandler));
-  }
+    /**
+     * Constructor.
+     *
+     * @param buf Byte buffer to read from.
+     * @param offset Offset into buffer to start from.
+     * @param timeHandler Time handler to use.
+     */
+    public VariableBinaryElementInputStream(final byte[] buf, final int offset,
+            final BinaryTimeHandler timeHandler) {
+        super(new VariableBinaryDecoder(buf, offset, timeHandler));
+    }
 
-  /**
-   * Sub class constructor.
-   *
-   * @param pdec Decoder to use.
-   */
-  protected VariableBinaryElementInputStream(VariableBinaryDecoder pdec)
-  {
-    super(pdec);
-  }
+    /**
+     * Sub class constructor.
+     *
+     * @param pdec Decoder to use.
+     */
+    protected VariableBinaryElementInputStream(VariableBinaryDecoder pdec) {
+        super(pdec);
+    }
 }

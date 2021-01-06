@@ -26,49 +26,54 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * The MALPublishInteractionListener interface allows the reception of the publish interaction results.
+ * The MALPublishInteractionListener interface allows the reception of the
+ * publish interaction results.
  */
-public interface MALPublishInteractionListener
-{
-  /**
-   * The method receives the PUBLISH REGISTER ACK message.
-   *
-   * @param header Header of the message
-   * @param qosProperties QoS properties of the message
-   * @throws MALException If an error occurs then a MALException may be raised.
-   */
-  void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties)
-          throws MALException;
+public interface MALPublishInteractionListener {
 
-  /**
-   * The method receives the PUBLISH REGISTER ERROR message.
-   *
-   * @param header Header of the message
-   * @param body Body of the message
-   * @param qosProperties QoS properties of the message
-   * @throws MALException If an error occurs then a MALException may be raised.
-   */
-  void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties)
-          throws MALException;
+    /**
+     * The method receives the PUBLISH REGISTER ACK message.
+     *
+     * @param header Header of the message
+     * @param qosProperties QoS properties of the message
+     * @throws MALException If an error occurs then a MALException may be
+     * raised.
+     */
+    void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties)
+            throws MALException;
 
-  /**
-   * The method receives the PUBLISH ERROR message.
-   *
-   * @param header Header of the message
-   * @param body Body of the message
-   * @param qosProperties QoS properties of the message
-   * @throws MALException If an error occurs then a MALException may be raised.
-   */
-  void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties)
-          throws MALException;
+    /**
+     * The method receives the PUBLISH REGISTER ERROR message.
+     *
+     * @param header Header of the message
+     * @param body Body of the message
+     * @param qosProperties QoS properties of the message
+     * @throws MALException If an error occurs then a MALException may be
+     * raised.
+     */
+    void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body,
+            Map qosProperties) throws MALException;
 
-  /**
-   * The method receives the PUBLISH DEREGISTER ACK message.
-   *
-   * @param header Header of the message
-   * @param qosProperties QoS properties of the message
-   * @throws MALException If an error occurs then a MALException may be raised.
-   */
-  void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties)
-          throws MALException;
+    /**
+     * The method receives the PUBLISH ERROR message.
+     *
+     * @param header Header of the message
+     * @param body Body of the message
+     * @param qosProperties QoS properties of the message
+     * @throws MALException If an error occurs then a MALException may be
+     * raised.
+     */
+    void publishErrorReceived(MALMessageHeader header, MALErrorBody body,
+            Map qosProperties) throws MALException;
+
+    /**
+     * The method receives the PUBLISH DEREGISTER ACK message.
+     *
+     * @param header Header of the message
+     * @param qosProperties QoS properties of the message
+     * @throws MALException If an error occurs then a MALException may be
+     * raised.
+     */
+    void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties)
+            throws MALException;
 }

@@ -37,82 +37,77 @@ import javax.xml.bind.Unmarshaller;
 /**
  * Small helper class to load in MO XML specifications via JAXB
  */
-public abstract class XmlHelper
-{
-  public static final java.util.logging.Logger LOGGER = Logger.getLogger("esa.mo.xsd");
+public abstract class XmlHelper {
 
-  private XmlHelper()
-  {
-  }
+    public static final java.util.logging.Logger LOGGER = Logger.getLogger("esa.mo.xsd");
 
-  public static List<Map.Entry<SpecificationType, XmlSpecification>> loadSpecifications(final File directory) throws IOException, JAXBException
-  {
-    final List<Map.Entry<SpecificationType, XmlSpecification>> specList = new LinkedList<Map.Entry<SpecificationType, XmlSpecification>>();
+    private XmlHelper() {
+    }
 
-    if (directory.exists())
-    {
-      final File xmlFiles[] = directory.listFiles();
+    public static List<Map.Entry<SpecificationType, XmlSpecification>> loadSpecifications(
+            final File directory) throws IOException, JAXBException {
+        final List<Map.Entry<SpecificationType, XmlSpecification>> specList 
+                = new LinkedList<Map.Entry<SpecificationType, XmlSpecification>>();
 
-      for (File file : xmlFiles)
-      {
-        if (file.isFile())
-        {
-          try
-          {
-            specList.add(loadSpecification(file));
-          }
-          catch (IOException ex)
-          {
-            LOGGER.log(Level.WARNING, "Exception thrown during the processing of XML file: {0}", file.getAbsolutePath());
-            throw ex;
-          }
-          catch (JAXBException ex)
-          {
-            LOGGER.log(Level.WARNING, "Exception thrown during the processing of XML file: {0}", file.getAbsolutePath());
-            throw ex;
-          }
-          catch (RuntimeException ex)
-          {
-            LOGGER.log(Level.WARNING, "Exception thrown during the processing of XML file: {0}", file.getAbsolutePath());
-            throw ex;
-          }
+        if (directory.exists()) {
+            final File xmlFiles[] = directory.listFiles();
+
+            for (File file : xmlFiles) {
+                if (file.isFile()) {
+                    try {
+                        specList.add(loadSpecification(file));
+                    } catch (IOException ex) {
+                        LOGGER.log(Level.WARNING, 
+                                "Exception thrown during the processing of XML file: {0}", 
+                                file.getAbsolutePath());
+                        throw ex;
+                    } catch (JAXBException ex) {
+                        LOGGER.log(Level.WARNING, 
+                                "Exception thrown during the processing of XML file: {0}",
+                                file.getAbsolutePath());
+                        throw ex;
+                    } catch (RuntimeException ex) {
+                        LOGGER.log(Level.WARNING, 
+                                "Exception thrown during the processing of XML file: {0}",
+                                file.getAbsolutePath());
+                        throw ex;
+                    }
+                }
+            }
         }
-      }
+
+        return specList;
     }
 
-    return specList;
-  }
-
-  public static AbstractMap.SimpleEntry<SpecificationType, XmlSpecification> loadSpecification(final File is) throws IOException, JAXBException
-  {
-    final JAXBContext jc = JAXBContext.newInstance("esa.mo.xsd");
-    final Unmarshaller unmarshaller = jc.createUnmarshaller();
-    final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
-    return new AbstractMap.SimpleEntry<SpecificationType, XmlSpecification>((SpecificationType) rootElement.getValue(),
-            new XmlSpecification(is, rootElement));
-  }
-
-  public final static class XmlSpecification
-  {
-    /**
-     * Holds the source file object.
-     */
-    public final File file;
-    /**
-     * Holds the XML root element.
-     */
-    public final JAXBElement rootElement;
-
-    /**
-     * Constructor.
-     *
-     * @param file The file.
-     * @param rootElement The XML root element.
-     */
-    public XmlSpecification(File file, JAXBElement rootElement)
-    {
-      this.file = file;
-      this.rootElement = rootElement;
+    public static AbstractMap.SimpleEntry<SpecificationType, XmlSpecification> loadSpecification(
+            final File is) throws IOException, JAXBException {
+        final JAXBContext jc = JAXBContext.newInstance("esa.mo.xsd");
+        final Unmarshaller unmarshaller = jc.createUnmarshaller();
+        final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
+        return new AbstractMap.SimpleEntry<SpecificationType, XmlSpecification>((SpecificationType) rootElement.getValue(),
+                new XmlSpecification(is, rootElement));
     }
-  }
+
+    public final static class XmlSpecification {
+
+        /**
+         * Holds the source file object.
+         */
+        public final File file;
+        /**
+         * Holds the XML root element.
+         */
+        public final JAXBElement rootElement;
+
+        /**
+         * Constructor.
+         *
+         * @param file The file.
+         * @param rootElement The XML root element.
+         */
+        public XmlSpecification(File file, JAXBElement rootElement) {
+            this.file = file;
+            this.rootElement = rootElement;
+        }
+    }
 }

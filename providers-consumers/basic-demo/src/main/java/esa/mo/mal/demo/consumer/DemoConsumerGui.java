@@ -63,285 +63,260 @@ import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicUpdateList;
 /**
  * This class provides a simple form for the control of the consumer.
  */
-public class DemoConsumerGui extends javax.swing.JFrame
-{
-  /**
-   * Logger
-   */
-  public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.demo.consumer");
-  private final IdentifierList domain = new IdentifierList();
-  private final Identifier network = new Identifier("GROUND");
-  private final SessionType session = SessionType.LIVE;
-  private final Identifier sessionName = new Identifier("LIVE");
-  private final ParameterLabel[] labels;
-  private final Subscription subRequestWildcard;
-  private final Subscription subRequestHalf;
-  private final Subscription subRequestAll;
-  private final DelayManager delayManager;
-  private final DemoConsumerAdapter adapter = new DemoConsumerAdapter();
-  private MALContextFactory malFactory;
-  private MALContext mal;
-  private MALConsumerManager consumerMgr;
-  private MALConsumer tmConsumer = null;
-  private BasicMonitorStub demoService = null;
-  private boolean running = true;
-  private boolean registered = false;
+public class DemoConsumerGui extends javax.swing.JFrame {
 
-  /**
-   * Main command line entry point.
-   *
-   * @param args the command line arguments
-   */
-  public static void main(final String args[])
-  {
-    try
-    {
-      final Properties sysProps = System.getProperties();
+    /**
+     * Logger
+     */
+    public static final java.util.logging.Logger LOGGER
+            = Logger.getLogger("org.ccsds.moims.mo.mal.demo.consumer");
+    private final IdentifierList domain = new IdentifierList();
+    private final Identifier network = new Identifier("GROUND");
+    private final SessionType session = SessionType.LIVE;
+    private final Identifier sessionName = new Identifier("LIVE");
+    private final ParameterLabel[] labels;
+    private final Subscription subRequestWildcard;
+    private final Subscription subRequestHalf;
+    private final Subscription subRequestAll;
+    private final DelayManager delayManager;
+    private final DemoConsumerAdapter adapter = new DemoConsumerAdapter();
+    private MALContextFactory malFactory;
+    private MALContext mal;
+    private MALConsumerManager consumerMgr;
+    private MALConsumer tmConsumer = null;
+    private BasicMonitorStub demoService = null;
+    private boolean running = true;
+    private boolean registered = false;
 
-      final File file = new File(System.getProperty("provider.properties", "demoConsumer.properties"));
-      if (file.exists())
-      {
-        sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), "provider.properties"));
-      }
+    /**
+     * Main command line entry point.
+     *
+     * @param args the command line arguments
+     */
+    public static void main(final String args[]) {
+        try {
+            final Properties sysProps = System.getProperties();
 
-      System.setProperties(sysProps);
+            final File file = new File(System.getProperty("provider.properties", "demoConsumer.properties"));
+            if (file.exists()) {
+                sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), "provider.properties"));
+            }
 
-      final String name = System.getProperty("application.name", "DemoServiceConsumer");
-      final Integer parametersNum = Integer.parseInt(System.getProperty("esa.mo.mal.demo.consumer.numparams", "512"));
+            System.setProperties(sysProps);
 
-      final DemoConsumerGui gui = new DemoConsumerGui(name, parametersNum);
-      gui.init();
+            final String name = System.getProperty("application.name", "DemoServiceConsumer");
+            final Integer parametersNum = Integer.parseInt(System.getProperty("esa.mo.mal.demo.consumer.numparams", "512"));
 
-      EventQueue.invokeLater(new Runnable()
-      {
-        public void run()
-        {
-          gui.setVisible(true);
+            final DemoConsumerGui gui = new DemoConsumerGui(name, parametersNum);
+            gui.init();
+
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    gui.setVisible(true);
+                }
+            });
+        } catch (MalformedURLException ex) {
+            LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Consumer {0}", ex);
+        } catch (MALException ex) {
+            LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Consumer {0}", ex);
         }
-      });
-    }
-    catch (MalformedURLException ex)
-    {
-      LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Consumer {0}", ex);
-    }
-    catch (MALException ex)
-    {
-      LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Consumer {0}", ex);
-    }
-  }
-
-  /**
-   * Creates new form DemoConsumerGui
-   *
-   * @param name The name to display on the title bar of the form.
-   * @param parameterNum Number of parameters to display.
-   */
-  public DemoConsumerGui(final String name, Integer parameterNum)
-  {
-    labels = new ParameterLabel[parameterNum];
-    initComponents();
-
-    this.setTitle(name);
-
-    delayManager = new DelayManager(delayLabel, 16);
-
-    final java.awt.Dimension dim = new java.awt.Dimension(64, 16);
-    for (int i = 0; i < labels.length; ++i)
-    {
-      labels[i] = new ParameterLabel(i, delayManager);
-      labels[i].setMinimumSize(dim);
-      labels[i].setPreferredSize(dim);
-      labels[i].setMaximumSize(dim);
-      labels[i].setOpaque(true);
-      labels[i].setBackground(Color.BLACK);
-      labels[i].setForeground(Color.GREEN);
-      labels[i].setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
-      this.jPanel1.add(labels[i]);
     }
 
-    domain.add(new Identifier("esa"));
-    domain.add(new Identifier("mission"));
+    /**
+     * Creates new form DemoConsumerGui
+     *
+     * @param name The name to display on the title bar of the form.
+     * @param parameterNum Number of parameters to display.
+     */
+    public DemoConsumerGui(final String name, Integer parameterNum) {
+        labels = new ParameterLabel[parameterNum];
+        initComponents();
 
-    final Identifier subscriptionId = new Identifier("SUB");
-    // set up the wildcard subscription
-    {
-      final EntityKey entitykey = new EntityKey(new Identifier("*"), 0L, 0L, 0L);
+        this.setTitle(name);
 
-      final EntityKeyList entityKeys = new EntityKeyList();
-      entityKeys.add(entitykey);
+        delayManager = new DelayManager(delayLabel, 16);
 
-      final EntityRequest entity = new EntityRequest(null, false, false, false, false, entityKeys);
+        final java.awt.Dimension dim = new java.awt.Dimension(64, 16);
+        for (int i = 0; i < labels.length; ++i) {
+            labels[i] = new ParameterLabel(i, delayManager);
+            labels[i].setMinimumSize(dim);
+            labels[i].setPreferredSize(dim);
+            labels[i].setMaximumSize(dim);
+            labels[i].setOpaque(true);
+            labels[i].setBackground(Color.BLACK);
+            labels[i].setForeground(Color.GREEN);
+            labels[i].setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-      final EntityRequestList entities = new EntityRequestList();
-      entities.add(entity);
-
-      subRequestWildcard = new Subscription(subscriptionId, entities);
-    }
-    // set up the named first half subscription
-    {
-      final EntityKeyList entityKeys = new EntityKeyList();
-
-      for (int i = 0; i < (labels.length / 2); i++)
-      {
-        final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
-        entityKeys.add(entitykey);
-      }
-
-      final EntityRequest entity = new EntityRequest(null, false, false, false, false, entityKeys);
-
-      final EntityRequestList entities = new EntityRequestList();
-      entities.add(entity);
-
-      subRequestHalf = new Subscription(subscriptionId, entities);
-    }
-    // set up the named all subscription
-    {
-      final EntityKeyList entityKeys = new EntityKeyList();
-
-      for (int i = 0; i < labels.length; i++)
-      {
-        final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
-        entityKeys.add(entitykey);
-      }
-
-      final EntityRequest entity = new EntityRequest(null, false, false, false, false, entityKeys);
-
-      final EntityRequestList entities = new EntityRequestList();
-      entities.add(entity);
-
-      subRequestAll = new Subscription(subscriptionId, entities);
-    }
-  }
-
-  private void init() throws MALException, MalformedURLException
-  {
-    loadURIs();
-
-    malFactory = MALContextFactory.newFactory();
-    mal = malFactory.createMALContext(System.getProperties());
-
-    MALHelper.init(MALContextFactory.getElementFactoryRegistry());
-    MALDemoHelper.init(MALContextFactory.getElementFactoryRegistry());
-    BasicMonitorHelper.init(MALContextFactory.getElementFactoryRegistry());
-
-    consumerMgr = mal.createConsumerManager();
-
-    startService();
-
-    Thread asyncSendThread = new Thread()
-    {
-      @Override
-      public void run()
-      {
-        while (running)
-        {
-          for (int i = 0; i < labels.length; ++i)
-          {
-            labels[i].displayValue();
-          }
-
-          // sleep
-          try
-          {
-            Thread.sleep(1000);
-          }
-          catch (InterruptedException ex)
-          {
-            // do nothing
-          }
+            this.jPanel1.add(labels[i]);
         }
-      }
-    };
 
-    asyncSendThread.start();
-  }
+        domain.add(new Identifier("esa"));
+        domain.add(new Identifier("mission"));
 
-  private void startService() throws MALException, MalformedURLException
-  {
-    // close old transport
-    if (null != tmConsumer)
-    {
-      tmConsumer.close();
-      resetErrorMenuItemActionPerformed(null);
-    }
-
-    loadURIs();
-
-    final String tpuri = System.getProperty("uri");
-    final String tburi = System.getProperty("broker");
-
-    tmConsumer = consumerMgr.createConsumer((String) null,
-            new URI(tpuri),
-            new URI(tburi),
-            BasicMonitorHelper.BASICMONITOR_SERVICE,
-            new Blob("".getBytes()),
-            domain,
-            network,
-            session,
-            sessionName,
-            QoSLevel.ASSURED,
-            System.getProperties(),
-            new UInteger(0));
-
-    demoService = new BasicMonitorStub(tmConsumer);
-  }
-
-  private static void loadURIs() throws MalformedURLException
-  {
-    final java.util.Properties sysProps = System.getProperties();
-
-    final String configFile = System.getProperty("providerURI.properties", "demoServiceURI.properties");
-
-    final java.io.File file = new java.io.File(configFile);
-    if (file.exists())
-    {
-      sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), "providerURI.properties"));
-    }
-
-    System.setProperties(sysProps);
-  }
-
-  private class DemoConsumerAdapter extends BasicMonitorAdapter
-  {
-    @Override
-    public void monitorNotifyReceived(final MALMessageHeader msgHeader,
-            final Identifier lIdentifier,
-            final UpdateHeaderList lUpdateHeaderList,
-            final BasicUpdateList lBasicUpdateList,
-            final Map qosp)
-    {
-      LOGGER.log(Level.INFO, "Received update list of size : {0}", lBasicUpdateList.size());
-      final long iDiff = System.currentTimeMillis() - msgHeader.getTimestamp().getValue();
-
-      for (int i = 0; i < lBasicUpdateList.size(); i++)
-      {
-        final UpdateHeader updateHeader = lUpdateHeaderList.get(i);
-        final BasicUpdate updateValue = lBasicUpdateList.get(i);
-        final String name = updateHeader.getKey().getFirstSubKey().getValue();
-
-        try
+        final Identifier subscriptionId = new Identifier("SUB");
+        // set up the wildcard subscription
         {
-          final int index = Integer.parseInt(name);
+            final EntityKey entitykey = new EntityKey(new Identifier("*"), 0L, 0L, 0L);
 
-          if ((0 <= index) && (index < labels.length))
-          {
-            labels[index].setNewValue(updateValue.getCounter(), iDiff);
-          }
+            final EntityKeyList entityKeys = new EntityKeyList();
+            entityKeys.add(entitykey);
+
+            final EntityRequest entity = new EntityRequest(null, false, false, false, false, entityKeys);
+
+            final EntityRequestList entities = new EntityRequestList();
+            entities.add(entity);
+
+            subRequestWildcard = new Subscription(subscriptionId, entities);
         }
-        catch (NumberFormatException ex)
+        // set up the named first half subscription
         {
-          LOGGER.log(Level.WARNING, "Error decoding update with name: {0}", name);
-        }
-      }
-    }
-  }
+            final EntityKeyList entityKeys = new EntityKeyList();
 
-  /**
-   * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
-   * content of this method is always regenerated by the Form Editor.
-   */
-  @SuppressWarnings("unchecked")
+            for (int i = 0; i < (labels.length / 2); i++) {
+                final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
+                entityKeys.add(entitykey);
+            }
+
+            final EntityRequest entity = new EntityRequest(null, false, false, false, false, entityKeys);
+
+            final EntityRequestList entities = new EntityRequestList();
+            entities.add(entity);
+
+            subRequestHalf = new Subscription(subscriptionId, entities);
+        }
+        // set up the named all subscription
+        {
+            final EntityKeyList entityKeys = new EntityKeyList();
+
+            for (int i = 0; i < labels.length; i++) {
+                final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
+                entityKeys.add(entitykey);
+            }
+
+            final EntityRequest entity = new EntityRequest(null, false, false, false, false, entityKeys);
+
+            final EntityRequestList entities = new EntityRequestList();
+            entities.add(entity);
+
+            subRequestAll = new Subscription(subscriptionId, entities);
+        }
+    }
+
+    private void init() throws MALException, MalformedURLException {
+        loadURIs();
+
+        malFactory = MALContextFactory.newFactory();
+        mal = malFactory.createMALContext(System.getProperties());
+
+        MALHelper.init(MALContextFactory.getElementFactoryRegistry());
+        MALDemoHelper.init(MALContextFactory.getElementFactoryRegistry());
+        BasicMonitorHelper.init(MALContextFactory.getElementFactoryRegistry());
+
+        consumerMgr = mal.createConsumerManager();
+
+        startService();
+
+        Thread asyncSendThread = new Thread() {
+            @Override
+            public void run() {
+                while (running) {
+                    for (int i = 0; i < labels.length; ++i) {
+                        labels[i].displayValue();
+                    }
+
+                    // sleep
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        // do nothing
+                    }
+                }
+            }
+        };
+
+        asyncSendThread.start();
+    }
+
+    private void startService() throws MALException, MalformedURLException {
+        // close old transport
+        if (null != tmConsumer) {
+            tmConsumer.close();
+            resetErrorMenuItemActionPerformed(null);
+        }
+
+        loadURIs();
+
+        final String tpuri = System.getProperty("uri");
+        final String tburi = System.getProperty("broker");
+
+        tmConsumer = consumerMgr.createConsumer((String) null,
+                new URI(tpuri),
+                new URI(tburi),
+                BasicMonitorHelper.BASICMONITOR_SERVICE,
+                new Blob("".getBytes()),
+                domain,
+                network,
+                session,
+                sessionName,
+                QoSLevel.ASSURED,
+                System.getProperties(),
+                new UInteger(0));
+
+        demoService = new BasicMonitorStub(tmConsumer);
+    }
+
+    private static void loadURIs() throws MalformedURLException {
+        final java.util.Properties sysProps = System.getProperties();
+
+        final String configFile = System.getProperty("providerURI.properties", 
+                "demoServiceURI.properties");
+
+        final java.io.File file = new java.io.File(configFile);
+        if (file.exists()) {
+            sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), 
+                    "providerURI.properties"));
+        }
+
+        System.setProperties(sysProps);
+    }
+
+    private class DemoConsumerAdapter extends BasicMonitorAdapter {
+
+        @Override
+        public void monitorNotifyReceived(final MALMessageHeader msgHeader,
+                final Identifier lIdentifier,
+                final UpdateHeaderList lUpdateHeaderList,
+                final BasicUpdateList lBasicUpdateList,
+                final Map qosp) {
+            LOGGER.log(Level.INFO, "Received update list of size : {0}", 
+                    lBasicUpdateList.size());
+            final long iDiff = System.currentTimeMillis() - msgHeader.getTimestamp().getValue();
+
+            for (int i = 0; i < lBasicUpdateList.size(); i++) {
+                final UpdateHeader updateHeader = lUpdateHeaderList.get(i);
+                final BasicUpdate updateValue = lBasicUpdateList.get(i);
+                final String name = updateHeader.getKey().getFirstSubKey().getValue();
+
+                try {
+                    final int index = Integer.parseInt(name);
+
+                    if ((0 <= index) && (index < labels.length)) {
+                        labels[index].setNewValue(updateValue.getCounter(), iDiff);
+                    }
+                } catch (NumberFormatException ex) {
+                    LOGGER.log(Level.WARNING, 
+                            "Error decoding update with name: {0}", name);
+                }
+            }
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents()
   {
@@ -557,203 +532,150 @@ public class DemoConsumerGui extends javax.swing.JFrame
 
     private void quitMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_quitMenuItemActionPerformed
     {//GEN-HEADEREND:event_quitMenuItemActionPerformed
-      try
-      {
-        running = false;
+        try {
+            running = false;
 
-        if (null != tmConsumer)
-        {
-          deregMenuItemActionPerformed(null);
-          tmConsumer.close();
+            if (null != tmConsumer) {
+                deregMenuItemActionPerformed(null);
+                tmConsumer.close();
+            }
+            if (null != consumerMgr) {
+                consumerMgr.close();
+            }
+            if (null != mal) {
+                mal.close();
+            }
+        } catch (MALException ex) {
+            LOGGER.log(Level.SEVERE, "Exception during close down of the consumer {0}", ex);
         }
-        if (null != consumerMgr)
-        {
-          consumerMgr.close();
-        }
-        if (null != mal)
-        {
-          mal.close();
-        }
-      }
-      catch (MALException ex)
-      {
-        LOGGER.log(Level.SEVERE, "Exception during close down of the consumer {0}", ex);
-      }
 
-      dispose();
+        dispose();
     }//GEN-LAST:event_quitMenuItemActionPerformed
 
     private void deregMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_deregMenuItemActionPerformed
     {//GEN-HEADEREND:event_deregMenuItemActionPerformed
-      if (registered)
-      {
-        try
-        {
-          registered = false;
-          final Identifier subscriptionId = new Identifier("SUB");
-          final IdentifierList subLst = new IdentifierList();
-          subLst.add(subscriptionId);
-          demoService.monitorDeregister(subLst);
+        if (registered) {
+            try {
+                registered = false;
+                final Identifier subscriptionId = new Identifier("SUB");
+                final IdentifierList subLst = new IdentifierList();
+                subLst.add(subscriptionId);
+                demoService.monitorDeregister(subLst);
+            } catch (MALException ex) {
+                Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (MALInteractionException ex) {
+                Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        catch (MALException ex)
-        {
-          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        catch (MALInteractionException ex)
-        {
-          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-        }
-      }
     }//GEN-LAST:event_deregMenuItemActionPerformed
 
     private void resetErrorMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_resetErrorMenuItemActionPerformed
     {//GEN-HEADEREND:event_resetErrorMenuItemActionPerformed
-      for (int i = 0; i < labels.length; ++i)
-      {
-        labels[i].reset();
-      }
+        for (int i = 0; i < labels.length; ++i) {
+            labels[i].reset();
+        }
     }//GEN-LAST:event_resetErrorMenuItemActionPerformed
 
     private void regWildcardRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_regWildcardRadioButtonMenuItemActionPerformed
     {//GEN-HEADEREND:event_regWildcardRadioButtonMenuItemActionPerformed
-      try
-      {
-        demoService.monitorRegister(subRequestWildcard, adapter);
-        registered = true;
-      }
-      catch (MALException ex)
-      {
-        Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      catch (MALInteractionException ex)
-      {
-        Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      }
+        try {
+            demoService.monitorRegister(subRequestWildcard, adapter);
+            registered = true;
+        } catch (MALException ex) {
+            Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MALInteractionException ex) {
+            Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_regWildcardRadioButtonMenuItemActionPerformed
 
     private void regHalfRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_regHalfRadioButtonMenuItemActionPerformed
     {//GEN-HEADEREND:event_regHalfRadioButtonMenuItemActionPerformed
-      try
-      {
-        demoService.monitorRegister(subRequestHalf, adapter);
-        registered = true;
-      }
-      catch (MALException ex)
-      {
-        Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      catch (MALInteractionException ex)
-      {
-        Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      }
+        try {
+            demoService.monitorRegister(subRequestHalf, adapter);
+            registered = true;
+        } catch (MALException ex) {
+            Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MALInteractionException ex) {
+            Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_regHalfRadioButtonMenuItemActionPerformed
 
     private void regAllRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_regAllRadioButtonMenuItemActionPerformed
     {//GEN-HEADEREND:event_regAllRadioButtonMenuItemActionPerformed
-      try
-      {
-        demoService.monitorRegister(subRequestAll, adapter);
-        registered = true;
-      }
-      catch (MALException ex)
-      {
-        Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      catch (MALInteractionException ex)
-      {
-        Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      }
+        try {
+            demoService.monitorRegister(subRequestAll, adapter);
+            registered = true;
+        } catch (MALException ex) {
+            Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MALInteractionException ex) {
+            Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_regAllRadioButtonMenuItemActionPerformed
 
     private void reconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reconnectActionPerformed
-      try
-      {
-        this.delayManager.resetDelay();
-        labels[0].reset();
-        StructureHelper.clearLoadedPropertiesList();
-        startService();
-      }
-      catch (MALException ex)
-      {
-        Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      catch (MalformedURLException ex)
-      {
-        Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      }
+        try {
+            this.delayManager.resetDelay();
+            labels[0].reset();
+            StructureHelper.clearLoadedPropertiesList();
+            startService();
+        } catch (MALException ex) {
+            Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_reconnectActionPerformed
 
   private void returnBooleanActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_returnBooleanActionPerformed
   {//GEN-HEADEREND:event_returnBooleanActionPerformed
-    try
-    {
-      LOGGER.log(Level.INFO, "returnBooleanActionPerformed: {0}", demoService.returnBoolean(Boolean.TRUE));
-    }
-    catch (MALException ex)
-    {
-      Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    catch (MALInteractionException ex)
-    {
-      Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-    }
+      try {
+          LOGGER.log(Level.INFO, "returnBooleanActionPerformed: {0}", demoService.returnBoolean(Boolean.TRUE));
+      } catch (MALException ex) {
+          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (MALInteractionException ex) {
+          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+      }
   }//GEN-LAST:event_returnBooleanActionPerformed
 
   private void returnCompositeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_returnCompositeActionPerformed
   {//GEN-HEADEREND:event_returnCompositeActionPerformed
-    try
-    {
-      LOGGER.log(Level.INFO,
-              "returnCompositeActionPerformed: {0}",
-              demoService.returnComposite(new BasicComposite(Short.MIN_VALUE, "String", Boolean.FALSE)));
-    }
-    catch (MALException ex)
-    {
-      Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    catch (MALInteractionException ex)
-    {
-      Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-    }
+      try {
+          LOGGER.log(Level.INFO,
+                  "returnCompositeActionPerformed: {0}",
+                  demoService.returnComposite(new BasicComposite(Short.MIN_VALUE, "String", Boolean.FALSE)));
+      } catch (MALException ex) {
+          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (MALInteractionException ex) {
+          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+      }
   }//GEN-LAST:event_returnCompositeActionPerformed
 
   private void returnEnumActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_returnEnumActionPerformed
   {//GEN-HEADEREND:event_returnEnumActionPerformed
-    try
-    {
-      LOGGER.log(Level.INFO, "returnEnumActionPerformed: {0}", demoService.returnEnumeration(BasicEnum.SECOND));
-    }
-    catch (MALException ex)
-    {
-      Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    catch (MALInteractionException ex)
-    {
-      Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-    }
+      try {
+          LOGGER.log(Level.INFO, "returnEnumActionPerformed: {0}", demoService.returnEnumeration(BasicEnum.SECOND));
+      } catch (MALException ex) {
+          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (MALInteractionException ex) {
+          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+      }
   }//GEN-LAST:event_returnEnumActionPerformed
 
   private void testSubmitActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_testSubmitActionPerformed
   {//GEN-HEADEREND:event_testSubmitActionPerformed
-    try
-    {
-      LOGGER.info("testSubmitActionPerformed started");
-      demoService.testSubmit(null);
-      LOGGER.info("testSubmitActionPerformed returned");
-    }
-    catch (MALException ex)
-    {
-      Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    catch (MALInteractionException ex)
-    {
-      Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-    }
+      try {
+          LOGGER.info("testSubmitActionPerformed started");
+          demoService.testSubmit(null);
+          LOGGER.info("testSubmitActionPerformed returned");
+      } catch (MALException ex) {
+          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (MALInteractionException ex) {
+          Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
+      }
   }//GEN-LAST:event_testSubmitActionPerformed
 
   private void formWindowClosing(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosing
   {//GEN-HEADEREND:event_formWindowClosing
-    quitMenuItemActionPerformed(null);
+      quitMenuItemActionPerformed(null);
   }//GEN-LAST:event_formWindowClosing
 
   // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -25,61 +25,55 @@ import esa.mo.xsd.ServiceType;
 import java.util.List;
 
 /**
- * Holds details about when a type should be created to represent the return from an operation that returns multiple
- * types.
+ * Holds details about when a type should be created to represent the return
+ * from an operation that returns multiple types.
  */
-public class MultiReturnType
-{
-  private final String returnType;
-  private final AreaType area;
-  private final ServiceType service;
-  private final String shortName;
-  private final List<TypeInfo> returnTypes;
+public class MultiReturnType {
 
-  /**
-   * Constructor.
-   *
-   * @param returnType The fully qualified return type name.
-   * @param area The service area of the operation.
-   * @param service The service of the operation.
-   * @param shortName The generated return type name.
-   * @param returnTypes The types contained in the return type.
-   */
-  public MultiReturnType(final String returnType,
-          final AreaType area,
-          final ServiceType service,
-          final String shortName,
-          final List<TypeInfo> returnTypes)
-  {
-    this.returnType = returnType;
-    this.area = area;
-    this.service = service;
-    this.shortName = shortName;
-    this.returnTypes = returnTypes;
-  }
+    private final String returnType;
+    private final AreaType area;
+    private final ServiceType service;
+    private final String shortName;
+    private final List<TypeInfo> returnTypes;
 
-  public String getReturnType()
-  {
-    return returnType;
-  }
+    /**
+     * Constructor.
+     *
+     * @param returnType The fully qualified return type name.
+     * @param area The service area of the operation.
+     * @param service The service of the operation.
+     * @param shortName The generated return type name.
+     * @param returnTypes The types contained in the return type.
+     */
+    public MultiReturnType(final String returnType,
+            final AreaType area,
+            final ServiceType service,
+            final String shortName,
+            final List<TypeInfo> returnTypes) {
+        this.returnType = returnType;
+        this.area = area;
+        this.service = service;
+        this.shortName = shortName;
+        this.returnTypes = returnTypes;
+    }
 
-  public AreaType getArea()
-  {
-    return area;
-  }
+    public String getReturnType() {
+        return returnType;
+    }
 
-  public ServiceType getService()
-  {
-    return service;
-  }
+    public AreaType getArea() {
+        return area;
+    }
 
-  public String getShortName()
-  {
-    return shortName;
-  }
+    public ServiceType getService() {
+        return service;
+    }
 
-  public List<TypeInfo> getReturnTypes()
-  {
-    return returnTypes;
-  }
+    public String getShortName() {
+        return shortName;
+    }
+
+    public List<TypeInfo> getReturnTypes() {
+        return returnTypes;
+    }
 }

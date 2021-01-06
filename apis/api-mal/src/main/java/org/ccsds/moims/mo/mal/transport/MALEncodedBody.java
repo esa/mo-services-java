@@ -25,27 +25,25 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 /**
  * The MALEncodedBody class represents an encoded body.
  */
-public class MALEncodedBody
-{
-  private Blob encodedBody;
+public class MALEncodedBody {
 
-  /**
-   * Constructor.
-   *
-   * @param encodedBody The encoded body
-   */
-  public MALEncodedBody(final Blob encodedBody)
-  {
-    this.encodedBody = encodedBody;
-  }
+    private Blob encodedBody;
 
-  /**
-   * Returns the encoded body.
-   *
-   * @return The encoded body
-   */
-  public Blob getEncodedBody()
-  {
-    return encodedBody;
-  }
+    /**
+     * Constructor.
+     *
+     * @param encodedBody The encoded body
+     */
+    public MALEncodedBody(final Blob encodedBody) {
+        this.encodedBody = encodedBody;
+    }
+
+    /**
+     * Returns the encoded body.
+     *
+     * @return The encoded body
+     */
+    public Blob getEncodedBody() {
+        return encodedBody;
+    }
 }

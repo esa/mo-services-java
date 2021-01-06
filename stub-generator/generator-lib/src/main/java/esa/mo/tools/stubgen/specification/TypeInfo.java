@@ -25,124 +25,121 @@ import esa.mo.xsd.TypeReference;
 /**
  * Holds information about a type.
  */
-public class TypeInfo
-{
-  private final TypeReference sourceType;
-  private final String fieldName;
-  private final String fieldComment;
-  private final String actualMalType;
-  private final String targetType;
-  private final boolean nativeType;
-  private final String malShortFormField;
-  private final String malVersionField;
+public class TypeInfo {
 
-  /**
-   * Constructor.
-   *
-   * @param sourceType XML type reference.
-   * @param fieldName Optional name for this field
-   * @param fieldComment Optional comment for this field
-   * @param actualMalType The name of the type in the specification.
-   * @param targetType The programming language type.
-   * @param isNative True if the type is represented by a native language type.
-   * @param malShortFormField The short form field value for the type.
-   * @param versionInfo The version information for the type.
-   */
-  public TypeInfo(TypeReference sourceType, String fieldName, String fieldComment, String actualMalType, String targetType, boolean isNative, String malShortFormField, String versionInfo)
-  {
-    this.sourceType = sourceType;
-    this.fieldName = fieldName;
-    this.fieldComment = fieldComment;
-    this.actualMalType = actualMalType;
-    this.targetType = targetType;
-    this.nativeType = isNative;
-    this.malShortFormField = malShortFormField;
-    this.malVersionField = versionInfo;
-  }
+    private final TypeReference sourceType;
+    private final String fieldName;
+    private final String fieldComment;
+    private final String actualMalType;
+    private final String targetType;
+    private final boolean nativeType;
+    private final String malShortFormField;
+    private final String malVersionField;
 
-  /**
-   * Returns the source XML type.
-   *
-   * @return the source type.
-   */
-  public TypeReference getSourceType()
-  {
-    return sourceType;
-  }
+    /**
+     * Constructor.
+     *
+     * @param sourceType XML type reference.
+     * @param fieldName Optional name for this field
+     * @param fieldComment Optional comment for this field
+     * @param actualMalType The name of the type in the specification.
+     * @param targetType The programming language type.
+     * @param isNative True if the type is represented by a native language
+     * type.
+     * @param malShortFormField The short form field value for the type.
+     * @param versionInfo The version information for the type.
+     */
+    public TypeInfo(TypeReference sourceType, String fieldName,
+            String fieldComment, String actualMalType, String targetType,
+            boolean isNative, String malShortFormField, String versionInfo) {
+        this.sourceType = sourceType;
+        this.fieldName = fieldName;
+        this.fieldComment = fieldComment;
+        this.actualMalType = actualMalType;
+        this.targetType = targetType;
+        this.nativeType = isNative;
+        this.malShortFormField = malShortFormField;
+        this.malVersionField = versionInfo;
+    }
 
-  /**
-   * Returns the optional field name.
-   *
-   * @return the optional field name.
-   */
-  public String getFieldName()
-  {
-    return fieldName;
-  }
+    /**
+     * Returns the source XML type.
+     *
+     * @return the source type.
+     */
+    public TypeReference getSourceType() {
+        return sourceType;
+    }
 
-  /**
-   * Returns the optional field comment.
-   *
-   * @return the optional field comment.
-   */
-  public String getFieldComment()
-  {
-    return fieldComment;
-  }
+    /**
+     * Returns the optional field name.
+     *
+     * @return the optional field name.
+     */
+    public String getFieldName() {
+        return fieldName;
+    }
 
-  /**
-   * Returns the MAL type.
-   *
-   * @return the actual MAL type.
-   */
-  public String getActualMalType()
-  {
-    return actualMalType;
-  }
+    /**
+     * Returns the optional field comment.
+     *
+     * @return the optional field comment.
+     */
+    public String getFieldComment() {
+        return fieldComment;
+    }
 
-  /**
-   * Returns the language type.
-   *
-   * @return the target type.
-   */
-  public String getTargetType()
-  {
-    return targetType;
-  }
+    /**
+     * Returns the MAL type.
+     *
+     * @return the actual MAL type.
+     */
+    public String getActualMalType() {
+        return actualMalType;
+    }
 
-  /**
-   * True if represented by a language native type.
-   *
-   * @return the native type.
-   */
-  public boolean isNativeType()
-  {
-    return nativeType;
-  }
+    /**
+     * Returns the language type.
+     *
+     * @return the target type.
+     */
+    public String getTargetType() {
+        return targetType;
+    }
 
-  /**
-   * Returns the MAL short form field value.
-   *
-   * @return the MAL short form field.
-   */
-  public String getMalShortFormField()
-  {
-    return malShortFormField;
-  }
+    /**
+     * True if represented by a language native type.
+     *
+     * @return the native type.
+     */
+    public boolean isNativeType() {
+        return nativeType;
+    }
 
-  /**
-   * Returns the type version information.
-   *
-   * @return the MAL version field.
-   */
-  public String getMalVersionField()
-  {
-    return malVersionField;
-  }
+    /**
+     * Returns the MAL short form field value.
+     *
+     * @return the MAL short form field.
+     */
+    public String getMalShortFormField() {
+        return malShortFormField;
+    }
 
-  @Override
-  public String toString()
-  {
-    return "TypeInfo{" + "sourceType=" + sourceType + ", fieldName=" + fieldName + ", actualMalType=" + actualMalType + ", targetType=" + targetType + ", nativeType=" + nativeType + ", malShortFormField=" + malShortFormField + ", malVersionField=" + malVersionField + '}';
-  }
+    /**
+     * Returns the type version information.
+     *
+     * @return the MAL version field.
+     */
+    public String getMalVersionField() {
+        return malVersionField;
+    }
+
+    @Override
+    public String toString() {
+        return "TypeInfo{"
+                + "sourceType=" + sourceType + ", fieldName=" + fieldName
+                + ", actualMalType=" + actualMalType + ", targetType=" + targetType
+                + ", nativeType=" + nativeType + ", malShortFormField=" + malShortFormField
+                + ", malVersionField=" + malVersionField + '}';
+    }
 }

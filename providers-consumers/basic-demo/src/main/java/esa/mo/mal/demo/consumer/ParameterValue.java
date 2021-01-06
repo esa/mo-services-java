@@ -21,115 +21,90 @@
 package esa.mo.mal.demo.consumer;
 
 /**
- * Class that extends the basic Swing label class to add in automatic handling for displaying an update and also
- * calculating the transmission delay for the specific update. It also interacts with the DelayManager to calculate the
+ * Class that extends the basic Swing label class to add in automatic handling
+ * for displaying an update and also calculating the transmission delay for the
+ * specific update. It also interacts with the DelayManager to calculate the
  * total delay.
  */
-class ParameterValue
-{
-  private final DelayManager delayManager;
-  private final boolean isFirst;
-  private short curValue = -1;
-  private short labelValue = -1;
-  private boolean inError = false;
+class ParameterValue {
 
-  public ParameterValue(final int index, final DelayManager delayManager)
-  {
-    this.delayManager = delayManager;
-    this.isFirst = (0 == index);
-  }
+    private final DelayManager delayManager;
+    private final boolean isFirst;
+    private short curValue = -1;
+    private short labelValue = -1;
+    private boolean inError = false;
 
-  public short getLabelValue()
-  {
-    return labelValue;
-  }
+    public ParameterValue(final int index, final DelayManager delayManager) {
+        this.delayManager = delayManager;
+        this.isFirst = (0 == index);
+    }
 
-  public boolean isInError()
-  {
-    return inError;
-  }
+    public short getLabelValue() {
+        return labelValue;
+    }
 
-  public void setNewValue(final short newVal, final long iDiff)
-  {
-    delayManager.addDelay(isFirst, iDiff);
+    public boolean isInError() {
+        return inError;
+    }
 
-    boolean updatelabel = false;
+    public void setNewValue(final short newVal, final long iDiff) {
+        delayManager.addDelay(isFirst, iDiff);
 
-    // work out whether we need to update the label and whether there has been a jump in the value greater than 1
-    // in which case we need to make it in error
-    if (-1 != curValue)
-    {
-      if (-35536 == newVal)
-      {
-        if (35535 != curValue)
-        {
-          inError = true;
-        }
-      }
-      else
-      {
-        if (1 < (newVal - curValue))
-        {
-          inError = true;
-        }
-      }
+        boolean updatelabel = false;
 
-      // this complicated bit tried to work out whether the update we are receiving is in sequence in case we are
-      // receiving them out of order. This happens when the provider is publishing too fast for the consumer or
-      // transport technology to cope with.
-      if ((0 > curValue) || (0 > newVal))
-      {
-        if ((0 > curValue) && (0 > newVal))
-        {
-          // both -tive
-          if (curValue < newVal)
-          {
-            updatelabel = true;
-          }
-        }
-        else
-        {
-          if (0 > curValue)
-          {
-            // current -tive, new is +ive
-            updatelabel = true;
-          }
-          else
-          {
-            // current +tive, new is -ive
-            if (curValue > 35500)
-            {
-              updatelabel = true;
+        // work out whether we need to update the label and whether there has been a jump in the value greater than 1
+        // in which case we need to make it in error
+        if (-1 != curValue) {
+            if (-35536 == newVal) {
+                if (35535 != curValue) {
+                    inError = true;
+                }
+            } else {
+                if (1 < (newVal - curValue)) {
+                    inError = true;
+                }
             }
-          }
+
+            // this complicated bit tried to work out whether the update we are receiving is in sequence in case we are
+            // receiving them out of order. This happens when the provider is publishing too fast for the consumer or
+            // transport technology to cope with.
+            if ((0 > curValue) || (0 > newVal)) {
+                if ((0 > curValue) && (0 > newVal)) {
+                    // both -tive
+                    if (curValue < newVal) {
+                        updatelabel = true;
+                    }
+                } else {
+                    if (0 > curValue) {
+                        // current -tive, new is +ive
+                        updatelabel = true;
+                    } else {
+                        // current +tive, new is -ive
+                        if (curValue > 35500) {
+                            updatelabel = true;
+                        }
+                    }
+                }
+            } else {
+                // both +tive
+                if (curValue < newVal) {
+                    updatelabel = true;
+                }
+            }
+        } else {
+            updatelabel = true;
         }
-      }
-      else
-      {
-        // both +tive
-        if (curValue < newVal)
-        {
-          updatelabel = true;
+
+        // display the new value
+        if (updatelabel) {
+            labelValue = newVal;
         }
-      }
-    }
-    else
-    {
-      updatelabel = true;
+
+        curValue = newVal;
     }
 
-    // display the new value
-    if (updatelabel)
-    {
-      labelValue = newVal;
+    public void reset() {
+        inError = false;
+        curValue = -1;
     }
-
-    curValue = newVal;
-  }
-
-  public void reset()
-  {
-    inError = false;
-    curValue = -1;
-  }
 }

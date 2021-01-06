@@ -29,121 +29,106 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Class representing MAL URI type.
  */
-public class URI implements Attribute
-{
-  private String value;
+public class URI implements Attribute {
 
-  /**
-   * Default constructor.
-   */
-  public URI()
-  {
-    this.value = "";
-  }
+    private String value;
 
-  /**
-   * Initialiser constructor.
-   *
-   * @param value Value to initialise with.
-   */
-  public URI(final String value)
-  {
-    if(null == value)
-    {
-      Logger.getLogger(URI.class.getName()).log(Level.WARNING, 
-          "The URI has been initialized with an invalid null value. Problems might occur while encoding the element.", 
-          new MALException());
-      this.value = "";
-    } else {
-      this.value = value;
+    /**
+     * Default constructor.
+     */
+    public URI() {
+        this.value = "";
     }
-  }
 
-  @Override
-  public Element createElement()
-  {
-    return new URI();
-  }
+    /**
+     * Initialiser constructor.
+     *
+     * @param value Value to initialise with.
+     */
+    public URI(final String value) {
+        if (null == value) {
+            Logger.getLogger(URI.class.getName()).log(
+                    Level.WARNING,
+                    "The URI has been initialized with an invalid null value. "
+                            + "Problems might occur while encoding the element.",
+                    new MALException());
+            this.value = "";
+        } else {
+            this.value = value;
+        }
+    }
 
-  /**
-   * Returns the value of this type.
-   *
-   * @return the value.
-   */
-  public String getValue()
-  {
-    return value;
-  }
+    @Override
+    public Element createElement() {
+        return new URI();
+    }
+
+    /**
+     * Returns the value of this type.
+     *
+     * @return the value.
+     */
+    public String getValue() {
+        return value;
+    }
 
 //  This might be required for XML serialisation and technologies that use that.  
 //  public void setValue(String value)
 //  {
 //    this.value = value;
 //  }
-
-  @Override
-  public Long getShortForm()
-  {
-    return Attribute.URI_SHORT_FORM;
-  }
-
-  @Override
-  public Integer getTypeShortForm()
-  {
-    return Attribute.URI_TYPE_SHORT_FORM;
-  }
-
-  @Override
-  public UShort getAreaNumber()
-  {
-    return UShort.ATTRIBUTE_AREA_NUMBER;
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion()
-  {
-    return UOctet.AREA_VERSION;
-  }
-
-  @Override
-  public UShort getServiceNumber()
-  {
-    return UShort.ATTRIBUTE_SERVICE_NUMBER;
-  }
-
-  @Override
-  public void encode(final MALEncoder encoder) throws MALException
-  {
-    encoder.encodeURI(this);
-  }
-
-  @Override
-  public Element decode(final MALDecoder decoder) throws MALException
-  {
-    return decoder.decodeURI();
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return value.hashCode();
-  }
-
-  @Override
-  public boolean equals(final Object obj)
-  {
-    if (obj instanceof URI)
-    {
-      return value.equals(((URI) obj).value);
+    @Override
+    public Long getShortForm() {
+        return Attribute.URI_SHORT_FORM;
     }
 
-    return false;
-  }
+    @Override
+    public Integer getTypeShortForm() {
+        return Attribute.URI_TYPE_SHORT_FORM;
+    }
 
-  @Override
-  public String toString()
-  {
-    return value;
-  }
-  private static final long serialVersionUID = Attribute.URI_SHORT_FORM;
+    @Override
+    public UShort getAreaNumber() {
+        return UShort.ATTRIBUTE_AREA_NUMBER;
+    }
+
+    @Override
+    public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion() {
+        return UOctet.AREA_VERSION;
+    }
+
+    @Override
+    public UShort getServiceNumber() {
+        return UShort.ATTRIBUTE_SERVICE_NUMBER;
+    }
+
+    @Override
+    public void encode(final MALEncoder encoder) throws MALException {
+        encoder.encodeURI(this);
+    }
+
+    @Override
+    public Element decode(final MALDecoder decoder) throws MALException {
+        return decoder.decodeURI();
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof URI) {
+            return value.equals(((URI) obj).value);
+        }
+
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
+    private static final long serialVersionUID = Attribute.URI_SHORT_FORM;
 }

@@ -24,18 +24,16 @@ import esa.mo.mal.encoder.binary.base.BaseBinaryStreamFactory;
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 
 /**
- * A factory implementation for the generation of input and output stream classes, which manage
- * decoding and encoding, respectively.
+ * A factory implementation for the generation of input and output stream
+ * classes, which manage decoding and encoding, respectively.
  *
  * @author Rian van Gijlswijk
  *
  */
-public class TCPIPFixedBinaryStreamFactory extends BaseBinaryStreamFactory
-{
+public class TCPIPFixedBinaryStreamFactory extends BaseBinaryStreamFactory {
 
-  public TCPIPFixedBinaryStreamFactory()
-  {
-    super(TCPIPFixedBinaryElementInputStream.class, TCPIPFixedBinaryElementOutputStream.class,
-        new BinaryTimeHandler());
-  }
+    public TCPIPFixedBinaryStreamFactory() {
+        super(TCPIPFixedBinaryElementInputStream.class,
+                TCPIPFixedBinaryElementOutputStream.class, new BinaryTimeHandler());
+    }
 }

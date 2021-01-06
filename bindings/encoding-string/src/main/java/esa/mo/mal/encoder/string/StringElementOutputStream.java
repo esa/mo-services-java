@@ -27,22 +27,19 @@ import java.io.OutputStream;
 /**
  * Implements the MALElementOutputStream interface for String encodings.
  */
-public class StringElementOutputStream extends GENElementOutputStream
-{
+public class StringElementOutputStream extends GENElementOutputStream {
 
-  /**
-   * Constructor.
-   *
-   * @param os Output stream to write to.
-   */
-  public StringElementOutputStream(final OutputStream os)
-  {
-    super(os);
-  }
+    /**
+     * Constructor.
+     *
+     * @param os Output stream to write to.
+     */
+    public StringElementOutputStream(final OutputStream os) {
+        super(os);
+    }
 
-  @Override
-  protected GENEncoder createEncoder(OutputStream os)
-  {
-    return new StringEncoder(os);
-  }
+    @Override
+    protected GENEncoder createEncoder(OutputStream os) {
+        return new StringEncoder(os);
+    }
 }

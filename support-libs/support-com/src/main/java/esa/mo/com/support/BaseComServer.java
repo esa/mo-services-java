@@ -35,58 +35,56 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 
 /**
- * Extension of the base MAL service provide class for COM based service providers.
+ * Extension of the base MAL service provide class for COM based service
+ * providers.
  */
-public abstract class BaseComServer extends BaseMalServer
-{
-  protected EventServiceProvider eventService;
-  protected ActivityTrackingPublisher activityService;
+public abstract class BaseComServer extends BaseMalServer {
 
-  /**
-   * Constructor.
-   *
-   * @param domain the domain of the service provider.
-   * @param network The network of the service provider.
-   */
-  public BaseComServer(IdentifierList domain, Identifier network)
-  {
-    super(domain, network);
-  }
+    protected EventServiceProvider eventService;
+    protected ActivityTrackingPublisher activityService;
 
-  /**
-   * Constructor.
-   *
-   * @param malFactory The MAL factory to use.
-   * @param mal The MAL context to use.
-   * @param consumerMgr The consumer manager to use.
-   * @param providerMgr The provider manager to use.
-   * @param domain the domain of the service provider.
-   * @param network The network of the service provider.
-   */
-  public BaseComServer(MALContextFactory malFactory, MALContext mal, MALConsumerManager consumerMgr, MALProviderManager providerMgr, IdentifierList domain, Identifier network)
-  {
-    super(malFactory, mal, consumerMgr, providerMgr, domain, network);
-  }
+    /**
+     * Constructor.
+     *
+     * @param domain the domain of the service provider.
+     * @param network The network of the service provider.
+     */
+    public BaseComServer(IdentifierList domain, Identifier network) {
+        super(domain, network);
+    }
 
-  @Override
-  protected void subInitHelpers(MALElementFactoryRegistry bodyElementFactory) throws MALException
-  {
-    COMHelper.deepInit(bodyElementFactory);
-  }
+    /**
+     * Constructor.
+     *
+     * @param malFactory The MAL factory to use.
+     * @param mal The MAL context to use.
+     * @param consumerMgr The consumer manager to use.
+     * @param providerMgr The provider manager to use.
+     * @param domain the domain of the service provider.
+     * @param network The network of the service provider.
+     */
+    public BaseComServer(MALContextFactory malFactory, MALContext mal,
+            MALConsumerManager consumerMgr, MALProviderManager providerMgr,
+            IdentifierList domain, Identifier network) {
+        super(malFactory, mal, consumerMgr, providerMgr, domain, network);
+    }
 
-  @Override
-  protected void subInit() throws MALException, MALInteractionException
-  {
-    eventService = new EventServiceProvider(createEventHandlerPublishListener());
-    activityService = new ActivityTrackingPublisher(eventService);
+    @Override
+    protected void subInitHelpers(MALElementFactoryRegistry bodyElementFactory) throws MALException {
+        COMHelper.deepInit(bodyElementFactory);
+    }
 
-    createProvider(EventHelper.EVENT_SERVICE, eventService, true);
+    @Override
+    protected void subInit() throws MALException, MALInteractionException {
+        eventService = new EventServiceProvider(createEventHandlerPublishListener());
+        activityService = new ActivityTrackingPublisher(eventService);
 
-    eventService.init(domain, network);
-  }
+        createProvider(EventHelper.EVENT_SERVICE, eventService, true);
 
-  protected MALPublishInteractionListener createEventHandlerPublishListener()
-  {
-    return new EventServiceProvider.EventPublisher();
-  }
+        eventService.init(domain, network);
+    }
+
+    protected MALPublishInteractionListener createEventHandlerPublishListener() {
+        return new EventServiceProvider.EventPublisher();
+    }
 }

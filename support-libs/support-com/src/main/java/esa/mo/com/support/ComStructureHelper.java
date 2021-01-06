@@ -25,43 +25,42 @@ import org.ccsds.moims.mo.com.structures.ObjectType;
 /**
  * Helper class for COM services.
  */
-public class ComStructureHelper
-{
-  private ComStructureHelper()
-  {
-    // hides the default constructor.
-  }
+public class ComStructureHelper {
 
-  /**
-   * Generate a EntityKey sub key using fields as specified in COM STD 3.2.4.2b
-   *
-   * @param area
-   * @param service
-   * @param version
-   * @param objectNumber
-   * @return
-   */
-  public static Long generateSubKey(int area, int service, int version, int objectNumber)
-  {
-    long subkey = objectNumber;
-    subkey = subkey | (((long) version) << 24);
-    subkey = subkey | ((long) service << 32);
-    subkey = subkey | ((long) area << 48);
+    private ComStructureHelper() {
+        // hides the default constructor.
+    }
 
-    return subkey;
-  }
+    /**
+     * Generate a EntityKey sub key using fields as specified in COM STD
+     * 3.2.4.2b
+     *
+     * @param area
+     * @param service
+     * @param version
+     * @param objectNumber
+     * @return
+     */
+    public static Long generateSubKey(int area, int service, int version, int objectNumber) {
+        long subkey = objectNumber;
+        subkey = subkey | (((long) version) << 24);
+        subkey = subkey | ((long) service << 32);
+        subkey = subkey | ((long) area << 48);
 
-  /**
-   * Generate a EntityKey sub key using fields as specified in COM STD 3.2.4.2b
-   *
-   * @param objectType
-   * @return
-   */
-  public static Long generateSubKey(ObjectType objectType)
-  {
-    return generateSubKey(objectType.getArea().getValue(),
-            objectType.getService().getValue(),
-            objectType.getVersion().getValue(),
-            objectType.getNumber().getValue());
-  }
+        return subkey;
+    }
+
+    /**
+     * Generate a EntityKey sub key using fields as specified in COM STD
+     * 3.2.4.2b
+     *
+     * @param objectType
+     * @return
+     */
+    public static Long generateSubKey(ObjectType objectType) {
+        return generateSubKey(objectType.getArea().getValue(),
+                objectType.getService().getValue(),
+                objectType.getVersion().getValue(),
+                objectType.getNumber().getValue());
+    }
 }

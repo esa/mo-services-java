@@ -21,7 +21,6 @@
 package esa.mo.mal.encoder.tcpip;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
-import java.util.logging.Level;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
@@ -33,159 +32,153 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementInputStream;
 import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
-import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
 import org.ccsds.moims.mo.mal.structures.Blob;
 
 /**
- * Manage the decoding of an incoming TCPIP Message. Separate decoders are used for the message
- * header and body. The header uses a custom implementation according to MAL TCPIP Transport Binding
- * specifications, and the body is split binary decoded.
+ * Manage the decoding of an incoming TCPIP Message. Separate decoders are used
+ * for the message header and body. The header uses a custom implementation
+ * according to MAL TCPIP Transport Binding specifications, and the body is
+ * split binary decoded.
  *
  * @author Rian van Gijlswijk
  *
  */
-public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputStream
-{
+public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputStream {
 
-  public TCPIPFixedBinaryElementInputStream(final java.io.InputStream is,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(new TCPIPFixedBinaryDecoder(is, timeHandler));
-  }
-
-  protected TCPIPFixedBinaryElementInputStream(final byte[] src, final int offset,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(new TCPIPFixedBinaryDecoder(src, offset, timeHandler));
-  }
-
-  /**
-   * Read an element
-   */
-  @Override
-  public Object readElement(final Object element, final MALEncodingContext ctx)
-      throws IllegalArgumentException, MALException
-  {
-
-    if (element == ctx.getHeader()) {
-      // header is decoded using custom tcpip decoder
-      return decodeHeader(element);
-    } else {
-      // body is not decoded
-      return null;
-    }
-  }
-
-  /**
-   * Decode the header
-   *
-   * @param element The header to decode
-   * @return The decoded header
-   * @throws MALException
-   */
-  private Object decodeHeader(final Object element) throws MALException
-  {
-    if (!(element instanceof TCPIPMessageHeader)) {
-      throw new MALException("Wrong header element supplied. Must be instance of TCPIPMessageHeader");
+    public TCPIPFixedBinaryElementInputStream(final java.io.InputStream is,
+            final BinaryTimeHandler timeHandler) {
+        super(new TCPIPFixedBinaryDecoder(is, timeHandler));
     }
 
-    TCPIPMessageHeader header = (TCPIPMessageHeader) element;
-
-    short versionAndSDU = dec.decodeUOctet().getValue();
-    header.versionNumber = (versionAndSDU >> 0x5);
-    short sduType = (short) (versionAndSDU & 0x1f);
-    header.setServiceArea(new UShort(dec.decodeShort()));
-    header.setService(new UShort(dec.decodeShort()));
-    header.setOperation(new UShort(dec.decodeShort()));
-    header.setAreaVersion(dec.decodeUOctet());
-
-    short parts = dec.decodeUOctet().getValue();
-    header.setIsErrorMessage((((parts & 0x80) >> 7) == 0x1));
-    header.setQoSlevel(QoSLevel.fromOrdinal(((parts & 0x70) >> 4)));
-    header.setSession(SessionType.fromOrdinal(parts & 0xF));
-    Long transactionId = ((TCPIPFixedBinaryDecoder) dec).decodeMALLong();
-    header.setTransactionId(transactionId);
-//		RLOGGER.log(Level.FINEST, "QOS DECODING: qos=" + header.getQoSlevel().getOrdinal() + " parts=" + parts);
-
-    short flags = dec.decodeUOctet().getValue(); // flags
-    boolean sourceIdFlag = (((flags & 0x80) >> 7) == 0x1);
-    boolean destinationIdFlag = (((flags & 0x40) >> 6) == 0x1);
-    boolean priorityFlag = (((flags & 0x20) >> 5) == 0x1);
-    boolean timestampFlag = (((flags & 0x10) >> 4) == 0x1);
-    boolean networkZoneFlag = (((flags & 0x8) >> 3) == 0x1);
-    boolean sessionNameFlag = (((flags & 0x4) >> 2) == 0x1);
-    boolean domainFlag = (((flags & 0x2) >> 1) == 0x1);
-    boolean authenticationIdFlag = ((flags & 0x1) == 0x1);
-
-    header.setEncodingId(dec.decodeUOctet().getValue());
-    int bodyLength = (int) dec.decodeInteger();
-    header.setBodyLength(bodyLength);
-
-    if (sourceIdFlag) {
-      String sourceId = dec.decodeString();
-      if (isURI(sourceId)) {
-        header.setURIFrom(new URI(sourceId));
-      } else {
-        String from = header.getURIFrom() + sourceId;
-        header.setURIFrom(new URI(from));
-      }
-    }
-    if (destinationIdFlag) {
-      String destinationId = dec.decodeString();
-      if (isURI(destinationId)) {
-        header.setURITo(new URI(destinationId));
-      } else {
-        String to = header.getURITo() + destinationId;
-        header.setURITo(new URI(to));
-      }
-    }
-    if (priorityFlag) {
-      header.setPriority(dec.decodeUInteger());
-    }
-    if (timestampFlag) {
-      header.setTimestamp(dec.decodeTime());
-    }
-    if (networkZoneFlag) {
-      header.setNetworkZone(dec.decodeIdentifier());
-    }
-    if (sessionNameFlag) {
-      header.setSessionName(dec.decodeIdentifier());
-    }
-    if (domainFlag) {
-      IdentifierList list = (IdentifierList) new IdentifierList().decode(dec);
-      header.setDomain(list);
-    }
-    if (authenticationIdFlag) {
-      header.setAuthenticationId(dec.decodeBlob());
-    } else {
-      header.setAuthenticationId(new Blob());
+    protected TCPIPFixedBinaryElementInputStream(final byte[] src, final int offset,
+            final BinaryTimeHandler timeHandler) {
+        super(new TCPIPFixedBinaryDecoder(src, offset, timeHandler));
     }
 
-    header.setInteractionType(sduType);
-    header.setInteractionStage(sduType);
+    /**
+     * Read an element
+     */
+    @Override
+    public Object readElement(final Object element, final MALEncodingContext ctx)
+            throws IllegalArgumentException, MALException {
 
-    header.decodedHeaderBytes = ((TCPIPFixedBinaryDecoder) dec).getBufferOffset();
+        if (element == ctx.getHeader()) {
+            // header is decoded using custom tcpip decoder
+            return decodeHeader(element);
+        } else {
+            // body is not decoded
+            return null;
+        }
+    }
 
-    // debug information
-    /*
+    /**
+     * Decode the header
+     *
+     * @param element The header to decode
+     * @return The decoded header
+     * @throws MALException
+     */
+    private Object decodeHeader(final Object element) throws MALException {
+        if (!(element instanceof TCPIPMessageHeader)) {
+            throw new MALException("Wrong header element supplied. "
+                    + "Must be instance of TCPIPMessageHeader");
+        }
+
+        TCPIPMessageHeader header = (TCPIPMessageHeader) element;
+
+        short versionAndSDU = dec.decodeUOctet().getValue();
+        header.versionNumber = (versionAndSDU >> 0x5);
+        short sduType = (short) (versionAndSDU & 0x1f);
+        header.setServiceArea(new UShort(dec.decodeShort()));
+        header.setService(new UShort(dec.decodeShort()));
+        header.setOperation(new UShort(dec.decodeShort()));
+        header.setAreaVersion(dec.decodeUOctet());
+
+        short parts = dec.decodeUOctet().getValue();
+        header.setIsErrorMessage((((parts & 0x80) >> 7) == 0x1));
+        header.setQoSlevel(QoSLevel.fromOrdinal(((parts & 0x70) >> 4)));
+        header.setSession(SessionType.fromOrdinal(parts & 0xF));
+        Long transactionId = ((TCPIPFixedBinaryDecoder) dec).decodeMALLong();
+        header.setTransactionId(transactionId);
+
+        short flags = dec.decodeUOctet().getValue(); // flags
+        boolean sourceIdFlag = (((flags & 0x80) >> 7) == 0x1);
+        boolean destinationIdFlag = (((flags & 0x40) >> 6) == 0x1);
+        boolean priorityFlag = (((flags & 0x20) >> 5) == 0x1);
+        boolean timestampFlag = (((flags & 0x10) >> 4) == 0x1);
+        boolean networkZoneFlag = (((flags & 0x8) >> 3) == 0x1);
+        boolean sessionNameFlag = (((flags & 0x4) >> 2) == 0x1);
+        boolean domainFlag = (((flags & 0x2) >> 1) == 0x1);
+        boolean authenticationIdFlag = ((flags & 0x1) == 0x1);
+
+        header.setEncodingId(dec.decodeUOctet().getValue());
+        int bodyLength = (int) dec.decodeInteger();
+        header.setBodyLength(bodyLength);
+
+        if (sourceIdFlag) {
+            String sourceId = dec.decodeString();
+            if (isURI(sourceId)) {
+                header.setURIFrom(new URI(sourceId));
+            } else {
+                String from = header.getURIFrom() + sourceId;
+                header.setURIFrom(new URI(from));
+            }
+        }
+        if (destinationIdFlag) {
+            String destinationId = dec.decodeString();
+            if (isURI(destinationId)) {
+                header.setURITo(new URI(destinationId));
+            } else {
+                String to = header.getURITo() + destinationId;
+                header.setURITo(new URI(to));
+            }
+        }
+        if (priorityFlag) {
+            header.setPriority(dec.decodeUInteger());
+        }
+        if (timestampFlag) {
+            header.setTimestamp(dec.decodeTime());
+        }
+        if (networkZoneFlag) {
+            header.setNetworkZone(dec.decodeIdentifier());
+        }
+        if (sessionNameFlag) {
+            header.setSessionName(dec.decodeIdentifier());
+        }
+        if (domainFlag) {
+            IdentifierList list = (IdentifierList) new IdentifierList().decode(dec);
+            header.setDomain(list);
+        }
+        if (authenticationIdFlag) {
+            header.setAuthenticationId(dec.decodeBlob());
+        } else {
+            header.setAuthenticationId(new Blob());
+        }
+
+        header.setInteractionType(sduType);
+        header.setInteractionStage(sduType);
+
+        header.decodedHeaderBytes = ((TCPIPFixedBinaryDecoder) dec).getBufferOffset();
+
+        // debug information
+        /*
 		RLOGGER.log(Level.FINEST, "Decoded header:");
-		RLOGGER.log(Level.FINEST, "---------------------------------------");
+		RLOGGER.log(Level.FINEST, "----------------------------------");
 		RLOGGER.log(Level.FINEST, element.toString());
 		RLOGGER.log(Level.FINEST, "Decoded header bytes:");
 		RLOGGER.log(Level.FINEST, header.decodedHeaderBytes + "");
-		RLOGGER.log(Level.FINEST, "---------------------------------------");
-     */
-    return header;
-  }
+		RLOGGER.log(Level.FINEST, "----------------------------------");
+         */
+        return header;
+    }
 
-  /**
-   * Is @param a URI?
-   *
-   * @param uri
-   * @return
-   */
-  private boolean isURI(String uri)
-  {
-    return uri.startsWith("maltcp://");
-  }
+    /**
+     * Is @param a URI?
+     *
+     * @param uri
+     * @return
+     */
+    private boolean isURI(String uri) {
+        return uri.startsWith("maltcp://");
+    }
 }

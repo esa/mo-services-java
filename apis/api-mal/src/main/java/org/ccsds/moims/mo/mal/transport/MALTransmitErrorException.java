@@ -25,46 +25,45 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
 
 /**
- * The MALTransmitErrorException class represents a TRANSMIT ERROR as an exception.
+ * The MALTransmitErrorException class represents a TRANSMIT ERROR as an
+ * exception.
  */
-public class MALTransmitErrorException extends MALInteractionException
-{
-  private MALMessageHeader header;
-  private Map qosProperties;
+public class MALTransmitErrorException extends MALInteractionException {
 
-  /**
-   * Constructor.
-   *
-   * @param header Header of the MALMessage that cannot be transmitted
-   * @param standardError Error preventing the message to be transmitted
-   * @param qosProperties QoS properties of the MALMessage which cannot be transmitted
-   */
-  public MALTransmitErrorException(final MALMessageHeader header,
-          final MALStandardError standardError,
-          final Map qosProperties)
-  {
-    super(standardError);
-    this.header = header;
-    this.qosProperties = qosProperties;
-  }
+    private MALMessageHeader header;
+    private Map qosProperties;
 
-  /**
-   * Returns the header of the MALMessage which cannot be transmitted.
-   *
-   * @return The header.
-   */
-  public MALMessageHeader getHeader()
-  {
-    return header;
-  }
+    /**
+     * Constructor.
+     *
+     * @param header Header of the MALMessage that cannot be transmitted
+     * @param standardError Error preventing the message to be transmitted
+     * @param qosProperties QoS properties of the MALMessage which cannot be
+     * transmitted
+     */
+    public MALTransmitErrorException(final MALMessageHeader header,
+            final MALStandardError standardError,
+            final Map qosProperties) {
+        super(standardError);
+        this.header = header;
+        this.qosProperties = qosProperties;
+    }
 
-  /**
-   * Returns the QoS properties of the MALMessage which cannot be transmitted.
-   *
-   * @return The properties.
-   */
-  public Map getQosProperties()
-  {
-    return qosProperties;
-  }
+    /**
+     * Returns the header of the MALMessage which cannot be transmitted.
+     *
+     * @return The header.
+     */
+    public MALMessageHeader getHeader() {
+        return header;
+    }
+
+    /**
+     * Returns the QoS properties of the MALMessage which cannot be transmitted.
+     *
+     * @return The properties.
+     */
+    public Map getQosProperties() {
+        return qosProperties;
+    }
 }

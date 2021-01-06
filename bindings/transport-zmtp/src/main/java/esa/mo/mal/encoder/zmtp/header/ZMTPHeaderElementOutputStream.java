@@ -26,34 +26,32 @@ import esa.mo.mal.encoder.gen.GENEncoder;
 import esa.mo.mal.transport.zmtp.ZMTPTransport;
 
 /**
- * Implements the MALElementOutputStream interface for a binary encoding used in ZMTP header.
+ * Implements the MALElementOutputStream interface for a binary encoding used in
+ * ZMTP header.
  */
-public class ZMTPHeaderElementOutputStream extends FixedBinaryElementOutputStream
-{
+public class ZMTPHeaderElementOutputStream extends FixedBinaryElementOutputStream {
 
-  /**
-   * Parent transport
-   */
-  ZMTPTransport transport;
+    /**
+     * Parent transport
+     */
+    ZMTPTransport transport;
 
-  /**
-   * Constructor.
-   *
-   * @param os          Output stream to write to
-   * @param transport   The parent transport
-   * @param timeHandler Implementation of the time encoding to use
-   */
-  public ZMTPHeaderElementOutputStream(final java.io.OutputStream os, final ZMTPTransport transport,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(os, timeHandler, false);
-    this.transport = transport;
-  }
+    /**
+     * Constructor.
+     *
+     * @param os Output stream to write to
+     * @param transport The parent transport
+     * @param timeHandler Implementation of the time encoding to use
+     */
+    public ZMTPHeaderElementOutputStream(final java.io.OutputStream os,
+            final ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
+        super(os, timeHandler, false);
+        this.transport = transport;
+    }
 
-  @Override
-  protected GENEncoder createEncoder(java.io.OutputStream os)
-  {
-    return new ZMTPHeaderEncoder(os, transport, timeHandler);
-  }
+    @Override
+    protected GENEncoder createEncoder(java.io.OutputStream os) {
+        return new ZMTPHeaderEncoder(os, transport, timeHandler);
+    }
 
 }

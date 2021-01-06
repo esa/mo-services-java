@@ -23,23 +23,21 @@ package esa.mo.mal.transport.spp;
 /**
  * Small class that implements a simple segment counter.
  */
-public class SPPSegmentCounter
-{
+public class SPPSegmentCounter {
 
-  private int sequenceCount = 0;
+    private int sequenceCount = 0;
 
-  public int getNextSegmentCount()
-  {
-    int i;
+    public int getNextSegmentCount() {
+        int i;
 
-    synchronized (this) {
-      i = sequenceCount++;
+        synchronized (this) {
+            i = sequenceCount++;
 
-      if (sequenceCount < 0) {
-        sequenceCount = 0;
-      }
+            if (sequenceCount < 0) {
+                sequenceCount = 0;
+            }
+        }
+
+        return i;
     }
-
-    return i;
-  }
 }

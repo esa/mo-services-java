@@ -27,27 +27,29 @@ import org.ccsds.moims.mo.mal.MALStandardError;
 /**
  * The MALSubmit interface represents a SUBMIT interaction handling context.
  */
-public interface MALSubmit extends MALInteraction
-{
-  /**
-   * The method sends an ACK message.
-   *
-   * @return the MALMessage that has been sent
-   * @throws MALInteractionException if the interaction is in the incorrect state.
-   * @throws MALException If an error occurs
-   */
-  org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement()
-          throws MALInteractionException, MALException;
+public interface MALSubmit extends MALInteraction {
 
-  /**
-   * The method sends an ACK ERROR message.
-   *
-   * @param error Error to be transmitted to the consumer
-   * @return the MALMessage that has been sent
-   * @throws java.lang.IllegalArgumentException If the argument is NULL
-   * @throws MALInteractionException if the interaction is in the incorrect state.
-   * @throws MALException If an error occurs
-   */
-  org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error)
-          throws IllegalArgumentException, MALInteractionException, MALException;
+    /**
+     * The method sends an ACK message.
+     *
+     * @return the MALMessage that has been sent
+     * @throws MALInteractionException if the interaction is in the incorrect
+     * state.
+     * @throws MALException If an error occurs
+     */
+    org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement()
+            throws MALInteractionException, MALException;
+
+    /**
+     * The method sends an ACK ERROR message.
+     *
+     * @param error Error to be transmitted to the consumer
+     * @return the MALMessage that has been sent
+     * @throws java.lang.IllegalArgumentException If the argument is NULL
+     * @throws MALInteractionException if the interaction is in the incorrect
+     * state.
+     * @throws MALException If an error occurs
+     */
+    org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error)
+            throws IllegalArgumentException, MALInteractionException, MALException;
 }

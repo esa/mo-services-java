@@ -31,56 +31,51 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Implements the MALElementOutputStream interface for the line encodings.
  */
-public class LineElementOutputStream implements MALElementOutputStream
-{
+public class LineElementOutputStream implements MALElementOutputStream {
 
-  private final OutputStream dos;
+    private final OutputStream dos;
 
-  /**
-   * Constructor.
-   *
-   * @param os Output stream to write to.
-   */
-  public LineElementOutputStream(final OutputStream os)
-  {
-    this.dos = os;
-  }
-
-  @Override
-  public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException
-  {
-    final LineEncoder enc = new LineEncoder();
-
-    if (element instanceof MALMessageHeader) {
-      enc.encodeTopLevelElement("Header", (Element) element);
-    } else {
-      enc.encodeTopLevelElement("Body", (Element) element);
+    /**
+     * Constructor.
+     *
+     * @param os Output stream to write to.
+     */
+    public LineElementOutputStream(final OutputStream os) {
+        this.dos = os;
     }
 
-    try {
-      dos.write(enc.toString().getBytes(LineDecoder.UTF8_CHARSET));
-    } catch (Exception ex) {
-      throw new MALException(ex.getLocalizedMessage(), ex);
-    }
-  }
+    @Override
+    public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException {
+        final LineEncoder enc = new LineEncoder();
 
-  @Override
-  public void flush() throws MALException
-  {
-    try {
-      dos.flush();
-    } catch (IOException ex) {
-      throw new MALException("IO exception flushing Element stream", ex);
-    }
-  }
+        if (element instanceof MALMessageHeader) {
+            enc.encodeTopLevelElement("Header", (Element) element);
+        } else {
+            enc.encodeTopLevelElement("Body", (Element) element);
+        }
 
-  @Override
-  public void close() throws MALException
-  {
-    try {
-      dos.close();
-    } catch (IOException ex) {
-      throw new MALException(ex.getLocalizedMessage(), ex);
+        try {
+            dos.write(enc.toString().getBytes(LineDecoder.UTF8_CHARSET));
+        } catch (Exception ex) {
+            throw new MALException(ex.getLocalizedMessage(), ex);
+        }
     }
-  }
+
+    @Override
+    public void flush() throws MALException {
+        try {
+            dos.flush();
+        } catch (IOException ex) {
+            throw new MALException("IO exception flushing Element stream", ex);
+        }
+    }
+
+    @Override
+    public void close() throws MALException {
+        try {
+            dos.close();
+        } catch (IOException ex) {
+            throw new MALException(ex.getLocalizedMessage(), ex);
+        }
+    }
 }

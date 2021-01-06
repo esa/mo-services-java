@@ -21,9 +21,8 @@
 package esa.mo.tools.stubgen.specification;
 
 /**
- *  Enumeration representing the MAL interaction pattern types.
+ * Enumeration representing the MAL interaction pattern types.
  */
-public enum InteractionPatternEnum
-{
-  SEND_OP, SUBMIT_OP, REQUEST_OP, INVOKE_OP, PROGRESS_OP, PUBSUB_OP
+public enum InteractionPatternEnum {
+    SEND_OP, SUBMIT_OP, REQUEST_OP, INVOKE_OP, PROGRESS_OP, PUBSUB_OP
 }

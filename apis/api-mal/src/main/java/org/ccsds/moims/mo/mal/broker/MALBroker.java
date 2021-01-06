@@ -23,24 +23,28 @@ package org.ccsds.moims.mo.mal.broker;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
- * The MALBroker interface represents a shared MAL level broker, i.e., a shared broker implemented at the MAL level.
- * NOTE – A single MALBroker instance can be bound to one or several transport layers. In this way, the MALBroker can
- * act as a bridge between several transport layers. For instance, a MALBroker can bridge two transport layers by
- * receiving updates from publishers through the first transport layer and notifying those updates to subscribers
- * through the second transport layer.
+ * The MALBroker interface represents a shared MAL level broker, i.e., a shared
+ * broker implemented at the MAL level. NOTE – A single MALBroker instance can
+ * be bound to one or several transport layers. In this way, the MALBroker can
+ * act as a bridge between several transport layers. For instance, a MALBroker
+ * can bridge two transport layers by receiving updates from publishers through
+ * the first transport layer and notifying those updates to subscribers through
+ * the second transport layer.
  *
  */
-public interface MALBroker
-{
-  /**
-   * Return the MALBrokerBindings owned by this MALBroker.
-   * @return the MALBrokerBindings;
-   */
-  MALBrokerBinding[] getBindings();
+public interface MALBroker {
 
-  /**
-   * The method terminates all pending interactions.
-   * @throws MALException If an internal error occurs.
-   */
-  void close() throws MALException;
+    /**
+     * Return the MALBrokerBindings owned by this MALBroker.
+     *
+     * @return the MALBrokerBindings;
+     */
+    MALBrokerBinding[] getBindings();
+
+    /**
+     * The method terminates all pending interactions.
+     *
+     * @throws MALException If an internal error occurs.
+     */
+    void close() throws MALException;
 }

@@ -27,44 +27,45 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * The MALInteraction interface represents a generic IP handling context.
  */
-public interface MALInteraction
-{
-  /**
-   * The method returns the header of the message that initiated the interaction.
-   *
-   * @return The message header.
-   */
-  MALMessageHeader getMessageHeader();
+public interface MALInteraction {
 
-  /**
-   * The method returns the operation called through this interaction.
-   *
-   * @return The operation.
-   */
-  MALOperation getOperation();
+    /**
+     * The method returns the header of the message that initiated the
+     * interaction.
+     *
+     * @return The message header.
+     */
+    MALMessageHeader getMessageHeader();
 
-  /**
-   * Sets a QoS property.
-   *
-   * @param name The property name.
-   * @param value The property value.
-   * @throws java.lang.IllegalArgumentException If the name argument is NULL
-   */
-  void setQoSProperty(String name, Object value) throws java.lang.IllegalArgumentException;
+    /**
+     * The method returns the operation called through this interaction.
+     *
+     * @return The operation.
+     */
+    MALOperation getOperation();
 
-  /**
-   * Gets a QoS property.
-   *
-   * @param name The property name.
-   * @return The property value.
-   * @throws java.lang.IllegalArgumentException If the name argument is NULL
-   */
-  Object getQoSProperty(String name) throws java.lang.IllegalArgumentException;
+    /**
+     * Sets a QoS property.
+     *
+     * @param name The property name.
+     * @param value The property value.
+     * @throws java.lang.IllegalArgumentException If the name argument is NULL
+     */
+    void setQoSProperty(String name, Object value) throws java.lang.IllegalArgumentException;
 
-  /**
-   * Gets the complete map of QoS properties.
-   *
-   * @return The property value map.
-   */
-  Map<String, Object> getQoSProperties();
+    /**
+     * Gets a QoS property.
+     *
+     * @param name The property name.
+     * @return The property value.
+     * @throws java.lang.IllegalArgumentException If the name argument is NULL
+     */
+    Object getQoSProperty(String name) throws java.lang.IllegalArgumentException;
+
+    /**
+     * Gets the complete map of QoS properties.
+     *
+     * @return The property value map.
+     */
+    Map<String, Object> getQoSProperties();
 }

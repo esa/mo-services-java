@@ -24,16 +24,17 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 
 /**
- * The MALNotifyBody interface gives access to the body of the NOTIFY message defined by the PUBLISH-SUBSCRIBE
- * interaction.
+ * The MALNotifyBody interface gives access to the body of the NOTIFY message
+ * defined by the PUBLISH-SUBSCRIBE interaction.
  */
-public interface MALNotifyBody extends MALPublishBody
-{
-  /**
-   * The method returns the identifier of the subscription from this NOTIFY message.
-   *
-   * @return The subscription id.
-   * @throws MALException If an error occurs
-   */
-  Identifier getSubscriptionId() throws MALException;
+public interface MALNotifyBody extends MALPublishBody {
+
+    /**
+     * The method returns the identifier of the subscription from this NOTIFY
+     * message.
+     *
+     * @return The subscription id.
+     * @throws MALException If an error occurs
+     */
+    Identifier getSubscriptionId() throws MALException;
 }

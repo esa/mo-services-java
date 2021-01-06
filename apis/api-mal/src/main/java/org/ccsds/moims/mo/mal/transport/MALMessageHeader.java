@@ -24,260 +24,260 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 
 /**
- * The MALMessageHeader structure is used to hold all fields that are passed for each message exchanged between a
- * consumer and provider.
+ * The MALMessageHeader structure is used to hold all fields that are passed for
+ * each message exchanged between a consumer and provider.
  */
-public interface MALMessageHeader
-{
-  /**
-   * Returns the field URIfrom.
-   *
-   * @return the field URIfrom.
-   */
-  org.ccsds.moims.mo.mal.structures.URI getURIFrom();
+public interface MALMessageHeader {
 
-  /**
-   * Sets the field URIfrom.
-   *
-   * @param newValue The new value to set.
-   */
-  void setURIFrom(org.ccsds.moims.mo.mal.structures.URI newValue);
+    /**
+     * Returns the field URIfrom.
+     *
+     * @return the field URIfrom.
+     */
+    org.ccsds.moims.mo.mal.structures.URI getURIFrom();
 
-  /**
-   * Returns the field authenticationId.
-   *
-   * @return the field authenticationId.
-   */
-  org.ccsds.moims.mo.mal.structures.Blob getAuthenticationId();
+    /**
+     * Sets the field URIfrom.
+     *
+     * @param newValue The new value to set.
+     */
+    void setURIFrom(org.ccsds.moims.mo.mal.structures.URI newValue);
 
-  /**
-   * Sets the field authenticationId.
-   *
-   * @param newValue The new value to set.
-   */
-  void setAuthenticationId(org.ccsds.moims.mo.mal.structures.Blob newValue);
+    /**
+     * Returns the field authenticationId.
+     *
+     * @return the field authenticationId.
+     */
+    org.ccsds.moims.mo.mal.structures.Blob getAuthenticationId();
 
-  /**
-   * Returns the field URIto.
-   *
-   * @return the field URIto.
-   */
-  org.ccsds.moims.mo.mal.structures.URI getURITo();
+    /**
+     * Sets the field authenticationId.
+     *
+     * @param newValue The new value to set.
+     */
+    void setAuthenticationId(org.ccsds.moims.mo.mal.structures.Blob newValue);
 
-  /**
-   * Sets the field URIto.
-   *
-   * @param newValue The new value to set.
-   */
-  void setURITo(org.ccsds.moims.mo.mal.structures.URI newValue);
+    /**
+     * Returns the field URIto.
+     *
+     * @return the field URIto.
+     */
+    org.ccsds.moims.mo.mal.structures.URI getURITo();
 
-  /**
-   * Returns the field timestamp.
-   *
-   * @return the field timestamp.
-   */
-  org.ccsds.moims.mo.mal.structures.Time getTimestamp();
+    /**
+     * Sets the field URIto.
+     *
+     * @param newValue The new value to set.
+     */
+    void setURITo(org.ccsds.moims.mo.mal.structures.URI newValue);
 
-  /**
-   * Sets the field timestamp.
-   *
-   * @param newValue The new value to set.
-   */
-  void setTimestamp(org.ccsds.moims.mo.mal.structures.Time newValue);
+    /**
+     * Returns the field timestamp.
+     *
+     * @return the field timestamp.
+     */
+    org.ccsds.moims.mo.mal.structures.Time getTimestamp();
 
-  /**
-   * Returns the field QoSlevel.
-   *
-   * @return the field QoSlevel.
-   */
-  org.ccsds.moims.mo.mal.structures.QoSLevel getQoSlevel();
+    /**
+     * Sets the field timestamp.
+     *
+     * @param newValue The new value to set.
+     */
+    void setTimestamp(org.ccsds.moims.mo.mal.structures.Time newValue);
 
-  /**
-   * Sets the field QoSlevel.
-   *
-   * @param newValue The new value to set.
-   */
-  void setQoSlevel(org.ccsds.moims.mo.mal.structures.QoSLevel newValue);
+    /**
+     * Returns the field QoSlevel.
+     *
+     * @return the field QoSlevel.
+     */
+    org.ccsds.moims.mo.mal.structures.QoSLevel getQoSlevel();
 
-  /**
-   * Returns the field priority.
-   *
-   * @return the field priority.
-   */
-  UInteger getPriority();
+    /**
+     * Sets the field QoSlevel.
+     *
+     * @param newValue The new value to set.
+     */
+    void setQoSlevel(org.ccsds.moims.mo.mal.structures.QoSLevel newValue);
 
-  /**
-   * Sets the field priority.
-   *
-   * @param newValue The new value to set.
-   */
-  void setPriority(UInteger newValue);
+    /**
+     * Returns the field priority.
+     *
+     * @return the field priority.
+     */
+    UInteger getPriority();
 
-  /**
-   * Returns the field domain.
-   *
-   * @return the field domain.
-   */
-  org.ccsds.moims.mo.mal.structures.IdentifierList getDomain();
+    /**
+     * Sets the field priority.
+     *
+     * @param newValue The new value to set.
+     */
+    void setPriority(UInteger newValue);
 
-  /**
-   * Sets the field domain.
-   *
-   * @param newValue The new value to set.
-   */
-  void setDomain(org.ccsds.moims.mo.mal.structures.IdentifierList newValue);
+    /**
+     * Returns the field domain.
+     *
+     * @return the field domain.
+     */
+    org.ccsds.moims.mo.mal.structures.IdentifierList getDomain();
 
-  /**
-   * Returns the field networkZone.
-   *
-   * @return the field networkZone.
-   */
-  org.ccsds.moims.mo.mal.structures.Identifier getNetworkZone();
+    /**
+     * Sets the field domain.
+     *
+     * @param newValue The new value to set.
+     */
+    void setDomain(org.ccsds.moims.mo.mal.structures.IdentifierList newValue);
 
-  /**
-   * Sets the field networkZone.
-   *
-   * @param newValue The new value to set.
-   */
-  void setNetworkZone(org.ccsds.moims.mo.mal.structures.Identifier newValue);
+    /**
+     * Returns the field networkZone.
+     *
+     * @return the field networkZone.
+     */
+    org.ccsds.moims.mo.mal.structures.Identifier getNetworkZone();
 
-  /**
-   * Returns the field session.
-   *
-   * @return the field session.
-   */
-  org.ccsds.moims.mo.mal.structures.SessionType getSession();
+    /**
+     * Sets the field networkZone.
+     *
+     * @param newValue The new value to set.
+     */
+    void setNetworkZone(org.ccsds.moims.mo.mal.structures.Identifier newValue);
 
-  /**
-   * Sets the field session.
-   *
-   * @param newValue The new value to set.
-   */
-  void setSession(org.ccsds.moims.mo.mal.structures.SessionType newValue);
+    /**
+     * Returns the field session.
+     *
+     * @return the field session.
+     */
+    org.ccsds.moims.mo.mal.structures.SessionType getSession();
 
-  /**
-   * Returns the field sessionName.
-   *
-   * @return the field sessionName.
-   */
-  org.ccsds.moims.mo.mal.structures.Identifier getSessionName();
+    /**
+     * Sets the field session.
+     *
+     * @param newValue The new value to set.
+     */
+    void setSession(org.ccsds.moims.mo.mal.structures.SessionType newValue);
 
-  /**
-   * Sets the field sessionName.
-   *
-   * @param newValue The new value to set.
-   */
-  void setSessionName(org.ccsds.moims.mo.mal.structures.Identifier newValue);
+    /**
+     * Returns the field sessionName.
+     *
+     * @return the field sessionName.
+     */
+    org.ccsds.moims.mo.mal.structures.Identifier getSessionName();
 
-  /**
-   * Returns the field interactionType.
-   *
-   * @return the field interactionType.
-   */
-  org.ccsds.moims.mo.mal.structures.InteractionType getInteractionType();
+    /**
+     * Sets the field sessionName.
+     *
+     * @param newValue The new value to set.
+     */
+    void setSessionName(org.ccsds.moims.mo.mal.structures.Identifier newValue);
 
-  /**
-   * Sets the field interactionType.
-   *
-   * @param newValue The new value to set.
-   */
-  void setInteractionType(org.ccsds.moims.mo.mal.structures.InteractionType newValue);
+    /**
+     * Returns the field interactionType.
+     *
+     * @return the field interactionType.
+     */
+    org.ccsds.moims.mo.mal.structures.InteractionType getInteractionType();
 
-  /**
-   * Returns the field interactionStage.
-   *
-   * @return the field interactionStage.
-   */
-  UOctet getInteractionStage();
+    /**
+     * Sets the field interactionType.
+     *
+     * @param newValue The new value to set.
+     */
+    void setInteractionType(org.ccsds.moims.mo.mal.structures.InteractionType newValue);
 
-  /**
-   * Sets the field interactionStage.
-   *
-   * @param newValue The new value to set.
-   */
-  void setInteractionStage(UOctet newValue);
+    /**
+     * Returns the field interactionStage.
+     *
+     * @return the field interactionStage.
+     */
+    UOctet getInteractionStage();
 
-  /**
-   * Returns the field transactionId.
-   *
-   * @return the field transactionId.
-   */
-  Long getTransactionId();
+    /**
+     * Sets the field interactionStage.
+     *
+     * @param newValue The new value to set.
+     */
+    void setInteractionStage(UOctet newValue);
 
-  /**
-   * Sets the field transactionId.
-   *
-   * @param newValue The new value to set.
-   */
-  void setTransactionId(Long newValue);
+    /**
+     * Returns the field transactionId.
+     *
+     * @return the field transactionId.
+     */
+    Long getTransactionId();
 
-  /**
-   * Returns the field area.
-   *
-   * @return the field area.
-   */
-  org.ccsds.moims.mo.mal.structures.UShort getServiceArea();
+    /**
+     * Sets the field transactionId.
+     *
+     * @param newValue The new value to set.
+     */
+    void setTransactionId(Long newValue);
 
-  /**
-   * Sets the field area.
-   *
-   * @param newValue The new value to set.
-   */
-  void setServiceArea(org.ccsds.moims.mo.mal.structures.UShort newValue);
+    /**
+     * Returns the field area.
+     *
+     * @return the field area.
+     */
+    org.ccsds.moims.mo.mal.structures.UShort getServiceArea();
 
-  /**
-   * Returns the field service.
-   *
-   * @return the field service.
-   */
-  org.ccsds.moims.mo.mal.structures.UShort getService();
+    /**
+     * Sets the field area.
+     *
+     * @param newValue The new value to set.
+     */
+    void setServiceArea(org.ccsds.moims.mo.mal.structures.UShort newValue);
 
-  /**
-   * Sets the field service.
-   *
-   * @param newValue The new value to set.
-   */
-  void setService(org.ccsds.moims.mo.mal.structures.UShort newValue);
+    /**
+     * Returns the field service.
+     *
+     * @return the field service.
+     */
+    org.ccsds.moims.mo.mal.structures.UShort getService();
 
-  /**
-   * Returns the field operation.
-   *
-   * @return the field operation.
-   */
-  org.ccsds.moims.mo.mal.structures.UShort getOperation();
+    /**
+     * Sets the field service.
+     *
+     * @param newValue The new value to set.
+     */
+    void setService(org.ccsds.moims.mo.mal.structures.UShort newValue);
 
-  /**
-   * Sets the field operation.
-   *
-   * @param newValue The new value to set.
-   */
-  void setOperation(org.ccsds.moims.mo.mal.structures.UShort newValue);
+    /**
+     * Returns the field operation.
+     *
+     * @return the field operation.
+     */
+    org.ccsds.moims.mo.mal.structures.UShort getOperation();
 
-  /**
-   * Returns the field version.
-   *
-   * @return the field version.
-   */
-  UOctet getAreaVersion();
+    /**
+     * Sets the field operation.
+     *
+     * @param newValue The new value to set.
+     */
+    void setOperation(org.ccsds.moims.mo.mal.structures.UShort newValue);
 
-  /**
-   * Sets the field version.
-   *
-   * @param newValue The new value to set.
-   */
-  void setAreaVersion(UOctet newValue);
+    /**
+     * Returns the field version.
+     *
+     * @return the field version.
+     */
+    UOctet getAreaVersion();
 
-  /**
-   * Returns the field isError.
-   *
-   * @return the field isError.
-   */
-  Boolean getIsErrorMessage();
+    /**
+     * Sets the field version.
+     *
+     * @param newValue The new value to set.
+     */
+    void setAreaVersion(UOctet newValue);
 
-  /**
-   * Sets the field isError.
-   *
-   * @param newValue The new value to set.
-   */
-  void setIsErrorMessage(Boolean newValue);
+    /**
+     * Returns the field isError.
+     *
+     * @return the field isError.
+     */
+    Boolean getIsErrorMessage();
+
+    /**
+     * Sets the field isError.
+     *
+     * @param newValue The new value to set.
+     */
+    void setIsErrorMessage(Boolean newValue);
 }

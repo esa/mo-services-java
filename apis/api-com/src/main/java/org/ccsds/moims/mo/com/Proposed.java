@@ -21,8 +21,8 @@
 package org.ccsds.moims.mo.com;
 
 /**
- * Simple java annotation to mark a feature as proposed for the MO Java APIs but not part of the published standard.s
+ * Simple java annotation to mark a feature as proposed for the MO Java APIs but
+ * not part of the published standard.s
  */
-public @interface Proposed
-{
+public @interface Proposed {
 }

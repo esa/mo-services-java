@@ -24,16 +24,16 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * The RMI interface. Defines a single method for the reception of an encoded message.
+ * The RMI interface. Defines a single method for the reception of an encoded
+ * message.
  */
-public interface RMIReceiveInterface extends Remote
-{
+public interface RMIReceiveInterface extends Remote {
 
-  /**
-   * Used to pass an encoded message to a RMI Transport instance.
-   *
-   * @param message The encoded message.
-   * @throws RemoteException On remote error.
-   */
-  void receive(final byte[] message) throws RemoteException;
+    /**
+     * Used to pass an encoded message to a RMI Transport instance.
+     *
+     * @param message The encoded message.
+     * @throws RemoteException On remote error.
+     */
+    void receive(final byte[] message) throws RemoteException;
 }

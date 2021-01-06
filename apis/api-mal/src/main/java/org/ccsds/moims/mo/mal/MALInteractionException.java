@@ -21,36 +21,40 @@
 package org.ccsds.moims.mo.mal;
 
 /**
- * The MALInteractionException class allows a MAL standard error to be raised as an Exception.
+ * The MALInteractionException class allows a MAL standard error to be raised as
+ * an Exception.
  */
-public class MALInteractionException extends Exception
-{
-  private final MALStandardError standardError;
-  
-  /**
-   * The constructor calls the java.lang.Exception constructor with the String representation of the MALStandardError
-   * extraInformation field or NULL if the extraInformation is NULL.
-   * @param error The MAL standard error to wrap.
-   */
-  public MALInteractionException(final MALStandardError error)
-  {
-    super(((null != error) && (null != error.getExtraInformation())) ? error.getExtraInformation().toString() : null);
-    
-    standardError = error;
-  }
-  
-  /**
-   * Returns the MAL standard error that caused this exception.
-   * @return The MAL standard error.
-   */
-  public MALStandardError getStandardError()
-  {
-    return standardError;
-  }
+public class MALInteractionException extends Exception {
 
-  @Override
-  public String toString()
-  {
-    return "MALInteractionException{" + "standardError=" + standardError + '}';
-  }
+    private final MALStandardError standardError;
+
+    /**
+     * The constructor calls the java.lang.Exception constructor with the String
+     * representation of the MALStandardError extraInformation field or NULL if
+     * the extraInformation is NULL.
+     *
+     * @param error The MAL standard error to wrap.
+     */
+    public MALInteractionException(final MALStandardError error) {
+        super(
+                ((null != error) && (null != error.getExtraInformation()))
+                ? error.getExtraInformation().toString() : null
+        );
+
+        standardError = error;
+    }
+
+    /**
+     * Returns the MAL standard error that caused this exception.
+     *
+     * @return The MAL standard error.
+     */
+    public MALStandardError getStandardError() {
+        return standardError;
+    }
+
+    @Override
+    public String toString() {
+        return "MALInteractionException{" + "standardError=" + standardError + '}';
+    }
 }

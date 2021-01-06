@@ -29,40 +29,37 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 
 /**
- * Extension of the GEN message class for incoming file messages. Closes the input stream after
- * reading.
+ * Extension of the GEN message class for incoming file messages. Closes the
+ * input stream after reading.
  */
-public class FileBasedMessage extends GENMessage
-{
+public class FileBasedMessage extends GENMessage {
 
-  private final InputStream is;
+    private final InputStream is;
 
-  /**
-   * Constructor.
-   *
-   * @param qosProperties The QoS properties for this message.
-   * @param ios           The message in encoded form.
-   * @param encFactory    The stream factory to use for decoding.
-   * @throws MALException On decoding error.
-   */
-  public FileBasedMessage(Map qosProperties, InputStream ios, MALElementStreamFactory encFactory)
-      throws MALException
-  {
-    super(false, true, new GENMessageHeader(), qosProperties, ios, encFactory);
+    /**
+     * Constructor.
+     *
+     * @param qosProperties The QoS properties for this message.
+     * @param ios The message in encoded form.
+     * @param encFactory The stream factory to use for decoding.
+     * @throws MALException On decoding error.
+     */
+    public FileBasedMessage(Map qosProperties, InputStream ios, 
+            MALElementStreamFactory encFactory) throws MALException {
+        super(false, true, new GENMessageHeader(), qosProperties, ios, encFactory);
 
-    is = ios;
-  }
-
-  @Override
-  public void free() throws MALException
-  {
-    System.out.println("File based message freed");
-    super.free();
-
-    try {
-      is.close();
-    } catch (IOException ex) {
-      ex.printStackTrace();
+        is = ios;
     }
-  }
+
+    @Override
+    public void free() throws MALException {
+        System.out.println("File based message freed");
+        super.free();
+
+        try {
+            is.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 }

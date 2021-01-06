@@ -44,255 +44,255 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  *
  */
-public class ZMTPEndpoint extends GENEndpoint
-{
+public class ZMTPEndpoint extends GENEndpoint {
 
-  private final ZMTPConfiguration configuration;
+    private final ZMTPConfiguration configuration;
 
-  public ZMTPEndpoint(GENTransport transport,
-      ZMTPConfiguration configuration,
-      String localName,
-      String routingName,
-      String uri,
-      boolean wrapBodyParts,
-      final Map properties)
-  {
-    super(transport, localName, routingName, uri, wrapBodyParts);
-    this.configuration = new ZMTPConfiguration(configuration, properties);
-  }
-
-  @Override
-  public MALMessage createMessage(final Blob authenticationId,
-      final URI uriTo,
-      final Time timestamp,
-      final QoSLevel qosLevel,
-      final UInteger priority,
-      final IdentifierList domain,
-      final Identifier networkZone,
-      final SessionType session,
-      final Identifier sessionName,
-      final InteractionType interactionType,
-      final UOctet interactionStage,
-      final Long transactionId,
-      final UShort serviceArea,
-      final UShort service,
-      final UShort operation,
-      final UOctet serviceVersion,
-      final Boolean isErrorMessage,
-      final Map qosProperties,
-      final Object... body) throws MALException
-  {
-    try {
-      ZMTPMessageHeader hdr = (ZMTPMessageHeader) createMessageHeader(getURI(),
-          authenticationId,
-          uriTo,
-          timestamp,
-          qosLevel,
-          priority,
-          domain,
-          networkZone,
-          session,
-          sessionName,
-          interactionType,
-          interactionStage,
-          transactionId,
-          serviceArea,
-          service,
-          operation,
-          serviceVersion,
-          isErrorMessage,
-          qosProperties);
-      return new ZMTPMessage(((ZMTPTransport) transport).getHeaderStreamFactory(), wrapBodyParts,
-          hdr, qosProperties, null,
-          transport.getStreamFactory(), body);
-    } catch (MALInteractionException ex) {
-      throw new MALException("Error creating message", ex);
+    public ZMTPEndpoint(GENTransport transport,
+            ZMTPConfiguration configuration,
+            String localName,
+            String routingName,
+            String uri,
+            boolean wrapBodyParts,
+            final Map properties) {
+        super(transport, localName, routingName, uri, wrapBodyParts);
+        this.configuration = new ZMTPConfiguration(configuration, properties);
     }
-  }
 
-  @Override
-  public MALMessage createMessage(final Blob authenticationId,
-      final URI uriTo,
-      final Time timestamp,
-      final QoSLevel qosLevel,
-      final UInteger priority,
-      final IdentifierList domain,
-      final Identifier networkZone,
-      final SessionType session,
-      final Identifier sessionName,
-      final InteractionType interactionType,
-      final UOctet interactionStage,
-      final Long transactionId,
-      final UShort serviceArea,
-      final UShort service,
-      final UShort operation,
-      final UOctet serviceVersion,
-      final Boolean isErrorMessage,
-      final Map qosProperties,
-      final MALEncodedBody body) throws MALException
-  {
-    try {
-      ZMTPMessageHeader hdr = (ZMTPMessageHeader) createMessageHeader(getURI(),
-          authenticationId,
-          uriTo,
-          timestamp,
-          qosLevel,
-          priority,
-          domain,
-          networkZone,
-          session,
-          sessionName,
-          interactionType,
-          interactionStage,
-          transactionId,
-          serviceArea,
-          service,
-          operation,
-          serviceVersion,
-          isErrorMessage,
-          qosProperties);
-      return new ZMTPMessage(((ZMTPTransport) transport).getHeaderStreamFactory(), wrapBodyParts,
-          hdr, qosProperties, null,
-          transport.getStreamFactory(), body);
-    } catch (MALInteractionException ex) {
-      throw new MALException("Error creating message", ex);
+    @Override
+    public MALMessage createMessage(final Blob authenticationId,
+            final URI uriTo,
+            final Time timestamp,
+            final QoSLevel qosLevel,
+            final UInteger priority,
+            final IdentifierList domain,
+            final Identifier networkZone,
+            final SessionType session,
+            final Identifier sessionName,
+            final InteractionType interactionType,
+            final UOctet interactionStage,
+            final Long transactionId,
+            final UShort serviceArea,
+            final UShort service,
+            final UShort operation,
+            final UOctet serviceVersion,
+            final Boolean isErrorMessage,
+            final Map qosProperties,
+            final Object... body) throws MALException {
+        try {
+            ZMTPMessageHeader hdr = (ZMTPMessageHeader) createMessageHeader(getURI(),
+                    authenticationId,
+                    uriTo,
+                    timestamp,
+                    qosLevel,
+                    priority,
+                    domain,
+                    networkZone,
+                    session,
+                    sessionName,
+                    interactionType,
+                    interactionStage,
+                    transactionId,
+                    serviceArea,
+                    service,
+                    operation,
+                    serviceVersion,
+                    isErrorMessage,
+                    qosProperties);
+            return new ZMTPMessage(
+                    ((ZMTPTransport) transport).getHeaderStreamFactory(),
+                    wrapBodyParts, hdr, qosProperties, null,
+                    transport.getStreamFactory(), body);
+        } catch (MALInteractionException ex) {
+            throw new MALException("Error creating message", ex);
+        }
     }
-  }
 
-  @Override
-  public MALMessage createMessage(final Blob authenticationId,
-      final URI uriTo,
-      final Time timestamp,
-      final QoSLevel qosLevel,
-      final UInteger priority,
-      final IdentifierList domain,
-      final Identifier networkZone,
-      final SessionType session,
-      final Identifier sessionName,
-      final Long transactionId,
-      final Boolean isErrorMessage,
-      final MALOperation op,
-      final UOctet interactionStage,
-      final Map qosProperties,
-      final MALEncodedBody body) throws MALException
-  {
-    try {
-      ZMTPMessageHeader hdr = (ZMTPMessageHeader) createMessageHeader(getURI(),
-          authenticationId,
-          uriTo,
-          timestamp,
-          qosLevel,
-          priority,
-          domain,
-          networkZone,
-          session,
-          sessionName,
-          op.getInteractionType(),
-          interactionStage,
-          transactionId,
-          op.getService().getArea().getNumber(),
-          op.getService().getNumber(),
-          op.getNumber(),
-          op.getService().getArea().getVersion(),
-          isErrorMessage,
-          qosProperties);
-
-      return new ZMTPMessage(((ZMTPTransport) transport).getHeaderStreamFactory(), wrapBodyParts,
-          hdr, qosProperties, op,
-          transport.getStreamFactory(), body);
-    } catch (MALInteractionException ex) {
-      throw new MALException("Error creating message", ex);
+    @Override
+    public MALMessage createMessage(final Blob authenticationId,
+            final URI uriTo,
+            final Time timestamp,
+            final QoSLevel qosLevel,
+            final UInteger priority,
+            final IdentifierList domain,
+            final Identifier networkZone,
+            final SessionType session,
+            final Identifier sessionName,
+            final InteractionType interactionType,
+            final UOctet interactionStage,
+            final Long transactionId,
+            final UShort serviceArea,
+            final UShort service,
+            final UShort operation,
+            final UOctet serviceVersion,
+            final Boolean isErrorMessage,
+            final Map qosProperties,
+            final MALEncodedBody body) throws MALException {
+        try {
+            ZMTPMessageHeader hdr = (ZMTPMessageHeader) createMessageHeader(
+                    getURI(),
+                    authenticationId,
+                    uriTo,
+                    timestamp,
+                    qosLevel,
+                    priority,
+                    domain,
+                    networkZone,
+                    session,
+                    sessionName,
+                    interactionType,
+                    interactionStage,
+                    transactionId,
+                    serviceArea,
+                    service,
+                    operation,
+                    serviceVersion,
+                    isErrorMessage,
+                    qosProperties);
+            return new ZMTPMessage(
+                    ((ZMTPTransport) transport).getHeaderStreamFactory(),
+                    wrapBodyParts, hdr, qosProperties, null,
+                    transport.getStreamFactory(), body);
+        } catch (MALInteractionException ex) {
+            throw new MALException("Error creating message", ex);
+        }
     }
-  }
 
-  @Override
-  public MALMessage createMessage(final Blob authenticationId,
-      final URI uriTo,
-      final Time timestamp,
-      final QoSLevel qosLevel,
-      final UInteger priority,
-      final IdentifierList domain,
-      final Identifier networkZone,
-      final SessionType session,
-      final Identifier sessionName,
-      final Long transactionId,
-      final Boolean isErrorMessage,
-      final MALOperation op,
-      final UOctet interactionStage,
-      final Map qosProperties,
-      final Object... body) throws MALException
-  {
-    try {
-      ZMTPMessageHeader hdr = (ZMTPMessageHeader) createMessageHeader(getURI(),
-          authenticationId,
-          uriTo,
-          timestamp,
-          qosLevel,
-          priority,
-          domain,
-          networkZone,
-          session,
-          sessionName,
-          op.getInteractionType(),
-          interactionStage,
-          transactionId,
-          op.getService().getArea().getNumber(),
-          op.getService().getNumber(),
-          op.getNumber(),
-          op.getService().getArea().getVersion(),
-          isErrorMessage,
-          qosProperties);
+    @Override
+    public MALMessage createMessage(final Blob authenticationId,
+            final URI uriTo,
+            final Time timestamp,
+            final QoSLevel qosLevel,
+            final UInteger priority,
+            final IdentifierList domain,
+            final Identifier networkZone,
+            final SessionType session,
+            final Identifier sessionName,
+            final Long transactionId,
+            final Boolean isErrorMessage,
+            final MALOperation op,
+            final UOctet interactionStage,
+            final Map qosProperties,
+            final MALEncodedBody body) throws MALException {
+        try {
+            ZMTPMessageHeader hdr = (ZMTPMessageHeader) createMessageHeader(
+                    getURI(),
+                    authenticationId,
+                    uriTo,
+                    timestamp,
+                    qosLevel,
+                    priority,
+                    domain,
+                    networkZone,
+                    session,
+                    sessionName,
+                    op.getInteractionType(),
+                    interactionStage,
+                    transactionId,
+                    op.getService().getArea().getNumber(),
+                    op.getService().getNumber(),
+                    op.getNumber(),
+                    op.getService().getArea().getVersion(),
+                    isErrorMessage,
+                    qosProperties);
 
-      return new ZMTPMessage(((ZMTPTransport) transport).getHeaderStreamFactory(), wrapBodyParts,
-          hdr, qosProperties, op,
-          transport.getStreamFactory(), body);
-    } catch (MALInteractionException ex) {
-      throw new MALException("Error creating message", ex);
+            return new ZMTPMessage(
+                    ((ZMTPTransport) transport).getHeaderStreamFactory(),
+                    wrapBodyParts, hdr, qosProperties, op,
+                    transport.getStreamFactory(), body);
+        } catch (MALInteractionException ex) {
+            throw new MALException("Error creating message", ex);
+        }
     }
-  }
 
-  @Override
-  public GENMessageHeader createMessageHeader(URI uriFrom,
-      Blob authenticationId,
-      URI uriTo,
-      Time timestamp,
-      QoSLevel qosLevel,
-      UInteger priority,
-      IdentifierList domain,
-      Identifier networkZone,
-      SessionType session,
-      Identifier sessionName,
-      InteractionType interactionType,
-      UOctet interactionStage,
-      Long transactionId,
-      UShort serviceArea,
-      UShort service,
-      UShort operation,
-      UOctet serviceVersion,
-      Boolean isErrorMessage,
-      Map qosProperties)
-  {
-    ZMTPMessageHeader header = new ZMTPMessageHeader(new ZMTPConfiguration(configuration,
-        qosProperties), null,
-        getURI(),
-        authenticationId,
-        uriTo,
-        timestamp,
-        qosLevel,
-        priority,
-        domain,
-        networkZone,
-        session,
-        sessionName,
-        interactionType,
-        interactionStage,
-        transactionId,
-        serviceArea,
-        service,
-        operation,
-        serviceVersion,
-        isErrorMessage);
-    ((ZMTPTransport) transport).getBodyEncodingSelector().applyEncodingIdToHeader(header);
-    return header;
-  }
+    @Override
+    public MALMessage createMessage(final Blob authenticationId,
+            final URI uriTo,
+            final Time timestamp,
+            final QoSLevel qosLevel,
+            final UInteger priority,
+            final IdentifierList domain,
+            final Identifier networkZone,
+            final SessionType session,
+            final Identifier sessionName,
+            final Long transactionId,
+            final Boolean isErrorMessage,
+            final MALOperation op,
+            final UOctet interactionStage,
+            final Map qosProperties,
+            final Object... body) throws MALException {
+        try {
+            ZMTPMessageHeader hdr = (ZMTPMessageHeader) createMessageHeader(
+                    getURI(),
+                    authenticationId,
+                    uriTo,
+                    timestamp,
+                    qosLevel,
+                    priority,
+                    domain,
+                    networkZone,
+                    session,
+                    sessionName,
+                    op.getInteractionType(),
+                    interactionStage,
+                    transactionId,
+                    op.getService().getArea().getNumber(),
+                    op.getService().getNumber(),
+                    op.getNumber(),
+                    op.getService().getArea().getVersion(),
+                    isErrorMessage,
+                    qosProperties);
+
+            return new ZMTPMessage(((ZMTPTransport) transport).getHeaderStreamFactory(),
+                    wrapBodyParts, hdr, qosProperties, op,
+                    transport.getStreamFactory(), body);
+        } catch (MALInteractionException ex) {
+            throw new MALException("Error creating message", ex);
+        }
+    }
+
+    @Override
+    public GENMessageHeader createMessageHeader(URI uriFrom,
+            Blob authenticationId,
+            URI uriTo,
+            Time timestamp,
+            QoSLevel qosLevel,
+            UInteger priority,
+            IdentifierList domain,
+            Identifier networkZone,
+            SessionType session,
+            Identifier sessionName,
+            InteractionType interactionType,
+            UOctet interactionStage,
+            Long transactionId,
+            UShort serviceArea,
+            UShort service,
+            UShort operation,
+            UOctet serviceVersion,
+            Boolean isErrorMessage,
+            Map qosProperties) {
+        ZMTPMessageHeader header = new ZMTPMessageHeader(
+                new ZMTPConfiguration(configuration, qosProperties),
+                null,
+                getURI(),
+                authenticationId,
+                uriTo,
+                timestamp,
+                qosLevel,
+                priority,
+                domain,
+                networkZone,
+                session,
+                sessionName,
+                interactionType,
+                interactionStage,
+                transactionId,
+                serviceArea,
+                service,
+                operation,
+                serviceVersion,
+                isErrorMessage);
+        ((ZMTPTransport) transport).getBodyEncodingSelector().applyEncodingIdToHeader(header);
+        return header;
+    }
 }

@@ -23,16 +23,16 @@ package esa.mo.mal.transport.gen.receivers;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
- * Small interface that is used to decode a message from an incoming connection.s
+ * Small interface that is used to decode a message from an incoming
+ * connection.s
  */
-public interface GENIncomingMessageDecoder
-{
+public interface GENIncomingMessageDecoder {
 
-  /**
-   * Decodes and returns a new incoming message holder.
-   *
-   * @return The decoded incoming message.
-   * @throws MALException On error.s
-   */
-  GENIncomingMessageHolder decodeAndCreateMessage() throws MALException;
+    /**
+     * Decodes and returns a new incoming message holder.
+     *
+     * @return The decoded incoming message.
+     * @throws MALException On error.s
+     */
+    GENIncomingMessageHolder decodeAndCreateMessage() throws MALException;
 }

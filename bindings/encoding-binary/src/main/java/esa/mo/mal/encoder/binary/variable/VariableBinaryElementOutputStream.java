@@ -23,26 +23,24 @@ package esa.mo.mal.encoder.binary.variable;
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 
 /**
- * Implements the MALElementOutputStream interface for a fixed length binary encoding.
+ * Implements the MALElementOutputStream interface for a fixed length binary
+ * encoding.
  */
-public class VariableBinaryElementOutputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementOutputStream
-{
+public class VariableBinaryElementOutputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementOutputStream {
 
-  /**
-   * Constructor.
-   *
-   * @param os          Output stream to write to.
-   * @param timeHandler Time handler to use.
-   */
-  public VariableBinaryElementOutputStream(final java.io.OutputStream os,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(os, timeHandler);
-  }
+    /**
+     * Constructor.
+     *
+     * @param os Output stream to write to.
+     * @param timeHandler Time handler to use.
+     */
+    public VariableBinaryElementOutputStream(final java.io.OutputStream os,
+            final BinaryTimeHandler timeHandler) {
+        super(os, timeHandler);
+    }
 
-  @Override
-  protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os)
-  {
-    return new VariableBinaryEncoder(os, timeHandler);
-  }
+    @Override
+    protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os) {
+        return new VariableBinaryEncoder(os, timeHandler);
+    }
 }

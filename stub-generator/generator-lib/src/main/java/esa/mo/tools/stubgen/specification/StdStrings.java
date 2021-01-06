@@ -23,43 +23,42 @@ package esa.mo.tools.stubgen.specification;
 /**
  * This class holds the standard set of MAL type names.
  */
-public abstract class StdStrings
-{
-  public static final String MAL = "MAL";
-  public static final String COM = "COM";
-  public static final String XML = "XML";
-  public static final String ELEMENT = "Element";
-  public static final String COMPOSITE = "Composite";
-  public static final String ATTRIBUTE = "Attribute";
-  public static final String ENUMERATION = "Enumeration";
-  public static final String BLOB = "Blob";
-  public static final String BOOLEAN = "Boolean";
-  public static final String DOUBLE = "Double";
-  public static final String DURATION = "Duration";
-  public static final String FLOAT = "Float";
-  public static final String INTEGER = "Integer";
-  public static final String IDENTIFIER = "Identifier";
-  public static final String LONG = "Long";
-  public static final String OCTET = "Octet";
-  public static final String SHORT = "Short";
-  public static final String UINTEGER = "UInteger";
-  public static final String ULONG = "ULong";
-  public static final String UOCTET = "UOctet";
-  public static final String USHORT = "UShort";
-  public static final String STRING = "String";
-  public static final String TIME = "Time";
-  public static final String FINETIME = "FineTime";
-  public static final String URI = "URI";
-  public static final String UNION = "Union";
-  public static final String VOID = "void";
-  public static final String PUBLIC = "public";
-  public static final String PRIVATE = "private";
-  public static final String MALEXCEPTION = "MALException";
-  public static final String MALINTERACTIONEXCEPTION = "MALInteractionException";
-  public static final String MALMESSAGE = "MALMessage";
-  public static final String MALINTERACTION = "MALInteraction";
+public abstract class StdStrings {
 
-  private StdStrings()
-  {
-  }
+    public static final String MAL = "MAL";
+    public static final String COM = "COM";
+    public static final String XML = "XML";
+    public static final String ELEMENT = "Element";
+    public static final String COMPOSITE = "Composite";
+    public static final String ATTRIBUTE = "Attribute";
+    public static final String ENUMERATION = "Enumeration";
+    public static final String BLOB = "Blob";
+    public static final String BOOLEAN = "Boolean";
+    public static final String DOUBLE = "Double";
+    public static final String DURATION = "Duration";
+    public static final String FLOAT = "Float";
+    public static final String INTEGER = "Integer";
+    public static final String IDENTIFIER = "Identifier";
+    public static final String LONG = "Long";
+    public static final String OCTET = "Octet";
+    public static final String SHORT = "Short";
+    public static final String UINTEGER = "UInteger";
+    public static final String ULONG = "ULong";
+    public static final String UOCTET = "UOctet";
+    public static final String USHORT = "UShort";
+    public static final String STRING = "String";
+    public static final String TIME = "Time";
+    public static final String FINETIME = "FineTime";
+    public static final String URI = "URI";
+    public static final String UNION = "Union";
+    public static final String VOID = "void";
+    public static final String PUBLIC = "public";
+    public static final String PRIVATE = "private";
+    public static final String MALEXCEPTION = "MALException";
+    public static final String MALINTERACTIONEXCEPTION = "MALInteractionException";
+    public static final String MALMESSAGE = "MALMessage";
+    public static final String MALINTERACTION = "MALInteraction";
+
+    private StdStrings() {
+    }
 }

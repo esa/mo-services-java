@@ -23,8 +23,8 @@ package org.ccsds.moims.mo.mal.structures;
 /**
  * List interface for Elements.
  *
- * @param <T> The type of the list, no requirement to extend Element so that native type can be used in Attribute lists.
+ * @param <T> The type of the list, no requirement to extend Element so that
+ * native type can be used in Attribute lists.
  */
-public interface ElementList<T> extends Composite, java.util.List<T>
-{
+public interface ElementList<T> extends Composite, java.util.List<T> {
 }

@@ -30,67 +30,62 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 /**
  *
  */
-public class JMSTransportFactoryImpl extends MALTransportFactory
-{
+public class JMSTransportFactoryImpl extends MALTransportFactory {
 
-  private static final String JMS_ADMIN_CLASS = "org.ccsds.moims.mo.jms.admin.class";
-  private static final String AMQP_ADMIN_CLASS = "org.ccsds.moims.mo.jms.amqp.admin.class";
-  private static final String JMSPS = "ccsdsjms";
-  private static final String AMQPPS = "amqpjms";
-  private static final Object mutex = "JMSTransportFactoryImpl.mutex";
-  private JMSTransport transport = null;
+    private static final String JMS_ADMIN_CLASS = "org.ccsds.moims.mo.jms.admin.class";
+    private static final String AMQP_ADMIN_CLASS = "org.ccsds.moims.mo.jms.amqp.admin.class";
+    private static final String JMSPS = "ccsdsjms";
+    private static final String AMQPPS = "amqpjms";
+    private static final Object mutex = "JMSTransportFactoryImpl.mutex";
+    private JMSTransport transport = null;
 
-  public JMSTransportFactoryImpl(String protocol)
-  {
-    super(protocol);
-  }
-
-  @Override
-  public MALTransport createTransport(MALContext ctx, Map properties) throws MALException
-  {
-    synchronized (mutex) {
-      init(properties);
-
-      return transport;
+    public JMSTransportFactoryImpl(String protocol) {
+        super(protocol);
     }
-  }
 
-  protected void init(Map properties) throws MALException
-  {
-    if (null == transport) {
-      try {
-        String prot = getProtocol();
-        if (JMSPS.equals(prot)) {
-          transport = new JMSTransport(this, prot, getAdministrator(false), properties);
-        } else if (AMQPPS.equals(prot)) {
-          transport = new JMSTransport(this, prot, getAdministrator(true), properties);
-        } else {
-          throw new MALException("Unknown JMS transport required! " + prot);
+    @Override
+    public MALTransport createTransport(MALContext ctx, Map properties) throws MALException {
+        synchronized (mutex) {
+            init(properties);
+
+            return transport;
         }
-
-        transport.init();
-      } catch (Exception ex) {
-        JMSTransport.RLOGGER.log(Level.SEVERE,
-            "Exception thrown during the creation of the JMSTransport: {0}", ex);
-      }
     }
-  }
 
-  private JMSAbstractAdministrator getAdministrator(boolean amqp) throws MALException
-  {
-    try {
-      String adminClassName;
+    protected void init(Map properties) throws MALException {
+        if (null == transport) {
+            try {
+                String prot = getProtocol();
+                if (JMSPS.equals(prot)) {
+                    transport = new JMSTransport(this, prot, getAdministrator(false), properties);
+                } else if (AMQPPS.equals(prot)) {
+                    transport = new JMSTransport(this, prot, getAdministrator(true), properties);
+                } else {
+                    throw new MALException("Unknown JMS transport required! " + prot);
+                }
 
-      if (amqp) {
-        adminClassName = System.getProperty(AMQP_ADMIN_CLASS);
-      } else {
-        adminClassName = System.getProperty(JMS_ADMIN_CLASS);
-      }
-
-      Class adminClass = Class.forName(adminClassName);
-      return (JMSAbstractAdministrator) adminClass.newInstance();
-    } catch (Exception e) {
-      throw new MALException("Unable to create JMS adminstration class", e);
+                transport.init();
+            } catch (Exception ex) {
+                JMSTransport.RLOGGER.log(Level.SEVERE,
+                        "Exception thrown during the creation of the JMSTransport: {0}", ex);
+            }
+        }
     }
-  }
+
+    private JMSAbstractAdministrator getAdministrator(boolean amqp) throws MALException {
+        try {
+            String adminClassName;
+
+            if (amqp) {
+                adminClassName = System.getProperty(AMQP_ADMIN_CLASS);
+            } else {
+                adminClassName = System.getProperty(JMS_ADMIN_CLASS);
+            }
+
+            Class adminClass = Class.forName(adminClassName);
+            return (JMSAbstractAdministrator) adminClass.newInstance();
+        } catch (Exception e) {
+            throw new MALException("Unable to create JMS adminstration class", e);
+        }
+    }
 }

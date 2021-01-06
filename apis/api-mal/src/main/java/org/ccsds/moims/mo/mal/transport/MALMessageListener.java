@@ -21,34 +21,35 @@
 package org.ccsds.moims.mo.mal.transport;
 
 /**
- * The MALMessageListener interface enables the MAL layer to be notified by the transport module when a MALMessage has
- * been received by a MALEndpoint or an asynchronous internal error has been raised by the transport layer as a
+ * The MALMessageListener interface enables the MAL layer to be notified by the
+ * transport module when a MALMessage has been received by a MALEndpoint or an
+ * asynchronous internal error has been raised by the transport layer as a
  * consequence of a severe failure making the transport unable to work.
  *
  */
-public interface MALMessageListener extends MALTransmitErrorListener
-{
-  /**
-   * The method receives a message.
-   *
-   * @param callingEndpoint MALEndpoint calling the MALMessageListener
-   * @param msg Message received by the listener
-   */
-  void onMessage(MALEndpoint callingEndpoint, MALMessage msg);
+public interface MALMessageListener extends MALTransmitErrorListener {
 
-  /**
-   * The method receives multiple messages.
-   *
-   * @param callingEndpoint MALEndpoint calling the MALMessageListener
-   * @param msgList List of the messages received by the listener
-   */
-  void onMessages(MALEndpoint callingEndpoint, MALMessage[] msgList);
+    /**
+     * The method receives a message.
+     *
+     * @param callingEndpoint MALEndpoint calling the MALMessageListener
+     * @param msg Message received by the listener
+     */
+    void onMessage(MALEndpoint callingEndpoint, MALMessage msg);
 
-  /**
-   * The method receives an internal error.
-   *
-   * @param callingEndpoint MALEndpoint calling the MALMessageListener
-   * @param err Error to be received by the listener
-   */
-  void onInternalError(MALEndpoint callingEndpoint, Throwable err);
+    /**
+     * The method receives multiple messages.
+     *
+     * @param callingEndpoint MALEndpoint calling the MALMessageListener
+     * @param msgList List of the messages received by the listener
+     */
+    void onMessages(MALEndpoint callingEndpoint, MALMessage[] msgList);
+
+    /**
+     * The method receives an internal error.
+     *
+     * @param callingEndpoint MALEndpoint calling the MALMessageListener
+     * @param err Error to be received by the listener
+     */
+    void onInternalError(MALEndpoint callingEndpoint, Throwable err);
 }

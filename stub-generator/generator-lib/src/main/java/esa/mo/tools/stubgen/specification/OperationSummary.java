@@ -26,198 +26,195 @@ import java.util.List;
 /**
  * Hold information about an operation.
  */
-public final class OperationSummary
-{
-  private final InteractionPatternEnum pattern;
-  private final OperationType originalOp;
-  private final Integer set;
-  private final List<TypeInfo> argTypes;
-  private final String argComment;
-  private final List<TypeInfo> ackTypes;
-  private final String ackComment;
-  private final List<TypeInfo> updateTypes;
-  private final String updateComment;
-  private final List<TypeInfo> retTypes;
-  private final String retComment;
+public final class OperationSummary {
 
-  /**
-   * Constructor.
-   *
-   * @param pattern The interaction pattern of the operation.
-   * @param op The XML operation details.
-   * @param set The capability set of the operation.
-   * @param argTypes The initial argument types of the operation.
-   * @param argComment The initial argument comments of the operation.
-   * @param ackTypes The acknowledgement argument types of the operation if support by the pattern.
-   * @param ackComment The acknowledgement argument comments of the operation if support by the pattern.
-   * @param updateTypes The update argument types of the operation if support by the pattern.
-   * @param updateComment The update argument comments of the operation if support by the pattern.
-   * @param retTypes The return argument types of the operation if support by the pattern.
-   * @param retComment The return argument comments of the operation if support by the pattern.
-   */
-  public OperationSummary(InteractionPatternEnum pattern,
-          OperationType op,
-          Integer set,
-          List<TypeInfo> argTypes,
-          String argComment,
-          List<TypeInfo> ackTypes,
-          String ackComment,
-          List<TypeInfo> updateTypes,
-          String updateComment,
-          List<TypeInfo> retTypes,
-          String retComment)
-  {
-    super();
-    this.pattern = pattern;
-    this.originalOp = op;
-    this.set = set;
-    this.argTypes = argTypes;
-    this.argComment = argComment;
-    this.ackTypes = ackTypes;
-    this.ackComment = ackComment;
-    this.updateTypes = updateTypes;
-    this.updateComment = updateComment;
-    this.retTypes = retTypes;
-    this.retComment = retComment;
-  }
+    private final InteractionPatternEnum pattern;
+    private final OperationType originalOp;
+    private final Integer set;
+    private final List<TypeInfo> argTypes;
+    private final String argComment;
+    private final List<TypeInfo> ackTypes;
+    private final String ackComment;
+    private final List<TypeInfo> updateTypes;
+    private final String updateComment;
+    private final List<TypeInfo> retTypes;
+    private final String retComment;
 
-  /**
-   * Returns the pattern type.
-   *
-   * @return the pattern
-   */
-  public InteractionPatternEnum getPattern()
-  {
-    return pattern;
-  }
+    /**
+     * Constructor.
+     *
+     * @param pattern The interaction pattern of the operation.
+     * @param op The XML operation details.
+     * @param set The capability set of the operation.
+     * @param argTypes The initial argument types of the operation.
+     * @param argComment The initial argument comments of the operation.
+     * @param ackTypes The acknowledgement argument types of the operation if
+     * support by the pattern.
+     * @param ackComment The acknowledgement argument comments of the operation
+     * if support by the pattern.
+     * @param updateTypes The update argument types of the operation if support
+     * by the pattern.
+     * @param updateComment The update argument comments of the operation if
+     * support by the pattern.
+     * @param retTypes The return argument types of the operation if support by
+     * the pattern.
+     * @param retComment The return argument comments of the operation if
+     * support by the pattern.
+     */
+    public OperationSummary(InteractionPatternEnum pattern,
+            OperationType op,
+            Integer set,
+            List<TypeInfo> argTypes,
+            String argComment,
+            List<TypeInfo> ackTypes,
+            String ackComment,
+            List<TypeInfo> updateTypes,
+            String updateComment,
+            List<TypeInfo> retTypes,
+            String retComment) {
+        super();
+        this.pattern = pattern;
+        this.originalOp = op;
+        this.set = set;
+        this.argTypes = argTypes;
+        this.argComment = argComment;
+        this.ackTypes = ackTypes;
+        this.ackComment = ackComment;
+        this.updateTypes = updateTypes;
+        this.updateComment = updateComment;
+        this.retTypes = retTypes;
+        this.retComment = retComment;
+    }
 
-  /**
-   * Returns the XML operation details.
-   *
-   * @return the originalOp
-   */
-  public OperationType getOriginalOp()
-  {
-    return originalOp;
-  }
+    /**
+     * Returns the pattern type.
+     *
+     * @return the pattern
+     */
+    public InteractionPatternEnum getPattern() {
+        return pattern;
+    }
 
-  /**
-   * Returns the name of the operation.
-   *
-   * @return the name
-   */
-  public String getName()
-  {
-    return originalOp.getName();
-  }
+    /**
+     * Returns the XML operation details.
+     *
+     * @return the originalOp
+     */
+    public OperationType getOriginalOp() {
+        return originalOp;
+    }
 
-  /**
-   * Returns the number of the operation.
-   *
-   * @return the number
-   */
-  public Integer getNumber()
-  {
-    return originalOp.getNumber();
-  }
+    /**
+     * Returns the name of the operation.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return originalOp.getName();
+    }
 
-  /**
-   * Returns the capability set of the operation.
-   *
-   * @return the set
-   */
-  public Integer getSet()
-  {
-    return set;
-  }
+    /**
+     * Returns the number of the operation.
+     *
+     * @return the number
+     */
+    public Integer getNumber() {
+        return originalOp.getNumber();
+    }
 
-  /**
-   * Is replay supported by the operation.
-   *
-   * @return the replay
-   */
-  public Boolean getReplay()
-  {
-    return originalOp.isSupportInReplay();
-  }
+    /**
+     * Returns the capability set of the operation.
+     *
+     * @return the set
+     */
+    public Integer getSet() {
+        return set;
+    }
 
-  /**
-   * Returns the initial argument types of the operation.
-   *
-   * @return the argTypes
-   */
-  public List<TypeInfo> getArgTypes()
-  {
-    return argTypes;
-  }
+    /**
+     * Is replay supported by the operation.
+     *
+     * @return the replay
+     */
+    public Boolean getReplay() {
+        return originalOp.isSupportInReplay();
+    }
 
-  /**
-   * Returns the initial argument comments of the operation.
-   *
-   * @return the argComment
-   */
-  public String getArgComment()
-  {
-    return argComment;
-  }
+    /**
+     * Returns the initial argument types of the operation.
+     *
+     * @return the argTypes
+     */
+    public List<TypeInfo> getArgTypes() {
+        return argTypes;
+    }
 
-  /**
-   * Returns the acknowledgement argument types of the operation if supported by the pattern otherwise null.
-   *
-   * @return the ackTypes
-   */
-  public List<TypeInfo> getAckTypes()
-  {
-    return ackTypes;
-  }
+    /**
+     * Returns the initial argument comments of the operation.
+     *
+     * @return the argComment
+     */
+    public String getArgComment() {
+        return argComment;
+    }
 
-  /**
-   * Returns the acknowledgement argument comments of the operation if supported by the pattern otherwise null.
-   *
-   * @return the ackComment
-   */
-  public String getAckComment()
-  {
-    return ackComment;
-  }
+    /**
+     * Returns the acknowledgement argument types of the operation if supported
+     * by the pattern otherwise null.
+     *
+     * @return the ackTypes
+     */
+    public List<TypeInfo> getAckTypes() {
+        return ackTypes;
+    }
 
-  /**
-   * Returns the update argument types of the operation if supported by the pattern otherwise null.
-   *
-   * @return the updateTypes
-   */
-  public List<TypeInfo> getUpdateTypes()
-  {
-    return updateTypes;
-  }
+    /**
+     * Returns the acknowledgement argument comments of the operation if
+     * supported by the pattern otherwise null.
+     *
+     * @return the ackComment
+     */
+    public String getAckComment() {
+        return ackComment;
+    }
 
-  /**
-   * Returns the update argument comments of the operation if supported by the pattern otherwise null.
-   *
-   * @return the updateComment
-   */
-  public String getUpdateComment()
-  {
-    return updateComment;
-  }
+    /**
+     * Returns the update argument types of the operation if supported by the
+     * pattern otherwise null.
+     *
+     * @return the updateTypes
+     */
+    public List<TypeInfo> getUpdateTypes() {
+        return updateTypes;
+    }
 
-  /**
-   * Returns the return argument types of the operation if supported by the pattern otherwise null.
-   *
-   * @return the retTypes
-   */
-  public List<TypeInfo> getRetTypes()
-  {
-    return retTypes;
-  }
+    /**
+     * Returns the update argument comments of the operation if supported by the
+     * pattern otherwise null.
+     *
+     * @return the updateComment
+     */
+    public String getUpdateComment() {
+        return updateComment;
+    }
 
-  /**
-   * Returns the return argument comments of the operation if supported by the pattern otherwise null.
-   *
-   * @return the retComment
-   */
-  public String getRetComment()
-  {
-    return retComment;
-  }
+    /**
+     * Returns the return argument types of the operation if supported by the
+     * pattern otherwise null.
+     *
+     * @return the retTypes
+     */
+    public List<TypeInfo> getRetTypes() {
+        return retTypes;
+    }
+
+    /**
+     * Returns the return argument comments of the operation if supported by the
+     * pattern otherwise null.
+     *
+     * @return the retComment
+     */
+    public String getRetComment() {
+        return retComment;
+    }
 }

@@ -25,31 +25,29 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
-public abstract class JMSAbstractAdministrator
-{
+public abstract class JMSAbstractAdministrator {
 
-  protected JMSTransport transport;
+    protected JMSTransport transport;
 
-  public void init(JMSTransport transport, Hashtable namingContextEnv) throws Exception
-  {
-    this.transport = transport;
-  }
+    public void init(JMSTransport transport, Hashtable namingContextEnv) throws Exception {
+        this.transport = transport;
+    }
 
-  public abstract Topic createTopic(String name) throws Exception;
+    public abstract Topic createTopic(String name) throws Exception;
 
-  public abstract void bindTopic(javax.jms.Session session, Topic topic) throws Exception;
+    public abstract void bindTopic(javax.jms.Session session, Topic topic) throws Exception;
 
-  public abstract Topic getTopic(javax.jms.Session session, String name) throws Exception;
+    public abstract Topic getTopic(javax.jms.Session session, String name) throws Exception;
 
-  public abstract void deleteTopic(javax.jms.Session session, Topic topic) throws Exception;
+    public abstract void deleteTopic(javax.jms.Session session, Topic topic) throws Exception;
 
-  public abstract Queue createQueue(javax.jms.Session session, String name) throws Exception;
+    public abstract Queue createQueue(javax.jms.Session session, String name) throws Exception;
 
-  public abstract void bindQueue(javax.jms.Session session, Queue queue) throws Exception;
+    public abstract void bindQueue(javax.jms.Session session, Queue queue) throws Exception;
 
-  public abstract Queue getQueue(javax.jms.Session session, String name) throws Exception;
+    public abstract Queue getQueue(javax.jms.Session session, String name) throws Exception;
 
-  public abstract void deleteQueue(javax.jms.Session session, Queue queue) throws Exception;
+    public abstract void deleteQueue(javax.jms.Session session, Queue queue) throws Exception;
 
-  public abstract ConnectionFactory getConnectionFactory() throws Exception;
+    public abstract ConnectionFactory getConnectionFactory() throws Exception;
 }

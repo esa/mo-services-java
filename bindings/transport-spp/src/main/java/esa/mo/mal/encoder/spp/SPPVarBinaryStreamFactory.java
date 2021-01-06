@@ -26,16 +26,14 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Implements the MALElementStreamFactory interface for a SPP binary encoding.
  */
-public class SPPVarBinaryStreamFactory extends esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory
-{
+public class SPPVarBinaryStreamFactory extends esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory {
 
-  @Override
-  protected void init(final String protocol, final Map properties) throws IllegalArgumentException,
-      MALException
-  {
-    super.init(protocol, properties);
+    @Override
+    protected void init(final String protocol, final Map properties) throws IllegalArgumentException,
+            MALException {
+        super.init(protocol, properties);
 
-    // Override default binary time encoding handler
-    timeHandler = new SPPTimeHandler(properties);
-  }
+        // Override default binary time encoding handler
+        timeHandler = new SPPTimeHandler(properties);
+    }
 }

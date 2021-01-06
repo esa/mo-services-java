@@ -25,29 +25,29 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * The MALElementOutputStream interface is used to encode Elements.
  */
-public interface MALElementOutputStream
-{
-  /**
-   * The method encodes an Element.
-   * 
-   * @param element Element to encode, may be null.
-   * @param ctx MALEncodingContext to be used in order to encode an Element
-   * @throws java.lang.IllegalArgumentException If the parameter ‘ctx’ is NULL 
-   * @throws MALException If the MALElementOutputStream is closed 
-   */
-  void writeElement(Object element, MALEncodingContext ctx) throws IllegalArgumentException, MALException;
+public interface MALElementOutputStream {
 
-  /**
-   * Flushes the stream.
-   * 
-   * @throws MALException If the MALElementOutputStream is closed
-   */
-  void flush() throws MALException;
+    /**
+     * The method encodes an Element.
+     *
+     * @param element Element to encode, may be null.
+     * @param ctx MALEncodingContext to be used in order to encode an Element
+     * @throws java.lang.IllegalArgumentException If the parameter ‘ctx’ is NULL
+     * @throws MALException If the MALElementOutputStream is closed
+     */
+    void writeElement(Object element, MALEncodingContext ctx) throws IllegalArgumentException, MALException;
 
-  /**
-   * Closes the stream.
-   * 
-   * @throws MALException If an internal error occurs 
-   */
-  void close() throws MALException;
+    /**
+     * Flushes the stream.
+     *
+     * @throws MALException If the MALElementOutputStream is closed
+     */
+    void flush() throws MALException;
+
+    /**
+     * Closes the stream.
+     *
+     * @throws MALException If an internal error occurs
+     */
+    void close() throws MALException;
 }

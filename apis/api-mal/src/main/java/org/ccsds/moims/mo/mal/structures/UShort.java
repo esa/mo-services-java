@@ -27,142 +27,122 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Class representing MAL UShort type.
  */
-public class UShort implements Attribute
-{
-  /**
-   *
-   */
-  public static final UShort ATTRIBUTE_AREA_NUMBER = new UShort(1);
-  /**
-   *
-   */
-  public static final UShort ATTRIBUTE_SERVICE_NUMBER = new UShort(0);
-  private int value;
+public class UShort implements Attribute {
 
-  /**
-   * A constant holding the maximum value a {@code UShort} can
-   * have, 2<sup>16</sup>-1.
-   */
-  public static final int MAX_VALUE = 65535;
+    /**
+     *
+     */
+    public static final UShort ATTRIBUTE_AREA_NUMBER = new UShort(1);
+    /**
+     *
+     */
+    public static final UShort ATTRIBUTE_SERVICE_NUMBER = new UShort(0);
+    private int value;
 
-  /**
-   * Default constructor.
-   */
-  public UShort()
-  {
-    value = 0;
-  }
+    /**
+     * A constant holding the maximum value a {@code UShort} can have,
+     * 2<sup>16</sup>-1.
+     */
+    public static final int MAX_VALUE = 65535;
 
-  /**
-   * Initialiser constructor.
-   *
-   * @param value Value to initialise with.
-   */
-  public UShort(final int value)
-  {
-    if (0 > value)
-    {
-      throw new IllegalArgumentException("UShort argument must not be negative");
+    /**
+     * Default constructor.
+     */
+    public UShort() {
+        value = 0;
     }
-    if (UShort.MAX_VALUE < value)
-    {
-      throw new IllegalArgumentException("UShort argument must not be greater than " + UShort.MAX_VALUE);
+
+    /**
+     * Initialiser constructor.
+     *
+     * @param value Value to initialise with.
+     */
+    public UShort(final int value) {
+        if (0 > value) {
+            throw new IllegalArgumentException("UShort argument must not be negative");
+        }
+        if (UShort.MAX_VALUE < value) {
+            throw new IllegalArgumentException("UShort argument must not be greater than " + UShort.MAX_VALUE);
+        }
+        this.value = value;
     }
-    this.value = value;
-  }
 
-  @Override
-  public Element createElement()
-  {
-    return new UShort();
-  }
+    @Override
+    public Element createElement() {
+        return new UShort();
+    }
 
-  /**
-   * Returns the value of this type.
-   *
-   * @return the value.
-   */
-  public int getValue()
-  {
-    return value;
-  }
+    /**
+     * Returns the value of this type.
+     *
+     * @return the value.
+     */
+    public int getValue() {
+        return value;
+    }
 
 //  This might be required for XML serialisation and technologies that use that.  
 //  public void setValue(int value)
 //  {
 //    this.value = value;
 //  }
-
-  @Override
-  public Long getShortForm()
-  {
-    return Attribute.USHORT_SHORT_FORM;
-  }
-
-  @Override
-  public Integer getTypeShortForm()
-  {
-    return Attribute.USHORT_TYPE_SHORT_FORM;
-  }
-
-  @Override
-  public UShort getAreaNumber()
-  {
-    return UShort.ATTRIBUTE_AREA_NUMBER;
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion()
-  {
-    return UOctet.AREA_VERSION;
-  }
-
-  @Override
-  public UShort getServiceNumber()
-  {
-    return UShort.ATTRIBUTE_SERVICE_NUMBER;
-  }
-
-  @Override
-  public void encode(final MALEncoder encoder) throws MALException
-  {
-    encoder.encodeUShort(this);
-  }
-
-  @Override
-  public Element decode(final MALDecoder decoder) throws MALException
-  {
-    return decoder.decodeUShort();
-  }
-
-  @Override
-  public boolean equals(final Object obj)
-  {
-    if (null == obj)
-    {
-      return false;
+    @Override
+    public Long getShortForm() {
+        return Attribute.USHORT_SHORT_FORM;
     }
-    if (this == obj)
-    {
-      return true;
-    }
-    if (!(obj instanceof UShort))
-    {
-      return false;
-    }
-    return this.value == (((UShort) obj).value);
-  }
 
-  @Override
-  public int hashCode()
-  {
-    return value;
-  }
+    @Override
+    public Integer getTypeShortForm() {
+        return Attribute.USHORT_TYPE_SHORT_FORM;
+    }
 
-  @Override
-  public String toString()
-  {
-    return String.valueOf(value);
-  }
-  private static final long serialVersionUID = Attribute.USHORT_SHORT_FORM;
+    @Override
+    public UShort getAreaNumber() {
+        return UShort.ATTRIBUTE_AREA_NUMBER;
+    }
+
+    @Override
+    public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion() {
+        return UOctet.AREA_VERSION;
+    }
+
+    @Override
+    public UShort getServiceNumber() {
+        return UShort.ATTRIBUTE_SERVICE_NUMBER;
+    }
+
+    @Override
+    public void encode(final MALEncoder encoder) throws MALException {
+        encoder.encodeUShort(this);
+    }
+
+    @Override
+    public Element decode(final MALDecoder decoder) throws MALException {
+        return decoder.decodeUShort();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (null == obj) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof UShort)) {
+            return false;
+        }
+        return this.value == (((UShort) obj).value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
+    private static final long serialVersionUID = Attribute.USHORT_SHORT_FORM;
 }

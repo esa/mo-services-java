@@ -49,194 +49,181 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 /**
  * An implementation of the transport interface for a file based protocol.
  */
-public class FileTransport extends GENTransport
-{
+public class FileTransport extends GENTransport {
 
-  /**
-   * Logger
-   */
-  public static final java.util.logging.Logger RLOGGER = Logger.getLogger(
-      "org.ccsds.moims.mo.mal.transport.file");
-  public static final String FILE_PREFIX = "CCSDS_FILE_TRANSPORT_";
-  private static final String QOS_I_MESSAGE_PROPERTY
-      = "ccsds.mal.transport.file.incoming.directory.property";
-  private static final String QOS_I_MESSAGE_DIRECTORY
-      = "ccsds.mal.transport.file.incoming.directory.name";
-  private static final String QOS_O_MESSAGE_PROPERTY
-      = "ccsds.mal.transport.file.outgoing.directory.property";
-  private static final String QOS_O_MESSAGE_DIRECTORY
-      = "ccsds.mal.transport.file.outgoing.directory.name";
-  private static final String QOS_DELETE_FILE = "ccsds.mal.transport.file.qos.delete";
-  private final boolean deleteFiles;
-  private final Thread asyncPollThread;
-  private final String transportString;
-  private final String filenameString;
-  private final WatchService watcher;
-  private final Path incomingDirectory;
-  private final Path outgoingDirectory;
-  private final FileTransceiver tc;
+    /**
+     * Logger
+     */
+    public static final java.util.logging.Logger RLOGGER 
+            = Logger.getLogger("org.ccsds.moims.mo.mal.transport.file");
+    public static final String FILE_PREFIX = "CCSDS_FILE_TRANSPORT_";
+    private static final String QOS_I_MESSAGE_PROPERTY
+            = "ccsds.mal.transport.file.incoming.directory.property";
+    private static final String QOS_I_MESSAGE_DIRECTORY
+            = "ccsds.mal.transport.file.incoming.directory.name";
+    private static final String QOS_O_MESSAGE_PROPERTY
+            = "ccsds.mal.transport.file.outgoing.directory.property";
+    private static final String QOS_O_MESSAGE_DIRECTORY
+            = "ccsds.mal.transport.file.outgoing.directory.name";
+    private static final String QOS_DELETE_FILE 
+            = "ccsds.mal.transport.file.qos.delete";
+    private final boolean deleteFiles;
+    private final Thread asyncPollThread;
+    private final String transportString;
+    private final String filenameString;
+    private final WatchService watcher;
+    private final Path incomingDirectory;
+    private final Path outgoingDirectory;
+    private final FileTransceiver tc;
 
-  /**
-   * Constructor.
-   *
-   * @param protocol   The protocol string.
-   * @param factory    The factory that created us.
-   * @param properties The QoS properties.
-   * @throws MALException On error.
-   */
-  public FileTransport(final String protocol,
-      final MALTransportFactory factory,
-      final java.util.Map properties) throws MALException
-  {
-    super(protocol, '-', false, false, factory, properties);
+    /**
+     * Constructor.
+     *
+     * @param protocol The protocol string.
+     * @param factory The factory that created us.
+     * @param properties The QoS properties.
+     * @throws MALException On error.
+     */
+    public FileTransport(final String protocol,
+            final MALTransportFactory factory,
+            final java.util.Map properties) throws MALException {
+        super(protocol, '-', false, false, factory, properties);
 
-    String incomingDirectoryName = System.getProperty("user.dir");
-    String outgoingDirectoryName = incomingDirectoryName;
-    boolean lDeleteFiles = true;
+        String incomingDirectoryName = System.getProperty("user.dir");
+        String outgoingDirectoryName = incomingDirectoryName;
+        boolean lDeleteFiles = true;
 
-    if (null != properties) {
-      if (properties.containsKey(QOS_DELETE_FILE)) {
-        RLOGGER.info("File transport set to NOT delete message files");
-        lDeleteFiles = false;
-      }
+        if (null != properties) {
+            if (properties.containsKey(QOS_DELETE_FILE)) {
+                RLOGGER.info("File transport set to NOT delete message files");
+                lDeleteFiles = false;
+            }
 
-      String lIncomingDirectoryName;
+            String lIncomingDirectoryName;
 
-      if (properties.containsKey(QOS_I_MESSAGE_PROPERTY) && null != properties.get(
-          QOS_I_MESSAGE_PROPERTY)) {
-        lIncomingDirectoryName = String.valueOf(properties.get(QOS_I_MESSAGE_PROPERTY));
-      } else {
-        lIncomingDirectoryName = String.valueOf(properties.get(QOS_I_MESSAGE_DIRECTORY));
-      }
+            if (properties.containsKey(QOS_I_MESSAGE_PROPERTY)
+                    && null != properties.get(QOS_I_MESSAGE_PROPERTY)) {
+                lIncomingDirectoryName = String.valueOf(properties.get(QOS_I_MESSAGE_PROPERTY));
+            } else {
+                lIncomingDirectoryName = String.valueOf(properties.get(QOS_I_MESSAGE_DIRECTORY));
+            }
 
-      if (null != lIncomingDirectoryName) {
-        incomingDirectoryName = lIncomingDirectoryName;
-      }
+            if (null != lIncomingDirectoryName) {
+                incomingDirectoryName = lIncomingDirectoryName;
+            }
 
-      String lOutgoingDirectoryName;
+            String lOutgoingDirectoryName;
 
-      if (properties.containsKey(QOS_O_MESSAGE_PROPERTY) && null != properties.get(
-          QOS_O_MESSAGE_PROPERTY)) {
-        lOutgoingDirectoryName = String.valueOf(properties.get(QOS_O_MESSAGE_PROPERTY));
-      } else {
-        lOutgoingDirectoryName = String.valueOf(properties.get(QOS_O_MESSAGE_DIRECTORY));
-      }
+            if (properties.containsKey(QOS_O_MESSAGE_PROPERTY)
+                    && null != properties.get(QOS_O_MESSAGE_PROPERTY)) {
+                lOutgoingDirectoryName = String.valueOf(properties.get(QOS_O_MESSAGE_PROPERTY));
+            } else {
+                lOutgoingDirectoryName = String.valueOf(properties.get(QOS_O_MESSAGE_DIRECTORY));
+            }
 
-      if (null != lOutgoingDirectoryName) {
-        outgoingDirectoryName = lOutgoingDirectoryName;
-      }
+            if (null != lOutgoingDirectoryName) {
+                outgoingDirectoryName = lOutgoingDirectoryName;
+            }
+        }
+
+        // set up the directory to watch for incoming and outgoing messages
+        incomingDirectory = Paths.get(incomingDirectoryName);
+        outgoingDirectory = Paths.get(outgoingDirectoryName);
+        deleteFiles = lDeleteFiles;
+
+        try {
+            watcher = FileSystems.getDefault().newWatchService();
+            System.out.println("Watching : " + incomingDirectoryName);
+
+            filenameString = ManagementFactory.getRuntimeMXBean().getName();
+            transportString = FILE_PREFIX + filenameString + "-";
+            incomingDirectory.register(watcher, java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY);
+            tc = new FileTransceiver(incomingDirectory, outgoingDirectory,
+                    watcher, transportString, filenameString, deleteFiles);
+
+            asyncPollThread = new GENMessagePoller<InputStream>(this, tc, tc,
+                    new GENIncomingStreamMessageDecoderFactory());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            throw new MALException("Error initialising TCP Server", ex);
+        }
+
+        // set up polling thread for new files appearing in the file directory
+        RLOGGER.log(Level.INFO, "Monitoring directory {0} for file prefix {1}",
+                new Object[]{incomingDirectoryName, transportString});
+        RLOGGER.log(Level.INFO, "Writing to directory {0} for outgoing messages",
+                new Object[]{outgoingDirectoryName});
     }
 
-    // set up the directory to watch for incoming and outgoing messages
-    incomingDirectory = Paths.get(incomingDirectoryName);
-    outgoingDirectory = Paths.get(outgoingDirectoryName);
-    deleteFiles = lDeleteFiles;
+    @Override
+    public void init() throws MALException {
+        super.init();
 
-    try {
-      watcher = FileSystems.getDefault().newWatchService();
-      System.out.println("Watching : " + incomingDirectoryName);
-
-      filenameString = ManagementFactory.getRuntimeMXBean().getName();
-      transportString = FILE_PREFIX + filenameString + "-";
-      incomingDirectory.register(watcher, java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY);
-      tc = new FileTransceiver(incomingDirectory, outgoingDirectory, watcher, transportString,
-          filenameString, deleteFiles);
-
-      asyncPollThread = new GENMessagePoller<InputStream>(this, tc, tc,
-          new GENIncomingStreamMessageDecoderFactory());
-    } catch (IOException ex) {
-      ex.printStackTrace();
-      throw new MALException("Error initialising TCP Server", ex);
+        asyncPollThread.start();
     }
 
-    // set up polling thread for new files appearing in the file directory
-    RLOGGER.log(Level.INFO, "Monitoring directory {0} for file prefix {1}", new Object[]{
-      incomingDirectoryName, transportString
-    });
-    RLOGGER.log(Level.INFO, "Writing to directory {0} for outgoing messages", new Object[]{
-      outgoingDirectoryName
-    });
-  }
+    @Override
+    protected String createTransportAddress() throws MALException {
+        return filenameString;
+    }
 
-  @Override
-  public void init() throws MALException
-  {
-    super.init();
+    @Override
+    protected GENEndpoint internalCreateEndpoint(String localName,
+            String routingName, Map qosProperties) throws MALException {
+        return new GENEndpoint(this, localName, routingName, uriBase + localName, false);
+    }
 
-    asyncPollThread.start();
-  }
+    @Override
+    public MALBrokerBinding createBroker(final String localName,
+            final Blob authenticationId,
+            final QoSLevel[] expectedQos,
+            final UInteger priorityLevelNumber,
+            final Map defaultQoSProperties) throws MALException {
+        // not support by File transport
+        return null;
+    }
 
-  @Override
-  protected String createTransportAddress() throws MALException
-  {
-    return filenameString;
-  }
+    @Override
+    public MALBrokerBinding createBroker(final MALEndpoint endpoint,
+            final Blob authenticationId,
+            final QoSLevel[] qosLevels,
+            final UInteger priorities,
+            final Map properties) throws MALException {
+        // not support by File transport
+        return null;
+    }
 
-  @Override
-  protected GENEndpoint internalCreateEndpoint(String localName, String routingName,
-      Map qosProperties) throws MALException
-  {
-    return new GENEndpoint(this, localName, routingName, uriBase + localName, false);
-  }
+    @Override
+    public boolean isSupportedInteractionType(final InteractionType type) {
+        // Supports all IPs except Pub Sub
+        return (InteractionType.PUBSUB.getOrdinal() != type.getOrdinal());
+    }
 
-  @Override
-  public MALBrokerBinding createBroker(final String localName,
-      final Blob authenticationId,
-      final QoSLevel[] expectedQos,
-      final UInteger priorityLevelNumber,
-      final Map defaultQoSProperties) throws MALException
-  {
-    // not support by File transport
-    return null;
-  }
+    @Override
+    public boolean isSupportedQoSLevel(final QoSLevel qos) {
+        // The transport only supports BESTEFFORT in reality but this is 
+        // only a test transport so we say it supports all
+        return QoSLevel.BESTEFFORT.equals(qos);
+    }
 
-  @Override
-  public MALBrokerBinding createBroker(final MALEndpoint endpoint,
-      final Blob authenticationId,
-      final QoSLevel[] qosLevels,
-      final UInteger priorities,
-      final Map properties) throws MALException
-  {
-    // not support by File transport
-    return null;
-  }
+    @Override
+    public void close() throws MALException {
+        asyncPollThread.interrupt();
+    }
 
-  @Override
-  public boolean isSupportedInteractionType(final InteractionType type)
-  {
-    // Supports all IPs except Pub Sub
-    return (InteractionType.PUBSUB.getOrdinal() != type.getOrdinal());
-  }
+    @Override
+    protected GENMessageSender createMessageSender(GENMessage msg,
+            String remoteRootURI) throws MALException, MALTransmitErrorException {
+        return tc;
+    }
 
-  @Override
-  public boolean isSupportedQoSLevel(final QoSLevel qos)
-  {
-    // The transport only supports BESTEFFORT in reality but this is only a test transport so we say it supports all
-    return QoSLevel.BESTEFFORT.equals(qos);
-  }
+    @Override
+    public GENMessage createMessage(InputStream ios) throws MALException {
+        return new FileBasedMessage(qosProperties, ios, getStreamFactory());
+    }
 
-  @Override
-  public void close() throws MALException
-  {
-    asyncPollThread.interrupt();
-  }
-
-  @Override
-  protected GENMessageSender createMessageSender(GENMessage msg, String remoteRootURI) throws
-      MALException, MALTransmitErrorException
-  {
-    return tc;
-  }
-
-  @Override
-  public GENMessage createMessage(InputStream ios) throws MALException
-  {
-    return new FileBasedMessage(qosProperties, ios, getStreamFactory());
-  }
-
-  @Override
-  public GENMessage createMessage(byte[] packet) throws MALException
-  {
-    return null;
-  }
+    @Override
+    public GENMessage createMessage(byte[] packet) throws MALException {
+        return null;
+    }
 }

@@ -27,16 +27,15 @@ import esa.mo.xsd.ServiceType;
 /**
  * Small class holding required publisher details.
  */
-public class RequiredPublisher
-{
-  public final AreaType area;
-  public final ServiceType service;
-  public final OperationSummary operation;
+public class RequiredPublisher {
 
-  public RequiredPublisher(AreaType area, ServiceType service, OperationSummary operation)
-  {
-    this.area = area;
-    this.service = service;
-    this.operation = operation;
-  }
+    public final AreaType area;
+    public final ServiceType service;
+    public final OperationSummary operation;
+
+    public RequiredPublisher(AreaType area, ServiceType service, OperationSummary operation) {
+        this.area = area;
+        this.service = service;
+        this.operation = operation;
+    }
 }

@@ -24,35 +24,37 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
- * The MALMessage interface gives a generic access to the transport specific messages.
+ * The MALMessage interface gives a generic access to the transport specific
+ * messages.
  */
-public interface MALMessage
-{
-  /**
-   * Returns the message header.
-   *
-   * @return The message header.
-   */
-  MALMessageHeader getHeader();
+public interface MALMessage {
 
-  /**
-   * Returns the message body.
-   *
-   * @return The message body.
-   */
-  MALMessageBody getBody();
+    /**
+     * Returns the message header.
+     *
+     * @return The message header.
+     */
+    MALMessageHeader getHeader();
 
-  /**
-   * Returns the message QoS properties.
-   *
-   * @return The message QoS properties.
-   */
-  Map getQoSProperties();
+    /**
+     * Returns the message body.
+     *
+     * @return The message body.
+     */
+    MALMessageBody getBody();
 
-  /**
-   * The method enables the transport to free resources owned by the MALMessage.
-   *
-   * @throws MALException If an internal error occurs
-   */
-  void free() throws MALException;
+    /**
+     * Returns the message QoS properties.
+     *
+     * @return The message QoS properties.
+     */
+    Map getQoSProperties();
+
+    /**
+     * The method enables the transport to free resources owned by the
+     * MALMessage.
+     *
+     * @throws MALException If an internal error occurs
+     */
+    void free() throws MALException;
 }

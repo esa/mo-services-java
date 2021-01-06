@@ -24,89 +24,82 @@ import java.util.Arrays;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 
 /**
- * The MALOperationStage class represents the element types used by an operation during a stage.
+ * The MALOperationStage class represents the element types used by an operation
+ * during a stage.
  */
-public class MALOperationStage
-{
-  private final UOctet number;
-  private final Object[] elementShortForms;
-  private final Object[] lastElementShortForms;
-  private MALOperation operation;
+public class MALOperationStage {
 
-  /**
-   * Constructs an operation stage using the supplied arguments.
-   *
-   * @param number Number of the interaction stage.
-   * @param elementShortForms Short forms of the body element types.
-   * @param lastElementShortForms Short forms of the types that can be used for the last element in case of
-   * polymorphism.
-   * @throws java.lang.IllegalArgumentException If any of the arguments are null.
-   */
-  public MALOperationStage(final UOctet number,
-          final Object[] elementShortForms,
-          final Object[] lastElementShortForms) throws java.lang.IllegalArgumentException
-  {
-    if (number == null)
-    {
-      throw new IllegalArgumentException("Number argument must not be NULL");
+    private final UOctet number;
+    private final Object[] elementShortForms;
+    private final Object[] lastElementShortForms;
+    private MALOperation operation;
+
+    /**
+     * Constructs an operation stage using the supplied arguments.
+     *
+     * @param number Number of the interaction stage.
+     * @param elementShortForms Short forms of the body element types.
+     * @param lastElementShortForms Short forms of the types that can be used
+     * for the last element in case of polymorphism.
+     * @throws java.lang.IllegalArgumentException If any of the arguments are
+     * null.
+     */
+    public MALOperationStage(final UOctet number,
+            final Object[] elementShortForms,
+            final Object[] lastElementShortForms) throws java.lang.IllegalArgumentException {
+        if (number == null) {
+            throw new IllegalArgumentException("Number argument must not be NULL");
+        }
+        if (elementShortForms == null) {
+            throw new IllegalArgumentException("Element short forms argument must not be NULL");
+        }
+        if (lastElementShortForms == null) {
+            throw new IllegalArgumentException("Last element short forms argument must not be NULL");
+        }
+        this.number = number;
+        this.elementShortForms = Arrays.copyOf(elementShortForms, elementShortForms.length);
+        this.lastElementShortForms = Arrays.copyOf(lastElementShortForms, lastElementShortForms.length);
     }
-    if (elementShortForms == null)
-    {
-      throw new IllegalArgumentException("Element short forms argument must not be NULL");
+
+    /**
+     * Returns the stage number.
+     *
+     * @return the stage number.
+     */
+    public UOctet getNumber() {
+        return number;
     }
-    if (lastElementShortForms == null)
-    {
-      throw new IllegalArgumentException("Last element short forms argument must not be NULL");
+
+    /**
+     * Returns the contained element short forms.
+     *
+     * @return The element short forms.
+     */
+    public Object[] getElementShortForms() {
+        // returns the internal reference for performance reasons
+        return elementShortForms;
     }
-    this.number = number;
-    this.elementShortForms = Arrays.copyOf(elementShortForms, elementShortForms.length);
-    this.lastElementShortForms = Arrays.copyOf(lastElementShortForms, lastElementShortForms.length);
-  }
 
-  /**
-   * Returns the stage number.
-   *
-   * @return the stage number.
-   */
-  public UOctet getNumber()
-  {
-    return number;
-  }
+    /**
+     * Returns the last element short forms.
+     *
+     * @return The last element short forms.
+     */
+    public Object[] getLastElementShortForms() {
+        // returns the internal reference for performance reasons
+        return lastElementShortForms;
+    }
 
-  /**
-   * Returns the contained element short forms.
-   *
-   * @return The element short forms.
-   */
-  public Object[] getElementShortForms()
-  {
-    // returns the internal reference for performance reasons
-    return elementShortForms;
-  }
+    /**
+     * Returns the associated operation object.
+     *
+     * @return The operation objects.
+     */
+    public MALOperation getOperation() {
+        return operation;
+    }
 
-  /**
-   * Returns the last element short forms.
-   *
-   * @return The last element short forms.
-   */
-  public Object[] getLastElementShortForms()
-  {
-    // returns the internal reference for performance reasons
-    return lastElementShortForms;
-  }
-
-  /**
-   * Returns the associated operation object.
-   *
-   * @return The operation objects.
-   */
-  public MALOperation getOperation()
-  {
-    return operation;
-  }
-
-  void setOperation(final MALOperation operation)
-  {
-    this.operation = operation;
-  }
+    void setOperation(final MALOperation operation) {
+        this.operation = operation;
+    }
 }

@@ -37,51 +37,46 @@ import org.ccsds.moims.mo.mal.MALException;
  * @param <I>
  */
 public class SPPMessageDecoderFactory<I> implements
-    GENIncomingMessageDecoderFactory<I, List<ByteBuffer>>
-{
-
-  @Override
-  public GENIncomingMessageDecoder createDecoder(GENTransport<I, List<ByteBuffer>> transport,
-      GENReceptionHandler receptionHandler, I messageSource)
-  {
-    return new SPPMessageDecoder((SPPBaseTransport<I>) transport, messageSource);
-  }
-
-  /**
-   * Implementation of the GENIncomingMessageDecoder class for newly arrived MAL Messages in
-   * SPPMessage format.
-   *
-   * @param <I>
-   */
-  public static final class SPPMessageDecoder<I> implements GENIncomingMessageDecoder
-  {
-
-    private final SPPBaseTransport<I> transport;
-    private final I rawMessage;
-
-    /**
-     * Constructor
-     *
-     * @param transport  Containing transport.
-     * @param rawMessage The raw message
-     */
-    public SPPMessageDecoder(SPPBaseTransport<I> transport, I rawMessage)
-    {
-      this.transport = transport;
-      this.rawMessage = rawMessage;
-    }
+        GENIncomingMessageDecoderFactory<I, List<ByteBuffer>> {
 
     @Override
-    public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException
-    {
-      GENTransport.PacketToString smsg = transport.new PacketToString(null);
-      GENMessage malMsg = transport.createMessage(rawMessage);
-
-      if (null != malMsg) {
-        return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
-      }
-
-      return null;
+    public GENIncomingMessageDecoder createDecoder(GENTransport<I, List<ByteBuffer>> transport,
+            GENReceptionHandler receptionHandler, I messageSource) {
+        return new SPPMessageDecoder((SPPBaseTransport<I>) transport, messageSource);
     }
-  }
+
+    /**
+     * Implementation of the GENIncomingMessageDecoder class for newly arrived
+     * MAL Messages in SPPMessage format.
+     *
+     * @param <I>
+     */
+    public static final class SPPMessageDecoder<I> implements GENIncomingMessageDecoder {
+
+        private final SPPBaseTransport<I> transport;
+        private final I rawMessage;
+
+        /**
+         * Constructor
+         *
+         * @param transport Containing transport.
+         * @param rawMessage The raw message
+         */
+        public SPPMessageDecoder(SPPBaseTransport<I> transport, I rawMessage) {
+            this.transport = transport;
+            this.rawMessage = rawMessage;
+        }
+
+        @Override
+        public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
+            GENTransport.PacketToString smsg = transport.new PacketToString(null);
+            GENMessage malMsg = transport.createMessage(rawMessage);
+
+            if (null != malMsg) {
+                return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
+            }
+
+            return null;
+        }
+    }
 }

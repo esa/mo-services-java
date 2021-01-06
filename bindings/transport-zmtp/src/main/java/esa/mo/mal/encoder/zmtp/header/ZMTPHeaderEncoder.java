@@ -32,121 +32,110 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 
-public class ZMTPHeaderEncoder extends FixedBinaryEncoder
-{
+public class ZMTPHeaderEncoder extends FixedBinaryEncoder {
 
-  /**
-   * ZMTP transport that created the encoder - used for MDK encoding.
-   */
-  protected ZMTPTransport transport;
+    /**
+     * ZMTP transport that created the encoder - used for MDK encoding.
+     */
+    protected ZMTPTransport transport;
 
-  /**
-   * Constructor.
-   *
-   * @param os          Output stream to write to
-   * @param transport   Parent transport
-   * @param timeHandler Implementation of the time encoding to use
-   */
-  public ZMTPHeaderEncoder(OutputStream os, ZMTPTransport transport, BinaryTimeHandler timeHandler)
-  {
-    super(os, timeHandler, false);
-    this.transport = transport;
-  }
-
-  /**
-   * Constructor for derived classes that have their own stream holder implementation that should be
-   * used.
-   *
-   * @param os          Output stream to write to.
-   * @param transport   Parent transport
-   * @param timeHandler Implementation of the time encoding to use
-   */
-  protected ZMTPHeaderEncoder(final StreamHolder os, ZMTPTransport transport,
-      BinaryTimeHandler timeHandler)
-  {
-    super(os, timeHandler);
-    this.transport = transport;
-  }
-
-  public void encodeVariableUInteger(UInteger value) throws MALException
-  {
-    try {
-      addVariableUnsignedInt(value.getValue());
-    } catch (IOException ex) {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    /**
+     * Constructor.
+     *
+     * @param os Output stream to write to
+     * @param transport Parent transport
+     * @param timeHandler Implementation of the time encoding to use
+     */
+    public ZMTPHeaderEncoder(OutputStream os, ZMTPTransport transport, BinaryTimeHandler timeHandler) {
+        super(os, timeHandler, false);
+        this.transport = transport;
     }
-  }
 
-  protected void addVariableSignedInt(final long value) throws IOException
-  {
-    addVariableUnsignedInt((value << 1) ^ (value >> 63));
-  }
-
-  protected void addVariableUnsignedInt(long value) throws IOException
-  {
-    while ((value & -128L) != 0L) {
-      outputStream.directAdd((byte) (((int) value & 127) | 128));
-      value >>>= 7;
+    /**
+     * Constructor for derived classes that have their own stream holder
+     * implementation that should be used.
+     *
+     * @param os Output stream to write to.
+     * @param transport Parent transport
+     * @param timeHandler Implementation of the time encoding to use
+     */
+    protected ZMTPHeaderEncoder(final StreamHolder os, ZMTPTransport transport,
+            BinaryTimeHandler timeHandler) {
+        super(os, timeHandler);
+        this.transport = transport;
     }
-    outputStream.directAdd((byte) ((int) value & 127));
-  }
 
-  @Override
-  public MALListEncoder createListEncoder(final java.util.List value) throws MALException
-  {
-    checkForNull(value);
-    try {
-      addVariableUnsignedInt(value.size());
-    } catch (IOException ex) {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    public void encodeVariableUInteger(UInteger value) throws MALException {
+        try {
+            addVariableUnsignedInt(value.getValue());
+        } catch (IOException ex) {
+            throw new MALException(ENCODING_EXCEPTION_STR, ex);
+        }
     }
-    return this;
-  }
 
-  @Override
-  public void encodeString(String value) throws MALException
-  {
-    checkForNull(value);
-    try {
-      int key = transport.stringMappingDirectory.getKey(value);
-      if (key == -1) {
-        byte[] stringBytes = value.getBytes(UTF8_CHARSET);
-        addVariableSignedInt(stringBytes.length);
-        outputStream.directAdd(stringBytes);
-      } else {
-        key = -key;
-        addVariableSignedInt(key);
-      }
-    } catch (IOException ex) {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    protected void addVariableSignedInt(final long value) throws IOException {
+        addVariableUnsignedInt((value << 1) ^ (value >> 63));
     }
-  }
 
-  @Override
-  public void encodeIdentifier(Identifier value) throws MALException
-  {
-    checkForNull(value);
-    encodeString(value.getValue());
-  }
-
-  @Override
-  public void encodeURI(URI value) throws MALException
-  {
-    checkForNull(value);
-    encodeString(value.getValue());
-  }
-
-  @Override
-  public void encodeBlob(Blob value) throws MALException
-  {
-    checkForNull(value);
-    try {
-      byte[] blobBytes = value.getValue();
-      addVariableUnsignedInt(blobBytes.length);
-      outputStream.directAdd(blobBytes);
-    } catch (IOException ex) {
-      throw new MALException(ENCODING_EXCEPTION_STR, ex);
+    protected void addVariableUnsignedInt(long value) throws IOException {
+        while ((value & -128L) != 0L) {
+            outputStream.directAdd((byte) (((int) value & 127) | 128));
+            value >>>= 7;
+        }
+        outputStream.directAdd((byte) ((int) value & 127));
     }
-  }
+
+    @Override
+    public MALListEncoder createListEncoder(final java.util.List value) throws MALException {
+        checkForNull(value);
+        try {
+            addVariableUnsignedInt(value.size());
+        } catch (IOException ex) {
+            throw new MALException(ENCODING_EXCEPTION_STR, ex);
+        }
+        return this;
+    }
+
+    @Override
+    public void encodeString(String value) throws MALException {
+        checkForNull(value);
+        try {
+            int key = transport.stringMappingDirectory.getKey(value);
+            if (key == -1) {
+                byte[] stringBytes = value.getBytes(UTF8_CHARSET);
+                addVariableSignedInt(stringBytes.length);
+                outputStream.directAdd(stringBytes);
+            } else {
+                key = -key;
+                addVariableSignedInt(key);
+            }
+        } catch (IOException ex) {
+            throw new MALException(ENCODING_EXCEPTION_STR, ex);
+        }
+    }
+
+    @Override
+    public void encodeIdentifier(Identifier value) throws MALException {
+        checkForNull(value);
+        encodeString(value.getValue());
+    }
+
+    @Override
+    public void encodeURI(URI value) throws MALException {
+        checkForNull(value);
+        encodeString(value.getValue());
+    }
+
+    @Override
+    public void encodeBlob(Blob value) throws MALException {
+        checkForNull(value);
+        try {
+            byte[] blobBytes = value.getValue();
+            addVariableUnsignedInt(blobBytes.length);
+            outputStream.directAdd(blobBytes);
+        } catch (IOException ex) {
+            throw new MALException(ENCODING_EXCEPTION_STR, ex);
+        }
+    }
 
 }

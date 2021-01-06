@@ -27,8 +27,6 @@ import esa.mo.mal.transport.gen.GENTransport;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoderFactory;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
-import esa.mo.mal.transport.tcpip.TCPIPPacketInfoHolder;
-import esa.mo.mal.transport.tcpip.TCPIPTransport;
 
 /**
  *
@@ -36,43 +34,37 @@ import esa.mo.mal.transport.tcpip.TCPIPTransport;
  * @param <O>
  *
  */
-public class TCPIPMessageDecoderFactory<O> implements
-    GENIncomingMessageDecoderFactory<TCPIPPacketInfoHolder, O>
-{
-
-  @Override
-  public GENIncomingMessageDecoder createDecoder(GENTransport transport,
-      GENReceptionHandler receptionHandler, TCPIPPacketInfoHolder packetInfo)
-  {
-    return new TCPIPMessageDecoder((TCPIPTransport) transport, packetInfo);
-  }
-
-  public static final class TCPIPMessageDecoder implements GENIncomingMessageDecoder
-  {
-
-    private final TCPIPTransport transport;
-    private TCPIPPacketInfoHolder packetInfo;
-
-    public TCPIPMessageDecoder(TCPIPTransport transport, TCPIPPacketInfoHolder packetInfo)
-    {
-      this.transport = transport;
-      this.packetInfo = packetInfo;
-    }
+public class TCPIPMessageDecoderFactory<O> implements GENIncomingMessageDecoderFactory<TCPIPPacketInfoHolder, O> {
 
     @Override
-    public GENIncomingMessageHolder decodeAndCreateMessage()
-        throws MALException
-    {
-      GENTransport.PacketToString smsg = transport.new PacketToString(null);
-      GENMessage msg = transport.createMessage(packetInfo);
-      packetInfo.setPacketData(null);
-
-      if (msg != null) {
-        return new GENIncomingMessageHolder(msg.getHeader().getTransactionId(), msg, smsg);
-      }
-
-      return null;
+    public GENIncomingMessageDecoder createDecoder(GENTransport transport,
+            GENReceptionHandler receptionHandler, TCPIPPacketInfoHolder packetInfo) {
+        return new TCPIPMessageDecoder((TCPIPTransport) transport, packetInfo);
     }
-  }
+
+    public static final class TCPIPMessageDecoder implements GENIncomingMessageDecoder {
+
+        private final TCPIPTransport transport;
+        private final TCPIPPacketInfoHolder packetInfo;
+
+        public TCPIPMessageDecoder(TCPIPTransport transport, TCPIPPacketInfoHolder packetInfo) {
+            this.transport = transport;
+            this.packetInfo = packetInfo;
+        }
+
+        @Override
+        public GENIncomingMessageHolder decodeAndCreateMessage()
+                throws MALException {
+            GENTransport.PacketToString smsg = transport.new PacketToString(null);
+            GENMessage msg = transport.createMessage(packetInfo);
+            packetInfo.setPacketData(null);
+
+            if (msg != null) {
+                return new GENIncomingMessageHolder(msg.getHeader().getTransactionId(), msg, smsg);
+            }
+
+            return null;
+        }
+    }
 
 }

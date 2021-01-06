@@ -23,16 +23,14 @@ package esa.mo.mal.encoder.string;
 /**
  * Implements the MALElementInputStream interface for String encodings.
  */
-public class StringElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream
-{
+public class StringElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream {
 
-  /**
-   * Constructor.
-   *
-   * @param is Input stream to read from.
-   */
-  public StringElementInputStream(final java.io.InputStream is)
-  {
-    super(new StringDecoder(is));
-  }
+    /**
+     * Constructor.
+     *
+     * @param is Input stream to read from.
+     */
+    public StringElementInputStream(final java.io.InputStream is) {
+        super(new StringDecoder(is));
+    }
 }

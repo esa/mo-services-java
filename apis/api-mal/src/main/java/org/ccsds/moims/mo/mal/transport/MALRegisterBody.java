@@ -24,15 +24,16 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 
 /**
- * The MALRegisterBody interface gives access to the body of the REGISTER message defined by the IP PUBLISH-SUBSCRIBE.
+ * The MALRegisterBody interface gives access to the body of the REGISTER
+ * message defined by the IP PUBLISH-SUBSCRIBE.
  */
-public interface MALRegisterBody extends MALMessageBody
-{
-  /**
-   * The method returns the Subscription from the REGISTER message.
-   *
-   * @return The decoded subscription.
-   * @throws MALException If an error occurs
-   */
-  Subscription getSubscription() throws MALException;
+public interface MALRegisterBody extends MALMessageBody {
+
+    /**
+     * The method returns the Subscription from the REGISTER message.
+     *
+     * @return The decoded subscription.
+     * @throws MALException If an error occurs
+     */
+    Subscription getSubscription() throws MALException;
 }

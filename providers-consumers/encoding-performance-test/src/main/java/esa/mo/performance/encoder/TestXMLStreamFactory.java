@@ -37,127 +37,99 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
 
+public class TestXMLStreamFactory extends MALElementStreamFactory {
 
-public class TestXMLStreamFactory extends MALElementStreamFactory
-{
-  @Override
-  protected void init(String protocol, Map properties) throws IllegalArgumentException, MALException
-  {
-  }
-
-  @Override
-  public MALElementInputStream createInputStream(InputStream is) throws IllegalArgumentException, MALException
-  {
-    return new TestXMLInputStream(is);
-  }
-
-  @Override
-  public MALElementOutputStream createOutputStream(OutputStream os) throws IllegalArgumentException, MALException
-  {
-    return new TestXMLOutputStream(os);
-  }
-
-  @Override
-  public MALElementInputStream createInputStream(byte[] bytes, int offset) throws IllegalArgumentException, MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
-  public Blob encode(Object[] elements, MALEncodingContext ctx) throws IllegalArgumentException, MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  protected static class TestXMLOutputStream implements MALElementOutputStream
-  {
-    private final OutputStream os;
-
-    public TestXMLOutputStream(OutputStream os)
-    {
-      this.os = os;
+    @Override
+    protected void init(String protocol, Map properties) throws IllegalArgumentException, MALException {
     }
 
     @Override
-    public void writeElement(Object o, MALEncodingContext ctx) throws IllegalArgumentException, MALException
-    {
-      try
-      {
-        String schemaURN = "http://www.ccsds.org/schema/PerfTestServiceSchema";
-        String schemaEle = "report";
-        JAXBContext jc = JAXBContext.newInstance(o.getClass().getPackage().getName());
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.marshal(new JAXBElement(new QName(schemaURN, schemaEle), o.getClass(), null, o), os);
-      }
-      catch (JAXBException ex)
-      {
-        throw new MALException("XML Encoding error", ex);
-      }
+    public MALElementInputStream createInputStream(InputStream is) throws IllegalArgumentException, MALException {
+        return new TestXMLInputStream(is);
     }
 
     @Override
-    public void flush() throws MALException
-    {
-      try
-      {
-        os.flush();
-      }
-      catch (IOException ex)
-      {
-        throw new MALException("XML Encoding error", ex);
-      }
+    public MALElementOutputStream createOutputStream(OutputStream os) throws IllegalArgumentException, MALException {
+        return new TestXMLOutputStream(os);
     }
 
     @Override
-    public void close() throws MALException
-    {
-      try
-      {
-        os.close();
-      }
-      catch (IOException ex)
-      {
-        throw new MALException("XML Encoding error", ex);
-      }
-    }
-  }
-
-  protected static class TestXMLInputStream implements MALElementInputStream
-  {
-    private final InputStream is;
-
-    public TestXMLInputStream(InputStream is)
-    {
-      this.is = is;
+    public MALElementInputStream createInputStream(byte[] bytes, int offset) throws IllegalArgumentException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Object readElement(Object element, MALEncodingContext ctx) throws IllegalArgumentException, MALException
-    {
-      try
-      {
-        JAXBContext jc = JAXBContext.newInstance(element.getClass().getPackage().getName());
-        Unmarshaller unmarshaller = jc.createUnmarshaller();
-        JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
-        return rootElement.getValue();
-      }
-      catch (JAXBException ex)
-      {
-        throw new MALException("XML Decoding error", ex);
-      }
+    public Blob encode(Object[] elements, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public void close() throws MALException
-    {
-      try
-      {
-        is.close();
-      }
-      catch (IOException ex)
-      {
-        throw new MALException("XML Encoding error", ex);
-      }
+    protected static class TestXMLOutputStream implements MALElementOutputStream {
+
+        private final OutputStream os;
+
+        public TestXMLOutputStream(OutputStream os) {
+            this.os = os;
+        }
+
+        @Override
+        public void writeElement(Object o, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+            try {
+                String schemaURN = "http://www.ccsds.org/schema/PerfTestServiceSchema";
+                String schemaEle = "report";
+                JAXBContext jc = JAXBContext.newInstance(o.getClass().getPackage().getName());
+                Marshaller marshaller = jc.createMarshaller();
+                marshaller.marshal(new JAXBElement(new QName(schemaURN, schemaEle), o.getClass(), null, o), os);
+            } catch (JAXBException ex) {
+                throw new MALException("XML Encoding error", ex);
+            }
+        }
+
+        @Override
+        public void flush() throws MALException {
+            try {
+                os.flush();
+            } catch (IOException ex) {
+                throw new MALException("XML Encoding error", ex);
+            }
+        }
+
+        @Override
+        public void close() throws MALException {
+            try {
+                os.close();
+            } catch (IOException ex) {
+                throw new MALException("XML Encoding error", ex);
+            }
+        }
     }
-  }
+
+    protected static class TestXMLInputStream implements MALElementInputStream {
+
+        private final InputStream is;
+
+        public TestXMLInputStream(InputStream is) {
+            this.is = is;
+        }
+
+        @Override
+        public Object readElement(Object element, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+            try {
+                JAXBContext jc = JAXBContext.newInstance(element.getClass().getPackage().getName());
+                Unmarshaller unmarshaller = jc.createUnmarshaller();
+                JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
+                return rootElement.getValue();
+            } catch (JAXBException ex) {
+                throw new MALException("XML Decoding error", ex);
+            }
+        }
+
+        @Override
+        public void close() throws MALException {
+            try {
+                is.close();
+            } catch (IOException ex) {
+                throw new MALException("XML Encoding error", ex);
+            }
+        }
+    }
 }

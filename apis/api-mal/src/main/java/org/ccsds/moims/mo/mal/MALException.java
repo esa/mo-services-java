@@ -21,34 +21,34 @@
 package org.ccsds.moims.mo.mal;
 
 /**
- * The MALException class provides a generic exception class for the MAL API to raise an error as an exception.
+ * The MALException class provides a generic exception class for the MAL API to
+ * raise an error as an exception.
  */
-public class MALException extends Exception
-{
-  /**
-   * Constructs a empty exception.
-   */
-  public MALException()
-  {
-    super();
-  }
+public class MALException extends Exception {
 
-  /**
-   * Constructs an exception with a string message.
-   * @param message The string message.
-   */
-  public MALException(final String message)
-  {
-    super(message);
-  }
+    /**
+     * Constructs a empty exception.
+     */
+    public MALException() {
+        super();
+    }
 
-  /**
-   * Constructs an exception with a message and a cause exception.
-   * @param message The string message.
-   * @param cause The exception that caused this exception to be raised.
-   */
-  public MALException(final String message, final Throwable cause)
-  {
-    super(message, cause);
-  }
+    /**
+     * Constructs an exception with a string message.
+     *
+     * @param message The string message.
+     */
+    public MALException(final String message) {
+        super(message);
+    }
+
+    /**
+     * Constructs an exception with a message and a cause exception.
+     *
+     * @param message The string message.
+     * @param cause The exception that caused this exception to be raised.
+     */
+    public MALException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 }

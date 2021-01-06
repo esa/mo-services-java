@@ -14,59 +14,59 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
   
-  <parent>
-    <groupId>int.esa.ccsds.mo</groupId>
-    <artifactId>POM</artifactId>
-    <version>8-SNAPSHOT</version>
-    <relativePath>../parent/pom.xml</relativePath>
-  </parent>
+    <parent>
+        <groupId>int.esa.ccsds.mo</groupId>
+        <artifactId>POM</artifactId>
+        <version>8-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
+    </parent>
   
-  <artifactId>REACTOR_STUBGEN</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>ESA MO Stub Generator Reactor</name>
+    <artifactId>REACTOR_STUBGEN</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>ESA MO Stub Generator Reactor</name>
   
-  <organization>
-    <name>ESA</name>
-    <url>http://www.esa.int</url>
-  </organization>
+    <organization>
+        <name>ESA</name>
+        <url>http://www.esa.int</url>
+    </organization>
   
-  <licenses>
-    <license>
-      <name>The European Space Agency Public License, Version 2.0</name>
-      <url>https://raw.github.com/esa/CCSDS_MO_StubGenerator/master/LICENCE.md</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+    <licenses>
+        <license>
+            <name>The European Space Agency Public License, Version 2.0</name>
+            <url>https://raw.github.com/esa/CCSDS_MO_StubGenerator/master/LICENCE.md</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-  <scm>
-    <connection>scm:git:git@github.com:esa/CCSDS_MO_StubGenerator.git</connection>
-    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_StubGenerator.git</developerConnection>
-    <url>https://github.com/esa/CCSDS_MO_StubGenerator</url>
-  </scm>
+    <scm>
+        <connection>scm:git:git@github.com:esa/CCSDS_MO_StubGenerator.git</connection>
+        <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_StubGenerator.git</developerConnection>
+        <url>https://github.com/esa/CCSDS_MO_StubGenerator</url>
+    </scm>
   
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/esa/CCSDS_MO_StubGenerator/issues</url>
-  </issueManagement>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/esa/CCSDS_MO_StubGenerator/issues</url>
+    </issueManagement>
   
-  <developers>
-    <developer>
-      <id>SamCooper</id>
-      <name>Sam Cooper</name>
-      <email>sam@brightascension.com</email>
-      <url>https://github.com/SamCooper</url>
-    </developer>
-  </developers>
+    <developers>
+        <developer>
+            <id>SamCooper</id>
+            <name>Sam Cooper</name>
+            <email>sam@brightascension.com</email>
+            <url>https://github.com/SamCooper</url>
+        </developer>
+    </developers>
 
-  <modules>
-    <module>xml-jaxb</module>
-    <module>generator-if</module>
-    <module>generator-lib</module>
-    <module>generator-java</module>
-    <module>generator-docs</module>
-    <module>plugin</module>
-  </modules>
+    <modules>
+        <module>xml-jaxb</module>
+        <module>generator-if</module>
+        <module>generator-lib</module>
+        <module>generator-java</module>
+        <module>generator-docs</module>
+        <module>plugin</module>
+    </modules>
 </project>

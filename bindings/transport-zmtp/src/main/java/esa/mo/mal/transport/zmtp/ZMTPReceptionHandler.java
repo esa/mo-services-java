@@ -29,57 +29,51 @@ import org.ccsds.moims.mo.mal.MALException;
  *
  * @author Dominik Marszk
  */
-public class ZMTPReceptionHandler implements GENReceptionHandler
-{
+public class ZMTPReceptionHandler implements GENReceptionHandler {
 
-  /**
-   * Reference to the parent transport.
-   */
-  private final ZMTPTransport transport;
+    /**
+     * Reference to the parent transport.
+     */
+    private final ZMTPTransport transport;
 
-  /**
-   * Associated channel source.
-   */
-  private ZMTPChannelSource sender;
+    /**
+     * Associated channel source.
+     */
+    private ZMTPChannelSource sender;
 
-  /**
-   * Remote root MAL URI.
-   */
-  private String remoteURI;
+    /**
+     * Remote root MAL URI.
+     */
+    private String remoteURI;
 
-  public ZMTPReceptionHandler(ZMTPTransport transport)
-  {
-    this.transport = transport;
-  }
-
-  public String getRemoteURI()
-  {
-    return remoteURI;
-  }
-
-  public void setRemoteURI(String newURI)
-  {
-    remoteURI = newURI;
-  }
-
-  public GENMessageSender getMessageSender()
-  {
-    // Message Sender is instantiated by transport for each URL when it is needed
-    if (sender == null) {
-      try {
-        sender = transport.createMessageSender(getRemoteURI());
-      } catch (MALException ex) {
-        ZMTPTransport.LOGGER.log(Level.SEVERE, null, ex);
-      }
+    public ZMTPReceptionHandler(ZMTPTransport transport) {
+        this.transport = transport;
     }
-    return sender;
-  }
 
-  public void close()
-  {
-    // If there's associated sender, close it
-    if (sender != null) {
-      sender.close();
+    public String getRemoteURI() {
+        return remoteURI;
     }
-  }
+
+    public void setRemoteURI(String newURI) {
+        remoteURI = newURI;
+    }
+
+    public GENMessageSender getMessageSender() {
+        // Message Sender is instantiated by transport for each URL when it is needed
+        if (sender == null) {
+            try {
+                sender = transport.createMessageSender(getRemoteURI());
+            } catch (MALException ex) {
+                ZMTPTransport.LOGGER.log(Level.SEVERE, null, ex);
+            }
+        }
+        return sender;
+    }
+
+    public void close() {
+        // If there's associated sender, close it
+        if (sender != null) {
+            sender.close();
+        }
+    }
 }

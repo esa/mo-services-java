@@ -25,6 +25,5 @@ package org.ccsds.moims.mo.mal.structures;
  *
  * @param <T> The type of the list, must extend Composite.
  */
-public interface CompositeList<T extends Composite> extends ElementList<T>
-{
+public interface CompositeList<T extends Composite> extends ElementList<T> {
 }

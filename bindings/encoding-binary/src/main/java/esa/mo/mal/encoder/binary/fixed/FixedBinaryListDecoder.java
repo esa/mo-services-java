@@ -29,50 +29,46 @@ import org.ccsds.moims.mo.mal.MALListDecoder;
  *
  * @author Dominik Marszk
  */
-public class FixedBinaryListDecoder extends FixedBinaryDecoder implements MALListDecoder
-{
+public class FixedBinaryListDecoder extends FixedBinaryDecoder implements MALListDecoder {
 
-  private final int listSize;
-  private final List list;
+    private final int listSize;
+    private final List list;
 
-  /**
-   * Constructor.
-   *
-   * @param list         List to decode into.
-   * @param sourceBuffer Buffer to reuse.
-   * @param timeHandler  Time handler to reuse.
-   * @throws MALException If cannot decode size of list.
-   */
-  public FixedBinaryListDecoder(final List list,
-      final BufferHolder sourceBuffer,
-      final BinaryTimeHandler timeHandler)
-      throws MALException
-  {
-    super(sourceBuffer, timeHandler);
+    /**
+     * Constructor.
+     *
+     * @param list List to decode into.
+     * @param sourceBuffer Buffer to reuse.
+     * @param timeHandler Time handler to reuse.
+     * @throws MALException If cannot decode size of list.
+     */
+    public FixedBinaryListDecoder(final List list,
+            final BufferHolder sourceBuffer,
+            final BinaryTimeHandler timeHandler)
+            throws MALException {
+        super(sourceBuffer, timeHandler);
 
-    this.list = list;
-    this.listSize = sourceBuffer.getUnsignedInt();
-  }
+        this.list = list;
+        this.listSize = sourceBuffer.getUnsignedInt();
+    }
 
-  /**
-   * MALListDecoder hasNext implementation.
-   *
-   * @return true if there is more list elements to decode
-   */
-  @Override
-  public boolean hasNext()
-  {
-    return list.size() < listSize;
-  }
+    /**
+     * MALListDecoder hasNext implementation.
+     *
+     * @return true if there is more list elements to decode
+     */
+    @Override
+    public boolean hasNext() {
+        return list.size() < listSize;
+    }
 
-  /**
-   * MALListDecoder size implementation.
-   *
-   * @return total numbers of list elements
-   */
-  @Override
-  public int size()
-  {
-    return listSize;
-  }
+    /**
+     * MALListDecoder size implementation.
+     *
+     * @return total numbers of list elements
+     */
+    @Override
+    public int size() {
+        return listSize;
+    }
 }

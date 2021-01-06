@@ -32,37 +32,34 @@ import org.ccsds.moims.mo.mal.MALListDecoder;
  * @author Rian van Gijlswijk
  *
  */
-public class TCPIPFixedBinaryListDecoder extends TCPIPFixedBinaryDecoder implements MALListDecoder
-{
+public class TCPIPFixedBinaryListDecoder extends TCPIPFixedBinaryDecoder implements MALListDecoder {
 
-  private final int size;
-  private final List list;
+    private final int size;
+    private final List list;
 
-  protected TCPIPFixedBinaryListDecoder(List list, final BufferHolder srcBuffer,
-      final BinaryTimeHandler timeHandler) throws MALException
-  {
-    super(srcBuffer, timeHandler);
-    this.list = list;
+    protected TCPIPFixedBinaryListDecoder(List list, final BufferHolder srcBuffer,
+            final BinaryTimeHandler timeHandler) throws MALException {
+        super(srcBuffer, timeHandler);
+        this.list = list;
 
-    // decode number of elements in list
-    this.size = (int) decodeUInteger().getValue();
-  }
+        // decode number of elements in list
+        this.size = (int) decodeUInteger().getValue();
+    }
 
-  /**
-   * Returns false once the list is filled with a number of elements equalling the expected size.
-   * The expected size is set at the beginning of the output stream. As soon as this occurs, all
-   * elements are read from the outputstream.
-   */
-  @Override
-  public boolean hasNext()
-  {
-    return list.size() < size;
-  }
+    /**
+     * Returns false once the list is filled with a number of elements equalling
+     * the expected size. The expected size is set at the beginning of the
+     * output stream. As soon as this occurs, all elements are read from the
+     * outputstream.
+     */
+    @Override
+    public boolean hasNext() {
+        return list.size() < size;
+    }
 
-  @Override
-  public int size()
-  {
-    return size;
-  }
+    @Override
+    public int size() {
+        return size;
+    }
 
 }

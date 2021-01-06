@@ -29,38 +29,36 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 /**
  * Instance of the transport factory for a TCP/IP transport.
  */
-public class TCPIPTransportFactoryImpl extends MALTransportFactory
-{
+public class TCPIPTransportFactoryImpl extends MALTransportFactory {
 
-  private static final Object MUTEX = new Object();
-  private TCPIPTransport transport = null;
+    private static final Object MUTEX = new Object();
+    private TCPIPTransport transport = null;
 
-  /**
-   * Service delimiter
-   */
-  public static final char SERVICE_DELIMITER = '/';
+    /**
+     * Service delimiter
+     */
+    public static final char SERVICE_DELIMITER = '/';
 
-  /**
-   * Constructor.
-   *
-   * @param protocol The protocol string.
-   */
-  public TCPIPTransportFactoryImpl(final String protocol)
-  {
-    super(protocol);
-  }
-
-  @Override
-  public MALTransport createTransport(final MALContext malContext, final Map properties) throws
-      MALException
-  {
-    synchronized (MUTEX) {
-      if (null == transport) {
-        transport = new TCPIPTransport(getProtocol(), SERVICE_DELIMITER, true, this, properties);
-        transport.init();
-      }
-
-      return transport;
+    /**
+     * Constructor.
+     *
+     * @param protocol The protocol string.
+     */
+    public TCPIPTransportFactoryImpl(final String protocol) {
+        super(protocol);
     }
-  }
+
+    @Override
+    public MALTransport createTransport(final MALContext malContext,
+            final Map properties) throws MALException {
+        synchronized (MUTEX) {
+            if (null == transport) {
+                transport = new TCPIPTransport(getProtocol(),
+                        SERVICE_DELIMITER, true, this, properties);
+                transport.init();
+            }
+
+            return transport;
+        }
+    }
 }

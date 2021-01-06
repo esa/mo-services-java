@@ -32,98 +32,94 @@ import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
 
 /**
- * Implements the MALElementStreamFactory interface for a binary encoding. It uses reflection to
- * allow child classes - e.g. Fixed, Variable and Split encodings stream factories, to implement the
- * necessary methods with minimal code, given that respective MAL Element I/O streams implement the
- * required constructors.
+ * Implements the MALElementStreamFactory interface for a binary encoding. It
+ * uses reflection to allow child classes - e.g. Fixed, Variable and Split
+ * encodings stream factories, to implement the necessary methods with minimal
+ * code, given that respective MAL Element I/O streams implement the required
+ * constructors.
  */
-public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory
-{
+public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory {
 
-  protected final Class inputStreamImpl;
-  protected final Class outputStreamImpl;
-  protected BinaryTimeHandler timeHandler;
+    protected final Class inputStreamImpl;
+    protected final Class outputStreamImpl;
+    protected BinaryTimeHandler timeHandler;
 
-  /**
-   * Constructor allowing child classes to reuse
-   *
-   * @param inputStreamImpl  The class of the input stream
-   * @param outputStreamImpl The class of the output stream
-   * @param timeHandler      The time handler to use.
-   */
-  protected BaseBinaryStreamFactory(final Class inputStreamImpl, final Class outputStreamImpl,
-      final BinaryTimeHandler timeHandler)
-  {
-    this.inputStreamImpl = inputStreamImpl;
-    this.outputStreamImpl = outputStreamImpl;
-    this.timeHandler = timeHandler;
-  }
-
-  @Override
-  protected void init(final String protocol, final Map properties) throws MALException
-  {
-    // nothing required here
-  }
-
-  @Override
-  public MALElementInputStream createInputStream(final byte[] bytes, final int offset) throws
-      java.lang.IllegalArgumentException, MALException
-  {
-    try {
-      return (MALElementInputStream) inputStreamImpl.getDeclaredConstructor(
-          byte[].class, int.class, BinaryTimeHandler.class).newInstance(bytes, offset, timeHandler);
-    } catch (NoSuchMethodException ex) {
-      throw new MALException(
-          "Error when creating input stream. Cannot find " + inputStreamImpl.getName() + "(byte[], int) constructor.",
-          ex);
-    } catch (Exception ex) {
-      throw new MALException("Error when creating input stream.", ex);
-    }
-  }
-
-  @Override
-  public MALElementInputStream createInputStream(final InputStream is) throws MALException
-  {
-    try {
-      return (MALElementInputStream) inputStreamImpl.getDeclaredConstructor(
-          InputStream.class, BinaryTimeHandler.class).newInstance(is, timeHandler);
-    } catch (NoSuchMethodException ex) {
-      throw new MALException(
-          "Error when creating input stream. Cannot find " + inputStreamImpl.getName() + "(InputStream) constructor.",
-          ex);
-    } catch (Exception ex) {
-      throw new MALException("Error when creating input stream.", ex);
-    }
-  }
-
-  @Override
-  public MALElementOutputStream createOutputStream(final OutputStream os) throws MALException
-  {
-    try {
-      return (MALElementOutputStream) outputStreamImpl.getDeclaredConstructor(
-          OutputStream.class, BinaryTimeHandler.class).newInstance(os, timeHandler);
-    } catch (NoSuchMethodException ex) {
-      throw new MALException(
-          "Error when creating output stream. Cannot find " + inputStreamImpl.getName() + "(OutputStream) constructor.",
-          ex);
-    } catch (Exception ex) {
-      throw new MALException("Error when creating output stream.", ex);
-    }
-  }
-
-  @Override
-  public Blob encode(final Object[] elements, final MALEncodingContext ctx) throws MALException
-  {
-    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-    final MALElementOutputStream os = createOutputStream(baos);
-
-    for (Object element : elements) {
-      os.writeElement(element, ctx);
+    /**
+     * Constructor allowing child classes to reuse
+     *
+     * @param inputStreamImpl The class of the input stream
+     * @param outputStreamImpl The class of the output stream
+     * @param timeHandler The time handler to use.
+     */
+    protected BaseBinaryStreamFactory(final Class inputStreamImpl, final Class outputStreamImpl,
+            final BinaryTimeHandler timeHandler) {
+        this.inputStreamImpl = inputStreamImpl;
+        this.outputStreamImpl = outputStreamImpl;
+        this.timeHandler = timeHandler;
     }
 
-    os.flush();
+    @Override
+    protected void init(final String protocol, final Map properties) throws MALException {
+        // nothing required here
+    }
 
-    return new Blob(baos.toByteArray());
-  }
+    @Override
+    public MALElementInputStream createInputStream(final byte[] bytes,
+            final int offset) throws java.lang.IllegalArgumentException, MALException {
+        try {
+            return (MALElementInputStream) inputStreamImpl
+                    .getDeclaredConstructor(byte[].class, int.class, BinaryTimeHandler.class)
+                    .newInstance(bytes, offset, timeHandler);
+        } catch (NoSuchMethodException ex) {
+            throw new MALException("Error when creating input stream. Cannot find "
+                    + inputStreamImpl.getName() + "(byte[], int) constructor.",
+                    ex);
+        } catch (Exception ex) {
+            throw new MALException("Error when creating input stream.", ex);
+        }
+    }
+
+    @Override
+    public MALElementInputStream createInputStream(final InputStream is) throws MALException {
+        try {
+            return (MALElementInputStream) inputStreamImpl.getDeclaredConstructor(
+                    InputStream.class, BinaryTimeHandler.class).newInstance(is, timeHandler);
+        } catch (NoSuchMethodException ex) {
+            throw new MALException("Error when creating input stream. Cannot find "
+                    + inputStreamImpl.getName() + "(InputStream) constructor.",
+                    ex);
+        } catch (Exception ex) {
+            throw new MALException("Error when creating input stream.", ex);
+        }
+    }
+
+    @Override
+    public MALElementOutputStream createOutputStream(final OutputStream os) throws MALException {
+        try {
+            return (MALElementOutputStream) outputStreamImpl
+                    .getDeclaredConstructor(OutputStream.class, BinaryTimeHandler.class)
+                    .newInstance(os, timeHandler);
+        } catch (NoSuchMethodException ex) {
+            throw new MALException(
+                    "Error when creating output stream. Cannot find "
+                    + inputStreamImpl.getName() + "(OutputStream) constructor.",
+                    ex);
+        } catch (Exception ex) {
+            throw new MALException("Error when creating output stream.", ex);
+        }
+    }
+
+    @Override
+    public Blob encode(final Object[] elements, final MALEncodingContext ctx) throws MALException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final MALElementOutputStream os = createOutputStream(baos);
+
+        for (Object element : elements) {
+            os.writeElement(element, ctx);
+        }
+
+        os.flush();
+
+        return new Blob(baos.toByteArray());
+    }
 }

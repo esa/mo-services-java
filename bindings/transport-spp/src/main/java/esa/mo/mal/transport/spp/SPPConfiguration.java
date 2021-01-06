@@ -33,208 +33,184 @@ import java.util.Map;
 /**
  * Small class that holds the encoding configuration for out going messages.
  */
-public class SPPConfiguration
-{
+public class SPPConfiguration {
 
-  private final boolean fixedBody;
-  private final int segmentSize;
-  private int flags = 0x0;
-  private boolean srcSubId;
-  private boolean dstSubId;
-  private boolean priority;
-  private boolean timestamp;
-  private boolean network;
-  private boolean session;
-  private boolean domain;
-  private boolean auth;
+    private final boolean fixedBody;
+    private final int segmentSize;
+    private int flags = 0x0;
+    private boolean srcSubId;
+    private boolean dstSubId;
+    private boolean priority;
+    private boolean timestamp;
+    private boolean network;
+    private boolean session;
+    private boolean domain;
+    private boolean auth;
 
-  public SPPConfiguration(boolean fixedBody,
-      int segmentSize,
-      boolean hasSrcSubId,
-      boolean hasDstSubId,
-      boolean hasPriority,
-      boolean hasTimestamp,
-      boolean hasNetwork,
-      boolean hasSession,
-      boolean hasDomain,
-      boolean hasAuth)
-  {
-    this.fixedBody = fixedBody;
-    this.segmentSize = segmentSize;
-    this.srcSubId = hasSrcSubId;
-    this.dstSubId = hasDstSubId;
-    this.priority = hasPriority;
-    this.timestamp = hasTimestamp;
-    this.network = hasNetwork;
-    this.session = hasSession;
-    this.domain = hasDomain;
-    this.auth = hasAuth;
+    public SPPConfiguration(boolean fixedBody,
+            int segmentSize,
+            boolean hasSrcSubId,
+            boolean hasDstSubId,
+            boolean hasPriority,
+            boolean hasTimestamp,
+            boolean hasNetwork,
+            boolean hasSession,
+            boolean hasDomain,
+            boolean hasAuth) {
+        this.fixedBody = fixedBody;
+        this.segmentSize = segmentSize;
+        this.srcSubId = hasSrcSubId;
+        this.dstSubId = hasDstSubId;
+        this.priority = hasPriority;
+        this.timestamp = hasTimestamp;
+        this.network = hasNetwork;
+        this.session = hasSession;
+        this.domain = hasDomain;
+        this.auth = hasAuth;
 
-    updateFlags();
-  }
-
-  public SPPConfiguration(SPPConfiguration other, final Map properties)
-  {
-    fixedBody = getBooleanProperty(properties, ENCODE_BODY_FIXED, other.fixedBody);
-
-    int sms = other.segmentSize;
-    if ((null != properties) && properties.containsKey(SEGMENT_MAX_SIZE_PROPERTY)) {
-      sms = Integer.parseInt(properties.get(SEGMENT_MAX_SIZE_PROPERTY).toString());
+        updateFlags();
     }
 
-    segmentSize = sms;
-    srcSubId = other.srcSubId;
-    dstSubId = other.dstSubId;
-    priority = getBooleanProperty(properties, PRIORITY_FLAG, other.priority);
-    timestamp = getBooleanProperty(properties, TIMESTAMP_FLAG, other.timestamp);
-    network = getBooleanProperty(properties, NETWORK_ZONE_FLAG, other.network);
-    session = getBooleanProperty(properties, SESSION_NAME_FLAG, other.session);
-    domain = getBooleanProperty(properties, DOMAIN_FLAG, other.domain);
-    auth = getBooleanProperty(properties, AUTHENTICATION_ID_FLAG, other.auth);
-    updateFlags();
-  }
+    public SPPConfiguration(SPPConfiguration other, final Map properties) {
+        fixedBody = getBooleanProperty(properties, ENCODE_BODY_FIXED, other.fixedBody);
 
-  private boolean getBooleanProperty(final Map properties, final String propertyName,
-      boolean existingValue)
-  {
-    if ((null != properties) && properties.containsKey(propertyName)) {
-      return Boolean.parseBoolean(properties.get(propertyName).toString());
+        int sms = other.segmentSize;
+        if ((null != properties) && properties.containsKey(SEGMENT_MAX_SIZE_PROPERTY)) {
+            sms = Integer.parseInt(properties.get(SEGMENT_MAX_SIZE_PROPERTY).toString());
+        }
+
+        segmentSize = sms;
+        srcSubId = other.srcSubId;
+        dstSubId = other.dstSubId;
+        priority = getBooleanProperty(properties, PRIORITY_FLAG, other.priority);
+        timestamp = getBooleanProperty(properties, TIMESTAMP_FLAG, other.timestamp);
+        network = getBooleanProperty(properties, NETWORK_ZONE_FLAG, other.network);
+        session = getBooleanProperty(properties, SESSION_NAME_FLAG, other.session);
+        domain = getBooleanProperty(properties, DOMAIN_FLAG, other.domain);
+        auth = getBooleanProperty(properties, AUTHENTICATION_ID_FLAG, other.auth);
+        updateFlags();
     }
 
-    return existingValue;
+    private boolean getBooleanProperty(final Map properties, final String propertyName,
+            boolean existingValue) {
+        if ((null != properties) && properties.containsKey(propertyName)) {
+            return Boolean.parseBoolean(properties.get(propertyName).toString());
+        }
 
-  }
+        return existingValue;
 
-  public int getFlags(boolean hasFromSubId, boolean hasToSubId)
-  {
-    if ((hasFromSubId == srcSubId) && (hasToSubId == dstSubId)) {
-      return flags;
     }
 
-    return calculateFlags(hasFromSubId, hasToSubId, priority, timestamp, network, session, domain,
-        auth);
-  }
+    public int getFlags(boolean hasFromSubId, boolean hasToSubId) {
+        if ((hasFromSubId == srcSubId) && (hasToSubId == dstSubId)) {
+            return flags;
+        }
 
-  public boolean isFixedBody()
-  {
-    return fixedBody;
-  }
+        return calculateFlags(hasFromSubId, hasToSubId, priority, timestamp, 
+                network, session, domain, auth);
+    }
 
-  public int getSegmentSize()
-  {
-    return segmentSize;
-  }
+    public boolean isFixedBody() {
+        return fixedBody;
+    }
 
-  public boolean isSrcSubId()
-  {
-    return srcSubId;
-  }
+    public int getSegmentSize() {
+        return segmentSize;
+    }
 
-  public boolean isDstSubId()
-  {
-    return dstSubId;
-  }
+    public boolean isSrcSubId() {
+        return srcSubId;
+    }
 
-  public boolean isPriority()
-  {
-    return priority;
-  }
+    public boolean isDstSubId() {
+        return dstSubId;
+    }
 
-  public boolean isTimestamp()
-  {
-    return timestamp;
-  }
+    public boolean isPriority() {
+        return priority;
+    }
 
-  public boolean isNetwork()
-  {
-    return network;
-  }
+    public boolean isTimestamp() {
+        return timestamp;
+    }
 
-  public boolean isSession()
-  {
-    return session;
-  }
+    public boolean isNetwork() {
+        return network;
+    }
 
-  public boolean isDomain()
-  {
-    return domain;
-  }
+    public boolean isSession() {
+        return session;
+    }
 
-  public boolean isAuth()
-  {
-    return auth;
-  }
+    public boolean isDomain() {
+        return domain;
+    }
 
-  public void setSrcSubId(boolean srcSubId)
-  {
-    this.srcSubId = srcSubId;
-    updateFlags();
-  }
+    public boolean isAuth() {
+        return auth;
+    }
 
-  public void setDstSubId(boolean dstSubId)
-  {
-    this.dstSubId = dstSubId;
-    updateFlags();
-  }
+    public void setSrcSubId(boolean srcSubId) {
+        this.srcSubId = srcSubId;
+        updateFlags();
+    }
 
-  public void setPriority(boolean priority)
-  {
-    this.priority = priority;
-    updateFlags();
-  }
+    public void setDstSubId(boolean dstSubId) {
+        this.dstSubId = dstSubId;
+        updateFlags();
+    }
 
-  public void setTimestamp(boolean timestamp)
-  {
-    this.timestamp = timestamp;
-    updateFlags();
-  }
+    public void setPriority(boolean priority) {
+        this.priority = priority;
+        updateFlags();
+    }
 
-  public void setNetwork(boolean network)
-  {
-    this.network = network;
-    updateFlags();
-  }
+    public void setTimestamp(boolean timestamp) {
+        this.timestamp = timestamp;
+        updateFlags();
+    }
 
-  public void setSession(boolean session)
-  {
-    this.session = session;
-    updateFlags();
-  }
+    public void setNetwork(boolean network) {
+        this.network = network;
+        updateFlags();
+    }
 
-  public void setDomain(boolean domain)
-  {
-    this.domain = domain;
-    updateFlags();
-  }
+    public void setSession(boolean session) {
+        this.session = session;
+        updateFlags();
+    }
 
-  public void setAuth(boolean auth)
-  {
-    this.auth = auth;
-    updateFlags();
-  }
+    public void setDomain(boolean domain) {
+        this.domain = domain;
+        updateFlags();
+    }
 
-  private void updateFlags()
-  {
-    flags = calculateFlags(srcSubId, dstSubId, priority, timestamp, network, session, domain, auth);
-  }
+    public void setAuth(boolean auth) {
+        this.auth = auth;
+        updateFlags();
+    }
 
-  private static int calculateFlags(boolean srcSubId,
-      boolean dstSubId,
-      boolean priority,
-      boolean timestamp,
-      boolean network,
-      boolean session,
-      boolean domain,
-      boolean auth)
-  {
-    int flags = 0;
-    flags = srcSubId ? (flags | 0x80) : flags;
-    flags = dstSubId ? (flags | 0x40) : flags;
-    flags = priority ? (flags | 0x20) : flags;
-    flags = timestamp ? (flags | 0x10) : flags;
-    flags = network ? (flags | 0x08) : flags;
-    flags = session ? (flags | 0x04) : flags;
-    flags = domain ? (flags | 0x02) : flags;
-    return auth ? (flags | 0x01) : flags;
-  }
+    private void updateFlags() {
+        flags = calculateFlags(srcSubId, dstSubId, priority, timestamp, 
+                network, session, domain, auth);
+    }
+
+    private static int calculateFlags(boolean srcSubId,
+            boolean dstSubId,
+            boolean priority,
+            boolean timestamp,
+            boolean network,
+            boolean session,
+            boolean domain,
+            boolean auth) {
+        int flags = 0;
+        flags = srcSubId ? (flags | 0x80) : flags;
+        flags = dstSubId ? (flags | 0x40) : flags;
+        flags = priority ? (flags | 0x20) : flags;
+        flags = timestamp ? (flags | 0x10) : flags;
+        flags = network ? (flags | 0x08) : flags;
+        flags = session ? (flags | 0x04) : flags;
+        flags = domain ? (flags | 0x02) : flags;
+        return auth ? (flags | 0x01) : flags;
+    }
 }

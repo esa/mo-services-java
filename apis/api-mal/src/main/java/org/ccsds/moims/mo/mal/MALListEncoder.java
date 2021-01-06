@@ -20,14 +20,13 @@
  */
 package org.ccsds.moims.mo.mal;
 
-
 /**
  * Encoder for encoding lists.
  */
-public interface MALListEncoder extends MALEncoder
-{
-  /**
-   * Signals that the list has finished.
-   */
-  void close();
+public interface MALListEncoder extends MALEncoder {
+
+    /**
+     * Signals that the list has finished.
+     */
+    void close();
 }

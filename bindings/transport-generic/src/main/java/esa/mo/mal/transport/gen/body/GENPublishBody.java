@@ -33,132 +33,125 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 /**
  * Implementation of the MALPublishBody interface.
  */
-public class GENPublishBody extends GENMessageBody implements MALPublishBody
-{
+public class GENPublishBody extends GENMessageBody implements MALPublishBody {
 
-  private static final long serialVersionUID = 222222222222227L;
-  private final int offset;
-  private UpdateHeaderList hdrList = null;
+    private static final long serialVersionUID = 222222222222227L;
+    private final int offset;
+    private UpdateHeaderList hdrList = null;
 
-  /**
-   * Constructor.
-   *
-   * @param ctx          The encoding context to use.
-   * @param encFactory   The encoder stream factory to use.
-   * @param messageParts The message parts that compose the body.
-   */
-  public GENPublishBody(final MALEncodingContext ctx,
-      final MALElementStreamFactory encFactory,
-      final Object[] messageParts)
-  {
-    super(ctx, encFactory, messageParts);
-    offset = 0;
-  }
-
-  /**
-   * Constructor.
-   *
-   * @param ctx          The encoding context to use.
-   * @param encFactory   The encoder stream factory to use.
-   * @param messageParts The message parts that compose the body.
-   * @param offset       The offset in the message parts where the updates start.
-   */
-  public GENPublishBody(final MALEncodingContext ctx,
-      final MALElementStreamFactory encFactory,
-      final Object[] messageParts, final int offset)
-  {
-    super(ctx, encFactory, messageParts);
-    this.offset = offset;
-  }
-
-  /**
-   * Constructor.
-   *
-   * @param ctx              The encoding context to use.
-   * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
-   * @param encFactory       The encoder stream factory to use.
-   * @param encBodyElements  The input stream that holds the encoded body parts.
-   */
-  public GENPublishBody(final MALEncodingContext ctx,
-      final boolean wrappedBodyParts,
-      final MALElementStreamFactory encFactory,
-      final ByteArrayInputStream encBodyBytes,
-      final MALElementInputStream encBodyElements)
-  {
-    super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
-    offset = 0;
-  }
-
-  /**
-   * Constructor.
-   *
-   * @param ctx              The encoding context to use.
-   * @param wrappedBodyParts True if the encoded body parts are wrapped in BLOBs.
-   * @param encFactory       The encoder stream factory to use.
-   * @param encBodyElements  The input stream that holds the encoded body parts.
-   * @param offset           The offset in the message parts where the updates start.
-   */
-  public GENPublishBody(final MALEncodingContext ctx,
-      final boolean wrappedBodyParts,
-      final MALElementStreamFactory encFactory,
-      final ByteArrayInputStream encBodyBytes,
-      final MALElementInputStream encBodyElements,
-      final int offset)
-  {
-    super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
-    this.offset = offset;
-  }
-
-  @Override
-  public int getUpdateCount() throws MALException
-  {
-    if (null == hdrList) {
-      getUpdateHeaderList();
+    /**
+     * Constructor.
+     *
+     * @param ctx The encoding context to use.
+     * @param encFactory The encoder stream factory to use.
+     * @param messageParts The message parts that compose the body.
+     */
+    public GENPublishBody(final MALEncodingContext ctx,
+            final MALElementStreamFactory encFactory,
+            final Object[] messageParts) {
+        super(ctx, encFactory, messageParts);
+        offset = 0;
     }
 
-    return hdrList.size();
-  }
-
-  @Override
-  public UpdateHeaderList getUpdateHeaderList() throws MALException
-  {
-    hdrList = (UpdateHeaderList) getBodyElement(offset, new UpdateHeaderList());
-    return hdrList;
-  }
-
-  @Override
-  public List getUpdateList(final int listIndex, final List updateList) throws MALException
-  {
-    return (List) getBodyElement(offset + listIndex + 1, updateList);
-  }
-
-  @Override
-  public List[] getUpdateLists(final List... updateLists) throws MALException
-  {
-    decodeMessageBody();
-
-    final List[] rv = new List[messageParts.length - offset - 1];
-
-    for (int i = 0; i < rv.length; i++) {
-      rv[i] = (List) messageParts[i + offset + 1];
+    /**
+     * Constructor.
+     *
+     * @param ctx The encoding context to use.
+     * @param encFactory The encoder stream factory to use.
+     * @param messageParts The message parts that compose the body.
+     * @param offset The offset in the message parts where the updates start.
+     */
+    public GENPublishBody(final MALEncodingContext ctx,
+            final MALElementStreamFactory encFactory,
+            final Object[] messageParts, final int offset) {
+        super(ctx, encFactory, messageParts);
+        this.offset = offset;
     }
 
-    return rv;
-  }
+    /**
+     * Constructor.
+     *
+     * @param ctx The encoding context to use.
+     * @param wrappedBodyParts True if the encoded body parts are wrapped in
+     * BLOBs.
+     * @param encFactory The encoder stream factory to use.
+     * @param encBodyElements The input stream that holds the encoded body
+     * parts.
+     */
+    public GENPublishBody(final MALEncodingContext ctx,
+            final boolean wrappedBodyParts,
+            final MALElementStreamFactory encFactory,
+            final ByteArrayInputStream encBodyBytes,
+            final MALElementInputStream encBodyElements) {
+        super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
+        offset = 0;
+    }
 
-  @Override
-  public Object getUpdate(final int listIndex, final int updateIndex) throws MALException
-  {
-    decodeMessageBody();
+    /**
+     * Constructor.
+     *
+     * @param ctx The encoding context to use.
+     * @param wrappedBodyParts True if the encoded body parts are wrapped in
+     * BLOBs.
+     * @param encFactory The encoder stream factory to use.
+     * @param encBodyElements The input stream that holds the encoded body
+     * parts.
+     * @param offset The offset in the message parts where the updates start.
+     */
+    public GENPublishBody(final MALEncodingContext ctx,
+            final boolean wrappedBodyParts,
+            final MALElementStreamFactory encFactory,
+            final ByteArrayInputStream encBodyBytes,
+            final MALElementInputStream encBodyElements,
+            final int offset) {
+        super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
+        this.offset = offset;
+    }
 
-    return ((List) (messageParts[offset + 1 + listIndex])).get(updateIndex);
-  }
+    @Override
+    public int getUpdateCount() throws MALException {
+        if (null == hdrList) {
+            getUpdateHeaderList();
+        }
 
-  @Override
-  public MALEncodedElement getEncodedUpdate(final int listIndex, final int updateIndex) throws
-      MALException
-  {
-    //ToDo
-    throw new MALException("Not supported yet.");
-  }
+        return hdrList.size();
+    }
+
+    @Override
+    public UpdateHeaderList getUpdateHeaderList() throws MALException {
+        hdrList = (UpdateHeaderList) getBodyElement(offset, new UpdateHeaderList());
+        return hdrList;
+    }
+
+    @Override
+    public List getUpdateList(final int listIndex, final List updateList) throws MALException {
+        return (List) getBodyElement(offset + listIndex + 1, updateList);
+    }
+
+    @Override
+    public List[] getUpdateLists(final List... updateLists) throws MALException {
+        decodeMessageBody();
+
+        final List[] rv = new List[messageParts.length - offset - 1];
+
+        for (int i = 0; i < rv.length; i++) {
+            rv[i] = (List) messageParts[i + offset + 1];
+        }
+
+        return rv;
+    }
+
+    @Override
+    public Object getUpdate(final int listIndex, final int updateIndex) throws MALException {
+        decodeMessageBody();
+
+        return ((List) (messageParts[offset + 1 + listIndex])).get(updateIndex);
+    }
+
+    @Override
+    public MALEncodedElement getEncodedUpdate(final int listIndex, 
+            final int updateIndex) throws MALException {
+        //ToDo
+        throw new MALException("Not supported yet.");
+    }
 }

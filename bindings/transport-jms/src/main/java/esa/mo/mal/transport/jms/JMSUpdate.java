@@ -27,54 +27,46 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 /**
  *
  */
-public class JMSUpdate
-{
+public class JMSUpdate {
 
-  private final IdentifierList domain;
-  private final Identifier network;
-  private final UShort serviceArea;
-  private final UShort service;
-  private final UShort operation;
-  private final byte[] dat;
+    private final IdentifierList domain;
+    private final Identifier network;
+    private final UShort serviceArea;
+    private final UShort service;
+    private final UShort operation;
+    private final byte[] dat;
 
-  public JMSUpdate(IdentifierList domain, Identifier network, UShort serviceArea, UShort service,
-      UShort operation, byte[] dat)
-  {
-    this.domain = domain;
-    this.network = network;
-    this.serviceArea = serviceArea;
-    this.service = service;
-    this.operation = operation;
-    this.dat = dat;
-  }
+    public JMSUpdate(IdentifierList domain, Identifier network,
+            UShort serviceArea, UShort service, UShort operation, byte[] dat) {
+        this.domain = domain;
+        this.network = network;
+        this.serviceArea = serviceArea;
+        this.service = service;
+        this.operation = operation;
+        this.dat = dat;
+    }
 
-  public IdentifierList getDomain()
-  {
-    return domain;
-  }
+    public IdentifierList getDomain() {
+        return domain;
+    }
 
-  public Identifier getNetwork()
-  {
-    return network;
-  }
+    public Identifier getNetwork() {
+        return network;
+    }
 
-  public UShort getOperation()
-  {
-    return operation;
-  }
+    public UShort getOperation() {
+        return operation;
+    }
 
-  public UShort getService()
-  {
-    return service;
-  }
+    public UShort getService() {
+        return service;
+    }
 
-  public UShort getServiceArea()
-  {
-    return serviceArea;
-  }
+    public UShort getServiceArea() {
+        return serviceArea;
+    }
 
-  public byte[] getDat()
-  {
-    return dat;
-  }
+    public byte[] getDat() {
+        return dat;
+    }
 }

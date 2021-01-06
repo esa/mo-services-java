@@ -38,162 +38,142 @@ import org.ccsds.moims.mo.mal.MALListDecoder;
  * @author Rian van Gijlswijk
  *
  */
-public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder
-{
+public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
 
-  protected TCPIPFixedBinaryDecoder(java.io.InputStream is,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(new TCPIPBufferHolder(is, null, 0, 0), timeHandler);
-  }
-
-  public TCPIPFixedBinaryDecoder(byte[] buf, int offset,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(new TCPIPBufferHolder(null, buf, offset, 0), timeHandler);
-  }
-
-  public TCPIPFixedBinaryDecoder(final BufferHolder srcBuffer,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(srcBuffer, timeHandler);
-  }
-
-  @Override
-  public MALListDecoder createListDecoder(final List list) throws MALException
-  {
-    return new TCPIPFixedBinaryListDecoder(list, sourceBuffer, timeHandler);
-  }
-
-  @Override
-  public String decodeString() throws MALException
-  {
-    return sourceBuffer.getString();
-  }
-
-  public Long decodeMALLong() throws MALException
-  {
-    return sourceBuffer.getSignedLong();
-  }
-
-  public UInteger decodeUInteger() throws MALException
-  {
-    return new UInteger(((TCPIPBufferHolder) sourceBuffer).getUnsignedIntValue());
-  }
-
-  @Override
-  public Identifier decodeNullableIdentifier() throws MALException
-  {
-    // decode presence flag
-    boolean isNotNull = decodeBoolean();
-
-    // decode one element, or add null if presence flag indicates no element
-    if (isNotNull) {
-      return decodeIdentifier();
+    protected TCPIPFixedBinaryDecoder(java.io.InputStream is,
+            final BinaryTimeHandler timeHandler) {
+        super(new TCPIPBufferHolder(is, null, 0, 0), timeHandler);
     }
 
-    return null;
-  }
-
-  @Override
-  public Integer decodeInteger() throws MALException
-  {
-    return ((TCPIPBufferHolder) sourceBuffer).get32();
-  }
-
-  @Override
-  public Blob decodeBlob() throws MALException
-  {
-    int sz = (int) decodeUInteger().getValue();
-
-    if (sz == 0) {
-      return null;
+    public TCPIPFixedBinaryDecoder(byte[] buf, int offset,
+            final BinaryTimeHandler timeHandler) {
+        super(new TCPIPBufferHolder(null, buf, offset, 0), timeHandler);
     }
 
-    return new Blob(sourceBuffer.directGetBytes(sz));
-  }
-
-  public int getBufferOffset()
-  {
-    return ((TCPIPBufferHolder) this.sourceBuffer).getOffset();
-  }
-
-  public BufferHolder getBuffer()
-  {
-    return this.sourceBuffer;
-  }
-
-  /**
-   * Internal class that implements the fixed length field decoding.
-   */
-  protected static class TCPIPBufferHolder extends FixedBinaryBufferHolder
-  {
-
-    public TCPIPBufferHolder(InputStream is, byte[] buf, int offset, int length)
-    {
-      super(is, buf, offset, length, false);
+    public TCPIPFixedBinaryDecoder(final BufferHolder srcBuffer,
+            final BinaryTimeHandler timeHandler) {
+        super(srcBuffer, timeHandler);
     }
 
     @Override
-    public String getString() throws MALException
-    {
-      final long len = getUnsignedInt();
+    public MALListDecoder createListDecoder(final List list) throws MALException {
+        return new TCPIPFixedBinaryListDecoder(list, sourceBuffer, timeHandler);
+    }
 
-      if (len > Integer.MAX_VALUE) {
-        throw new MALException("Value is too big to decode! "
-            + "Please provide a string with a length lower than INT_MAX");
-      }
+    @Override
+    public String decodeString() throws MALException {
+        return sourceBuffer.getString();
+    }
 
-      if (len >= 0) {
-        buf.checkBuffer((int) len);
+    public Long decodeMALLong() throws MALException {
+        return sourceBuffer.getSignedLong();
+    }
 
-        final String s = new String(buf.getBuf(), buf.getOffset(), (int) len, UTF8_CHARSET);
-        buf.shiftOffsetAndReturnPrevious((int) len);
-        return s;
-      }
+    public UInteger decodeUInteger() throws MALException {
+        return new UInteger(((TCPIPBufferHolder) sourceBuffer).getUnsignedIntValue());
+    }
 
-      return null;
+    @Override
+    public Identifier decodeNullableIdentifier() throws MALException {
+        // decode presence flag
+        boolean isNotNull = decodeBoolean();
+
+        // decode one element, or add null if presence flag indicates no element
+        if (isNotNull) {
+            return decodeIdentifier();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Integer decodeInteger() throws MALException {
+        return ((TCPIPBufferHolder) sourceBuffer).get32();
+    }
+
+    @Override
+    public Blob decodeBlob() throws MALException {
+        int sz = (int) decodeUInteger().getValue();
+
+        if (sz == 0) {
+            return null;
+        }
+
+        return new Blob(sourceBuffer.directGetBytes(sz));
+    }
+
+    public int getBufferOffset() {
+        return ((TCPIPBufferHolder) this.sourceBuffer).getOffset();
+    }
+
+    public BufferHolder getBuffer() {
+        return this.sourceBuffer;
     }
 
     /**
-     * Decode an unsigned int using a split-binary approach
+     * Internal class that implements the fixed length field decoding.
      */
-    @Override
-    public int getUnsignedInt() throws MALException
-    {
-      int value = 0;
-      int i = 0;
-      int b;
-      while (((b = get8()) & 0x80) != 0) {
-        value |= (b & 0x7F) << i;
-        i += 7;
-      }
-      return value | (b << i);
-    }
+    protected static class TCPIPBufferHolder extends FixedBinaryBufferHolder {
 
-    public long getUnsignedIntValue() throws MALException
-    {
-      long value = 0;
-      int i = 0;
-      long b;
-      while (((b = get8()) & 0x80) != 0) {
-        value |= (b & 0x7F) << i;
-        i += 7;
-      }
-      return value | (b << i);
-    }
+        public TCPIPBufferHolder(InputStream is, byte[] buf, int offset, int length) {
+            super(is, buf, offset, length, false);
+        }
 
-    public int get32() throws MALException
-    {
-      buf.checkBuffer(4);
+        @Override
+        public String getString() throws MALException {
+            final long len = getUnsignedInt();
 
-      final int i = buf.shiftOffsetAndReturnPrevious(4);
-      return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 4).getInt() & 0xFFFFFFF;
-    }
+            if (len > Integer.MAX_VALUE) {
+                throw new MALException("Value is too big to decode! "
+                        + "Please provide a string with a length lower than INT_MAX");
+            }
 
-    public int getOffset()
-    {
-      return buf.getOffset();
+            if (len >= 0) {
+                buf.checkBuffer((int) len);
+
+                final String s = new String(buf.getBuf(), buf.getOffset(), (int) len, UTF8_CHARSET);
+                buf.shiftOffsetAndReturnPrevious((int) len);
+                return s;
+            }
+
+            return null;
+        }
+
+        /**
+         * Decode an unsigned int using a split-binary approach
+         */
+        @Override
+        public int getUnsignedInt() throws MALException {
+            int value = 0;
+            int i = 0;
+            int b;
+            while (((b = get8()) & 0x80) != 0) {
+                value |= (b & 0x7F) << i;
+                i += 7;
+            }
+            return value | (b << i);
+        }
+
+        public long getUnsignedIntValue() throws MALException {
+            long value = 0;
+            int i = 0;
+            long b;
+            while (((b = get8()) & 0x80) != 0) {
+                value |= (b & 0x7F) << i;
+                i += 7;
+            }
+            return value | (b << i);
+        }
+
+        public int get32() throws MALException {
+            buf.checkBuffer(4);
+
+            final int i = buf.shiftOffsetAndReturnPrevious(4);
+            return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 4).getInt() & 0xFFFFFFF;
+        }
+
+        public int getOffset() {
+            return buf.getOffset();
+        }
     }
-  }
 }

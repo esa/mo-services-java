@@ -25,19 +25,19 @@ package org.ccsds.moims.mo.mal;
  *
  * Has non-standard extension size() operation.
  */
-public interface MALListDecoder extends MALDecoder
-{
-  /**
-   * Determines if there are any more elements in the lists to decode.
-   *
-   * @return True if more elements in list, else false.
-   */
-  boolean hasNext();
+public interface MALListDecoder extends MALDecoder {
 
-  /**
-   * Returns the total number of elements in the list.
-   *
-   * @return the total number of elements in the list if known otherwise -1.
-   */
-  int size();
+    /**
+     * Determines if there are any more elements in the lists to decode.
+     *
+     * @return True if more elements in list, else false.
+     */
+    boolean hasNext();
+
+    /**
+     * Returns the total number of elements in the list.
+     *
+     * @return the total number of elements in the list if known otherwise -1.
+     */
+    int size();
 }

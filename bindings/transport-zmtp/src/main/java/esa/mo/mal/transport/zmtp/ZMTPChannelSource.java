@@ -27,41 +27,38 @@ import org.zeromq.ZMQ;
 import org.zeromq.ZMsg;
 
 /**
- * This class implements the low level data (MAL Message) transport protocol. In order to
- * differentiate messages with each other, the protocol has a very simple format: |size|message|
+ * This class implements the low level data (MAL Message) transport protocol. In
+ * order to differentiate messages with each other, the protocol has a very
+ * simple format: |size|message|
  *
- * If the protocol uses a different message encoding this class can be replaced in the
- * ZMTPTransport.
+ * If the protocol uses a different message encoding this class can be replaced
+ * in the ZMTPTransport.
  *
  */
-public class ZMTPChannelSource implements GENMessageSender<byte[]>
-{
+public class ZMTPChannelSource implements GENMessageSender<byte[]> {
 
-  /**
-   * Reference to a ZMQ socket produced by the OPEN primitive
-   */
-  protected final ZMQ.Socket socket;
+    /**
+     * Reference to a ZMQ socket produced by the OPEN primitive
+     */
+    protected final ZMQ.Socket socket;
 
-  /**
-   * Constructor.
-   *
-   * @param socket The ZMTP socket.
-   */
-  public ZMTPChannelSource(ZMQ.Socket socket)
-  {
-    this.socket = socket;
-  }
+    /**
+     * Constructor.
+     *
+     * @param socket The ZMTP socket.
+     */
+    public ZMTPChannelSource(ZMQ.Socket socket) {
+        this.socket = socket;
+    }
 
-  @Override
-  public void sendEncodedMessage(GENOutgoingMessageHolder<byte[]> packetData) throws IOException
-  {
-    ZMsg outMsg = new ZMsg();
-    outMsg.add(packetData.getEncodedMessage());
-    outMsg.send(socket, true);
-  }
+    @Override
+    public void sendEncodedMessage(GENOutgoingMessageHolder<byte[]> packetData) throws IOException {
+        ZMsg outMsg = new ZMsg();
+        outMsg.add(packetData.getEncodedMessage());
+        outMsg.send(socket, true);
+    }
 
-  @Override
-  public void close()
-  {
-  }
+    @Override
+    public void close() {
+    }
 }

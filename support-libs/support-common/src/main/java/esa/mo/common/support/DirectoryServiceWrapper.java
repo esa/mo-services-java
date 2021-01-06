@@ -23,16 +23,12 @@ package esa.mo.common.support;
 import esa.mo.mal.support.BaseMalServer;
 import org.ccsds.moims.mo.common.directory.DirectoryHelper;
 import org.ccsds.moims.mo.common.directory.consumer.DirectoryStub;
-import org.ccsds.moims.mo.common.directory.structures.LocalNode;
-import org.ccsds.moims.mo.common.directory.structures.NodeDetails;
-import org.ccsds.moims.mo.common.directory.structures.NodeDetailsList;
-import org.ccsds.moims.mo.common.directory.structures.ProviderInformation;
-import org.ccsds.moims.mo.common.directory.structures.ProviderInformationList;
-import org.ccsds.moims.mo.common.directory.structures.ServiceAddress;
-import org.ccsds.moims.mo.common.directory.structures.ServiceAddressList;
-import org.ccsds.moims.mo.common.directory.structures.ServiceDetails;
-import org.ccsds.moims.mo.common.directory.structures.ServiceDetailsList;
+import org.ccsds.moims.mo.common.directory.structures.ProviderDetails;
+import org.ccsds.moims.mo.common.directory.structures.ProviderDetailsList;
+import org.ccsds.moims.mo.common.directory.structures.ProviderSummaryList;
+import org.ccsds.moims.mo.common.directory.structures.PublishDetails;
 import org.ccsds.moims.mo.common.directory.structures.ServiceFilter;
+import org.ccsds.moims.mo.common.structures.ServiceKey;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALService;
@@ -50,215 +46,229 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.structures.UShortList;
 
 /**
  * Simple class that simplifies access to the directory service.
  */
-public class DirectoryServiceWrapper
-{
-  protected DirectoryStub directoryService;
+public class DirectoryServiceWrapper {
 
-  /**
-   * Initialises the helper class by creating the MAl connection to the Directory service. Must be called before using
-   * any of the other operations.
-   *
-   * @param consumerMgr The MAL consumer manager to use.
-   * @param uri The URI of the directory service provider.
-   * @throws MALInteractionException On error.
-   * @throws MALException On error.
-   */
-  public void init(MALConsumerManager consumerMgr, URI uri) throws MALInteractionException, MALException
-  {
-    BaseMalServer.LOGGER.fine("DirectoryServiceWrapper:init");
+    protected DirectoryStub directoryService;
 
-    if (null == directoryService)
-    {
-      IdentifierList domain = new IdentifierList();
-      Identifier network = new Identifier("GROUND");
-      SessionType session = SessionType.LIVE;
-      Identifier sessionName = new Identifier("LIVE");
+    /**
+     * Initialises the helper class by creating the MAl connection to the
+     * Directory service. Must be called before using any of the other
+     * operations.
+     *
+     * @param consumerMgr The MAL consumer manager to use.
+     * @param uri The URI of the directory service provider.
+     * @throws MALInteractionException On error.
+     * @throws MALException On error.
+     */
+    public void init(MALConsumerManager consumerMgr, URI uri)
+            throws MALInteractionException, MALException {
+        BaseMalServer.LOGGER.fine("DirectoryServiceWrapper:init");
 
-      MALConsumer consumer = consumerMgr.createConsumer((String) null,
-              uri,
-              uri,
-              DirectoryHelper.DIRECTORY_SERVICE,
-              new Blob("".getBytes()),
-              domain,
-              network,
-              session,
-              sessionName,
-              QoSLevel.BESTEFFORT,
-              System.getProperties(),
-              new UInteger(0));
+        if (null == directoryService) {
+            IdentifierList domain = new IdentifierList();
+            Identifier network = new Identifier("GROUND");
+            SessionType session = SessionType.LIVE;
+            Identifier sessionName = new Identifier("LIVE");
 
-      directoryService = new DirectoryStub(consumer);
-    }
-  }
+            MALConsumer consumer = consumerMgr.createConsumer((String) null,
+                    uri,
+                    uri,
+                    DirectoryHelper.DIRECTORY_SERVICE,
+                    new Blob("".getBytes()),
+                    domain,
+                    network,
+                    session,
+                    sessionName,
+                    QoSLevel.BESTEFFORT,
+                    System.getProperties(),
+                    new UInteger(0));
 
-  /**
-   * Publishes the supplied details in the directory service.
-   *
-   * @param providerName The service provider name.
-   * @param domain The domain to use.
-   * @param network The network to use.
-   * @param service The service being provided.
-   * @param supportedCapabilities The supported capabilities.
-   * @param serviceURI The service URI
-   * @param brokerURI The broker URI
-   * @throws MALException On error.
-   * @throws MALInteractionException On error.
-   */
-  public void publishProvider(Identifier providerName,
-          IdentifierList domain,
-          Identifier network,
-          MALService service,
-          IntegerList supportedCapabilities,
-          URI serviceURI,
-          URI brokerURI) throws MALException, MALInteractionException
-  {
-    BaseMalServer.LOGGER.fine("DirectoryServiceWrapper:publishProvider");
-
-    if (null == directoryService)
-    {
-      BaseMalServer.LOGGER.severe("DirectoryServiceWrapper not initialised!");
-      return;
+            directoryService = new DirectoryStub(consumer);
+        }
     }
 
-    directoryService.publishService(createNodeDetailsList(providerName,
-            domain,
-            network,
-            service,
-            supportedCapabilities,
-            serviceURI,
-            brokerURI));
-  }
+    /**
+     * Publishes the supplied details in the directory service.
+     *
+     * @param providerName The service provider name.
+     * @param domain The domain to use.
+     * @param network The network to use.
+     * @param service The service being provided.
+     * @param supportedCapabilities The supported capabilities.
+     * @param serviceURI The service URI
+     * @param brokerURI The broker URI
+     * @throws MALException On error.
+     * @throws MALInteractionException On error.
+     */
+    public void publishProvider(Identifier providerName,
+            IdentifierList domain,
+            Identifier network,
+            MALService service,
+            IntegerList supportedCapabilities,
+            URI serviceURI,
+            URI brokerURI) throws MALException, MALInteractionException {
+        BaseMalServer.LOGGER.fine("DirectoryServiceWrapper:publishProvider");
 
-  /**
-   * Withdraws the supplied details from the directory service.
-   *
-   * @param providerName The service provider name.
-   * @param domain The domain to use.
-   * @param network The network to use.
-   * @param service The service being provided.
-   * @param supportedCapabilities The supported capabilities.
-   * @param serviceURI The service URI
-   * @param brokerURI The broker URI
-   * @throws MALException On error.
-   * @throws MALInteractionException On error.
-   */
-  public void withdrawProvider(Identifier providerName,
-          IdentifierList domain,
-          Identifier network,
-          MALService service,
-          IntegerList supportedCapabilities,
-          URI serviceURI,
-          URI brokerURI) throws MALException, MALInteractionException
-  {
-    BaseMalServer.LOGGER.fine("DirectoryServiceWrapper:withdrawProvider");
+        if (null == directoryService) {
+            BaseMalServer.LOGGER.severe("DirectoryServiceWrapper not initialised!");
+            return;
+        }
 
-    if (null == directoryService)
-    {
-      BaseMalServer.LOGGER.severe("DirectoryServiceWrapper not initialised!");
-      return;
+        directoryService.publishProvider(createNodeDetailsList(providerName,
+                domain,
+                network,
+                service,
+                supportedCapabilities,
+                serviceURI,
+                brokerURI));
     }
 
-    directoryService.withdrawService(createNodeDetailsList(providerName,
-            domain,
-            network,
-            service,
-            supportedCapabilities,
-            serviceURI,
-            brokerURI));
-  }
+    /**
+     * Withdraws the supplied details from the directory service.
+     *
+     * @param providerName The service provider name.
+     * @param domain The domain to use.
+     * @param network The network to use.
+     * @param service The service being provided.
+     * @param supportedCapabilities The supported capabilities.
+     * @param serviceURI The service URI
+     * @param brokerURI The broker URI
+     * @throws MALException On error.
+     * @throws MALInteractionException On error.
+     */
+    public void withdrawProvider(Identifier providerName,
+            IdentifierList domain,
+            Identifier network,
+            MALService service,
+            IntegerList supportedCapabilities,
+            URI serviceURI,
+            URI brokerURI) throws MALException, MALInteractionException {
+        BaseMalServer.LOGGER.fine("DirectoryServiceWrapper:withdrawProvider");
 
-  /**
-   * Performs a lookup using the supplied details on the directory service.
-   *
-   * @param providerName The service provider name.
-   * @param domain The domain to use.
-   * @param network The network to use.
-   * @param service The service being provided.
-   * @param supportedCapabilities The supported capabilities.
-   * @return The lookup response.
-   * @throws MALException On error.
-   * @throws MALInteractionException On error.
-   */
-  public ServiceDetailsList lookupService(Identifier providerName,
-          IdentifierList domain,
-          Identifier network,
-          MALService service,
-          IntegerList supportedCapabilities) throws MALException, MALInteractionException
-  {
-    BaseMalServer.LOGGER.fine("DirectoryServiceWrapper:lookupService");
+        if (null == directoryService) {
+            BaseMalServer.LOGGER.severe("DirectoryServiceWrapper not initialised!");
+            return;
+        }
 
-    if (null == directoryService)
-    {
-      BaseMalServer.LOGGER.severe("DirectoryServiceWrapper not initialised!");
-      return null;
+        // To be updated correctly...
+        directoryService.withdrawProvider(new Long(1));
+
+        /*
+        directoryService.withdrawProvider(createNodeDetailsList(providerName,
+                domain,
+                network,
+                service,
+                supportedCapabilities,
+                serviceURI,
+                brokerURI));
+         */
     }
 
-    UShort areaNumber = null;
-    UShort serviceNumber = null;
-    UOctet areaVersion = null;
+    /**
+     * Performs a lookup using the supplied details on the directory service.
+     *
+     * @param providerName The service provider name.
+     * @param domain The domain to use.
+     * @param network The network to use.
+     * @param service The service being provided.
+     * @param supportedCapabilities The supported capabilities.
+     * @return The lookup response.
+     * @throws MALException On error.
+     * @throws MALInteractionException On error.
+     */
+    public ProviderSummaryList lookupService(Identifier providerName,
+            IdentifierList domain,
+            Identifier network,
+            MALService service,
+            UShortList supportedCapabilities)
+            throws MALException, MALInteractionException {
+        BaseMalServer.LOGGER.fine("DirectoryServiceWrapper:lookupService");
 
-    if (null != service)
-    {
-      areaNumber = service.getArea().getNumber();
-      serviceNumber = service.getNumber();
-      areaVersion = service.getArea().getVersion();
+        if (null == directoryService) {
+            BaseMalServer.LOGGER.severe("DirectoryServiceWrapper not initialised!");
+            return null;
+        }
+
+        UShort areaNumber = null;
+        UShort serviceNumber = null;
+        UOctet areaVersion = null;
+
+        if (null != service) {
+            areaNumber = service.getArea().getNumber();
+            serviceNumber = service.getNumber();
+            areaVersion = service.getArea().getVersion();
+        }
+
+        ServiceKey serviceKey = new ServiceKey(areaNumber, serviceNumber, areaVersion);
+
+        ServiceFilter filter = new ServiceFilter(
+                null,
+                domain,
+                network,
+                SessionType.LIVE,
+                new Identifier("LIVE"),
+                serviceKey,
+                supportedCapabilities);
+
+        return directoryService.lookupProvider(filter);
     }
 
-    ServiceFilter filter = new ServiceFilter(domain,
-            network,
-            SessionType.LIVE,
-            new Identifier("LIVE"),
-            areaNumber,
-            serviceNumber,
-            areaVersion,
-            supportedCapabilities,
-            providerName);
+    /**
+     * Utility method to create a node set list from the supplied details.
+     *
+     * @param providerName The service provider name.
+     * @param domain The domain to use.
+     * @param network The network to use.
+     * @param service The service being provided.
+     * @param supportedCapabilities The supported capabilities.
+     * @param serviceURI The service URI
+     * @param brokerURI The broker URI
+     * @return The constructed node details list.
+     */
+    public static PublishDetails createNodeDetailsList(Identifier providerName,
+            IdentifierList domain,
+            Identifier network,
+            MALService service,
+            IntegerList supportedCapabilities,
+            URI serviceURI,
+            URI brokerURI) {
+        /*
+        ServiceAddress sa = new ServiceAddress(new QoSLevelList(),
+                new NamedValueList(), 1, serviceURI, brokerURI, null);
+        ServiceAddressList sal = new ServiceAddressList();
+        sal.add(sa);
 
-    return directoryService.lookupService(filter);
-  }
+        ProviderInformation pi = new ProviderInformation(providerName,
+                supportedCapabilities, new NamedValueList(), sal);
+        ProviderInformationList pil = new ProviderInformationList();
+        pil.add(pi);
 
-  /**
-   * Utility method to create a node set list from the supplied details.
-   *
-   * @param providerName The service provider name.
-   * @param domain The domain to use.
-   * @param network The network to use.
-   * @param service The service being provided.
-   * @param supportedCapabilities The supported capabilities.
-   * @param serviceURI The service URI
-   * @param brokerURI The broker URI
-   * @return The constructed node details list.
-   */
-  public static NodeDetailsList createNodeDetailsList(Identifier providerName,
-          IdentifierList domain,
-          Identifier network,
-          MALService service,
-          IntegerList supportedCapabilities,
-          URI serviceURI,
-          URI brokerURI)
-  {
-    ServiceAddress sa = new ServiceAddress(new QoSLevelList(), new NamedValueList(), 1, serviceURI, brokerURI, null);
-    ServiceAddressList sal = new ServiceAddressList();
-    sal.add(sa);
+        ServiceDetails sd = new ServiceDetails(service.getArea().getNumber(),
+                service.getNumber(), service.getArea().getVersion(), pil);
+        ServiceDetailsList sdl = new ServiceDetailsList();
+        sdl.add(sd);
 
-    ProviderInformation pi = new ProviderInformation(providerName, supportedCapabilities, new NamedValueList(), sal);
-    ProviderInformationList pil = new ProviderInformationList();
-    pil.add(pi);
+        LocalNode node = new LocalNode(SessionType.LIVE, new Identifier("LIVE"), sdl);
+        NodeDetails nd = new NodeDetails(domain, network, node);
+         */
+        ProviderDetails providerDetails = new ProviderDetails();
 
-    ServiceDetails sd = new ServiceDetails(service.getArea().getNumber(), service.getNumber(), service.getArea().getVersion(), pil);
-    ServiceDetailsList sdl = new ServiceDetailsList();
-    sdl.add(sd);
+        PublishDetails ndl = new PublishDetails(
+                providerName,
+                domain,
+                SessionType.LIVE,
+                new Identifier("LIVE"),
+                network,
+                providerDetails,
+                null);
 
-    LocalNode node = new LocalNode(SessionType.LIVE, new Identifier("LIVE"), sdl);
-    NodeDetails nd = new NodeDetails(domain, network, node);
+        // ndl.add(nd);
+        return ndl;
+    }
 
-    NodeDetailsList ndl = new NodeDetailsList();
-    ndl.add(nd);
-
-    return ndl;
-  }
 }

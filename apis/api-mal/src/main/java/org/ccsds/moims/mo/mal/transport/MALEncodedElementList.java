@@ -21,30 +21,31 @@
 package org.ccsds.moims.mo.mal.transport;
 
 /**
- * The type MALEncodedElementList represents a body element typed as a list and containing encoded elements.
+ * The type MALEncodedElementList represents a body element typed as a list and
+ * containing encoded elements.
  */
-public class MALEncodedElementList extends java.util.ArrayList<MALEncodedElement>
-{
-  private final Object shortForm;
-  private static final long serialVersionUID = 0x1000000000099L;
+public class MALEncodedElementList extends java.util.ArrayList<MALEncodedElement> {
 
-  /**
-   * Constructor.
-   * @param shortForm The short form of the elements held by this list.
-   * @param size Size of the list.
-   */
-  public MALEncodedElementList(final Object shortForm, final int size)
-  {
-    super(size);
-    this.shortForm = shortForm;
-  }
+    private final Object shortForm;
+    private static final long serialVersionUID = 0x1000000000099L;
 
-  /**
-   * Returns the short form of the elements in this list.
-   * @return The short form.
-   */
-  public Object getShortForm()
-  {
-    return shortForm;
-  }
+    /**
+     * Constructor.
+     *
+     * @param shortForm The short form of the elements held by this list.
+     * @param size Size of the list.
+     */
+    public MALEncodedElementList(final Object shortForm, final int size) {
+        super(size);
+        this.shortForm = shortForm;
+    }
+
+    /**
+     * Returns the short form of the elements in this list.
+     *
+     * @return The short form.
+     */
+    public Object getShortForm() {
+        return shortForm;
+    }
 }

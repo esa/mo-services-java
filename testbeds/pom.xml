@@ -14,70 +14,70 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
   
-  <parent>
-    <groupId>int.esa.ccsds.mo</groupId>
-    <artifactId>POM</artifactId>
-    <version>6</version>
-    <relativePath/>
-  </parent>
+    <parent>
+        <groupId>int.esa.ccsds.mo</groupId>
+        <artifactId>POM</artifactId>
+        <version>8-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
   
-  <artifactId>REACTOR_TESTBEDS</artifactId>
-  <version>8.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>ESA CCSDS Testbed reactor build</name>
+    <artifactId>REACTOR_TESTBEDS</artifactId>
+    <version>8.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>ESA CCSDS Testbed reactor build</name>
 
-  <organization>
-    <name>ESA</name>
-    <url>http://www.esa.int</url>
-  </organization>
+    <organization>
+        <name>ESA</name>
+        <url>http://www.esa.int</url>
+    </organization>
   
-  <licenses>
-    <license>
-      <name>The European Space Agency Public License, Version 2.0</name>
-      <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_ESA.md</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+    <licenses>
+        <license>
+            <name>The European Space Agency Public License, Version 2.0</name>
+            <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_ESA.md</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-  <scm>
-    <connection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</connection>
-    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</developerConnection>
-    <url>https://github.com/esa/CCSDS_MO_TESTBEDS</url>
-  </scm>
+    <scm>
+        <connection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</connection>
+        <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</developerConnection>
+        <url>https://github.com/esa/CCSDS_MO_TESTBEDS</url>
+    </scm>
   
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/esa/CCSDS_MO_TESTBEDS/issues</url>
-  </issueManagement>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/esa/CCSDS_MO_TESTBEDS/issues</url>
+    </issueManagement>
   
-  <developers>
-    <developer>
-      <id>SamCooper</id>
-      <name>Sam Cooper</name>
-      <email>sam@brightascension.com</email>
-      <url>https://github.com/SamCooper</url>
-    </developer>
-  </developers>
+    <developers>
+        <developer>
+            <id>SamCooper</id>
+            <name>Sam Cooper</name>
+            <email>sam@brightascension.com</email>
+            <url>https://github.com/SamCooper</url>
+        </developer>
+    </developers>
 
-  <modules>
-    <module>MOIMS_TESTBED_POM</module>
-    <module>MOIMS_TESTBED_UTIL</module>
-    <module>MOIMS_TESTBED_MAL</module>
-    <module>MOIMS_TESTBED_COM_FRAMEWORK</module>
-    <module>MOIMS_TESTBED_COM_PROVIDER_ESA</module>
-    <module>MOIMS_TESTBED_COM</module>
-<!--
-    <module>MOIMS_TESTBED_UTIL_SPP</module>
-    <module>MOIMS_TESTBED_MALSPP_FRAMEWORK</module>
-    <module>MOIMS_TESTBED_MALSPP</module>
--->
-  </modules>
+    <modules>
+        <module>MOIMS_TESTBED_POM</module>
+        <module>MOIMS_TESTBED_UTIL</module>
+        <module>MOIMS_TESTBED_MAL</module>
+        <module>MOIMS_TESTBED_COM_FRAMEWORK</module>
+        <module>MOIMS_TESTBED_COM_PROVIDER_ESA</module>
+        <module>MOIMS_TESTBED_COM</module>
+        <!--
+            <module>MOIMS_TESTBED_UTIL_SPP</module>
+            <module>MOIMS_TESTBED_MALSPP_FRAMEWORK</module>
+            <module>MOIMS_TESTBED_MALSPP</module>
+        -->
+    </modules>
   
-  <profiles>
-    <profile>
-      <id>ESA</id>
-    </profile>
-  </profiles>
+    <profiles>
+        <profile>
+            <id>ESA</id>
+        </profile>
+    </profiles>
 </project>

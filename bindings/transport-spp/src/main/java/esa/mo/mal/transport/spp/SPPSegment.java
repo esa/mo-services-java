@@ -24,46 +24,39 @@ package esa.mo.mal.transport.spp;
  *
  * @author Cesar Coelho
  */
-public class SPPSegment
-{
+public class SPPSegment {
 
-  private final long segmentIndex;
-  private final byte[] packet;
-  private final long ssc;
-  private final boolean isFirst;
-  private final boolean isLast;
+    private final long segmentIndex;
+    private final byte[] packet;
+    private final long ssc;
+    private final boolean isFirst;
+    private final boolean isLast;
 
-  SPPSegment(long segmentIndex, int segmentFlags, long ssc, byte[] packet)
-  {
-    this.segmentIndex = segmentIndex;
-    this.ssc = ssc;
-    this.packet = packet;
-    this.isFirst = (1 == segmentFlags);
-    this.isLast = (2 == segmentFlags);
-  }
+    SPPSegment(long segmentIndex, int segmentFlags, long ssc, byte[] packet) {
+        this.segmentIndex = segmentIndex;
+        this.ssc = ssc;
+        this.packet = packet;
+        this.isFirst = (1 == segmentFlags);
+        this.isLast = (2 == segmentFlags);
+    }
 
-  public boolean isFirst()
-  {
-    return this.isFirst;
-  }
+    public boolean isFirst() {
+        return this.isFirst;
+    }
 
-  public boolean isLast()
-  {
-    return this.isLast;
-  }
+    public boolean isLast() {
+        return this.isLast;
+    }
 
-  public byte[] getPacket()
-  {
-    return packet;
-  }
+    public byte[] getPacket() {
+        return packet;
+    }
 
-  public long getSegmentIndex()
-  {
-    return segmentIndex;
-  }
+    public long getSegmentIndex() {
+        return segmentIndex;
+    }
 
-  public long getSSC()
-  {
-    return ssc;
-  }
+    public long getSSC() {
+        return ssc;
+    }
 }

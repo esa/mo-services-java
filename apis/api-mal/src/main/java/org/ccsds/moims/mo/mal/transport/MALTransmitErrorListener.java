@@ -24,18 +24,20 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.MALStandardError;
 
 /**
- * The MALTransmitErrorListener interface enables the MAL layer to be notified by the transport module when an
- * asynchronous internal error has been raised by the transport layer when it has failed to transmit a message.
+ * The MALTransmitErrorListener interface enables the MAL layer to be notified
+ * by the transport module when an asynchronous internal error has been raised
+ * by the transport layer when it has failed to transmit a message.
  */
-public interface MALTransmitErrorListener
-{
-  /**
-   * The method receives a transmission error.
-   *
-   * @param callingEndpoint MALEndpoint calling the MALMessageListener
-   * @param srcMessageHeader The message header of the message being sent.
-   * @param err Error to be received by the listener
-   * @param qosMap The QoS details of the message being sent.
-   */
-  void onTransmitError(MALEndpoint callingEndpoint, MALMessageHeader srcMessageHeader, MALStandardError err, Map qosMap);
+public interface MALTransmitErrorListener {
+
+    /**
+     * The method receives a transmission error.
+     *
+     * @param callingEndpoint MALEndpoint calling the MALMessageListener
+     * @param srcMessageHeader The message header of the message being sent.
+     * @param err Error to be received by the listener
+     * @param qosMap The QoS details of the message being sent.
+     */
+    void onTransmitError(MALEndpoint callingEndpoint, 
+            MALMessageHeader srcMessageHeader, MALStandardError err, Map qosMap);
 }

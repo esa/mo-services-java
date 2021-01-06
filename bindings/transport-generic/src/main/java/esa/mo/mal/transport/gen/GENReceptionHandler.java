@@ -23,36 +23,35 @@ package esa.mo.mal.transport.gen;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 
 /**
- * The GENReceptionHandler interface defines the methods needed for a receiver managing incoming
- * data from a communication channel.
+ * The GENReceptionHandler interface defines the methods needed for a receiver
+ * managing incoming data from a communication channel.
  */
-public interface GENReceptionHandler
-{
+public interface GENReceptionHandler {
 
-  /**
-   * Returns the remote URI for this reception handler.
-   *
-   * @return the remote URI that this reception handler receives data from
-   */
-  public String getRemoteURI();
+    /**
+     * Returns the remote URI for this reception handler.
+     *
+     * @return the remote URI that this reception handler receives data from
+     */
+    public String getRemoteURI();
 
-  /**
-   * Setter method for the remote URI of this handler
-   *
-   * @param newURI the remote root URI, i.e. maltcp://10.0.0.1:61617
-   */
-  public void setRemoteURI(String newURI);
+    /**
+     * Setter method for the remote URI of this handler
+     *
+     * @param newURI the remote root URI, i.e. maltcp://10.0.0.1:61617
+     */
+    public void setRemoteURI(String newURI);
 
-  /**
-   * Returns the message sender for this reception handler.
-   *
-   * @return the message sender for this receiver. Null if this receiver does not support sending
-   * messages
-   */
-  public GENMessageSender getMessageSender();
+    /**
+     * Returns the message sender for this reception handler.
+     *
+     * @return the message sender for this receiver. Null if this receiver does
+     * not support sending messages
+     */
+    public GENMessageSender getMessageSender();
 
-  /**
-   * Closes the communication channel for this reception handler
-   */
-  public void close();
+    /**
+     * Closes the communication channel for this reception handler
+     */
+    public void close();
 }

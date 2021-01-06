@@ -28,39 +28,43 @@ import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 /**
  * The MALRequest interface represents a REQUEST interaction handling context.
  */
-public interface MALRequest extends MALInteraction
-{
-  /**
-   * The method sends a RESPONSE message.
-   *
-   * @param body Message body to be transmitted to the consumer
-   * @return the MALMessage that has been sent
-   * @throws MALInteractionException if the interaction is in the incorrect state.
-   * @throws MALException If an error occurs
-   */
-  org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(Object... body)
-          throws MALInteractionException, MALException;
+public interface MALRequest extends MALInteraction {
 
-  /**
-   * The method sends a RESPONSE message.
-   *
-   * @param body The already encoded message body to be transmitted to the consumer
-   * @return the MALMessage that has been sent
-   * @throws MALInteractionException if the interaction is in the incorrect state.
-   * @throws MALException If an error occurs
-   */
-  org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(MALEncodedBody body)
-          throws MALInteractionException, MALException;
+    /**
+     * The method sends a RESPONSE message.
+     *
+     * @param body Message body to be transmitted to the consumer
+     * @return the MALMessage that has been sent
+     * @throws MALInteractionException if the interaction is in the incorrect
+     * state.
+     * @throws MALException If an error occurs
+     */
+    org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(Object... body)
+            throws MALInteractionException, MALException;
 
-  /**
-   * The method sends an RESPONSE ERROR message.
-   *
-   * @param error Error to be transmitted to the consumer
-   * @return the MALMessage that has been sent
-   * @throws java.lang.IllegalArgumentException If the argument is NULL
-   * @throws MALInteractionException if the interaction is in the incorrect state.
-   * @throws MALException If an error occurs
-   */
-  org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error)
-          throws IllegalArgumentException, MALInteractionException, MALException;
+    /**
+     * The method sends a RESPONSE message.
+     *
+     * @param body The already encoded message body to be transmitted to the
+     * consumer
+     * @return the MALMessage that has been sent
+     * @throws MALInteractionException if the interaction is in the incorrect
+     * state.
+     * @throws MALException If an error occurs
+     */
+    org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(MALEncodedBody body)
+            throws MALInteractionException, MALException;
+
+    /**
+     * The method sends an RESPONSE ERROR message.
+     *
+     * @param error Error to be transmitted to the consumer
+     * @return the MALMessage that has been sent
+     * @throws java.lang.IllegalArgumentException If the argument is NULL
+     * @throws MALInteractionException if the interaction is in the incorrect
+     * state.
+     * @throws MALException If an error occurs
+     */
+    org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error)
+            throws IllegalArgumentException, MALInteractionException, MALException;
 }

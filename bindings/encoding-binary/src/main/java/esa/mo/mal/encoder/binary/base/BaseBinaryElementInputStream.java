@@ -23,16 +23,14 @@ package esa.mo.mal.encoder.binary.base;
 /**
  * Implements the MALElementInputStream interface for a binary encoding.
  */
-public abstract class BaseBinaryElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream
-{
+public abstract class BaseBinaryElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream {
 
-  /**
-   * Sub class constructor.
-   *
-   * @param dec Decoder to use.
-   */
-  protected BaseBinaryElementInputStream(BaseBinaryDecoder dec)
-  {
-    super(dec);
-  }
+    /**
+     * Sub class constructor.
+     *
+     * @param dec Decoder to use.
+     */
+    protected BaseBinaryElementInputStream(BaseBinaryDecoder dec) {
+        super(dec);
+    }
 }

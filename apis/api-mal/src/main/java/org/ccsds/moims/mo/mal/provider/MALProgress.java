@@ -29,39 +29,43 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * The MALProgress interface represents a PROGRESS interaction handling context.
  */
-public interface MALProgress extends MALInvoke
-{
-  /**
-   * The method sends an UPDATE message.
-   *
-   * @param body Message body to be transmitted to the consumer
-   * @return the MALMessage that has been sent
-   * @throws MALInteractionException if the interaction is in the incorrect state.
-   * @throws MALException If an error occurs
-   */
-  MALMessage sendUpdate(Object... body)
-          throws MALInteractionException, MALException;
+public interface MALProgress extends MALInvoke {
 
-  /**
-   * The method sends an UPDATE message.
-   *
-   * @param body The already encoded message body to be transmitted to the consumer
-   * @return the MALMessage that has been sent
-   * @throws MALInteractionException if the interaction is in the incorrect state.
-   * @throws MALException If an error occurs
-   */
-  MALMessage sendUpdate(MALEncodedBody body)
-          throws MALInteractionException, MALException;
+    /**
+     * The method sends an UPDATE message.
+     *
+     * @param body Message body to be transmitted to the consumer
+     * @return the MALMessage that has been sent
+     * @throws MALInteractionException if the interaction is in the incorrect
+     * state.
+     * @throws MALException If an error occurs
+     */
+    MALMessage sendUpdate(Object... body)
+            throws MALInteractionException, MALException;
 
-  /**
-   * The method sends an UPDATE ERROR message.
-   *
-   * @param error Error to be transmitted to the consumer
-   * @return the MALMessage that has been sent
-   * @throws java.lang.IllegalArgumentException If the argument is NULL
-   * @throws MALInteractionException if the interaction is in the incorrect state.
-   * @throws MALException If an error occurs
-   */
-  MALMessage sendUpdateError(MALStandardError error)
-          throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
+    /**
+     * The method sends an UPDATE message.
+     *
+     * @param body The already encoded message body to be transmitted to the
+     * consumer
+     * @return the MALMessage that has been sent
+     * @throws MALInteractionException if the interaction is in the incorrect
+     * state.
+     * @throws MALException If an error occurs
+     */
+    MALMessage sendUpdate(MALEncodedBody body)
+            throws MALInteractionException, MALException;
+
+    /**
+     * The method sends an UPDATE ERROR message.
+     *
+     * @param error Error to be transmitted to the consumer
+     * @return the MALMessage that has been sent
+     * @throws java.lang.IllegalArgumentException If the argument is NULL
+     * @throws MALInteractionException if the interaction is in the incorrect
+     * state.
+     * @throws MALException If an error occurs
+     */
+    MALMessage sendUpdateError(MALStandardError error)
+            throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 }

@@ -25,36 +25,34 @@ import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementInputStream;
 import esa.mo.mal.transport.zmtp.ZMTPTransport;
 
 /**
- * Implements the MALElementInputStream interface for a binary encoding used in ZMTP header.
+ * Implements the MALElementInputStream interface for a binary encoding used in
+ * ZMTP header.
  */
-public class ZMTPHeaderElementInputStream extends FixedBinaryElementInputStream
-{
+public class ZMTPHeaderElementInputStream extends FixedBinaryElementInputStream {
 
-  /**
-   * Constructor.
-   *
-   * @param is        Input stream to read from.
-   * @param transport The parent transport.
-   */
-  public ZMTPHeaderElementInputStream(final java.io.InputStream is, ZMTPTransport transport,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(new ZMTPHeaderDecoder(is, transport, timeHandler));
-  }
+    /**
+     * Constructor.
+     *
+     * @param is Input stream to read from.
+     * @param transport The parent transport.
+     */
+    public ZMTPHeaderElementInputStream(final java.io.InputStream is, 
+            ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
+        super(new ZMTPHeaderDecoder(is, transport, timeHandler));
+    }
 
-  /**
-   * Constructor.
-   *
-   * @param buf         Byte buffer to read from
-   * @param offset      Offset into buffer to start from
-   * @param transport   The parent transport
-   * @param timeHandler Implementation of the time encoding to use
-   */
-  public ZMTPHeaderElementInputStream(final byte[] buf,
-      final int offset, ZMTPTransport transport,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(new ZMTPHeaderDecoder(buf, offset, transport, timeHandler));
-  }
+    /**
+     * Constructor.
+     *
+     * @param buf Byte buffer to read from
+     * @param offset Offset into buffer to start from
+     * @param transport The parent transport
+     * @param timeHandler Implementation of the time encoding to use
+     */
+    public ZMTPHeaderElementInputStream(final byte[] buf,
+            final int offset, ZMTPTransport transport,
+            final BinaryTimeHandler timeHandler) {
+        super(new ZMTPHeaderDecoder(buf, offset, transport, timeHandler));
+    }
 
 }

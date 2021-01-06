@@ -28,38 +28,40 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 /**
  * Class representing a Send operation.
  */
-public class MALSendOperation extends MALOperation
-{
-  private final MALOperationStage sendStage;
+public class MALSendOperation extends MALOperation {
 
-  /**
-   * Initialises the internal variables with the supplied values.
-   * @param number Number of the operation.
-   * @param name Name of the operation.
-   * @param replayable Boolean that indicates whether the operation is replayable or not
-   * @param capabilitySet Capability set of the operation.
-   * @param sendStage The stage information for the SEND stage.
-   * @throws java.lang.IllegalArgumentException If any argument is null, except the operation stage arguments.
-   */
-  public MALSendOperation(final UShort number,
-          final Identifier name,
-          final Boolean replayable,
-          final UShort capabilitySet,
-          final MALOperationStage sendStage) throws java.lang.IllegalArgumentException
-  {
-    super(number, name, replayable, InteractionType.SEND, capabilitySet);
+    private final MALOperationStage sendStage;
 
-    this.sendStage = sendStage;
-  }
+    /**
+     * Initialises the internal variables with the supplied values.
+     *
+     * @param number Number of the operation.
+     * @param name Name of the operation.
+     * @param replayable Boolean that indicates whether the operation is
+     * replayable or not
+     * @param capabilitySet Capability set of the operation.
+     * @param sendStage The stage information for the SEND stage.
+     * @throws java.lang.IllegalArgumentException If any argument is null,
+     * except the operation stage arguments.
+     */
+    public MALSendOperation(final UShort number,
+            final Identifier name,
+            final Boolean replayable,
+            final UShort capabilitySet,
+            final MALOperationStage sendStage)
+            throws java.lang.IllegalArgumentException {
+        super(number, name, replayable, InteractionType.SEND, capabilitySet);
+        this.sendStage = sendStage;
+    }
 
-  /**
-   * Returns the operation stage for the supplied stage number.
-   * @param stageNumber The stage number to return, ignored for SEND pattern.
-   * @return The operation stage.
-   */
-  @Override
-  public MALOperationStage getOperationStage(final UOctet stageNumber)
-  {
-    return sendStage;
-  }
+    /**
+     * Returns the operation stage for the supplied stage number.
+     *
+     * @param stageNumber The stage number to return, ignored for SEND pattern.
+     * @return The operation stage.
+     */
+    @Override
+    public MALOperationStage getOperationStage(final UOctet stageNumber) {
+        return sendStage;
+    }
 }

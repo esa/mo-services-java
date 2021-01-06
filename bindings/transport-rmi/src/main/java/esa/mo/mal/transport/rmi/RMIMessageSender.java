@@ -31,64 +31,60 @@ import java.rmi.RemoteException;
 /**
  * implementation of the GENMessageSender information for RMI transport.
  */
-public class RMIMessageSender implements GENMessageSender<byte[]>
-{
+public class RMIMessageSender implements GENMessageSender<byte[]> {
 
-  private final String remoteURI;
-  private boolean closed = false;
-  private RMIReceiveInterface destinationRMI;
+    private final String remoteURI;
+    private boolean closed = false;
+    private RMIReceiveInterface destinationRMI;
 
-  /**
-   * Constructor.
-   *
-   * @param remoteRootURI The remote RMI object URI.
-   * @throws NotBoundException If remote RMI object no bound.
-   * @throws MalformedURLException If URI not correct.
-   * @throws RemoteException If there is a remote error.
-   */
-  public RMIMessageSender(String remoteRootURI) throws NotBoundException, MalformedURLException,
-      RemoteException
-  {
-    this.remoteURI = remoteRootURI;
-    destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteURI);
-  }
-
-  @Override
-  public void sendEncodedMessage(GENOutgoingMessageHolder<byte[]> packetData) throws IOException
-  {
-    try {
-      internalSendMessage(packetData);
-    } catch (RemoteException ex) {
-      // this can be thrown if we have a cached interface that has expired, so we clear the interface and try again
-      destinationRMI = null;
-      internalSendMessage(packetData);
+    /**
+     * Constructor.
+     *
+     * @param remoteRootURI The remote RMI object URI.
+     * @throws NotBoundException If remote RMI object no bound.
+     * @throws MalformedURLException If URI not correct.
+     * @throws RemoteException If there is a remote error.
+     */
+    public RMIMessageSender(String remoteRootURI) 
+            throws NotBoundException, MalformedURLException, RemoteException {
+        this.remoteURI = remoteRootURI;
+        destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteURI);
     }
-  }
 
-  private void internalSendMessage(GENOutgoingMessageHolder<byte[]> packetData) throws
-      MalformedURLException, RemoteException, IOException
-  {
-    if (!closed) {
-      if (null == destinationRMI) {
+    @Override
+    public void sendEncodedMessage(GENOutgoingMessageHolder<byte[]> packetData) throws IOException {
         try {
-          destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteURI);
-        } catch (NotBoundException ex) {
-          throw new IOException("Remote URI no known " + remoteURI, ex);
+            internalSendMessage(packetData);
+        } catch (RemoteException ex) {
+            // this can be thrown if we have a cached interface that has expired, 
+            // so we clear the interface and try again
+            destinationRMI = null;
+            internalSendMessage(packetData);
         }
-      }
-
-      RMIReceiveInterface remoteIf = destinationRMI;
-
-      if (null != remoteIf) {
-        remoteIf.receive(packetData.getEncodedMessage());
-      }
     }
-  }
 
-  @Override
-  public void close()
-  {
-    closed = true;
-    destinationRMI = null;
-  }
+    private void internalSendMessage(GENOutgoingMessageHolder<byte[]> packetData) 
+            throws MalformedURLException, RemoteException, IOException {
+        if (!closed) {
+            if (null == destinationRMI) {
+                try {
+                    destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteURI);
+                } catch (NotBoundException ex) {
+                    throw new IOException("Remote URI no known " + remoteURI, ex);
+                }
+            }
+
+            RMIReceiveInterface remoteIf = destinationRMI;
+
+            if (null != remoteIf) {
+                remoteIf.receive(packetData.getEncodedMessage());
+            }
+        }
+    }
+
+    @Override
+    public void close() {
+        closed = true;
+        destinationRMI = null;
+    }
 }

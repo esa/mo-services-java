@@ -23,30 +23,31 @@ package org.ccsds.moims.mo.mal.transport;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
- * The MALTransmitMultipleErrorException class represents a TRANSMITMULTIPLE ERROR as an exception.
+ * The MALTransmitMultipleErrorException class represents a TRANSMITMULTIPLE
+ * ERROR as an exception.
  */
-public class MALTransmitMultipleErrorException extends MALException
-{
-  private MALTransmitErrorException[] transmitExceptions;
+public class MALTransmitMultipleErrorException extends MALException {
 
-  /**
-   * Constructor.
-   *
-   * @param transmitExceptions Transmit errors preventing messages to be transmitted
-   */
-  public MALTransmitMultipleErrorException(final MALTransmitErrorException[] transmitExceptions)
-  {
-    super();
-    this.transmitExceptions = transmitExceptions;
-  }
+    private MALTransmitErrorException[] transmitExceptions;
 
-  /**
-   * Returns the Transmit errors raised by the MALMessages which Transmit failed.
-   *
-   * @return The transmit errors.
-   */
-  public MALTransmitErrorException[] getTransmitExceptions()
-  {
-    return transmitExceptions;
-  }
+    /**
+     * Constructor.
+     *
+     * @param transmitExceptions Transmit errors preventing messages to be
+     * transmitted
+     */
+    public MALTransmitMultipleErrorException(final MALTransmitErrorException[] transmitExceptions) {
+        super();
+        this.transmitExceptions = transmitExceptions;
+    }
+
+    /**
+     * Returns the Transmit errors raised by the MALMessages which Transmit
+     * failed.
+     *
+     * @return The transmit errors.
+     */
+    public MALTransmitErrorException[] getTransmitExceptions() {
+        return transmitExceptions;
+    }
 }

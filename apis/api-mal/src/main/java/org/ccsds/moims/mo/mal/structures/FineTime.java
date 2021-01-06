@@ -27,120 +27,102 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Class representing MAL FineTime type.
  */
-public class FineTime implements Attribute
-{
-  private long value;
+public class FineTime implements Attribute {
 
-  /**
-   * Default constructor.
-   */
-  public FineTime()
-  {
-    value = 0;
-  }
+    private long value;
 
-  /**
-   * Initialiser constructor.
-   *
-   * @param value Value to initialise with.
-   */
-  public FineTime(final long value)
-  {
-    this.value = value;
-  }
+    /**
+     * Default constructor.
+     */
+    public FineTime() {
+        value = 0;
+    }
 
-  @Override
-  public Element createElement()
-  {
-    return new FineTime();
-  }
+    /**
+     * Initialiser constructor.
+     *
+     * @param value Value to initialise with.
+     */
+    public FineTime(final long value) {
+        this.value = value;
+    }
 
-  /**
-   * Returns the value of this type.
-   *
-   * @return the value.
-   */
-  public long getValue()
-  {
-    return value;
-  }
+    @Override
+    public Element createElement() {
+        return new FineTime();
+    }
+
+    /**
+     * Returns the value of this type.
+     *
+     * @return the value.
+     */
+    public long getValue() {
+        return value;
+    }
 
 //  This might be required for XML serialisation and technologies that use that.  
 //  public void setValue(long value)
 //  {
 //    this.value = value;
 //  }
-
-  @Override
-  public Long getShortForm()
-  {
-    return Attribute.FINETIME_SHORT_FORM;
-  }
-
-  @Override
-  public Integer getTypeShortForm()
-  {
-    return Attribute.FINETIME_TYPE_SHORT_FORM;
-  }
-
-  @Override
-  public UShort getAreaNumber()
-  {
-    return UShort.ATTRIBUTE_AREA_NUMBER;
-  }
-
-  @Override
-  public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion()
-  {
-    return UOctet.AREA_VERSION;
-  }
-
-  @Override
-  public UShort getServiceNumber()
-  {
-    return UShort.ATTRIBUTE_SERVICE_NUMBER;
-  }
-
-  @Override
-  public void encode(final MALEncoder encoder) throws MALException
-  {
-    encoder.encodeFineTime(this);
-  }
-
-  @Override
-  public Element decode(final MALDecoder decoder) throws MALException
-  {
-    return decoder.decodeFineTime();
-  }
-
-  @Override
-  public boolean equals(final Object obj)
-  {
-    if (null == obj)
-    {
-      return false;
+    @Override
+    public Long getShortForm() {
+        return Attribute.FINETIME_SHORT_FORM;
     }
-    if (this == obj)
-    {
-      return true;
-    }
-    if (!(obj instanceof FineTime))
-    {
-      return false;
-    }
-    return this.value == (((FineTime) obj).value);
-  }
 
-  @Override
-  public int hashCode()
-  {
-    return (int) value;
-  }
+    @Override
+    public Integer getTypeShortForm() {
+        return Attribute.FINETIME_TYPE_SHORT_FORM;
+    }
 
-  @Override
-  public String toString()
-  {
-    return String.valueOf(value);
-  }
-  private static final long serialVersionUID = Attribute.FINETIME_SHORT_FORM;
+    @Override
+    public UShort getAreaNumber() {
+        return UShort.ATTRIBUTE_AREA_NUMBER;
+    }
+
+    @Override
+    public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion() {
+        return UOctet.AREA_VERSION;
+    }
+
+    @Override
+    public UShort getServiceNumber() {
+        return UShort.ATTRIBUTE_SERVICE_NUMBER;
+    }
+
+    @Override
+    public void encode(final MALEncoder encoder) throws MALException {
+        encoder.encodeFineTime(this);
+    }
+
+    @Override
+    public Element decode(final MALDecoder decoder) throws MALException {
+        return decoder.decodeFineTime();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (null == obj) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof FineTime)) {
+            return false;
+        }
+        return this.value == (((FineTime) obj).value);
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
+    private static final long serialVersionUID = Attribute.FINETIME_SHORT_FORM;
 }

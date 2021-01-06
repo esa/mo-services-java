@@ -23,91 +23,86 @@ package esa.mo.tools.stubgen.specification;
 /**
  * Holds details about native types used by the auto generator.
  */
-public class NativeTypeDetails
-{
-  /**
-   * The language specific type to use.
-   */
-  private final String languageTypeName;
-  /**
-   * True is this type is an object.
-   */
-  private final boolean object;
-  /**
-   * True is this type is a parameterised type.
-   */
-  private final boolean parameterised;
-  /**
-   * If an import is needed, then this is the file to import. If null then no import needed.
-   */
-  private final String importFileName;
+public class NativeTypeDetails {
 
-  /**
-   * Constructor.
-   *
-   * @param languageTypeName the language type.
-   * @param isObject True if this is an object.
-   * @param isParameterised true if parameterised.
-   * @param importFileName Import file name.
-   */
-  public NativeTypeDetails(final String languageTypeName,
-          final boolean isObject,
-          final boolean isParameterised,
-          final String importFileName)
-  {
-    this.languageTypeName = languageTypeName;
-    this.object = isObject;
-    this.parameterised = isParameterised;
-    this.importFileName = importFileName;
-  }
+    /**
+     * The language specific type to use.
+     */
+    private final String languageTypeName;
+    /**
+     * True is this type is an object.
+     */
+    private final boolean object;
+    /**
+     * True is this type is a parameterised type.
+     */
+    private final boolean parameterised;
+    /**
+     * If an import is needed, then this is the file to import. If null then no
+     * import needed.
+     */
+    private final String importFileName;
 
-  /**
-   * Returns true if an import statement is needed for this type.
-   *
-   * @return the import requirement.
-   */
-  public boolean needsImport()
-  {
-    return null != importFileName;
-  }
+    /**
+     * Constructor.
+     *
+     * @param languageTypeName the language type.
+     * @param isObject True if this is an object.
+     * @param isParameterised true if parameterised.
+     * @param importFileName Import file name.
+     */
+    public NativeTypeDetails(final String languageTypeName,
+            final boolean isObject,
+            final boolean isParameterised,
+            final String importFileName) {
+        this.languageTypeName = languageTypeName;
+        this.object = isObject;
+        this.parameterised = isParameterised;
+        this.importFileName = importFileName;
+    }
 
-  /**
-   * Returns the language type.
-   *
-   * @return the language type name.
-   */
-  public String getLanguageTypeName()
-  {
-    return languageTypeName;
-  }
+    /**
+     * Returns true if an import statement is needed for this type.
+     *
+     * @return the import requirement.
+     */
+    public boolean needsImport() {
+        return null != importFileName;
+    }
 
-  /**
-   * True if it is an object type.
-   *
-   * @return True if an object.
-   */
-  public boolean isObject()
-  {
-    return object;
-  }
+    /**
+     * Returns the language type.
+     *
+     * @return the language type name.
+     */
+    public String getLanguageTypeName() {
+        return languageTypeName;
+    }
 
-  /**
-   * True if it is parameterised.
-   *
-   * @return True if parameterised.
-   */
-  public boolean isParameterised()
-  {
-    return parameterised;
-  }
+    /**
+     * True if it is an object type.
+     *
+     * @return True if an object.
+     */
+    public boolean isObject() {
+        return object;
+    }
 
-  /**
-   * The import file name if needed.
-   *
-   * @return the import file name.
-   */
-  public String getImportFileName()
-  {
-    return importFileName;
-  }
+    /**
+     * True if it is parameterised.
+     *
+     * @return True if parameterised.
+     */
+    public boolean isParameterised() {
+        return parameterised;
+    }
+
+    /**
+     * The import file name if needed.
+     *
+     * @return the import file name.
+     */
+    public String getImportFileName() {
+        return importFileName;
+    }
 }

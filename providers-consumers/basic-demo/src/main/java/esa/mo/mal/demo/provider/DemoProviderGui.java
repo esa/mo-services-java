@@ -31,123 +31,116 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 
 /**
- * This class provides a simple form for the control of the provider. It allows control of the generation of updates,
- * the rate the updates are generated, the size of the set of updates (the pool) and the block size of the update sets.
+ * This class provides a simple form for the control of the provider. It allows
+ * control of the generation of updates, the rate the updates are generated, the
+ * size of the set of updates (the pool) and the block size of the update sets.
  */
-public class DemoProviderGui extends javax.swing.JFrame
-{
-  /**
-   * Logger
-   */
-  public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.demo.provider");
-  private final DemoProviderServiceImpl handler = new DemoProviderServiceImpl();
-  private final String defaultProtocol;
+public class DemoProviderGui extends javax.swing.JFrame {
 
-  /**
-   * Main command line entry point.
-   *
-   * @param args the command line arguments
-   */
-  public static void main(final String args[])
-  {
-    try
-    {
-      final java.util.Properties sysProps = System.getProperties();
+    /**
+     * Logger
+     */
+    public static final java.util.logging.Logger LOGGER
+            = Logger.getLogger("org.ccsds.moims.mo.mal.demo.provider");
+    private final DemoProviderServiceImpl handler = new DemoProviderServiceImpl();
+    private final String defaultProtocol;
 
-      File file = new File(System.getProperty("provider.properties", "demoProvider.properties"));
-      if (file.exists())
-      {
-        sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), "provider.properties"));
-      }
+    /**
+     * Main command line entry point.
+     *
+     * @param args the command line arguments
+     */
+    public static void main(final String args[]) {
+        try {
+            final java.util.Properties sysProps = System.getProperties();
 
-      file = new File(System.getProperty("broker.properties", "sharedBrokerURI.properties"));
-      if (file.exists())
-      {
-        sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), "broker.properties"));
-      }
+            File file = new File(System.getProperty("provider.properties",
+                    "demoProvider.properties"));
+            if (file.exists()) {
+                sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(),
+                        "provider.properties"));
+            }
 
-      System.setProperties(sysProps);
+            file = new File(System.getProperty("broker.properties",
+                    "sharedBrokerURI.properties"));
+            if (file.exists()) {
+                sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(),
+                        "broker.properties"));
+            }
 
-      final String name = System.getProperty("application.name", "DemoServiceProvider");
+            System.setProperties(sysProps);
 
-      final DemoProviderGui gui = new DemoProviderGui(name);
-      gui.handler.init();
+            final String name = System.getProperty("application.name", "DemoServiceProvider");
 
-      EventQueue.invokeLater(new Runnable()
-      {
-        public void run()
-        {
-          gui.setVisible(true);
+            final DemoProviderGui gui = new DemoProviderGui(name);
+            gui.handler.init();
+
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    gui.setVisible(true);
+                }
+            });
+        } catch (MalformedURLException ex) {
+            LOGGER.log(Level.SEVERE,
+                    "Exception thrown during initialisation of Demo Provider {0}", ex);
+        } catch (MALException ex) {
+            LOGGER.log(Level.SEVERE,
+                    "Exception thrown during initialisation of Demo Provider {0}", ex);
+        } catch (MALInteractionException ex) {
+            LOGGER.log(Level.SEVERE,
+                    "Exception thrown during initialisation of Demo Provider {0}", ex);
         }
-      });
-    }
-    catch (MalformedURLException ex)
-    {
-      LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Provider {0}", ex);
-    }
-    catch (MALException ex)
-    {
-      LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Provider {0}", ex);
-    }
-    catch (MALInteractionException ex)
-    {
-      LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Provider {0}", ex);
-    }
-  }
-
-  /**
-   * Creates new form DemoProviderGui.
-   *
-   * @param name The name to display on the title bar of the form.
-   */
-  public DemoProviderGui(final String name)
-  {
-    initComponents();
-
-    defaultProtocol = System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol");
-
-    String protocolString = System.getProperty("esa.mo.mal.demo.provider.protocols");
-
-    if ((null != protocolString) && (0 < protocolString.trim().length()))
-    {
-      String[] protocols = protocolString.trim().split(",");
-
-      for (int i = 0; i < protocols.length; i = i + 2)
-      {
-        String displayName = protocols[i];
-        String protocol = protocols[i + 1];
-
-        javax.swing.JMenuItem tmpMenuItem = new javax.swing.JMenuItem();
-        tmpMenuItem.setText(displayName);
-        tmpMenuItem.setActionCommand(protocol);
-        tmpMenuItem.addActionListener(new java.awt.event.ActionListener()
-        {
-          public void actionPerformed(java.awt.event.ActionEvent evt)
-          {
-            transportSelected(evt);
-          }
-        });
-
-        jMenu3.add(tmpMenuItem);
-      }
     }
 
-    this.setTitle(name);
-    statusLabel.setOpaque(true);
+    /**
+     * Creates new form DemoProviderGui.
+     *
+     * @param name The name to display on the title bar of the form.
+     */
+    public DemoProviderGui(final String name) {
+        initComponents();
 
-    ((javax.swing.SpinnerNumberModel) poolSize.getModel()).setMinimum(1);
-    ((javax.swing.SpinnerNumberModel) blockSize.getModel()).setMinimum(1);
-    ((javax.swing.SpinnerNumberModel) poolSize.getModel()).setValue(handler.getPoolSize());
-    ((javax.swing.SpinnerNumberModel) blockSize.getModel()).setValue(handler.getBlockSize());
-    
-    updateRateStateChanged(null);
-  }
+        defaultProtocol = System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol");
 
-  /**
-   * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
-   * content of this method is always regenerated by the Form Editor.
-   */
-  @SuppressWarnings("unchecked")
+        String protocolString = System.getProperty("esa.mo.mal.demo.provider.protocols");
+
+        if ((null != protocolString) && (0 < protocolString.trim().length())) {
+            String[] protocols = protocolString.trim().split(",");
+
+            for (int i = 0; i < protocols.length; i = i + 2) {
+                String displayName = protocols[i];
+                String protocol = protocols[i + 1];
+
+                javax.swing.JMenuItem tmpMenuItem = new javax.swing.JMenuItem();
+                tmpMenuItem.setText(displayName);
+                tmpMenuItem.setActionCommand(protocol);
+                tmpMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        transportSelected(evt);
+                    }
+                });
+
+                jMenu3.add(tmpMenuItem);
+            }
+        }
+
+        this.setTitle(name);
+        statusLabel.setOpaque(true);
+
+        ((javax.swing.SpinnerNumberModel) poolSize.getModel()).setMinimum(1);
+        ((javax.swing.SpinnerNumberModel) blockSize.getModel()).setMinimum(1);
+        ((javax.swing.SpinnerNumberModel) poolSize.getModel()).setValue(handler.getPoolSize());
+        ((javax.swing.SpinnerNumberModel) blockSize.getModel()).setValue(handler.getBlockSize());
+
+        updateRateStateChanged(null);
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents()
   {
@@ -332,93 +325,82 @@ public class DemoProviderGui extends javax.swing.JFrame
 
     private void quitMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_quitMenuItemActionPerformed
     {//GEN-HEADEREND:event_quitMenuItemActionPerformed
-      handler.close();
-      dispose();
+        handler.close();
+        dispose();
     }//GEN-LAST:event_quitMenuItemActionPerformed
 
     private void genTMMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_genTMMenuItemActionPerformed
     {//GEN-HEADEREND:event_genTMMenuItemActionPerformed
-      handler.startGeneration();
-      statusLabel.setText("GENERATING");
-      statusLabel.setBackground(Color.ORANGE);
+        handler.startGeneration();
+        statusLabel.setText("GENERATING");
+        statusLabel.setBackground(Color.ORANGE);
     }//GEN-LAST:event_genTMMenuItemActionPerformed
 
     private void pauseTMMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_pauseTMMenuItemActionPerformed
     {//GEN-HEADEREND:event_pauseTMMenuItemActionPerformed
-      handler.pauseGeneration();
-      statusLabel.setText("PAUSED");
-      statusLabel.setBackground(Color.GRAY);
+        handler.pauseGeneration();
+        statusLabel.setText("PAUSED");
+        statusLabel.setBackground(Color.GRAY);
 
     }//GEN-LAST:event_pauseTMMenuItemActionPerformed
 
     private void updateRateStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_updateRateStateChanged
     {//GEN-HEADEREND:event_updateRateStateChanged
-      if (0 < updateRate.getValue())
-      {
-        handler.setSleep((11 - updateRate.getValue()) * 1000);
-      }
-      else
-      {
-        handler.pauseGeneration();
-        statusLabel.setText("PAUSED");
-        statusLabel.setBackground(Color.GRAY);
-      }
+        if (0 < updateRate.getValue()) {
+            handler.setSleep((11 - updateRate.getValue()) * 1000);
+        } else {
+            handler.pauseGeneration();
+            statusLabel.setText("PAUSED");
+            statusLabel.setBackground(Color.GRAY);
+        }
     }//GEN-LAST:event_updateRateStateChanged
 
     private void poolSizeStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_poolSizeStateChanged
     {//GEN-HEADEREND:event_poolSizeStateChanged
-      handler.setPoolSize((Integer) poolSize.getValue());
+        handler.setPoolSize((Integer) poolSize.getValue());
     }//GEN-LAST:event_poolSizeStateChanged
 
     private void blockSizeStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_blockSizeStateChanged
     {//GEN-HEADEREND:event_blockSizeStateChanged
-      handler.setBlockSize((Integer) blockSize.getValue());
+        handler.setBlockSize((Integer) blockSize.getValue());
     }//GEN-LAST:event_blockSizeStateChanged
 
   private void transportSelected(java.awt.event.ActionEvent evt)//GEN-FIRST:event_transportSelected
   {//GEN-HEADEREND:event_transportSelected
-    String newProtocol;
+      String newProtocol;
 
-    if (evt.getSource() == this.defaultTransportMenuItem)
-    {
-      System.out.println("SELECTED DEFAULT TRANSPORT");
-      newProtocol = defaultProtocol;
-    }
-    else
-    {
-      System.out.println("SELECTED TRANSPORT: " + evt.getActionCommand());
-      newProtocol = evt.getActionCommand();
-    }
+      if (evt.getSource() == this.defaultTransportMenuItem) {
+          System.out.println("SELECTED DEFAULT TRANSPORT");
+          newProtocol = defaultProtocol;
+      } else {
+          System.out.println("SELECTED TRANSPORT: " + evt.getActionCommand());
+          newProtocol = evt.getActionCommand();
+      }
 
-    boolean isGenerating = handler.isGenerating();
+      boolean isGenerating = handler.isGenerating();
 
-    if (isGenerating)
-    {
-      pauseTMMenuItemActionPerformed(null);
-    }
+      if (isGenerating) {
+          pauseTMMenuItemActionPerformed(null);
+      }
 
-    try
-    {
-      handler.startServices(newProtocol);
-    }
-    catch (MALException ex)
-    {
-      LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Provider {0}", ex);
-    }
-    catch (MALInteractionException ex)
-    {
-      LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Provider {0}", ex);
-    }
+      try {
+          handler.startServices(newProtocol);
+      } catch (MALException ex) {
+          LOGGER.log(Level.SEVERE,
+                  "Exception thrown during initialisation of Demo Provider {0}", ex);
+      } catch (MALInteractionException ex) {
+          LOGGER.log(Level.SEVERE,
+                  "Exception thrown during initialisation of Demo Provider {0}", ex);
+      }
 
-    if (isGenerating)
-    {
-      genTMMenuItemActionPerformed(null);
-    }
+      if (isGenerating) {
+          genTMMenuItemActionPerformed(null);
+      }
   }//GEN-LAST:event_transportSelected
 
   private void formWindowClosing(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosing
   {//GEN-HEADEREND:event_formWindowClosing
-    quitMenuItemActionPerformed(null);
+      quitMenuItemActionPerformed(null);
   }//GEN-LAST:event_formWindowClosing
 
   // Variables declaration - do not modify//GEN-BEGIN:variables

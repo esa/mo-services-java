@@ -30,49 +30,45 @@ import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
 
 /**
- * Implementation of the MALElementStreamFactory interface for the line encoding.
+ * Implementation of the MALElementStreamFactory interface for the line
+ * encoding.
  */
-public class LineStreamFactory extends MALElementStreamFactory
-{
+public class LineStreamFactory extends MALElementStreamFactory {
 
-  @Override
-  protected void init(final String protocol, final Map properties) throws IllegalArgumentException,
-      MALException
-  {
-    // nothing to do here
-  }
-
-  @Override
-  public MALElementInputStream createInputStream(final byte[] bytes, final int offset)
-  {
-    return new LineElementInputStream(new ByteArrayInputStream(bytes, offset, bytes.length - offset));
-  }
-
-  @Override
-  public MALElementInputStream createInputStream(final InputStream is) throws MALException
-  {
-    return new LineElementInputStream(is);
-  }
-
-  @Override
-  public MALElementOutputStream createOutputStream(final OutputStream os) throws MALException
-  {
-    return new LineElementOutputStream(os);
-  }
-
-  @Override
-  public Blob encode(final Object[] elements, final MALEncodingContext ctx) throws MALException
-  {
-    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-    final MALElementOutputStream os = createOutputStream(baos);
-
-    for (Object element : elements) {
-      os.writeElement(element, ctx);
+    @Override
+    protected void init(final String protocol, final Map properties)
+            throws IllegalArgumentException, MALException {
+        // nothing to do here
     }
 
-    os.flush();
+    @Override
+    public MALElementInputStream createInputStream(final byte[] bytes, final int offset) {
+        return new LineElementInputStream(
+                new ByteArrayInputStream(bytes, offset, bytes.length - offset)
+        );
+    }
 
-    return new Blob(baos.toByteArray());
-  }
+    @Override
+    public MALElementInputStream createInputStream(final InputStream is) throws MALException {
+        return new LineElementInputStream(is);
+    }
+
+    @Override
+    public MALElementOutputStream createOutputStream(final OutputStream os) throws MALException {
+        return new LineElementOutputStream(os);
+    }
+
+    @Override
+    public Blob encode(final Object[] elements, final MALEncodingContext ctx) throws MALException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final MALElementOutputStream os = createOutputStream(baos);
+
+        for (Object element : elements) {
+            os.writeElement(element, ctx);
+        }
+
+        os.flush();
+
+        return new Blob(baos.toByteArray());
+    }
 }

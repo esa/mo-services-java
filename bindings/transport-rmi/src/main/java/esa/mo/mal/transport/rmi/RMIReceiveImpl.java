@@ -25,29 +25,26 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
- * The implementation of the RMIReceiveInterface interface. Holds a reference to the transport
- * instance that created it.
+ * The implementation of the RMIReceiveInterface interface. Holds a reference to
+ * the transport instance that created it.
  */
-public class RMIReceiveImpl extends UnicastRemoteObject implements RMIReceiveInterface
-{
+public class RMIReceiveImpl extends UnicastRemoteObject implements RMIReceiveInterface {
 
-  private static final long serialVersionUID = 0x1000001111100L;
-  private final transient RMITransport transport;
+    private static final long serialVersionUID = 0x1000001111100L;
+    private final transient RMITransport transport;
 
-  /**
-   * Creates a new instance of RMIRecvImpl
-   *
-   * @param transport The transport instance to pass received messages to.
-   * @throws RemoteException On error.
-   */
-  public RMIReceiveImpl(final RMITransport transport) throws RemoteException
-  {
-    this.transport = transport;
-  }
+    /**
+     * Creates a new instance of RMIRecvImpl
+     *
+     * @param transport The transport instance to pass received messages to.
+     * @throws RemoteException On error.
+     */
+    public RMIReceiveImpl(final RMITransport transport) throws RemoteException {
+        this.transport = transport;
+    }
 
-  @Override
-  public void receive(final byte[] packet) throws RemoteException
-  {
-    transport.receive(null, new GENIncomingByteMessageDecoder(transport, packet));
-  }
+    @Override
+    public void receive(final byte[] packet) throws RemoteException {
+        transport.receive(null, new GENIncomingByteMessageDecoder(transport, packet));
+    }
 }

@@ -33,56 +33,43 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
 
+public class TestGZipStreamFactory extends MALElementStreamFactory {
 
-public class TestGZipStreamFactory extends MALElementStreamFactory
-{
-  private final MALElementStreamFactory delegate;
+    private final MALElementStreamFactory delegate;
 
-  public TestGZipStreamFactory(MALElementStreamFactory delegate)
-  {
-    this.delegate = delegate;
-  }
-
-  @Override
-  protected void init(String protocol, Map properties) throws IllegalArgumentException, MALException
-  {
-  }
-
-  @Override
-  public MALElementInputStream createInputStream(InputStream is) throws IllegalArgumentException, MALException
-  {
-    try
-    {
-      return delegate.createInputStream(new GZIPInputStream(is));
+    public TestGZipStreamFactory(MALElementStreamFactory delegate) {
+        this.delegate = delegate;
     }
-    catch (IOException ex)
-    {
-      throw new MALException("XML Encoding error", ex);
-    }
-  }
 
-  @Override
-  public MALElementOutputStream createOutputStream(OutputStream os) throws IllegalArgumentException, MALException
-  {
-    try
-    {
-      return delegate.createOutputStream(new GZIPOutputStream(os));
+    @Override
+    protected void init(String protocol, Map properties) throws IllegalArgumentException, MALException {
     }
-    catch (IOException ex)
-    {
-      throw new MALException("XML Encoding error", ex);
+
+    @Override
+    public MALElementInputStream createInputStream(InputStream is) throws IllegalArgumentException, MALException {
+        try {
+            return delegate.createInputStream(new GZIPInputStream(is));
+        } catch (IOException ex) {
+            throw new MALException("XML Encoding error", ex);
+        }
     }
-  }
 
-  @Override
-  public MALElementInputStream createInputStream(byte[] bytes, int offset) throws IllegalArgumentException, MALException
-  {
-    return delegate.createInputStream(bytes, offset);
-  }
+    @Override
+    public MALElementOutputStream createOutputStream(OutputStream os) throws IllegalArgumentException, MALException {
+        try {
+            return delegate.createOutputStream(new GZIPOutputStream(os));
+        } catch (IOException ex) {
+            throw new MALException("XML Encoding error", ex);
+        }
+    }
 
-  @Override
-  public Blob encode(Object[] elements, MALEncodingContext ctx) throws IllegalArgumentException, MALException
-  {
-    return delegate.encode(elements, ctx);
-  }
+    @Override
+    public MALElementInputStream createInputStream(byte[] bytes, int offset) throws IllegalArgumentException, MALException {
+        return delegate.createInputStream(bytes, offset);
+    }
+
+    @Override
+    public Blob encode(Object[] elements, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+        return delegate.encode(elements, ctx);
+    }
 }

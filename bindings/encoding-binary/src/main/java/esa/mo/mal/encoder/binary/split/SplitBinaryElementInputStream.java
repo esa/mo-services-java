@@ -25,41 +25,37 @@ import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 /**
  * Implements the MALElementInputStream interface for a split binary encoding.
  */
-public class SplitBinaryElementInputStream extends esa.mo.mal.encoder.binary.variable.VariableBinaryElementInputStream
-{
+public class SplitBinaryElementInputStream extends esa.mo.mal.encoder.binary.variable.VariableBinaryElementInputStream {
 
-  /**
-   * Constructor.
-   *
-   * @param is          Input stream to read from.
-   * @param timeHandler Time handler to use.
-   */
-  public SplitBinaryElementInputStream(final java.io.InputStream is,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(new SplitBinaryDecoder(is, timeHandler));
-  }
+    /**
+     * Constructor.
+     *
+     * @param is Input stream to read from.
+     * @param timeHandler Time handler to use.
+     */
+    public SplitBinaryElementInputStream(final java.io.InputStream is,
+            final BinaryTimeHandler timeHandler) {
+        super(new SplitBinaryDecoder(is, timeHandler));
+    }
 
-  /**
-   * Constructor.
-   *
-   * @param buf         Byte buffer to read from.
-   * @param offset      Offset into buffer to start from.
-   * @param timeHandler Time handler to use.
-   */
-  public SplitBinaryElementInputStream(final byte[] buf, final int offset,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(new SplitBinaryDecoder(buf, offset, timeHandler));
-  }
+    /**
+     * Constructor.
+     *
+     * @param buf Byte buffer to read from.
+     * @param offset Offset into buffer to start from.
+     * @param timeHandler Time handler to use.
+     */
+    public SplitBinaryElementInputStream(final byte[] buf, final int offset,
+            final BinaryTimeHandler timeHandler) {
+        super(new SplitBinaryDecoder(buf, offset, timeHandler));
+    }
 
-  /**
-   * Sub class constructor.
-   *
-   * @param dec Decoder to use.
-   */
-  protected SplitBinaryElementInputStream(SplitBinaryDecoder dec)
-  {
-    super(dec);
-  }
+    /**
+     * Sub class constructor.
+     *
+     * @param dec Decoder to use.
+     */
+    protected SplitBinaryElementInputStream(SplitBinaryDecoder dec) {
+        super(dec);
+    }
 }

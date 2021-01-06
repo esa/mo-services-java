@@ -20,43 +20,38 @@
  */
 package esa.mo.mal.encoder.spp;
 
-import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
-import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementInputStream;
-import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * Implements the MALElementStreamFactory interface for a SPP binary encoding.
  */
-public class SPPFixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory
-{
+public class SPPFixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory {
 
-  public static final String SMALL_LENGTH_FIELD = "esa.mo.mal.encoding.spp.smallLengthField";
-  public static final String TIME_PFIELD_PROPERTY = "org.ccsds.moims.mo.malspp.timePfield";
-  public static final String TIME_EPOCH_PROPERTY = "org.ccsds.moims.mo.malspp.timeEpoch";
-  public static final String TIME_SCALE_PROPERTY = "org.ccsds.moims.mo.malspp.timeScale";
-  public static final String FINETIME_PFIELD_PROPERTY = "org.ccsds.moims.mo.malspp.fineTimePfield";
-  public static final String FINETIME_EPOCH_PROPERTY = "org.ccsds.moims.mo.malspp.fineTimeEpoch";
-  public static final String FINETIME_SCALE_PROPERTY = "org.ccsds.moims.mo.malspp.fineTimeScale";
-  public static int SECONDS_FROM_CCSDS_TO_UNIX_EPOCH = 378691208;
-  public static long FINETIME_EPOCH = 9223372036854775807L;
+    public static final String SMALL_LENGTH_FIELD = "esa.mo.mal.encoding.spp.smallLengthField";
+    public static final String TIME_PFIELD_PROPERTY = "org.ccsds.moims.mo.malspp.timePfield";
+    public static final String TIME_EPOCH_PROPERTY = "org.ccsds.moims.mo.malspp.timeEpoch";
+    public static final String TIME_SCALE_PROPERTY = "org.ccsds.moims.mo.malspp.timeScale";
+    public static final String FINETIME_PFIELD_PROPERTY = "org.ccsds.moims.mo.malspp.fineTimePfield";
+    public static final String FINETIME_EPOCH_PROPERTY = "org.ccsds.moims.mo.malspp.fineTimeEpoch";
+    public static final String FINETIME_SCALE_PROPERTY = "org.ccsds.moims.mo.malspp.fineTimeScale";
+    public static int SECONDS_FROM_CCSDS_TO_UNIX_EPOCH = 378691208;
+    public static long FINETIME_EPOCH = 9223372036854775807L;
 
-  @Override
-  protected void init(final String protocol, final Map properties) throws IllegalArgumentException,
-      MALException
-  {
-    super.init(protocol, properties);
+    @Override
+    protected void init(final String protocol, final Map properties) throws IllegalArgumentException,
+            MALException {
+        super.init(protocol, properties);
 
-    // Override default binary time encoding handler
-    timeHandler = new SPPTimeHandler(properties);
+        // Override default binary time encoding handler
+        timeHandler = new SPPTimeHandler(properties);
 
-    // Backward compatible short length field property name
-    if (null != properties) {
-      if (properties.containsKey(SMALL_LENGTH_FIELD)
-          && Boolean.parseBoolean(properties.get(SMALL_LENGTH_FIELD).toString())) {
-        shortLengthField = true;
-      }
+        // Backward compatible short length field property name
+        if (null != properties) {
+            if (properties.containsKey(SMALL_LENGTH_FIELD)
+                    && Boolean.parseBoolean(properties.get(SMALL_LENGTH_FIELD).toString())) {
+                shortLengthField = true;
+            }
+        }
     }
-  }
 }

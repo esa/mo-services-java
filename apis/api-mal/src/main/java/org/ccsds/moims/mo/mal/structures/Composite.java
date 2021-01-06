@@ -23,6 +23,5 @@ package org.ccsds.moims.mo.mal.structures;
 /**
  * The Composite interface represents the MAL Composite type.
  */
-public interface Composite extends Element
-{
+public interface Composite extends Element {
 }

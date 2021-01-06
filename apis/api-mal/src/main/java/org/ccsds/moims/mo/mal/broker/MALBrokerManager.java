@@ -28,84 +28,91 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
 /**
- * The MALBrokerManager interface encapsulates the resources used to enable MAL brokers to handle PUBLISH-SUBSCRIBE
- * interactions. It is a MALBroker factory.
+ * The MALBrokerManager interface encapsulates the resources used to enable MAL
+ * brokers to handle PUBLISH-SUBSCRIBE interactions. It is a MALBroker factory.
  *
  */
-public interface MALBrokerManager
-{
-  /**
-   * Creates a broker using an internally generated broker handler.
-   *
-   * @return The new MALBroker.
-   * @throws MALException If an error occurs or if the MALBrokerManager is closed
-   */
-  MALBroker createBroker() throws MALException;
+public interface MALBrokerManager {
 
-  /**
-   * Creates a broker using a supplied broker handler.
-   *
-   * @param handler The handler to use, must not be null.
-   * @return The new MALBroker.
-   * @throws java.lang.IllegalArgumentException If the argument is NULL
-   * @throws MALException If an error occurs or if the MALBrokerManager is closed
-   */
-  MALBroker createBroker(MALBrokerHandler handler) throws java.lang.IllegalArgumentException, MALException;
+    /**
+     * Creates a broker using an internally generated broker handler.
+     *
+     * @return The new MALBroker.
+     * @throws MALException If an error occurs or if the MALBrokerManager is
+     * closed
+     */
+    MALBroker createBroker() throws MALException;
 
-  /**
-   * The method binds a shared MAL level broker to a particular transport or creates a transport level broker if no MAL
-   * level broker is supplied.
-   *
-   * @param optionalMALBroker MAL level broker to be bound, may be NULL
-   * @param localName Name of the private MALEndpoint to be created and used by the broker binding, may be NULL
-   * @param protocol Name of the protocol used to bind the broker
-   * @param authenticationId Authentication identifier that should be used by the broker
-   * @param expectedQos QoS levels the broker assumes it can rely on
-   * @param priorityLevelNumber Number of priorities the broker uses
-   * @param qosProperties Default QoS properties used by the broker to send messages, may be NULL
-   * @return The new broker binding.
-   * @throws java.lang.IllegalArgumentException If the parameters ‘protocol’, ‘authenticationId’ or ‘expectedQos’ are
-   * NULL
-   * @throws MALException If the MALBrokerManager is closed
-   */
-  MALBrokerBinding createBrokerBinding(
-          MALBroker optionalMALBroker,
-          String localName,
-          String protocol,
-          Blob authenticationId,
-          QoSLevel[] expectedQos,
-          UInteger priorityLevelNumber,
-          Map qosProperties)
-          throws java.lang.IllegalArgumentException, MALException;
+    /**
+     * Creates a broker using a supplied broker handler.
+     *
+     * @param handler The handler to use, must not be null.
+     * @return The new MALBroker.
+     * @throws java.lang.IllegalArgumentException If the argument is NULL
+     * @throws MALException If an error occurs or if the MALBrokerManager is
+     * closed
+     */
+    MALBroker createBroker(MALBrokerHandler handler) throws java.lang.IllegalArgumentException, MALException;
 
-  /**
-   * The method binds a shared MAL level broker to a particular transport or creates a transport level broker if no MAL
-   * level broker is supplied.
-   *
-   * @param optionalMALBroker MAL level broker to be bound, may be NULL
-   * @param endpoint Shared MALEndpoint to be used by the broker
-   * @param authenticationId Authentication identifier that should be used by the broker
-   * @param expectedQos QoS levels the broker assumes it can rely on
-   * @param priorityLevelNumber Number of priorities the broker uses
-   * @param qosProperties Default QoS properties used by the broker to send messages, may be NULL
-   * @return The new broker binding.
-   * @throws java.lang.IllegalArgumentException If the parameters ‘endpoint’, ‘authenticationId’ or ‘expectedQos’ are
-   * NULL
-   * @throws MALException If the MALBrokerManager is closed
-   */
-  MALBrokerBinding createBrokerBinding(
-          MALBroker optionalMALBroker,
-          MALEndpoint endpoint,
-          Blob authenticationId,
-          QoSLevel[] expectedQos,
-          UInteger priorityLevelNumber,
-          Map qosProperties)
-          throws java.lang.IllegalArgumentException, MALException;
+    /**
+     * The method binds a shared MAL level broker to a particular transport or
+     * creates a transport level broker if no MAL level broker is supplied.
+     *
+     * @param optionalMALBroker MAL level broker to be bound, may be NULL
+     * @param localName Name of the private MALEndpoint to be created and used
+     * by the broker binding, may be NULL
+     * @param protocol Name of the protocol used to bind the broker
+     * @param authenticationId Authentication identifier that should be used by
+     * the broker
+     * @param expectedQos QoS levels the broker assumes it can rely on
+     * @param priorityLevelNumber Number of priorities the broker uses
+     * @param qosProperties Default QoS properties used by the broker to send
+     * messages, may be NULL
+     * @return The new broker binding.
+     * @throws java.lang.IllegalArgumentException If the parameters ‘protocol’,
+     * ‘authenticationId’ or ‘expectedQos’ are NULL
+     * @throws MALException If the MALBrokerManager is closed
+     */
+    MALBrokerBinding createBrokerBinding(
+            MALBroker optionalMALBroker,
+            String localName,
+            String protocol,
+            Blob authenticationId,
+            QoSLevel[] expectedQos,
+            UInteger priorityLevelNumber,
+            Map qosProperties)
+            throws java.lang.IllegalArgumentException, MALException;
 
-  /**
-   * The method releases the resources owned by this MALBrokerManager.
-   *
-   * @throws MALException If an internal error occurs
-   */
-  void close() throws MALException;
+    /**
+     * The method binds a shared MAL level broker to a particular transport or
+     * creates a transport level broker if no MAL level broker is supplied.
+     *
+     * @param optionalMALBroker MAL level broker to be bound, may be NULL
+     * @param endpoint Shared MALEndpoint to be used by the broker
+     * @param authenticationId Authentication identifier that should be used by
+     * the broker
+     * @param expectedQos QoS levels the broker assumes it can rely on
+     * @param priorityLevelNumber Number of priorities the broker uses
+     * @param qosProperties Default QoS properties used by the broker to send
+     * messages, may be NULL
+     * @return The new broker binding.
+     * @throws java.lang.IllegalArgumentException If the parameters ‘endpoint’,
+     * ‘authenticationId’ or ‘expectedQos’ are NULL
+     * @throws MALException If the MALBrokerManager is closed
+     */
+    MALBrokerBinding createBrokerBinding(
+            MALBroker optionalMALBroker,
+            MALEndpoint endpoint,
+            Blob authenticationId,
+            QoSLevel[] expectedQos,
+            UInteger priorityLevelNumber,
+            Map qosProperties)
+            throws java.lang.IllegalArgumentException, MALException;
+
+    /**
+     * The method releases the resources owned by this MALBrokerManager.
+     *
+     * @throws MALException If an internal error occurs
+     */
+    void close() throws MALException;
 }

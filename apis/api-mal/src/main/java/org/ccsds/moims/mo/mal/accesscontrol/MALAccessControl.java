@@ -23,20 +23,22 @@ package org.ccsds.moims.mo.mal.accesscontrol;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * The interface used by a MAL implementation to implement access control policy.
+ * The interface used by a MAL implementation to implement access control
+ * policy.
  */
-public interface MALAccessControl
-{
-  /**
-   * The method is invoked by a MAL implementation to intercept and check: outgoing messages before they are transmitted
-   * to the transport layer; incoming messages before they are delivered to the MAL client.
-   *
-   * It may modify the message and therefore returns the message to use.
-   *
-   * @param msg The MAL message to check
-   * @return The MAL message to use from this point onwards.
-   * @throws IllegalArgumentException if the argument is null.
-   * @throws MALCheckErrorException If there is an access control violation.
-   */
-  MALMessage check(MALMessage msg) throws IllegalArgumentException, MALCheckErrorException;
+public interface MALAccessControl {
+
+    /**
+     * The method is invoked by a MAL implementation to intercept and check:
+     * outgoing messages before they are transmitted to the transport layer;
+     * incoming messages before they are delivered to the MAL client.
+     *
+     * It may modify the message and therefore returns the message to use.
+     *
+     * @param msg The MAL message to check
+     * @return The MAL message to use from this point onwards.
+     * @throws IllegalArgumentException if the argument is null.
+     * @throws MALCheckErrorException If there is an access control violation.
+     */
+    MALMessage check(MALMessage msg) throws IllegalArgumentException, MALCheckErrorException;
 }

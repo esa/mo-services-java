@@ -36,68 +36,64 @@ import org.ccsds.moims.mo.mal.structures.Union;
 /**
  * This class allows marshalling and unmarshalling objects.
  */
-public abstract class GENMarshaller
-{
+public abstract class GENMarshaller {
 
-  private GENMarshaller()
-  {
-    // private contructor as not a real class but a place for static methods
-  }
-
-  /**
-   * Marshals the object.
-   *
-   * @param ssf The string short form.
-   * @param o   The object to be marshalled.
-   * @return The marshalled object.
-   * @throws MALException if any error detected.
-   */
-  public static StringWriter marshall(final String ssf, final Object o) throws MALException
-  {
-    final StringWriter ow = new StringWriter();
-
-    try {
-      final String schemaURN = ssf.substring(0, ssf.lastIndexOf(':'));
-      final String schemaEle = ssf.substring(ssf.lastIndexOf(':') + 1);
-
-      // create the marshaller
-      final JAXBContext jc = JAXBContext.newInstance(o.getClass().getPackage().getName());
-      final Marshaller marshaller = jc.createMarshaller();
-
-      // encode the XML into a string
-      marshaller.marshal(new JAXBElement(new QName(schemaURN, schemaEle), o.getClass(), null, o), ow);
-    } catch (JAXBException ex) {
-      throw new MALException("XML Encoding error", ex);
+    private GENMarshaller() {
+        // private contructor as not a real class but a place for static methods
     }
 
-    return ow;
-  }
+    /**
+     * Marshals the object.
+     *
+     * @param ssf The string short form.
+     * @param o The object to be marshalled.
+     * @return The marshalled object.
+     * @throws MALException if any error detected.
+     */
+    public static StringWriter marshall(final String ssf, final Object o) throws MALException {
+        final StringWriter ow = new StringWriter();
 
-  /**
-   * Unmarshals the object.
-   *
-   * @param shortForm The string short form.
-   * @param ctx       The encoding context to use.
-   * @param lenc      The decoder to be used.
-   * @return The unmarshalled object.
-   * @throws MALException if any error detected.
-   */
-  public static Object unmarshall(final String shortForm, MALEncodingContext ctx,
-      MALElementInputStream lenc) throws MALException
-  {
-    try {
-      final String schemaURN = shortForm.substring(0, shortForm.lastIndexOf(':'));
-      final String packageName = (String) ctx.getEndpointQosProperties().get(schemaURN);
+        try {
+            final String schemaURN = ssf.substring(0, ssf.lastIndexOf(':'));
+            final String schemaEle = ssf.substring(ssf.lastIndexOf(':') + 1);
 
-      final JAXBContext jc = JAXBContext.newInstance(packageName);
-      final Unmarshaller unmarshaller = jc.createUnmarshaller();
+            // create the marshaller
+            final JAXBContext jc = JAXBContext.newInstance(o.getClass().getPackage().getName());
+            final Marshaller marshaller = jc.createMarshaller();
 
-      final String srcString = ((Union) lenc.readElement(new Union(""), null)).getStringValue();
-      final StringReader ir = new StringReader(srcString);
-      final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(ir);
-      return rootElement.getValue();
-    } catch (JAXBException ex) {
-      throw new MALException("XML Decoding error", ex);
+            // encode the XML into a string
+            marshaller.marshal(new JAXBElement(new QName(schemaURN, schemaEle), o.getClass(), null, o), ow);
+        } catch (JAXBException ex) {
+            throw new MALException("XML Encoding error", ex);
+        }
+
+        return ow;
     }
-  }
+
+    /**
+     * Unmarshals the object.
+     *
+     * @param shortForm The string short form.
+     * @param ctx The encoding context to use.
+     * @param lenc The decoder to be used.
+     * @return The unmarshalled object.
+     * @throws MALException if any error detected.
+     */
+    public static Object unmarshall(final String shortForm, MALEncodingContext ctx,
+            MALElementInputStream lenc) throws MALException {
+        try {
+            final String schemaURN = shortForm.substring(0, shortForm.lastIndexOf(':'));
+            final String packageName = (String) ctx.getEndpointQosProperties().get(schemaURN);
+
+            final JAXBContext jc = JAXBContext.newInstance(packageName);
+            final Unmarshaller unmarshaller = jc.createUnmarshaller();
+
+            final String srcString = ((Union) lenc.readElement(new Union(""), null)).getStringValue();
+            final StringReader ir = new StringReader(srcString);
+            final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(ir);
+            return rootElement.getValue();
+        } catch (JAXBException ex) {
+            throw new MALException("XML Decoding error", ex);
+        }
+    }
 }

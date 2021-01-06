@@ -26,156 +26,145 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 
 /**
- * Implements the MALEncoder and MALListEncoder interfaces for a fixed length binary encoding.
+ * Implements the MALEncoder and MALListEncoder interfaces for a fixed length
+ * binary encoding.
  */
-public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinaryEncoder
-{
-
-  /**
-   * Constructor.
-   *
-   * @param os               Output stream to write to.
-   * @param timeHandler      Time handler to use.
-   * @param shortLengthField True if length field is 16-bit wide, otherwise assumed to be 32-bit.
-   */
-  public FixedBinaryEncoder(final OutputStream os,
-      final BinaryTimeHandler timeHandler,
-      final boolean shortLengthField)
-  {
-    super(new FixedBinaryStreamHolder(os, shortLengthField), timeHandler);
-  }
-
-  /**
-   * Constructor for derived classes that have their own stream holder implementation that should be
-   * used.
-   *
-   * @param os          Output stream to write to.
-   * @param timeHandler Time handler to use.
-   */
-  protected FixedBinaryEncoder(final StreamHolder os,
-      final BinaryTimeHandler timeHandler)
-  {
-    super(os, timeHandler);
-  }
-
-  /**
-   * Extends the StreamHolder class for handling fixed length, non-zig-zag encoded fields.
-   */
-  public static class FixedBinaryStreamHolder extends BaseBinaryStreamHolder
-  {
-
-    /**
-     * 16-bit length field encoding enabled
-     */
-    protected final boolean shortLengthField;
-
-    private static final BigInteger B_255 = new BigInteger("255");
+public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinaryEncoder {
 
     /**
      * Constructor.
      *
-     * @param outputStream     The output stream to encode into.
-     * @param shortLengthField True if length field is 16-bit wide, otherwise assumed to be 32-bit.
+     * @param os Output stream to write to.
+     * @param timeHandler Time handler to use.
+     * @param shortLengthField True if length field is 16-bit wide, otherwise
+     * assumed to be 32-bit.
      */
-    public FixedBinaryStreamHolder(OutputStream outputStream,
-        final boolean shortLengthField)
-    {
-      super(outputStream);
-      this.shortLengthField = shortLengthField;
+    public FixedBinaryEncoder(final OutputStream os,
+            final BinaryTimeHandler timeHandler,
+            final boolean shortLengthField) {
+        super(new FixedBinaryStreamHolder(os, shortLengthField), timeHandler);
     }
 
-    @Override
-    public void addSignedLong(final long value) throws IOException
-    {
-      addUnsignedLong(value);
+    /**
+     * Constructor for derived classes that have their own stream holder
+     * implementation that should be used.
+     *
+     * @param os Output stream to write to.
+     * @param timeHandler Time handler to use.
+     */
+    protected FixedBinaryEncoder(final StreamHolder os,
+            final BinaryTimeHandler timeHandler) {
+        super(os, timeHandler);
     }
 
-    @Override
-    public void addSignedInt(final int value) throws IOException
-    {
-      addUnsignedInt(value);
-    }
+    /**
+     * Extends the StreamHolder class for handling fixed length, non-zig-zag
+     * encoded fields.
+     */
+    public static class FixedBinaryStreamHolder extends BaseBinaryStreamHolder {
 
-    @Override
-    public void addSignedShort(final short value) throws IOException
-    {
-      addUnsignedShort(value);
-    }
+        /**
+         * 16-bit length field encoding enabled
+         */
+        protected final boolean shortLengthField;
 
-    @Override
-    public void addUnsignedLong(long value) throws IOException
-    {
-      directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array());
-    }
+        private static final BigInteger B_255 = new BigInteger("255");
 
-    @Override
-    public void addUnsignedLong32(long value) throws IOException
-    {
-      directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array(), 4, 4);
-    }
-
-    @Override
-    public void addUnsignedInt(int value) throws IOException
-    {
-      directAdd(java.nio.ByteBuffer.allocate(4).putInt(value).array());
-    }
-
-    @Override
-    public void addUnsignedInt16(int value) throws IOException
-    {
-      directAdd(java.nio.ByteBuffer.allocate(4).putInt(value).array(), 2, 2);
-    }
-
-    @Override
-    public void addUnsignedShort(int value) throws IOException
-    {
-      directAdd(java.nio.ByteBuffer.allocate(2).putShort((short) value).array());
-    }
-
-    @Override
-    public void addUnsignedShort8(short value) throws IOException
-    {
-      directAdd(java.nio.ByteBuffer.allocate(2).putShort(value).array()[1]);
-    }
-
-    @Override
-    public void addBigInteger(BigInteger value) throws IOException
-    {
-      byte[] valueBytes = value.toByteArray();
-      int arrayLength = valueBytes.length;
-      int arrayOffset = 0;
-      // Strip sign bit if it is the only bit overflowing 8 bytes buffer
-      if (valueBytes[0] == 0 && arrayLength == 9) {
-        arrayOffset = 1;
-        arrayLength--;
-      }
-      if (arrayLength > 8) {
-        throw new IOException(
-            "Adding big integer larger than 8 bytes (size = " + valueBytes.length + " bytes, value = " + value + ")");
-      }
-      java.nio.ByteBuffer buf = java.nio.ByteBuffer.allocate(8);
-      buf.position(8 - arrayLength);
-      directAdd(buf.put(valueBytes, arrayOffset, arrayLength).array());
-    }
-
-    @Override
-    public void addBytes(final byte[] value) throws IOException
-    {
-      if (null == value) {
-        if (shortLengthField) {
-          addUnsignedShort(0);
-        } else {
-          addUnsignedInt(0);
+        /**
+         * Constructor.
+         *
+         * @param outputStream The output stream to encode into.
+         * @param shortLengthField True if length field is 16-bit wide,
+         * otherwise assumed to be 32-bit.
+         */
+        public FixedBinaryStreamHolder(OutputStream outputStream,
+                final boolean shortLengthField) {
+            super(outputStream);
+            this.shortLengthField = shortLengthField;
         }
-        throw new IOException("StreamHolder.addBytes: null value supplied!!");
-      } else {
-        if (shortLengthField) {
-          addUnsignedShort(value.length);
-        } else {
-          addUnsignedInt(value.length);
+
+        @Override
+        public void addSignedLong(final long value) throws IOException {
+            addUnsignedLong(value);
         }
-        directAdd(value);
-      }
+
+        @Override
+        public void addSignedInt(final int value) throws IOException {
+            addUnsignedInt(value);
+        }
+
+        @Override
+        public void addSignedShort(final short value) throws IOException {
+            addUnsignedShort(value);
+        }
+
+        @Override
+        public void addUnsignedLong(long value) throws IOException {
+            directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array());
+        }
+
+        @Override
+        public void addUnsignedLong32(long value) throws IOException {
+            directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array(), 4, 4);
+        }
+
+        @Override
+        public void addUnsignedInt(int value) throws IOException {
+            directAdd(java.nio.ByteBuffer.allocate(4).putInt(value).array());
+        }
+
+        @Override
+        public void addUnsignedInt16(int value) throws IOException {
+            directAdd(java.nio.ByteBuffer.allocate(4).putInt(value).array(), 2, 2);
+        }
+
+        @Override
+        public void addUnsignedShort(int value) throws IOException {
+            directAdd(java.nio.ByteBuffer.allocate(2).putShort((short) value).array());
+        }
+
+        @Override
+        public void addUnsignedShort8(short value) throws IOException {
+            directAdd(java.nio.ByteBuffer.allocate(2).putShort(value).array()[1]);
+        }
+
+        @Override
+        public void addBigInteger(BigInteger value) throws IOException {
+            byte[] valueBytes = value.toByteArray();
+            int arrayLength = valueBytes.length;
+            int arrayOffset = 0;
+            // Strip sign bit if it is the only bit overflowing 8 bytes buffer
+            if (valueBytes[0] == 0 && arrayLength == 9) {
+                arrayOffset = 1;
+                arrayLength--;
+            }
+            if (arrayLength > 8) {
+                throw new IOException(
+                        "Adding big integer larger than 8 bytes (size = "
+                        + valueBytes.length + " bytes, value = " + value + ")");
+            }
+            java.nio.ByteBuffer buf = java.nio.ByteBuffer.allocate(8);
+            buf.position(8 - arrayLength);
+            directAdd(buf.put(valueBytes, arrayOffset, arrayLength).array());
+        }
+
+        @Override
+        public void addBytes(final byte[] value) throws IOException {
+            if (null == value) {
+                if (shortLengthField) {
+                    addUnsignedShort(0);
+                } else {
+                    addUnsignedInt(0);
+                }
+                throw new IOException("StreamHolder.addBytes: null value supplied!!");
+            } else {
+                if (shortLengthField) {
+                    addUnsignedShort(value.length);
+                } else {
+                    addUnsignedInt(value.length);
+                }
+                directAdd(value);
+            }
+        }
     }
-  }
 }
