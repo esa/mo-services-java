@@ -58,17 +58,17 @@ public abstract class XmlHelper {
                         specList.add(loadSpecification(file));
                     } catch (IOException ex) {
                         LOGGER.log(Level.WARNING, 
-                                "Exception thrown during the processing of XML file: {0}", 
+                                "(1) Exception thrown during the processing of XML file: {0}", 
                                 file.getAbsolutePath());
                         throw ex;
                     } catch (JAXBException ex) {
                         LOGGER.log(Level.WARNING, 
-                                "Exception thrown during the processing of XML file: {0}",
+                                "(2) Exception thrown during the processing of XML file: {0}",
                                 file.getAbsolutePath());
                         throw ex;
                     } catch (RuntimeException ex) {
                         LOGGER.log(Level.WARNING, 
-                                "Exception thrown during the processing of XML file: {0}",
+                                "(3) Exception thrown during the processing of XML file: {0}",
                                 file.getAbsolutePath());
                         throw ex;
                     }

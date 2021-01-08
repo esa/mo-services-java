@@ -345,17 +345,21 @@ public class StubGenerator extends AbstractMojo {
         // if the directoy containing the xml specifications exists
         if (xmlDirectory.exists()) {
             // load in any reference specifications
+            String steps = "Step 0.. ";
             try {
                 final List<Map.Entry<SpecificationType, XmlSpecification>> refSpecs
                         = XmlHelper.loadSpecifications(xmlRefDirectory);
+                steps += "Step 1.. ";
 
                 // load in any reference XML schema
                 final List<Map.Entry<Schema, XmlSpecification>> refXsd
                         = loadXsdSpecifications(xsdRefDirectory);
+                steps += "Step 2.. ";
 
                 // load in the specifications
                 final List<Map.Entry<SpecificationType, XmlSpecification>> specs
                         = XmlHelper.loadSpecifications(xmlDirectory);
+                steps += "Step 3.. ";
 
                 // work out the latest timestamp of the input files
                 long inputTimestamp = getLatestTimestamp(0, refSpecs);
@@ -388,10 +392,11 @@ public class StubGenerator extends AbstractMojo {
                 }
             } catch (IOException ex) {
                 throw new MojoExecutionException(
-                        "Exception thrown during the processing of XML file: ", ex);
+                        "(a) Exception thrown during the processing of XML file: ", ex);
             } catch (JAXBException ex) {
+                ex.printStackTrace();
                 throw new MojoExecutionException(
-                        "Exception thrown during the processing of XML file: ", ex);
+                        steps + " (b) Exception thrown during the processing of XML file: ", ex);
             }
         } else {
             getLog().error("XML directory is not valid");
@@ -525,7 +530,7 @@ public class StubGenerator extends AbstractMojo {
                 generator.compile(outputDirectory.getPath(), spec.getKey(), spec.getValue().rootElement);
             } catch (Exception ex) {
                 throw new MojoExecutionException(
-                        "Exception thrown during the processing of XML file: "
+                        "(c) Exception thrown during the processing of XML file: "
                         + spec.getValue().file.getPath(), ex);
             }
         }
