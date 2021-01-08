@@ -130,7 +130,7 @@ public class InteractionTimeout {
                         if (!handler.finished()) {
                             // Then we must trigger an Exception!
                             Logger.getLogger(InteractionTimeout.class.getName()).log(
-                                    Level.INFO, "Timeout triggered!");
+                                    Level.FINE, "Timeout triggered!");
 
                             String msg = "The interaction timeout in the MAL "
                                     + "was triggered! The timeout is currently "
