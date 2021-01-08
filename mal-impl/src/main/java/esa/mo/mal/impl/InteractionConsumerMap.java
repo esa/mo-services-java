@@ -50,15 +50,18 @@ import org.ccsds.moims.mo.mal.transport.*;
  * which is responsible for ensuring the correct stages are received in the
  * correct order.
  */
-class InteractionConsumerMap {
+public class InteractionConsumerMap {
 
     private final Map<Long, BaseOperationHandler> transMap
             = new HashMap<Long, BaseOperationHandler>();
 
     private final Map<Long, OperationResponseHolder> syncOpResponseMap
             = new HashMap<Long, OperationResponseHolder>();
+    
+    // This object will be shared across. It is thread-safe
+    private final static InteractionTimeout INTERACTION_TIMEOUT = new InteractionTimeout();
 
-    Long createTransaction(final int interactionType,
+    public Long createTransaction(final int interactionType,
             final boolean syncOperation,
             final MALInteractionListener listener) throws MALInteractionException {
         synchronized (transMap) {
@@ -97,6 +100,7 @@ class InteractionConsumerMap {
 
             if (null != handler) {
                 transMap.put(oTransId, handler);
+                INTERACTION_TIMEOUT.insertInQueue(handler);
 
                 if (syncOperation) {
                     synchronized (syncOpResponseMap) {
@@ -109,7 +113,7 @@ class InteractionConsumerMap {
         }
     }
 
-    Long createTransaction(final boolean syncOperation, final MALPublishInteractionListener listener) {
+    public Long createTransaction(final boolean syncOperation, final MALPublishInteractionListener listener) {
         synchronized (transMap) {
             final Long oTransId = InteractionTransaction.getTransactionId(transMap.keySet());
 
@@ -126,7 +130,7 @@ class InteractionConsumerMap {
         }
     }
 
-    void continueTransaction(final int interactionType,
+    public void continueTransaction(final int interactionType,
             final UOctet lastInteractionStage,
             final Long oTransId,
             final MALInteractionListener listener) throws MALException, MALInteractionException {
@@ -167,7 +171,7 @@ class InteractionConsumerMap {
         }
     }
 
-    MALMessage waitForResponse(final Long id) throws MALInteractionException, MALException {
+    public MALMessage waitForResponse(final Long id) throws MALInteractionException, MALException {
         OperationResponseHolder holder = null;
 
         synchronized (syncOpResponseMap) {
@@ -202,7 +206,7 @@ class InteractionConsumerMap {
         return retVal;
     }
 
-    void handleStage(final MALMessage msg) throws MALInteractionException, MALException {
+    public void handleStage(final MALMessage msg) throws MALInteractionException, MALException {
         final Long id = msg.getHeader().getTransactionId();
         BaseOperationHandler handler = null;
         MessageHandlerDetails dets = null;
@@ -236,7 +240,7 @@ class InteractionConsumerMap {
         }
     }
 
-    void handleError(final MALMessageHeader hdr, final MALStandardError err, final Map qosMap) {
+    public void handleError(final MALMessageHeader hdr, final MALStandardError err, final Map qosMap) {
         final Long id = hdr.getTransactionId();
         BaseOperationHandler handler = null;
 
