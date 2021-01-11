@@ -38,7 +38,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
 
     private final URI uri;
     private final String localName;
-    private final Blob authenticationId;
+    private Blob authenticationId;
     private final QoSLevel[] expectedQos;
     private final UInteger priorityLevelNumber;
     private MALTransmitErrorListener listener = null;
@@ -52,22 +52,34 @@ public class JMSBrokerBinding implements MALBrokerBinding {
         this.priorityLevelNumber = priorityLevelNumber;
     }
 
+    @Override
     public Blob getAuthenticationId() {
         return authenticationId;
     }
 
+    @Override
+    public Blob setAuthenticationId(Blob newAuthenticationId) {
+        Blob previous = this.authenticationId;
+        this.authenticationId = newAuthenticationId;
+        return previous;
+    }
+    
+    @Override
     public URI getURI() {
         return uri;
     }
 
+    @Override
     public void setTransmitErrorListener(MALTransmitErrorListener listener) throws MALException {
         this.listener = listener;
     }
 
+    @Override
     public MALTransmitErrorListener getTransmitErrorListener() throws MALException {
         return listener;
     }
 
+    @Override
     public MALMessage sendNotify(UShort area, UShort service, UShort operation, UOctet version,
             URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone,
             SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps,
@@ -77,6 +89,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
         return null;
     }
 
+    @Override
     public MALMessage sendNotify(MALOperation op, URI subscriber, Long transactionId,
             IdentifierList domainId, Identifier networkZone, SessionType sessionType,
             Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority,
@@ -86,6 +99,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
         return null;
     }
 
+    @Override
     public MALMessage sendNotifyError(UShort area, UShort service, UShort operation, UOctet version,
             URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone,
             SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps,
@@ -95,6 +109,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
         return null;
     }
 
+    @Override
     public MALMessage sendNotifyError(MALOperation op, URI subscriber, Long transactionId,
             IdentifierList domainId, Identifier networkZone, SessionType sessionType,
             Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority,
@@ -103,6 +118,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
         return null;
     }
 
+    @Override
     public MALMessage sendPublishError(UShort area, UShort service, UShort operation, UOctet version,
             URI publisher, Long transactionId, IdentifierList domainId, Identifier networkZone,
             SessionType sessionType, Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority,
@@ -111,6 +127,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
         return null;
     }
 
+    @Override
     public MALMessage sendPublishError(MALOperation op, URI publisher, Long transactionId,
             IdentifierList domainId, Identifier networkZone, SessionType sessionType,
             Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority, MALStandardError error)
@@ -119,6 +136,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
         return null;
     }
 
+    @Override
     public void close() throws MALException {
     }
 }

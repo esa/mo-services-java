@@ -269,8 +269,8 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         }
 
         // create response and do callback
-        GENMessage returnMsg = new GENMessage(false,
-                createReturnHeader(msg, false), null, null, (Object[]) null);
+        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), 
+                null, null, transport.getStreamFactory(), (Object[]) null);
         receiveMessage(returnMsg);
     }
 
@@ -289,8 +289,8 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         details.setKeyList(hdr, ((MALPublishRegisterBody) msg.getBody()).getEntityKeyList());
 
         // create response and do callback
-        GENMessage returnMsg = new GENMessage(false,
-                createReturnHeader(msg, false), null, null, (Object[]) null);
+        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), 
+                null, null, transport.getStreamFactory(), (Object[]) null);
         receiveMessage(returnMsg);
     }
 
@@ -335,15 +335,15 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         }
 
         // create response and do callback
-        GENMessage returnMsg = new GENMessage(false,
-                createReturnHeader(msg, false), null, null, (Object[]) null);
+        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), 
+                null, null, transport.getStreamFactory(), (Object[]) null);
         receiveMessage(returnMsg);
     }
 
     protected void internalHandlePublishDeregister(final GENMessage msg,
             Session lqs) throws MALException, MALInteractionException {
-        GENMessage returnMsg = new GENMessage(false,
-                createReturnHeader(msg, false), null, null, (Object[]) null);
+        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), 
+                null, null, transport.getStreamFactory(), (Object[]) null);
 
         JMSPublishHandler hdlr = publishHandlerMap.remove(createProviderKey(msg.getHeader()));
         if (null != hdlr) {

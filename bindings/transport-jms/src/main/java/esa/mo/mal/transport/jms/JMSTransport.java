@@ -33,6 +33,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
@@ -46,7 +47,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 /**
  *
  */
-public class JMSTransport extends GENTransport implements MALTransport {
+public class JMSTransport extends GENTransport<byte[], byte[]> implements MALTransport {
 
     /**
      * Logger
@@ -158,7 +159,7 @@ public class JMSTransport extends GENTransport implements MALTransport {
     }
 
     @Override
-    protected GENMessageSender createMessageSender(GENMessage msg,
+    protected GENMessageSender<byte[]> createMessageSender(GENMessage msg,
             String remoteRootURI) throws MALException, MALTransmitErrorException {
         RLOGGER.log(Level.FINE,
                 "JMS received request to create connections to URI:{0}", remoteRootURI);
@@ -180,7 +181,25 @@ public class JMSTransport extends GENTransport implements MALTransport {
         super.close();
     }
 
-    private class JMSMessageSender implements GENMessageSender {
+    @Override
+    public GENMessage createMessage(byte[] packet) throws MALException {
+        return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, packet, getStreamFactory());
+    }
+
+    @Override
+    protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(String destinationRootURI, 
+            String destinationURI, Object multiSendHandle, boolean lastForHandle, 
+            String targetURI, GENMessage msg) throws Exception {
+        return new GENOutgoingMessageHolder<byte[]>(10,
+            destinationRootURI,
+            destinationURI,
+            multiSendHandle,
+            lastForHandle,
+            msg,
+            internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg));
+    }
+
+    private class JMSMessageSender implements GENMessageSender<byte[]> {
 
         private final String remoteRootURI;
 
@@ -188,7 +207,8 @@ public class JMSTransport extends GENTransport implements MALTransport {
             this.remoteRootURI = remoteRootURI;
         }
 
-        public void sendEncodedMessage(GENOutgoingMessageHolder tmsg) throws IOException {
+        @Override
+        public void sendEncodedMessage(GENOutgoingMessageHolder<byte[]> tmsg) throws IOException {
             String sendRoutingKey = tmsg.getDestinationURI().substring(remoteRootURI.length() + 1);
 
             RLOGGER.log(Level.FINE, "Attempting to send to {0}",
@@ -264,6 +284,7 @@ public class JMSTransport extends GENTransport implements MALTransport {
             }
         }
 
+        @Override
         public void close() {
         }
     }

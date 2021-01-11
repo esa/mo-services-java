@@ -58,9 +58,9 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder {
     final Identifier sessionName;
     final Long transactionId;
 
-    public JMSIncomingPSMessageDecoder(final JMSTransport transport, 
+    public JMSIncomingPSMessageDecoder(final JMSTransport transport,
             JMSUpdate jmsUpdate, URI uri, UOctet version, Identifier subId,
-            URI URIFrom, QoSLevel level, UInteger priority, Identifier networkZone, 
+            URI URIFrom, QoSLevel level, UInteger priority, Identifier networkZone,
             SessionType session, Identifier sessionName, Long transactionId) {
         this.transport = transport;
         this.jmsUpdate = jmsUpdate;
@@ -105,9 +105,9 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder {
                 new_objs[i] = enc.readElement(null, null);
             }
 
-            GENMessage malMsg = new GENMessage(false, 
-                    new JMSMessageHeader(hdr, jmsUpdate), null, null, new_objs);
-            return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), 
+            GENMessage malMsg = new GENMessage(false, new JMSMessageHeader(hdr, jmsUpdate),
+                    null, null, transport.getStreamFactory(), new_objs);
+            return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(),
                     malMsg, transport.new PacketToString(data));
         } catch (Throwable ex) {
             throw new MALException("Internal error decoding message", ex);

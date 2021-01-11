@@ -77,8 +77,9 @@ public class JMSPublishHandler {
             preCheckAllowedToPublish(hdr, headerList);
         } catch (MALTransmitErrorException ex) {
             // create response and do callback
-            return new GENMessage(false, JMSEndpoint.createReturnHeader(msg,
-                    true, MALPubSubOperation._PUBLISH_STAGE), null, null,
+            return new GENMessage(false,
+                    JMSEndpoint.createReturnHeader(msg, true, MALPubSubOperation._PUBLISH_STAGE),
+                    null, null, jtransport.getStreamFactory(),
                     ex.getStandardError().getErrorNumber(),
                     ex.getStandardError().getExtraInformation());
         }

@@ -231,8 +231,8 @@ public class GENMessage implements MALMessage, java.io.Serializable {
             }
 
             // now encode the body
-            body.encodeMessageBody(streamFactory, enc, lowLevelOutputStream, header.getInteractionStage(),
-                    ctx);
+            body.encodeMessageBody(streamFactory, enc, lowLevelOutputStream, 
+                    header.getInteractionStage(), ctx);
         } catch (Exception ex) {
             throw new MALException("Internal error encoding message", ex);
         }
