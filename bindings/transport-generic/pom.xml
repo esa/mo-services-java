@@ -73,10 +73,6 @@
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>ENCODING_GEN</artifactId>
         </dependency>
-        <dependency>
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

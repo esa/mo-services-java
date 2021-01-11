@@ -22,12 +22,10 @@ package esa.mo.mal.transport.gen.body;
 
 import esa.mo.mal.encoder.gen.GENElementInputStream;
 import esa.mo.mal.transport.gen.GENTransport;
-import esa.mo.mal.transport.gen.util.GENMarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALArea;
@@ -44,7 +42,6 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElementList;
@@ -305,38 +302,6 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
                 // write the encoded blob to the stream
                 enc.writeElement(new Blob(lbaos.toByteArray()), null);
             }
-        } // else if it is a JAXB XML object
-        else if (o.getClass().isAnnotationPresent(javax.xml.bind.annotation.XmlType.class)) {
-            // get the XML tags for the object
-            final String ssf = (String) sf;
-            // Marshal the element!
-            StringWriter ow = GENMarshaller.marshall(ssf, o);
-
-            GENTransport.LOGGER.log(Level.FINE,
-                    "GEN Message encoding XML body part : {0}", ow.toString());
-
-            MALElementOutputStream lenc = enc;
-            ByteArrayOutputStream lbaos = null;
-
-            if (wrapBodyParts) {
-                // we encode it into a byte buffer so that it can be 
-                // extracted as a MALEncodedElement if required
-                lbaos = new ByteArrayOutputStream();
-                lenc = streamFactory.createOutputStream(lbaos);
-            }
-
-            // encode the short form
-            lenc.writeElement(new Union(ssf), null);
-            // now encode the element
-            lenc.writeElement(new Union(ow.toString()), null);
-
-            if (wrapBodyParts) {
-                lenc.flush();
-                lenc.close();
-
-                // write the encoded blob to the stream
-                enc.writeElement(new Blob(lbaos.toByteArray()), null);
-            }
         } else {
             throw new MALException(
                     "ERROR: Unable to encode body object of type: "
@@ -518,16 +483,8 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
 
             rv = lenc.readElement(element, ctx);
         } else {
-            final Union u = (Union) lenc.readElement(new Union(""), null);
-            if (null != u) {
-                final String shortForm = u.getStringValue();
-                GENTransport.LOGGER.log(Level.FINER,
-                        "GEN Message decoding XML body part : Type = {0}",
-                        shortForm);
-
-                // Unmarshal the object
-                rv = GENMarshaller.unmarshall(shortForm, ctx, lenc);
-            }
+                GENTransport.LOGGER.log(Level.WARNING,
+                        "Marshalling and unmarshalling of JAXB is no longer supported!");
         }
 
         return rv;
