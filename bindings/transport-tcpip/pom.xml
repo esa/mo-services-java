@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
     <version>8.0-SNAPSHOT</version>
 
-    <name>ESA MAL TCP/IP Java transport</name>
+    <name>ESA Transport - TCP/IP</name>
     <description>A Java TCP/IP transport for CCSDS MAL</description>
     <url>http://www.esa.int</url>
 

@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
     <version>8.0-SNAPSHOT</version>
 
-    <name>ESA MAL ActiveMQ JMS transport</name>
+    <name>ESA Transport - ActiveMQ JMS</name>
     <description>A Java JMS transport for CCSDS MAL based on Apache ActiveMQ</description>
     <url>http://www.esa.int</url>
   
