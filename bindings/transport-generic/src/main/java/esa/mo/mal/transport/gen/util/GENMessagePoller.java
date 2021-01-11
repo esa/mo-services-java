@@ -82,8 +82,8 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
             GENIncomingMessageDecoderFactory<I, O> decoderFactory) {
         this.transport = transport;
         this.messageSender = messageSender;
-        this.messageReceiver
-                = new MessageAdapter<I, O>(transport, this, messageReceiver, decoderFactory);
+        this.messageReceiver = new MessageAdapter<I, O>(transport,
+                this, messageReceiver, decoderFactory);
         setName(getClass().getName());
     }
 
@@ -96,8 +96,8 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
      * @param messageReceiver The message reception interface, used for pulling
      * messaging into this transport.
      */
-    protected GENMessagePoller(GENTransport<I, O> transport, GENMessageSender messageSender,
-            MessageAdapter messageReceiver) {
+    protected GENMessagePoller(GENTransport<I, O> transport,
+            GENMessageSender messageSender, MessageAdapter messageReceiver) {
         this.transport = transport;
         this.messageSender = messageSender;
         this.messageReceiver = messageReceiver;
