@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mal:specification xmlns:mal="http://www.ccsds.org/schema/ServiceSchema" xmlns:com="http://www.ccsds.org/schema/COMSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" comment="">
+    <mal:area name="FM" number="20" version="1" comment="File Management Services: File System and Transfer Management">
+        <mal:service name="FileSystem" number="29" comment="The File System service provides the capability to manage files on a remote file system. 
+It is not content aware, and manipulates files as black boxes. It allows controlling flat (i.e. without support for directories) or structured (i.e. with directory support) file systems byproviding functionalities to manage files and directories. 
+File usage is not within the scope of this service. MO services that can use files have dedicated subtypes supporting the utilization of files within their context.
+File transfers that require the file to leave the file system (e.g. transfer over a space link) are out of the scope of this service and are handled by the File Transfer Management Service (service 30)." xsi:type="com:ExtendedServiceType">
+            <mal:capabilitySet number="1">
+                <mal:submitIP name="create" number="1" comment="The create operation allows a consumer to create a new empty file or directory on the remote file store. This operation will create the file or directory with the default attrivbutes of the remote file system. To change the attributes of files or directories refer to operation setAttributes." supportInReplay="false">
+                    <mal:messages>
+                        <mal:submit>
+                            <mal:field name="type" canBeNull="false" comment="The type of node to create: File or Directory">
+                                <mal:type area="FM" service="FileSystem" list="false" name="NodeType"/>
+                            </mal:field>
+                            <mal:field name="path" canBeNull="false" comment="The path field contains the logical path to where the file or directory is to be created.">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                            <mal:field name="overwrite" canBeNull="false" comment="Force overwrite if the file or directory already exists.">
+                                <mal:type area="MAL" list="false" name="Boolean"/>
+                            </mal:field>
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef>
+                            <mal:type are="FM" service="FileSystem" list="false" name="NODE_EXISTS"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                        
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="UNKNOWN_NODE_TYPE"/>
+                            <mal:extraInformation comment="">
+                                <mal:type service="FileSystem" area="FM" list="false" name="NodeType"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                        
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER"/>
+                            <mal:extraInformation comment="The error reported by the remote file system">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:submitIP>
+                <mal:submitIP name="move" number="2" comment="The move operation allows a consumer to move (i.e. rename) a file or directory from the source to the target path within a remote file store (even if across different file systems). Operations to move a file across different file stores over the space link are covered by the File Transfer Management Service." supportInReplay="false">
+                    <mal:messages>
+                        <mal:submit>
+                            <mal:field name="source" canBeNull="false" comment="Path to the node being moved.">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                            <mal:field name="target" canBeNull="false" comment="Target name">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                            <mal:field name="overwrite" canBeNull="true" comment="Force overwrite if the file or folder already exist.">
+                                <mal:type area="MAL" list="false" name="Boolean"/>
+                            </mal:field>
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef>
+                            <mal:type are="FM" service="FileSystem" list="false" name="NODE_EXISTS"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>    
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>    
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="FILESYSTEM_FULL"/>
+                        </mal:errorRef>                      
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER"/>
+                            <mal:extraInformation comment="The error reported by the remote file system">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:submitIP>
+                <mal:submitIP name="delete" number="3" comment="The delete operation allows a consumer to delete a file or directory from a remote file store." supportInReplay="false">
+                    <mal:messages>
+                        <mal:submit>
+                            <mal:field name="path" canBeNull="false" comment="The path field contains the path to the node to be deleted">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                            <mal:field name="force" canBeNull="false" comment="Force delete: true/false">
+                                <mal:type area="MAL" list="false" name="Boolean"/>
+                            </mal:field>
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                        
+                        <mal:errorRef>
+                            <mal:type are="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                  
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="UNKNOWN_NODE_TYPE"/>
+                            <mal:extraInformation comment="">
+                                <mal:type service="FileSystem" area="FM" list="false" name="NodeType"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                        
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER"/>
+                            <mal:extraInformation comment="The error reported by the remote file system">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                                                                    
+                    </mal:errors>
+                </mal:submitIP>
+                <mal:submitIP name="copy" number="4" comment="The copy operation allows a consumer to copy a file or directory from the source to the target path within a remote file store (even if across different file systems). Operations to copy a file across different file stores over the space link are covered by the File Transfer Management Service." supportInReplay="false">
+                    <mal:messages>
+                        <mal:submit>
+                            <mal:field name="source" canBeNull="false" comment="Path to the node being copied.">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                            <mal:field name="target" canBeNull="false" comment="Target path of the copied node.">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                            <mal:field name="overwrite" canBeNull="false" comment="Force overwrite if the file or folder already exist.">
+                                <mal:type area="MAL" list="false" name="Boolean"/>
+                            </mal:field>
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>                                                
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef>
+                            <mal:type are="FM" service="FileSystem" list="false" name="NODE_EXISTS"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>    
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>    
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="FILESYSTEM_FULL"/>
+                        </mal:errorRef>                      
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER"/>
+                            <mal:extraInformation comment="The error reported by the remote file system">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:submitIP>
+            </mal:capabilitySet>
+            <mal:capabilitySet number="2">
+                <mal:requestIP name="getAttributes" number="5" comment="The getAttributes operation allows a consumer to retrieve the attributes for a file or directory on a remote file system." supportInReplay="false">
+                    <mal:messages>
+                        <mal:request comment="">
+                            <mal:field name="path" canBeNull="false" comment="The path of the node to be queried">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                        </mal:request>
+                        <mal:response comment="">
+                            <mal:field name="attributes" canBeNull="false" comment="List of node attributes">
+                                <mal:type service="FileSystem" area="FM" list="false" name="NodeAttributes"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                       <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM"  list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>     
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER"/>
+                            <mal:extraInformation comment="The error reported by the remote file system">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:requestIP>        
+                <mal:submitIP name="setAttributes" number="6" comment="The setAttributes operation allows a consumer to change the attributes of a file or directory on a remote file system." supportInReplay="false">
+                    <mal:messages>
+                        <mal:submit comment="">
+                            <mal:field name="path" canBeNull="false" comment="Path to the node whose attributes will be set.">
+                                <mal:type name="URI" area="MAL" list="false"/>
+                            </mal:field>
+                            <mal:field name="attributes" canBeNull="false" comment="">
+                                <mal:type service="FileSystem" area="FM" list="false" name="NodeAttributes"/>
+                            </mal:field>
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>
+                       <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>     
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_ATTRIBUTE"/>
+                            <mal:extraInformation comment="List of the invalid attributes which were not set due to error.">
+                                <mal:type service="FileSystem" area="FM" list="false" name="NodeAttributes"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                        
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER"/>
+                            <mal:extraInformation comment="The error reported by the remote file system">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                        
+                    </mal:errors>
+                </mal:submitIP>
+            </mal:capabilitySet>
+            <mal:capabilitySet number="3">
+                <mal:requestIP name="list" number="7" comment="The list operation allows a consumer to list the files and directories in a given directory on the remote file system. This listing allows for filtering based on name and time and it is not recursive." supportInReplay="false">
+                    <mal:messages>
+                        <mal:request comment="">
+                            <mal:field name="path" canBeNull="false" comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                            <mal:field name="toFile" canBeNull="false" comment="Set to true if the list should be written to a file. If toFile is true then the Response contails the path to the file with the list.">
+                                <mal:type area="MAL" list="false" name="Boolean"/>
+                            </mal:field>
+                            <mal:field name="nameRegexFilter" canBeNull="true" comment="Name filter to be applied. All files and folders that pass the filter will be added to the list.">
+                                <mal:type area="MAL" list="false" name="String"/>
+                            </mal:field>
+                            <mal:field name="lastModifiedTimeFilter" canBeNull="true" comment="Time filters to be applied. All files and folders with last modified time larger than or equal to the filter will be added to the list.">
+                                <mal:type area="MAL" list="false" name="Time"/>
+                            </mal:field>
+                            <mal:field name="recursive" canBeNull="true" comment="Set to true to do a recursive list">
+                                <mal:type area="MAL" list="false" name="Boolean"/>
+                            </mal:field>                        
+                        </mal:request>
+                        <mal:response comment="List of files and/or folders">
+                            <mal:field name="nodes" canBeNull="false" comment="">
+                                <mal:type service="FileSystem" area="FM" list="true" name="Node"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>                        
+                       <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>     
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="NOT_A_DIRECTORY"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="IO_ERROR"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                                                         
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER"/>
+                            <mal:extraInformation comment="The error reported by the remote file system">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                    </mal:errors>
+                </mal:requestIP>                
+                <mal:progressIP name="find" number="8" comment="The find operation allows a consumer to find files or folders in a search path on a remote file system that match a given regular expression." supportInReplay="false">
+                    <mal:messages>
+                        <mal:progress>
+                            <mal:field name="path" canBeNull="false" comment="The location from where the search will be done.">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                            <mal:field name="toFile" canBeNull="false" comment="Set to true if the list should be written to a file. If toFile is true then the Update contails the path to the file with the list.">
+                                <mal:type area="MAL" list="false" name="Boolean"/>
+                            </mal:field>
+                            <mal:field name="searchPattern" canBeNull="false" comment="Regular expression to be matched against files in the Directory. Only files that match will be returned. If null all files nodes will match.">
+                                <mal:type area="MAL" list="false" name="String"/>
+                            </mal:field>
+                        </mal:progress>
+                        <mal:acknowledgement/>
+                        <mal:update>
+                            <mal:field name="nodes" canBeNull="false" comment="">
+                                <mal:type service="FileSystem" area="FM" list="true" name="Node"/>
+                            </mal:field>
+                        </mal:update>
+                        <mal:response>
+                            <mal:field name="count" canBeNull="false" comment="Number of matches">
+                                <mal:type area="MAL" list="false" name="UInteger"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>     
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="NOT_A_DIRECTORY"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="IO_ERROR"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                                                         
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER"/>
+                            <mal:extraInformation comment="The error reported by the remote file system">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:progressIP>
+            </mal:capabilitySet> 
+            <mal:capabilitySet number="4" comment="File content manipulation: read, truncate, append">
+                <mal:requestIP name="append" number="9" comment="The append operation allows a consumer to append a blob of data to the end of an existing file on the remote file system." supportInReplay="false">
+                    <mal:messages>
+                        <mal:request>
+                            <mal:field name="path" canBeNull="false" comment="File to which the data shall be appended to">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                            <mal:field name="data" canBeNull="false" comment="Data to be appended to file">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:field>
+                        </mal:request>
+                        <mal:response>
+                            <mal:field name="size" canBeNull="false" comment="New total file size">
+                                <mal:type area="MAL" list="false" name="UInteger"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>                    
+                    <mal:errors>                                                                       
+                       <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>     
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="NOT_A_FILE"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="IO_ERROR"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                                                         
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER"/>
+                            <mal:extraInformation comment="The error reported by the remote file system">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                               
+                    </mal:errors>                    
+                </mal:requestIP>
+                <mal:submitIP name="truncate" number="10" comment="Truncates file to zero byte in size" supportInReplay="false">
+                    <mal:messages>
+                        <mal:submit>
+                            <mal:field name="path" canBeNull="false">
+                                <mal:type name="URI" area="MAL" list="false"/>
+                            </mal:field>              
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>                        
+                      <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>     
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="NOT_A_FILE"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="IO_ERROR"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                                                         
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER"/>
+                            <mal:extraInformation comment="The error reported by the remote file system">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                           
+                    </mal:errors>
+                </mal:submitIP>
+                <mal:requestIP name="read" number="11" supportInReplay="false" comments="The read operation allows a consumer to read a blob of data from a file on the remote file system. The operation allows the user to specify the location in the file from where to read (offset), as well as the number of bytes to read (size).">
+                    <mal:messages>
+                        <mal:request>
+                            <mal:field name="path" canBeNull="false">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                            <mal:field name="offset" canBeNull="true" comment="Offset from the start of the file in byte. If Null then zero is assumed">
+                                <mal:type area="MAL" list="false" name="UInteger"/>
+                            </mal:field>
+                            <mal:field name="size" canBeNull="true" comment="Number of byte to read. If Null then read the whole file">
+                                <mal:type area="MAL" list="false" name="UInteger"/>
+                            </mal:field>
+                        </mal:request>
+                        <mal:response>
+                            <mal:field name="data" canBeNull="true">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>     
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="NOT_A_FILE"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="IO_ERROR"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                                                         
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER"/>
+                            <mal:extraInformation comment="The error reported by the remote file system">
+                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                    </mal:errors>
+                </mal:requestIP>
+            </mal:capabilitySet>
+            <mal:dataTypes>
+                <mal:composite name="NodeAttributes" shortFormPart="1" comment="The NodeAttributes composite holds the attributes for the remote file or directory">
+                    <mal:extends>
+                        <mal:type area="MAL" list="false" name="Composite"/>
+                    </mal:extends>              
+                    <mal:field name="type" canBeNull="true" comment="Returns the type of this node: File or Directory. Settable: no">
+                        <mal:type service="FileSystem" area="FM" list="false" name="NodeType"/>
+                    </mal:field>
+                    <mal:field name="size" canBeNull="true" comment="Size of the node in Kibibyte (1024 byte). Settable: no">
+                        <mal:type area="MAL" list="false" name="UInteger"/>
+                    </mal:field>
+                    <mal:field name="creationTime" canBeNull="true" comment="Settable: no">
+                        <mal:type area="MAL" list="true" name="String"/>
+                    </mal:field>                
+                    <mal:field name="lastAccessTime" canBeNull="true" comment="Settable: no">
+                        <mal:type area="MAL" list="true" name="String"/>
+                    </mal:field>
+                    <mal:field name="lastChangeTime" canBeNull="true" comment="Settable: no">
+                        <mal:type area="MAL" list="true" name="String"/>
+                    </mal:field> 
+                    <mal:field name="lastModificationTime" canBeNull="true" comment="Settable: no">
+                        <mal:type area="MAL" list="true" name="String"/>
+                    </mal:field>                
+                    <mal:field name="accessPermissions" canBeNull="true" comment="Settable: yes">
+                        <mal:type area="MAL" list="true" name="String"/>
+                    </mal:field>                                          
+                    <mal:field name="owner" canBeNull="true" comment="Settable: yes">
+                        <mal:type area="MAL" list="true" name="String"/>
+                    </mal:field>                                                     
+                </mal:composite>            
+                <mal:enumeration name="NodeType" shortFormPart="2" comment="List of possible node types">
+                    <mal:item value="FILE" nvalue="1" comment="The node is a file"/>
+                    <mal:item value="DIRECTORY" nvalue="2" comment="The node is a directory"/>                    
+                </mal:enumeration>
+                <mal:composite name="Node" shortFormPart="3" comment="Node representation composite.">
+                    <mal:extends>
+                        <mal:type area="MAL" list="false" name="Composite"/>
+                    </mal:extends>
+                    <mal:field name="type" canBeNull="false" comment="">
+                        <mal:type service="FileSystem" area="FM" list="false" name="NodeType"/>
+                    </mal:field>
+                    <mal:field name="path" canBeNull="false" comment="">
+                        <mal:type area="MAL" list="false" name="URI"/>
+                    </mal:field>                    
+                    <mal:field name="size" canBeNull="false" comment="Size of the node in byte. Settable: no">
+                        <mal:type area="MAL" list="false" name="UInteger"/>
+                    </mal:field>
+                    <mal:field name="permissions" canBeNull="false" comment="The node permissions. Settable: no">
+                        <mal:type area="MAL" list="false" name="String"/>
+                    </mal:field>
+                    <mal:field name="lmTime" canBeNull="false" comment="Last modified time in seconds. Settable: no">
+                        <mal:type area="MAL" list="false" name="Long"/>
+                    </mal:field>
+                    <mal:field name="owner" canBeNull="false" comment="The owner of the file">
+                        <mal:type area="MAL" list="false" name="String"/>
+                    </mal:field>
+                </mal:composite>
+            </mal:dataTypes>
+            <mal:errors>                 
+                <mal:error name="NODE_EXISTS" number="80010" comment="The path to the remote file or directory provided by the consumer already exists"/>                
+                <mal:error name="NODE_LOOP" number="80011" comment="Recursive symbolic links (only applicable if the file system supports symbolic links)"/>
+                <mal:error name="NOT_A_DIRECTORY" number="80012" comment="Node invoked as a directory it is not a directory."/>            
+                <mal:error name="NOT_A_FILE" number="80013" comment="Node invoked as a file it is not a file."/>
+                <mal:error name="UNKNOWN_NODE_TYPE" number="80014" comment="The node is neither a file nor a directory."/>
+                <mal:error name="DIRECTORY_NOT_EMPTY" number="80015" comment="The consumer tried to delete a directory but the directory is not empty"/>
+                <mal:error name="INVALID_ATTRIBUTE" number="80020" comment="One or more attributes set by the consumer are invalid. See extra information for details"/>                        
+                <mal:error name="IO_ERROR" number="80030" comment="Could not read or write to file. See extra information for details"/>                
+                <!--
+                <mal:error name="CREATE_NOT_ALLOWED" number="80035" comment="File or directory cannot be replaced."/>
+                <mal:error name="MOVE_NOT_ALLOWED" number="80031" comment="Cannot move file or directory."/>
+                <mal:error name="DELETE_NOT_ALLOWED" number="80030" comment="Cannot delete file or directory."/>            
+                <mal:error name="COPY_NOT_ALLOWED" number="80034" comment="File or directory cannot be replaced."/>
+                <mal:error name="APPEND_NOT_ALLOWED" number="80032" comment="Cannot append to file."/>
+                -->                                           
+            </mal:errors>
+            <com:features/>
+        </mal:service>        
+        <mal:service name="FileTransfer" number="30" comment="The File Transfer Management Service gives consumers the capabilities to control and monitor file transfers across the space link.
+This service assumes the use of the CCSDS File Delivery Protocol (CFDP) [D2] as the underlying file delivery mechanism." xsi:type="com:ExtendedServiceType">
+            <mal:capabilitySet number="1" comment="Implements the five CFDP request primitives: put, report, cancel, suspend, resume">
+                <mal:invokeIP name="transfer" number="1" comment="The transfer operation allows a consumer to transfer a file from the service provider to the consumer. This operation wraps the CFDP Put Request Primitive. "  supportInReplay="false">
+                    <mal:messages>
+                        <mal:invoke>
+                            <mal:field name="sourcePath" canBeNull="false" comment="The 'Source Repository Path Value' field, this is the logical path to the directory where the source file to be transferred to the remote entity resides.">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>
+                            <mal:field name="targetEntityId" canBeNull="false" comment="">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:field>
+                            <mal:field name="targetPath" canBeNull="false" comment="This is the logical path to the directory where the transferred file will be placed at the destination entity.">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:field>       
+                            <mal:field name="priority" canBeNull="false" comment="The request priority in the range [1,10]. The lower the number the higher the priority.">
+                                <mal:type area="MAL" list="false" name="UOctet"/>
+                            </mal:field>                
+                            <mal:field name="transmissionWindowMode" canBeNull="true" comment="">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransmissionMode"/>
+                            </mal:field>
+                        </mal:invoke>                        
+                        <mal:acknowledgement>                            
+                            <mal:field name="transactionId" canBeNull="false" comment="The transaction ID of the just initiated transfer. Null if the transfer could not be started">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                            </mal:field>
+                            <mal:field name="fileSize" canBeNull="false" comment="The size of the file being transferred in Kibibyte (1024 byte)">
+                                <mal:type area="MAL" list="false" name="UInteger"/>
+                            </mal:field>
+                        </mal:acknowledgement>                                                                                                
+                        <mal:response>
+                            <mal:field name="transactionReport" canBeNull="false" comment="Generated once the transfer is complete. Contains the status of the transaction." >
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionReport"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>                            
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="PERMISSION_DENIED"/>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="INVALID_PATH"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>     
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileSystem" list="false" name="NOT_A_FILE"/>
+                            <mal:extraInformation comment="">
+                                <mal:type area="MAL" list="false" name="URI"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                        
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileTransfer" list="false" name="UNKNOWN_ENTITY"/>
+                            <mal:extraInformation comment="Reports the Entity ID">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                                         
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER_ERROR"/>
+                            <mal:extraInformation comment="Extra information about this error. Usually the exception message.">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                                      
+                    </mal:errors>
+                </mal:invokeIP>                
+                <mal:submitIP name="cancel" number="2" comment="The cancel operation allows a consumer to cancel an ongoing transaction. This operation wraps the CFDP Cancel Request Primitive. " supportInReplay="false">
+                    <mal:messages>
+                        <mal:submit>
+                            <mal:field name="transactionId" canBeNull="false" comment="">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                            </mal:field>
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="UNKNOWN_TRANSACTION"/>
+                            <mal:extraInformation comment="The transaction is not known to the provider">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>   
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER_ERROR"/>
+                            <mal:extraInformation comment="Extra information about this error. Usually the exception message.">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                             
+                    </mal:errors>
+                </mal:submitIP>
+                <mal:submitIP name="suspend" number="3" supportInReplay="false" comment="The suspend operation allows a consumer to suspend an ongoing transfer. This operation wraps the CFDP Suspend Request Primitive.">
+                    <mal:messages>
+                        <mal:submit comment="">
+                            <mal:field name="transactionId" canBeNull="false" comment="">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                            </mal:field>
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="UNKNOWN_TRANSACTION"/>
+                            <mal:extraInformation comment="The transaction is not known to the provider">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>   
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER_ERROR"/>
+                            <mal:extraInformation comment="Extra information about this error. Usually the exception message.">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                             
+                    </mal:errors>
+                </mal:submitIP>
+                <mal:submitIP name="resume" number="4" supportInReplay="false" comment="The resume operation allows a consumer to resumes a previously suspended transaction. This operation wraps the CFDP Resume Request Primitive.">
+                    <mal:messages>
+                        <mal:submit comment="">
+                            <mal:field name="transactionId" canBeNull="false" comment="">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                            </mal:field>
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="UNKNOWN_TRANSACTION"/>
+                            <mal:extraInformation comment="The transaction is not known to the provider">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>   
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER_ERROR"/>
+                            <mal:extraInformation comment="Extra information about this error. Usually the exception message.">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                             
+                    </mal:errors>
+                </mal:submitIP>                
+            </mal:capabilitySet>
+            <mal:capabilitySet number="2" comment="Extends the five CFDP request primitives to operate on all ongoing transactions simultaneously">
+                <mal:submitIP name="cancelAll" number="5" supportInReplay="false" comment="The cancelAll operation allows a consumer to cancel all ongoing transactions. This operation applies the  CFDP Cancel Request Primitive on all ongoing transactions for a given entity.">
+                    <mal:messages>
+                        <mal:submit/>
+                    </mal:messages>                    
+                    <mal:errors>           
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER_ERROR"/>
+                            <mal:extraInformation comment="Extra information about this error. Usually the exception message.">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                    </mal:errors>                                           
+                </mal:submitIP>                                               
+                <mal:submitIP name="suspendAll" number="6" comment="The suspendAll operation allows a consumer to suspends all ongoing transactions from and/or to a given entity. This operation applies the  CFDP Suspend Request Primitive on all ongoing transactions to/from a user-defined entity." supportInReplay="false">
+                    <mal:messages>
+                        <mal:submit>
+                            <mal:field name="entityId" canBeNull="false" comment="">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:field>
+                            <mal:field name="window" canBeNull="false" comment="The Transmit (Tx) and/or Receive (Rx) windows to be closed.">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransferWindow"/>
+                            </mal:field>                            
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileTransfer" list="false" name="UNKNOWN_ENTITY"/>
+                            <mal:extraInformation comment="Reports the Entity ID">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="CANNOT_SET_MIB_VALUE"/>
+                            <mal:extraInformation comment="Extra information about this error">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                        
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER_ERROR"/>
+                            <mal:extraInformation comment="Extra information about this error. Usually the exception message.">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>  
+                    </mal:errors>
+                </mal:submitIP>                 
+                <mal:submitIP name="resumeAll" number="7" comment="The resumeAll operation allows a consumer to resume previously suspended transactions from and/or to a given entity. This operation applies the  CFDP Resume Request Primitive on all suspended transactions to/from a user-defined entity." supportInReplay="false">
+                    <mal:messages>
+                        <mal:submit>
+                            <mal:field name="entityId" canBeNull="false" comment="">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:field>
+                            <mal:field name="window" canBeNull="false" comment="The Transmit (Tx) and/or Receive (Rx) windows to be closed.">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransferWindow"/>
+                            </mal:field>
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>
+                         <mal:errorRef>
+                            <mal:type area="FM" service="FileTransfer" list="false" name="UNKNOWN_ENTITY"/>
+                            <mal:extraInformation comment="Reports the Entity ID">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:extraInformation>
+                        </mal:errorRef> 
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="CANNOT_SET_MIB_VALUE"/>
+                            <mal:extraInformation comment="Extra information about this error">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                        
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER_ERROR"/>
+                            <mal:extraInformation comment="Extra information about this error. Usually the exception message.">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>  
+                    </mal:errors>
+                </mal:submitIP>                                                            
+            </mal:capabilitySet>                                      
+            <mal:capabilitySet number="3" comment="Utility operations">
+                <mal:requestIP name="getTransactionReport" number="8" comment="The getTransactionReport operation allows a consumer to request a report on the status of a transaction. This operation wraps the CFDP Report Request Primitive. " supportInReplay="false">
+                    <mal:messages>
+                        <mal:request>
+                            <mal:field name="transactionId" canBeNull="false" comment="">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                            </mal:field>
+                        </mal:request>
+                        <mal:response>
+                            <mal:field name="report" canBeNull="false" comment="">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionReport"/>
+                            </mal:field>                            
+                        </mal:response>
+                    </mal:messages>                    
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="UNKNOWN_TRANSACTION"/>
+                            <mal:extraInformation comment="The transaction is not known to the provider">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>   
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER_ERROR"/>
+                            <mal:extraInformation comment="Extra information about this error. Usually the exception message.">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                                                                                                        
+                    </mal:errors>                                        
+                </mal:requestIP>
+                <mal:requestIP name="listTransactions" number="9" comment="The listTransactions operation allows a consumer to list with all ongoing or pending transactions to/from a given entity. " supportInReplay="false">
+                    <mal:messages>
+                        <mal:request>
+                            <mal:field name="entityId" canBeNull="false" comment="">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:field>
+                        </mal:request>
+                        <mal:response>
+                            <mal:field name="transactionList" canBeNull="false" comment="">
+                                <mal:type service="FileTransfer" area="FM" list="true" name="FileTransactionReport"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileTransfer" list="false" name="UNKNOWN_ENTITY"/>
+                            <mal:extraInformation comment="Reports the Entity ID">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="UNKNOWN_TRANSACTION"/>
+                            <mal:extraInformation comment="The transaction is not known to the provider">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                         
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER_ERROR"/>
+                            <mal:extraInformation comment="Extra information about this error. Usually the exception message.">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>  
+                    </mal:errors>
+                </mal:requestIP>     
+                <mal:requestIP name="getWindowStatus" number="10" comment="The getWindowStatus operation allows a consumer to get the current status of the receive and transmit windows for a given entity." supportInReplay="false">
+                    <mal:messages>
+                        <mal:request>
+                            <mal:field name="entityId" canBeNull="false" comment="">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:field>
+                        </mal:request>
+                        <mal:response>
+                            <mal:field name="statusReporty" canBeNull="false" comment="">
+                                <mal:type service="FileTransfer" area="FM" list="false" name="WindowStatusReport"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef>
+                            <mal:type area="FM" service="FileTransfer" list="false" name="UNKNOWN_ENTITY"/>
+                            <mal:extraInformation comment="Reports the Entity ID">
+                                <mal:type area="MAL" list="false" name="Blob"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>   
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="CANNOT_GET_MIB_VALUE"/>
+                            <mal:extraInformation comment="Extra information about this error">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>                                           
+                        <mal:errorRef>
+                            <mal:type area="FM" list="false" name="OTHER_ERROR"/>
+                            <mal:extraInformation comment="Extra information about this error. Usually the exception message.">
+                                <mal:type name="String" area="MAL" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>  
+                    </mal:errors>
+                </mal:requestIP>                        
+            </mal:capabilitySet>
+            <mal:dataTypes>           
+                <mal:composite name="TransactionAttributes" shortFormPart="1" comment="Composite with possible transfer attributes.">
+                    <mal:extends>
+                        <mal:type area="MAL" list="false" name="Composite"/>
+                    </mal:extends>              
+                    <mal:field name="transmissionWindowMode" canBeNull="true" comment="">
+                        <mal:type service="FileTransfer" area="FM" list="false" name="FileTransmissionMode"/>
+                    </mal:field>
+                    <mal:field name="receptionWindowMode" canBeNull="true" comment="">
+                        <mal:type service="FileTransfer" area="FM" list="false" name="FileTransmissionMode"/>
+                    </mal:field>
+                    <mal:field name="transactionStatus" canBeNull="true" comment="">
+                        <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionStatus"/>
+                    </mal:field>                
+                    <mal:field name="transactionResponseCode" canBeNull="true" comment="">
+                        <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionResponseCode"/>
+                    </mal:field>                                
+                    <mal:field name="transactionId" canBeNull="true" comment="">
+                        <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                    </mal:field>
+                    <mal:field name="maxTransmissionSpeed" canBeNull="true" comment="">
+                        <mal:type area="MAL" list="false" name="Float"/>
+                    </mal:field>  
+                    <mal:field name="maxReceptionSpeed" canBeNull="true" comment="">
+                        <mal:type area="MAL" list="false" name="Float"/>
+                    </mal:field> 
+                    <mal:field name="priority" canBeNull="true" comment="The request priority in the range [1,10]. The lower the number the higher the priority.">
+                        <mal:type area="MAL" list="false" name="UOctet"/>
+                    </mal:field>                
+                </mal:composite>
+                <mal:composite name="FileTransactionId" shortFormPart="2" comment="The ID of the FDU transaction between two CFDP entities. A single transaction usually entails the transmission and reception of multiple PDUs">
+                    <mal:extends>
+                        <mal:type area="MAL" list="false" name="Composite"/>
+                    </mal:extends>
+                    <mal:field name="entity" canBeNull="false" comment="">
+                        <mal:type name="Blob" area="MAL" list="false"/>
+                    </mal:field>
+                    <mal:field name="id" canBeNull="false" comment="The ID as a byte array">
+                        <mal:type name="Blob" area="MAL" list="false"/>
+                    </mal:field>                
+                </mal:composite>                        
+                <mal:enumeration name="FileTransmissionMode" shortFormPart="3">
+                    <mal:item value="UNRELIABLE" nvalue="1" comment="Unacknowledged mode"/>
+                    <mal:item value="RELIABLE" nvalue="2" comment="Acknowledged mode"/>
+                </mal:enumeration>
+                <mal:enumeration name="FileTransactionStatus" shortFormPart="4">                
+                    <mal:item value="UNDEFINED" nvalue="1" comment=""/>
+                    <mal:item value="ACTIVE" nvalue="2" comment=""/>
+                    <mal:item value="TERMINATED" nvalue="3" comment=""/>
+                    <mal:item value="UNRECOGNISED" nvalue="4" comment=""/>
+                    <mal:item value="UNKNOWN" nvalue="5" comment=""/>                               
+                </mal:enumeration>
+                <mal:enumeration name="FileTransactionResponseCode" shortFormPart="5">                
+                    <mal:item value="UNSUCCESSFUL" nvalue="1" comment=""/>
+                    <mal:item value="SUCCESSFUL" nvalue="2" comment=""/>
+                    <mal:item value="UNKNOWN" nvalue="3" comment=""/>                               
+                </mal:enumeration>
+                <mal:enumeration name="FileTransferWindow" shortFormPart="6" comment="This enumeration represents the communication windows of a file transfer entity. It should be noted that the reception/transmission is from the point of view of the entity being addressed.">
+                    <mal:item value="TX_WINDOW" nvalue="1" comment="Transmission window"/>
+                    <mal:item value="RX_WINDOW" nvalue="2" comment="Reception window"/>
+                    <mal:item value="BOTH_WINDOW" nvalue="3" comment="Both TX and RX windows"/>
+                </mal:enumeration>
+                <mal:composite name="FileTransactionReport" shortFormPart="7" comment="">
+                    <mal:field name="transactionId" canBeNull="false" comment="The transaction ID of the file transfer initiated on the spacecraft.">
+                        <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionId"/>
+                    </mal:field>
+                    <mal:field name="transactionStatus" canBeNull="false" comment="">
+                        <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionStatus"/>
+                    </mal:field>
+                    <mal:field name="transactionResponseCode" canBeNull="false" comment="">
+                        <mal:type service="FileTransfer" area="FM" list="false" name="FileTransactionResponseCode"/>
+                    </mal:field>                    
+                    <mal:field name="sourcePath" canBeNull="false" comment="">
+                        <mal:type area="MAL" list="false" name="URI"/>
+                    </mal:field>
+                    <mal:field name="targetPath" canBeNull="false" comment="">
+                        <mal:type area="MAL" list="false" name="URI"/>
+                    </mal:field>
+                </mal:composite>
+                <mal:composite name="WindowStatusReport" shortFormPart="8" comment="">
+                    <mal:field name="txWindowOpen" canBeNull="false" comment="Returns true if the transmit window is open otherwise false.">
+                        <mal:type area="MAL" list="false" name="Boolean"/>
+                    </mal:field>
+                    <mal:field name="rxWindowOpen" canBeNull="false" comment="Returns true if the receive window is open otherwise false.">
+                        <mal:type area="MAL" list="false" name="Boolean"/>
+                    </mal:field>
+                </mal:composite>
+            </mal:dataTypes>
+            <mal:errors>
+                <mal:error name="TRANSACTION_ABORTED" number="80040" comment="The file transfer has been aborted. See extra information for details"/>                        
+                <mal:error name="TRANSACTION_ALREADY_STARTED" number="80041" comment="A start or resume request was received by the provider but the transaction was already started"/>
+                <mal:error name="TRANSACTION_ALREADY_CANCELED" number="80042" comment="A cancel request was received by the provider but the transaction was already canceled"/>
+                <mal:error name="TRANSACTION_ALREADY_SUSPENDED" number="80043" comment="A suspend request was received by the provider but the transaction was already suspended"/>
+                <mal:error name="UNKNOWN_TRANSACTION" number="80044" comment="The transaction referenced by the consumer is not known to the provider"/>
+                <mal:error name="UNKNOWN_ENTITY" number="80045" comment="The entity referenced by the consumer is not known to the provider"/>
+                <mal:error name="CANNOT_SET_MIB_VALUE" number="80050" comment="Could not set the value in the CFDP Management Information Base (MIB). See extra information for details"/>
+                <mal:error name="CANNOT_GET_MIB_VALUE" number="80051" comment="Could not get the value in the CFDP Management Information Base (MIB). See extra information for details"/>                
+            </mal:errors> 
+            <com:features/>
+        </mal:service>
+        <mal:dataTypes/>
+        <mal:errors>
+            <mal:error name="PERMISSION_DENIED" number="80001" comment="The consumer does not have the right permissions to perform the operation on the remote file or directory"/>
+            <mal:error name="FILESYSTEM_FULL" number="80002" comment="The operation could not be performed because the remote file system is full"/>
+            <mal:error name="INVALID_PATH" number="80003" comment="The path to the remote file or directory provided by the consumer is invalid"/>            
+            <mal:error name="NODE_NOT_FOUND" number="80004" comment="The path to the remote file or directory provided by the consumer does not exist"/>                              
+            <mal:error name="OTHER" number="80005" comment="Other system-specific error reported by the remote file system that is not covered in these specifications. See extra information for details"/>
+        </mal:errors>
+    </mal:area>
+</mal:specification>
