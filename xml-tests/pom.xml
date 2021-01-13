@@ -17,11 +17,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ccsds.mo</groupId>
-    <artifactId>MOXML_Extra</artifactId>
+    <artifactId>xml-tests</artifactId>
     <version>8.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>MOXML (Extra)</name>
+    <name>CCSDS MO services XML - MO Tests</name>
     <description>CCSDS Mission Operations XML Extra files</description>
     <url>http://www.ccsds.org</url>
   
@@ -56,6 +56,11 @@
             <name>Sam Cooper</name>
             <email>sam@brightascension.com</email>
             <url>https://github.com/SamCooper</url>
+        </developer>
+        <developer>
+            <id>CesarCoelho</id>
+            <name>Cesar Coelho</name>
+            <url>https://github.com/CesarCoelho</url>
         </developer>
     </developers>
 
