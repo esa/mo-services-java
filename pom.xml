@@ -23,8 +23,8 @@
     <name>CCSDS MO services - XML Service Specifications</name>
 
     <organization>
-        <name>ESA</name>
-        <url>http://www.esa.int</url>
+        <name>CCSDS</name>
+        <url>http://www.ccsds.org</url>
     </organization>
   
     <licenses>
@@ -36,14 +36,14 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:esa/CCSDS_MO_XML.git</connection>
-        <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_XML.git</developerConnection>
-        <url>https://github.com/esa/CCSDS_MO_XML</url>
+        <connection>scm:git:git@github.com:ccsdsmo/xml-service-specifications.git</connection>
+        <developerConnection>scm:git:git@github.com:esa/ccsdsmo/xml-service-specifications.git</developerConnection>
+        <url>https://github.com/ccsdsmo/xml-service-specifications</url>
     </scm>
   
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/esa/CCSDS_MO_XML/issues</url>
+        <url>https://github.com/ccsdsmo/xml-service-specifications/issues</url>
     </issueManagement>
   
     <developers>
