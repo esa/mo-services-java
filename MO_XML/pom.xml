@@ -14,79 +14,75 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>int.esa.ccsds.mo</groupId>
-    <artifactId>POM</artifactId>
-    <version>7</version>
-    <relativePath/>
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
   
-  <artifactId>MOXML</artifactId>
-  <version>1.7.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <groupId>com.ccsds.mo</groupId>
+    <artifactId>MOXML</artifactId>
+    <version>8.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
   
-  <name>MOXML</name>
-  <description>CCSDS Mission Operations XML files</description>
-  <url>http://www.ccsds.org</url>
-  
-  <organization>
-    <name>CCSDS</name>
+    <name>MOXML</name>
+    <description>CCSDS Mission Operations XML files</description>
     <url>http://www.ccsds.org</url>
-  </organization>
   
-  <licenses>
-    <license>
-      <name>The European Space Agency Public License, Version 2.0</name>
-      <url>https://raw.github.com/esa/CCSDS_MO_XML/master/LICENCE.md</url>
-      <distribution>repo</distribution>
-      <comments>This license only applies to the POM file. The XML/Schema files are owned by CCSDS.</comments>
-    </license>
-  </licenses>
-
-  <scm>
-    <connection>scm:git:git@github.com:esa/CCSDS_MO_XML.git</connection>
-    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_XML.git</developerConnection>
-    <url>https://github.com/esa/CCSDS_MO_XML</url>
-  </scm>
+    <organization>
+        <name>CCSDS</name>
+        <url>http://www.ccsds.org</url>
+    </organization>
   
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/esa/CCSDS_MO_XML/issues</url>
-  </issueManagement>
+    <licenses>
+        <license>
+            <name>The European Space Agency Public License, Version 2.0</name>
+            <url>https://raw.github.com/esa/CCSDS_MO_XML/master/LICENCE.md</url>
+            <distribution>repo</distribution>
+            <comments>This license only applies to the POM file. The XML/Schema files are owned by CCSDS.</comments>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:esa/CCSDS_MO_XML.git</connection>
+        <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_XML.git</developerConnection>
+        <url>https://github.com/esa/CCSDS_MO_XML</url>
+    </scm>
   
-  <developers>
-    <developer>
-      <id>SamCooper</id>
-      <name>Sam Cooper</name>
-      <email>sam@brightascension.com</email>
-      <url>https://github.com/SamCooper</url>
-    </developer>
-  </developers>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/esa/CCSDS_MO_XML/issues</url>
+    </issueManagement>
+  
+    <developers>
+        <developer>
+            <id>SamCooper</id>
+            <name>Sam Cooper</name>
+            <email>sam@brightascension.com</email>
+            <url>https://github.com/SamCooper</url>
+        </developer>
+    </developers>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>${basedir}/..</directory>
-        <includes>
-          <include>LICENCE.md</include>
-        </includes>
-      </resource>
-    </resources>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}/..</directory>
+                <includes>
+                    <include>LICENCE.md</include>
+                </includes>
+            </resource>
+        </resources>
 
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>
