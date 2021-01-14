@@ -45,14 +45,14 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:esa/CCSDS_MO_APIS.git</connection>
-        <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_APIS.git</developerConnection>
-        <url>https://github.com/esa/CCSDS_MO_APIS</url>
+        <connection>scm:git:git@github.com:esa/mo-services-java.git</connection>
+        <developerConnection>scm:git:git@github.com:esa/mo-services-java.git</developerConnection>
+        <url>https://github.com/esa/mo-services-java</url>
     </scm>
   
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/esa/CCSDS_MO_APIS/issues</url>
+        <url>https://github.com/esa/mo-services-java/issues</url>
     </issueManagement>
   
     <developers>
@@ -66,11 +66,11 @@
 
     <properties>
         <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
-        <ccsds.specification.download.artifact>MOXML_Extra</ccsds.specification.download.artifact>
+        <ccsds.specification.download.artifact>xml-tests</ccsds.specification.download.artifact>
         <ccsds.specification.download.version>${extra.specification.version}</ccsds.specification.download.version>
         <ccsds.specification.download.filter>**/COMPrototype.xml</ccsds.specification.download.filter>
         <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
-        <ccsds.specification.download.ref-filter>**/ServiceDefMAL.xml, **/ServiceDefCOM.xml</ccsds.specification.download.ref-filter>
+        <ccsds.specification.download.ref-filter>**/area001-v001-MAL.xml, **/area002-v001-COM.xml</ccsds.specification.download.ref-filter>
     </properties>
   
     <dependencies>

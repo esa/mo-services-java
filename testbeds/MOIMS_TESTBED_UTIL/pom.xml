@@ -13,122 +13,122 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>int.esa.ccsds.mo</groupId>
-    <artifactId>TESTBED_POM</artifactId>
-    <version>8-SNAPSHOT</version>
-    <relativePath>../MOIMS_TESTBED_POM/pom.xml</relativePath>
-  </parent>
+    <parent>
+        <groupId>int.esa.ccsds.mo</groupId>
+        <artifactId>TESTBED_POM</artifactId>
+        <version>8-SNAPSHOT</version>
+        <relativePath>../MOIMS_TESTBED_POM/pom.xml</relativePath>
+    </parent>
   
-  <artifactId>TESTBED_UTIL</artifactId>
-  <packaging>jar</packaging>
-  <version>8.0-SNAPSHOT</version>
-  <name>CCSDS MOIMS MO Testbed utilities</name>
+    <artifactId>TESTBED_UTIL</artifactId>
+    <packaging>jar</packaging>
+    <version>8.0-SNAPSHOT</version>
+    <name>CCSDS MOIMS MO Testbed utilities</name>
 
-  <organization>
-    <name>CCSDS</name>
-    <url>http://www.ccsds.org</url>
-  </organization>
+    <organization>
+        <name>CCSDS</name>
+        <url>http://www.ccsds.org</url>
+    </organization>
   
-  <licenses>
-    <license>
-      <name>The European Space Agency Public License, Version 2.0</name>
-      <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_ESA.md</url>
-      <distribution>repo</distribution>
-    </license>
-    <license>
-      <name>CeCILL-C FREE SOFTWARE LICENSE AGREEMENT</name>
-      <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_CNES.md</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+    <licenses>
+        <license>
+            <name>The European Space Agency Public License, Version 2.0</name>
+            <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_ESA.md</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>CeCILL-C FREE SOFTWARE LICENSE AGREEMENT</name>
+            <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_CNES.md</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-  <scm>
-    <connection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</connection>
-    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS.git</developerConnection>
-    <url>https://github.com/esa/CCSDS_MO_TESTBEDS</url>
-  </scm>
+    <scm>
+        <connection>scm:git:git@github.com:esa/mo-services-java.git</connection>
+        <developerConnection>scm:git:git@github.com:esa/mo-services-java.git</developerConnection>
+        <url>https://github.com/esa/mo-services-java</url>
+    </scm>
   
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/esa/CCSDS_MO_TESTBEDS/issues</url>
-  </issueManagement>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/esa/mo-services-java/issues</url>
+    </issueManagement>
   
-  <developers>
-    <developer>
-      <id>SamCooper</id>
-      <name>Sam Cooper</name>
-      <email>sam@brightascension.com</email>
-      <url>https://github.com/SamCooper</url>
-    </developer>
-    <developer>
-      <id>DavidFeliot</id>
-      <name>David Feliot</name>
-      <email>david.feliot@scalagent.com</email>
-      <url>https://github.com/DavidFeliot</url>
-    </developer>
-  </developers>
+    <developers>
+        <developer>
+            <id>SamCooper</id>
+            <name>Sam Cooper</name>
+            <email>sam@brightascension.com</email>
+            <url>https://github.com/SamCooper</url>
+        </developer>
+        <developer>
+            <id>DavidFeliot</id>
+            <name>David Feliot</name>
+            <email>david.feliot@scalagent.com</email>
+            <url>https://github.com/DavidFeliot</url>
+        </developer>
+    </developers>
   
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>${basedir}/..</directory>
-        <includes>
-          <include>LICENCE_ESA.md</include>
-          <include>LICENCE_CNES.md</include>
-        </includes>
-      </resource>
-    </resources>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}/..</directory>
+                <includes>
+                    <include>LICENCE_ESA.md</include>
+                    <include>LICENCE_CNES.md</include>
+                </includes>
+            </resource>
+        </resources>
     
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
   
-  <profiles>
-    <profile>
-      <id>ESA</id>
-      <dependencies>
-        <dependency>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>API_MAL</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>CNES</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.ccsds.moims.mo</groupId>
-          <artifactId>cnes-mal-api</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>DLR</id>
-      <dependencies>
-        <dependency>
-          <groupId>int.esa.ccsds.mo</groupId>
-          <artifactId>API_MAL</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
+    <profiles>
+        <profile>
+            <id>ESA</id>
+            <dependencies>
+                <dependency>
+                    <groupId>int.esa.ccsds.mo</groupId>
+                    <artifactId>API_MAL</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>CNES</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.ccsds.moims.mo</groupId>
+                    <artifactId>cnes-mal-api</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>DLR</id>
+            <dependencies>
+                <dependency>
+                    <groupId>int.esa.ccsds.mo</groupId>
+                    <artifactId>API_MAL</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

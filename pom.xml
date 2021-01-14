@@ -34,6 +34,7 @@
         <name>ESA</name>
         <url>http://www.esa.int</url>
     </organization>
+    
     <licenses>
         <license>
             <name>The European Space Agency Public License, Version 2.0</name>
@@ -41,10 +42,12 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
         <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
     </properties>
+    
     <modules>
         <module>parent</module>
         <module>stub-generator</module>
@@ -53,6 +56,6 @@
         <module>bindings</module>
         <module>providers-consumers</module>
         <module>support-libs</module>
-        <!-- <module>testbeds</module> -->
+        <module>testbeds</module>
     </modules>
 </project>

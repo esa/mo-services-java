@@ -14,113 +14,113 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>int.esa.ccsds.mo</groupId>
-    <artifactId>TESTBED_POM</artifactId>
-    <version>8-SNAPSHOT</version>
-    <relativePath>../MOIMS_TESTBED_POM/pom.xml</relativePath>
-  </parent>
+    <parent>
+        <groupId>int.esa.ccsds.mo</groupId>
+        <artifactId>TESTBED_POM</artifactId>
+        <version>8-SNAPSHOT</version>
+        <relativePath>../MOIMS_TESTBED_POM/pom.xml</relativePath>
+    </parent>
   
-  <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
-  <version>8.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <artifactId>TESTBED_COM_PROVIDER_ESA</artifactId>
+    <version>8.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
   
-  <name>ESA MOIMS MO Testbed COM Provider</name>
+    <name>ESA MOIMS MO Testbed COM Provider</name>
   
-  <organization>
-    <name>ESA</name>
-    <url>http://www.esa.int</url>
-  </organization>
+    <organization>
+        <name>ESA</name>
+        <url>http://www.esa.int</url>
+    </organization>
   
-  <licenses>
-    <license>
-      <name>The European Space Agency Public License, Version 2.0</name>
-      <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS_ESA/master/LICENCE.md</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+    <licenses>
+        <license>
+            <name>The European Space Agency Public License, Version 2.0</name>
+            <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS_ESA/master/LICENCE.md</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-  <scm>
-    <connection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS_ESA</connection>
-    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_TESTBEDS_ESA</developerConnection>
-    <url>https://github.com/esa/CCSDS_MO_TESTBEDS_ESA</url>
-  </scm>
+    <scm>
+        <connection>scm:git:git@github.com:esa/mo-services-java.git</connection>
+        <developerConnection>scm:git:git@github.com:esa/mo-services-java.git</developerConnection>
+        <url>https://github.com/esa/mo-services-java</url>
+    </scm>
   
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/esa/CCSDS_MO_TESTBEDS_ESA/issues</url>
-  </issueManagement>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/esa/mo-services-java/issues</url>
+    </issueManagement>
   
-  <developers>
-    <developer>
-      <id>IvanDankiewicz</id>
-      <name>Ivan Dankiewicz</name>
-      <email>ivan.dankiewicz@scisys.co.uk</email>
-      <url>https://github.com/ivandankiewicz</url>
-    </developer>
-    <developer>
-      <id>SamCooper</id>
-      <name>Sam Cooper</name>
-      <email>sam@brightascension.com</email>
-      <url>https://github.com/SamCooper</url>
-    </developer>
-  </developers>
+    <developers>
+        <developer>
+            <id>IvanDankiewicz</id>
+            <name>Ivan Dankiewicz</name>
+            <email>ivan.dankiewicz@scisys.co.uk</email>
+            <url>https://github.com/ivandankiewicz</url>
+        </developer>
+        <developer>
+            <id>SamCooper</id>
+            <name>Sam Cooper</name>
+            <email>sam@brightascension.com</email>
+            <url>https://github.com/SamCooper</url>
+        </developer>
+    </developers>
 
-  <properties>
-    <esa.com.test_api.version>8.0-SNAPSHOT</esa.com.test_api.version>
-    <ccsds.testbed.com.version>8.0-SNAPSHOT</ccsds.testbed.com.version>
-  </properties>
+    <properties>
+        <esa.com.test_api.version>8.0-SNAPSHOT</esa.com.test_api.version>
+        <ccsds.testbed.com.version>8.0-SNAPSHOT</ccsds.testbed.com.version>
+    </properties>
   
-  <dependencies>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>API_MAL</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>MAL_IMPL</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>API_COM_TEST</artifactId>
-      <version>${esa.com.test_api.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>TESTBED_UTIL</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>TESTBED_COM_FRAMEWORK</artifactId>
-      <version>${ccsds.testbed.com.version}</version>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>API_MAL</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>MAL_IMPL</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>API_COM_TEST</artifactId>
+            <version>${esa.com.test_api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>TESTBED_UTIL</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>TESTBED_COM_FRAMEWORK</artifactId>
+            <version>${ccsds.testbed.com.version}</version>
+        </dependency>
+    </dependencies>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>${basedir}/..</directory>
-        <includes>
-          <include>LICENCE_ESA.md</include>
-        </includes>
-      </resource>
-    </resources>
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/..</directory>
+                <includes>
+                    <include>LICENCE_ESA.md</include>
+                </includes>
+            </resource>
+        </resources>
     
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId> 
-      </plugin>
-    </plugins>
-  </build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId> 
+            </plugin>
+        </plugins>
+    </build>
 </project>

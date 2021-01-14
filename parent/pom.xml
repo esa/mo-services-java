@@ -38,14 +38,14 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:esa/CCSDS_MO_POM.git</connection>
-        <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_POM.git</developerConnection>
-        <url>https://github.com/esa/CCSDS_MO_POM</url>
+        <connection>scm:git:git@github.com:esa/mo-services-java.git</connection>
+        <developerConnection>scm:git:git@github.com:esa/mo-services-java.git</developerConnection>
+        <url>https://github.com/esa/mo-services-java</url>
     </scm>
   
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/esa/CCSDS_MO_POM/issues</url>
+        <url>https://github.com/esa/mo-services-java/issues</url>
     </issueManagement>
   
     <distributionManagement>
@@ -74,8 +74,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ccsds.specification.version>1.7.1-SNAPSHOT</ccsds.specification.version>
-        <extra.specification.version>1.7</extra.specification.version>
+        <ccsds.specification.version>8.0-SNAPSHOT</ccsds.specification.version>
+        <extra.specification.version>8.0-SNAPSHOT</extra.specification.version>
         <esa.stubgen.version>8.0-SNAPSHOT</esa.stubgen.version>
         <esa.api.mal.version>8.0-SNAPSHOT</esa.api.mal.version>
         <esa.api.com.version>8.0-SNAPSHOT</esa.api.com.version>
@@ -90,23 +90,23 @@
         <esa.gen.transport.version>8.0-SNAPSHOT</esa.gen.transport.version>
         <esa.rmi.transport.version>8.0-SNAPSHOT</esa.rmi.transport.version>
         <esa.tcpip.transport.version>8.0-SNAPSHOT</esa.tcpip.transport.version>
-        <esa.jms.transport.version>1.0.2</esa.jms.transport.version>
+        <esa.jms.transport.version>8.0-SNAPSHOT</esa.jms.transport.version>
         <esa.spp.transport.version>8.0-SNAPSHOT</esa.spp.transport.version>
         <esa.support.lib.mal.version>8.0-SNAPSHOT</esa.support.lib.mal.version>
         <esa.support.lib.com.version>8.0-SNAPSHOT</esa.support.lib.com.version>
     
         <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
         <ccsds.specification.download.group>int.esa.ccsds.mo</ccsds.specification.download.group>
-        <ccsds.specification.download.artifact>MOXML</ccsds.specification.download.artifact>
+        <ccsds.specification.download.artifact>xml-ccsds-mo-standards</ccsds.specification.download.artifact>
         <ccsds.specification.download.version>${ccsds.specification.version}</ccsds.specification.download.version>
         <ccsds.specification.download.directory>${project.build.directory}/xml</ccsds.specification.download.directory>
         <ccsds.specification.download.filter></ccsds.specification.download.filter>
         <ccsds.specification.download.ref-skip>true</ccsds.specification.download.ref-skip>
         <ccsds.specification.download.ref-group>int.esa.ccsds.mo</ccsds.specification.download.ref-group>
-        <ccsds.specification.download.ref-artifact>MOXML</ccsds.specification.download.ref-artifact>
+        <ccsds.specification.download.ref-artifact>xml-ccsds-mo-standards</ccsds.specification.download.ref-artifact>
         <ccsds.specification.download.ref-version>${ccsds.specification.version}</ccsds.specification.download.ref-version>
         <ccsds.specification.download.ref-directory>${project.build.directory}/xml-ref</ccsds.specification.download.ref-directory>
-        <ccsds.specification.download.ref-filter>**/ServiceDefMAL.xml</ccsds.specification.download.ref-filter>
+        <ccsds.specification.download.ref-filter>**/area001-v001-MAL.xml</ccsds.specification.download.ref-filter>
         <esa.stubgen.xmlDirectory>${project.build.directory}/xml</esa.stubgen.xmlDirectory>
         <esa.stubgen.xmlRefDirectory>${project.build.directory}/xml-ref/xml</esa.stubgen.xmlRefDirectory>
     </properties>
