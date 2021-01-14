@@ -20,7 +20,7 @@
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>POM</artifactId>
         <version>8-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>SUPPORT_LIB_COMMON</artifactId>
