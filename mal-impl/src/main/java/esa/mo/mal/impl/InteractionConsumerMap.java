@@ -57,7 +57,7 @@ public class InteractionConsumerMap {
 
     private final Map<Long, OperationResponseHolder> syncOpResponseMap
             = new HashMap<Long, OperationResponseHolder>();
-    
+
     // This object will be shared across. It is thread-safe
     private final static InteractionTimeout INTERACTION_TIMEOUT = new InteractionTimeout();
 
@@ -216,7 +216,12 @@ public class InteractionConsumerMap {
                 handler = transMap.get(id);
             } else {
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "No key found in service maps to get listener! {0} {1}",
+                        "The transaction handler could not be found for transactionId: {0}"
+                        + "\nMessage header: {1}\n"
+                        + "This error usually happens because the messages "
+                        + "are being received out-of-order in the MAL layer. "
+                        + "The problem is typically in the transport layer "
+                        + "and usually is related with threading.",
                         new Object[]{id, msg.getHeader()}
                 );
             }
