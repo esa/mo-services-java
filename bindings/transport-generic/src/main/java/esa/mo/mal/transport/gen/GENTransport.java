@@ -26,6 +26,7 @@ import esa.mo.mal.transport.gen.sending.GENConcurrentMessageSender;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
 import esa.mo.mal.transport.gen.util.GENHelper;
+import esa.mo.mal.transport.gen.util.TransportThreadFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -34,10 +35,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.*;
@@ -380,7 +379,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
     @Override
     public MALEndpoint getEndpoint(final URI uri) throws IllegalArgumentException {
         String endpointUriPart = getRoutingPart(uri.getValue());
-
         return endpointRoutingMap.get(endpointUriPart);
     }
 
@@ -1281,37 +1279,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
         }
 
         return rv;
-    }
-
-    /**
-     * The transport backend thread factory
-     */
-    private static class TransportThreadFactory implements ThreadFactory {
-
-        private final ThreadGroup group;
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        private final String namePrefix;
-
-        TransportThreadFactory(String prefix) {
-            SecurityManager s = System.getSecurityManager();
-            group = (s != null) ? s.getThreadGroup()
-                    : Thread.currentThread().getThreadGroup();
-            namePrefix = prefix + "-thread-";
-        }
-
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(group, r,
-                    namePrefix + threadNumber.getAndIncrement(),
-                    0);
-            if (t.isDaemon()) {
-                t.setDaemon(false);
-            }
-            if (t.getPriority() != Thread.NORM_PRIORITY) {
-                t.setPriority(Thread.NORM_PRIORITY);
-            }
-            return t;
-        }
     }
 
 }
