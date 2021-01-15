@@ -79,8 +79,8 @@ public class GENConcurrentMessageSender {
      * @param targetURI
      */
     public GENConcurrentMessageSender(GENTransport transport, String targetURI) {
-        outgoingQueue = new LinkedBlockingQueue<GENOutgoingMessageHolder>();
-        processingThreads = Collections.synchronizedList(new ArrayList<GENSenderThread>());
+        outgoingQueue = new LinkedBlockingQueue<>();
+        processingThreads = Collections.synchronizedList(new ArrayList<>());
         this.transport = transport;
         this.targetURI = targetURI;
     }
@@ -212,7 +212,7 @@ public class GENConcurrentMessageSender {
         public GENSenderThread(GENMessageSender messageSender, String uriTo) {
             this.uriTo = uriTo;
             this.messageSender = messageSender;
-            setName(getClass().getName() + " URI:" + uriTo);
+            setName("Transport_Send" + " URI: " + uriTo);
         }
 
         @Override

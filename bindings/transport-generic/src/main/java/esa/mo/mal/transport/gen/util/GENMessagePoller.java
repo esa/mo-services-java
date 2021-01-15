@@ -84,7 +84,7 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
         this.messageSender = messageSender;
         this.messageReceiver = new MessageAdapter<I, O>(transport,
                 this, messageReceiver, decoderFactory);
-        setName(getClass().getName());
+        setName("Transport_Receive");
     }
 
     /**
@@ -101,7 +101,7 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
         this.transport = transport;
         this.messageSender = messageSender;
         this.messageReceiver = messageReceiver;
-        setName(getClass().getName());
+        setName("Transport_Receive");
     }
 
     @Override
@@ -148,7 +148,7 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
     @Override
     public void setRemoteURI(String remoteURI) {
         this.remoteURI = remoteURI;
-        setName(getClass().getName() + " URI:" + remoteURI);
+        setName("Transport_Receive" + " URI:" + remoteURI);
     }
 
     @Override

@@ -1267,7 +1267,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             }
         }
 
-        ExecutorService rv = Executors.newFixedThreadPool(lInputProcessorThreads, 
+        ExecutorService rv = Executors.newFixedThreadPool(lInputProcessorThreads,
                 new TransportThreadFactory("Transport_Dispatcher"));
 
         // see if we can tune the thread pool

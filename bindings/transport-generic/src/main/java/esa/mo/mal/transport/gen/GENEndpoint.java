@@ -55,8 +55,8 @@ public class GENEndpoint implements MALEndpoint {
      * @param wrapBodyParts True if the encoded body parts should be wrapped in
      * BLOBs.
      */
-    public GENEndpoint(final GENTransport transport, final String localName, final String routingName,
-            final String uri, final boolean wrapBodyParts) {
+    public GENEndpoint(final GENTransport transport, final String localName,
+            final String routingName, final String uri, final boolean wrapBodyParts) {
         this.transport = transport;
         this.localName = localName;
         this.routingName = routingName;
@@ -162,7 +162,8 @@ public class GENEndpoint implements MALEndpoint {
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
             final Map qosProperties,
-            final MALEncodedBody body) throws IllegalArgumentException, MALException {
+            final MALEncodedBody body) 
+            throws IllegalArgumentException, MALException {
         try {
             return new GENMessage(wrapBodyParts, createMessageHeader(getURI(),
                     authenticationId,
