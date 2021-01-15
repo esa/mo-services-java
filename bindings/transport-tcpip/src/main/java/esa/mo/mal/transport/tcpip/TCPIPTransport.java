@@ -113,6 +113,25 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             "org.ccsds.moims.mo.mal.transport.tcpip");
 
     /**
+     * System property to control whether the transport automatically sets the
+     * host address and port number.
+     */
+    private static final String PROPERTY_AUTOHOST
+            = "org.ccsds.moims.mo.mal.transport.tcpip.autohost";
+    
+    /**
+     * System property to define the host address.
+     */
+    private static final String PROPERTY_HOST
+            = "org.ccsds.moims.mo.mal.transport.tcpip.host";
+    
+    /**
+     * System property to define the port number.
+     */
+    private static final String PROPERTY_PORT
+            = "org.ccsds.moims.mo.mal.transport.tcpip.port";
+    
+    /**
      * Port delimiter
      */
     private static final char PORT_DELIMITER = ':';
@@ -145,12 +164,12 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
     private boolean autohost = false;
     private ServerSocket serverSocket;
-    private final Map<String, Integer> socketsList = new HashMap<String, Integer>();
+    private final Map<String, Integer> socketsList = new HashMap<>();
 
     /**
      * Holds the list of data poller threads
      */
-    private final List<GENMessagePoller> messagePollerThreadPool = new ArrayList<GENMessagePoller>();
+    private final List<GENMessagePoller> messagePollerThreadPool = new ArrayList<>();
 
     /**
      * Constructor. Configures host/port and debug settings.
@@ -173,25 +192,25 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
         // decode configuration
         if (properties != null) {
-            if (properties.containsKey("org.ccsds.moims.mo.mal.transport.tcpip.autohost")) {
-                if ("true".equals((String) properties.get("org.ccsds.moims.mo.mal.transport.tcpip.autohost"))) {
+            if (properties.containsKey(PROPERTY_AUTOHOST)) {
+                if ("true".equals((String) properties.get(PROPERTY_AUTOHOST))) {
                     // Get the local address...
-                    properties.put("org.ccsds.moims.mo.mal.transport.tcpip.host", getDefaultHost());
+                    properties.put(PROPERTY_HOST, getDefaultHost());
                     autohost = true;
                 }
             }
 
             // host / ip adress
-            if (properties.containsKey("org.ccsds.moims.mo.mal.transport.tcpip.host")) {
+            if (properties.containsKey(PROPERTY_HOST)) {
                 //this is a server
-                String hostName = (String) properties.get("org.ccsds.moims.mo.mal.transport.tcpip.host");
+                String hostName = (String) properties.get(PROPERTY_HOST);
                 try {
                     this.serverHost = InetAddress.getByName(hostName).getHostAddress();
                 } catch (UnknownHostException ex) {
-                    RLOGGER.log(Level.WARNING,
-                            "Cannot convert server hostname from properties file to IP address", ex);
-                    throw new MALException("Cannot convert server hostname from properties file to IP address",
-                            ex);
+                    RLOGGER.log(Level.WARNING, "Cannot convert server hostname "
+                            + "from properties file to IP address", ex);
+                    throw new MALException("Cannot convert server hostname "
+                            + "from properties file to IP address", ex);
                 }
                 this.clientHost = null;
             } else {
@@ -203,21 +222,22 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             // port
             if (serverHost != null) {
                 //this is a server
-                if (properties.containsKey("org.ccsds.moims.mo.mal.transport.tcpip.port")) {
+                if (properties.containsKey(PROPERTY_PORT)) {
                     try {
-                        this.serverPort = Integer.parseInt((String) properties.get(
-                                "org.ccsds.moims.mo.mal.transport.tcpip.port"));
+                        this.serverPort = Integer.parseInt((String) properties.get(PROPERTY_PORT));
                         InetAddress serverHostAddr = InetAddress.getByName(serverHost);
                         serverSocket = new ServerSocket(this.serverPort, 0, serverHostAddr);
                     } catch (NumberFormatException ex) {
-                        RLOGGER.log(Level.WARNING,
-                                "Cannot parse server port number from properties file to Integer", ex);
-                        throw new MALException("Cannot parse server port number from properties file to Integer",
-                                ex);
+                        RLOGGER.log(Level.WARNING, "Cannot parse server port "
+                                + "number from properties file to Integer", ex);
+                        throw new MALException("Cannot parse server port "
+                                + "number from properties file to Integer", ex);
                     } catch (UnknownHostException ex) {
-                        Logger.getLogger(TCPIPTransport.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(TCPIPTransport.class.getName()).log(
+                                Level.SEVERE, "Something went wrong...", ex);
                     } catch (IOException ex) {
-                        Logger.getLogger(TCPIPTransport.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(TCPIPTransport.class.getName()).log(
+                                Level.SEVERE, "Something went wrong...", ex);
                     }
                 } else {
                     try {
@@ -230,13 +250,15 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
                                 serverSocket = new ServerSocket(portNumber, 0, serverHostAddr);
                                 break;
                             } catch (Exception ex) {
-                                RLOGGER.log(Level.FINE, "Port " + portNumber + " already in use...");
+                                RLOGGER.log(Level.FINE, 
+                                        "Port {0} already in use...", portNumber);
                                 portNumber += 1;
                             }
                         }
                         this.serverPort = portNumber;
                     } catch (UnknownHostException ex) {
-                        Logger.getLogger(TCPIPTransport.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(TCPIPTransport.class.getName()).log(
+                                Level.SEVERE, "Something went wrong...", ex);
                     }
                 }
                 this.clientPort = 0;
@@ -256,7 +278,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
                         Level parsedLevel = Level.parse(level.toString());
                         RLOGGER.setLevel(parsedLevel);
                         handler.setLevel(parsedLevel);
-                        RLOGGER.info("Setting logger to level " + RLOGGER.getLevel());
+                        RLOGGER.log(Level.INFO, "Setting logger to level {0}", RLOGGER.getLevel());
                         RLOGGER.addHandler(handler);
                     } catch (IllegalArgumentException ex) {
                         RLOGGER.log(Level.WARNING, "The debug level supplied by the parameter"
@@ -421,8 +443,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     @Override
     protected GENEndpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map properties) throws MALException {
-        RLOGGER.fine("TCPIPTransport.internalCreateEndpoint() with uri: " + uriBase);
-
+        RLOGGER.log(Level.FINE, "TCPIPTransport.internalCreateEndpoint() with uri: {0}", uriBase);
         return new TCPIPEndpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts);
     }
 
@@ -449,15 +470,15 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             addr = serverHost + PORT_DELIMITER + serverPort;
         }
 
-        RLOGGER.info("Transport address created is " + addr);
+        RLOGGER.log(Level.INFO, "TCP/IP Transport address: {0}", addr);
 
         return addr;
     }
 
     @Override
     public GENMessage createMessage(byte[] packet) throws MALException {
-        return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, packet,
-                getStreamFactory());
+        return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), 
+                qosProperties, packet, getStreamFactory());
     }
 
     /**
@@ -495,8 +516,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         byte[] packetData = packetInfo.getPacketData();
 
         // Header must be always Fixed Binary
-        TCPIPMessage msg = new TCPIPMessage(wrapBodyParts, header, qosProperties, packetData,
-                new TCPIPFixedBinaryStreamFactory());
+        TCPIPMessage msg = new TCPIPMessage(wrapBodyParts, header, 
+                qosProperties, packetData, new TCPIPFixedBinaryStreamFactory());
 
         int decodedHeaderBytes = ((TCPIPMessageHeader) msg.getHeader()).decodedHeaderBytes;
         int bodySize = ((TCPIPMessageHeader) msg.getHeader()).getBodyLength() + 23 - decodedHeaderBytes;
@@ -532,7 +553,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             // create a message sender and receiver for the socket
             Integer localPort = socketsList.get(remoteRootURI);
 
-            if (localPort == null) { // Assign a different client port per remote location
+            // Assign a different client port per remote location
+            if (localPort == null) {
                 localPort = this.getRandomClientPort();
                 socketsList.put(remoteRootURI, localPort);
             }
@@ -563,16 +585,16 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
             return trans;
         } catch (NumberFormatException nfe) {
-            LOGGER.log(Level.WARNING, "Have no means to communicate with client URI : {0}", remoteRootURI);
-            throw new MALException("Have no means to communicate with client URI : " + remoteRootURI);
+            LOGGER.log(Level.WARNING, "Have no means to communicate with client URI: {0}", remoteRootURI);
+            throw new MALException("Have no means to communicate with client URI: " + remoteRootURI);
         } catch (UnknownHostException e) {
-            LOGGER.log(Level.WARNING, "TCPIP could not find host :{0}", remoteRootURI);
-            LOGGER.log(Level.FINE, "TCPIP could not find host  :" + remoteRootURI, e);
+            LOGGER.log(Level.WARNING, "TCPIP could not find host: {0}", remoteRootURI);
+            LOGGER.log(Level.FINE, "TCPIP could not find host: " + remoteRootURI, e);
             throw new MALTransmitErrorException(msg.getHeader(),
                     new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
         } catch (java.net.ConnectException e) {
-            LOGGER.log(Level.WARNING, "TCPIP could not connect to : {0}", remoteRootURI);
-            LOGGER.log(Level.FINE, "TCPIP could not connect to : " + remoteRootURI, e);
+            LOGGER.log(Level.WARNING, "TCPIP could not connect to: {0}", remoteRootURI);
+            LOGGER.log(Level.FINE, "TCPIP could not connect to: " + remoteRootURI, e);
             throw new MALTransmitErrorException(
                     msg.getHeader(),
                     new MALStandardError(
@@ -580,7 +602,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         } catch (IOException e) {
             // there was a communication problem, we need to clean up the
             // objects we created in the meanwhile
-            LOGGER.log(Level.WARNING, "TCPIP could not connect to : " + remoteRootURI, e);
+            LOGGER.log(Level.WARNING, "TCPIP could not connect to: " + remoteRootURI, e);
             communicationError(remoteRootURI, null);
 
             // rethrow for higher MAL leyers
