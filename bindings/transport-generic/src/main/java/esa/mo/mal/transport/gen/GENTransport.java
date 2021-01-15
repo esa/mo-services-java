@@ -34,8 +34,10 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.*;
@@ -55,7 +57,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
     /**
      * System property to control whether message parts of wrapped in BLOBs.
      */
-    public static final String WRAP_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.wrap";
+    public static final String WRAP_PROPERTY
+            = "org.ccsds.moims.mo.mal.transport.gen.wrap";
     /**
      * System property to control whether in-process processing supported.
      */
@@ -64,7 +67,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
     /**
      * System property to control whether debug messages are generated.
      */
-    public static final String DEBUG_PROPERTY = "org.ccsds.moims.mo.mal.transport.gen.debug";
+    public static final String DEBUG_PROPERTY
+            = "org.ccsds.moims.mo.mal.transport.gen.debug";
     /**
      * System property to control the number of input processors.
      */
@@ -160,11 +164,11 @@ public abstract class GENTransport<I, O> implements MALTransport {
     /**
      * Map of string MAL names to endpoints.
      */
-    protected final Map<String, GENEndpoint> endpointMalMap = new HashMap<String, GENEndpoint>();
+    protected final Map<String, GENEndpoint> endpointMalMap = new HashMap<>();
     /**
      * Map of string transport routing names to endpoints.
      */
-    protected final Map<String, GENEndpoint> endpointRoutingMap = new HashMap<String, GENEndpoint>();
+    protected final Map<String, GENEndpoint> endpointRoutingMap = new HashMap<>();
     /**
      * Map of QoS properties.
      */
@@ -179,24 +183,24 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * The thread that receives incoming message from the underlying transport.
      * All incoming raw data packets are processed by this thread.
      */
-    private final ExecutorService asyncInputReceptionProcessor;
+    private final ExecutorService decoderExecutor;
     /**
      * The thread pool of input message processors. All incoming messages are
      * processed by this thread pool after they have been decoded by the
-     * asyncInputReceptionProcessor thread.
+     * decoderExecutor thread.
      */
-    private final ExecutorService asyncInputDataProcessors;
+    private final ExecutorService dispatcherExecutor;
     /**
      * The map of message queues, segregated by transaction id.
      */
     private final Map<Long, GENIncomingMessageProcessor> transactionQueues
-            = new HashMap<Long, GENIncomingMessageProcessor>();
+            = new HashMap<>();
     /**
      * Map of outgoing channels. This associates a URI to a transport resource
      * that is able to send messages to this URI.
      */
     private final Map<String, GENConcurrentMessageSender> outgoingDataChannels
-            = new HashMap<String, GENConcurrentMessageSender>();
+            = new HashMap<>();
     /**
      * The stream factory used for encoding and decoding messages.
      */
@@ -209,12 +213,12 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * Map of cachedRoutingParts. This associates a URI to its Routing part.
      */
     private final ConcurrentHashMap<String, String> cachedRoutingParts
-            = new ConcurrentHashMap<String, String>();
+            = new ConcurrentHashMap<>();
     /**
      * Map of cachedRootURIs. This associates a full URI to its root URI.
      */
     private final ConcurrentHashMap<String, String> cachedRootURIs
-            = new ConcurrentHashMap<String, String>();
+            = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
@@ -234,69 +238,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
             final boolean wrapBodyParts,
             final MALTransportFactory factory,
             final java.util.Map properties) throws MALException {
-        this.factory = factory;
-        this.protocol = protocol;
-        this.supportsRouting = supportsRouting;
-        this.protocolDelim = "://";
-        this.serviceDelim = serviceDelim;
-        this.routingDelim = '@';
-        this.qosProperties = properties;
-        this.streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
-
-        if (protocolDelim.contains("" + serviceDelim)) {
-            serviceDelimCounter
-                    = protocolDelim.length() - protocolDelim.replace("" + serviceDelim, "").length();
-        } else {
-            serviceDelimCounter = 0;
-        }
-
-        LOGGER.log(Level.FINE, "GEN Creating element stream : {0}",
-                streamFactory.getClass().getName());
-
-        // very crude and faulty test but it will do for testing
-        this.streamHasStrings = streamFactory.getClass().getName().contains("String");
-
-        // default values
-        boolean lLogFullDebug = false;
-        boolean lWrapBodyParts = wrapBodyParts;
-        boolean lInProcessSupport = true;
-        int lNumConnections = 1;
-        int lDeliveryTime = 10;
-
-        // decode configuration
-        if (properties != null) {
-            if (properties.containsKey(DEBUG_PROPERTY)) {
-                lLogFullDebug = Boolean.parseBoolean((String) properties.get(DEBUG_PROPERTY));
-            }
-
-            if (properties.containsKey(WRAP_PROPERTY)) {
-                lWrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
-            }
-
-            if (properties.containsKey(INPROC_PROPERTY)) {
-                lInProcessSupport = Boolean.parseBoolean((String) properties.get(INPROC_PROPERTY));
-            }
-
-            // number of connections per client/server
-            if (properties.containsKey(NUM_CLIENT_CONNS_PROPERTY)) {
-                lNumConnections = Integer.parseInt((String) properties.get(NUM_CLIENT_CONNS_PROPERTY));
-            }
-
-            if (properties.containsKey(DELIVERY_TIMEOUT_PROPERTY)) {
-                lDeliveryTime = Integer.parseInt((String) properties.get(DELIVERY_TIMEOUT_PROPERTY));
-            }
-        }
-
-        this.logFullDebug = lLogFullDebug;
-        this.wrapBodyParts = lWrapBodyParts;
-        this.inProcessSupport = lInProcessSupport;
-        this.numConnections = lNumConnections;
-        this.deliveryTimeout = lDeliveryTime;
-
-        this.asyncInputReceptionProcessor = Executors.newSingleThreadExecutor();
-        this.asyncInputDataProcessors = createThreadPoolExecutor(properties);
-
-        LOGGER.log(Level.FINE, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
+        this(protocol, "://", serviceDelim, '@', supportsRouting,
+                wrapBodyParts, factory, properties);
     }
 
     /**
@@ -330,7 +273,10 @@ public abstract class GENTransport<I, O> implements MALTransport {
         this.serviceDelim = serviceDelim;
         this.routingDelim = routingDelim;
         this.qosProperties = properties;
+
         streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
+        LOGGER.log(Level.FINE, "GEN Created element stream: {0}",
+                streamFactory.getClass().getName());
 
         if (protocolDelim.contains("" + serviceDelim)) {
             serviceDelimCounter
@@ -338,9 +284,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
         } else {
             serviceDelimCounter = 0;
         }
-
-        LOGGER.log(Level.FINE, "GEN Creating element stream : {0}",
-                streamFactory.getClass().getName());
 
         // very crude and faulty test but it will do for testing
         streamHasStrings = streamFactory.getClass().getName().contains("String");
@@ -382,10 +325,11 @@ public abstract class GENTransport<I, O> implements MALTransport {
         this.numConnections = lNumConnections;
         this.deliveryTimeout = lDeliveryTime;
 
-        asyncInputReceptionProcessor = Executors.newSingleThreadExecutor();
-        this.asyncInputDataProcessors = createThreadPoolExecutor(properties);
+        TransportThreadFactory decFactory = new TransportThreadFactory("Transport_Decoder");
+        this.decoderExecutor = Executors.newSingleThreadExecutor(decFactory);
+        this.dispatcherExecutor = createDispatcherExecutor(properties);
 
-        LOGGER.log(Level.FINE, "GEN Wrapping body parts set to  : {0}", this.wrapBodyParts);
+        LOGGER.log(Level.FINE, "GEN Wrapping body parts set to: {0}", this.wrapBodyParts);
     }
 
     /**
@@ -462,7 +406,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      */
     public void receive(final GENReceptionHandler receptionHandler,
             final GENIncomingMessageDecoder decoder) {
-        asyncInputReceptionProcessor.submit(
+        decoderExecutor.submit(
                 new GENIncomingMessageReceiver(this, receptionHandler, decoder));
     }
 
@@ -622,8 +566,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
         endpointMalMap.clear();
         endpointRoutingMap.clear();
 
-        asyncInputReceptionProcessor.shutdown();
-        asyncInputDataProcessors.shutdown();
+        decoderExecutor.shutdown();
+        dispatcherExecutor.shutdown();
 
         LOGGER.fine("Closing outgoing channels");
         synchronized (this) {
@@ -654,13 +598,13 @@ public abstract class GENTransport<I, O> implements MALTransport {
             if (null == proc) {
                 proc = new GENIncomingMessageProcessor(malMsg);
                 transactionQueues.put(malMsg.transactionId, proc);
-                asyncInputDataProcessors.submit(proc);
+                dispatcherExecutor.submit(proc);
             } else if (proc.addMessage(malMsg)) {
                 // need to resubmit this to the processing threads
-                asyncInputDataProcessors.submit(proc);
+                dispatcherExecutor.submit(proc);
             }
 
-            Set<Long> transactionsToRemove = new HashSet<Long>();
+            Set<Long> transactionsToRemove = new HashSet<>();
             for (Map.Entry<Long, GENIncomingMessageProcessor> entrySet : transactionQueues.entrySet()) {
                 Long key = entrySet.getKey();
                 GENIncomingMessageProcessor lproc = entrySet.getValue();
@@ -1189,8 +1133,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      */
     private final class GENIncomingMessageProcessor implements Runnable {
 
-        private final Queue<GENIncomingMessageHolder> malMsgs
-                = new ArrayDeque<GENIncomingMessageHolder>();
+        private final Queue<GENIncomingMessageHolder> malMsgs = new ArrayDeque<>();
         private boolean finished = false;
 
         /**
@@ -1295,7 +1238,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
         }
     }
 
-    private static ExecutorService createThreadPoolExecutor(final java.util.Map properties) {
+    private static ExecutorService createDispatcherExecutor(final java.util.Map properties) {
         boolean needsTuning = false;
         int lInputProcessorThreads = 100;
         int lMinInputProcessorThreads = lInputProcessorThreads;
@@ -1309,7 +1252,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
                         MIN_INPUT_PROCESSORS_PROPERTY));
             }
 
-            // number of seconds for internal threads that process incoming MAL packets to be idle before being terminated
+            // number of seconds for internal threads that process incoming 
+            // MAL packets to be idle before being terminated
             if (properties.containsKey(IDLE_INPUT_PROCESSORS_PROPERTY)) {
                 needsTuning = true;
                 lIdleTimeInSeconds = Integer.parseInt(
@@ -1323,7 +1267,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
             }
         }
 
-        ExecutorService rv = Executors.newFixedThreadPool(lInputProcessorThreads);
+        ExecutorService rv = Executors.newFixedThreadPool(lInputProcessorThreads, 
+                new TransportThreadFactory("Transport_Dispatcher"));
 
         // see if we can tune the thread pool
         if (needsTuning) {
@@ -1337,4 +1282,36 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
         return rv;
     }
+
+    /**
+     * The transport backend thread factory
+     */
+    private static class TransportThreadFactory implements ThreadFactory {
+
+        private final ThreadGroup group;
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+        private final String namePrefix;
+
+        TransportThreadFactory(String prefix) {
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null) ? s.getThreadGroup()
+                    : Thread.currentThread().getThreadGroup();
+            namePrefix = prefix + "-thread-";
+        }
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(group, r,
+                    namePrefix + threadNumber.getAndIncrement(),
+                    0);
+            if (t.isDaemon()) {
+                t.setDaemon(false);
+            }
+            if (t.getPriority() != Thread.NORM_PRIORITY) {
+                t.setPriority(Thread.NORM_PRIORITY);
+            }
+            return t;
+        }
+    }
+
 }
