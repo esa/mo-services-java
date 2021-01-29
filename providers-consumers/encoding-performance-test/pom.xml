@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>POM</artifactId>
-        <version>8-SNAPSHOT</version>
+        <version>8</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>MAL_PERFORMANCE_TESTS</artifactId>
     <packaging>jar</packaging>
-    <version>8.0-SNAPSHOT</version>
+    <version>8.0</version>
 
     <name>ESA MAL performance tests</name>
     <description>A small set of test applications for the evaluation of CCSDS MAL performance</description>
