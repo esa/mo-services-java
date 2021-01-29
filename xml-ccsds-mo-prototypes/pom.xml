@@ -18,7 +18,7 @@
   
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>xml-ccsds-mo-prototypes</artifactId>
-    <version>8.0-SNAPSHOT</version>
+    <version>8.0</version>
     <packaging>jar</packaging>
   
     <name>CCSDS MO services XML - MO Prototypes</name>
