@@ -307,7 +307,7 @@ public class GENEndpoint implements MALEndpoint {
         }
 
         if (!v.isEmpty()) {
-            throw new MALTransmitMultipleErrorException(v.toArray(new MALTransmitErrorException[v.size()]));
+            throw new MALTransmitMultipleErrorException(v.toArray(new MALTransmitErrorException[0]));
         }
     }
 

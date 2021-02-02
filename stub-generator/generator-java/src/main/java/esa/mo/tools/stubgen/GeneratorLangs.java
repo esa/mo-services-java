@@ -1893,9 +1893,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 conArgsList.add(element);
             }
 
-            for (CompositeField element : compElements) {
-                conArgsList.add(element);
-            }
+            conArgsList.addAll(compElements);
 
             MethodWriter method = file.addConstructor(StdStrings.PUBLIC, compName, conArgsList, superArgsList, null, "Constructor that initialises the values of the structure.", null);
 

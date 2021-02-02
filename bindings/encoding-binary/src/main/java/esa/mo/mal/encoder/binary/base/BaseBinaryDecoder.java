@@ -263,9 +263,8 @@ public abstract class BaseBinaryDecoder extends GENDecoder {
                         // of the old buffer, or copies it into the new buffer
                         // NOTE: this is faster than System.arraycopy, as that 
                         // performs argument type checks
-                        for (int i = 0; i < existingContentRemaining; ++i) {
-                            destBuf[i] = this.buf[this.offset + i];
-                        }
+                        if (existingContentRemaining >= 0)
+                            System.arraycopy(this.buf, this.offset + 0, destBuf, 0, existingContentRemaining);
 
                         // the start of the data in the buffer has moved to zero now
                         this.buf = destBuf;
