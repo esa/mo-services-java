@@ -49,7 +49,6 @@ class SimpleSubscriptionSource extends SubscriptionSource {
      * Constructor.
      *
      * @param hdr The message header of the subscription message.
-     * @param binding The broker binding that received the subscription.
      */
     public SimpleSubscriptionSource(final MALMessageHeader hdr) {
         super(hdr, hdr.getURIFrom());
