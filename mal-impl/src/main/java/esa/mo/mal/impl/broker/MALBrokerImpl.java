@@ -70,7 +70,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker {
 
     @Override
     public MALBrokerBinding[] getBindings() {
-        return bindings.toArray(new MALBrokerBinding[bindings.size()]);
+        return bindings.toArray(new MALBrokerBinding[0]);
     }
 
     /**

@@ -301,9 +301,9 @@ public class SPPMessageHeader extends GENMessageHeader {
         }
 
         boolean isTC = 0 != (0x00001000 & ccsdsHdrPt1);
-        Integer sourceQualifier;
+        int sourceQualifier;
         short sourceApid;
-        Integer destQualifier;
+        int destQualifier;
         short destApid;
 
         if (isTC) {
