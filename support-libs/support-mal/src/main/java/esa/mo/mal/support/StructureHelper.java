@@ -22,10 +22,11 @@ package esa.mo.mal.support;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -178,7 +179,7 @@ public abstract class StructureHelper {
 
             try {
                 File file = new File(filename);
-                final FileOutputStream fos = new FileOutputStream(file);
+                final OutputStream fos = Files.newOutputStream(file.toPath());
                 final OutputStreamWriter osw = new OutputStreamWriter(fos);
                 final BufferedWriter wrt = new BufferedWriter(osw);
 
