@@ -33,14 +33,14 @@ public interface GENReceptionHandler {
      *
      * @return the remote URI that this reception handler receives data from
      */
-    public String getRemoteURI();
+    String getRemoteURI();
 
     /**
      * Setter method for the remote URI of this handler
      *
      * @param newURI the remote root URI, i.e. maltcp://10.0.0.1:61617
      */
-    public void setRemoteURI(String newURI);
+    void setRemoteURI(String newURI);
 
     /**
      * Returns the message sender for this reception handler.
@@ -48,10 +48,10 @@ public interface GENReceptionHandler {
      * @return the message sender for this receiver. Null if this receiver does
      * not support sending messages
      */
-    public GENMessageSender getMessageSender();
+    GENMessageSender getMessageSender();
 
     /**
      * Closes the communication channel for this reception handler
      */
-    public void close();
+    void close();
 }

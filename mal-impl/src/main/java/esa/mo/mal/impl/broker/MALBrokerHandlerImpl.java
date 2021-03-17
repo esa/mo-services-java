@@ -273,12 +273,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     }
 
     private Map<String, SubscriptionSource> getConsumerMap(final BrokerKey key) {
-        Map<String, SubscriptionSource> rv = consumerMap.get(key);
-
-        if (null == rv) {
-            rv = new HashMap();
-            consumerMap.put(key, rv);
-        }
+        Map<String, SubscriptionSource> rv = consumerMap.computeIfAbsent(key, k -> new HashMap());
 
         return rv;
     }
@@ -302,12 +297,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     }
 
     private Map<StringPair, PublisherSource> getProviderMap(final BrokerKey key) {
-        Map<StringPair, PublisherSource> rv = providerMap.get(key);
-
-        if (null == rv) {
-            rv = new HashMap();
-            providerMap.put(key, rv);
-        }
+        Map<StringPair, PublisherSource> rv = providerMap.computeIfAbsent(key, k -> new HashMap());
 
         return rv;
     }
