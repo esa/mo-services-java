@@ -87,12 +87,9 @@ public class FileTransceiver implements GENMessageReceiver<InputStream>, GENMess
 
         java.io.File tmpFile = new File(outgoingDirectory.toFile(), tmpname + ".tmp");
 
-        java.io.FileOutputStream fos = new FileOutputStream(tmpFile);
-        try {
+        try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
             fos.write((byte[]) packetData.getEncodedMessage());
             fos.flush();
-        } finally {
-            fos.close();
         }
 
         // rename file to correct file name

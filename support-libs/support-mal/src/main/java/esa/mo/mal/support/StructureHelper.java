@@ -184,13 +184,13 @@ public abstract class StructureHelper {
 
                 if ((null != serviceUri) && (null != serviceUri.getValue())) {
                     wrt.append(propertyPrefix);
-                    wrt.append("uri=" + serviceUri);
+                    wrt.append("uri=").append(String.valueOf(serviceUri));
                     wrt.newLine();
                 }
 
                 if ((null != brokerUri) && (null != brokerUri.getValue())) {
                     wrt.append(propertyPrefix);
-                    wrt.append("broker=" + brokerUri);
+                    wrt.append("broker=").append(String.valueOf(brokerUri));
                     wrt.newLine();
                 }
 

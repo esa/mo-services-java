@@ -356,8 +356,7 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
             String mappedRemoteURI = uriMapping.getRemotePtpZmtpUri(remoteRootURI);
             ZMQ.Socket socket = openSocket(getZmqContext(),
                     ZMTP_COMMUNICATION_PATTERN_P2P, mappedRemoteURI, false);
-            ZMTPChannelSource channelSource = new ZMTPChannelSource(socket);
-            return channelSource;
+            return new ZMTPChannelSource(socket);
         } catch (IllegalArgumentException e) {
             RLOGGER.log(Level.WARNING,
                     "Malformed parameters when creating sender to : {0}", remoteRootURI);

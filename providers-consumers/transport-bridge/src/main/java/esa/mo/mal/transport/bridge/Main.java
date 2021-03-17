@@ -114,9 +114,9 @@ public class Main {
 
     protected static void storeURIs(String filename, String uri, String buri) throws Exception {
         java.io.BufferedWriter wrt = new BufferedWriter(new java.io.FileWriter(new java.io.File(filename)));
-        wrt.append("uri=" + uri);
+        wrt.append("uri=").append(uri);
         wrt.newLine();
-        wrt.append("broker=" + buri);
+        wrt.append("broker=").append(buri);
         wrt.newLine();
         wrt.close();
     }

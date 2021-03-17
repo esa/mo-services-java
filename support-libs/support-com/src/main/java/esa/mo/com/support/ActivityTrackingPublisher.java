@@ -166,7 +166,7 @@ public class ActivityTrackingPublisher {
                         ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
                         COMHelper._COM_AREA_VERSION,
                         0),
-                new Long(instanceIdentifier++),
+                (long) instanceIdentifier++,
                 ComStructureHelper.generateSubKey(source.getType()));
         BaseMalServer.LOGGER.log(Level.FINE, "ActivityTracking:eKey = {0}", ekey);
 
@@ -314,7 +314,7 @@ public class ActivityTrackingPublisher {
                         ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
                         COMHelper._COM_AREA_VERSION,
                         0),
-                new Long(instanceIdentifier++),
+                (long) instanceIdentifier++,
                 ComStructureHelper.generateSubKey(source.getType()));
 
         BaseMalServer.LOGGER.log(Level.FINE,

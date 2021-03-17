@@ -40,7 +40,7 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation {
         if (-1 == j) {
             j = val.length();
         }
-        return Short.valueOf(val.substring(i, j));
+        return Short.parseShort(val.substring(i, j));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation {
         if (-1 == j) {
             j = val.length();
         }
-        return Integer.valueOf(val.substring(i, j));
+        return Integer.parseInt(val.substring(i, j));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation {
         int i = val.indexOf('/') + 1;
         int j = val.indexOf('/', i) + 1;
 
-        return Short.valueOf(val.substring(j, val.length()));
+        return Short.parseShort(val.substring(j, val.length()));
     }
 
     @Override

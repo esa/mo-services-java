@@ -89,8 +89,7 @@ public abstract class GeneratorDocument extends GeneratorBase {
                     fieldName, elementType.isList(), canBeNull, false, 
                     StdStrings.MAL, "", "", false, "", comment);
         } else {
-            String fqTypeName = typeName;
-            ele = new CompositeField(fqTypeName, elementType, fieldName, 
+            ele = new CompositeField(typeName, elementType, fieldName,
                     elementType.isList(), canBeNull, false, elementType.getArea(), 
                     "", elementType.getService(), false, "", comment);
         }
@@ -115,8 +114,8 @@ public abstract class GeneratorDocument extends GeneratorBase {
         String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
         Document document = impl.createDocument(svgNS, "svg", null);
         Element root = document.getDocumentElement();
-        rv[0] = Integer.valueOf(svg.getAttribute("width"));
-        rv[1] = Integer.valueOf(svg.getAttribute("height"));
+        rv[0] = Integer.parseInt(svg.getAttribute("width"));
+        rv[1] = Integer.parseInt(svg.getAttribute("height"));
         root.setAttributeNS(null, "width", svg.getAttribute("width"));
         root.setAttributeNS(null, "height", svg.getAttribute("height"));
         // Create a duplicate node and transfer ownership of the

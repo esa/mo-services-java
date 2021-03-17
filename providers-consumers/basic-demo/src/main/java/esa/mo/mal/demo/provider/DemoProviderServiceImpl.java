@@ -176,9 +176,9 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
             final FileOutputStream fos = new FileOutputStream(file);
             final OutputStreamWriter osw = new OutputStreamWriter(fos);
             final BufferedWriter wrt = new BufferedWriter(osw);
-            wrt.append("uri=" + demoServiceProvider.getURI());
+            wrt.append("uri=").append(String.valueOf(demoServiceProvider.getURI()));
             wrt.newLine();
-            wrt.append("broker=" + demoServiceProvider.getBrokerURI());
+            wrt.append("broker=").append(String.valueOf(demoServiceProvider.getBrokerURI()));
             wrt.newLine();
             wrt.close();
         } catch (IOException ex) {

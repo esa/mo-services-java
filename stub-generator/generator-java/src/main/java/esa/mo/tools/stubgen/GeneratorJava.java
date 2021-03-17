@@ -94,8 +94,8 @@ public class GeneratorJava extends GeneratorLangs {
             Map<String, String> extraProperties) throws IOException {
         super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
-        setRequiresDefaultConstructors(Boolean.valueOf(extraProperties.get("java.requiresDefaultConstructors")));
-        setSupportFullyPolymorphicTypes(Boolean.valueOf(extraProperties.get("java.supportFullyPolymorphicTypes")));
+        setRequiresDefaultConstructors(Boolean.parseBoolean(extraProperties.get("java.requiresDefaultConstructors")));
+        setSupportFullyPolymorphicTypes(Boolean.parseBoolean(extraProperties.get("java.supportFullyPolymorphicTypes")));
 
         addAttributeType(StdStrings.MAL, StdStrings.BLOB, false, "Blob", "");
         addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, true, "Boolean", "Boolean.FALSE");
@@ -684,12 +684,12 @@ public class GeneratorJava extends GeneratorLangs {
             if (abstractClass) {
                 file.append("abstract ");
             }
-            file.append("class " + className);
+            file.append("class ").append(className);
             if (null != extendsClass) {
-                file.append(" extends " + extendsClass);
+                file.append(" extends ").append(extendsClass);
             }
             if (null != implementsInterface) {
-                file.append(" implements " + implementsInterface);
+                file.append(" implements ").append(implementsInterface);
             }
             file.append(getLineSeparator());
             file.append(addFileStatement(0, "{", false));
@@ -918,7 +918,7 @@ public class GeneratorJava extends GeneratorLangs {
             file.append("public interface ");
             file.append(interfaceName);
             if (null != extendsInterface) {
-                file.append(" extends " + extendsInterface);
+                file.append(" extends ").append(extendsInterface);
             }
             file.append(getLineSeparator());
             file.append(addFileStatement(0, "{", false));
