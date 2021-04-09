@@ -21,6 +21,7 @@
 package esa.mo.mal.demo.consumer;
 
 import javax.swing.JLabel;
+import java.util.Arrays;
 
 /**
  * A simple class that sums the transmission delay over a set of parameter
@@ -41,9 +42,7 @@ class DelayManager {
         delays = new long[size];
 
         // cl;ear the delay set
-        for (int i = 0; i < delays.length; i++) {
-            delays[i] = 0;
-        }
+        Arrays.fill(delays, 0);
     }
 
     public synchronized void addDelay(final boolean displayTotal, final long delay) {
@@ -70,8 +69,6 @@ class DelayManager {
         totalDelay = 0;
         index = 0;
 
-        for (int i = 0; i < delays.length; i++) {
-            delays[i] = 0;
-        }
+        Arrays.fill(delays, 0);
     }
 }

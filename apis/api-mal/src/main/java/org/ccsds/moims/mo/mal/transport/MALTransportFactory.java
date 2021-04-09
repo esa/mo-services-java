@@ -111,9 +111,7 @@ public abstract class MALTransportFactory {
                             className);
                 }
 
-                return (MALTransportFactory) factoryClass.getConstructor(new Class[]{
-                    String.class
-                })
+                return (MALTransportFactory) factoryClass.getConstructor(String.class)
                         .newInstance(new Object[]{
                     protocol
                 });

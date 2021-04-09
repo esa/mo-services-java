@@ -30,6 +30,7 @@ import static esa.mo.mal.encoder.string.StringEncoder.STR_NULL_ESC;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
@@ -40,7 +41,7 @@ import org.ccsds.moims.mo.mal.structures.*;
  */
 public class StringDecoder extends GENDecoder {
 
-    static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+    static final Charset UTF8_CHARSET = StandardCharsets.UTF_8;
     public static final int BLOCK_SIZE = 65536;
 
     /**

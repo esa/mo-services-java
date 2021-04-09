@@ -168,7 +168,7 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
      *
      * @param <T> The type of the encoded messages.
      */
-    public static interface GENMessageReceiver<T> {
+    public interface GENMessageReceiver<T> {
 
         /**
          * Reads an encoded MALMessage.

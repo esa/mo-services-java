@@ -31,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -97,7 +98,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * Charset used for converting the encoded message into a string for
      * debugging.
      */
-    public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+    public static final Charset UTF8_CHARSET = StandardCharsets.UTF_8;
     /**
      * Logger
      */

@@ -110,11 +110,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             final DemoConsumerGui gui = new DemoConsumerGui(name, parametersNum);
             gui.init();
 
-            EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    gui.setVisible(true);
-                }
-            });
+            EventQueue.invokeLater(() -> gui.setVisible(true));
         } catch (MalformedURLException ex) {
             LOGGER.log(Level.SEVERE, "Exception thrown during initialisation of Demo Consumer {0}", ex);
         } catch (MALException ex) {
@@ -216,23 +212,20 @@ public class DemoConsumerGui extends javax.swing.JFrame {
 
         startService();
 
-        Thread asyncSendThread = new Thread() {
-            @Override
-            public void run() {
-                while (running) {
-                    for (int i = 0; i < labels.length; ++i) {
-                        labels[i].displayValue();
-                    }
+        Thread asyncSendThread = new Thread(() -> {
+            while (running) {
+                for (int i = 0; i < labels.length; ++i) {
+                    labels[i].displayValue();
+                }
 
-                    // sleep
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        // do nothing
-                    }
+                // sleep
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    // do nothing
                 }
             }
-        };
+        });
 
         asyncSendThread.start();
     }
@@ -382,13 +375,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
 
     quitMenuItem.setText("Quit");
     quitMenuItem.setName("quitMenuItem"); // NOI18N
-    quitMenuItem.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        quitMenuItemActionPerformed(evt);
-      }
-    });
+    quitMenuItem.addActionListener(evt -> quitMenuItemActionPerformed(evt));
     jMenu1.add(quitMenuItem);
 
     jMenuBar1.add(jMenu1);
@@ -403,50 +390,26 @@ public class DemoConsumerGui extends javax.swing.JFrame {
     regWildcardRadioButtonMenuItem.setSelected(true);
     regWildcardRadioButtonMenuItem.setText("Wildcard");
     regWildcardRadioButtonMenuItem.setName("regWildcardRadioButtonMenuItem"); // NOI18N
-    regWildcardRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        regWildcardRadioButtonMenuItemActionPerformed(evt);
-      }
-    });
+    regWildcardRadioButtonMenuItem.addActionListener(evt -> regWildcardRadioButtonMenuItemActionPerformed(evt));
     jMenu3.add(regWildcardRadioButtonMenuItem);
 
     subscriptionButtonGroup.add(regHalfRadioButtonMenuItem);
     regHalfRadioButtonMenuItem.setText("Half");
     regHalfRadioButtonMenuItem.setName("regHalfRadioButtonMenuItem"); // NOI18N
-    regHalfRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        regHalfRadioButtonMenuItemActionPerformed(evt);
-      }
-    });
+    regHalfRadioButtonMenuItem.addActionListener(evt -> regHalfRadioButtonMenuItemActionPerformed(evt));
     jMenu3.add(regHalfRadioButtonMenuItem);
 
     subscriptionButtonGroup.add(regAllRadioButtonMenuItem);
     regAllRadioButtonMenuItem.setText("All");
     regAllRadioButtonMenuItem.setName("regAllRadioButtonMenuItem"); // NOI18N
-    regAllRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        regAllRadioButtonMenuItemActionPerformed(evt);
-      }
-    });
+    regAllRadioButtonMenuItem.addActionListener(evt -> regAllRadioButtonMenuItemActionPerformed(evt));
     jMenu3.add(regAllRadioButtonMenuItem);
 
     jMenu2.add(jMenu3);
 
     deregMenuItem.setText("Deregister");
     deregMenuItem.setName("deregMenuItem"); // NOI18N
-    deregMenuItem.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        deregMenuItemActionPerformed(evt);
-      }
-    });
+    deregMenuItem.addActionListener(evt -> deregMenuItemActionPerformed(evt));
     jMenu2.add(deregMenuItem);
 
     jSeparator1.setName("jSeparator1"); // NOI18N
@@ -454,24 +417,12 @@ public class DemoConsumerGui extends javax.swing.JFrame {
 
     resetErrorMenuItem.setText("Reset errors");
     resetErrorMenuItem.setName("resetErrorMenuItem"); // NOI18N
-    resetErrorMenuItem.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        resetErrorMenuItemActionPerformed(evt);
-      }
-    });
+    resetErrorMenuItem.addActionListener(evt -> resetErrorMenuItemActionPerformed(evt));
     jMenu2.add(resetErrorMenuItem);
 
     jMenuItem1.setText("Reconnect");
     jMenuItem1.setName("jMenuItem1"); // NOI18N
-    jMenuItem1.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        reconnectActionPerformed(evt);
-      }
-    });
+    jMenuItem1.addActionListener(evt -> reconnectActionPerformed(evt));
     jMenu2.add(jMenuItem1);
 
     jMenuBar1.add(jMenu2);
@@ -481,46 +432,22 @@ public class DemoConsumerGui extends javax.swing.JFrame {
 
     returnBoolean.setText("Return Boolean");
     returnBoolean.setName("returnBoolean"); // NOI18N
-    returnBoolean.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        returnBooleanActionPerformed(evt);
-      }
-    });
+    returnBoolean.addActionListener(evt -> returnBooleanActionPerformed(evt));
     jMenu4.add(returnBoolean);
 
     returnComposite.setText("Return Composite");
     returnComposite.setName("returnComposite"); // NOI18N
-    returnComposite.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        returnCompositeActionPerformed(evt);
-      }
-    });
+    returnComposite.addActionListener(evt -> returnCompositeActionPerformed(evt));
     jMenu4.add(returnComposite);
 
     returnEnum.setText("Return Enum");
     returnEnum.setName("returnEnum"); // NOI18N
-    returnEnum.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        returnEnumActionPerformed(evt);
-      }
-    });
+    returnEnum.addActionListener(evt -> returnEnumActionPerformed(evt));
     jMenu4.add(returnEnum);
 
     testSubmit.setText("Test Submit");
     testSubmit.setName("testSubmit"); // NOI18N
-    testSubmit.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        testSubmitActionPerformed(evt);
-      }
-    });
+    testSubmit.addActionListener(evt -> testSubmitActionPerformed(evt));
     jMenu4.add(testSubmit);
 
     jMenuBar1.add(jMenu4);

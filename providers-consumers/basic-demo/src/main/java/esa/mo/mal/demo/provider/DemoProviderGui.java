@@ -75,11 +75,7 @@ public class DemoProviderGui extends javax.swing.JFrame {
             final DemoProviderGui gui = new DemoProviderGui(name);
             gui.handler.init();
 
-            EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    gui.setVisible(true);
-                }
-            });
+            EventQueue.invokeLater(() -> gui.setVisible(true));
         } catch (MalformedURLException ex) {
             LOGGER.log(Level.SEVERE,
                     "Exception thrown during initialisation of Demo Provider {0}", ex);
@@ -114,11 +110,7 @@ public class DemoProviderGui extends javax.swing.JFrame {
                 javax.swing.JMenuItem tmpMenuItem = new javax.swing.JMenuItem();
                 tmpMenuItem.setText(displayName);
                 tmpMenuItem.setActionCommand(protocol);
-                tmpMenuItem.addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        transportSelected(evt);
-                    }
-                });
+                tmpMenuItem.addActionListener(evt -> transportSelected(evt));
 
                 jMenu3.add(tmpMenuItem);
             }
@@ -192,13 +184,7 @@ public class DemoProviderGui extends javax.swing.JFrame {
     updateRate.setPaintTicks(true);
     updateRate.setValue(10);
     updateRate.setName("updateRate"); // NOI18N
-    updateRate.addChangeListener(new javax.swing.event.ChangeListener()
-    {
-      public void stateChanged(javax.swing.event.ChangeEvent evt)
-      {
-        updateRateStateChanged(evt);
-      }
-    });
+    updateRate.addChangeListener(evt -> updateRateStateChanged(evt));
     controlsPanel.add(updateRate);
 
     jLabel3.setText("Pool size");
@@ -206,13 +192,7 @@ public class DemoProviderGui extends javax.swing.JFrame {
     controlsPanel.add(jLabel3);
 
     poolSize.setName("poolSize"); // NOI18N
-    poolSize.addChangeListener(new javax.swing.event.ChangeListener()
-    {
-      public void stateChanged(javax.swing.event.ChangeEvent evt)
-      {
-        poolSizeStateChanged(evt);
-      }
-    });
+    poolSize.addChangeListener(evt -> poolSizeStateChanged(evt));
     controlsPanel.add(poolSize);
 
     jLabel4.setText("Block size");
@@ -220,13 +200,7 @@ public class DemoProviderGui extends javax.swing.JFrame {
     controlsPanel.add(jLabel4);
 
     blockSize.setName("blockSize"); // NOI18N
-    blockSize.addChangeListener(new javax.swing.event.ChangeListener()
-    {
-      public void stateChanged(javax.swing.event.ChangeEvent evt)
-      {
-        blockSizeStateChanged(evt);
-      }
-    });
+    blockSize.addChangeListener(evt -> blockSizeStateChanged(evt));
     controlsPanel.add(blockSize);
 
     mainPanel.add(controlsPanel, java.awt.BorderLayout.PAGE_START);
@@ -261,13 +235,7 @@ public class DemoProviderGui extends javax.swing.JFrame {
 
     quitMenuItem.setText("Quit");
     quitMenuItem.setName("quitMenuItem"); // NOI18N
-    quitMenuItem.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        quitMenuItemActionPerformed(evt);
-      }
-    });
+    quitMenuItem.addActionListener(evt -> quitMenuItemActionPerformed(evt));
     jMenu1.add(quitMenuItem);
 
     jMenuBar1.add(jMenu1);
@@ -277,24 +245,12 @@ public class DemoProviderGui extends javax.swing.JFrame {
 
     genTMMenuItem.setText("Start TM");
     genTMMenuItem.setName("genTMMenuItem"); // NOI18N
-    genTMMenuItem.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        genTMMenuItemActionPerformed(evt);
-      }
-    });
+    genTMMenuItem.addActionListener(evt -> genTMMenuItemActionPerformed(evt));
     jMenu2.add(genTMMenuItem);
 
     pauseTMMenuItem.setText("Pause TM");
     pauseTMMenuItem.setName("pauseTMMenuItem"); // NOI18N
-    pauseTMMenuItem.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        pauseTMMenuItemActionPerformed(evt);
-      }
-    });
+    pauseTMMenuItem.addActionListener(evt -> pauseTMMenuItemActionPerformed(evt));
     jMenu2.add(pauseTMMenuItem);
 
     jMenuBar1.add(jMenu2);
@@ -304,13 +260,7 @@ public class DemoProviderGui extends javax.swing.JFrame {
 
     defaultTransportMenuItem.setText("default");
     defaultTransportMenuItem.setName("defaultTransportMenuItem"); // NOI18N
-    defaultTransportMenuItem.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        transportSelected(evt);
-      }
-    });
+    defaultTransportMenuItem.addActionListener(evt -> transportSelected(evt));
     jMenu3.add(defaultTransportMenuItem);
 
     jSeparator1.setName("jSeparator1"); // NOI18N
