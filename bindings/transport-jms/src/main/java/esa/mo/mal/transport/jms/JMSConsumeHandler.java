@@ -86,11 +86,12 @@ public class JMSConsumeHandler extends JMSQueueHandler {
         String sdomain = StructureHelper.domainToString(msg.getHeader().getDomain());
 
         for (EntityRequest entitie : entities) {
+            EntityRequest rqst = (EntityRequest) entitie;
             buf.append('(');
             // insert request specific filters
             StringBuilder pbuf = new StringBuilder();
             boolean pvalueSet;
-            IdentifierList sdl = ((EntityRequest) entitie).getSubDomain();
+            IdentifierList sdl = rqst.getSubDomain();
             if ((null != sdl) && (0 < sdl.size())) {
                 boolean wildcard = false;
                 int trunc = 0;
@@ -113,34 +114,35 @@ public class JMSConsumeHandler extends JMSQueueHandler {
                 pvalueSet = createRoutingKeyString(pbuf,
                         JMSEndpoint.DOM_PROPERTY, sdomain, false, false);
             }
-            if (!((EntityRequest) entitie).getAllAreas()) {
+            if (!rqst.getAllAreas()) {
                 pvalueSet = createRoutingKeyLong(pbuf, JMSEndpoint.ARR_PROPERTY,
                         (long) msg.getHeader().getServiceArea().getValue(), pvalueSet);
             }
-            if (!((EntityRequest) entitie).getAllServices()) {
+            if (!rqst.getAllServices()) {
                 pvalueSet = createRoutingKeyLong(pbuf, JMSEndpoint.SVC_PROPERTY,
                         (long) msg.getHeader().getService().getValue(), pvalueSet);
             }
-            if (!((EntityRequest) entitie).getAllOperations()) {
+            if (!rqst.getAllOperations()) {
                 pvalueSet = createRoutingKeyLong(pbuf, JMSEndpoint.OPN_PROPERTY,
                         (long) msg.getHeader().getOperation().getValue(), pvalueSet);
             }
-            if (((EntityRequest) entitie).getOnlyOnChange()) {
+            if (rqst.getOnlyOnChange()) {
                 createRoutingKeyBoolean(pbuf, JMSEndpoint.MOD_PROPERTY, true, pvalueSet);
             }
             buf.append(pbuf);
             StringBuilder ebuf = new StringBuilder();
-            EntityKeyList entityKeys = ((EntityRequest) entitie).getEntityKeys();
+            EntityKeyList entityKeys = rqst.getEntityKeys();
             for (EntityKey entityKey : entityKeys) {
+                EntityKey id = (EntityKey) entityKey;
                 StringBuilder lbuf = new StringBuilder();
                 boolean valueSet = createRoutingKeyIdentifier(lbuf,
-                        JMSEndpoint.EID_PROPERTY, ((EntityKey) entityKey).getFirstSubKey());
+                        JMSEndpoint.EID_PROPERTY, id.getFirstSubKey());
                 valueSet = createRoutingKeyLong(lbuf, JMSEndpoint.DID_PROPERTY,
-                        ((EntityKey) entityKey).getSecondSubKey(), valueSet);
+                        id.getSecondSubKey(), valueSet);
                 valueSet = createRoutingKeyLong(lbuf, JMSEndpoint.OID_PROPERTY,
-                        ((EntityKey) entityKey).getThirdSubKey(), valueSet);
+                        id.getThirdSubKey(), valueSet);
                 createRoutingKeyLong(lbuf, JMSEndpoint.SID_PROPERTY,
-                        ((EntityKey) entityKey).getFourthSubKey(), valueSet);
+                        id.getFourthSubKey(), valueSet);
                 if (lbuf.length() > 0) {
                     if (notFirst) {
                         ebuf.append(" OR ");
