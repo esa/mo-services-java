@@ -180,7 +180,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALOperation[] getOperationsByCapabilitySet(final int capabilitySet) {
-        final MALOperation[] rv = (MALOperation[]) operationsBySet.get(Integer.valueOf(capabilitySet));
+        final MALOperation[] rv = (MALOperation[]) operationsBySet.get(capabilitySet);
         return ((null == rv) ? EMPTY_SET : rv);
     }
 

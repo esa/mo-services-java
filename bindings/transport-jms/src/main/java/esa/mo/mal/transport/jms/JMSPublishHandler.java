@@ -163,8 +163,7 @@ public class JMSPublishHandler {
         if (StructureHelper.isSubDomainOf(domain, hdr.getDomain())) {
             EntityKeyList lst = new EntityKeyList();
             for (UpdateHeader updateList1 : updateList) {
-                UpdateHeader update = (UpdateHeader) updateList1;
-                EntityKey updateKey = update.getKey();
+                EntityKey updateKey = ((UpdateHeader) updateList1).getKey();
                 boolean matched = false;
                 for (JMSPublisherKey key : keySet) {
                     if (key.matches(updateKey)) {

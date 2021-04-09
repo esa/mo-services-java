@@ -156,7 +156,7 @@ public class DirectoryServiceWrapper {
         }
 
         // To be updated correctly...
-        directoryService.withdrawProvider(new Long(1));
+        directoryService.withdrawProvider(1L);
 
         /*
         directoryService.withdrawProvider(createNodeDetailsList(providerName,
@@ -258,7 +258,8 @@ public class DirectoryServiceWrapper {
          */
         ProviderDetails providerDetails = new ProviderDetails();
 
-        PublishDetails ndl = new PublishDetails(
+        // ndl.add(nd);
+        return new PublishDetails(
                 providerName,
                 domain,
                 SessionType.LIVE,
@@ -266,9 +267,6 @@ public class DirectoryServiceWrapper {
                 network,
                 providerDetails,
                 null);
-
-        // ndl.add(nd);
-        return ndl;
     }
 
 }
