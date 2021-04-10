@@ -22,9 +22,10 @@ package esa.mo.mal.demo.provider;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -173,7 +174,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
 
         try {
             final File file = new File("demoServiceURI.properties");
-            final FileOutputStream fos = new FileOutputStream(file);
+            final OutputStream fos = Files.newOutputStream(file.toPath());
             final OutputStreamWriter osw = new OutputStreamWriter(fos);
             final BufferedWriter wrt = new BufferedWriter(osw);
             wrt.append("uri=").append(String.valueOf(demoServiceProvider.getURI()));
