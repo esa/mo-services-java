@@ -38,10 +38,10 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 class InteractionPubSubMap {
 
     private final Map<StringPair, MALPublishInteractionListener> publisherMap
-            = new HashMap<StringPair, MALPublishInteractionListener>();
+            = new HashMap<>();
     private final Map<String, Map<String, MALInteractionListener>> errorMap
-            = new HashMap<String, Map<String, MALInteractionListener>>();
-    private final Map<StringPair, MALInteractionListener> notifyMap = new HashMap<StringPair, MALInteractionListener>();
+            = new HashMap<>();
+    private final Map<StringPair, MALInteractionListener> notifyMap = new HashMap<>();
 
     void registerPublishListener(final MessageDetails details, final MALPublishInteractionListener listener) {
         final StringPair id = new StringPair(details.uriFrom.getValue(), createProviderKey(details));
@@ -117,7 +117,7 @@ class InteractionPubSubMap {
             Map<String, MALInteractionListener> ent = errorMap.get(uri);
 
             if (null == ent) {
-                ent = new HashMap<String, MALInteractionListener>();
+                ent = new HashMap<>();
                 errorMap.put(uri, ent);
             }
 

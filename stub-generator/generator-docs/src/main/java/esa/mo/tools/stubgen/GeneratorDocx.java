@@ -148,7 +148,7 @@ public class GeneratorDocx extends GeneratorDocument {
                             drawCOMUsageTables(docxServiceFile, area, ((ExtendedServiceType) service));
                         }
                     } else {
-                        List<String> comments = new ArrayList<String>();
+                        List<String> comments = new ArrayList<>();
 
                         for (CapabilitySetType cSet : service.getCapabilitySet()) {
                             String str = cSet.getComment();
@@ -286,7 +286,7 @@ public class GeneratorDocx extends GeneratorDocument {
             docxServiceFile.flush();
             docxNumberingFile.flush();
 
-            ArrayList<String> filenames = new ArrayList<String>();
+            ArrayList<String> filenames = new ArrayList<>();
             filenames.add("[Content_Types].xml");
             filenames.add("_rels/.rels");
             filenames.add("word/_rels/document.xml.rels");
@@ -376,7 +376,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Source points to", HEADER_COLOUR);
                     docxFile.endRow();
 
-                    List<String> cmts = new LinkedList<String>();
+                    List<String> cmts = new LinkedList<>();
 
                     for (ModelObjectType obj : features.getObjects().getObject()) {
                         docxFile.startRow();
@@ -702,7 +702,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 docxFile.addComment("The operation may return one of the following errors:");
             }
 
-            TreeMap<String, List<Object[]>> m = new TreeMap<String, List<Object[]>>(new Comparator<String>() {
+            TreeMap<String, List<Object[]>> m = new TreeMap<>(new Comparator<String>() {
                 @Override
                 public int compare(String o1, String o2) {
                     try {
@@ -733,7 +733,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     if (m.containsKey(String.valueOf(err.getNumber()))) {
                         v = m.get(String.valueOf(err.getNumber()));
                     } else {
-                        v = new ArrayList<Object[]>();
+                        v = new ArrayList<>();
                         m.put(String.valueOf(err.getNumber()), v);
                     }
 
@@ -772,7 +772,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     if (m.containsKey(es)) {
                         v = m.get(es);
                     } else {
-                        v = new ArrayList<Object[]>();
+                        v = new ArrayList<>();
                         m.put(es, v);
                     }
 

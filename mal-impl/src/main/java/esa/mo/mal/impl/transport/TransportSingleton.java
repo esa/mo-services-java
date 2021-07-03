@@ -39,13 +39,13 @@ public final class TransportSingleton {
     /**
      * Map of transport factories currently used by the application
      */
-    private static final Map<String, MALTransportFactory> FACTORY_MAP = 
-            new HashMap<String, MALTransportFactory>();
+    private static final Map<String, MALTransportFactory> FACTORY_MAP =
+            new HashMap<>();
     /**
      * Map of transport handlers currently used by the application
      */
-    private static final Map<String, MALTransport> TRANSPORT_MAP = 
-            new HashMap<String, MALTransport>();
+    private static final Map<String, MALTransport> TRANSPORT_MAP =
+            new HashMap<>();
     /**
      * The default protocol to be used by the provider
      */

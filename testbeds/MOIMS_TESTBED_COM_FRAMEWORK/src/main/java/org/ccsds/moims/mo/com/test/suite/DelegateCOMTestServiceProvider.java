@@ -46,7 +46,7 @@ public class DelegateCOMTestServiceProvider extends UriCOMTestServiceProvider
     logMessage("Delegate: uri props: " + uriPrp);
     System.getProperties().putAll(uriPrp);
 
-    List<URItriple> returnValues = new ArrayList<URItriple>();
+    List<URItriple> returnValues = new ArrayList<>();
 
     returnValues.add(getServiceURIs(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME));
     returnValues.add(getServiceURIs(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME));

@@ -41,7 +41,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 class MALProviderImpl extends ServiceComponentImpl implements MALProvider {
 
     private final boolean isPublisher;
-    private final Map<String, MALPublisher> publishers = new HashMap<String, MALPublisher>();
+    private final Map<String, MALPublisher> publishers = new HashMap<>();
     private final URI sharedBrokerUri;
     private final MALBrokerBinding localBrokerBinding;
     private final URI localBrokerUri;

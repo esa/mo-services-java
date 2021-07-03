@@ -31,7 +31,7 @@ public final class ServiceSummary {
 
     private final ServiceType service;
     private final boolean comService;
-    private final List<OperationSummary> operations = new LinkedList<OperationSummary>();
+    private final List<OperationSummary> operations = new LinkedList<>();
 
     /**
      * Constructor.

@@ -36,8 +36,8 @@ public class MALArea {
     private final Identifier name;
     private final UOctet version;
     private MALService[] services = new MALService[0];
-    private final Map<String, MALService> serviceNames = new HashMap<String, MALService>();
-    private final Map<Integer, MALService> serviceNumbers = new HashMap<Integer, MALService>();
+    private final Map<String, MALService> serviceNames = new HashMap<>();
+    private final Map<Integer, MALService> serviceNumbers = new HashMap<>();
 
     /**
      * MALArea constructor.

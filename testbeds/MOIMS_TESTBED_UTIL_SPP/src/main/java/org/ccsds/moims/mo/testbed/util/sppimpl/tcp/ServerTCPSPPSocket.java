@@ -66,7 +66,7 @@ public class ServerTCPSPPSocket implements SPPSocket {
   
   public ServerTCPSPPSocket() {
 	  super();
-	  input = new LinkedBlockingQueue<SpacePacket>();
+	  input = new LinkedBlockingQueue<>();
   }
 
 	public void init(Map properties) throws Exception {

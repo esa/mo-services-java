@@ -437,7 +437,7 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
   
   private class ProgressAdapter extends IPTestAdapter {
     private final List<Blob> payloads = new ArrayList<Blob>();
-    private final List<Integer> packetNumbers = new ArrayList<Integer>();
+    private final List<Integer> packetNumbers = new ArrayList<>();
     private boolean correctResponseReceived = false;
     
     @Override

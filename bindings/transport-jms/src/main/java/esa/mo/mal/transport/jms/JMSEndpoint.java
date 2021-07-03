@@ -59,9 +59,9 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
     private final Session qs;
     private final JMSQueueHandler rspnHandler;
     private final Map<String, JMSConsumeHandler> consumeHandlerMap
-            = new TreeMap<String, JMSConsumeHandler>();
+            = new TreeMap<>();
     private final Map<String, JMSPublishHandler> publishHandlerMap
-            = new TreeMap<String, JMSPublishHandler>();
+            = new TreeMap<>();
     final Object interruption = new Object();
 
     /**

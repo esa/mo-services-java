@@ -42,8 +42,8 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 class SimpleSubscriptionSource extends SubscriptionSource {
 
     private final String signature;
-    private final Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
-    private final Map<String, SimpleSubscriptionDetails> details = new HashMap<String, SimpleSubscriptionDetails>();
+    private final Set<SubscriptionKey> required = new TreeSet<>();
+    private final Map<String, SimpleSubscriptionDetails> details = new HashMap<>();
 
     /**
      * Constructor.
@@ -96,7 +96,7 @@ class SimpleSubscriptionSource extends SubscriptionSource {
         MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signature);
 
         final String srcDomainId = StructureHelper.domainToString(srcHdr.getDomain());
-        final List<NotifyMessage> msgs = new LinkedList<NotifyMessage>();
+        final List<NotifyMessage> msgs = new LinkedList<>();
 
         for (Map.Entry<String, SimpleSubscriptionDetails> ent : details.entrySet()) {
             final NotifyMessage subUpdate = ent.getValue().populateNotifyList(

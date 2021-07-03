@@ -151,7 +151,7 @@ public abstract class GeneratorDocument extends GeneratorBase {
      */
     protected static List<String> splitString(List<String> srcArr, String str) {
         if (null == srcArr) {
-            srcArr = new LinkedList<String>();
+            srcArr = new LinkedList<>();
         }
         if (null != str) {
             srcArr.addAll(Arrays.asList(str.split("(  |\n)")));

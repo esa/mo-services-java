@@ -211,7 +211,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
 		protocol = getProtocol();
     brokerManager = defaultMal.createBrokerManager();
     
-    HashMap<Object, Object> tmProviderProps = new HashMap<Object, Object>();
+    HashMap<Object, Object> tmProviderProps = new HashMap<>();
     tmProviderProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
     tmProviderProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
         TM_REMOTE_APID_QUALIFIER);
@@ -273,7 +273,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
             Boolean.FALSE, // isPublisher
             null);
 
-    Map<Object, Object> segmentationErrorProps = new HashMap<Object, Object>();
+    Map<Object, Object> segmentationErrorProps = new HashMap<>();
     segmentationErrorProps.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_ERROR_REMOTE_APID_QUALIFIER);
     segmentationErrorProps.put(TestHelper.APID_PROPERTY, SEGMENTATION_ERROR_REMOTE_APID);
     segmentationErrorProps.put(TestHelper.AUTHENTICATION_ID_FLAG, Boolean.FALSE);
@@ -298,7 +298,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
             Boolean.FALSE, // isPublisher
             null);
 
-    Map<Object, Object> segmentationCounterSelectProps = new HashMap<Object, Object>();
+    Map<Object, Object> segmentationCounterSelectProps = new HashMap<>();
     segmentationCounterSelectProps.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_COUNTER_SELECT_REMOTE_APID_QUALIFIER);
     segmentationCounterSelectProps.put(TestHelper.APID_PROPERTY, SEGMENTATION_COUNTER_SELECT_REMOTE_APID);
     

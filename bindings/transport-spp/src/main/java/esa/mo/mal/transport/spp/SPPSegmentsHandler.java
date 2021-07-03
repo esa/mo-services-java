@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.mal.MALException;
 public class SPPSegmentsHandler {
 
     private final HashMap<Long, SPPSegmentsAssembler> segmentsAssemblerMap
-            = new HashMap<Long, SPPSegmentsAssembler>(); // use TreeMap so that key is kept sorted
+            = new HashMap<>(); // use TreeMap so that key is kept sorted
     private final int apidQualifier;
     private final int apid;
     private final SPPBaseTransport transport;

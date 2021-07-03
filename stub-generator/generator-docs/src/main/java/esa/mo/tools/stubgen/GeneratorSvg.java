@@ -112,7 +112,7 @@ public class GeneratorSvg extends GeneratorDocument {
     @Override
     public void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException {
         for (AreaType area : spec.getArea()) {
-            Map<String, String> indexMap = new TreeMap<String, String>();
+            Map<String, String> indexMap = new TreeMap<>();
 
             if ((!area.getName().equalsIgnoreCase(StdStrings.COM)) || (generateCOM())) {
                 String outputName = "output" + area.getName();
@@ -123,7 +123,7 @@ public class GeneratorSvg extends GeneratorDocument {
                 svgBuff.addTitle(1, "Specification: ", createId(null, null), area.getName(), false);
                 svgBuff.addComment(area.getComment());
 
-                Set<Map.Entry<String, String>> svcTocMap = new LinkedHashSet<Map.Entry<String, String>>();
+                Set<Map.Entry<String, String>> svcTocMap = new LinkedHashSet<>();
                 SvgBufferWriter areaBodyBuff = new SvgBufferWriter(destinationFolderName, outputName, true);
 
                 // create services
@@ -133,7 +133,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
                     svcTocMap.add(new AbstractMap.SimpleEntry<String, String>(service.getName(), createXlink(null, service.getName(), null)));
 
-                    Set<Map.Entry<String, String>> opTocMap = new LinkedHashSet<Map.Entry<String, String>>();
+                    Set<Map.Entry<String, String>> opTocMap = new LinkedHashSet<>();
                     SvgBufferWriter serviceBodyBuff = new SvgBufferWriter(destinationFolderName, outputName, true);
 
                     ServiceSummary summary = createOperationElementList(service);
@@ -142,7 +142,7 @@ public class GeneratorSvg extends GeneratorDocument {
                         serviceBodyBuff.addTitle(3, "Operation: ", createId(service, op.getName()), op.getName(), false);
                         serviceBodyBuff.addComment(op.getOriginalOp().getComment());
 
-                        opTocMap.add(new AbstractMap.SimpleEntry<String, String>(op.getName(), createXlink(null, service.getName(), op.getName())));
+                        opTocMap.add(new AbstractMap.SimpleEntry<>(op.getName(), createXlink(null, service.getName(), op.getName())));
 
                         drawOperationMessages(serviceBodyBuff, summary, op);
                     }
@@ -158,7 +158,7 @@ public class GeneratorSvg extends GeneratorDocument {
                         ExtendedServiceType eservice = (ExtendedServiceType) service;
 
                         if ((null != eservice.getFeatures()) && (null != eservice.getFeatures().getEvents())) {
-                            Set<Map.Entry<String, String>> evTocMap = new LinkedHashSet<Map.Entry<String, String>>();
+                            Set<Map.Entry<String, String>> evTocMap = new LinkedHashSet<>();
                             SvgBufferWriter eventBodyBuff = new SvgBufferWriter(destinationFolderName, outputName, true);
 
                             for (ModelObjectType evt : eservice.getFeatures().getEvents().getEvent()) {
@@ -166,7 +166,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
                                 evTocMap.add(new AbstractMap.SimpleEntry<String, String>(evt.getName(), createXlink(null, service.getName(), evt.getName())));
 
-                                List<TypeInfo> types = new LinkedList<TypeInfo>();
+                                List<TypeInfo> types = new LinkedList<>();
                                 if (null != evt.getObjectType()) {
                                     types = TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(evt.getObjectType().getAny()));
                                 }
@@ -271,7 +271,7 @@ public class GeneratorSvg extends GeneratorDocument {
                 break;
             }
             case PUBSUB_OP: {
-                List<esa.mo.tools.stubgen.specification.TypeInfo> types = new ArrayList<TypeInfo>();
+                List<esa.mo.tools.stubgen.specification.TypeInfo> types = new ArrayList<>();
                 TypeReference subId = new TypeReference();
                 subId.setArea("MAL");
                 subId.setName("Identifier");
@@ -378,7 +378,7 @@ public class GeneratorSvg extends GeneratorDocument {
             svgFile.addTitle(4, title, null, " None", false);
         }
 
-        List<String> cmts = new LinkedList<String>();
+        List<String> cmts = new LinkedList<>();
         cmts.add(comment);
         for (TypeInfo e : types) {
             cmts.add(e.getFieldComment());
@@ -625,7 +625,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
     private abstract class Container extends ContainerElement {
 
-        protected final List<ContainerElement> elements = new ArrayList<ContainerElement>();
+        protected final List<ContainerElement> elements = new ArrayList<>();
 
         public Container(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional) {
             super(container, typeRef, name, type, isList, isOptional);

@@ -42,7 +42,7 @@ import org.ccsds.moims.mo.perftest.structures.*;
 public class TestEncoder {
 
     public static void main(String[] args) throws Exception {
-        List<Results> results = new LinkedList<Results>();
+        List<Results> results = new LinkedList<>();
 
         int runCount = 100;
         int pktsPerReport = 1;

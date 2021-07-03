@@ -39,7 +39,7 @@ public final class PublisherSource {
 
     private final String uri;
     private final QoSLevel qosLevel;
-    private final Set<PublisherKey> keySet = new TreeSet<PublisherKey>();
+    private final Set<PublisherKey> keySet = new TreeSet<>();
     private IdentifierList domain = null;
 
     PublisherSource(final String uri, final QoSLevel qosLevel) {

@@ -29,7 +29,7 @@ import java.util.Map;
  */
 public class MALElementFactoryRegistry {
 
-    private final Map<Object, MALElementFactory> factoryMap = new HashMap<Object, MALElementFactory>();
+    private final Map<Object, MALElementFactory> factoryMap = new HashMap<>();
 
     /**
      * Registers a element factory in the map using the supplied short form

@@ -190,13 +190,13 @@ public class JMSTransport extends GENTransport<byte[], byte[]> implements MALTra
     protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(String destinationRootURI, 
             String destinationURI, Object multiSendHandle, boolean lastForHandle, 
             String targetURI, GENMessage msg) throws Exception {
-        return new GENOutgoingMessageHolder<byte[]>(10,
-            destinationRootURI,
-            destinationURI,
-            multiSendHandle,
-            lastForHandle,
-            msg,
-            internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg));
+        return new GENOutgoingMessageHolder<>(10,
+                destinationRootURI,
+                destinationURI,
+                multiSendHandle,
+                lastForHandle,
+                msg,
+                internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg));
     }
 
     private class JMSMessageSender implements GENMessageSender<byte[]> {
