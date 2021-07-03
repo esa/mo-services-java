@@ -72,9 +72,9 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     protected final int defaultApidQualifier;
     protected final int defaultApid;
     protected final Map<QualifiedApid, SPPConfiguration> apidConfigurations
-            = new HashMap<QualifiedApid, SPPConfiguration>();
+            = new HashMap<>();
     protected final Map<QualifiedApid, Map<Long, SPPSegmentsHandler>> segmentHandlers
-            = new HashMap<QualifiedApid, Map<Long, SPPSegmentsHandler>>();
+            = new HashMap<>();
     /**
      * The stream factory used for encoding and decoding message headers.
      */
@@ -223,7 +223,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
 
         int sequenceFlags = (buf[2] & 0xC0) >> 6;
 
-        List<ByteBuffer> encodedMessage = new ArrayList<ByteBuffer>();
+        List<ByteBuffer> encodedMessage = new ArrayList<>();
 
         if (3 == sequenceFlags) {
             encodedMessage.add(ByteBuffer.wrap(buf));
@@ -240,7 +240,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
             }
         }
 
-        return new GENOutgoingMessageHolder<List<ByteBuffer>>(defaultApid,
+        return new GENOutgoingMessageHolder<>(defaultApid,
                 destinationRootURI,
                 destinationURI,
                 multiSendHandle,
@@ -288,7 +288,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
                     = segmentHandlers.get(new QualifiedApid(apidQualifier, apid));
 
             if (null == map) {
-                map = new HashMap<Long, SPPSegmentsHandler>();
+                map = new HashMap<>();
                 segmentHandlers.put(new QualifiedApid(apidQualifier, apid), map);
             }
 

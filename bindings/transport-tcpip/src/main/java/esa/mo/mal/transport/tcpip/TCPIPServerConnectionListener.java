@@ -45,7 +45,7 @@ public class TCPIPServerConnectionListener extends Thread {
     /**
      * Holds the list of data poller threads
      */
-    private final List<Thread> pollerThreads = new ArrayList<Thread>();
+    private final List<Thread> pollerThreads = new ArrayList<>();
 
     /**
      * Constructor.

@@ -172,7 +172,7 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
             Boolean.TRUE, // isPublisher
             null);
 
-    List<URItriple> returnValues = new ArrayList<URItriple>();
+    List<URItriple> returnValues = new ArrayList<>();
     
     returnValues.add(new URItriple(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME, activityTestProvider.getURI(), activityTestProvider.getBrokerURI()));
     returnValues.add(new URItriple(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME, activityRelayManagementProvider.getURI(), activityRelayManagementProvider.getBrokerURI()));

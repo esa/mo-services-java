@@ -163,14 +163,14 @@ public class GeneratorJava extends GeneratorLangs {
         method.addMethodStatement("publisherSet.asyncRegister(entityKeys, listener)");
         method.addMethodCloseStatement();
 
-        List<CompositeField> argList = new LinkedList<CompositeField>();
+        List<CompositeField> argList = new LinkedList<>();
         argList.add(createCompositeElementsDetails(file, true, "updateHeaderList", TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true, "updateHeaderList The headers of the updates being added"));
         argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes(), true));
 
         String argNameList = "";
 
         if (1 < argList.size()) {
-            List<String> strList = new LinkedList<String>();
+            List<String> strList = new LinkedList<>();
 
             for (int i = 1; i < argList.size(); i++) {
                 strList.add(argList.get(i).getFieldName());
@@ -977,7 +977,7 @@ public class GeneratorJava extends GeneratorLangs {
         }
 
         private List<String> normaliseArgComments(String comment, String returnComment, List<CompositeField> argsComments, List<String> throwsComment) {
-            List<String> rv = new LinkedList<String>();
+            List<String> rv = new LinkedList<>();
 
             if (null != argsComments) {
                 for (CompositeField arg : argsComments) {
@@ -989,7 +989,7 @@ public class GeneratorJava extends GeneratorLangs {
         }
 
         private List<String> normaliseComments(String comment, String returnComment, List<String> argsComments, List<String> throwsComment) {
-            List<String> rv = new LinkedList<String>();
+            List<String> rv = new LinkedList<>();
 
             normaliseComment(rv, comment);
             normaliseComments(rv, StubUtils.conditionalAdd("@param ", argsComments));

@@ -388,7 +388,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
                 });
 
         final List<Map.Entry<UpdateHeaderList, BasicUpdateList>> updateList
-                = new LinkedList<Map.Entry<UpdateHeaderList, BasicUpdateList>>();
+                = new LinkedList<>();
 
         for (int i = 0; i < poolSize;) {
             final UpdateHeaderList hdrLst = new UpdateHeaderList();

@@ -77,9 +77,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
      */
     public static final String TRANSPORT_FOLDER = "transport";
     private final Map<TypeKey, ModelObjectType> comObjectMap = new HashMap<TypeKey, ModelObjectType>();
-    private final Map<String, MultiReturnType> multiReturnTypeMap = new HashMap<String, MultiReturnType>();
-    private final Map<String, String> reservedWordsMap = new HashMap<String, String>();
-    private final Map<String, RequiredPublisher> requiredPublishers = new HashMap<String, RequiredPublisher>();
+    private final Map<String, MultiReturnType> multiReturnTypeMap = new HashMap<>();
+    private final Map<String, String> reservedWordsMap = new HashMap<>();
+    private final Map<String, RequiredPublisher> requiredPublishers = new HashMap<>();
     private boolean supportsToString;
     private boolean supportsEquals;
     private boolean supportsToValue;
@@ -564,7 +564,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     break;
                 }
                 case PUBSUB_OP: {
-                    List<TypeInfo> retTypes = new LinkedList<TypeInfo>();
+                    List<TypeInfo> retTypes = new LinkedList<>();
                     retTypes.add(0, TypeUtils.convertTypeReference(this, TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
                     retTypes.add(1, TypeUtils.convertTypeReference(this, TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true)));
                     for (TypeInfo ti : op.getRetTypes()) {
@@ -669,7 +669,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (optype == op.getPattern()) {
                 String ns = convertToNamespace(serviceHelper + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("    case " + ns, ns, false);
-                List<TypeInfo> opTypes = new LinkedList<TypeInfo>();
+                List<TypeInfo> opTypes = new LinkedList<>();
                 opTypes.add(0, TypeUtils.convertTypeReference(this, TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
                 opTypes.add(1, TypeUtils.convertTypeReference(this, TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true)));
                 for (TypeInfo ti : op.getRetTypes()) {
@@ -1398,7 +1398,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             }
         }
 
-        List<String> typeCalls = new LinkedList<String>();
+        List<String> typeCalls = new LinkedList<>();
 
         if ((null != area.getDataTypes()) && !area.getDataTypes().getFundamentalOrAttributeOrComposite().isEmpty()) {
             for (Object oType : area.getDataTypes().getFundamentalOrAttributeOrComposite()) {
@@ -1520,7 +1520,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             file.addClassVariable(true, true, StdStrings.PUBLIC, _opNumberVar, false, op.getNumber().toString());
             file.addClassVariable(true, true, StdStrings.PUBLIC, opNumberVar, false, "(_" + operationInstanceVar + "_OP_NUMBER)");
 
-            List<String> opArgs = new LinkedList<String>();
+            List<String> opArgs = new LinkedList<>();
             addServiceHelperOperationArgs(file, op, opArgs);
             CompositeField opInstVar = createCompositeElementsDetails(file, false, operationInstanceVar + "_OP", TypeUtils.createTypeReference(StdStrings.MAL, null, getOperationInstanceType(op), false), false, true, "Operation instance for operation " + operationInstanceVar);
             file.addClassVariable(true, true, StdStrings.PUBLIC, opInstVar, false, false, opArgs);
@@ -1565,7 +1565,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         method.addMethodWithDependencyStatement(createMethodCall(ns + ".addService(" + serviceVar + "_SERVICE)"), ns, true);
 
-        List<String> typeCalls = new LinkedList<String>();
+        List<String> typeCalls = new LinkedList<>();
         if ((null != service.getDataTypes()) && !service.getDataTypes().getCompositeOrEnumeration().isEmpty()) {
             for (Object oType : service.getDataTypes().getCompositeOrEnumeration()) {
                 String typeName = "";
@@ -1717,9 +1717,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         // create arrays
-        List<String> opStr = new LinkedList<String>();
-        List<String> stStr = new LinkedList<String>();
-        List<String> vaStr = new LinkedList<String>();
+        List<String> opStr = new LinkedList<>();
+        List<String> stStr = new LinkedList<>();
+        List<String> vaStr = new LinkedList<>();
         for (int i = 0; i < enumSize; i++) {
             opStr.add(enumeration.getItem().get(i).getValue());
             stStr.add("\"" + enumeration.getItem().get(i).getValue() + "\"");
@@ -1862,7 +1862,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         CompositeField elementType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false), true, true, null);
 
         List<CompositeField> compElements = createCompositeElementsList(file, composite);
-        List<CompositeField> superCompElements = new LinkedList<CompositeField>();
+        List<CompositeField> superCompElements = new LinkedList<>();
         createCompositeSuperElementsList(file, parentType, superCompElements);
 
         boolean abstractComposite = (null == composite.getShortFormPart());
@@ -1885,8 +1885,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // if we or our parents have attributes then we need a typed constructor
         if (!compElements.isEmpty() || !superCompElements.isEmpty()) {
-            List<CompositeField> superArgsList = new LinkedList<CompositeField>();
-            List<CompositeField> conArgsList = new LinkedList<CompositeField>();
+            List<CompositeField> superArgsList = new LinkedList<>();
+            List<CompositeField> conArgsList = new LinkedList<>();
 
             for (CompositeField element : superCompElements) {
                 superArgsList.add(element);
@@ -2264,7 +2264,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected void addMalTypes(TypeInformation tiSource, List<String> opArgs, int index, List<TypeInfo> ti, boolean isPubSub) {
-        ArrayList<String> typeArgs = new ArrayList<String>();
+        ArrayList<String> typeArgs = new ArrayList<>();
         boolean needXmlSchema = false;
         boolean needMalTypes = false;
         boolean finalTypeIsAttribute = false;
@@ -2312,7 +2312,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String arrayArgs = StubUtils.concatenateStringArguments(false, typeArgs.toArray(new String[0]));
         String polyArgs = "";
         if (finalTypeIsAttribute) {
-            Set<String> attribArgs = new HashSet<String>();
+            Set<String> attribArgs = new HashSet<>();
 
             for (Map.Entry<TypeKey, AttributeTypeDetails> val : getAttributeTypesMap().entrySet()) {
                 TypeReference tr = new TypeReference();
@@ -2452,7 +2452,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected List<CompositeField> createOperationArguments(GeneratorConfiguration config, LanguageWriter file, List<TypeInfo> opArgs, boolean forceList) {
-        List<CompositeField> rv = new LinkedList<CompositeField>();
+        List<CompositeField> rv = new LinkedList<>();
 
         if (null != opArgs) {
             for (int i = 0; i < opArgs.size(); i++) {

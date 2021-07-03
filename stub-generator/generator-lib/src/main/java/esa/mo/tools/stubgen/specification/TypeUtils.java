@@ -128,7 +128,7 @@ public abstract class TypeUtils {
      */
     public static List<TypeInfo> convertTypeReferences(TypeInformation tiSource, List<TypeRef> trList) {
         if (null != trList) {
-            List<TypeInfo> tiList = new ArrayList<TypeInfo>(trList.size());
+            List<TypeInfo> tiList = new ArrayList<>(trList.size());
             for (TypeRef tr : trList) {
                 tiList.add(convertTypeReference(tiSource, tr));
             }
@@ -218,7 +218,7 @@ public abstract class TypeUtils {
         if (null != any) {
             if (any instanceof List) {
                 List li = (List) any;
-                ArrayList<TypeRef> rv = new ArrayList<TypeRef>(li.size());
+                ArrayList<TypeRef> rv = new ArrayList<>(li.size());
                 for (Object e : li) {
                     rv.add(getTypeViaXSDAny(e));
                 }

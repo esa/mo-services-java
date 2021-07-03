@@ -61,7 +61,7 @@ public abstract class TestStructureBuilder {
         GregorianCalendar gcal = new GregorianCalendar();
         gcal.setTime(timestamp);
 
-        List<String> domain = new ArrayList<String>();
+        List<String> domain = new ArrayList<>();
 //    domain.add("ccsds");
 //    domain.add("mission");
 

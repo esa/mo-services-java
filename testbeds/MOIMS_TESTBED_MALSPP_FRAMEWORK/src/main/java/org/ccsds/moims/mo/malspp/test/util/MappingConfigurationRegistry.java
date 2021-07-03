@@ -58,7 +58,7 @@ public class MappingConfigurationRegistry {
   
   private MappingConfigurationRegistry() {
     super();
-    mappingConfigurations = new HashMap<QualifiedApid, MappingConfiguration>();
+    mappingConfigurations = new HashMap<>();
     
     CUCTimeCode timeCode = new CUCTimeCode(TimeCode.EPOCH_TAI, TimeCode.UNIT_SECOND, 4, 3);
     CUCTimeCode fineTimeCode = new CUCTimeCode(new AbsoluteDate("2013-01-01T00:00:00.000",

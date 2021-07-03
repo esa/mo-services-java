@@ -89,7 +89,7 @@ public class EventTestHandlerImpl implements EventTestHandler
   // Count of test object instances created - also use as instanceId
   private long eventInstCount = 1;
   // Maintain a list hold description for each instance created
-  private java.util.ArrayList<TestObjectDetails> testObjectDetailsList = new java.util.ArrayList<TestObjectDetails>();
+  private java.util.ArrayList<TestObjectDetails> testObjectDetailsList = new java.util.ArrayList<>();
   // Archive stub used to archive events 
   private ArchiveStub archiveStub;
   // Event numbers allocated to events

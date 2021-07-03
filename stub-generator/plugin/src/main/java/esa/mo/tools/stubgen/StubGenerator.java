@@ -120,7 +120,7 @@ public class StubGenerator extends AbstractMojo {
      * @parameter
      */
     protected Map<String, String> packageBindings;
-    private static final Map<String, Generator> GENERATOR_MAP = new TreeMap<String, Generator>();
+    private static final Map<String, Generator> GENERATOR_MAP = new TreeMap<>();
     private static boolean generatorsLoaded = false;
 
     /**
@@ -133,8 +133,8 @@ public class StubGenerator extends AbstractMojo {
         // default a few values
         gen.generateStructures = true;
         gen.generateCOM = true;
-        gen.extraProperties = new TreeMap<String, String>();
-        gen.packageBindings = new TreeMap<String, String>();
+        gen.extraProperties = new TreeMap<>();
+        gen.packageBindings = new TreeMap<>();
 
         boolean printHelp = false;
 
@@ -214,12 +214,12 @@ public class StubGenerator extends AbstractMojo {
             final org.apache.maven.plugin.logging.Log logger) {
         loadGenerators(logger);
 
-        List<Map.Entry<String, String>> rv = new ArrayList<Map.Entry<String, String>>(GENERATOR_MAP.size());
+        List<Map.Entry<String, String>> rv = new ArrayList<>(GENERATOR_MAP.size());
 
         for (Map.Entry<String, Generator> entry : GENERATOR_MAP.entrySet()) {
             final Generator g = entry.getValue();
 
-            rv.add(new AbstractMap.SimpleEntry<String, String>(g.getShortName(), g.getDescription()));
+            rv.add(new AbstractMap.SimpleEntry<>(g.getShortName(), g.getDescription()));
         }
 
         return rv;
@@ -339,7 +339,7 @@ public class StubGenerator extends AbstractMojo {
         loadGenerators(getLog());
 
         if (null == extraProperties) {
-            extraProperties = new TreeMap<String, String>();
+            extraProperties = new TreeMap<>();
         }
 
         // if the directoy containing the xml specifications exists
@@ -424,7 +424,7 @@ public class StubGenerator extends AbstractMojo {
     private static List<Map.Entry<Schema, XmlSpecification>> loadXsdSpecifications(
             final File directory) throws IOException, JAXBException {
         final List<Map.Entry<Schema, XmlSpecification>> specList
-                = new LinkedList<Map.Entry<Schema, XmlSpecification>>();
+                = new LinkedList<>();
 
         if (directory.exists()) {
             final File xmlFiles[] = directory.listFiles();

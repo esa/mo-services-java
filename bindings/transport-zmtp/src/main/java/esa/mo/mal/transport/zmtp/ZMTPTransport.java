@@ -401,7 +401,7 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
             boolean lastForHandle,
             String targetURI,
             GENMessage msg) throws Exception {
-        return new GENOutgoingMessageHolder<byte[]>(10,
+        return new GENOutgoingMessageHolder<>(10,
                 destinationRootURI,
                 destinationURI,
                 multiSendHandle,

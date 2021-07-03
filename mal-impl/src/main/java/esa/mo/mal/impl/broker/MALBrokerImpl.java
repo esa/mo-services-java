@@ -45,7 +45,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker {
     public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl.broker");
     private final MALBrokerHandler handler;
     private final boolean handlerIsLocalType;
-    private final List<MALBrokerBindingImpl> bindings = new LinkedList<MALBrokerBindingImpl>();
+    private final List<MALBrokerBindingImpl> bindings = new LinkedList<>();
 
     MALBrokerImpl(final MALClose parent) throws MALException {
         super(parent);

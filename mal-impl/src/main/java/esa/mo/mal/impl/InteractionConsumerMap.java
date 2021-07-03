@@ -53,10 +53,10 @@ import org.ccsds.moims.mo.mal.transport.*;
 public class InteractionConsumerMap {
 
     private final Map<Long, BaseOperationHandler> transMap
-            = new HashMap<Long, BaseOperationHandler>();
+            = new HashMap<>();
 
     private final Map<Long, OperationResponseHolder> syncOpResponseMap
-            = new HashMap<Long, OperationResponseHolder>();
+            = new HashMap<>();
 
     // This object will be shared across. It is thread-safe
     private final static InteractionTimeout INTERACTION_TIMEOUT = new InteractionTimeout();

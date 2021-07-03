@@ -385,7 +385,7 @@ public class GeneratorXsd extends GeneratorDocument {
 
         private final Writer file;
         private final StringBuffer buffer = new StringBuffer();
-        private final Set<String> areas = new TreeSet<String>();
+        private final Set<String> areas = new TreeSet<>();
         private final String thisArea;
 
         protected XsdWriter(String folder, String fileName, String areaName, String ext) throws IOException {

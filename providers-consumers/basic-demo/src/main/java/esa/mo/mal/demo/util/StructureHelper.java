@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  */
 public abstract class StructureHelper {
 
-    private static final Set<String> LOADED_PROPERTIES = new TreeSet<String>();
+    private static final Set<String> LOADED_PROPERTIES = new TreeSet<>();
 
     /**
      * Clears the list of loaded property files.

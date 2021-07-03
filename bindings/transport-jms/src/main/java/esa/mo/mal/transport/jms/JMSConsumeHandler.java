@@ -38,7 +38,7 @@ import esa.mo.mal.transport.jms.util.StructureHelper;
  */
 public class JMSConsumeHandler extends JMSQueueHandler {
 
-    private final List<MessageConsumer> consumerList = new LinkedList<MessageConsumer>();
+    private final List<MessageConsumer> consumerList = new LinkedList<>();
     private final UOctet version;
     private Identifier subId = null;
     private URI URIFrom = null;

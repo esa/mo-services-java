@@ -40,9 +40,9 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 class SimpleSubscriptionDetails {
 
     private final String subscriptionId;
-    private Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
-    private Set<SubscriptionKey> onAll = new TreeSet<SubscriptionKey>();
-    private Set<SubscriptionKey> onChange = new TreeSet<SubscriptionKey>();
+    private Set<SubscriptionKey> required = new TreeSet<>();
+    private Set<SubscriptionKey> onAll = new TreeSet<>();
+    private Set<SubscriptionKey> onChange = new TreeSet<>();
 
     SimpleSubscriptionDetails(final String subscriptionId) {
         this.subscriptionId = subscriptionId;

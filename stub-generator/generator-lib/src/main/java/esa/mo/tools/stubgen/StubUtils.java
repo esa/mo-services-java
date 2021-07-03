@@ -211,7 +211,7 @@ public abstract class StubUtils {
         List<String> rv = null;
 
         if (null != cond) {
-            rv = new LinkedList<String>();
+            rv = new LinkedList<>();
 
             for (String string : cond) {
                 rv.add(conditionalAdd(prefix, string));
@@ -278,7 +278,7 @@ public abstract class StubUtils {
      */
     public static List<CompositeField> concatenateArguments(CompositeField firstArg,
             List<CompositeField>... args) {
-        List<CompositeField> lst = new LinkedList<CompositeField>();
+        List<CompositeField> lst = new LinkedList<>();
         lst.add(firstArg);
 
         for (List<CompositeField> elem : args) {

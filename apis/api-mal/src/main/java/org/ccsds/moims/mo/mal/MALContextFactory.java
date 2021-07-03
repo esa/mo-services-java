@@ -38,10 +38,10 @@ public abstract class MALContextFactory {
      * The default implementation to use.
      */
     public static final String MAL_DEFAULT_FACTORY = "esa.mo.mal.impl.MALContextFactoryImpl";
-    private static final Map<String, Class> _FACTORY_MAP = new HashMap<String, Class>();
-    private static final Map<VersionizedAreaNumber, MALArea> _VERSIONIZED_AREA_NUMBER_MAP = new HashMap<VersionizedAreaNumber, MALArea>();
-    private static final Map<String, Integer> _AREA_NAME_MAP = new HashMap<String, Integer>();
-    private static final Map<Long, Identifier> _ERROR_MAP = new HashMap<Long, Identifier>();
+    private static final Map<String, Class> _FACTORY_MAP = new HashMap<>();
+    private static final Map<VersionizedAreaNumber, MALArea> _VERSIONIZED_AREA_NUMBER_MAP = new HashMap<>();
+    private static final Map<String, Integer> _AREA_NAME_MAP = new HashMap<>();
+    private static final Map<Long, Identifier> _ERROR_MAP = new HashMap<>();
     private static final MALElementFactoryRegistry _FACTORY_REGISTRY = new MALElementFactoryRegistry();
 
     /**

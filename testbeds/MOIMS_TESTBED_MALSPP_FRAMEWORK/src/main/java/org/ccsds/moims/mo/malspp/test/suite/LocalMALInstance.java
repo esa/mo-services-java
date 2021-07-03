@@ -229,7 +229,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     String protocol = getProtocol();
 
     MALBroker tcTmSharedBroker = brokerManager.createBroker();
-    HashMap<Object, Object> tcTmProps = new HashMap<Object, Object>();
+    HashMap<Object, Object> tcTmProps = new HashMap<>();
     tcTmProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
     tcTmProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
         TC_TM_LOCAL_APID_QUALIFIER);
@@ -241,7 +241,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
         new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), tcTmProps);
     
     MALBroker tmTcSharedBroker = brokerManager.createBroker();
-    HashMap<Object, Object> tmTcProps = new HashMap<Object, Object>();
+    HashMap<Object, Object> tmTcProps = new HashMap<>();
     tmTcProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
     tmTcProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
         TM_TC_LOCAL_APID_QUALIFIER);
@@ -253,7 +253,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
         new QoSLevel[] { QoSLevel.ASSURED }, new UInteger(1), tmTcProps);
     
     MALBroker tmTmSharedBroker = brokerManager.createBroker();
-    HashMap<Object, Object> tmTmProps = new HashMap<Object, Object>();
+    HashMap<Object, Object> tmTmProps = new HashMap<>();
     tmTmProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
     tmTmProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
         TM_TM_LOCAL_APID_QUALIFIER);
@@ -305,7 +305,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       FileBasedDirectory.URIpair uris = FileBasedDirectory
           .loadURIs(TestServiceProvider.TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME);
 
-      HashMap<Object, Object> tcTmIpConsumerProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> tcTmIpConsumerProps = new HashMap<>();
       tcTmIpConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
       tcTmIpConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TC_TM_LOCAL_APID_QUALIFIER);
@@ -336,7 +336,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       FileBasedDirectory.URIpair uris = FileBasedDirectory
           .loadURIs(TestServiceProvider.TM_PUBSUB_ERROR_IP_TEST_PROVIDER_NAME);
 
-      HashMap<Object, Object> tmTmIpConsumerProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> tmTmIpConsumerProps = new HashMap<>();
       tmTmIpConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
       tmTmIpConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TM_TM_LOCAL_APID_QUALIFIER);
@@ -367,7 +367,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       FileBasedDirectory.URIpair uris = FileBasedDirectory
           .loadURIs(TestServiceProvider.PUBSUB_ERROR_IP_TEST_PROVIDER_NAME);
 
-      HashMap<Object, Object> tmTcIpConsumerProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> tmTcIpConsumerProps = new HashMap<>();
       tmTcIpConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
       tmTcIpConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TM_TC_LOCAL_APID_QUALIFIER);
@@ -411,7 +411,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             .loadURIs(TestServiceProvider.TC_IP_TEST_PROVIDER_NAME);
       }
 
-      HashMap<Object, Object> tcTcConsumerProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> tcTcConsumerProps = new HashMap<>();
       tcTcConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
       tcTcConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TC_TC_LOCAL_APID_QUALIFIER);
@@ -451,7 +451,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             .loadURIs(TestServiceProvider.TC_IP_TEST_PROVIDER_NAME);
       }
 
-      HashMap<Object, Object> tmTcConsumerProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> tmTcConsumerProps = new HashMap<>();
       tmTcConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
       tmTcConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TM_TC_LOCAL_APID_QUALIFIER);
@@ -490,7 +490,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             .loadURIs(TestServiceProvider.TM_IP_TEST_PROVIDER_NAME);
       }
 
-      HashMap<Object, Object> tcTmConsumerProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> tcTmConsumerProps = new HashMap<>();
       tcTmConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
       tcTmConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TC_TM_LOCAL_APID_QUALIFIER);
@@ -529,7 +529,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             .loadURIs(TestServiceProvider.TM_IP_TEST_PROVIDER_NAME);
       }
 
-      HashMap<Object, Object> tmTmConsumerProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> tmTmConsumerProps = new HashMap<>();
       tmTmConsumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
       tmTmConsumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TM_TM_LOCAL_APID_QUALIFIER);
@@ -561,7 +561,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       FileBasedDirectory.URIpair uris = FileBasedDirectory
             .loadURIs(TestServiceProvider.QOS_TC_IP_TEST_PROVIDER_NAME);
       
-      HashMap<Object, Object> consumerProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> consumerProps = new HashMap<>();
       consumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
       consumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TC_TC_LOCAL_APID_QUALIFIER);
@@ -592,7 +592,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       FileBasedDirectory.URIpair uris = FileBasedDirectory
             .loadURIs(TestServiceProvider.QOS_TM_IP_TEST_PROVIDER_NAME);
       
-      HashMap<Object, Object> consumerProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> consumerProps = new HashMap<>();
       consumerProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
       consumerProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TC_TM_LOCAL_APID_QUALIFIER);
@@ -640,7 +640,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       MALProviderManager providerMgr = LocalMALInstance.instance()
           .getMalContext().createProviderManager();
       
-      HashMap<Object, Object> tcTmProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> tcTmProps = new HashMap<>();
       tcTmProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
       tcTmProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TC_TM_LOCAL_APID_QUALIFIER);
@@ -667,7 +667,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       MALProviderManager providerMgr = LocalMALInstance.instance()
           .getMalContext().createProviderManager();
       
-      HashMap<Object, Object> tmTcProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> tmTcProps = new HashMap<>();
       tmTcProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
       tmTcProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TM_TC_LOCAL_APID_QUALIFIER);
@@ -694,7 +694,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       MALProviderManager providerMgr = LocalMALInstance.instance()
           .getMalContext().createProviderManager();
       
-      HashMap<Object, Object> tmTmProps = new HashMap<Object, Object>();
+      HashMap<Object, Object> tmTmProps = new HashMap<>();
       tmTmProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
       tmTmProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TM_TM_LOCAL_APID_QUALIFIER);
@@ -746,7 +746,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
   public synchronized DataTestStub segmentationErrorSmallHeaderStub() throws MALException {
     if (null == segErrorSmallStub) {
       FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_ERROR_TEST_PROVIDER_NAME);
-      HashMap<Object, Object> props = new HashMap<Object, Object>();
+      HashMap<Object, Object> props = new HashMap<>();
       props.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_ERROR_LOCAL_APID_QUALIFIER);
       props.put(TestHelper.APID_PROPERTY, SEGMENTATION_ERROR_LOCAL_APID);
       props.put(TestHelper.AUTHENTICATION_ID_FLAG, Boolean.FALSE);
@@ -776,7 +776,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
   public synchronized DataTestStub segmentationErrorLargeHeaderStub() throws MALException {
     if (null == segErrorLargeStub) {
       FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_ERROR_TEST_PROVIDER_NAME);
-      HashMap<Object, Object> props = new HashMap<Object, Object>();
+      HashMap<Object, Object> props = new HashMap<>();
       props.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_ERROR_LOCAL_APID_QUALIFIER);
       props.put(TestHelper.APID_PROPERTY, SEGMENTATION_ERROR_LOCAL_APID);
       props.put(TestHelper.AUTHENTICATION_ID_FLAG, Boolean.FALSE);
@@ -806,7 +806,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
   public synchronized IPTestStub segCounterTestStub() throws MALException {
     if (null == segCounterStub) {
       FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_COUNTER_SELECT_TEST_PROVIDER_NAME);
-      HashMap<Object, Object> props = new HashMap<Object, Object>();
+      HashMap<Object, Object> props = new HashMap<>();
       props.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_COUNTER_SELECT_LOCAL_APID_QUALIFIER);
       props.put(TestHelper.APID_PROPERTY, SEGMENTATION_COUNTER_SELECT_LOCAL_APID);
       MALConsumer consumer = defaultConsumerMgr.createConsumer(
@@ -832,7 +832,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
       FileBasedDirectory.URIpair uris = FileBasedDirectory
           .loadURIs(TestServiceProvider.DATA_TEST_NO_VARINT_PROVIDER_NAME);
 
-      HashMap<Object, Object> props = new HashMap<Object, Object>();
+      HashMap<Object, Object> props = new HashMap<>();
       props.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.TRUE);
       props.put(TestHelper.APID_QUALIFIER_PROPERTY,
           TC_TM_LOCAL_APID_QUALIFIER);

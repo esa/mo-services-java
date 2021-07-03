@@ -54,7 +54,7 @@ public enum TCPIPConnectionPoolManager {
      * The internal list of sockets. Each socket is identified by a hash, which
      * is made purely from the port number.
      */
-    private final Map<Integer, Socket> connections = new HashMap<Integer, Socket>();
+    private final Map<Integer, Socket> connections = new HashMap<>();
 
     /**
      * Put a new socket into the list of connections

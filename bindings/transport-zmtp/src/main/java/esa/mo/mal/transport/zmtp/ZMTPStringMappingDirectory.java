@@ -36,8 +36,8 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class ZMTPStringMappingDirectory {
 
-    private final Map<Integer, String> keyToValueMap = new HashMap<Integer, String>();
-    private final Map<String, Integer> valueToKeyMap = new HashMap<String, Integer>();
+    private final Map<Integer, String> keyToValueMap = new HashMap<>();
+    private final Map<String, Integer> valueToKeyMap = new HashMap<>();
 
     /**
      * Cleans currently stored String Mapping Directory and loads String Mapping

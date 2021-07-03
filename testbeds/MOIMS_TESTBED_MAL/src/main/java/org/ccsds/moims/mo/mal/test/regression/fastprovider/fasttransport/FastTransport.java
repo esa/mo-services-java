@@ -40,7 +40,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 public class FastTransport implements MALTransport
 {
   protected static final Random RANDOM_NAME = new Random();
-  protected Map<String, FastEndpoint> endpointMap = new HashMap<String, FastEndpoint>();
+  protected Map<String, FastEndpoint> endpointMap = new HashMap<>();
 
   public MALEndpoint createEndpoint(String localName, Map map) throws MALException
   {

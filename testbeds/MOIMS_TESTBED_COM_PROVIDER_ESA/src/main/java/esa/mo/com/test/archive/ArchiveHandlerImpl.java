@@ -1030,7 +1030,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
           Archive.ArchiveObjectList objs)
   {
     LoggingBase.logMessage(CLS + ":createDomainObjectTypeLists: " + objs.size());
-    ArrayList<Archive.ArchiveObjectList> lists = new ArrayList<Archive.ArchiveObjectList>();
+    ArrayList<Archive.ArchiveObjectList> lists = new ArrayList<>();
     ObjectType objectType;
     IdentifierList domain;
     Archive.ArchiveObjectList domainObjectTypeList;
@@ -1267,7 +1267,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
       LoggingBase.logMessage(CLS + ":query:Filter List" + queryFilterList);
     }
     UIntegerList failedQueries = new UIntegerList();
-    ArrayList<Archive.ArchiveObjectList> returnedLists = new ArrayList<Archive.ArchiveObjectList>();
+    ArrayList<Archive.ArchiveObjectList> returnedLists = new ArrayList<>();
 
     interaction.sendAcknowledgement();
     // Wait for short time to ensure ACK has been sent
@@ -1347,7 +1347,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
     }
     UIntegerList failedQueries = new UIntegerList();
     LongList countResults = new LongList();
-    ArrayList<Archive.ArchiveObjectList> returnedLists = new ArrayList<Archive.ArchiveObjectList>();
+    ArrayList<Archive.ArchiveObjectList> returnedLists = new ArrayList<>();
 
     interaction.sendAcknowledgement();
     // Wait for short time to ensure ACK has been sent

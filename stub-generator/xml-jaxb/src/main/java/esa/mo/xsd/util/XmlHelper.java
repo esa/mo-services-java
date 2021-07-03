@@ -47,7 +47,7 @@ public abstract class XmlHelper {
     public static List<Map.Entry<SpecificationType, XmlSpecification>> loadSpecifications(
             final File directory) throws IOException, JAXBException {
         final List<Map.Entry<SpecificationType, XmlSpecification>> specList 
-                = new LinkedList<Map.Entry<SpecificationType, XmlSpecification>>();
+                = new LinkedList<>();
 
         if (directory.exists()) {
             final File xmlFiles[] = directory.listFiles();

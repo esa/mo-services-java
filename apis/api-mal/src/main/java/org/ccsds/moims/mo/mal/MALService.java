@@ -40,9 +40,9 @@ public class MALService {
     private MALArea area;
     private final UShort number;
     private final Identifier name;
-    private final Map<Integer, MALOperation> operationsByNumber = new HashMap<Integer, MALOperation>();
-    private final Map<String, MALOperation> operationsByName = new HashMap<String, MALOperation>();
-    private final Map<Integer, MALOperation[]> operationsBySet = new HashMap<Integer, MALOperation[]>();
+    private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
+    private final Map<String, MALOperation> operationsByName = new HashMap<>();
+    private final Map<Integer, MALOperation[]> operationsBySet = new HashMap<>();
     private MALSendOperation[] sendOperations;
     private MALSubmitOperation[] submitOperations;
     private MALRequestOperation[] requestOperations;

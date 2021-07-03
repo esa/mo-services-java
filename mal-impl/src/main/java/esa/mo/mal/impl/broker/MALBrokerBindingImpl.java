@@ -41,7 +41,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBrokerBinding {
 
     private final MALBrokerImpl brokerImpl;
-    private final Set<String> subscriberSet = new TreeSet<String>();
+    private final Set<String> subscriberSet = new TreeSet<>();
     private MALTransmitErrorListener listener;
 
     MALBrokerBindingImpl(final MALBrokerImpl parent,

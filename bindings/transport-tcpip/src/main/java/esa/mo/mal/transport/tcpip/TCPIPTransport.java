@@ -427,7 +427,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             LOGGER.log(Level.FINE, "GEN Sending data to {0} : {1}",
                     new Object[]{targetURI, new PacketToString(data)});
 
-            return new GENOutgoingMessageHolder<byte[]>(10, destinationRootURI,
+            return new GENOutgoingMessageHolder<>(10, destinationRootURI,
                     destinationURI, multiSendHandle, lastForHandle, msg, data);
         } catch (MALException ex) {
             LOGGER.log(Level.SEVERE, "GEN could not encode message!", ex);

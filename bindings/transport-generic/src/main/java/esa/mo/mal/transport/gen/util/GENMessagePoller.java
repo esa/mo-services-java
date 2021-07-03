@@ -82,7 +82,7 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
             GENIncomingMessageDecoderFactory<I, O> decoderFactory) {
         this.transport = transport;
         this.messageSender = messageSender;
-        this.messageReceiver = new MessageAdapter<I, O>(transport,
+        this.messageReceiver = new MessageAdapter<>(transport,
                 this, messageReceiver, decoderFactory);
         setName("Transport_Receive");
     }

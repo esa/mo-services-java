@@ -53,7 +53,7 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
 
     @Override
     public void addMultilineComment(int tabCount, boolean preBlankLine, String comment, boolean postBlankLine) throws IOException {
-        addMultilineComment(tabCount, preBlankLine, normaliseComment(new LinkedList<String>(), comment), postBlankLine);
+        addMultilineComment(tabCount, preBlankLine, normaliseComment(new LinkedList<>(), comment), postBlankLine);
     }
 
     /**

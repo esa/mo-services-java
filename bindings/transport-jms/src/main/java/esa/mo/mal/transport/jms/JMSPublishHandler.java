@@ -45,7 +45,7 @@ import esa.mo.mal.transport.jms.util.StructureHelper;
 public class JMSPublishHandler {
 
     private final JMSTransport jtransport;
-    private final Set<JMSPublisherKey> keySet = new TreeSet<JMSPublisherKey>();
+    private final Set<JMSPublisherKey> keySet = new TreeSet<>();
     private final QoSLevel registerQoS;
     private IdentifierList domain = null;
 
