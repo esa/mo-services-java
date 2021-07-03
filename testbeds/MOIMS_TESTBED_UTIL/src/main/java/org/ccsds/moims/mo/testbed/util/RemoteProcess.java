@@ -107,16 +107,12 @@ public class RemoteProcess extends LoggingBase implements Executable.ExitConditi
       {
         logMessage("ERROR: Unable to locate class : " + argv[2] + " : " + ex.getLocalizedMessage());
       }
-      catch (InstantiationException ex)
-      {
-        logMessage("ERROR: Unable to instantiate class : " + argv[2] + " : " + ex.getLocalizedMessage());
-      }
-      catch (IllegalAccessException ex)
+      catch (InstantiationException | IllegalAccessException ex)
       {
         logMessage("ERROR: Unable to instantiate class : " + argv[2] + " : " + ex.getLocalizedMessage());
       }
 
-      /** we execute the test outside of the above exception handlers to that
+        /** we execute the test outside of the above exception handlers to that
        * any exceptions thrown by the test are not hidden.
        */
       if (null != obj)
