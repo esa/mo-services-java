@@ -91,11 +91,7 @@ public abstract class ServiceComponentImpl extends MALClose {
             this.expectedQos = null;
         }
         this.priorityLevelNumber = priorityLevelNumber;
-        if (null != defaultQoSProperties) {
-            this.defaultQoSProperties = defaultQoSProperties;
-        } else {
-            this.defaultQoSProperties = null;
-        }
+        this.defaultQoSProperties = defaultQoSProperties;
 
         this.transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
         this.endpoint = transport.createEndpoint(localName, defaultQoSProperties);
@@ -143,11 +139,7 @@ public abstract class ServiceComponentImpl extends MALClose {
             this.expectedQos = null;
         }
         this.priorityLevelNumber = priorityLevelNumber;
-        if (null != defaultQoSProperties) {
-            this.defaultQoSProperties = defaultQoSProperties;
-        } else {
-            this.defaultQoSProperties = null;
-        }
+        this.defaultQoSProperties = defaultQoSProperties;
 
         this.endpoint = endPoint;
         this.transport = TransportSingleton.instance(endpoint.getURI(), impl.getInitialProperties());

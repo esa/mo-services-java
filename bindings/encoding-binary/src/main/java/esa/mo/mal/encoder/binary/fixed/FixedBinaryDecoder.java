@@ -196,9 +196,8 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
 
             if (len >= 0) {
                 buf.checkBuffer(len);
-                final String s = new String(buf.getBuf(),
+                return new String(buf.getBuf(),
                         buf.shiftOffsetAndReturnPrevious(len), len, UTF8_CHARSET);
-                return s;
             }
             return null;
         }

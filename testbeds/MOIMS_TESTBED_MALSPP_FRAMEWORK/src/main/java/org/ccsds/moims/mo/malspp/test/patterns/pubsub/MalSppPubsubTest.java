@@ -724,8 +724,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
   }
   
   public long uintegerFieldIs() {
-    long res = spacePacketCheck.readUInteger().getValue();
-    return res;
+      return spacePacketCheck.readUInteger().getValue();
   }
   
   public boolean uintegerFieldIsSizeOf(String type) {

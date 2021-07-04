@@ -118,9 +118,7 @@ public abstract class StructureHelper {
                 return true;
             }
         } else {
-            if ((null == srcDomain) && (null == testDomain)) {
-                return true;
-            }
+            return (null == srcDomain) && (null == testDomain);
         }
 
         return false;

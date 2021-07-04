@@ -258,7 +258,8 @@ public class DirectoryServiceWrapper {
          */
         ProviderDetails providerDetails = new ProviderDetails();
 
-        PublishDetails ndl = new PublishDetails(
+        // ndl.add(nd);
+        return new PublishDetails(
                 providerName,
                 domain,
                 SessionType.LIVE,
@@ -266,9 +267,6 @@ public class DirectoryServiceWrapper {
                 network,
                 providerDetails,
                 null);
-
-        // ndl.add(nd);
-        return ndl;
     }
 
 }

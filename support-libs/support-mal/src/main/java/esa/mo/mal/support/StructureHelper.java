@@ -213,11 +213,9 @@ public abstract class StructureHelper {
         if (null != in) {
             int shortFormPart = in.getTypeShortForm();
 
-            if ((shortFormPart == Attribute._IDENTIFIER_TYPE_SHORT_FORM)
+            return (shortFormPart == Attribute._IDENTIFIER_TYPE_SHORT_FORM)
                     || (shortFormPart == Attribute._STRING_TYPE_SHORT_FORM)
-                    || (shortFormPart == Attribute._URI_TYPE_SHORT_FORM)) {
-                return true;
-            }
+                    || (shortFormPart == Attribute._URI_TYPE_SHORT_FORM);
         }
 
         return false;

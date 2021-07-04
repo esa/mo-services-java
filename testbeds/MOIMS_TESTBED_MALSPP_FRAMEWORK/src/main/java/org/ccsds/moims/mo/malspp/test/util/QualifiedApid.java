@@ -64,9 +64,7 @@ public class QualifiedApid {
     QualifiedApid other = (QualifiedApid) obj;
     if (apid != other.apid)
       return false;
-    if (qualifier != other.qualifier)
-      return false;
-    return true;
+      return qualifier == other.qualifier;
   }
 
 }

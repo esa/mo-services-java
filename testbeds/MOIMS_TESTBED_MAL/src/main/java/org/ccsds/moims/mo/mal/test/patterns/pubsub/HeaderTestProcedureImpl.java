@@ -954,11 +954,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
         {
           return false;
         }
-        if (! sk.sharedBroker.equals(sharedBroker))
-        {
-          return false;
-        }
-        return true;
+          return sk.sharedBroker.equals(sharedBroker);
       } else {
         return false;
       }

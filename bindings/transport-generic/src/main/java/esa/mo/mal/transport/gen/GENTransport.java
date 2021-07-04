@@ -810,15 +810,14 @@ public abstract class GENTransport<I, O> implements MALTransport {
         String routingPart = cachedRoutingParts.get(uriValue);
 
         if (routingPart == null) {
-            String endpointUriPart = uriValue;
-            final int iFirst = nthIndexOf(endpointUriPart, serviceDelim, serviceDelimCounter);
-            int iSecond = supportsRouting ? endpointUriPart.indexOf(routingDelim)
-                    : endpointUriPart.length();
+            final int iFirst = nthIndexOf(uriValue, serviceDelim, serviceDelimCounter);
+            int iSecond = supportsRouting ? uriValue.indexOf(routingDelim)
+                    : uriValue.length();
             if (0 > iSecond) {
-                iSecond = endpointUriPart.length();
+                iSecond = uriValue.length();
             }
 
-            routingPart = endpointUriPart.substring(iFirst + 1, iSecond);
+            routingPart = uriValue.substring(iFirst + 1, iSecond);
             cachedRoutingParts.put(uriValue, routingPart);
         }
 

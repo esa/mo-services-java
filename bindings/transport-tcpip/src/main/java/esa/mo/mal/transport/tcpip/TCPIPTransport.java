@@ -527,11 +527,10 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         System.arraycopy(packetData, decodedHeaderBytes, bodyPacketData, 0, bodySize);
 
         // decode the body
-        TCPIPMessage messageWithBody = new TCPIPMessage(wrapBodyParts,
+
+        return new TCPIPMessage(wrapBodyParts,
                 (TCPIPMessageHeader) msg.getHeader(), qosProperties,
                 bodyPacketData, getStreamFactory());
-
-        return messageWithBody;
     }
 
     /**

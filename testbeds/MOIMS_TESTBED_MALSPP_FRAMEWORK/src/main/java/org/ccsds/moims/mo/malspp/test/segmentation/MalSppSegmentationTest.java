@@ -122,10 +122,7 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
       firstPrimaryHeader = primaryHeader;
       firstSecondaryHeader = secondaryHeader;
     }
-    if (null == firstPrimaryHeader || null == firstSecondaryHeader) {
-      return false;
-    }
-    return true;
+      return null != firstPrimaryHeader && null != firstSecondaryHeader;
   }
 
   public boolean packetDataLengthIsConsistentWith(int sequence) {

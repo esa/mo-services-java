@@ -251,19 +251,14 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
    */
   private boolean objectTypeHasNoBody(ObjectType objectType)
   {
-    boolean bRet = false;
 
-    if ((objectType.getArea().equals(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER)
+    return (objectType.getArea().equals(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER)
             && objectType.getService().equals(ArchiveTestHelper.ARCHIVETEST_SERVICE_NUMBER)
             && objectType.getVersion().equals(COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION)
             && objectType.getNumber().equals(COMPROTOTYPE_TEST_TEST_OBJECT5_OBJ_NO))
             || (objectType.getArea().equals(COMHelper.COM_AREA_NUMBER)
             && objectType.getService().equals(ArchiveHelper.ARCHIVE_SERVICE_NUMBER)
-            && objectType.getVersion().equals(COMHelper.COM_AREA_VERSION)))
-    {
-      bRet = true;
-    }
-    return bRet;
+            && objectType.getVersion().equals(COMHelper.COM_AREA_VERSION));
   }
 
   /**
@@ -295,20 +290,13 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
     if (!end)
     {
       // reached end no none matches - check all entries checked
+      // Also allow the case where there is only 1 extra domain in the filter and it is a wildcard
+      // for example MSG1.aocs and MSG1.aocs.*
       if (qDomain.size() == domain.size())
       {
         match = true;
       }
-      else if (qDomain.size() == (domain.size() + 1) && qDomain.get(qDomain.size() - 1).equals(IDENTIFIER_WILDCARD))
-      {
-        // Also allow the case where there is only 1 extra domain in the filter and it is a wildcard
-        // for example MSG1.aocs and MSG1.aocs.*
-        match = true;
-      }
-      else
-      {
-        match = false;
-      }
+      else match = qDomain.size() == (domain.size() + 1) && qDomain.get(qDomain.size() - 1).equals(IDENTIFIER_WILDCARD);
     }
     return match;
   }
@@ -322,11 +310,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
    */
   private boolean objectIdMatches(ObjectId objectId, ObjectId qObjectId)
   {
-    boolean bMatch = true;
-    if (!Archive.objectTypeMatches(objectId.getType(), qObjectId.getType()))
-    {
-      bMatch = false;
-    }
+    boolean bMatch = Archive.objectTypeMatches(objectId.getType(), qObjectId.getType());
     if (!domainMatches(objectId.getKey().getDomain(), qObjectId.getKey().getDomain()))
     {
       bMatch = false;
@@ -471,28 +455,14 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
         {
           bMatch = stringVal.equals(stringFilterVal);
         }
-        else if (stringVal == null && stringFilterVal == null)
-        {
-          bMatch = true;
-        }
-        else
-        {
-          bMatch = false;
-        }
+        else bMatch = stringVal == null && stringFilterVal == null;
         break;
       case ExpressionOperator._DIFFER_INDEX:
         if (!(stringVal == null || stringFilterVal == null))
         {
           bMatch = !stringVal.equals(stringFilterVal);
         }
-        else if (stringVal == null && stringFilterVal == null)
-        {
-          bMatch = false;
-        }
-        else
-        {
-          bMatch = true;
-        }
+        else bMatch = stringVal != null || stringFilterVal != null;
         break;
       case ExpressionOperator._CONTAINS_INDEX:
         if (!(stringVal == null || stringFilterVal == null))
@@ -1487,15 +1457,8 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
    */
   private boolean containsWildcard(ObjectType objectType)
   {
-    if (objectType.getArea().getValue() == 0 || objectType.getService().getValue() == 0
-            || objectType.getVersion().getValue() == 0 || objectType.getNumber().getValue() == 0)
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return objectType.getArea().getValue() == 0 || objectType.getService().getValue() == 0
+            || objectType.getVersion().getValue() == 0 || objectType.getNumber().getValue() == 0;
   }
 
   /**

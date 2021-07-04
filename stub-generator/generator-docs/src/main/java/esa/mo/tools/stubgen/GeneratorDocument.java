@@ -89,8 +89,7 @@ public abstract class GeneratorDocument extends GeneratorBase {
                     fieldName, elementType.isList(), canBeNull, false, 
                     StdStrings.MAL, "", "", false, "", comment);
         } else {
-            String fqTypeName = typeName;
-            ele = new CompositeField(fqTypeName, elementType, fieldName, 
+            ele = new CompositeField(typeName, elementType, fieldName,
                     elementType.isList(), canBeNull, false, elementType.getArea(), 
                     "", elementType.getService(), false, "", comment);
         }

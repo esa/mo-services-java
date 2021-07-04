@@ -260,11 +260,8 @@ public class PubsubErrorIPTestHandler extends IPTestInheritanceSkeleton {
 	    } else if (!session.equals(other.session))
 		    return false;
 	    if (sessionName == null) {
-		    if (other.sessionName != null)
-			    return false;
-	    } else if (!sessionName.equals(other.sessionName))
-		    return false;
-	    return true;
-    }
+            return other.sessionName == null;
+	    } else return sessionName.equals(other.sessionName);
+        }
 	}
 }

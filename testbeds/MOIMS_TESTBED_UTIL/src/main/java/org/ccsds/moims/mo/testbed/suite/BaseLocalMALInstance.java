@@ -257,11 +257,7 @@ public abstract class BaseLocalMALInstance extends LoggingBase
         {
           return false;
         }
-        if (sk.shared != shared)
-        {
-          return false;
-        }
-        return true;
+          return sk.shared == shared;
       }
       else
       {
