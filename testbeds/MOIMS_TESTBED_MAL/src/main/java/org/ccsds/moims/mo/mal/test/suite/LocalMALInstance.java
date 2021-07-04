@@ -288,9 +288,7 @@ public class LocalMALInstance extends BaseLocalMALInstance
             networkZone, sessionType, sessionName, qosLevel, qosProperties,
             priority);
 
-    org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestStub stub =
-            new org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestStub(consumer);
-    return stub;
+      return new org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestStub(consumer);
   }
 
   public synchronized IPTest2Stub newIPTest2Stub(
@@ -322,8 +320,7 @@ public class LocalMALInstance extends BaseLocalMALInstance
             networkZone, sessionType, sessionName, qosLevel, qosProperties,
             priority);
 
-    IPTest2Stub stub = new IPTest2Stub(consumer);
-    return stub;
+      return new IPTest2Stub(consumer);
   }
 
   public static class IPTestConsumer

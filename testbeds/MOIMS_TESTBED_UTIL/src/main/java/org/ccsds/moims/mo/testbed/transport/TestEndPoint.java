@@ -115,26 +115,25 @@ public class TestEndPoint implements MALEndpoint
           Blob authId,
           UOctet stage)
   {
-    TestMessageHeader res = new TestMessageHeader(
-            initialHeader.getURITo(),
-            authId,
-            initialHeader.getURIFrom(),
-            new Time(System.currentTimeMillis()),
-            initialHeader.getQoSlevel(),
-            initialHeader.getPriority(),
-            initialHeader.getDomain(),
-            initialHeader.getNetworkZone(),
-            initialHeader.getSession(),
-            initialHeader.getSessionName(),
-            initialHeader.getInteractionType(),
-            stage,
-            initialHeader.getTransactionId(),
-            initialHeader.getServiceArea(),
-            initialHeader.getService(),
-            initialHeader.getOperation(),
-            initialHeader.getAreaVersion(),
-            Boolean.TRUE);
-    return res;
+      return new TestMessageHeader(
+              initialHeader.getURITo(),
+              authId,
+              initialHeader.getURIFrom(),
+              new Time(System.currentTimeMillis()),
+              initialHeader.getQoSlevel(),
+              initialHeader.getPriority(),
+              initialHeader.getDomain(),
+              initialHeader.getNetworkZone(),
+              initialHeader.getSession(),
+              initialHeader.getSessionName(),
+              initialHeader.getInteractionType(),
+              stage,
+              initialHeader.getTransactionId(),
+              initialHeader.getServiceArea(),
+              initialHeader.getService(),
+              initialHeader.getOperation(),
+              initialHeader.getAreaVersion(),
+              Boolean.TRUE);
   }
 
   public void sendMessages(MALMessage[] messages) 

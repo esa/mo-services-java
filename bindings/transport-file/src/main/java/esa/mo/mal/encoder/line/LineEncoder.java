@@ -63,11 +63,7 @@ public class LineEncoder {
     public void encodeField(final String name, final Class declaredType, final Object value) throws
             MALException {
         if (null != value) {
-            boolean isAbstract = true;
-
-            if (declaredType == value.getClass()) {
-                isAbstract = false;
-            }
+            boolean isAbstract = declaredType != value.getClass();
 
             internalEncodeField(isAbstract, name, declaredType, value);
         } else {

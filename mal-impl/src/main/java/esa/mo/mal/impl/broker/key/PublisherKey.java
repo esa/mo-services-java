@@ -107,10 +107,7 @@ public class PublisherKey implements Comparable {
         if (this.key3 == null ? other.key3 != null : !this.key3.equals(other.key3)) {
             return false;
         }
-        if (this.key4 == null ? other.key4 != null : !this.key4.equals(other.key4)) {
-            return false;
-        }
-        return true;
+        return this.key4 == null ? other.key4 == null : this.key4.equals(other.key4);
     }
 
     @Override

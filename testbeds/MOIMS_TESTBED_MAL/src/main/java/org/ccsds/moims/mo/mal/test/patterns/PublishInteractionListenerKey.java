@@ -119,15 +119,8 @@ public class PublishInteractionListenerKey
     }
     if (sessionName == null)
     {
-      if (other.sessionName != null)
-      {
-        return false;
-      }
+        return other.sessionName == null;
     }
-    else if (!sessionName.equals(other.sessionName))
-    {
-      return false;
-    }
-    return true;
+    else return sessionName.equals(other.sessionName);
   }
 }

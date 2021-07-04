@@ -195,8 +195,7 @@ public class BufferReader {
   
   public String readString() {
     byte[] bytes = readBytes();
-    String res = new String(bytes);
-    return res;
+    return new String(bytes);
   }
   
   public Identifier readNullableIdentifier() throws Exception{
@@ -324,8 +323,7 @@ public class BufferReader {
   private AbsoluteDate readCUCAbsoluteTime(int coarseTimeLength,
       int fineTimeLength, AbsoluteDate epoch) {
     double seconds = readCUCDuration(coarseTimeLength, fineTimeLength);
-    AbsoluteDate absoluteDate = new AbsoluteDate(epoch, seconds);
-    return absoluteDate;
+    return new AbsoluteDate(epoch, seconds);
   }
   
   public Time readTime() throws Exception {

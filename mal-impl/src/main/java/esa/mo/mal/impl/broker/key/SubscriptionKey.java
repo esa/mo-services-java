@@ -117,10 +117,7 @@ public final class SubscriptionKey extends PublisherKey {
         if (this.service != other.service && (this.service == null || !this.service.equals(other.service))) {
             return false;
         }
-        if (this.operation != other.operation && (this.operation == null || !this.operation.equals(other.operation))) {
-            return false;
-        }
-        return true;
+        return this.operation == other.operation || (this.operation != null && this.operation.equals(other.operation));
     }
 
     /**

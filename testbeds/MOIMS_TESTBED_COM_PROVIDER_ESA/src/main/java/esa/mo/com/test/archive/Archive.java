@@ -119,15 +119,8 @@ public class Archive
     {
       bMatch = false;
     }
-    else if (!(rtrObjectType.getNumber() != null && (rtrObjectType.getNumber().getValue() == 0
-            || rtrObjectType.getNumber().equals(objectType.getNumber()))))
-    {
-      bMatch = false;
-    }
-    else
-    {
-      bMatch = true;
-    }
+    else bMatch = rtrObjectType.getNumber() != null && (rtrObjectType.getNumber().getValue() == 0
+                || rtrObjectType.getNumber().equals(objectType.getNumber()));
 
     LoggingBase.logMessage(CLS + ":objectTypeMatches:RET " + bMatch + ":" + objectType + ":" + rtrObjectType);
 

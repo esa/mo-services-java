@@ -217,11 +217,7 @@ public class EntityRequestTestProcedure extends LoggingBase
     for (int i = 0; i < containedList.size(); i++) {
       EntityKey key = containedList.get(i);
       boolean res;
-      if (containerList.indexOf(key) < 0) {
-        res = false;
-      } else {
-        res = true;
-      }
+        res = containerList.indexOf(key) >= 0;
       assertions.add(new Assertion(procedureName, info + 
           key.getFirstSubKey() + '.' + key.getSecondSubKey() + '.' +
           key.getThirdSubKey() + '.' + key.getFourthSubKey(), res));

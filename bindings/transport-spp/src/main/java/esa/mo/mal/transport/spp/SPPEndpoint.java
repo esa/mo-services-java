@@ -452,12 +452,9 @@ public class SPPEndpoint extends GENEndpoint {
                     || !this.service.equals(other.service))) {
                 return false;
             }
-            if (this.operation != other.operation
-                    && (this.operation == null
-                    || !this.operation.equals(other.operation))) {
-                return false;
-            }
-            return true;
+            return this.operation == other.operation
+                    || (this.operation != null
+                    && this.operation.equals(other.operation));
         }
     }
 }

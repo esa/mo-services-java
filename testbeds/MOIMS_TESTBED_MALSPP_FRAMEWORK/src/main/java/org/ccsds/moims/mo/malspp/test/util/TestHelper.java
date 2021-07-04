@@ -113,12 +113,9 @@ public class TestHelper {
     } catch (NumberFormatException ex) {
       return false;
     }
-    if (qualifier < 0 || qualifier > 65535
-      || apid < 0 || apid >= 2047
-      || (identifier != null && (identifier < 0 || identifier > 255))) {
-      return false;
-    }
-    return true;
+      return qualifier >= 0 && qualifier <= 65535
+              && apid >= 0 && apid < 2047
+              && (identifier == null || (identifier >= 0 && identifier <= 255));
   }
   
   public static int decodeSecondaryHeader(SecondaryHeader ssh,

@@ -121,17 +121,11 @@ public class AccessControlErrorScenario extends LoggingBase
     {
       if ("local".equals(requiredSource))
       {
-        if (((Union) lastError.getStandardError().getExtraInformation()).getStringValue().startsWith("local"))
-        {
-          return true;
-        }
+        return ((Union) lastError.getStandardError().getExtraInformation()).getStringValue().startsWith("local");
       }
       else if ("remote".equals(requiredSource))
       {
-        if (((Union) lastError.getStandardError().getExtraInformation()).getStringValue().startsWith("remote"))
-        {
-          return true;
-        }
+        return ((Union) lastError.getStandardError().getExtraInformation()).getStringValue().startsWith("remote");
       }
     }
 
