@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>POM</artifactId>
-        <version>8</version>
+        <version>9-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>API_COM</artifactId>
-    <version>8.0</version>
+    <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>ESA COM Java API</name>
