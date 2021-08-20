@@ -97,16 +97,16 @@
     
         <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
         <ccsds.specification.download.group>int.esa.ccsds.mo</ccsds.specification.download.group>
-        <ccsds.specification.download.artifact>xml-ccsds-mo-standards</ccsds.specification.download.artifact>
+        <ccsds.specification.download.artifact>xml-ccsds-mo-prototypes</ccsds.specification.download.artifact>
         <ccsds.specification.download.version>${ccsds.specification.version}</ccsds.specification.download.version>
         <ccsds.specification.download.directory>${project.build.directory}/xml</ccsds.specification.download.directory>
         <ccsds.specification.download.filter></ccsds.specification.download.filter>
         <ccsds.specification.download.ref-skip>true</ccsds.specification.download.ref-skip>
         <ccsds.specification.download.ref-group>int.esa.ccsds.mo</ccsds.specification.download.ref-group>
-        <ccsds.specification.download.ref-artifact>xml-ccsds-mo-standards</ccsds.specification.download.ref-artifact>
+        <ccsds.specification.download.ref-artifact>xml-ccsds-mo-prototypes</ccsds.specification.download.ref-artifact>
         <ccsds.specification.download.ref-version>${ccsds.specification.version}</ccsds.specification.download.ref-version>
         <ccsds.specification.download.ref-directory>${project.build.directory}/xml-ref</ccsds.specification.download.ref-directory>
-        <ccsds.specification.download.ref-filter>**/area001-v001-MAL.xml</ccsds.specification.download.ref-filter>
+        <ccsds.specification.download.ref-filter>**/area001-v002-MAL.xml</ccsds.specification.download.ref-filter>
         <esa.stubgen.xmlDirectory>${project.build.directory}/xml</esa.stubgen.xmlDirectory>
         <esa.stubgen.xmlRefDirectory>${project.build.directory}/xml-ref/xml</esa.stubgen.xmlRefDirectory>
     </properties>
