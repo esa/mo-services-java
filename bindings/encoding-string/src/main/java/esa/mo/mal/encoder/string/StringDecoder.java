@@ -140,7 +140,7 @@ public class StringDecoder extends GENDecoder {
         @Override
         public float getFloat() throws MALException {
             try {
-                return Float.parseFloat(removeFirst());
+                return Float.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
                 throw new MALException(ex.getLocalizedMessage(), ex);
             }
@@ -149,7 +149,7 @@ public class StringDecoder extends GENDecoder {
         @Override
         public double getDouble() throws MALException {
             try {
-                return Double.parseDouble(removeFirst());
+                return Double.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
                 throw new MALException(ex.getLocalizedMessage(), ex);
             }
@@ -167,7 +167,7 @@ public class StringDecoder extends GENDecoder {
         @Override
         public long getSignedLong() throws MALException {
             try {
-                return Long.parseLong(removeFirst());
+                return Long.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
                 throw new MALException(ex.getLocalizedMessage(), ex);
             }
@@ -176,7 +176,7 @@ public class StringDecoder extends GENDecoder {
         @Override
         public int getSignedInt() throws MALException {
             try {
-                return Integer.parseInt(removeFirst());
+                return Integer.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
                 throw new MALException(ex.getLocalizedMessage(), ex);
             }
@@ -185,7 +185,7 @@ public class StringDecoder extends GENDecoder {
         @Override
         public short getSignedShort() throws MALException {
             try {
-                return Short.parseShort(removeFirst());
+                return Short.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
                 throw new MALException(ex.getLocalizedMessage(), ex);
             }
@@ -229,7 +229,7 @@ public class StringDecoder extends GENDecoder {
         @Override
         public boolean getBool() throws MALException {
             try {
-                return Boolean.parseBoolean(removeFirst());
+                return Boolean.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
                 throw new MALException(ex.getLocalizedMessage(), ex);
             }
@@ -238,7 +238,7 @@ public class StringDecoder extends GENDecoder {
         @Override
         public byte get8() throws MALException {
             try {
-                return Byte.parseByte(removeFirst());
+                return Byte.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
                 throw new MALException(ex.getLocalizedMessage(), ex);
             }

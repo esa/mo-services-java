@@ -625,7 +625,7 @@ public class MessageSend {
                 msgs.set(i, msg);
             }
 
-            ep.sendMessages(msgs.toArray(new MALMessage[0]));
+            ep.sendMessages(msgs.toArray(new MALMessage[msgs.size()]));
         } catch (IllegalArgumentException ex) {
             throw new MALException("ERROR: Error with one way send : IllegalArgumentException : ", ex);
         } catch (MALException ex) {
