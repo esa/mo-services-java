@@ -26,7 +26,7 @@
     <artifactId>REACTOR_APPS</artifactId>
     <version>9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>ESA CCSDS Apps reactor build</name>
+    <name>ESA CCSDS Apps Reactor</name>
 
     <organization>
         <name>ESA</name>
