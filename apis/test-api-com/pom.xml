@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>POM</artifactId>
-        <version>8</version>
+        <version>9-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>API_COM_TEST</artifactId>
-    <version>8.0</version>
+    <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>ESA TEST COM Java API</name>
@@ -70,7 +70,7 @@
         <ccsds.specification.download.version>${extra.specification.version}</ccsds.specification.download.version>
         <ccsds.specification.download.filter>**/COMPrototype.xml</ccsds.specification.download.filter>
         <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
-        <ccsds.specification.download.ref-filter>**/area001-v001-MAL.xml, **/area002-v001-COM.xml</ccsds.specification.download.ref-filter>
+        <ccsds.specification.download.ref-filter>**/area001-v002-MAL.xml, **/area002-v001-COM.xml</ccsds.specification.download.ref-filter>
     </properties>
   
     <dependencies>

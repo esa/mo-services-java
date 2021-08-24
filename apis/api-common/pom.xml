@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>POM</artifactId>
-        <version>8</version>
+        <version>9-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>API_COMMON</artifactId>
-    <version>8.0</version>
+    <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>ESA Common Java API</name>
@@ -70,7 +70,7 @@
         <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
         <ccsds.specification.download.filter>**/area003-v001-Common.xml</ccsds.specification.download.filter>
         <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
-        <ccsds.specification.download.ref-filter>**/area001-v001-MAL.xml, **/area002-v001-COM.xml</ccsds.specification.download.ref-filter>
+        <ccsds.specification.download.ref-filter>**/area001-v002-MAL.xml, **/area002-v001-COM.xml</ccsds.specification.download.ref-filter>
     </properties>
 
     <dependencies>

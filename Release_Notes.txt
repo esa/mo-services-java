@@ -5,7 +5,10 @@
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-Version 8 (TBD)
+Version 9 (TBD)
+	- 
+
+Version 8
 	- Merged multiple repos into a single one
 	- Increased the Java supported version from 1.6 to 1.8 (Java 8 has Long Term Support until 2030)
 	- Improvements in the TCP/IP implementation

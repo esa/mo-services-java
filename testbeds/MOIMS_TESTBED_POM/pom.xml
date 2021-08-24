@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>POM</artifactId>
-        <version>8</version>
+        <version>9-SNAPSHOT</version>
         <relativePath/>
     </parent>
   
     <artifactId>TESTBED_POM</artifactId>
     <packaging>pom</packaging>
-    <version>8</version>
+    <version>9-SNAPSHOT</version>
     <name>CCSDS MOIMS MO Testbed POM</name>
 
     <organization>
@@ -80,7 +80,7 @@
         <jacoco.version>0.7.1.201405082137</jacoco.version>
         <junit.version>4.8.1</junit.version>
         <fitnesse.output.dir>${project.build.directory}/surefire-reports</fitnesse.output.dir>
-        <ccsds.testbed.util.version>8.0</ccsds.testbed.util.version>
+        <ccsds.testbed.util.version>9.0-SNAPSHOT</ccsds.testbed.util.version>
         <cnes.version>3.2.2-SNAPSHOT</cnes.version>
         <joram.version>5.9.0</joram.version>
     </properties>

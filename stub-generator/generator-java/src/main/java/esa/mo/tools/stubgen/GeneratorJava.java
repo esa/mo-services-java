@@ -94,8 +94,8 @@ public class GeneratorJava extends GeneratorLangs {
             Map<String, String> extraProperties) throws IOException {
         super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
-        setRequiresDefaultConstructors(Boolean.parseBoolean(extraProperties.get("java.requiresDefaultConstructors")));
-        setSupportFullyPolymorphicTypes(Boolean.parseBoolean(extraProperties.get("java.supportFullyPolymorphicTypes")));
+        setRequiresDefaultConstructors(Boolean.valueOf(extraProperties.get("java.requiresDefaultConstructors")));
+        setSupportFullyPolymorphicTypes(Boolean.valueOf(extraProperties.get("java.supportFullyPolymorphicTypes")));
 
         addAttributeType(StdStrings.MAL, StdStrings.BLOB, false, "Blob", "");
         addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, true, "Boolean", "Boolean.FALSE");

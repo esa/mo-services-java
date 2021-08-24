@@ -67,7 +67,7 @@ public class InteractionTimeout {
 
             if (prop != null) {
                 try {
-                    timeout = Long.parseLong(prop);
+                    timeout = Long.valueOf(prop);
                     // 
                     if (timeout > 0) {
                         enabled = true;
