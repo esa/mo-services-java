@@ -641,14 +641,9 @@ public class PatternTest
 
   private void transmitBrokenMessage(MALMessageHeader srcHdr, IPTestTransitionType transitionType) throws Exception
   {
-    boolean isError = false;
+    boolean isError = (IPTestTransitionType.ACK_ERROR == transitionType) || (IPTestTransitionType.UPDATE_ERROR == transitionType) || (IPTestTransitionType.RESPONSE_ERROR == transitionType);
 
-    if ((IPTestTransitionType.ACK_ERROR == transitionType) || (IPTestTransitionType.UPDATE_ERROR == transitionType) || (IPTestTransitionType.RESPONSE_ERROR == transitionType))
-    {
-      isError = true;
-    }
-
-    MALMessageHeader brokenHeader = new TestMessageHeader(srcHdr.getURIFrom(),
+      MALMessageHeader brokenHeader = new TestMessageHeader(srcHdr.getURIFrom(),
             srcHdr.getAuthenticationId(),
             srcHdr.getURITo(),
             srcHdr.getTimestamp(),

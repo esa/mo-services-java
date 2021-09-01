@@ -169,10 +169,9 @@ public class EventTestScenario extends LoggingBase
     {
         logMessage(loggingClassName + ":createInstanceOfObjectAInDomainWithDescription domain = "
                 + domain + " desc = " + description);
-        long retValue = LocalMALInstance.instance().eventTestStub().createinstance(
-                COMTestHelper.TEST_OBJECT_A, domain, description, null);
 
-        return retValue;
+        return LocalMALInstance.instance().eventTestStub().createinstance(
+                COMTestHelper.TEST_OBJECT_A, domain, description, null);
     }
 
     /**
@@ -186,9 +185,8 @@ public class EventTestScenario extends LoggingBase
   {
     logMessage(loggingClassName + ":createInstanceOfObjectBInDomainWithDescriptionWithParentObject domain = "
             + domain + " desc = " + description + "parentInstId = " + parentInstId);
-    long retValue = LocalMALInstance.instance().eventTestStub().createinstance(
-    		COMTestHelper.TEST_OBJECT_B, domain, description, new Long(parentInstId));
-    return retValue;
+      return LocalMALInstance.instance().eventTestStub().createinstance(
+              COMTestHelper.TEST_OBJECT_B, domain, description, new Long(parentInstId));
   }
 
   /**
