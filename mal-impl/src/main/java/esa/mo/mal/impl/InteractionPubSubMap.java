@@ -114,12 +114,7 @@ class InteractionPubSubMap {
 
         synchronized (notifyMap) {
             notifyMap.put(id, list);
-            Map<String, MALInteractionListener> ent = errorMap.get(uri);
-
-            if (null == ent) {
-                ent = new HashMap<String, MALInteractionListener>();
-                errorMap.put(uri, ent);
-            }
+            Map<String, MALInteractionListener> ent = errorMap.computeIfAbsent(uri, k -> new HashMap<String, MALInteractionListener>());
 
             MALContextFactoryImpl.LOGGER.log(Level.FINE,
                     "PubSubMap({0}), adding notify handler: {1} : {2} : {3}",

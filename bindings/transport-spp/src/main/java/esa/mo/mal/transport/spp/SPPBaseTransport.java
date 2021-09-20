@@ -285,12 +285,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
             final Long transactionId = (long) java.nio.ByteBuffer.wrap(packet).getLong(18);
 
             Map<Long, SPPSegmentsHandler> map
-                    = segmentHandlers.get(new QualifiedApid(apidQualifier, apid));
-
-            if (null == map) {
-                map = new HashMap<Long, SPPSegmentsHandler>();
-                segmentHandlers.put(new QualifiedApid(apidQualifier, apid), map);
-            }
+                    = segmentHandlers.computeIfAbsent(new QualifiedApid(apidQualifier, apid), k -> new HashMap<Long, SPPSegmentsHandler>());
 
             SPPSegmentsHandler segmentHandler = map.get(transactionId);
 

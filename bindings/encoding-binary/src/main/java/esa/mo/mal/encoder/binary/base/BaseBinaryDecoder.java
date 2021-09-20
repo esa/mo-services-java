@@ -23,6 +23,7 @@ package esa.mo.mal.encoder.binary.base;
 import esa.mo.mal.encoder.gen.GENDecoder;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +40,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder {
 
     protected static final java.util.logging.Logger LOGGER = Logger.getLogger(
             BaseBinaryDecoder.class.getName());
-    protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+    protected static final Charset UTF8_CHARSET = StandardCharsets.UTF_8;
     protected static final int BLOCK_SIZE = 65536;
 
     protected final BinaryTimeHandler timeHandler;

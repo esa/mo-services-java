@@ -89,45 +89,43 @@ public class ZMTPChannelDestination {
     }
 
     public void runRxThread() {
-        rxThread = new Thread(new Runnable() {
-            public void run() {
-                zmqContext = ZContext.shadow(transport.getZmqContext());
-                socket = ZMTPTransport.openSocket(zmqContext, communicationPattern, zmtpURI, true);
-                
-                while (true) {
-                    if (Thread.interrupted()) {
-                        ZMTPTransport.RLOGGER.log(Level.INFO, "Thread interrupted");
-                        break;
-                    }
-                    try {
-                        org.zeromq.ZMsg recvMsg = org.zeromq.ZMsg.recvMsg(socket);
-                        ZFrame first = recvMsg.pop(); // The frame with sender id
-                        byte[] remoteIdentity = first.getData();
-                        byte[] rxData = getMessageBuffer(recvMsg);
-                        transport.channelDataReceived(remoteIdentity, rxData);
-                        recvMsg.destroy();
-                    } catch (ZMQException e) {
-                        if (e.getErrorCode() == ZMQ.Error.ETERM.getCode()) {
-                            ZMTPTransport.RLOGGER.log(Level.INFO, 
-                                    "ZMQ context terminated - shutting down");
-                        } else {
-                            ZMTPTransport.RLOGGER.log(Level.WARNING,
-                                    "ZMQ Error in ZMTPChannelDestination RX Thread", e);
-                        }
-                        break;
-                    } catch (zmq.ZError.IOException e) {
-                        if (e.getCause() instanceof ClosedByInterruptException) {
-                            ZMTPTransport.RLOGGER.log(Level.INFO, "Thread interrupted");
-                        } else {
-                            ZMTPTransport.RLOGGER.log(Level.WARNING,
-                                    "ZMQ IO Error in ZMTPChannelDestination RX Thread", e);
-                        }
-                        break;
-                    }
+        rxThread = new Thread(() -> {
+            zmqContext = ZContext.shadow(transport.getZmqContext());
+            socket = ZMTPTransport.openSocket(zmqContext, communicationPattern, zmtpURI, true);
+
+            while (true) {
+                if (Thread.interrupted()) {
+                    ZMTPTransport.RLOGGER.log(Level.INFO, "Thread interrupted");
+                    break;
                 }
-                // Don't destroy the context properly as it locks the application
-                //zmqContext.destroy();
+                try {
+                    org.zeromq.ZMsg recvMsg = org.zeromq.ZMsg.recvMsg(socket);
+                    ZFrame first = recvMsg.pop(); // The frame with sender id
+                    byte[] remoteIdentity = first.getData();
+                    byte[] rxData = getMessageBuffer(recvMsg);
+                    transport.channelDataReceived(remoteIdentity, rxData);
+                    recvMsg.destroy();
+                } catch (ZMQException e) {
+                    if (e.getErrorCode() == ZMQ.Error.ETERM.getCode()) {
+                        ZMTPTransport.RLOGGER.log(Level.INFO,
+                                "ZMQ context terminated - shutting down");
+                    } else {
+                        ZMTPTransport.RLOGGER.log(Level.WARNING,
+                                "ZMQ Error in ZMTPChannelDestination RX Thread", e);
+                    }
+                    break;
+                } catch (zmq.ZError.IOException e) {
+                    if (e.getCause() instanceof ClosedByInterruptException) {
+                        ZMTPTransport.RLOGGER.log(Level.INFO, "Thread interrupted");
+                    } else {
+                        ZMTPTransport.RLOGGER.log(Level.WARNING,
+                                "ZMQ IO Error in ZMTPChannelDestination RX Thread", e);
+                    }
+                    break;
+                }
             }
+            // Don't destroy the context properly as it locks the application
+            //zmqContext.destroy();
         });
         rxThread.setName("ZMTPChannelDestination RX Thread");
         rxThread.start();

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -141,7 +142,7 @@ public abstract class StubUtils {
             String ext) throws IOException {
         File file = createLowLevelFile(folder, name, ext);
 
-        return new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8"));
+        return new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
     }
 
     /**
@@ -160,7 +161,7 @@ public abstract class StubUtils {
             throw new IOException("Unable to create file: " + file.getPath());
         }
 
-        return new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8"));
+        return new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
     }
 
     /**
