@@ -94,17 +94,8 @@
                 <mal:extends>
                     <mal:type area="MAL" name="Composite"/>
                 </mal:extends>
-                <mal:field name="firstSubKey" comment="The first sub-key of the key.">
-                    <mal:type area="MAL" name="Identifier"/>
-                </mal:field>
-                <mal:field name="secondSubKey" comment="The second sub-key of the key.">
-                    <mal:type area="MAL" name="Long"/>
-                </mal:field>
-                <mal:field name="thirdSubKey" comment="The third sub-key of the key.">
-                    <mal:type area="MAL" name="Long"/>
-                </mal:field>
-                <mal:field name="fourthSubKey" comment="The fourth sub-key of the key.">
-                    <mal:type area="MAL" name="Long"/>
+                <mal:field name="subkeys" comment="The list of subkeys.">
+                    <mal:type list="true" area="MAL" name="NamedValue"/>
                 </mal:field>
             </mal:composite>
             <mal:composite name="UpdateHeader" shortFormPart="26" comment="The UpdateHeader structure is used by updates using the PUBSUB interaction pattern. It holds information that identifies a single update.">
@@ -183,7 +174,7 @@
                     <mal:type list="true" area="MAL" name="NamedValue"/>
                 </mal:field>
             </mal:composite>
-            <mal:composite name="ObjectReference" shortFormPart="31" comment="The ObjectReference structure represents a reference to an MO Object. This structure contains the same fields as an MO Object Identity.">
+            <mal:composite name="ObjectRef" shortFormPart="31" comment="The ObjectReference structure represents a reference to an MO Object. This structure contains the same fields as an MO Object Identity.">
                 <mal:extends>
                     <mal:type area="MAL" name="Composite"/>
                 </mal:extends>
