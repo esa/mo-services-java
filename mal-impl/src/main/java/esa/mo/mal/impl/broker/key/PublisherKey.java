@@ -20,9 +20,17 @@
  */
 package esa.mo.mal.impl.broker.key;
 
+import static esa.mo.mal.impl.broker.key.PublisherKey.HASH_MAGIC_NUMBER;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperAttributes;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
  * Simple class that identifies a publisher in a MAL broker.
@@ -46,21 +54,9 @@ public class PublisherKey implements Comparable {
      */
     protected static final int HASH_MAGIC_NUMBER = 47;
     /**
-     * First sub key.
+     * The set of subkeys.
      */
-    private final String key1;
-    /**
-     * Second sub key.
-     */
-    private final Long key2;
-    /**
-     * Third sub key.
-     */
-    private final Long key3;
-    /**
-     * Fourth sub key.
-     */
-    private final Long key4;
+    private final HashMap<String, Attribute> subkeys = new HashMap<>();
 
     /**
      * Constructor.
@@ -68,23 +64,21 @@ public class PublisherKey implements Comparable {
      * @param key Entity key.
      */
     public PublisherKey(final EntityKey key) {
-        this.key1 = getIdValue(key.getFirstSubKey());
-        this.key2 = key.getSecondSubKey();
-        this.key3 = key.getThirdSubKey();
-        this.key4 = key.getFourthSubKey();
+        for (NamedValue subkey : key.getSubkeys()) {
+            subkeys.put(subkey.getName().getValue(), subkey.getValue());
+        }
     }
 
     @Override
     public String toString() {
         final StringBuilder buf = new StringBuilder();
         buf.append('[');
-        buf.append(this.key1);
-        buf.append('.');
-        buf.append(this.key2);
-        buf.append('.');
-        buf.append(this.key3);
-        buf.append('.');
-        buf.append(this.key4);
+        for (Entry<String, Attribute> entry : subkeys.entrySet()) {
+            buf.append(entry.getKey());
+            buf.append('=');
+            buf.append(entry.getValue());
+            buf.append(';');
+        }
         buf.append(']');
         return buf.toString();
     }
@@ -98,17 +92,14 @@ public class PublisherKey implements Comparable {
             return false;
         }
         final PublisherKey other = (PublisherKey) obj;
-        if (this.key1 == null ? other.key1 != null : !this.key1.equals(other.key1)) {
+        if (this.subkeys.size() != other.subkeys.size()) {
             return false;
         }
-        if (this.key2 == null ? other.key2 != null : !this.key2.equals(other.key2)) {
-            return false;
-        }
-        if (this.key3 == null ? other.key3 != null : !this.key3.equals(other.key3)) {
-            return false;
-        }
-        if (this.key4 == null ? other.key4 != null : !this.key4.equals(other.key4)) {
-            return false;
+        for (Entry<String, Attribute> entry : subkeys.entrySet()) {
+            String key = entry.getKey();
+            if (!this.subkeys.get(key).equals(other.subkeys.get(key))) {
+                return false;
+            }
         }
         return true;
     }
@@ -116,23 +107,31 @@ public class PublisherKey implements Comparable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = HASH_MAGIC_NUMBER * hash + (this.key1 != null ? this.key1.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + (this.key2 != null ? this.key2.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + (this.key3 != null ? this.key3.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + (this.key4 != null ? this.key4.hashCode() : 0);
+        for (Entry<String, Attribute> entry : subkeys.entrySet()) {
+            Attribute value = entry.getValue();
+            hash = HASH_MAGIC_NUMBER * hash + (value != null ? value.hashCode() : 0);
+        }
         return hash;
     }
 
     @Override
     public int compareTo(final Object o) {
         final PublisherKey rhs = (PublisherKey) o;
-        int rv = compareSubkey(this.key1, rhs.key1);
-        if (0 == rv) {
-            rv = compareSubkey(this.key2, rhs.key2);
-            if (0 == rv) {
-                rv = compareSubkey(this.key3, rhs.key3);
-                if (0 == rv) {
-                    rv = compareSubkey(this.key4, rhs.key4);
+
+        int rv = 0;
+
+        for (Entry<String, Attribute> entry : subkeys.entrySet()) {
+            String key = entry.getKey();
+            Attribute value = entry.getValue();
+
+            if (value instanceof Union) {
+                rv = compareSubkey(
+                        ((Union) this.subkeys.get(key)).getLongValue(),
+                        ((Union) rhs.subkeys.get(key)).getLongValue()
+                );
+
+                if (rv != 0) {
+                    return rv;
                 }
             }
         }
@@ -148,19 +147,16 @@ public class PublisherKey implements Comparable {
      */
     public boolean matchesWithWildcard(final EntityKey rhs) {
         if (null != rhs) {
-            boolean matched = matchedSubkeyWithWildcard(key1, getIdValue(rhs.getFirstSubKey()));
-
-            if (matched) {
-                matched = matchedSubkeyWithWildcard(key2, rhs.getSecondSubKey());
-                if (matched) {
-                    matched = matchedSubkeyWithWildcard(key3, rhs.getThirdSubKey());
-                    if (matched) {
-                        matched = matchedSubkeyWithWildcard(key4, rhs.getFourthSubKey());
-                    }
+            for(NamedValue nv : rhs.getSubkeys()){
+                boolean matched = matchedSubkeyWithWildcard(nv.getValue(), 
+                        this.subkeys.get(nv.getName().getValue()));
+                
+                if(!matched){
+                    return false;
                 }
             }
-
-            return matched;
+            
+            return true;
         }
 
         return false;
@@ -175,19 +171,16 @@ public class PublisherKey implements Comparable {
      */
     public boolean matchesWithWildcard(final PublisherKey rhs) {
         if (null != rhs) {
-            boolean matched = matchedSubkeyWithWildcard(key1, rhs.key1);
-
-            if (matched) {
-                matched = matchedSubkeyWithWildcard(key2, rhs.key2);
-                if (matched) {
-                    matched = matchedSubkeyWithWildcard(key3, rhs.key3);
-                    if (matched) {
-                        matched = matchedSubkeyWithWildcard(key4, rhs.key4);
-                    }
+            for(Entry<String, Attribute> nv : rhs.subkeys.entrySet()){
+                boolean matched = matchedSubkeyWithWildcard(nv.getValue(), 
+                        this.subkeys.get(nv.getKey()));
+                
+                if(!matched){
+                    return false;
                 }
             }
-
-            return matched;
+            
+            return true;
         }
 
         return false;
@@ -261,6 +254,46 @@ public class PublisherKey implements Comparable {
      * @param theirKeyPart The second key part.
      * @return True if they match or one is the wildcard.
      */
+    protected static boolean matchedSubkeyWithWildcard(final Attribute myKeyPart, final Attribute theirKeyPart) {
+        // Are we handling strings?
+        if(HelperMisc.isStringAttribute(myKeyPart) && HelperMisc.isStringAttribute(theirKeyPart)){
+            String first = HelperAttributes.attribute2string(myKeyPart);
+            String second = HelperAttributes.attribute2string(theirKeyPart);
+            
+            if (ALL_ID.equals(first) || ALL_ID.equals(second)) {
+                return true;
+            }
+        }
+        
+        // Are we not handling strings?
+        if(!HelperMisc.isStringAttribute(myKeyPart) && !HelperMisc.isStringAttribute(theirKeyPart)){
+            Object first = HelperAttributes.attribute2JavaType(myKeyPart);
+            Object second = HelperAttributes.attribute2JavaType(theirKeyPart);
+            
+            if(first instanceof Long){
+                if (ALL_NUMBER.equals((Long) first) || ALL_NUMBER.equals((Long) second)) {
+                    return true;
+                }
+            }
+        }
+        
+        if ((null == myKeyPart) || (null == theirKeyPart)) {
+            return (null == myKeyPart) && (null == theirKeyPart);
+        }
+
+        return myKeyPart.equals(theirKeyPart);
+    }
+
+    /**
+     * Compares two String sub-keys taking into account wildcard values. This
+     * method is deprecated because it was being used before we changed to MO
+     * v2.0 as the subscription to PUBSUB has now changed.
+     *
+     * @param myKeyPart The first key part.
+     * @param theirKeyPart The second key part.
+     * @return True if they match or one is the wildcard.
+     */
+    @Deprecated
     protected static boolean matchedSubkeyWithWildcard(final String myKeyPart, final String theirKeyPart) {
         if (ALL_ID.equals(myKeyPart) || ALL_ID.equals(theirKeyPart)) {
             return true;
@@ -274,12 +307,15 @@ public class PublisherKey implements Comparable {
     }
 
     /**
-     * Compares two Long sub-keys taking into account wildcard values.
+     * Compares two Long sub-keys taking into account wildcard values. This
+     * method is deprecated because it was being used before we changed to MO
+     * v2.0 as the subscription to PUBSUB has now changed.
      *
      * @param myKeyPart The first key part.
      * @param theirKeyPart The second key part.
      * @return True if they match or one is the wildcard.
      */
+    @Deprecated
     protected static boolean matchedSubkeyWithWildcard(final Long myKeyPart, final Long theirKeyPart) {
         if (ALL_NUMBER.equals(myKeyPart) || ALL_NUMBER.equals(theirKeyPart)) {
             return true;
