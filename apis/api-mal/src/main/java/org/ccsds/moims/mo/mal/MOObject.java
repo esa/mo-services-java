@@ -20,7 +20,7 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import org.ccsds.moims.mo.mal.structures.ObjectReference;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
 
 /**
  * Class representing an MO Object.
@@ -30,7 +30,7 @@ public class MOObject<T> {
     /**
      * Identity of the MO Object.
      */
-    private final ObjectReference identity;
+    private final ObjectRef identity;
 
     /**
      * Body of the MO Object.
@@ -44,8 +44,7 @@ public class MOObject<T> {
      * @param body Body of the MO Object.
      * @throws java.lang.IllegalArgumentException If any argument is null.
      */
-    public MOObject(final ObjectReference identity, final T body)
-            throws java.lang.IllegalArgumentException {
+    public MOObject(final ObjectRef identity, final T body) throws IllegalArgumentException {
         if (identity == null) {
             throw new IllegalArgumentException("The identity argument cannot be null!");
         }
@@ -62,7 +61,7 @@ public class MOObject<T> {
      *
      * @return The Identity.
      */
-    public ObjectReference getIdentity() {
+    public ObjectRef getIdentity() {
         return identity;
     }
 
