@@ -29,7 +29,7 @@
             <mal:attribute name="ULong" shortFormPart="14" comment="The ULong structure is used to store 64-bit unsigned attributes. The permitted range is 0 to 18446744073709551615."/>
             <mal:attribute name="String" shortFormPart="15" comment="The String structure is used to store String attributes. It is a variable-length, unbounded, Unicode string."/>
             <mal:attribute name="Time" shortFormPart="16" comment="The Time structure is used to store absolute time attributes. It represents an absolute date and time to millisecond resolution."/>
-            <mal:attribute name="FineTime" shortFormPart="17" comment="The FineTime structure is used to store high-resolution absolute time attributes. It represents an absolute date and time to picosecond resolution."/>
+            <mal:attribute name="FineTime" shortFormPart="17" comment="The FineTime structure is used to store high-resolution absolute time attributes. It represents an absolute date and time to nanosecond resolution."/>
             <mal:attribute name="URI" shortFormPart="18" comment="The URI structure is used to store URI addresses. It is a variable-length, unbounded, Unicode string."/>
             <mal:enumeration name="InteractionType" shortFormPart="19" comment="InteractionType is an enumeration holding the possible interaction pattern types.">
                 <mal:item value="SEND" nvalue="1" comment="Used for Send interactions."/>
@@ -201,6 +201,47 @@
                 </mal:field>
                 <mal:field name="versionRef" canBeNull="false" comment="The version of the MO Object being referenced.">
                     <mal:type area="MAL" name="UInteger"/>
+                </mal:field>
+            </mal:composite>
+            <mal:composite comment="The ObjectType structure uniquely identifies the body type of an MO object. It is the combination of the area number and short form part of the object." name="ObjectType" shortFormPart="32">
+                <mal:extends>
+                    <mal:type area="MAL" list="false" name="Composite"/>
+                </mal:extends>
+                <mal:field canBeNull="false" comment="Area Number where the object type is defined. Must not be '0' for values as this is the wildcard." name="area">
+                    <mal:type area="MAL" list="false" name="UShort"/>
+                </mal:field>
+                <mal:field canBeNull="false" comment="The short form part of the body data structure. Must not be '0' for values as this is the wildcard." name="shortFormPart">
+                    <mal:type area="MAL" list="false" name="UShort"/>
+                </mal:field>
+            </mal:composite>
+            <mal:composite name="ConfigurationObjectSet" shortFormPart="33" comment="The configuration object set holds a set of object identifiers for a single COM object type in a single domain.">
+                <mal:field name="objType" canBeNull="false" comment="The COM object type of the configuration objects.">
+                    <mal:type name="ObjectType" area="MAL"/>
+                </mal:field>
+                <mal:field name="domain" canBeNull="false" comment="The domain of the configuration objects.">
+                    <mal:type list="true" name="Identifier" area="MAL"/>
+                </mal:field>
+                <mal:field name="objInstIds" canBeNull="false" comment="The set of COM object identifiers that form this configuration set.">
+                    <mal:type list="true" name="Long" area="MAL"/>
+                </mal:field>
+            </mal:composite>
+            <mal:composite name="ConfigurationObjectDetails" shortFormPart="34" comment="The ConfigurationObjectDetails composite holds a zero to many ConfigurationObjectSet structures. It allows a configuration to reference COM objects from more than one domain or of more than one COM object type.">
+                <mal:field name="configObjects" canBeNull="false" comment="The list of configuration objects.">
+                    <mal:type list="true" name="ConfigurationObjectSet" area="MAL"/>
+                </mal:field>
+            </mal:composite>
+            <mal:composite name="ServiceKey" shortFormPart="35" comment="The ServiceKey composite can specify a certain Service (and its version) within an Area.">
+                <mal:extends>
+                    <mal:type name="Composite" area="MAL"/>
+                </mal:extends>
+                <mal:field name="keyArea" canBeNull="false" comment="The area of this service taken from the numeric Area identifier of the service specification.">
+                    <mal:type name="UShort" area="MAL"/>
+                </mal:field>
+                <mal:field name="keyAreaVersion" canBeNull="false" comment="The version of this service taken from the Area Version of the area specification.">
+                    <mal:type name="UOctet" area="MAL"/>
+                </mal:field>
+                <mal:field name="keyService" canBeNull="false" comment="The service taken from the numeric Service identifier of the service specification.">
+                    <mal:type name="UShort" area="MAL"/>
                 </mal:field>
             </mal:composite>
         </mal:dataTypes>
