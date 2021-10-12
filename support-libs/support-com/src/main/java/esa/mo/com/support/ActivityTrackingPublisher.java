@@ -37,9 +37,12 @@ import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateType;
 
@@ -159,6 +162,17 @@ public class ActivityTrackingPublisher {
         objDetails.setSource(source);
 
         // Produce header
+        NamedValueList subkeys = new NamedValueList();
+        subkeys.add(new NamedValue(new Identifier("key1"), new Identifier(OBJ_NO_ASE_ACCEPTANCE_STR)));
+        subkeys.add(new NamedValue(new Identifier("key2"), new Union(ComStructureHelper.generateSubKey(
+                        COMHelper._COM_AREA_NUMBER,
+                        ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                        COMHelper._COM_AREA_VERSION,
+                        0))));
+        subkeys.add(new NamedValue(new Identifier("key3"), new Union((long) instanceIdentifier++)));
+        subkeys.add(new NamedValue(new Identifier("key4"), new Union(0L)));
+        EntityKey ekey = new EntityKey(subkeys);
+        /*
         final EntityKey ekey = new EntityKey(
                 new Identifier(OBJ_NO_ASE_ACCEPTANCE_STR),
                 ComStructureHelper.generateSubKey(
@@ -168,6 +182,7 @@ public class ActivityTrackingPublisher {
                         0),
                 (long) instanceIdentifier++,
                 ComStructureHelper.generateSubKey(source.getType()));
+        */
         BaseMalServer.LOGGER.log(Level.FINE, "ActivityTracking:eKey = {0}", ekey);
 
         UpdateHeader uh = new UpdateHeader(StructureHelper.getTimestampMillis(),
@@ -307,6 +322,17 @@ public class ActivityTrackingPublisher {
                 new Object[]{eventSourceURI, source});
 
         // Produce header
+        NamedValueList subkeys = new NamedValueList();
+        subkeys.add(new NamedValue(new Identifier("key1"), new Identifier(OBJ_NO_ASE_EXECUTION_STR)));
+        subkeys.add(new NamedValue(new Identifier("key2"), new Union(ComStructureHelper.generateSubKey(
+                        COMHelper._COM_AREA_NUMBER,
+                        ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                        COMHelper._COM_AREA_VERSION,
+                        0))));
+        subkeys.add(new NamedValue(new Identifier("key3"), new Union((long) instanceIdentifier++)));
+        subkeys.add(new NamedValue(new Identifier("key4"), new Union(0L)));
+        EntityKey ekey = new EntityKey(subkeys);
+/*        
         final EntityKey ekey = new EntityKey(
                 new Identifier(OBJ_NO_ASE_EXECUTION_STR),
                 ComStructureHelper.generateSubKey(
@@ -316,7 +342,7 @@ public class ActivityTrackingPublisher {
                         0),
                 (long) instanceIdentifier++,
                 ComStructureHelper.generateSubKey(source.getType()));
-
+*/
         BaseMalServer.LOGGER.log(Level.FINE,
                 "ActivityTracking:publishexecution ekey = {0}", ekey);
 

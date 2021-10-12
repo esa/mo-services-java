@@ -97,7 +97,8 @@ public class PublisherKey implements Comparable {
         }
         for (Entry<String, Attribute> entry : subkeys.entrySet()) {
             String key = entry.getKey();
-            if (!this.subkeys.get(key).equals(other.subkeys.get(key))) {
+            Object otherValue = other.subkeys.get(key);
+            if (otherValue == null || !this.subkeys.get(key).equals(otherValue)) {
                 return false;
             }
         }
@@ -255,6 +256,10 @@ public class PublisherKey implements Comparable {
      * @return True if they match or one is the wildcard.
      */
     protected static boolean matchedSubkeyWithWildcard(final Attribute myKeyPart, final Attribute theirKeyPart) {
+        if ((null == myKeyPart) || (null == theirKeyPart)) {
+            return true;
+        }
+        
         // Are we handling strings?
         if(HelperMisc.isStringAttribute(myKeyPart) && HelperMisc.isStringAttribute(theirKeyPart)){
             String first = HelperAttributes.attribute2string(myKeyPart);
@@ -277,10 +282,6 @@ public class PublisherKey implements Comparable {
             }
         }
         
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            return (null == myKeyPart) && (null == theirKeyPart);
-        }
-
         return myKeyPart.equals(theirKeyPart);
     }
 

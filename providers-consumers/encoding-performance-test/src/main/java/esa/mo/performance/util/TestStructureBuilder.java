@@ -35,7 +35,14 @@ public abstract class TestStructureBuilder {
 //    domain.add(null);
 
         for (int i = 0; i < pktsPerReport; i++) {
-            updateHeader.add(new UpdateHeader(timestamp, new URI(""), UpdateType.UPDATE, new EntityKey(new Identifier("1"), 1L, (long) (i + 1), null)));
+            NamedValueList subkeys = new NamedValueList();
+            subkeys.add(new NamedValue(new Identifier("key1"), new Identifier("1")));
+            subkeys.add(new NamedValue(new Identifier("key2"), new Union(1L)));
+            subkeys.add(new NamedValue(new Identifier("key3"), new Union((long) (i + 1))));
+            subkeys.add(new NamedValue(new Identifier("key4"), null));
+            EntityKey eKey = new EntityKey(subkeys);
+            // EntityKey eKey = new EntityKey(new Identifier("1"), 1L, (long) (i + 1), null);
+            updateHeader.add(new UpdateHeader(timestamp, new URI(""), UpdateType.UPDATE, eKey));
             //objectId.add(new ObjectId(new ObjectType(new UShort(4), new UShort(6), new UOctet((short)1), new UShort(2)), new ObjectKey(domain, (long)i)));
             objectId.add(null);
             value.add(createTestMALValueUpdate(paramsPerPkt));

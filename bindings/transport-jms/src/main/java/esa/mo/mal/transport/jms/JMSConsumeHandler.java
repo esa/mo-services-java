@@ -38,7 +38,7 @@ import esa.mo.mal.transport.jms.util.StructureHelper;
  */
 public class JMSConsumeHandler extends JMSQueueHandler {
 
-    private final List<MessageConsumer> consumerList = new LinkedList<MessageConsumer>();
+    private final List<MessageConsumer> consumerList = new LinkedList<>();
     private final UOctet version;
     private Identifier subId = null;
     private URI URIFrom = null;
@@ -135,6 +135,7 @@ public class JMSConsumeHandler extends JMSQueueHandler {
             for (EntityKey entityKey : entityKeys) {
                 EntityKey id = (EntityKey) entityKey;
                 StringBuilder lbuf = new StringBuilder();
+                /*
                 boolean valueSet = createRoutingKeyIdentifier(lbuf,
                         JMSEndpoint.EID_PROPERTY, id.getFirstSubKey());
                 valueSet = createRoutingKeyLong(lbuf, JMSEndpoint.DID_PROPERTY,
@@ -143,6 +144,7 @@ public class JMSConsumeHandler extends JMSQueueHandler {
                         id.getThirdSubKey(), valueSet);
                 createRoutingKeyLong(lbuf, JMSEndpoint.SID_PROPERTY,
                         id.getFourthSubKey(), valueSet);
+                */
                 if (lbuf.length() > 0) {
                     if (notFirst) {
                         ebuf.append(" OR ");

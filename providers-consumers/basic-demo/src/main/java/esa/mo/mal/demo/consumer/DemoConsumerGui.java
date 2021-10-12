@@ -43,6 +43,8 @@ import org.ccsds.moims.mo.mal.structures.EntityRequest;
 import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -156,7 +158,8 @@ public class DemoConsumerGui extends javax.swing.JFrame {
         final Identifier subscriptionId = new Identifier("SUB");
         // set up the wildcard subscription
         {
-            final EntityKey entitykey = new EntityKey(new Identifier("*"), 0L, 0L, 0L);
+            // final EntityKey entitykey = new EntityKey(new Identifier("*"), 0L, 0L, 0L);
+            final EntityKey entitykey = new EntityKey(new NamedValueList());
 
             final EntityKeyList entityKeys = new EntityKeyList();
             entityKeys.add(entitykey);
@@ -173,7 +176,13 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             final EntityKeyList entityKeys = new EntityKeyList();
 
             for (int i = 0; i < (labels.length / 2); i++) {
-                final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
+                NamedValueList subkeys = new NamedValueList();
+                subkeys.add(new NamedValue(new Identifier("key1"), new Identifier(String.valueOf(i))));
+                subkeys.add(new NamedValue(new Identifier("key2"), null));
+                subkeys.add(new NamedValue(new Identifier("key3"), null));
+                subkeys.add(new NamedValue(new Identifier("key4"), null));
+                EntityKey entitykey = new EntityKey(subkeys);
+                //final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
                 entityKeys.add(entitykey);
             }
 
@@ -189,7 +198,13 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             final EntityKeyList entityKeys = new EntityKeyList();
 
             for (int i = 0; i < labels.length; i++) {
-                final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
+                // final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
+                NamedValueList subkeys = new NamedValueList();
+                subkeys.add(new NamedValue(new Identifier("key1"), new Identifier(String.valueOf(i))));
+                subkeys.add(new NamedValue(new Identifier("key2"), null));
+                subkeys.add(new NamedValue(new Identifier("key3"), null));
+                subkeys.add(new NamedValue(new Identifier("key4"), null));
+                EntityKey entitykey = new EntityKey(subkeys);
                 entityKeys.add(entitykey);
             }
 
@@ -295,7 +310,12 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             for (int i = 0; i < lBasicUpdateList.size(); i++) {
                 final UpdateHeader updateHeader = lUpdateHeaderList.get(i);
                 final BasicUpdate updateValue = lBasicUpdateList.get(i);
-                final String name = updateHeader.getKey().getFirstSubKey().getValue();
+                NamedValueList lst = updateHeader.getKey().getSubkeys();
+                if (lst.isEmpty()){
+                    continue;
+                }
+                    
+                final String name = ((Identifier) lst.get(0).getValue()).getValue();
 
                 try {
                     final int index = Integer.parseInt(name);

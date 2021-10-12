@@ -35,6 +35,7 @@ import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperAttributes;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
@@ -45,11 +46,14 @@ import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.IntegerList;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.structures.UpdateType;
@@ -320,6 +324,13 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
 
         final BasicEnumList eLst = new BasicEnumList();
         eLst.add(BasicEnum.FOURTH);
+        //EntityKey key = new EntityKey(new Identifier("First"), 2L, 3L, 4L));
+        NamedValueList subkeys = new NamedValueList();
+        subkeys.add(new NamedValue(new Identifier("key1"), new Union("First")));
+        subkeys.add(new NamedValue(new Identifier("key2"), new Union(2L)));
+        subkeys.add(new NamedValue(new Identifier("key3"), new Union(3L)));
+        subkeys.add(new NamedValue(new Identifier("key4"), new Union(4L)));
+        EntityKey key = new EntityKey(subkeys);
 
         return new ComplexComposite(new URI("Base String value"),
                 !isRegistered,
@@ -329,7 +340,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
                 QoSLevel.ASSURED,
                 iLst,
                 eLst,
-                new EntityKey(new Identifier("First"), 2L, 3L, 4L));
+                key);
     }
 
     @Override
@@ -349,7 +360,8 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
     private void registerPublisher() throws MALException, MALInteractionException {
         if (!isRegistered) {
             final EntityKeyList lst = new EntityKeyList();
-            lst.add(new EntityKey(new Identifier("*"), 0L, 0L, 0L));
+            EntityKey key = new EntityKey(new NamedValueList());
+            lst.add(key);
             publisher.register(lst, new PublishInteractionListener());
 
             isRegistered = true;
@@ -408,7 +420,13 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
             final BasicUpdateList lst,
             final short currentValue,
             final int i) {
-        final EntityKey ekey = new EntityKey(new Identifier(String.valueOf(i)), null, null, null);
+        //final EntityKey ekey = new EntityKey(new Identifier(String.valueOf(i)), null, null, null);
+        NamedValueList subkeys = new NamedValueList();
+        subkeys.add(new NamedValue(new Identifier("key1"), new Identifier(String.valueOf(i))));
+        subkeys.add(new NamedValue(new Identifier("key2"), null));
+        subkeys.add(new NamedValue(new Identifier("key3"), null));
+        subkeys.add(new NamedValue(new Identifier("key4"), null));
+        EntityKey ekey = new EntityKey(subkeys);
         final Time timestamp = new Time(System.currentTimeMillis());
 
         hdrLst.add(new UpdateHeader(timestamp, new URI("SomeURI"), UpdateType.UPDATE, ekey));

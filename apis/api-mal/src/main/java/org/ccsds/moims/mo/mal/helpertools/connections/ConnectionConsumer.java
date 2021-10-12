@@ -44,6 +44,7 @@ import org.ccsds.moims.mo.mal.structures.QoSLevelList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
  * The class responsible for starting the MAL layer and takes care of
@@ -317,4 +318,73 @@ public class ConnectionConsumer {
         return new Subscription(subscriptionId, entities);
     }
 
+    /**
+     *
+     * Returns a subscription object with the entity keys field set as the
+     * provided keys. The method is deprecated because this was for the old
+     * COM model with 4 fixed subkeys.
+     *
+     * @param subId Identifier of the subscription
+     * @param key1 First key
+     * @param key2 Second key
+     * @param key3 Third key
+     * @param key4 Fourth key
+     * @return The subscription object
+     */
+    @Deprecated
+    public static Subscription subscriptionKeys(Identifier subId, Identifier key1, Long key2, Long key3, Long key4) {
+        NamedValueList subkeys = new NamedValueList();
+        subkeys.add(new NamedValue(new Identifier("key1"), key1));
+        subkeys.add(new NamedValue(new Identifier("key2"), new Union(key2)));
+        subkeys.add(new NamedValue(new Identifier("key3"), new Union(key3)));
+        subkeys.add(new NamedValue(new Identifier("key4"), new Union(key4)));
+        final EntityKey entitykey = new EntityKey(subkeys);
+        
+        final EntityKeyList entityKeys = new EntityKeyList();
+        entityKeys.add(entitykey);
+
+        final EntityRequest entity = new EntityRequest(null, false, false, false, false, entityKeys);
+        final EntityRequestList entities = new EntityRequestList();
+        entities.add(entity);
+
+        return new Subscription(subId, entities);
+    }
+    
+    /**
+     * Returns an EntityKey object with the entity keys field set as the
+     * provided keys. The method is deprecated because this was for the old
+     * COM model with 4 fixed subkeys.
+     *
+     * @param key1 First key
+     * @param key2 Second key
+     * @param key3 Third key
+     * @param key4 Fourth key
+     * @return The subscription object
+     */
+    @Deprecated
+    public static EntityKey subscriptionKeys(Identifier key1, Long key2, Long key3, Long key4) {
+        NamedValueList subkeys = new NamedValueList();
+        subkeys.add(new NamedValue(new Identifier("key1"), key1));
+        subkeys.add(new NamedValue(new Identifier("key2"), new Union(key2)));
+        subkeys.add(new NamedValue(new Identifier("key3"), new Union(key3)));
+        subkeys.add(new NamedValue(new Identifier("key4"), new Union(key4)));
+        return new EntityKey(subkeys);
+    }
+    
+    /**
+     *
+     * Returns an EntityKey object with the entity keys field set as the
+     * wildcard
+     *
+     * @return The EntityKey object
+     */
+    public static EntityKey entityKeyWildcard() {
+        NamedValueList subkeys = new NamedValueList();
+        subkeys.add(new NamedValue(new Identifier("key1"), new Identifier("*")));
+        subkeys.add(new NamedValue(new Identifier("key2"), new Union(0L)));
+        subkeys.add(new NamedValue(new Identifier("key3"), new Union(0L)));
+        subkeys.add(new NamedValue(new Identifier("key4"), new Union(0L)));
+        return new EntityKey(subkeys);
+    }
+    
 }

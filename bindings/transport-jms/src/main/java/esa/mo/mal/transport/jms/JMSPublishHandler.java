@@ -126,11 +126,13 @@ public class JMSPublishHandler {
                     objMsg.setIntProperty(JMSEndpoint.ARR_PROPERTY, area);
                     objMsg.setIntProperty(JMSEndpoint.SVC_PROPERTY, service);
                     objMsg.setIntProperty(JMSEndpoint.OPN_PROPERTY, operation);
+                    /*
                     objMsg.setStringProperty(JMSEndpoint.EID_PROPERTY,
                             publishEntry.eKey.getFirstSubKey().getValue());
                     objMsg.setObjectProperty(JMSEndpoint.DID_PROPERTY, publishEntry.eKey.getSecondSubKey());
                     objMsg.setObjectProperty(JMSEndpoint.OID_PROPERTY, publishEntry.eKey.getThirdSubKey());
                     objMsg.setObjectProperty(JMSEndpoint.SID_PROPERTY, publishEntry.eKey.getFourthSubKey());
+                    */
                     objMsg.setBooleanProperty(JMSEndpoint.MOD_PROPERTY, publishEntry.isModification);
                     objMsg.setObject(publishEntry.update);
                     sender.send(objMsg);
