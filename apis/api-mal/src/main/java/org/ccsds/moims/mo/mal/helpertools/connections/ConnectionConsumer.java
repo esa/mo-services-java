@@ -21,9 +21,12 @@
 package org.ccsds.moims.mo.mal.helpertools.connections;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Properties;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
@@ -321,8 +324,8 @@ public class ConnectionConsumer {
     /**
      *
      * Returns a subscription object with the entity keys field set as the
-     * provided keys. The method is deprecated because this was for the old
-     * COM model with 4 fixed subkeys.
+     * provided keys. The method is deprecated because this was for the old COM
+     * model with 4 fixed subkeys.
      *
      * @param subId Identifier of the subscription
      * @param key1 First key
@@ -333,13 +336,18 @@ public class ConnectionConsumer {
      */
     @Deprecated
     public static Subscription subscriptionKeys(Identifier subId, Identifier key1, Long key2, Long key3, Long key4) {
+        if (key1 == null || key2 == null || key3 == null || key4 == null) {
+            Logger.getLogger(ConnectionConsumer.class.getName()).log(
+                    Level.WARNING, "One of the keys is null!", new IOException());
+        }
+
         NamedValueList subkeys = new NamedValueList();
         subkeys.add(new NamedValue(new Identifier("key1"), key1));
         subkeys.add(new NamedValue(new Identifier("key2"), new Union(key2)));
         subkeys.add(new NamedValue(new Identifier("key3"), new Union(key3)));
         subkeys.add(new NamedValue(new Identifier("key4"), new Union(key4)));
         final EntityKey entitykey = new EntityKey(subkeys);
-        
+
         final EntityKeyList entityKeys = new EntityKeyList();
         entityKeys.add(entitykey);
 
@@ -349,11 +357,11 @@ public class ConnectionConsumer {
 
         return new Subscription(subId, entities);
     }
-    
+
     /**
      * Returns an EntityKey object with the entity keys field set as the
-     * provided keys. The method is deprecated because this was for the old
-     * COM model with 4 fixed subkeys.
+     * provided keys. The method is deprecated because this was for the old COM
+     * model with 4 fixed subkeys.
      *
      * @param key1 First key
      * @param key2 Second key
@@ -370,7 +378,7 @@ public class ConnectionConsumer {
         subkeys.add(new NamedValue(new Identifier("key4"), new Union(key4)));
         return new EntityKey(subkeys);
     }
-    
+
     /**
      *
      * Returns an EntityKey object with the entity keys field set as the
@@ -386,5 +394,5 @@ public class ConnectionConsumer {
         subkeys.add(new NamedValue(new Identifier("key4"), new Union(0L)));
         return new EntityKey(subkeys);
     }
-    
+
 }

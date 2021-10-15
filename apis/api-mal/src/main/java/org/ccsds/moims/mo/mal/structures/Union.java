@@ -227,6 +227,15 @@ public class Union implements Attribute {
         return (String) value;
     }
 
+    /**
+     * Returns true if the value is null.
+     *
+     * @return True if null, false otherwise.
+     */
+    public boolean isNull() {
+        return (value == null);
+    }
+    
     @Override
     public Long getShortForm() {
         return shortForm;

@@ -118,18 +118,34 @@ public class PublisherKey implements Comparable {
     @Override
     public int compareTo(final Object o) {
         final PublisherKey rhs = (PublisherKey) o;
-
         int rv = 0;
 
-        for (Entry<String, Attribute> entry : subkeys.entrySet()) {
+        for (Entry<String, Attribute> entry : this.subkeys.entrySet()) {
             String key = entry.getKey();
             Attribute value = entry.getValue();
 
             if (value instanceof Union) {
-                rv = compareSubkey(
-                        ((Union) this.subkeys.get(key)).getLongValue(),
-                        ((Union) rhs.subkeys.get(key)).getLongValue()
-                );
+                Union subThis = (Union) value;
+                Object valueRhs = rhs.subkeys.get(key);
+                if(!(valueRhs instanceof Union)){
+                    return -1;
+                }
+                   
+                Union subRhs = (Union) rhs.subkeys.get(key);
+                
+                if (subThis.isNull() && subRhs.isNull()) {
+                    return 0;
+                }
+
+                if (subThis.isNull() && !subRhs.isNull()) {
+                    return 1;
+                }
+                
+                if (!subThis.isNull() && subRhs.isNull()) {
+                    return -1;
+                }
+                
+                rv = compareSubkey(subThis.getLongValue(), subRhs.getLongValue());
 
                 if (rv != 0) {
                     return rv;
@@ -148,15 +164,15 @@ public class PublisherKey implements Comparable {
      */
     public boolean matchesWithWildcard(final EntityKey rhs) {
         if (null != rhs) {
-            for(NamedValue nv : rhs.getSubkeys()){
-                boolean matched = matchedSubkeyWithWildcard(nv.getValue(), 
+            for (NamedValue nv : rhs.getSubkeys()) {
+                boolean matched = matchedSubkeyWithWildcard(nv.getValue(),
                         this.subkeys.get(nv.getName().getValue()));
-                
-                if(!matched){
+
+                if (!matched) {
                     return false;
                 }
             }
-            
+
             return true;
         }
 
@@ -172,15 +188,15 @@ public class PublisherKey implements Comparable {
      */
     public boolean matchesWithWildcard(final PublisherKey rhs) {
         if (null != rhs) {
-            for(Entry<String, Attribute> nv : rhs.subkeys.entrySet()){
-                boolean matched = matchedSubkeyWithWildcard(nv.getValue(), 
+            for (Entry<String, Attribute> nv : rhs.subkeys.entrySet()) {
+                boolean matched = matchedSubkeyWithWildcard(nv.getValue(),
                         this.subkeys.get(nv.getKey()));
-                
-                if(!matched){
+
+                if (!matched) {
                     return false;
                 }
             }
-            
+
             return true;
         }
 
@@ -233,12 +249,9 @@ public class PublisherKey implements Comparable {
      * comparable rules.
      */
     protected static int compareSubkey(final Long myKeyPart, final Long theirKeyPart) {
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            if ((null != myKeyPart) || (null != theirKeyPart)) {
-                if (null == myKeyPart) {
-                    return -1;
-                }
-                return 1;
+        if ((myKeyPart == null) || (theirKeyPart == null)) {
+            if ((myKeyPart != null) || (theirKeyPart != null)) {
+                return (myKeyPart == null) ? -1 : 1;
             }
         } else {
             if (!myKeyPart.equals(theirKeyPart)) {
@@ -256,32 +269,38 @@ public class PublisherKey implements Comparable {
      * @return True if they match or one is the wildcard.
      */
     protected static boolean matchedSubkeyWithWildcard(final Attribute myKeyPart, final Attribute theirKeyPart) {
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
+        if ((myKeyPart == null) || (theirKeyPart == null)) {
             return true;
         }
-        
+
         // Are we handling strings?
-        if(HelperMisc.isStringAttribute(myKeyPart) && HelperMisc.isStringAttribute(theirKeyPart)){
+        if (HelperMisc.isStringAttribute(myKeyPart) && HelperMisc.isStringAttribute(theirKeyPart)) {
             String first = HelperAttributes.attribute2string(myKeyPart);
             String second = HelperAttributes.attribute2string(theirKeyPart);
-            
+
             if (ALL_ID.equals(first) || ALL_ID.equals(second)) {
                 return true;
             }
         }
-        
+
         // Are we not handling strings?
-        if(!HelperMisc.isStringAttribute(myKeyPart) && !HelperMisc.isStringAttribute(theirKeyPart)){
+        if (!HelperMisc.isStringAttribute(myKeyPart) && !HelperMisc.isStringAttribute(theirKeyPart)) {
+            if ((myKeyPart instanceof Union) || (theirKeyPart instanceof Union)) {
+                if (((Union) myKeyPart).isNull() || ((Union) theirKeyPart).isNull()) {
+                    return true;
+                }
+            }
+
             Object first = HelperAttributes.attribute2JavaType(myKeyPart);
             Object second = HelperAttributes.attribute2JavaType(theirKeyPart);
-            
-            if(first instanceof Long){
+
+            if (first instanceof Long) {
                 if (ALL_NUMBER.equals((Long) first) || ALL_NUMBER.equals((Long) second)) {
                     return true;
                 }
             }
         }
-        
+
         return myKeyPart.equals(theirKeyPart);
     }
 
