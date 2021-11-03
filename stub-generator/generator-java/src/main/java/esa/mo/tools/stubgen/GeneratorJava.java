@@ -311,7 +311,20 @@ public class GeneratorJava extends GeneratorLangs {
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, listName, createCompositeElementsDetails(file, false, "initialCapacity", TypeUtils.createTypeReference(null, null, "int", false), false, false, "initialCapacity the required initial capacity."), true, null, "Constructor that initialises the capacity of the list.", null);
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, elementType, "createElement", null, null, "Creates an instance of this type using the default constructor. It is a generic factory method.", "A new instance of this type with default field values.", null);
+        List<CompositeField> argList = new LinkedList<>();
+        argList.add(createCompositeElementsDetails(file, true, "element", srcType, true, true, "List element."));
+        TypeReference type = new TypeReference();
+        type.setName("boolean");
+        CompositeField rtype = createCompositeElementsDetails(file, false, "element", type, false, true, "List element.");
+        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, rtype, "add", argList, null, "Adds an element to the list and checks if it is not null.", "The success status.", null);
+        method.addMethodStatement("if (element == null){", false);
+        method.addMethodStatement("  throw new IllegalArgumentException(\"The added argument cannot be null!\")");
+        method.addMethodStatement("}", false);
+        method.addMethodStatement("return super.add(element)");
+        method.addMethodCloseStatement();
+        
+        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, 
+                true, elementType, "createElement", null, null, "Creates an instance of this type using the default constructor. It is a generic factory method.", "A new instance of this type with default field values.", null);
         method.addMethodStatement("return new " + listName + "()");
         method.addMethodCloseStatement();
 
