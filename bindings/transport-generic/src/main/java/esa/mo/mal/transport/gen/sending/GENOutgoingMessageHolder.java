@@ -94,7 +94,7 @@ public class GENOutgoingMessageHolder<O> {
             final boolean lastForHandle,
             final MALMessage originalMessage,
             O encodedMessage) {
-        replyQueue = new LinkedBlockingQueue<Boolean>();
+        replyQueue = new LinkedBlockingQueue<>();
         this.timeout = timeout;
         this.destinationRootURI = destinationRootURI;
         this.destinationURI = destinationURI;

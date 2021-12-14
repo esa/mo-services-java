@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.MALException;
 public class SPPSegmentsAssembler {
 
     // use TreeMap so that key is kept sorted
-    private final TreeMap<Long, SPPSegment> segmentsMap = new TreeMap<Long, SPPSegment>();
+    private final TreeMap<Long, SPPSegment> segmentsMap = new TreeMap<>();
     private final long sequenceIndex;
     private int totalSize = 0;
     private boolean receivedFirst = false;

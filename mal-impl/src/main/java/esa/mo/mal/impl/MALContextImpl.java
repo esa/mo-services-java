@@ -49,7 +49,7 @@ public class MALContextImpl extends MALClose implements MALContext {
     private final MALAccessControl securityManager;
     private final InteractionConsumerMap icmap = new InteractionConsumerMap();
     private final InteractionPubSubMap ipsmap = new InteractionPubSubMap();
-    private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<String, MALBrokerBindingImpl>();
+    private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<>();
     private final MessageReceive receiver;
     private final MessageSend sender;
 

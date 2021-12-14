@@ -54,7 +54,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
  */
 public abstract class MALBrokerHandlerImpl extends MALClose implements MALBrokerHandler {
 
-    private final List<MALBrokerBindingImpl> bindings = new LinkedList<MALBrokerBindingImpl>();
+    private final List<MALBrokerBindingImpl> bindings = new LinkedList<>();
     private final Map<BrokerKey, Map<StringPair, PublisherSource>> providerMap = new HashMap();
     private final Map<BrokerKey, Map<String, SubscriptionSource>> consumerMap = new HashMap();
 
@@ -230,7 +230,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         final UpdateHeaderList hl = publishBody.getUpdateHeaderList();
         details.checkPublish(hdr, hl);
 
-        final List<NotifyMessageSet> lst = new LinkedList<NotifyMessageSet>();
+        final List<NotifyMessageSet> lst = new LinkedList<>();
 
         if (hl != null) {
             final Map<String, SubscriptionSource> rv = getConsumerMap(key);

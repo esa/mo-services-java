@@ -55,7 +55,7 @@ public class ZMTPEncodingSelector {
             = "esa.mo.mal.encoder.binary.split.SplitBinaryStreamFactory";
 
     protected Map<Integer, MALElementStreamFactory> encodingFactories
-            = new HashMap<Integer, MALElementStreamFactory>();
+            = new HashMap<>();
 
     /**
      * Encoding ID used for outgoing messages.

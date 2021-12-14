@@ -55,7 +55,7 @@ public class SPPEndpoint extends GENEndpoint {
     private final SPPURIRepresentation uriRep;
     private final SPPSourceSequenceCounter ssCounter;
     private final Map<SegmentIndex, SPPSegmentCounter> segmentCounterMap
-            = new HashMap<SegmentIndex, SPPSegmentCounter>();
+            = new HashMap<>();
 
     public SPPEndpoint(GENTransport transport,
             SPPConfiguration configuration,
