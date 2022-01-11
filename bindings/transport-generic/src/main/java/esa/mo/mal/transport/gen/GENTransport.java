@@ -135,10 +135,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
      */
     protected final boolean supportsRouting;
     /**
-     * True if string based stream, can be logged as a string rather than hex.
-     */
-    protected final boolean streamHasStrings;
-    /**
      * True if body parts should be wrapped in blobs for encoded element
      * support.
      */
@@ -283,9 +279,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
         } else {
             serviceDelimCounter = 0;
         }
-
-        // very crude and faulty test but it will do for testing
-        streamHasStrings = streamFactory.getClass().getName().contains("String");
 
         // default values
         boolean lLogFullDebug = false;
@@ -1221,11 +1214,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             if (null == str) {
                 synchronized (this) {
                     if (logFullDebug && null != data) {
-                        if (streamHasStrings) {
-                            str = new String(data, UTF8_CHARSET);
-                        } else {
-                            str = GENHelper.byteArrayToHexString(data);
-                        }
+                        str = GENHelper.byteArrayToHexString(data);
                     } else {
                         str = "";
                     }
