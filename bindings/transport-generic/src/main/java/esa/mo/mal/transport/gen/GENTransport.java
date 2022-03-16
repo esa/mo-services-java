@@ -445,7 +445,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
                 // get outgoing channel
                 GENConcurrentMessageSender dataSender = manageCommunicationChannel(msg, false, null);
-
+                destinationURI = msg.getHeader().getURITo().getValue();
+                remoteRootURI = getRootURI(destinationURI);
                 GENOutgoingMessageHolder outgoingPacket = internalEncodeMessage(
                         remoteRootURI, destinationURI, multiSendHandle,
                         lastForHandle, dataSender.getTargetURI(), msg);
@@ -892,7 +893,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
         } else {
             // outgoing message
             // get target URI
-            String remoteRootURI = getRootURI(msg.getHeader().getURITo().getValue());
+            String remoteRootURI = rerouteMessage(msg);
 
             // get sender if it exists
             sender = outgoingDataChannels.get(remoteRootURI);
@@ -929,6 +930,10 @@ public abstract class GENTransport<I, O> implements MALTransport {
         }
 
         return sender;
+    }
+
+    protected String rerouteMessage(GENMessage message) {
+        return getRootURI(message.getHeader().getURITo().getValue());
     }
 
     /**

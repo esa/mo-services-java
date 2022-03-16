@@ -21,11 +21,8 @@
 package esa.mo.mal.transport.tcpip;
 
 import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryStreamFactory;
-import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
-import esa.mo.mal.transport.gen.GENEndpoint;
-import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
-import esa.mo.mal.transport.gen.GENTransport;
+
+import esa.mo.mal.transport.gen.*;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
 import esa.mo.mal.transport.gen.util.GENMessagePoller;
@@ -39,13 +36,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -171,6 +162,11 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      */
     private final List<GENMessagePoller> messagePollerThreadPool = new ArrayList<>();
 
+    private static boolean aliasesLoaded = false;
+    private static Map<String, String> aliasToIp = new HashMap<>();
+    private static Map<String, String> aliasToRoutedIp = new HashMap<>();
+    private static Map<String, String> ipToRoutedIp = new HashMap<>();
+
     /**
      * Constructor. Configures host/port and debug settings.
      *
@@ -192,6 +188,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
         // decode configuration
         if (properties != null) {
+            loadHostAliases(properties);
+
             if (properties.containsKey(PROPERTY_AUTOHOST)) {
                 if ("true".equals((String) properties.get(PROPERTY_AUTOHOST))) {
                     // Get the local address...
@@ -298,6 +296,35 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
         RLOGGER.log(Level.FINE, "TCPIP Wrapping body parts set to  : {0}", this.wrapBodyParts);
     }
+
+    private static void loadHostAliases(Map properties) {
+        if(aliasesLoaded) {
+            return;
+        }
+
+        // remoteUri@alias@routedUri
+        String ALIAS_PROPERTY_NAME = "org.ccsds.moims.mo.mal.transport.tcpip.hostalias";
+
+//        int index = 0;
+//        while (true) {
+//        String alias = (String) properties.get(String.format("%s.%d", ALIAS_PROPERTY_NAME, index));
+//        if (alias == null || alias.isEmpty()) {
+//            break;
+//        }
+        String property = (String) properties.get(ALIAS_PROPERTY_NAME);
+        if(property != null && !property.isEmpty()) {
+            String[] split = property.split("@");
+            aliasToIp.put(split[1], split[0]);
+            aliasToRoutedIp.put(split[1], split[2]);
+            ipToRoutedIp.put(split[0], split[2]);
+        }
+
+//            index++;
+//        }
+
+        aliasesLoaded = true;
+    }
+
 
     /**
      * Initialize a server socket, if this is a provider
@@ -723,4 +750,28 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         return new Random().nextInt(max - min) + min;
     }
 
+    @Override
+    protected String rerouteMessage(GENMessage message) {
+        String uri = message.getHeader().getURITo().getValue();
+        int index = uri.indexOf("://") + 3;
+        String protocol = uri.substring(0, index);
+        String address = uri.substring(index);
+        int portIndex = address.indexOf(":");
+        String ipOrAlias = address.substring(0, portIndex);
+        String rest = address.substring(portIndex);
+
+        if(aliasToRoutedIp.containsKey(ipOrAlias)) {
+//            LOGGER.log(Level.INFO, "Replacing " + ipOrAlias + " with " + aliasToRoutedIp.get(ipOrAlias));
+            message.getHeader().setURITo(new URI(protocol + aliasToIp.get(ipOrAlias) + rest));
+            ipOrAlias = aliasToRoutedIp.get(ipOrAlias);
+        } else if (ipToRoutedIp.containsKey(ipOrAlias)) {
+//            LOGGER.log(Level.INFO, "Replacing " + ipOrAlias + " with " + ipToRoutedIp.get(ipOrAlias));
+            ipOrAlias = ipToRoutedIp.get(ipOrAlias);
+        } else {
+//            LOGGER.log(Level.INFO, "Not replacing alias or ip, returning: " + uri);
+            return getRootURI(uri);
+        }
+
+        return getRootURI(protocol + ipOrAlias + rest);
+    }
 }
