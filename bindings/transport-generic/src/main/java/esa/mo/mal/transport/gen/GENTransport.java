@@ -893,7 +893,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
         } else {
             // outgoing message
             // get target URI
-            String remoteRootURI = rerouteMessage(msg);
+            String remoteRootURI = getRootURI(rerouteMessage(msg));
 
             // get sender if it exists
             sender = outgoingDataChannels.get(remoteRootURI);
@@ -933,7 +933,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
     }
 
     protected String rerouteMessage(GENMessage message) {
-        return getRootURI(message.getHeader().getURITo().getValue());
+        return message.getHeader().getURITo().getValue();
     }
 
     /**

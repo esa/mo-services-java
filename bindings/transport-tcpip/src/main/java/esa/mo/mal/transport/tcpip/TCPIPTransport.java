@@ -163,10 +163,11 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     private final List<GENMessagePoller> messagePollerThreadPool = new ArrayList<>();
 
     private static boolean aliasesLoaded = false;
-    private static Map<String, String> aliasToIp = new HashMap<>();
-    private static Map<String, String> aliasToRoutedIp = new HashMap<>();
-    private static Map<String, String> ipToRoutedIp = new HashMap<>();
-
+    private static final Map<String, String> aliasToIp = new HashMap<>();
+    private static final Map<String, String> aliasToRoutedIp = new HashMap<>();
+    private static final Map<String, String> ipToRoutedIp = new HashMap<>();
+    private static final Map<String, String> cachedRoutedUris = new HashMap<>();
+    private static final Map<String, String> cachedUrisTo = new HashMap<>();
     /**
      * Constructor. Configures host/port and debug settings.
      *
@@ -301,27 +302,19 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         if(aliasesLoaded) {
             return;
         }
-
         // remoteUri@alias@routedUri
         String ALIAS_PROPERTY_NAME = "org.ccsds.moims.mo.mal.transport.tcpip.hostalias";
 
-//        int index = 0;
-//        while (true) {
-//        String alias = (String) properties.get(String.format("%s.%d", ALIAS_PROPERTY_NAME, index));
-//        if (alias == null || alias.isEmpty()) {
-//            break;
-//        }
         String property = (String) properties.get(ALIAS_PROPERTY_NAME);
         if(property != null && !property.isEmpty()) {
             String[] split = property.split("@");
-            aliasToIp.put(split[1], split[0]);
-            aliasToRoutedIp.put(split[1], split[2]);
-            ipToRoutedIp.put(split[0], split[2]);
+            String remoteUri = split[0].equals("localhost") ? "127.0.0.1" : split[0];
+            String alias = split[1];
+            String routedUri = split[2].equals("localhost") ? "127.0.0.1" : split[2];
+            aliasToIp.put(alias, remoteUri);
+            aliasToRoutedIp.put(alias, routedUri);
+            ipToRoutedIp.put(remoteUri, routedUri);
         }
-
-//            index++;
-//        }
-
         aliasesLoaded = true;
     }
 
@@ -750,9 +743,17 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         return new Random().nextInt(max - min) + min;
     }
 
+
     @Override
     protected String rerouteMessage(GENMessage message) {
         String uri = message.getHeader().getURITo().getValue();
+        if(cachedRoutedUris.containsKey(uri)) {
+            if(cachedUrisTo.containsKey(uri)) {
+                message.getHeader().setURITo(new URI(cachedUrisTo.get(uri)));
+            }
+            return cachedRoutedUris.get(uri);
+        }
+
         int index = uri.indexOf("://") + 3;
         String protocol = uri.substring(0, index);
         String address = uri.substring(index);
@@ -761,17 +762,19 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         String rest = address.substring(portIndex);
 
         if(aliasToRoutedIp.containsKey(ipOrAlias)) {
-//            LOGGER.log(Level.INFO, "Replacing " + ipOrAlias + " with " + aliasToRoutedIp.get(ipOrAlias));
-            message.getHeader().setURITo(new URI(protocol + aliasToIp.get(ipOrAlias) + rest));
+            String uriTo = protocol + aliasToIp.get(ipOrAlias) + rest;
+            cachedUrisTo.put(uri, uriTo);
+            message.getHeader().setURITo(new URI(uriTo));
             ipOrAlias = aliasToRoutedIp.get(ipOrAlias);
         } else if (ipToRoutedIp.containsKey(ipOrAlias)) {
-//            LOGGER.log(Level.INFO, "Replacing " + ipOrAlias + " with " + ipToRoutedIp.get(ipOrAlias));
             ipOrAlias = ipToRoutedIp.get(ipOrAlias);
         } else {
-//            LOGGER.log(Level.INFO, "Not replacing alias or ip, returning: " + uri);
-            return getRootURI(uri);
+            cachedRoutedUris.put(uri, uri);
+            return uri;
         }
 
-        return getRootURI(protocol + ipOrAlias + rest);
+        String routedUri = protocol + ipOrAlias + rest;
+        cachedRoutedUris.put(uri, routedUri);
+        return routedUri;
     }
 }
