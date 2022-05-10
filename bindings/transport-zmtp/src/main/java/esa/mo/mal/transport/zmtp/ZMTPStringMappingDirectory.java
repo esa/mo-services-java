@@ -21,9 +21,10 @@
 package esa.mo.mal.transport.zmtp;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class ZMTPStringMappingDirectory {
         keyToValueMap.clear();
         valueToKeyMap.clear();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(filePath));
+            BufferedReader br = new BufferedReader(Files.newBufferedReader(new File(filePath).toPath()));
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.length() == 0) {

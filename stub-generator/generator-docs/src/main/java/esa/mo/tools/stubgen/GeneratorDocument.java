@@ -25,9 +25,9 @@ import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.TypeReference;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -125,7 +125,7 @@ public abstract class GeneratorDocument extends GeneratorBase {
         root.appendChild(newNode);
         // Set the transcoder input and output.
         TranscoderInput input = new TranscoderInput(document);
-        OutputStream ostream = new FileOutputStream(StubUtils.createLowLevelFile(folder, name, "png"));
+        OutputStream ostream = Files.newOutputStream(StubUtils.createLowLevelFile(folder, name, "png").toPath());
         TranscoderOutput output = new TranscoderOutput(ostream);
 
         // Perform the transcoding.

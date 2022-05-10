@@ -24,9 +24,9 @@ import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
 import esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -87,7 +87,7 @@ public class FileTransceiver implements GENMessageReceiver<InputStream>, GENMess
 
         java.io.File tmpFile = new File(outgoingDirectory.toFile(), tmpname + ".tmp");
 
-        try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
+        try (OutputStream fos = Files.newOutputStream(tmpFile.toPath())) {
             fos.write((byte[]) packetData.getEncodedMessage());
             fos.flush();
         }

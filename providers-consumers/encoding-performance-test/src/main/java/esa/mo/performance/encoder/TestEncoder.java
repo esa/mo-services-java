@@ -23,7 +23,7 @@ package esa.mo.performance.encoder;
 import esa.mo.performance.util.TestStructureBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -161,7 +161,7 @@ public class TestEncoder {
 
         if (result.dump) {
             java.io.File outputFile = new java.io.File(result.encoderName + ".txt");
-            java.io.FileOutputStream fos = new FileOutputStream(outputFile);
+            java.io.OutputStream fos = Files.newOutputStream(outputFile.toPath());
             fos.write(baos.toByteArray());
             fos.close();
         }

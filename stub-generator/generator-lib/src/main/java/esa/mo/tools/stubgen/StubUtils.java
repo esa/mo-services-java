@@ -22,13 +22,13 @@ package esa.mo.tools.stubgen;
 
 import esa.mo.tools.stubgen.specification.CompositeField;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,11 +72,11 @@ public abstract class StubUtils {
         try {
             // Create the ZIP file
             ZipOutputStream out = new ZipOutputStream(
-                    new FileOutputStream(destinationFolderName + outFilename));
+                    Files.newOutputStream(new File(destinationFolderName + outFilename).toPath()));
 
             // Compress the files
             for (int i = 0; i < filenames.length; ++i) {
-                FileInputStream in = new FileInputStream(destinationFolderName + "/" + filenames[i]);
+                InputStream in = Files.newInputStream(new File(destinationFolderName + "/" + filenames[i]).toPath());
 
                 try {
                     // Add ZIP entry to output stream.
@@ -141,7 +141,7 @@ public abstract class StubUtils {
             String ext) throws IOException {
         File file = createLowLevelFile(folder, name, ext);
 
-        return new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8"));
+        return new OutputStreamWriter(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8);
     }
 
     /**
@@ -160,7 +160,7 @@ public abstract class StubUtils {
             throw new IOException("Unable to create file: " + file.getPath());
         }
 
-        return new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8"));
+        return new OutputStreamWriter(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8);
     }
 
     /**
