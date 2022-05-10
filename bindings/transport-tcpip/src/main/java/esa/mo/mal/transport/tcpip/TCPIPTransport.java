@@ -37,6 +37,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -163,11 +164,22 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     private final List<GENMessagePoller> messagePollerThreadPool = new ArrayList<>();
 
     private static boolean aliasesLoaded = false;
-    private static final Map<String, String> aliasToIp = new HashMap<>();
-    private static final Map<String, String> aliasToRoutedIp = new HashMap<>();
-    private static final Map<String, String> ipToRoutedIp = new HashMap<>();
-    private static final Map<String, String> cachedRoutedUris = new HashMap<>();
-    private static final Map<String, String> cachedUrisTo = new HashMap<>();
+
+    /**
+     * Maps host aliases to their ip
+     */
+    private static final Map<String, String> aliasToIp = new ConcurrentHashMap<>();
+
+    /**
+     * Maps host aliases to the ip to which messages should be redirected
+     */
+    private static final Map<String, String> aliasToRoutedIp = new ConcurrentHashMap<>();
+
+    /**
+     * Maps provider ip to the ip to which messages should be redirected
+     */
+    private static final Map<String, String> ipToRoutedIp = new ConcurrentHashMap<>();
+
     /**
      * Constructor. Configures host/port and debug settings.
      *
@@ -302,19 +314,26 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         if(aliasesLoaded) {
             return;
         }
-        // remoteUri@alias@routedUri
-        String ALIAS_PROPERTY_NAME = "org.ccsds.moims.mo.mal.transport.tcpip.hostalias";
 
-        String property = (String) properties.get(ALIAS_PROPERTY_NAME);
-        if(property != null && !property.isEmpty()) {
-            String[] split = property.split("@");
-            String remoteUri = split[0].equals("localhost") ? "127.0.0.1" : split[0];
-            String alias = split[1];
-            String routedUri = split[2].equals("localhost") ? "127.0.0.1" : split[2];
-            aliasToIp.put(alias, remoteUri);
-            aliasToRoutedIp.put(alias, routedUri);
-            ipToRoutedIp.put(remoteUri, routedUri);
+        int index = 0;
+        while(true) {
+            // remoteUri@alias@routedUri
+            String ALIAS_PROPERTY_NAME = String.format("org.ccsds.moims.mo.mal.transport.tcpip.hostalias.%d", index);
+
+            String property = (String) properties.get(ALIAS_PROPERTY_NAME);
+            if(property != null && !property.isEmpty()) {
+                String[] split = property.split("@");
+                String remoteUri = split[0].equals("localhost") ? "127.0.0.1" : split[0];
+                String alias = split[1];
+                String routedUri = split[2].equals("localhost") ? "127.0.0.1" : split[2];
+                aliasToIp.put(alias, remoteUri);
+                aliasToRoutedIp.put(alias, routedUri);
+                ipToRoutedIp.put(remoteUri, routedUri);
+            } else {
+                break;
+            }
         }
+
         aliasesLoaded = true;
     }
 
@@ -743,16 +762,9 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         return new Random().nextInt(max - min) + min;
     }
 
-
     @Override
     protected String rerouteMessage(GENMessage message) {
         String uri = message.getHeader().getURITo().getValue();
-        if(cachedRoutedUris.containsKey(uri)) {
-            if(cachedUrisTo.containsKey(uri)) {
-                message.getHeader().setURITo(new URI(cachedUrisTo.get(uri)));
-            }
-            return cachedRoutedUris.get(uri);
-        }
 
         int index = uri.indexOf("://") + 3;
         String protocol = uri.substring(0, index);
@@ -761,20 +773,16 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         String ipOrAlias = address.substring(0, portIndex);
         String rest = address.substring(portIndex);
 
-        if(aliasToRoutedIp.containsKey(ipOrAlias)) {
+        if (aliasToRoutedIp.containsKey(ipOrAlias)) {
             String uriTo = protocol + aliasToIp.get(ipOrAlias) + rest;
-            cachedUrisTo.put(uri, uriTo);
             message.getHeader().setURITo(new URI(uriTo));
             ipOrAlias = aliasToRoutedIp.get(ipOrAlias);
         } else if (ipToRoutedIp.containsKey(ipOrAlias)) {
             ipOrAlias = ipToRoutedIp.get(ipOrAlias);
         } else {
-            cachedRoutedUris.put(uri, uri);
             return uri;
         }
 
-        String routedUri = protocol + ipOrAlias + rest;
-        cachedRoutedUris.put(uri, routedUri);
-        return routedUri;
+        return protocol + ipOrAlias + rest;
     }
 }
