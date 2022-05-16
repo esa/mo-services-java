@@ -319,6 +319,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         while(true) {
             // remoteUri@alias@routedUri
             String ALIAS_PROPERTY_NAME = String.format("org.ccsds.moims.mo.mal.transport.tcpip.hostalias.%d", index);
+            index += 1;
 
             String property = (String) properties.get(ALIAS_PROPERTY_NAME);
             if(property != null && !property.isEmpty()) {
