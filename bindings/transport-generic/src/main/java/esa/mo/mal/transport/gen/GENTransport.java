@@ -43,6 +43,7 @@ import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
@@ -93,6 +94,14 @@ public abstract class GENTransport<I, O> implements MALTransport {
      */
     public static final String DELIVERY_TIMEOUT_PROPERTY
             = "org.ccsds.moims.mo.mal.transport.gen.deliverytimeout";
+
+    /**
+     * System property to control whether a new outgoing data channel should be
+     * created if one dosen't exist when sending a message 
+     */        
+    public static final String CONNECTION_PROPERTY
+            = "org.ccsds.moims.mo.mal.transport.gen.connectwhenconsumeroffline";
+
     /**
      * Charset used for converting the encoded message into a string for
      * debugging.
@@ -215,6 +224,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
     private final ConcurrentHashMap<String, String> cachedRootURIs
             = new ConcurrentHashMap<>();
 
+    private boolean connectWhenConsumerOffline = true;
+
     /**
      * Constructor.
      *
@@ -308,6 +319,10 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
             if (properties.containsKey(DELIVERY_TIMEOUT_PROPERTY)) {
                 lDeliveryTime = Integer.parseInt((String) properties.get(DELIVERY_TIMEOUT_PROPERTY));
+            }
+
+            if (properties.containsKey(CONNECTION_PROPERTY)) {
+                connectWhenConsumerOffline = Boolean.parseBoolean((String) properties.get(CONNECTION_PROPERTY));
             }
         }
 
@@ -898,7 +913,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             // get sender if it exists
             sender = outgoingDataChannels.get(remoteRootURI);
 
-            if (null == sender) {
+            if (null == sender && connectWhenConsumerOffline) {
                 // we do not have any channel for this URI
                 // try to create a set of connections to this URI 
                 LOGGER.log(Level.INFO,
@@ -926,6 +941,11 @@ public abstract class GENTransport<I, O> implements MALTransport {
                             new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
                             null);
                 }
+            } else if (null == sender && !connectWhenConsumerOffline) {
+                LOGGER.log(Level.FINE, "Could not locate an outgoing data channel and the connectWhenConsumerOffline property prevents establishing a new one");
+                throw new MALTransmitErrorException(msg.getHeader(),
+                                                    new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
+                                                    null);
             }
         }
 
