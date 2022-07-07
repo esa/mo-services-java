@@ -99,7 +99,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * System property to control whether a new outgoing data channel should be
      * created if one dosen't exist when sending a message 
      */        
-    public static final String CONNECTION_PROPERTY
+    public static final String CONNECT_WHEN_CONSUMER_OFFLINE_PROPERTY
             = "org.ccsds.moims.mo.mal.transport.gen.connectwhenconsumeroffline";
 
     /**
@@ -321,8 +321,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
                 lDeliveryTime = Integer.parseInt((String) properties.get(DELIVERY_TIMEOUT_PROPERTY));
             }
 
-            if (properties.containsKey(CONNECTION_PROPERTY)) {
-                connectWhenConsumerOffline = Boolean.parseBoolean((String) properties.get(CONNECTION_PROPERTY));
+            if (properties.containsKey(CONNECT_WHEN_CONSUMER_OFFLINE_PROPERTY)) {
+                connectWhenConsumerOffline = Boolean.parseBoolean((String) properties.get(CONNECT_WHEN_CONSUMER_OFFLINE_PROPERTY));
             }
         }
 
