@@ -224,7 +224,17 @@ public abstract class GENTransport<I, O> implements MALTransport {
     private final ConcurrentHashMap<String, String> cachedRootURIs
             = new ConcurrentHashMap<>();
 
+    /**
+     * Value of the org.ccsds.moims.mo.mal.transport.gen.connectwhenconsumeroffline property
+     */
     private boolean connectWhenConsumerOffline = true;
+
+    /**
+     * Set of root uris to which the transport tried to connect. Used together with the
+     * connectWhenConsumerOffline property to decide if the connection is trying to be established
+     * for the fist time.
+     */
+    private final static Set<String> connectionAttempts = new HashSet<>();
 
     /**
      * Constructor.
@@ -460,8 +470,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
                 // get outgoing channel
                 GENConcurrentMessageSender dataSender = manageCommunicationChannel(msg, false, null);
-                destinationURI = msg.getHeader().getURITo().getValue();
-                remoteRootURI = getRootURI(destinationURI);
                 GENOutgoingMessageHolder outgoingPacket = internalEncodeMessage(
                         remoteRootURI, destinationURI, multiSendHandle,
                         lastForHandle, dataSender.getTargetURI(), msg);
@@ -913,7 +921,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
             // get sender if it exists
             sender = outgoingDataChannels.get(remoteRootURI);
 
-            if (null == sender && connectWhenConsumerOffline) {
+            boolean firstTime = !connectionAttempts.contains(remoteRootURI);
+            if (null == sender && (connectWhenConsumerOffline || firstTime)) {
                 // we do not have any channel for this URI
                 // try to create a set of connections to this URI 
                 LOGGER.log(Level.INFO,
@@ -941,6 +950,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                             new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
                             null);
                 }
+                connectionAttempts.add(remoteRootURI);
             } else if (null == sender && !connectWhenConsumerOffline) {
                 LOGGER.log(Level.FINE, "Could not locate an outgoing data channel and the connectWhenConsumerOffline property prevents establishing a new one");
                 throw new MALTransmitErrorException(msg.getHeader(),
