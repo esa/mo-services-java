@@ -120,8 +120,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     /**
      * System property to define the published ip.
      */
-    private static final String PROPERTY_PUBLISHED_IP
-            = "org.ccsds.moims.mo.mal.transport.tcpip.publishedip";
+    private static final String PROPERTY_PUBLISHED_HOST
+            = "org.ccsds.moims.mo.mal.transport.tcpip.publishedhost";
 
     /**
      * System property to define the port number.
@@ -225,11 +225,11 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
                             + "from properties file to IP address", ex);
                 }
 
-                if (properties.containsKey(PROPERTY_PUBLISHED_IP)) {
-                    this.serverHost = (String) properties.get(PROPERTY_PUBLISHED_IP);
+                if (properties.containsKey(PROPERTY_PUBLISHED_HOST)) {
+                    this.serverHost = (String) properties.get(PROPERTY_PUBLISHED_HOST);
                 } else {
                     if(this.serverBindIp.equals("0.0.0.0")) {
-                        throw new MALException("Property " + PROPERTY_PUBLISHED_IP + " needs to be "
+                        throw new MALException("Property " + PROPERTY_PUBLISHED_HOST + " needs to be "
                                                + "specified when bind ip is set to 0.0.0.0");
                     }
                     this.serverHost = this.serverBindIp;

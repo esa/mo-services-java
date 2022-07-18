@@ -232,7 +232,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
     /**
      * Set of root uris to which the transport tried to connect. Used together with the
      * connectWhenConsumerOffline property to decide if the connection is trying to be established
-     * for the fist time.
+     * for the first time.
      */
     private final static Set<String> connectionAttempts = new HashSet<>();
 
