@@ -922,6 +922,10 @@ public abstract class GENTransport<I, O> implements MALTransport {
             sender = outgoingDataChannels.get(remoteRootURI);
 
             boolean firstTime = !connectionAttempts.contains(remoteRootURI);
+            if (firstTime) {
+                connectionAttempts.add(remoteRootURI);
+            }
+
             if (null == sender && (connectWhenConsumerOffline || firstTime)) {
                 // we do not have any channel for this URI
                 // try to create a set of connections to this URI 
@@ -950,7 +954,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
                             new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
                             null);
                 }
-                connectionAttempts.add(remoteRootURI);
             } else if (null == sender && !connectWhenConsumerOffline) {
                 LOGGER.log(Level.FINE, "Could not locate an outgoing data channel and the connectWhenConsumerOffline property prevents establishing a new one");
                 throw new MALTransmitErrorException(msg.getHeader(),
