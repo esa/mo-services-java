@@ -85,7 +85,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableDouble(final Double value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeDouble(value);
             } else {
@@ -109,7 +109,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableInteger(final Integer value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeInteger(value);
             } else {
@@ -133,7 +133,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableLong(final Long value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeLong(value);
             } else {
@@ -157,7 +157,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableOctet(final Byte value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeOctet(value);
             } else {
@@ -181,7 +181,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableShort(final Short value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeShort(value);
             } else {
@@ -205,7 +205,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableUInteger(final UInteger value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeUInteger(value);
             } else {
@@ -229,7 +229,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableULong(final ULong value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeULong(value);
             } else {
@@ -253,7 +253,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableUOctet(final UOctet value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeUOctet(value);
             } else {
@@ -277,7 +277,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableUShort(final UShort value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeUShort(value);
             } else {
@@ -302,7 +302,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableURI(final URI value) throws MALException {
         try {
-            if ((null != value) && (null != value.getValue())) {
+            if ((value != null) && (null != value.getValue())) {
                 outputStream.addNotNull();
                 encodeURI(value);
             } else {
@@ -327,7 +327,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableIdentifier(final Identifier value) throws MALException {
         try {
-            if ((null != value) && (null != value.getValue())) {
+            if ((value != null) && (null != value.getValue())) {
                 outputStream.addNotNull();
                 encodeIdentifier(value);
             } else {
@@ -351,7 +351,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableString(final String value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeString(value);
             } else {
@@ -375,7 +375,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableBoolean(final Boolean value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeBoolean(value);
             } else {
@@ -399,7 +399,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableTime(final Time value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeTime(value);
             } else {
@@ -423,7 +423,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableFineTime(final FineTime value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeFineTime(value);
             } else {
@@ -452,7 +452,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableBlob(final Blob value) throws MALException {
         try {
-            if ((null != value)
+            if ((value != null)
                     && ((value.isURLBased() && (null != value.getURL()))
                     || (!value.isURLBased() && (null != value.getValue())))) {
                 outputStream.addNotNull();
@@ -478,7 +478,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableDuration(final Duration value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeDuration(value);
             } else {
@@ -506,7 +506,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableObjectRef(final ObjectRef value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeObjectRef(value);
             } else {
@@ -530,7 +530,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableFloat(final Float value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeFloat(value);
             } else {
@@ -555,7 +555,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableAttribute(final Attribute value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 encodeAttribute(value);
             } else {
@@ -575,7 +575,7 @@ public abstract class GENEncoder implements MALListEncoder {
     @Override
     public void encodeNullableElement(final Element value) throws MALException {
         try {
-            if (null != value) {
+            if (value != null) {
                 outputStream.addNotNull();
                 value.encode(this);
             } else {

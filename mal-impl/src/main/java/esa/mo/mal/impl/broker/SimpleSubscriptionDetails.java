@@ -102,11 +102,11 @@ class SimpleSubscriptionDetails {
         }
 
         if (!notifyHeaders.isEmpty()) {
-            NotifyMessage retVal = new NotifyMessage();
-            retVal.subscriptionId = new Identifier(subscriptionId);
-            retVal.updateHeaderList = notifyHeaders;
-            retVal.updateList = notifyLists;
-            return retVal;
+            NotifyMessage msg = new NotifyMessage();
+            msg.subscriptionId = new Identifier(subscriptionId);
+            msg.updateHeaderList = notifyHeaders;
+            msg.updateList = notifyLists;
+            return msg;
         }
 
         return null;
@@ -126,7 +126,7 @@ class SimpleSubscriptionDetails {
             // add update for this consumer/subscription
             notifyHeaders.add(updateHeader);
 
-            if (null != notifyLists) {
+            if (notifyLists != null) {
                 for (int i = 0; i < notifyLists.length; i++) {
                     if ((notifyLists[i] != null) && (updateLists[i] != null)) {
                         notifyLists[i].add(updateLists[i].get(index));

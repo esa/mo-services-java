@@ -25,7 +25,7 @@ import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
- * Class representing MAL Duration type.
+ * Class representing MAL ObjectRef type.
  */
 public class ObjectRef implements Attribute {
 

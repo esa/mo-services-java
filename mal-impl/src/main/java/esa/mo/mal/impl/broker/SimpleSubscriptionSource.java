@@ -22,7 +22,11 @@ package esa.mo.mal.impl.broker;
 
 import esa.mo.mal.impl.broker.key.SubscriptionConsumer;
 import esa.mo.mal.impl.util.StructureHelper;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -39,7 +43,7 @@ class SimpleSubscriptionSource extends SubscriptionSource {
 
     private final String signature;
     private final ArrayList<SubscriptionConsumer> required = new ArrayList<>();
-    private final Map<String, SimpleSubscriptionDetails> subs = new HashMap<>();
+    private final HashMap<String, SimpleSubscriptionDetails> subs = new HashMap<>();
 
     /**
      * Constructor.

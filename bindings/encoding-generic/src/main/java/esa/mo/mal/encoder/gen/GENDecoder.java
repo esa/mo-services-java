@@ -138,12 +138,15 @@ public abstract class GENDecoder implements MALDecoder {
     public Double decodeDouble() throws MALException {
         return sourceBuffer.getDouble();
     }
-    
+
     @Override
     public ObjectRef decodeObjectRef() throws MALException {
-        return new ObjectRef(sourceBuffer.getString(), new Identifier(sourceBuffer.getString()),
-        new Identifier(sourceBuffer.getString()), new Identifier(sourceBuffer.getString()), 
-                new UInteger(sourceBuffer.getUnsignedLong32()));
+        return new ObjectRef(sourceBuffer.getString(),
+                new Identifier(sourceBuffer.getString()),
+                new Identifier(sourceBuffer.getString()),
+                new Identifier(sourceBuffer.getString()),
+                new UInteger(sourceBuffer.getUnsignedLong32())
+        );
     }
 
     @Override
@@ -330,7 +333,7 @@ public abstract class GENDecoder implements MALDecoder {
 
         return null;
     }
-    
+
     protected Attribute internalDecodeAttribute(final int typeval) throws MALException {
         switch (typeval) {
             case Attribute._BLOB_TYPE_SHORT_FORM:
