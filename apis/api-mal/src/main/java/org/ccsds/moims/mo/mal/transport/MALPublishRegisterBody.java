@@ -20,20 +20,10 @@
  */
 package org.ccsds.moims.mo.mal.transport;
 
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-
 /**
  * The MALPublishRegisterBody interface gives access to the body of the PUBLISH
  * REGISTER message defined by the IP PUBLISH-SUBSCRIBE.
  */
 public interface MALPublishRegisterBody extends MALMessageBody {
 
-    /**
-     * The method returns the EntityKeyList from the PUBLISH REGISTER message.
-     *
-     * @return The decoded EntityKeyList.
-     * @throws MALException If an error occurs
-     */
-    EntityKeyList getEntityKeyList() throws MALException;
 }

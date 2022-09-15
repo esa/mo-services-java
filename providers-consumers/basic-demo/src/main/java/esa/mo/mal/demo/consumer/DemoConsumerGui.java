@@ -36,18 +36,15 @@ import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.NamedValue;
-import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
@@ -156,64 +153,33 @@ public class DemoConsumerGui extends javax.swing.JFrame {
         domain.add(new Identifier("mission"));
 
         final Identifier subscriptionId = new Identifier("SUB");
+        
         // set up the wildcard subscription
-        {
-            // final EntityKey entitykey = new EntityKey(new Identifier("*"), 0L, 0L, 0L);
-            final EntityKey entitykey = new EntityKey(new NamedValueList());
+        subRequestWildcard = new Subscription(subscriptionId, domain, null);
 
-            final EntityKeyList entityKeys = new EntityKeyList();
-            entityKeys.add(entitykey);
-
-            final EntityRequest entity = new EntityRequest(null, false, false, false, false, entityKeys);
-
-            final EntityRequestList entities = new EntityRequestList();
-            entities.add(entity);
-
-            subRequestWildcard = new Subscription(subscriptionId, entities);
-        }
         // set up the named first half subscription
         {
-            final EntityKeyList entityKeys = new EntityKeyList();
-
+            AttributeList att = new AttributeList();
+            SubscriptionFilterList subList = new SubscriptionFilterList();
+            
             for (int i = 0; i < (labels.length / 2); i++) {
-                NamedValueList subkeys = new NamedValueList();
-                subkeys.add(new NamedValue(new Identifier("key1"), new Identifier(String.valueOf(i))));
-                subkeys.add(new NamedValue(new Identifier("key2"), null));
-                subkeys.add(new NamedValue(new Identifier("key3"), null));
-                subkeys.add(new NamedValue(new Identifier("key4"), null));
-                EntityKey entitykey = new EntityKey(subkeys);
-                //final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
-                entityKeys.add(entitykey);
+                att.add(String.valueOf(i));
+                subList.add(new SubscriptionFilter(new Identifier("key" + i), att));
             }
 
-            final EntityRequest entity = new EntityRequest(null, false, false, false, false, entityKeys);
-
-            final EntityRequestList entities = new EntityRequestList();
-            entities.add(entity);
-
-            subRequestHalf = new Subscription(subscriptionId, entities);
+            subRequestHalf = new Subscription(subscriptionId, domain, subList);
         }
         // set up the named all subscription
         {
-            final EntityKeyList entityKeys = new EntityKeyList();
+            AttributeList att1 = new AttributeList();
+            SubscriptionFilterList subList1 = new SubscriptionFilterList();
 
             for (int i = 0; i < labels.length; i++) {
-                // final EntityKey entitykey = new EntityKey(new Identifier(String.valueOf(i)), 0L, 0L, 0L);
-                NamedValueList subkeys = new NamedValueList();
-                subkeys.add(new NamedValue(new Identifier("key1"), new Identifier(String.valueOf(i))));
-                subkeys.add(new NamedValue(new Identifier("key2"), null));
-                subkeys.add(new NamedValue(new Identifier("key3"), null));
-                subkeys.add(new NamedValue(new Identifier("key4"), null));
-                EntityKey entitykey = new EntityKey(subkeys);
-                entityKeys.add(entitykey);
+                att1.add(String.valueOf(i));
+                subList1.add(new SubscriptionFilter(new Identifier("key" + i), att1));
             }
 
-            final EntityRequest entity = new EntityRequest(null, false, false, false, false, entityKeys);
-
-            final EntityRequestList entities = new EntityRequestList();
-            entities.add(entity);
-
-            subRequestAll = new Subscription(subscriptionId, entities);
+            subRequestAll = new Subscription(subscriptionId, domain, subList1);
         }
     }
 
@@ -310,12 +276,13 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             for (int i = 0; i < lBasicUpdateList.size(); i++) {
                 final UpdateHeader updateHeader = lUpdateHeaderList.get(i);
                 final BasicUpdate updateValue = lBasicUpdateList.get(i);
-                NamedValueList lst = updateHeader.getKey().getSubkeys();
+                AttributeList lst = updateHeader.getKeyValues();
+                
                 if (lst.isEmpty()){
                     continue;
                 }
                     
-                final String name = ((Identifier) lst.get(0).getValue()).getValue();
+                final String name = ((Identifier) lst.get(0)).getValue();
 
                 try {
                     final int index = Integer.parseInt(name);

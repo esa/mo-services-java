@@ -115,6 +115,7 @@ public class GeneratorJava extends GeneratorLangs {
         addAttributeType(StdStrings.MAL, StdStrings.TIME, false, "Time", "");
         addAttributeType(StdStrings.MAL, StdStrings.FINETIME, false, "FineTime", "");
         addAttributeType(StdStrings.MAL, StdStrings.URI, false, "URI", "");
+        addAttributeType(StdStrings.MAL, StdStrings.OBJECTREF, false, "ObjectRef", "");
 
         addNativeType("boolean", new NativeTypeDetails("boolean", false, false, null));
         addNativeType("_String", new NativeTypeDetails("String", false, false, null));
@@ -153,24 +154,26 @@ public class GeneratorJava extends GeneratorLangs {
 
         CompositeField entKeyList = createCompositeElementsDetails(file, false, "entityKeys", TypeUtils.createTypeReference(StdStrings.MAL, null, "EntityKey", true), true, true, "entityKeys The entity keys to use in the method");
         CompositeField psListener = createCompositeElementsDetails(file, false, "listener", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublishInteractionListener", false), false, true, "listener The listener object to use for callback from the publisher");
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "register", StubUtils.concatenateArguments(entKeyList, psListener), throwsExceptions,
+        List<CompositeField> argPSListenerList = new LinkedList<>();
+        argPSListenerList.add(psListener);
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "register", argPSListenerList, throwsExceptions,
                 "Registers this provider implementation to the set of broker connections", null, Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addMethodStatement("publisherSet.register(entityKeys, listener)");
+        method.addMethodStatement("publisherSet.register(listener)");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "asyncRegister", StubUtils.concatenateArguments(entKeyList, psListener), throwsExceptions,
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "asyncRegister", argPSListenerList, throwsExceptions,
                 "Asynchronously registers this provider implementation to the set of broker connections", null, Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addMethodStatement("publisherSet.asyncRegister(entityKeys, listener)");
+        method.addMethodStatement("publisherSet.asyncRegister(listener)");
         method.addMethodCloseStatement();
 
-        List<CompositeField> argList = new LinkedList<CompositeField>();
+        List<CompositeField> argList = new LinkedList<>();
         argList.add(createCompositeElementsDetails(file, true, "updateHeaderList", TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true, "updateHeaderList The headers of the updates being added"));
         argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes(), true));
 
         String argNameList = "";
 
         if (1 < argList.size()) {
-            List<String> strList = new LinkedList<String>();
+            List<String> strList = new LinkedList<>();
 
             for (int i = 1; i < argList.size(); i++) {
                 strList.add(argList.get(i).getFieldName());
@@ -297,8 +300,12 @@ public class GeneratorJava extends GeneratorLangs {
         }
 
         CompositeField listSuperElement = createCompositeElementsDetails(file, false, null, superTypeReference, true, true, "List element.");
+        String sElement = listSuperElement.getTypeName();
+        if(sElement.contains("Attribute")) {
+           sElement = sElement.replace("Attribute", "Element"); // Needs to be replaced for Attributes
+        }
 
-        file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">", listSuperElement.getTypeName() + "List<" + fqSrcTypeName + ">", "List class for " + srcTypeName + ".");
+        file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">", sElement + "List<" + fqSrcTypeName + ">", "List class for " + srcTypeName + ".");
 
         CompositeField listElement = createCompositeElementsDetails(file, true, null, srcType, true, true, "List element.");
 
@@ -317,9 +324,11 @@ public class GeneratorJava extends GeneratorLangs {
         type.setName("boolean");
         CompositeField rtype = createCompositeElementsDetails(file, false, "element", type, false, true, "List element.");
         method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, rtype, "add", argList, null, "Adds an element to the list and checks if it is not null.", "The success status.", null);
+        /*
         method.addMethodStatement("if (element == null){", false);
         method.addMethodStatement("  throw new IllegalArgumentException(\"The added argument cannot be null!\")");
         method.addMethodStatement("}", false);
+        */
         method.addMethodStatement("return super.add(element)");
         method.addMethodCloseStatement();
         
@@ -990,7 +999,7 @@ public class GeneratorJava extends GeneratorLangs {
         }
 
         private List<String> normaliseArgComments(String comment, String returnComment, List<CompositeField> argsComments, List<String> throwsComment) {
-            List<String> rv = new LinkedList<String>();
+            List<String> rv = new LinkedList<>();
 
             if (null != argsComments) {
                 for (CompositeField arg : argsComments) {
@@ -1002,7 +1011,7 @@ public class GeneratorJava extends GeneratorLangs {
         }
 
         private List<String> normaliseComments(String comment, String returnComment, List<String> argsComments, List<String> throwsComment) {
-            List<String> rv = new LinkedList<String>();
+            List<String> rv = new LinkedList<>();
 
             normaliseComment(rv, comment);
             normaliseComments(rv, StubUtils.conditionalAdd("@param ", argsComments));

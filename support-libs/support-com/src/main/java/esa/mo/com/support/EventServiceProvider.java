@@ -20,13 +20,10 @@
  */
 package esa.mo.com.support;
 
-import static esa.mo.com.support.ActivityTrackingPublisher.OBJ_NO_ASE_EXECUTION_STR;
 import esa.mo.mal.support.BaseMalServer;
 import esa.mo.mal.support.StructureHelper;
 import java.util.Map;
 import java.util.logging.Level;
-import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.event.provider.EventInheritanceSkeleton;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
@@ -36,16 +33,11 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.NamedValue;
-import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
@@ -93,16 +85,8 @@ public class EventServiceProvider extends EventInheritanceSkeleton {
                     QoSLevel.BESTEFFORT,
                     null,
                     new UInteger(0));
-            final EntityKeyList lst = new EntityKeyList();
-            NamedValueList subkeys = new NamedValueList();
-            subkeys.add(new NamedValue(new Identifier("key1"), new Identifier("*")));
-            subkeys.add(new NamedValue(new Identifier("key2"), new Union(0L)));
-            subkeys.add(new NamedValue(new Identifier("key3"), new Union(0L)));
-            subkeys.add(new NamedValue(new Identifier("key4"), new Union(0L)));
-            lst.add(new EntityKey(subkeys));
-            // lst.add(new EntityKey(new Identifier("*"), (long) 0, (long) 0, (long) 0));
-
-            monitorEventPublisher.register(lst, eventPublishListener);
+            
+            monitorEventPublisher.register(eventPublishListener);
         }
     }
 

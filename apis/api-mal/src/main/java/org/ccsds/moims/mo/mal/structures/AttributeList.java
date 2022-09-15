@@ -20,11 +20,81 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+
 /**
- * List interface for Attributes.
+ * The Attributes list.
  *
- * @param <T> The type of the list, no requirement to extend Attribute so that
- * native Java types can be used.
  */
-public interface AttributeList<T> extends ElementList<T> {
+public class AttributeList extends java.util.ArrayList<Object> implements Element {
+
+    public AttributeList(Attribute attribute) {
+        super();
+        super.add(attribute);
+    }
+
+    public AttributeList() {
+        super();
+    }
+
+    @Override
+    public Element createElement() {
+        return new AttributeList();
+    }
+
+    @Override
+    public Long getShortForm() {
+        throw new UnsupportedOperationException("This method should never be called!");
+    }
+
+    @Override
+    public UShort getAreaNumber() {
+        throw new UnsupportedOperationException("This method should never be called!");
+    }
+
+    @Override
+    public UOctet getAreaVersion() {
+        throw new UnsupportedOperationException("This method should never be called!");
+    }
+
+    @Override
+    public UShort getServiceNumber() {
+        throw new UnsupportedOperationException("This method should never be called!");
+    }
+
+    @Override
+    public Integer getTypeShortForm() {
+        throw new UnsupportedOperationException("This method should never be called!");
+    }
+
+    @Override
+    public void encode(MALEncoder encoder) throws MALException {
+        int size = this.size();
+        encoder.encodeInteger(size);
+        
+        for (int i = 0; i < size; i++) {
+            Object objToEncode = super.get(i);
+
+            if (objToEncode instanceof Attribute) {
+                encoder.encodeNullableAttribute((Attribute) objToEncode);
+            } else {
+                throw new MALException("The object is not an Attribute type! It is: "
+                        + objToEncode.getClass().getCanonicalName());
+            }
+        }
+    }
+
+    @Override
+    public Element decode(MALDecoder decoder) throws MALException {
+        int size = decoder.decodeInteger();
+        AttributeList newObj = new AttributeList();
+        
+        for(int i = 0; i < size; i++){
+            newObj.add(decoder.decodeNullableAttribute());
+        }
+
+        return newObj;
+    }
 }

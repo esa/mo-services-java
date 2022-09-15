@@ -133,8 +133,8 @@ public class StubGenerator extends AbstractMojo {
         // default a few values
         gen.generateStructures = true;
         gen.generateCOM = true;
-        gen.extraProperties = new TreeMap<String, String>();
-        gen.packageBindings = new TreeMap<String, String>();
+        gen.extraProperties = new TreeMap<>();
+        gen.packageBindings = new TreeMap<>();
 
         boolean printHelp = false;
 
@@ -214,12 +214,12 @@ public class StubGenerator extends AbstractMojo {
             final org.apache.maven.plugin.logging.Log logger) {
         loadGenerators(logger);
 
-        List<Map.Entry<String, String>> rv = new ArrayList<Map.Entry<String, String>>(GENERATOR_MAP.size());
+        List<Map.Entry<String, String>> rv = new ArrayList<>(GENERATOR_MAP.size());
 
         for (Map.Entry<String, Generator> entry : GENERATOR_MAP.entrySet()) {
             final Generator g = entry.getValue();
 
-            rv.add(new AbstractMap.SimpleEntry<String, String>(g.getShortName(), g.getDescription()));
+            rv.add(new AbstractMap.SimpleEntry<>(g.getShortName(), g.getDescription()));
         }
 
         return rv;
@@ -339,7 +339,7 @@ public class StubGenerator extends AbstractMojo {
         loadGenerators(getLog());
 
         if (null == extraProperties) {
-            extraProperties = new TreeMap<String, String>();
+            extraProperties = new TreeMap<>();
         }
 
         // if the directoy containing the xml specifications exists
@@ -391,6 +391,7 @@ public class StubGenerator extends AbstractMojo {
                     getLog().error("No generators selected - could not process files");
                 }
             } catch (IOException ex) {
+                ex.printStackTrace();
                 throw new MojoExecutionException(
                         "(a) Exception thrown during the processing of XML file: ", ex);
             } catch (JAXBException ex) {
@@ -423,8 +424,7 @@ public class StubGenerator extends AbstractMojo {
 
     private static List<Map.Entry<Schema, XmlSpecification>> loadXsdSpecifications(
             final File directory) throws IOException, JAXBException {
-        final List<Map.Entry<Schema, XmlSpecification>> specList
-                = new LinkedList<Map.Entry<Schema, XmlSpecification>>();
+        final List<Map.Entry<Schema, XmlSpecification>> specList = new LinkedList<>();
 
         if (directory.exists()) {
             final File xmlFiles[] = directory.listFiles();
@@ -443,7 +443,7 @@ public class StubGenerator extends AbstractMojo {
             final File is) throws IOException, JAXBException {
         final JAXBContext jc = JAXBContext.newInstance("w3c.xsd");
         final Unmarshaller unmarshaller = jc.createUnmarshaller();
-        return new AbstractMap.SimpleEntry<Schema, XmlSpecification>((Schema) unmarshaller.unmarshal(is),
+        return new AbstractMap.SimpleEntry<>((Schema) unmarshaller.unmarshal(is),
                 new XmlSpecification(is, null));
     }
 
@@ -486,6 +486,7 @@ public class StubGenerator extends AbstractMojo {
             generator.init(outputDirectory.getPath(), generateStructures, generateCOM, packageBindings, extraProperties);
             generator.postinit(outputDirectory.getPath(), generateStructures, generateCOM, packageBindings, extraProperties);
         } catch (IOException ex) {
+            ex.printStackTrace();
             throw new MojoExecutionException(
                     "Exception thrown during the opening of the generator", ex);
         }
@@ -495,6 +496,7 @@ public class StubGenerator extends AbstractMojo {
             try {
                 generator.preProcess(spec.getKey());
             } catch (Exception ex) {
+                ex.printStackTrace();
                 throw new MojoExecutionException(
                         "Exception thrown during the pre-processing of reference XML file: "
                         + spec.getValue().file.getPath(), ex);
@@ -506,6 +508,7 @@ public class StubGenerator extends AbstractMojo {
             try {
                 generator.preProcess(spec.getKey());
             } catch (Exception ex) {
+                ex.printStackTrace();
                 throw new MojoExecutionException(
                         "Exception thrown during the pre-processing of reference XSD file: "
                         + spec.getValue().file.getPath(), ex);
@@ -517,6 +520,7 @@ public class StubGenerator extends AbstractMojo {
             try {
                 generator.preProcess(spec.getKey());
             } catch (Exception ex) {
+                ex.printStackTrace();
                 throw new MojoExecutionException(
                         "Exception thrown during the pre-processing of XML file: "
                         + spec.getValue().file.getPath(), ex);
@@ -529,6 +533,7 @@ public class StubGenerator extends AbstractMojo {
                 getLog().info("Generating " + generator.getShortName());
                 generator.compile(outputDirectory.getPath(), spec.getKey(), spec.getValue().rootElement);
             } catch (Exception ex) {
+                ex.printStackTrace();
                 throw new MojoExecutionException(
                         "(c) Exception thrown during the processing of XML file: "
                         + spec.getValue().file.getPath(), ex);

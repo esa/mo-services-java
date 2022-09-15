@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,15 +41,15 @@ public class MALService {
     private MALArea area;
     private final UShort number;
     private final Identifier name;
-    private final Map<Integer, MALOperation> operationsByNumber = new HashMap<Integer, MALOperation>();
-    private final Map<String, MALOperation> operationsByName = new HashMap<String, MALOperation>();
-    private final Map<Integer, MALOperation[]> operationsBySet = new HashMap<Integer, MALOperation[]>();
-    private MALSendOperation[] sendOperations;
-    private MALSubmitOperation[] submitOperations;
-    private MALRequestOperation[] requestOperations;
-    private MALInvokeOperation[] invokeOperations;
-    private MALProgressOperation[] progressOperations;
-    private MALPubSubOperation[] pubSubOperations;
+    private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
+    private final Map<String, MALOperation> operationsByName = new HashMap<>();
+    private final Map<Integer, MALOperation[]> operationsBySet = new HashMap<>();
+    private final ArrayList<MALSendOperation> sendOperations = new ArrayList();
+    private final ArrayList<MALSubmitOperation> submitOperations = new ArrayList();
+    private final ArrayList<MALRequestOperation> requestOperations = new ArrayList();
+    private final ArrayList<MALInvokeOperation> invokeOperations = new ArrayList();
+    private final ArrayList<MALProgressOperation> progressOperations = new ArrayList();
+    private final ArrayList<MALPubSubOperation> pubSubOperations = new ArrayList();
 
     /**
      * Constructs a MALService object.
@@ -67,13 +68,6 @@ public class MALService {
 
         this.number = number;
         this.name = name;
-
-        sendOperations = new MALSendOperation[0];
-        submitOperations = new MALSubmitOperation[0];
-        requestOperations = new MALRequestOperation[0];
-        invokeOperations = new MALInvokeOperation[0];
-        progressOperations = new MALProgressOperation[0];
-        pubSubOperations = new MALPubSubOperation[0];
     }
 
     /**
@@ -86,22 +80,22 @@ public class MALService {
         if (null != operation) {
             switch (operation.getInteractionType().getOrdinal()) {
                 case InteractionType._SEND_INDEX:
-                    sendOperations = (MALSendOperation[]) appendObject(sendOperations, operation);
+                    sendOperations.add((MALSendOperation) operation);
                     break;
                 case InteractionType._SUBMIT_INDEX:
-                    submitOperations = (MALSubmitOperation[]) appendObject(submitOperations, operation);
+                    submitOperations.add((MALSubmitOperation) operation);
                     break;
                 case InteractionType._REQUEST_INDEX:
-                    requestOperations = (MALRequestOperation[]) appendObject(requestOperations, operation);
+                    requestOperations.add((MALRequestOperation) operation);
                     break;
                 case InteractionType._INVOKE_INDEX:
-                    invokeOperations = (MALInvokeOperation[]) appendObject(invokeOperations, operation);
+                    invokeOperations.add((MALInvokeOperation) operation);
                     break;
                 case InteractionType._PROGRESS_INDEX:
-                    progressOperations = (MALProgressOperation[]) appendObject(progressOperations, operation);
+                    progressOperations.add((MALProgressOperation) operation);
                     break;
                 case InteractionType._PUBSUB_INDEX:
-                    pubSubOperations = (MALPubSubOperation[]) appendObject(pubSubOperations, operation);
+                    pubSubOperations.add((MALPubSubOperation) operation);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown MAL interaction type of "
@@ -190,7 +184,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALSendOperation[] getSendOperations() {
-        return Arrays.copyOf(sendOperations, sendOperations.length);
+        return (MALSendOperation[]) sendOperations.toArray();
     }
 
     /**
@@ -199,7 +193,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALSubmitOperation[] getSubmitOperations() {
-        return Arrays.copyOf(submitOperations, submitOperations.length);
+        return (MALSubmitOperation[]) submitOperations.toArray();
     }
 
     /**
@@ -208,7 +202,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALRequestOperation[] getRequestOperations() {
-        return Arrays.copyOf(requestOperations, requestOperations.length);
+        return (MALRequestOperation[]) requestOperations.toArray();
     }
 
     /**
@@ -217,7 +211,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALInvokeOperation[] getInvokeOperations() {
-        return Arrays.copyOf(invokeOperations, invokeOperations.length);
+        return (MALInvokeOperation[]) invokeOperations.toArray();
     }
 
     /**
@@ -226,7 +220,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALProgressOperation[] getProgressOperations() {
-        return Arrays.copyOf(progressOperations, progressOperations.length);
+        return (MALProgressOperation[]) progressOperations.toArray();
     }
 
     /**
@@ -235,7 +229,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALPubSubOperation[] getPubSubOperations() {
-        return Arrays.copyOf(pubSubOperations, pubSubOperations.length);
+        return (MALPubSubOperation[]) pubSubOperations.toArray();
     }
 
     private void initOperation(final MALOperation op) {
@@ -246,7 +240,7 @@ public class MALService {
 
         MALOperation[] v = (MALOperation[]) operationsBySet.get(op.getCapabilitySet().getValue());
 
-        if (null == v) {
+        if (v == null) {
             v = new MALOperation[0];
         }
 

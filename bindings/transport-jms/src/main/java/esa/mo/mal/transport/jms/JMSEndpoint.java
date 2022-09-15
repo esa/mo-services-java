@@ -286,7 +286,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
             JMSTransport.RLOGGER.log(Level.FINE, "New JMS publisher registering: {0}", hdr);
         }
 
-        details.setKeyList(hdr, ((MALPublishRegisterBody) msg.getBody()).getEntityKeyList());
+        // details.setKeyList(hdr, ((MALPublishRegisterBody) msg.getBody()).getEntityKeyList());
 
         // create response and do callback
         GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), 
@@ -433,12 +433,12 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
 
     protected static class PublishEntry {
 
-        public final EntityKey eKey;
+        public final AttributeList attList;
         public final boolean isModification;
         public final byte[] update;
 
-        public PublishEntry(EntityKey eKey, boolean isModification, byte[] update) {
-            this.eKey = eKey;
+        public PublishEntry(AttributeList attList, boolean isModification, byte[] update) {
+            this.attList = attList;
             this.isModification = isModification;
             this.update = update;
         }

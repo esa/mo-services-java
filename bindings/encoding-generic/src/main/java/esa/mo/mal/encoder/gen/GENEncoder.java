@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.ULong;
@@ -487,6 +488,34 @@ public abstract class GENEncoder implements MALListEncoder {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
     }
+    
+    @Override
+    public void encodeObjectRef(final ObjectRef value) throws IllegalArgumentException, MALException {
+        try {
+            checkForNull(value);
+            outputStream.addString(value.getDomain());
+            outputStream.addString(value.getArea().getValue());
+            outputStream.addString(value.getType().getValue());
+            outputStream.addString(value.getKey().getValue());
+            outputStream.addUnsignedLong32(value.getObjectVersion().getValue());
+        } catch (IOException ex) {
+            throw new MALException(ENCODING_EXCEPTION_STR, ex);
+        }
+    }
+
+    @Override
+    public void encodeNullableObjectRef(final ObjectRef value) throws MALException {
+        try {
+            if (null != value) {
+                outputStream.addNotNull();
+                encodeObjectRef(value);
+            } else {
+                outputStream.addIsNull();
+            }
+        } catch (IOException ex) {
+            throw new MALException(ENCODING_EXCEPTION_STR, ex);
+        }
+    }
 
     @Override
     public void encodeFloat(final Float value) throws MALException {
@@ -536,7 +565,7 @@ public abstract class GENEncoder implements MALListEncoder {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
     }
-
+    
     @Override
     public void encodeElement(final Element value) throws MALException {
         checkForNull(value);

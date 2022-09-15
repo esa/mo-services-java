@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import javax.xml.datatype.DatatypeFactory;
 import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.perftest.structures.AggregationValueList;
 import org.ccsds.moims.mo.perftest.structures.GenerationMode;
 import org.ccsds.moims.mo.perftest.structures.ObjectIdList;
@@ -29,21 +30,16 @@ public abstract class TestStructureBuilder {
         org.ccsds.moims.mo.perftest.structures.ObjectIdList objectId = new ObjectIdList();
         org.ccsds.moims.mo.perftest.structures.AggregationValueList value = new AggregationValueList();
 
-        IdentifierList domain = new IdentifierList();
-//    domain.add(new Identifier("ccsds"));
-//    domain.add(new Identifier("mission"));
-//    domain.add(null);
+        SubscriptionFilterList filters = new SubscriptionFilterList();
 
         for (int i = 0; i < pktsPerReport; i++) {
-            NamedValueList subkeys = new NamedValueList();
-            subkeys.add(new NamedValue(new Identifier("key1"), new Identifier("1")));
-            subkeys.add(new NamedValue(new Identifier("key2"), new Union(1L)));
-            subkeys.add(new NamedValue(new Identifier("key3"), new Union((long) (i + 1))));
-            subkeys.add(new NamedValue(new Identifier("key4"), null));
-            EntityKey eKey = new EntityKey(subkeys);
-            // EntityKey eKey = new EntityKey(new Identifier("1"), 1L, (long) (i + 1), null);
-            updateHeader.add(new UpdateHeader(timestamp, new URI(""), UpdateType.UPDATE, eKey));
-            //objectId.add(new ObjectId(new ObjectType(new UShort(4), new UShort(6), new UOctet((short)1), new UShort(2)), new ObjectKey(domain, (long)i)));
+            AttributeList lst = new AttributeList();
+            lst.add(new Identifier("1"));
+            lst.add(new AttributeList(new Union(1L)));
+            lst.add(new AttributeList(new Union((long) (i + 1))));
+            lst.add(new AttributeList(null));
+            
+            updateHeader.add(new UpdateHeader(new Identifier(""), lst));
             objectId.add(null);
             value.add(createTestMALValueUpdate(paramsPerPkt));
         }
@@ -68,7 +64,7 @@ public abstract class TestStructureBuilder {
         GregorianCalendar gcal = new GregorianCalendar();
         gcal.setTime(timestamp);
 
-        List<String> domain = new ArrayList<String>();
+        List<String> domain = new ArrayList<>();
 //    domain.add("ccsds");
 //    domain.add("mission");
 

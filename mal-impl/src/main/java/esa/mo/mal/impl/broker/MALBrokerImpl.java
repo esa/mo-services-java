@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.impl.broker;
 
-import esa.mo.mal.impl.broker.simple.SimpleBrokerHandler;
 import esa.mo.mal.impl.util.MALClose;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
@@ -49,7 +48,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker {
 
     MALBrokerImpl(final MALClose parent) throws MALException {
         super(parent);
-        this.handler = (MALBrokerHandlerImpl) addChild(createBrokerHandler());
+        this.handler = (MALBrokerHandlerImpl) super.addChild(createBrokerHandler());
         handlerIsLocalType = true;
     }
 

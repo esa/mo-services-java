@@ -75,6 +75,7 @@ public abstract class GeneratorDocument extends GeneratorBase {
         addAttributeType(StdStrings.MAL, StdStrings.TIME, true, "Time", "");
         addAttributeType(StdStrings.MAL, StdStrings.FINETIME, true, "FineTime", "");
         addAttributeType(StdStrings.MAL, StdStrings.URI, true, "URI", "");
+        addAttributeType(StdStrings.MAL, StdStrings.OBJECTREF, true, "ObjectRef", "");
     }
 
     @Override
@@ -149,10 +150,10 @@ public abstract class GeneratorDocument extends GeneratorBase {
      * @return The updated source array.
      */
     protected static List<String> splitString(List<String> srcArr, String str) {
-        if (null == srcArr) {
-            srcArr = new LinkedList<String>();
+        if (srcArr == null) {
+            srcArr = new LinkedList<>();
         }
-        if (null != str) {
+        if (str != null) {
             srcArr.addAll(Arrays.asList(str.split("(  |\n)")));
         }
         return srcArr;

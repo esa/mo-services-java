@@ -57,56 +57,57 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
 
         if (element == ctx.getHeader()) {
             ((Element) element).encode(enc);
-        } else {
-            if (null == element) {
-                enc.encodeNullableElement(null);
+        }
+        
+        if (null == element) {
+            enc.encodeNullableElement(null);
+        }
+        
+        if (ctx.getHeader().getIsErrorMessage()) {
+            // error messages have a standard format
+            if (0 == ctx.getBodyElementIndex()) {
+                ((Element) element).encode(enc);
             } else {
-                if (ctx.getHeader().getIsErrorMessage()) {
-                    // error messages have a standard format
-                    if (0 == ctx.getBodyElementIndex()) {
-                        ((Element) element).encode(enc);
-                    } else {
+                encodeSubElement((Element) element, null, null);
+            }
+        } 
+        
+        if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
+            switch (ctx.getHeader().getInteractionStage().getValue()) {
+                case MALPubSubOperation._REGISTER_STAGE:
+                case MALPubSubOperation._DEREGISTER_STAGE:
+                    ((Element) element).encode(enc);
+                    return;
+                case MALPubSubOperation._PUBLISH_STAGE:
+                    if ((0 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(
+                            ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()])) {
                         encodeSubElement((Element) element, null, null);
+                    } else {
+                        ((Element) element).encode(enc);
                     }
-                } else if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
-                    switch (ctx.getHeader().getInteractionStage().getValue()) {
-                        case MALPubSubOperation._REGISTER_STAGE:
-                        case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                        case MALPubSubOperation._DEREGISTER_STAGE:
-                            ((Element) element).encode(enc);
-                            return;
-                        case MALPubSubOperation._PUBLISH_STAGE:
-                            if ((0 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(
-                                    ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()])) {
-                                encodeSubElement((Element) element, null, null);
-                            } else {
-                                ((Element) element).encode(enc);
-                            }
-                            return;
-                        case MALPubSubOperation._NOTIFY_STAGE:
-                            if ((1 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(
-                                    ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()])) {
-                                encodeSubElement((Element) element, null, null);
-                            } else {
-                                ((Element) element).encode(enc);
-                            }
-                            return;
-                        default:
-                            encodeSubElement((Element) element, null, null);
+                    return;
+                case MALPubSubOperation._NOTIFY_STAGE:
+                    if ((1 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(
+                            ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()])) {
+                        encodeSubElement((Element) element, null, null);
+                    } else {
+                        ((Element) element).encode(enc);
                     }
-                } else {
-                    if (element instanceof Element) {
-                        // encode the short form if it is not fixed in the operation
-                        final Element e = (Element) element;
+                    return;
+                default:
+                    encodeSubElement((Element) element, null, null);
+            }
+        } else {
+            if (element instanceof Element) {
+                // encode the short form if it is not fixed in the operation
+                final Element e = (Element) element;
 
-                        UOctet stage = ctx.getHeader().getInteractionStage();
-                        Object sf = ctx.getOperation()
-                                .getOperationStage(stage)
-                                .getElementShortForms()[ctx.getBodyElementIndex()];
+                UOctet stage = ctx.getHeader().getInteractionStage();
+                Object sf = ctx.getOperation()
+                        .getOperationStage(stage)
+                        .getElementShortForms()[ctx.getBodyElementIndex()];
 
-                        encodeSubElement(e, sf, ctx);
-                    }
-                }
+                encodeSubElement(e, sf, ctx);
             }
         }
     }

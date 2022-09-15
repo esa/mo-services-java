@@ -18,13 +18,9 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.broker.simple;
+package esa.mo.mal.impl.broker;
 
-import esa.mo.mal.impl.broker.MALBrokerImpl;
-import esa.mo.mal.impl.broker.NotifyMessageSet;
-import esa.mo.mal.impl.broker.NotifyMessageSet.NotifyMessage;
-import esa.mo.mal.impl.broker.SubscriptionSource;
-import esa.mo.mal.impl.broker.key.SubscriptionKey;
+import esa.mo.mal.impl.broker.key.SubscriptionConsumer;
 import esa.mo.mal.impl.util.StructureHelper;
 import java.util.*;
 import java.util.logging.Level;
@@ -42,8 +38,8 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 class SimpleSubscriptionSource extends SubscriptionSource {
 
     private final String signature;
-    private final Set<SubscriptionKey> required = new TreeSet<SubscriptionKey>();
-    private final Map<String, SimpleSubscriptionDetails> details = new HashMap<String, SimpleSubscriptionDetails>();
+    private final ArrayList<SubscriptionConsumer> required = new ArrayList<>();
+    private final Map<String, SimpleSubscriptionDetails> subs = new HashMap<>();
 
     /**
      * Constructor.
@@ -64,7 +60,7 @@ class SimpleSubscriptionSource extends SubscriptionSource {
     public void report() {
         MALBrokerImpl.LOGGER.log(Level.FINE, "  START Consumer ( {0} )", signature);
         MALBrokerImpl.LOGGER.log(Level.FINE, "   Required: {0}", required.size());
-        for (Map.Entry<String, SimpleSubscriptionDetails> entry : details.entrySet()) {
+        for (Map.Entry<String, SimpleSubscriptionDetails> entry : subs.entrySet()) {
             entry.getValue().report();
         }
         MALBrokerImpl.LOGGER.log(Level.FINE, "  END Consumer ( {0} )", signature);
@@ -78,13 +74,12 @@ class SimpleSubscriptionSource extends SubscriptionSource {
     @Override
     public void addSubscription(final MALMessageHeader srcHdr, final Subscription subscription) {
         final String subId = subscription.getSubscriptionId().getValue();
-        SimpleSubscriptionDetails sub = details.get(subId);
-        if (null == sub) {
+        SimpleSubscriptionDetails sub = subs.get(subId);
+        if (sub == null) {
             sub = new SimpleSubscriptionDetails(subId);
-            details.put(subId, sub);
+            subs.put(subId, sub);
         }
-        sub.setIds(srcHdr, subscription.getEntities());
-
+        sub.setIds(srcHdr, subscription.getFilters());
         updateIds();
     }
 
@@ -96,22 +91,19 @@ class SimpleSubscriptionSource extends SubscriptionSource {
         MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signature);
 
         final String srcDomainId = StructureHelper.domainToString(srcHdr.getDomain());
-        final List<NotifyMessage> msgs = new LinkedList<NotifyMessage>();
+        final List<NotifyMessage> msgs = new LinkedList<>();
 
-        for (Map.Entry<String, SimpleSubscriptionDetails> ent : details.entrySet()) {
+        for (Map.Entry<String, SimpleSubscriptionDetails> ent : subs.entrySet()) {
             final NotifyMessage subUpdate = ent.getValue().populateNotifyList(
                     srcHdr, srcDomainId, updateHeaderList, publishBody);
-            if (null != subUpdate) {
+            if (subUpdate != null) {
                 msgs.add(subUpdate);
             }
         }
 
         if (!msgs.isEmpty()) {
-            NotifyMessageSet msgSet = new NotifyMessageSet();
-            msgSet.details = getMsgHeaderDetails();
-            msgSet.messages = msgs;
             for (NotifyMessage msg : msgs) {
-                // update the details in the header
+                // update the subs in the header
                 msg.domain = srcHdr.getDomain();
                 msg.networkZone = srcHdr.getNetworkZone();
                 msg.area = srcHdr.getServiceArea();
@@ -119,22 +111,22 @@ class SimpleSubscriptionSource extends SubscriptionSource {
                 msg.operation = srcHdr.getOperation();
                 msg.version = srcHdr.getAreaVersion();
             }
-
-            lst.add(msgSet);
+            
+            lst.add(new NotifyMessageSet(getMsgHeaderDetails(), msgs));
         }
     }
 
     @Override
-    public void removeSubscriptions(final IdentifierList subscriptions) {
-        if (null != subscriptions) {
-            for (Identifier sub : subscriptions) {
-                details.remove(sub.getValue());
+    public void removeSubscriptions(final IdentifierList subscriptionIds) {
+        if (null != subscriptionIds) {
+            for (Identifier id : subscriptionIds) {
+                subs.remove(id.getValue());
             }
 
             updateIds();
         } else {
             // remove all
-            details.clear();
+            subs.clear();
             required.clear();
         }
     }
@@ -142,8 +134,14 @@ class SimpleSubscriptionSource extends SubscriptionSource {
     private void updateIds() {
         required.clear();
 
-        for (Map.Entry<String, SimpleSubscriptionDetails> entry : details.entrySet()) {
-            entry.getValue().appendIds(required);
+        /*
+        for (Map.Entry<String, SimpleSubscriptionDetails> entry : subs.entrySet()) {
+            // entry.getValue().appendIds(required);
+            required.addAll(entry.getValue().getRequired());
+        }
+        */
+        for (SimpleSubscriptionDetails subDetails : subs.values()) {
+            required.addAll(subDetails.getRequired());
         }
     }
 }

@@ -100,12 +100,8 @@ public final class TransportSingleton {
      */
     public static MALTransport instance(final String dstUri, final Map properties) throws MALException {
         init();
-
-        if (null != dstUri) {
-            return internalInstance(dstUri, properties);
-        }
-
-        return internalInstance(defaultProtocol, properties);
+        String uri = (dstUri == null) ? defaultProtocol : dstUri;
+        return internalInstance(uri, properties);
     }
 
     /**

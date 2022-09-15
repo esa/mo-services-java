@@ -246,4 +246,16 @@ public interface Attribute extends Element {
      * Absolute type short form for URI.
      */
     public final static Long URI_SHORT_FORM = ABSOLUTE_AREA_SERVICE_NUMBER + _URI_TYPE_SHORT_FORM;
+    /**
+     * Relative type short form for OBJECTREF, can be using in switch statements.
+     */
+    public final static int _OBJECTREF_TYPE_SHORT_FORM = 19;
+    /**
+     * Relative type short form for URI.
+     */
+    public final static Integer OBJECTREF_TYPE_SHORT_FORM = _OBJECTREF_TYPE_SHORT_FORM;
+    /**
+     * Absolute type short form for URI.
+     */
+    public final static Long OBJECTREF_SHORT_FORM = ABSOLUTE_AREA_SERVICE_NUMBER + _OBJECTREF_TYPE_SHORT_FORM;
 }

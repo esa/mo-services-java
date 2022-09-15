@@ -20,20 +20,27 @@
  */
 package esa.mo.mal.impl.broker.key;
 
-import esa.mo.mal.impl.util.StructureHelper;
-import org.ccsds.moims.mo.mal.structures.*;
+import esa.mo.mal.impl.broker.BrokerMatcher;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
+import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Simple class that represents a MAL subscription.
  */
-public final class SubscriptionKey extends PublisherKey {
+public final class SubscriptionConsumer {
 
+    /**
+     * Hash function magic number.
+     */
+    protected static final int HASH_MAGIC_NUMBER = 47;
+    
     private final String domain;
-    private final boolean andSubDomains;
+    // private final boolean andSubDomains;
     private final UShort area;
     private final UShort service;
     private final UShort operation;
+    private final SubscriptionFilterList filters;
 
     /**
      * Constructor.
@@ -42,13 +49,12 @@ public final class SubscriptionKey extends PublisherKey {
      * @param rqst The subscription request.
      * @param key The subscription entity key.
      */
-    public SubscriptionKey(final MALMessageHeader hdr, final EntityRequest rqst, final EntityKey key) {
-        super(key);
-
+    public SubscriptionConsumer(final MALMessageHeader hdr, final SubscriptionFilterList filters) {
         // Converts the domain from list form to string form.
         String tmpDomain = "";
         boolean tmpAndSubDomains = false;
 
+        /*
         final IdentifierList mdomain = hdr.getDomain();
         final IdentifierList sdomain = rqst.getSubDomain();
         if ((null != mdomain) || (null != sdomain)) {
@@ -74,22 +80,25 @@ public final class SubscriptionKey extends PublisherKey {
 
             tmpDomain = buf.toString();
         }
+        */
 
         this.domain = tmpDomain;
-        this.andSubDomains = tmpAndSubDomains;
-        this.area = rqst.getAllAreas() ? ALL_SHORT : hdr.getServiceArea();
-        this.service = rqst.getAllServices() ? ALL_SHORT : hdr.getService();
-        this.operation = rqst.getAllOperations() ? ALL_SHORT : hdr.getOperation();
+        // this.andSubDomains = tmpAndSubDomains;
+        this.area = hdr.getServiceArea();
+        this.service = hdr.getService();
+        this.operation = hdr.getOperation();
+        this.filters = filters;
     }
 
     @Override
     public int hashCode() {
         int hash = super.hashCode();
         hash = HASH_MAGIC_NUMBER * hash + (this.domain != null ? this.domain.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + (this.andSubDomains ? 1 : 0);
+        //hash = HASH_MAGIC_NUMBER * hash + (this.andSubDomains ? 1 : 0);
         hash = HASH_MAGIC_NUMBER * hash + (this.area != null ? this.area.hashCode() : 0);
         hash = HASH_MAGIC_NUMBER * hash + (this.service != null ? this.service.hashCode() : 0);
         hash = HASH_MAGIC_NUMBER * hash + (this.operation != null ? this.operation.hashCode() : 0);
+
         return hash;
     }
 
@@ -101,16 +110,18 @@ public final class SubscriptionKey extends PublisherKey {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final SubscriptionKey other = (SubscriptionKey) obj;
+        final SubscriptionConsumer other = (SubscriptionConsumer) obj;
         if (!super.equals(obj)) {
             return false;
         }
         if (this.domain == null ? other.domain != null : !this.domain.equals(other.domain)) {
             return false;
         }
+        /*
         if (this.andSubDomains != other.andSubDomains) {
             return false;
         }
+        */
         if (this.area != other.area && (this.area == null || !this.area.equals(other.area))) {
             return false;
         }
@@ -130,22 +141,25 @@ public final class SubscriptionKey extends PublisherKey {
      * @param rhs Key to match against.
      * @return True if matches.
      */
-    public boolean matchesWithWildcard(final UpdateKey rhs) {
-        boolean matched = super.matchesWithWildcard(rhs);
+    public boolean matchesWithWildcard(final UpdateKeyValues rhs) {
+        //boolean matched = super.matchesWithWildcard(rhs);
+        boolean matched = true;
         if (matched) {
             matched = rhs.getDomain().startsWith(this.domain);
 
             if (matched) {
+                /*
                 if (this.domain.length() < rhs.getDomain().length()) {
                     matched = this.andSubDomains;
                 }
+                */
 
                 if (matched) {
-                    matched = matchedSubkeyWithWildcard(area, rhs.getArea());
+                    matched = BrokerMatcher.matchedSubkeyWithWildcard(area, rhs.getArea());
                     if (matched) {
-                        matched = matchedSubkeyWithWildcard(service, rhs.getService());
+                        matched = BrokerMatcher.matchedSubkeyWithWildcard(service, rhs.getService());
                         if (matched) {
-                            matched = matchedSubkeyWithWildcard(operation, rhs.getOperation());
+                            matched = BrokerMatcher.matchedSubkeyWithWildcard(operation, rhs.getOperation());
                         }
                     }
                 }
@@ -160,9 +174,11 @@ public final class SubscriptionKey extends PublisherKey {
         final StringBuilder buf = new StringBuilder();
         buf.append('[');
         buf.append(this.domain);
+        /*
         if (this.andSubDomains) {
             buf.append(".*");
         }
+        */
         buf.append(':');
         buf.append(this.area);
         buf.append(':');

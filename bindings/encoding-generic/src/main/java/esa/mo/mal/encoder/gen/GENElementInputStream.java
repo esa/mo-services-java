@@ -28,7 +28,6 @@ import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -56,89 +55,89 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             throws IllegalArgumentException, MALException {
         if (element == ctx.getHeader()) {
             return dec.decodeElement((Element) element);
-        } else {
-            if (ctx.getHeader().getIsErrorMessage()) {
-                // error messages have a standard format
-                if (0 == ctx.getBodyElementIndex()) {
-                    return dec.decodeUInteger();
-                } else {
-                    return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
-                }
-            } else if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
-                switch (ctx.getHeader().getInteractionStage().getValue()) {
-                    case MALPubSubOperation._REGISTER_STAGE:
-                        return dec.decodeElement(new Subscription());
-                    case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                        return dec.decodeElement(new EntityKeyList());
-                    case MALPubSubOperation._DEREGISTER_STAGE:
-                        return dec.decodeElement(new IdentifierList());
-                    case MALPubSubOperation._PUBLISH_STAGE: {
-                        int idx = ctx.getBodyElementIndex();
-                        if (0 == idx) {
-                            return dec.decodeElement(new UpdateHeaderList());
-                        } else {
-                            Object sf = ctx.getOperation()
-                                    .getOperationStage(ctx.getHeader().getInteractionStage())
-                                    .getElementShortForms()[ctx.getBodyElementIndex()];
-
-                            // element is defined as an abstract type
-                            if (null == sf) {
-                                sf = dec.decodeAbstractElementType(true);
-                            }
-
-                            return decodeSubElement((Long) sf, ctx);
-                        }
-                    }
-                    case MALPubSubOperation._NOTIFY_STAGE: {
-                        int idx = ctx.getBodyElementIndex();
-                        if (0 == idx) {
-                            return dec.decodeIdentifier();
-                        } else if (1 == idx) {
-                            return dec.decodeElement(new UpdateHeaderList());
-                        } else {
-                            Object sf = ctx.getOperation()
-                                    .getOperationStage(ctx.getHeader().getInteractionStage())
-                                    .getElementShortForms()[ctx.getBodyElementIndex()];
-
-                            // element is defined as an abstract type
-                            if (null == sf) {
-                                sf = dec.decodeAbstractElementType(true);
-                            }
-
-                            return decodeSubElement((Long) sf, ctx);
-                        }
-                    }
-                    default:
-                        return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
-                }
+        }
+        
+        if (ctx.getHeader().getIsErrorMessage()) {
+            // error messages have a standard format
+            if (0 == ctx.getBodyElementIndex()) {
+                return dec.decodeUInteger();
             } else {
-                if (null == element) {
-                    Long shortForm;
+                return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
+            }
+        }
+        
+        if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
+            switch (ctx.getHeader().getInteractionStage().getValue()) {
+                case MALPubSubOperation._REGISTER_STAGE:
+                    return dec.decodeElement(new Subscription());
+                case MALPubSubOperation._DEREGISTER_STAGE:
+                    return dec.decodeElement(new IdentifierList());
+                case MALPubSubOperation._PUBLISH_STAGE: {
+                    int idx = ctx.getBodyElementIndex();
+                    if (0 == idx) {
+                        return dec.decodeElement(new UpdateHeaderList());
+                    } else {
+                        Object sf = ctx.getOperation()
+                                .getOperationStage(ctx.getHeader().getInteractionStage())
+                                .getElementShortForms()[ctx.getBodyElementIndex()];
 
-                    // dirty check to see if we are trying to decode an 
-                    // abstract Attribute (and not a list of them either)
-                    Object[] finalEleShortForms = ctx.getOperation().getOperationStage(
-                            ctx.getHeader().getInteractionStage()).getLastElementShortForms();
-
-                    if ((null != finalEleShortForms)
-                            && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length)
-                            && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0)) {
-                        Byte sf = dec.decodeNullableOctet();
+                        // element is defined as an abstract type
                         if (null == sf) {
-                            return null;
+                            sf = dec.decodeAbstractElementType(true);
                         }
 
-                        shortForm = Attribute.ABSOLUTE_AREA_SERVICE_NUMBER
-                                + dec.internalDecodeAttributeType(sf);
-                    } else {
-                        shortForm = dec.decodeAbstractElementType(true);
+                        return decodeSubElement((Long) sf, ctx);
                     }
-
-                    return decodeSubElement(shortForm, ctx);
-                } else {
-                    return dec.decodeNullableElement((Element) element);
                 }
+                case MALPubSubOperation._NOTIFY_STAGE: {
+                    int idx = ctx.getBodyElementIndex();
+                    if (0 == idx) {
+                        return dec.decodeIdentifier();
+                    } else if (1 == idx) {
+                        return dec.decodeElement(new UpdateHeaderList());
+                    } else {
+                        Object sf = ctx.getOperation()
+                                .getOperationStage(ctx.getHeader().getInteractionStage())
+                                .getElementShortForms()[ctx.getBodyElementIndex()];
+
+                        // element is defined as an abstract type
+                        if (null == sf) {
+                            sf = dec.decodeAbstractElementType(true);
+                        }
+
+                        return decodeSubElement((Long) sf, ctx);
+                    }
+                }
+                default:
+                    return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
             }
+        }
+        
+        if (null == element) {
+            Long shortForm;
+
+            // dirty check to see if we are trying to decode an 
+            // abstract Attribute (and not a list of them either)
+            Object[] finalEleShortForms = ctx.getOperation().getOperationStage(
+                    ctx.getHeader().getInteractionStage()).getLastElementShortForms();
+
+            if ((null != finalEleShortForms)
+                    && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length)
+                    && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0)) {
+                Byte sf = dec.decodeNullableOctet();
+                if (null == sf) {
+                    return null;
+                }
+
+                shortForm = Attribute.ABSOLUTE_AREA_SERVICE_NUMBER
+                        + dec.internalDecodeAttributeType(sf);
+            } else {
+                shortForm = dec.decodeAbstractElementType(true);
+            }
+
+            return decodeSubElement(shortForm, ctx);
+        } else {
+            return dec.decodeNullableElement((Element) element);
         }
     }
 

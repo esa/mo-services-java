@@ -131,7 +131,6 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
         @Override
         public long getUnsignedLong32() throws MALException {
             buf.checkBuffer(4);
-
             final int i = buf.shiftOffsetAndReturnPrevious(4);
             return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 4).getInt() & 0xFFFFFFFFL;
         }
@@ -187,12 +186,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
 
         @Override
         public String getString() throws MALException {
-            int len;
-            if (shortLengthField) {
-                len = getUnsignedShort();
-            } else {
-                len = getUnsignedInt();
-            }
+            int len = (shortLengthField) ? getUnsignedShort() : getUnsignedInt();
 
             if (len >= 0) {
                 buf.checkBuffer(len);
@@ -204,11 +198,8 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
 
         @Override
         public byte[] getBytes() throws MALException {
-            if (shortLengthField) {
-                return directGetBytes(getUnsignedShort());
-            } else {
-                return directGetBytes(getUnsignedInt());
-            }
+            int len = (shortLengthField) ? getUnsignedShort() : getUnsignedInt();
+            return directGetBytes(len);
         }
     }
 }

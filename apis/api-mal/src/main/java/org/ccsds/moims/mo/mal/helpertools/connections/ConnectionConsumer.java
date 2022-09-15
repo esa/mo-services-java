@@ -33,21 +33,17 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.NamedValue;
-import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.QoSLevelList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
  * The class responsible for starting the MAL layer and takes care of
@@ -273,9 +269,9 @@ public class ConnectionConsumer {
      * @param subkeys The subkeys
      * @return The subscription object
      */
-    public static Subscription subscriptionKeys(final NamedValueList subkeys) {
+    public static Subscription subscriptionKeys(final SubscriptionFilterList filters) {
         final Identifier subscriptionId = new Identifier("SUB");
-        return ConnectionConsumer.subscriptionKeys(subscriptionId, subkeys);
+        return ConnectionConsumer.subscriptionKeys(subscriptionId, filters);
     }
 
     /**
@@ -285,18 +281,7 @@ public class ConnectionConsumer {
      * @return The subscription object
      */
     public static Subscription subscriptionWildcard(final Identifier subscriptionId) {
-        final EntityKeyList entityKeys = new EntityKeyList();
-        final NamedValueList subkeys = new NamedValueList();
-        subkeys.add(new NamedValue(new Identifier("*"), new Identifier("*")));
-        final EntityKey entitykey = new EntityKey(subkeys);
-        entityKeys.add(entitykey);
-
-        final EntityRequest entity = new EntityRequest(
-                null, false, false, false, false, entityKeys);
-        final EntityRequestList entities = new EntityRequestList();
-        entities.add(entity);
-
-        return new Subscription(subscriptionId, entities);
+        return new Subscription(subscriptionId, null, null);
     }
 
     /**
@@ -308,17 +293,8 @@ public class ConnectionConsumer {
      * @return The subscription object
      */
     public static Subscription subscriptionKeys(final Identifier subscriptionId,
-            final NamedValueList subkeys) {
-        final EntityKeyList entityKeys = new EntityKeyList();
-        final EntityKey entitykey = new EntityKey(subkeys);
-        entityKeys.add(entitykey);
-
-        final EntityRequest entity = new EntityRequest(
-                null, false, false, false, false, entityKeys);
-        final EntityRequestList entities = new EntityRequestList();
-        entities.add(entity);
-
-        return new Subscription(subscriptionId, entities);
+            final SubscriptionFilterList filters) {
+        return new Subscription(subscriptionId, null, filters);
     }
 
     /**
@@ -341,58 +317,21 @@ public class ConnectionConsumer {
                     Level.WARNING, "One of the keys is null!", new IOException());
         }
 
-        NamedValueList subkeys = new NamedValueList();
-        subkeys.add(new NamedValue(new Identifier("key1"), key1));
-        subkeys.add(new NamedValue(new Identifier("key2"), new Union(key2)));
-        subkeys.add(new NamedValue(new Identifier("key3"), new Union(key3)));
-        subkeys.add(new NamedValue(new Identifier("key4"), new Union(key4)));
-        final EntityKey entitykey = new EntityKey(subkeys);
+        SubscriptionFilterList filters = new SubscriptionFilterList();
+        AttributeList list1 = new AttributeList();
+        list1.add(key1);
+        AttributeList list2 = new AttributeList();
+        list2.add(key2);
+        AttributeList list3 = new AttributeList();
+        list3.add(key3);
+        AttributeList list4 = new AttributeList();
+        list4.add(key4);
+        filters.add(new SubscriptionFilter(new Identifier("key1"), list1));
+        filters.add(new SubscriptionFilter(new Identifier("key2"), list2));
+        filters.add(new SubscriptionFilter(new Identifier("key3"), list3));
+        filters.add(new SubscriptionFilter(new Identifier("key4"), list4));
 
-        final EntityKeyList entityKeys = new EntityKeyList();
-        entityKeys.add(entitykey);
-
-        final EntityRequest entity = new EntityRequest(null, false, false, false, false, entityKeys);
-        final EntityRequestList entities = new EntityRequestList();
-        entities.add(entity);
-
-        return new Subscription(subId, entities);
-    }
-
-    /**
-     * Returns an EntityKey object with the entity keys field set as the
-     * provided keys. The method is deprecated because this was for the old COM
-     * model with 4 fixed subkeys.
-     *
-     * @param key1 First key
-     * @param key2 Second key
-     * @param key3 Third key
-     * @param key4 Fourth key
-     * @return The subscription object
-     */
-    @Deprecated
-    public static EntityKey subscriptionKeys(Identifier key1, Long key2, Long key3, Long key4) {
-        NamedValueList subkeys = new NamedValueList();
-        subkeys.add(new NamedValue(new Identifier("key1"), key1));
-        subkeys.add(new NamedValue(new Identifier("key2"), new Union(key2)));
-        subkeys.add(new NamedValue(new Identifier("key3"), new Union(key3)));
-        subkeys.add(new NamedValue(new Identifier("key4"), new Union(key4)));
-        return new EntityKey(subkeys);
-    }
-
-    /**
-     *
-     * Returns an EntityKey object with the entity keys field set as the
-     * wildcard
-     *
-     * @return The EntityKey object
-     */
-    public static EntityKey entityKeyWildcard() {
-        NamedValueList subkeys = new NamedValueList();
-        subkeys.add(new NamedValue(new Identifier("key1"), new Identifier("*")));
-        subkeys.add(new NamedValue(new Identifier("key2"), new Union(0L)));
-        subkeys.add(new NamedValue(new Identifier("key3"), new Union(0L)));
-        subkeys.add(new NamedValue(new Identifier("key4"), new Union(0L)));
-        return new EntityKey(subkeys);
+        return new Subscription(subId, null, filters);
     }
 
 }

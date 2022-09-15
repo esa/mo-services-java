@@ -49,7 +49,7 @@ public class MALContextImpl extends MALClose implements MALContext {
     private final MALAccessControl securityManager;
     private final InteractionConsumerMap icmap = new InteractionConsumerMap();
     private final InteractionPubSubMap ipsmap = new InteractionPubSubMap();
-    private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<String, MALBrokerBindingImpl>();
+    private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<>();
     private final MessageReceive receiver;
     private final MessageSend sender;
 
@@ -63,10 +63,9 @@ public class MALContextImpl extends MALClose implements MALContext {
     public MALContextImpl(final MALAccessControlFactory securityFactory, 
             final Map properties) throws MALException {
         super(null);
-
         initialProperties = properties;
 
-        if (null != securityFactory) {
+        if (securityFactory != null) {
             securityManager = securityFactory.createAccessControl(initialProperties);
         } else {
             securityManager = new NullSecurityManager();
@@ -109,7 +108,6 @@ public class MALContextImpl extends MALClose implements MALContext {
     @Override
     public void close() throws MALException {
         super.close();
-
         esa.mo.mal.impl.transport.TransportSingleton.close();
     }
 

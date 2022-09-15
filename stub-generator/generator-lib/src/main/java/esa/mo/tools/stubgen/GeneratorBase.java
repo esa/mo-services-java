@@ -52,17 +52,13 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * The configuration of the generator.
      */
     private final GeneratorConfiguration config;
-    protected final Set<TypeKey> enumTypesSet = new TreeSet<TypeKey>();
-    protected final Set<TypeKey> abstractTypesSet = new TreeSet<TypeKey>();
-    protected final Map<TypeKey, Object> allTypesMap = new TreeMap<TypeKey, Object>();
-    protected final Map<TypeKey, CompositeType> compositeTypesMap
-            = new TreeMap<TypeKey, CompositeType>();
-    protected final Map<TypeKey, AttributeTypeDetails> attributeTypesMap
-            = new TreeMap<TypeKey, AttributeTypeDetails>();
-    protected final Map<String, NativeTypeDetails> nativeTypesMap
-            = new TreeMap<String, NativeTypeDetails>();
-    protected final Map<String, ErrorDefinitionType> errorDefinitionMap
-            = new TreeMap<String, ErrorDefinitionType>();
+    protected final Set<TypeKey> enumTypesSet = new TreeSet<>();
+    protected final Set<TypeKey> abstractTypesSet = new TreeSet<>();
+    protected final Map<TypeKey, Object> allTypesMap = new TreeMap<>();
+    protected final Map<TypeKey, CompositeType> compositeTypesMap = new TreeMap<>();
+    protected final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new TreeMap<>();
+    protected final Map<String, NativeTypeDetails> nativeTypesMap = new TreeMap<>();
+    protected final Map<String, ErrorDefinitionType> errorDefinitionMap = new TreeMap<>();
     private final Log logger;
     private boolean generateCOM;
 
@@ -473,7 +469,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @return a list of the element details.
      */
     protected List<CompositeField> createCompositeElementsList(TargetWriter file, CompositeType composite) {
-        List<CompositeField> lst = new LinkedList<CompositeField>();
+        List<CompositeField> lst = new LinkedList<>();
         for (NamedElementReferenceWithCommentType element : composite.getField()) {
             CompositeField ele = createCompositeElementsDetails(file,
                     true,
@@ -634,11 +630,14 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     lop.getMessages().getResponse().getComment());
         } else if (op instanceof PubSubOperationType) {
             PubSubOperationType lop = (PubSubOperationType) op;
+            AnyTypeReference subs = lop.getMessages().getSubscriptionKeys();
+            List<TypeInfo> subKeysList = (subs == null) ? null : 
+                    TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(subs.getAny()));
             List<TypeInfo> riList = TypeUtils.convertTypeReferences(this,
                     TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny()));
 
             ele = new OperationSummary(InteractionPatternEnum.PUBSUB_OP, op, capNum,
-                    null, "",
+                    subKeysList, "",
                     null, "",
                     riList, "",
                     riList, lop.getMessages().getPublishNotify().getComment());

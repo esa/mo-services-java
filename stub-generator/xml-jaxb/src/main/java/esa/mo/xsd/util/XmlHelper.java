@@ -46,8 +46,7 @@ public abstract class XmlHelper {
 
     public static List<Map.Entry<SpecificationType, XmlSpecification>> loadSpecifications(
             final File directory) throws IOException, JAXBException {
-        final List<Map.Entry<SpecificationType, XmlSpecification>> specList 
-                = new LinkedList<Map.Entry<SpecificationType, XmlSpecification>>();
+        final List<Map.Entry<SpecificationType, XmlSpecification>> specList = new LinkedList<>();
 
         if (directory.exists()) {
             final File xmlFiles[] = directory.listFiles();
@@ -84,7 +83,7 @@ public abstract class XmlHelper {
         final JAXBContext jc = JAXBContext.newInstance("esa.mo.xsd");
         final Unmarshaller unmarshaller = jc.createUnmarshaller();
         final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
-        return new AbstractMap.SimpleEntry<SpecificationType, XmlSpecification>((SpecificationType) rootElement.getValue(),
+        return new AbstractMap.SimpleEntry<>((SpecificationType) rootElement.getValue(),
                 new XmlSpecification(is, rootElement));
     }
 

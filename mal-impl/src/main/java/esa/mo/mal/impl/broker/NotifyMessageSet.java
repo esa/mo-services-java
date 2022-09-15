@@ -23,29 +23,38 @@ package esa.mo.mal.impl.broker;
 import java.util.List;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 
 /**
- * Simple struct style class that holds a set of notify message for a single
- * subscription
+ * The NotifyMessageSet holds a set of notify message for a single subscription
  */
 public final class NotifyMessageSet {
 
     /**
      * Message header.
      */
-    public MessageHeaderDetails details;
+    private final MessageHeaderDetails details;
+
     /**
      * Message bodies.
      */
-    public List<NotifyMessage> messages;
+    private final List<NotifyMessage> messages;
+
+    NotifyMessageSet(MessageHeaderDetails details, List<NotifyMessage> messages) {
+        this.details = details;
+        this.messages = messages;
+    }
+
+    public MessageHeaderDetails getDetails() {
+        return details;
+    }
+
+    public List<NotifyMessage> getMessages() {
+        return messages;
+    }
 
     /**
      * Simple struct style class that holds details common to a set of
@@ -93,8 +102,8 @@ public final class NotifyMessageSet {
          * @param qosProps The QoS properties of the subscription.
          * @param priority The priority of the subscription.
          */
-        public MessageHeaderDetails(URI uriTo, Long transactionId, 
-                SessionType sessionType, Identifier sessionName, 
+        public MessageHeaderDetails(URI uriTo, Long transactionId,
+                SessionType sessionType, Identifier sessionName,
                 QoSLevel qosLevel, Map qosProps, UInteger priority) {
             this.uriTo = uriTo;
             this.transactionId = transactionId;
@@ -106,46 +115,4 @@ public final class NotifyMessageSet {
         }
     }
 
-    /**
-     * Simple struct style class that holds a single notify message body.
-     */
-    public static final class NotifyMessage {
-
-        /**
-         * PubSub domain.
-         */
-        public IdentifierList domain;
-        /**
-         * PubSub network zone.
-         */
-        public Identifier networkZone;
-        /**
-         * PubSub area.
-         */
-        public UShort area;
-        /**
-         * PubSub service.
-         */
-        public UShort service;
-        /**
-         * PubSub operation.
-         */
-        public UShort operation;
-        /**
-         * PubSub version.
-         */
-        public UOctet version;
-        /**
-         * PubSub subscription Id.
-         */
-        public Identifier subscriptionId;
-        /**
-         * PubSub update headers.
-         */
-        public UpdateHeaderList updateHeaderList;
-        /**
-         * PubSub updates.
-         */
-        public java.util.List[] updateList;
-    }
 }

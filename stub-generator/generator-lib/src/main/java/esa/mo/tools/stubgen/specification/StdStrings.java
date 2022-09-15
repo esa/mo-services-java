@@ -30,6 +30,7 @@ public abstract class StdStrings {
     public static final String XML = "XML";
     public static final String ELEMENT = "Element";
     public static final String COMPOSITE = "Composite";
+    public static final String OBJECT = "Object";
     public static final String ATTRIBUTE = "Attribute";
     public static final String ENUMERATION = "Enumeration";
     public static final String BLOB = "Blob";
@@ -50,6 +51,7 @@ public abstract class StdStrings {
     public static final String TIME = "Time";
     public static final String FINETIME = "FineTime";
     public static final String URI = "URI";
+    public static final String OBJECTREF = "ObjectRef";
     public static final String UNION = "Union";
     public static final String VOID = "void";
     public static final String PUBLIC = "public";

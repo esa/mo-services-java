@@ -335,6 +335,23 @@ public interface MALEncoder {
     void encodeNullableURI(URI att) throws MALException;
 
     /**
+     * Encodes a non-null ObjectRef.
+     *
+     * @param att The ObjectRef to encode.
+     * @throws IllegalArgumentException If the argument is null.
+     * @throws MALException If an error detected during encoding.
+     */
+    void encodeObjectRef(ObjectRef att) throws IllegalArgumentException, MALException;
+
+    /**
+     * Encodes an ObjectRef that may be null
+     *
+     * @param att The ObjectRef to encode.
+     * @throws MALException If an error detected during encoding.
+     */
+    void encodeNullableObjectRef(ObjectRef att) throws MALException;
+
+    /**
      * Encodes a non-null Element.
      *
      * @param element The Element to encode.

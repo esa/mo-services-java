@@ -39,7 +39,7 @@ public abstract class MALTransportFactory {
      * class name for a protocol.
      */
     public static final String FACTORY_PROP_NAME_PREFIX = "org.ccsds.moims.mo.mal.transport.protocol";
-    private static final Map<String, Class> _FACTORY_MAP = new HashMap<String, Class>();
+    private static final Map<String, Class> FACTORIES = new HashMap<>();
     private final String protocol;
 
     /**
@@ -56,7 +56,7 @@ public abstract class MALTransportFactory {
             throw new IllegalArgumentException("Not compliant: " + factoryClass.getName());
         }
 
-        _FACTORY_MAP.put(factoryClass.getName(), factoryClass);
+        FACTORIES.put(factoryClass.getName(), factoryClass);
     }
 
     /**
@@ -67,14 +67,14 @@ public abstract class MALTransportFactory {
      * @throws IllegalArgumentException if the argument does not extend
      * MALTransportFactory
      */
-    public static void deregisterFactoryClass(final java.lang.Class factoryClass) 
+    public static void deregisterFactoryClass(final java.lang.Class factoryClass)
             throws IllegalArgumentException {
         if (!MALTransportFactory.class.isAssignableFrom(factoryClass)) {
             throw new IllegalArgumentException("Not compliant: " + factoryClass.getName());
         }
 
-        if (null != factoryClass) {
-            _FACTORY_MAP.remove(factoryClass.getName());
+        if (factoryClass != null) {
+            FACTORIES.remove(factoryClass.getName());
         }
     }
 
@@ -92,7 +92,7 @@ public abstract class MALTransportFactory {
      * @throws IllegalArgumentException If the parameter ‘protocol’ is NULL
      * @throws MALException If no MALTransportFactory can be returned
      */
-    public static MALTransportFactory newFactory(final String protocol) 
+    public static MALTransportFactory newFactory(final String protocol)
             throws IllegalArgumentException, MALException {
         final String className = System.getProperty(FACTORY_PROP_NAME_PREFIX + '.' + protocol);
 
@@ -100,23 +100,19 @@ public abstract class MALTransportFactory {
             try {
                 Class factoryClass;
 
-                if (_FACTORY_MAP.containsKey(className)) {
-                    factoryClass = (Class) _FACTORY_MAP.get(className);
+                if (FACTORIES.containsKey(className)) {
+                    factoryClass = (Class) FACTORIES.get(className);
                 } else {
                     factoryClass = Class.forName(className);
                     registerFactoryClass(factoryClass);
                     Logger.getLogger(MALTransportFactory.class.getName()).log(
-                            Level.INFO, 
-                            "New transport factory registered with classname: {0}", 
+                            Level.INFO,
+                            "New transport factory registered with classname: {0}",
                             className);
                 }
 
-                return (MALTransportFactory) factoryClass.getConstructor(new Class[]{
-                    String.class
-                })
-                        .newInstance(new Object[]{
-                    protocol
-                });
+                return (MALTransportFactory) factoryClass.getConstructor(
+                        new Class[]{String.class}).newInstance(new Object[]{protocol});
             } catch (ClassNotFoundException exc) {
                 throw new MALException(exc.getLocalizedMessage(), exc);
             } catch (InstantiationException exc) {

@@ -317,6 +317,22 @@ public interface MALDecoder {
     URI decodeNullableURI() throws MALException;
 
     /**
+     * Decodes an ObjectRef.
+     *
+     * @return The decoded ObjectRef.
+     * @throws MALException If an error detected during decoding.
+     */
+    ObjectRef decodeObjectRef() throws MALException;
+
+    /**
+     * Decodes a ObjectRef that may be null.
+     *
+     * @return The decoded ObjectRef or null.
+     * @throws MALException If an error detected during decoding.
+     */
+    ObjectRef decodeNullableObjectRef() throws MALException;
+
+    /**
      * Decodes an Element.
      *
      * @param element An instance of the element to decode.

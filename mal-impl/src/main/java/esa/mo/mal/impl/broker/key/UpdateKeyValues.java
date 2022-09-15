@@ -20,19 +20,23 @@
  */
 package esa.mo.mal.impl.broker.key;
 
-import org.ccsds.moims.mo.mal.structures.EntityKey;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Simple class that represents a MAL update key.
  */
-public final class UpdateKey extends PublisherKey {
+public final class UpdateKeyValues {
 
     /**
      * The domain of the update.
      */
     private final String domain;
+    /**
+     * The keyValues of the update.
+     */
+    private final AttributeList keyValues;
     /**
      * The area of the update.
      */
@@ -45,6 +49,10 @@ public final class UpdateKey extends PublisherKey {
      * The operation of the update.
      */
     private final UShort operation;
+    /**
+     * Hash function magic number.
+     */
+    protected static final int HASH_MAGIC_NUMBER = 47;
 
     /**
      * Constructor.
@@ -53,22 +61,22 @@ public final class UpdateKey extends PublisherKey {
      * @param domainId Update domain.
      * @param key Entity key.
      */
-    public UpdateKey(final MALMessageHeader srcHdr, final String domainId, final EntityKey key) {
-        super(key);
-
+    public UpdateKeyValues(final MALMessageHeader srcHdr, final String domainId, final AttributeList keyValues) {
         this.domain = domainId;
+        this.keyValues = keyValues;
         this.area = srcHdr.getServiceArea();
         this.service = srcHdr.getService();
         this.operation = srcHdr.getOperation();
     }
 
+    /*
     @Override
     public boolean equals(final Object obj) {
         if (!super.equals(obj)) {
             return false;
         }
 
-        final UpdateKey other = (UpdateKey) obj;
+        final UpdateKeyValues other = (UpdateKeyValues) obj;
         if (this.domain == null ? other.domain != null : !this.domain.equals(other.domain)) {
             return false;
         }
@@ -79,19 +87,16 @@ public final class UpdateKey extends PublisherKey {
     public int hashCode() {
         return HASH_MAGIC_NUMBER * super.hashCode() + (this.domain != null ? this.domain.hashCode() : 0);
     }
+    */
 
     @Override
     public String toString() {
         final StringBuilder buf = new StringBuilder();
         buf.append('[');
-        buf.append(this.domain);
-        buf.append(':');
-        buf.append(this.area);
-        buf.append(':');
-        buf.append(this.service);
-        buf.append(':');
-        buf.append(this.operation);
-        buf.append(':');
+        buf.append(this.domain).append(':');
+        buf.append(this.area).append(':');
+        buf.append(this.service).append(':');
+        buf.append(this.operation).append(':');
         buf.append(super.toString());
         buf.append(']');
         return buf.toString();
@@ -104,6 +109,15 @@ public final class UpdateKey extends PublisherKey {
      */
     public String getDomain() {
         return domain;
+    }
+
+    /**
+     * Returns the keyValues string.
+     *
+     * @return the keyValues.
+     */
+    public AttributeList getKeyValues() {
+        return keyValues;
     }
 
     /**

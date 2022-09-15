@@ -21,7 +21,6 @@
 package org.ccsds.moims.mo.mal;
 
 import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -120,7 +119,7 @@ public class MALPubSubOperation extends MALOperation {
     private static final MALOperationStage PUBSUB_REGACK_OPERATION_STAGE
             = new MALOperationStage(REGISTER_ACK_STAGE, new Object[0], new Object[0]);
     private static final MALOperationStage PUBSUB_PUBREG_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_REGISTER_STAGE, new Object[]{EntityKeyList.SHORT_FORM}, new Object[0]);
+            = new MALOperationStage(PUBLISH_REGISTER_STAGE, new Object[0], new Object[0]);
     private static final MALOperationStage PUBSUB_PUBREGACK_OPERATION_STAGE
             = new MALOperationStage(PUBLISH_REGISTER_ACK_STAGE, new Object[0], new Object[0]);
     private static final MALOperationStage PUBSUB_DEREG_OPERATION_STAGE

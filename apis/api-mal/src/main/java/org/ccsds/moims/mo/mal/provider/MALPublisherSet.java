@@ -38,7 +38,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 public class MALPublisherSet {
 
     private final MALProviderSet providerSet;
-    private final Set<MALPublisher> subpublishers = new HashSet<MALPublisher>();
+    private final Set<MALPublisher> subpublishers = new HashSet<>();
     private final MALPubSubOperation op;
     private final IdentifierList domain;
     private final Identifier networkZone;
@@ -117,10 +117,10 @@ public class MALPublisherSet {
      * @throws MALInteractionException If thrown by the contained MALPublishers.
      * @throws MALException If thrown by the contained MALPublishers.
      */
-    public void register(final EntityKeyList entityKeyList, final MALPublishInteractionListener listener)
+    public void register(final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         for (MALPublisher p : subpublishers) {
-            p.register(entityKeyList, listener);
+            p.register(listener);
         }
     }
 
@@ -171,11 +171,11 @@ public class MALPublisherSet {
      * @throws MALInteractionException If thrown by the contained MALPublishers.
      * @throws MALException If thrown by the contained MALPublishers.
      */
-    public MALMessage asyncRegister(final EntityKeyList entityKeyList, final MALPublishInteractionListener listener)
+    public MALMessage asyncRegister(final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         MALMessage rv = null;
         for (MALPublisher p : subpublishers) {
-            rv = p.asyncRegister(entityKeyList, listener);
+            rv = p.asyncRegister(listener);
         }
 
         return rv;

@@ -37,13 +37,11 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 class InteractionPubSubMap {
 
-    private final Map<StringPair, MALPublishInteractionListener> publisherMap
-            = new HashMap<StringPair, MALPublishInteractionListener>();
-    private final Map<String, Map<String, MALInteractionListener>> errorMap
-            = new HashMap<String, Map<String, MALInteractionListener>>();
-    private final Map<StringPair, MALInteractionListener> notifyMap = new HashMap<StringPair, MALInteractionListener>();
+    private final Map<StringPair, MALPublishInteractionListener> publisherMap = new HashMap<>();
+    private final Map<String, Map<String, MALInteractionListener>> errorMap = new HashMap<>();
+    private final Map<StringPair, MALInteractionListener> notifyMap = new HashMap<>();
 
-    void registerPublishListener(final MessageDetails details, final MALPublishInteractionListener listener) {
+    public void registerPublishListener(final MessageDetails details, final MALPublishInteractionListener listener) {
         final StringPair id = new StringPair(details.uriFrom.getValue(), createProviderKey(details));
 
         synchronized (publisherMap) {
@@ -52,7 +50,7 @@ class InteractionPubSubMap {
         }
     }
 
-    MALPublishInteractionListener getPublishListener(final URI uri, final MALMessageHeader mshHdr) {
+    public MALPublishInteractionListener getPublishListener(final URI uri, final MALMessageHeader mshHdr) {
         final StringPair id = new StringPair(uri.getValue(), createProviderKey(mshHdr));
         MALPublishInteractionListener list;
 
@@ -67,7 +65,7 @@ class InteractionPubSubMap {
         return list;
     }
 
-    void listPublishListeners() {
+    public void listPublishListeners() {
         synchronized (publisherMap) {
             MALContextFactoryImpl.LOGGER.fine("Starting dump of publisher map");
             for (StringPair e : publisherMap.keySet()) {
@@ -90,7 +88,7 @@ class InteractionPubSubMap {
         }
     }
 
-    MALPublishInteractionListener getPublishListenerAndRemove(final URI uri, final MessageDetails details) {
+    public MALPublishInteractionListener getPublishListenerAndRemove(final URI uri, final MessageDetails details) {
         final StringPair id = new StringPair(uri.getValue(), createProviderKey(details));
         MALPublishInteractionListener list;
 
@@ -105,7 +103,7 @@ class InteractionPubSubMap {
         return list;
     }
 
-    void registerNotifyListener(final MessageDetails details,
+    public void registerNotifyListener(final MessageDetails details,
             final Subscription subscription,
             final MALInteractionListener list) {
         final String uri = details.endpoint.getURI().getValue();
@@ -117,7 +115,7 @@ class InteractionPubSubMap {
             Map<String, MALInteractionListener> ent = errorMap.get(uri);
 
             if (null == ent) {
-                ent = new HashMap<String, MALInteractionListener>();
+                ent = new HashMap<>();
                 errorMap.put(uri, ent);
             }
 
@@ -129,7 +127,7 @@ class InteractionPubSubMap {
         }
     }
 
-    MALInteractionListener getNotifyListener(final URI uri, final Identifier subscription) {
+    public MALInteractionListener getNotifyListener(final URI uri, final Identifier subscription) {
         final StringPair id = new StringPair(uri.getValue(), subscription.getValue());
 
         MALContextFactoryImpl.LOGGER.log(Level.FINE,
@@ -153,7 +151,7 @@ class InteractionPubSubMap {
         return null;
     }
 
-    Map<String, MALInteractionListener> getNotifyListenersAndRemove(final URI uriValue) {
+    public Map<String, MALInteractionListener> getNotifyListenersAndRemove(final URI uriValue) {
         synchronized (notifyMap) {
             final String uri = uriValue.getValue();
             final Map<String, MALInteractionListener> ent = errorMap.get(uri);
@@ -172,7 +170,7 @@ class InteractionPubSubMap {
         }
     }
 
-    void deregisterNotifyListener(final MessageDetails details,
+    public void deregisterNotifyListener(final MessageDetails details,
             final IdentifierList unsubscription) {
         synchronized (notifyMap) {
             final String uri = details.endpoint.getURI().getValue();
@@ -203,29 +201,19 @@ class InteractionPubSubMap {
 
     private static String createProviderKey(final MessageDetails details) {
         final StringBuilder buf = new StringBuilder();
-
-        buf.append(details.sessionType);
-        buf.append(':');
-        buf.append(details.sessionName);
-        buf.append(':');
-        buf.append(details.networkZone);
-        buf.append(':');
+        buf.append(details.sessionType).append(':');
+        buf.append(details.sessionName).append(':');
+        buf.append(details.networkZone).append(':');
         buf.append(details.domain);
-
         return buf.toString();
     }
 
     private static String createProviderKey(final MALMessageHeader details) {
         final StringBuilder buf = new StringBuilder();
-
-        buf.append(details.getSession());
-        buf.append(':');
-        buf.append(details.getSessionName());
-        buf.append(':');
-        buf.append(details.getNetworkZone());
-        buf.append(':');
+        buf.append(details.getSession()).append(':');
+        buf.append(details.getSessionName()).append(':');
+        buf.append(details.getNetworkZone()).append(':');
         buf.append(details.getDomain());
-
         return buf.toString();
     }
 }

@@ -21,7 +21,6 @@
 package org.ccsds.moims.mo.mal;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Holds a map of MALElementFactorys indexed on type short forms. Used to lookup
@@ -29,7 +28,7 @@ import java.util.Map;
  */
 public class MALElementFactoryRegistry {
 
-    private final Map<Object, MALElementFactory> factoryMap = new HashMap<Object, MALElementFactory>();
+    private final HashMap<Object, MALElementFactory> factoryMap = new HashMap<>();
 
     /**
      * Registers a element factory in the map using the supplied short form

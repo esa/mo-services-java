@@ -90,7 +90,7 @@ class MALPublisherImpl implements MALPublisher {
     }
 
     @Override
-    public void register(final EntityKeyList entityKeys, final MALPublishInteractionListener listener)
+    public void register(final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(
                 parent.getEndpoint(),
@@ -112,11 +112,11 @@ class MALPublisherImpl implements MALPublisher {
                 networkZone.getValue(),
                 sessionType,
                 sessionName.getValue(),
-                handler.publishRegister(details, operation, entityKeys, listener));
+                handler.publishRegister(details, operation, listener));
     }
 
     @Override
-    public MALMessage asyncRegister(final EntityKeyList entityKeys, final MALPublishInteractionListener listener)
+    public MALMessage asyncRegister(final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(parent.getEndpoint(),
                 parent.getURI(),
@@ -133,7 +133,7 @@ class MALPublisherImpl implements MALPublisher {
                 remotePublisherPriority);
 
         final MALMessage msg = handler.publishRegisterAsync(details,
-                operation, entityKeys, listener);
+                operation, listener);
 
         setTransId(parent.getBrokerURI(),
                 domain,

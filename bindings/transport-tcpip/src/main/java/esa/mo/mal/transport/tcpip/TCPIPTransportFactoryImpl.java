@@ -31,7 +31,6 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  */
 public class TCPIPTransportFactoryImpl extends MALTransportFactory {
 
-    private static final Object MUTEX = new Object();
     private TCPIPTransport transport = null;
 
     /**
@@ -49,16 +48,14 @@ public class TCPIPTransportFactoryImpl extends MALTransportFactory {
     }
 
     @Override
-    public MALTransport createTransport(final MALContext malContext,
+    public synchronized MALTransport createTransport(final MALContext malContext,
             final Map properties) throws MALException {
-        synchronized (MUTEX) {
-            if (null == transport) {
-                transport = new TCPIPTransport(getProtocol(),
-                        SERVICE_DELIMITER, true, this, properties);
-                transport.init();
-            }
-
-            return transport;
+        if (null == transport) {
+            transport = new TCPIPTransport(getProtocol(),
+                    SERVICE_DELIMITER, true, this, properties);
+            transport.init();
         }
+
+        return transport;
     }
 }

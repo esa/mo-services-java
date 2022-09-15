@@ -25,9 +25,9 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperAttributes;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
@@ -51,10 +51,10 @@ public final class JMSPublisherKey implements Comparable {
      *
      * @param key Entity key.
      */
-    public JMSPublisherKey(final EntityKey key) {
+    public JMSPublisherKey(final NamedValueList keys) {
         super();
 
-        for (NamedValue subkey : key.getSubkeys()) {
+        for (NamedValue subkey : keys) {
             subkeys.put(subkey.getName().getValue(), subkey.getValue());
         }
     }
@@ -122,9 +122,9 @@ public final class JMSPublisherKey implements Comparable {
      * @param rhs Key to match against.
      * @return True if matches.
      */
-    public boolean matches(final EntityKey rhs) {
-        if (null != rhs) {
-            for(NamedValue nv : rhs.getSubkeys()){
+    public boolean matches(final NamedValueList keys) {
+        if (null != keys) {
+            for(NamedValue nv : keys){
                 boolean matched = matchedSubkeyWithWildcard(nv.getValue(), 
                         this.subkeys.get(nv.getName().getValue()));
                 

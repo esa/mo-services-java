@@ -143,9 +143,6 @@
           <smc:field name="fieldH">
             <smc:type list="true" area="MALDemo" service="BasicMonitor" name="BasicEnum"/>
           </smc:field>
-          <smc:field name="fieldI">
-            <smc:type area="MAL" name="EntityKey"/>
-          </smc:field>
         </smc:composite>
         <smc:enumeration name="BasicEnum" shortFormPart="4">
           <smc:item value="FIRST" nvalue="1"/>

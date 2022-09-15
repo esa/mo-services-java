@@ -68,8 +68,9 @@ public class GeneratorDocx extends GeneratorDocument {
         2302, 1830, 1100, 3768
     };
 
-    private boolean includeMessageFieldNames = false;
-    private boolean includeDiagrams = false;
+    private boolean includeMessageFieldNames = true;
+    private boolean includeDiagrams = true;
+    private boolean oldStyle = false;
 
     /**
      * Constructor.
@@ -104,6 +105,10 @@ public class GeneratorDocx extends GeneratorDocument {
 
         if (extraProperties.containsKey("docx.includeDiagrams")) {
             includeDiagrams = Boolean.parseBoolean(extraProperties.get("docx.includeDiagrams"));
+        }
+        
+        if (extraProperties.containsKey("docx.oldStyle")) {
+            oldStyle = Boolean.parseBoolean(extraProperties.get("docx.oldStyle"));
         }
     }
 
@@ -148,7 +153,7 @@ public class GeneratorDocx extends GeneratorDocument {
                             drawCOMUsageTables(docxServiceFile, area, ((ExtendedServiceType) service));
                         }
                     } else {
-                        List<String> comments = new ArrayList<String>();
+                        List<String> comments = new ArrayList<>();
 
                         for (CapabilitySetType cSet : service.getCapabilitySet()) {
                             String str = cSet.getComment();
@@ -221,7 +226,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 // process errors
                 docxDataFile.addTitle(1, "Error codes");
 
-                List<ErrorDefinitionType> errors = new LinkedList<ErrorDefinitionType>();
+                List<ErrorDefinitionType> errors = new LinkedList<>();
 
                 // if area level types exist
                 if ((null != area.getErrors()) && !area.getErrors().getError().isEmpty()) {
@@ -286,7 +291,7 @@ public class GeneratorDocx extends GeneratorDocument {
             docxServiceFile.flush();
             docxNumberingFile.flush();
 
-            ArrayList<String> filenames = new ArrayList<String>();
+            ArrayList<String> filenames = new ArrayList<>();
             filenames.add("[Content_Types].xml");
             filenames.add("_rels/.rels");
             filenames.add("word/_rels/document.xml.rels");
@@ -376,7 +381,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Source points to", HEADER_COLOUR);
                     docxFile.endRow();
 
-                    List<String> cmts = new LinkedList<String>();
+                    List<String> cmts = new LinkedList<>();
 
                     for (ModelObjectType obj : features.getObjects().getObject()) {
                         docxFile.startRow();
@@ -384,7 +389,7 @@ public class GeneratorDocx extends GeneratorDocument {
                         docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, String.valueOf(obj.getNumber()));
 
                         if (null != obj.getObjectType() && (null != obj.getObjectType().getAny())) {
-                            docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, includeMessageFieldNames, area, service, TypeUtils.getTypeListViaXSDAny(obj.getObjectType().getAny()), null);
+                            docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, includeMessageFieldNames, oldStyle, area, service, TypeUtils.getTypeListViaXSDAny(obj.getObjectType().getAny()), null);
                         } else {
                             docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "No body");
                         }
@@ -449,7 +454,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     evntTable.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, String.valueOf(evnt.getNumber()), STD_COLOUR);
 
                     if (null != evnt.getObjectType()) {
-                        evntTable.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, includeMessageFieldNames, area, service, TypeUtils.getTypeListViaXSDAny(evnt.getObjectType().getAny()), null);
+                        evntTable.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, includeMessageFieldNames, oldStyle, area, service, TypeUtils.getTypeListViaXSDAny(evnt.getObjectType().getAny()), null);
                     } else {
                         evntTable.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "No body", STD_COLOUR);
                     }
@@ -580,7 +585,15 @@ public class GeneratorDocx extends GeneratorDocument {
         } else if (op instanceof PubSubOperationType) {
             PubSubOperationType lop = (PubSubOperationType) op;
             drawOperationPattern(docxFile, "PUBLISH-SUBSCRIBE");
+            AnyTypeReference subKeys = lop.getMessages().getSubscriptionKeys();
+            if(subKeys != null) {
+                drawOperationPubSubKeys(docxFile, area, service, TypeUtils.getTypeListViaXSDAny(subKeys.getAny()));
+            }
             drawOperationMessageHeader(docxFile);
+            // Probably looks cooler like this:
+            if(subKeys != null) {
+                //drawOperationMessageDetails(docxFile, area, service, true, "SUBSCRIPTION KEYS", TypeUtils.getTypeListViaXSDAny(subKeys.getAny()));
+            }
             drawOperationMessageDetails(docxFile, area, service, false, "PUBLISH/NOTIFY", TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny()));
         }
 
@@ -594,11 +607,24 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.endRow();
     }
 
+    private void drawOperationPubSubKeys(DocxBaseWriter docxFile, AreaType area, ServiceType service, List<TypeRef> types) throws IOException {
+        docxFile.startRow();
+        docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "Subscription Keys", HEADER_COLOUR);
+        
+        if ((null == types) || (0 == types.size())) {
+            docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, "Empty", FIXED_COLOUR, 2);
+        } else {
+            docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, includeMessageFieldNames, oldStyle, area, service, types, null, 2);
+        }
+        
+        docxFile.endRow();
+    }
+    
     private void drawOperationMessageHeader(DocxBaseWriter docxFile) throws IOException {
         docxFile.startRow();
         docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "Pattern Sequence", HEADER_COLOUR);
         docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, "Message", HEADER_COLOUR);
-        docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "Body Signature", HEADER_COLOUR);
+        docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "Type Signature", HEADER_COLOUR);
         docxFile.endRow();
     }
 
@@ -614,7 +640,7 @@ public class GeneratorDocx extends GeneratorDocument {
         if ((null == types) || (0 == types.size())) {
             docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "Empty", FIXED_COLOUR);
         } else {
-            docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, includeMessageFieldNames, area, service, types, null);
+            docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, includeMessageFieldNames, oldStyle, area, service, types, null);
         }
         docxFile.endRow();
     }
@@ -622,7 +648,7 @@ public class GeneratorDocx extends GeneratorDocument {
     private void addOperationStructureDetails(DocxBaseWriter docxFile, OperationType op) throws IOException {
         docxFile.addTitle(4, "Structures");
 
-        List<AnyTypeReference> msgs = new LinkedList<AnyTypeReference>();
+        List<AnyTypeReference> msgs = new LinkedList<>();
 
         if (op instanceof SendOperationType) {
             SendOperationType lop = (SendOperationType) op;
@@ -702,7 +728,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 docxFile.addComment("The operation may return one of the following errors:");
             }
 
-            TreeMap<String, List<Object[]>> m = new TreeMap<String, List<Object[]>>(new Comparator<String>() {
+            TreeMap<String, List<Object[]>> m = new TreeMap<>(new Comparator<String>() {
                 @Override
                 public int compare(String o1, String o2) {
                     try {
@@ -733,7 +759,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     if (m.containsKey(String.valueOf(err.getNumber()))) {
                         v = m.get(String.valueOf(err.getNumber()));
                     } else {
-                        v = new ArrayList<Object[]>();
+                        v = new ArrayList<>();
                         m.put(String.valueOf(err.getNumber()), v);
                     }
 
@@ -772,7 +798,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     if (m.containsKey(es)) {
                         v = m.get(es);
                     } else {
-                        v = new ArrayList<Object[]>();
+                        v = new ArrayList<>();
                         m.put(es, v);
                     }
 
@@ -930,7 +956,7 @@ public class GeneratorDocx extends GeneratorDocument {
         }
         docxFile.startRow();
         docxFile.addCell(0, COMPOSITE_TABLE_WIDTHS, "Extends", HEADER_COLOUR);
-        docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, area, service, new TypeRef(extendsClass), STD_COLOUR, 3);
+        docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, new TypeRef(extendsClass), STD_COLOUR, 3);
         docxFile.endRow();
 
         if (null == composite.getShortFormPart()) {
@@ -957,7 +983,7 @@ public class GeneratorDocx extends GeneratorDocument {
             for (CompositeField element : compElements) {
                 docxFile.startRow();
                 docxFile.addCell(0, COMPOSITE_TABLE_WIDTHS, element.getFieldName());
-                docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, area, service, new TypeRef(element.getTypeReference()), null, 0);
+                docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, new TypeRef(element.getTypeReference()), null, 0);
                 docxFile.addCell(2, COMPOSITE_TABLE_WIDTHS, element.isCanBeNull() ? "Yes" : "No");
                 docxFile.addCell(3, COMPOSITE_TABLE_WIDTHS, element.getComment(), false);
                 docxFile.endRow();
@@ -1170,22 +1196,26 @@ public class GeneratorDocx extends GeneratorDocument {
             addCell(index, widths, text, shade, true, span, false, false);
         }
 
-        protected void addCell(int index, int[] widths, boolean includeMessageFieldNames, AreaType area, ServiceType service, TypeRef type, String shade, int span) throws IOException {
-            StringBuilder buf = createTypeHyperLink(new StringBuilder(), includeMessageFieldNames, area, service, type);
+        protected void addCell(int index, int[] widths, boolean includeMessageFieldNames, boolean oldStyle, AreaType area, ServiceType service, TypeRef type, String shade, int span) throws IOException {
+            StringBuilder buf = createTypeHyperLink(new StringBuilder(), includeMessageFieldNames, oldStyle, area, service, type);
             actualAddCell(index, widths, buf.toString(), shade, true, span, false, false);
         }
 
-        protected void addCell(int index, int[] widths, boolean includeMessageFieldNames, AreaType area, ServiceType service, List<TypeRef> types, String shade) throws IOException {
+        protected void addCell(int index, int[] widths, boolean includeMessageFieldNames, boolean oldStyle, AreaType area, ServiceType service, List<TypeRef> types, String shade) throws IOException {
+            addCell(index, widths, includeMessageFieldNames, oldStyle, area, service, types, shade, 1);
+        }
+        
+        protected void addCell(int index, int[] widths, boolean includeMessageFieldNames, boolean oldStyle, AreaType area, ServiceType service, List<TypeRef> types, String shade, int span) throws IOException {
             StringBuilder buf = new StringBuilder();
             for (int i = 0; i < types.size(); i++) {
-                createTypeHyperLink(buf, includeMessageFieldNames, area, service, types.get(i));
+                createTypeHyperLink(buf, includeMessageFieldNames, oldStyle, area, service, types.get(i));
 
                 if ((i + 1) != types.size()) {
                     buf.append("</w:p><w:p><w:pPr><w:jc w:val=\"center\"/></w:pPr>");
                 }
             }
 
-            actualAddCell(index, widths, buf.toString(), shade, true, 1, false, false);
+            actualAddCell(index, widths, buf.toString(), shade, true, span, false, false);
         }
 
         protected void addCell(int index, int[] widths, String text, String shade, boolean centered, int span, boolean vMerge, boolean vRestart) throws IOException {
@@ -1354,42 +1384,51 @@ public class GeneratorDocx extends GeneratorDocument {
         }
 
         private StringBuilder createTypeHyperLink(StringBuilder buf, 
-                boolean includeMessageFieldNames, AreaType area, 
+                boolean includeMessageFieldNames, boolean oldStyle, AreaType area, 
                 ServiceType service, TypeRef ref) throws IOException {
             String prefix = "";
             String typeName;
             String postfix = "";
             boolean hyperlink;
+            TypeReference type;
 
             if (includeMessageFieldNames && ref.isField()) {
                 NamedElementReferenceWithCommentType field = ref.getFieldRef();
-                TypeReference type = field.getType();
+                type = field.getType();
                 hyperlink = area.getName().equalsIgnoreCase(type.getArea());
+                
+                if(oldStyle){
+                    if ((null != field.getName()) && (0 < field.getName().length())) {
+                        prefix = field.getName() + " : (";
+                    } else {
+                        prefix = "(";
+                    }
 
-                if ((null != field.getName()) && (0 < field.getName().length())) {
-                    prefix = field.getName() + " : (";
-                } else {
-                    prefix = "(";
+                    postfix = ")";
+
+                    if (type.isList()) {
+                        prefix += "List<";
+                        postfix = ">" + postfix;
+                    }
+                }else{
+                    prefix = (type.isList()) ? "List<" : "";
+                    postfix = (type.isList()) ? "> " : " "; // Space html character
+                    postfix += field.getName();
                 }
-
-                postfix = ")";
-
-                if (type.isList()) {
-                    prefix += "List<";
-                    postfix = ">" + postfix;
-                }
-
-                typeName = createFQTypeName(area, service, type, false);
             } else {
-                TypeReference type = ref.getTypeRef();
+                type = ref.getTypeRef();
                 hyperlink = area.getName().equalsIgnoreCase(type.getArea());
 
                 if (type.isList()) {
                     prefix = "List<";
                     postfix = ">";
                 }
-
-                typeName = createFQTypeName(area, service, type, false);
+            }
+            
+            typeName = createFQTypeName(area, service, type, false);
+            // No need to append the MAL prefix as those types are very well known
+            if(typeName.startsWith("MAL::")) {
+                typeName = typeName.replace("MAL::", "");
             }
 
             return createHyperLink(buf, prefix, typeName, postfix, "DATATYPE_" + typeName, hyperlink);
@@ -1411,14 +1450,14 @@ public class GeneratorDocx extends GeneratorDocument {
             if (hyperlink) {
                 buf.append("<w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr>");
             }
-            buf.append("<w:t>");
-            buf.append(escape(typeName));
-            buf.append("</w:t></w:r>");
+            buf.append("<w:t>").append(escape(typeName)).append("</w:t>");
+            buf.append("</w:r>");
+            
             if (hyperlink) {
                 buf.append("<w:r><w:fldChar w:fldCharType=\"end\"/></w:r>");
             }
 
-            buf.append("<w:r><w:t>");
+            buf.append("<w:r><w:t xml:space=\"preserve\">");
             buf.append(escape(postfix));
             buf.append("</w:t></w:r>");
 
@@ -1426,7 +1465,7 @@ public class GeneratorDocx extends GeneratorDocument {
         }
 
         private String escape(String t) {
-            if (null != t) {
+            if (t != null) {
                 t = t.replaceAll("<li>", "");
                 t = t.replaceAll("</li>", "");
                 t = t.replaceAll("&", "&amp;");

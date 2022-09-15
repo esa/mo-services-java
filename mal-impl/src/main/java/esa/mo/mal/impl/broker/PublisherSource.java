@@ -20,14 +20,11 @@
  */
 package esa.mo.mal.impl.broker;
 
-import esa.mo.mal.impl.broker.key.PublisherKey;
 import esa.mo.mal.impl.util.StructureHelper;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -39,7 +36,7 @@ public final class PublisherSource {
 
     private final String uri;
     private final QoSLevel qosLevel;
-    private final Set<PublisherKey> keySet = new TreeSet<PublisherKey>();
+    private final Set<Identifier> keySet = new TreeSet<>();
     private IdentifierList domain = null;
 
     PublisherSource(final String uri, final QoSLevel qosLevel) {
@@ -55,44 +52,50 @@ public final class PublisherSource {
     public void report() {
         MALBrokerImpl.LOGGER.log(Level.FINE, "  START Provider ( {0} )", uri);
         MALBrokerImpl.LOGGER.log(Level.FINE, "    Domain : {0}", StructureHelper.domainToString(domain));
-        for (PublisherKey key : keySet) {
+        for (Identifier key : keySet) {
             MALBrokerImpl.LOGGER.log(Level.FINE, "    Allowed: {0}", key);
         }
         MALBrokerImpl.LOGGER.log(Level.FINE, "  END Provider ( {0} )", uri);
     }
 
-    public void setKeyList(final MALMessageHeader hdr, final EntityKeyList l) {
+    @Deprecated
+    public void setKeyList(final MALMessageHeader hdr, final IdentifierList l) {
         domain = hdr.getDomain();
         keySet.clear();
-        for (EntityKey entityKey : l) {
-            keySet.add(new PublisherKey(entityKey));
+        for (Identifier key : l) {
+            keySet.add(key);
         }
     }
 
+    /*
     public void checkPublish(final MALMessageHeader hdr, 
             final UpdateHeaderList updateList) throws MALInteractionException {
         if (StructureHelper.isSubDomainOf(domain, hdr.getDomain())) {
-            final EntityKeyList lst = new EntityKeyList();
+            // Check if the number of key matches:
             for (final UpdateHeader update : updateList) {
-                final EntityKey updateKey = update.getKey();
-                boolean matched = false;
-                for (PublisherKey key : keySet) {
-                    if (key.matchesWithWildcard(updateKey)) {
-                        matched = true;
-                        break;
-                    }
+                if(update.getKeyValues().size() != keySet.size()) {
+                    MALBrokerImpl.LOGGER.warning("The number of published keys does not match!");
+                    throw new MALInteractionException(new MALStandardError(
+                            MALHelper.UNKNOWN_ERROR_NUMBER, "The number of published keys does not match!"));
                 }
-                if (!matched) {
-                    lst.add(updateKey);
-                }
-            }
-            if (!lst.isEmpty()) {
-                MALBrokerImpl.LOGGER.warning("Provider not allowed to publish some keys");
-                throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, lst));
             }
         } else {
             MALBrokerImpl.LOGGER.warning("Provider not allowed to publish to the domain");
             throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null));
         }
+    }
+    */
+    public void checkPublish(final MALMessageHeader hdr, 
+            final UpdateHeaderList updateList) throws MALInteractionException {
+        // Check if the number of key matches:
+        /*
+        for (final UpdateHeader update : updateList) {
+            if(update.getKeyValues().size() != keySet.size()) {
+                MALBrokerImpl.LOGGER.warning("The number of published keys does not match!");
+                throw new MALInteractionException(new MALStandardError(
+                        MALHelper.UNKNOWN_ERROR_NUMBER, "The number of published keys does not match!"));
+            }
+        }
+        */
     }
 }

@@ -369,6 +369,16 @@ public class LineDecoder implements MALDecoder {
 
         return null;
     }
+    
+    @Override
+    public ObjectRef decodeObjectRef() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ObjectRef decodeNullableObjectRef() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     private Short internalDecodeShort(final String strVal) throws MALException {
         try {
@@ -555,6 +565,8 @@ public class LineDecoder implements MALDecoder {
                 return decodeFineTime();
             case Attribute._URI_TYPE_SHORT_FORM:
                 return decodeURI();
+            case Attribute._OBJECTREF_TYPE_SHORT_FORM:
+                return decodeObjectRef();
             default:
                 throw new MALException("Unknown attribute type received: " + strVal);
         }

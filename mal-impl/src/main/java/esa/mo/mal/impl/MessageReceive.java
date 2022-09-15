@@ -738,11 +738,7 @@ public class MessageReceive implements MALMessageListener {
                         return this.second.compareTo(otherPair.second);
                     }
                 } else {
-                    if (null == otherPair.second) {
-                        return 0;
-                    }
-
-                    return -1;
+                    return (null == otherPair.second) ? 0 : -1;
                 }
             }
 

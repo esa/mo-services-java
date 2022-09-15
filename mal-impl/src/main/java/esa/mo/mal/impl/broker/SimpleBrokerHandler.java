@@ -18,10 +18,8 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.broker.simple;
+package esa.mo.mal.impl.broker;
 
-import esa.mo.mal.impl.broker.MALBrokerHandlerImpl;
-import esa.mo.mal.impl.broker.SubscriptionSource;
 import esa.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 

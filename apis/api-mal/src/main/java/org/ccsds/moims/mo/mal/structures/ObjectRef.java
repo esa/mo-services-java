@@ -27,15 +27,23 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Class representing MAL Duration type.
  */
-public class Duration implements Attribute {
+public class ObjectRef implements Attribute {
 
-    private double value;
+    private final String domain;
+    private final Identifier area;
+    private final Identifier type;
+    private final Identifier key;
+    private final UInteger objectVersion;
 
     /**
      * Default constructor.
      */
-    public Duration() {
-        value = 0;
+    public ObjectRef() {
+        this.domain = "";
+        this.area = new Identifier();
+        this.type = new Identifier();
+        this.key = new Identifier();
+        this.objectVersion = new UInteger();
     }
 
     /**
@@ -43,37 +51,73 @@ public class Duration implements Attribute {
      *
      * @param value Value to initialise with.
      */
-    public Duration(final double value) {
-        this.value = value;
+    public ObjectRef(final String domain, final Identifier area, final Identifier type, 
+            final Identifier key, final UInteger objectVersion) {
+        this.domain = domain;
+        this.area = area;
+        this.type = type;
+        this.key = key;
+        this.objectVersion = objectVersion;
     }
 
     @Override
     public Element createElement() {
-        return new Duration();
+        return new ObjectRef();
     }
 
     /**
-     * Returns the value of this type.
+     * Returns the domain.
      *
-     * @return the value.
+     * @return the domain.
      */
-    public double getValue() {
-        return value;
+    public String getDomain() {
+        return domain;
     }
 
-//  This might be required for XML serialisation and technologies that use that.  
-//  public void setValue(int value)
-//  {
-//    this.value = value;
-//  }
+    /**
+     * Returns the area.
+     *
+     * @return the area.
+     */
+    public Identifier getArea() {
+        return area;
+    }
+
+    /**
+     * Returns the type.
+     *
+     * @return the type.
+     */
+    public Identifier getType() {
+        return type;
+    }
+    
+    /**
+     * Returns the key.
+     *
+     * @return the key.
+     */
+    public Identifier getKey() {
+        return key;
+    }
+
+    /**
+     * Returns the object version.
+     *
+     * @return the object version.
+     */
+    public UInteger getObjectVersion() {
+        return objectVersion;
+    }
+    
     @Override
     public Long getShortForm() {
-        return Attribute.DURATION_SHORT_FORM;
+        return Attribute.OBJECTREF_SHORT_FORM;
     }
 
     @Override
     public Integer getTypeShortForm() {
-        return Attribute.DURATION_TYPE_SHORT_FORM;
+        return Attribute.OBJECTREF_TYPE_SHORT_FORM;
     }
 
     @Override
@@ -93,12 +137,13 @@ public class Duration implements Attribute {
 
     @Override
     public void encode(final MALEncoder encoder) throws MALException {
-        encoder.encodeDuration(this);
+        encoder.encodeObjectRef(this);
     }
 
     @Override
     public Element decode(final MALDecoder decoder) throws MALException {
-        return decoder.decodeDuration();
+        return decoder.decodeObjectRef();
+        
     }
 
     @Override
@@ -109,20 +154,38 @@ public class Duration implements Attribute {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof Duration)) {
+        if (!(obj instanceof ObjectRef)) {
             return false;
         }
-        return this.value == (((Duration) obj).value);
+        if(!domain.equals(((ObjectRef) obj).getDomain())){
+            return false;
+        }
+        if(!area.equals(((ObjectRef) obj).getArea())){
+            return false;
+        }
+        if(!type.equals(((ObjectRef) obj).getType())){
+            return false;
+        }
+        if(!key.equals(((ObjectRef) obj).getKey())){
+            return false;
+        }
+        if(!objectVersion.equals(((ObjectRef) obj).getObjectVersion())){
+            return false;
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Double.valueOf(value).hashCode();
+        return domain.hashCode() + area.hashCode() + type.hashCode() 
+                + key.hashCode() + objectVersion.hashCode();
     }
 
     @Override
     public String toString() {
-        return String.valueOf(value);
+        return String.valueOf(domain) + ":" + String.valueOf(area) + ":"
+                + String.valueOf(type) + ":" + String.valueOf(key) + ":" 
+                + String.valueOf(objectVersion) + ":";
     }
     private static final long serialVersionUID = Attribute.DURATION_SHORT_FORM;
 }

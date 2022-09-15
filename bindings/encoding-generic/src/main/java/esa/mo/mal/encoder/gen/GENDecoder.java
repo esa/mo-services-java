@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.ULong;
@@ -136,6 +137,13 @@ public abstract class GENDecoder implements MALDecoder {
     @Override
     public Double decodeDouble() throws MALException {
         return sourceBuffer.getDouble();
+    }
+    
+    @Override
+    public ObjectRef decodeObjectRef() throws MALException {
+        return new ObjectRef(sourceBuffer.getString(), new Identifier(sourceBuffer.getString()),
+        new Identifier(sourceBuffer.getString()), new Identifier(sourceBuffer.getString()), 
+                new UInteger(sourceBuffer.getUnsignedLong32()));
     }
 
     @Override
@@ -314,6 +322,15 @@ public abstract class GENDecoder implements MALDecoder {
         return null;
     }
 
+    @Override
+    public ObjectRef decodeNullableObjectRef() throws MALException {
+        if (sourceBuffer.isNotNull()) {
+            return decodeObjectRef();
+        }
+
+        return null;
+    }
+    
     protected Attribute internalDecodeAttribute(final int typeval) throws MALException {
         switch (typeval) {
             case Attribute._BLOB_TYPE_SHORT_FORM:

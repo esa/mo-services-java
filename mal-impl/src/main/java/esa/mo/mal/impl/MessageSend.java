@@ -78,7 +78,6 @@ public class MessageSend {
      *
      * @param details Message details structure.
      * @param op The operation.
-     * @param entityKeys List of keys that can be published.
      * @param listener Error callback interface.
      * @return Publish transaction identifier.
      * @throws MALInteractionException if there is a problem during the
@@ -87,7 +86,6 @@ public class MessageSend {
      */
     public Long publishRegister(final MessageDetails details,
             final MALPubSubOperation op,
-            final EntityKeyList entityKeys,
             final MALPublishInteractionListener listener)
             throws MALInteractionException, MALException {
         ipsmap.registerPublishListener(details, listener);
@@ -95,8 +93,7 @@ public class MessageSend {
         return initiateSynchronousInteraction(details,
                 op,
                 MALPubSubOperation.PUBLISH_REGISTER_STAGE,
-                (MALPublishInteractionListener) null,
-                entityKeys);
+                (MALPublishInteractionListener) null);
     }
 
     /**
@@ -154,13 +151,12 @@ public class MessageSend {
      */
     public MALMessage publishRegisterAsync(final MessageDetails details,
             final MALPubSubOperation op,
-            final EntityKeyList entityKeys,
             final MALPublishInteractionListener listener)
             throws MALInteractionException, MALException {
         ipsmap.registerPublishListener(details, listener);
         final Long transId = icmap.createTransaction(false, listener);
         return initiateAsynchronousInteraction(details,
-                createMessage(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE, entityKeys));
+                createMessage(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE));
     }
 
     /**
