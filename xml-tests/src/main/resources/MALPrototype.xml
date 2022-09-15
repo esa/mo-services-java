@@ -454,10 +454,6 @@
             <smc:type area="MALPrototype" service="IPTest"
                       name="TestPublish" />
           </smc:extends>
-          <smc:field name="entityKeys"
-                     comment="The keys of the entities to be registered.">
-            <smc:type list="true" area="MAL" name="EntityKey" />
-          </smc:field>
           <smc:field name="errorCode"
                      comment="The code of the Publish Register error expected to be received.-1 if no Publish Register error is expected.">
             <smc:type area="MAL" name="UInteger" />
@@ -470,10 +466,6 @@
             <smc:type area="MALPrototype" service="IPTest"
                       name="TestPublish" />
           </smc:extends>
-          <smc:field name="entityKeys"
-                     comment="The keys of the entities to be registered.">
-            <smc:type list="true" area="MAL" name="EntityKey" />
-          </smc:field>
           <smc:field name="errorCode"
                      comment="The code of the Publish Deregister error expected to be received.-1 if no Publish Deregister error is expected.">
             <smc:type area="MAL" name="UInteger" />
@@ -502,10 +494,6 @@
           <smc:field name="isException"
                      comment="Indicates whether the error is returned as an Exception or a Publish Error message">
             <smc:type area="MAL" name="Boolean" />
-          </smc:field>
-          <smc:field name="failedEntityKeys"
-                     comment="The keys of the published entities that have not been registered.">
-            <smc:type list="true" area="MAL" name="EntityKey" />
           </smc:field>
         </smc:composite>
         <smc:composite name="TestUpdate" shortFormPart="8"

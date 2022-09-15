@@ -278,6 +278,7 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
+                <xsd:element name="subscriptionKeys" type="mal:AnyTypeReference"/>
                 <xsd:element name="publishNotify" type="mal:AnyTypeReference"/>
               </xsd:sequence>
             </xsd:complexType>
