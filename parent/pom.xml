@@ -115,17 +115,17 @@
         <dependencies>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>API_MAL</artifactId>
+                <artifactId>api-mal</artifactId>
                 <version>${esa.api.mal.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>API_COM</artifactId>
+                <artifactId>api-com</artifactId>
                 <version>${esa.api.com.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>API_MC</artifactId>
+                <artifactId>api-mc</artifactId>
                 <version>${esa.api.mc.version}</version>
             </dependency>
             <dependency>

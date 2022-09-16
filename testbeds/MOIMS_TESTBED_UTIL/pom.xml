@@ -108,7 +108,7 @@
             <dependencies>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>API_MAL</artifactId>
+                    <artifactId>api-mal</artifactId>
                 </dependency>
             </dependencies>
         </profile>
@@ -126,7 +126,7 @@
             <dependencies>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>API_MAL</artifactId>
+                    <artifactId>api-mal</artifactId>
                 </dependency>
             </dependencies>
         </profile>

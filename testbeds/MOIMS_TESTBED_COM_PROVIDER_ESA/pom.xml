@@ -76,7 +76,7 @@
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>API_MAL</artifactId>
+            <artifactId>api-mal</artifactId>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
@@ -84,7 +84,7 @@
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>API_COM_TEST</artifactId>
+            <artifactId>api-com-test</artifactId>
             <version>${esa.com.test_api.version}</version>
         </dependency>
         <dependency>

@@ -67,15 +67,15 @@
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>API_MAL</artifactId>
+            <artifactId>api-mal</artifactId>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>API_COM</artifactId>
+            <artifactId>api-com</artifactId>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>API_COMMON</artifactId>
+            <artifactId>api-common</artifactId>
             <version>9.0-SNAPSHOT</version>
         </dependency>
         <dependency>
