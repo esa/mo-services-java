@@ -108,24 +108,9 @@ public abstract class TestData
     testEnumerations.add(SessionType.LIVE);
     testEnumerations.add(SessionType.REPLAY);
     testEnumerations.add(SessionType.SIMULATION);
-    testEnumerations.add(UpdateType.CREATION);
-    testEnumerations.add(UpdateType.UPDATE);
-    testEnumerations.add(UpdateType.MODIFICATION);
-    testEnumerations.add(UpdateType.DELETION);
 
     // complete composites
     testComposites.add(testComposite);
-    testComposites.add(new EntityRequest(
-        null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
-        Boolean.TRUE, new EntityKeyList()));
-    EntityKeyList lst = new EntityKeyList();
-    //lst.add(new EntityKey(new Identifier("aFirst"), new Identifier("aSecond"), new Identifier("aThird"), new Identifier("aFourth")));
-    lst.add(new EntityKey(new Identifier("a"), new Long(1), new Long(2), new Long(3)));
-    //lst.add(new EntityKey(new Identifier("bFirst"), new Identifier("bSecond"), new Identifier("bThird"), new Identifier("bFourth")));
-    lst.add(new EntityKey(new Identifier("b"), new Long(11), new Long(12), new Long(13)));
-    testComposites.add(new EntityRequest(
-        null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
-        Boolean.TRUE, lst));
     testComposites.add(new Pair(new Union(testInteger), testURI));
 
     // abstract composites
@@ -152,16 +137,6 @@ public abstract class TestData
     testNulls.add(null);
 
     // composites with null
-    testCompositeWithNulls.add(new EntityRequest(
-        null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
-        Boolean.TRUE, new EntityKeyList()));
-    EntityKeyList nlst = new EntityKeyList();
-    nlst.add(new EntityKey(new Identifier("a"), new Long(1), new Long(3), null));
-    nlst.add(new EntityKey(new Identifier("b"), new Long(11), null, new Long(13)));
-    nlst.add(null);
-    testCompositeWithNulls.add(new EntityRequest(
-        null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
-        Boolean.FALSE, nlst));
     testCompositeWithNulls.add(new Pair(null, testURI));
 
     // concatenate all together for simplicity in service provider

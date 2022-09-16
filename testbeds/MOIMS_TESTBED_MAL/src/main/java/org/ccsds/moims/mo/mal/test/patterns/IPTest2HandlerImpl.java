@@ -80,8 +80,7 @@ public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton
         _TestPublishRegister.getQos(),
         new Hashtable(),
         _TestPublishRegister.getPriority());
-    publisher.register(_TestPublishRegister.getEntityKeys(), 
-        new PublisherListener());
+    publisher.register(new PublisherListener());
   }
 
   public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)
@@ -97,10 +96,6 @@ public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton
         _TestPublishUpdate.getPriority());
     UpdateHeaderList updateHeaderList = _TestPublishUpdate.getUpdateHeaders();
     TestUpdateList testUpdateList = _TestPublishUpdate.getUpdates();
-    for (UpdateHeader updateHeader : updateHeaderList) {
-      updateHeader.setTimestamp(new Time(System.currentTimeMillis()));
-      updateHeader.setSourceURI(new URI(""));
-    }
     publisher.publish(updateHeaderList, testUpdateList);
   }
 
