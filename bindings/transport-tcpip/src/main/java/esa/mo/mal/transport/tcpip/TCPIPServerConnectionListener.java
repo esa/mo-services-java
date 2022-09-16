@@ -45,7 +45,7 @@ public class TCPIPServerConnectionListener extends Thread {
     /**
      * Holds the list of data poller threads
      */
-    private final List<Thread> pollerThreads = new ArrayList<Thread>();
+    private final List<Thread> pollerThreads = new ArrayList<>();
 
     /**
      * Constructor.
@@ -77,8 +77,7 @@ public class TCPIPServerConnectionListener extends Thread {
             try {
                 // wait for connection
                 Socket socket = serverSocket.accept();
-
-                RLOGGER.log(Level.INFO, "Socket accepted at port {0}", socket.getPort());
+                RLOGGER.log(Level.INFO, "New TCP/IP client connected! Using remote port: {0}", socket.getPort());
 
                 // handle socket in separate thread
                 TCPIPTransportDataTransceiver tc = transport.createDataTransceiver(socket);
