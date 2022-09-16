@@ -18,7 +18,7 @@
   
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>POM</artifactId>
+        <artifactId>parent</artifactId>
         <version>9-SNAPSHOT</version>
         <relativePath>parent/pom.xml</relativePath>
     </parent>
@@ -56,6 +56,6 @@
         <module>bindings</module>
         <module>providers-consumers</module>
         <module>support-libs</module>
-        <!-- <module>testbeds</module>  -->
+        <module>testbeds</module>
     </modules>
 </project>
