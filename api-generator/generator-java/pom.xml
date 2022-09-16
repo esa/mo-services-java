@@ -13,20 +13,22 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
   
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
         <version>9-SNAPSHOT</version>
-        <relativePath>../parent/pom.xml</relativePath>
+        <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>REACTOR_STUBGEN</artifactId>
+    <artifactId>generator-java</artifactId>
     <version>9.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>ESA MO Stub Generator Reactor</name>
+    <packaging>jar</packaging>
+  
+    <name>ESA MO Stub Generator Plugin for Java</name>
+    <description>Generates Java APIs for CCSDS MO service specifications</description>
   
     <organization>
         <name>ESA</name>
@@ -61,12 +63,50 @@
         </developer>
     </developers>
 
-    <modules>
-        <module>xml-jaxb</module>
-        <module>generator-if</module>
-        <module>generator-lib</module>
-        <module>generator-java</module>
-        <module>generator-docs</module>
-        <module>plugin</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>generator-lib</artifactId>
+            <version>9.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+        </dependency>
+    </dependencies>
+  
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/..</directory>
+                <includes>
+                    <include>LICENCE.md</include>
+                </includes>
+            </resource>
+        </resources>
+    
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -23,12 +23,11 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>StubGenerator_Java</artifactId>
+    <artifactId>generator-lib</artifactId>
     <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
   
-    <name>ESA MO Stub Generator Plugin for Java</name>
-    <description>Generates Java APIs for CCSDS MAL service specifications</description>
+    <name>ESA MO Stub Generator Plugin Library</name>
     <url>http://github.com/esa/CCSDS_MO_StubGenerator</url>
   
     <organization>
@@ -64,12 +63,13 @@
         </developer>
     </developers>
 
+    <properties>
+        <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
+        <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
+        <ccsds.specification.download.filter>**/*.xsd</ccsds.specification.download.filter>
+    </properties>
+
     <dependencies>
-        <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>StubGenerator_Lib</artifactId>
-            <version>9.0-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
@@ -80,8 +80,9 @@
             <artifactId>jaxb-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>generator-interfaces</artifactId>
+            <version>9.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
   

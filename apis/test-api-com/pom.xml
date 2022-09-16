@@ -109,7 +109,7 @@
             </plugin>
             <plugin>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>StubGenerator</artifactId>
+                <artifactId>api-generator-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

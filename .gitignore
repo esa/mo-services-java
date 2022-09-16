@@ -6,3 +6,12 @@
 /stub-generator/xml-jaxb/target/
 /stub-generator/plugin-temp/target/
 /stub-generator/plugin/target/
+/api-generator/generator-docs/target/
+/api-generator/generator-if/target/
+/api-generator/generator-java/target/
+/api-generator/generator-lib/target/
+/api-generator/plugin/target/
+/api-generator/xml-jaxb/target/
+/api-generator/api-generator-interfaces/target/
+/api-generator/generator-interfaces/target/
+/api-generator/api-generator-maven-plugin/target/

@@ -326,7 +326,7 @@
                 </plugin>
                 <plugin>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>StubGenerator</artifactId>
+                    <artifactId>api-generator-maven-plugin</artifactId>
                     <version>${esa.stubgen.version}</version>
                     <executions>
                         <execution>
@@ -346,7 +346,7 @@
                     <dependencies>
                         <dependency>
                             <groupId>int.esa.ccsds.mo</groupId>
-                            <artifactId>StubGenerator_Java</artifactId>
+                            <artifactId>generator-java</artifactId>
                             <version>${esa.stubgen.version}</version>
                         </dependency>
                     </dependencies>
