@@ -40,8 +40,7 @@ import esa.mo.xsd.EnumerationType.Item;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import org.apache.maven.plugin.logging.Log;
@@ -385,9 +384,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 // create a comment for the structure folder if supported
                 createAreaStructureFolderComment(structureFolder, area);
 
+                ConcurrentLinkedQueue<Exception> errors = new ConcurrentLinkedQueue<>();
+                
                 // create area level data types
-                for (Object oType : area.getDataTypes().getFundamentalOrAttributeOrComposite()) {
-                //area.getDataTypes().getFundamentalOrAttributeOrComposite().stream().forEach(oType -> {
+                area.getDataTypes().getFundamentalOrAttributeOrComposite().stream().forEach(oType -> {
                     try {
                         if (oType instanceof FundamentalType) {
                             createFundamentalClass(structureFolder, area, null, (FundamentalType) oType);
@@ -403,11 +403,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         } else {
                             throw new IllegalArgumentException("Unexpected area (" + area.getName() + ") level datatype of " + oType.getClass().getName());
                         }
-                    } catch (IOException ex) {
-                        Logger.getLogger(GeneratorLangs.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (Exception ex) {
+                        errors.add(ex);
                     }
+                });
+                
+                if(!errors.isEmpty()) {
+                    throw (IOException) errors.poll();
                 }
-                //});
             }
             // create services
             for (ServiceType service : area.getService()) {
