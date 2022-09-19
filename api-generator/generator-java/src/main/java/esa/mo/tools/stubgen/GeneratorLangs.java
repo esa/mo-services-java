@@ -387,7 +387,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 ConcurrentLinkedQueue<Exception> errors = new ConcurrentLinkedQueue<>();
                 
                 // create area level data types
-                area.getDataTypes().getFundamentalOrAttributeOrComposite().stream().forEach(oType -> {
+                area.getDataTypes().getFundamentalOrAttributeOrComposite().parallelStream().forEach(oType -> {
                     try {
                         if (oType instanceof FundamentalType) {
                             createFundamentalClass(structureFolder, area, null, (FundamentalType) oType);

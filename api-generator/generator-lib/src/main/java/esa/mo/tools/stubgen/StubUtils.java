@@ -156,7 +156,9 @@ public abstract class StubUtils {
     public static Writer createLowLevelWriter(File folder, String name,
             String ext) throws IOException {
         File file = new File(folder, name + "." + ext);
-        if (!file.exists() && !file.createNewFile()) {
+        file.createNewFile();
+        
+        if (!file.exists()) {
             throw new IOException("Unable to create file: " + file.getPath());
         }
 
@@ -172,13 +174,11 @@ public abstract class StubUtils {
      * @throws FileNotFoundException If there is a problem creating the folder.
      */
     public static File createFolder(File parentFolder, String name) throws FileNotFoundException {
-        File folder;
-        if (null != parentFolder) {
-            folder = new File(parentFolder.getPath() + File.separator + name.toLowerCase());
-        } else {
-            folder = new File(name.toLowerCase());
-        }
-        if (!folder.exists() && !folder.mkdirs()) {
+        String prefix = (parentFolder != null) ? parentFolder.getPath() + File.separator : "";
+        File folder = new File(prefix + name.toLowerCase());
+        folder.mkdirs();
+        
+        if (!folder.exists()) {
             throw new FileNotFoundException("Failed to create directory: " + folder.getPath());
         }
 
@@ -211,7 +211,7 @@ public abstract class StubUtils {
         List<String> rv = null;
 
         if (null != cond) {
-            rv = new LinkedList<String>();
+            rv = new LinkedList<>();
 
             for (String string : cond) {
                 rv.add(conditionalAdd(prefix, string));
