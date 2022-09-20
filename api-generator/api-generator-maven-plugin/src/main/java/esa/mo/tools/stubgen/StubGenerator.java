@@ -33,6 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.concurrent.ThreadSafe;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -52,6 +53,7 @@ import w3c.xsd.Schema;
  *
  * @phase generate-sources
  */
+@ThreadSafe
 public class StubGenerator extends AbstractMojo {
 
     /**
@@ -120,8 +122,8 @@ public class StubGenerator extends AbstractMojo {
      * @parameter
      */
     protected HashMap<String, String> packageBindings;
-    private static final Map<String, Generator> GENERATOR_MAP = new HashMap<>();
-    private static boolean generatorsLoaded = false;
+    private final Map<String, Generator> GENERATOR_MAP = new HashMap<>();
+    private boolean generatorsLoaded = false;
 
     /**
      * The main entry point when running from the command line.
@@ -153,7 +155,7 @@ public class StubGenerator extends AbstractMojo {
                 } else if ("-l".equalsIgnoreCase(arg)) {
                     // print out list of supported generators and exit
                     List<HashMap.Entry<String, String>> generators
-                            = getSupportedLanguages(new SystemStreamLog());
+                            = gen.getSupportedLanguages(new SystemStreamLog());
 
                     System.out.println("The following language generators are supported:");
 
@@ -210,16 +212,16 @@ public class StubGenerator extends AbstractMojo {
      * executing.
      * @return The list of available generators.
      */
-    public static List<Map.Entry<String, String>> getSupportedLanguages(
+    public List<Map.Entry<String, String>> getSupportedLanguages(
             final org.apache.maven.plugin.logging.Log logger) {
         loadGenerators(logger);
 
         List<Map.Entry<String, String>> rv = new ArrayList<>(GENERATOR_MAP.size());
 
-        for (Map.Entry<String, Generator> entry : GENERATOR_MAP.entrySet()) {
-            final Generator g = entry.getValue();
-
-            rv.add(new AbstractMap.SimpleEntry<>(g.getShortName(), g.getDescription()));
+        for (Generator g : GENERATOR_MAP.values()) {
+            String shortName = g.getShortName();
+            String description = g.getDescription();
+            rv.add(new AbstractMap.SimpleEntry<>(shortName, description));
         }
 
         return rv;
@@ -447,7 +449,7 @@ public class StubGenerator extends AbstractMojo {
                 new XmlSpecification(is, null));
     }
 
-    private static void loadGenerators(final org.apache.maven.plugin.logging.Log logger) {
+    private void loadGenerators(final org.apache.maven.plugin.logging.Log logger) {
         if (!generatorsLoaded) {
             generatorsLoaded = true;
 
@@ -463,10 +465,7 @@ public class StubGenerator extends AbstractMojo {
                     try {
                         final Generator g = (Generator) cls.getConstructor(new Class[]{
                             org.apache.maven.plugin.logging.Log.class
-                        })
-                                .newInstance(new Object[]{
-                            logger
-                        });
+                        }).newInstance(new Object[]{logger});
 
                         GENERATOR_MAP.put(g.getShortName().toLowerCase(), g);
                     } catch (Exception ex) {
