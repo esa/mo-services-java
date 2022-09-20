@@ -28,11 +28,11 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -112,15 +112,15 @@ public class StubGenerator extends AbstractMojo {
      *
      * @parameter
      */
-    protected Map<String, String> extraProperties;
+    protected HashMap<String, String> extraProperties;
     /**
      * Package bindings, held in AREA/package pairs For JAXB bindings, held in
      * URI/package pairs
      *
      * @parameter
      */
-    protected Map<String, String> packageBindings;
-    private static final Map<String, Generator> GENERATOR_MAP = new TreeMap<String, Generator>();
+    protected HashMap<String, String> packageBindings;
+    private static final Map<String, Generator> GENERATOR_MAP = new HashMap<>();
     private static boolean generatorsLoaded = false;
 
     /**
@@ -133,8 +133,8 @@ public class StubGenerator extends AbstractMojo {
         // default a few values
         gen.generateStructures = true;
         gen.generateCOM = true;
-        gen.extraProperties = new TreeMap<>();
-        gen.packageBindings = new TreeMap<>();
+        gen.extraProperties = new HashMap<>();
+        gen.packageBindings = new HashMap<>();
 
         boolean printHelp = false;
 
@@ -152,7 +152,7 @@ public class StubGenerator extends AbstractMojo {
                     break;
                 } else if ("-l".equalsIgnoreCase(arg)) {
                     // print out list of supported generators and exit
-                    List<Map.Entry<String, String>> generators
+                    List<HashMap.Entry<String, String>> generators
                             = getSupportedLanguages(new SystemStreamLog());
 
                     System.out.println("The following language generators are supported:");
@@ -320,7 +320,7 @@ public class StubGenerator extends AbstractMojo {
      * @param extraProperties Extra generator specific properties, held in
      * name/value pairs
      */
-    public void setExtraProperties(Map<String, String> extraProperties) {
+    public void setExtraProperties(HashMap<String, String> extraProperties) {
         this.extraProperties = extraProperties;
     }
 
@@ -330,7 +330,7 @@ public class StubGenerator extends AbstractMojo {
      *
      * @param packageBindings
      */
-    public void setPackageBindings(Map<String, String> packageBindings) {
+    public void setPackageBindings(HashMap<String, String> packageBindings) {
         this.packageBindings = packageBindings;
     }
 
@@ -339,7 +339,7 @@ public class StubGenerator extends AbstractMojo {
         loadGenerators(getLog());
 
         if (null == extraProperties) {
-            extraProperties = new TreeMap<>();
+            extraProperties = new HashMap<>();
         }
 
         // if the directoy containing the xml specifications exists

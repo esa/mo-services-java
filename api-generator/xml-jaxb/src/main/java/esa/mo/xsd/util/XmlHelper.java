@@ -40,6 +40,7 @@ import javax.xml.bind.Unmarshaller;
 public abstract class XmlHelper {
 
     public static final java.util.logging.Logger LOGGER = Logger.getLogger("esa.mo.xsd");
+    private static JAXBContext jc = null;
 
     private XmlHelper() {
     }
@@ -78,9 +79,12 @@ public abstract class XmlHelper {
         return specList;
     }
 
-    public static AbstractMap.SimpleEntry<SpecificationType, XmlSpecification> loadSpecification(
+    public synchronized static AbstractMap.SimpleEntry<SpecificationType, XmlSpecification> loadSpecification(
             final File is) throws IOException, JAXBException {
-        final JAXBContext jc = JAXBContext.newInstance("esa.mo.xsd");
+        if(jc == null) {
+           jc = JAXBContext.newInstance("esa.mo.xsd");
+        }
+
         final Unmarshaller unmarshaller = jc.createUnmarshaller();
         final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
         return new AbstractMap.SimpleEntry<>((SpecificationType) rootElement.getValue(),

@@ -35,12 +35,12 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 
@@ -112,7 +112,7 @@ public class GeneratorSvg extends GeneratorDocument {
     @Override
     public void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException {
         for (AreaType area : spec.getArea()) {
-            Map<String, String> indexMap = new TreeMap<>();
+            Map<String, String> indexMap = new HashMap<>();
 
             if ((!area.getName().equalsIgnoreCase(StdStrings.COM)) || (generateCOM())) {
                 String outputName = "output" + area.getName();

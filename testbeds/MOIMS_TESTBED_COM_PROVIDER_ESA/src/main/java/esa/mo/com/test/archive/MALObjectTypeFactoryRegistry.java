@@ -21,7 +21,7 @@
 package esa.mo.com.test.archive;
 
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.HashMap;
 import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.mal.MALElementFactory;
 
@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.MALElementFactory;
  */
 public class MALObjectTypeFactoryRegistry
 {
-  private final Map<String, ElementFactories> factoryMap = new TreeMap();
+  private final Map<String, ElementFactories> factoryMap = new HashMap();
 
   private static MALObjectTypeFactoryRegistry instance = null;
 

@@ -54,11 +54,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     private final GeneratorConfiguration config;
     protected final Set<TypeKey> enumTypesSet = new TreeSet<>();
     protected final Set<TypeKey> abstractTypesSet = new TreeSet<>();
-    protected final Map<TypeKey, Object> allTypesMap = new TreeMap<>();
-    protected final Map<TypeKey, CompositeType> compositeTypesMap = new TreeMap<>();
-    protected final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new TreeMap<>();
-    protected final Map<String, NativeTypeDetails> nativeTypesMap = new TreeMap<>();
-    protected final Map<String, ErrorDefinitionType> errorDefinitionMap = new TreeMap<>();
+    protected final Map<TypeKey, Object> allTypesMap = new HashMap<>();
+    protected final Map<TypeKey, CompositeType> compositeTypesMap = new HashMap<>();
+    protected final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new HashMap<>();
+    protected final Map<String, NativeTypeDetails> nativeTypesMap = new HashMap<>();
+    protected final Map<String, ErrorDefinitionType> errorDefinitionMap = new HashMap<>();
     private final Log logger;
     private boolean generateCOM;
 
@@ -81,7 +81,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             Map<String, String> extraProperties) throws IOException {
         this.generateCOM = generateCOM;
 
-        if (null != packageBindings) {
+        if (packageBindings != null) {
             for (Map.Entry<String, String> entry : packageBindings.entrySet()) {
                 String area = entry.getKey();
                 String pack = entry.getValue();
@@ -338,16 +338,8 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @return the full name of the type.
      */
     public String createElementType(TargetWriter file, AreaType area, ServiceType service, String type) {
-        String areaName = null;
-        String serviceName = null;
-
-        if (null != area) {
-            areaName = area.getName();
-        }
-        if (null != service) {
-            serviceName = service.getName();
-        }
-
+        String areaName = (area != null) ? area.getName() : null;
+        String serviceName = (service != null) ? service.getName() : null;
         return createElementType(file, areaName, serviceName, config.getStructureFolder(), type);
     }
 
@@ -368,30 +360,30 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
 
         if (null == area) {
             return type;
+        }
+        
+        if (isAttributeType(TypeUtils.createTypeReference(area, service, type, false))) {
+            AttributeTypeDetails details = getAttributeDetails(area, type);
+            retVal = details.getTargetType();
         } else {
-            if (isAttributeType(TypeUtils.createTypeReference(area, service, type, false))) {
-                AttributeTypeDetails details = getAttributeDetails(area, type);
-                retVal = details.getTargetType();
+            if (StdStrings.XML.equals(area)) {
+                retVal = config.getAreaPackage(service) + StubUtils.preCap(type);
             } else {
-                if (StdStrings.XML.equals(area)) {
-                    retVal = config.getAreaPackage(service) + StubUtils.preCap(type);
-                } else {
-                    retVal += config.getAreaPackage(area) + area.toLowerCase() + config.getNamingSeparator();
+                retVal += config.getAreaPackage(area) + area.toLowerCase() + config.getNamingSeparator();
 
-                    if (null != service) {
-                        retVal += service.toLowerCase() + config.getNamingSeparator();
-                    }
-
-                    if ((null != extraPackageLevel) && (0 < extraPackageLevel.length())) {
-                        retVal += extraPackageLevel + config.getNamingSeparator();
-                    }
-
-                    retVal += type;
+                if (null != service) {
+                    retVal += service.toLowerCase() + config.getNamingSeparator();
                 }
+
+                if ((null != extraPackageLevel) && (0 < extraPackageLevel.length())) {
+                    retVal += extraPackageLevel + config.getNamingSeparator();
+                }
+
+                retVal += type;
             }
         }
 
-        if (null != file) {
+        if (file != null) {
             file.addTypeDependency(retVal);
             retVal = convertClassName(retVal);
         }

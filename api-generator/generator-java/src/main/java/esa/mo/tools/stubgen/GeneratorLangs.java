@@ -192,7 +192,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
     @Override
     public void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException {
         for (AreaType area : spec.getArea()) {
+            long timestamp = System.currentTimeMillis();
             processArea(destinationFolderName, area, requiredPublishers);
+            timestamp = System.currentTimeMillis() - timestamp;
+            getLog().info("-----------\nProcessed " + area.getName() + " area in " + timestamp + " ms");
         }
 
         for (Map.Entry<String, MultiReturnType> entry : multiReturnTypeMap.entrySet()) {
@@ -384,7 +387,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 // create a comment for the structure folder if supported
                 createAreaStructureFolderComment(structureFolder, area);
 
-                ConcurrentLinkedQueue<Exception> errors = new ConcurrentLinkedQueue<>();
+                ConcurrentLinkedQueue<Exception> errors_1 = new ConcurrentLinkedQueue<>();
                 
                 // create area level data types
                 area.getDataTypes().getFundamentalOrAttributeOrComposite().parallelStream().forEach(oType -> {
@@ -404,14 +407,15 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             throw new IllegalArgumentException("Unexpected area (" + area.getName() + ") level datatype of " + oType.getClass().getName());
                         }
                     } catch (Exception ex) {
-                        errors.add(ex);
+                        errors_1.add(ex);
                     }
                 });
                 
-                if(!errors.isEmpty()) {
-                    throw (IOException) errors.poll();
+                if(!errors_1.isEmpty()) {
+                    throw (IOException) errors_1.poll();
                 }
             }
+            
             // create services
             for (ServiceType service : area.getService()) {
                 processService(areaFolder, area, service, requiredPublishers);
@@ -2320,7 +2324,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         typeArgs.add(lti.getMalShortFormField());
                         tr.setList(false);
                     } else {
-                        typeArgs.add(typeInfo.getMalShortFormField().substring(0, typeInfo.getMalShortFormField().length() - 11) + "List.SHORT_FORM");
+                        String field = typeInfo.getMalShortFormField();
+                        int length = field.length() - 11;
+                        typeArgs.add(field.substring(0, length) + "List.SHORT_FORM");
                     }
                 } else {
                     typeArgs.add(typeInfo.getMalShortFormField());
