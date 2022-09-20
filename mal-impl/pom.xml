@@ -23,7 +23,7 @@
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>MAL_IMPL</artifactId>
+    <artifactId>mal-impl</artifactId>
     <packaging>jar</packaging>
     <version>9.0-SNAPSHOT</version>
 

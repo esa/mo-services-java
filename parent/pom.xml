@@ -130,7 +130,7 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>MAL_IMPL</artifactId>
+                <artifactId>mal-impl</artifactId>
                 <version>${esa.mal.version}</version>
             </dependency>
             <dependency>
