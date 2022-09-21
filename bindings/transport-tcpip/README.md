@@ -56,11 +56,11 @@ The testbed, used to validate the MAL TCPIP transport binding, is found in the g
 The following directory structure is proposed:
 ```
 <top-level-directory>
-	CCSDS_MO_TRANS
-		CCSDS_MAL_TRANSPORT_TCPIP
+	bindings
+		transport-spp
 		...
-	CCSDS_MO_TESTBEDS
-		MOIMS_TESTBED_MAL
+	testbeds
+		testbed-mal
 		...		
 ```
 
@@ -71,11 +71,11 @@ Some parameters have to be setup correctly in order to run the testbed successfu
 This section assumes that CCSDS has been built correctly, including the MAL TCPIP transport binding.
 The testbed is configured in maven with the `ESA_TCPIP` profile. In order to run the testbed for the TCPIP binding, one has to execute the following:
 ```
-	cd CCSDS_MO_TESTBEDS/MOIMS_TESTBED_POM
+	cd testbeds/testbed-pom
 	mvn clean install
-	cd ../MOIMS_TESTBED_UTIL
+	cd ../testbed-util
 	mvn -P ESA clean install
-	cd ../MOIMS_TESTBED_MAL
+	cd ../testbed-mal
 	mvn -P ESA_TCPIP clean install
 ```
 

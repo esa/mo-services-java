@@ -54,7 +54,7 @@
         <module>apis</module>
         <module>mal-impl</module>
         <module>bindings</module>
-        <module>providers-consumers</module>
+        <module>tooling</module>
         <module>support-libs</module>
         <!-- <module>testbeds</module> -->
     </modules>

@@ -23,7 +23,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>TRANSPORT_GEN</artifactId>
+    <artifactId>transport-generic</artifactId>
     <packaging>jar</packaging>
     <version>9.0-SNAPSHOT</version>
 
@@ -71,7 +71,7 @@
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>ENCODING_GEN</artifactId>
+            <artifactId>encoding-generic</artifactId>
         </dependency>
     </dependencies>
 

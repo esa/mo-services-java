@@ -23,7 +23,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>SUPPORT_LIB_COMMON</artifactId>
+    <artifactId>support-common</artifactId>
     <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -80,11 +80,11 @@
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>SUPPORT_LIB_MAL</artifactId>
+            <artifactId>support-mal</artifactId>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>SUPPORT_LIB_COM</artifactId>
+            <artifactId>support-com</artifactId>
         </dependency>
     </dependencies>
 

@@ -18,12 +18,12 @@
 
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>TESTBED_POM</artifactId>
+        <artifactId>testbed-pom</artifactId>
         <version>9-SNAPSHOT</version>
-        <relativePath>../MOIMS_TESTBED_POM/pom.xml</relativePath>
+        <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
-    <artifactId>TESTBED_COM_FRAMEWORK</artifactId>
+    <artifactId>testbed-com-framework</artifactId>
     <packaging>jar</packaging>
     <version>9.0-SNAPSHOT</version>
     <name>CCSDS MOIMS MO Testbed for COM Framework</name>
@@ -86,7 +86,7 @@
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>TESTBED_UTIL</artifactId>
+            <artifactId>testbed-util</artifactId>
         </dependency>
     </dependencies>
   

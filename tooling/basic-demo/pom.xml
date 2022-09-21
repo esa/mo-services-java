@@ -23,12 +23,12 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>MAL_PERFORMANCE_TESTS</artifactId>
+    <artifactId>basic-demo</artifactId>
     <packaging>jar</packaging>
     <version>9.0-SNAPSHOT</version>
 
-    <name>ESA MAL performance tests</name>
-    <description>A small set of test applications for the evaluation of CCSDS MAL performance</description>
+    <name>ESA MAL Java Demo</name>
+    <description>A Demo Java application for the CCSDS MAL</description>
     <url>http://www.esa.int</url>
   
     <organization>
@@ -66,42 +66,37 @@
 
     <properties>
         <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
-        <esa.stubgen.xmlDirectory>src/main/resources/xml</esa.stubgen.xmlDirectory>
-        <assembly.mainClass>esa.mo.encoderperf.TestEncoder</assembly.mainClass>
+        <esa.stubgen.xmlDirectory>src/main/resources</esa.stubgen.xmlDirectory>
+        <assembly.mainClass>esa.mo.mal.demo.provider.DemoProviderGui</assembly.mainClass>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-        </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>api-mal</artifactId>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>ENCODING_STRING</artifactId>
+            <artifactId>mal-impl</artifactId>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>ENCODING_BINARY</artifactId>
+            <artifactId>transport-rmi</artifactId>
         </dependency>
-        <!--    <dependency>
-          <groupId>fr.cnes.maljoram</groupId>
-          <artifactId>mal-joram-malencoding</artifactId>
-          <version>3.1.1</version>
-        </dependency>-->
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>transport-tcpip</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>encoding-string</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>encoding-binary</artifactId>
+        </dependency>
     </dependencies>
-  
+
     <build>
         <resources>
             <resource>
@@ -118,44 +113,6 @@
                 <artifactId>maven-enforcer-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>xjc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <packageName>org.ccsds.moims.mo.xml.test</packageName>
-                    <sources>
-                        <source>src/main/resources/xsd</source>
-                    </sources>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-generator-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <xmlDirectory>${esa.stubgen.xmlDirectory}</xmlDirectory>
-                            <xmlRefDirectory>${esa.stubgen.xmlRefDirectory}</xmlRefDirectory>
-                            <xsdRefDirectory>src/main/resources/xsd</xsdRefDirectory>
-                            <packageBindings>
-                                <xml>org.ccsds.moims.mo.xml.test|http://www.ccsds.org/schema/PerfTestServiceSchema</xml>
-                            </packageBindings>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
@@ -164,12 +121,20 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>api-generator-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId> 
             </plugin>
         </plugins>
     </build>

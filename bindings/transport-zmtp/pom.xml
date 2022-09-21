@@ -23,7 +23,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>TRANSPORT_ZMTP</artifactId>
+    <artifactId>transport-zmtp</artifactId>
     <packaging>jar</packaging>
     <version>9.0-SNAPSHOT</version>
 
@@ -70,7 +70,7 @@
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>TRANSPORT_GEN</artifactId>
+            <artifactId>transport-generic</artifactId>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.zeromq/jeromq -->
         <dependency>
@@ -80,7 +80,7 @@
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>ENCODING_BINARY</artifactId>
+            <artifactId>encoding-binary</artifactId>
             <type>jar</type>
         </dependency>
         <dependency>

@@ -39,13 +39,13 @@
 
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>TESTBED_POM</artifactId>
+        <artifactId>testbed-pom</artifactId>
         <version>9-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <groupId>int.esa.ccsds.mo</groupId>
-    <artifactId>TESTBED_MALSPP_FRAMEWORK</artifactId>
+    <artifactId>testbed-malspp-framework</artifactId>
     <packaging>jar</packaging>
     <version>9.0-SNAPSHOT</version>
     <name>CCSDS MOIMS MO Testbed Framework for MAL/SPP Binding </name>
@@ -164,7 +164,7 @@
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>TESTBED_MAL</artifactId>
+            <artifactId>testbed-mal</artifactId>
             <version>${ccsds.testbed.mal.version}</version>
         </dependency>
         <dependency>
@@ -174,7 +174,7 @@
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>TESTBED_UTIL_SPP</artifactId>
+            <artifactId>testbed-util-spp</artifactId>
             <version>${ccsds.testbed.util.spp.version}</version>
         </dependency>
     </dependencies>

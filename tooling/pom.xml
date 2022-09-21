@@ -13,24 +13,21 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
   
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
         <version>9-SNAPSHOT</version>
-        <relativePath>../../parent/pom.xml</relativePath>
+        <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>TRANSPORT_BRIDGE</artifactId>
+    <artifactId>tooling</artifactId>
     <version>9.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
+    <name>ESA CCSDS Apps Reactor</name>
 
-    <name>ESA MAL transport bridge</name>
-    <description>A small application that allows bridging between transports</description>
-    <url>http://www.esa.int</url>
-  
     <organization>
         <name>ESA</name>
         <url>http://www.esa.int</url>
@@ -64,52 +61,9 @@
         </developer>
     </developers>
 
-    <properties>
-        <assembly.mainClass>esa.mo.mal.transport.bridge.Main</assembly.mainClass>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>api-mal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>mal-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>TRANSPORT_RMI</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>ENCODING_STRING</artifactId>
-        </dependency>
-    </dependencies>
-  
-    <build>
-        <resources>
-            <resource>
-                <directory>${basedir}/..</directory>
-                <includes>
-                    <include>LICENCE.md</include>
-                </includes>
-            </resource>
-        </resources>
-    
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId> 
-            </plugin>
-        </plugins>
-    </build>
+    <modules>
+        <module>basic-demo</module>
+        <module>encoding-performance-test</module>
+        <module>transport-bridge</module>
+    </modules>
 </project>

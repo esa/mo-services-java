@@ -1,36 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
   <!--
-    Copyright or © or Copr. CNES
-  
-    This software is a computer program whose purpose is to provide a 
-    framework for the CCSDS Mission Operations services.
-  
-    This software is governed by the CeCILL-C license under French law and
-    abiding by the rules of distribution of free software.  You can  use, 
-    modify and/ or redistribute the software under the terms of the CeCILL-C
-    license as circulated by CEA, CNRS and INRIA at the following URL
-    "http://www.cecill.info". 
-  
-    As a counterpart to the access to the source code and  rights to copy,
-    modify and redistribute granted by the license, users are provided only
-    with a limited warranty  and the software's author,  the holder of the
-    economic rights,  and the successive licensors  have only  limited
-    liability. 
-  
-    In this respect, the user's attention is drawn to the risks associated
-    with loading,  using,  modifying and/or developing or reproducing the
-    software by the user in light of its specific status of free software,
-    that may mean  that it is complicated to manipulate,  and  that  also
-    therefore means  that it is reserved for developers  and  experienced
-    professionals having in-depth computer knowledge. Users are therefore
-    encouraged to load and test the software's suitability as regards their
-    requirements in conditions enabling the security of their systems and/or 
-    data to be ensured and,  more generally, to use and operate it in the 
-    same conditions as regards security. 
-  
-    The fact that you are presently reading this means that you have had
-    knowledge of the CeCILL-C license and that you accept its terms.
+    Licensed under the European Space Agency Public License, Version 2.0
+    You may not use this file except in compliance with the License.
+
+    Except as expressly set forth in this License, the Software is provided to
+    You on an "as is" basis and without warranties of any kind, including without
+    limitation merchantability, fitness for a particular purpose, absence of
+    defects or errors, accuracy or non-infringement of intellectual property rights.
+ 
+    See the License for the specific language governing permissions and limitations under the License.
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -39,16 +18,15 @@
 
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>TESTBED_POM</artifactId>
+        <artifactId>testbed-pom</artifactId>
         <version>9-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
-    <groupId>int.esa.ccsds.mo</groupId>
-    <artifactId>TESTBED_UTIL_SPP</artifactId>
+    <artifactId>testbed-util</artifactId>
     <packaging>jar</packaging>
     <version>9.0-SNAPSHOT</version>
-    <name>CCSDS MOIMS MO Testbed utilities for the Space Packet Protocol</name>
+    <name>CCSDS MOIMS MO Testbed utilities</name>
 
     <organization>
         <name>CCSDS</name>
@@ -56,6 +34,11 @@
     </organization>
   
     <licenses>
+        <license>
+            <name>The European Space Agency Public License, Version 2.0</name>
+            <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_ESA.md</url>
+            <distribution>repo</distribution>
+        </license>
         <license>
             <name>CeCILL-C FREE SOFTWARE LICENSE AGREEMENT</name>
             <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_CNES.md</url>
@@ -76,6 +59,12 @@
   
     <developers>
         <developer>
+            <id>SamCooper</id>
+            <name>Sam Cooper</name>
+            <email>sam@brightascension.com</email>
+            <url>https://github.com/SamCooper</url>
+        </developer>
+        <developer>
             <id>DavidFeliot</id>
             <name>David Feliot</name>
             <email>david.feliot@scalagent.com</email>
@@ -83,10 +72,20 @@
         </developer>
     </developers>
   
-    <properties>  
-    </properties>
-  
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}/..</directory>
+                <includes>
+                    <include>LICENCE_ESA.md</include>
+                    <include>LICENCE_CNES.md</include>
+                </includes>
+            </resource>
+        </resources>
+    
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -104,6 +103,15 @@
     </build>
   
     <profiles>
+        <profile>
+            <id>ESA</id>
+            <dependencies>
+                <dependency>
+                    <groupId>int.esa.ccsds.mo</groupId>
+                    <artifactId>api-mal</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
         <profile>
             <id>CNES</id>
             <dependencies>
@@ -123,12 +131,4 @@
             </dependencies>
         </profile>
     </profiles>
-  
-    <dependencies>
-        <dependency>
-            <groupId>org.ow2.joram</groupId>
-            <artifactId>a3-common</artifactId>
-            <version>${joram.version}</version>
-        </dependency>
-    </dependencies>
 </project>

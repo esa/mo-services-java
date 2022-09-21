@@ -23,7 +23,7 @@
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>REACTOR_LIBS</artifactId>
+    <artifactId>support-libs</artifactId>
     <version>9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>ESA CCSDS Support libs Reactor</name>

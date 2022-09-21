@@ -23,7 +23,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>TESTBED_POM</artifactId>
+    <artifactId>testbed-pom</artifactId>
     <packaging>pom</packaging>
     <version>9-SNAPSHOT</version>
     <name>CCSDS MOIMS MO Testbed POM</name>
@@ -99,7 +99,7 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>TESTBED_UTIL</artifactId>
+                <artifactId>testbed-util</artifactId>
                 <version>${ccsds.testbed.util.version}</version>
             </dependency>
             <dependency>
@@ -182,7 +182,7 @@
                                 <artifactItems>
                                     <artifactItem>
                                         <groupId>int.esa.ccsds.mo</groupId>
-                                        <artifactId>TESTBED_UTIL</artifactId>
+                                        <artifactId>testbed-util</artifactId>
                                         <version>${ccsds.testbed.util.version}</version>
                                         <type>jar</type>
                                         <overWrite>true</overWrite>
