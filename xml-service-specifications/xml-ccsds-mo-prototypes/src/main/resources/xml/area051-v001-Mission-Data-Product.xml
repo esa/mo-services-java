@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mal:specification xmlns:mal="http://www.ccsds.org/schema/ServiceSchema" xmlns:com="http://www.ccsds.org/schema/COMSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<mal:area name="MDP" number="51" version="1" comment="CCSDS Mission Data Product services">
+		<mal:service xsi:type="com:ExtendedServiceType" name="Delivery" number="1"
+		comment="Data Delivery Service">
+			<mal:capabilitySet number="1">
+				<mal:requestIP name="search" number="1" supportInReplay="false"
+				comment="Searches for products in the data distributor's archive">
+					<mal:messages>
+						<mal:request>
+							<mal:field name="root" canBeNull="false"
+									comment="Identifies the root for the search.
+									E.g. /mission-x/attitude/ identifies the collection of attitude files for mission-x, and / indentifies the whole archive">
+									<mal:type name="ProductPath" area="MDP"/>
+							</mal:field>
+							<mal:field name="filter" canBeNull="true"
+										comment="Optional filter to be applied on the product metadata">
+								<mal:type name="AttributeFilter" area="MDP"/>
+							</mal:field>
+							<mal:field name="orderBy" canBeNull="true"
+										comment="Order the returned results by values in the metadata.">
+								<mal:type name="SortCriteria" area="MDP" list="true"/>
+							</mal:field>
+							<mal:field name="limit" canBeNull="true"
+										comment="Limit the number of records returned by the get operation.
+										If NULL, than the limit is automatically set by the provider.
+										Any sensible implementation of an MDP provider should, anyway, provide a default limit.">
+								<mal:type name="UInteger" area="MAL"/>
+							</mal:field>
+							<mal:field name="metadata" canBeNull="true"
+										comment="If True than return also the product metadata in addition to the product ID.">
+								<mal:type name="Boolean" area="MAL"/>
+							</mal:field>
+						</mal:request>
+						<mal:response
+	                  	comment="Returns the list of items that match the search">
+							<mal:field name="token" comment="Decided to return single token during Fall meeting 2019">
+								<mal:type list="true" name="ProductToken" area="MDP" />
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="unknown.">
+							<mal:type name="UNKNOWN" area="MAL"/>
+							<mal:extraInformation comment="Extra information by the provider">
+								<mal:type name="String" area="MAL"/>
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+
+				</mal:requestIP>
+				<mal:requestIP name="subscribe" number="2" supportInReplay="false"
+				comment="Subscribes to a product or collection of products given their product type.
+				Like for the search, subscription-based product delivery, delivers only the product ID and, optionally, its metadata.
+				It is up to the consumer to retrieve the actual data using the fetch operation">
+					<mal:messages>
+						<mal:request>
+							<mal:field name="type" canBeNull="true"
+				            comment="Identifies the product searcch">
+								<mal:type list="true" name="ProductSearch" area="MDP"/>
+							</mal:field>
+							<mal:field name="compressed" canBeNull="true" comment="If true the returned item will forcibly be compressed">
+								<mal:type name="Boolean" area="MAL"/>
+							</mal:field>
+							<mal:field name="frequency" canBeNull="false"
+				            comment="How oftern will this subscription be executed">
+								<mal:type name="Frequency" area="MDP"/>
+							</mal:field>
+						</mal:request>
+						<mal:response
+											comment="Returns the list of items that match the search">
+							<mal:field name="subscriptionId" comment="Decided to return single token during Fall meeting 2019">
+								<mal:type list="false" name="SubscriptionId" area="MDP" />
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="Already exists">
+							<mal:type name="DUPLICATE" area="COM"/>
+						</mal:errorRef>
+						<mal:errorRef comment="Too many">
+							<mal:type name="TOO_MANY" area="MAL"/>
+						</mal:errorRef>
+
+						<mal:errorRef comment="unknown.">
+							<mal:type name="UNKNOWN" area="MAL"/>
+							<mal:extraInformation comment="Extra information by the provider">
+								<mal:type name="String" area="MAL"/>
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+				</mal:requestIP>
+				<mal:submitIP name="unsubscribe" number="3" supportInReplay="false"
+				comment="Unsubscribes from a previously subscribed product type or list of product types.">
+					<mal:messages>
+						<mal:submit>
+							<mal:field name="ids" canBeNull="true"
+				            comment="Identifies the product type">
+								<mal:type list="true" name="SubscriptionId" area="MDP"/>
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="unknown.">
+							<mal:type name="UNKNOWN" area="MAL"/>
+							<mal:extraInformation comment="Extra information by the provider">
+								<mal:type name="String" area="MAL"/>
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+				</mal:submitIP>
+
+				<mal:requestIP name="listSubscriptions" number="3" supportInReplay="false"
+				comment="Lists active subscriptions for the active user">
+					<mal:messages>
+						<mal:request>
+						</mal:request>
+						<mal:response>
+							<mal:field name="subscriptions"
+				            comment="list of subscriptions">
+								<mal:type list="true" name="Subscription" area="MDP"/>
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+				</mal:requestIP>
+
+			  </mal:capabilitySet>
+				<mal:capabilitySet number="2">
+
+				<mal:invokeIP name="fetch" number="4" supportInReplay="false" comment="Downloads the product data for a given product ID">
+					<mal:messages>
+						<mal:invoke comment="">
+							<mal:field name="token" canBeNull="false"
+				            comment="Identifier that univocally identifies one product item for a given provider">
+								<mal:type name="ProductToken" area="MDP"  list="true"/>
+							</mal:field>
+							<mal:field name="preFetch" canBeNull="true"
+				            comment="If true, only the attributes are returned not any data.">
+								<mal:type name="Boolean" area="MAL"/>
+							</mal:field>
+						</mal:invoke>
+						<mal:acknowledgement/>
+						<mal:response>
+							<mal:field name="productData" canBeNull="false" comment="Path and details for the product being added">
+								<mal:type name="ProductData" area="MDP"/>
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+
+					<mal:errors>
+						<mal:errorRef comment="Not found..">
+							<mal:type name="NOT_FOUND" area="MDP"/>
+						</mal:errorRef>
+
+						<mal:errorRef comment="unknown.">
+							<mal:type name="UNKNOWN" area="MAL"/>
+							<mal:extraInformation comment="Extra information by the provider">
+								<mal:type name="String" area="MAL"/>
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+
+				</mal:invokeIP>
+			</mal:capabilitySet>
+			<mal:capabilitySet number="3">
+
+				<mal:requestIP name="list" number="5" supportInReplay="false"
+				comment="Lists products offered by the provider. The consumer can provide an optional filter.">
+					<mal:messages>
+						<mal:request>
+							<mal:field name="path" canBeNull="false"
+				            comment="Identifies the root for the search.
+				            E.g. /mission-x/attitude/ identifies the collection of attitude files for mission-x, and / indentifies the whole archive">
+								<mal:type name="ProductPath" area="MDP"/>
+							</mal:field>
+							<mal:field name="limitPaths" canBeNull="true"
+				            comment="Limit the number of records returned by the get operation.
+				            If NULL, than the limit is automatically set by the provider.
+				            Any sensible implementation of an MDP provider should, anyway, provide a default limit.">
+								<mal:type name="UInteger" area="MAL"/>
+							</mal:field>
+							<mal:field name="limitTokens" canBeNull="true"
+				            comment="Limit the number of records returned by the get operation.
+				            If NULL, than the limit is automatically set by the provider.
+				            Any sensible implementation of an MDP provider should, anyway, provide a default limit.">
+								<mal:type name="UInteger" area="MAL"/>
+							</mal:field>
+						</mal:request>
+						<mal:response
+	                  	comment="Returns the list of product types that match the search">
+							<mal:field name="paths" canBeNull="false" comment="List of sub-folders for the current path">
+								<mal:type list="true" name="ProductPath" area="MDP"/>
+							</mal:field>
+							<mal:field name="tokens" canBeNull="false" comment="Tokens to request products on the current path">
+							<mal:type list="true" name="ProductToken" area="MDP"/>
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+				</mal:requestIP>
+			</mal:capabilitySet>
+		</mal:service>
+		<mal:service xsi:type="com:ExtendedServiceType" name="Management" number="2"
+		comment="Operations to manage the Products and the Product Types">
+			<mal:capabilitySet number="1"
+			comment="Product management">
+				<mal:requestIP name="add" number="1" supportInReplay="false"
+				comment="Adds a new Product to the product provider">
+					<mal:messages>
+						<mal:request>
+							<mal:field name="productData" canBeNull="false"
+				            comment="Path and details for the product being added">
+								<mal:type name="ProductData" area="MDP"/>
+							</mal:field>
+						</mal:request>
+						<mal:response
+											comment="Returns token for the created product">
+							<mal:field name="token" comment="Asafvvz">
+								<mal:type list="false" name="ProductToken" area="MDP" />
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="Already exists">
+							<mal:type name="DUPLICATE" area="COM"/>
+						</mal:errorRef>
+						<mal:errorRef comment="unknown.">
+							<mal:type name="UNKNOWN" area="MAL"/>
+							<mal:extraInformation comment="Extra information by the provider">
+								<mal:type name="String" area="MAL"/>
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+				</mal:requestIP>
+				<mal:submitIP name="update" number="2" supportInReplay="false"
+				comment="Updates an existing Product on the product provider. The Product is identified by its unique identifier">
+					<mal:messages>
+						<mal:submit>
+							<mal:field name="token" comment="Token of the product to be updated">
+								<mal:type list="false" name="ProductToken" area="MDP" />
+							</mal:field>
+							<mal:field name="productData" canBeNull="false"
+				            comment="New data for the product">
+								<mal:type name="ProductData" area="MDP"/>
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="Already exists">
+							<mal:type name="READONLY" area="MC"/>
+						</mal:errorRef>
+						<mal:errorRef comment="unknown.">
+							<mal:type name="UNKNOWN" area="MAL"/>
+							<mal:extraInformation comment="Extra information by the provider">
+								<mal:type name="String" area="MAL"/>
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+				</mal:submitIP>
+				<mal:submitIP name="delete" number="3" supportInReplay="false"
+				comment="Deletes an existing Product from the product provider. The Product is identified by its unique identifier">
+					<mal:messages>
+						<mal:submit>
+							<mal:field name="tokens" canBeNull="false"
+				            comment="Tokens for the products beeing deleted">
+								<mal:type name="ProductToken" list="true" area="MDP"/>
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="Already exists">
+							<mal:type name="READONLY" area="MC"/>
+						</mal:errorRef>
+						<mal:errorRef comment="unknown.">
+							<mal:type name="UNKNOWN" area="MAL"/>
+							<mal:extraInformation comment="Extra information by the provider">
+								<mal:type name="String" area="MAL"/>
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+
+				</mal:submitIP>
+			</mal:capabilitySet>
+			<mal:capabilitySet number="2"
+			comment="Product Type management">
+				<mal:submitIP name="addType" number="4" supportInReplay="false"
+				comment="Adds a new Product Type to the product provider">
+					<mal:messages>
+						<mal:submit>
+							<mal:field name="productType" canBeNull="false"
+				            comment="Path and details for the product being added">
+								<mal:type name="ProductType" area="MDP"/>
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="Already exists">
+							<mal:type name="DUPLICATE" area="COM"/>
+						</mal:errorRef>
+						<mal:errorRef comment="unknown.">
+							<mal:type name="UNKNOWN" area="MAL"/>
+							<mal:extraInformation comment="Extra information by the provider">
+								<mal:type name="String" area="MAL"/>
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+
+				</mal:submitIP>
+				<mal:submitIP name="updateType" number="5" supportInReplay="false"
+				comment="Updates an existing Product Type on the product provider. The Product Type is identified by its unique identifier">
+					<mal:messages>
+						<mal:submit>
+							<mal:field name="productType" canBeNull="false"
+				            comment="Path and details for the product being added">
+								<mal:type name="ProductType" area="MDP"/>
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="Already exists">
+							<mal:type name="READONLY" area="MC"/>
+						</mal:errorRef>
+						<mal:errorRef comment="unknown.">
+							<mal:type name="UNKNOWN" area="MAL"/>
+							<mal:extraInformation comment="Extra information by the provider">
+								<mal:type name="String" area="MAL"/>
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+				</mal:submitIP>
+				<mal:submitIP name="deleteType" number="6" supportInReplay="false"
+				comment="Deletes an existing Product Type from the product provider. The Product Type is identified by its unique identifier">
+					<mal:messages>
+						<mal:submit>
+							<mal:field name="productPath" canBeNull="false"
+				            comment="Path and details for the product being added">
+								<mal:type name="ProductPath" area="MDP"/>
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="Already exists">
+							<mal:type name="READONLY" area="MC"/>
+						</mal:errorRef>
+						<mal:errorRef comment="unknown.">
+							<mal:type name="UNKNOWN" area="MAL"/>
+							<mal:extraInformation comment="Extra information by the provider">
+								<mal:type name="String" area="MAL"/>
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+
+				</mal:submitIP>
+			</mal:capabilitySet>
+		</mal:service>
+		<mal:dataTypes>
+			<mal:composite name="ProductToken" shortFormPart="10"
+         	comment="This token will allow a product to be fetched. A token might be a path to a specific product (e.g. /mission-x/orbit/orbit_file_12345) or any other sort of unique identifier (e.g. implementation specific checksum of the file). Some tokens might be deducible (e.g. /mission-y/sensor-x/YYYY-MM-DD) and thus don't need to be searched. The creation strategy for tokens is implementation specific">
+				<mal:extends>
+					<mal:type name="String" area="MAL"/>
+				</mal:extends>
+			</mal:composite>
+			<mal:composite name="ProductPath" shortFormPart="20"
+         	comment="Path that univocally identifies one or more items (products or product types) offered by a provider. The path is local to the provider.
+         	As long as it is unique for a given provider, this field can take any valid path value as defined in RFC3986:relative-part,
+         	e.g. /mission-x/orbit/orbit_file_12345.xml to identify a specific file, or /mission-x/attitude/ to identify the collection of attitude files for mission-x ">
+				<mal:extends>
+					<mal:type name="URI" area="MAL"/>
+				</mal:extends>
+			</mal:composite>
+
+			<mal:composite name="SubscriptionId" shortFormPart="25"
+         	comment="cmt">
+				<mal:extends>
+					<mal:type name="Identifier" area="MAL"/>
+				</mal:extends>
+			</mal:composite>
+
+			<mal:composite name="ProductType" shortFormPart="30"
+			comment="Identifies a product or product type, with an optional metadata">
+				<mal:extends>
+					<mal:type name="Composite" area="MAL"/>
+				</mal:extends>
+				<mal:field name="path" canBeNull="false" comment="">
+					<mal:type name="ProductPath" area="MDP"/>
+				</mal:field>
+				<mal:field name="metadata" canBeNull="true" comment="Metadata common to all products in this path">
+					<mal:type list="true" name="NamedValue" area="MAL"/>
+				</mal:field>
+			</mal:composite>
+			<mal:composite name="ProductData" shortFormPart="35"
+			comment="Identifies a product or product type, with an optional metadata">
+				<mal:extends>
+					<mal:type name="Composite" area="MAL"/>
+				</mal:extends>
+				<mal:field name="path" canBeNull="false" comment="e.g. /mission-x/orbit/orbit_file_12345">
+					<mal:type name="ProductPath" area="MDP"/>
+				</mal:field>
+				<mal:field name="attributes" canBeNull="true" comment="Searchable attributes specific to this product">
+					<mal:type list="true" name="ProductAttributes" area="MDP"/>
+				</mal:field>
+				<mal:field name="dataFile" comment="optional data field of the product. Data be null, if added through other means in the back-end">
+					<mal:type canBeNull="true" name="File" area="MAL"/>
+				</mal:field>
+			</mal:composite>
+			<mal:composite name="ProductAttributes" shortFormPart="37"
+			comment="Identifies a product or product type, with an optional metadata">
+				<mal:extends>
+					<mal:type name="Composite" area="MAL"/>
+				</mal:extends>
+				<mal:field name="attributes" canBeNull="true" comment="Attributes specific to a product">
+					<mal:type list="true" name="NamedValue" area="MAL"/>
+				</mal:field>
+			</mal:composite>
+			<mal:composite name="AttributeFilter" shortFormPart="40"
+			comment="The search criteria">
+				<mal:extends>
+					<mal:type name="CompositeFilterSet" service="Archive" area="COM"/>
+				</mal:extends>
+			</mal:composite>
+			<mal:enumeration name="SortDirection" shortFormPart="50">
+				<mal:item value="ASC" nvalue="1" comment="Sort in ascending order, from the lowest to the highest value"/>
+				<mal:item value="DESC" nvalue="2" comment="Sort in descending order, from the highest to the lowest value"/>
+			</mal:enumeration>
+			<mal:composite name="SortCriteria" shortFormPart="60"
+			comment="The sort criteria">
+				<mal:extends>
+					<mal:type name="Composite" area="MAL"/>
+				</mal:extends>
+				<mal:field name="fieldName" comment="The name of the field to use for sorting">
+					<mal:type name="String" area="MAL"/>
+				</mal:field>
+				<mal:field name="direction" comment="The direction in which the sort the values for the fieldName">
+					<mal:type name="SortDirection" area="MDP"/>
+				</mal:field>
+			</mal:composite>
+
+			<mal:composite name="ProductSearch" shortFormPart="70" comment="The Product Search fields">
+				<mal:extends>
+					<mal:type name="Composite" area="MAL"/>
+				</mal:extends>
+				<mal:field name="root" canBeNull="false"
+						comment="Identifies the root for the search.
+						E.g. /mission-x/attitude/ identifies the collection of attitude files for mission-x, and / indentifies the whole archive">
+						<mal:type name="ProductPath" area="MDP"/>
+				</mal:field>
+				<mal:field name="filter" canBeNull="true"
+							comment="Optional filter to be applied on the product metadata">
+					<mal:type name="AttributeFilter" area="MDP"/>
+				</mal:field>
+				<mal:field name="orderBy" canBeNull="true"
+							comment="Order the returned results by values in the metadata.">
+					<mal:type name="SortCriteria" area="MDP"/>
+				</mal:field>
+				<mal:field name="limit" canBeNull="true"
+							comment="Limit the number of records returned by the get operation.
+							If NULL, than the limit is automatically set by the provider.
+							Any sensible implementation of an MDP provider should, anyway, provide a default limit.">
+					<mal:type name="UInteger" area="MAL"/>
+				</mal:field>
+				<mal:field name="metadata" canBeNull="true"
+							comment="If True than return also the product metadata in addition to the product ID.">
+					<mal:type name="Boolean" area="MAL"/>
+				</mal:field>
+			</mal:composite>
+
+			<mal:composite name="Frequency" shortFormPart="80" comment="The Product Search fields">
+				<mal:extends>
+					<mal:type name="Composite" area="MAL"/>
+				</mal:extends>
+				<mal:field name="start" canBeNull="true"
+						comment="When will this frequency start. Default is 'now'">
+						<mal:type name="Time" area="MAL"/>
+				</mal:field>
+				<mal:field name="duration" canBeNull="false"
+							comment="How often? e.g. every X seconds">
+					<mal:type name="Duration" area="MAL"/>
+				</mal:field>
+			</mal:composite>
+
+			<mal:composite name="Subscription" shortFormPart="80" comment="The subscription id, plus all the information provided when 'subscribe' was invoked">
+				<mal:extends>
+					<mal:type name="Composite" area="MAL"/>
+				</mal:extends>
+
+				<mal:field name="subscriptionId" canBeNull="false" comment="Decided to return single token during Fall meeting 2019">
+					<mal:type list="false" name="SubscriptionId" area="MDP" />
+				</mal:field>
+
+				<mal:field name="type" canBeNull="false"
+							comment="Identifies the product searcch">
+					<mal:type list="true" name="ProductSearch" area="MDP"/>
+				</mal:field>
+				<mal:field name="compressed" canBeNull="true" comment="If true the returned item will forcibly be compressed">
+					<mal:type name="Boolean" area="MAL"/>
+				</mal:field>
+				<mal:field name="frequency" canBeNull="false"
+							comment="How oftern will this subscription be executed">
+					<mal:type name="Frequency" area="MDP"/>
+				</mal:field>
+			</mal:composite>
+		</mal:dataTypes>
+
+		<mal:errors>
+      <mal:error name="NOT_FOUND" number="280020" comment="Operation specific"/>
+      <mal:error name="TBD2" number="280021" comment="Operation specific"/>
+    </mal:errors>
+
+	</mal:area>
+</mal:specification>
