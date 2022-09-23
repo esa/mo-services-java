@@ -20,58 +20,68 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import org.ccsds.moims.mo.mal.structures.ObjectRef;
-
 /**
- * Class representing an MO Object.
+ * Class representing a Tag.
  */
-public class MOObject<T> {
+public class Tag {
 
     /**
-     * Identity of the MO Object.
+     * Tag of the MAL Element.
      */
-    private final ObjectRef identity;
+    private final String domain;
 
     /**
-     * Body of the MO Object.
+     * The short form part of the MAL Element.
      */
-    private final T body;
+    private final long shortFormPart;
 
     /**
-     * Initialises an MO Object.
+     * The instanceId of the MAL Element.
+     */
+    private final long instanceId;
+
+    /**
+     * Initialises a tagged MAL Element.
      *
-     * @param identity Identity of the MO Object.
-     * @param body Body of the MO Object.
+     * @param identity Identity of the MAL Element.
+     * @param body Body of the MAL Element.
      * @throws java.lang.IllegalArgumentException If any argument is null.
      */
-    public MOObject(final ObjectRef identity, final T body) throws IllegalArgumentException {
-        if (identity == null) {
+    public Tag(final String domain, final long shortFormPart, final long instanceId) throws IllegalArgumentException {
+        if (domain == null) {
             throw new IllegalArgumentException("The identity argument cannot be null!");
         }
-        if (body == null) {
-            throw new IllegalArgumentException("The body argument cannot be null!");
-        }
 
-        this.identity = identity;
-        this.body = body;
+        this.domain = domain;
+        this.shortFormPart = shortFormPart;
+        this.instanceId = instanceId;
     }
 
     /**
-     * Returns the Identity of the MO Object.
+     * Returns the domain of the MAL Element.
      *
-     * @return The Identity.
+     * @return The domain.
      */
-    public ObjectRef getIdentity() {
-        return identity;
+    public String getDomain() {
+        return domain;
     }
 
     /**
-     * Returns the Body of the MO Object.
+     * Returns the short form part of the MAL Element.
      *
-     * @return The Body.
+     * @return The short form part.
      */
-    public T getBody() {
-        return body;
+    public long getShortFormPart() {
+        return shortFormPart;
+    }
+
+    /**
+     * Returns the instanceId of the MAL Element.
+     *
+     * @return The instanceId.
+     */
+    public long getInstanceId() {
+        return instanceId;
     }
 
 }
