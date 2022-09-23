@@ -26,7 +26,7 @@
     <artifactId>api-generator</artifactId>
     <version>9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>ESA MO API Generator Reactor</name>
+    <name>ESA MO API Generator</name>
   
     <organization>
         <name>ESA</name>
