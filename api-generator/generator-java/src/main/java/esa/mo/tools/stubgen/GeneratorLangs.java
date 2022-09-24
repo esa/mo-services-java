@@ -103,8 +103,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
      * constructor.
      * @param config The generator configuration.
      */
-    public GeneratorLangs(Log logger, boolean supportsToString, boolean supportsEquals, 
-            boolean supportsToValue, boolean supportsAsync, 
+    public GeneratorLangs(Log logger, boolean supportsToString, boolean supportsEquals,
+            boolean supportsToValue, boolean supportsAsync,
             boolean requiresDefaultConstructors, GeneratorConfiguration config) {
         super(logger, config);
 
@@ -388,7 +388,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 createAreaStructureFolderComment(structureFolder, area);
 
                 ConcurrentLinkedQueue<Exception> errors_1 = new ConcurrentLinkedQueue<>();
-                
+
                 // create area level data types
                 area.getDataTypes().getFundamentalOrAttributeOrComposite().parallelStream().forEach(oType -> {
                     try {
@@ -410,12 +410,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         errors_1.add(ex);
                     }
                 });
-                
-                if(!errors_1.isEmpty()) {
+
+                if (!errors_1.isEmpty()) {
                     throw (IOException) errors_1.poll();
                 }
             }
-            
+
             // create services
             for (ServiceType service : area.getService()) {
                 processService(areaFolder, area, service, requiredPublishers);
@@ -433,7 +433,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // create service helper
         createServiceHelperClass(serviceFolder, area, service, summary);
 
-        // create consuer classes
+        // create consumer classes
         createServiceConsumerClasses(serviceFolder, area, service, summary);
         // create provider classes
         createServiceProviderClasses(serviceFolder, area, service, summary, requiredPublishers);
@@ -791,8 +791,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName() + "Register", StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Register method for the " + op.getName() + " PubSub interaction", null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName() + "Deregister", Arrays.asList(idStr), throwsInteractionAndMALException, "Deregister method for the " + op.getName() + " PubSub interaction", null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     if (supportsAsync) {
-                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()) + "Register", StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Register", "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()) + "Deregister", StubUtils.concatenateArguments(idStr, serviceAdapterArg), throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Deregister", "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()) + "Register",
+                                StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Register", "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()) + "Deregister",
+                                StubUtils.concatenateArguments(idStr, serviceAdapterArg), throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Deregister", "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     }
                     break;
                 }
@@ -1902,23 +1904,58 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // if we or our parents have attributes then we need a typed constructor
         if (!compElements.isEmpty() || !superCompElements.isEmpty()) {
-            List<CompositeField> superArgsList = new LinkedList<>();
-            List<CompositeField> conArgsList = new LinkedList<>();
+            List<CompositeField> superArgs = new LinkedList<>();
+            List<CompositeField> args = new LinkedList<>();
+            List<CompositeField> superArgsNonNullable = new LinkedList<>();
+            List<CompositeField> argsNonNullable = new LinkedList<>();
 
             for (CompositeField element : superCompElements) {
-                superArgsList.add(element);
-                conArgsList.add(element);
+                superArgs.add(element);
+                args.add(element);
+
+                if (!element.isCanBeNull()) {
+                    superArgsNonNullable.add(element);
+                    argsNonNullable.add(element);
+                }
             }
-
-            conArgsList.addAll(compElements);
-
-            MethodWriter method = file.addConstructor(StdStrings.PUBLIC, compName, conArgsList, superArgsList, null, "Constructor that initialises the values of the structure.", null);
+            
+            args.addAll(compElements);
 
             for (CompositeField element : compElements) {
-                method.addMethodStatement(createMethodCall("this." + element.getFieldName() + " = " + element.getFieldName()));
+                if (!element.isCanBeNull()) {
+                    argsNonNullable.add(element);
+                }
+            }
+
+            // Creates constructor with all arguments
+            MethodWriter method = file.addConstructor(StdStrings.PUBLIC, compName, args,
+                    superArgs, null, "Constructor that initialises the values of the structure.", null);
+
+            for (CompositeField element : compElements) {
+                String call = createMethodCall("this." + element.getFieldName() + " = " + element.getFieldName());
+                method.addMethodStatement(call);
             }
 
             method.addMethodCloseStatement();
+
+            // Add a contructor that has only the non-nullable fields. Sets the nullable fields to null.
+            boolean hasNonNullable = !argsNonNullable.isEmpty() || !superArgsNonNullable.isEmpty();
+            boolean allArgsNonNullable = argsNonNullable.size() == args.size(); // All args are non-nullable?
+            // Note: If all method arguments are non-nullable, then the 
+            // contructor will look the same as the one with all arguments. So, 
+            // same type signature and therefore that needs to be avoided.
+            if (hasNonNullable && !allArgsNonNullable) {
+                MethodWriter method2 = file.addConstructor(StdStrings.PUBLIC, compName, argsNonNullable,
+                        superArgsNonNullable, null, "Constructor that initialises the non-nullable values of the structure.", null);
+
+                for (CompositeField element : compElements) {
+                    String ending = (!element.isCanBeNull()) ? element.getFieldName() : "null";
+                    String call = createMethodCall("this." + element.getFieldName() + " = " + ending);
+                    method.addMethodStatement(call);
+                }
+
+                method2.addMethodCloseStatement();
+            }
 
             // create copy constructor
             if (supportsToValue && !abstractComposite) {
@@ -2029,9 +2066,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
             } else if (isAbstract && !element.isList()) {
                 method.addMethodStatement(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + "PolymorphicElement(" + element.getFieldName() + ")"));
             } else {
-                if(element.getEncodeCall() != null) {
+                if (element.getEncodeCall() != null) {
                     method.addMethodStatement(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + element.getEncodeCall() + "(" + element.getFieldName() + ")"));
-                }else{
+                } else {
                     // This is when the Element is set as the abstract Attribute type
                     method.addMethodStatement(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + "Element(" + element.getFieldName() + ")"));
                 }
@@ -2052,10 +2089,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 method.addMethodStatement(element.getFieldName() + " = " + element.getDecodeCast() + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + "PolymorphicElement()"));
             } else {
                 String castString = element.getDecodeCast();
-                if(castString.contains("AttributeList")) {
+                if (castString.contains("AttributeList")) {
                     // This is when the Element is set as the abstract AttributeList type
                     method.addMethodStatement(element.getFieldName() + " = " + castString + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + element.getDecodeCall() + "(new AttributeList())"));
-                }else{
+                } else {
                     method.addMethodStatement(element.getFieldName() + " = " + castString + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + element.getDecodeCall() + "(" + (element.isDecodeNeedsNewCall() ? element.getNewCall() : "") + ")"));
                 }
             }
