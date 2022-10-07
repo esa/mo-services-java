@@ -147,6 +147,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                     MALBrokerImpl.LOGGER.log(Level.WARNING,
                             "Unable to find consumer for NOTIFY : {0}",
                             notifyMessageSet.details.uriTo.getValue());
+                    handleConsumerCommunicationError(key, notifyMessageSet);
                 }
             }
         }

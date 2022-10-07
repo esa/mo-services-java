@@ -21,11 +21,8 @@
 package esa.mo.mal.transport.tcpip;
 
 import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryStreamFactory;
-import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
-import esa.mo.mal.transport.gen.GENEndpoint;
-import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
-import esa.mo.mal.transport.gen.GENTransport;
+
+import esa.mo.mal.transport.gen.*;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
 import esa.mo.mal.transport.gen.util.GENMessagePoller;
@@ -39,13 +36,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -124,7 +116,13 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      */
     private static final String PROPERTY_HOST
             = "org.ccsds.moims.mo.mal.transport.tcpip.host";
-    
+
+    /**
+     * System property to define the published ip.
+     */
+    private static final String PROPERTY_PUBLISHED_HOST
+            = "org.ccsds.moims.mo.mal.transport.tcpip.publishedhost";
+
     /**
      * System property to define the port number.
      */
@@ -145,6 +143,11 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * Server host, this can be one of the IP Addresses / hostnames of the host.
      */
     private final String serverHost;
+
+    /**
+     * Ip this server is bound to.
+     */
+    private final String serverBindIp;
 
     /**
      * The client port that the TCP transport uses as unique identifier for the
@@ -171,6 +174,13 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      */
     private final List<GENMessagePoller> messagePollerThreadPool = new ArrayList<>();
 
+    private static boolean aliasesLoaded = false;
+
+    /**
+     * Maps host aliases to their ip
+     */
+    private static final Map<String, String> aliasToIp = new ConcurrentHashMap<>();
+
     /**
      * Constructor. Configures host/port and debug settings.
      *
@@ -192,6 +202,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
         // decode configuration
         if (properties != null) {
+            loadHostAliases(properties);
+
             if (properties.containsKey(PROPERTY_AUTOHOST)) {
                 if ("true".equals((String) properties.get(PROPERTY_AUTOHOST))) {
                     // Get the local address...
@@ -205,27 +217,39 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
                 //this is a server
                 String hostName = (String) properties.get(PROPERTY_HOST);
                 try {
-                    this.serverHost = InetAddress.getByName(hostName).getHostAddress();
+                    this.serverBindIp = InetAddress.getByName(hostName).getHostAddress();
                 } catch (UnknownHostException ex) {
                     RLOGGER.log(Level.WARNING, "Cannot convert server hostname "
                             + "from properties file to IP address", ex);
                     throw new MALException("Cannot convert server hostname "
                             + "from properties file to IP address", ex);
                 }
+
+                if (properties.containsKey(PROPERTY_PUBLISHED_HOST)) {
+                    this.serverHost = (String) properties.get(PROPERTY_PUBLISHED_HOST);
+                } else {
+                    if(this.serverBindIp.equals("0.0.0.0")) {
+                        throw new MALException("Property " + PROPERTY_PUBLISHED_HOST + " needs to be "
+                                               + "specified when bind ip is set to 0.0.0.0");
+                    }
+                    this.serverHost = this.serverBindIp;
+                }
+
                 this.clientHost = null;
             } else {
                 //this is a client
+                this.serverBindIp = null;
                 this.serverHost = null;
                 this.clientHost = getDefaultHost();
             }
 
             // port
-            if (serverHost != null) {
+            if (serverBindIp != null) {
                 //this is a server
                 if (properties.containsKey(PROPERTY_PORT)) {
                     try {
                         this.serverPort = Integer.parseInt((String) properties.get(PROPERTY_PORT));
-                        InetAddress serverHostAddr = InetAddress.getByName(serverHost);
+                        InetAddress serverHostAddr = InetAddress.getByName(serverBindIp);
                         serverSocket = new ServerSocket(this.serverPort, 0, serverHostAddr);
                     } catch (NumberFormatException ex) {
                         RLOGGER.log(Level.WARNING, "Cannot parse server port "
@@ -242,7 +266,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
                 } else {
                     try {
                         //use default port
-                        InetAddress serverHostAddr = InetAddress.getByName(serverHost);
+                        InetAddress serverHostAddr = InetAddress.getByName(serverBindIp);
                         int portNumber = 1024;  // Default it to 1024
 
                         while (true) {
@@ -290,6 +314,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
         } else {
             // default values, this is a client
+            this.serverBindIp = null;
             this.serverHost = null;
             this.serverPort = 0;
             this.clientHost = getDefaultHost();
@@ -298,6 +323,32 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
         RLOGGER.log(Level.FINE, "TCPIP Wrapping body parts set to  : {0}", this.wrapBodyParts);
     }
+
+    private static void loadHostAliases(Map properties) {
+        if (aliasesLoaded) {
+            return;
+        }
+
+        int index = 0;
+        while (true) {
+            // remoteUri@alias@routedUri
+            String ALIAS_PROPERTY_NAME = String.format("org.ccsds.moims.mo.mal.transport.tcpip.hostalias.%d", index);
+            index += 1;
+
+            String property = (String) properties.get(ALIAS_PROPERTY_NAME);
+            if (property != null && !property.isEmpty()) {
+                String[] split = property.split("@");
+                String alias = split[0];
+                String routedUri = split[1].equals("localhost") ? "127.0.0.1" : split[1];
+                aliasToIp.put(alias, routedUri);
+            } else {
+                break;
+            }
+        }
+
+        aliasesLoaded = true;
+    }
+
 
     /**
      * Initialize a server socket, if this is a provider
@@ -310,7 +361,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         RLOGGER.fine("TCPIPTransport.init()");
 
         // Is it a server?
-        if (serverHost != null) {
+        if (serverBindIp != null) {
             // start server socket on predefined port / interface
             try {
                 // create thread that will listen for connections
@@ -723,4 +774,25 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         return new Random().nextInt(max - min) + min;
     }
 
+    @Override
+    protected String rerouteMessage(GENMessage message) {
+        String uri = message.getHeader().getURITo().getValue();
+
+        if (aliasToIp.isEmpty()) {
+            return uri;
+        }
+
+        int index = uri.indexOf("://") + 3;
+        String protocol = uri.substring(0, index);
+        String address = uri.substring(index);
+        int portIndex = address.indexOf(":");
+        String ip = address.substring(0, portIndex);
+        String rest = address.substring(portIndex);
+
+        if (aliasToIp.containsKey(ip)) {
+            return protocol + aliasToIp.get(ip) + rest;
+        } else {
+            return uri;
+        }
+    }
 }

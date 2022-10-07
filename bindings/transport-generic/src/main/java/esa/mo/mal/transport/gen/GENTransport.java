@@ -43,6 +43,7 @@ import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
@@ -93,6 +94,14 @@ public abstract class GENTransport<I, O> implements MALTransport {
      */
     public static final String DELIVERY_TIMEOUT_PROPERTY
             = "org.ccsds.moims.mo.mal.transport.gen.deliverytimeout";
+
+    /**
+     * System property to control whether a new outgoing data channel should be
+     * created if one dosen't exist when sending a message 
+     */        
+    public static final String CONNECT_WHEN_CONSUMER_OFFLINE_PROPERTY
+            = "org.ccsds.moims.mo.mal.transport.gen.connectwhenconsumeroffline";
+
     /**
      * Charset used for converting the encoded message into a string for
      * debugging.
@@ -216,6 +225,18 @@ public abstract class GENTransport<I, O> implements MALTransport {
             = new ConcurrentHashMap<>();
 
     /**
+     * Value of the org.ccsds.moims.mo.mal.transport.gen.connectwhenconsumeroffline property
+     */
+    private boolean connectWhenConsumerOffline = true;
+
+    /**
+     * Set of root uris to which the transport tried to connect. Used together with the
+     * connectWhenConsumerOffline property to decide if the connection is trying to be established
+     * for the first time.
+     */
+    private final static Set<String> connectionAttempts = new HashSet<>();
+
+    /**
      * Constructor.
      *
      * @param protocol The protocol string.
@@ -308,6 +329,10 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
             if (properties.containsKey(DELIVERY_TIMEOUT_PROPERTY)) {
                 lDeliveryTime = Integer.parseInt((String) properties.get(DELIVERY_TIMEOUT_PROPERTY));
+            }
+
+            if (properties.containsKey(CONNECT_WHEN_CONSUMER_OFFLINE_PROPERTY)) {
+                connectWhenConsumerOffline = Boolean.parseBoolean((String) properties.get(CONNECT_WHEN_CONSUMER_OFFLINE_PROPERTY));
             }
         }
 
@@ -445,7 +470,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
                 // get outgoing channel
                 GENConcurrentMessageSender dataSender = manageCommunicationChannel(msg, false, null);
-
                 GENOutgoingMessageHolder outgoingPacket = internalEncodeMessage(
                         remoteRootURI, destinationURI, multiSendHandle,
                         lastForHandle, dataSender.getTargetURI(), msg);
@@ -892,12 +916,17 @@ public abstract class GENTransport<I, O> implements MALTransport {
         } else {
             // outgoing message
             // get target URI
-            String remoteRootURI = getRootURI(msg.getHeader().getURITo().getValue());
+            String remoteRootURI = getRootURI(rerouteMessage(msg));
 
             // get sender if it exists
             sender = outgoingDataChannels.get(remoteRootURI);
 
-            if (null == sender) {
+            boolean firstTime = !connectionAttempts.contains(remoteRootURI);
+            if (firstTime) {
+                connectionAttempts.add(remoteRootURI);
+            }
+
+            if (null == sender && (connectWhenConsumerOffline || firstTime)) {
                 // we do not have any channel for this URI
                 // try to create a set of connections to this URI 
                 LOGGER.log(Level.INFO,
@@ -925,10 +954,19 @@ public abstract class GENTransport<I, O> implements MALTransport {
                             new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
                             null);
                 }
+            } else if (null == sender && !connectWhenConsumerOffline) {
+                LOGGER.log(Level.FINE, "Could not locate an outgoing data channel and the connectWhenConsumerOffline property prevents establishing a new one");
+                throw new MALTransmitErrorException(msg.getHeader(),
+                                                    new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
+                                                    null);
             }
         }
 
         return sender;
+    }
+
+    protected String rerouteMessage(GENMessage message) {
+        return message.getHeader().getURITo().getValue();
     }
 
     /**
