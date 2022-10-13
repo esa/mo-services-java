@@ -1,3 +1,9 @@
+<p align="left">
+  <a href="https://github.com/esa/mo-services-java">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/ESA_logo.png/800px-ESA_logo.png" alt="esa logo" title="esa" width="400"/>
+  </a>
+</p>
+
 # CCSDS MO services - ESA's Java implementation
 
 CCSDS Mission Operations (MO) services are a set of standard end-to-end services based on a service-oriented architecture defined by the Consultative Committee for Space Data Systems (CCSDS) and it is intended to be used for mission operations of future space missions.
@@ -12,7 +18,7 @@ Standardization of a Mission Operations Service Framework offers a number of pot
 - Increased competition and vendor independence;
 - Improved long-term maintainability.
 
-The deployment of standardized interoperable interfaces between operating Agencies, the spacecraft and internally on-board would in itself bring a number of benefits. Each organization would be able to develop or integrate their own multi-mission systems that can then be rapidly made compliant with the spacecraft. It does not preclude the reuse of legacy spacecraft, simply requiring an adaptation layer on the ground to support it, rather than many missionspecific bespoke interfaces. In the on-board environment, where software development costs are considerably higher due to platform constraints and reliability requirements, software reuse can bring immense savings.
+The deployment of standardized interoperable interfaces between operating Agencies, the spacecraft and internally on-board would in itself bring a number of benefits. Each organization would be able to develop or integrate their own multi-mission systems that can then be rapidly made compliant with the spacecraft. It does not preclude the reuse of legacy spacecraft, simply requiring an adaptation layer on the ground to support it, rather than many mission-specific bespoke interfaces. In the on-board environment, where software development costs are considerably higher due to platform constraints and reliability requirements, software reuse can bring immense savings.
 
 ![layerImage]
 
@@ -23,7 +29,7 @@ The deployment of standardized interoperable interfaces between operating Agenci
 - CCSDS website: https://public.ccsds.org/
 - Online CCSDS Books: https://public.ccsds.org/review/default.aspx
 - CCSDS Mission Operations services for Newbies:  https://github.com/esa/CCSDS_MO/wiki/CCSDS-Mission-Operations-services-for-Newbies
-- GitHub CCSDS MO services source code: https://github.com/esa
+- GitHub CCSDS MO services source code: https://github.com/esa/mo-services-java
 - MO Training material: https://github.com/esa/CCSDS_MO_TRAINING
 - Online video:  https://www.youtube.com/watch?v=XdGeaJE7yEk
 
@@ -54,35 +60,18 @@ git clone https://github.com/esa/mo-services-java.git
 mvn clean install
 ```
 
-## Getting Started
+## More information
 
-### SDK and examples
-
-More documentation about code examples, SDK packaging and usage is available under [sdk](sdk) directory.
-
-### Logging
-
-This project uses the default Java logger (java.util.Logger) to generate log messages. The verbosity of these log messages can be changed by configuring the logging.properties file inside the NMF\_HOME directory.
-
-## Source Code
-
-The source code of the NanoSat MO Framework can be found on [GitHub].
+More code examples are available under [tooling](tooling) directory.
 
 ## Bugs Reporting
 
-Bug Reports can be submitted on: [Issues]
-
-Or directly in the respective source code repository.
+Bug Reports are directly in the source code repository can be submitted on: [Issues]
 
 ## License
 
-The NanoSat MO Framework is **licensed** under:
-
-**[European Space Agency Public License (ESA-PL) Weak Copyleft â€“ v2.4]**.
-
-[![][ESAImage]][website]
+The CCSDS MO services are **licensed** under: **[European Space Agency Public License (ESA-PL) Weak Copyleft - v2.0]**
 	
-
 [ESAImage]: https://upload.wikimedia.org/wikipedia/commons/a/af/ESA_logo.png
 [European Space Agency Public License - v2.0]: https://github.com/esa/CCSDS_MO_TRANS/blob/master/LICENCE.md
 [GitHub]: https://github.com/esa/mo-services-java
