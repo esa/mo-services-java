@@ -27,8 +27,7 @@
     <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
   
-    <name>ESA JAXB classes for MO XML files</name>
-    <url>http://github.com/esa/CCSDS_MO_StubGenerator</url>
+    <name>ESA MO JAXB classes for MO XML files</name>
   
     <organization>
         <name>ESA</name>

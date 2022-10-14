@@ -27,7 +27,7 @@
     <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
   
-    <name>ESA MO Stub Generator Plugin for Documentation</name>
+    <name>ESA MO API Generator Plugin for Documentation</name>
     <description>Generates documentation for CCSDS MO service specifications</description>
   
     <organization>
