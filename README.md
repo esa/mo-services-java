@@ -4,7 +4,8 @@
   </a>
 </p>
 
-# CCSDS MO services - ESA's Java implementation
+CCSDS MO services - ESA's Java implementation
+========================
 
 CCSDS Mission Operations (MO) services are a set of standard end-to-end services based on a service-oriented architecture defined by the Consultative Committee for Space Data Systems (CCSDS) and it is intended to be used for mission operations of future space missions.
 
@@ -20,9 +21,11 @@ Standardization of a Mission Operations Service Framework offers a number of pot
 
 The deployment of standardized interoperable interfaces between operating Agencies, the spacecraft and internally on-board would in itself bring a number of benefits. Each organization would be able to develop or integrate their own multi-mission systems that can then be rapidly made compliant with the spacecraft. It does not preclude the reuse of legacy spacecraft, simply requiring an adaptation layer on the ground to support it, rather than many mission-specific bespoke interfaces. In the on-board environment, where software development costs are considerably higher due to platform constraints and reliability requirements, software reuse can bring immense savings.
 
+## MO stack
+
 ![layerImage]
 
-# List of relevant Links:
+## List of relevant Links:
 - Wikipedia page: https://github.com/esa/CCSDS_MO/wiki
 - Documentation: https://github.com/esa/CCSDS_MO/wiki/Documentation
 - Service interfaces: https://dmarszk.github.io/MOWebViewer4NMF/
@@ -32,10 +35,6 @@ The deployment of standardized interoperable interfaces between operating Agenci
 - GitHub CCSDS MO services source code: https://github.com/esa/mo-services-java
 - MO Training material: https://github.com/esa/CCSDS_MO_TRAINING
 - Online video:  https://www.youtube.com/watch?v=XdGeaJE7yEk
-
-
-## Release
-The latest release note is available in [Releases]. However, the currently recommended distribution channel is directly from Git repository.
 
 ## Building Prerequisites
 
@@ -60,6 +59,11 @@ git clone https://github.com/esa/mo-services-java.git
 mvn clean install
 ```
 
+## Release
+The Releases can be found in: [Releases]
+
+The release notes are available in [Release Notes].
+
 ## More information
 
 More code examples are available under [tooling](tooling) directory.
@@ -73,9 +77,10 @@ Bug Reports are directly in the source code repository can be submitted on: [Iss
 The CCSDS MO services are **licensed** under: **[European Space Agency Public License (ESA-PL) Weak Copyleft - v2.0]**
 	
 [ESAImage]: https://upload.wikimedia.org/wikipedia/commons/a/af/ESA_logo.png
-[European Space Agency Public License - v2.0]: https://github.com/esa/CCSDS_MO_TRANS/blob/master/LICENCE.md
+[European Space Agency Public License (ESA-PL) Weak Copyleft - v2.0]: https://github.com/esa/CCSDS_MO_TRANS/blob/master/LICENCE.md
 [GitHub]: https://github.com/esa/mo-services-java
-[Releases]: https://github.com/esa/mo-services-java/blob/master/Release_Notes.txt
+[Release Notes]: https://github.com/esa/mo-services-java/blob/master/Release_Notes.txt
+[Releases]: https://github.com/esa/mo-services-java/releases
 [Issues]: https://github.com/esa/mo-services-java/issues
 [website]: http://www.esa.int/
 [layerImage]: https://upload.wikimedia.org/wikipedia/commons/9/9a/Ccsds_mo_service_layers.jpg
