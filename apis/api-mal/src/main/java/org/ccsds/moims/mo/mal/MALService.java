@@ -38,9 +38,7 @@ public class MALService {
      */
     public static final UShort NULL_SERVICE_NUMBER = new UShort(0);
     private static final MALOperation[] EMPTY_SET = new MALOperation[0];
-    private MALArea area;
-    private final UShort number;
-    private final Identifier name;
+    
     private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
     private final Map<String, MALOperation> operationsByName = new HashMap<>();
     private final Map<Integer, MALOperation[]> operationsBySet = new HashMap<>();
@@ -51,6 +49,10 @@ public class MALService {
     private final ArrayList<MALProgressOperation> progressOperations = new ArrayList();
     private final ArrayList<MALPubSubOperation> pubSubOperations = new ArrayList();
 
+    private MALArea area;
+    private final UShort number;
+    private final Identifier name;
+    
     /**
      * Constructs a MALService object.
      *

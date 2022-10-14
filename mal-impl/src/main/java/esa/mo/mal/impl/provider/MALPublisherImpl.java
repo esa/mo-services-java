@@ -55,7 +55,7 @@ class MALPublisherImpl implements MALPublisher {
     private final QoSLevel remotePublisherQos;
     private final Map remotePublisherQosProps;
     private final UInteger remotePublisherPriority;
-    private final Map<AddressKey, Long> transIdMap = new HashMap<AddressKey, Long>();
+    private final Map<AddressKey, Long> transIdMap = new HashMap<>();
 
     MALPublisherImpl(final MALProviderImpl parent,
             final MessageSend handler,

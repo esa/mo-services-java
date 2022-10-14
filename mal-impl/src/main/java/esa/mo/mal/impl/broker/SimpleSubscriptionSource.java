@@ -41,9 +41,9 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
  */
 class SimpleSubscriptionSource extends SubscriptionSource {
 
-    private final String signature;
-    private final ArrayList<SubscriptionConsumer> required = new ArrayList<>();
     private final HashMap<String, SimpleSubscriptionDetails> subs = new HashMap<>();
+    private final ArrayList<SubscriptionConsumer> required = new ArrayList<>();
+    private final String signature;
 
     /**
      * Constructor.

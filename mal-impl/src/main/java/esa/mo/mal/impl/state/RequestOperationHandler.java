@@ -34,7 +34,7 @@ public final class RequestOperationHandler extends SubmitOperationHandler {
     /**
      * Constructor.
      *
-     * @param syncOperation true if this is a synchronous call.
+     * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
     public RequestOperationHandler(final boolean syncOperation,

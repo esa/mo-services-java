@@ -45,7 +45,7 @@ public final class ProgressOperationHandler extends BaseOperationHandler {
     /**
      * Constructor.
      *
-     * @param syncOperation true if this is a synchronous call.
+     * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
     public ProgressOperationHandler(final boolean syncOperation,
@@ -113,7 +113,7 @@ public final class ProgressOperationHandler extends BaseOperationHandler {
         boolean isError = details.getMessage().getHeader().getIsErrorMessage();
         try {
             if (details.isAckStage()) {
-                if (syncOperation) {
+                if (isSynchronous) {
                     responseHolder.signalResponse(isError, details.getMessage());
                 } else if (isError) {
                     responseHolder.getListener().progressAckErrorReceived(
@@ -163,7 +163,7 @@ public final class ProgressOperationHandler extends BaseOperationHandler {
     @Override
     public synchronized void handleError(final MALMessageHeader hdr,
             final MALStandardError err, final Map qosMap) {
-        if (syncOperation) {
+        if (isSynchronous) {
             DummyErrorBody errBody = new DummyErrorBody(err);
             responseHolder.signalResponse(true, new DummyMessage(hdr, errBody, qosMap));
         } else {

@@ -40,10 +40,10 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
  */
 class SimpleSubscriptionDetails {
 
-    private final String subscriptionId;
     private final ArrayList<SubscriptionConsumer> subs = new ArrayList<>();
+    private final String subscriptionId;
 
-    SimpleSubscriptionDetails(final String subscriptionId) {
+    public SimpleSubscriptionDetails(final String subscriptionId) {
         this.subscriptionId = subscriptionId;
     }
 

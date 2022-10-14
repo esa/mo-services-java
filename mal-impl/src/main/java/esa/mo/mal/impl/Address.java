@@ -65,6 +65,19 @@ public final class Address {
         this.handler = handler;
     }
 
+    /**
+     * Constructor.
+     *
+     * @param endpoint Endpoint.
+     * @param authenticationId Authentication identifier.
+     * @param handler Interaction handler.
+     */
+    public Address(final MALEndpoint endpoint,
+            final Blob authenticationId,
+            final MALInteractionHandler handler) {
+        this(endpoint, endpoint.getURI(), authenticationId, handler);
+    }
+
     public MALEndpoint getEndpoint() {
         return endpoint;
     }

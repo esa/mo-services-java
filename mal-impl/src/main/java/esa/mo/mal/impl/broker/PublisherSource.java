@@ -34,10 +34,10 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public final class PublisherSource {
 
-    private final String uri;
-    private final QoSLevel qosLevel;
     private final Set<Identifier> keySet = new TreeSet<>();
     private IdentifierList domain = null;
+    private final String uri;
+    private final QoSLevel qosLevel;
 
     PublisherSource(final String uri, final QoSLevel qosLevel) {
         super();

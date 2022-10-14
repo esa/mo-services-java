@@ -45,7 +45,7 @@ public final class InvokeOperationHandler extends BaseOperationHandler {
     /**
      * Constructor.
      *
-     * @param syncOperation true if this is a synchronous call.
+     * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
     public InvokeOperationHandler(final boolean syncOperation,
@@ -75,7 +75,7 @@ public final class InvokeOperationHandler extends BaseOperationHandler {
         if (!receivedAck) {
             if ((interactionType == InteractionType._INVOKE_INDEX) && (interactionStage == MALInvokeOperation._INVOKE_ACK_STAGE)) {
                 receivedAck = true;
-                if (!syncOperation && msg.getHeader().getIsErrorMessage()) {
+                if (!isSynchronous && msg.getHeader().getIsErrorMessage()) {
                     receivedResponse = true;
                 }
                 return new MessageHandlerDetails(true, msg);
@@ -100,7 +100,7 @@ public final class InvokeOperationHandler extends BaseOperationHandler {
 
         try {
             if (details.isAckStage()) {
-                if (syncOperation) {
+                if (isSynchronous) {
                     responseHolder.signalResponse(isError, details.getMessage());
                 } else if (isError) {
                     responseHolder.getListener().invokeAckErrorReceived(
@@ -139,7 +139,7 @@ public final class InvokeOperationHandler extends BaseOperationHandler {
     @Override
     public synchronized void handleError(final MALMessageHeader hdr,
             final MALStandardError err, final Map qosMap) {
-        if (syncOperation) {
+        if (isSynchronous) {
             responseHolder.signalResponse(true, new DummyMessage(hdr, new DummyErrorBody(err), qosMap));
         } else {
             try {

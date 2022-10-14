@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class MALArea {
     private final UShort number;
     private final Identifier name;
     private final UOctet version;
-    private MALService[] services = new MALService[0];
+    private final ArrayList<MALService> services = new ArrayList<>();
     private final Map<String, MALService> serviceNames = new HashMap<>();
     private final Map<Integer, MALService> serviceNumbers = new HashMap<>();
 
@@ -92,21 +93,14 @@ public class MALArea {
     }
 
     /**
-     * Returns an array of MAL Services contained in this area.
+     * Returns the services in this MAL Area.
      *
-     * @return The array of MAL services in this area, or an empty array if none
-     * contained.
+     * @return The services in this MAL Area.
      */
-    public final MALService[] getServices() {
-        MALService[] rv;
-
-        synchronized (this) {
-            rv = Arrays.copyOf(services, services.length);
-        }
-
-        return rv;
+    public final ArrayList<MALService> getServices() {
+        return services;
     }
-
+    
     /**
      * Returns a contained service identified by its name.
      *
@@ -144,11 +138,7 @@ public class MALArea {
                     && !(serviceNames.containsKey(service.getName().getValue()))) {
                 service.setArea(this);
 
-                final MALService[] t = new MALService[services.length + 1];
-                System.arraycopy(services, 0, t, 0, services.length);
-                t[services.length] = service;
-                services = t;
-
+                services.add(service);
                 serviceNumbers.put(service.getNumber().getValue(), service);
                 serviceNames.put(service.getName().getValue(), service);
             } else {

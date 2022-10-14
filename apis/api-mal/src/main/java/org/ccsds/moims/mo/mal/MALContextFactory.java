@@ -226,13 +226,13 @@ public abstract class MALContextFactory {
      */
     public static MALContextFactory newFactory() throws MALException {
         try {
-            final String malfactoryClassName = System.getProperty(MAL_FACTORY_PROPERTY, MAL_DEFAULT_FACTORY);
+            final String classname = System.getProperty(MAL_FACTORY_PROPERTY, MAL_DEFAULT_FACTORY);
             Class malFactoryClass;
 
-            if (_FACTORY_MAP.containsKey(malfactoryClassName)) {
-                malFactoryClass = (Class) _FACTORY_MAP.get(malfactoryClassName);
+            if (_FACTORY_MAP.containsKey(classname)) {
+                malFactoryClass = (Class) _FACTORY_MAP.get(classname);
             } else {
-                malFactoryClass = Class.forName(malfactoryClassName);
+                malFactoryClass = Class.forName(classname);
                 registerFactoryClass(malFactoryClass);
             }
 

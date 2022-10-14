@@ -177,13 +177,15 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         final BrokerKey key = new BrokerKey(hdr);
 
         report(key);
-        final Map<StringPair, PublisherSource> rv = this.getProviderSubscriptions(key);
+        final Map<StringPair, PublisherSource> subs = this.getProviderSubscriptions(key);
         String providerKey = createProviderKey(hdr);
-        if (rv.remove(new StringPair(hdr.getURIFrom().getValue(), providerKey)) != null) {
+        StringPair pair = new StringPair(hdr.getURIFrom().getValue(), providerKey);
+        
+        if (subs.remove(pair) != null) {
             MALBrokerImpl.LOGGER.log(Level.FINE, "Removing publisher! Details: {0}", hdr);
         }
 
-        if (rv.isEmpty()) {
+        if (subs.isEmpty()) {
             providers.remove(key);
         }
         report(key);
@@ -293,16 +295,16 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
     private SubscriptionSource getConsumerEntry(final BrokerKey key,
             final MALMessageHeader hdr, final boolean create) {
-        final Map<String, SubscriptionSource> rv = this.getConsumerSubscriptions(key);
+        final Map<String, SubscriptionSource> subs = this.getConsumerSubscriptions(key);
         final String signature = hdr.getURIFrom().getValue();
-        SubscriptionSource ent = rv.get(signature);
+        SubscriptionSource subSource = subs.get(signature);
 
-        if ((null == ent) && (create)) {
-            ent = createEntry(hdr);
-            rv.put(signature, ent);
+        if ((null == subSource) && (create)) {
+            subSource = createEntry(hdr);
+            subs.put(signature, subSource);
         }
 
-        return ent;
+        return subSource;
     }
 
     private SubscriptionSource getConsumerEntry(final BrokerKey key, final String consumerUri) {
@@ -310,26 +312,26 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     }
 
     private Map<StringPair, PublisherSource> getProviderSubscriptions(final BrokerKey key) {
-        Map<StringPair, PublisherSource> rv = providers.get(key);
+        Map<StringPair, PublisherSource> provider = providers.get(key);
 
-        if (null == rv) {
-            rv = new HashMap();
-            providers.put(key, rv);
+        if (provider == null) {
+            provider = new HashMap();
+            providers.put(key, provider);
         }
 
-        return rv;
+        return provider;
     }
 
     private PublisherSource getProviderEntry(final BrokerKey key,
             final MALMessageHeader hdr, final boolean create) {
-        final Map<StringPair, PublisherSource> rv = this.getProviderSubscriptions(key);
+        final Map<StringPair, PublisherSource> subs = this.getProviderSubscriptions(key);
         String providerKey = createProviderKey(hdr);
         String uriFrom = hdr.getURIFrom().getValue();
-        PublisherSource details = rv.get(new StringPair(uriFrom, providerKey));
+        PublisherSource details = subs.get(new StringPair(uriFrom, providerKey));
 
         if ((details == null) && create) {
             details = new PublisherSource(uriFrom, hdr.getQoSlevel());
-            rv.put(new StringPair(uriFrom, providerKey), details);
+            subs.put(new StringPair(uriFrom, providerKey), details);
             MALBrokerImpl.LOGGER.log(Level.FINE, "New publisher registering: {0}", hdr);
         }
 
@@ -338,31 +340,31 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
     private void handleConsumerCommunicationError(final BrokerKey key,
             final String uriTo) {
-        final SubscriptionSource ent = getConsumerEntry(key, uriTo);
+        final SubscriptionSource entry = getConsumerEntry(key, uriTo);
 
-        if (ent != null) {
-            ent.incCommsErrorCount();
+        if (entry != null) {
+            entry.incCommsErrorCount();
 
-            if (ent.getCommsErrorCount() > 2) {
+            if (entry.getCommsErrorCount() > 2) {
                 MALBrokerImpl.LOGGER.log(Level.WARNING,
                         "Removing the Consumer due to too many errors: {0}",
                         uriTo);
 
                 // three strikes and you're out!
-                internalDeregisterSubscriptions(key, ent, null);
+                internalDeregisterSubscriptions(key, entry, null);
             }
         }
     }
 
     private void internalDeregisterSubscriptions(final BrokerKey key,
-            final SubscriptionSource ent, final IdentifierList subscriptionIds) {
-        if (ent != null) {
-            ent.removeSubscriptions(subscriptionIds);
-            if (!ent.active()) {
-                final Map<String, SubscriptionSource> rv = getConsumerSubscriptions(key);
-                rv.remove(ent.getSignature());
+            final SubscriptionSource subSource, final IdentifierList subscriptionIds) {
+        if (subSource != null) {
+            subSource.removeSubscriptions(subscriptionIds);
+            if (!subSource.active()) {
+                Map<String, SubscriptionSource> subs = getConsumerSubscriptions(key);
+                subs.remove(subSource.getSignature());
 
-                if (rv.isEmpty()) {
+                if (subs.isEmpty()) {
                     consumers.remove(key);
                 }
             }

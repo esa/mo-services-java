@@ -34,12 +34,12 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public abstract class BaseOperationHandler {
 
-    protected final boolean syncOperation;
+    protected final boolean isSynchronous;
     protected final OperationResponseHolder responseHolder;
 
-    protected BaseOperationHandler(final boolean syncOperation,
+    protected BaseOperationHandler(final boolean isSynchronous,
             final OperationResponseHolder responseHolder) {
-        this.syncOperation = syncOperation;
+        this.isSynchronous = isSynchronous;
         this.responseHolder = responseHolder;
     }
 
