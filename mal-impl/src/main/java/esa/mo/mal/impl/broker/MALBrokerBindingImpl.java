@@ -131,7 +131,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
 
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 subscriber,
-                new Time(new Date().getTime()),
+                Time.now(),
                 notifyQos,
                 notifyPriority,
                 domainId,
@@ -178,7 +178,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
 
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 subscriber,
-                new Time(new Date().getTime()),
+                Time.now(),
                 notifyQos,
                 notifyPriority,
                 domainId,
@@ -215,7 +215,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 subscriber,
-                new Time(new Date().getTime()),
+                Time.now(),
                 notifyQos,
                 notifyPriority,
                 domainId,
@@ -253,7 +253,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 subscriber,
-                new Time(new Date().getTime()),
+                Time.now(),
                 notifyQos,
                 notifyPriority,
                 domainId,
@@ -290,7 +290,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 publisher,
-                new Time(new Date().getTime()),
+                Time.now(),
                 qos,
                 priority,
                 domainId,
@@ -328,7 +328,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 publisher,
-                new Time(new Date().getTime()),
+                Time.now(),
                 qos,
                 priority,
                 domainId,

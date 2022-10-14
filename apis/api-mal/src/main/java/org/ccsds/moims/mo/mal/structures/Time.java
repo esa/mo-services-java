@@ -61,6 +61,10 @@ public class Time implements Attribute {
         return value;
     }
 
+    public static Time now() {
+        return new Time(System.currentTimeMillis());
+    }
+
 //  This might be required for XML serialisation and technologies that use that.  
 //  public void setValue(long value)
 //  {

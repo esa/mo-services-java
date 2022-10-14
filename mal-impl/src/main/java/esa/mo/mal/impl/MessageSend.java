@@ -464,9 +464,11 @@ public class MessageSend {
         MALMessage msg = null;
 
         try {
-            msg = msgAddress.endpoint.createMessage(msgAddress.authenticationId,
+            MALEndpoint endpoint = msgAddress.getEndpoint();
+            msg = endpoint.createMessage(
+                    msgAddress.getAuthenticationId(),
                     srcHdr.getURIFrom(),
-                    new Time(new Date().getTime()),
+                    Time.now(),
                     lvl,
                     srcHdr.getPriority(),
                     srcHdr.getDomain(),
@@ -480,7 +482,7 @@ public class MessageSend {
                     qosProperties,
                     rspn);
 
-            msgAddress.endpoint.sendMessage(msg);
+            endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
@@ -518,10 +520,11 @@ public class MessageSend {
         MALMessage msg = null;
 
         try {
-            msg = msgAddress.endpoint.createMessage(
-                    msgAddress.authenticationId,
+            MALEndpoint endpoint = msgAddress.getEndpoint();
+            msg = endpoint.createMessage(
+                    msgAddress.getAuthenticationId(),
                     srcHdr.getURIFrom(),
-                    new Time(new Date().getTime()),
+                    Time.now(),
                     lvl,
                     srcHdr.getPriority(),
                     srcHdr.getDomain(),
@@ -535,7 +538,7 @@ public class MessageSend {
                     qosProperties,
                     rspn);
 
-            msgAddress.endpoint.sendMessage(msg);
+            endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
@@ -707,10 +710,11 @@ public class MessageSend {
                 level = srcHdr.getQoSlevel();
             }
 
-            msg = msgAddress.endpoint.createMessage(
-                    msgAddress.authenticationId,
+            MALEndpoint endpoint = msgAddress.getEndpoint();
+            msg = endpoint.createMessage(
+                    msgAddress.getAuthenticationId(),
                     srcHdr.getURIFrom(),
-                    new Time(new Date().getTime()),
+                    Time.now(),
                     level,
                     srcHdr.getPriority(),
                     srcHdr.getDomain(),
@@ -726,9 +730,10 @@ public class MessageSend {
                     srcHdr.getAreaVersion(),
                     true,
                     new HashMap(),
-                    error.getErrorNumber(), error.getExtraInformation());
+                    error.getErrorNumber(), 
+                    error.getExtraInformation());
 
-            msgAddress.endpoint.sendMessage(msg);
+            endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "Error returning error to consumer : {0} : {1}", new Object[]{
@@ -762,7 +767,7 @@ public class MessageSend {
 
         return details.endpoint.createMessage(details.authenticationId,
                 to,
-                new Time(new Date().getTime()),
+                Time.now(),
                 details.qosLevel,
                 details.priority,
                 details.domain,
@@ -790,7 +795,7 @@ public class MessageSend {
 
         return details.endpoint.createMessage(details.authenticationId,
                 to,
-                new Time(new Date().getTime()),
+                Time.now(),
                 details.qosLevel,
                 details.priority,
                 details.domain,

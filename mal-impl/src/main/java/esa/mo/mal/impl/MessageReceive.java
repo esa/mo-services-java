@@ -264,9 +264,10 @@ public class MessageReceive implements MALMessageListener {
 
     private void internalHandleSend(final MALMessage msg, final Address address) throws MALInteractionException {
         try {
+            MALInteractionHandler handler = address.getHandler();
             MALContextFactoryImpl.LOGGER.log(Level.FINE,
-                    "internalHandleSend for type {0}", address.handler);
-            address.handler.handleSend(new SendInteractionImpl(sender, msg), msg.getBody());
+                    "internalHandleSend for type {0}", handler);
+            handler.handleSend(new SendInteractionImpl(sender, msg), msg.getBody());
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "Error generated during reception of SEND pattern, dropping: {0}", ex);
@@ -279,11 +280,12 @@ public class MessageReceive implements MALMessageListener {
 
         try {
             try {
+                MALInteractionHandler handler = address.getHandler();
                 MALContextFactoryImpl.LOGGER.log(Level.FINE,
                         "internalHandleSubmit for {0} type {1}",
-                        new Object[]{msg.getHeader().getTransactionId(), address.handler}
+                        new Object[]{msg.getHeader().getTransactionId(), handler}
                 );
-                address.handler.handleSubmit(interaction, msg.getBody());
+                handler.handleSubmit(interaction, msg.getBody());
             } catch (MALInteractionException ex) {
                 interaction.sendError(ex.getStandardError());
             }
@@ -301,11 +303,12 @@ public class MessageReceive implements MALMessageListener {
 
         try {
             try {
+                MALInteractionHandler handler = address.getHandler();
                 MALContextFactoryImpl.LOGGER.log(Level.FINE,
                         "internalHandleRequest for {0} type {1}",
-                        new Object[]{msg.getHeader().getTransactionId(), address.handler}
+                        new Object[]{msg.getHeader().getTransactionId(), handler}
                 );
-                address.handler.handleRequest(interaction, msg.getBody());
+                handler.handleRequest(interaction, msg.getBody());
             } catch (MALInteractionException ex) {
                 interaction.sendError(ex.getStandardError());
             }
@@ -323,11 +326,12 @@ public class MessageReceive implements MALMessageListener {
 
         try {
             try {
+                MALInteractionHandler handler = address.getHandler();
                 MALContextFactoryImpl.LOGGER.log(Level.FINE,
                         "internalHandleInvoke for {0} type {1}",
-                        new Object[]{msg.getHeader().getTransactionId(), address.handler}
+                        new Object[]{msg.getHeader().getTransactionId(), handler}
                 );
-                address.handler.handleInvoke(interaction, msg.getBody());
+                handler.handleInvoke(interaction, msg.getBody());
             } catch (MALInteractionException ex) {
                 interaction.sendError(ex.getStandardError());
             }
@@ -350,11 +354,12 @@ public class MessageReceive implements MALMessageListener {
 
         try {
             try {
+                MALInteractionHandler handler = address.getHandler();
                 MALContextFactoryImpl.LOGGER.log(Level.FINE,
                         "internalHandleProgresss for {0} type {1}",
-                        new Object[]{msg.getHeader().getTransactionId(), address.handler}
+                        new Object[]{msg.getHeader().getTransactionId(), handler}
                 );
-                address.handler.handleProgress(interaction, msg.getBody());
+                handler.handleProgress(interaction, msg.getBody());
             } catch (MALInteractionException ex) {
                 interaction.sendError(ex.getStandardError());
             }

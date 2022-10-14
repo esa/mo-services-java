@@ -104,49 +104,46 @@ public class InteractionTimeout {
     }
 
     private Thread createTimeoutCheckingThread() {
-        return new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        SimpleEntry<Long, BaseOperationHandler> entry = queue.take();
-                        long timeoutAt = entry.getKey() + timeout;
-                        long sleepFor = timeoutAt - System.currentTimeMillis();
-
-                        // If the timeout was not reached yet
-                        // then we sleep until we reach it
-                        if (sleepFor > 0) {
-                            try {
-                                Thread.sleep(sleepFor);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(InteractionTimeout.class.getName()).log(
-                                        Level.SEVERE, "Something went wrong...", ex);
-                            }
-                        }
-
-                        BaseOperationHandler handler = entry.getValue();
-
-                        // Is the interaction still pending?
-                        if (!handler.finished()) {
-                            // Then we must trigger an Exception!
+        return new Thread(() -> {
+            while (true) {
+                try {
+                    SimpleEntry<Long, BaseOperationHandler> entry = queue.take();
+                    long timeoutAt = entry.getKey() + timeout;
+                    long sleepFor = timeoutAt - System.currentTimeMillis();
+                    
+                    // If the timeout was not reached yet
+                    // then we sleep until we reach it
+                    if (sleepFor > 0) {
+                        try {
+                            Thread.sleep(sleepFor);
+                        } catch (InterruptedException ex) {
                             Logger.getLogger(InteractionTimeout.class.getName()).log(
-                                    Level.FINE, "Timeout triggered!");
-
-                            String msg = "The interaction timeout in the MAL "
-                                    + "was triggered! The timeout is currently "
-                                    + "set to: " + timeout + " ms";
-
-                            handler.handleError(
-                                    null,
-                                    new MALStandardError(
-                                            MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER,
-                                            msg),
-                                    null);
+                                    Level.SEVERE, "Something went wrong...", ex);
                         }
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(InteractionTimeout.class.getName()).log(
-                                Level.SEVERE, "Something went wrong...", ex);
                     }
+                    
+                    BaseOperationHandler handler = entry.getValue();
+                    
+                    // Is the interaction still pending?
+                    if (!handler.finished()) {
+                        // Then we must trigger an Exception!
+                        Logger.getLogger(InteractionTimeout.class.getName()).log(
+                                Level.FINE, "Timeout triggered!");
+                        
+                        String msg = "The interaction timeout in the MAL "
+                                + "was triggered! The timeout is currently "
+                                + "set to: " + timeout + " ms";
+                        
+                        handler.handleError(
+                                null,
+                                new MALStandardError(
+                                        MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER,
+                                        msg),
+                                null);
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(InteractionTimeout.class.getName()).log(
+                            Level.SEVERE, "Something went wrong...", ex);
                 }
             }
         });
