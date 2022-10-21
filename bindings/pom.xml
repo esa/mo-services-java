@@ -26,7 +26,7 @@
     <artifactId>bindings-reactor</artifactId>
     <version>9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>ESA CCSDS Java Bindings (Encoding/Transport) Reactor</name>
+    <name>ESA MO Bindings - Encodings and Transports</name>
 
     <organization>
         <name>ESA</name>

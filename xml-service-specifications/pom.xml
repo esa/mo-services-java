@@ -20,7 +20,7 @@
     <artifactId>xml-service-specifications</artifactId>
     <version>9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>CCSDS MO services - XML Service Specifications</name>
+    <name>ESA MO XML Service Specifications</name>
 
     <organization>
         <name>CCSDS</name>

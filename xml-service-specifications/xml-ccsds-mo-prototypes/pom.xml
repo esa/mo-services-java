@@ -21,7 +21,7 @@
     <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
   
-    <name>CCSDS MO services XML - MO Prototypes</name>
+    <name>ESA MO XML services - MO Prototypes</name>
     <description>CCSDS Mission Operations XML files</description>
     <url>http://www.ccsds.org</url>
   

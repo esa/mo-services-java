@@ -27,7 +27,7 @@
     <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ESA Common Java support library</name>
+    <name>ESA MO Common Java support library</name>
     <description>A small support library for the CCSDS Common in Java</description>
     <url>http://www.esa.int</url>
   

@@ -27,7 +27,7 @@
     <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ESA MAL transport bridge</name>
+    <name>ESA MO Transport Bridge</name>
     <description>A small application that allows bridging between transports</description>
     <url>http://www.esa.int</url>
   
