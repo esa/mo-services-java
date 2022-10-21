@@ -247,7 +247,8 @@ public interface Attribute extends Element {
      */
     public final static Long URI_SHORT_FORM = ABSOLUTE_AREA_SERVICE_NUMBER + _URI_TYPE_SHORT_FORM;
     /**
-     * Relative type short form for OBJECTREF, can be using in switch statements.
+     * Relative type short form for OBJECTREF, can be using in switch
+     * statements.
      */
     public final static int _OBJECTREF_TYPE_SHORT_FORM = 19;
     /**
@@ -258,4 +259,93 @@ public interface Attribute extends Element {
      * Absolute type short form for URI.
      */
     public final static Long OBJECTREF_SHORT_FORM = ABSOLUTE_AREA_SERVICE_NUMBER + _OBJECTREF_TYPE_SHORT_FORM;
+
+    /**
+     * Converts a Java data type into a MAL data type if possible
+     *
+     * @param obj The object in the Java data type
+     * @return The object in the MAL data type or the original object
+     */
+    public static Object javaType2Attribute(Object obj) {
+        if (obj instanceof java.lang.Boolean) {
+            return new Union((Boolean) obj);
+        }
+
+        if (obj instanceof java.lang.Integer) {
+            return new Union((Integer) obj);
+        }
+
+        if (obj instanceof java.lang.Long) {
+            return new Union((Long) obj);
+        }
+
+        if (obj instanceof java.lang.String) {
+            return new Union((String) obj);
+        }
+
+        if (obj instanceof java.lang.Double) {
+            return new Union((Double) obj);
+        }
+
+        if (obj instanceof java.lang.Float) {
+            return new Union((Float) obj);
+        }
+
+        if (obj instanceof java.lang.Byte) {
+            return new Union((Byte) obj);
+        }
+
+        if (obj instanceof java.lang.Short) {
+            return new Union((Short) obj);
+        }
+
+        return obj;
+    }
+
+    /**
+     * Converts a MAL data type into a Java data type
+     *
+     * @param obj The object in the MAL data type
+     * @return The object in the Java data type
+     */
+    public static Object attribute2JavaType(Object obj) {
+        if (obj instanceof Union) {
+            Integer typeShortForm = ((Union) obj).getTypeShortForm();
+
+            if (typeShortForm == Attribute._BOOLEAN_TYPE_SHORT_FORM) {
+                return (boolean) ((Union) obj).getBooleanValue();
+            }
+
+            if (typeShortForm == Attribute._INTEGER_TYPE_SHORT_FORM) {
+                return (int) ((Union) obj).getIntegerValue();
+            }
+
+            if (typeShortForm == Attribute._LONG_TYPE_SHORT_FORM) {
+                return (long) ((Union) obj).getLongValue();
+            }
+
+            if (typeShortForm == Attribute._STRING_TYPE_SHORT_FORM) {
+                return ((Union) obj).getStringValue();
+            }
+
+            if (typeShortForm == Attribute._DOUBLE_TYPE_SHORT_FORM) {
+                return (double) ((Union) obj).getDoubleValue();
+            }
+
+            if (typeShortForm == Attribute._FLOAT_TYPE_SHORT_FORM) {
+                return (float) ((Union) obj).getFloatValue();
+            }
+
+            if (typeShortForm == Attribute._OCTET_TYPE_SHORT_FORM) {
+                return (byte) ((Union) obj).getOctetValue();
+            }
+
+            if (typeShortForm == Attribute._SHORT_TYPE_SHORT_FORM) {
+                return (short) ((Union) obj).getShortValue();
+            }
+        }
+
+        return obj;
+    }
+
 }

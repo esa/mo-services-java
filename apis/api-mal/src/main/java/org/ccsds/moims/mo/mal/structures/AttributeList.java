@@ -30,11 +30,19 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class AttributeList extends java.util.ArrayList<Object> implements Element {
 
+    /**
+     * Default constructor.
+     *
+     * @param attribute An attribute to be added to the list.
+     */
     public AttributeList(Attribute attribute) {
         super();
         super.add(attribute);
     }
 
+    /**
+     * Default constructor.
+     */
     public AttributeList() {
         super();
     }
@@ -70,19 +78,29 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
     }
 
     @Override
+    public Object get(int index) {
+        return Attribute.attribute2JavaType(super.get(index));
+    }
+
+    @Override
     public void encode(MALEncoder encoder) throws MALException {
         int size = this.size();
         encoder.encodeInteger(size);
-        
+
         for (int i = 0; i < size; i++) {
             Object objToEncode = super.get(i);
 
-            if (objToEncode instanceof Attribute) {
-                encoder.encodeNullableAttribute((Attribute) objToEncode);
-            } else {
-                throw new MALException("The object is not an Attribute type! It is: "
-                        + objToEncode.getClass().getCanonicalName());
+            if (!(objToEncode instanceof Attribute)) {
+                objToEncode = Attribute.javaType2Attribute(objToEncode);
             }
+
+            if (!(objToEncode instanceof Attribute)) {
+                throw new MALException("The object is not an Attribute type! "
+                        + "It is: " + objToEncode.getClass().getCanonicalName()
+                        + " - With value: " + objToEncode.toString());
+            }
+
+            encoder.encodeNullableAttribute((Attribute) objToEncode);
         }
     }
 
@@ -90,8 +108,8 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
     public Element decode(MALDecoder decoder) throws MALException {
         int size = decoder.decodeInteger();
         AttributeList newObj = new AttributeList();
-        
-        for(int i = 0; i < size; i++){
+
+        for (int i = 0; i < size; i++) {
             newObj.add(decoder.decodeNullableAttribute());
         }
 
