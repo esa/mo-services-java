@@ -49,29 +49,31 @@ public abstract class XmlHelper {
             final File directory) throws IOException, JAXBException {
         final List<Map.Entry<SpecificationType, XmlSpecification>> specList = new LinkedList<>();
 
-        if (directory.exists()) {
-            final File xmlFiles[] = directory.listFiles();
+        if (!directory.exists()) {
+            return specList;
+        }
 
-            for (File file : xmlFiles) {
-                if (file.isFile()) {
-                    try {
-                        specList.add(loadSpecification(file));
-                    } catch (IOException ex) {
-                        LOGGER.log(Level.WARNING, 
-                                "(1) Exception thrown during the processing of XML file: {0}", 
-                                file.getAbsolutePath());
-                        throw ex;
-                    } catch (JAXBException ex) {
-                        LOGGER.log(Level.WARNING, 
-                                "(2) Exception thrown during the processing of XML file: {0}",
-                                file.getAbsolutePath());
-                        throw ex;
-                    } catch (RuntimeException ex) {
-                        LOGGER.log(Level.WARNING, 
-                                "(3) Exception thrown during the processing of XML file: {0}",
-                                file.getAbsolutePath());
-                        throw ex;
-                    }
+        final File xmlFiles[] = directory.listFiles();
+
+        for (File file : xmlFiles) {
+            if (file.isFile()) {
+                try {
+                    specList.add(loadSpecification(file));
+                } catch (IOException ex) {
+                    LOGGER.log(Level.WARNING,
+                            "(1) Exception thrown during the processing of XML file: {0}",
+                            file.getAbsolutePath());
+                    throw ex;
+                } catch (JAXBException ex) {
+                    LOGGER.log(Level.WARNING,
+                            "(2) Exception thrown during the processing of XML file: {0}",
+                            file.getAbsolutePath());
+                    throw ex;
+                } catch (RuntimeException ex) {
+                    LOGGER.log(Level.WARNING,
+                            "(3) Exception thrown during the processing of XML file: {0}",
+                            file.getAbsolutePath());
+                    throw ex;
                 }
             }
         }
@@ -81,8 +83,8 @@ public abstract class XmlHelper {
 
     public synchronized static AbstractMap.SimpleEntry<SpecificationType, XmlSpecification> loadSpecification(
             final File is) throws IOException, JAXBException {
-        if(jc == null) {
-           jc = JAXBContext.newInstance("esa.mo.xsd");
+        if (jc == null) {
+            jc = JAXBContext.newInstance("esa.mo.xsd");
         }
 
         final Unmarshaller unmarshaller = jc.createUnmarshaller();

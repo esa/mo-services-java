@@ -33,13 +33,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.concurrent.ThreadSafe;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -53,7 +54,7 @@ import w3c.xsd.Schema;
  *
  * @phase generate-sources
  */
-@ThreadSafe
+@Mojo(name = "generate-apis", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class StubGenerator extends AbstractMojo {
 
     /**

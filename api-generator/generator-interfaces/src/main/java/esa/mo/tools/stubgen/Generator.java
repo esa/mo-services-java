@@ -30,97 +30,105 @@ import w3c.xsd.Schema;
 /**
  * Interface class for a language generator.
  */
-public interface Generator
-{
-  /**
-   * Returns the short name of the generator, this is used on the command line when specifying generators.
-   *
-   * @return the generator short name.
-   */
-  String getShortName();
+public interface Generator {
 
-  /**
-   * Returns the description of the generator.
-   *
-   * @return the generator description.
-   */
-  String getDescription();
+    /**
+     * Returns the short name of the generator, this is used on the command line
+     * when specifying generators.
+     *
+     * @return the generator short name.
+     */
+    String getShortName();
 
-  /**
-   * Initialises the generator.
-   *
-   * @param destinationFolderName The folder to generate into too.
-   * @param generateStructures Whether to generate any data types in the specification.
-   * @param generateCOM Whether to generate COM information.
-   * @param packageBindings Sets any binding information for when services are specified packages other than the default for that
-   * language. Held in AREA/package pairs, or URI/package for JAXB.
-   * @param extraProperties Any generator specific properties.
-   * @throws IOException If there is a problem initialising the generator.
-   */
-  void init(String destinationFolderName,
-          boolean generateStructures,
-          boolean generateCOM,
-          Map<String, String> packageBindings,
-          Map<String, String> extraProperties) throws IOException;
+    /**
+     * Returns the description of the generator.
+     *
+     * @return the generator description.
+     */
+    String getDescription();
 
-  /**
-   * Extra initialisation the generator called after init.
-   *
-   * @param destinationFolderName The folder to generate into too.
-   * @param generateStructures Whether to generate any data types in the specification.
-   * @param generateCOM Whether to generate COM information.
-   * @param packageBindings Sets any binding information for when services are specified packages other than the default for that
-   * language. Held in AREA/package pairs, or URI/package for JAXB.
-   * @param extraProperties Any generator specific properties.
-   * @throws IOException If there is a problem initialising the generator.
-   */
-  void postinit(String destinationFolderName,
-          boolean generateStructures,
-          boolean generateCOM,
-          Map<String, String> packageBindings,
-          Map<String, String> extraProperties) throws IOException;
+    /**
+     * Initialises the generator.
+     *
+     * @param destinationFolderName The folder to generate into too.
+     * @param generateStructures Whether to generate any data types in the
+     * specification.
+     * @param generateCOM Whether to generate COM information.
+     * @param packageBindings Sets any binding information for when services are
+     * specified packages other than the default for that language. Held in
+     * AREA/package pairs, or URI/package for JAXB.
+     * @param extraProperties Any generator specific properties.
+     * @throws IOException If there is a problem initialising the generator.
+     */
+    void init(String destinationFolderName,
+            boolean generateStructures,
+            boolean generateCOM,
+            Map<String, String> packageBindings,
+            Map<String, String> extraProperties) throws IOException;
 
-  /**
-   * Pre process a specification to load in the type definitions.
-   *
-   * @param spec The specification to process.
-   * @throws IOException If there are problems reading the file.
-   * @throws JAXBException If there are problems reading any XML Schema definitions.
-   */
-  void preProcess(SpecificationType spec) throws IOException, JAXBException;
+    /**
+     * Extra initialisation the generator called after init.
+     *
+     * @param destinationFolderName The folder to generate into too.
+     * @param generateStructures Whether to generate any data types in the
+     * specification.
+     * @param generateCOM Whether to generate COM information.
+     * @param packageBindings Sets any binding information for when services are
+     * specified packages other than the default for that language. Held in
+     * AREA/package pairs, or URI/package for JAXB.
+     * @param extraProperties Any generator specific properties.
+     * @throws IOException If there is a problem initialising the generator.
+     */
+    void postinit(String destinationFolderName,
+            boolean generateStructures,
+            boolean generateCOM,
+            Map<String, String> packageBindings,
+            Map<String, String> extraProperties) throws IOException;
 
-  /**
-   * Pre process an XSD specification to load in the type definitions.
-   *
-   * @param spec The specification to process.
-   * @throws IOException If there are problems reading the file.
-   * @throws JAXBException If there are problems reading any XML Schema definitions.
-   */
-  void preProcess(Schema spec) throws IOException, JAXBException;
+    /**
+     * Pre process a specification to load in the type definitions.
+     *
+     * @param spec The specification to process.
+     * @throws IOException If there are problems reading the file.
+     * @throws JAXBException If there are problems reading any XML Schema
+     * definitions.
+     */
+    void preProcess(SpecificationType spec) throws IOException, JAXBException;
 
-  /**
-   * compiles the specification into the appropriate form for the generator.
-   *
-   * @param destinationFolderName The folder to generate in to.
-   * @param spec The specification to process.
-   * @param rootNode The JAXB root node for the specification
-   * @throws IOException If there are problems writing the files.
-   * @throws JAXBException If there are problems reading any XML Schema definitions.
-   */
-  void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException;
+    /**
+     * Pre process an XSD specification to load in the type definitions.
+     *
+     * @param spec The specification to process.
+     * @throws IOException If there are problems reading the file.
+     * @throws JAXBException If there are problems reading any XML Schema
+     * definitions.
+     */
+    void preProcess(Schema spec) throws IOException, JAXBException;
 
-  /**
-   * Closes the generator allowing it to write out any final files or processing.
-   *
-   * @param destinationFolderName The folder name that the output should be sent too.
-   * @throws IOException If there are problems writing the files.
-   */
-  void close(String destinationFolderName) throws IOException;
+    /**
+     * Compiles the specification into the appropriate form for the generator.
+     *
+     * @param destinationFolderName The folder to generate in to.
+     * @param spec The specification to process.
+     * @param rootNode The JAXB root node for the specification
+     * @throws IOException If there are problems writing the files.
+     * @throws JAXBException If there are problems reading any XML Schema
+     * definitions.
+     */
+    void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException;
 
-  /**
-   * Resets the generator allowing it to be reused.
-   *
-   * s
-   */
-  void reset();
+    /**
+     * Closes the generator allowing it to write out any final files or
+     * processing.
+     *
+     * @param destinationFolderName The folder name that the output should be
+     * sent too.
+     * @throws IOException If there are problems writing the files.
+     */
+    void close(String destinationFolderName) throws IOException;
+
+    /**
+     * Resets the generator allowing it to be reused.
+     */
+    void reset();
 }
