@@ -35,7 +35,8 @@ public class BrokerMatcher {
     public static final UShort ALL_SHORT = new UShort(0);
 
     /**
-     *
+     * Compare provider's UpdateKeyValues with consumer's subscription filters
+     * 
      * @param values which is provided by provider
      * @param searchSet list of subscriptions from customers
      * @return boolean match found or not

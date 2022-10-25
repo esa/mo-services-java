@@ -67,7 +67,7 @@ public final class UpdateKeyValues {
     }
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param domain domain provided by provider
      * @param area area provided by provider

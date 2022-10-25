@@ -21,7 +21,6 @@
 package esa.mo.mal.impl.broker.key;
 
 import esa.mo.mal.impl.broker.BrokerMatcher;
-import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
@@ -47,7 +46,8 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
     private final SubscriptionFilterList filters;
 
     /**
-     *
+     * Constructor.
+     * 
      * @param domain subscription domain
      * @param area subscription area
      * @param service subscription service
