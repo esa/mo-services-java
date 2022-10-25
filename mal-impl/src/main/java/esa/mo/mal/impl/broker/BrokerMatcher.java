@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperAttributes;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 
@@ -33,13 +34,21 @@ public class BrokerMatcher {
      */
     public static final UShort ALL_SHORT = new UShort(0);
 
+    /**
+     *
+     * @param values which is provided by provider
+     * @param searchSet list of subscriptions from customers
+     * @return boolean match found or not
+     */
     public static boolean keyValuesMatchSubs(final UpdateKeyValues values, final ArrayList<SubscriptionConsumer> searchSet) {
+        if(values == null || searchSet == null) return false;
+        
         boolean matched = false;
         for (SubscriptionConsumer subscriptionKey : searchSet) {
             MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0} against {1}",
                     new Object[]{values, subscriptionKey});
-
-            if (subscriptionKey.matchesWithWildcard(values)) {
+            
+            if (subscriptionKey.matchesWithFilters(values)) {
                 MALBrokerImpl.LOGGER.fine("    : Matched");
                 matched = true;
                 break;
@@ -200,4 +209,76 @@ public class BrokerMatcher {
         return myKeyPart.equals(theirKeyPart);
     }
 
+    /**
+     * Checks if the provided domain matches the subscribed domain
+     *
+     * @param consumerDomain list of domain subscribed by consumers, it can contain wildcard
+     * @param providerDomain list of domain provided by providers 
+     * @return True if the domain matches the domain with the wildcard
+     */
+    public static boolean domainMatchesWildcardDomain(IdentifierList consumerDomain, IdentifierList providerDomain) {
+        
+        if(consumerDomain == null || providerDomain == null){
+            return consumerDomain == null && providerDomain == null;
+        }
+        
+        String firstDomain = consumerDomain.get(0).getValue();
+        String lastDomain = consumerDomain.get(consumerDomain.size()-1).getValue();
+        if("*".equals(firstDomain) && "*".equals(lastDomain)){  // *.B.*
+            if(consumerDomain.size() > providerDomain.size() + 2){
+                return false;
+            } 
+            
+            for(int i = 0; i <= providerDomain.size() - consumerDomain.size() + 2; i++){
+                boolean matched = true;
+                for(int j = 0; j < consumerDomain.size() - 2; j++){
+                    if(!providerDomain.get(i + j).getValue().equals(consumerDomain.get(j + 1).getValue())){
+                        matched = false;
+                        break;
+                    }
+                }
+                if(matched){
+                    return true;
+                }
+            }
+            return false;
+        }
+        else if(!"*".equals(firstDomain) && !"*".equals(lastDomain)){ // A.B.C
+            if(consumerDomain.size() != providerDomain.size()){
+                return false;
+            }
+            
+            for(int i = 0; i < consumerDomain.size(); i++){
+                if(!consumerDomain.get(i).getValue().equals(providerDomain.get(i).getValue())){
+                    return false;
+                }
+            }
+        }
+        else {
+            if(consumerDomain.size() > providerDomain.size() + 1){
+                return false;
+            }  
+            
+            if("*".equals(lastDomain)){ // A.B.*
+                for(int i = 0; i < consumerDomain.size() - 1 ; i++){
+                    if(!consumerDomain.get(i).getValue().equals(providerDomain.get(i).getValue())){
+                        return false;
+                    }
+                }
+            }
+            else if("*".equals(firstDomain)){ //*.B.C
+                int i = consumerDomain.size() - 1;
+                int j = providerDomain.size() - 1;
+                for(; i >= 1; i--, j--){
+                    if(!consumerDomain.get(i).getValue().equals(providerDomain.get(j).getValue())){
+                        return false;
+                    }
+                }
+            }
+            
+        }
+
+
+        return true;
+    }
 }

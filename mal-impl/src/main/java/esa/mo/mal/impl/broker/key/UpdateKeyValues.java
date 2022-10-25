@@ -20,7 +20,9 @@
  */
 package esa.mo.mal.impl.broker.key;
 
-import org.ccsds.moims.mo.mal.structures.AttributeList;
+import java.util.List;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -32,11 +34,11 @@ public final class UpdateKeyValues {
     /**
      * The domain of the update.
      */
-    private final String domain;
+    private final IdentifierList domain;
     /**
      * The keyValues of the update.
      */
-    private final AttributeList keyValues;
+    private final List<NamedValue> keyValues;
     /**
      * The area of the update.
      */
@@ -53,20 +55,31 @@ public final class UpdateKeyValues {
      * Hash function magic number.
      */
     protected static final int HASH_MAGIC_NUMBER = 47;
-
     /**
      * Constructor.
      *
      * @param srcHdr Update message header.
      * @param domainId Update domain.
-     * @param key Entity key.
+     * @param keyValues
      */
-    public UpdateKeyValues(final MALMessageHeader srcHdr, final String domainId, final AttributeList keyValues) {
-        this.domain = domainId;
+    public UpdateKeyValues(final MALMessageHeader srcHdr, final IdentifierList domainId, final List<NamedValue> keyValues) {
+        this(domainId, srcHdr.getServiceArea(), srcHdr.getService(), srcHdr.getOperation(), keyValues);
+    }
+    
+    /**
+     *
+     * @param domain
+     * @param area
+     * @param service
+     * @param operation
+     * @param keyValues
+     */
+    public UpdateKeyValues(final IdentifierList domain, final UShort area, final UShort service, final UShort operation, final List<NamedValue> keyValues) {
+        this.domain = domain;
         this.keyValues = keyValues;
-        this.area = srcHdr.getServiceArea();
-        this.service = srcHdr.getService();
-        this.operation = srcHdr.getOperation();
+        this.area = area;
+        this.service = service;
+        this.operation = operation;
     }
 
     /*
@@ -107,7 +120,7 @@ public final class UpdateKeyValues {
      *
      * @return the domain.
      */
-    public String getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -116,7 +129,7 @@ public final class UpdateKeyValues {
      *
      * @return the keyValues.
      */
-    public AttributeList getKeyValues() {
+    public List<NamedValue> getKeyValues() {
         return keyValues;
     }
 

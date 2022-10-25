@@ -94,7 +94,7 @@ class SimpleSubscriptionSource extends SubscriptionSource {
             final MALPublishBody publishBody) throws MALException {
         MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signature);
 
-        final String srcDomainId = StructureHelper.domainToString(srcHdr.getDomain());
+        final IdentifierList srcDomainId = srcHdr.getDomain();
         final List<NotifyMessage> msgs = new LinkedList<>();
 
         for (Map.Entry<String, SimpleSubscriptionDetails> ent : subs.entrySet()) {

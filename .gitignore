@@ -15,3 +15,5 @@
 /api-generator/api-generator-interfaces/target/
 /api-generator/generator-interfaces/target/
 /api-generator/api-generator-maven-plugin/target/
+/mal-impl/nbproject/
+/apis/api-mal/nbproject/

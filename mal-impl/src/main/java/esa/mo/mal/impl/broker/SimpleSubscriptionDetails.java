@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
@@ -66,7 +67,7 @@ class SimpleSubscriptionDetails {
     * matches with any of the subscriptions, or a null if there are no matches.
     */
     public NotifyMessage populateNotifyList(final MALMessageHeader srcHdr,
-            final String srcDomainId,
+            final IdentifierList srcDomainId,
             final UpdateHeaderList updateHeaderList,
             final MALPublishBody publishBody) throws MALException {
         MALBrokerImpl.LOGGER.fine("Checking SimpleSubscriptionDetails");
@@ -113,13 +114,13 @@ class SimpleSubscriptionDetails {
     }
 
     private void populateNotifyList(final MALMessageHeader srcHdr,
-            final String srcDomainId,
+            final IdentifierList srcDomainId,
             final UpdateHeader updateHeader,
             final List[] updateLists,
             final int index,
             final UpdateHeaderList notifyHeaders,
             final List[] notifyLists) throws MALException {
-        final UpdateKeyValues key = new UpdateKeyValues(srcHdr, srcDomainId, updateHeader.getKeyValues());
+        final UpdateKeyValues key = new UpdateKeyValues(srcHdr, srcDomainId, null);
         MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0}", key);
 
         if (BrokerMatcher.keyValuesMatchSubs(key, subs)) {
