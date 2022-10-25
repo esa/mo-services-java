@@ -67,12 +67,13 @@ public final class UpdateKeyValues {
     }
     
     /**
-     *
-     * @param domain
-     * @param area
-     * @param service
-     * @param operation
-     * @param keyValues
+     * Constructor
+     * 
+     * @param domain domain provided by provider
+     * @param area area provided by provider
+     * @param service service  provided by provider
+     * @param operation operation  provided by provider
+     * @param keyValues key value  provided by provider
      */
     public UpdateKeyValues(final IdentifierList domain, final UShort area, final UShort service, final UShort operation, final List<NamedValue> keyValues) {
         this.domain = domain;

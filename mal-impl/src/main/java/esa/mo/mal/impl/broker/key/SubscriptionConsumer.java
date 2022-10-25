@@ -39,7 +39,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
      */
     protected static final int HASH_MAGIC_NUMBER = 47;
     
-    private final IdentifierList domain = new IdentifierList();
+    private final IdentifierList domain;
     // private final boolean andSubDomains;
     private final UShort area;
     private final UShort service;
@@ -55,7 +55,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
      * @param filters subscription filters
      */
     public SubscriptionConsumer(final IdentifierList domain, final UShort area, final UShort service, final UShort operation, final SubscriptionFilterList filters) {
-        this.domain.equals(domain);
+        this.domain = domain;
         this.area = area;
         this.service = service;
         this.operation = operation;
@@ -171,7 +171,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
         
         if(!matched) return matched; //if not matched, return without checking domain & filters to avoid cpu load
         
-        //matched = matched && BrokerMatcher.matchedDomainWithWildcard(domain, rhs.getDomain());
+        matched = matched && BrokerMatcher.domainMatchesWildcardDomain(domain, rhs.getDomain());
         
         if(!matched) return matched; //if not matched, return without checking filters to avoid cpu load
         
