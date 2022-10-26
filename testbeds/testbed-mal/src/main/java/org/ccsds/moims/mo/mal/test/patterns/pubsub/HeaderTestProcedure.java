@@ -35,7 +35,6 @@ package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -53,9 +52,6 @@ public class HeaderTestProcedure extends LoggingBase
           });
   public static final Identifier NETWORK_ZONE = new Identifier("NetworkZone");
   public static final UInteger PRIORITY = new UInteger(1);
-  public static final EntityKey RIGHT_ENTITY_KEY = new EntityKey(new Identifier("A"), null, null, null);
-  public static final EntityKey WRONG_ENTITY_KEY = new EntityKey(new Identifier("B"), null, null, null);
-  public static final EntityKey PUBLISH_REGISTER_ERROR_ENTITY_KEY = new EntityKey(new Identifier("PublishRegisterErrorEntity"), null, null, null);
   public static final Identifier SUBSCRIPTION_ID = new Identifier("sub1");
   public static final Identifier REGISTER_ERROR_SUBSCRIPTION_ID = new Identifier("RegisterErrorSubscription");
   private static HeaderTestProcedureImpl realInstance = null;

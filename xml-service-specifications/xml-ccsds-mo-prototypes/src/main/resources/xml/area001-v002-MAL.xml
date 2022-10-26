@@ -93,7 +93,7 @@
                 <mal:field name="subscriptionId" canBeNull="false" comment="The identifier of this subscription.">
                     <mal:type area="MAL" name="Identifier"/>
                 </mal:field>
-                <mal:field name="domain" canBeNull="true" comment="Optional domain identifier. If NULL, the subscription shall match with any domain.">
+                <mal:field name="domain" canBeNull="true" comment="Domain is a list of identifier. If NULL, the subscription shall match with any domain.">
                     <mal:type list="true" area="MAL" name="Identifier"/>
                 </mal:field>
                 <mal:field name="filters" canBeNull="true" comment="The list of filters that are being selected for this subscription.">
@@ -118,6 +118,9 @@
                 <mal:field name="source" canBeNull="true" comment="The source of the update, usually a PUBSUB provider.">
                     <mal:type area="MAL" name="Identifier"/>
                 </mal:field>
+                <mal:field name="domain" canBeNull="true" comment="Domain is a list of identifier. If NULL, the subscription shall match with any domain.">
+                    <mal:type list="true" area="MAL" name="Identifier"/>
+                </mal:field>               
                 <mal:field name="keyValues" canBeNull="true" comment="The values for the PUBSUB keys. The values shall be ordered according to the defined keys.">
                     <mal:type list="true" area="MAL" name="Attribute"/>
                 </mal:field>

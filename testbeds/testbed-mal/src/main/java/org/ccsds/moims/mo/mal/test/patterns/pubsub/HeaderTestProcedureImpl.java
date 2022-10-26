@@ -32,6 +32,7 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -40,10 +41,9 @@ import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -54,9 +54,9 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import org.ccsds.moims.mo.mal.structures.UpdateType;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
@@ -154,11 +154,9 @@ public class HeaderTestProcedureImpl extends LoggingBase
     initConsumer(domain, session, sessionName, qos, shared);
     
     ipTest = ipTestConsumer.getStub();
-    EntityKeyList entityKeys = new EntityKeyList();
-    entityKeys.add(HeaderTestProcedure.RIGHT_ENTITY_KEY);
     UInteger errorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = 
-      new TestPublishRegister(qos, HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, entityKeys, errorCode);
+      new TestPublishRegister(qos, HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, Helper.getTestFilterlist(), errorCode);
     ipTest.publishRegister(testPublishRegister);
     return true;
   }
@@ -199,15 +197,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     initConsumer(domain, session, sessionName, qos, shared);
     
     ipTest = ipTestConsumer.getStub();
-    EntityKeyList entityKeys = new EntityKeyList();
-    entityKeys.add(HeaderTestProcedure.RIGHT_ENTITY_KEY);
-    Boolean onlyOnChange =  false;
-    EntityRequest entityRequest = new EntityRequest(
-        null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
-        onlyOnChange, entityKeys);
-    EntityRequestList entityRequests = new EntityRequestList();
-    entityRequests.add(entityRequest);
-    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, entityRequests);
+
+    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, Helper.getTestFilterlistNull());
     MonitorListener listener = new MonitorListener();
     
     ConsumerContext consumerContext = new ConsumerContext(listener);
@@ -325,26 +316,15 @@ public class HeaderTestProcedureImpl extends LoggingBase
     
     ipTest = ipTestConsumer.getStub();
     
-    UpdateHeader updateHeader1 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.CREATION, HeaderTestProcedure.RIGHT_ENTITY_KEY);
-    TestUpdate update1 = new TestUpdate(new Integer(1));
-    UpdateHeader updateHeader2 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.DELETION, HeaderTestProcedure.RIGHT_ENTITY_KEY);
-    TestUpdate update2 = new TestUpdate(new Integer(2));
-    UpdateHeader updateHeader3 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.MODIFICATION, HeaderTestProcedure.RIGHT_ENTITY_KEY);
-    TestUpdate update3 = new TestUpdate(new Integer(3));
-    UpdateHeader updateHeader4 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.UPDATE, HeaderTestProcedure.RIGHT_ENTITY_KEY);
-    TestUpdate update4 = new TestUpdate(new Integer(4));
-    
     UpdateHeaderList updateHeaders = new UpdateHeaderList();
-    updateHeaders.add(updateHeader1);
-    updateHeaders.add(updateHeader2);
-    updateHeaders.add(updateHeader3);
-    updateHeaders.add(updateHeader4);
-    
-    TestUpdateList updates = new TestUpdateList();
-    updates.add(update1);
-    updates.add(update2);
-    updates.add(update3);
-    updates.add(update4);
+    TestUpdateList updates = new TestUpdateList();    
+    UpdateHeaderList updateHeadersTemp = Helper.getTestUpdateHeaderlist();
+    for(int i = 0; i < 4; i++){
+        updates.add(new TestUpdate(i));
+        for(UpdateHeader updateHeader : updateHeadersTemp){
+            updateHeaders.add(updateHeader);
+        }
+    }
     
     ConsumerContext cc = 
       (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker));
@@ -358,7 +338,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     
     UInteger errorCode = new UInteger(999);
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), 
-        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, updateHeaders, updates, errorCode, Boolean.FALSE, null);
+        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, updateHeaders, updates, null, errorCode, Boolean.FALSE);
     ipTest.publishUpdates(testPublishUpdate);
 
     return true;
@@ -501,13 +481,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     initConsumer(domain, session, sessionName, qos, shared);
     
     ipTest = ipTestConsumer.getStub();
-    
-    UpdateHeader updateHeader = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.CREATION, HeaderTestProcedure.WRONG_ENTITY_KEY);
-    TestUpdate update = new TestUpdate(new Integer(1));
-    
-    UpdateHeaderList updateHeaders = new UpdateHeaderList();
-    updateHeaders.add(updateHeader);
-    
+
+    TestUpdate update = new TestUpdate(1);
     TestUpdateList updates = new TestUpdateList();
     updates.add(update);
     
@@ -522,11 +497,11 @@ public class HeaderTestProcedureImpl extends LoggingBase
     cc.setPublishTimeStamp(new Time(System.currentTimeMillis()));
     
     UInteger errorCode = MALHelper.UNKNOWN_ERROR_NUMBER;
-    EntityKeyList failedEntityKeys = new EntityKeyList();
-    failedEntityKeys.add(HeaderTestProcedure.WRONG_ENTITY_KEY);
+    Attribute value = new Union("B");
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY, 
-        HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, updateHeaders, updates, errorCode,
-        Boolean.FALSE, failedEntityKeys);
+        HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, 
+            sessionName, false, Helper.getTestUpdateHeaderlist(new AttributeList(value)), updates, Helper.getTestFilterlistNull(), errorCode,
+        Boolean.FALSE);
     ipTest.publishUpdates(testPublishUpdate);
 
     return true;
@@ -678,12 +653,13 @@ public class HeaderTestProcedureImpl extends LoggingBase
     initConsumer(domain, session, sessionName, qos, shared);
     
     ipTest = ipTestConsumer.getStub();
-    EntityKeyList entityKeys = new EntityKeyList();
-    entityKeys.add(HeaderTestProcedure.PUBLISH_REGISTER_ERROR_ENTITY_KEY);
+    
+    Attribute value = new Union("PublishRegisterErrorEntity");
+    AttributeList values = new AttributeList(value);
     UInteger errorCode = MALHelper.INTERNAL_ERROR_NUMBER;
     TestPublishRegister testPublishRegister = new TestPublishRegister(qos,
-        HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, entityKeys,
-        errorCode);
+        HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, 
+            Helper.getTestFilterlistNull(values), errorCode);
     ipTest.publishRegister(testPublishRegister);
     return true;
   }
@@ -705,16 +681,9 @@ public class HeaderTestProcedureImpl extends LoggingBase
     initConsumer(domain, session, sessionName, qos, shared);
     
     ipTest = ipTestConsumer.getStub();
-    EntityKeyList entityKeys = new EntityKeyList();
-    entityKeys.add(HeaderTestProcedure.RIGHT_ENTITY_KEY);
-    Boolean onlyOnChange = Boolean.FALSE;
-    EntityRequest entityRequest = new EntityRequest(
-        null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
-        onlyOnChange, entityKeys);
-    EntityRequestList entityRequests = new EntityRequestList();
-    entityRequests.add(entityRequest);
+
     Subscription subscription = new Subscription(
-        HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID, entityRequests);
+        HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, Helper.getTestFilterlistNull());
     MonitorListener listener = new MonitorListener();
 
     ConsumerContext consumerContext = new ConsumerContext(listener);

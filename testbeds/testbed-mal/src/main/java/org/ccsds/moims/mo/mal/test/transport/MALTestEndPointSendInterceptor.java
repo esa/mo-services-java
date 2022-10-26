@@ -37,7 +37,6 @@ import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
@@ -51,7 +50,6 @@ import org.ccsds.moims.mo.malprototype.errortest.ErrorTestHelper;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
 import org.ccsds.moims.mo.testbed.transport.TestEndPoint;
 import org.ccsds.moims.mo.testbed.transport.TestEndPointSendInterceptor;
-import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -69,6 +67,7 @@ public class MALTestEndPointSendInterceptor implements TestEndPointSendIntercept
         if (msg.getHeader().getInteractionStage().getValue() == MALPubSubOperation._PUBLISH_REGISTER_STAGE)
         {
           MALPublishRegisterBody publishRegisterBody = (MALPublishRegisterBody) msg.getBody();
+          /*
           EntityKeyList keyList = publishRegisterBody.getEntityKeyList();
           if (keyList.contains(HeaderTestProcedure.PUBLISH_REGISTER_ERROR_ENTITY_KEY))
           {
@@ -79,7 +78,7 @@ public class MALTestEndPointSendInterceptor implements TestEndPointSendIntercept
                     new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), msg.getQoSProperties());
             ep.getReceivedMessageInterceptor().onMessage(ep, ack);
             return;
-          }
+          }*/
         }
         else if (msg.getHeader().getInteractionStage().getValue() == MALPubSubOperation._REGISTER_STAGE)
         {

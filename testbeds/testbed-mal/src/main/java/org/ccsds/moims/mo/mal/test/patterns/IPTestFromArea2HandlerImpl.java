@@ -127,10 +127,7 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton
     
     UpdateHeaderList updateHeaderList = _TestPublishUpdate.getUpdateHeaders();
     TestUpdateList testUpdateList = _TestPublishUpdate.getUpdates();
-    for (UpdateHeader updateHeader : updateHeaderList) {
-      updateHeader.setTimestamp(new Time(System.currentTimeMillis()));
-      updateHeader.setSourceURI(new URI(""));
-    }
+    
     publisher.publish(updateHeaderList, testUpdateList);
     publisher2.publish(updateHeaderList, testUpdateList);
   }

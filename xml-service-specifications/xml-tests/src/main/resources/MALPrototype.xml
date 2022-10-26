@@ -454,6 +454,10 @@
             <smc:type area="MALPrototype" service="IPTest"
                       name="TestPublish" />
           </smc:extends>
+          <smc:field name="subFilterList"
+                     comment="list of subscription filters">
+            <smc:type area="MAL" name="SubscriptionFilterList" />
+          </smc:field>            
           <smc:field name="errorCode"
                      comment="The code of the Publish Register error expected to be received.-1 if no Publish Register error is expected.">
             <smc:type area="MAL" name="UInteger" />
@@ -466,6 +470,10 @@
             <smc:type area="MALPrototype" service="IPTest"
                       name="TestPublish" />
           </smc:extends>
+          <smc:field name="subFilterList"
+                     comment="list of subscription filters">
+            <smc:type area="MAL" name="SubscriptionFilterList" />
+          </smc:field>          
           <smc:field name="errorCode"
                      comment="The code of the Publish Deregister error expected to be received.-1 if no Publish Deregister error is expected.">
             <smc:type area="MAL" name="UInteger" />
@@ -487,6 +495,10 @@
             <smc:type list="true" area="MALPrototype" service="IPTest"
                       name="TestUpdate" />
           </smc:field>
+          <smc:field name="subFilterList"
+                     comment="list of subscription filters">
+            <smc:type area="MAL" name="SubscriptionFilterList" />
+          </smc:field>            
           <smc:field name="errorCode"
                      comment="The code of the Publish error expected to be received.-1 if no Publish error is expected.">
             <smc:type area="MAL" name="UInteger" />

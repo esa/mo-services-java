@@ -32,21 +32,17 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import java.util.Map;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import org.ccsds.moims.mo.mal.structures.UpdateType;
+import static org.ccsds.moims.mo.mal.test.patterns.pubsub.SubscriptionSessionNameTestProcedure.SUBSCRIPTION_ID;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
@@ -67,8 +63,6 @@ public class SubscriptionTestProcedure extends LoggingBase
   public static final QoSLevel QOS_LEVEL = QoSLevel.ASSURED;
   public static final UInteger PRIORITY = new UInteger(1);
   
-  public static final EntityKey A_ENTITY_KEY = new EntityKey(new Identifier("A"), null, null, null);
-  
   private IPTestStub ipTest;
   
   private MonitorListener listener;
@@ -87,16 +81,13 @@ public class SubscriptionTestProcedure extends LoggingBase
         HeaderTestProcedure.DOMAIN, 
         HeaderTestProcedure.NETWORK_ZONE, 
         SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
-    
-    EntityKeyList registeredEntityKeyList = new EntityKeyList();
-    registeredEntityKeyList.add(A_ENTITY_KEY);
-    
+
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = 
       new TestPublishRegister(QOS_LEVEL, PRIORITY, 
           HeaderTestProcedure.DOMAIN, 
           HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, 
-          registeredEntityKeyList, expectedErrorCode);
+          Helper.getTestFilterlist(), expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
     
     listener = new MonitorListener();
@@ -107,46 +98,37 @@ public class SubscriptionTestProcedure extends LoggingBase
   public boolean register() throws Exception {
     logMessage("SubscriptionTestProcedure.register()");
     
-    EntityKeyList entityKeys = new EntityKeyList();
-    entityKeys.add(A_ENTITY_KEY);
-    Boolean onlyOnChange = false;
-    EntityRequest entityRequest = new EntityRequest(
-        null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
-        onlyOnChange, entityKeys);
-    EntityRequestList entityRequests = new EntityRequestList();
-    entityRequests.add(entityRequest);
-    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, entityRequests);
+    Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, Helper.getTestFilterlistNull()); 
 
-      ipTest.asyncMonitorRegister(subscription, listener);
-      synchronized(listener.cond)
-      {
-      listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
-      listener.cond.reset();
-      }
-    
+    ipTest.asyncMonitorRegister(subscription, listener);
+    synchronized(listener.cond)
+    {
+        listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
+        listener.cond.reset();
+    }
+
     return true;
   }
   
   public boolean reregister() throws Exception {
     logMessage("SubscriptionTestProcedure.reregister()");
     
-    EntityKeyList entityKeys = new EntityKeyList();
-    entityKeys.add(A_ENTITY_KEY);
-    entityKeys.add(A_ENTITY_KEY);
-    Boolean onlyOnChange = true;
-    EntityRequest entityRequest = new EntityRequest(
-        null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
-        onlyOnChange, entityKeys);
-    EntityRequestList entityRequests = new EntityRequestList();
-    entityRequests.add(entityRequest);
-    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, entityRequests);
+    SubscriptionFilterList keyValues = new SubscriptionFilterList();
+    SubscriptionFilterList keyValuesTemp = Helper.getTestFilterlistNull();
+    for(int i = 0; i < 2; i++){
+        for(SubscriptionFilter keyValue : keyValuesTemp){
+            keyValues.add(keyValue);
+        }
+    }
+     
+    Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, keyValues); 
 
-      ipTest.asyncMonitorRegister(subscription, listener);
-      synchronized(listener.cond)
-      {
-      listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
-      listener.cond.reset();
-      }
+    ipTest.asyncMonitorRegister(subscription, listener);
+    synchronized(listener.cond)
+    {
+        listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
+        listener.cond.reset();
+    }
     
     return true;
   }
@@ -154,31 +136,14 @@ public class SubscriptionTestProcedure extends LoggingBase
   public boolean publishWithUpdateType(String updateTypeName) throws Exception {
     logMessage("SubscriptionTestProcedure.publishWithUpdateType(" + updateTypeName + ')');
     listener.resetState();
-    
-    UpdateType updateType;
-    if (updateTypeName.equals("Creation")) {
-      updateType = UpdateType.CREATION;
-    } else if (updateTypeName.equals("Update")) {
-      updateType = UpdateType.UPDATE;
-    } else if (updateTypeName.equals("Modification")) {
-      updateType = UpdateType.MODIFICATION;
-    } else if (updateTypeName.equals("Deletion")) {
-      updateType = UpdateType.DELETION;
-    } else
-    {
-      throw new Exception("Unknown update type: " + updateTypeName);
-    }
-    
-    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    updateHeaderList.add(new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), updateType, A_ENTITY_KEY));
-    
+
     TestUpdateList updateList = new TestUpdateList();
-    updateList.add(new TestUpdate(new Integer(0)));
+    updateList.add(new TestUpdate(0));
     
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE, 
-        SESSION, SESSION_NAME, false, updateHeaderList, updateList, expectedErrorCode, false, null);
+        SESSION, SESSION_NAME, false, Helper.getTestUpdateHeaderlist(), updateList, null, expectedErrorCode, false);
     
     ipTest.publishUpdates(testPublishUpdate);
     return true;

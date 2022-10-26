@@ -32,6 +32,7 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import java.util.Map;
 import java.util.Vector;
 import org.ccsds.moims.mo.mal.MALException;
@@ -82,13 +83,10 @@ public class SubscriptionAreaTestProcedure extends LoggingBase
         HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, QOS_LEVEL,
         PRIORITY, true);
 
-    EntityKeyList entityKeyList = new EntityKeyList();
-    entityKeyList.add(new EntityKey(ENTITY_A, ALL_IDS, ALL_IDS, ALL_IDS));
-
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = new TestPublishRegister(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
-        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, entityKeyList,
+        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, Helper.getTestFilterlist(),
         expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
     ipTestFromArea2.publishRegister(testPublishRegister);
@@ -101,36 +99,21 @@ public class SubscriptionAreaTestProcedure extends LoggingBase
     logMessage("SubscriptionAreaTestProcedure.subscribeToAllAreasAndExpectedNotifyFromOtherServices("
         + allAreas + ")");
     
-    EntityKeyList entityKeys = new EntityKeyList();
-    entityKeys.add(new EntityKey(ENTITY_A, ALL_IDS, ALL_IDS, ALL_IDS));
-    Boolean onlyOnChange = false;
-    EntityRequest entityRequest = new EntityRequest(null,
-        allAreas,
-        Boolean.FALSE, 
-        Boolean.FALSE, 
-        onlyOnChange,
-        entityKeys);
-    EntityRequestList entityRequests = new EntityRequestList();
-    entityRequests.add(entityRequest);
-    Subscription subscription = new Subscription(SUBSCRIPTION_ID,
-        entityRequests);
+    Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN,
+        Helper.getTestFilterlist());
     
     listener = new MonitorListener();
     
     ipTest.monitorRegister(subscription, listener);
-    
-    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    updateHeaderList.add(new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.CREATION,
-        new EntityKey(ENTITY_A, null, null, null)));
-    
+
     TestUpdateList updateList = new TestUpdateList();
     updateList.add(new TestUpdate(new Integer(0)));
     
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(QOS_LEVEL,
         PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-        SESSION, SESSION_NAME, false, updateHeaderList, updateList, expectedErrorCode, 
-        Boolean.FALSE, null);
+        SESSION, SESSION_NAME, false, Helper.getTestUpdateHeaderlist(), updateList, null, expectedErrorCode, 
+        Boolean.FALSE);
     
     ipTest.publishUpdates(testPublishUpdate);
     ipTestFromArea2.publishUpdates(testPublishUpdate);

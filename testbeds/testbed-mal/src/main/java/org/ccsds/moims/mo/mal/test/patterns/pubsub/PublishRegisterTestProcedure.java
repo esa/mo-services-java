@@ -34,23 +34,21 @@ package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.EntityRequestList;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import org.ccsds.moims.mo.mal.structures.UpdateType;
+import static org.ccsds.moims.mo.mal.test.patterns.pubsub.EntityRequestTestProcedure.parseFirstKeyValue;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
@@ -102,7 +100,7 @@ public class PublishRegisterTestProcedure extends LoggingBase
         entities + ')');
     publishRegistered = true;
     
-    EntityKeyList entityKeyList = EntityRequestTestProcedure.parseEntityKeyList(entities);
+    SubscriptionFilterList entityKeyList = EntityRequestTestProcedure.parseKeyValueList(entities);
     
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = 
@@ -115,46 +113,35 @@ public class PublishRegisterTestProcedure extends LoggingBase
     return true;
   }
   
-  public boolean publishWithEntityAndExpectError(String entityKey, String error) throws Exception {
+  public boolean publishWithEntityAndExpectError(String entityKeyValue, String error) throws Exception {
     LoggingBase.logMessage("PublishRegisterTestProcedure.publishWithEntityAndExpectError(" +
-        entityKey + ',' + error + ')');
+        entityKeyValue + ',' + error + ')');
     listener.clear();
-    
-    EntityKey entity = EntityRequestTestProcedure.parseEntityKey(entityKey);
-    
-    EntityKeyList entityKeyList = new EntityKeyList();
-    entityKeyList.add(entity);
-    Boolean onlyOnChange = false;
-    EntityRequest entityRequest = new EntityRequest(
-        null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
-        onlyOnChange, entityKeyList);
-    EntityRequestList entityRequests = new EntityRequestList();
-    entityRequests.add(entityRequest);
-    Subscription subscription = new Subscription(SUBSCRIPTION_ID, entityRequests);
-
+   
+    Attribute value = new Union(parseFirstKeyValue(entityKeyValue));
+    AttributeList values = new AttributeList(value);
+    SubscriptionFilterList keyValues = Helper.getTestFilterlistNull(values);
+    Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, keyValues);
     ipTest.monitorRegister(subscription, listener);
     
     boolean expectError = Boolean.parseBoolean(error);
 
-    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    updateHeaderList.add(new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.MODIFICATION, entity));
-    
     TestUpdateList updateList = new TestUpdateList();
     updateList.add(new TestUpdate(new Integer(0)));
+    UpdateHeaderList updateHeaders = Helper.getTestUpdateHeaderlist(values);
     
     UInteger expectedErrorCode;
-    EntityKeyList failedEntityKeys;
+    SubscriptionFilterList failedEntityKeys;
     if (expectError) {
       expectedErrorCode = MALHelper.UNKNOWN_ERROR_NUMBER;
-      failedEntityKeys = entityKeyList;
+      failedEntityKeys = keyValues;
     } else {
       expectedErrorCode = new UInteger(999);
       failedEntityKeys = null;
     }
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE, 
-        SESSION, SESSION_NAME, false, updateHeaderList, updateList, expectedErrorCode, (! publishRegistered),
-        failedEntityKeys);
+        SESSION, SESSION_NAME, false, updateHeaders, updateList, failedEntityKeys, expectedErrorCode, (! publishRegistered));
     
     ipTest.publishUpdates(testPublishUpdate);
     
@@ -175,7 +162,7 @@ public class PublishRegisterTestProcedure extends LoggingBase
       }
       if (notifiedUpdates != null && notifiedUpdates.size() == 1) {
         localAssertions.add(new Assertion(procedureName, 
-          "Expected key is: " + entityKey, entity.equals(notifiedUpdateHeaders.get(0).getKey())));
+          "Expected key is: " + keyValues, updateHeaders.equals(notifiedUpdateHeaders.get(0).getKeyValues())));
       }
     }
     

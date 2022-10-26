@@ -473,11 +473,6 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
     // Set time stamp and Source URI
     FileBasedDirectory.URIpair uris = getProviderURIs();
     UpdateHeaderList updateHeaderList = _TestPublishUpdate.getUpdateHeaders();
-    for (UpdateHeader updateHeader : updateHeaderList)
-    {
-      updateHeader.setTimestamp(new Time(System.currentTimeMillis()));
-      updateHeader.setSourceURI(uris.uri);
-    }
 
     UShort opNumber = null;
     try
@@ -492,7 +487,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
                 _TestPublishUpdate.getSessionName(),
                 _TestPublishUpdate.getQos(),
                 _TestPublishUpdate.getPriority());
-        boolean specialSubKey = false;
+        /*boolean specialSubKey = false;
         try {
             specialSubKey = updateHeaderList.get(0).getKey().getSecondSubKey() == 1;
         } catch (NullPointerException ex) {} catch (IndexOutOfBoundsException ex) {}
@@ -504,7 +499,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
             publisher.publish(updateHeaderList, testUpdateList, integerUpdateList);
         } else {
             publisher.publish(updateHeaderList, testUpdateList, testUpdateList);
-        }
+        }*/
       }
       else
       {
@@ -586,7 +581,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
 
         error = listener.getError();
         expectedErrorCode = _TestPublishUpdate.getErrorCode();
-        expectedExtraInfo = _TestPublishUpdate.getFailedEntityKeys();
+        //expectedExtraInfo = _TestPublishUpdate.getFailedEntityKeys();
       }
 
       assertions.add(new Assertion("PubSub.checkPublishError",
@@ -600,7 +595,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
                 expectedErrorCode);
 
         AssertionHelper.checkEquality("PubSub.checkPublishError",
-                assertions, "extraInfo", error.getExtraInformation(), expectedExtraInfo);
+                assertions, "extraInfo", error.getExtraInformation(), null);
       }
     }
     else
