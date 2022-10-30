@@ -21,7 +21,6 @@
 package org.ccsds.moims.mo.mal;
 
 import java.util.HashMap;
-import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
@@ -41,11 +40,11 @@ public abstract class MALContextFactory {
      * The default implementation to use.
      */
     public static final String MAL_DEFAULT_FACTORY = "esa.mo.mal.impl.MALContextFactoryImpl";
-    private static final Map<String, Class> _FACTORY_MAP = new HashMap<>();
-    private static final Map<VersionizedAreaNumber, MALArea> _VERSIONIZED_AREA_NUMBER_MAP = new HashMap<>();
-    private static final Map<String, Integer> _AREA_NAME_MAP = new HashMap<>();
-    private static final Map<Long, Identifier> _ERROR_MAP = new HashMap<>();
-    private static final MALElementFactoryRegistry _FACTORY_REGISTRY = new MALElementFactoryRegistry();
+    private static final HashMap<String, Class> MAL_MAP = new HashMap<>();
+    private static final HashMap<VersionizedAreaNumber, MALArea> VERSIONIZED_AREA_NUMBER_MAP = new HashMap<>();
+    private static final HashMap<String, Integer> AREA_NAME_MAP = new HashMap<>();
+    private static final HashMap<Long, Identifier> ERROR_MAP = new HashMap<>();
+    private static final MALElementFactoryRegistry FACTORY_REGISTRY = new MALElementFactoryRegistry();
 
     /**
      * Registers a MALArea in the list of areas held by this context factory.
@@ -63,20 +62,20 @@ public abstract class MALContextFactory {
         final int num = area.getNumber().getValue();
         final short ver = area.getVersion().getValue();
         final VersionizedAreaNumber verArea = new VersionizedAreaNumber(num, ver);
-        final MALArea currentMapping = _VERSIONIZED_AREA_NUMBER_MAP.get(verArea);
+        final MALArea currentMapping = VERSIONIZED_AREA_NUMBER_MAP.get(verArea);
 
         if ((null != currentMapping) && (currentMapping != area)) {
             throw new MALException("MALArea already registered with a different instance");
         }
 
-        Integer currentNum = _AREA_NAME_MAP.get(area.getName().getValue());
+        Integer currentNum = AREA_NAME_MAP.get(area.getName().getValue());
 
         if (currentNum != null && currentNum.shortValue() != num) {
             throw new MALException("Trying to register the same 'Area Name' with a different 'Area Number'");
         }
 
-        _AREA_NAME_MAP.put(area.getName().getValue(), num);
-        _VERSIONIZED_AREA_NUMBER_MAP.put(verArea, area);
+        AREA_NAME_MAP.put(area.getName().getValue(), num);
+        VERSIONIZED_AREA_NUMBER_MAP.put(verArea, area);
     }
 
     /**
@@ -93,15 +92,15 @@ public abstract class MALContextFactory {
             throw new IllegalArgumentException("NULL argument");
         }
 
-        synchronized (_ERROR_MAP) {
+        synchronized (ERROR_MAP) {
             final Long num = errorNumber.getValue();
-            final Identifier currentMapping = _ERROR_MAP.get(num);
+            final Identifier currentMapping = ERROR_MAP.get(num);
 
             if ((null != currentMapping) && !(currentMapping.equals(errorName))) {
                 throw new MALException("Error already registered with a different name");
             }
 
-            _ERROR_MAP.put(errorNumber.getValue(), errorName);
+            ERROR_MAP.put(errorNumber.getValue(), errorName);
         }
     }
 
@@ -122,13 +121,13 @@ public abstract class MALContextFactory {
             throw new IllegalArgumentException("NULL version argument");
         }
 
-        final Integer num = _AREA_NAME_MAP.get(areaName.getValue());
+        final Integer num = AREA_NAME_MAP.get(areaName.getValue());
 
         if (num == null) {
             return null;
         }
 
-        return (MALArea) _VERSIONIZED_AREA_NUMBER_MAP.get(
+        return (MALArea) VERSIONIZED_AREA_NUMBER_MAP.get(
                 new VersionizedAreaNumber(num, version.getValue()));
     }
 
@@ -149,7 +148,7 @@ public abstract class MALContextFactory {
             throw new IllegalArgumentException("NULL version argument");
         }
 
-        return (MALArea) _VERSIONIZED_AREA_NUMBER_MAP.get(
+        return (MALArea) VERSIONIZED_AREA_NUMBER_MAP.get(
                 new VersionizedAreaNumber(areaNumber.getValue(), version.getValue()));
     }
 
@@ -160,7 +159,7 @@ public abstract class MALContextFactory {
      * @return The error number or null if not found.
      */
     public static Identifier lookupError(final UInteger errorNumber) {
-        return _ERROR_MAP.get(errorNumber.getValue());
+        return ERROR_MAP.get(errorNumber.getValue());
     }
 
     /**
@@ -169,7 +168,7 @@ public abstract class MALContextFactory {
      * @return The registry.
      */
     public static MALElementFactoryRegistry getElementFactoryRegistry() {
-        return _FACTORY_REGISTRY;
+        return FACTORY_REGISTRY;
     }
 
     /**
@@ -188,7 +187,7 @@ public abstract class MALContextFactory {
                         + factoryClass.getName());
             }
 
-            _FACTORY_MAP.put(factoryClass.getName(), factoryClass);
+            MAL_MAP.put(factoryClass.getName(), factoryClass);
         } else {
             throw new IllegalArgumentException("NULL argument");
         }
@@ -210,7 +209,7 @@ public abstract class MALContextFactory {
                         + factoryClass.getName());
             }
 
-            _FACTORY_MAP.remove(factoryClass.getName());
+            MAL_MAP.remove(factoryClass.getName());
         } else {
             throw new IllegalArgumentException("NULL argument");
         }
@@ -229,8 +228,8 @@ public abstract class MALContextFactory {
             final String classname = System.getProperty(MAL_FACTORY_PROPERTY, MAL_DEFAULT_FACTORY);
             Class malFactoryClass;
 
-            if (_FACTORY_MAP.containsKey(classname)) {
-                malFactoryClass = (Class) _FACTORY_MAP.get(classname);
+            if (MAL_MAP.containsKey(classname)) {
+                malFactoryClass = (Class) MAL_MAP.get(classname);
             } else {
                 malFactoryClass = Class.forName(classname);
                 registerFactoryClass(malFactoryClass);

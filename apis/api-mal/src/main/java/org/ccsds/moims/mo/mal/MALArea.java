@@ -21,7 +21,6 @@
 package org.ccsds.moims.mo.mal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -100,17 +99,15 @@ public class MALArea {
     public final ArrayList<MALService> getServices() {
         return services;
     }
-    
+
     /**
      * Returns a contained service identified by its name.
      *
      * @param serviceName The name of the service to find.
      * @return The found service or null if not found.
      */
-    public MALService getServiceByName(final Identifier serviceName) {
-        synchronized (this) {
-            return (MALService) serviceNames.get(serviceName.getValue());
-        }
+    public synchronized MALService getServiceByName(final Identifier serviceName) {
+        return (MALService) serviceNames.get(serviceName.getValue());
     }
 
     /**
@@ -119,10 +116,8 @@ public class MALArea {
      * @param serviceNumber The number of the service to find.
      * @return The found service or null if not found.
      */
-    public MALService getServiceByNumber(final UShort serviceNumber) {
-        synchronized (this) {
-            return (MALService) serviceNumbers.get(serviceNumber.getValue());
-        }
+    public synchronized MALService getServiceByNumber(final UShort serviceNumber) {
+        return (MALService) serviceNumbers.get(serviceNumber.getValue());
     }
 
     /**
@@ -132,18 +127,15 @@ public class MALArea {
      * @throws IllegalArgumentException Thrown if argument is NULL.
      * @throws MALException Thrown if service is already contained.
      */
-    public void addService(final MALService service) throws IllegalArgumentException, MALException {
-        synchronized (this) {
-            if (!serviceNumbers.containsKey(service.getNumber().getValue())
-                    && !(serviceNames.containsKey(service.getName().getValue()))) {
-                service.setArea(this);
-
-                services.add(service);
-                serviceNumbers.put(service.getNumber().getValue(), service);
-                serviceNames.put(service.getName().getValue(), service);
-            } else {
-                throw new MALException("Service already included in area");
-            }
+    public synchronized void addService(final MALService service) throws IllegalArgumentException, MALException {
+        if (!serviceNumbers.containsKey(service.getNumber().getValue())
+                && !(serviceNames.containsKey(service.getName().getValue()))) {
+            service.setArea(this);
+            services.add(service);
+            serviceNumbers.put(service.getNumber().getValue(), service);
+            serviceNames.put(service.getName().getValue(), service);
+        } else {
+            throw new MALException("Service already included in area");
         }
     }
 }

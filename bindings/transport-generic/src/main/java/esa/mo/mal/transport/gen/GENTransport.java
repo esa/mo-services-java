@@ -648,8 +648,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                         "Endpoint not found: " + endpointUriPart);
             }
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING,
-                    "Error occurred when receiving data : {0}", e);
+            LOGGER.log(Level.WARNING, "Error occurred when receiving data!", e);
 
             final StringWriter wrt = new StringWriter();
             e.printStackTrace(new PrintWriter(wrt));
@@ -661,7 +660,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                         "Error occurred: " + e.toString() + " : " + wrt.toString());
             } catch (MALException ex) {
                 LOGGER.log(Level.SEVERE,
-                        "Error occurred when return error data : {0}", ex);
+                        "Error occurred while trying to return error smg!", ex);
             }
         } catch (Error e) {
             // This is bad, Java errors are serious, 
@@ -741,19 +740,19 @@ public abstract class GENTransport<I, O> implements MALTransport {
                     sendMessage(null, true, retMsg);
                 } else {
                     LOGGER.log(Level.WARNING,
-                            "Unable to return error number ({0}) "
-                            + "as no endpoint supplied : {1}",
-                            new Object[]{errorNumber, oriMsg.getHeader()});
+                            "Unable to return error number (" + errorNumber
+                            + ") as no endpoint supplied: " + oriMsg.getHeader()
+                    );
                 }
             } else {
                 LOGGER.log(Level.WARNING,
-                        "Unable to return error number ({0}) "
-                        + "as already a return message : {1}",
-                        new Object[]{errorNumber, oriMsg.getHeader()});
+                        "Unable to return error number (" + errorNumber
+                        + ") as already a return message: " + oriMsg.getHeader()
+                );
             }
         } catch (MALTransmitErrorException ex) {
             LOGGER.log(Level.WARNING,
-                    "Error occurred when attempting to return previous error : {0}",
+                    "Error occurred when attempting to return previous error!",
                     ex);
         }
     }
