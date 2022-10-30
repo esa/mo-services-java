@@ -1573,7 +1573,18 @@ public abstract class GeneratorLangs extends GeneratorBase {
             }
         }
 
-        MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false, true, null, "init", Arrays.asList(eleFactory), throwsMALException, "Registers all aspects of this service with the provided element factory", null, Arrays.asList(throwsMALException + " If cannot initialise this helper."));
+        MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, 
+                false, true, null, "init", Arrays.asList(eleFactory), throwsMALException, 
+                "Registers all aspects of this service with the provided element factory", 
+                null, Arrays.asList(throwsMALException + " If cannot initialise this helper."));
+        
+        // Add the if condition to check if it has already been registered!
+        method.addMethodStatement("if (org.ccsds.moims.mo.mal.MALContextFactory.lookupArea(", false);
+        method.addMethodStatement("   " + ns + "_NAME,", false);
+        method.addMethodStatement("   " + ns + "_VERSION) == null) {", false);
+        method.addMethodStatement(" " + hlp + ".init(bodyElementFactory);", false);
+        method.addMethodStatement("}", false);
+
         addServiceConstructor(method, serviceVar, String.valueOf(area.getVersion()), summary);
 
         if (0 < comObjectCalls.size()) {
