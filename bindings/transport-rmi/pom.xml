@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
     <version>9.0-SNAPSHOT</version>
 
-    <name>ESA Transport - RMI</name>
+    <name>ESA MO Transport - RMI</name>
     <description>A Java RMI transport for CCSDS MAL</description>
     <url>http://www.esa.int</url>
   

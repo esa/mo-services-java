@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
     <version>9.0-SNAPSHOT</version>
 
-    <name>ESA Transport - Generic Framework</name>
+    <name>ESA MO Transport - Generic Framework</name>
     <description>A base Java framework for CCSDS MAL transports</description>
     <url>http://www.esa.int</url>
   

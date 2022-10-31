@@ -27,7 +27,7 @@
     <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ESA API TEST MC Java</name>
+    <name>ESA MO API TEST MC Java</name>
     <description>The CCSDS MC test bed API</description>
     <url>http://www.esa.int</url>
   

@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
     <version>9.0-SNAPSHOT</version>
 
-    <name>ESA Encoder - Generic Framework</name>
+    <name>ESA MO Encoder - Generic Framework</name>
     <description>A base Java framework for CCSDS MAL encoders</description>
     <url>http://www.esa.int</url>
   

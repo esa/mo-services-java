@@ -27,7 +27,7 @@
     <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ESA API MC Java</name>
+    <name>ESA MO API MC Java</name>
     <description>The CCSDS MC API for Java</description>
     <url>http://www.esa.int</url>
   

@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
     <version>9.0-SNAPSHOT</version>
 
-    <name>ESA Encoder - String</name>
+    <name>ESA MO Encoder - String</name>
     <description>A simple Java String based encoder for the CCSDS MAL</description>
     <url>http://www.esa.int</url>
   
