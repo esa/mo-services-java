@@ -36,10 +36,6 @@ public final class UpdateKeyValues {
      */
     private final IdentifierList domain;
     /**
-     * The keyValues of the update.
-     */
-    private final List<NamedValue> keyValues;
-    /**
      * The area of the update.
      */
     private final UShort area;
@@ -52,6 +48,10 @@ public final class UpdateKeyValues {
      */
     private final UShort operation;
     /**
+     * The keyValues of the update.
+     */
+    private final List<NamedValue> keyValues;
+    /**
      * Hash function magic number.
      */
     protected static final int HASH_MAGIC_NUMBER = 47;
@@ -62,7 +62,8 @@ public final class UpdateKeyValues {
      * @param domainId Update domain.
      * @param keyValues
      */
-    public UpdateKeyValues(final MALMessageHeader srcHdr, final IdentifierList domainId, final List<NamedValue> keyValues) {
+    public UpdateKeyValues(final MALMessageHeader srcHdr, 
+            final IdentifierList domainId, final List<NamedValue> keyValues) {
         this(domainId, srcHdr.getServiceArea(), srcHdr.getService(), srcHdr.getOperation(), keyValues);
     }
     
@@ -75,33 +76,14 @@ public final class UpdateKeyValues {
      * @param operation operation  provided by provider
      * @param keyValues key value  provided by provider
      */
-    public UpdateKeyValues(final IdentifierList domain, final UShort area, final UShort service, final UShort operation, final List<NamedValue> keyValues) {
+    public UpdateKeyValues(final IdentifierList domain, final UShort area, 
+            final UShort service, final UShort operation, final List<NamedValue> keyValues) {
         this.domain = domain;
-        this.keyValues = keyValues;
         this.area = area;
         this.service = service;
         this.operation = operation;
+        this.keyValues = keyValues;
     }
-
-    /*
-    @Override
-    public boolean equals(final Object obj) {
-        if (!super.equals(obj)) {
-            return false;
-        }
-
-        final UpdateKeyValues other = (UpdateKeyValues) obj;
-        if (this.domain == null ? other.domain != null : !this.domain.equals(other.domain)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return HASH_MAGIC_NUMBER * super.hashCode() + (this.domain != null ? this.domain.hashCode() : 0);
-    }
-    */
 
     @Override
     public String toString() {
@@ -111,7 +93,7 @@ public final class UpdateKeyValues {
         buf.append(this.area).append(':');
         buf.append(this.service).append(':');
         buf.append(this.operation).append(':');
-        buf.append(super.toString());
+        buf.append(keyValues.toString());
         buf.append(']');
         return buf.toString();
     }

@@ -20,10 +20,21 @@
  */
 package org.ccsds.moims.mo.mal.transport;
 
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+
 /**
  * The MALPublishRegisterBody interface gives access to the body of the PUBLISH
  * REGISTER message defined by the IP PUBLISH-SUBSCRIBE.
  */
 public interface MALPublishRegisterBody extends MALMessageBody {
 
+    /**
+     * The method returns the Subscription Keys from the PUBLISH_REGISTER
+     * message.
+     *
+     * @return The decoded keys.
+     * @throws MALException If an error occurs
+     */
+    IdentifierList getSubscriptionKeys() throws MALException;
 }

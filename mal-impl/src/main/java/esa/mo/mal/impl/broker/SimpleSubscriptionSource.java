@@ -21,7 +21,6 @@
 package esa.mo.mal.impl.broker;
 
 import esa.mo.mal.impl.broker.key.SubscriptionConsumer;
-import esa.mo.mal.impl.util.StructureHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -43,7 +42,7 @@ class SimpleSubscriptionSource extends SubscriptionSource {
 
     private final HashMap<String, SimpleSubscriptionDetails> subs = new HashMap<>();
     private final ArrayList<SubscriptionConsumer> required = new ArrayList<>();
-    private final String signature;
+    private final String signatureURI;
 
     /**
      * Constructor.
@@ -52,7 +51,7 @@ class SimpleSubscriptionSource extends SubscriptionSource {
      */
     public SimpleSubscriptionSource(final MALMessageHeader hdr) {
         super(hdr, hdr.getURIFrom());
-        this.signature = hdr.getURIFrom().getValue();
+        this.signatureURI = hdr.getURIFrom().getValue();
     }
 
     @Override
@@ -62,17 +61,17 @@ class SimpleSubscriptionSource extends SubscriptionSource {
 
     @Override
     public void report() {
-        MALBrokerImpl.LOGGER.log(Level.FINE, "  START Consumer ( {0} )", signature);
+        MALBrokerImpl.LOGGER.log(Level.FINE, "  START Consumer ( {0} )", signatureURI);
         MALBrokerImpl.LOGGER.log(Level.FINE, "   Required: {0}", required.size());
         for (Map.Entry<String, SimpleSubscriptionDetails> entry : subs.entrySet()) {
             entry.getValue().report();
         }
-        MALBrokerImpl.LOGGER.log(Level.FINE, "  END Consumer ( {0} )", signature);
+        MALBrokerImpl.LOGGER.log(Level.FINE, "  END Consumer ( {0} )", signatureURI);
     }
 
     @Override
     public String getSignature() {
-        return signature;
+        return signatureURI;
     }
 
     @Override
@@ -92,7 +91,7 @@ class SimpleSubscriptionSource extends SubscriptionSource {
             final List<NotifyMessageSet> lst,
             final UpdateHeaderList updateHeaderList,
             final MALPublishBody publishBody) throws MALException {
-        MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signature);
+        MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signatureURI);
 
         final IdentifierList srcDomainId = srcHdr.getDomain();
         final List<NotifyMessage> msgs = new LinkedList<>();

@@ -22,6 +22,7 @@ package org.ccsds.moims.mo.mal.provider;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
@@ -50,6 +51,7 @@ public interface MALPublisher {
     /**
      * The method enables a provider to synchronously register to its broker.
      *
+     * @param keys Keys of the subscriptions that are to be published
      * @param listener Listener in charge of receiving the messages PUBLISH
      * ERROR
      * @throws java.lang.IllegalArgumentException If the parameters
@@ -59,7 +61,7 @@ public interface MALPublisher {
      * @throws MALInteractionException if a PUBLISH REGISTER ERROR or other MAL
      * error occurs.
      */
-    void register(MALPublishInteractionListener listener)
+    void register(IdentifierList keys, MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**
@@ -75,6 +77,7 @@ public interface MALPublisher {
     /**
      * The method enables a provider to asynchronously register to its broker.
      *
+     * @param keys Keys of the subscriptions that are to be published
      * @param listener Listener in charge of receiving the messages PUBLISH
      * REGISTER ACK, PUBLISH REGISTER ERROR and PUBLISH ERROR
      * @return the MALMessage that has been sent
@@ -84,7 +87,7 @@ public interface MALPublisher {
      * message sending or the MALPublisher is closed.
      * @throws MALInteractionException if a MAL error occurs.
      */
-    MALMessage asyncRegister(MALPublishInteractionListener listener)
+    MALMessage asyncRegister(IdentifierList keys, MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**

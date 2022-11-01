@@ -99,6 +99,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         report(key);
         if ((null != hdr)) {
             PublisherSource s = this.getProviderEntry(key, hdr, true);
+            s.setSubscriptionKeys(body.getSubscriptionKeys());
             // s.setKeyList(hdr);
         }
         report(key);

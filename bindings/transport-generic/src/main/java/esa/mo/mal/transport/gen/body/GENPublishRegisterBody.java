@@ -21,9 +21,11 @@
 package esa.mo.mal.transport.gen.body;
 
 import java.io.ByteArrayInputStream;
+import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.transport.MALPublishRegisterBody;
 
 /**
@@ -64,4 +66,8 @@ public class GENPublishRegisterBody extends GENMessageBody implements MALPublish
         super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
     }
 
+    @Override
+    public IdentifierList getSubscriptionKeys() throws MALException {
+        return (IdentifierList) getBodyElement(0, new IdentifierList());
+    }
 }

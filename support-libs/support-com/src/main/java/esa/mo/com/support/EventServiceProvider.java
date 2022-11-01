@@ -86,7 +86,7 @@ public class EventServiceProvider extends EventInheritanceSkeleton {
                     null,
                     new UInteger(0));
             
-            monitorEventPublisher.register(eventPublishListener);
+            monitorEventPublisher.register(new IdentifierList(), eventPublishListener);
         }
     }
 

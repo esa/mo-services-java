@@ -282,10 +282,10 @@ public class SubscriptionConsumerTest {
 
         Attribute value_2_2 = new Union(5);
         Attribute value_2_3 = new Union(7);        
-        AttributeList values2 = new AttributeList(value2);
+        AttributeList values2 = new AttributeList();
         values2.add(value_2_2);
         values2.add(value_2_3);
-        Identifier key5 = new Identifier("parameter property");  
+        Identifier key5 = new Identifier("parameter id");
         SubscriptionFilter subFilter2 = new SubscriptionFilter(key5, values2); 
         
         SubscriptionFilterList subFilters = new SubscriptionFilterList();

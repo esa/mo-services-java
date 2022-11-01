@@ -77,6 +77,7 @@ public class MessageSend {
      *
      * @param details Message details structure.
      * @param op The operation.
+     * @param keys List of keys to be published.
      * @param listener Error callback interface.
      * @return Publish transaction identifier.
      * @throws MALInteractionException if there is a problem during the
@@ -85,6 +86,7 @@ public class MessageSend {
      */
     public Long publishRegister(final MessageDetails details,
             final MALPubSubOperation op,
+            final IdentifierList keys,
             final MALPublishInteractionListener listener)
             throws MALInteractionException, MALException {
         ipsmap.registerPublishListener(details, listener);
@@ -92,7 +94,8 @@ public class MessageSend {
         return initiateSynchronousInteraction(details,
                 op,
                 MALPubSubOperation.PUBLISH_REGISTER_STAGE,
-                (MALPublishInteractionListener) null);
+                (MALPublishInteractionListener) null,
+                keys);
     }
 
     /**
@@ -141,7 +144,7 @@ public class MessageSend {
      *
      * @param details Message details structure.
      * @param op The operation.
-     * @param entityKeys List of keys that can be published.
+     * @param keys List of keys that can be published.
      * @param listener Response callback interface.
      * @return The sent MAL message.
      * @throws MALInteractionException if there is a problem during the
@@ -150,12 +153,13 @@ public class MessageSend {
      */
     public MALMessage publishRegisterAsync(final MessageDetails details,
             final MALPubSubOperation op,
+            final IdentifierList keys,
             final MALPublishInteractionListener listener)
             throws MALInteractionException, MALException {
         ipsmap.registerPublishListener(details, listener);
         final Long transId = icmap.createTransaction(false, listener);
         return initiateAsynchronousInteraction(details,
-                createMessage(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE));
+                createMessage(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE, keys));
     }
 
     /**

@@ -68,6 +68,8 @@ public abstract class GENElementInputStream implements MALElementInputStream {
         
         if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
             switch (ctx.getHeader().getInteractionStage().getValue()) {
+                case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
+                    return dec.decodeElement(new IdentifierList());
                 case MALPubSubOperation._REGISTER_STAGE:
                     return dec.decodeElement(new Subscription());
                 case MALPubSubOperation._DEREGISTER_STAGE:

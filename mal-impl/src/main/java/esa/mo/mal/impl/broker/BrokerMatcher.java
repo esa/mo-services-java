@@ -46,7 +46,7 @@ public class BrokerMatcher {
         
         boolean matched = false;
         for (SubscriptionConsumer subscriptionKey : searchSet) {
-            MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0} against {1}",
+            MALBrokerImpl.LOGGER.log(Level.FINE, "Checking: {0}\nAgainst: {1}",
                     new Object[]{values, subscriptionKey});
             
             if (subscriptionKey.matchesWithFilters(values)) {

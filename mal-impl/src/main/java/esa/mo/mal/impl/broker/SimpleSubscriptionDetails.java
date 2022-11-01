@@ -121,7 +121,7 @@ class SimpleSubscriptionDetails {
             final UpdateHeaderList notifyHeaders,
             final List[] notifyLists) throws MALException {
         final UpdateKeyValues key = new UpdateKeyValues(srcHdr, srcDomainId, null);
-        MALBrokerImpl.LOGGER.log(Level.FINE, "Checking {0}", key);
+        MALBrokerImpl.LOGGER.log(Level.FINE, "Checking: {0}", key);
 
         if (BrokerMatcher.keyValuesMatchSubs(key, subs)) {
             // add update for this consumer/subscription

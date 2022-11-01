@@ -34,10 +34,13 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public final class PublisherSource {
 
+    @Deprecated
     private final Set<Identifier> keySet = new TreeSet<>();
+
     private IdentifierList domain = null;
     private final String uri;
     private final QoSLevel qosLevel;
+    private IdentifierList subscriptionKeys;
 
     PublisherSource(final String uri, final QoSLevel qosLevel) {
         super();
@@ -49,11 +52,19 @@ public final class PublisherSource {
         return qosLevel;
     }
 
+    public IdentifierList getSubscriptionKeys() {
+        return subscriptionKeys;
+    }
+
+    void setSubscriptionKeys(IdentifierList subscriptionKeys) {
+        this.subscriptionKeys = subscriptionKeys;
+    }
+
     public void report() {
         MALBrokerImpl.LOGGER.log(Level.FINE, "  START Provider ( {0} )", uri);
         MALBrokerImpl.LOGGER.log(Level.FINE, "    Domain : {0}", StructureHelper.domainToString(domain));
-        for (Identifier key : keySet) {
-            MALBrokerImpl.LOGGER.log(Level.FINE, "    Allowed: {0}", key);
+        for (Identifier key : subscriptionKeys) {
+            MALBrokerImpl.LOGGER.log(Level.FINE, "    Allowed key: {0}", key);
         }
         MALBrokerImpl.LOGGER.log(Level.FINE, "  END Provider ( {0} )", uri);
     }

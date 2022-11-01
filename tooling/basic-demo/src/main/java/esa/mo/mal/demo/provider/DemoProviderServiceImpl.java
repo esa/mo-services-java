@@ -157,6 +157,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
         final IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
+        IdentifierList keys = new IdentifierList();
 
         publisher = createMonitorPublisher(domain,
                 new Identifier("GROUND"),
@@ -342,7 +343,8 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
 
     private void registerPublisher() throws MALException, MALInteractionException {
         if (!isRegistered) {
-            publisher.register(new PublishInteractionListener());
+            IdentifierList keys = new IdentifierList();
+            publisher.register(keys, new PublishInteractionListener());
             isRegistered = true;
         }
     }

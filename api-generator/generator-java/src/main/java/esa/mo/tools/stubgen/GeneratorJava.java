@@ -157,20 +157,21 @@ public class GeneratorJava extends GeneratorLangs {
         method.addMethodStatement("this.publisherSet = publisherSet");
         method.addMethodCloseStatement();
 
-        CompositeField entKeyList = createCompositeElementsDetails(file, false, "entityKeys", TypeUtils.createTypeReference(StdStrings.MAL, null, "EntityKey", true), true, true, "entityKeys The entity keys to use in the method");
+        CompositeField keyList = createCompositeElementsDetails(file, false, "keys", TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true), true, true, "keys The keys to use in the method");
         CompositeField psListener = createCompositeElementsDetails(file, false, "listener", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublishInteractionListener", false), false, true, "listener The listener object to use for callback from the publisher");
         List<CompositeField> argPSListenerList = new LinkedList<>();
+        argPSListenerList.add(keyList);
         argPSListenerList.add(psListener);
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "register", argPSListenerList, throwsExceptions,
                 "Registers this provider implementation to the set of broker connections", null, 
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addMethodStatement("publisherSet.register(listener)");
+        method.addMethodStatement("publisherSet.register(keys, listener)");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "asyncRegister", argPSListenerList, throwsExceptions,
                 "Asynchronously registers this provider implementation to the set of broker connections", null,
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addMethodStatement("publisherSet.asyncRegister(listener)");
+        method.addMethodStatement("publisherSet.asyncRegister(keys, listener)");
         method.addMethodCloseStatement();
 
         List<CompositeField> argList = new LinkedList<>();

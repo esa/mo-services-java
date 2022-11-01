@@ -1211,10 +1211,15 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             switch (op.getPattern()) {
                 case PUBSUB_OP: {
-                    CompositeField updateType = createCompositeElementsDetails(file, false, "publisher", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false), false, true, null);
-                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, updateType, "create" + StubUtils.preCap(op.getName()) + "Publisher", psArgs, throwsMALException, "Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName(), "The new publisher object.", Arrays.asList(throwsMALException + " if a problem is detected during creation of the publisher"));
+                    CompositeField updateType = createCompositeElementsDetails(file, false, "publisher", 
+                            TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false), false, true, null);
+                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, 
+                            updateType, "create" + StubUtils.preCap(op.getName()) + "Publisher", psArgs, throwsMALException, 
+                            "Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName(), 
+                            "The new publisher object.", Arrays.asList(throwsMALException + " if a problem is detected during creation of the publisher"));
                     String ns = convertToNamespace(helperName + "." + op.getName().toUpperCase() + "_OP");
-                    method.addMethodWithDependencyStatement("return new " + updateType.getTypeName() + createMethodCall("(providerSet.createPublisherSet(") + ns + ", domain, networkZone, sessionType, sessionName, qos, qosProps, priority))", ns, true);
+                    method.addMethodWithDependencyStatement("return new " + updateType.getTypeName() 
+                            + createMethodCall("(providerSet.createPublisherSet(") + ns + ", domain, networkZone, sessionType, sessionName, qos, qosProps, priority))", ns, true);
                     method.addMethodCloseStatement();
                     break;
                 }
