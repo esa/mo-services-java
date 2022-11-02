@@ -39,6 +39,8 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
@@ -91,7 +93,11 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton
         _TestPublishRegister.getQos(),
         new Hashtable(),
         _TestPublishRegister.getPriority());
-    publisher.register(new PublisherListener());
+    IdentifierList keys = new IdentifierList();
+    for(SubscriptionFilter sf : _TestPublishRegister.getSubFilterList()){
+        keys.add(sf.getName());
+    }    
+    publisher.register(keys, new PublisherListener());
     
     Monitor2Publisher publisher2 = createMonitor2Publisher(
         _TestPublishRegister.getDomain(),
@@ -101,7 +107,7 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton
         _TestPublishRegister.getQos(),
         new Hashtable(),
         _TestPublishRegister.getPriority());
-    publisher2.register(new PublisherListener());
+    publisher2.register(keys, new PublisherListener());
   }
 
   public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)
@@ -127,10 +133,7 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton
     
     UpdateHeaderList updateHeaderList = _TestPublishUpdate.getUpdateHeaders();
     TestUpdateList testUpdateList = _TestPublishUpdate.getUpdates();
-    for (UpdateHeader updateHeader : updateHeaderList) {
-      updateHeader.setTimestamp(new Time(System.currentTimeMillis()));
-      updateHeader.setSourceURI(new URI(""));
-    }
+    
     publisher.publish(updateHeaderList, testUpdateList);
     publisher2.publish(updateHeaderList, testUpdateList);
   }

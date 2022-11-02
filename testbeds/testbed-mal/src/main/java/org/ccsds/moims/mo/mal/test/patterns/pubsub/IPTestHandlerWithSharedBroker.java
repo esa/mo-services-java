@@ -111,7 +111,11 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl
                 _TestPublishRegister.getSessionName(),
                 _TestPublishRegister.getQos(),
                 _TestPublishRegister.getPriority());
-        publisher.asyncRegister(_TestPublishRegister.getEntityKeys(), listener);
+        IdentifierList keys = new IdentifierList();
+        for(SubscriptionFilter sf : _TestPublishRegister.getSubFilterList()){
+            keys.add(sf.getName());
+        }
+        publisher.asyncRegister(keys, listener);
       }
       else
       {
@@ -123,7 +127,11 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl
                 _TestPublishRegister.getSessionName(),
                 _TestPublishRegister.getQos(),
                 _TestPublishRegister.getPriority());
-        publisher.asyncRegister(_TestPublishRegister.getEntityKeys(), listener);
+        IdentifierList keys = new IdentifierList();
+        for(SubscriptionFilter sf : _TestPublishRegister.getSubFilterList()){
+            keys.add(sf.getName());
+        }
+        publisher.asyncRegister(keys, listener);
       }
       listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
     }

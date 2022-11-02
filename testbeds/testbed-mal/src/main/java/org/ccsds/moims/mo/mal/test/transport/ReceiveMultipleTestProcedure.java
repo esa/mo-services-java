@@ -36,22 +36,15 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import org.ccsds.moims.mo.mal.structures.UpdateType;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
@@ -74,8 +67,6 @@ public class ReceiveMultipleTestProcedure
   public static final UInteger PRIORITY = new UInteger(1);
   public static final QoSLevel QOS_LEVEL = QoSLevel.ASSURED;
   
-  public static final EntityKey A_ENTITY_KEY = new EntityKey(new Identifier("A"), null, null, null);
-  
   private Subscription subscription;
 
   private TestEndPoint ep;
@@ -94,15 +85,7 @@ public class ReceiveMultipleTestProcedure
         SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false);
     ipTest = ipTestConsumer.getStub();
     
-    EntityKeyList entityKeys = new EntityKeyList();
-    entityKeys.add(A_ENTITY_KEY);
-    Boolean onlyOnChange = false;
-    EntityRequest entityRequest = new EntityRequest(
-        null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
-        onlyOnChange, entityKeys);
-    EntityRequestList entityRequests = new EntityRequestList();
-    entityRequests.add(entityRequest);
-    subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, entityRequests);
+    subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, Helper.getTestFilterlistNull());
 
     ipTest.monitorRegister(subscription, listener);
 
@@ -112,26 +95,20 @@ public class ReceiveMultipleTestProcedure
   public boolean publishInitialMessage() throws Exception {
     LoggingBase.logMessage("ReceiveMultipleTestProcedure.publishInitialMessage()");
 
-    EntityKeyList registeredEntityKeyList = new EntityKeyList();
-    registeredEntityKeyList.add(A_ENTITY_KEY);
-
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister =
       new TestPublishRegister(QOS_LEVEL, PRIORITY,
           HeaderTestProcedure.DOMAIN,
           HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
-          registeredEntityKeyList, expectedErrorCode);
+          Helper.getTestFilterlistNull(), expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
-
-    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    updateHeaderList.add(new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.MODIFICATION, A_ENTITY_KEY));
     
     TestUpdateList testUpdateList = new TestUpdateList();
-    testUpdateList.add(new TestUpdate(new Integer(0)));
+    testUpdateList.add(new TestUpdate(0));
 
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-        SESSION, SESSION_NAME, false, updateHeaderList, testUpdateList,expectedErrorCode, false, null);
+        SESSION, SESSION_NAME, false, Helper.getTestUpdateHeaderlist(), testUpdateList, null, expectedErrorCode, false);
     ipTest.publishUpdates(testPublishUpdate);
 
     return true;

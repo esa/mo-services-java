@@ -32,21 +32,17 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.mal.test.transport;
 
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.EntityRequestList;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
@@ -68,16 +64,14 @@ public class TransmitMultipleTestProcedure
   public static final UInteger PRIORITY = new UInteger(1);
   public static final QoSLevel QOS_LEVEL = QoSLevel.ASSURED;
   
-  public static final EntityKey A_ENTITY_KEY = new EntityKey(NETWORK_ZONE, null, null, null);
-  
   private Subscription subscription;
-
   private IPTestStub ipTest1;
   private MonitorListener listener1;
   private IPTestStub ipTest2;
-  private MonitorListener listener2;
-  
+  private MonitorListener listener2;  
   private IPTestResult result;
+  private final Attribute value = new Union("NetworkZone-TransmitMultiple");
+  private final AttributeList values = new AttributeList(value);
   
   public boolean createConsumers() throws Exception {
     LoggingBase.logMessage("TransmitMultipleTestProcedure.createConsumers()");
@@ -95,30 +89,21 @@ public class TransmitMultipleTestProcedure
         NETWORK_ZONE, 
         SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false).getStub();
     
-    EntityKeyList entityKeys = new EntityKeyList();
-    entityKeys.add(A_ENTITY_KEY);
-    Boolean onlyOnChange = false;
-    EntityRequest entityRequest = new EntityRequest(
-        null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, 
-        onlyOnChange, entityKeys);
-    EntityRequestList entityRequests = new EntityRequestList();
-    entityRequests.add(entityRequest);
-    subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, entityRequests);
+    
+    subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, 
+            Helper.getTestFilterlistNull(values));
     return true;
   }
   
   public boolean initiateInteraction() throws Exception {
     LoggingBase.logMessage("TransmitMultipleTestProcedure.initiateInteraction()");
     
-    EntityKeyList registeredEntityKeyList = new EntityKeyList();
-    registeredEntityKeyList.add(A_ENTITY_KEY);
-    
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = 
       new TestPublishRegister(QOS_LEVEL, PRIORITY, 
           HeaderTestProcedure.DOMAIN, 
           NETWORK_ZONE, SESSION, SESSION_NAME, false, 
-          registeredEntityKeyList, expectedErrorCode);
+          Helper.getTestFilterlistNull(values), expectedErrorCode);
     ipTest1.publishRegister(testPublishRegister);
     
     listener1 = new MonitorListener();
@@ -127,15 +112,12 @@ public class TransmitMultipleTestProcedure
     ipTest1.monitorRegister(subscription, listener1);
     ipTest2.monitorRegister(subscription, listener2);
     
-    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    updateHeaderList.add(new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.MODIFICATION, A_ENTITY_KEY));
-    
     TestUpdateList updateList = new TestUpdateList();
-    updateList.add(new TestUpdate(new Integer(0)));
+    updateList.add(new TestUpdate(0));
     
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, NETWORK_ZONE, 
-        SESSION, SESSION_NAME, false, updateHeaderList, updateList, expectedErrorCode, false, null);
+        SESSION, SESSION_NAME, false, Helper.getTestUpdateHeaderlist(values), updateList, null, expectedErrorCode, false);
     ipTest1.testMultipleNotify(testPublishUpdate);
     
     return true;
