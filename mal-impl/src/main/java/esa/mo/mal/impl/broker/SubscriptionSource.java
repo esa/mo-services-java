@@ -114,15 +114,16 @@ public abstract class SubscriptionSource {
      * Adds messages to the list of notify messages to be sent out.
      *
      * @param srcHdr Source publish message.
-     * @param lst List of broker messages.
      * @param updateHeaderList The update header list.
      * @param publishBody The publish message body.
+     * @param keyNames The provider key list.
+     * @return NotifyMessageSet The set of NotifyMessages.
      * @throws MALException On error.
      */
-    public abstract void populateNotifyList(final MALMessageHeader srcHdr,
-            final List<NotifyMessageSet> lst,
+    public abstract NotifyMessageSet  populateNotifyList(final MALMessageHeader srcHdr,
             final UpdateHeaderList updateHeaderList,
-            final MALPublishBody publishBody) throws MALException;
+            final MALPublishBody publishBody,
+            final IdentifierList keyNames) throws MALException;
 
     /**
      * Removes a subscription.

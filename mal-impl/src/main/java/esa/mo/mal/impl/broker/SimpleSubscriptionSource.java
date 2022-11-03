@@ -87,18 +87,19 @@ class SimpleSubscriptionSource extends SubscriptionSource {
     }
 
     @Override
-    public void populateNotifyList(final MALMessageHeader srcHdr,
-            final List<NotifyMessageSet> lst,
+    public NotifyMessageSet populateNotifyList(final MALMessageHeader srcHdr,
             final UpdateHeaderList updateHeaderList,
-            final MALPublishBody publishBody) throws MALException {
+            final MALPublishBody publishBody,
+            IdentifierList keyNames) throws MALException {
         MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signatureURI);
 
+        NotifyMessageSet lst = null;
         final IdentifierList srcDomainId = srcHdr.getDomain();
         final List<NotifyMessage> msgs = new LinkedList<>();
 
         for (Map.Entry<String, SimpleSubscriptionDetails> ent : subs.entrySet()) {
             final NotifyMessage subUpdate = ent.getValue().populateNotifyList(
-                    srcHdr, srcDomainId, updateHeaderList, publishBody);
+                    srcHdr, srcDomainId, updateHeaderList, publishBody, keyNames);
             if (subUpdate != null) {
                 msgs.add(subUpdate);
             }
@@ -115,8 +116,9 @@ class SimpleSubscriptionSource extends SubscriptionSource {
                 msg.version = srcHdr.getAreaVersion();
             }
             
-            lst.add(new NotifyMessageSet(getMsgHeaderDetails(), msgs));
+            lst = new NotifyMessageSet(getMsgHeaderDetails(), msgs);
         }
+        return lst;
     }
 
     @Override
