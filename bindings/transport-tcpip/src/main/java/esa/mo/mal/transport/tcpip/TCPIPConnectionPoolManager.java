@@ -54,7 +54,7 @@ public enum TCPIPConnectionPoolManager {
      * The internal list of sockets. Each socket is identified by a hash, which
      * is made purely from the port number.
      */
-    private final Map<Integer, Socket> connections = new HashMap<Integer, Socket>();
+    private final Map<Integer, Socket> connections = new HashMap<>();
 
     /**
      * Put a new socket into the list of connections
@@ -62,11 +62,8 @@ public enum TCPIPConnectionPoolManager {
      * @param socket The socket to store
      */
     private void put(Socket socket) {
-
         int hash = getSocketHash(socket.getLocalPort());
-
         RLOGGER.log(Level.FINEST, "ConnectionPool: put -> hash: {0}", hash);
-
         connections.put(hash, socket);
     }
 
@@ -81,8 +78,7 @@ public enum TCPIPConnectionPoolManager {
      * existant.
      * @return Socket instance
      */
-    public Socket get(int localPort) {
-
+    public synchronized Socket get(int localPort) {
         Socket s;
         int hash = getSocketHash(localPort);
         RLOGGER.log(Level.FINEST, "ConnectionPool: get -> hash: {0}", hash);
@@ -106,7 +102,6 @@ public enum TCPIPConnectionPoolManager {
      * @return String hash
      */
     public int getSocketHash(int localPort) {
-
         return Integer.toString(localPort).hashCode();
     }
 
@@ -118,8 +113,7 @@ public enum TCPIPConnectionPoolManager {
      * @param localPort The port number to create the socket at
      * @return Socket instance
      */
-    public Socket createSocket(int localPort) {
-
+    public synchronized Socket createSocket(int localPort) {
         Socket s = new Socket();
         try {
             s.bind(new InetSocketAddress(localPort));
@@ -143,7 +137,7 @@ public enum TCPIPConnectionPoolManager {
     /**
      * Close all sockets and remove them from the connections pool
      */
-    public void close() {
+    public synchronized void close() {
         RLOGGER.info("Closing client sockets...");
 
         for (int hash : connections.keySet()) {
@@ -163,7 +157,7 @@ public enum TCPIPConnectionPoolManager {
      * @return
      */
     @Override
-    public String toString() {
+    public synchronized String toString() {
         StringBuilder result = new StringBuilder();
         result.append("LocalSockets:\n");
         for (int hash : connections.keySet()) {
