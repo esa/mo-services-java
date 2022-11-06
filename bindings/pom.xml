@@ -62,7 +62,6 @@
     </developers>
 
     <modules>
-        <module>encoding-generic</module>
         <module>encoding-string</module>
         <module>encoding-binary</module>
         <module>transport-generic</module>
