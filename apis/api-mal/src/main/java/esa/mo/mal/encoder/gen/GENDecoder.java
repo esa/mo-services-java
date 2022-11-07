@@ -372,6 +372,8 @@ public abstract class GENDecoder implements MALDecoder {
                 return decodeFineTime();
             case Attribute._URI_TYPE_SHORT_FORM:
                 return decodeURI();
+            case Attribute._OBJECTREF_TYPE_SHORT_FORM:
+                return decodeObjectRef();
             default:
                 throw new MALException("Unknown attribute type received: " + typeval);
         }
