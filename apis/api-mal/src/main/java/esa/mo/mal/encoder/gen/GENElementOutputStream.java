@@ -57,10 +57,12 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
 
         if (element == ctx.getHeader()) {
             ((Element) element).encode(enc);
+            return;
         }
         
         if (null == element) {
             enc.encodeNullableElement(null);
+            return;
         }
         
         if (ctx.getHeader().getIsErrorMessage()) {
@@ -70,6 +72,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             } else {
                 encodeSubElement((Element) element, null, null);
             }
+            return;
         } 
         
         if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
