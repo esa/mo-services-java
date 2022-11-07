@@ -105,15 +105,10 @@ class SimpleSubscriptionDetails {
             AttributeList providerValues = updateHeaderList.get(i).getKeyValues();
             
             for(int j = 0; j < providerKeys.size(); j++){
-                NamedValue keyValue = new NamedValue();
-                
                 Identifier key = providerKeys.get(i);
-                keyValue.setName(key);
-
                 Object value = providerValues.get(j);
-                keyValue.setValue((Attribute) value);
-                
-                providerKeyValues.add(keyValue);
+                value = (Attribute) Attribute.javaType2Attribute(value);
+                providerKeyValues.add(new NamedValue(key, (Attribute) value));
             }
             
             final UpdateKeyValues providerUpdates = new UpdateKeyValues(srcHdr, srcDomainId, providerKeyValues);
