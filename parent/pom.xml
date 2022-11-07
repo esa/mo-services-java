@@ -82,7 +82,6 @@
         <esa.api.mc.version>9.0-SNAPSHOT</esa.api.mc.version>
         <esa.api.common.version>9.0-SNAPSHOT</esa.api.common.version>
         <esa.mal.version>9.0-SNAPSHOT</esa.mal.version>
-        <esa.gen.encoder.version>9.0-SNAPSHOT</esa.gen.encoder.version>
         <esa.string.encoder.version>9.0-SNAPSHOT</esa.string.encoder.version>
         <esa.binary.encoder.version>9.0-SNAPSHOT</esa.binary.encoder.version>
         <esa.gen.transport.version>9.0-SNAPSHOT</esa.gen.transport.version>
@@ -130,11 +129,6 @@
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>mal-impl</artifactId>
                 <version>${esa.mal.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>encoding-generic</artifactId>
-                <version>${esa.gen.encoder.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
