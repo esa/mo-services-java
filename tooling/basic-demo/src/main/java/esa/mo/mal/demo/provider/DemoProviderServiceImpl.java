@@ -400,7 +400,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
             final BasicUpdateList lst, final short currentValue, final int i) {
         AttributeList keyValues = new AttributeList();
         keyValues.add(new Identifier(String.valueOf(i)));
-        hdrLst.add(new UpdateHeader(new Identifier("SomeURI"), keyValues));
+        hdrLst.add(new UpdateHeader(new Identifier("SomeURI"), null, keyValues));
         lst.add(new BasicUpdate(currentValue));
     }
 

@@ -20,17 +20,20 @@
  */
 package esa.mo.mal.impl.broker;
 
+import esa.mo.mal.impl.broker.key.BrokerKey;
 import esa.mo.mal.impl.broker.key.SubscriptionConsumer;
 import esa.mo.mal.impl.broker.key.UpdateKeyValues;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
-import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElementList;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -41,7 +44,7 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
  */
 class SimpleSubscriptionDetails {
 
-    private final ArrayList<SubscriptionConsumer> subs = new ArrayList<>();
+    private final ArrayList<SubscriptionConsumer> subscriptionList = new ArrayList<>();
     private final String subscriptionId;
 
     public SimpleSubscriptionDetails(final String subscriptionId) {
@@ -50,16 +53,16 @@ class SimpleSubscriptionDetails {
 
     public void report() {
         MALBrokerImpl.LOGGER.log(Level.FINE, "    START Subscription ( {0} )", subscriptionId);
-        MALBrokerImpl.LOGGER.log(Level.FINE, "     Subs: {0}", subs.size());
-        for (SubscriptionConsumer key : subs) {
+        MALBrokerImpl.LOGGER.log(Level.FINE, "     Subs: {0}", subscriptionList.size());
+        for (SubscriptionConsumer key : subscriptionList) {
             MALBrokerImpl.LOGGER.log(Level.FINE, "            : Rqd : {0}", key);
         }
         MALBrokerImpl.LOGGER.log(Level.FINE, "    END Subscription ( {0} )", subscriptionId);
     }
 
     public void setIds(final MALMessageHeader srcHdr, final SubscriptionFilterList filters) {
-        subs.clear();
-        subs.add(new SubscriptionConsumer(srcHdr, filters));
+        subscriptionList.clear();
+        subscriptionList.add(new SubscriptionConsumer(srcHdr, filters));
     }
 
     /**
@@ -69,7 +72,8 @@ class SimpleSubscriptionDetails {
     public NotifyMessage populateNotifyList(final MALMessageHeader srcHdr,
             final IdentifierList srcDomainId,
             final UpdateHeaderList updateHeaderList,
-            final MALPublishBody publishBody) throws MALException {
+            final MALPublishBody publishBody,
+            IdentifierList providerKeys) throws MALException {
         MALBrokerImpl.LOGGER.fine("Checking SimpleSubscriptionDetails");
 
         final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
@@ -96,10 +100,36 @@ class SimpleSubscriptionDetails {
                 }
             }
         }
-
+        List<NamedValue> providerKeyValues = new ArrayList<>();        
         for (int i = 0; i < updateHeaderList.size(); ++i) {
-            populateNotifyList(srcHdr, srcDomainId, updateHeaderList.get(i),
-                    updateLists, i, notifyHeaders, notifyLists);
+            AttributeList providerValues = updateHeaderList.get(i).getKeyValues();
+            
+            for(int j = 0; j < providerKeys.size(); j++){
+                NamedValue keyValue = new NamedValue();
+                
+                Identifier key = providerKeys.get(i);
+                keyValue.setName(key);
+
+                Object value = providerValues.get(j);
+                keyValue.setValue((Attribute) value);
+                
+                providerKeyValues.add(keyValue);
+            }
+            
+            final UpdateKeyValues providerUpdates = new UpdateKeyValues(srcHdr, srcDomainId, providerKeyValues);
+            
+            if (BrokerMatcher.keyValuesMatchSubs(providerUpdates, subscriptionList)) {
+                // add update for this consumer/subscription
+                notifyHeaders.add(updateHeaderList.get(i));
+
+                if (notifyLists != null) {
+                    for (int j = 0; j < notifyLists.length; j++) {
+                        if ((notifyLists[j] != null) && (updateLists[j] != null)) {
+                            notifyLists[j].add(updateLists[j].get(i));
+                        }
+                    }
+                }
+            }            
         }
 
         if (!notifyHeaders.isEmpty()) {
@@ -113,31 +143,7 @@ class SimpleSubscriptionDetails {
         return null;
     }
 
-    private void populateNotifyList(final MALMessageHeader srcHdr,
-            final IdentifierList srcDomainId,
-            final UpdateHeader updateHeader,
-            final List[] updateLists,
-            final int index,
-            final UpdateHeaderList notifyHeaders,
-            final List[] notifyLists) throws MALException {
-        final UpdateKeyValues key = new UpdateKeyValues(srcHdr, srcDomainId, null);
-        MALBrokerImpl.LOGGER.log(Level.FINE, "Checking: {0}", key);
-
-        if (BrokerMatcher.keyValuesMatchSubs(key, subs)) {
-            // add update for this consumer/subscription
-            notifyHeaders.add(updateHeader);
-
-            if (notifyLists != null) {
-                for (int i = 0; i < notifyLists.length; i++) {
-                    if ((notifyLists[i] != null) && (updateLists[i] != null)) {
-                        notifyLists[i].add(updateLists[i].get(index));
-                    }
-                }
-            }
-        }
-    }
-
     public final ArrayList<SubscriptionConsumer> getRequired(){
-        return subs;
+        return subscriptionList;
     }
 }

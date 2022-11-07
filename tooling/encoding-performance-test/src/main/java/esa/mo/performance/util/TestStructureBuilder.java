@@ -39,7 +39,7 @@ public abstract class TestStructureBuilder {
             lst.add(new AttributeList(new Union((long) (i + 1))));
             lst.add(new AttributeList(null));
             
-            updateHeader.add(new UpdateHeader(new Identifier(""), lst));
+            updateHeader.add(new UpdateHeader(new Identifier(""), null, lst));
             objectId.add(null);
             value.add(createTestMALValueUpdate(paramsPerPkt));
         }

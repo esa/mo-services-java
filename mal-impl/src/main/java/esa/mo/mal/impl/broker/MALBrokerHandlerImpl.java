@@ -109,10 +109,11 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     public void handlePublish(final MALInteraction interaction,
             final MALPublishBody body) throws MALInteractionException, MALException {
         final MALMessageHeader hdr = interaction.getMessageHeader();
-        final BrokerKey key = new BrokerKey(hdr);
-
+        final BrokerKey brokerKey = new BrokerKey(hdr);
         // Generate the Notify Messages (the matching is done inside it!)
-        final List<NotifyMessageSet> notifyList = generateNotifyMessages(key, hdr, body);
+        PublisherSource s = this.getProviderEntry(brokerKey, hdr, false);
+        IdentifierList subKeys = s.getSubscriptionKeys();
+        final List<NotifyMessageSet> notifyList = generateNotifyMessages(brokerKey, hdr, body, subKeys);
 
         // Dispatch the Notify messages
         if (!notifyList.isEmpty()) {
@@ -144,7 +145,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                                     "MALTransmitErrorException during transmission of NOTIFY to Consumer URI: {0}",
                                     uriTo);
 
-                            handleConsumerCommunicationError(key, uriTo);
+                            handleConsumerCommunicationError(brokerKey, uriTo);
                         }
                     }
                 } else {
@@ -221,10 +222,11 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     }
 
     private synchronized List<NotifyMessageSet> generateNotifyMessages(
-            final BrokerKey key, final MALMessageHeader hdr,
-            final MALPublishBody publishBody) throws MALInteractionException, MALException {
+            final BrokerKey brokerKey, final MALMessageHeader hdr,
+            final MALPublishBody MALPublishBodypublishBody,
+            IdentifierList keyNames) throws MALInteractionException, MALException {
         MALBrokerImpl.LOGGER.fine("Checking if Provider is registered...");
-        final PublisherSource details = this.getProviderEntry(key, hdr, false);
+        final PublisherSource details = this.getProviderEntry(brokerKey, hdr, false);
 
         if (details == null) {
             String msg = "Provider not registered! Please register the provider"
@@ -234,18 +236,21 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                     MALHelper.INCORRECT_STATE_ERROR_NUMBER, msg));
         }
 
-        final UpdateHeaderList hl = publishBody.getUpdateHeaderList();
+        final UpdateHeaderList hl = MALPublishBodypublishBody.getUpdateHeaderList();
         details.checkPublish(hdr, hl);
 
-        final List<NotifyMessageSet> lst = new LinkedList<>();
+        List<NotifyMessageSet> lst = new LinkedList<>();
 
         if (hl != null) {
-            final Map<String, SubscriptionSource> rv = this.getConsumerSubscriptions(key);
+            final Map<String, SubscriptionSource> rv = this.getConsumerSubscriptions(brokerKey);
 
             // Iterate through all the consumer subscriptions and populate
             // the notify list if it matches the published updates
             for (SubscriptionSource subSource : rv.values()) {
-                subSource.populateNotifyList(hdr, lst, hl, publishBody);
+                NotifyMessageSet nms = subSource.populateNotifyList(hdr, hl, MALPublishBodypublishBody, keyNames);
+                if(null != nms){
+                    lst.add(nms);
+                }
             }
 
             /*
