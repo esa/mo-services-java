@@ -315,92 +315,94 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
      * @throws MALException if any error detected.
      */
     protected void decodeMessageBody() throws MALException {
-        if (!decodedBody) {
-            decodedBody = true;
+        if (decodedBody) {
+            return;
+        }
 
-            try {
-                if (null == ctx.getOperation()) {
-                    MALMessageHeader header = ctx.getHeader();
-                    MALArea area = MALContextFactory
-                            .lookupArea(header.getServiceArea(), header.getAreaVersion());
-                    if (null != area) {
-                        MALService service = area.getServiceByNumber(header.getService());
-                        if (null != service) {
-                            MALOperation op = service.getOperationByNumber(header.getOperation());
+        decodedBody = true;
 
-                            if (null != op) {
-                                ctx.setOperation(op);
-                            } else {
-                                GENTransport.LOGGER.log(Level.SEVERE,
-                                        "Operation for unknown area/version/service/op received ({0}, {1}, {2}, {3})",
-                                        new Object[]{
-                                            header.getServiceArea(), header.getAreaVersion(), header.getService(),
-                                            header.getOperation()
-                                        });
-                            }
+        try {
+            if (null == ctx.getOperation()) {
+                MALMessageHeader header = ctx.getHeader();
+                MALArea area = MALContextFactory
+                        .lookupArea(header.getServiceArea(), header.getAreaVersion());
+                if (null != area) {
+                    MALService service = area.getServiceByNumber(header.getService());
+                    if (null != service) {
+                        MALOperation op = service.getOperationByNumber(header.getOperation());
+
+                        if (null != op) {
+                            ctx.setOperation(op);
                         } else {
                             GENTransport.LOGGER.log(Level.SEVERE,
-                                    "Operation for unknown area/version/service received ({0}, {1}, {2})",
+                                    "Operation for unknown area/version/service/op received ({0}, {1}, {2}, {3})",
                                     new Object[]{
-                                        header.getServiceArea(), header.getAreaVersion(), header.getService()
+                                        header.getServiceArea(), header.getAreaVersion(), header.getService(),
+                                        header.getOperation()
                                     });
                         }
                     } else {
                         GENTransport.LOGGER.log(Level.SEVERE,
-                                "Operation for unknown area/version received ({0}, {1})", new Object[]{
-                                    header.getServiceArea(), header.getAreaVersion()
+                                "Operation for unknown area/version/service received ({0}, {1}, {2})",
+                                new Object[]{
+                                    header.getServiceArea(), header.getAreaVersion(), header.getService()
                                 });
                     }
-                }
-
-                if (ctx.getHeader().getIsErrorMessage()) {
-                    bodyPartCount = 2;
                 } else {
-                    bodyPartCount = ctx.getOperation()
-                            .getOperationStage(ctx.getHeader().getInteractionStage())
-                            .getElementShortForms().length;
+                    GENTransport.LOGGER.log(Level.SEVERE,
+                            "Operation for unknown area/version received ({0}, {1})", new Object[]{
+                                header.getServiceArea(), header.getAreaVersion()
+                            });
                 }
-                GENTransport.LOGGER.log(Level.FINE,
-                        "GEN Message decoding body ... pc ({0})", bodyPartCount);
-                messageParts = new Object[bodyPartCount];
-
-                if (bodyPartCount == 1) {
-                    Object sf = ctx.getOperation()
-                            .getOperationStage(ctx.getHeader().getInteractionStage())
-                            .getElementShortForms()[0];
-                    messageParts[0] = decodeBodyPart(encBodyElements, ctx, sf);
-                } else if (bodyPartCount > 1) {
-                    MALElementInputStream benc = encBodyElements;
-                    if (wrappedBodyParts) {
-                        GENTransport.LOGGER.fine("GEN Message decoding body wrapper");
-                        final Blob body = (Blob) encBodyElements.readElement(new Blob(), null);
-                        final ByteArrayInputStream bais = new ByteArrayInputStream(body.getValue());
-                        benc = encFactory.createInputStream(bais);
-                    }
-
-                    for (int i = 0; i < bodyPartCount; i++) {
-                        GENTransport.LOGGER.log(Level.FINE,
-                                "GEN Message decoding body part : {0}", i);
-                        Object sf = null;
-
-                        ctx.setBodyElementIndex(i);
-
-                        if (!ctx.getHeader().getIsErrorMessage()) {
-                            sf = ctx.getOperation()
-                                    .getOperationStage(ctx.getHeader().getInteractionStage())
-                                    .getElementShortForms()[i];
-                        }
-
-                        messageParts[i] = decodeBodyPart(benc, ctx, sf);
-                    }
-                }
-
-                GENTransport.LOGGER.fine("GEN Message decoded body");
-            } catch (MALException ex) {
-                GENTransport.LOGGER.log(Level.WARNING,
-                        "GEN Message body ERROR on decode : {0}", ex);
-                throw ex;
             }
+
+            if (ctx.getHeader().getIsErrorMessage()) {
+                bodyPartCount = 2;
+            } else {
+                bodyPartCount = ctx.getOperation()
+                        .getOperationStage(ctx.getHeader().getInteractionStage())
+                        .getElementShortForms().length;
+            }
+            GENTransport.LOGGER.log(Level.FINE,
+                    "GEN Message decoding body! bodyPartCount: {0}", bodyPartCount);
+            messageParts = new Object[bodyPartCount];
+
+            if (bodyPartCount == 1) {
+                Object sf = ctx.getOperation()
+                        .getOperationStage(ctx.getHeader().getInteractionStage())
+                        .getElementShortForms()[0];
+                messageParts[0] = decodeBodyPart(encBodyElements, ctx, sf);
+            } else if (bodyPartCount > 1) {
+                MALElementInputStream benc = encBodyElements;
+                if (wrappedBodyParts) {
+                    GENTransport.LOGGER.fine("GEN Message decoding body wrapper");
+                    final Blob body = (Blob) encBodyElements.readElement(new Blob(), null);
+                    final ByteArrayInputStream bais = new ByteArrayInputStream(body.getValue());
+                    benc = encFactory.createInputStream(bais);
+                }
+
+                for (int i = 0; i < bodyPartCount; i++) {
+                    GENTransport.LOGGER.log(Level.FINE,
+                            "GEN Message decoding body part : {0}", i);
+                    Object sf = null;
+
+                    ctx.setBodyElementIndex(i);
+
+                    if (!ctx.getHeader().getIsErrorMessage()) {
+                        sf = ctx.getOperation()
+                                .getOperationStage(ctx.getHeader().getInteractionStage())
+                                .getElementShortForms()[i];
+                    }
+
+                    messageParts[i] = decodeBodyPart(benc, ctx, sf);
+                }
+            }
+
+            GENTransport.LOGGER.fine("GEN Message decoded body");
+        } catch (MALException ex) {
+            GENTransport.LOGGER.log(Level.WARNING,
+                    "GEN Message body ERROR on decode : {0}", ex);
+            throw ex;
         }
     }
 
@@ -483,8 +485,8 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
 
             rv = lenc.readElement(element, ctx);
         } else {
-                GENTransport.LOGGER.log(Level.WARNING,
-                        "Marshalling and unmarshalling of JAXB is no longer supported!");
+            GENTransport.LOGGER.log(Level.WARNING,
+                    "Marshalling and unmarshalling of JAXB is no longer supported!");
         }
 
         return rv;
