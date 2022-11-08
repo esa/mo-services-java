@@ -22,6 +22,7 @@ package esa.mo.mal.transport.gen;
 
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
+import esa.mo.mal.transport.gen.receivers.GENIncomingMessageReceiver;
 import esa.mo.mal.transport.gen.sending.GENConcurrentMessageSender;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
@@ -35,8 +36,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.*;
@@ -68,21 +67,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
      */
     public static final String DEBUG_PROPERTY
             = "org.ccsds.moims.mo.mal.transport.gen.debug";
-    /**
-     * System property to control the number of input processors.
-     */
-    public static final String INPUT_PROCESSORS_PROPERTY
-            = "org.ccsds.moims.mo.mal.transport.gen.inputprocessors";
-    /**
-     * System property to control the number of input processors.
-     */
-    public static final String MIN_INPUT_PROCESSORS_PROPERTY
-            = "org.ccsds.moims.mo.mal.transport.gen.mininputprocessors";
-    /**
-     * System property to control the number of input processors.
-     */
-    public static final String IDLE_INPUT_PROCESSORS_PROPERTY
-            = "org.ccsds.moims.mo.mal.transport.gen.idleinputprocessors";
     /**
      * System property to control the number of connections per client.
      */
@@ -326,7 +310,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
         TransportThreadFactory decFactory = new TransportThreadFactory("Transport_Decoder");
         this.decoderExecutor = Executors.newSingleThreadExecutor(decFactory);
-        this.dispatcherExecutor = createDispatcherExecutor(properties);
+        this.dispatcherExecutor = TransportThreadFactory.createDispatcherExecutor(properties);
 
         LOGGER.log(Level.FINE, "Wrapping body parts set to: {0}", this.wrapBodyParts);
     }
@@ -586,7 +570,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      *
      * @param malMsg the message
      */
-    protected void receiveIncomingMessage(final GENIncomingMessageHolder malMsg) {
+    public void receiveIncomingMessage(final GENIncomingMessageHolder malMsg) {
         LOGGER.log(Level.FINE, "Queuing message : {0} : {1}",
                 new Object[]{malMsg.malMsg.getHeader().getTransactionId(), malMsg.smsg});
 
@@ -875,7 +859,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @return returns an existing or newly created message sender
      * @throws MALTransmitErrorException in case of communication problems
      */
-    protected synchronized GENConcurrentMessageSender manageCommunicationChannel(
+    public synchronized GENConcurrentMessageSender manageCommunicationChannel(
             GENMessage msg, boolean isIncomingMsgDirection,
             GENReceptionHandler receptionHandler) throws MALTransmitErrorException {
         GENConcurrentMessageSender sender = null;
@@ -1061,67 +1045,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
             String remoteRootURI) throws MALException, MALTransmitErrorException;
 
     /**
-     * This Runnable task is responsible for decoding newly arrived MAL Messages
-     * and passing to the transport executor.
-     */
-    private static class GENIncomingMessageReceiver implements Runnable {
-
-        protected final GENTransport transport;
-        protected final GENReceptionHandler receptionHandler;
-        protected final GENIncomingMessageDecoder decoder;
-
-        /**
-         * Constructor
-         *
-         * @param transport Containing transport.
-         * @param receptionHandler The reception handler to pass them to.
-         * @param decoder The class responsible for decoding the message from
-         * the incoming connection
-         */
-        protected GENIncomingMessageReceiver(final GENTransport transport,
-                final GENReceptionHandler receptionHandler,
-                final GENIncomingMessageDecoder decoder) {
-            this.transport = transport;
-            this.receptionHandler = receptionHandler;
-            this.decoder = decoder;
-        }
-
-        /**
-         * This method processes an incoming message and then forwards it for
-         * routing to the appropriate message queue. The processing consists of
-         * transforming the raw message to the appropriate format and then
-         * registering if necessary the communication channel.
-         */
-        @Override
-        public void run() {
-            try {
-                GENIncomingMessageHolder msg = decoder.decodeAndCreateMessage();
-
-                // the decoder may return null for transports that support fragmentation
-                if (null != msg) {
-                    GENTransport.LOGGER.log(Level.FINE,
-                            "Receving message : {0} : {1}",
-                            new Object[]{msg.malMsg.getHeader().getTransactionId(), msg.smsg});
-
-                    //register communication channel if needed
-                    transport.manageCommunicationChannel(msg.malMsg, true, receptionHandler);
-                    transport.receiveIncomingMessage(msg);
-                }
-            } catch (MALException e) {
-                GENTransport.LOGGER.log(Level.WARNING,
-                        "Error occurred when decoding data : {0}", e);
-
-                transport.communicationError(null, receptionHandler);
-            } catch (MALTransmitErrorException e) {
-                GENTransport.LOGGER.log(Level.WARNING,
-                        "Error occurred when decoding data : {0}", e);
-
-                transport.communicationError(null, receptionHandler);
-            }
-        }
-    }
-
-    /**
      * This Runnable task is responsible for processing the already decoded
      * message. It holds a queue of messages split on transaction id so that
      * messages with the same transaction id get processed in reception order.
@@ -1233,50 +1156,4 @@ public abstract class GENTransport<I, O> implements MALTransport {
             return str;
         }
     }
-
-    private static ExecutorService createDispatcherExecutor(final java.util.Map properties) {
-        boolean needsTuning = false;
-        int lInputProcessorThreads = 100;
-        int lMinInputProcessorThreads = lInputProcessorThreads;
-        int lIdleTimeInSeconds = 0;
-
-        if (null != properties) {
-            // minium number of internal threads that process incoming MAL packets
-            if (properties.containsKey(MIN_INPUT_PROCESSORS_PROPERTY)) {
-                needsTuning = true;
-                lMinInputProcessorThreads = Integer.parseInt((String) properties.get(
-                        MIN_INPUT_PROCESSORS_PROPERTY));
-            }
-
-            // number of seconds for internal threads that process incoming 
-            // MAL packets to be idle before being terminated
-            if (properties.containsKey(IDLE_INPUT_PROCESSORS_PROPERTY)) {
-                needsTuning = true;
-                lIdleTimeInSeconds = Integer.parseInt(
-                        (String) properties.get(IDLE_INPUT_PROCESSORS_PROPERTY));
-            }
-
-            // number of internal threads that process incoming MAL packets
-            if (properties.containsKey(INPUT_PROCESSORS_PROPERTY)) {
-                lInputProcessorThreads
-                        = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
-            }
-        }
-
-        ExecutorService rv = Executors.newFixedThreadPool(lInputProcessorThreads,
-                new TransportThreadFactory("Transport_Dispatcher"));
-
-        // see if we can tune the thread pool
-        if (needsTuning) {
-            if (rv instanceof ThreadPoolExecutor) {
-                ThreadPoolExecutor tpe = (ThreadPoolExecutor) rv;
-
-                tpe.setKeepAliveTime(lIdleTimeInSeconds, TimeUnit.SECONDS);
-                tpe.setCorePoolSize(lMinInputProcessorThreads);
-            }
-        }
-
-        return rv;
-    }
-
 }

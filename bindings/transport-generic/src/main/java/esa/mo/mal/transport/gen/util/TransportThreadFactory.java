@@ -20,13 +20,33 @@
  */
 package esa.mo.mal.transport.gen.util;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The transport backend thread factory
  */
 public class TransportThreadFactory implements ThreadFactory {
+
+    /**
+     * System property to control the number of input processors.
+     */
+    public static final String INPUT_PROCESSORS_PROPERTY
+            = "org.ccsds.moims.mo.mal.transport.gen.inputprocessors";
+    /**
+     * System property to control the number of input processors.
+     */
+    public static final String MIN_INPUT_PROCESSORS_PROPERTY
+            = "org.ccsds.moims.mo.mal.transport.gen.mininputprocessors";
+    /**
+     * System property to control the number of input processors.
+     */
+    public static final String IDLE_INPUT_PROCESSORS_PROPERTY
+            = "org.ccsds.moims.mo.mal.transport.gen.idleinputprocessors";
 
     private final ThreadGroup group;
     private final AtomicInteger threadNumber = new AtomicInteger(1);
@@ -52,4 +72,50 @@ public class TransportThreadFactory implements ThreadFactory {
         }
         return t;
     }
+
+    public static ExecutorService createDispatcherExecutor(final java.util.Map properties) {
+        boolean needsTuning = false;
+        int lInputProcessorThreads = 100;
+        int lMinInputProcessorThreads = lInputProcessorThreads;
+        int lIdleTimeInSeconds = 0;
+
+        if (null != properties) {
+            // minium number of internal threads that process incoming MAL packets
+            if (properties.containsKey(MIN_INPUT_PROCESSORS_PROPERTY)) {
+                needsTuning = true;
+                lMinInputProcessorThreads = Integer.parseInt((String) properties.get(
+                        MIN_INPUT_PROCESSORS_PROPERTY));
+            }
+
+            // number of seconds for internal threads that process incoming 
+            // MAL packets to be idle before being terminated
+            if (properties.containsKey(IDLE_INPUT_PROCESSORS_PROPERTY)) {
+                needsTuning = true;
+                lIdleTimeInSeconds = Integer.parseInt(
+                        (String) properties.get(IDLE_INPUT_PROCESSORS_PROPERTY));
+            }
+
+            // number of internal threads that process incoming MAL packets
+            if (properties.containsKey(INPUT_PROCESSORS_PROPERTY)) {
+                lInputProcessorThreads
+                        = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
+            }
+        }
+
+        ExecutorService rv = Executors.newFixedThreadPool(lInputProcessorThreads,
+                new TransportThreadFactory("Transport_Dispatcher"));
+
+        // see if we can tune the thread pool
+        if (needsTuning) {
+            if (rv instanceof ThreadPoolExecutor) {
+                ThreadPoolExecutor tpe = (ThreadPoolExecutor) rv;
+
+                tpe.setKeepAliveTime(lIdleTimeInSeconds, TimeUnit.SECONDS);
+                tpe.setCorePoolSize(lMinInputProcessorThreads);
+            }
+        }
+
+        return rv;
+    }
+
 }
