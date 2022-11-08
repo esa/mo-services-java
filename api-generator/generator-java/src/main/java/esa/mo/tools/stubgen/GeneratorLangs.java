@@ -1987,8 +1987,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // add getters and setters
         for (CompositeField element : compElements) {
-            addGetter(file, element);
-            addSetter(file, element);
+            addGetter(file, element, null);
+            addSetter(file, element, null);
         }
 
         // create equals method
@@ -2187,7 +2187,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // create attributes
         for (int i = 0; i < argsList.size(); i++) {
             CompositeField argType = argsList.get(i);
-            CompositeField memType = createCompositeElementsDetails(file, true, "bodyElement" + i, argType.getTypeReference(), true, true, argType.getFieldName() + ": " + argType.getComment());
+            CompositeField memType = createCompositeElementsDetails(file, true, argType.getFieldName(), argType.getTypeReference(), true, true, argType.getFieldName() + ": " + argType.getComment());
             file.addClassVariable(false, false, StdStrings.PRIVATE, memType, false, (String) null);
         }
 
@@ -2199,18 +2199,26 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         for (int i = 0; i < argsList.size(); i++) {
             CompositeField argType = argsList.get(i);
-            method.addMethodStatement(createMethodCall("this.bodyElement" + i + " = " + argType.getFieldName()));
+            method.addMethodStatement(createMethodCall("this." + argType.getFieldName() + " = " + argType.getFieldName()));
         }
 
         method.addMethodCloseStatement();
 
         // add getters and setters
         for (int i = 0; i < argsList.size(); i++) {
-            CompositeField argType = createCompositeElementsDetails(file, true, "bodyElement" + i, returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");
-            addGetter(file, argType);
-            addSetter(file, argType);
+            CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(), returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");
+            addGetter(file, argType, null);
+            addSetter(file, argType, null);
         }
-
+        // add deprecated getters and setters
+        for (int i = 0; i < argsList.size(); i++) {
+            CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(), returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");
+            file.addStatement("  @Deprecated");
+            addGetter(file, argType, "BodyElement" + i);
+            file.addStatement("  @Deprecated");
+            addSetter(file, argType, "BodyElement" + i);
+        }        
+        
         file.addClassCloseStatement();
 
         file.flush();
@@ -2279,26 +2287,39 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
     }
 
-    protected static void addGetter(ClassWriter file, CompositeField element) throws IOException {
+    protected static void addGetter(ClassWriter file, CompositeField element, String backwardCompitability) throws IOException {
         String getOpPrefix = "get";
         String attributeName = element.getFieldName();
-        String getOpName = StubUtils.preCap(attributeName);
+        String getOpName;
+        if(backwardCompitability == null){
+            getOpName = StubUtils.preCap(attributeName);
+        }
+        else{
+            getOpName = backwardCompitability;
+        }
 
         MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, !element.isCanBeNull(), !element.isCanBeNull() && element.isActual(), element, getOpPrefix + getOpName, null, null, "Returns the field " + attributeName, "The field " + attributeName, null);
         method.addMethodStatement("return " + attributeName);
         method.addMethodCloseStatement();
     }
 
-    protected static void addSetter(ClassWriter file, CompositeField element) throws IOException {
+     protected static void addSetter(ClassWriter file, CompositeField element, String backwardCompitability) throws IOException {
+        String setOpPrefix = "set";
         String attributeName = element.getFieldName();
-        String getOpName = StubUtils.preCap(attributeName);
+        String getOpName;
+        if(backwardCompitability == null){
+            getOpName = StubUtils.preCap(attributeName);
+        }
+        else{
+            getOpName = backwardCompitability;
+        }
 
         if (StdStrings.BOOLEAN.equals(element.getTypeName()) && getOpName.startsWith("Is")) {
             getOpName = getOpName.substring(2);
         }
 
         CompositeField fld = new CompositeField(element, "__newValue", "__newValue The new value");
-        MethodWriter method = file.addMethodOpenStatement(false, false, false, false, StdStrings.PUBLIC, false, true, null, "set" + getOpName, Arrays.asList(fld), null, "Sets the field " + attributeName, null, null);
+        MethodWriter method = file.addMethodOpenStatement(false, false, false, false, StdStrings.PUBLIC, false, true, null, setOpPrefix + getOpName, Arrays.asList(fld), null, "Sets the field " + attributeName, null, null);
         method.addMethodStatement(attributeName + " = __newValue");
         method.addMethodCloseStatement();
     }
