@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-  <!--
+<!--
     Licensed under the European Space Agency Public License, Version 2.0
     You may not use this file except in compliance with the License.
 
@@ -13,22 +13,22 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>POM</artifactId>
-    <version>8</version>
+    <version>8.1</version>
     <packaging>pom</packaging>
-  
+
     <name>ESA MO POM</name>
     <description>ESA top level POM for CCSDS MO based artifacts</description>
     <url>http://github.com/esa/CCSDS_MO_POM</url>
-  
+
     <organization>
         <name>ESA</name>
         <url>http://www.esa.int</url>
     </organization>
-  
+
     <licenses>
         <license>
             <name>The European Space Agency Public License, Version 2.0</name>
@@ -42,12 +42,12 @@
         <developerConnection>scm:git:git@github.com:esa/mo-services-java.git</developerConnection>
         <url>https://github.com/esa/mo-services-java</url>
     </scm>
-  
+
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/esa/mo-services-java/issues</url>
     </issueManagement>
-  
+
     <distributionManagement>
         <site>
             <id>Sonatype</id>
@@ -62,7 +62,7 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-  
+
     <developers>
         <developer>
             <id>SamCooper</id>
@@ -76,25 +76,25 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <ccsds.specification.version>8.0</ccsds.specification.version>
         <extra.specification.version>8.0</extra.specification.version>
-        <esa.stubgen.version>8.0</esa.stubgen.version>
-        <esa.api.mal.version>8.0</esa.api.mal.version>
-        <esa.api.com.version>8.0</esa.api.com.version>
-        <esa.api.mc.version>8.0</esa.api.mc.version>
-        <esa.api.common.version>8.0</esa.api.common.version>
-        <esa.mal.version>8.0</esa.mal.version>
-        <esa.gen.encoder.version>8.0</esa.gen.encoder.version>
-        <esa.string.encoder.version>8.0</esa.string.encoder.version>
-        <esa.binary.encoder.version>8.0</esa.binary.encoder.version>
-        <esa.binary_fixed.encoder.version>8.0</esa.binary_fixed.encoder.version>
-        <esa.binary_split.encoder.version>8.0</esa.binary_split.encoder.version>
-        <esa.gen.transport.version>8.0</esa.gen.transport.version>
-        <esa.rmi.transport.version>8.0</esa.rmi.transport.version>
-        <esa.tcpip.transport.version>8.0</esa.tcpip.transport.version>
-        <esa.jms.transport.version>8.0</esa.jms.transport.version>
-        <esa.spp.transport.version>8.0</esa.spp.transport.version>
-        <esa.support.lib.mal.version>8.0</esa.support.lib.mal.version>
-        <esa.support.lib.com.version>8.0</esa.support.lib.com.version>
-    
+        <esa.stubgen.version>8.1</esa.stubgen.version>
+        <esa.api.mal.version>8.1</esa.api.mal.version>
+        <esa.api.com.version>8.1</esa.api.com.version>
+        <esa.api.mc.version>8.1</esa.api.mc.version>
+        <esa.api.common.version>8.1</esa.api.common.version>
+        <esa.mal.version>8.1</esa.mal.version>
+        <esa.gen.encoder.version>8.1</esa.gen.encoder.version>
+        <esa.string.encoder.version>8.1</esa.string.encoder.version>
+        <esa.binary.encoder.version>8.1</esa.binary.encoder.version>
+        <esa.binary_fixed.encoder.version>8.1</esa.binary_fixed.encoder.version>
+        <esa.binary_split.encoder.version>8.1</esa.binary_split.encoder.version>
+        <esa.gen.transport.version>8.1</esa.gen.transport.version>
+        <esa.rmi.transport.version>8.1</esa.rmi.transport.version>
+        <esa.tcpip.transport.version>8.1</esa.tcpip.transport.version>
+        <esa.jms.transport.version>8.1</esa.jms.transport.version>
+        <esa.spp.transport.version>8.1</esa.spp.transport.version>
+        <esa.support.lib.mal.version>8.1</esa.support.lib.mal.version>
+        <esa.support.lib.com.version>8.1</esa.support.lib.com.version>
+
         <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
         <ccsds.specification.download.group>int.esa.ccsds.mo</ccsds.specification.download.group>
         <ccsds.specification.download.artifact>xml-ccsds-mo-standards</ccsds.specification.download.artifact>
@@ -110,7 +110,7 @@
         <esa.stubgen.xmlDirectory>${project.build.directory}/xml</esa.stubgen.xmlDirectory>
         <esa.stubgen.xmlRefDirectory>${project.build.directory}/xml-ref/xml</esa.stubgen.xmlRefDirectory>
     </properties>
-  
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -220,7 +220,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-  
+
     <build>
         <resources>
             <resource>
@@ -233,7 +233,7 @@
                 </includes>
             </resource>
         </resources>
-    
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -414,37 +414,37 @@
                             <id>attach-sources</id>
                             <goals>
                                 <goal>jar-no-fork</goal>
-                            </goals> 
+                            </goals>
                         </execution>
                     </executions>
                 </plugin>
-                <plugin> 
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId> 
+                    <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.4.0</version>
-                    <executions> 
-                        <execution> 
+                    <executions>
+                        <execution>
                             <id>attach-javadocs</id>
                             <goals>
                                 <goal>jar</goal>
-                            </goals> 
-                        </execution> 
-                    </executions> 
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
-                <plugin> 
+                <plugin>
                     <!-- explicitly define maven-deploy-plugin after other to force exec order -->
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId> 
+                    <artifactId>maven-deploy-plugin</artifactId>
                     <version>3.0.0</version>
-                    <executions> 
-                        <execution> 
+                    <executions>
+                        <execution>
                             <id>deploy</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy</goal>
-                            </goals> 
-                        </execution> 
-                    </executions> 
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -463,7 +463,7 @@
                             </configuration>
                         </execution>
                     </executions>
-                </plugin>      
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -491,9 +491,9 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
                     </plugin>
-                    <plugin> 
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId> 
+                        <artifactId>maven-javadoc-plugin</artifactId>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

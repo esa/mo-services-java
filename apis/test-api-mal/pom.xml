@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>POM</artifactId>
-        <version>8</version>
+        <version>8.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>API_MAL_TEST</artifactId>
-    <version>8.0</version>
+    <version>8.1</version>
     <packaging>jar</packaging>
 
     <name>ESA TEST MAL Java API</name>
