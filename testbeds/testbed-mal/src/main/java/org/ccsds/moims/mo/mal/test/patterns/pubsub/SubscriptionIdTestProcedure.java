@@ -154,7 +154,7 @@ public class SubscriptionIdTestProcedure extends LoggingBase
     TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
             QOS_LEVEL, PRIORITY,
             HeaderTestProcedure.DOMAIN,
-            HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, null, expectedErrorCode);
+            HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, expectedErrorCode);
     ipTest.publishDeregister(testPublishDeregister);
     return true;
   }

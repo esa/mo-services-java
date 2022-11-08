@@ -32,6 +32,7 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
+import java.util.ArrayList;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.structures.Attribute;
@@ -46,6 +47,7 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import static org.ccsds.moims.mo.mal.test.patterns.pubsub.EntityRequestTestProcedure.parseFirstKeyValue;
+import static org.ccsds.moims.mo.mal.test.patterns.pubsub.EntityRequestTestProcedure.parseKeyNamesList;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.test.util.Helper;
@@ -100,14 +102,12 @@ public class PublishRegisterTestProcedure extends LoggingBase
         entities + ')');
     publishRegistered = true;
     
-    SubscriptionFilterList entityKeyList = EntityRequestTestProcedure.parseKeyValueList(entities);
-    
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = 
       new TestPublishRegister(QOS_LEVEL, PRIORITY, 
           HeaderTestProcedure.DOMAIN, 
           HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, 
-          entityKeyList, expectedErrorCode);
+          Helper.get4TestKeys(), expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
     
     return true;
@@ -177,7 +177,7 @@ public class PublishRegisterTestProcedure extends LoggingBase
     TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
         QOS_LEVEL, PRIORITY, 
         HeaderTestProcedure.DOMAIN, 
-        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, null, expectedErrorCode);
+        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, expectedErrorCode);
     ipTest.publishDeregister(testPublishDeregister);
     publishRegistered = false;
     

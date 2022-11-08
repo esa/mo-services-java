@@ -93,11 +93,7 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton
         _TestPublishRegister.getQos(),
         new Hashtable(),
         _TestPublishRegister.getPriority());
-    IdentifierList keys = new IdentifierList();
-    for(SubscriptionFilter sf : _TestPublishRegister.getSubFilterList()){
-        keys.add(sf.getName());
-    }    
-    publisher.register(keys, new PublisherListener());
+    publisher.register(_TestPublishRegister.getKeyNames(), new PublisherListener());
     
     Monitor2Publisher publisher2 = createMonitor2Publisher(
         _TestPublishRegister.getDomain(),
@@ -107,7 +103,7 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton
         _TestPublishRegister.getQos(),
         new Hashtable(),
         _TestPublishRegister.getPriority());
-    publisher2.register(keys, new PublisherListener());
+    publisher2.register(_TestPublishRegister.getKeyNames(), new PublisherListener());
   }
 
   public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)

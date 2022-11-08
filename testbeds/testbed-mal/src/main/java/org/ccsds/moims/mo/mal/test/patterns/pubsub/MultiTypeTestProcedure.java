@@ -86,7 +86,7 @@ public class MultiTypeTestProcedure extends LoggingBase
             new TestPublishRegister(QOS_LEVEL, PRIORITY,
             HeaderTestProcedure.DOMAIN,
             HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, true,
-            Helper.getTestFilterlistNull(), expectedErrorCode);
+            Helper.get4TestKeys(), expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
 
     return true;
@@ -149,7 +149,7 @@ public class MultiTypeTestProcedure extends LoggingBase
     TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
             QOS_LEVEL, PRIORITY,
             HeaderTestProcedure.DOMAIN,
-            HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, true, null, expectedErrorCode);
+            HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, true, expectedErrorCode);
     ipTest.publishDeregister(testPublishDeregister);
     return true;
   }

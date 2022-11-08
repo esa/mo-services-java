@@ -96,7 +96,7 @@ public class SubscriptionServiceTestProcedure extends LoggingBase
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = new TestPublishRegister(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
-        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, Helper.getTestFilterlist(),
+        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, Helper.get4TestKeys(),
         expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
     ipTest2.publishRegister(testPublishRegister);
@@ -154,7 +154,7 @@ public class SubscriptionServiceTestProcedure extends LoggingBase
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
-        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, null,
+        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
         expectedErrorCode);
     ipTest.publishDeregister(testPublishDeregister);
     ipTest2.publishDeregister(testPublishDeregister);

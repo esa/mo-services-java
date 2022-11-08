@@ -155,8 +155,9 @@ public class HeaderTestProcedureImpl extends LoggingBase
     
     ipTest = ipTestConsumer.getStub();
     UInteger errorCode = new UInteger(999);
-    TestPublishRegister testPublishRegister = 
-      new TestPublishRegister(qos, HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, Helper.getTestFilterlist(), errorCode);
+    TestPublishRegister testPublishRegister = new TestPublishRegister(qos, 
+            HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), 
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, Helper.get4TestKeys(), errorCode);
     ipTest.publishRegister(testPublishRegister);
     return true;
   }
@@ -632,7 +633,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     ipTest = ipTestConsumer.getStub();
     UInteger errorCode = new UInteger(999);
     TestPublishDeregister testPublishDeregister = new TestPublishDeregister(qos,
-        HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, null,
+        HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), 
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false,
         errorCode);
     ipTest.publishDeregister(testPublishDeregister);
     return true;
@@ -654,12 +656,13 @@ public class HeaderTestProcedureImpl extends LoggingBase
     
     ipTest = ipTestConsumer.getStub();
     
-    Attribute value = new Union("PublishRegisterErrorEntity");
-    AttributeList values = new AttributeList(value);
+    IdentifierList list = new IdentifierList();
+    list.add(HeaderTestProcedure.PUBLISH_REGISTER_ERROR_ENTITY_KEY);
     UInteger errorCode = MALHelper.INTERNAL_ERROR_NUMBER;
     TestPublishRegister testPublishRegister = new TestPublishRegister(qos,
-        HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, 
-            Helper.getTestFilterlistNull(values), errorCode);
+        HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), 
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, 
+            list, errorCode);
     ipTest.publishRegister(testPublishRegister);
     return true;
   }

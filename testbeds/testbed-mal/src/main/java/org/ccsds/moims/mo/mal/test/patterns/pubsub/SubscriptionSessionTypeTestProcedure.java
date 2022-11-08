@@ -97,8 +97,8 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = new TestPublishRegister(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
-        HeaderTestProcedure.NETWORK_ZONE, publisherSessionType, SESSION_NAME, false, Helper.getTestFilterlist(),
-        expectedErrorCode);
+        HeaderTestProcedure.NETWORK_ZONE, publisherSessionType, SESSION_NAME, 
+        false, new IdentifierList(), expectedErrorCode);
     ipTestToPublish.publishRegister(testPublishRegister);
     return true;
   }
@@ -159,7 +159,7 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
-        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, null,
+        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
         expectedErrorCode);
     ipTestToPublish.publishDeregister(testPublishDeregister);
     return true;

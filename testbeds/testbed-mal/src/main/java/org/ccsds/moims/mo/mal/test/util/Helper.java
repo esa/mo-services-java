@@ -21,11 +21,12 @@ import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
  * @author mansuruddin.khan
  */
 public final class Helper {
-  public static final Attribute valueA = new Union("A");
-  public static final Attribute value0 = new Union(Long.valueOf(0));
-  public static final Attribute valueNull = null;    
+    
+  private static final Attribute valueA = new Union("A");
+  private static final Attribute value0 = new Union(0L);
+  private static final Attribute valueNull = null;
   
-  public static  final Identifier key1 = new Identifier("K1");  
+  public static final Identifier key1 = new Identifier("K1");
   public static final Identifier key2 = new Identifier("K2");  
   public static final Identifier key3 = new Identifier("K3");  
   public static final Identifier key4 = new Identifier("K4");  
@@ -33,20 +34,31 @@ public final class Helper {
   public static final AttributeList valuesA = new AttributeList(valueA);
   public static final AttributeList values0 = new AttributeList(value0);
   public static final AttributeList valuesNull = new AttributeList(valueNull);  
-  
-  public static IdentifierList domain = null;
-
-  public static final SubscriptionFilter subFilter = new SubscriptionFilter(key1, valuesA);       
-
+  //private static final SubscriptionFilter subFilter = new SubscriptionFilter(key1, valuesA);
   
   private Helper(){
       
   }
   
+  public static IdentifierList get4TestKeys() {
+      IdentifierList list = new IdentifierList();
+      list.add(key1);
+      list.add(key2);
+      list.add(key3);
+      list.add(key4);
+      return list;
+  }
+  
+  public static IdentifierList get1TestKey() {
+      IdentifierList list = new IdentifierList();
+      list.add(key1);
+      return list;
+  }
+  
+  @Deprecated
   public static SubscriptionFilterList getTestFilterlist(){
-      
     SubscriptionFilterList subFilterList = new SubscriptionFilterList();
-    subFilterList.add(subFilter);
+    subFilterList.add(new SubscriptionFilter(key1, values0));
     subFilterList.add(new SubscriptionFilter(key2, values0));
     subFilterList.add(new SubscriptionFilter(key3, values0));
     subFilterList.add(new SubscriptionFilter(key4, values0));   
@@ -55,9 +67,8 @@ public final class Helper {
   }
 
   public static SubscriptionFilterList getTestFilterlistNull(){
-      
     SubscriptionFilterList subFilterList = new SubscriptionFilterList();
-    subFilterList.add(subFilter);
+    subFilterList.add(new SubscriptionFilter(key1, valuesNull));
     subFilterList.add(new SubscriptionFilter(key2, valuesNull));
     subFilterList.add(new SubscriptionFilter(key3, valuesNull));
     subFilterList.add(new SubscriptionFilter(key4, valuesNull));   
@@ -66,7 +77,6 @@ public final class Helper {
   }  
   
   public static SubscriptionFilterList getTestFilterlistNull(AttributeList values){
-      
     SubscriptionFilterList subFilterList = new SubscriptionFilterList();
     subFilterList.add(new SubscriptionFilter(key1, values));
     subFilterList.add(new SubscriptionFilter(key2, valuesNull));
@@ -77,7 +87,7 @@ public final class Helper {
   }  
   
   public static UpdateHeaderList getTestUpdateHeaderlist(){
-    domain = new IdentifierList();
+    IdentifierList domain = new IdentifierList();
     domain.add(new Identifier("Test"));
     domain.add(new Identifier("Domain0"));
     UpdateHeaderList updateHeaderList = new UpdateHeaderList();
@@ -89,7 +99,7 @@ public final class Helper {
     return updateHeaderList;
   }  
 public static UpdateHeaderList getTestUpdateHeaderlist(AttributeList values){
-    domain = new IdentifierList();
+    IdentifierList domain = new IdentifierList();
     domain.add(new Identifier("Test"));
     domain.add(new Identifier("Domain0"));    
     UpdateHeaderList updateHeaderList = new UpdateHeaderList();

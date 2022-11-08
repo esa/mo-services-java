@@ -100,7 +100,7 @@ public class ReceiveMultipleTestProcedure
       new TestPublishRegister(QOS_LEVEL, PRIORITY,
           HeaderTestProcedure.DOMAIN,
           HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
-          Helper.getTestFilterlistNull(), expectedErrorCode);
+          Helper.get4TestKeys(), expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
     
     TestUpdateList testUpdateList = new TestUpdateList();

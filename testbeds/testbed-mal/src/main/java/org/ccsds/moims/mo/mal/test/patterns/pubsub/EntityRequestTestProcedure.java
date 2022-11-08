@@ -32,8 +32,11 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -84,7 +87,7 @@ public class EntityRequestTestProcedure extends LoggingBase
     
     boolean shared = Boolean.parseBoolean(sharedBroker);
     
-    SubscriptionFilterList keyValueList = parseKeyValueList(entities);
+    ArrayList<AttributeList> keyValueList = parseKeyNamesList(entities);
     
     ipTest = LocalMALInstance.instance().ipTestStub(
         HeaderTestProcedure.AUTHENTICATION_ID, 
@@ -96,20 +99,56 @@ public class EntityRequestTestProcedure extends LoggingBase
     TestPublishRegister testPublishRegister = 
       new TestPublishRegister(QOS_LEVEL, PRIORITY, 
           HeaderTestProcedure.DOMAIN, 
-          HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, keyValueList, expectedErrorCode);
+          HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, 
+              false, Helper.get4TestKeys(), expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
     
     updateHeaderList = new UpdateHeaderList();
     updateList = new TestUpdateList();
+    
     for (int i = 0; i < keyValueList.size(); i++) {
-      SubscriptionFilter keyValue= keyValueList.get(i);
-      updateHeaderList.add(new UpdateHeader(keyValue.getName(), HeaderTestProcedure.DOMAIN, keyValue.getValues()));
+      AttributeList attList = keyValueList.get(i);
+      updateHeaderList.add(new UpdateHeader(new Identifier(""), HeaderTestProcedure.DOMAIN, attList));
       updateList.add(new TestUpdate(i));
     }
     
     return true;
   }
-  
+
+  /*
+  public static IdentifierList parseKeyNamesList(String s) {
+      Logger log = Logger.getLogger(EntityRequestTestProcedure.class.getName());
+        log.log(Level.INFO, "The string is: {0}", s);
+        
+    IdentifierList ids = new IdentifierList();
+    StringTokenizer st = new StringTokenizer(s, " ,");
+    while (st.hasMoreTokens()) {
+        StringTokenizer st2 = new StringTokenizer(st.nextToken(), ".");
+        ids.add(new Identifier(parseFirstKeyValue(st2.nextToken())));
+    }
+    return ids;
+  }
+    */
+  public static ArrayList<AttributeList> parseKeyNamesList(String s) {
+      Logger log = Logger.getLogger(EntityRequestTestProcedure.class.getName());
+        log.log(Level.INFO, "The string is: {0}", s);
+        
+    ArrayList<AttributeList> list = new ArrayList<>();
+    
+    StringTokenizer st = new StringTokenizer(s, " ,");
+    while (st.hasMoreTokens()) {
+        StringTokenizer st2 = new StringTokenizer(st.nextToken(), ".");
+        AttributeList attList = new AttributeList();
+        attList.add(new Union(parseFirstKeyValue(st2.nextToken())));
+        attList.add(new Union(parseKeyValue(st2.nextToken())));
+        attList.add(new Union(parseKeyValue(st2.nextToken())));
+        attList.add(new Union(parseKeyValue(st2.nextToken())));
+        
+        list.add(attList);
+    }
+    return list;
+  }
+
   public static SubscriptionFilterList parseKeyValueList(String s) {
     SubscriptionFilterList subscriptionFilterList = new SubscriptionFilterList();
     StringTokenizer st = new StringTokenizer(s, " ,");
@@ -126,7 +165,6 @@ public class EntityRequestTestProcedure extends LoggingBase
     }
     return subscriptionFilterList;
   }
-  
   
   public static String parseFirstKeyValue(String s) {
     if (s.equals("[null]")) {
@@ -199,7 +237,7 @@ public class EntityRequestTestProcedure extends LoggingBase
     TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
         QOS_LEVEL, PRIORITY, 
         HeaderTestProcedure.DOMAIN, 
-        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, null, expectedErrorCode);
+        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, expectedErrorCode);
     ipTest.publishDeregister(testPublishDeregister);
     return true;
   }

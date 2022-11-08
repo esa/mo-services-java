@@ -121,10 +121,12 @@ public class LocalMALInstance extends BaseLocalMALInstance
       //sharedBrokerBinding.startMessageDelivery();
       logMessage("D: " + protocol);
 
-      FileBasedDirectory.storeURI(Configuration.SHARED_BROKER_NAME,
+      boolean stored = FileBasedDirectory.storeURI(Configuration.SHARED_BROKER_NAME,
               sharedBrokerBinding.getURI(), sharedBrokerBinding.getURI());
+      logMessage("E: Shared Broker Stored = " + stored);
       FileBasedDirectory.storeSharedBrokerAuthenticationId(
               sharedBrokerBinding.getAuthenticationId());
+      logMessage("F: AuthId stored");
 
     }
     catch (Throwable error)

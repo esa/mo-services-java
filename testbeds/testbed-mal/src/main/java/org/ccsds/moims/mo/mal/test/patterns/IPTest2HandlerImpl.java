@@ -82,11 +82,8 @@ public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton
         _TestPublishRegister.getQos(),
         new Hashtable(),
         _TestPublishRegister.getPriority());
-    IdentifierList keys = new IdentifierList();
-    for(SubscriptionFilter sf : _TestPublishRegister.getSubFilterList()){
-        keys.add(sf.getName());
-    }
-    publisher.register(keys, new PublisherListener());
+
+    publisher.register(_TestPublishRegister.getKeyNames(), new PublisherListener());
   }
 
   public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)

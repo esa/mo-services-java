@@ -103,7 +103,7 @@ public class TransmitMultipleTestProcedure
       new TestPublishRegister(QOS_LEVEL, PRIORITY, 
           HeaderTestProcedure.DOMAIN, 
           NETWORK_ZONE, SESSION, SESSION_NAME, false, 
-          Helper.getTestFilterlistNull(values), expectedErrorCode);
+          Helper.get4TestKeys(), expectedErrorCode);
     ipTest1.publishRegister(testPublishRegister);
     
     listener1 = new MonitorListener();

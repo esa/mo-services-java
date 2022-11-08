@@ -98,7 +98,9 @@ public class SubscriptionDomainTestProcedure extends LoggingBase
     publishDomainIds = parseDomains(domains);
       for (IdentifierList publishDomainId : publishDomainIds) {
           UInteger expectedErrorCode = new UInteger(999);
-          TestPublishRegister testPublishRegister = new TestPublishRegister(QOS_LEVEL, PRIORITY, publishDomainId, HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, Helper.getTestFilterlist(), expectedErrorCode);
+          TestPublishRegister testPublishRegister = new TestPublishRegister(QOS_LEVEL, 
+                  PRIORITY, publishDomainId, HeaderTestProcedure.NETWORK_ZONE, SESSION, 
+                  SESSION_NAME, false, Helper.get4TestKeys(), expectedErrorCode);
           ipTestForPublish.publishRegister(testPublishRegister);
       }
     return true;
@@ -192,7 +194,7 @@ public class SubscriptionDomainTestProcedure extends LoggingBase
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
-        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, null,
+        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
         expectedErrorCode);
       for (IdentifierList publishDomainId : publishDomainIds) {
           IPTestStub loopIpTestForPublish = LocalMALInstance.instance().ipTestStub(HeaderTestProcedure.AUTHENTICATION_ID, publishDomainId, HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
