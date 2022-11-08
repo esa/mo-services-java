@@ -2212,10 +2212,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         // add deprecated getters and setters
         for (int i = 0; i < argsList.size(); i++) {
-            CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(), returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");
-            file.addStatement("  @Deprecated");
+            CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(), returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");  
             addGetter(file, argType, "BodyElement" + i);
-            file.addStatement("  @Deprecated");
             addSetter(file, argType, "BodyElement" + i);
         }        
         
@@ -2291,14 +2289,19 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String getOpPrefix = "get";
         String attributeName = element.getFieldName();
         String getOpName;
+        boolean isDeprecated = false;
         if(backwardCompitability == null){
             getOpName = StubUtils.preCap(attributeName);
         }
         else{
+            isDeprecated = true;
             getOpName = backwardCompitability;
         }
 
-        MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, !element.isCanBeNull(), !element.isCanBeNull() && element.isActual(), element, getOpPrefix + getOpName, null, null, "Returns the field " + attributeName, "The field " + attributeName, null);
+        MethodWriter method = file.addMethodOpenStatement(false,false, true, false, StdStrings.PUBLIC, 
+                !element.isCanBeNull(), !element.isCanBeNull() && element.isActual(), element, 
+                getOpPrefix + getOpName, null, null, "Returns the field " + attributeName, 
+                "The field " + attributeName, null, isDeprecated);
         method.addMethodStatement("return " + attributeName);
         method.addMethodCloseStatement();
     }
@@ -2307,10 +2310,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String setOpPrefix = "set";
         String attributeName = element.getFieldName();
         String getOpName;
+        boolean isDeprecated = false;
         if(backwardCompitability == null){
             getOpName = StubUtils.preCap(attributeName);
         }
         else{
+            isDeprecated = true;
             getOpName = backwardCompitability;
         }
 
@@ -2319,7 +2324,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         CompositeField fld = new CompositeField(element, "__newValue", "__newValue The new value");
-        MethodWriter method = file.addMethodOpenStatement(false, false, false, false, StdStrings.PUBLIC, false, true, null, setOpPrefix + getOpName, Arrays.asList(fld), null, "Sets the field " + attributeName, null, null);
+        MethodWriter method = file.addMethodOpenStatement(false, false, false, false, 
+                StdStrings.PUBLIC, false, true, null, 
+                setOpPrefix + getOpName, Arrays.asList(fld), null, "Sets the field " + attributeName, 
+                null, null, isDeprecated);
         method.addMethodStatement(attributeName + " = __newValue");
         method.addMethodCloseStatement();
     }

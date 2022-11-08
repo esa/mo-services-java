@@ -256,6 +256,32 @@ public interface ClassWriter extends LanguageWriter {
             String returnComment, List<String> throwsComment) throws IOException;
 
     /**
+     * Add a method to the class.
+     *
+     * @param isFinal Is the method final.
+     * @param isVirtual Is the method a virtual method.
+     * @param isConst Is the method constant.
+     * @param isStatic Is it is static method.
+     * @param scope Method scope.
+     * @param isReturnConst Is the return constant.
+     * @param isReturnActual Is the return an instance.
+     * @param rtype The return type of the method.
+     * @param methodName The method name.
+     * @param args The arguments of the method.
+     * @param throwsSpec The throws specification.
+     * @param comment The comment for the method.
+     * @param returnComment The comment for the return value.
+     * @param throwsComment The comment for the throws specification.
+     * @param isDeprecated Is the method deprecated
+     * @return Returns a method writer for the method.
+     * @throws IOException If there is an IO error.
+     */
+    MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
+            boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
+            boolean isReturnActual, CompositeField rtype, String methodName,
+            List<CompositeField> args, String throwsSpec, String comment,
+            String returnComment, List<String> throwsComment, boolean  isDeprecated) throws IOException;
+    /**
      * Adds statements to close the class.
      *
      * @throws IOException If there is an IO error.

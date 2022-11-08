@@ -905,7 +905,45 @@ public class GeneratorJava extends GeneratorLangs {
 
             return this;
         }
+        @Override
+        public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual, 
+                boolean isConst, boolean isStatic, String scope, boolean isReturnConst, 
+                boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args, 
+                String throwsSpec, String comment, String returnComment, List<String> throwsComment, boolean isDeprecated) throws IOException {
 
+            addMultilineComment(1, false, normaliseArgComments(comment, returnComment, args, throwsComment), false);
+
+            if(isDeprecated) {
+                file.append("  @Deprecated");
+            }
+
+            String nStatic = "";
+
+            if (isStatic) {
+                nStatic = "static ";
+            }
+
+            String nFinal = "";
+
+            if (isFinal) {
+                nFinal = "final ";
+            }
+
+            String srtype = createLocalType(rtype);
+            String argString = processArgs(args, true);
+
+            StringBuilder buf = new StringBuilder(scope + " " + nStatic + nFinal + srtype + " " + methodName + "(" + argString + ")");
+
+            if (null != throwsSpec) {
+                buf.append(" throws ");
+                buf.append(throwsSpec);
+            }
+
+            file.append(addFileStatement(1, buf.toString(), false));
+            file.append(addFileStatement(1, "{", false));
+
+            return this;
+        }
         @Override
         public void addPackageStatement(AreaType area, ServiceType service, String extraPackage) throws IOException {
             String packageName = "";
