@@ -914,7 +914,7 @@ public class GeneratorJava extends GeneratorLangs {
             addMultilineComment(1, false, normaliseArgComments(comment, returnComment, args, throwsComment), false);
 
             if(isDeprecated) {
-                file.append("  @Deprecated");
+                file.append("  @Deprecated\n");
             }
 
             String nStatic = "";
