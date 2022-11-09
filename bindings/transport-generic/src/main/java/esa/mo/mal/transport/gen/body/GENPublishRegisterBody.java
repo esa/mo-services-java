@@ -67,7 +67,8 @@ public class GENPublishRegisterBody extends GENMessageBody implements MALPublish
     }
 
     @Override
-    public IdentifierList getSubscriptionKeys() throws MALException {
-        return (IdentifierList) getBodyElement(0, new IdentifierList());
+    public IdentifierList getSubscriptionKeyNames() throws MALException {
+        IdentifierList keyNames = (IdentifierList) getBodyElement(0, new IdentifierList());
+        return (keyNames != null) ? keyNames : new IdentifierList();
     }
 }

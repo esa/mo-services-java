@@ -30,11 +30,11 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
 public interface MALPublishRegisterBody extends MALMessageBody {
 
     /**
-     * The method returns the Subscription Keys from the PUBLISH_REGISTER
+     * The method returns the Subscription Key Names from the PUBLISH_REGISTER
      * message.
      *
-     * @return The decoded keys.
+     * @return The decoded key names.
      * @throws MALException If an error occurs
      */
-    IdentifierList getSubscriptionKeys() throws MALException;
+    IdentifierList getSubscriptionKeyNames() throws MALException;
 }
