@@ -35,26 +35,27 @@ public final class UpdateKeyValues {
      * The domain of the update.
      */
     private final IdentifierList domain;
+
     /**
      * The area of the update.
      */
     private final UShort area;
+
     /**
      * The service of the update.
      */
     private final UShort service;
+
     /**
      * The operation of the update.
      */
     private final UShort operation;
+
     /**
      * The keyValues of the update.
      */
     private final List<NamedValue> keyValues;
-    /**
-     * Hash function magic number.
-     */
-    protected static final int HASH_MAGIC_NUMBER = 47;
+
     /**
      * Constructor.
      *
@@ -62,21 +63,21 @@ public final class UpdateKeyValues {
      * @param domainId Update domain.
      * @param keyValues
      */
-    public UpdateKeyValues(final MALMessageHeader srcHdr, 
+    public UpdateKeyValues(final MALMessageHeader srcHdr,
             final IdentifierList domainId, final List<NamedValue> keyValues) {
         this(domainId, srcHdr.getServiceArea(), srcHdr.getService(), srcHdr.getOperation(), keyValues);
     }
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param domain domain provided by provider
      * @param area area provided by provider
-     * @param service service  provided by provider
-     * @param operation operation  provided by provider
-     * @param keyValues key value  provided by provider
+     * @param service service provided by provider
+     * @param operation operation provided by provider
+     * @param keyValues key value provided by provider
      */
-    public UpdateKeyValues(final IdentifierList domain, final UShort area, 
+    public UpdateKeyValues(final IdentifierList domain, final UShort area,
             final UShort service, final UShort operation, final List<NamedValue> keyValues) {
         this.domain = domain;
         this.area = area;

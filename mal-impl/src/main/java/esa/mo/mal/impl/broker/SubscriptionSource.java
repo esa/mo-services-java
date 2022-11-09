@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.impl.broker;
 
-import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;

@@ -99,8 +99,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         report(key);
         if ((null != hdr)) {
             PublisherSource s = this.getProviderEntry(key, hdr, true);
-            s.setSubscriptionKeys(body.getSubscriptionKeys());
-            // s.setKeyList(hdr);
+            s.setSubscriptionKeyNames(body.getSubscriptionKeyNames());
         }
         report(key);
     }
@@ -112,7 +111,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         final BrokerKey brokerKey = new BrokerKey(hdr);
         // Generate the Notify Messages (the matching is done inside it!)
         PublisherSource s = this.getProviderEntry(brokerKey, hdr, false);
-        IdentifierList subKeys = s.getSubscriptionKeys();
+        IdentifierList subKeys = s.getSubscriptionKeyNames();
         final List<NotifyMessageSet> notifyList = generateNotifyMessages(brokerKey, hdr, body, subKeys);
 
         // Dispatch the Notify messages
@@ -267,8 +266,8 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         if (MALBrokerImpl.LOGGER.isLoggable(Level.FINE)) {
             MALBrokerImpl.LOGGER.fine("START REPORT");
 
-            for (PublisherSource subscriptionSource : this.getProviderSubscriptions(key).values()) {
-                subscriptionSource.report();
+            for (PublisherSource publisherSource : this.getProviderSubscriptions(key).values()) {
+                publisherSource.report();
             }
 
             for (SubscriptionSource subscriptionSource : this.getConsumerSubscriptions(key).values()) {

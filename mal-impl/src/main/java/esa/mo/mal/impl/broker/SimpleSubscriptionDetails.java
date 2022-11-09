@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.impl.broker;
 
-import esa.mo.mal.impl.broker.key.BrokerKey;
 import esa.mo.mal.impl.broker.key.SubscriptionConsumer;
 import esa.mo.mal.impl.broker.key.UpdateKeyValues;
 import java.util.ArrayList;
@@ -66,14 +65,14 @@ class SimpleSubscriptionDetails {
     }
 
     /**
-    * The populateNotifyList method returns a NotifyMessage object if there are
-    * matches with any of the subscriptions, or a null if there are no matches.
-    */
+     * The populateNotifyList method returns a NotifyMessage object if there are
+     * matches with any of the subscriptions, or a null if there are no matches.
+     */
     public NotifyMessage populateNotifyList(final MALMessageHeader srcHdr,
             final IdentifierList srcDomainId,
             final UpdateHeaderList updateHeaderList,
             final MALPublishBody publishBody,
-            IdentifierList providerKeys) throws MALException {
+            IdentifierList keyNames) throws MALException {
         MALBrokerImpl.LOGGER.fine("Checking SimpleSubscriptionDetails");
 
         final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
@@ -100,19 +99,26 @@ class SimpleSubscriptionDetails {
                 }
             }
         }
-        List<NamedValue> providerKeyValues = new ArrayList<>();        
+        List<NamedValue> providerKeyValues = new ArrayList<>();
         for (int i = 0; i < updateHeaderList.size(); ++i) {
-            AttributeList providerValues = updateHeaderList.get(i).getKeyValues();
-            
-            for(int j = 0; j < providerKeys.size(); j++){
-                Identifier key = providerKeys.get(i);
-                Object value = providerValues.get(j);
-                value = (Attribute) Attribute.javaType2Attribute(value);
-                providerKeyValues.add(new NamedValue(key, (Attribute) value));
+            AttributeList keyValues = updateHeaderList.get(i).getKeyValues();
+
+            if (keyValues.size() != keyNames.size()) {
+                throw new MALException("The keyValues size don't match the providerNames "
+                        + "size: " + keyValues.size() + "!=" + keyNames.size()
+                        + "\nkeyValues: " + keyValues.toString()
+                        + "\nproviderNames: " + keyNames.toString());
             }
-            
+
+            for (int j = 0; j < keyNames.size(); j++) {
+                Identifier name = keyNames.get(i);
+                Object value = keyValues.get(j);
+                value = (Attribute) Attribute.javaType2Attribute(value);
+                providerKeyValues.add(new NamedValue(name, (Attribute) value));
+            }
+
             final UpdateKeyValues providerUpdates = new UpdateKeyValues(srcHdr, srcDomainId, providerKeyValues);
-            
+
             if (BrokerMatcher.keyValuesMatchSubs(providerUpdates, subscriptionList)) {
                 // add update for this consumer/subscription
                 notifyHeaders.add(updateHeaderList.get(i));
@@ -124,7 +130,7 @@ class SimpleSubscriptionDetails {
                         }
                     }
                 }
-            }            
+            }
         }
 
         if (!notifyHeaders.isEmpty()) {
@@ -138,7 +144,7 @@ class SimpleSubscriptionDetails {
         return null;
     }
 
-    public final ArrayList<SubscriptionConsumer> getRequired(){
+    public final ArrayList<SubscriptionConsumer> getRequired() {
         return subscriptionList;
     }
 }

@@ -20,9 +20,6 @@
  */
 package esa.mo.mal.impl.broker;
 
-import esa.mo.mal.impl.util.StructureHelper;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.*;
@@ -34,13 +31,9 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public final class PublisherSource {
 
-    @Deprecated
-    private final Set<Identifier> keySet = new TreeSet<>();
-
-    private IdentifierList domain = null;
     private final String uri;
     private final QoSLevel qosLevel;
-    private IdentifierList subscriptionKeys;
+    private IdentifierList subscriptionKeyNames;
 
     PublisherSource(final String uri, final QoSLevel qosLevel) {
         super();
@@ -52,30 +45,21 @@ public final class PublisherSource {
         return qosLevel;
     }
 
-    public IdentifierList getSubscriptionKeys() {
-        return subscriptionKeys;
+    public IdentifierList getSubscriptionKeyNames() {
+        return subscriptionKeyNames;
     }
 
-    void setSubscriptionKeys(IdentifierList subscriptionKeys) {
-        this.subscriptionKeys = subscriptionKeys;
+    void setSubscriptionKeyNames(IdentifierList subscriptionKeyNames) {
+        this.subscriptionKeyNames = subscriptionKeyNames;
     }
 
     public void report() {
         MALBrokerImpl.LOGGER.log(Level.FINE, "  START Provider ( {0} )", uri);
-        MALBrokerImpl.LOGGER.log(Level.FINE, "    Domain : {0}", StructureHelper.domainToString(domain));
-        for (Identifier key : subscriptionKeys) {
+        // MALBrokerImpl.LOGGER.log(Level.FINE, "    Domain : {0}", StructureHelper.domainToString(domain));
+        for (Identifier key : subscriptionKeyNames) {
             MALBrokerImpl.LOGGER.log(Level.FINE, "    Allowed key: {0}", key);
         }
         MALBrokerImpl.LOGGER.log(Level.FINE, "  END Provider ( {0} )", uri);
-    }
-
-    @Deprecated
-    public void setKeyList(final MALMessageHeader hdr, final IdentifierList l) {
-        domain = hdr.getDomain();
-        keySet.clear();
-        for (Identifier key : l) {
-            keySet.add(key);
-        }
     }
 
     /*
