@@ -284,9 +284,9 @@ public class RemoteProcessRunner extends LoggingBase
       }
       else
       {
-        cp.append('"');
+        //cp.append('"');
         cp.append(entry);
-        cp.append('"');
+        //cp.append('"');
       }
     }
   }
