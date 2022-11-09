@@ -59,17 +59,17 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
 
     @Override
     public UShort getAreaNumber() {
-        throw new UnsupportedOperationException("This method should never be called!");
+        return UShort.ATTRIBUTE_AREA_NUMBER;
     }
 
     @Override
     public UOctet getAreaVersion() {
-        throw new UnsupportedOperationException("This method should never be called!");
+        return UOctet.AREA_VERSION;
     }
 
     @Override
     public UShort getServiceNumber() {
-        throw new UnsupportedOperationException("This method should never be called!");
+        return UShort.ATTRIBUTE_SERVICE_NUMBER;
     }
 
     @Override
@@ -94,7 +94,7 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
                 objToEncode = Attribute.javaType2Attribute(objToEncode);
             }
 
-            if (!(objToEncode instanceof Attribute)) {
+            if (objToEncode != null && !(objToEncode instanceof Attribute)) {
                 throw new MALException("The object is not an Attribute type! "
                         + "It is: " + objToEncode.getClass().getCanonicalName()
                         + " - With value: " + objToEncode.toString());
