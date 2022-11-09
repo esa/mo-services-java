@@ -100,11 +100,8 @@ public class MessageReceive implements MALMessageListener {
         try {
             msg = securityManager.check(msg);
 
-            short stage = -1;
             UOctet oStage = msg.getHeader().getInteractionStage();
-            if (null != oStage) {
-                stage = oStage.getValue();
-            }
+            short stage = (oStage != null) ? oStage.getValue() : -1;
 
             MALContextFactoryImpl.LOGGER.fine("MAL Receiving message");
 
@@ -643,8 +640,9 @@ public class MessageReceive implements MALMessageListener {
 
         if (null == addr) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "lookupAddress failed to find local endpoint for {0}",
-                    new Object[]{key}
+                    "lookupAddress failed to find local endpoint for {0}.\n"
+                            + "Available options: {1}",
+                    new Object[]{key, providerEndpointMap}
             );
         }
 
