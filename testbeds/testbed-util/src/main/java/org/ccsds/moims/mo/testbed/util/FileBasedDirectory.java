@@ -48,6 +48,7 @@ public abstract class FileBasedDirectory
   {
     if (null != name)
     {
+      System.out.println("INFO: Storing file: " + name);
       java.util.Properties prop = new Properties();
 
       String uriValue = "";
@@ -98,6 +99,7 @@ public abstract class FileBasedDirectory
 
     try
     {
+      System.out.println("INFO: Loading file: " + name);
       prop.load(new java.io.FileInputStream(name + FILENAME_EXT));
     }
     catch (IOException ex)
