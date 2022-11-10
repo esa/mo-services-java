@@ -246,17 +246,17 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
             // Iterate through all the consumer subscriptions and populate
             // the notify list if it matches the published updates
             for (SubscriptionSource subSource : rv.values()) {
-                NotifyMessageSet nms = subSource.populateNotifyList(hdr, hl, MALPublishBodypublishBody, keyNames);
-                if(null != nms){
-                    lst.add(nms);
+                try {
+                    NotifyMessageSet nms = subSource.populateNotifyList(hdr, hl, MALPublishBodypublishBody, keyNames);
+                    if(null != nms){
+                        lst.add(nms);
+                    }
+                } catch(MALException ex) {
+                    MALBrokerImpl.LOGGER.warning(ex.getMessage());
+                    throw new MALInteractionException(new MALStandardError(
+                            MALHelper.UNKNOWN_ERROR_NUMBER, null));
                 }
             }
-
-            /*
-            for (Map.Entry<String, SubscriptionSource> entry : rv.entrySet()) {
-                entry.getValue().populateNotifyList(hdr, lst, hl, publishBody);
-            }
-             */
         }
 
         return lst;
