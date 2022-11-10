@@ -68,7 +68,6 @@ public class SubscriptionConsumerTest {
         assertEquals(expResult, result); 
     }
     
-    
     @Test
     public void testMatchesWithFilters3() {
         System.out.println("matchesWithFilters: filters is null");
