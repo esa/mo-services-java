@@ -90,12 +90,13 @@ public class MessageSend {
             final MALPublishInteractionListener listener)
             throws MALInteractionException, MALException {
         ipsmap.registerPublishListener(details, listener);
+        IdentifierList publishedKeys = (keys != null) ? keys :  new IdentifierList();
 
         return initiateSynchronousInteraction(details,
                 op,
                 MALPubSubOperation.PUBLISH_REGISTER_STAGE,
                 (MALPublishInteractionListener) null,
-                keys);
+                publishedKeys);
     }
 
     /**
@@ -157,9 +158,10 @@ public class MessageSend {
             final MALPublishInteractionListener listener)
             throws MALInteractionException, MALException {
         ipsmap.registerPublishListener(details, listener);
+        IdentifierList publishedKeys = (keys != null) ? keys :  new IdentifierList();
         final Long transId = icmap.createTransaction(false, listener);
         return initiateAsynchronousInteraction(details,
-                createMessage(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE, keys));
+                createMessage(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE, publishedKeys));
     }
 
     /**
