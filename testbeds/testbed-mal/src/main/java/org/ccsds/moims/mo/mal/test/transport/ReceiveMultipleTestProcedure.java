@@ -36,11 +36,16 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
@@ -66,7 +71,7 @@ public class ReceiveMultipleTestProcedure
   public static final Identifier SESSION_NAME = new Identifier("LIVE");
   public static final UInteger PRIORITY = new UInteger(1);
   public static final QoSLevel QOS_LEVEL = QoSLevel.ASSURED;
-  
+  public static final Identifier value = new Identifier("A");
   private Subscription subscription;
 
   private TestEndPoint ep;
@@ -85,7 +90,10 @@ public class ReceiveMultipleTestProcedure
         SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false);
     ipTest = ipTestConsumer.getStub();
     
-    subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, Helper.getTestFilterlistNull());
+    SubscriptionFilterList filters = new SubscriptionFilterList();
+    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(value)));
+  
+    subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
 
     ipTest.monitorRegister(subscription, listener);
 
@@ -95,20 +103,26 @@ public class ReceiveMultipleTestProcedure
   public boolean publishInitialMessage() throws Exception {
     LoggingBase.logMessage("ReceiveMultipleTestProcedure.publishInitialMessage()");
 
+    IdentifierList keyNames = new IdentifierList();
+    keyNames.add(Helper.key1);
+    
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister =
       new TestPublishRegister(QOS_LEVEL, PRIORITY,
           HeaderTestProcedure.DOMAIN,
           HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
-          Helper.get4TestKeys(), expectedErrorCode);
+          keyNames, expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
     
+    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
+    updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList(value)));
+        
     TestUpdateList testUpdateList = new TestUpdateList();
     testUpdateList.add(new TestUpdate(0));
 
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-        SESSION, SESSION_NAME, false, Helper.getTestUpdateHeaderlist(), testUpdateList, null, expectedErrorCode, false);
+        SESSION, SESSION_NAME, false, updateHeaderList, testUpdateList, null, expectedErrorCode, false);
     ipTest.publishUpdates(testPublishUpdate);
 
     return true;
