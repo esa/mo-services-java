@@ -42,12 +42,11 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import static org.ccsds.moims.mo.mal.test.patterns.pubsub.EntityRequestTestProcedure.parseFirstKeyValue;
-import static org.ccsds.moims.mo.mal.test.patterns.pubsub.EntityRequestTestProcedure.parseKeyNamesList;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.test.util.Helper;
@@ -82,6 +81,8 @@ public class PublishRegisterTestProcedure extends LoggingBase
   
   private boolean publishRegistered = false;
   
+  private AttributeList myKeys = new AttributeList();
+  
   public boolean useSharedBroker(String sharedBroker) throws Exception {
     LoggingBase.logMessage("PublishRegisterTestProcedure.useSharedBroker(" +
         sharedBroker + ')');
@@ -102,12 +103,29 @@ public class PublishRegisterTestProcedure extends LoggingBase
         entities + ')');
     publishRegistered = true;
     
+    // Add the Key Names
+    ArrayList<AttributeList> entityKeyList = EntityRequestTestProcedure.parseEntityKeyList(entities);
+    myKeys = entityKeyList.get(0);
+    IdentifierList keyNames = new IdentifierList();
+    if(myKeys.get(0) != null) {
+        keyNames.add(Helper.key1);
+    }
+    if(myKeys.get(1) != null) {
+        keyNames.add(Helper.key2);
+    }
+    if(myKeys.get(2) != null) {
+        keyNames.add(Helper.key3);
+    }
+    if(myKeys.get(3) != null) {
+        keyNames.add(Helper.key4);
+    }
+    
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = 
       new TestPublishRegister(QOS_LEVEL, PRIORITY, 
           HeaderTestProcedure.DOMAIN, 
           HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, 
-          Helper.get4TestKeys(), expectedErrorCode);
+          keyNames, expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
     
     return true;
@@ -118,23 +136,47 @@ public class PublishRegisterTestProcedure extends LoggingBase
         entityKeyValue + ',' + error + ')');
     listener.clear();
    
-    Attribute value = new Union(parseFirstKeyValue(entityKeyValue));
-    AttributeList values = new AttributeList(value);
-    SubscriptionFilterList keyValues = Helper.getTestFilterlistNull(values);
-    Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, keyValues);
+    AttributeList parsed = EntityRequestTestProcedure.parseEntityKey(entityKeyValue);
+
+    SubscriptionFilterList filters = new SubscriptionFilterList();
+    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList((Attribute) Attribute.javaType2Attribute(parsed.get(0)))));
+    filters.add(new SubscriptionFilter(Helper.key2, new AttributeList((Attribute) Attribute.javaType2Attribute(parsed.get(1)))));
+    filters.add(new SubscriptionFilter(Helper.key3, new AttributeList((Attribute) Attribute.javaType2Attribute(parsed.get(2)))));
+    filters.add(new SubscriptionFilter(Helper.key4, new AttributeList((Attribute) Attribute.javaType2Attribute(parsed.get(3)))));
+    
+    Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
     ipTest.monitorRegister(subscription, listener);
     
     boolean expectError = Boolean.parseBoolean(error);
 
+    AttributeList values = new AttributeList();
+
+    if(myKeys.size() == 4) {
+        if(myKeys.get(0) != null || parsed.get(0) != null) {
+            values.add(parsed.get(0));
+        }
+        if(myKeys.get(1) != null || parsed.get(1) != null) {
+            values.add(parsed.get(1));
+        }
+        if(myKeys.get(2) != null || parsed.get(2) != null) {
+            values.add(parsed.get(2));
+        }
+        if(myKeys.get(3) != null || parsed.get(3) != null) {
+            values.add(parsed.get(3));
+        }
+    }
+    
+    UpdateHeaderList updateHeaders = new UpdateHeaderList();
+    updateHeaders.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, values));
+    
     TestUpdateList updateList = new TestUpdateList();
     updateList.add(new TestUpdate(new Integer(0)));
-    UpdateHeaderList updateHeaders = Helper.getTestUpdateHeaderlist(values);
     
     UInteger expectedErrorCode;
     SubscriptionFilterList failedEntityKeys;
     if (expectError) {
       expectedErrorCode = MALHelper.UNKNOWN_ERROR_NUMBER;
-      failedEntityKeys = keyValues;
+      failedEntityKeys = filters;
     } else {
       expectedErrorCode = new UInteger(999);
       failedEntityKeys = null;
@@ -158,11 +200,11 @@ public class PublishRegisterTestProcedure extends LoggingBase
       if(notifiedUpdates != null)
       {
         localAssertions.add(new Assertion(procedureName, 
-          "One notified update : " + notifiedUpdates.size(), (notifiedUpdates.size() == 1)));
+          "One notified update : " + notifiedUpdates.size() + " - " + notifiedUpdates.toString(), (notifiedUpdates.size() == 1)));
       }
       if (notifiedUpdates != null && notifiedUpdates.size() == 1) {
         localAssertions.add(new Assertion(procedureName, 
-          "Expected key is: " + keyValues, updateHeaders.equals(notifiedUpdateHeaders.get(0).getKeyValues())));
+          "Expected key is: " + entityKeyValue, values.equals(notifiedUpdateHeaders.get(0).getKeyValues())));
       }
     }
     
@@ -201,7 +243,8 @@ public class PublishRegisterTestProcedure extends LoggingBase
         Identifier subscriptionId, UpdateHeaderList updateHeaderList,
         TestUpdateList updateList, Map qosProperties)
     {
-      LoggingBase.logMessage("PublishRegisterTestProcedure.MonitorListener.monitorNotifyReceived");
+      LoggingBase.logMessage("PublishRegisterTestProcedure.MonitorListener.monitorNotifyReceived: "
+      );
       notifiedUpdateHeaders = updateHeaderList;
       notifiedUpdates = updateList;
     }

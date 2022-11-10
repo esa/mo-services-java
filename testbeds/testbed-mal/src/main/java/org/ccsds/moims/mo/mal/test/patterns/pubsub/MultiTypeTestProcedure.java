@@ -55,6 +55,7 @@ public class MultiTypeTestProcedure extends LoggingBase
   public static final Identifier SESSION_NAME = new Identifier("LIVE");
   public static final QoSLevel QOS_LEVEL = QoSLevel.ASSURED;
   public static final UInteger PRIORITY = new UInteger(1);
+  public static final Identifier A_KEY_VALUE = new Identifier("A");
   private boolean shared;
   private IPTestStub ipTest;
   private Vector consumers;
@@ -86,7 +87,7 @@ public class MultiTypeTestProcedure extends LoggingBase
             new TestPublishRegister(QOS_LEVEL, PRIORITY,
             HeaderTestProcedure.DOMAIN,
             HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, true,
-            Helper.get4TestKeys(), expectedErrorCode);
+            Helper.get1TestKey(), expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
 
     return true;
@@ -103,8 +104,11 @@ public class MultiTypeTestProcedure extends LoggingBase
             SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
     consumers.addElement(newIPTest);
 
+    SubscriptionFilterList filters = new SubscriptionFilterList();
+    AttributeList values = new AttributeList(A_KEY_VALUE);
+    filters.add(new SubscriptionFilter(Helper.key1, values));
 
-    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, Helper.getTestFilterlistNull());
+    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
 
     MonitorListener listener = new MonitorListener();
     listeners.addElement(listener);
@@ -117,13 +121,18 @@ public class MultiTypeTestProcedure extends LoggingBase
   {
     logMessage("MultiTypeTestProcedure.publish()");
 
+    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
+    updateHeaderList.add(new UpdateHeader(new Identifier(""), HeaderTestProcedure.DOMAIN, new AttributeList(A_KEY_VALUE)));
+    
     TestUpdateList updateList = new TestUpdateList();
     updateList.add(new TestUpdate(new Integer(0)));
 
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
             QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-            SESSION, SESSION_NAME, true, Helper.getTestUpdateHeaderlist(), updateList, null, expectedErrorCode, false);
+            SESSION, SESSION_NAME, true, 
+            updateHeaderList, updateList, 
+            null, expectedErrorCode, false);
 
     ipTest.publishUpdates(testPublishUpdate);
     return true;

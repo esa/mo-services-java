@@ -87,8 +87,8 @@ public class EntityRequestTestProcedure extends LoggingBase
     
     boolean shared = Boolean.parseBoolean(sharedBroker);
     
-    ArrayList<AttributeList> keyValueList = parseKeyNamesList(entities);
-    
+    ArrayList<AttributeList> entityKeyList = parseEntityKeyList(entities);
+
     ipTest = LocalMALInstance.instance().ipTestStub(
         HeaderTestProcedure.AUTHENTICATION_ID, 
         HeaderTestProcedure.DOMAIN, 
@@ -106,8 +106,8 @@ public class EntityRequestTestProcedure extends LoggingBase
     updateHeaderList = new UpdateHeaderList();
     updateList = new TestUpdateList();
     
-    for (int i = 0; i < keyValueList.size(); i++) {
-      AttributeList attList = keyValueList.get(i);
+    for (int i = 0; i < entityKeyList.size(); i++) {
+      AttributeList attList = entityKeyList.get(i);
       updateHeaderList.add(new UpdateHeader(new Identifier(""), HeaderTestProcedure.DOMAIN, attList));
       updateList.add(new TestUpdate(i));
     }
@@ -115,66 +115,34 @@ public class EntityRequestTestProcedure extends LoggingBase
     return true;
   }
 
-  /*
-  public static IdentifierList parseKeyNamesList(String s) {
-      Logger log = Logger.getLogger(EntityRequestTestProcedure.class.getName());
-        log.log(Level.INFO, "The string is: {0}", s);
-        
-    IdentifierList ids = new IdentifierList();
+  public static ArrayList<AttributeList> parseEntityKeyList(String s) {
+    ArrayList<AttributeList> entityKeyList = new ArrayList<>();
     StringTokenizer st = new StringTokenizer(s, " ,");
     while (st.hasMoreTokens()) {
-        StringTokenizer st2 = new StringTokenizer(st.nextToken(), ".");
-        ids.add(new Identifier(parseFirstKeyValue(st2.nextToken())));
+      entityKeyList.add(parseEntityKey(st.nextToken()));
     }
-    return ids;
-  }
-    */
-  public static ArrayList<AttributeList> parseKeyNamesList(String s) {
-      Logger log = Logger.getLogger(EntityRequestTestProcedure.class.getName());
-        log.log(Level.INFO, "The string is: {0}", s);
-        
-    ArrayList<AttributeList> list = new ArrayList<>();
-    
-    StringTokenizer st = new StringTokenizer(s, " ,");
-    while (st.hasMoreTokens()) {
-        StringTokenizer st2 = new StringTokenizer(st.nextToken(), ".");
-        AttributeList attList = new AttributeList();
-        attList.add(new Union(parseFirstKeyValue(st2.nextToken())));
-        attList.add(new Union(parseKeyValue(st2.nextToken())));
-        attList.add(new Union(parseKeyValue(st2.nextToken())));
-        attList.add(new Union(parseKeyValue(st2.nextToken())));
-        
-        list.add(attList);
-    }
-    return list;
-  }
-
-  public static SubscriptionFilterList parseKeyValueList(String s) {
-    SubscriptionFilterList subscriptionFilterList = new SubscriptionFilterList();
-    StringTokenizer st = new StringTokenizer(s, " ,");
-    while (st.hasMoreTokens()) {
-        StringTokenizer st2 = new StringTokenizer(st.nextToken(), ".");
-        Attribute value = new Union(parseFirstKeyValue(st2.nextToken()));
-        Attribute value2 = new Union(parseKeyValue(st2.nextToken()));
-        Attribute value3 = new Union(parseKeyValue(st2.nextToken()));
-        Attribute value4 = new Union(parseKeyValue(st2.nextToken()));
-        subscriptionFilterList.add(new SubscriptionFilter(Helper.key1, new AttributeList(value)));
-        subscriptionFilterList.add(new SubscriptionFilter(Helper.key2, new AttributeList(value2)));
-        subscriptionFilterList.add(new SubscriptionFilter(Helper.key3, new AttributeList(value3)));
-        subscriptionFilterList.add(new SubscriptionFilter(Helper.key4, new AttributeList(value4)));
-    }
-    return subscriptionFilterList;
+    return entityKeyList;
   }
   
-  public static String parseFirstKeyValue(String s) {
+  public static AttributeList parseEntityKey(String s) {
+    StringTokenizer st = new StringTokenizer(s, ".");
+    AttributeList k = new AttributeList();
+    k.add(parseEntitySubKey(st.nextToken()));
+    k.add(parseEntitySubKey(st.nextToken()));
+    k.add(parseEntitySubKey(st.nextToken()));
+    k.add(parseEntitySubKey(st.nextToken()));
+    return k;
+  }
+  
+  public static Identifier parseEntitySubKey(String s) {
     if (s.equals("[null]")) {
       return null;
     } else {
-      return s;
+      return new Identifier(s);
     }
   }
   
-  public static Long parseKeyValue(String s) {
+  public static Long parseSubKey(String s) {
     if (s.equals("[null]")) {
       return null;
     } else if (s.equals("*")) {
@@ -190,11 +158,18 @@ public class EntityRequestTestProcedure extends LoggingBase
     logMessage("EntityRequestTestProcedure.subscribeToPatternAndCheckExpectedEntities({" + 
         pattern + "},{" + expectedEntities + "})");
 
-    SubscriptionFilterList expectedKeyValues = parseKeyValueList(expectedEntities);   
+    ArrayList<AttributeList> expectedKeyValues = parseEntityKeyList(expectedEntities);
+    //SubscriptionFilterList expectedKeyValues = parseKeyValueList(expectedEntities);   
     
-    Attribute value = new Union(parseFirstKeyValue(pattern));
-    AttributeList values = new AttributeList(value);
-    Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, Helper.getTestFilterlistNull(values));
+    AttributeList values = parseEntityKey(pattern);
+    
+    SubscriptionFilterList filters = new SubscriptionFilterList();
+    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(0)))));
+    filters.add(new SubscriptionFilter(Helper.key2, new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(1)))));
+    filters.add(new SubscriptionFilter(Helper.key3, new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(2)))));
+    filters.add(new SubscriptionFilter(Helper.key4, new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(3)))));
+    
+    Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
     
     MonitorListener listener = new MonitorListener();
     
@@ -212,7 +187,7 @@ public class EntityRequestTestProcedure extends LoggingBase
     // The QoS level is Assured (FIFO) so the Notify messages arrived
     // before the 'publishUpdates' ack.
     
-    SubscriptionFilterList notifiedKeyValues = listener.getNotifiedKeys();
+    ArrayList<AttributeList> notifiedKeyValues = listener.getNotifiedKeys();
     
     IdentifierList idList = new IdentifierList();
     idList.add(SUBSCRIPTION_ID);
@@ -242,28 +217,31 @@ public class EntityRequestTestProcedure extends LoggingBase
     return true;
   }
 
-    public void checkIsContainedInto(SubscriptionFilterList containedList, SubscriptionFilterList containerList, 
+    public void checkIsContainedInto(ArrayList<AttributeList> containedList, ArrayList<AttributeList> containerList, 
             AssertionList assertions, String procedureName, String info) {
     for (int i = 0; i < containedList.size(); i++) {
-      SubscriptionFilter keyValue = containedList.get(i);
-      boolean res;
-      if (containerList.indexOf(keyValue.getValues().get(0)) < 0) {
-        res = false;
-      } else {
-        res = true;
+      AttributeList keyValues = containedList.get(i);
+      
+      for(int j = 0; j < containerList.size(); j++) {
+        for(int k = 0; k < keyValues.size(); k++) {
+            Object keyValueA = keyValues.get(k);
+            Object keyValueB = containerList.get(j).get(k);
+            boolean res = (keyValueA != null) ? keyValueA.equals(keyValueB) : (keyValueA == keyValueB);
+
+            assertions.add(new Assertion(procedureName, info + 
+                keyValueA + " == " + keyValueB + " ? -> Index: " + j, res));
+        }
       }
-      assertions.add(new Assertion(procedureName, info + 
-          keyValue.getName() + '.' + keyValue.getValues(), res));
     }
   }
   
   static class MonitorListener extends IPTestAdapter
   {
     
-    private SubscriptionFilterList notifiedKeyValues;
+    private ArrayList<AttributeList> notifiedKeyValues;
     
     MonitorListener() {
-      notifiedKeyValues = new SubscriptionFilterList();
+      notifiedKeyValues = new ArrayList<>();
     }
 
 		@Override
@@ -272,11 +250,11 @@ public class EntityRequestTestProcedure extends LoggingBase
         TestUpdateList updateList, Map qosProperties)
     {
       for (UpdateHeader updateHeader : updateHeaderList) {
-        notifiedKeyValues.add(new SubscriptionFilter(updateHeader.getSource(), updateHeader.getKeyValues()));
+        notifiedKeyValues.add(updateHeader.getKeyValues());
       }
     }
     
-    SubscriptionFilterList getNotifiedKeys() {
+    ArrayList<AttributeList> getNotifiedKeys() {
       return notifiedKeyValues;
     }
   }

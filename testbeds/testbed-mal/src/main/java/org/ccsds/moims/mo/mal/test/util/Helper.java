@@ -98,15 +98,18 @@ public final class Helper {
     
     return updateHeaderList;
   }  
-public static UpdateHeaderList getTestUpdateHeaderlist(AttributeList values){
+  
+  public static UpdateHeaderList getTestUpdateHeaderlist(AttributeList values){
     IdentifierList domain = new IdentifierList();
     domain.add(new Identifier("Test"));
     domain.add(new Identifier("Domain0"));    
     UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    updateHeaderList.add(new UpdateHeader(key1, domain, values));
+    updateHeaderList.add(new UpdateHeader(new Identifier("source"), domain, values));
+    /*
     updateHeaderList.add(new UpdateHeader(key2, domain, valuesNull));
     updateHeaderList.add(new UpdateHeader(key3, domain, valuesNull));
     updateHeaderList.add(new UpdateHeader(key4, domain, valuesNull));
+    */
     
     return updateHeaderList;
   }  

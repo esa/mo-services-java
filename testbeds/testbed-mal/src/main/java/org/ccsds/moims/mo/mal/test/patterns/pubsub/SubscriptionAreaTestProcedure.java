@@ -99,20 +99,27 @@ public class SubscriptionAreaTestProcedure extends LoggingBase
     logMessage("SubscriptionAreaTestProcedure.subscribeToAllAreasAndExpectedNotifyFromOtherServices("
         + allAreas + ")");
     
+    AttributeList values = new AttributeList(ENTITY_A);
+    SubscriptionFilterList list = new SubscriptionFilterList();
+    list.add(new SubscriptionFilter(Helper.key1, values));
     Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN,
-        Helper.getTestFilterlist());
+        list);
     
     listener = new MonitorListener();
     
     ipTest.monitorRegister(subscription, listener);
 
+    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
+    updateHeaderList.add(new UpdateHeader(new Identifier(""), HeaderTestProcedure.DOMAIN, values));
+    
     TestUpdateList updateList = new TestUpdateList();
     updateList.add(new TestUpdate(new Integer(0)));
     
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(QOS_LEVEL,
         PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-        SESSION, SESSION_NAME, false, Helper.getTestUpdateHeaderlist(), updateList, null, expectedErrorCode, 
+        SESSION, SESSION_NAME, false, 
+            updateHeaderList, updateList, null, expectedErrorCode, 
         Boolean.FALSE);
     
     ipTest.publishUpdates(testPublishUpdate);
