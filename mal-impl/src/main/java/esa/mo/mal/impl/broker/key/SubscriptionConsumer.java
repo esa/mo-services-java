@@ -21,6 +21,7 @@
 package esa.mo.mal.impl.broker.key;
 
 import esa.mo.mal.impl.broker.BrokerMatcher;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
@@ -164,7 +165,8 @@ public final class SubscriptionConsumer {
                 // We need to match at least one of the values!
                 for (Object value : filter.getValues()) {
                     // Keep looking until we find a match!
-                    if (value == null || value.equals(keyValue.getValue())) {
+                    // if (value == null || value.equals(keyValue.getValue())) {
+                    if (value == null || BrokerMatcher.matchedSubkeyWithWildcard((Attribute) value, keyValue.getValue())) {
                         matchedORed = true;
                         break;
                     }

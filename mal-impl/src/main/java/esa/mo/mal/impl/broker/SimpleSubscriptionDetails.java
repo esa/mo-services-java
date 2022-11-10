@@ -75,8 +75,6 @@ class SimpleSubscriptionDetails {
             IdentifierList keyNames) throws MALException {
         MALBrokerImpl.LOGGER.fine("Checking SimpleSubscriptionDetails");
 
-        final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
-
         final List[] updateLists = publishBody.getUpdateLists((List[]) null);
         List[] notifyLists = null;
 
@@ -99,19 +97,22 @@ class SimpleSubscriptionDetails {
                 }
             }
         }
+
+        final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
         List<NamedValue> providerKeyValues = new ArrayList<>();
+
         for (int i = 0; i < updateHeaderList.size(); ++i) {
             AttributeList keyValues = updateHeaderList.get(i).getKeyValues();
 
             if (keyValues.size() != keyNames.size()) {
                 throw new MALException("The keyValues size don't match the providerNames "
                         + "size: " + keyValues.size() + "!=" + keyNames.size()
-                        + "\nkeyValues: " + keyValues.toString()
-                        + "\nproviderNames: " + keyNames.toString());
+                        + "\nkeyNames: " + keyNames.toString()
+                        + "\nkeyValues: " + keyValues.toString());
             }
 
             for (int j = 0; j < keyNames.size(); j++) {
-                Identifier name = keyNames.get(i);
+                Identifier name = keyNames.get(j);
                 Object value = keyValues.get(j);
                 value = (Attribute) Attribute.javaType2Attribute(value);
                 providerKeyValues.add(new NamedValue(name, (Attribute) value));
