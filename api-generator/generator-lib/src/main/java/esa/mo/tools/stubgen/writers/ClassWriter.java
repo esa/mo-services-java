@@ -280,7 +280,8 @@ public interface ClassWriter extends LanguageWriter {
             boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
             boolean isReturnActual, CompositeField rtype, String methodName,
             List<CompositeField> args, String throwsSpec, String comment,
-            String returnComment, List<String> throwsComment, boolean  isDeprecated) throws IOException;
+            String returnComment, List<String> throwsComment, boolean isDeprecated) throws IOException;
+
     /**
      * Adds statements to close the class.
      *

@@ -1211,14 +1211,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             switch (op.getPattern()) {
                 case PUBSUB_OP: {
-                    CompositeField updateType = createCompositeElementsDetails(file, false, "publisher", 
+                    CompositeField updateType = createCompositeElementsDetails(file, false, "publisher",
                             TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false), false, true, null);
-                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, 
-                            updateType, "create" + StubUtils.preCap(op.getName()) + "Publisher", psArgs, throwsMALException, 
-                            "Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName(), 
+                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false,
+                            updateType, "create" + StubUtils.preCap(op.getName()) + "Publisher", psArgs, throwsMALException,
+                            "Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName(),
                             "The new publisher object.", Arrays.asList(throwsMALException + " if a problem is detected during creation of the publisher"));
                     String ns = convertToNamespace(helperName + "." + op.getName().toUpperCase() + "_OP");
-                    method.addMethodWithDependencyStatement("return new " + updateType.getTypeName() 
+                    method.addMethodWithDependencyStatement("return new " + updateType.getTypeName()
                             + createMethodCall("(providerSet.createPublisherSet(") + ns + ", domain, networkZone, sessionType, sessionName, qos, qosProps, priority))", ns, true);
                     method.addMethodCloseStatement();
                     break;
@@ -1578,11 +1578,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
             }
         }
 
-        MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, 
-                false, true, null, "init", Arrays.asList(eleFactory), throwsMALException, 
-                "Registers all aspects of this service with the provided element factory", 
+        MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC,
+                false, true, null, "init", Arrays.asList(eleFactory), throwsMALException,
+                "Registers all aspects of this service with the provided element factory",
                 null, Arrays.asList(throwsMALException + " If cannot initialise this helper."));
-        
+
         // Add the if condition to check if it has already been registered!
         method.addMethodStatement("if (org.ccsds.moims.mo.mal.MALContextFactory.lookupArea(", false);
         method.addMethodStatement("   " + ns + "_NAME,", false);
@@ -1934,7 +1934,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     argsNonNullable.add(element);
                 }
             }
-            
+
             args.addAll(compElements);
 
             for (CompositeField element : compElements) {
@@ -2107,7 +2107,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String castString = element.getDecodeCast();
                 if (castString.contains("AttributeList")) {
                     // This is when the Element is set as the abstract AttributeList type
-                    method.addMethodStatement(element.getFieldName() + " = " + castString + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + element.getDecodeCall() + "(new AttributeList())"));
+                    String attNew = "new org.ccsds.moims.mo.mal.structures.AttributeList()";
+                    method.addMethodStatement(element.getFieldName() + " = " + castString + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + element.getDecodeCall() + "(" + attNew + ")"));
                 } else {
                     method.addMethodStatement(element.getFieldName() + " = " + castString + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + element.getDecodeCall() + "(" + (element.isDecodeNeedsNewCall() ? element.getNewCall() : "") + ")"));
                 }
@@ -2212,11 +2213,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         // add deprecated getters and setters
         for (int i = 0; i < argsList.size(); i++) {
-            CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(), returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");  
+            CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(), returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");
             addGetter(file, argType, "BodyElement" + i);
             addSetter(file, argType, "BodyElement" + i);
-        }        
-        
+        }
+
         file.addClassCloseStatement();
 
         file.flush();
@@ -2285,48 +2286,34 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
     }
 
-    protected static void addGetter(ClassWriter file, CompositeField element, String backwardCompitability) throws IOException {
+    protected static void addGetter(ClassWriter file, CompositeField element, String backwardCompatibility) throws IOException {
         String getOpPrefix = "get";
         String attributeName = element.getFieldName();
-        String getOpName;
-        boolean isDeprecated = false;
-        if(backwardCompitability == null){
-            getOpName = StubUtils.preCap(attributeName);
-        }
-        else{
-            isDeprecated = true;
-            getOpName = backwardCompitability;
-        }
+        boolean isDeprecated = (backwardCompatibility != null);
+        String getOpName = (backwardCompatibility == null) ? StubUtils.preCap(attributeName) : backwardCompatibility;
 
-        MethodWriter method = file.addMethodOpenStatement(false,false, true, false, StdStrings.PUBLIC, 
-                !element.isCanBeNull(), !element.isCanBeNull() && element.isActual(), element, 
-                getOpPrefix + getOpName, null, null, "Returns the field " + attributeName, 
+        MethodWriter method = file.addMethodOpenStatement(false, false, true, false, StdStrings.PUBLIC,
+                !element.isCanBeNull(), !element.isCanBeNull() && element.isActual(), element,
+                getOpPrefix + getOpName, null, null, "Returns the field " + attributeName,
                 "The field " + attributeName, null, isDeprecated);
         method.addMethodStatement("return " + attributeName);
         method.addMethodCloseStatement();
     }
 
-     protected static void addSetter(ClassWriter file, CompositeField element, String backwardCompitability) throws IOException {
+    protected static void addSetter(ClassWriter file, CompositeField element, String backwardCompatibility) throws IOException {
         String setOpPrefix = "set";
         String attributeName = element.getFieldName();
-        String getOpName;
-        boolean isDeprecated = false;
-        if(backwardCompitability == null){
-            getOpName = StubUtils.preCap(attributeName);
-        }
-        else{
-            isDeprecated = true;
-            getOpName = backwardCompitability;
-        }
+        boolean isDeprecated = (backwardCompatibility != null);
+        String getOpName = (backwardCompatibility == null) ? StubUtils.preCap(attributeName) : backwardCompatibility;
 
         if (StdStrings.BOOLEAN.equals(element.getTypeName()) && getOpName.startsWith("Is")) {
             getOpName = getOpName.substring(2);
         }
 
         CompositeField fld = new CompositeField(element, "__newValue", "__newValue The new value");
-        MethodWriter method = file.addMethodOpenStatement(false, false, false, false, 
-                StdStrings.PUBLIC, false, true, null, 
-                setOpPrefix + getOpName, Arrays.asList(fld), null, "Sets the field " + attributeName, 
+        MethodWriter method = file.addMethodOpenStatement(false, false, false, false,
+                StdStrings.PUBLIC, false, true, null,
+                setOpPrefix + getOpName, Arrays.asList(fld), null, "Sets the field " + attributeName,
                 null, null, isDeprecated);
         method.addMethodStatement(attributeName + " = __newValue");
         method.addMethodCloseStatement();
