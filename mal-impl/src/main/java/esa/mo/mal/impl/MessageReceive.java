@@ -565,7 +565,8 @@ public class MessageReceive implements MALMessageListener {
     private void internalHandleDeregister(final MALMessage msg,
             final Address address) throws MALInteractionException {
         // find relevant broker
-        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
+        String uri = msg.getHeader().getURITo().getValue();
+        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(uri);
 
         if (null != brokerHandler) {
             try {
