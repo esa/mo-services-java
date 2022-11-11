@@ -20,58 +20,46 @@
  */
 package esa.mo.mal.impl;
 
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Singleton class that holds the transaction id counter used by the interaction
- * maps.
+ * Class that generates a unique transaction id counter that can be used by the 
+ * MAL interactions for the transactionId field.
+ *
+ * The following constant defines a time epoch for the MAL transaction id. The
+ * date is 1st September 2010 which is when the MAL was first published. It is
+ * used to subtract from the UNIX time used as the seed for the transaction id.
+ * It gives us an effective time range for transaction values from the MAL epoch
+ * until approximately year 2045.
+ *
+ * The transaction number is made up as follows:
+ * <--        (Part A)        |   (Part B)   |      (Part C)         -->
+ * <--         40bits         |   8 bits     |      16 bits          -->
+ * <--  Time (ms resolution)  |  Randomness  |  Transaction Counter  -->
  */
-public abstract class InteractionTransaction {
+public class InteractionTransaction {
 
-    /**
-     * The following constant defines a time epoch for the MAL transaction id.
-     * The date is 1st September 2010 which is when the MAL was first published.
-     * It is used to subtract from the UNIX time used as the seed for the
-     * transaction id. It gives us an effective time range for transaction
-     * values from the MAL epoch until approximately year 2045. Hopefully we
-     * will have come up with a new algorithm before then...
-     *
-     * The transaction number is made up as follows:
-     * <-- 40bits of time to millisecond resolution | 8 bits of RNG | 16 bits of transaction counter -->
-     */
     private static final long MAL_EPOCH = 1283299200000L;
-    private static final long MAX_OFFSET = 65535L;
+    private static final long MAX_OFFSET = 0xFFFFL;
     private static final long RANDOM_MASK = 0xFFL;
 
-    private static volatile long transMag;
-    private static volatile long transOffset;
+    private static long partAB = recalculatePartAB(); // Time with Randomness
+    private static final AtomicLong transactionCounter = new AtomicLong(0);
 
-    private InteractionTransaction() {
+    public static synchronized Long getTransactionId() {
+        long counter = transactionCounter.incrementAndGet();
+
+        if (counter > MAX_OFFSET) {
+            recalculatePartAB();
+            transactionCounter.set(0);
+        }
+
+        return partAB + transactionCounter.get();
     }
 
-    static {
-        recalculateTransactionIdMagnitude();
-    }
-
-    public static synchronized Long getTransactionId(Set<Long> keySet) {
-        long lt;
-
-        do {
-            ++transOffset;
-
-            if (transOffset > MAX_OFFSET) {
-                recalculateTransactionIdMagnitude();
-            }
-
-            lt = transMag + transOffset;
-        } while (keySet.contains(lt));
-
-        return lt;
-    }
-
-    private static void recalculateTransactionIdMagnitude() {
-        transMag = (System.currentTimeMillis() - MAL_EPOCH) << 24;
-        transMag += ((System.nanoTime()) & RANDOM_MASK) << 16;
-        transOffset = 0;
+    private static long recalculatePartAB() {
+        partAB = (System.currentTimeMillis() - MAL_EPOCH) << 24; // Time
+        partAB += ((System.nanoTime()) & RANDOM_MASK) << 16; // Randomness
+        return partAB;
     }
 }

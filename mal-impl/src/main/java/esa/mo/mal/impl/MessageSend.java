@@ -656,9 +656,7 @@ public class MessageSend {
             MALMessage msg) throws MALInteractionException, MALException {
         try {
             msg = securityManager.check(msg);
-
             details.endpoint.sendMessage(msg);
-
             final MALMessage rtn = icmap.waitForResponse(transId);
 
             if (null != rtn) {
@@ -690,7 +688,6 @@ public class MessageSend {
             MALMessage msg) throws MALInteractionException, MALException {
         try {
             msg = securityManager.check(msg);
-
             details.endpoint.sendMessage(msg);
         } catch (IllegalArgumentException ex) {
             throw new MALException("IllegalArgumentException", ex);
