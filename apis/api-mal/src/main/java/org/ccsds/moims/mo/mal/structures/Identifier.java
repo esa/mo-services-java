@@ -31,7 +31,9 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class Identifier implements Attribute {
 
-    private String value;
+    public final static String WILDCARD = "*";
+
+    private final String value;
 
     /**
      * Default constructor.
@@ -70,6 +72,10 @@ public class Identifier implements Attribute {
      */
     public String getValue() {
         return value;
+    }
+
+    public boolean isWildcard() {
+        return WILDCARD.equals(value);
     }
 
 //  This might be required for XML serialisation and technologies that use that.  

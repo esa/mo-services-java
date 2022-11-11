@@ -35,7 +35,7 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
      *
      * @param attribute An attribute to be added to the list.
      */
-    public AttributeList(Attribute attribute) {
+    public AttributeList(Object attribute) {
         super();
         super.add(attribute);
     }
