@@ -66,11 +66,13 @@ public final class SubscriptionConsumer {
     /**
      * Constructor.
      *
+     * @param domain The domain of the subscription.
      * @param hdr Subscription message header.
-     * @param filters The subscription filters.
+     * @param filters The filters of the subscription.
      */
-    public SubscriptionConsumer(final MALMessageHeader hdr, final SubscriptionFilterList filters) {
-        this(null, hdr.getServiceArea(), hdr.getService(), hdr.getOperation(), filters);
+    public SubscriptionConsumer(final IdentifierList domain, 
+            final MALMessageHeader hdr, final SubscriptionFilterList filters) {
+        this(domain, hdr.getServiceArea(), hdr.getService(), hdr.getOperation(), filters);
     }
 
     @Override

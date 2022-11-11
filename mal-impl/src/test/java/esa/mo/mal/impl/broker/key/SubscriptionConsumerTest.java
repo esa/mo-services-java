@@ -249,7 +249,7 @@ public class SubscriptionConsumerTest {
         
     @Test
     public void testMatchesWithFilters9() {
-        System.out.println("matchesWithFilters:: functional test of ANDed keys with two filters");
+        System.out.println("matchesWithFilters: functional test of ANDed keys with two filters");
 
         List<NamedValue> keyVals = new ArrayList<>();
         Identifier key = new Identifier("parameter name");

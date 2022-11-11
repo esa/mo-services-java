@@ -82,7 +82,7 @@ class SimpleSubscriptionSource extends SubscriptionSource {
             sub = new SimpleSubscriptionDetails(subId);
             subs.put(subId, sub);
         }
-        sub.setIds(srcHdr, subscription.getFilters());
+        sub.setIds(subscription.getDomain(), srcHdr, subscription.getFilters());
         updateIds();
     }
 

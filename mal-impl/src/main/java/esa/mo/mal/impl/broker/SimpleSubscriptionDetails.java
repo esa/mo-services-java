@@ -59,9 +59,10 @@ class SimpleSubscriptionDetails {
         MALBrokerImpl.LOGGER.log(Level.FINE, "    END Subscription ( {0} )", subscriptionId);
     }
 
-    public void setIds(final MALMessageHeader srcHdr, final SubscriptionFilterList filters) {
+    public void setIds(final IdentifierList domain,
+            final MALMessageHeader srcHdr, final SubscriptionFilterList filters) {
         subscriptionList.clear();
-        subscriptionList.add(new SubscriptionConsumer(srcHdr, filters));
+        subscriptionList.add(new SubscriptionConsumer(domain, srcHdr, filters));
     }
 
     /**
