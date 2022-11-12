@@ -35,14 +35,17 @@ package org.ccsds.moims.mo.mal.test.transport;
 import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
@@ -70,8 +73,7 @@ public class TransmitMultipleTestProcedure
   private IPTestStub ipTest2;
   private MonitorListener listener2;  
   private IPTestResult result;
-  private final Attribute value = new Union("NetworkZone-TransmitMultiple");
-  private final AttributeList values = new AttributeList(value);
+  private final AttributeList values = new AttributeList(NETWORK_ZONE);
   
   public boolean createConsumers() throws Exception {
     LoggingBase.logMessage("TransmitMultipleTestProcedure.createConsumers()");
@@ -89,21 +91,24 @@ public class TransmitMultipleTestProcedure
         NETWORK_ZONE, 
         SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false).getStub();
     
-    
-    subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, 
-            Helper.getTestFilterlistNull(values));
+    SubscriptionFilterList filters = new SubscriptionFilterList();
+    filters.add(new SubscriptionFilter(Helper.key1, values));
+    subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
     return true;
   }
   
   public boolean initiateInteraction() throws Exception {
     LoggingBase.logMessage("TransmitMultipleTestProcedure.initiateInteraction()");
     
+    IdentifierList keyNames = new IdentifierList();
+    keyNames.add(Helper.key1);
+
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = 
       new TestPublishRegister(QOS_LEVEL, PRIORITY, 
           HeaderTestProcedure.DOMAIN, 
           NETWORK_ZONE, SESSION, SESSION_NAME, false, 
-          Helper.get4TestKeys(), expectedErrorCode);
+          keyNames, expectedErrorCode);
     ipTest1.publishRegister(testPublishRegister);
     
     listener1 = new MonitorListener();
@@ -112,12 +117,15 @@ public class TransmitMultipleTestProcedure
     ipTest1.monitorRegister(subscription, listener1);
     ipTest2.monitorRegister(subscription, listener2);
     
+    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
+    updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, values));
+        
     TestUpdateList updateList = new TestUpdateList();
     updateList.add(new TestUpdate(0));
     
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, NETWORK_ZONE, 
-        SESSION, SESSION_NAME, false, Helper.getTestUpdateHeaderlist(values), updateList, null, expectedErrorCode, false);
+        SESSION, SESSION_NAME, false, updateHeaderList, updateList, null, expectedErrorCode, false, null);
     ipTest1.testMultipleNotify(testPublishUpdate);
     
     return true;

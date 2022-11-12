@@ -207,12 +207,16 @@ public class LocalMALInstance extends BaseLocalMALInstance
     FileBasedDirectory.URIpair uris;
     if (shared)
     {
+      logMessage("Loading URIs from file: " + TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
       uris = FileBasedDirectory.loadURIs(TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
     }
     else
     {
+      logMessage("Loading URIs from file: " + IPTestHelper.IPTEST_SERVICE_NAME.getValue());
       uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME.getValue());
     }
+
+    logMessage("The Loaded uris are :\nuri: " + uris.uri + "\nbroker: " + uris.broker);
 
     return newIPTestStub(consumerName, uris, authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, priority, shared);
   }

@@ -1,17 +1,9 @@
 package org.ccsds.moims.mo.mal.test.util;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
-import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
@@ -33,7 +25,7 @@ public final class Helper {
   
   public static final AttributeList valuesA = new AttributeList(valueA);
   public static final AttributeList values0 = new AttributeList(value0);
-  public static final AttributeList valuesNull = new AttributeList(valueNull);  
+  public static final AttributeList valuesNull = new AttributeList(valueNull);
   //private static final SubscriptionFilter subFilter = new SubscriptionFilter(key1, valuesA);
   
   private Helper(){
@@ -54,37 +46,6 @@ public final class Helper {
       list.add(key1);
       return list;
   }
-  
-  @Deprecated
-  public static SubscriptionFilterList getTestFilterlist(){
-    SubscriptionFilterList subFilterList = new SubscriptionFilterList();
-    subFilterList.add(new SubscriptionFilter(key1, values0));
-    subFilterList.add(new SubscriptionFilter(key2, values0));
-    subFilterList.add(new SubscriptionFilter(key3, values0));
-    subFilterList.add(new SubscriptionFilter(key4, values0));   
-    
-    return subFilterList;
-  }
-
-  public static SubscriptionFilterList getTestFilterlistNull(){
-    SubscriptionFilterList subFilterList = new SubscriptionFilterList();
-    subFilterList.add(new SubscriptionFilter(key1, valuesNull));
-    subFilterList.add(new SubscriptionFilter(key2, valuesNull));
-    subFilterList.add(new SubscriptionFilter(key3, valuesNull));
-    subFilterList.add(new SubscriptionFilter(key4, valuesNull));   
-    
-    return subFilterList;
-  }  
-  
-  public static SubscriptionFilterList getTestFilterlistNull(AttributeList values){
-    SubscriptionFilterList subFilterList = new SubscriptionFilterList();
-    subFilterList.add(new SubscriptionFilter(key1, values));
-    subFilterList.add(new SubscriptionFilter(key2, valuesNull));
-    subFilterList.add(new SubscriptionFilter(key3, valuesNull));
-    subFilterList.add(new SubscriptionFilter(key4, valuesNull));   
-    
-    return subFilterList;
-  }  
   
   public static UpdateHeaderList getTestUpdateHeaderlist(){
     IdentifierList domain = new IdentifierList();

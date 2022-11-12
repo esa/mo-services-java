@@ -118,9 +118,8 @@ public class SubscriptionAreaTestProcedure extends LoggingBase
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(QOS_LEVEL,
         PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-        SESSION, SESSION_NAME, false, 
-            updateHeaderList, updateList, null, expectedErrorCode, 
-        Boolean.FALSE);
+        SESSION, SESSION_NAME, false, updateHeaderList, updateList, null, expectedErrorCode, 
+        Boolean.FALSE, null);
     
     ipTest.publishUpdates(testPublishUpdate);
     ipTestFromArea2.publishUpdates(testPublishUpdate);

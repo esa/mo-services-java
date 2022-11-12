@@ -122,7 +122,7 @@ public class ReceiveMultipleTestProcedure
 
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-        SESSION, SESSION_NAME, false, updateHeaderList, testUpdateList, null, expectedErrorCode, false);
+        SESSION, SESSION_NAME, false, updateHeaderList, testUpdateList, null, expectedErrorCode, false, null);
     ipTest.publishUpdates(testPublishUpdate);
 
     return true;

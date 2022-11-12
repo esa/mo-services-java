@@ -50,6 +50,8 @@ import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
@@ -57,6 +59,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import static org.ccsds.moims.mo.mal.test.patterns.pubsub.SubscriptionDomainTestProcedure.SUBSCRIPTION_ID;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
@@ -157,7 +160,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     UInteger errorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = new TestPublishRegister(qos, 
             HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), 
-            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, Helper.get4TestKeys(), errorCode);
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, Helper.get1TestKey(), errorCode);
     ipTest.publishRegister(testPublishRegister);
     return true;
   }
@@ -199,7 +202,9 @@ public class HeaderTestProcedureImpl extends LoggingBase
     
     ipTest = ipTestConsumer.getStub();
 
-    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, Helper.getTestFilterlistNull());
+    SubscriptionFilterList filters = new SubscriptionFilterList();
+    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_ENTITY_KEY)));
+    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
     MonitorListener listener = new MonitorListener();
     
     ConsumerContext consumerContext = new ConsumerContext(listener);
@@ -339,7 +344,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     
     UInteger errorCode = new UInteger(999);
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), 
-        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, updateHeaders, updates, null, errorCode, Boolean.FALSE);
+        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, updateHeaders, updates, null, errorCode, Boolean.FALSE, null);
     ipTest.publishUpdates(testPublishUpdate);
 
     return true;
@@ -483,7 +488,12 @@ public class HeaderTestProcedureImpl extends LoggingBase
     
     ipTest = ipTestConsumer.getStub();
 
-    TestUpdate update = new TestUpdate(1);
+    UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList(HeaderTestProcedure.RIGHT_ENTITY_KEY));
+    TestUpdate update = new TestUpdate(new Integer(1));
+    
+    UpdateHeaderList updateHeaders = new UpdateHeaderList();
+    updateHeaders.add(updateHeader);
+    
     TestUpdateList updates = new TestUpdateList();
     updates.add(update);
     
@@ -498,11 +508,11 @@ public class HeaderTestProcedureImpl extends LoggingBase
     cc.setPublishTimeStamp(new Time(System.currentTimeMillis()));
     
     UInteger errorCode = MALHelper.UNKNOWN_ERROR_NUMBER;
-    Attribute value = new Union("B");
+    AttributeList failedKeyValues = new AttributeList(HeaderTestProcedure.WRONG_ENTITY_KEY);
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY, 
         HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, 
-            sessionName, false, Helper.getTestUpdateHeaderlist(new AttributeList(value)), updates, Helper.getTestFilterlistNull(), errorCode,
-        Boolean.FALSE);
+            sessionName, false, updateHeaders, updates, null, errorCode,
+        Boolean.FALSE, failedKeyValues);
     ipTest.publishUpdates(testPublishUpdate);
 
     return true;
@@ -634,7 +644,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     UInteger errorCode = new UInteger(999);
     TestPublishDeregister testPublishDeregister = new TestPublishDeregister(qos,
         HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), 
-            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false,
+        HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false,
         errorCode);
     ipTest.publishDeregister(testPublishDeregister);
     return true;
@@ -645,7 +655,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
       throws Exception
   {
     logMessage("initiatePublishRegisterErrorWithQosAndSessionAndSharedBrokerAndDomain("
-        + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain+ ')');
+        + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
     resetAssertions();
 
     QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
@@ -685,8 +695,11 @@ public class HeaderTestProcedureImpl extends LoggingBase
     
     ipTest = ipTestConsumer.getStub();
 
+    SubscriptionFilterList filters = new SubscriptionFilterList();
+    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_ENTITY_KEY)));
+
     Subscription subscription = new Subscription(
-        HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, Helper.getTestFilterlistNull());
+        HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
     MonitorListener listener = new MonitorListener();
 
     ConsumerContext consumerContext = new ConsumerContext(listener);

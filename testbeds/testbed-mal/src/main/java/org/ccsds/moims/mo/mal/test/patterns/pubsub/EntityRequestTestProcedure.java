@@ -179,7 +179,7 @@ public class EntityRequestTestProcedure extends LoggingBase
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE, 
         SESSION, SESSION_NAME, false, updateHeaderList, updateList, null, expectedErrorCode,
-        Boolean.FALSE);
+        Boolean.FALSE, null);
     
     ipTest.publishUpdates(testPublishUpdate);
     

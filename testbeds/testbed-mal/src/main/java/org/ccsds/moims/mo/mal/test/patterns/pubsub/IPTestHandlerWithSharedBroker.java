@@ -112,6 +112,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl
                 _TestPublishRegister.getQos(),
                 _TestPublishRegister.getPriority());
 
+        LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister: The keyNames are: " + _TestPublishRegister.getKeyNames());
         publisher.asyncRegister(_TestPublishRegister.getKeyNames(), listener);
       }
       else
@@ -125,6 +126,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl
                 _TestPublishRegister.getQos(),
                 _TestPublishRegister.getPriority());
 
+        LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister: The keyNames are: " + _TestPublishRegister.getKeyNames());
         publisher.asyncRegister(_TestPublishRegister.getKeyNames(), listener);
       }
       listener.cond.waitFor(Configuration.WAIT_TIME_OUT);

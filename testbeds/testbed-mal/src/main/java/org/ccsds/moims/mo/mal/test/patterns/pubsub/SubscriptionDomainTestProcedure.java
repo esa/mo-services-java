@@ -96,7 +96,6 @@ public class SubscriptionDomainTestProcedure extends LoggingBase
     
     AttributeList keyValues = new AttributeList();
     keyValues.add("myValue");
-    
 
     updateList = new TestUpdateList();
     updateList.add(new TestUpdate(new Integer(0)));
@@ -183,7 +182,7 @@ public class SubscriptionDomainTestProcedure extends LoggingBase
           TestPublishUpdate testPublishUpdate = new TestPublishUpdate(QOS_LEVEL, PRIORITY, 
                   publishDomainIds[i], HeaderTestProcedure.NETWORK_ZONE, SESSION, 
                   SESSION_NAME, false, updateHeaderList[i], updateList, 
-                  null, expectedErrorCode, Boolean.FALSE);
+                  null, expectedErrorCode, Boolean.FALSE, null);
           ipTestForPublish.publishUpdates(testPublishUpdate);
       }
 

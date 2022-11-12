@@ -122,7 +122,7 @@ public class MultiTypeTestProcedure extends LoggingBase
     logMessage("MultiTypeTestProcedure.publish()");
 
     UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    updateHeaderList.add(new UpdateHeader(new Identifier(""), HeaderTestProcedure.DOMAIN, new AttributeList(A_KEY_VALUE)));
+    updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList(A_KEY_VALUE)));
     
     TestUpdateList updateList = new TestUpdateList();
     updateList.add(new TestUpdate(new Integer(0)));
@@ -132,7 +132,7 @@ public class MultiTypeTestProcedure extends LoggingBase
             QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
             SESSION, SESSION_NAME, true, 
             updateHeaderList, updateList, 
-            null, expectedErrorCode, false);
+            null, expectedErrorCode, false, null);
 
     ipTest.publishUpdates(testPublishUpdate);
     return true;

@@ -49,17 +49,17 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
 {
   private Identifier transactionId;
   protected AssertionList assertions;
-  private Hashtable<PublishInteractionListenerKey, MALPublishInteractionListener> publishInteractionListeners;
-  private Hashtable<PublisherKey, MonitorPublisher> publishers;
-  private Hashtable<PublisherKey, MonitorMultiPublisher> publishersMulti;
+  private final Hashtable<PublishInteractionListenerKey, MALPublishInteractionListener> publishInteractionListeners;
+  private final Hashtable<PublisherKey, MonitorPublisher> publishers;
+  private final Hashtable<PublisherKey, MonitorMultiPublisher> publishersMulti;
   
   private String ipTestProviderFileName;
 
   public IPTestHandlerImpl()
   {
-    publishInteractionListeners = new Hashtable<PublishInteractionListenerKey, MALPublishInteractionListener>();
-    publishers = new Hashtable<PublisherKey, MonitorPublisher>();
-    publishersMulti = new Hashtable<PublisherKey, MonitorMultiPublisher>();
+    publishInteractionListeners = new Hashtable<>();
+    publishers = new Hashtable<>();
+    publishersMulti = new Hashtable<>();
     ipTestProviderFileName = IPTestHelper.IPTEST_SERVICE_NAME.getValue();
   }
 
@@ -427,6 +427,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
                 _TestPublishRegister.getQos(),
                 _TestPublishRegister.getPriority());
 
+        LoggingBase.logMessage("IPTestHandlerImpl.doPublishRegister: The keyNames are: " + _TestPublishRegister.getKeyNames());
         publisher.asyncRegister(_TestPublishRegister.getKeyNames(), listener);
       }
       else
@@ -439,6 +440,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
                 _TestPublishRegister.getQos(),
                 _TestPublishRegister.getPriority());
 
+        LoggingBase.logMessage("IPTestHandlerImpl.doPublishRegister: The keyNames are: " + _TestPublishRegister.getKeyNames());
         publisher.asyncRegister(_TestPublishRegister.getKeyNames(), listener);
       }
       listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
@@ -502,6 +504,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
         } else {
             publisher.publish(updateHeaderList, testUpdateList, testUpdateList);
         }*/
+        publisher.publish(updateHeaderList, testUpdateList, testUpdateList);
       }
       else
       {
@@ -583,7 +586,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
 
         error = listener.getError();
         expectedErrorCode = _TestPublishUpdate.getErrorCode();
-        //expectedExtraInfo = _TestPublishUpdate.getFailedEntityKeys();
+        expectedExtraInfo = _TestPublishUpdate.getFailedKeyValues();
       }
 
       assertions.add(new Assertion("PubSub.checkPublishError",
@@ -597,7 +600,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton
                 expectedErrorCode);
 
         AssertionHelper.checkEquality("PubSub.checkPublishError",
-                assertions, "extraInfo", error.getExtraInformation(), null);
+                assertions, "extraInfo", error.getExtraInformation(), expectedExtraInfo);
       }
     }
     else

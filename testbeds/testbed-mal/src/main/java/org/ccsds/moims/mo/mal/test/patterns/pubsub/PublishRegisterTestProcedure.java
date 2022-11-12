@@ -173,17 +173,18 @@ public class PublishRegisterTestProcedure extends LoggingBase
     updateList.add(new TestUpdate(new Integer(0)));
     
     UInteger expectedErrorCode;
-    SubscriptionFilterList failedEntityKeys;
+    AttributeList failedEntityKeys;
     if (expectError) {
       expectedErrorCode = MALHelper.UNKNOWN_ERROR_NUMBER;
-      failedEntityKeys = filters;
+      failedEntityKeys = values;
     } else {
       expectedErrorCode = new UInteger(999);
       failedEntityKeys = null;
     }
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
         QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE, 
-        SESSION, SESSION_NAME, false, updateHeaders, updateList, failedEntityKeys, expectedErrorCode, (! publishRegistered));
+        SESSION, SESSION_NAME, false, updateHeaders, updateList, values, expectedErrorCode, (! publishRegistered),
+        failedEntityKeys);
     
     ipTest.publishUpdates(testPublishUpdate);
     
