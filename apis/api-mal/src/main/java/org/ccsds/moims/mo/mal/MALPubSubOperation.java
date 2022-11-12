@@ -119,7 +119,7 @@ public class MALPubSubOperation extends MALOperation {
     private static final MALOperationStage PUBSUB_REGACK_OPERATION_STAGE
             = new MALOperationStage(REGISTER_ACK_STAGE, new Object[0], new Object[0]);
     private static final MALOperationStage PUBSUB_PUBREG_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_REGISTER_STAGE, new Object[0], new Object[0]);
+            = new MALOperationStage(PUBLISH_REGISTER_STAGE, new Object[]{IdentifierList.SHORT_FORM}, new Object[0]);
     private static final MALOperationStage PUBSUB_PUBREGACK_OPERATION_STAGE
             = new MALOperationStage(PUBLISH_REGISTER_ACK_STAGE, new Object[0], new Object[0]);
     private static final MALOperationStage PUBSUB_DEREG_OPERATION_STAGE

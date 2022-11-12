@@ -77,10 +77,8 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
         
         if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
             switch (ctx.getHeader().getInteractionStage().getValue()) {
-                case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                    ((Element) element).encode(enc);
-                    return;
                 case MALPubSubOperation._REGISTER_STAGE:
+                case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
                 case MALPubSubOperation._DEREGISTER_STAGE:
                     ((Element) element).encode(enc);
                     return;
