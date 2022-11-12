@@ -70,7 +70,7 @@ public final class SubscriptionConsumer {
      * @param hdr Subscription message header.
      * @param filters The filters of the subscription.
      */
-    public SubscriptionConsumer(final IdentifierList domain, 
+    public SubscriptionConsumer(final IdentifierList domain,
             final MALMessageHeader hdr, final SubscriptionFilterList filters) {
         this(domain, hdr.getServiceArea(), hdr.getService(), hdr.getOperation(), filters);
     }
@@ -167,8 +167,12 @@ public final class SubscriptionConsumer {
                 // We need to match at least one of the values!
                 for (Object value : filter.getValues()) {
                     // Keep looking until we find a match!
+                    Attribute att = (value instanceof Attribute)
+                            ? (Attribute) value
+                            : (Attribute) Attribute.javaType2Attribute(value);
+
                     // if (value == null || value.equals(keyValue.getValue())) {
-                    if (value == null || BrokerMatcher.matchedSubkeyWithWildcard((Attribute) value, keyValue.getValue())) {
+                    if (value == null || BrokerMatcher.matchedSubkeyWithWildcard(att, keyValue.getValue())) {
                         matchedORed = true;
                         break;
                     }
