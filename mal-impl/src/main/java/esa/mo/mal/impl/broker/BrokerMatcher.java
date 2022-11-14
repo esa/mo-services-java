@@ -213,71 +213,80 @@ public class BrokerMatcher {
     }
 
     /**
-     * Checks if the provided domain matches the subscribed domain
      *
-     * @param consumerDomain list of domain subscribed by consumers, it can
-     * contain wildcard
-     * @param providerDomain list of domain provided by providers
-     * @return True if the domain matches the domain with the wildcard
+     * @param consumerDomainList The list of domains subscribed by consumers, it can
+     * @param providerDomainList The list of domains provided by providers
+     * @param consumerStartIndex The start index of consumerDomainList
+     * @param providerStartIndex The start index of providerDomainList
+     * @param size The length to be matched
+     * @return
      */
-    public static boolean domainMatchesWildcardDomain(IdentifierList consumerDomain, IdentifierList providerDomain) {
-        if (consumerDomain == null || providerDomain == null) {
-            return consumerDomain == null && providerDomain == null;
-        }
-
-        String firstDomain = consumerDomain.get(0).getValue();
-        String lastDomain = consumerDomain.get(consumerDomain.size() - 1).getValue();
-        if ("*".equals(firstDomain) && "*".equals(lastDomain)) {  // *.B.*
-            if (consumerDomain.size() > providerDomain.size() + 2) {
+    public static boolean innerDomainMatchesWildcardDomain(IdentifierList consumerDomainList, IdentifierList providerDomainList,
+            int consumerStartIndex, int providerStartIndex, int size) {
+        for (int i = 0; i < size; i++) {
+            String consumerDomain = consumerDomainList.get(consumerStartIndex + i).getValue();
+            String providerDomain = providerDomainList.get(providerStartIndex + i).getValue();
+            if (!"*".equals(consumerDomain) && !consumerDomain.equals(providerDomain)) {
                 return false;
             }
+        }
+        return true;
+    }
+    
+    /**
+     * Checks if the provided domain matches the subscribed domain
+     *
+     * @param consumerDomainList The list of domains subscribed by consumers, it can
+     * contain wildcard
+     * @param providerDomainList The list of domains provided by providers
+     * @return True if the domain matches the domain with the wildcard
+     */
+    public static boolean domainMatchesWildcardDomain(IdentifierList consumerDomainList, IdentifierList providerDomainList) {
+        if (consumerDomainList == null || providerDomainList == null) {
+            return consumerDomainList == null && providerDomainList == null;
+        }
 
-            for (int i = 0; i <= providerDomain.size() - consumerDomain.size() + 2; i++) {
-                boolean matched = true;
-                for (int j = 0; j < consumerDomain.size() - 2; j++) {
-                    if (!providerDomain.get(i + j).getValue().equals(consumerDomain.get(j + 1).getValue())) {
-                        matched = false;
-                        break;
-                    }
-                }
+        boolean matched = false;
+        String firstDomain = consumerDomainList.get(0).getValue();
+        String lastDomain = consumerDomainList.get(consumerDomainList.size() - 1).getValue();
+        
+        if ("*".equals(firstDomain) && "*".equals(lastDomain)) {  // *.B.*
+            if (consumerDomainList.size() > providerDomainList.size() + 2) {
+                return false;
+            }
+            
+            for (int i = 0; i <= providerDomainList.size() - consumerDomainList.size() + 2; i++) {
+                matched = innerDomainMatchesWildcardDomain(consumerDomainList, providerDomainList, 1, i, consumerDomainList.size() - 2);
                 if (matched) {
                     return true;
                 }
             }
-            return false;
-        } else if (!"*".equals(firstDomain) && !"*".equals(lastDomain)) { // A.B.C
-            if (consumerDomain.size() != providerDomain.size()) {
+        } else if (!"*".equals(firstDomain) && !"*".equals(lastDomain)) { // A.B.C or A.B.*.C
+            if (consumerDomainList.size() != providerDomainList.size()) {
                 return false;
             }
-
-            for (int i = 0; i < consumerDomain.size(); i++) {
-                if (!consumerDomain.get(i).getValue().equals(providerDomain.get(i).getValue())) {
-                    return false;
-                }
-            }
+            matched = innerDomainMatchesWildcardDomain(consumerDomainList, providerDomainList, 0, 0, consumerDomainList.size());
         } else {
-            if (consumerDomain.size() > providerDomain.size() + 1) {
+            if (consumerDomainList.size() > providerDomainList.size() + 1) {
                 return false;
             }
 
             if ("*".equals(lastDomain)) { // A.B.*
-                for (int i = 0; i < consumerDomain.size() - 1; i++) {
-                    if (!consumerDomain.get(i).getValue().equals(providerDomain.get(i).getValue())) {
-                        return false;
-                    }
-                }
+                matched = innerDomainMatchesWildcardDomain(consumerDomainList, providerDomainList, 0, 0, consumerDomainList.size() - 1);
             } else if ("*".equals(firstDomain)) { //*.B.C
-                int i = consumerDomain.size() - 1;
-                int j = providerDomain.size() - 1;
+                int i = consumerDomainList.size() - 1;
+                int j = providerDomainList.size() - 1;
                 for (; i >= 1; i--, j--) {
-                    if (!consumerDomain.get(i).getValue().equals(providerDomain.get(j).getValue())) {
+                    String consumerDomain = consumerDomainList.get(i).getValue();
+                    String providerDomain = providerDomainList.get(j).getValue();
+                    if (!"*".equals(consumerDomain) && !consumerDomain.equals(providerDomain)) {
                         return false;
-                    }
+                    }                    
                 }
+                matched = true;
             }
-
         }
 
-        return true;
+        return matched;
     }
 }

@@ -409,7 +409,6 @@ public class BrokerMatcherTest {
         assertEquals(expResult, result);
     }
 
-    /*
     @Test
     public void testDomainMatchesWildcardDomain_6_1() {
         System.out.println("domainMatchesWildcardDomain: myconstellation.*.obc_1.app_1 and myconstellation.spacecraft_1.obc_1.app_1 matching");
@@ -429,7 +428,6 @@ public class BrokerMatcherTest {
         boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
         assertEquals(expResult, result);
     }
-     */
 
     @Test
     public void testDomainMatchesWildcardDomain_6_2() {
@@ -471,7 +469,7 @@ public class BrokerMatcherTest {
         assertEquals(expResult, result);
     }
 
-    /*
+
     @Test
     public void testDomainMatchesWildcardDomain_6_4() {
         System.out.println("domainMatchesWildcardDomain: myconstellation.*.*.app_1 and myconstellation.spacecraft_1.obc_2.app_1 matching");
@@ -491,7 +489,7 @@ public class BrokerMatcherTest {
         boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
         assertEquals(expResult, result);
     }
-     */
+
     @Test
     public void testDomainMatchesWildcardDomain_6_5() {
         System.out.println("domainMatchesWildcardDomain: myconstellation.*.*.app_1 and myconstellation.spacecraft_1.obc_2.app_2 matching");
@@ -512,4 +510,127 @@ public class BrokerMatcherTest {
         assertEquals(expResult, result);
     }
 
+    @Test
+    public void testDomainMatchesWildcardDomain_6_6() {
+        System.out.println("domainMatchesWildcardDomain: *.spacecraft_1.*.app_1 and myconstellation.spacecraft_1.obc_2.app_1 matching");
+        IdentifierList consumerDomain = new IdentifierList();
+        consumerDomain.add(new Identifier("*"));
+        consumerDomain.add(new Identifier("spacecraft_1"));
+        consumerDomain.add(new Identifier("*"));
+        consumerDomain.add(new Identifier("app_1"));
+
+        IdentifierList providerDomain = new IdentifierList();
+        providerDomain.add(new Identifier("myconstellation"));
+        providerDomain.add(new Identifier("spacecraft_1"));
+        providerDomain.add(new Identifier("obc_2"));
+        providerDomain.add(new Identifier("app_1"));
+
+        boolean expResult = true;
+        boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testDomainMatchesWildcardDomain_6_7() {
+        System.out.println("domainMatchesWildcardDomain: *.spacecraft_1.*.app_1 and myconstellation.spacecraft_1.obc_2.app_2 matching");
+        IdentifierList consumerDomain = new IdentifierList();
+        consumerDomain.add(new Identifier("*"));
+        consumerDomain.add(new Identifier("spacecraft_1"));
+        consumerDomain.add(new Identifier("*"));
+        consumerDomain.add(new Identifier("app_1"));
+
+        IdentifierList providerDomain = new IdentifierList();
+        providerDomain.add(new Identifier("myconstellation"));
+        providerDomain.add(new Identifier("spacecraft_1"));
+        providerDomain.add(new Identifier("obc_2"));
+        providerDomain.add(new Identifier("app_2"));
+
+        boolean expResult = false;
+        boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testDomainMatchesWildcardDomain_6_8() {
+        System.out.println("domainMatchesWildcardDomain: myconstellation.*.obc_2.* and myconstellation.spacecraft_1.obc_2.app_2 matching");
+        IdentifierList consumerDomain = new IdentifierList();
+        consumerDomain.add(new Identifier("myconstellation"));
+        consumerDomain.add(new Identifier("*"));
+        consumerDomain.add(new Identifier("obc_2"));
+        consumerDomain.add(new Identifier("*"));
+
+        IdentifierList providerDomain = new IdentifierList();
+        providerDomain.add(new Identifier("myconstellation"));
+        providerDomain.add(new Identifier("spacecraft_1"));
+        providerDomain.add(new Identifier("obc_2"));
+        providerDomain.add(new Identifier("app_2"));
+
+        boolean expResult = true;
+        boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
+        assertEquals(expResult, result);
+    }   
+
+    @Test
+    public void testDomainMatchesWildcardDomain_6_9() {
+        System.out.println("domainMatchesWildcardDomain: myconstellation.*.obc_2.* and myconstellation.spacecraft_1.obc_1.app_2 matching");
+        IdentifierList consumerDomain = new IdentifierList();
+        consumerDomain.add(new Identifier("myconstellation"));
+        consumerDomain.add(new Identifier("*"));
+        consumerDomain.add(new Identifier("obc_2"));
+        consumerDomain.add(new Identifier("*"));
+
+        IdentifierList providerDomain = new IdentifierList();
+        providerDomain.add(new Identifier("myconstellation"));
+        providerDomain.add(new Identifier("spacecraft_1"));
+        providerDomain.add(new Identifier("obc_1"));
+        providerDomain.add(new Identifier("app_2"));
+
+        boolean expResult = false;
+        boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testDomainMatchesWildcardDomain_6_10() {
+        System.out.println("domainMatchesWildcardDomain: *.spacecraft_1.*.app_1.* and myconstellation.spacecraft_1.obc_1.app_1.param_1 matching");
+        IdentifierList consumerDomain = new IdentifierList();
+        consumerDomain.add(new Identifier("*"));
+        consumerDomain.add(new Identifier("spacecraft_1"));
+        consumerDomain.add(new Identifier("*"));
+        consumerDomain.add(new Identifier("app_1"));
+        consumerDomain.add(new Identifier("*"));
+
+        IdentifierList providerDomain = new IdentifierList();
+        providerDomain.add(new Identifier("myconstellation"));
+        providerDomain.add(new Identifier("spacecraft_1"));
+        providerDomain.add(new Identifier("obc_1"));
+        providerDomain.add(new Identifier("app_1"));
+        providerDomain.add(new Identifier("param_1"));
+
+        boolean expResult = true;
+        boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
+        assertEquals(expResult, result);
+    } 
+
+    @Test
+    public void testDomainMatchesWildcardDomain_6_11() {
+        System.out.println("domainMatchesWildcardDomain: *.spacecraft_1.*.app_1.* and myconstellation.spacecraft_1.obc_1.app_2.param_1 matching");
+        IdentifierList consumerDomain = new IdentifierList();
+        consumerDomain.add(new Identifier("*"));
+        consumerDomain.add(new Identifier("spacecraft_1"));
+        consumerDomain.add(new Identifier("*"));
+        consumerDomain.add(new Identifier("app_1"));
+        consumerDomain.add(new Identifier("*"));
+
+        IdentifierList providerDomain = new IdentifierList();
+        providerDomain.add(new Identifier("myconstellation"));
+        providerDomain.add(new Identifier("spacecraft_1"));
+        providerDomain.add(new Identifier("obc_1"));
+        providerDomain.add(new Identifier("app_2"));
+        providerDomain.add(new Identifier("param_1"));
+
+        boolean expResult = false;
+        boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
+        assertEquals(expResult, result);
+    }     
 }
