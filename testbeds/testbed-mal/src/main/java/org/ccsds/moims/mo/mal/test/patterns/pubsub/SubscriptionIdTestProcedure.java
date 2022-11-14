@@ -91,11 +91,14 @@ public class SubscriptionIdTestProcedure extends LoggingBase
             HeaderTestProcedure.NETWORK_ZONE,
             SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
 
+    IdentifierList keyNames = new IdentifierList();
+    keyNames.add(Helper.key1);
+    
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister =
             new TestPublishRegister(QOS_LEVEL, PRIORITY,
             HeaderTestProcedure.DOMAIN,
-            HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, null,
+            HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, keyNames,
              expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
 
@@ -129,7 +132,8 @@ public class SubscriptionIdTestProcedure extends LoggingBase
     logMessage("SubscriptionIdTestProcedure.publish()");
     
     UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList("value")));
+    updateHeaderList.add(new UpdateHeader(new Identifier("source"), 
+            HeaderTestProcedure.DOMAIN, new AttributeList("value")));
 
     TestUpdateList updateList = new TestUpdateList();
     updateList.add(new TestUpdate(0));
