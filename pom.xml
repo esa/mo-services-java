@@ -57,7 +57,6 @@
         <module>bindings</module>
         <module>tooling</module>
         <module>support-libs</module>
-        <module>testbeds</module>
         <!--<module>testbeds</module> -->
     </modules>
 </project>

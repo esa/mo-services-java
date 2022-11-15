@@ -750,7 +750,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      */
     protected String getLocalName(String localName, final java.util.Map properties) {
         if ((null == localName) || (0 == localName.length())) {
-            localName = String.valueOf(RANDOM_NAME.nextInt() & Integer.MAX_VALUE); // zero out the sign bit
+            localName = String.valueOf(RANDOM_NAME.nextInt() & Integer.MAX_VALUE); // setting sign bit as zero
         }
 
         return localName;
