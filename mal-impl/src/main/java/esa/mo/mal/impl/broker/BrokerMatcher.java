@@ -213,13 +213,14 @@ public class BrokerMatcher {
     }
 
     /**
-     *
-     * @param consumerDomainList The list of domains subscribed by consumers, it can
+     * Checks if the provided domain matches the subscribed domain without wildcard in prefix or suffix
+     * 
+     * @param consumerDomainList The list of domains subscribed by consumers, it can contain wildcard
      * @param providerDomainList The list of domains provided by providers
      * @param consumerStartIndex The start index of consumerDomainList
      * @param providerStartIndex The start index of providerDomainList
      * @param size The length to be matched
-     * @return
+     * @return True if the domain matches the domain with the wildcard
      */
     public static boolean innerDomainMatchesWildcardDomain(IdentifierList consumerDomainList, IdentifierList providerDomainList,
             int consumerStartIndex, int providerStartIndex, int size) {
@@ -236,8 +237,7 @@ public class BrokerMatcher {
     /**
      * Checks if the provided domain matches the subscribed domain
      *
-     * @param consumerDomainList The list of domains subscribed by consumers, it can
-     * contain wildcard
+     * @param consumerDomainList The list of domains subscribed by consumers, it can contain wildcard
      * @param providerDomainList The list of domains provided by providers
      * @return True if the domain matches the domain with the wildcard
      */
