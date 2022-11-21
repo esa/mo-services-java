@@ -499,6 +499,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     ipTest = ipTestConsumer.getStub();
 
     AttributeList keyValues = new AttributeList(HeaderTestProcedure.WRONG_ENTITY_KEY);
+    keyValues.add(new Identifier("myvalu"));
     UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"), HeaderTestProcedure.getDomain(domain), keyValues);
     TestUpdate update = new TestUpdate(new Integer(1));
     
@@ -519,11 +520,14 @@ public class HeaderTestProcedureImpl extends LoggingBase
     cc.setPublishTimeStamp(new Time(System.currentTimeMillis()));
     
     UInteger errorCode = MALHelper.UNKNOWN_ERROR_NUMBER;
-    AttributeList failedKeyValues = new AttributeList(HeaderTestProcedure.WRONG_ENTITY_KEY);
+    // AttributeList failedKeyValues = new AttributeList(HeaderTestProcedure.WRONG_ENTITY_KEY);
+    // failedKeyValues.add(new Identifier("myvalu"));
+    // Failed entitykeys should be null because the 
+    // extra information no longer exists in the new book!
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY, 
         HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, 
             sessionName, false, updateHeaders, updates, keyValues, errorCode,
-        Boolean.FALSE, failedKeyValues);
+        Boolean.FALSE, null);
     ipTest.publishUpdates(testPublishUpdate);
 
     return true;
