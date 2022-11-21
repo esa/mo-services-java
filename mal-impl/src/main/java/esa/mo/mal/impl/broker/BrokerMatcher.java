@@ -299,12 +299,8 @@ public class BrokerMatcher {
     /**
      * Checks if the provided domain matches the subscribed domain
      *
-<<<<<<< Updated upstream
-     * @param consumerDomainList The list of domains subscribed by consumers, it can contain wildcard
-=======
      * @param consumerDomainList The list of domains subscribed by consumers, it
      * can contain wildcard
->>>>>>> Stashed changes
      * @param providerDomainList The list of domains provided by providers
      * @return True if the domain matches the domain with the wildcard
      */

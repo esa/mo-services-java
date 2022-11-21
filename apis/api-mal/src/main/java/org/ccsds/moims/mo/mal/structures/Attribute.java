@@ -363,10 +363,9 @@ public interface Attribute extends Element {
             throw new IllegalArgumentException("Obj must not be null");
         }
 
-        // sft means: Short Form Part
-        Integer sft = obj.getTypeShortForm();
+        Integer sft = obj.getTypeShortForm(); // sft: Short Form Type
 
-        // Identifier, String, URI
+        // Check if: Identifier, String, URI
         return (sft == 6) || (sft == 15) || (sft == 18);
     }
 }
