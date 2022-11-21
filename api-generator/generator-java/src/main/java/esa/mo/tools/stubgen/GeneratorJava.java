@@ -323,9 +323,22 @@ public class GeneratorJava extends GeneratorLangs {
         // create initial size contructor
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, listName,
                 createCompositeElementsDetails(file, false, "initialCapacity",
-                        TypeUtils.createTypeReference(null, null, "int", false), false, false, "initialCapacity the required initial capacity."),
+                        TypeUtils.createTypeReference(null, null, "int", false), 
+                        false, false, "initialCapacity the required initial capacity."),
                 true, null, "Constructor that initialises the capacity of the list.", null);
         method.addMethodCloseStatement();
+
+        // create contructor with ArrayList 
+        method = file.addConstructor(StdStrings.PUBLIC, listName,
+                createCompositeElementsDetails(file, false, "elementList",
+                        TypeUtils.createTypeReference(null, null, "java.util.ArrayList<" + fqSrcTypeName + ">", false), 
+                        false, false, "The ArrayList that is used for initialization."),
+                false, null, "Constructor that uses an ArrayList for initialization.", null);
+        method.addMethodStatement("for(" + fqSrcTypeName + " element : elementList)", false);
+        method.addMethodStatement("{", false);
+        method.addMethodStatement("    super.add(element)");
+        method.addMethodStatement("}", false);
+        method.addMethodCloseStatement();        
 
         List<CompositeField> argList = new LinkedList<>();
         argList.add(createCompositeElementsDetails(file, true, "element", srcType, true, true, "List element."));
@@ -549,7 +562,7 @@ public class GeneratorJava extends GeneratorLangs {
 
         return ele;
     }
-
+   
     @Override
     protected void addServiceConstructor(MethodWriter method, String serviceVar, String serviceVersion, ServiceSummary summary) throws IOException {
         String opCall = serviceVar + "_SERVICE.addOperation(";
@@ -800,7 +813,49 @@ public class GeneratorJava extends GeneratorLangs {
             }
             file.append(addFileStatement(1, buf.toString(), true));
         }
+        
+        @Override
+        public void addClassVariableNewInit(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, String initialValue, boolean isNewInit) throws IOException {
+            addMultilineComment(1, false, arg.getComment(), false);
 
+            StringBuilder buf = new StringBuilder(scope);
+            buf.append(" ");
+            if (isStatic) {
+                buf.append("static ");
+            }
+            if (isFinal) {
+                buf.append("final ");
+            }
+            String ltype = createLocalType(arg);
+            buf.append(ltype);
+            if (isArray) {
+                buf.append("[]");
+            }
+            buf.append(" ");
+            buf.append(arg.getFieldName());
+
+            if (null != initialValue) {
+                if (isArray) {
+                    buf.append(" = {").append(initialValue).append("}");
+                } 
+                else if(!isNewInit){
+                    buf.append(" = ").append(initialValue);
+                }
+                else if (isNativeType(arg.getTypeName())) {
+                    NativeTypeDetails dets = getNativeType(arg.getTypeName());
+                    if (dets.isObject()) {
+                        buf.append(" = new ").append(ltype).append(initialValue);
+                    } else {
+                        buf.append(" = ").append(initialValue);
+                    }
+                } else {
+                    buf.append(" = new ").append(ltype).append(initialValue);
+                }
+            }
+
+            file.append(addFileStatement(1, buf.toString(), true));
+        }
+        
         @Override
         public void addStaticConstructor(String returnType, String methodName, String args, String constructorCall) throws IOException {
         }
