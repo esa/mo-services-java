@@ -54,7 +54,7 @@ public class HeaderTestProcedure extends LoggingBase
   public static final UInteger PRIORITY = new UInteger(1);
   public static final Identifier RIGHT_ENTITY_KEY = new Identifier("A");
   public static final Identifier WRONG_ENTITY_KEY = new Identifier("B");
-  public static final Identifier PUBLISH_REGISTER_ERROR_ENTITY_KEY = new Identifier("PublishRegisterErrorEntity");
+  public static final Identifier PUBLISH_REGISTER_ERROR_KEY_VALUE = new Identifier("PublishRegisterErrorEntity");
   public static final Identifier SUBSCRIPTION_ID = new Identifier("sub1");
   public static final Identifier REGISTER_ERROR_SUBSCRIPTION_ID = new Identifier("RegisterErrorSubscription");
   private static HeaderTestProcedureImpl realInstance = null;

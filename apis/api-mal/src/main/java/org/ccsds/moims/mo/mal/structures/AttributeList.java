@@ -20,13 +20,16 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import java.util.ArrayList;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
- * The Attributes list.
- *
+ * The Attributes list. The added and removed objects to this class might or
+ * might not be wrapped in a Union type. It is the responsibility of this class
+ * to be able to handle each case when trying to encode and when passing the
+ * values to the user.
  */
 public class AttributeList extends java.util.ArrayList<Object> implements Element {
 
@@ -80,6 +83,20 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
     @Override
     public Object get(int index) {
         return Attribute.attribute2JavaType(super.get(index));
+    }
+
+    /**
+     * Returns a list with all Attributes in this object. It casts them to MO
+     * Attribute type when necessary.
+     *
+     * @return The list of Attributes wrapped in a Union type when it is needed.
+     */
+    public ArrayList<Attribute> getAsAttributes() {
+        ArrayList<Attribute> attributes = new ArrayList<>();
+        for (Object obj : this) {
+            attributes.add((Attribute) Attribute.javaType2Attribute(obj));
+        }
+        return attributes;
     }
 
     @Override

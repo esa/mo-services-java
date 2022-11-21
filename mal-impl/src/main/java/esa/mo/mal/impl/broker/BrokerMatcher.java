@@ -107,13 +107,75 @@ public class BrokerMatcher {
     }
 
     /**
-     * Compares two String sub-keys taking into account wildcard values.
+     * Compares two Attribute Key Values taking into account wildcard values.
+     *
+     * @param consumer The consumer key value.
+     * @param provider The provider key value.
+     * @return True if they match or one is the wildcard.
+     */
+    public static boolean matchKeyValues(final Attribute consumer, final Attribute provider) {
+        boolean consumerIsNull = (consumer == null);
+        boolean providerIsNull = (provider == null);
+        
+        // Easiest case: both are null
+        if (consumerIsNull && providerIsNull) {
+            return true;
+        }
+
+        // Check if we have a Wildcard on the consumer subscription...
+        if (!consumerIsNull && Attribute.isStringAttribute(consumer)) {
+            String str = HelperAttributes.attribute2string(consumer);
+            // Check the asterisk case
+            if (ALL_ID.equals(str)) {
+                return true;
+            }
+        } else {
+            // Check the zero case for numbers
+            if ((consumer instanceof Union) && ((Union) consumer).isZero()) {
+                return true;
+            }
+        }
+        
+        // If one of them is null, then it is false.. the wildcard cases are covered above
+        if (consumerIsNull) {
+            return false;
+        }
+
+        // Are we handling strings?
+        if (HelperMisc.isStringAttribute(consumer) && HelperMisc.isStringAttribute(provider)) {
+            String first = HelperAttributes.attribute2string(consumer);
+            String second = HelperAttributes.attribute2string(provider);
+            return first.equals(second);
+        }
+
+        // Are we not handling strings?
+        if (!HelperMisc.isStringAttribute(consumer) && !HelperMisc.isStringAttribute(provider)) {
+            if ((consumer instanceof Union) || (provider instanceof Union)) {
+                // Sometimes the nulls are wrapped in a Union type!
+                // We need to check that...
+                if (((Union) consumer).isNull() || ((Union) provider).isNull()) {
+                    return true;
+                }
+            }
+
+            Object first = HelperAttributes.attribute2JavaType(consumer);
+            Object second = HelperAttributes.attribute2JavaType(provider);
+            return first.equals(second);
+        }
+
+        // Weird case with different data types:
+        return consumer.equals(provider);
+    }
+
+    /**
+     * Compares two Attribute Key Values taking into account wildcard values.
      *
      * @param myKeyPart The first key part.
      * @param theirKeyPart The second key part.
      * @return True if they match or one is the wildcard.
      */
-    public static boolean matchedSubkeyWithWildcard(final Attribute myKeyPart, final Attribute theirKeyPart) {
+    /*
+    public static boolean matchKeyValues(final Attribute myKeyPart, final Attribute theirKeyPart) {
         if ((myKeyPart == null) || (theirKeyPart == null)) {
             return true;
         }
@@ -148,7 +210,7 @@ public class BrokerMatcher {
 
         return myKeyPart.equals(theirKeyPart);
     }
-
+     */
     /**
      * Compares two String sub-keys taking into account wildcard values. This
      * method is deprecated because it was being used before we changed to MO
@@ -233,11 +295,16 @@ public class BrokerMatcher {
         }
         return true;
     }
-    
+
     /**
      * Checks if the provided domain matches the subscribed domain
      *
+<<<<<<< Updated upstream
      * @param consumerDomainList The list of domains subscribed by consumers, it can contain wildcard
+=======
+     * @param consumerDomainList The list of domains subscribed by consumers, it
+     * can contain wildcard
+>>>>>>> Stashed changes
      * @param providerDomainList The list of domains provided by providers
      * @return True if the domain matches the domain with the wildcard
      */
@@ -249,12 +316,12 @@ public class BrokerMatcher {
         boolean matched = false;
         String firstDomain = consumerDomainList.get(0).getValue();
         String lastDomain = consumerDomainList.get(consumerDomainList.size() - 1).getValue();
-        
+
         if ("*".equals(firstDomain) && "*".equals(lastDomain)) {  // *.B.*
             if (consumerDomainList.size() > providerDomainList.size() + 2) {
                 return false;
             }
-            
+
             for (int i = 0; i <= providerDomainList.size() - consumerDomainList.size() + 2; i++) {
                 matched = innerDomainMatchesWildcardDomain(consumerDomainList, providerDomainList, 1, i, consumerDomainList.size() - 2);
                 if (matched) {
@@ -281,7 +348,7 @@ public class BrokerMatcher {
                     String providerDomain = providerDomainList.get(j).getValue();
                     if (!"*".equals(consumerDomain) && !consumerDomain.equals(providerDomain)) {
                         return false;
-                    }                    
+                    }
                 }
                 matched = true;
             }

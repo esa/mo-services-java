@@ -60,7 +60,7 @@ public class SubscriptionAreaTestProcedure extends LoggingBase
 
   public static final Identifier SUBSCRIPTION_ID = new Identifier(
       "EntityRequestSubscription");
-  public static final Identifier ENTITY_A = new Identifier("A");
+  public static final Identifier KEY_VALUE_A = new Identifier("A");
   public static final Long ALL_IDS = new Long(0);
 
   private IPTestStub ipTest;
@@ -99,7 +99,7 @@ public class SubscriptionAreaTestProcedure extends LoggingBase
     logMessage("SubscriptionAreaTestProcedure.subscribeToAllAreasAndExpectedNotifyFromOtherServices("
         + allAreas + ")");
     
-    AttributeList values = new AttributeList(ENTITY_A);
+    AttributeList values = new AttributeList(KEY_VALUE_A);
     SubscriptionFilterList list = new SubscriptionFilterList();
     list.add(new SubscriptionFilter(Helper.key1, values));
     Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN,

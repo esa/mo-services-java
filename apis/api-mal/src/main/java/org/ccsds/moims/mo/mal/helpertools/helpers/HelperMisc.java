@@ -326,7 +326,7 @@ public class HelperMisc {
     }
 
     /**
-     * Checks if an attribute is an Identifier, String or URI MAL data type
+     * Checks if an attribute is an Identifier, String or URI MAL data type.
      *
      * @param obj The attribute
      * @return True if the object can be read as a string

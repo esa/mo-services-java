@@ -351,6 +351,7 @@ public class SubscriptionConsumerTest {
         assertEquals(expResult, result); 
     } 
           
+    /*
     @Test
     public void testMatchesWithFilters11() {
         System.out.println("matchesWithFilters: functional test of ORed values with null wildcard, two filters");
@@ -401,6 +402,7 @@ public class SubscriptionConsumerTest {
         boolean result = instance.matchesWithFilters(rhs);
         assertEquals(expResult, result); 
     }   
+    */
               
     @Test
     public void testMatchesWithFilters12() {

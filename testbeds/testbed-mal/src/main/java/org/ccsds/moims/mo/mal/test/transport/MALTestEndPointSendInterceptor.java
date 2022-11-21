@@ -71,7 +71,7 @@ public class MALTestEndPointSendInterceptor implements TestEndPointSendIntercept
           MALPublishRegisterBody publishRegisterBody = (MALPublishRegisterBody) msg.getBody();
 
           IdentifierList keyNames = publishRegisterBody.getSubscriptionKeyNames();
-          if (keyNames.contains(HeaderTestProcedure.PUBLISH_REGISTER_ERROR_ENTITY_KEY))
+          if (keyNames.contains(HeaderTestProcedure.PUBLISH_REGISTER_ERROR_KEY_VALUE))
           {
             MALMessageHeader errorHeader = TestEndPoint.createErrorHeader(msg.getHeader(),
                     FileBasedDirectory.loadSharedBrokerAuthenticationId(),

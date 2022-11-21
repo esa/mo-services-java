@@ -262,7 +262,7 @@ public interface Attribute extends Element {
 
     // ONE_MILLION is used by the Time and FineTime classes
     public final static long ONE_MILLION = 1000000;
-    
+
     /**
      * Converts a Java data type into a MAL data type if possible
      *
@@ -351,4 +351,22 @@ public interface Attribute extends Element {
         return obj;
     }
 
+    /**
+     * Checks if an attribute is an Identifier, String or URI MAL data type
+     *
+     * @param obj The attribute
+     * @return True if the object can be read as a string
+     * @throws java.lang.IllegalArgumentException If obj == null
+     */
+    public static boolean isStringAttribute(Attribute obj) throws IllegalArgumentException {
+        if (obj == null) {
+            throw new IllegalArgumentException("Obj must not be null");
+        }
+
+        // sft means: Short Form Part
+        Integer sft = obj.getTypeShortForm();
+
+        // Identifier, String, URI
+        return (sft == 6) || (sft == 15) || (sft == 18);
+    }
 }

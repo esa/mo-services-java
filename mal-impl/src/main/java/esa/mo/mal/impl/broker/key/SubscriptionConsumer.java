@@ -154,25 +154,21 @@ public final class SubscriptionConsumer {
             return true;
         }
 
-        // Iterate over all filters
+        // Iterate over all filters. Filter out the updates that don't matter
         for (SubscriptionFilter filter : filters) {
             // Iterate over all provided key value pairs
             for (NamedValue keyValue : updateMsg.getKeyValues()) {
                 if (!filter.getName().equals(keyValue.getName())) {
-                    continue; // This is not the key we want...
+                    continue; // This is not the key name that we want...
                 }
 
                 boolean matchedORed = false; //ORed
 
                 // We need to match at least one of the values!
-                for (Object value : filter.getValues()) {
+                for (Attribute value : filter.getValues().getAsAttributes()) {
                     // Keep looking until we find a match!
-                    Attribute att = (value instanceof Attribute)
-                            ? (Attribute) value
-                            : (Attribute) Attribute.javaType2Attribute(value);
-
-                    // if (value == null || value.equals(keyValue.getValue())) {
-                    if (value == null || BrokerMatcher.matchedSubkeyWithWildcard(att, keyValue.getValue())) {
+                    //if (value == null || value.equals(keyValue.getValue())) {
+                    if (BrokerMatcher.matchKeyValues(value, keyValue.getValue())) {
                         matchedORed = true;
                         break;
                     }

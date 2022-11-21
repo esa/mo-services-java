@@ -117,7 +117,7 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase
 
     SubscriptionFilterList filters = new SubscriptionFilterList();
     filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
-    Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+    Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null);
     
     listener = new MonitorListener();
     
