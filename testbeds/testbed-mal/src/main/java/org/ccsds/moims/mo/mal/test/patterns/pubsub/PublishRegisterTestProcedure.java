@@ -32,24 +32,20 @@
  *******************************************************************************/
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
-import java.util.ArrayList;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
-import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
@@ -81,8 +77,6 @@ public class PublishRegisterTestProcedure extends LoggingBase
   
   private boolean publishRegistered = false;
   
-  private AttributeList myKeys = new AttributeList();
-  
   public boolean useSharedBroker(String sharedBroker) throws Exception {
     LoggingBase.logMessage("PublishRegisterTestProcedure.useSharedBroker(" +
         sharedBroker + ')');
@@ -104,28 +98,14 @@ public class PublishRegisterTestProcedure extends LoggingBase
     publishRegistered = true;
     
     // Add the Key Names
-    ArrayList<AttributeList> entityKeyList = EntityRequestTestProcedure.parseEntityKeyList(entities);
-    myKeys = entityKeyList.get(0);
-    IdentifierList keyNames = new IdentifierList();
-    if(myKeys.get(0) != null) {
-        keyNames.add(Helper.key1);
-    }
-    if(myKeys.get(1) != null) {
-        keyNames.add(Helper.key2);
-    }
-    if(myKeys.get(2) != null) {
-        keyNames.add(Helper.key3);
-    }
-    if(myKeys.get(3) != null) {
-        keyNames.add(Helper.key4);
-    }
+    IdentifierList myKeys = EntityRequestTestProcedure.parseKeyNames(entities);
     
     UInteger expectedErrorCode = new UInteger(999);
     TestPublishRegister testPublishRegister = 
       new TestPublishRegister(QOS_LEVEL, PRIORITY, 
           HeaderTestProcedure.DOMAIN, 
           HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, 
-          keyNames, expectedErrorCode);
+          myKeys, expectedErrorCode);
     ipTest.publishRegister(testPublishRegister);
     
     return true;
@@ -136,36 +116,15 @@ public class PublishRegisterTestProcedure extends LoggingBase
         entityKeyValue + ',' + error + ')');
     listener.clear();
    
-    AttributeList parsed = EntityRequestTestProcedure.parseEntityKey(entityKeyValue);
+    AttributeList values = EntityRequestTestProcedure.parseKeyValues(entityKeyValue);
 
+    // Empty filters list because we don't want any filter
     SubscriptionFilterList filters = new SubscriptionFilterList();
-    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList((Attribute) Attribute.javaType2Attribute(parsed.get(0)))));
-    filters.add(new SubscriptionFilter(Helper.key2, new AttributeList((Attribute) Attribute.javaType2Attribute(parsed.get(1)))));
-    filters.add(new SubscriptionFilter(Helper.key3, new AttributeList((Attribute) Attribute.javaType2Attribute(parsed.get(2)))));
-    filters.add(new SubscriptionFilter(Helper.key4, new AttributeList((Attribute) Attribute.javaType2Attribute(parsed.get(3)))));
-    
     Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
     ipTest.monitorRegister(subscription, listener);
     
     boolean expectError = Boolean.parseBoolean(error);
 
-    AttributeList values = new AttributeList();
-
-    if(myKeys.size() == 4) {
-        if(myKeys.get(0) != null || parsed.get(0) != null) {
-            values.add(parsed.get(0));
-        }
-        if(myKeys.get(1) != null || parsed.get(1) != null) {
-            values.add(parsed.get(1));
-        }
-        if(myKeys.get(2) != null || parsed.get(2) != null) {
-            values.add(parsed.get(2));
-        }
-        if(myKeys.get(3) != null || parsed.get(3) != null) {
-            values.add(parsed.get(3));
-        }
-    }
-    
     UpdateHeaderList updateHeaders = new UpdateHeaderList();
     updateHeaders.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, values));
     
@@ -176,7 +135,8 @@ public class PublishRegisterTestProcedure extends LoggingBase
     AttributeList failedEntityKeys;
     if (expectError) {
       expectedErrorCode = MALHelper.UNKNOWN_ERROR_NUMBER;
-      failedEntityKeys = values;
+      // failedEntityKeys = values;
+      failedEntityKeys = null; // Needs to be set to null, because the failed keys are not passed
     } else {
       expectedErrorCode = new UInteger(999);
       failedEntityKeys = null;

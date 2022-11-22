@@ -39,6 +39,8 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -124,6 +126,11 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton
     
     UpdateHeaderList updateHeaderList = _TestPublishUpdate.getUpdateHeaders();
     TestUpdateList testUpdateList = _TestPublishUpdate.getUpdates();
+    
+    for (UpdateHeader updateHeader : updateHeaderList) {
+      updateHeader.setDomain(_TestPublishUpdate.getDomain());
+      updateHeader.setSource(new Identifier(""));
+    }
     
     publisher.publish(updateHeaderList, testUpdateList);
     publisher2.publish(updateHeaderList, testUpdateList);

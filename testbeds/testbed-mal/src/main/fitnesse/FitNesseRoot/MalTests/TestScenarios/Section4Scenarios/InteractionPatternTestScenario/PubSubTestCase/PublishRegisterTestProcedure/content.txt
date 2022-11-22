@@ -48,44 +48,45 @@ Finally it checks whether the provider receives a Publish Error or a Notify mess
 !*> Sub scenario definitions
 |scenario| publish register | shared |
 |ensure |use shared broker | @shared |
+|ensure |publish with entity | A | and expect error | true |
+|ensure |publish register with the entities | K1 |
+|ensure |publish with entity | A | and expect error | false |
+|ensure |publish with entity | A.2 | and expect error | true |
+|ensure |publish register with the entities | K1.K2 |
+|ensure |publish with entity | A | and expect error | true |
+|ensure |publish with entity | A.2 | and expect error | false |
+|ensure |publish with entity | A.2.3 | and expect error | true |
+|ensure |publish register with the entities | K1.K2.K3 |
+|ensure |publish with entity | A | and expect error | true |
+|ensure |publish with entity | A.2.3 | and expect error | false |
+|ensure |publish with entity | A.2.[null] | and expect error | false |
+|ensure |publish with entity | A.2.3.4 | and expect error | true |
+|ensure |publish with entity | Q.2.3.[null] | and expect error | true |
+|ensure |publish register with the entities | K1.K2 |
+|ensure |publish with entity | 1.[null].[null] | and expect error | true |
+|ensure |publish with entity | 1.[null] | and expect error | false |
+|ensure |publish with entity | 1.2.3.[null] | and expect error | true |
+|ensure |publish with entity | 1.2.3.4 | and expect error | true |
+|ensure |publish with entity | Q.2.3.[null] | and expect error | true |
+|ensure |publish register with the entities | K1.K2.K3 |
 |ensure |publish with entity | A.[null].[null].[null] | and expect error | true |
-|ensure |publish register with the entities | A.[null].[null].[null] |
+|ensure |publish with entity | A.2.[null] | and expect error | false |
+|ensure |publish with entity | A.B.3 | and expect error | false |
+|ensure |publish with entity | A.2.3.4 | and expect error | true |
+|ensure |publish with entity | 0.0.W.0 | and expect error | true |
+|ensure |publish with entity | Q.2.3.[null] | and expect error | true |
+|ensure |publish register with the entities | K1.K2.K3 |
+|ensure |publish with entity | [null].*.[null] | and expect error | false |
+|ensure |publish with entity | [null].A.2 | and expect error | false |
+|ensure |publish with entity | *.2.3 | and expect error | false |
+|ensure |publish with entity | *.*.* | and expect error | false |
+|ensure |publish with entity | 0.0.0 | and expect error | false |
+|ensure |publish register with the entities | K1.K2.K3.K4 |
 |ensure |publish with entity | A.[null].[null].[null] | and expect error | false |
-|ensure |publish with entity | A.2.[null].[null] | and expect error | true |
-|ensure |publish register with the entities | A.*.[null].[null] |
-|ensure |publish with entity | A.[null].[null].[null] | and expect error | false |
 |ensure |publish with entity | A.2.[null].[null] | and expect error | false |
-|ensure |publish with entity | A.2.3.[null] | and expect error | true |
-|ensure |publish register with the entities | A.*.*.* |
-|ensure |publish with entity | A.[null].[null].[null] | and expect error | false |
-|ensure |publish with entity | A.2.[null].[null] | and expect error | false |
-|ensure |publish with entity | A.2.3.[null] | and expect error | false |
-|ensure |publish with entity | A.2.3.4 | and expect error | false |
-|ensure |publish with entity | Q.2.3.[null] | and expect error | true |
-|ensure |publish register with the entities | A.2.[null].[null] |
-|ensure |publish with entity | A.[null].[null].[null] | and expect error | true |
-|ensure |publish with entity | A.2.[null].[null] | and expect error | false |
-|ensure |publish with entity | A.2.3.[null] | and expect error | true |
-|ensure |publish with entity | A.2.3.4 | and expect error | true |
-|ensure |publish with entity | Q.2.3.[null] | and expect error | true |
-|ensure |publish register with the entities | A.2.*.[null] |
-|ensure |publish with entity | A.[null].[null].[null] | and expect error | true |
-|ensure |publish with entity | A.2.[null].[null] | and expect error | false |
-|ensure |publish with entity | A.2.3.[null] | and expect error | false |
-|ensure |publish with entity | A.2.3.4 | and expect error | true |
-|ensure |publish with entity | Q.2.3.[null] | and expect error | true |
-|ensure |publish register with the entities | *.2.*.[null] |
-|ensure |publish with entity | A.[null].[null].[null] | and expect error | true |
-|ensure |publish with entity | A.2.[null].[null] | and expect error | false |
-|ensure |publish with entity | A.2.3.[null] | and expect error | false |
-|ensure |publish with entity | A.2.3.4 | and expect error | true |
-|ensure |publish with entity | Q.2.3.[null] | and expect error | false |
-|ensure |publish register with the entities | B.*.*.* |
-|ensure |publish with entity | A.[null].[null].[null] | and expect error | true |
-|ensure |publish with entity | A.2.[null].[null] | and expect error | true |
-|ensure |publish with entity | A.2.3.[null] | and expect error | true |
-|ensure |publish with entity | A.2.3.4 | and expect error | true |
-|ensure |publish with entity | Q.2.3.[null] | and expect error | true |
+|ensure |publish with entity | A | and expect error | true |
+|ensure |publish with entity | A.2.3 | and expect error | true |
+|ensure |publish with entity | *.2.3.[null] | and expect error | false |
 |ensure |publish with entity | B.[null].[null].[null] | and expect error | false |
 |ensure |publish deregister |
 ***********!

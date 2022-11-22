@@ -131,6 +131,24 @@ public class EntityRequestTestProcedure extends LoggingBase
     return k;
   }
   
+  public static AttributeList parseKeyValues(String s) {
+    StringTokenizer st = new StringTokenizer(s, ".");
+    AttributeList k = new AttributeList();
+    while(st.hasMoreTokens()){
+       k.add(parseStringKeyValue(st.nextToken()));
+    }
+    return k;
+  }
+  
+  public static IdentifierList parseKeyNames(String s) {
+    StringTokenizer st = new StringTokenizer(s, ".");
+    IdentifierList k = new IdentifierList();
+    while(st.hasMoreTokens()){
+       k.add(parseStringKeyValue(st.nextToken()));
+    }
+    return k;
+  }
+  
   public static Identifier parseStringKeyValue(String s) {
     if (s.equals("[null]")) {
       return null;

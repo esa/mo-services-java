@@ -128,6 +128,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
    * @param session
    * @param sessionName
    * @param qos
+   * @param shared
    * @throws Exception
    */
   protected void initConsumer(int domain, SessionType session,
@@ -154,9 +155,10 @@ public class HeaderTestProcedureImpl extends LoggingBase
     
     ipTest = ipTestConsumer.getStub();
     UInteger errorCode = new UInteger(999);
+    IdentifierList keyNames = Helper.get1TestKey();
     TestPublishRegister testPublishRegister = new TestPublishRegister(qos, 
             HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), 
-            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, Helper.get1TestKey(), errorCode);
+            HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, keyNames, errorCode);
     ipTest.publishRegister(testPublishRegister);
     return true;
   }
@@ -199,7 +201,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     ipTest = ipTestConsumer.getStub();
 
     SubscriptionFilterList filters = new SubscriptionFilterList();
-    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_ENTITY_KEY)));
+    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME)));
     Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
     MonitorListener listener = new MonitorListener();
     
@@ -319,7 +321,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     ipTest = ipTestConsumer.getStub();
 
     IdentifierList d = HeaderTestProcedure.getDomain(domain);
-    AttributeList keyValues = new AttributeList(HeaderTestProcedure.RIGHT_ENTITY_KEY);
+    AttributeList keyValues = new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME);
 
     UpdateHeader updateHeader1 = new UpdateHeader(new Identifier("source"), d, keyValues);
     TestUpdate update1 = new TestUpdate(new Integer(1));
@@ -498,8 +500,8 @@ public class HeaderTestProcedureImpl extends LoggingBase
     
     ipTest = ipTestConsumer.getStub();
 
-    AttributeList keyValues = new AttributeList(HeaderTestProcedure.WRONG_ENTITY_KEY);
-    keyValues.add(new Identifier("myvalu"));
+    AttributeList keyValues = new AttributeList(HeaderTestProcedure.WRONG_KEY_NAME);
+    keyValues.add(new Identifier("OneMoreValueToForceUnknownError"));
     UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"), HeaderTestProcedure.getDomain(domain), keyValues);
     TestUpdate update = new TestUpdate(new Integer(1));
     
@@ -522,7 +524,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     UInteger errorCode = MALHelper.UNKNOWN_ERROR_NUMBER;
     // AttributeList failedKeyValues = new AttributeList(HeaderTestProcedure.WRONG_ENTITY_KEY);
     // failedKeyValues.add(new Identifier("myvalu"));
-    // Failed entitykeys should be null because the 
+    // Failed failedKeyValues should be null because the 
     // extra information no longer exists in the new book!
     TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY, 
         HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session, 
@@ -711,7 +713,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     ipTest = ipTestConsumer.getStub();
 
     SubscriptionFilterList filters = new SubscriptionFilterList();
-    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_ENTITY_KEY)));
+    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME)));
 
     Subscription subscription = new Subscription(
         HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
@@ -811,7 +813,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
 
     private MALStandardError monitorRegisterError;
 
-		@Override
+    @Override
     public synchronized void monitorRegisterAckReceived(MALMessageHeader msgHeader, Map qosProperties)
     {
       monitorRegisterAckHeader = msgHeader;
@@ -832,7 +834,6 @@ public class HeaderTestProcedureImpl extends LoggingBase
         Identifier subscriptionId, UpdateHeaderList updateHeaderList,
         TestUpdateList updateList, Map qosProperties)
     {
-      logMessage("monitorNotifyReceived: " + msgHeader);
       monitorNotifyHeader = msgHeader;
       monitorNotifyCond.set();
     }
