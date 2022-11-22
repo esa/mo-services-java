@@ -30,6 +30,7 @@ import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeInformation;
 import esa.mo.tools.stubgen.specification.TypeUtils;
+import esa.mo.tools.stubgen.specification.TypeUtils.TypeRef;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.InterfaceWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
@@ -1548,6 +1549,40 @@ public abstract class GeneratorLangs extends GeneratorBase {
             addServiceHelperOperationArgs(file, op, opArgs);
             CompositeField opInstVar = createCompositeElementsDetails(file, false, operationInstanceVar + "_OP", TypeUtils.createTypeReference(StdStrings.MAL, null, getOperationInstanceType(op), false), false, true, "Operation instance for operation " + operationInstanceVar);
             file.addClassVariable(true, true, StdStrings.PUBLIC, opInstVar, false, false, opArgs);
+
+            if (op.getPattern() == InteractionPatternEnum.PUBSUB_OP) {
+
+                StringBuilder arrayList = new StringBuilder("{");
+                PubSubOperationType lop = (PubSubOperationType) op.getOriginalOp();
+                AnyTypeReference subsKeys = lop.getMessages().getSubscriptionKeys();
+
+                if (null != subsKeys) {
+                    List<TypeRef> types = TypeUtils.getTypeListViaXSDAny(subsKeys.getAny());
+                    if (null != types && 0 != types.size()) {
+                        String prefix = "";
+                        for (TypeRef type : types) {
+                            if (type.isField()) {
+                                NamedElementReferenceWithCommentType field = type.getFieldRef();
+                                arrayList.append(prefix);
+                                prefix = ",";
+                                arrayList = arrayList.append("new org.ccsds.moims.mo.mal.structures.Identifier(\"").append(field.getName()).append("\")");
+                            }
+                        }
+                    }
+                }
+                arrayList.append("}");
+                
+                CompositeField _opKeyNamesVar = createCompositeElementsDetails(file, false, "_" + operationInstanceVar + "_OP_KEY_NAMES",
+                        TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.structures.Identifier []", false),
+                        false, false, "Key names instance for " + operationInstanceVar + " operation of pubsub interaction pattern");
+                file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, _opKeyNamesVar, false, false, arrayList.toString(), false);
+
+                CompositeField opKeyNamesVar = createCompositeElementsDetails(file, false, operationInstanceVar + "_OP_KEY_NAMES",
+                        TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.structures.IdentifierList", false),
+                        false, false, "Key names instance for " + operationInstanceVar + " operation of pubsub interaction pattern");
+                file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, opKeyNamesVar, false, false, 
+                        "new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(_" + operationInstanceVar + "_OP_KEY_NAMES)))", false);
+            }
         }
 
         // construct area helper class name and variable
