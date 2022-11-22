@@ -235,16 +235,24 @@ public class Union implements Attribute {
     public boolean isNull() {
         return (value == null);
     }
-    
+
     /**
      * Returns true if the value is zero.
      *
      * @return True if zero, false otherwise.
      */
     public boolean isZero() {
-        return (value != null) && value.equals(0);
+        if (value == null) {
+            return false;
+        }
+
+        if (value instanceof Long) { // Many cases! Should be fast!
+            value.equals(0L);
+        }
+
+        return "0".equals(String.valueOf(value));
     }
-    
+
     @Override
     public Long getShortForm() {
         return shortForm;

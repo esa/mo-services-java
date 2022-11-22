@@ -116,7 +116,7 @@ public class BrokerMatcher {
     public static boolean matchKeyValues(final Attribute consumer, final Attribute provider) {
         boolean consumerIsNull = (consumer == null);
         boolean providerIsNull = (provider == null);
-        
+
         // Easiest case: both are null
         if (consumerIsNull && providerIsNull) {
             return true;
@@ -129,7 +129,8 @@ public class BrokerMatcher {
             if (ALL_ID.equals(str)) {
                 return true;
             }
-        } else {
+        }
+        if (!consumerIsNull && !Attribute.isStringAttribute(consumer)) {
             // Check the zero case for numbers
             if ((consumer instanceof Union) && ((Union) consumer).isZero()) {
                 return true;
@@ -137,7 +138,7 @@ public class BrokerMatcher {
         }
         
         // If one of them is null, then it is false.. the wildcard cases are covered above
-        if (consumerIsNull) {
+        if (consumerIsNull || providerIsNull) {
             return false;
         }
 

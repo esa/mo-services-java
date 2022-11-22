@@ -100,9 +100,8 @@ class SimpleSubscriptionDetails {
         }
 
         final UpdateHeaderList notifyHeaders = new UpdateHeaderList();
-        List<NamedValue> providerKeyValues = new ArrayList<>();
 
-        for (int i = 0; i < updateHeaderList.size(); ++i) {
+        for (int i = 0; i < updateHeaderList.size(); i++) {
             AttributeList keyValues = updateHeaderList.get(i).getKeyValues();
 
             if (keyValues.size() != keyNames.size()) {
@@ -111,6 +110,8 @@ class SimpleSubscriptionDetails {
                         + "\nkeyNames: " + keyNames.toString()
                         + "\nkeyValues: " + keyValues.toString());
             }
+
+            List<NamedValue> providerKeyValues = new ArrayList<>();
 
             for (int j = 0; j < keyNames.size(); j++) {
                 Identifier name = keyNames.get(j);
