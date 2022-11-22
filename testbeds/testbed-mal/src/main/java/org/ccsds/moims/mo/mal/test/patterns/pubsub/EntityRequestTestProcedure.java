@@ -35,8 +35,6 @@ package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -47,7 +45,6 @@ import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
@@ -87,7 +84,7 @@ public class EntityRequestTestProcedure extends LoggingBase
     
     boolean shared = Boolean.parseBoolean(sharedBroker);
     
-    ArrayList<AttributeList> entityKeyList = parseEntityKeyList(entities);
+    ArrayList<AttributeList> entityKeyList = parseAllKeyValues(entities);
 
     ipTest = LocalMALInstance.instance().ipTestStub(
         HeaderTestProcedure.AUTHENTICATION_ID, 
@@ -115,26 +112,26 @@ public class EntityRequestTestProcedure extends LoggingBase
     return true;
   }
 
-  public static ArrayList<AttributeList> parseEntityKeyList(String s) {
-    ArrayList<AttributeList> entityKeyList = new ArrayList<>();
+  public static ArrayList<AttributeList> parseAllKeyValues(String s) {
+    ArrayList<AttributeList> allKeyValues = new ArrayList<>();
     StringTokenizer st = new StringTokenizer(s, " ,");
     while (st.hasMoreTokens()) {
-      entityKeyList.add(parseEntityKey(st.nextToken()));
+      allKeyValues.add(parse4KeyValues(st.nextToken()));
     }
-    return entityKeyList;
+    return allKeyValues;
   }
   
-  public static AttributeList parseEntityKey(String s) {
+  public static AttributeList parse4KeyValues(String s) {
     StringTokenizer st = new StringTokenizer(s, ".");
     AttributeList k = new AttributeList();
-    k.add(parseEntitySubKey(st.nextToken()));
-    k.add(parseEntitySubKey(st.nextToken()));
-    k.add(parseEntitySubKey(st.nextToken()));
-    k.add(parseEntitySubKey(st.nextToken()));
+    k.add(parseStringKeyValue(st.nextToken()));
+    k.add(parseNumberKeyValue(st.nextToken()));
+    k.add(parseNumberKeyValue(st.nextToken()));
+    k.add(parseNumberKeyValue(st.nextToken()));
     return k;
   }
   
-  public static Identifier parseEntitySubKey(String s) {
+  public static Identifier parseStringKeyValue(String s) {
     if (s.equals("[null]")) {
       return null;
     } else {
@@ -142,7 +139,7 @@ public class EntityRequestTestProcedure extends LoggingBase
     }
   }
   
-  public static Long parseSubKey(String s) {
+  public static Long parseNumberKeyValue(String s) {
     if (s.equals("[null]")) {
       return null;
     } else if (s.equals("*")) {
@@ -158,10 +155,8 @@ public class EntityRequestTestProcedure extends LoggingBase
     logMessage("EntityRequestTestProcedure.subscribeToPatternAndCheckExpectedEntities({" + 
         pattern + "},{" + expectedEntities + "})");
 
-    ArrayList<AttributeList> expectedKeyValues = parseEntityKeyList(expectedEntities);
-    //SubscriptionFilterList expectedKeyValues = parseKeyValueList(expectedEntities);   
-    
-    AttributeList values = parseEntityKey(pattern);
+    ArrayList<AttributeList> expectedKeyValues = parseAllKeyValues(expectedEntities);
+    AttributeList values = parse4KeyValues(pattern);
     
     SubscriptionFilterList filters = new SubscriptionFilterList();
     filters.add(new SubscriptionFilter(Helper.key1, new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(0)))));
@@ -217,23 +212,52 @@ public class EntityRequestTestProcedure extends LoggingBase
     return true;
   }
 
-    public void checkIsContainedInto(ArrayList<AttributeList> containedList, ArrayList<AttributeList> containerList, 
+    private void checkIsContainedInto(ArrayList<AttributeList> containedList, ArrayList<AttributeList> containerList, 
             AssertionList assertions, String procedureName, String info) {
+    // Print out the sizes of the lists!
+    logMessage("containedList.size() = " + containedList.size()
+        + "  --  containerList.size() = " + containerList.size());
+
     for (int i = 0; i < containedList.size(); i++) {
       AttributeList keyValues = containedList.get(i);
+      logMessage("containedList keyValues = " + keyValues.toString());
       
+      boolean found = false;
       for(int j = 0; j < containerList.size(); j++) {
-        for(int k = 0; k < keyValues.size(); k++) {
-            Object keyValueA = keyValues.get(k);
-            Object keyValueB = containerList.get(j).get(k);
-            boolean res = (keyValueA != null) ? keyValueA.equals(keyValueB) : (keyValueA == keyValueB);
-
-            assertions.add(new Assertion(procedureName, info + 
-                keyValueA + " == " + keyValueB + " ? -> Index: " + j, res));
+        if(valuesAreMatching(keyValues, containerList.get(j))) {
+            found = true;
         }
       }
+      
+      assertions.add(new Assertion(procedureName, info + 
+            " -> The keyValues were found in the container? ", found));
     }
   }
+    
+    private boolean valuesAreMatching(AttributeList listA, AttributeList listB){
+        if(listA.size() != listB.size()) {
+            return false;
+        }
+        
+        for(int i = 0; i < listA.size(); i++) {
+            Object valueA = listA.get(i);
+            Object valueB = listB.get(i);
+            
+            if(valueA == null) {
+                if(valueB == null) {
+                    continue; // Matched! continue checking the other values...
+                }else {
+                    return false;
+                }
+            }
+
+            if(!valueA.equals(valueB)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
   
   static class MonitorListener extends IPTestAdapter
   {
