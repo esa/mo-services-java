@@ -57,8 +57,8 @@ public class MALOperationStage {
             throw new IllegalArgumentException("Last element short forms argument must not be NULL");
         }
         this.number = number;
-        this.elementShortForms = Arrays.copyOf(elementShortForms, elementShortForms.length);
-        this.lastElementShortForms = Arrays.copyOf(lastElementShortForms, lastElementShortForms.length);
+        this.elementShortForms = elementShortForms;
+        this.lastElementShortForms = lastElementShortForms;
     }
 
     /**
