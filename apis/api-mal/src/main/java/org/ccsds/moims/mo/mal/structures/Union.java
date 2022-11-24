@@ -246,8 +246,9 @@ public class Union implements Attribute {
             return false;
         }
 
-        if (value instanceof Long) { // Many cases! Should be fast!
-            value.equals(0L);
+        // Long is expected to happen many times! Therefore should return fast!
+        if (value instanceof Long) {
+            return value.equals(0L);
         }
 
         return "0".equals(String.valueOf(value));
