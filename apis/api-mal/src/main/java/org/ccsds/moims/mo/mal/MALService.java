@@ -21,7 +21,6 @@
 package org.ccsds.moims.mo.mal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -37,11 +36,11 @@ public class MALService {
      * Number representing a non-existent service.
      */
     public static final UShort NULL_SERVICE_NUMBER = new UShort(0);
-    private static final MALOperation[] EMPTY_SET = new MALOperation[0];
+    private static final ArrayList<MALOperation> EMPTY_SET = new ArrayList<>();
     
     private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
     private final Map<String, MALOperation> operationsByName = new HashMap<>();
-    private final Map<Integer, MALOperation[]> operationsBySet = new HashMap<>();
+    private final Map<Integer, ArrayList<MALOperation>> operationsBySet = new HashMap<>();
     private final ArrayList<MALSendOperation> sendOperations = new ArrayList();
     private final ArrayList<MALSubmitOperation> submitOperations = new ArrayList();
     private final ArrayList<MALRequestOperation> requestOperations = new ArrayList();
@@ -175,8 +174,8 @@ public class MALService {
      * @param capabilitySet The capability set.
      * @return The set of operations or an empty array if not found.
      */
-    public MALOperation[] getOperationsByCapabilitySet(final int capabilitySet) {
-        final MALOperation[] rv = (MALOperation[]) operationsBySet.get(capabilitySet);
+    public ArrayList<MALOperation> getOperationsByCapabilitySet(final int capabilitySet) {
+        final ArrayList<MALOperation> rv = operationsBySet.get(capabilitySet);
         return ((null == rv) ? EMPTY_SET : rv);
     }
 
@@ -240,20 +239,13 @@ public class MALService {
         operationsByName.put(op.getName().getValue(), op);
         operationsByNumber.put(op.getNumber().getValue(), op);
 
-        MALOperation[] v = (MALOperation[]) operationsBySet.get(op.getCapabilitySet().getValue());
+        ArrayList<MALOperation> v = operationsBySet.get(op.getCapabilitySet().getValue());
 
         if (v == null) {
-            v = new MALOperation[0];
+            v = new ArrayList<>();
         }
 
-        v = (MALOperation[]) appendObject(v, op);
+        v.add(op);
         operationsBySet.put(op.getCapabilitySet().getValue(), v);
-    }
-
-    private Object[] appendObject(final Object[] arr, final Object val) {
-        final Object[] tarr = Arrays.copyOf(arr, arr.length + 1);
-        tarr[arr.length] = val;
-
-        return tarr;
     }
 }

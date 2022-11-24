@@ -107,7 +107,7 @@ public class MALArea {
      * @return The found service or null if not found.
      */
     public synchronized MALService getServiceByName(final Identifier serviceName) {
-        return (MALService) serviceNames.get(serviceName.getValue());
+        return serviceNames.get(serviceName.getValue());
     }
 
     /**
@@ -117,7 +117,7 @@ public class MALArea {
      * @return The found service or null if not found.
      */
     public synchronized MALService getServiceByNumber(final UShort serviceNumber) {
-        return (MALService) serviceNumbers.get(serviceNumber.getValue());
+        return serviceNumbers.get(serviceNumber.getValue());
     }
 
     /**

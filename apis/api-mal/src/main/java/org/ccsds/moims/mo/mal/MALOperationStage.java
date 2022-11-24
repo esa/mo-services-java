@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.Arrays;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 
 /**
