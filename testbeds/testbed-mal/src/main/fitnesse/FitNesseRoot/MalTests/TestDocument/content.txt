@@ -22,7 +22,6 @@
 # !see CompleteDocument
 
 !see TestScenarios.Section4Scenarios
-#!see TestScenarios.Section4Scenarios.InteractionPatternTestScenario
 !see TestScenarios.Section4Scenarios.AllExceptPubSubTestCase
 !see TestScenarios.Section4Scenarios.AllExceptPubSubTestCase.AllExceptPubSubTestProcedure
 !see TestScenarios.Section4Scenarios.PubSubTestCase
