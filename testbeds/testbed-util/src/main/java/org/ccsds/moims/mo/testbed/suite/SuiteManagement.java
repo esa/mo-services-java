@@ -71,6 +71,13 @@ public class SuiteManagement extends LoggingBase
 
     boolean res = RemoteMALInstance.instance().startProcess();
 
+    // If it didn't start correctly lock the code here forever and display an error!
+    if(!res) {
+        logMessage("The remote process is not running therefore the tests will all fail. "
+                + "Make sure the remote process is running before running the tests!");
+        Thread.sleep(Long.MAX_VALUE);
+    }
+
     Thread.sleep(5000);
 
     return res;
