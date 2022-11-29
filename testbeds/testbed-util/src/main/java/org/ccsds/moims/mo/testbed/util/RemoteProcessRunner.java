@@ -20,28 +20,35 @@
  */
 package org.ccsds.moims.mo.testbed.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  */
 public class RemoteProcessRunner extends LoggingBase
 {
-  private String defaultClass = null;
+  private final String defaultClass;
+  private static final String osName = System.getProperty("os.name");
+  private static final boolean isLinux = osName.contains("Linux");
+
   private Process proc = null;
   private int portNum = 0;
-  private static String osName;
-  private static boolean isLinux;
 
   public RemoteProcessRunner()
   {
+      this(null);
   }
 
   public RemoteProcessRunner(String defaultClass)
@@ -68,7 +75,7 @@ public class RemoteProcessRunner extends LoggingBase
 
     Vector v = new Vector();
     v.add("java");
-
+    
     int x = 1;
     String prop = null;
     while (null != (prop = System.getProperty(Configuration.REMOTE_CMD_PROPERTY_PREFIX + "java." + Configuration.getOSname() + "." + String.valueOf(x++))))
@@ -79,9 +86,13 @@ public class RemoteProcessRunner extends LoggingBase
     v.add("-D" + Configuration.LOCAL_CONFIGURATION_DIR + "="
             + System.getProperty(Configuration.REMOTE_CONFIGURATION_DIR));
 
-    if (null != System.getProperty(Configuration.REMOTE_EXTRA_ARGS))
+    String remoteExtraArgs = System.getProperty(Configuration.REMOTE_EXTRA_ARGS);
+
+    if (null != remoteExtraArgs)
     {
-      v.addAll(Arrays.asList(System.getProperty(Configuration.REMOTE_EXTRA_ARGS).split(" ")));
+        logMessage("The REMOTE_EXTRA_ARGS are: " + remoteExtraArgs);
+        logMessage("The REMOTE_EXTRA_ARGS will be ignored!");
+        //v.addAll(Arrays.asList(remoteExtraArgs.split(" ")));
     }
     v.add("-classpath");
     v.add(createClasspath(new String[]
@@ -147,6 +158,16 @@ public class RemoteProcessRunner extends LoggingBase
       logMessage("Process is still running");
       return true;
     }
+    
+    try {
+      String txtStream = extractString(proc.getInputStream());
+      String errorStream = extractString(proc.getErrorStream());
+      logMessage("txtStream: " + txtStream);
+      logMessage("errorStream: " + errorStream);
+    } catch (IOException ex) {
+      Logger.getLogger(RemoteProcessRunner.class.getName()).log(
+        Level.SEVERE, "Something went wrong!", ex);
+    }
 
     logMessage("Process has exited");
     // if we are here then the process terminated for some reason
@@ -179,7 +200,6 @@ public class RemoteProcessRunner extends LoggingBase
   public static String createClasspath(String[] extraJarList, String[] mavenJarList, String[] filterJarList) throws Exception
   {
     StringBuffer cp = new StringBuffer();
-
     String sep = System.getProperty("path.separator");
 
     for (String str : extraJarList)
@@ -199,7 +219,7 @@ public class RemoteProcessRunner extends LoggingBase
     {
       URL[] classpath = ((URLClassLoader) RemoteProcessRunner.class.getClassLoader()).getURLs();
 
-      if (0 < classpath.length)
+      if (classpath.length > 0)
       {
         StringBuilder filterEnv = new StringBuilder();
 
@@ -211,14 +231,24 @@ public class RemoteProcessRunner extends LoggingBase
 
         String[] filterStr = null;
 
-        if (0 < filterEnv.length())
+        if (filterEnv.length() > 0)
         {
           filterStr = filterEnv.toString().toLowerCase().split(",");
         }
+        
+        int length = classpath.length;
+        
+        if(length != 0 && !isLinux) {
+            cp.append('"'); // Adds a Quotation mark before the jars
+        }
 
-        for (int i = 0; i < classpath.length; i++)
-        {
-          addClasspathEntry(cp, classpath[i].toURI().getPath(), sep, filterStr);
+        for (int i = 0; i < length; i++) {
+            String path = classpath[i].toURI().getPath();
+            addClasspathEntry(cp, path, sep, filterStr);
+        }
+        
+        if(length != 0 && !isLinux) {
+            cp.append('"'); // Adds a Quotation mark after the jars
         }
       }
     }
@@ -265,15 +295,9 @@ public class RemoteProcessRunner extends LoggingBase
   {
     if ((!entry.toLowerCase().endsWith(".jar")) || (!filterString(entry.toLowerCase(), filterStr)))
     {
-      if (0 < cp.length())
+      if (cp.length() > 0)
       {
         cp.append(sep);
-      }
-
-      if (osName == null)
-      {
-        osName = System.getProperty("os.name");
-        isLinux = osName.contains("Linux");
       }
 
       if (isLinux)
@@ -331,4 +355,17 @@ public class RemoteProcessRunner extends LoggingBase
 
     return strArr;
   }
+  
+    private static String extractString(InputStream in) throws IOException {
+        InputStreamReader isr = new InputStreamReader(in);
+        BufferedReader br = new BufferedReader(isr);
+        StringBuilder buffer = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            buffer.append(line);
+            buffer.append("\n");
+        }
+
+        return buffer.toString();
+    }  
 }
