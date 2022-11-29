@@ -431,7 +431,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
         } else {
             try {
                 LOGGER.log(Level.FINE,
-                        "Sending msg. Target root URI: {0} full URI:{1}",
+                        "Sending msg. Target root URI: {0} full URI: {1}",
                         new Object[]{remoteRootURI, destinationURI});
 
                 // get outgoing channel
@@ -890,7 +890,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                 // we do not have any channel for this URI
                 // try to create a set of connections to this URI 
                 LOGGER.log(Level.INFO,
-                        "Establishing connection to remote root URI: {0}",
+                        "Establishing connection to: {0}",
                         remoteRootURI);
 
                 try {
@@ -908,7 +908,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                     }
                 } catch (MALException e) {
                     LOGGER.log(Level.WARNING,
-                            "Could not connect to :" + remoteRootURI, e);
+                            "Could not connect to: " + remoteRootURI, e);
 
                     throw new MALTransmitErrorException(msg.getHeader(),
                             new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
@@ -942,17 +942,17 @@ public abstract class GENTransport<I, O> implements MALTransport {
             //we already have a communication channel for this URI
             //check if we have enough connections for the URI, if not then add the data sender 
             if (dataSender.getNumberOfProcessors() < numConnections) {
-                LOGGER.log(Level.FINE, "Registering data sender for URI:{0}", remoteRootURI);
+                LOGGER.log(Level.FINE, "Registering data sender for URI: {0}", remoteRootURI);
                 // insert new processor (message sender) to root data sender for the URI
                 dataSender.addProcessor(dataTransmitter, remoteRootURI);
             }
         } else {
             //we do not have a communication channel, create a data sender manager and add the first data sender
             // create new sender manager for this URI
-            LOGGER.log(Level.FINE, "Creating data sender manager for URI:{0}", remoteRootURI);
+            LOGGER.log(Level.FINE, "Creating data sender manager for URI: {0}", remoteRootURI);
             dataSender = new GENConcurrentMessageSender(this, remoteRootURI);
 
-            LOGGER.log(Level.FINE, "Registering data sender for URI:{0}", remoteRootURI);
+            LOGGER.log(Level.FINE, "Registering data sender for URI: {0}", remoteRootURI);
             outgoingDataChannels.put(remoteRootURI, dataSender);
 
             // insert new processor (message sender) to root data sender for the URI
