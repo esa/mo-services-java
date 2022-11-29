@@ -51,21 +51,10 @@ public enum TCPIPConnectionPoolManager {
     INSTANCE;
 
     /**
-     * The internal list of sockets. Each socket is identified by a hash, which
-     * is made purely from the port number.
+     * The internal list of sockets. Each socket is identified by its port
+     * number.
      */
     private final Map<Integer, Socket> connections = new HashMap<>();
-
-    /**
-     * Put a new socket into the list of connections
-     *
-     * @param socket The socket to store
-     */
-    private void put(Socket socket) {
-        int hash = getSocketHash(socket.getLocalPort());
-        RLOGGER.log(Level.FINEST, "ConnectionPool: put -> hash: {0}", hash);
-        connections.put(hash, socket);
-    }
 
     /**
      * Returns a socket bound to a specific port. If this socket doesn't exist,
@@ -79,30 +68,13 @@ public enum TCPIPConnectionPoolManager {
      * @return Socket instance
      */
     public synchronized Socket get(int localPort) {
-        Socket s;
-        int hash = getSocketHash(localPort);
-        RLOGGER.log(Level.FINEST, "ConnectionPool: get -> hash: {0}", hash);
+        Socket s = connections.get(localPort);
 
-        s = connections.get(hash);
         if (s == null) {
-            RLOGGER.info("The socket doesn't exist! Creating a new one...");
             s = createSocket(localPort);
         }
 
         return s;
-    }
-
-    /**
-     * Get a unique hash, based on a port number. Each socket is identified by a
-     * hash, which is made purely from the port number. Any instance of the MAL
-     * transport TCPIP binding always only runs on one machine, and on any one
-     * machine each port number is unique. Hence, the hash is unique.
-     *
-     * @param localPort The port to get the hash for
-     * @return String hash
-     */
-    public int getSocketHash(int localPort) {
-        return Integer.toString(localPort).hashCode();
     }
 
     /**
@@ -113,12 +85,11 @@ public enum TCPIPConnectionPoolManager {
      * @param localPort The port number to create the socket at
      * @return Socket instance
      */
-    public synchronized Socket createSocket(int localPort) {
+    private synchronized Socket createSocket(int localPort) {
         Socket s = new Socket();
         try {
             s.bind(new InetSocketAddress(localPort));
-
-            RLOGGER.log(Level.FINE, "Created a socket at port {0}", s.getLocalPort());
+            RLOGGER.log(Level.INFO, "New socket created on port: {0}", s.getLocalPort());
         } catch (IOException e) {
             try {
                 s.bind(null);
@@ -129,8 +100,8 @@ public enum TCPIPConnectionPoolManager {
             RLOGGER.log(Level.WARNING, "Failed to create a socket at port {0}! {1}",
                     new Object[]{localPort, e.getMessage()});
         }
-        put(s);
 
+        connections.put(port, s.getLocalPort());
         return s;
     }
 
@@ -140,10 +111,10 @@ public enum TCPIPConnectionPoolManager {
     public synchronized void close() {
         RLOGGER.info("Closing client sockets...");
 
-        for (int hash : connections.keySet()) {
+        for (int port : connections.keySet()) {
             try {
-                connections.get(hash).close();
-                connections.remove(hash);
+                connections.get(port).close();
+                connections.remove(port);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -160,8 +131,10 @@ public enum TCPIPConnectionPoolManager {
     public synchronized String toString() {
         StringBuilder result = new StringBuilder();
         result.append("LocalSockets:\n");
-        for (int hash : connections.keySet()) {
-            result.append(hash).append(": ").append(connections.get(hash)).append("\n");
+
+        for (int port : connections.keySet()) {
+            result.append(" -> ").append(port).append(" - ");
+            result.append(connections.get(port)).append("\n");
         }
 
         return result.toString();
