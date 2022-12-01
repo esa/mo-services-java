@@ -868,12 +868,10 @@ public abstract class GENTransport<I, O> implements MALTransport {
             // get sender if it exists
             sender = outgoingDataChannels.get(remoteRootURI);
 
-            if (null == sender) {
+            if (sender == null) {
                 // we do not have any channel for this URI
                 // try to create a set of connections to this URI 
-                LOGGER.log(Level.INFO,
-                        "Establishing connection to: {0}",
-                        remoteRootURI);
+                LOGGER.log(Level.INFO, "Establishing connection to: {0}", remoteRootURI);
 
                 try {
                     // create new sender for this URI

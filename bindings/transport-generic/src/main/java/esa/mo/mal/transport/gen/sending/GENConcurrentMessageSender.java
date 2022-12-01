@@ -167,13 +167,13 @@ public class GENConcurrentMessageSender {
      */
     public synchronized void terminate() {
         LOGGER.log(Level.INFO,
-                "Terminating all processing threads for sender for URI:{0}",
+                "Terminating all processing threads for sender for URI: {0}",
                 targetURI);
 
         for (GENSenderThread t : processingThreads) {
             // this will cause all threads to terminate
             LOGGER.log(Level.FINE,
-                    "Terminating sender processing thread for URI:{0}",
+                    "Terminating sender processing thread for URI: {0}",
                     t.getUriTo());
             t.interrupt();
         }

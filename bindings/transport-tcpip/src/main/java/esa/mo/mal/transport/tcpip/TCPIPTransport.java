@@ -590,8 +590,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             throw new MALTransmitErrorException(msg.getHeader(),
                     new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
         } catch (java.net.ConnectException e) {
-            LOGGER.log(Level.WARNING, "TCPIP could not connect to: {0}", remoteRootURI);
-            LOGGER.log(Level.FINE, "TCPIP could not connect to: " + remoteRootURI, e);
+            LOGGER.log(Level.WARNING, "TCPIP could not reach: {0}", remoteRootURI);
+            LOGGER.log(Level.FINE, "TCPIP could not reach: " + remoteRootURI, e);
             throw new MALTransmitErrorException(
                     msg.getHeader(),
                     new MALStandardError(
