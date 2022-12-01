@@ -47,8 +47,7 @@ import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
  *
  * @author Rian van Gijlswijk
  */
-public enum TCPIPConnectionPoolManager {
-    INSTANCE;
+public class TCPIPClientSocketsManager {
 
     /**
      * The internal list of sockets. Each socket is identified by its port

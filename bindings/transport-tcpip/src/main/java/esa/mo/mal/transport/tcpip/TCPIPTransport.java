@@ -117,20 +117,17 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * System property to control whether the transport automatically sets the
      * host address and port number.
      */
-    private static final String PROPERTY_AUTOHOST
-            = "org.ccsds.moims.mo.mal.transport.tcpip.autohost";
+    private static final String PROPERTY_AUTOHOST = "org.ccsds.moims.mo.mal.transport.tcpip.autohost";
     
     /**
      * System property to define the host address.
      */
-    private static final String PROPERTY_HOST
-            = "org.ccsds.moims.mo.mal.transport.tcpip.host";
+    private static final String PROPERTY_HOST = "org.ccsds.moims.mo.mal.transport.tcpip.host";
     
     /**
      * System property to define the port number.
      */
-    private static final String PROPERTY_PORT
-            = "org.ccsds.moims.mo.mal.transport.tcpip.port";
+    private static final String PROPERTY_PORT = "org.ccsds.moims.mo.mal.transport.tcpip.port";
     
     /**
      * Port delimiter
@@ -165,7 +162,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
     private boolean autohost = false;
     private ServerSocket serverSocket;
-    private final Map<String, Integer> socketsList = new HashMap<>();
+    private final Map<String, Integer> clientPorts = new HashMap<>();
+    private final TCPIPClientSocketsManager clientSockets = new TCPIPClientSocketsManager();
 
     /**
      * Holds the list of data poller threads
@@ -382,7 +380,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         RLOGGER.info("Closing TCPIPTransport...");
 
         synchronized (this) {
-            TCPIPConnectionPoolManager.INSTANCE.close();
+            clientSockets.close();
 
             for (GENMessagePoller entry : messagePollerThreadPool) {
                 entry.close();
@@ -551,17 +549,16 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         RLOGGER.fine("TCPIPTransport.createMessageSender()");
         try {
             // create a message sender and receiver for the socket
-            Integer localPort = socketsList.get(remoteRootURI);
+            Integer localPort = clientPorts.get(remoteRootURI);
 
             // Assign a different client port per remote location
             if (localPort == null) {
                 localPort = this.getRandomClientPort();
-                socketsList.put(remoteRootURI, localPort);
+                clientPorts.put(remoteRootURI, localPort);
             }
 
             ConnectionTuple toCt = getConnectionParts(remoteRootURI);
-
-            Socket s = TCPIPConnectionPoolManager.INSTANCE.get(localPort);
+            Socket s = clientSockets.get(localPort);
 
             try {
                 s.connect(new InetSocketAddress(toCt.host, toCt.port));
@@ -569,8 +566,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
                 RLOGGER.warning("A problem was detected! Assigning a new consumer port...");
 
                 localPort = this.getRandomClientPort();
-                socketsList.put(remoteRootURI, localPort);
-                s = TCPIPConnectionPoolManager.INSTANCE.get(localPort);
+                clientPorts.put(remoteRootURI, localPort);
+                s = clientSockets.get(localPort);
                 s.connect(new InetSocketAddress(toCt.host, toCt.port));
             }
 
@@ -684,7 +681,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
         if (!targetAddress.contains(":")) {
             // malformed URI
-            throw new MALException("Malformed URI:" + addr);
+            throw new MALException("Malformed URI: " + addr);
         }
 
         String host = targetAddress.split(":")[0];
