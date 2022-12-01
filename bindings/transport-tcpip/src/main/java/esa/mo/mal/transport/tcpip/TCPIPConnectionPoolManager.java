@@ -101,7 +101,7 @@ public enum TCPIPConnectionPoolManager {
                     new Object[]{localPort, e.getMessage()});
         }
 
-        connections.put(port, s.getLocalPort());
+        connections.put(s.getLocalPort(), s);
         return s;
     }
 
