@@ -22,7 +22,7 @@ package esa.mo.mal.transport.jms;
 
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENMessageHeader;
-import esa.mo.mal.transport.gen.GENTransport.PacketToString;
+import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
 import java.io.ByteArrayInputStream;
@@ -108,7 +108,7 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder {
             GENMessage malMsg = new GENMessage(false, new JMSMessageHeader(hdr, jmsUpdate),
                     null, null, transport.getStreamFactory(), new_objs);
             return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(),
-                    malMsg, transport.new PacketToString(data));
+                    malMsg, new PacketToString(data));
         } catch (Throwable ex) {
             throw new MALException("Internal error decoding message", ex);
         }

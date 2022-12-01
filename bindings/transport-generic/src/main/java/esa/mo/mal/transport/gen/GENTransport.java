@@ -26,7 +26,6 @@ import esa.mo.mal.transport.gen.receivers.GENIncomingMessageReceiver;
 import esa.mo.mal.transport.gen.sending.GENConcurrentMessageSender;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
-import esa.mo.mal.transport.gen.util.GENHelper;
 import esa.mo.mal.transport.gen.util.TransportThreadFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -119,10 +118,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
      */
     protected final boolean supportsRouting;
     /**
-     * True if string based stream, can be logged as a string rather than hex.
-     */
-    protected final boolean streamHasStrings;
-    /**
      * True if body parts should be wrapped in blobs for encoded element
      * support.
      */
@@ -136,10 +131,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * The timeout in seconds to wait for confirmation of delivery.
      */
     protected final int deliveryTimeout;
-    /**
-     * True if want to log the packet data
-     */
-    protected final boolean logFullDebug;
     /**
      * The string used to represent this protocol.
      */
@@ -268,11 +259,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             serviceDelimCounter = 0;
         }
 
-        // very crude and faulty test but it will do for testing
-        streamHasStrings = streamFactory.getClass().getName().contains("String");
-
         // default values
-        boolean lLogFullDebug = false;
         boolean lWrapBodyParts = wrapBodyParts;
         boolean lInProcessSupport = true;
         int lNumConnections = 1;
@@ -280,10 +267,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
         // decode configuration
         if (properties != null) {
-            if (properties.containsKey(DEBUG_PROPERTY)) {
-                lLogFullDebug = Boolean.parseBoolean((String) properties.get(DEBUG_PROPERTY));
-            }
-
             if (properties.containsKey(WRAP_PROPERTY)) {
                 lWrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
             }
@@ -302,7 +285,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
             }
         }
 
-        this.logFullDebug = lLogFullDebug;
         this.wrapBodyParts = lWrapBodyParts;
         this.inProcessSupport = lInProcessSupport;
         this.numConnections = lNumConnections;
@@ -1116,44 +1098,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Converts the packet to a string form for logging.
-     *
-     */
-    public class PacketToString {
-
-        private final byte[] data;
-        private String str;
-
-        /**
-         * Constructor.
-         *
-         * @param data the packet.
-         */
-        public PacketToString(byte[] data) {
-            this.data = data;
-        }
-
-        @Override
-        public String toString() {
-            if (null == str) {
-                synchronized (this) {
-                    if (logFullDebug && null != data) {
-                        if (streamHasStrings) {
-                            str = new String(data, UTF8_CHARSET);
-                        } else {
-                            str = GENHelper.byteArrayToHexString(data);
-                        }
-                    } else {
-                        str = "";
-                    }
-                }
-            }
-
-            return str;
         }
     }
 }

@@ -23,7 +23,7 @@ package esa.mo.mal.transport.spp;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENReceptionHandler;
 import esa.mo.mal.transport.gen.GENTransport;
-import esa.mo.mal.transport.gen.GENTransport.PacketToString;
+import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoderFactory;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
@@ -69,7 +69,7 @@ public class SPPMessageDecoderFactory<I> implements
 
         @Override
         public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
-            GENTransport.PacketToString smsg = transport.new PacketToString(null);
+            PacketToString smsg = new PacketToString(null);
             GENMessage malMsg = transport.createMessage(rawMessage);
 
             if (null != malMsg) {

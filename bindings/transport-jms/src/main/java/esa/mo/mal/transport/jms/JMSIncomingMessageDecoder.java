@@ -22,7 +22,7 @@ package esa.mo.mal.transport.jms;
 
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENMessageHeader;
-import esa.mo.mal.transport.gen.GENTransport.PacketToString;
+import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
 import java.util.HashMap;
@@ -52,6 +52,6 @@ final class JMSIncomingMessageDecoder implements GENIncomingMessageDecoder {
         GENMessage malMsg = new GENMessage(false, true, new GENMessageHeader(), 
                 new HashMap(), jmsUpdate.getDat(), transport.getStreamFactory());
         return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), 
-                malMsg, transport.new PacketToString(null));
+                malMsg, new PacketToString(null));
     }
 }

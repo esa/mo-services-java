@@ -23,6 +23,7 @@ package esa.mo.mal.transport.gen.receivers;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.GENReceptionHandler;
 import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.PacketToString;
 import java.io.InputStream;
 import org.ccsds.moims.mo.mal.MALException;
 
@@ -61,7 +62,7 @@ public class GENIncomingStreamMessageDecoderFactory<O> implements
 
         @Override
         public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
-            GENTransport.PacketToString smsg = transport.new PacketToString(null);
+            PacketToString smsg = new PacketToString(null);
             GENMessage malMsg = transport.createMessage(ios);
             return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
         }
