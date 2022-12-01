@@ -52,7 +52,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
  */
 public abstract class MALBrokerHandlerImpl extends MALClose implements MALBrokerHandler {
 
-    private final List<MALBrokerBindingImpl> bindings = new LinkedList<>();
+    private final List<MALBrokerBindingImpl> brokers = new LinkedList<>();
     private final Map<BrokerKey, Map<StringPair, PublisherSource>> providers = new HashMap();
     private final Map<BrokerKey, Map<String, SubscriptionSource>> consumers = new HashMap();
 
@@ -67,12 +67,12 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
     @Override
     public void malInitialize(MALBrokerBinding brokerBinding) {
-        bindings.add((MALBrokerBindingImpl) brokerBinding);
+        brokers.add((MALBrokerBindingImpl) brokerBinding);
     }
 
     @Override
     public void malFinalize(MALBrokerBinding brokerBinding) {
-        bindings.remove((MALBrokerBindingImpl) brokerBinding);
+        brokers.remove((MALBrokerBindingImpl) brokerBinding);
     }
 
     @Override
@@ -118,7 +118,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         if (!notifyList.isEmpty()) {
             for (NotifyMessageSet notifyMessageSet : notifyList) {
                 String uriTo = notifyMessageSet.getDetails().uriTo.getValue();
-                MALBrokerBinding binding = this.getBinding(uriTo);
+                MALBrokerBinding binding = this.getBroker(uriTo);
 
                 if (binding != null) {
                     for (NotifyMessage notifyMessage : notifyMessageSet.getMessages()) {
@@ -141,8 +141,8 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                                     notifyMessage.updateList);
                         } catch (MALTransmitErrorException ex) {
                             MALBrokerImpl.LOGGER.log(Level.WARNING,
-                                    "MALTransmitErrorException during transmission of NOTIFY to Consumer URI: {0}",
-                                    uriTo);
+                                    "Unable to send NOTIFY message:\n{0}",
+                                    notifyMessage.toString());
 
                             handleConsumerCommunicationError(brokerKey, uriTo);
                         }
@@ -210,8 +210,8 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         return QoSLevel.BESTEFFORT;
     }
 
-    private synchronized MALBrokerBinding getBinding(String uriTo) {
-        for (MALBrokerBindingImpl binding : bindings) {
+    private synchronized MALBrokerBinding getBroker(String uriTo) {
+        for (MALBrokerBindingImpl binding : brokers) {
             if (binding.hasSubscriber(uriTo)) {
                 return binding;
             }
@@ -348,14 +348,13 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         final SubscriptionSource entry = getConsumerEntry(key, uriTo);
 
         if (entry != null) {
-            entry.incCommsErrorCount();
+            entry.incrementCommsErrorCount();
 
-            if (entry.getCommsErrorCount() > 2) {
+            // Deregister the subscription if it is unreachable
+            if (entry.getCommsErrorCount() != 0) {
                 MALBrokerImpl.LOGGER.log(Level.WARNING,
-                        "Removing the Consumer due to too many errors: {0}",
-                        uriTo);
+                        "Removing the Consumer Subscription: {0}", uriTo);
 
-                // three strikes and you're out!
                 internalDeregisterSubscriptions(key, entry, null);
             }
         }

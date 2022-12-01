@@ -61,7 +61,7 @@ public abstract class SubscriptionSource {
     /**
      * Increments the count of communication errors.
      */
-    public void incCommsErrorCount() {
+    public void incrementCommsErrorCount() {
         ++commsErrorCount;
     }
 

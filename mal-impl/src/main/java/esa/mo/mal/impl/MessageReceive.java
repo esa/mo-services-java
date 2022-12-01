@@ -485,8 +485,7 @@ public class MessageReceive implements MALMessageListener {
             if (null != brokerHandler) {
                 if (msg.getBody() instanceof MALPublishBody) {
                     try {
-                        final MALInteraction interaction
-                                = new PubSubInteractionImpl(sender, address, msg);
+                        final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
                         brokerHandler.getBrokerImpl().getHandler().handlePublish(interaction, (MALPublishBody) msg.getBody());
                     } catch (MALInteractionException ex) {
                         sender.returnError(address,
