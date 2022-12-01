@@ -27,7 +27,7 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  * Class representing MAL ObjectRef type.
  */
-public class ObjectRef implements Attribute {
+public class ObjectRef<T> implements Attribute {
 
     private final String domain;
     private final Identifier area;
@@ -187,5 +187,5 @@ public class ObjectRef implements Attribute {
                 + String.valueOf(type) + ":" + String.valueOf(key) + ":" 
                 + String.valueOf(objectVersion) + ":";
     }
-    private static final long serialVersionUID = Attribute.DURATION_SHORT_FORM;
+    private static final long serialVersionUID = Attribute.OBJECTREF_SHORT_FORM;
 }

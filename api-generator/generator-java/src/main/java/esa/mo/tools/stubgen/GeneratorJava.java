@@ -323,7 +323,7 @@ public class GeneratorJava extends GeneratorLangs {
         // create initial size contructor
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, listName,
                 createCompositeElementsDetails(file, false, "initialCapacity",
-                        TypeUtils.createTypeReference(null, null, "int", false), 
+                        TypeUtils.createTypeReference(null, null, "int", false),
                         false, false, "initialCapacity the required initial capacity."),
                 true, null, "Constructor that initialises the capacity of the list.", null);
         method.addMethodCloseStatement();
@@ -331,14 +331,14 @@ public class GeneratorJava extends GeneratorLangs {
         // create contructor with ArrayList 
         method = file.addConstructor(StdStrings.PUBLIC, listName,
                 createCompositeElementsDetails(file, false, "elementList",
-                        TypeUtils.createTypeReference(null, null, "java.util.ArrayList<" + fqSrcTypeName + ">", false), 
+                        TypeUtils.createTypeReference(null, null, "java.util.ArrayList<" + fqSrcTypeName + ">", false),
                         false, false, "The ArrayList that is used for initialization."),
                 false, null, "Constructor that uses an ArrayList for initialization.", null);
         method.addMethodStatement("for(" + fqSrcTypeName + " element : elementList)", false);
         method.addMethodStatement("{", false);
         method.addMethodStatement("    super.add(element)");
         method.addMethodStatement("}", false);
-        method.addMethodCloseStatement();        
+        method.addMethodCloseStatement();
 
         List<CompositeField> argList = new LinkedList<>();
         argList.add(createCompositeElementsDetails(file, true, "element", srcType, true, true, "List element."));
@@ -562,7 +562,7 @@ public class GeneratorJava extends GeneratorLangs {
 
         return ele;
     }
-   
+
     @Override
     protected void addServiceConstructor(MethodWriter method, String serviceVar, String serviceVersion, ServiceSummary summary) throws IOException {
         String opCall = serviceVar + "_SERVICE.addOperation(";
@@ -752,15 +752,20 @@ public class GeneratorJava extends GeneratorLangs {
         }
 
         @Override
-        public void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, List<String> initialValue) throws IOException {
+        public void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, List<String> initialValues) throws IOException {
             StringBuilder iniVal = new StringBuilder();
 
-            for (int i = 0; i < initialValue.size(); i++) {
+            for (int i = 0; i < initialValues.size(); i++) {
                 if (0 < i) {
                     iniVal.append(", ");
                 }
-
-                iniVal.append(initialValue.get(i));
+                String initialValue = initialValues.get(i); 
+                if (initialValue.contains("ObjectRef<")) {
+                    initialValue = initialValue.substring(0, initialValue.indexOf("org.ccsds.moims.mo.malprototype.iptest.structures.ObjectRef")) +
+                            "org.ccsds.moims.mo.mal.structures.ObjectRef.OBJECTREF_SHORT_FORM" + 
+                            initialValue.substring(initialValue.indexOf("SHORT_FORM") + 10, initialValue.length());
+                }
+                iniVal.append(initialValue);
             }
 
             String val;
@@ -813,7 +818,7 @@ public class GeneratorJava extends GeneratorLangs {
             }
             file.append(addFileStatement(1, buf.toString(), true));
         }
-        
+
         @Override
         public void addClassVariableNewInit(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, String initialValue, boolean isNewInit) throws IOException {
             addMultilineComment(1, false, arg.getComment(), false);
@@ -837,11 +842,9 @@ public class GeneratorJava extends GeneratorLangs {
             if (null != initialValue) {
                 if (isArray) {
                     buf.append(" = {").append(initialValue).append("}");
-                } 
-                else if(!isNewInit){
+                } else if (!isNewInit) {
                     buf.append(" = ").append(initialValue);
-                }
-                else if (isNativeType(arg.getTypeName())) {
+                } else if (isNativeType(arg.getTypeName())) {
                     NativeTypeDetails dets = getNativeType(arg.getTypeName());
                     if (dets.isObject()) {
                         buf.append(" = new ").append(ltype).append(initialValue);
@@ -855,7 +858,7 @@ public class GeneratorJava extends GeneratorLangs {
 
             file.append(addFileStatement(1, buf.toString(), true));
         }
-        
+
         @Override
         public void addStaticConstructor(String returnType, String methodName, String args, String constructorCall) throws IOException {
         }
@@ -1097,6 +1100,8 @@ public class GeneratorJava extends GeneratorLangs {
 
                 file.append(addFileStatement(tabCount, "/**", false));
                 for (String comment : comments) {
+                    comment = comment.replaceAll("<", "_");
+                    comment = comment.replaceAll(">", "_");
                     file.append(addFileStatement(tabCount, " * " + comment, false));
                 }
                 file.append(addFileStatement(tabCount, " */", false));
@@ -1147,6 +1152,8 @@ public class GeneratorJava extends GeneratorLangs {
                     }
 
                     String name = checkForReservedWords(arg.getFieldName());
+                    name = name.replaceAll("<", "_");
+                    name = name.replaceAll(">", "_");
                     buf.append(name);
                 }
             }
@@ -1156,8 +1163,15 @@ public class GeneratorJava extends GeneratorLangs {
 
         private String createLocalType(CompositeField type) {
             if (null != type) {
-                if (isNativeType(type.getTypeName())) {
-                    NativeTypeDetails dets = getNativeType(type.getTypeName());
+                String fullType = type.getTypeName();
+                if (fullType.contains("ObjectRef<")) {
+                    fullType = "org.ccsds.moims.mo.mal.structures.ObjectRef<"
+                            + fullType.substring(0, fullType.indexOf("ObjectRef"))
+                            + fullType.substring(fullType.indexOf('<') + 1, fullType.indexOf('>'))
+                            + ">";
+                }
+                if (isNativeType(fullType)) {
+                    NativeTypeDetails dets = getNativeType(fullType);
 
                     return dets.getLanguageTypeName();
                 } else if (!type.isList() && isAttributeType(type.getTypeReference())) {
@@ -1167,7 +1181,7 @@ public class GeneratorJava extends GeneratorLangs {
                     }
                 }
 
-                return type.getTypeName();
+                return fullType;
             }
 
             return StdStrings.VOID;

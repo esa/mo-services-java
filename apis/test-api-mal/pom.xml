@@ -76,6 +76,8 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>api-mal</artifactId>
+            <version>9.0-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 

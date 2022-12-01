@@ -154,6 +154,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         addAttributeType(StdStrings.XML, "dateTime", getAttributeDetails(StdStrings.MAL, StdStrings.TIME));
         addAttributeType(StdStrings.XML, "dateTime", getAttributeDetails(StdStrings.MAL, StdStrings.FINETIME));
         addAttributeType(StdStrings.XML, "anyURI", getAttributeDetails(StdStrings.MAL, StdStrings.URI));
+        addAttributeType(StdStrings.XML, "ObjectRef", getAttributeDetails(StdStrings.MAL, StdStrings.OBJECTREF));
 
         addAttributeType(StdStrings.XML, "Element", new AttributeTypeDetails(this, "Element", true, "Object", ""));
     }
@@ -666,6 +667,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         break;
                 }
                 String opArgs = createAdapterMethodsArgs(opTypes, "body", true, false);
+                if(opArgs.contains("ObjectRef<")){
+                    opArgs = updateObjectRefType(opArgs);
+                }                
                 method.addMethodStatement("    " + op.getName() + subopPostname + "Received(msgHeader" + opArgs + ", qosProperties)");
                 method.addMethodStatement("    break");
             }
@@ -1139,6 +1143,15 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
+    private String updateObjectRefType(String fullType) {
+        String path = fullType.substring(fullType.indexOf("org"), fullType.indexOf("ObjectRef"));
+        String type = fullType.substring(fullType.indexOf('<') + 1, fullType.indexOf('>'));
+        fullType = fullType.replaceAll(path, "org.ccsds.moims.mo.mal.structures.");
+        fullType = fullType.replaceAll(type, path + type);
+        
+        return fullType;
+    }
+    
     protected void createServiceProviderSkeletonHandler(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary, boolean isDelegate) throws IOException {
         String className = service.getName();
         String comment;
@@ -1239,7 +1252,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodStatement("{", false);
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SEND_OP) {
-                String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
+                String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);   
+                if (opArgs.contains("ObjectRef<")) {
+                    opArgs = updateObjectRefType(opArgs);
+                }                
                 String ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addMethodStatement("    " + delegateCall + op.getName() + "(" + opArgs + "interaction)");
@@ -1260,6 +1276,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SUBMIT_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
+                if (opArgs.contains("ObjectRef<")) {
+                    opArgs = updateObjectRefType(opArgs);
+                }
                 ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addMethodStatement("    " + delegateCall + op.getName() + "(" + opArgs + "interaction)");
@@ -1281,6 +1300,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.REQUEST_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
+                if (opArgs.contains("ObjectRef<")) {
+                    opArgs = updateObjectRefType(opArgs);
+                }                
                 String opResp = delegateCall + op.getName() + "(" + opArgs + "interaction)";
                 ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
@@ -1302,6 +1324,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.INVOKE_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
+                if (opArgs.contains("ObjectRef<")) {
+                    opArgs = updateObjectRefType(opArgs);
+                }                
                 ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addMethodStatement("    " + delegateCall + op.getName() + "(" + opArgs + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
@@ -1322,6 +1347,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.PROGRESS_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
+                if (opArgs.contains("ObjectRef<")) {
+                    opArgs = updateObjectRefType(opArgs);
+                }                
                 ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addMethodStatement("    " + delegateCall + op.getName() + "(" + opArgs + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
@@ -1571,7 +1599,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     }
                 }
                 arrayList.append("}");
-                
+
                 CompositeField _opKeyNamesVar = createCompositeElementsDetails(file, false, "_" + operationInstanceVar + "_OP_KEY_NAMES",
                         TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.structures.Identifier []", false),
                         false, false, "Key names instance for " + operationInstanceVar + " operation of pubsub interaction pattern");
@@ -1580,7 +1608,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 CompositeField opKeyNamesVar = createCompositeElementsDetails(file, false, operationInstanceVar + "_OP_KEY_NAMES",
                         TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.structures.IdentifierList", false),
                         false, false, "Key names instance for " + operationInstanceVar + " operation of pubsub interaction pattern");
-                file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, opKeyNamesVar, false, false, 
+                file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, opKeyNamesVar, false, false,
                         "new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(_" + operationInstanceVar + "_OP_KEY_NAMES)))", false);
             }
         }
@@ -2739,8 +2767,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     buf.append(argName);
                 }
             }
+            String ret = buf.toString();
+            ret = ret.replaceAll("<", "_");
+            ret = ret.replaceAll(">", "_");
 
-            return buf.toString();
+            return ret;
         }
 
         return getConfig().getNullValue();

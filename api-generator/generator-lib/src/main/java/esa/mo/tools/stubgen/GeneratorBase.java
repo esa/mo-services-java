@@ -194,7 +194,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
 
     @Override
     public boolean isAttributeType(TypeReference type) {
-        return (null != type) && attributeTypesMap.containsKey(new TypeKey(type));
+        if (type == null) {
+            return false;
+        }
+
+        return attributeTypesMap.containsKey(new TypeKey(type));
     }
 
     /**
@@ -204,10 +208,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @return the details if found, otherwise null.
      */
     public AttributeTypeDetails getAttributeDetails(TypeReference type) {
-        if (null != type) {
-            return attributeTypesMap.get(new TypeKey(type));
+        if (type == null) {
+            return null;
         }
-        return null;
+
+        return attributeTypesMap.get(new TypeKey(type));
     }
 
     /**
@@ -225,6 +230,21 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     }
 
     /**
+     * Returns attribute details if attribute type.
+     *
+     * @param area the type area.
+     * @param service the type service.
+     * @param type The type to look for.
+     * @return the details if found, otherwise null.
+     */
+    public AttributeTypeDetails getAttributeDetails(String area, String service, String type) {
+        if (null != type) {
+            return attributeTypesMap.get(new TypeKey(area, service, type));
+        }
+        return null;
+    }
+
+    /**
      * Returns true if the type is a native type.
      *
      * @param type the type to look for.
@@ -234,7 +254,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         if (type.contains("<")) {
             type = type.substring(0, type.indexOf('<'));
         }
-
         return nativeTypesMap.containsKey(type);
     }
 
@@ -361,7 +380,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         if (null == area) {
             return type;
         }
-        
+
         if (isAttributeType(TypeUtils.createTypeReference(area, service, type, false))) {
             AttributeTypeDetails details = getAttributeDetails(area, type);
             retVal = details.getTargetType();
@@ -623,8 +642,8 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         } else if (op instanceof PubSubOperationType) {
             PubSubOperationType lop = (PubSubOperationType) op;
             AnyTypeReference subs = lop.getMessages().getSubscriptionKeys();
-            List<TypeInfo> subKeysList = (subs == null) ? null : 
-                    TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(subs.getAny()));
+            List<TypeInfo> subKeysList = (subs == null) ? null
+                    : TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(subs.getAny()));
             List<TypeInfo> riList = TypeUtils.convertTypeReferences(this,
                     TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny()));
 
