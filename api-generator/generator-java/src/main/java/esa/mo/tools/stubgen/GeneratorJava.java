@@ -759,11 +759,14 @@ public class GeneratorJava extends GeneratorLangs {
                 if (0 < i) {
                     iniVal.append(", ");
                 }
-                String initialValue = initialValues.get(i); 
+                String initialValue = initialValues.get(i);
                 if (initialValue.contains("ObjectRef<")) {
-                    initialValue = initialValue.substring(0, initialValue.indexOf("org.ccsds.moims.mo.malprototype.iptest.structures.ObjectRef")) +
-                            "org.ccsds.moims.mo.mal.structures.ObjectRef.OBJECTREF_SHORT_FORM" + 
-                            initialValue.substring(initialValue.indexOf("SHORT_FORM") + 10, initialValue.length());
+                    initialValue = initialValue.substring(0, 
+                            initialValue.indexOf("org", 
+                                     initialValue.indexOf("org", 
+                                       initialValue.indexOf("org") + 1 ) + 1))
+                            + "org.ccsds.moims.mo.mal.structures.ObjectRef.OBJECTREF_SHORT_FORM"
+                            + initialValue.substring(initialValue.indexOf("SHORT_FORM") + 10, initialValue.length());
                 }
                 iniVal.append(initialValue);
             }
