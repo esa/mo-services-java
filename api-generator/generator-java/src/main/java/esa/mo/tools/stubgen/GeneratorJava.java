@@ -1163,15 +1163,19 @@ public class GeneratorJava extends GeneratorLangs {
 
             return buf.toString();
         }
-
+        private String updateObjectRefType(String fullType) {
+            fullType = "org.ccsds.moims.mo.mal.structures.ObjectRef<"
+                    + fullType.substring(0, fullType.indexOf("ObjectRef"))
+                    + fullType.substring(fullType.indexOf('<') + 1, fullType.indexOf('>'))
+                    + ">";
+            return fullType;
+        }
+        
         private String createLocalType(CompositeField type) {
             if (null != type) {
                 String fullType = type.getTypeName();
                 if (fullType.contains("ObjectRef<")) {
-                    fullType = "org.ccsds.moims.mo.mal.structures.ObjectRef<"
-                            + fullType.substring(0, fullType.indexOf("ObjectRef"))
-                            + fullType.substring(fullType.indexOf('<') + 1, fullType.indexOf('>'))
-                            + ">";
+                    fullType = updateObjectRefType(fullType);
                 }
                 if (isNativeType(fullType)) {
                     NativeTypeDetails dets = getNativeType(fullType);
