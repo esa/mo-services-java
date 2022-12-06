@@ -108,13 +108,13 @@ public class MessageReceive implements MALMessageListener {
             switch (msg.getHeader().getInteractionType().getOrdinal()) {
                 case InteractionType._SEND_INDEX:
                     address = lookupAddress(callingEndpoint, msg);
-                    internalHandleSend(msg, address);
+                    handleSend(msg, address);
                     break;
                 case InteractionType._SUBMIT_INDEX:
                     switch (stage) {
                         case MALSubmitOperation._SUBMIT_STAGE:
                             address = lookupAddress(callingEndpoint, msg);
-                            internalHandleSubmit(msg, address);
+                            handleSubmit(msg, address);
                             break;
                         case MALSubmitOperation._SUBMIT_ACK_STAGE:
                             icmap.handleStage(msg);
@@ -127,7 +127,7 @@ public class MessageReceive implements MALMessageListener {
                     switch (stage) {
                         case MALRequestOperation._REQUEST_STAGE:
                             address = lookupAddress(callingEndpoint, msg);
-                            internalHandleRequest(msg, address);
+                            handleRequest(msg, address);
                             break;
                         case MALRequestOperation._REQUEST_RESPONSE_STAGE:
                             icmap.handleStage(msg);
@@ -140,7 +140,7 @@ public class MessageReceive implements MALMessageListener {
                     switch (stage) {
                         case MALInvokeOperation._INVOKE_STAGE:
                             address = lookupAddress(callingEndpoint, msg);
-                            internalHandleInvoke(msg, address);
+                            handleInvoke(msg, address);
                             break;
                         case MALInvokeOperation._INVOKE_ACK_STAGE:
                         case MALInvokeOperation._INVOKE_RESPONSE_STAGE:
@@ -154,7 +154,7 @@ public class MessageReceive implements MALMessageListener {
                     switch (stage) {
                         case MALProgressOperation._PROGRESS_STAGE:
                             address = lookupAddress(callingEndpoint, msg);
-                            internalHandleProgress(msg, address);
+                            handleProgress(msg, address);
                             break;
                         case MALProgressOperation._PROGRESS_ACK_STAGE:
                         case MALProgressOperation._PROGRESS_UPDATE_STAGE:
@@ -175,26 +175,26 @@ public class MessageReceive implements MALMessageListener {
                             break;
                         case MALPubSubOperation._REGISTER_STAGE:
                             address = lookupAddress(callingEndpoint, null);
-                            internalHandleRegister(msg, address);
+                            handleRegister(msg, address);
                             break;
                         case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
                             address = lookupAddress(callingEndpoint, null);
-                            internalHandlePublishRegister(msg, address);
+                            handlePublishRegister(msg, address);
                             break;
                         case MALPubSubOperation._PUBLISH_STAGE:
                             address = lookupAddress(callingEndpoint, null);
-                            internalHandlePublish(msg, address);
+                            handlePublish(msg, address);
                             break;
                         case MALPubSubOperation._NOTIFY_STAGE:
-                            internalHandleNotify(msg);
+                            handleNotify(msg);
                             break;
                         case MALPubSubOperation._DEREGISTER_STAGE:
                             address = lookupAddress(callingEndpoint, null);
-                            internalHandleDeregister(msg, address);
+                            handleDeregister(msg, address);
                             break;
                         case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
                             address = lookupAddress(callingEndpoint, null);
-                            internalHandlePublishDeregister(msg, address);
+                            handlePublishDeregister(msg, address);
                             break;
                         default:
                             throw new MALException("Received unexpected stage of " + stage);
@@ -238,7 +238,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    void registerProviderEndpoint(final String localURI,
+    public void registerProviderEndpoint(final String localURI,
             final MALService service, final Address address) {
         final EndPointPair key = new EndPointPair(localURI, service);
 
@@ -249,7 +249,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    void deregisterProviderEndpoint(final String localURI, final MALService service) {
+    public void deregisterProviderEndpoint(final String localURI, final MALService service) {
         final EndPointPair key = new EndPointPair(localURI, service);
 
         if (providerEndpointMap.containsKey(key)) {
@@ -259,11 +259,11 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void internalHandleSend(final MALMessage msg, final Address address) throws MALInteractionException {
+    private void handleSend(final MALMessage msg, final Address address) throws MALInteractionException {
         try {
             MALInteractionHandler handler = address.getHandler();
             MALContextFactoryImpl.LOGGER.log(Level.FINE,
-                    "internalHandleSend for type {0}", handler);
+                    "handleSend for type {0}", handler);
             handler.handleSend(new SendInteractionImpl(sender, msg), msg.getBody());
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
@@ -271,7 +271,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void internalHandleSubmit(final MALMessage msg,
+    private void handleSubmit(final MALMessage msg,
             final Address address) throws MALInteractionException {
         SubmitInteractionImpl interaction = new SubmitInteractionImpl(sender, address, msg);
 
@@ -279,7 +279,7 @@ public class MessageReceive implements MALMessageListener {
             try {
                 MALInteractionHandler handler = address.getHandler();
                 MALContextFactoryImpl.LOGGER.log(Level.FINE,
-                        "internalHandleSubmit for {0} type {1}",
+                        "handleSubmit for {0} type {1}",
                         new Object[]{msg.getHeader().getTransactionId(), handler}
                 );
                 handler.handleSubmit(interaction, msg.getBody());
@@ -294,7 +294,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void internalHandleRequest(final MALMessage msg,
+    private void handleRequest(final MALMessage msg,
             final Address address) throws MALInteractionException {
         RequestInteractionImpl interaction = new RequestInteractionImpl(sender, address, msg);
 
@@ -302,7 +302,7 @@ public class MessageReceive implements MALMessageListener {
             try {
                 MALInteractionHandler handler = address.getHandler();
                 MALContextFactoryImpl.LOGGER.log(Level.FINE,
-                        "internalHandleRequest for {0} type {1}",
+                        "handleRequest for {0} type {1}",
                         new Object[]{msg.getHeader().getTransactionId(), handler}
                 );
                 handler.handleRequest(interaction, msg.getBody());
@@ -317,7 +317,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void internalHandleInvoke(final MALMessage msg,
+    private void handleInvoke(final MALMessage msg,
             final Address address) throws MALInteractionException {
         InvokeInteractionImpl interaction = new InvokeInteractionImpl(sender, address, msg);
 
@@ -325,7 +325,7 @@ public class MessageReceive implements MALMessageListener {
             try {
                 MALInteractionHandler handler = address.getHandler();
                 MALContextFactoryImpl.LOGGER.log(Level.FINE,
-                        "internalHandleInvoke for {0} type {1}",
+                        "handleInvoke for {0} type {1}",
                         new Object[]{msg.getHeader().getTransactionId(), handler}
                 );
                 handler.handleInvoke(interaction, msg.getBody());
@@ -345,7 +345,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void internalHandleProgress(final MALMessage msg,
+    private void handleProgress(final MALMessage msg,
             final Address address) throws MALInteractionException {
         ProgressInteractionImpl interaction = new ProgressInteractionImpl(sender, address, msg);
 
@@ -353,7 +353,7 @@ public class MessageReceive implements MALMessageListener {
             try {
                 MALInteractionHandler handler = address.getHandler();
                 MALContextFactoryImpl.LOGGER.log(Level.FINE,
-                        "internalHandleProgresss for {0} type {1}",
+                        "handleProgresss for {0} type {1}",
                         new Object[]{msg.getHeader().getTransactionId(), handler}
                 );
                 handler.handleProgress(interaction, msg.getBody());
@@ -373,7 +373,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void internalHandleRegister(final MALMessage msg, final Address address)
+    private void handleRegister(final MALMessage msg, final Address address)
             throws MALInteractionException, MALException {
         // find relevant broker
         final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
@@ -414,7 +414,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void internalHandlePublishRegister(final MALMessage msg,
+    private void handlePublishRegister(final MALMessage msg,
             final Address address) throws MALInteractionException, MALException {
         // find relevant broker
         final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
@@ -457,7 +457,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void internalHandlePublish(final MALMessage msg,
+    private void handlePublish(final MALMessage msg,
             final Address address) throws MALInteractionException {
         if (msg.getHeader().getIsErrorMessage()) {
             if (msg.getBody() instanceof MALErrorBody) {
@@ -522,7 +522,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void internalHandleNotify(final MALMessage msg)
+    private void handleNotify(final MALMessage msg)
             throws MALInteractionException, MALException {
         final MALMessageHeader hdr = msg.getHeader();
 
@@ -561,7 +561,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void internalHandleDeregister(final MALMessage msg,
+    private void handleDeregister(final MALMessage msg,
             final Address address) throws MALInteractionException {
         // find relevant broker
         String uri = msg.getHeader().getURITo().getValue();
@@ -598,7 +598,7 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void internalHandlePublishDeregister(final MALMessage msg,
+    private void handlePublishDeregister(final MALMessage msg,
             final Address address) throws MALInteractionException, MALException {
         // find relevant broker
         final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
