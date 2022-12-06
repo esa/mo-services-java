@@ -31,7 +31,6 @@ public class MALOperationStage {
     private final UOctet number;
     private final Object[] elementShortForms;
     private final Object[] lastElementShortForms;
-    private MALOperation operation;
 
     /**
      * Constructs an operation stage using the supplied arguments.
@@ -87,18 +86,5 @@ public class MALOperationStage {
     public Object[] getLastElementShortForms() {
         // returns the internal reference for performance reasons
         return lastElementShortForms;
-    }
-
-    /**
-     * Returns the associated operation object.
-     *
-     * @return The operation objects.
-     */
-    public MALOperation getOperation() {
-        return operation;
-    }
-
-    void setOperation(final MALOperation operation) {
-        this.operation = operation;
     }
 }
