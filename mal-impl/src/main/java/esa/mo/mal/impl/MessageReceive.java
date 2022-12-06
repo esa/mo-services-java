@@ -650,47 +650,37 @@ public class MessageReceive implements MALMessageListener {
     }
 
     private UOctet calculateReturnStage(final MALMessageHeader srcHdr) {
-        UOctet rspnInteractionStage = null;
         final short srcInteractionStage = srcHdr.getInteractionStage().getValue();
 
         switch (srcHdr.getInteractionType().getOrdinal()) {
             case InteractionType._SUBMIT_INDEX:
                 if (MALSubmitOperation._SUBMIT_STAGE == srcInteractionStage) {
-                    rspnInteractionStage = MALSubmitOperation.SUBMIT_ACK_STAGE;
+                    return MALSubmitOperation.SUBMIT_ACK_STAGE;
                 }
-                break;
             case InteractionType._REQUEST_INDEX:
                 if (MALRequestOperation._REQUEST_STAGE == srcInteractionStage) {
-                    rspnInteractionStage = MALRequestOperation.REQUEST_RESPONSE_STAGE;
+                    return MALRequestOperation.REQUEST_RESPONSE_STAGE;
                 }
-                break;
             case InteractionType._INVOKE_INDEX:
                 if (MALInvokeOperation._INVOKE_STAGE == srcInteractionStage) {
-                    rspnInteractionStage = MALInvokeOperation.INVOKE_ACK_STAGE;
+                    return MALInvokeOperation.INVOKE_ACK_STAGE;
                 }
-                break;
             case InteractionType._PROGRESS_INDEX:
                 if (MALProgressOperation._PROGRESS_STAGE == srcInteractionStage) {
-                    rspnInteractionStage = MALProgressOperation.PROGRESS_ACK_STAGE;
+                    return MALProgressOperation.PROGRESS_ACK_STAGE;
                 }
-                break;
             case InteractionType._PUBSUB_INDEX:
                 switch (srcInteractionStage) {
                     case MALPubSubOperation._REGISTER_STAGE:
-                        rspnInteractionStage = MALPubSubOperation.REGISTER_ACK_STAGE;
-                        break;
+                        return MALPubSubOperation.REGISTER_ACK_STAGE;
                     case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                        rspnInteractionStage = MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE;
-                        break;
+                        return MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE;
                     case MALPubSubOperation._PUBLISH_STAGE:
-                        rspnInteractionStage = MALPubSubOperation.PUBLISH_STAGE;
-                        break;
+                        return MALPubSubOperation.PUBLISH_STAGE;
                     case MALPubSubOperation._DEREGISTER_STAGE:
-                        rspnInteractionStage = MALPubSubOperation.DEREGISTER_ACK_STAGE;
-                        break;
+                        return MALPubSubOperation.DEREGISTER_ACK_STAGE;
                     case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
-                        rspnInteractionStage = MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE;
-                        break;
+                        return MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE;
                     default:
                     // no op
                 }
@@ -699,7 +689,7 @@ public class MessageReceive implements MALMessageListener {
             // no op
         }
 
-        return rspnInteractionStage;
+        return null;
     }
 
     private static class EndPointPair implements Comparable {
