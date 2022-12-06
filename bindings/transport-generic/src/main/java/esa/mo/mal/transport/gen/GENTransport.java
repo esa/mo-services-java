@@ -585,14 +585,14 @@ public abstract class GENTransport<I, O> implements MALTransport {
     }
 
     /**
-     * This method processes an incoming message by routing it to the
+     * This method dispatches an incoming message by routing it to the
      * appropriate endpoint, returning an error if the message cannot be
-     * processed.
+     * dispatched.
      *
      * @param msg The source message.
      * @param smsg The message in a string representation for logging.
      */
-    protected void processIncomingMessage(final GENMessage msg, PacketToString smsg) {
+    protected void dispatchMessage(final GENMessage msg, PacketToString smsg) {
         try {
             LOGGER.log(Level.FINE, "Processing message : {0} : {1}",
                     new Object[]{msg.getHeader().getTransactionId(), smsg});
@@ -1086,7 +1086,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
             while (null != msg) {
                 // send message for further processing and routing
-                processIncomingMessage(msg.malMsg, msg.smsg);
+                dispatchMessage(msg.malMsg, msg.smsg);
 
                 synchronized (this) {
                     msg = malMsgs.poll();

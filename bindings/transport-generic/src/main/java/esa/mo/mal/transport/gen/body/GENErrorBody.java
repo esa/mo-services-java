@@ -70,11 +70,7 @@ public class GENErrorBody extends GENMessageBody implements MALErrorBody {
     @Override
     public MALStandardError getError() throws MALException {
         decodeMessageBody();
-
-        if (1 < messageParts.length) {
-            return new MALStandardError((UInteger) messageParts[0], messageParts[1]);
-        } else {
-            return new MALStandardError((UInteger) messageParts[0], null);
-        }
+        Object extraInfo = (messageParts.length > 1) ? messageParts[1] : null;
+        return new MALStandardError((UInteger) messageParts[0], extraInfo);
     }
 }
