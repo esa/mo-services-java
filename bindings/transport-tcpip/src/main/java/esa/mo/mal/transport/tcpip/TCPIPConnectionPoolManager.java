@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -140,10 +141,11 @@ public enum TCPIPConnectionPoolManager {
     public synchronized void close() {
         RLOGGER.info("Closing client sockets...");
 
-        for (int hash : connections.keySet()) {
+        Iterator<Map.Entry<Integer, Socket>> iterator = connections.entrySet().iterator();
+        while(iterator.hasNext()) {
             try {
-                connections.get(hash).close();
-                connections.remove(hash);
+                connections.get(iterator.next().getKey()).close();
+                iterator.remove();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
