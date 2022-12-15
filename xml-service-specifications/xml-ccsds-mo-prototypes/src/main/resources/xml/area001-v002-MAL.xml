@@ -211,27 +211,11 @@
                 <mal:field name="keyArea" canBeNull="false" comment="The area of this service taken from the numeric Area identifier of the service specification.">
                     <mal:type name="UShort" area="MAL"/>
                 </mal:field>
-                <mal:field name="keyAreaVersion" canBeNull="false" comment="The version of this service taken from the Area Version of the area specification.">
-                    <mal:type name="UOctet" area="MAL"/>
-                </mal:field>
                 <mal:field name="keyService" canBeNull="false" comment="The service taken from the numeric Service identifier of the service specification.">
                     <mal:type name="UShort" area="MAL"/>
                 </mal:field>
-            </mal:composite>
-            <mal:composite name="ConfigurationSet" shortFormPart="1010" comment="The ConfigurationSet holds a set of configuration elements for a single element type in a single domain.">
-                <mal:field name="elementType" canBeNull="false" comment="The element type of the configuration elements.">
-                    <mal:type name="UInteger" area="MAL"/>
-                </mal:field>
-                <mal:field name="domain" canBeNull="false" comment="The domain of the configuration elements.">
-                    <mal:type list="true" name="Identifier" area="MAL"/>
-                </mal:field>
-                <mal:field name="elementInstIds" canBeNull="false" comment="The set of element identifiers that form this configuration set.">
-                    <mal:type list="true" name="Long" area="MAL"/>
-                </mal:field>
-            </mal:composite>
-            <mal:composite name="ConfigurationDetails" shortFormPart="1011" comment="The ConfigurationDetails holds a zero to many ConfigurationSet structures. It allows a configuration to reference elements from more than one domain or of more than one element type.">
-                <mal:field name="configObjects" canBeNull="false" comment="The list of configuration objects.">
-                    <mal:type list="true" name="ConfigurationSet" area="MAL"/>
+                <mal:field name="keyServiceVersion" canBeNull="false" comment="The version of this service taken from the Service Version of the area specification.">
+                    <mal:type name="UOctet" area="MAL"/>
                 </mal:field>
             </mal:composite>
         </mal:dataTypes>
