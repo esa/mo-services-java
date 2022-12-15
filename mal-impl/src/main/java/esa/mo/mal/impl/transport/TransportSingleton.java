@@ -39,13 +39,11 @@ public final class TransportSingleton {
     /**
      * Map of transport factories currently used by the application
      */
-    private static final Map<String, MALTransportFactory> FACTORY_MAP = 
-            new HashMap<String, MALTransportFactory>();
+    private static final Map<String, MALTransportFactory> FACTORY_MAP = new HashMap<>();
     /**
      * Map of transport handlers currently used by the application
      */
-    private static final Map<String, MALTransport> TRANSPORT_MAP = 
-            new HashMap<String, MALTransport>();
+    private static final Map<String, MALTransport> TRANSPORT_MAP = new HashMap<>();
     /**
      * The default protocol to be used by the provider
      */
@@ -83,7 +81,7 @@ public final class TransportSingleton {
     public static MALTransport instance(final URI dstUri, final Map properties) throws MALException {
         init();
 
-        if ((null != dstUri) && (null != dstUri.getValue())) {
+        if ((dstUri != null) && (dstUri.getValue() != null)) {
             return internalInstance(dstUri.getValue(), properties);
         }
 
@@ -114,7 +112,7 @@ public final class TransportSingleton {
     public static boolean isSameTransport(final URI dstUri, final MALTransport transport) {
         init();
 
-        if ((null != dstUri) && (null != dstUri.getValue())) {
+        if ((dstUri != null) && (dstUri.getValue() != null)) {
             return isSameTransport(dstUri.getValue(), transport);
         }
 
@@ -131,7 +129,7 @@ public final class TransportSingleton {
     public static boolean isSameTransport(final String dstUri, final MALTransport transport) {
         init();
 
-        if (null != dstUri) {
+        if (dstUri != null) {
             // lookup for existing transport
             MALTransport existingTransport;
 
@@ -153,7 +151,7 @@ public final class TransportSingleton {
      * @return The transport handler.
      * @throws MALException on error.
      */
-    private static MALTransport internalInstance(final String dstUri, 
+    private static MALTransport internalInstance(final String dstUri,
             final Map properties) throws MALException {
         // get protocol from uri
         final String strProtocol = getProtocol(dstUri);
@@ -165,13 +163,13 @@ public final class TransportSingleton {
             transport = TRANSPORT_MAP.get(strProtocol);
         }
 
-        if (null == transport) {
+        if (transport == null) {
             // lookup for existing handler else create new one and add to map
             MALTransportFactory ohandler = FACTORY_MAP.get(strProtocol);
-            if (null == ohandler) {
+            if (ohandler == null) {
                 ohandler = MALTransportFactory.newFactory(strProtocol);
 
-                if (null != ohandler) {
+                if (ohandler != null) {
                     FACTORY_MAP.put(strProtocol, ohandler);
                 } else {
                     throw new MALException("DESTINATION_UNKNOWN_ERROR_NUMBER");
@@ -180,7 +178,7 @@ public final class TransportSingleton {
 
             transport = ohandler.createTransport(null, properties);
 
-            if (null != transport) {
+            if (transport != null) {
                 synchronized (TRANSPORT_MAP) {
                     TRANSPORT_MAP.put(strProtocol, transport);
                 }
@@ -210,15 +208,15 @@ public final class TransportSingleton {
      * @throws MALException If an error is detected closing the transports.
      */
     public static void close() throws MALException {
-        StringBuilder exceptionList = new StringBuilder();
+        StringBuilder exceptions = new StringBuilder();
         synchronized (TRANSPORT_MAP) {
             for (Entry<String, MALTransport> obj : TRANSPORT_MAP.entrySet()) {
                 try {
                     obj.getValue().close();
                 } catch (MALException ex) {
                     // there was a problem, record it and carry on
-                    exceptionList.append(" : ");
-                    exceptionList.append(ex.getMessage());
+                    exceptions.append(" : ");
+                    exceptions.append(ex.getMessage());
                 }
             }
 
@@ -226,17 +224,17 @@ public final class TransportSingleton {
             FACTORY_MAP.clear();
         }
 
-        if (0 != exceptionList.length()) {
+        if (exceptions.length() != 0) {
             // now we can throw the exceptions we caught earlier.
-            throw new MALException("Error during closing of transports" + exceptionList);
+            throw new MALException("Error during closing of transports: " + exceptions.toString());
         }
     }
 
     private static String getProtocol(String dstUri) {
         // get protocol from uri
-        final int iPro = dstUri.indexOf(':');
-        if (-1 != iPro) {
-            dstUri = dstUri.substring(0, iPro);
+        final int index = dstUri.indexOf(':');
+        if (index != -1) {
+            dstUri = dstUri.substring(0, index);
         }
 
         return dstUri;
