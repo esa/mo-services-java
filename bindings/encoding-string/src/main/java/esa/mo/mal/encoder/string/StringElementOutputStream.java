@@ -21,7 +21,7 @@
 package esa.mo.mal.encoder.string;
 
 import esa.mo.mal.encoder.gen.GENElementOutputStream;
-import esa.mo.mal.encoder.gen.GENEncoder;
+import esa.mo.mal.encoder.gen.Encoder;
 import java.io.OutputStream;
 
 /**
@@ -39,7 +39,7 @@ public class StringElementOutputStream extends GENElementOutputStream {
     }
 
     @Override
-    protected GENEncoder createEncoder(OutputStream os) {
+    protected Encoder createEncoder(OutputStream os) {
         return new StringEncoder(os);
     }
 }

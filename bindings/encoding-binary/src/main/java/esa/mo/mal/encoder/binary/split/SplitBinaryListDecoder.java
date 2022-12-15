@@ -21,6 +21,7 @@
 package esa.mo.mal.encoder.binary.split;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import esa.mo.mal.encoder.gen.BufferHolder;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
@@ -49,7 +50,7 @@ public class SplitBinaryListDecoder extends SplitBinaryDecoder implements MALLis
         super(sourceBuffer, timeHandler);
 
         this.list = list;
-        this.listSize = sourceBuffer.getUnsignedInt();
+        this.listSize = sourceBuffer.readUnsignedInt();
     }
 
     /**

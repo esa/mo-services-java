@@ -40,7 +40,7 @@ public class VariableBinaryElementOutputStream extends esa.mo.mal.encoder.binary
     }
 
     @Override
-    protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os) {
+    protected esa.mo.mal.encoder.gen.Encoder createEncoder(java.io.OutputStream os) {
         return new VariableBinaryEncoder(os, timeHandler);
     }
 }

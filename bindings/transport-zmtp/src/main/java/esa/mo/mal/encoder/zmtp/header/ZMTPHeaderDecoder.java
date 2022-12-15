@@ -123,7 +123,7 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
         long value = 0L;
         int i = 0;
         long b;
-        while (((b = sourceBuffer.get8()) & 0x80L) != 0) {
+        while (((b = sourceBuffer.read8()) & 0x80L) != 0) {
             value |= (b & 0x7F) << i;
             i += 7;
         }
@@ -160,7 +160,7 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
                         + mdk + ". Missing directory entry.");
             }
         } else {
-            ret = new String(sourceBuffer.directGetBytes(lengthOrMDK));
+            ret = new String(sourceBuffer.readBytes(lengthOrMDK));
         }
         return ret;
     }
@@ -177,7 +177,7 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
 
     @Override
     public String decodeNullableString() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeString();
         }
         return null;
@@ -207,6 +207,6 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
         if (len < 0) {
             throw new MALException("Negative blob length: " + len);
         }
-        return new Blob(sourceBuffer.directGetBytes(len));
+        return new Blob(sourceBuffer.readBytes(len));
     }
 }

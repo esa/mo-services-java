@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.string;
 
+import esa.mo.mal.encoder.gen.BufferHolder;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
@@ -44,7 +45,7 @@ public class StringListDecoder extends StringDecoder implements MALListDecoder {
         super(srcBuffer);
 
         this.list = list;
-        size = sourceBuffer.getSignedInt();
+        size = sourceBuffer.readSignedInt();
     }
 
     @Override

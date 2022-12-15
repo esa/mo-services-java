@@ -21,6 +21,7 @@
 package esa.mo.mal.encoder.binary.fixed;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import esa.mo.mal.encoder.gen.BufferHolder;
 import java.math.BigInteger;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
@@ -122,62 +123,62 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
         }
 
         @Override
-        public long getUnsignedLong() throws MALException {
+        public long readUnsignedLong() throws MALException {
             buf.checkBuffer(8);
             final int i = buf.shiftOffsetAndReturnPrevious(8);
             return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 8).getLong();
         }
 
         @Override
-        public long getUnsignedLong32() throws MALException {
+        public long readUnsignedLong32() throws MALException {
             buf.checkBuffer(4);
             final int i = buf.shiftOffsetAndReturnPrevious(4);
             return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 4).getInt() & 0xFFFFFFFFL;
         }
 
         @Override
-        public int getUnsignedInt() throws MALException {
+        public int readUnsignedInt() throws MALException {
             buf.checkBuffer(4);
             final int i = buf.shiftOffsetAndReturnPrevious(4);
             return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 4).getInt();
         }
 
         @Override
-        public int getUnsignedInt16() throws MALException {
+        public int readUnsignedInt16() throws MALException {
             buf.checkBuffer(2);
             final int i = buf.shiftOffsetAndReturnPrevious(2);
             return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 2).getShort() & 0xFFFF;
         }
 
         @Override
-        public int getUnsignedShort() throws MALException {
+        public int readUnsignedShort() throws MALException {
             buf.checkBuffer(2);
             final int i = buf.shiftOffsetAndReturnPrevious(2);
             return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 2).getShort();
         }
 
         @Override
-        public short getUnsignedShort8() throws MALException {
-            return (short) (get8() & 0xFF);
+        public short readUnsignedShort8() throws MALException {
+            return (short) (read8() & 0xFF);
         }
 
         @Override
-        public short getSignedShort() throws MALException {
-            return (short) getUnsignedShort();
+        public short readSignedShort() throws MALException {
+            return (short) readUnsignedShort();
         }
 
         @Override
-        public int getSignedInt() throws MALException {
-            return getUnsignedInt();
+        public int readSignedInt() throws MALException {
+            return readUnsignedInt();
         }
 
         @Override
-        public long getSignedLong() throws MALException {
-            return getUnsignedLong();
+        public long readSignedLong() throws MALException {
+            return readUnsignedLong();
         }
 
         @Override
-        public BigInteger getBigInteger() throws MALException {
+        public BigInteger readBigInteger() throws MALException {
             // Make sure that sign bit is always 0
             byte[] readBuf = new byte[9];
             System.arraycopy(buf.directGetBytes(8), 0, readBuf, 1, 8);
@@ -185,8 +186,8 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
         }
 
         @Override
-        public String getString() throws MALException {
-            int len = (shortLengthField) ? getUnsignedShort() : getUnsignedInt();
+        public String readString() throws MALException {
+            int len = (shortLengthField) ? readUnsignedShort() : readUnsignedInt();
 
             if (len >= 0) {
                 buf.checkBuffer(len);
@@ -197,9 +198,9 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
         }
 
         @Override
-        public byte[] getBytes() throws MALException {
-            int len = (shortLengthField) ? getUnsignedShort() : getUnsignedInt();
-            return directGetBytes(len);
+        public byte[] readBytes() throws MALException {
+            int len = (shortLengthField) ? readUnsignedShort() : readUnsignedInt();
+            return readBytes(len);
         }
     }
 }

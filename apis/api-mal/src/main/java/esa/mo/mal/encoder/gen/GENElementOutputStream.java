@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Generic Encoder Framework
+ * System                : CCSDS MO MAL Java API
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
 public abstract class GENElementOutputStream implements MALElementOutputStream {
 
     protected final OutputStream dos;
-    protected GENEncoder enc = null;
+    protected Encoder enc = null;
 
     /**
      * Constructor.
@@ -169,5 +169,5 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
      * @param os Output stream to wrap.
      * @return the new encoder.
      */
-    protected abstract GENEncoder createEncoder(OutputStream os);
+    protected abstract Encoder createEncoder(OutputStream os);
 }

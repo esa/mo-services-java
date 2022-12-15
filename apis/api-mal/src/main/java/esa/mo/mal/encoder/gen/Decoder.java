@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Generic Encoder Framework
+ * System                : CCSDS MO MAL Java API
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.encoder.gen;
 
-import java.math.BigInteger;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
@@ -41,118 +40,118 @@ import org.ccsds.moims.mo.mal.structures.Union;
 /**
  * Extends the MALDecoder interface for use in the generic encoding framework.
  */
-public abstract class GENDecoder implements MALDecoder {
+public abstract class Decoder implements MALDecoder {
 
     protected final BufferHolder sourceBuffer;
 
-    protected GENDecoder(BufferHolder sourceBuffer) {
+    protected Decoder(BufferHolder sourceBuffer) {
         this.sourceBuffer = sourceBuffer;
     }
 
     @Override
     public Blob decodeBlob() throws MALException {
-        return new Blob(sourceBuffer.getBytes());
+        return new Blob(sourceBuffer.readBytes());
     }
 
     @Override
     public Boolean decodeBoolean() throws MALException {
-        return sourceBuffer.getBool();
+        return sourceBuffer.readBool();
     }
 
     @Override
     public Identifier decodeIdentifier() throws MALException {
-        return new Identifier(sourceBuffer.getString());
+        return new Identifier(sourceBuffer.readString());
     }
 
     @Override
     public URI decodeURI() throws MALException {
-        return new URI(sourceBuffer.getString());
+        return new URI(sourceBuffer.readString());
     }
 
     @Override
     public String decodeString() throws MALException {
-        return sourceBuffer.getString();
+        return sourceBuffer.readString();
     }
 
     @Override
     public Integer decodeInteger() throws MALException {
-        return sourceBuffer.getSignedInt();
+        return sourceBuffer.readSignedInt();
     }
 
     @Override
     public Time decodeTime() throws MALException {
-        return new Time(sourceBuffer.getUnsignedLong());
+        return new Time(sourceBuffer.readUnsignedLong());
     }
 
     @Override
     public FineTime decodeFineTime() throws MALException {
-        return new FineTime(sourceBuffer.getUnsignedLong());
+        return new FineTime(sourceBuffer.readUnsignedLong());
     }
 
     @Override
     public Duration decodeDuration() throws MALException {
-        return new Duration(sourceBuffer.getDouble());
+        return new Duration(sourceBuffer.readDouble());
     }
 
     @Override
     public Long decodeLong() throws MALException {
-        return sourceBuffer.getSignedLong();
+        return sourceBuffer.readSignedLong();
     }
 
     @Override
     public Byte decodeOctet() throws MALException {
-        return sourceBuffer.get8();
+        return sourceBuffer.read8();
     }
 
     @Override
     public Short decodeShort() throws MALException {
-        return sourceBuffer.getSignedShort();
+        return sourceBuffer.readSignedShort();
     }
 
     @Override
     public ULong decodeULong() throws MALException {
-        return new ULong(sourceBuffer.getBigInteger());
+        return new ULong(sourceBuffer.readBigInteger());
     }
 
     @Override
     public UInteger decodeUInteger() throws MALException {
-        return new UInteger(sourceBuffer.getUnsignedLong32());
+        return new UInteger(sourceBuffer.readUnsignedLong32());
     }
 
     @Override
     public UOctet decodeUOctet() throws MALException {
-        return new UOctet(sourceBuffer.getUnsignedShort8());
+        return new UOctet(sourceBuffer.readUnsignedShort8());
     }
 
     @Override
     public UShort decodeUShort() throws MALException {
-        return new UShort(sourceBuffer.getUnsignedInt16());
+        return new UShort(sourceBuffer.readUnsignedInt16());
     }
 
     @Override
     public Float decodeFloat() throws MALException {
-        return sourceBuffer.getFloat();
+        return sourceBuffer.readFloat();
     }
 
     @Override
     public Double decodeDouble() throws MALException {
-        return sourceBuffer.getDouble();
+        return sourceBuffer.readDouble();
     }
 
     @Override
     public ObjectRef decodeObjectRef() throws MALException {
-        return new ObjectRef(sourceBuffer.getString(),
-                new Identifier(sourceBuffer.getString()),
-                new Identifier(sourceBuffer.getString()),
-                new Identifier(sourceBuffer.getString()),
-                new UInteger(sourceBuffer.getUnsignedLong32())
+        return new ObjectRef(sourceBuffer.readString(),
+                new Identifier(sourceBuffer.readString()),
+                new Identifier(sourceBuffer.readString()),
+                new Identifier(sourceBuffer.readString()),
+                new UInteger(sourceBuffer.readUnsignedLong32())
         );
     }
 
     @Override
     public String decodeNullableString() throws MALException {
-        if (sourceBuffer.isNotNull()) {
-            return sourceBuffer.getString();
+        if (sourceBuffer.readIsNotNull()) {
+            return sourceBuffer.readString();
         }
 
         return null;
@@ -160,7 +159,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Identifier decodeNullableIdentifier() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeIdentifier();
         }
 
@@ -169,7 +168,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public URI decodeNullableURI() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeURI();
         }
 
@@ -178,7 +177,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Blob decodeNullableBlob() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeBlob();
         }
 
@@ -187,7 +186,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Boolean decodeNullableBoolean() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeBoolean();
         }
 
@@ -196,7 +195,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Time decodeNullableTime() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeTime();
         }
 
@@ -205,7 +204,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public FineTime decodeNullableFineTime() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeFineTime();
         }
 
@@ -214,7 +213,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Duration decodeNullableDuration() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeDuration();
         }
 
@@ -223,7 +222,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Float decodeNullableFloat() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeFloat();
         }
 
@@ -232,7 +231,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Double decodeNullableDouble() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeDouble();
         }
 
@@ -241,7 +240,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Long decodeNullableLong() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeLong();
         }
 
@@ -250,7 +249,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Integer decodeNullableInteger() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeInteger();
         }
 
@@ -259,7 +258,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Short decodeNullableShort() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeShort();
         }
 
@@ -268,7 +267,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Byte decodeNullableOctet() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeOctet();
         }
 
@@ -277,7 +276,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public ULong decodeNullableULong() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeULong();
         }
 
@@ -286,7 +285,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public UInteger decodeNullableUInteger() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeUInteger();
         }
 
@@ -295,7 +294,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public UShort decodeNullableUShort() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeUShort();
         }
 
@@ -304,7 +303,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public UOctet decodeNullableUOctet() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeUOctet();
         }
 
@@ -313,12 +312,12 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Attribute decodeAttribute() throws MALException {
-        return internalDecodeAttribute(internalDecodeAttributeType(sourceBuffer.get8()));
+        return internalDecodeAttribute(internalDecodeAttributeType(sourceBuffer.read8()));
     }
 
     @Override
     public Attribute decodeNullableAttribute() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeAttribute();
         }
 
@@ -327,7 +326,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public ObjectRef decodeNullableObjectRef() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeObjectRef();
         }
 
@@ -386,7 +385,7 @@ public abstract class GENDecoder implements MALDecoder {
 
     @Override
     public Element decodeNullableElement(final Element element) throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return element.decode(this);
         }
 
@@ -421,159 +420,4 @@ public abstract class GENDecoder implements MALDecoder {
      */
     public abstract byte[] getRemainingEncodedData() throws MALException;
 
-    /**
-     * Internal class that is used to hold the byte buffer. Derived classes
-     * should extend this (and replace it in the constructors) if they encode
-     * the fields differently from this encoding.
-     */
-    public abstract static class BufferHolder {
-
-        /**
-         * Gets a string from the incoming stream.
-         *
-         * @return the extracted string.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract String getString() throws MALException;
-
-        /**
-         * Gets a float from the incoming stream.
-         *
-         * @return the extracted float.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract float getFloat() throws MALException;
-
-        /**
-         * Gets a double from the incoming stream.
-         *
-         * @return the extracted double.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract double getDouble() throws MALException;
-
-        /**
-         * Gets a BigInteger from the incoming stream.
-         *
-         * @return the extracted BigInteger.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract BigInteger getBigInteger() throws MALException;
-
-        /**
-         * Gets a single signed long from the incoming stream.
-         *
-         * @return the extracted value.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract long getSignedLong() throws MALException;
-
-        /**
-         * Gets a single signed integer from the incoming stream.
-         *
-         * @return the extracted value.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract int getSignedInt() throws MALException;
-
-        /**
-         * Gets a single signed short from the incoming stream.
-         *
-         * @return the extracted value.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract short getSignedShort() throws MALException;
-
-        /**
-         * Gets a single unsigned long from the incoming stream.
-         *
-         * @return the extracted value.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract long getUnsignedLong() throws MALException;
-
-        /**
-         * Gets a single 32 bit unsigned integer as a long from the incoming
-         * stream.
-         *
-         * @return the extracted value.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract long getUnsignedLong32() throws MALException;
-
-        /**
-         * Gets a single unsigned integer from the incoming stream.
-         *
-         * @return the extracted value.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract int getUnsignedInt() throws MALException;
-
-        /**
-         * Gets a single 16 bit unsigned integer as a int from the incoming
-         * stream.
-         *
-         * @return the extracted value.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract int getUnsignedInt16() throws MALException;
-
-        /**
-         * Gets a single unsigned short from the incoming stream.
-         *
-         * @return the extracted value.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract int getUnsignedShort() throws MALException;
-
-        /**
-         * Gets a single 8 bit unsigned integer as a short from the incoming
-         * stream.
-         *
-         * @return the extracted value.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract short getUnsignedShort8() throws MALException;
-
-        /**
-         * Gets a single byte from the incoming stream.
-         *
-         * @return the extracted byte.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract byte get8() throws MALException;
-
-        /**
-         * Gets a byte array from the incoming stream.
-         *
-         * @return the extracted byte.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract byte[] getBytes() throws MALException;
-
-        /**
-         * Gets a single Boolean value from the incoming stream.
-         *
-         * @return the extracted value.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract boolean getBool() throws MALException;
-
-        /**
-         * Returns true is the next value is not NULL.
-         *
-         * @return the extracted value.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract boolean isNotNull() throws MALException;
-
-        /**
-         * Gets a byte array from the incoming stream.
-         *
-         * @param length The number of bytes to retrieve
-         * @return the extracted byte.
-         * @throws MALException If there is a problem with the decoding.
-         */
-        public abstract byte[] directGetBytes(int length) throws MALException;
-    }
 }

@@ -20,7 +20,8 @@
  */
 package esa.mo.mal.encoder.string;
 
-import esa.mo.mal.encoder.gen.GENDecoder;
+import esa.mo.mal.encoder.gen.BufferHolder;
+import esa.mo.mal.encoder.gen.Decoder;
 import static esa.mo.mal.encoder.string.StringEncoder.STR_DELIM;
 import static esa.mo.mal.encoder.string.StringEncoder.STR_DELIM_ESC;
 import static esa.mo.mal.encoder.string.StringEncoder.STR_ESC;
@@ -38,7 +39,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 /**
  * The implementation of the MALDecoder interface for the String encoding.
  */
-public class StringDecoder extends GENDecoder {
+public class StringDecoder extends Decoder {
 
     static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
     public static final int BLOCK_SIZE = 65536;
@@ -77,7 +78,7 @@ public class StringDecoder extends GENDecoder {
 
     @Override
     public Element decodeNullableElement(final Element element) throws MALException {
-        final String strVal = sourceBuffer.getString();
+        final String strVal = sourceBuffer.readString();
 
         // Check if object is not null...
         if (!strVal.equals(STR_NULL)) {
@@ -133,12 +134,12 @@ public class StringDecoder extends GENDecoder {
         }
 
         @Override
-        public String getString() throws MALException {
+        public String readString() throws MALException {
             return removeFirst();
         }
 
         @Override
-        public float getFloat() throws MALException {
+        public float readFloat() throws MALException {
             try {
                 return Float.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
@@ -147,7 +148,7 @@ public class StringDecoder extends GENDecoder {
         }
 
         @Override
-        public double getDouble() throws MALException {
+        public double readDouble() throws MALException {
             try {
                 return Double.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
@@ -156,7 +157,7 @@ public class StringDecoder extends GENDecoder {
         }
 
         @Override
-        public BigInteger getBigInteger() throws MALException {
+        public BigInteger readBigInteger() throws MALException {
             try {
                 return new BigInteger(removeFirst());
             } catch (NumberFormatException ex) {
@@ -165,7 +166,7 @@ public class StringDecoder extends GENDecoder {
         }
 
         @Override
-        public long getSignedLong() throws MALException {
+        public long readSignedLong() throws MALException {
             try {
                 return Long.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
@@ -174,7 +175,7 @@ public class StringDecoder extends GENDecoder {
         }
 
         @Override
-        public int getSignedInt() throws MALException {
+        public int readSignedInt() throws MALException {
             try {
                 return Integer.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
@@ -183,7 +184,7 @@ public class StringDecoder extends GENDecoder {
         }
 
         @Override
-        public short getSignedShort() throws MALException {
+        public short readSignedShort() throws MALException {
             try {
                 return Short.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
@@ -192,42 +193,42 @@ public class StringDecoder extends GENDecoder {
         }
 
         @Override
-        public long getUnsignedLong() throws MALException {
-            return getSignedLong();
+        public long readUnsignedLong() throws MALException {
+            return readSignedLong();
         }
 
         @Override
-        public long getUnsignedLong32() throws MALException {
-            return getSignedLong();
+        public long readUnsignedLong32() throws MALException {
+            return readSignedLong();
         }
 
         @Override
-        public int getUnsignedInt() throws MALException {
-            return getSignedInt();
+        public int readUnsignedInt() throws MALException {
+            return readSignedInt();
         }
 
         @Override
-        public int getUnsignedInt16() throws MALException {
-            return getSignedInt();
+        public int readUnsignedInt16() throws MALException {
+            return readSignedInt();
         }
 
         @Override
-        public int getUnsignedShort() throws MALException {
-            return getSignedInt();
+        public int readUnsignedShort() throws MALException {
+            return readSignedInt();
         }
 
         @Override
-        public short getUnsignedShort8() throws MALException {
-            return getSignedShort();
+        public short readUnsignedShort8() throws MALException {
+            return readSignedShort();
         }
 
         @Override
-        public byte[] getBytes() throws MALException {
+        public byte[] readBytes() throws MALException {
             return hexStringToByteArray(removeFirst());
         }
 
         @Override
-        public boolean getBool() throws MALException {
+        public boolean readBool() throws MALException {
             try {
                 return Boolean.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
@@ -236,7 +237,7 @@ public class StringDecoder extends GENDecoder {
         }
 
         @Override
-        public byte get8() throws MALException {
+        public byte read8() throws MALException {
             try {
                 return Byte.valueOf(removeFirst());
             } catch (NumberFormatException ex) {
@@ -245,7 +246,7 @@ public class StringDecoder extends GENDecoder {
         }
 
         @Override
-        public boolean isNotNull() throws MALException {
+        public boolean readIsNotNull() throws MALException {
             final String strVal = peekNext();
 
             // Check if object is null...
@@ -260,7 +261,7 @@ public class StringDecoder extends GENDecoder {
         }
 
         @Override
-        public byte[] directGetBytes(int length) throws MALException {
+        public byte[] readBytes(int length) throws MALException {
             // not supported/required for this encoding
             return null;
         }

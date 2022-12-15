@@ -21,6 +21,7 @@
 package esa.mo.mal.encoder.binary.fixed;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import esa.mo.mal.encoder.gen.StreamHolder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -84,52 +85,52 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
         }
 
         @Override
-        public void addSignedLong(final long value) throws IOException {
-            addUnsignedLong(value);
+        public void writeSignedLong(final long value) throws IOException {
+            writeUnsignedLong(value);
         }
 
         @Override
-        public void addSignedInt(final int value) throws IOException {
-            addUnsignedInt(value);
+        public void writeSignedInt(final int value) throws IOException {
+            writeUnsignedInt(value);
         }
 
         @Override
-        public void addSignedShort(final short value) throws IOException {
-            addUnsignedShort(value);
+        public void writeSignedShort(final short value) throws IOException {
+            writeUnsignedShort(value);
         }
 
         @Override
-        public void addUnsignedLong(long value) throws IOException {
-            directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array());
+        public void writeUnsignedLong(long value) throws IOException {
+            write(java.nio.ByteBuffer.allocate(8).putLong(value).array());
         }
 
         @Override
-        public void addUnsignedLong32(long value) throws IOException {
-            directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array(), 4, 4);
+        public void writeUnsignedLong32(long value) throws IOException {
+            write(java.nio.ByteBuffer.allocate(8).putLong(value).array(), 4, 4);
         }
 
         @Override
-        public void addUnsignedInt(int value) throws IOException {
-            directAdd(java.nio.ByteBuffer.allocate(4).putInt(value).array());
+        public void writeUnsignedInt(int value) throws IOException {
+            write(java.nio.ByteBuffer.allocate(4).putInt(value).array());
         }
 
         @Override
-        public void addUnsignedInt16(int value) throws IOException {
-            directAdd(java.nio.ByteBuffer.allocate(4).putInt(value).array(), 2, 2);
+        public void writeUnsignedInt16(int value) throws IOException {
+            write(java.nio.ByteBuffer.allocate(4).putInt(value).array(), 2, 2);
         }
 
         @Override
-        public void addUnsignedShort(int value) throws IOException {
-            directAdd(java.nio.ByteBuffer.allocate(2).putShort((short) value).array());
+        public void writeUnsignedShort(int value) throws IOException {
+            write(java.nio.ByteBuffer.allocate(2).putShort((short) value).array());
         }
 
         @Override
-        public void addUnsignedShort8(short value) throws IOException {
-            directAdd(java.nio.ByteBuffer.allocate(2).putShort(value).array()[1]);
+        public void writeUnsignedShort8(short value) throws IOException {
+            write(java.nio.ByteBuffer.allocate(2).putShort(value).array()[1]);
         }
 
         @Override
-        public void addBigInteger(BigInteger value) throws IOException {
+        public void writeBigInteger(BigInteger value) throws IOException {
             byte[] valueBytes = value.toByteArray();
             int arrayLength = valueBytes.length;
             int arrayOffset = 0;
@@ -145,25 +146,25 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
             }
             java.nio.ByteBuffer buf = java.nio.ByteBuffer.allocate(8);
             buf.position(8 - arrayLength);
-            directAdd(buf.put(valueBytes, arrayOffset, arrayLength).array());
+            write(buf.put(valueBytes, arrayOffset, arrayLength).array());
         }
 
         @Override
-        public void addBytes(final byte[] value) throws IOException {
+        public void writeBytes(final byte[] value) throws IOException {
             if (null == value) {
                 if (shortLengthField) {
-                    addUnsignedShort(0);
+                    writeUnsignedShort(0);
                 } else {
-                    addUnsignedInt(0);
+                    writeUnsignedInt(0);
                 }
                 throw new IOException("StreamHolder.addBytes: null value supplied!!");
             } else {
                 if (shortLengthField) {
-                    addUnsignedShort(value.length);
+                    writeUnsignedShort(value.length);
                 } else {
-                    addUnsignedInt(value.length);
+                    writeUnsignedInt(value.length);
                 }
-                directAdd(value);
+                write(value);
             }
         }
     }

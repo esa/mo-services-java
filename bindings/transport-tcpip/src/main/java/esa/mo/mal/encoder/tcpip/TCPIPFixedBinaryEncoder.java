@@ -78,7 +78,7 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
 
         encodeUInteger(new UInteger(output.length));
         try {
-            outputStream.directAdd(output);
+            outputStream.write(output);
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
@@ -93,7 +93,7 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
     public void encodeMALLong(Long val) throws MALException {
 
         try {
-            outputStream.addSignedLong(val);
+            outputStream.writeSignedLong(val);
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
@@ -151,7 +151,7 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
 
         if (value.getLength() > 0) {
             try {
-                outputStream.directAdd(byteValue);
+                outputStream.write(byteValue);
             } catch (IOException ex) {
                 throw new MALException(ENCODING_EXCEPTION_STR, ex);
             }

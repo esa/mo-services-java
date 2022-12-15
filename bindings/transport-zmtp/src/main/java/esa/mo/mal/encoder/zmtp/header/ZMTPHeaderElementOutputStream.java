@@ -22,7 +22,7 @@ package esa.mo.mal.encoder.zmtp.header;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
-import esa.mo.mal.encoder.gen.GENEncoder;
+import esa.mo.mal.encoder.gen.Encoder;
 import esa.mo.mal.transport.zmtp.ZMTPTransport;
 
 /**
@@ -50,7 +50,7 @@ public class ZMTPHeaderElementOutputStream extends FixedBinaryElementOutputStrea
     }
 
     @Override
-    protected GENEncoder createEncoder(java.io.OutputStream os) {
+    protected Encoder createEncoder(java.io.OutputStream os) {
         return new ZMTPHeaderEncoder(os, transport, timeHandler);
     }
 

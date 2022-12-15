@@ -21,6 +21,7 @@
 package esa.mo.mal.encoder.binary.variable;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import esa.mo.mal.encoder.gen.BufferHolder;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
@@ -49,7 +50,7 @@ public class VariableBinaryListDecoder extends VariableBinaryDecoder implements 
         super(sourceBuffer, timeHandler);
 
         this.list = list;
-        this.listSize = sourceBuffer.getUnsignedInt();
+        this.listSize = sourceBuffer.readUnsignedInt();
     }
 
     /**

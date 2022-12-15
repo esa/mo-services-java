@@ -20,7 +20,8 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
-import esa.mo.mal.encoder.gen.GENDecoder;
+import esa.mo.mal.encoder.gen.BufferHolder;
+import esa.mo.mal.encoder.gen.Decoder;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ import org.ccsds.moims.mo.mal.structures.Time;
 /**
  * Implements the MALDecoder interface for a binary encoding.
  */
-public abstract class BaseBinaryDecoder extends GENDecoder {
+public abstract class BaseBinaryDecoder extends Decoder {
 
     protected static final java.util.logging.Logger LOGGER = Logger.getLogger(
             BaseBinaryDecoder.class.getName());
@@ -123,8 +124,8 @@ public abstract class BaseBinaryDecoder extends GENDecoder {
         }
 
         @Override
-        public String getString() throws MALException {
-            final int len = getUnsignedInt();
+        public String readString() throws MALException {
+            final int len = readUnsignedInt();
 
             if (len >= 0) {
                 buf.checkBuffer(len);
@@ -137,37 +138,37 @@ public abstract class BaseBinaryDecoder extends GENDecoder {
         }
 
         @Override
-        public byte get8() throws MALException {
+        public byte read8() throws MALException {
             return buf.get8();
         }
 
         @Override
-        public byte[] getBytes() throws MALException {
-            return directGetBytes(getUnsignedInt());
+        public byte[] readBytes() throws MALException {
+            return readBytes(readUnsignedInt());
         }
 
         @Override
-        public boolean getBool() throws MALException {
-            return !(0 == get8());
+        public boolean readBool() throws MALException {
+            return !(0 == read8());
         }
 
         @Override
-        public boolean isNotNull() throws MALException {
-            return getBool();
+        public boolean readIsNotNull() throws MALException {
+            return readBool();
         }
 
         @Override
-        public float getFloat() throws MALException {
-            return Float.intBitsToFloat(getSignedInt());
+        public float readFloat() throws MALException {
+            return Float.intBitsToFloat(readSignedInt());
         }
 
         @Override
-        public double getDouble() throws MALException {
-            return Double.longBitsToDouble(getSignedLong());
+        public double readDouble() throws MALException {
+            return Double.longBitsToDouble(readSignedLong());
         }
 
         @Override
-        public byte[] directGetBytes(final int size) throws MALException {
+        public byte[] readBytes(final int size) throws MALException {
             return buf.directGetBytes(size);
         }
     }

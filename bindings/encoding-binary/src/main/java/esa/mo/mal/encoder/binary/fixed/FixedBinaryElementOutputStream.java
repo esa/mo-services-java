@@ -49,7 +49,7 @@ public class FixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary.ba
     }
 
     @Override
-    protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os) {
+    protected esa.mo.mal.encoder.gen.Encoder createEncoder(java.io.OutputStream os) {
         return new FixedBinaryEncoder(os, timeHandler, shortLengthField);
     }
 }

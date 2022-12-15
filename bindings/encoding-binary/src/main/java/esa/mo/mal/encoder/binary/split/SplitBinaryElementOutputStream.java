@@ -39,7 +39,7 @@ public class SplitBinaryElementOutputStream extends esa.mo.mal.encoder.binary.va
     }
 
     @Override
-    protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os) {
+    protected esa.mo.mal.encoder.gen.Encoder createEncoder(java.io.OutputStream os) {
         return new SplitBinaryEncoder(os, timeHandler);
     }
 }

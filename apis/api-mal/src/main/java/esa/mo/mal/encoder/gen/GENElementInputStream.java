@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Generic Encoder Framework
+ * System                : CCSDS MO MAL Java API
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -39,14 +39,14 @@ import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
  */
 public abstract class GENElementInputStream implements MALElementInputStream {
 
-    protected final GENDecoder dec;
+    protected final Decoder dec;
 
     /**
      * Sub class constructor.
      *
      * @param pdec Decoder to use.
      */
-    protected GENElementInputStream(GENDecoder pdec) {
+    protected GENElementInputStream(Decoder pdec) {
         dec = pdec;
     }
 
