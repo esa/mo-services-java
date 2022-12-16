@@ -181,11 +181,7 @@ public class InteractionConsumerMap {
             }
         }
 
-        MALMessage retVal = null;
-
-        // do the wait
-        if (null != holder) {
-            // wait for the bat signal
+        if (holder != null) { // Wait until ready...
             holder.waitForResponseSignal();
 
             // delete entry from trans map
@@ -196,12 +192,11 @@ public class InteractionConsumerMap {
             }
 
             synchronized (holder) {
-                // must have value now
-                retVal = holder.getResult();
+                return holder.getResult(); // must have value now
             }
         }
 
-        return retVal;
+        return null;
     }
 
     public void handleStage(final MALMessage msg) throws MALInteractionException, MALException {

@@ -169,50 +169,6 @@ public class BrokerMatcher {
     }
 
     /**
-     * Compares two Attribute Key Values taking into account wildcard values.
-     *
-     * @param myKeyPart The first key part.
-     * @param theirKeyPart The second key part.
-     * @return True if they match or one is the wildcard.
-     */
-    /*
-    public static boolean matchKeyValues(final Attribute myKeyPart, final Attribute theirKeyPart) {
-        if ((myKeyPart == null) || (theirKeyPart == null)) {
-            return true;
-        }
-
-        // Are we handling strings?
-        if (HelperMisc.isStringAttribute(myKeyPart) && HelperMisc.isStringAttribute(theirKeyPart)) {
-            String first = HelperAttributes.attribute2string(myKeyPart);
-            String second = HelperAttributes.attribute2string(theirKeyPart);
-
-            if (ALL_ID.equals(first) || ALL_ID.equals(second)) {
-                return true;
-            }
-        }
-
-        // Are we not handling strings?
-        if (!HelperMisc.isStringAttribute(myKeyPart) && !HelperMisc.isStringAttribute(theirKeyPart)) {
-            if ((myKeyPart instanceof Union) || (theirKeyPart instanceof Union)) {
-                if (((Union) myKeyPart).isNull() || ((Union) theirKeyPart).isNull()) {
-                    return true;
-                }
-            }
-
-            Object first = HelperAttributes.attribute2JavaType(myKeyPart);
-            Object second = HelperAttributes.attribute2JavaType(theirKeyPart);
-
-            if (first instanceof Long) {
-                if (ALL_NUMBER.equals((Long) first) || ALL_NUMBER.equals((Long) second)) {
-                    return true;
-                }
-            }
-        }
-
-        return myKeyPart.equals(theirKeyPart);
-    }
-     */
-    /**
      * Compares two String sub-keys taking into account wildcard values. This
      * method is deprecated because it was being used before we changed to MO
      * v2.0 as the subscription to PUBSUB has now changed.
