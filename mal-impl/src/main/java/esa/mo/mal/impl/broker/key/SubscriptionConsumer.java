@@ -21,6 +21,8 @@
 package esa.mo.mal.impl.broker.key;
 
 import esa.mo.mal.impl.broker.BrokerMatcher;
+import esa.mo.mal.impl.broker.MALBrokerImpl;
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
@@ -166,12 +168,18 @@ public final class SubscriptionConsumer {
 
                 // We need to match at least one of the values!
                 for (Attribute value : filter.getValues().getAsAttributes()) {
+                    MALBrokerImpl.LOGGER.log(Level.FINE,
+                            "Matching the subscription value against the provider value! "
+                            + "For key name: {0}\nConsumer Value: {1}  -  Provider Value:  {2}",
+                            new Object[]{keyValue.getName(), value, keyValue.getValue()});
+
                     // Keep looking until we find a match!
-                    //if (value == null || value.equals(keyValue.getValue())) {
                     if (BrokerMatcher.matchKeyValues(value, keyValue.getValue())) {
+                        MALBrokerImpl.LOGGER.log(Level.FINER, "Matched: true");
                         matchedORed = true;
                         break;
                     }
+                    MALBrokerImpl.LOGGER.log(Level.FINER, "Matched: false");
                 }
 
                 if (!matchedORed) { // No values matched?
