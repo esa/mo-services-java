@@ -92,9 +92,9 @@ public class HeaderTestProcedureImpl extends LoggingBase
   
   private AssertionList assertions;
   
-  private Hashtable consumerContexts;
+  private final Hashtable consumerContexts;
   
-  private IdentifierList[] domains;
+  private final IdentifierList[] domains;
   
   public HeaderTestProcedureImpl() {
     consumerContexts = new Hashtable();
@@ -125,6 +125,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
   /**
    * Allows a subclass to override the consumer, for example by
    * interacting with another service provider and with specific QoS properties.
+   * @param domain
    * @param session
    * @param sessionName
    * @param qos
@@ -202,15 +203,13 @@ public class HeaderTestProcedureImpl extends LoggingBase
 
     SubscriptionFilterList filters = new SubscriptionFilterList();
     filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME)));
-    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.getDomain(domain), filters);
     MonitorListener listener = new MonitorListener();
     
     ConsumerContext consumerContext = new ConsumerContext(listener);
     
     logMessage("new consumer context");
-    consumerContexts.put(
-        new ConsumerKey(qosLevel, sessionType, sharedBroker),
-        consumerContext);
+    consumerContexts.put(new ConsumerKey(qosLevel, sessionType, sharedBroker), consumerContext);
     
     FileBasedDirectory.URIpair uris = getProviderURIs(shared);
     
@@ -324,13 +323,13 @@ public class HeaderTestProcedureImpl extends LoggingBase
     AttributeList keyValues = new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME);
 
     UpdateHeader updateHeader1 = new UpdateHeader(new Identifier("source"), d, keyValues);
-    TestUpdate update1 = new TestUpdate(new Integer(1));
+    TestUpdate update1 = new TestUpdate(1);
     UpdateHeader updateHeader2 = new UpdateHeader(new Identifier("source"), d, keyValues);
-    TestUpdate update2 = new TestUpdate(new Integer(2));
+    TestUpdate update2 = new TestUpdate(2);
     UpdateHeader updateHeader3 = new UpdateHeader(new Identifier("source"), d, keyValues);
-    TestUpdate update3 = new TestUpdate(new Integer(3));
+    TestUpdate update3 = new TestUpdate(3);
     UpdateHeader updateHeader4 = new UpdateHeader(new Identifier("source"), d, keyValues);
-    TestUpdate update4 = new TestUpdate(new Integer(4));
+    TestUpdate update4 = new TestUpdate(4);
                 
     UpdateHeaderList updateHeaders = new UpdateHeaderList();
     updateHeaders.add(updateHeader1);
@@ -365,7 +364,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
   public boolean getNotifyWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,
       String sessionType, String sharedBroker, int domain) throws Exception {
     logMessage("getNotifyWithQosAndSessionAndSharedBrokerAndDomain(" + qosLevel 
-            + ',' + sessionType + ',' + sharedBroker + ',' + domain+ ')');
+            + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
     resetAssertions();
     
     QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
@@ -407,11 +406,11 @@ public class HeaderTestProcedureImpl extends LoggingBase
         MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
         Boolean.FALSE);
     
-    MALMessageHeader monitorNotifyHeader =
-      cc.getListener().getMonitorNotifyHeader();
+    MALMessageHeader monitorNotifyHeader = cc.getListener().getMonitorNotifyHeader();
     
     if (monitorNotifyHeader == null) {
-      logMessage("Wait timeout");
+      logMessage("Wait timeout! Make sure that the Subscription is correct, "
+              + "otherwise you won't receive the NOTIFY message!");
       return false;
     }
     
@@ -464,7 +463,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
         Boolean.TRUE);
     
     TestEndPoint ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
-    
+
     MALMessage notifyMessage = ep.createTestMessage(
         expectedMonitorNotifyErrorHeader,
         new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), new Hashtable());
@@ -503,7 +502,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     AttributeList keyValues = new AttributeList(HeaderTestProcedure.WRONG_KEY_NAME);
     keyValues.add(new Identifier("OneMoreValueToForceUnknownError"));
     UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"), HeaderTestProcedure.getDomain(domain), keyValues);
-    TestUpdate update = new TestUpdate(new Integer(1));
+    TestUpdate update = new TestUpdate(1);
     
     UpdateHeaderList updateHeaders = new UpdateHeaderList();
     updateHeaders.add(updateHeader);
@@ -694,8 +693,6 @@ public class HeaderTestProcedureImpl extends LoggingBase
     return true;
   }
   
-  
-  
   public boolean initiateRegisterErrorWithQosAndSessionAndSharedBrokerAndDomain(
       String qosLevel, String sessionType, String sharedBroker, int domain)
       throws Exception
@@ -716,7 +713,7 @@ public class HeaderTestProcedureImpl extends LoggingBase
     filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME)));
 
     Subscription subscription = new Subscription(
-        HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID, HeaderTestProcedure.getDomain(domain), filters);
     MonitorListener listener = new MonitorListener();
 
     ConsumerContext consumerContext = new ConsumerContext(listener);
