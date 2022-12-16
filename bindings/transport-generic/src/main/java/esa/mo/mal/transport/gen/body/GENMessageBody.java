@@ -91,15 +91,10 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
     public GENMessageBody(final MALEncodingContext ctx,
             final MALElementStreamFactory encFactory,
             final Object[] messageParts) {
-        wrappedBodyParts = false;
-        if (null != messageParts) {
-            this.bodyPartCount = messageParts.length;
-        } else {
-            this.bodyPartCount = 0;
-        }
-
-        this.messageParts = messageParts;
         this.ctx = ctx;
+        wrappedBodyParts = false;
+        this.bodyPartCount = (messageParts != null) ? messageParts.length : 0;
+        this.messageParts = messageParts;
         this.encFactory = encFactory;
         decodedBody = true;
     }
@@ -142,6 +137,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
     public MALEncodedBody getEncodedBody() throws MALException {
         if (!decodedBody && (encBodyElements instanceof GENElementInputStream)) {
             byte[] rd = ((GENElementInputStream) encBodyElements).getRemainingEncodedData();
+
             if ((null != encBodyBytes) && (0 < encBodyBytes.available())) {
                 byte[] c = new byte[rd.length + encBodyBytes.available()];
                 System.arraycopy(rd, 0, c, 0, rd.length);
@@ -151,6 +147,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
 
                 rd = c;
             }
+
             return new MALEncodedBody(new Blob(rd));
         } else {
             throw new UnsupportedOperationException("Not supported yet.");
@@ -455,9 +452,8 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
      */
     protected Object decodeBodyPart(final MALElementInputStream decoder,
             MALEncodingContext ctx, Object sf) throws MALException {
-        Object rv = null;
-
         MALElementInputStream lenc = decoder;
+        
         if (wrappedBodyParts) {
             final Blob ele = (Blob) decoder.readElement(new Blob(), null);
             final ByteArrayInputStream lbais = new ByteArrayInputStream(ele.getValue());
@@ -465,30 +461,28 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
         }
 
         // work out whether it is a MAL element or JAXB element we have received
-        if (!(sf instanceof String)) {
-            Object element = null;
-            if (null != sf) {
-                Long shortForm = (Long) sf;
-                GENTransport.LOGGER.log(Level.FINER,
-                        "GEN Message decoding body part : Type = {0}", shortForm);
-                final MALElementFactory ef = MALContextFactory
-                        .getElementFactoryRegistry()
-                        .lookupElementFactory(shortForm);
-                if (null != ef) {
-                    element = (Element) ef.createElement();
-                } else {
-                    throw new MALException(
-                            "GEN transport unable to find element factory "
-                            + "for short type: " + shortForm);
-                }
-            }
-
-            rv = lenc.readElement(element, ctx);
-        } else {
-            GENTransport.LOGGER.log(Level.WARNING,
-                    "Marshalling and unmarshalling of JAXB is no longer supported!");
+        if ((sf instanceof String)) {
+            throw new MALException("Marshalling and unmarshalling of "
+                    + "JAXB elements is no longer supported!");
         }
 
-        return rv;
+        Object element = null;
+        if (null != sf) {
+            Long shortForm = (Long) sf;
+            GENTransport.LOGGER.log(Level.FINER,
+                    "GEN Message decoding body part : Type = {0}", shortForm);
+            final MALElementFactory ef = MALContextFactory
+                    .getElementFactoryRegistry()
+                    .lookupElementFactory(shortForm);
+            if (null != ef) {
+                element = (Element) ef.createElement();
+            } else {
+                throw new MALException(
+                        "GEN transport unable to find element factory "
+                        + "for short type: " + shortForm);
+            }
+        }
+
+        return lenc.readElement(element, ctx);
     }
 }
