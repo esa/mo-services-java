@@ -27,8 +27,8 @@
     <version>9.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
   
-    <name>ESA MO API Generator</name>
-    <description>Generates technology bindings for CCSDS MAL service specifications</description>
+    <name>ESA MO API Generator Maven Plugin</name>
+    <description>Maven Plugin to generate APIs for MO services</description>
   
     <organization>
         <name>ESA</name>

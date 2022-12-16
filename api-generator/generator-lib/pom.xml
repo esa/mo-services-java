@@ -27,7 +27,7 @@
     <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
   
-    <name>ESA MO API Generator Plugin Library</name>
+    <name>ESA MO API Generator - Library</name>
   
     <organization>
         <name>ESA</name>
