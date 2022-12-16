@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * <--         40bits         |   8 bits     |      16 bits          -->
  * <--  Time (ms resolution)  |  Randomness  |  Transaction Counter  -->
  */
-public class InteractionTransaction {
+public class TransactionIdCounter {
 
     private static final long MAL_EPOCH = 1283299200000L;
     private static final long MAX_OFFSET = 0xFFFFL;
@@ -46,7 +46,7 @@ public class InteractionTransaction {
     private static long partAB = recalculatePartAB(); // Time with Randomness
     private static final AtomicLong transactionCounter = new AtomicLong(0);
 
-    public static synchronized Long getTransactionId() {
+    public static synchronized Long nextTransactionId() {
         long counter = transactionCounter.incrementAndGet();
 
         if (counter > MAX_OFFSET) {

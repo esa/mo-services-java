@@ -63,7 +63,7 @@ public class InteractionConsumerMap {
             final boolean syncOperation,
             final MALInteractionListener listener) throws MALInteractionException {
         synchronized (transMap) {
-            final Long oTransId = InteractionTransaction.getTransactionId();
+            final Long oTransId = TransactionIdCounter.nextTransactionId();
 
             BaseOperationHandler handler = null;
             OperationResponseHolder responseHandler = new OperationResponseHolder(listener);
@@ -113,7 +113,7 @@ public class InteractionConsumerMap {
 
     public Long createTransaction(final boolean syncOperation, final MALPublishInteractionListener listener) {
         synchronized (transMap) {
-            final Long oTransId = InteractionTransaction.getTransactionId();
+            final Long oTransId = TransactionIdCounter.nextTransactionId();
 
             OperationResponseHolder responseHolder = new OperationResponseHolder(listener);
             transMap.put(oTransId, new PubSubOperationHandler(syncOperation, responseHolder));
