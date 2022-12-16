@@ -40,10 +40,12 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
 import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
 import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
 import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
@@ -141,6 +143,16 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton
   {
     
   }
+
+    @Override
+    public void testObjectRefSubmit(ObjectRef<TestPublishUpdate> _ObjectRef_TestPublishUpdate_0, MALInteraction interaction) throws MALInteractionException, MALException {
+
+    }
+
+    @Override
+    public void testObjectRefSend(ObjectRef<IPTestDefinition> _ObjectRef_IPTestDefinition_0, MALInteraction interaction) throws MALInteractionException, MALException {
+        
+    }
   
   static class PublisherListener implements MALPublishInteractionListener {
 
