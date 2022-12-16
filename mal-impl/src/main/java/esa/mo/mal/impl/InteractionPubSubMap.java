@@ -66,26 +66,31 @@ class InteractionPubSubMap {
     }
 
     public void listPublishListeners() {
+        StringBuilder str = new StringBuilder();
+        str.append("listPublishListeners()\n");
+        
         synchronized (publisherMap) {
-            MALContextFactoryImpl.LOGGER.fine("Starting dump of publisher map");
+            str.append("Starting dump of publisher map\n");
+
             for (StringPair e : publisherMap.keySet()) {
-                MALContextFactoryImpl.LOGGER.log(Level.FINE, "  {0}", e);
+                str.append("  >> ").append(e).append("\n");
             }
-            MALContextFactoryImpl.LOGGER.fine("End of dump of publisher map");
         }
         synchronized (notifyMap) {
-            MALContextFactoryImpl.LOGGER.fine("Starting dump of error map");
+            str.append("Starting dump of error map\n");
+            
             for (String e : errorMap.keySet()) {
-                MALContextFactoryImpl.LOGGER.log(Level.FINE, "  {0}", e);
+                str.append("  >> ").append(e).append("\n");
             }
-            MALContextFactoryImpl.LOGGER.fine("End of dump of error map");
 
-            MALContextFactoryImpl.LOGGER.fine("Starting dump of notify map");
+            str.append("Starting dump of notify map\n");
+            
             for (StringPair e : notifyMap.keySet()) {
-                MALContextFactoryImpl.LOGGER.log(Level.FINE, "  {0}", e);
+                str.append("  >> ").append(e).append("\n");
             }
-            MALContextFactoryImpl.LOGGER.fine("End of dump of notify map");
         }
+        
+        MALContextFactoryImpl.LOGGER.info(str.toString());
     }
 
     public MALPublishInteractionListener getPublishListenerAndRemove(final URI uri, final MessageDetails details) {
@@ -171,12 +176,12 @@ class InteractionPubSubMap {
     }
 
     public void deregisterNotifyListener(final MessageDetails details,
-            final IdentifierList unsubscription) {
+            final IdentifierList unsubscriptions) {
         synchronized (notifyMap) {
             final String uri = details.endpoint.getURI().getValue();
 
-            for (Identifier unsubscription1 : unsubscription) {
-                final String unsubId = unsubscription1.getValue();
+            for (Identifier unsubscription : unsubscriptions) {
+                final String unsubId = unsubscription.getValue();
                 final StringPair id = new StringPair(uri, unsubId);
 
                 if (notifyMap.containsKey(id)) {

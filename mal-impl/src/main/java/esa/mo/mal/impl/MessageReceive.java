@@ -462,11 +462,11 @@ public class MessageReceive implements MALMessageListener {
         if (msg.getHeader().getIsErrorMessage()) {
             if (msg.getBody() instanceof MALErrorBody) {
                 try {
-                    final MALPublishInteractionListener list = ipsmap.getPublishListener(msg.getHeader().getURITo(),
+                    MALPublishInteractionListener listener = ipsmap.getPublishListener(msg.getHeader().getURITo(),
                             msg.getHeader());
 
-                    if (null != list) {
-                        list.publishErrorReceived(msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());
+                    if (listener != null) {
+                        listener.publishErrorReceived(msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());
                     } else {
                         MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                                 "Unknown publisher for PUBLISH error: {0}",
@@ -522,14 +522,13 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    private void handleNotify(final MALMessage msg)
-            throws MALInteractionException, MALException {
+    private void handleNotify(final MALMessage msg) throws MALInteractionException, MALException {
         final MALMessageHeader hdr = msg.getHeader();
 
         if (hdr.getIsErrorMessage()) {
             final Map<String, MALInteractionListener> lists = ipsmap.getNotifyListenersAndRemove(hdr.getURITo());
 
-            if (null != lists) {
+            if (lists != null) {
                 final MALErrorBody err = (MALErrorBody) msg.getBody();
                 for (Map.Entry<String, MALInteractionListener> e : lists.entrySet()) {
                     try {
@@ -547,7 +546,7 @@ public class MessageReceive implements MALMessageListener {
             final MALNotifyBody notifyBody = (MALNotifyBody) msg.getBody();
             final MALInteractionListener rcv = ipsmap.getNotifyListener(hdr.getURITo(), notifyBody.getSubscriptionId());
 
-            if (null != rcv) {
+            if (rcv != null) {
                 try {
                     rcv.notifyReceived(hdr, notifyBody, msg.getQoSProperties());
                 } catch (MALException ex) {
@@ -556,7 +555,9 @@ public class MessageReceive implements MALMessageListener {
                 }
             } else {
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "Unknown notify consumer requested: {0}", hdr.getURITo());
+                        "Unknown notify consumer requested:\n >> uri: {0}\n >> subscriptionId: {1}", 
+                        new Object[]{hdr.getURITo(), notifyBody.getSubscriptionId()});
+                ipsmap.listPublishListeners();
             }
         }
     }
@@ -638,7 +639,7 @@ public class MessageReceive implements MALMessageListener {
         final EndPointPair key = new EndPointPair(callingEndpoint.getURI().getValue(), msg);
         Address addr = providerEndpointMap.get(key);
 
-        if (null == addr) {
+        if (addr == null) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "lookupAddress failed to find local endpoint for {0}.\n"
                             + "Available options: {1}",
