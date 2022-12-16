@@ -24,7 +24,7 @@
     </parent>
   
     <groupId>int.esa.ccsds.mo</groupId>
-    <artifactId>mo-services-reactor</artifactId>
+    <artifactId>mo-services-java</artifactId>
     <name>ESA CCSDS MO services - Reactor</name>
   
     <packaging>pom</packaging>
