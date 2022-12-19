@@ -526,11 +526,11 @@ public class MessageReceive implements MALMessageListener {
         final MALMessageHeader hdr = msg.getHeader();
 
         if (hdr.getIsErrorMessage()) {
-            final Map<String, MALInteractionListener> lists = ipsmap.getNotifyListenersAndRemove(hdr.getURITo());
+            final Map<String, MALInteractionListener> listeners = ipsmap.getNotifyListenersAndRemove(hdr.getURITo());
 
-            if (lists != null) {
+            if (listeners != null) {
                 final MALErrorBody err = (MALErrorBody) msg.getBody();
-                for (Map.Entry<String, MALInteractionListener> e : lists.entrySet()) {
+                for (Map.Entry<String, MALInteractionListener> e : listeners.entrySet()) {
                     try {
                         e.getValue().notifyErrorReceived(hdr, err, msg.getQoSProperties());
                     } catch (MALException ex) {

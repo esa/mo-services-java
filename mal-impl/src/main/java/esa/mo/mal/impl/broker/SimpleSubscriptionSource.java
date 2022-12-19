@@ -93,32 +93,20 @@ class SimpleSubscriptionSource extends SubscriptionSource {
             IdentifierList keyNames) throws MALException {
         MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signatureURI);
 
-        NotifyMessageSet lst = null;
         final IdentifierList srcDomainId = srcHdr.getDomain();
         final List<NotifyMessage> msgs = new LinkedList<>();
 
-        for (Map.Entry<String, SimpleSubscriptionDetails> ent : subs.entrySet()) {
-            final NotifyMessage subUpdate = ent.getValue().populateNotifyList(
+        for (SimpleSubscriptionDetails sub : subs.values()) {
+            NotifyMessage subUpdate = sub.generateNotifyMessage(
                     srcHdr, srcDomainId, updateHeaderList, publishBody, keyNames);
+            
             if (subUpdate != null) {
                 msgs.add(subUpdate);
             }
         }
 
-        if (!msgs.isEmpty()) {
-            for (NotifyMessage msg : msgs) {
-                // update the subs in the header
-                msg.domain = srcHdr.getDomain();
-                msg.networkZone = srcHdr.getNetworkZone();
-                msg.area = srcHdr.getServiceArea();
-                msg.service = srcHdr.getService();
-                msg.operation = srcHdr.getOperation();
-                msg.version = srcHdr.getAreaVersion();
-            }
-            
-            lst = new NotifyMessageSet(getMsgHeaderDetails(), msgs);
-        }
-        return lst;
+        NotifyMessageSet.MessageHeaderDetails header = getMsgHeaderDetails();
+        return (msgs.isEmpty()) ? null : new NotifyMessageSet(header, msgs);
     }
 
     @Override
@@ -139,14 +127,8 @@ class SimpleSubscriptionSource extends SubscriptionSource {
     private void updateIds() {
         required.clear();
 
-        /*
-        for (Map.Entry<String, SimpleSubscriptionDetails> entry : subs.entrySet()) {
-            // entry.getValue().appendIds(required);
-            required.addAll(entry.getValue().getRequired());
-        }
-        */
         for (SimpleSubscriptionDetails subDetails : subs.values()) {
-            required.addAll(subDetails.getRequired());
+            required.addAll(subDetails.getSubscriptions());
         }
     }
 }

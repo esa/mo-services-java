@@ -222,7 +222,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
     private synchronized List<NotifyMessageSet> generateNotifyMessages(
             final BrokerKey brokerKey, final MALMessageHeader hdr,
-            final MALPublishBody MALPublishBodypublishBody,
+            final MALPublishBody malPublishBodypublishBody,
             IdentifierList keyNames) throws MALInteractionException, MALException {
         MALBrokerImpl.LOGGER.fine("Checking if Provider is registered...");
         final PublisherSource details = this.getProviderEntry(brokerKey, hdr, false);
@@ -235,7 +235,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                     MALHelper.INCORRECT_STATE_ERROR_NUMBER, msg));
         }
 
-        final UpdateHeaderList hl = MALPublishBodypublishBody.getUpdateHeaderList();
+        final UpdateHeaderList hl = malPublishBodypublishBody.getUpdateHeaderList();
         details.checkPublish(hdr, hl);
 
         List<NotifyMessageSet> lst = new LinkedList<>();
@@ -247,7 +247,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
             // the notify list if it matches the published updates
             for (SubscriptionSource subSource : rv.values()) {
                 try {
-                    NotifyMessageSet nms = subSource.populateNotifyList(hdr, hl, MALPublishBodypublishBody, keyNames);
+                    NotifyMessageSet nms = subSource.populateNotifyList(hdr, hl, malPublishBodypublishBody, keyNames);
                     if(null != nms){
                         lst.add(nms);
                     }

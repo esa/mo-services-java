@@ -43,17 +43,21 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
  */
 class SimpleSubscriptionDetails {
 
-    private final ArrayList<SubscriptionConsumer> subscriptionList = new ArrayList<>();
+    private final ArrayList<SubscriptionConsumer> subscriptions = new ArrayList<>();
     private final String subscriptionId;
 
     public SimpleSubscriptionDetails(final String subscriptionId) {
         this.subscriptionId = subscriptionId;
     }
 
+    public final ArrayList<SubscriptionConsumer> getSubscriptions() {
+        return subscriptions;
+    }
+
     public void report() {
         MALBrokerImpl.LOGGER.log(Level.FINE, "    START Subscription ( {0} )", subscriptionId);
-        MALBrokerImpl.LOGGER.log(Level.FINE, "     Subs: {0}", subscriptionList.size());
-        for (SubscriptionConsumer key : subscriptionList) {
+        MALBrokerImpl.LOGGER.log(Level.FINE, "     Subs: {0}", subscriptions.size());
+        for (SubscriptionConsumer key : subscriptions) {
             MALBrokerImpl.LOGGER.log(Level.FINE, "            : Rqd : {0}", key);
         }
         MALBrokerImpl.LOGGER.log(Level.FINE, "    END Subscription ( {0} )", subscriptionId);
@@ -61,26 +65,26 @@ class SimpleSubscriptionDetails {
 
     public void setIds(final IdentifierList domain,
             final MALMessageHeader srcHdr, final SubscriptionFilterList filters) {
-        subscriptionList.clear();
-        subscriptionList.add(new SubscriptionConsumer(domain, srcHdr, filters));
+        subscriptions.clear();
+        subscriptions.add(new SubscriptionConsumer(domain, srcHdr, filters));
     }
 
     /**
-     * The populateNotifyList method returns a NotifyMessage object if there are
+     * The generateNotifyMessage method returns a NotifyMessage object if there are
      * matches with any of the subscriptions, or a null if there are no matches.
      */
-    public NotifyMessage populateNotifyList(final MALMessageHeader srcHdr,
+    public NotifyMessage generateNotifyMessage(final MALMessageHeader srcHdr,
             final IdentifierList srcDomainId,
             final UpdateHeaderList updateHeaderList,
             final MALPublishBody publishBody,
             IdentifierList keyNames) throws MALException {
-        MALBrokerImpl.LOGGER.fine("Checking SimpleSubscriptionDetails");
+        MALBrokerImpl.LOGGER.fine("Generating Notify Message...");
 
         final List[] updateLists = publishBody.getUpdateLists((List[]) null);
         List[] notifyLists = null;
 
         // have to check for the case where the pubsub message does not contain a body
-        if (null != updateLists) {
+        if (updateLists != null) {
             notifyLists = new List[updateLists.length];
 
             for (int i = 0; i < notifyLists.length; i++) {
@@ -111,6 +115,7 @@ class SimpleSubscriptionDetails {
                         + "\nkeyValues: " + keyValues.toString());
             }
 
+            // Prepare the Key-Value list
             List<NamedValue> providerKeyValues = new ArrayList<>();
 
             for (int j = 0; j < keyNames.size(); j++) {
@@ -120,9 +125,9 @@ class SimpleSubscriptionDetails {
                 providerKeyValues.add(new NamedValue(name, (Attribute) value));
             }
 
-            final UpdateKeyValues providerUpdates = new UpdateKeyValues(srcHdr, srcDomainId, providerKeyValues);
+            UpdateKeyValues providerUpdates = new UpdateKeyValues(srcHdr, srcDomainId, providerKeyValues);
 
-            if (BrokerMatcher.keyValuesMatchSubs(providerUpdates, subscriptionList)) {
+            if (BrokerMatcher.keyValuesMatchSubs(providerUpdates, subscriptions)) {
                 // add update for this consumer/subscription
                 notifyHeaders.add(updateHeaderList.get(i));
 
@@ -141,13 +146,15 @@ class SimpleSubscriptionDetails {
             msg.subscriptionId = new Identifier(subscriptionId);
             msg.updateHeaderList = notifyHeaders;
             msg.updateList = notifyLists;
+            msg.domain = srcHdr.getDomain();
+            msg.networkZone = srcHdr.getNetworkZone();
+            msg.area = srcHdr.getServiceArea();
+            msg.service = srcHdr.getService();
+            msg.operation = srcHdr.getOperation();
+            msg.version = srcHdr.getAreaVersion();
             return msg;
         }
 
         return null;
-    }
-
-    public final ArrayList<SubscriptionConsumer> getRequired() {
-        return subscriptionList;
     }
 }
