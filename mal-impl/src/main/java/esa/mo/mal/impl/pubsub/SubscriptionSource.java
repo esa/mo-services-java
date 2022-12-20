@@ -18,9 +18,9 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.broker;
+package esa.mo.mal.impl.pubsub;
 
-import esa.mo.mal.impl.broker.key.SubscriptionConsumer;
+import esa.mo.mal.impl.broker.MALBrokerImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -36,80 +36,105 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 
 /**
- * A SimpleSubscriptionSource represents a single consumer indexed by URI.
+ * The SubscriptionSource represents a single consumer source indexed by URI.
  */
-class SimpleSubscriptionSource extends SubscriptionSource {
+public class SubscriptionSource {
 
-    private final HashMap<String, SimpleSubscriptionDetails> subs = new HashMap<>();
+    private final HashMap<String, Subscriptions> subs = new HashMap<>();
     private final ArrayList<SubscriptionConsumer> required = new ArrayList<>();
+    private final NotifyMessageHeader msgHeaderDetails;
     private final String signatureURI;
+    private int commsErrorCount = 0;
 
     /**
      * Constructor.
      *
      * @param hdr The message header of the subscription message.
      */
-    public SimpleSubscriptionSource(final MALMessageHeader hdr) {
-        super(hdr, hdr.getURIFrom());
+    public SubscriptionSource(final MALMessageHeader hdr) {
         this.signatureURI = hdr.getURIFrom().getValue();
+        msgHeaderDetails = new NotifyMessageHeader(
+                hdr.getURIFrom(),
+                hdr.getTransactionId(),
+                hdr.getSession(),
+                hdr.getSessionName(),
+                hdr.getQoSlevel(),
+                null,
+                hdr.getPriority());
     }
 
-    @Override
+    /**
+     * Increments the count of communication errors.
+     */
+    public void incrementCommsErrorCount() {
+        ++commsErrorCount;
+    }
+
+    /**
+     * Returns the current communications error count.
+     *
+     * @return the error count.
+     */
+    public int getCommsErrorCount() {
+        return commsErrorCount;
+    }
+
+    /**
+     * Resets the count of communication errors.
+     */
+    public void resetCommsErrorCount() {
+        commsErrorCount = 0;
+    }
+
     public boolean active() {
         return !required.isEmpty();
     }
 
-    @Override
     public void report() {
         MALBrokerImpl.LOGGER.log(Level.FINE, "  START Consumer ( {0} )", signatureURI);
         MALBrokerImpl.LOGGER.log(Level.FINE, "   Required: {0}", required.size());
-        for (Map.Entry<String, SimpleSubscriptionDetails> entry : subs.entrySet()) {
+        for (Map.Entry<String, Subscriptions> entry : subs.entrySet()) {
             entry.getValue().report();
         }
         MALBrokerImpl.LOGGER.log(Level.FINE, "  END Consumer ( {0} )", signatureURI);
     }
 
-    @Override
     public String getSignature() {
         return signatureURI;
     }
 
-    @Override
     public void addSubscription(final MALMessageHeader srcHdr, final Subscription subscription) {
         final String subId = subscription.getSubscriptionId().getValue();
-        SimpleSubscriptionDetails sub = subs.get(subId);
+        Subscriptions sub = subs.get(subId);
         if (sub == null) {
-            sub = new SimpleSubscriptionDetails(subId);
+            sub = new Subscriptions(subId);
             subs.put(subId, sub);
         }
         sub.setIds(subscription.getDomain(), srcHdr, subscription.getFilters());
         updateIds();
     }
 
-    @Override
-    public NotifyMessageSet populateNotifyList(final MALMessageHeader srcHdr,
+    public NotifyMessageSet generateNotifyList(final MALMessageHeader srcHdr,
             final UpdateHeaderList updateHeaderList,
             final MALPublishBody publishBody,
             IdentifierList keyNames) throws MALException {
         MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signatureURI);
 
         final IdentifierList srcDomainId = srcHdr.getDomain();
-        final List<NotifyMessage> msgs = new LinkedList<>();
+        final List<NotifyMessageBody> msgs = new LinkedList<>();
 
-        for (SimpleSubscriptionDetails sub : subs.values()) {
-            NotifyMessage subUpdate = sub.generateNotifyMessage(
+        for (Subscriptions sub : subs.values()) {
+            NotifyMessageBody subUpdate = sub.generateNotifyMessage(
                     srcHdr, srcDomainId, updateHeaderList, publishBody, keyNames);
-            
+
             if (subUpdate != null) {
                 msgs.add(subUpdate);
             }
         }
 
-        NotifyMessageSet.MessageHeaderDetails header = getMsgHeaderDetails();
-        return (msgs.isEmpty()) ? null : new NotifyMessageSet(header, msgs);
+        return (msgs.isEmpty()) ? null : new NotifyMessageSet(msgHeaderDetails, msgs);
     }
 
-    @Override
     public void removeSubscriptions(final IdentifierList subscriptionIds) {
         if (null != subscriptionIds) {
             for (Identifier id : subscriptionIds) {
@@ -127,7 +152,7 @@ class SimpleSubscriptionSource extends SubscriptionSource {
     private void updateIds() {
         required.clear();
 
-        for (SimpleSubscriptionDetails subDetails : subs.values()) {
+        for (Subscriptions subDetails : subs.values()) {
             required.addAll(subDetails.getSubscriptions());
         }
     }

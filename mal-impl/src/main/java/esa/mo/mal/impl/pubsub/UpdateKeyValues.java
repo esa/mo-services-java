@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.broker.key;
+package esa.mo.mal.impl.pubsub;
 
 import java.util.List;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;

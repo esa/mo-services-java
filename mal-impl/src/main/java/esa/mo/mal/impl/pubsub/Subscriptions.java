@@ -18,10 +18,12 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.broker;
+package esa.mo.mal.impl.pubsub;
 
-import esa.mo.mal.impl.broker.key.SubscriptionConsumer;
-import esa.mo.mal.impl.broker.key.UpdateKeyValues;
+import esa.mo.mal.impl.broker.BrokerMatcher;
+import esa.mo.mal.impl.broker.MALBrokerImpl;
+import esa.mo.mal.impl.pubsub.SubscriptionConsumer;
+import esa.mo.mal.impl.pubsub.UpdateKeyValues;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -39,14 +41,14 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 
 /**
- * A SimpleSubscriptionDetails is keyed on subscription Id
+ * Holds a list of subscriptions keyed on a subscription Id
  */
-class SimpleSubscriptionDetails {
+public class Subscriptions {
 
     private final ArrayList<SubscriptionConsumer> subscriptions = new ArrayList<>();
     private final String subscriptionId;
 
-    public SimpleSubscriptionDetails(final String subscriptionId) {
+    public Subscriptions(final String subscriptionId) {
         this.subscriptionId = subscriptionId;
     }
 
@@ -55,12 +57,13 @@ class SimpleSubscriptionDetails {
     }
 
     public void report() {
-        MALBrokerImpl.LOGGER.log(Level.FINE, "    START Subscription ( {0} )", subscriptionId);
-        MALBrokerImpl.LOGGER.log(Level.FINE, "     Subs: {0}", subscriptions.size());
+        StringBuilder str = new StringBuilder();
+        str.append("    START Subscription: ").append(subscriptionId);
+
         for (SubscriptionConsumer key : subscriptions) {
-            MALBrokerImpl.LOGGER.log(Level.FINE, "            : Rqd : {0}", key);
+            str.append("            : Rqd : ").append(key);
         }
-        MALBrokerImpl.LOGGER.log(Level.FINE, "    END Subscription ( {0} )", subscriptionId);
+        MALBrokerImpl.LOGGER.log(Level.FINE, str.toString());
     }
 
     public void setIds(final IdentifierList domain,
@@ -70,10 +73,11 @@ class SimpleSubscriptionDetails {
     }
 
     /**
-     * The generateNotifyMessage method returns a NotifyMessage object if there are
-     * matches with any of the subscriptions, or a null if there are no matches.
+     * The generateNotifyMessage method returns a NotifyMessage object if there
+     * are matches with any of the subscriptions, or a null if there are no
+     * matches.
      */
-    public NotifyMessage generateNotifyMessage(final MALMessageHeader srcHdr,
+    public NotifyMessageBody generateNotifyMessage(final MALMessageHeader srcHdr,
             final IdentifierList srcDomainId,
             final UpdateHeaderList updateHeaderList,
             final MALPublishBody publishBody,
@@ -142,17 +146,9 @@ class SimpleSubscriptionDetails {
         }
 
         if (!notifyHeaders.isEmpty()) {
-            NotifyMessage msg = new NotifyMessage();
-            msg.subscriptionId = new Identifier(subscriptionId);
-            msg.updateHeaderList = notifyHeaders;
-            msg.updateList = notifyLists;
-            msg.domain = srcHdr.getDomain();
-            msg.networkZone = srcHdr.getNetworkZone();
-            msg.area = srcHdr.getServiceArea();
-            msg.service = srcHdr.getService();
-            msg.operation = srcHdr.getOperation();
-            msg.version = srcHdr.getAreaVersion();
-            return msg;
+            return new NotifyMessageBody(new Identifier(subscriptionId),
+                    notifyHeaders, notifyLists, srcHdr);
+
         }
 
         return null;

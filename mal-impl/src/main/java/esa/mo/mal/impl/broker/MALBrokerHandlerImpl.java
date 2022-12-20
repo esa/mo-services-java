@@ -20,8 +20,11 @@
  */
 package esa.mo.mal.impl.broker;
 
+import esa.mo.mal.impl.pubsub.NotifyMessageSet;
+import esa.mo.mal.impl.pubsub.NotifyMessageBody;
+import esa.mo.mal.impl.pubsub.SubscriptionSource;
+import esa.mo.mal.impl.pubsub.PublisherSource;
 import esa.mo.mal.impl.StringPair;
-import esa.mo.mal.impl.broker.key.BrokerKey;
 import esa.mo.mal.impl.util.MALClose;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -97,8 +100,8 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         final BrokerKey key = new BrokerKey(hdr);
 
         report(key);
-        if ((null != hdr)) {
-            PublisherSource s = this.getProviderEntry(key, hdr, true);
+        if ((hdr != null)) {
+            PublisherSource s = this.getPublisherSource(key, hdr, true);
             s.setSubscriptionKeyNames(body.getSubscriptionKeyNames());
         }
         report(key);
@@ -110,46 +113,44 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         final MALMessageHeader hdr = interaction.getMessageHeader();
         final BrokerKey brokerKey = new BrokerKey(hdr);
         // Generate the Notify Messages (the matching is done inside it!)
-        PublisherSource s = this.getProviderEntry(brokerKey, hdr, false);
+        PublisherSource s = this.getPublisherSource(brokerKey, hdr, false);
         IdentifierList subKeys = s.getSubscriptionKeyNames();
         final List<NotifyMessageSet> notifyList = generateNotifyMessages(brokerKey, hdr, body, subKeys);
 
         // Dispatch the Notify messages
-        if (!notifyList.isEmpty()) {
-            for (NotifyMessageSet notifyMessageSet : notifyList) {
-                String uriTo = notifyMessageSet.getDetails().uriTo.getValue();
-                MALBrokerBinding binding = this.getBroker(uriTo);
+        for (NotifyMessageSet notifyMessageSet : notifyList) {
+            String uriTo = notifyMessageSet.getDetails().uriTo.getValue();
+            MALBrokerBinding binding = this.getBroker(uriTo);
 
-                if (binding != null) {
-                    for (NotifyMessage notifyMessage : notifyMessageSet.getMessages()) {
-                        try {
-                            binding.sendNotify(notifyMessage.area,
-                                    notifyMessage.service,
-                                    notifyMessage.operation,
-                                    notifyMessage.version,
-                                    notifyMessageSet.getDetails().uriTo,
-                                    notifyMessageSet.getDetails().transactionId,
-                                    notifyMessage.domain,
-                                    notifyMessage.networkZone,
-                                    notifyMessageSet.getDetails().sessionType,
-                                    notifyMessageSet.getDetails().sessionName,
-                                    notifyMessageSet.getDetails().qosLevel,
-                                    notifyMessageSet.getDetails().qosProps,
-                                    notifyMessageSet.getDetails().priority,
-                                    notifyMessage.subscriptionId,
-                                    notifyMessage.updateHeaderList,
-                                    notifyMessage.updateList);
-                        } catch (MALTransmitErrorException ex) {
-                            MALBrokerImpl.LOGGER.log(Level.WARNING,
-                                    "Unable to send NOTIFY message:\n{0}",
-                                    notifyMessage.toString());
+            if (binding == null) {
+                MALBrokerImpl.LOGGER.log(Level.WARNING,
+                        "Unable to find binding for NOTIFY message to: {0}", uriTo);
+                continue;
+            }
 
-                            handleConsumerCommunicationError(brokerKey, uriTo);
-                        }
-                    }
-                } else {
+            for (NotifyMessageBody msgBody : notifyMessageSet.getBodies()) {
+                try {
+                    binding.sendNotify(msgBody.getArea(),
+                            msgBody.getService(),
+                            msgBody.getOperation(),
+                            msgBody.getVersion(),
+                            notifyMessageSet.getDetails().uriTo,
+                            notifyMessageSet.getDetails().transactionId,
+                            msgBody.getDomain(),
+                            msgBody.getNetworkZone(),
+                            notifyMessageSet.getDetails().sessionType,
+                            notifyMessageSet.getDetails().sessionName,
+                            notifyMessageSet.getDetails().qosLevel,
+                            notifyMessageSet.getDetails().qosProps,
+                            notifyMessageSet.getDetails().priority,
+                            msgBody.getSubscriptionId(),
+                            msgBody.getUpdateHeaderList(),
+                            msgBody.getUpdateList());
+                } catch (MALTransmitErrorException ex) {
                     MALBrokerImpl.LOGGER.log(Level.WARNING,
-                            "Unable to find binding for NOTIFY message to: {0}", uriTo);
+                            "Unable to send NOTIFY message:\n{0}", msgBody.toString());
+
+                    handleConsumerCommunicationError(brokerKey, uriTo);
                 }
             }
         }
@@ -181,7 +182,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         final Map<StringPair, PublisherSource> subs = this.getProviderSubscriptions(key);
         String providerKey = createProviderKey(hdr);
         StringPair pair = new StringPair(hdr.getURIFrom().getValue(), providerKey);
-        
+
         if (subs.remove(pair) != null) {
             MALBrokerImpl.LOGGER.log(Level.FINE, "Removing publisher! Details: {0}", hdr);
         }
@@ -200,10 +201,9 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
      */
     public QoSLevel getProviderQoSLevel(final MALMessageHeader hdr) {
         final BrokerKey key = new BrokerKey(hdr);
-        final PublisherSource details = this.getProviderEntry(key, hdr, false);
+        final PublisherSource details = this.getPublisherSource(key, hdr, false);
 
-        if (null != details) {
-            MALBrokerImpl.LOGGER.log(Level.FINE, "Getting publisher QoS details: {0}", hdr);
+        if (details != null) {
             return details.getQosLevel();
         }
 
@@ -222,10 +222,10 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
     private synchronized List<NotifyMessageSet> generateNotifyMessages(
             final BrokerKey brokerKey, final MALMessageHeader hdr,
-            final MALPublishBody malPublishBodypublishBody,
-            IdentifierList keyNames) throws MALInteractionException, MALException {
+            final MALPublishBody publishBody, IdentifierList keyNames)
+            throws MALInteractionException, MALException {
         MALBrokerImpl.LOGGER.fine("Checking if Provider is registered...");
-        final PublisherSource details = this.getProviderEntry(brokerKey, hdr, false);
+        PublisherSource details = this.getPublisherSource(brokerKey, hdr, false);
 
         if (details == null) {
             String msg = "Provider not registered! Please register the provider"
@@ -235,23 +235,23 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                     MALHelper.INCORRECT_STATE_ERROR_NUMBER, msg));
         }
 
-        final UpdateHeaderList hl = malPublishBodypublishBody.getUpdateHeaderList();
+        final UpdateHeaderList hl = publishBody.getUpdateHeaderList();
         details.checkPublish(hdr, hl);
 
         List<NotifyMessageSet> lst = new LinkedList<>();
 
         if (hl != null) {
-            final Map<String, SubscriptionSource> rv = this.getConsumerSubscriptions(brokerKey);
+            Map<String, SubscriptionSource> rv = this.getConsumerSubscriptions(brokerKey);
 
-            // Iterate through all the consumer subscriptions and populate
+            // Iterate through all the consumer subscriptions and generate
             // the notify list if it matches the published updates
             for (SubscriptionSource subSource : rv.values()) {
                 try {
-                    NotifyMessageSet nms = subSource.populateNotifyList(hdr, hl, malPublishBodypublishBody, keyNames);
-                    if(null != nms){
+                    NotifyMessageSet nms = subSource.generateNotifyList(hdr, hl, publishBody, keyNames);
+                    if (nms != null) {
                         lst.add(nms);
                     }
-                } catch(MALException ex) {
+                } catch (MALException ex) {
                     MALBrokerImpl.LOGGER.warning(ex.getMessage());
                     throw new MALInteractionException(new MALStandardError(
                             MALHelper.UNKNOWN_ERROR_NUMBER, null));
@@ -304,7 +304,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         final String signature = hdr.getURIFrom().getValue();
         SubscriptionSource subSource = subs.get(signature);
 
-        if ((null == subSource) && (create)) {
+        if ((subSource == null) && (create)) {
             subSource = createEntry(hdr);
             subs.put(signature, subSource);
         }
@@ -312,7 +312,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         return subSource;
     }
 
-    private SubscriptionSource getConsumerEntry(final BrokerKey key, final String consumerUri) {
+    private SubscriptionSource getSubscriptionSource(final BrokerKey key, final String consumerUri) {
         return this.getConsumerSubscriptions(key).get(consumerUri);
     }
 
@@ -327,25 +327,25 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         return provider;
     }
 
-    private PublisherSource getProviderEntry(final BrokerKey key,
+    private PublisherSource getPublisherSource(final BrokerKey key,
             final MALMessageHeader hdr, final boolean create) {
         final Map<StringPair, PublisherSource> subs = this.getProviderSubscriptions(key);
         String providerKey = createProviderKey(hdr);
         String uriFrom = hdr.getURIFrom().getValue();
-        PublisherSource details = subs.get(new StringPair(uriFrom, providerKey));
+        StringPair pair = new StringPair(uriFrom, providerKey);
+        PublisherSource publisher = subs.get(pair);
 
-        if ((details == null) && create) {
-            details = new PublisherSource(uriFrom, hdr.getQoSlevel());
-            subs.put(new StringPair(uriFrom, providerKey), details);
+        if ((publisher == null) && create) {
+            publisher = new PublisherSource(uriFrom, hdr.getQoSlevel());
+            subs.put(pair, publisher);
             MALBrokerImpl.LOGGER.log(Level.FINE, "New publisher registering: {0}", hdr);
         }
 
-        return details;
+        return publisher;
     }
 
-    private void handleConsumerCommunicationError(final BrokerKey key,
-            final String uriTo) {
-        final SubscriptionSource entry = getConsumerEntry(key, uriTo);
+    private void handleConsumerCommunicationError(final BrokerKey key, final String uriTo) {
+        final SubscriptionSource entry = getSubscriptionSource(key, uriTo);
 
         if (entry != null) {
             entry.incrementCommsErrorCount();

@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.MALStandardError;
 
 /**
  * The InteractionTimeout class is responsible for maintaining a queue of
- * transactions and checking if they have timedout.
+ * transactions and checking if they have timed out.
  */
 public class InteractionTimeout {
 

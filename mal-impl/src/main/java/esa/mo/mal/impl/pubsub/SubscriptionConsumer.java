@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.broker.key;
+package esa.mo.mal.impl.pubsub;
 
 import esa.mo.mal.impl.broker.BrokerMatcher;
 import esa.mo.mal.impl.broker.MALBrokerImpl;

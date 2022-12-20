@@ -18,8 +18,9 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.broker;
+package esa.mo.mal.impl.pubsub;
 
+import esa.mo.mal.impl.broker.MALBrokerImpl;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.*;
@@ -35,7 +36,7 @@ public final class PublisherSource {
     private final QoSLevel qosLevel;
     private IdentifierList subscriptionKeyNames;
 
-    PublisherSource(final String uri, final QoSLevel qosLevel) {
+    public PublisherSource(final String uri, final QoSLevel qosLevel) {
         super();
         this.uri = uri;
         this.qosLevel = qosLevel;
@@ -49,7 +50,7 @@ public final class PublisherSource {
         return subscriptionKeyNames;
     }
 
-    void setSubscriptionKeyNames(IdentifierList subscriptionKeyNames) {
+    public void setSubscriptionKeyNames(IdentifierList subscriptionKeyNames) {
         this.subscriptionKeyNames = subscriptionKeyNames;
     }
 

@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.broker.key;
+package esa.mo.mal.impl.broker;
 
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 

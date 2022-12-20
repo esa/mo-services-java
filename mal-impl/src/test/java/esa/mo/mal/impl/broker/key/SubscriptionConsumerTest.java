@@ -4,6 +4,8 @@
  */
 package esa.mo.mal.impl.broker.key;
 
+import esa.mo.mal.impl.pubsub.SubscriptionConsumer;
+import esa.mo.mal.impl.pubsub.UpdateKeyValues;
 import java.util.ArrayList;
 import java.util.List;
 import org.ccsds.moims.mo.mal.structures.Attribute;

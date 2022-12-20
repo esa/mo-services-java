@@ -18,28 +18,36 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.broker;
+package esa.mo.mal.impl.pubsub;
 
-import esa.mo.mal.impl.pubsub.SubscriptionSource;
-import esa.mo.mal.impl.util.MALClose;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import java.util.List;
 
 /**
- * Extends the base broker handler for the Simple broker implementation.
+ * The NotifyMessageSet holds a set of notify message for a single subscription
  */
-public class SimpleBrokerHandler extends MALBrokerHandlerImpl {
+public final class NotifyMessageSet {
 
     /**
-     * Constructor
-     *
-     * @param parent The parent of this class.
+     * Message header.
      */
-    public SimpleBrokerHandler(MALClose parent) {
-        super(parent);
+    private final NotifyMessageHeader header;
+
+    /**
+     * Message bodies.
+     */
+    private final List<NotifyMessageBody> bodies;
+
+    public NotifyMessageSet(NotifyMessageHeader header, List<NotifyMessageBody> bodies) {
+        this.header = header;
+        this.bodies = bodies;
     }
 
-    @Override
-    protected SubscriptionSource createEntry(final MALMessageHeader hdr) {
-        return new SubscriptionSource(hdr);
+    public NotifyMessageHeader getDetails() {
+        return header;
     }
+
+    public List<NotifyMessageBody> getBodies() {
+        return bodies;
+    }
+
 }
