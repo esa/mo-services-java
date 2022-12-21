@@ -366,6 +366,8 @@ public interface Attribute extends Element {
         Integer sft = obj.getTypeShortForm(); // sft: Short Form Type
 
         // Check if: Identifier, String, URI
-        return (sft == 6) || (sft == 15) || (sft == 18);
+        return (sft == Attribute._IDENTIFIER_TYPE_SHORT_FORM)
+                || (sft == Attribute._STRING_TYPE_SHORT_FORM)
+                || (sft == Attribute._URI_TYPE_SHORT_FORM);
     }
 }
