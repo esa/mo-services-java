@@ -21,6 +21,7 @@
 package esa.mo.mal.encoder.binary.variable;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
 
 /**
  * Implements the MALElementOutputStream interface for a fixed length binary
@@ -40,7 +41,7 @@ public class VariableBinaryElementOutputStream extends esa.mo.mal.encoder.binary
     }
 
     @Override
-    protected esa.mo.mal.encoder.gen.Encoder createEncoder(java.io.OutputStream os) {
+    protected Encoder createEncoder(java.io.OutputStream os) {
         return new VariableBinaryEncoder(os, timeHandler);
     }
 }

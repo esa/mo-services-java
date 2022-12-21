@@ -22,7 +22,7 @@ package esa.mo.mal.encoder.zmtp.header;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
-import esa.mo.mal.encoder.gen.StreamHolder;
+import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 import esa.mo.mal.transport.zmtp.ZMTPTransport;
 import java.io.IOException;
 import java.io.OutputStream;

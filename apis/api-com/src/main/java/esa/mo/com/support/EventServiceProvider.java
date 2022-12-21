@@ -20,8 +20,8 @@
  */
 package esa.mo.com.support;
 
-import esa.mo.mal.support.BaseMalServer;
-import esa.mo.mal.support.StructureHelper;
+import org.ccsds.moims.mo.mal.support.BaseMalServer;
+import org.ccsds.moims.mo.mal.support.StructureHelper;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.com.event.provider.EventInheritanceSkeleton;

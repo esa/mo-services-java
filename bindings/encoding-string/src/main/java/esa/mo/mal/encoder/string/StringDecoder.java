@@ -20,8 +20,6 @@
  */
 package esa.mo.mal.encoder.string;
 
-import esa.mo.mal.encoder.gen.BufferHolder;
-import esa.mo.mal.encoder.gen.Decoder;
 import static esa.mo.mal.encoder.string.StringEncoder.STR_DELIM;
 import static esa.mo.mal.encoder.string.StringEncoder.STR_DELIM_ESC;
 import static esa.mo.mal.encoder.string.StringEncoder.STR_ESC;
@@ -34,6 +32,8 @@ import java.nio.charset.Charset;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
+import org.ccsds.moims.mo.mal.encoding.Decoder;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**

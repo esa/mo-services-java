@@ -38,7 +38,7 @@ public abstract class MALElementStreamFactory {
      * class name.
      */
     public static final String FACTORY_PROP_NAME_PREFIX = "org.ccsds.moims.mo.mal.encoding.protocol";
-    private static final Map<String, Class> _FACTORY_MAP = new HashMap<>();
+    private static final Map<String, Class> FACTORIES = new HashMap<>();
 
     /**
      * The method allows an implementation to register the class of a specific
@@ -55,7 +55,7 @@ public abstract class MALElementStreamFactory {
             throw new IllegalArgumentException("Not compliant: " + factoryClass.getName());
         }
 
-        _FACTORY_MAP.put(factoryClass.getName(), factoryClass);
+        FACTORIES.put(factoryClass.getName(), factoryClass);
     }
 
     /**
@@ -69,7 +69,7 @@ public abstract class MALElementStreamFactory {
     public static void deregisterFactoryClass(final java.lang.Class factoryClass) 
             throws IllegalArgumentException {
         if (null != factoryClass) {
-            _FACTORY_MAP.remove(factoryClass.getName());
+            FACTORIES.remove(factoryClass.getName());
         }
     }
 
@@ -90,8 +90,8 @@ public abstract class MALElementStreamFactory {
             try {
                 Class factoryClass;
 
-                if (_FACTORY_MAP.containsKey(className)) {
-                    factoryClass = (Class) _FACTORY_MAP.get(className);
+                if (FACTORIES.containsKey(className)) {
+                    factoryClass = (Class) FACTORIES.get(className);
                 } else {
                     factoryClass = Class.forName(className);
                     registerFactoryClass(factoryClass);

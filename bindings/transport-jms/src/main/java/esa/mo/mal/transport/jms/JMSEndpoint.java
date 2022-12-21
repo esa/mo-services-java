@@ -347,7 +347,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
 
         JMSPublishHandler hdlr = publishHandlerMap.remove(createProviderKey(msg.getHeader()));
         if (null != hdlr) {
-            hdlr.deregister(returnMsg);
+            returnMsg.getHeader().setQoSlevel(hdlr.getRegisterQoS());
             JMSTransport.RLOGGER.log(Level.FINE,
                     "Removing JMS publisher details: {0}", msg.getHeader());
         }

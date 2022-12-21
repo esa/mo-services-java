@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.gen;
+package org.ccsds.moims.mo.mal.encoding;
 
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALException;

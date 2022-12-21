@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.gen.body;
 
-import esa.mo.mal.encoder.gen.GENElementInputStream;
+import org.ccsds.moims.mo.mal.encoding.GENElementInputStream;
 import esa.mo.mal.transport.gen.GENTransport;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

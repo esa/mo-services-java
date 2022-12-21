@@ -20,7 +20,7 @@
  */
 package esa.mo.com.support;
 
-import esa.mo.mal.support.BaseMalServer;
+import org.ccsds.moims.mo.mal.support.BaseMalServer;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;

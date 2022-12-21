@@ -22,7 +22,7 @@ package esa.mo.mal.encoder.zmtp.header;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
-import esa.mo.mal.encoder.gen.Encoder;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
 import esa.mo.mal.transport.zmtp.ZMTPTransport;
 
 /**

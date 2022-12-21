@@ -21,10 +21,10 @@
 package esa.mo.mal.encoder.binary.variable;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
-import esa.mo.mal.encoder.gen.StreamHolder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a fixed length

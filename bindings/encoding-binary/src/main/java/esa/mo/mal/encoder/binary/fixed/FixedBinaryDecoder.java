@@ -21,11 +21,11 @@
 package esa.mo.mal.encoder.binary.fixed;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
-import esa.mo.mal.encoder.gen.BufferHolder;
 import java.math.BigInteger;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 
 /**
  * Implements the MALDecoder interface for a fixed length binary encoding.
@@ -42,8 +42,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
      */
     public FixedBinaryDecoder(final byte[] src,
             final BinaryTimeHandler timeHandler, final boolean shortLengthField) {
-        super(
-                new FixedBinaryBufferHolder(null, src, 0, src.length, shortLengthField),
+        super(new FixedBinaryBufferHolder(null, src, 0, src.length, shortLengthField),
                 timeHandler);
     }
 
@@ -69,10 +68,8 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
      * @param shortLengthField True if length field is 16-bit wide, otherwise
      * assumed to be 32-bit.
      */
-    public FixedBinaryDecoder(final byte[] src,
-            final int offset,
-            final BinaryTimeHandler timeHandler,
-            final boolean shortLengthField) {
+    public FixedBinaryDecoder(final byte[] src, final int offset,
+            final BinaryTimeHandler timeHandler, final boolean shortLengthField) {
         super(new FixedBinaryBufferHolder(null, src, offset, src.length, shortLengthField), timeHandler);
     }
 
@@ -82,8 +79,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
      * @param src Source buffer holder to use.
      * @param timeHandler Time handler to use.
      */
-    public FixedBinaryDecoder(final BufferHolder src,
-            final BinaryTimeHandler timeHandler) {
+    public FixedBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler) {
         super(src, timeHandler);
     }
 

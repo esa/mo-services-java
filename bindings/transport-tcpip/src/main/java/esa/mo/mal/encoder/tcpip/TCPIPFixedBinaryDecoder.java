@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder;
-import esa.mo.mal.encoder.gen.BufferHolder;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 import org.ccsds.moims.mo.mal.MALListDecoder;
 
 /**

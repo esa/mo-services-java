@@ -21,12 +21,12 @@
 package esa.mo.mal.encoder.binary.variable;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
-import esa.mo.mal.encoder.gen.BufferHolder;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 
 /**
  * Implements the MALDecoder interface for a fixed length binary encoding.

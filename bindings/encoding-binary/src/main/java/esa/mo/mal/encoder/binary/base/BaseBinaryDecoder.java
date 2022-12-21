@@ -20,8 +20,6 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
-import esa.mo.mal.encoder.gen.BufferHolder;
-import esa.mo.mal.encoder.gen.Decoder;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -29,6 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
+import org.ccsds.moims.mo.mal.encoding.Decoder;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;

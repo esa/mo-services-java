@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.support;
+package org.ccsds.moims.mo.mal.support;
 
 import java.io.BufferedWriter;
 import java.io.File;

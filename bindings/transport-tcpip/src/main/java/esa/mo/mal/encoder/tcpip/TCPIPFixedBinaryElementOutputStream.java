@@ -25,7 +25,7 @@ import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
-import esa.mo.mal.encoder.gen.Encoder;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
 import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
 
 import org.ccsds.moims.mo.mal.MALException;

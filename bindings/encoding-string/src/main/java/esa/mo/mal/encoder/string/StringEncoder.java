@@ -20,14 +20,14 @@
  */
 package esa.mo.mal.encoder.string;
 
-import esa.mo.mal.encoder.gen.Encoder;
-import esa.mo.mal.encoder.gen.StreamHolder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.math.BigInteger;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
+import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**

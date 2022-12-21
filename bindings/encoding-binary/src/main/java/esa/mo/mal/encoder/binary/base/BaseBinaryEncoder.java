@@ -20,11 +20,11 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
-import esa.mo.mal.encoder.gen.Encoder;
-import esa.mo.mal.encoder.gen.StreamHolder;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
+import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;

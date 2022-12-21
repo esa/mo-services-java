@@ -158,8 +158,8 @@ public class JMSPublishHandler {
         return null;
     }
 
-    public void deregister(GENMessage returnMsg) {
-        returnMsg.getHeader().setQoSlevel(registerQoS);
+    public QoSLevel getRegisterQoS() {
+        return registerQoS;
     }
 
     protected void preCheckAllowedToPublish(MALMessageHeader hdr,
