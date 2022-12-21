@@ -22,8 +22,6 @@ package esa.mo.com.test.activity;
 
 import java.util.Hashtable;
 import java.util.Map;
-import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransferList;
 import org.ccsds.moims.mo.com.event.EventHelper;
@@ -65,7 +63,8 @@ public class ActivityRelayNode
   private int instanceIdentifier = 0;
   private long instIdBaseOffset = 0;
 
-  public ActivityRelayNode(TestServiceProvider testService, ActivityRelayManagementHandlerImpl relayManager, String protocol, String relayName, String relayTo) throws MALException
+  public ActivityRelayNode(TestServiceProvider testService, ActivityRelayManagementHandlerImpl relayManager, 
+          String protocol, String relayName, String relayTo) throws MALException
   {
     LoggingBase.logMessage("Starting relay " + relayName);
 
@@ -181,14 +180,21 @@ public class ActivityRelayNode
             QoSLevel.BESTEFFORT,
             null,
             new UInteger(0));
+    /*
     final EntityKeyList lst = new EntityKeyList();
     lst.add(new EntityKey(new Identifier("*"), new Long(0), new Long(0), new Long(0)));
+    */
+    IdentifierList keys = new IdentifierList();
+    keys.add(new Identifier("K1"));
+    keys.add(new Identifier("K2"));
+    keys.add(new Identifier("K3"));
+    keys.add(new Identifier("K4"));
 
     LoggingBase.logMessage("ActivityRelayNode:createMonitorEventPublisher Reset X calling register");
 
     try
     {
-      monitorEventPublisher.register(lst, activityTestPublisher);
+      monitorEventPublisher.register(keys, activityTestPublisher);
     }
     catch (MALInteractionException ex)
     {
@@ -201,11 +207,17 @@ public class ActivityRelayNode
   {
     LoggingBase.logMessage("ActivityRelayNode:createMonitorEventListener " + relayName);
     EventStub evStub = getEventStub();
+    /*
     EntityKeyList ekl = new EntityKeyList();
     EntityRequestList erl = new EntityRequestList();
     ekl.add(new EntityKey(ALL_ID, new Long(ALL_INT), new Long(ALL_INT), new Long(ALL_INT)));
     erl.add(new EntityRequest(null, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, ekl));
-    Subscription sub = new Subscription(new Identifier("Sub-" + relayName), erl);
+    */
+    
+    SubscriptionFilterList filters = new SubscriptionFilterList();
+    IdentifierList domain = new IdentifierList();
+    domain.add(new Identifier("*"));
+    Subscription sub = new Subscription(new Identifier("Sub-" + relayName), domain, filters);
     try
     {
       evStub.monitorEventRegister(sub, new MonitorEventAdapter());
@@ -275,6 +287,7 @@ public class ActivityRelayNode
     // Produce header
     UpdateHeaderList uhl = new UpdateHeaderList();
 
+    /*
     final EntityKey ekey = new EntityKey(
             new Identifier(phase),
             ActivityTestHandlerImpl.generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, 0),
@@ -283,6 +296,7 @@ public class ActivityRelayNode
 
     final Time timestamp = new Time(System.currentTimeMillis());
     uhl.add(new UpdateHeader(timestamp, new URI(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName), UpdateType.DELETION, ekey));
+    */
 
     // Produce ActivityTransferList
     ActivityTransferList atl = new ActivityTransferList();

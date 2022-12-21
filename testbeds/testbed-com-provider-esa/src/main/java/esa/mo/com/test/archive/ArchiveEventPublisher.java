@@ -20,9 +20,11 @@
  */
 package esa.mo.com.test.archive;
 
+import esa.mo.com.support.ComStructureHelper;
 import java.util.Iterator;
 import java.util.Map;
 import org.ccsds.moims.mo.com.COMHelper;
+import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetails;
 import org.ccsds.moims.mo.com.event.EventHelper;
@@ -33,14 +35,14 @@ import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
+import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -51,9 +53,9 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import org.ccsds.moims.mo.mal.structures.UpdateType;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
@@ -120,11 +122,18 @@ public class ArchiveEventPublisher
             QoSLevel.BESTEFFORT,
             null,
             new UInteger(0));
+    /*
     final EntityKeyList lst = new EntityKeyList();
     lst.add(new EntityKey(new Identifier("*"), new Long(0), new Long(0), new Long(0)));
+    */
+    IdentifierList keys = new IdentifierList();
+    keys.add(new Identifier("K1"));
+    keys.add(new Identifier("K2"));
+    keys.add(new Identifier("K3"));
+    keys.add(new Identifier("K4"));
 
     PublisherListener publisherListener = new PublisherListener();
-    monitorEventPublisher.register(lst, publisherListener);
+    monitorEventPublisher.register(keys, publisherListener);
 
   }
 
@@ -156,6 +165,7 @@ public class ArchiveEventPublisher
    */
   private void setUpdateHeader(UpdateHeader updateHeader, UShort eventObjectNumber, ObjectType sourceObjectType)
   {
+      /*
     final EntityKey ekey = new EntityKey(
             new Identifier(eventObjectNumber.toString()),
             generateSubKey(COMHelper.COM_AREA_NUMBER.getValue(),
@@ -168,7 +178,29 @@ public class ArchiveEventPublisher
     updateHeader.setSourceURI(new URI(EventHelper.EVENT_SERVICE_NAME.getValue()));
     updateHeader.setUpdateType(UpdateType.DELETION);
     updateHeader.setTimestamp(timestamp);
+      */
 
+    AttributeList keyValues = new AttributeList();
+    keyValues.add(new Identifier(eventObjectNumber.toString()));
+    keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                    COMHelper._COM_AREA_NUMBER,
+                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                    COMHelper._COM_AREA_VERSION,
+                    0)));
+    keyValues.add(new Union((long) ++eventInstCount));
+    keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                    sourceObjectType.getArea().getValue(),
+                    sourceObjectType.getServiceNumber().getValue(),
+                    sourceObjectType.getAreaVersion().getValue(),
+                    sourceObjectType.getNumber().getValue())));
+    
+    IdentifierList domain = new IdentifierList();
+    domain.add(new Identifier("esa"));
+    domain.add(new Identifier("mission"));
+    
+    updateHeader.setKeyValues(keyValues);
+    updateHeader.setDomain(domain);
+    updateHeader.setSource(new Identifier(EventHelper.EVENT_SERVICE_NAME.getValue()));
   }
 
   /**
@@ -202,13 +234,13 @@ public class ArchiveEventPublisher
    * @param objDetails
    * @param objectNumber
    */
-  public void storeEvent(ObjectType objectType, IdentifierList domain, Long instId, Time timestamp, URI provider,
-          ObjectDetails objDetails, UShort objectNumber)
+  public void storeEvent(ObjectType objectType, IdentifierList domain, Long instId, 
+          Time timestamp, Identifier source, ObjectDetails objDetails, UShort objectNumber)
   {
     Archive.inst().add(
             new ObjectType(COMHelper.COM_AREA_NUMBER, ArchiveHelper.ARCHIVE_SERVICE_NUMBER, COMHelper.COM_AREA_VERSION, objectNumber),
             eventDomainId,
-            new ArchiveDetails(instId, objDetails, NETWORK, new FineTime(timestamp.getValue()), provider), null);
+            new ArchiveDetails(instId, objDetails, NETWORK, new FineTime(timestamp.getValue()), new URI(source.getValue())), null);
   }
 
   /**
@@ -244,7 +276,7 @@ public class ArchiveEventPublisher
       setUpdateHeader(uh, objectNumber, objectType);
       updateHeaderList.add(uh);
       // elementList.add(null);
-      storeEvent(objectType, eventDomainId, eventInstCount, uh.getTimestamp(), uh.getSourceURI(), objDetails, objectNumber);
+      storeEvent(objectType, eventDomainId, eventInstCount, Time.now(), uh.getSource(), objDetails, objectNumber);
     }
 
     monitorEventPublisher.publish(updateHeaderList, objDetailsList, null);

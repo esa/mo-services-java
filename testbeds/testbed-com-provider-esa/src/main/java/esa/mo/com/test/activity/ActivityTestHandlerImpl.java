@@ -20,6 +20,7 @@
  */
 package esa.mo.com.test.activity;
 
+import esa.mo.com.support.ComStructureHelper;
 import java.util.Map;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityAcceptance;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityAcceptanceList;
@@ -83,10 +84,18 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton
               QoSLevel.BESTEFFORT,
               null,
               new UInteger(0));
+      
+      /*
       final EntityKeyList lst = new EntityKeyList();
       lst.add(new EntityKey(new Identifier("*"), new Long(0), new Long(0), new Long(0)));
+      */
+      IdentifierList keys = new IdentifierList();
+      keys.add(new Identifier("K1"));
+      keys.add(new Identifier("K2"));
+      keys.add(new Identifier("K3"));
+      keys.add(new Identifier("K4"));
 
-      monitorEventPublisher.register(lst, new ActivityTestPublisher());
+      monitorEventPublisher.register(keys, new ActivityTestPublisher());
     }
   }
 
@@ -331,14 +340,35 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton
     odl.add(objDetails);
     // Produce header
     UpdateHeaderList uhl = new UpdateHeaderList();
+    /*
     final EntityKey ekey = new EntityKey(
             new Identifier(COMTestHelper.OBJ_NO_ASE_ACCEPTANCE_STR),
             generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, 0),
             new Long(instanceIdentifier++),
             generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY));
-    LoggingBase.logMessage("ActivityTestHandler:eKey = " + ekey);
-    final Time timestamp = new Time(System.currentTimeMillis());
-    UpdateHeader uh = new UpdateHeader(timestamp, interaction.getMessageHeader().getURITo(), UpdateType.DELETION, ekey);
+    */
+    
+    AttributeList keyValues = new AttributeList();
+    keyValues.add(new Identifier(COMTestHelper.OBJ_NO_ASE_ACCEPTANCE_STR));
+    keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                    COMHelper._COM_AREA_NUMBER,
+                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                    COMHelper._COM_AREA_VERSION,
+                    0)));
+    keyValues.add(new Union((long) instanceIdentifier++));
+    keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                    COMHelper._COM_AREA_NUMBER,
+                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                    COMHelper._COM_AREA_VERSION,
+                    COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
+    
+    LoggingBase.logMessage("ActivityTestHandler: keyValues = " + keyValues);
+    URI uri = interaction.getMessageHeader().getURITo();
+    IdentifierList domain = new IdentifierList();
+    domain.add(new Identifier("esa"));
+    domain.add(new Identifier("mission"));
+
+    UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues);
     uhl.add(uh);
 
     // We can now publish the event
@@ -352,15 +382,34 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton
     LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution malInter = " + interaction);
     // Produce header
     UpdateHeaderList uhl = new UpdateHeaderList();
+    /*
     final EntityKey ekey = new EntityKey(
             new Identifier(COMTestHelper.OBJ_NO_ASE_EXECUTION_STR),
             generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, 0),
             new Long(instanceIdentifier++),
             generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY));
-
-    LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution ekey = " + ekey);
-    final Time timestamp = new Time(System.currentTimeMillis());
-    uhl.add(new UpdateHeader(timestamp, interaction.getMessageHeader().getURITo(), UpdateType.DELETION, ekey));
+    */
+    
+    AttributeList keyValues = new AttributeList();
+    keyValues.add(new Identifier(COMTestHelper.OBJ_NO_ASE_EXECUTION_STR));
+    keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                    COMHelper._COM_AREA_NUMBER,
+                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                    COMHelper._COM_AREA_VERSION,
+                    0)));
+    keyValues.add(new Union((long) instanceIdentifier++));
+    keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                    COMHelper._COM_AREA_NUMBER,
+                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                    COMHelper._COM_AREA_VERSION,
+                    COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
+        
+    LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution keyValues = " + keyValues);
+    URI uri = interaction.getMessageHeader().getURITo();
+    IdentifierList domain = new IdentifierList();
+    domain.add(new Identifier("esa"));
+    domain.add(new Identifier("mission"));
+    uhl.add(new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues));
 
     // Produce ActivityTransferList
     ActivityExecutionList ael = new ActivityExecutionList();

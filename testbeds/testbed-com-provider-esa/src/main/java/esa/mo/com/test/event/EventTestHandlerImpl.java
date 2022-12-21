@@ -20,6 +20,7 @@
  */
 package esa.mo.com.test.event;
 
+import esa.mo.com.support.ComStructureHelper;
 import java.util.Hashtable;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
 import org.ccsds.moims.mo.com.archive.consumer.ArchiveStub;
@@ -51,25 +52,23 @@ import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.ElementList;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.ShortList;
-import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import org.ccsds.moims.mo.mal.structures.UpdateType;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
@@ -212,10 +211,17 @@ public class EventTestHandlerImpl implements EventTestHandler
             QoSLevel.BESTEFFORT,
             null,
             new UInteger(0));
+    /*
     final EntityKeyList lst = new EntityKeyList();
     lst.add(new EntityKey(new Identifier("*"), new Long(0), new Long(0), new Long(0)));
+    */
+    IdentifierList keys = new IdentifierList();
+    keys.add(new Identifier("K1"));
+    keys.add(new Identifier("K2"));
+    keys.add(new Identifier("K3"));
+    keys.add(new Identifier("K4"));
 
-    monitorEventPublisher.register(lst, publisherListener);
+    monitorEventPublisher.register(keys, publisherListener);
 
   }
 
@@ -318,8 +324,8 @@ public class EventTestHandlerImpl implements EventTestHandler
           ElementList elementList, String objectNumber) throws MALInteractionException, MALException
   {
     ArchiveDetailsList archiveDetailsList = new ArchiveDetailsList();
-    archiveDetailsList.add(new ArchiveDetails(updateHeader.getKey().getThirdSubKey(), objDetails, NETWORK,
-            new FineTime(updateHeader.getTimestamp().getValue()), updateHeader.getSourceURI()));
+    archiveDetailsList.add(new ArchiveDetails((Long) updateHeader.getKeyValues().get(2), objDetails, NETWORK,
+            FineTime.now(), new URI(updateHeader.getSource().getValue())));
 
        // Domain is TBD
 //        final IdentifierList domain = new IdentifierList();
@@ -387,6 +393,7 @@ public class EventTestHandlerImpl implements EventTestHandler
   private void setUpdateHeader(UpdateHeader updateHeader, String eventObjectNumber, /* String domain, short objectNumber, */ long sourceInstId)
   {
     short sourceObjectNumber = testObjectDetailsList.get((int) (sourceInstId - 1)).objectNumber;
+    /*
     final EntityKey ekey = new EntityKey(
             new Identifier(eventObjectNumber),
             generateSubKey(COMPrototypeHelper._COMPROTOTYPE_AREA_NUMBER,
@@ -399,11 +406,32 @@ public class EventTestHandlerImpl implements EventTestHandler
     updateHeader.setSourceURI(new URI(EventTestHelper.EVENTTEST_SERVICE_NAME.toString()));
     updateHeader.setUpdateType(UpdateType.DELETION);
     updateHeader.setTimestamp(timestamp);
-
+    */
+    
+    AttributeList keyValues = new AttributeList();
+    keyValues.add(new Identifier(eventObjectNumber));
+    keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                    COMPrototypeHelper._COMPROTOTYPE_AREA_NUMBER,
+                    EventTestHelper._EVENTTEST_SERVICE_NUMBER,
+                    COMPrototypeHelper._COMPROTOTYPE_AREA_VERSION,
+                    0)));
+    keyValues.add(new Union((long) eventInstCount++));
+    keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                    COMPrototypeHelper._COMPROTOTYPE_AREA_NUMBER,
+                    EventTestHelper._EVENTTEST_SERVICE_NUMBER,
+                    COMPrototypeHelper._COMPROTOTYPE_AREA_VERSION,
+                    sourceObjectNumber)));
+    
+    IdentifierList domain = new IdentifierList();
+    domain.add(new Identifier("esa"));
+    domain.add(new Identifier("mission"));
+    
+    updateHeader.setKeyValues(keyValues);
+    updateHeader.setDomain(domain);
+    updateHeader.setSource(new Identifier(EventTestHelper.EVENTTEST_SERVICE_NAME.getValue()));
   }
 
   private void setObjectId(ObjectId objectId, String domain, short objectNumber, long instanceId)
-
   {
     ObjectType type = new ObjectType();
     type.setArea(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER);

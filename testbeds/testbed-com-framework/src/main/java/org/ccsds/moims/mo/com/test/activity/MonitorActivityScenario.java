@@ -20,7 +20,11 @@
  */
 package org.ccsds.moims.mo.com.test.activity;
 
+import static esa.mo.com.support.ActivityTrackingPublisher.OBJ_NO_ASE_ACCEPTANCE_STR;
+import esa.mo.com.support.ComStructureHelper;
 import java.util.*;
+import org.ccsds.moims.mo.com.COMHelper;
+import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransferList;
 import org.ccsds.moims.mo.com.event.consumer.EventStub;
@@ -49,6 +53,7 @@ import static org.ccsds.moims.mo.testbed.util.LoggingBase.logMessage;
  */
 public class MonitorActivityScenario extends BaseActivityScenario
 {
+    final IdentifierList domain = new IdentifierList();
   private final Map monitorMap = new TreeMap();
   private int nextMonitorKey = 0;
   private MonitorEventAdapter monitorEventAdapter = null;
@@ -73,6 +78,8 @@ public class MonitorActivityScenario extends BaseActivityScenario
     monitorEventAdapter = new MonitorEventAdapter();
     logMessage(loggingClassName + ":constructor");
     InstIdLists.inst().reset();
+    domain.add(new Identifier("esa"));
+    domain.add(new Identifier("mission"));
   }
 
   /**
@@ -139,15 +146,15 @@ public class MonitorActivityScenario extends BaseActivityScenario
   public boolean subscribeForActivityEventsFrom(String relay) throws Exception
   {
     logMessage(loggingClassName + ":registerForEvents START");
-    final IdentifierList domain = new IdentifierList();
-    domain.add(new Identifier("esa"));
-    domain.add(new Identifier("mission"));
     EventStub evStub = LocalMALInstance.instance().activityEventStub(relay, domain);
+    /*
     EntityKeyList ekl = new EntityKeyList();
     EntityRequestList erl = new EntityRequestList();
     ekl.add(new EntityKey(ALL_ID, new Long(ALL_INT), new Long(ALL_INT), new Long(ALL_INT)));
     erl.add(new EntityRequest(null, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, ekl));
-    Subscription sub = new Subscription(new Identifier("SubA"), erl);
+    */
+    SubscriptionFilterList filters = new SubscriptionFilterList();
+    Subscription sub = new Subscription(new Identifier("SubA"), domain, filters);
     evStub.monitorEventRegister(sub, monitorEventAdapter);
     logMessage(loggingClassName + ":registerForEvents Complete");
     return true;
@@ -534,13 +541,29 @@ public class MonitorActivityScenario extends BaseActivityScenario
 
     // Produce header
     UpdateHeaderList uhl = new UpdateHeaderList();
+    /*
     final EntityKey ekey = new EntityKey(
             new Identifier(COMTestHelper.OBJ_NO_ASE_RELEASE_STR),
             COMTestHelper.getActivityObjectTypeAsKey(0),
             new Long(instanceIdentifier++),
             COMTestHelper.getActivityObjectTypeAsKey(COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY));
     final Time timestamp = new Time(System.currentTimeMillis());
-    uhl.add(new UpdateHeader(timestamp, new URI(LocalMALInstance.ACTIVITY_EVENT_NAME + "CONSUMER"), UpdateType.DELETION, ekey));
+    */
+    AttributeList keys = new AttributeList();
+    keys.add(new Identifier(COMTestHelper.OBJ_NO_ASE_RELEASE_STR));
+    keys.add(new Union(ComStructureHelper.generateSubKey(
+                    COMHelper._COM_AREA_NUMBER,
+                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                    COMHelper._COM_AREA_VERSION,
+                    0)));
+    keys.add(new Union((long) instanceIdentifier++));
+    keys.add(new Union(ComStructureHelper.generateSubKey(
+                    COMHelper._COM_AREA_NUMBER,
+                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                    COMHelper._COM_AREA_VERSION,
+                    COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
+    
+    uhl.add(new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + "CONSUMER"), domain, keys));
 
     // Produce ActivityTransferList
     ActivityTransferList atl = new ActivityTransferList();

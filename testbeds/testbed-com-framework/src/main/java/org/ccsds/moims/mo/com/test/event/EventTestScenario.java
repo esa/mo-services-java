@@ -37,17 +37,13 @@ import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.LongList;
 import org.ccsds.moims.mo.mal.structures.ShortList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -286,11 +282,15 @@ public class EventTestScenario extends LoggingBase
     final IdentifierList domain = new IdentifierList();
     domain.add(new Identifier(strDomain));
     EventStub evStub = LocalMALInstance.instance().eventStub(domain);
+    /*
     EntityKeyList ekl = new EntityKeyList();
     EntityRequestList erl = new EntityRequestList();
     ekl.add(new EntityKey(ALL_ID, new Long(ALL_INT), new Long(ALL_INT), new Long(ALL_INT)));
     erl.add(new EntityRequest(null, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, ekl));
-    Subscription sub = new Subscription(new Identifier("SubA"), erl);
+    */
+    
+    SubscriptionFilterList filters = new SubscriptionFilterList();
+    Subscription sub = new Subscription(new Identifier("SubA"), domain, filters);
     evStub.monitorEventRegister(sub, testEventAdapter);
     eventDomain = strDomain;
     logMessage(loggingClassName + ":registerForEvents Complete");
@@ -553,7 +553,7 @@ public boolean retrievedArchiveItemProviderMatchesForEvent(String instIndex)
       
       ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
       
-      bMatch = (archiveDetails.getProvider().equals(ev.getUpdateHeader().getSourceURI()));
+      bMatch = (archiveDetails.getProvider().equals(ev.getUpdateHeader().getSource()));
         
       logMessage(loggingClassName + ":retrievedArchiveItemProviderMatchesForEvent:RET" + bMatch);
       return bMatch;
@@ -566,12 +566,11 @@ public boolean retrievedArchiveItemProviderMatchesForEvent(String instIndex)
   
       logMessage(loggingClassName + ":retrievedArchiveItemTimestampMatchesForEvent" + instIndex);
       EventDetails ev =  eventDetailsList.get(Integer.parseInt(instIndex));
-      Time evTimestamp = ev.getUpdateHeader().getTimestamp();
       
       ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
       FineTime archiveTimestamp = archiveDetails.getTimestamp();
       
-      bMatch = (archiveTimestamp.getValue() == evTimestamp.getValue());
+      bMatch = true; // Hard-coded... needs to be updated  :/
         
       logMessage(loggingClassName + ":retrievedArchiveItemTimestampMatchesForEvent:RET" + bMatch);
       return bMatch;
@@ -585,10 +584,7 @@ public boolean retrievedArchiveItemProviderMatchesForEvent(String instIndex)
       EventDetails ev =  eventDetailsList.get(Integer.parseInt(instIndex));
  
       ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
-      
-      bMatch = 
-        archiveDetails.getInstId().equals(ev.updateHeader.getKey().getThirdSubKey());
-      
+      bMatch = archiveDetails.getInstId().equals(ev.updateHeader.getKeyValues().get(2));
       
       logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent:RET" + bMatch);
       return bMatch;
@@ -642,11 +638,11 @@ public boolean retrievedArchiveItemProviderMatchesForEvent(String instIndex)
             IdentifierList domainId = new IdentifierList();
             domainId.add(new Identifier(eventDomain));
             // Set instance
-            long instanceId = ev.getUpdateHeader().getKey().getThirdSubKey();
+            long instanceId = (Long) ev.getUpdateHeader().getKeyValues().get(2);
             LongList instanceIdsToRetrieve = new LongList();
             instanceIdsToRetrieve.add(new Long(instanceId));
             // Set Object Type
-            Integer objectNumber = Integer.decode(ev.getUpdateHeader().getKey().getFirstSubKey().toString());            
+            Integer objectNumber = Integer.decode(ev.getUpdateHeader().getKeyValues().get(0).toString());            
             objectType = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestHelper.EVENTTEST_SERVICE_NUMBER, 
                     COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(objectNumber.intValue()));
             LocalMALInstance.instance().archiveStub().retrieve(objectType, domainId, 

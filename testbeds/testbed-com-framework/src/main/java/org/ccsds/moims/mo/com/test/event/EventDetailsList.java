@@ -36,7 +36,6 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.ShortList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateType;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import static org.ccsds.moims.mo.testbed.util.LoggingBase.logMessage;
 
@@ -68,7 +67,7 @@ public class EventDetailsList extends java.util.ArrayList<EventDetails>
     for (index = (size() - 1); index >= 0 && !bFound; index--)
     {
       EventDetails eventDetails = get(index);
-      String evObjNumber = eventDetails.getUpdateHeader().getKey().getFirstSubKey().toString();
+      String evObjNumber = eventDetails.getUpdateHeader().getKeyValues().get(0).toString();
       String evSourceObjNumber = eventDetails.getObjectDetails().getSource().getType().getNumber().toString();
       IdentifierList evSourceDomain = eventDetails.getObjectDetails().getSource().getKey().getDomain();
       String evSourceInstId = eventDetails.getObjectDetails().getSource().getKey().getInstId().toString();
@@ -130,30 +129,24 @@ class EventDetails
     // Check key
     // First Sub Key = event object number (Identifier) 
     bValid = COMChecker.equalsCheck(strObject, "Header.Key.First",
-            updateHeader.getKey().getFirstSubKey().toString(),
+            updateHeader.getKeyValues().get(0).toString(),
             objNumber, bValid);
     // Second Sub Key = event object type (3 sub-fields)
     bValid = COMChecker.equalsCheck(strObject, "Header.Key.Second",
-            updateHeader.getKey().getSecondSubKey(),
+            (Long) updateHeader.getKeyValues().get(1),
             COMTestHelper.getEventTestObjectTypeAsKey(0), bValid);
     // Third Sub Key = event object instance identifier 
-    updateHeader.getKey().getThirdSubKey().intValue();
+    //updateHeader.getKey().getThirdSubKey().intValue();
     bValid = COMChecker.equalsCheck(strObject, "Header.Key.Third",
-            updateHeader.getKey().getThirdSubKey().intValue(),
+            (Long) updateHeader.getKeyValues().get(2),
             instId, bValid);
     // Fourth Sub Key = event source object type (4 sub-fields)
     bValid = COMChecker.equalsCheck(strObject, "Header.Key.Fourth",
-            updateHeader.getKey().getFourthSubKey(),
+            (Long) updateHeader.getKeyValues().get(3),
             COMTestHelper.getEventTestObjectTypeAsKey((new Integer(sourceObjNumber)).intValue()), bValid);
     // Check source URI
-    COMChecker.equalsCheck(strObject, "Header.UpdateType", updateHeader.getSourceURI().toString(),
+    COMChecker.equalsCheck(strObject, "Header.UpdateType", updateHeader.getSource().toString(),
             EventTestHelper.EVENTTEST_SERVICE_NAME.toString(), bValid);
-    // Check update type
-    bValid = COMChecker.equalsCheck(strObject, "Header.UpdateType", updateHeader.getUpdateType().toString(),
-            UpdateType.DELETION.toString(), bValid);
-    // Check update timeStamp
-    bValid = COMChecker.timeCheck(strObject, "TimeStamp", updateHeader.getTimestamp(),
-            null, new Time(System.currentTimeMillis()), bValid);
     return bValid;
   }
 

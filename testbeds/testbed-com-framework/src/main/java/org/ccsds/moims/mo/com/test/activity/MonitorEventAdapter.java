@@ -70,8 +70,8 @@ class MonitorEventAdapter extends EventAdapter
     // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _ObjectDetailsList2);
     // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _ElementList3);
 
-    Identifier objectNumber = headerList.get(0).getKey().getFirstSubKey();
-    URI uri = headerList.get(0).getSourceURI();
+    Identifier objectNumber = (Identifier) headerList.get(0).getKeyValues().get(0);
+    Identifier source = headerList.get(0).getSource();
     String strObjectNumber = objectNumber.toString();
     String strEventName = objToEventName(objectNumber.toString());
     strEventName.trim();
@@ -96,7 +96,7 @@ class MonitorEventAdapter extends EventAdapter
       success = activityTransferExecution.getSuccess();
     }
     // TBC do we need to support multiple updates
-    monitorEventList.add(new MonitorEventDetails(strEventName, uri.toString(), success,
+    monitorEventList.add(new MonitorEventDetails(strEventName, source.toString(), success,
             headerList.get(0), objectDetailsList.get(0), (Element) elementList.get(0)));
     LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived " + strEventName + " " + success);
   }

@@ -74,10 +74,6 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.BlobList;
 import org.ccsds.moims.mo.mal.structures.BooleanList;
 import org.ccsds.moims.mo.mal.structures.ElementList;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -85,6 +81,7 @@ import org.ccsds.moims.mo.mal.structures.IntegerList;
 import org.ccsds.moims.mo.mal.structures.LongList;
 import org.ccsds.moims.mo.mal.structures.StringList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UIntegerList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
@@ -971,6 +968,7 @@ public class ArchiveScenario
     secondSubKey |= (ArchiveHelper._ARCHIVE_SERVICE_NUMBER & 0xFFFFL) << 32;
     secondSubKey |= (COMHelper._COM_AREA_NUMBER & 0xFFFFL) << 48;
 
+    /*
     EntityKey everyArchiveEventKey = new EntityKey(new Identifier("*"),
             secondSubKey, 0L, 0L);
 
@@ -982,9 +980,11 @@ public class ArchiveScenario
 
     EntityRequestList entityRequestList = new EntityRequestList();
     entityRequestList.add(entityRequest);
+    */
 
+    SubscriptionFilterList filters = new SubscriptionFilterList();
     Subscription subscription = new Subscription(
-            ARCHIVE_EVENT_SUBSCRIPTION, entityRequestList);
+            ARCHIVE_EVENT_SUBSCRIPTION, domain, filters);
     try
     {
       LoggingBase.logMessage("subscribeToArchiveEvents:: calling monitorEventRegister");
@@ -1063,7 +1063,7 @@ public class ArchiveScenario
 
   public boolean selectedNotifiedObjectNumberIs(String objectNumber)
   {
-    return selectedNotifiedUpdateHeader.getKey().getFirstSubKey().equals(new Identifier(objectNumber));
+    return selectedNotifiedUpdateHeader.getKeyValues().get(0).equals(new Identifier(objectNumber));
   }
 
   public boolean queriedArchiveDetailsListIsEqualToLocalList()

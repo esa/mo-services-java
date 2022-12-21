@@ -357,10 +357,17 @@ public class LocalMALInstance extends BaseLocalMALInstance
             QoSLevel.BESTEFFORT,
             null,
             new UInteger(0));
+    /*
     final EntityKeyList lst = new EntityKeyList();
     lst.add(new EntityKey(new Identifier("*"), new Long(0), new Long(0), new Long(0)));
+    */
 
-    monitorEventPublisher.register(lst, new MALPublishInteractionListenerImpl());
+    IdentifierList keys = new IdentifierList();
+    keys.add(new Identifier("K1"));
+    keys.add(new Identifier("K2"));
+    keys.add(new Identifier("K3"));
+    keys.add(new Identifier("K4"));
+    monitorEventPublisher.register(keys, new MALPublishInteractionListenerImpl());
   }
 
   public MonitorEventPublisher getMonitorEventPublisher(String relay) throws MALInteractionException, MALException

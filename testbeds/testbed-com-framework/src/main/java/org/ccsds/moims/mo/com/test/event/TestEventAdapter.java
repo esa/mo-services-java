@@ -68,12 +68,11 @@ class TestEventAdapter extends EventAdapter
     LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + objectDetailsList);
     LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + elementList);
 
-    Identifier objectNumber = headerList.get(0).getKey().getFirstSubKey();
-    URI uri = headerList.get(0).getSourceURI();
+    Identifier objectNumber = (Identifier) headerList.get(0).getKeyValues().get(0);
+    Identifier uri = headerList.get(0).getSource();
     String strObjectNumber = objectNumber.toString();
     eventDetailsList.add(new EventDetails(
             headerList.get(0), objectDetailsList.get(0), (Element) elementList.get(0)));
-
   }
 
   /**
