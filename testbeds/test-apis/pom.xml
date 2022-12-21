@@ -26,7 +26,7 @@
     <artifactId>apis</artifactId>
     <version>9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>ESA MO APIs</name>
+    <name>CCSDS MOIMS MO Testbed APIs</name>
 
     <organization>
         <name>ESA</name>
@@ -54,17 +54,15 @@
   
     <developers>
         <developer>
-            <id>SamCooper</id>
-            <name>Sam Cooper</name>
-            <email>sam@brightascension.com</email>
-            <url>https://github.com/SamCooper</url>
+            <id>CesarCoelho</id>
+            <name>Cesar Coelho</name>
+            <url>https://github.com/CesarCoelho/</url>
         </developer>
     </developers>
 
     <modules>
-        <module>api-mal</module>
-        <module>api-com</module>
-        <module>api-common</module>
-        <module>api-mc</module>
+        <module>test-api-mal</module>
+        <module>test-api-com</module>
+        <module>test-api-mc</module>
     </modules>
 </project>

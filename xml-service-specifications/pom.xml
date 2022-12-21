@@ -63,6 +63,5 @@
     <modules>
         <module>xml-ccsds-mo-standards</module>
         <module>xml-ccsds-mo-prototypes</module>
-        <module>xml-tests</module>
     </modules>
 </project>

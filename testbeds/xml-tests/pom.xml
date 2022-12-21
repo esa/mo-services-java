@@ -21,7 +21,7 @@
     <version>9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ESA MO XML services - MO Tests</name>
+    <name>CCSDS MOIMS MO Testbed XML</name>
     <description>CCSDS Mission Operations XML Extra files</description>
     <url>http://www.ccsds.org</url>
 
