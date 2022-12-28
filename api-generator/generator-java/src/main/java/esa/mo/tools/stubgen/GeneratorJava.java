@@ -27,7 +27,6 @@ import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
-import esa.mo.tools.stubgen.writers.AbstractLanguageWriter;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.InterfaceWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
@@ -39,7 +38,6 @@ import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,8 +65,12 @@ public class GeneratorJava extends GeneratorLangs {
      */
     public GeneratorJava(org.apache.maven.plugin.logging.Log logger) {
         super(logger, true, true, false, true, false,
-                new GeneratorConfiguration("org.ccsds.moims.mo.", "structures",
-                        "factory", "body", ".", "(Object[]) null",
+                new GeneratorConfiguration("org.ccsds.moims.mo.", 
+                        "structures",
+                        "factory", 
+                        "body", 
+                        ".", 
+                        "(Object[]) null",
                         "MALSendOperation",
                         "MALSubmitOperation",
                         "MALRequestOperation",
@@ -118,16 +120,16 @@ public class GeneratorJava extends GeneratorLangs {
         addAttributeType(StdStrings.MAL, StdStrings.URI, false, "URI", "");
         addAttributeType(StdStrings.MAL, StdStrings.OBJECTREF, false, "ObjectRef", "");
 
-        addNativeType("boolean", new NativeTypeDetails("boolean", false, false, null));
-        addNativeType("_String", new NativeTypeDetails("String", false, false, null));
-        addNativeType("byte", new NativeTypeDetails("byte", false, false, null));
-        addNativeType("short", new NativeTypeDetails("short", false, false, null));
-        addNativeType("int", new NativeTypeDetails("int", false, false, null));
-        addNativeType("long", new NativeTypeDetails("long", false, false, null));
-        addNativeType("_Integer", new NativeTypeDetails("Integer", true, false, null));
-        addNativeType("Class", new NativeTypeDetails("Class", true, false, null));
-        addNativeType("Map", new NativeTypeDetails("java.util.Map", true, false, null));
-        addNativeType("Vector", new NativeTypeDetails("java.util.Vector", true, false, null));
+        super.addNativeType("boolean", new NativeTypeDetails("boolean", false, false, null));
+        super.addNativeType("_String", new NativeTypeDetails("String", false, false, null));
+        super.addNativeType("byte", new NativeTypeDetails("byte", false, false, null));
+        super.addNativeType("short", new NativeTypeDetails("short", false, false, null));
+        super.addNativeType("int", new NativeTypeDetails("int", false, false, null));
+        super.addNativeType("long", new NativeTypeDetails("long", false, false, null));
+        super.addNativeType("_Integer", new NativeTypeDetails("Integer", true, false, null));
+        super.addNativeType("Class", new NativeTypeDetails("Class", true, false, null));
+        super.addNativeType("Map", new NativeTypeDetails("java.util.Map", true, false, null));
+        super.addNativeType("Vector", new NativeTypeDetails("java.util.Vector", true, false, null));
     }
 
     @Override
@@ -665,575 +667,21 @@ public class GeneratorJava extends GeneratorLangs {
 
     @Override
     protected ClassWriterProposed createClassFile(File folder, String className) throws IOException {
-        return new JavaClassWriter(folder, className);
+        return new JavaClassWriter(folder, className, this);
     }
 
     @Override
     protected ClassWriter createClassFile(String destinationFolderName, String className) throws IOException {
-        return new JavaClassWriter(destinationFolderName, className);
+        return new JavaClassWriter(destinationFolderName, className, this);
     }
 
     @Override
     protected InterfaceWriter createInterfaceFile(File folder, String className) throws IOException {
-        return new JavaClassWriter(folder, className);
+        return new JavaClassWriter(folder, className, this);
     }
 
     @Override
     protected InterfaceWriter createInterfaceFile(String destinationFolderName, String className) throws IOException {
-        return new JavaClassWriter(destinationFolderName, className);
-    }
-
-    private class JavaClassWriter extends AbstractLanguageWriter implements ClassWriterProposed, InterfaceWriter, MethodWriter {
-
-        private final Writer file;
-
-        /**
-         * Constructor.
-         *
-         * @param folder The folder to create the file in.
-         * @param className The class name.
-         * @throws IOException If any problems creating the file.
-         */
-        public JavaClassWriter(File folder, String className) throws IOException {
-            file = StubUtils.createLowLevelWriter(folder, className, JAVA_FILE_EXT);
-        }
-
-        /**
-         * Constructor.
-         *
-         * @param destinationFolderName Folder to create the file in.
-         * @param className The file name.
-         * @throws IOException If any problems creating the file.
-         */
-        public JavaClassWriter(String destinationFolderName, String className) throws IOException {
-            file = StubUtils.createLowLevelWriter(destinationFolderName, className, JAVA_FILE_EXT);
-        }
-
-        @Override
-        public void addStatement(String string) throws IOException {
-            file.append(addFileStatement(0, string, false));
-        }
-
-        @Override
-        public void addClassCloseStatement() throws IOException {
-            file.append(addFileStatement(0, "}", false));
-        }
-
-        @Override
-        public void addClassOpenStatement(String className, boolean finalClass, boolean abstractClass, String extendsClass, String implementsInterface, String comment) throws IOException {
-            addMultilineComment(0, true, comment, false);
-
-            file.append("public ");
-            if (finalClass) {
-                file.append("final ");
-            }
-            if (abstractClass) {
-                file.append("abstract ");
-            }
-            file.append("class ").append(className);
-            if (null != extendsClass) {
-                file.append(" extends ").append(extendsClass);
-            }
-            if (null != implementsInterface) {
-                file.append(" implements ").append(implementsInterface);
-            }
-            file.append(getLineSeparator());
-            file.append(addFileStatement(0, "{", false));
-        }
-
-        @Override
-        public void addClassVariableProposed(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, String initialValue) throws IOException {
-            addClassVariable(true, isStatic, isFinal, scope, arg, isObject, false, initialValue);
-        }
-
-        @Override
-        public void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, String initialValue) throws IOException {
-            addClassVariable(false, isStatic, isFinal, scope, arg, isObject, false, initialValue);
-        }
-
-        @Override
-        public void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, List<String> initialValues) throws IOException {
-            StringBuilder iniVal = new StringBuilder();
-
-            for (int i = 0; i < initialValues.size(); i++) {
-                if (0 < i) {
-                    iniVal.append(", ");
-                }
-                String initialValue = initialValues.get(i);
-                if (initialValue.contains("ObjectRef<")) {
-                    initialValue = initialValue.substring(0, 
-                            initialValue.indexOf("org", 
-                                     initialValue.indexOf("org", 
-                                       initialValue.indexOf("org") + 1 ) + 1))
-                            + "org.ccsds.moims.mo.mal.structures.ObjectRef.OBJECTREF_SHORT_FORM"
-                            + initialValue.substring(initialValue.indexOf("SHORT_FORM") + 10, initialValue.length());
-                }
-                iniVal.append(initialValue);
-            }
-
-            String val;
-
-            if (isArray) {
-                val = iniVal.toString();
-            } else {
-                val = "(" + iniVal.toString() + ")";
-            }
-
-            addClassVariable(false, isStatic, isFinal, scope, arg, isObject, isArray, val);
-        }
-
-        protected void addClassVariable(boolean isProposed, boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, String initialValue) throws IOException {
-            addMultilineComment(1, false, arg.getComment(), false);
-
-            StringBuilder buf = new StringBuilder(scope);
-            buf.append(" ");
-            if (isStatic) {
-                buf.append("static ");
-            }
-            if (isFinal) {
-                buf.append("final ");
-            }
-            String ltype = createLocalType(arg);
-            buf.append(ltype);
-            if (isArray) {
-                buf.append("[]");
-            }
-            buf.append(" ");
-            buf.append(arg.getFieldName());
-
-            if (null != initialValue) {
-                if (isArray) {
-                    buf.append(" = {").append(initialValue).append("}");
-                } else if (isNativeType(arg.getTypeName())) {
-                    NativeTypeDetails dets = getNativeType(arg.getTypeName());
-                    if (dets.isObject()) {
-                        buf.append(" = new ").append(ltype).append(initialValue);
-                    } else {
-                        buf.append(" = ").append(initialValue);
-                    }
-                } else {
-                    buf.append(" = new ").append(ltype).append(initialValue);
-                }
-            }
-
-            if (isProposed) {
-                file.append(addFileStatement(1, "@org.ccsds.moims.mo.com.Proposed", false));
-            }
-            file.append(addFileStatement(1, buf.toString(), true));
-        }
-
-        @Override
-        public void addClassVariableNewInit(boolean isStatic, boolean isFinal, String scope, CompositeField arg, boolean isObject, boolean isArray, String initialValue, boolean isNewInit) throws IOException {
-            addMultilineComment(1, false, arg.getComment(), false);
-
-            StringBuilder buf = new StringBuilder(scope);
-            buf.append(" ");
-            if (isStatic) {
-                buf.append("static ");
-            }
-            if (isFinal) {
-                buf.append("final ");
-            }
-            String ltype = createLocalType(arg);
-            buf.append(ltype);
-            if (isArray) {
-                buf.append("[]");
-            }
-            buf.append(" ");
-            buf.append(arg.getFieldName());
-
-            if (null != initialValue) {
-                if (isArray) {
-                    buf.append(" = {").append(initialValue).append("}");
-                } else if (!isNewInit) {
-                    buf.append(" = ").append(initialValue);
-                } else if (isNativeType(arg.getTypeName())) {
-                    NativeTypeDetails dets = getNativeType(arg.getTypeName());
-                    if (dets.isObject()) {
-                        buf.append(" = new ").append(ltype).append(initialValue);
-                    } else {
-                        buf.append(" = ").append(initialValue);
-                    }
-                } else {
-                    buf.append(" = new ").append(ltype).append(initialValue);
-                }
-            }
-
-            file.append(addFileStatement(1, buf.toString(), true));
-        }
-
-        @Override
-        public void addStaticConstructor(String returnType, String methodName, String args, String constructorCall) throws IOException {
-        }
-
-        @Override
-        public void addConstructorDefault(String className) throws IOException {
-            addMultilineComment(1, false, "Default constructor for " + className, false);
-
-            addConstructor(StdStrings.PUBLIC, className, null, null, null, null, null).addMethodCloseStatement();
-        }
-
-        @Override
-        public void addConstructorCopy(String className, List<CompositeField> compElements) throws IOException {
-        }
-
-        @Override
-        public MethodWriter addConstructor(String scope, String className, CompositeField arg, boolean isArgForSuper, String throwsSpec, String comment, String throwsComment) throws IOException {
-            return addConstructor(scope, className, Arrays.asList(arg), (isArgForSuper ? Arrays.asList(arg) : ((List<CompositeField>) null)), throwsSpec, comment, throwsComment);
-        }
-
-        @Override
-        public MethodWriter addConstructor(String scope, String className, List<CompositeField> args, List<CompositeField> superArgs, String throwsSpec, String comment, String throwsComment) throws IOException {
-            addMultilineComment(1, false, normaliseArgComments(comment, null, args, Arrays.asList(throwsComment)), false);
-
-            StringBuilder buf = new StringBuilder(scope + " " + className + "(" + processArgs(args, true) + ")");
-
-            if (null != throwsSpec) {
-                buf.append(" throws ");
-                buf.append(throwsSpec);
-            }
-
-            file.append(addFileStatement(1, buf.toString(), false));
-            file.append(addFileStatement(1, "{", false));
-            if ((null != superArgs) && (0 < superArgs.size())) {
-                file.append(addFileStatement(2, "super(" + processArgs(superArgs, false) + ")", true));
-            }
-
-            return this;
-        }
-
-        @Override
-        public MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic,
-                String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype,
-                String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
-            return addMethodOpenStatement(isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, null, null, null);
-        }
-
-        @Override
-        public MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic,
-                String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype,
-                String methodName, List<CompositeField> args, String throwsSpec, String comment,
-                String returnComment, List<String> throwsComment) throws IOException {
-            return addMethodOpenStatement(false, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
-        }
-
-        @Override
-        public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst,
-                boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual,
-                CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
-            return addMethodOpenStatement(isVirtual, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, null, null, null);
-        }
-
-        @Override
-        public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst,
-                boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual,
-                CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec,
-                String comment, String returnComment, List<String> throwsComment) throws IOException {
-            return addMethodOpenStatement(false, isVirtual, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
-        }
-
-        @Override
-        public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
-                boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
-                boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args,
-                String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException {
-            addMultilineComment(1, false, normaliseArgComments(comment, returnComment, args, throwsComment), false);
-
-            String nStatic = "";
-
-            if (isStatic) {
-                nStatic = "static ";
-            }
-
-            String nFinal = "";
-
-            if (isFinal) {
-                nFinal = "final ";
-            }
-
-            String srtype = createLocalType(rtype);
-            String argString = processArgs(args, true);
-
-            StringBuilder buf = new StringBuilder(scope + " " + nStatic + nFinal + srtype + " " + methodName + "(" + argString + ")");
-
-            if (null != throwsSpec) {
-                buf.append(" throws ");
-                buf.append(throwsSpec);
-            }
-
-            file.append(addFileStatement(1, buf.toString(), false));
-            file.append(addFileStatement(1, "{", false));
-
-            return this;
-        }
-
-        @Override
-        public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
-                boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
-                boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args,
-                String throwsSpec, String comment, String returnComment, List<String> throwsComment, boolean isDeprecated) throws IOException {
-
-            addMultilineComment(1, false, normaliseArgComments(comment, returnComment, args, throwsComment), false);
-
-            if (isDeprecated) {
-                file.append("  @Deprecated\n");
-            }
-
-            String nStatic = isStatic ? "static " : "";
-            String nFinal = isFinal ? "final " : "";
-            String srtype = createLocalType(rtype);
-            String argString = processArgs(args, true);
-
-            StringBuilder buf = new StringBuilder(scope + " " + nStatic + nFinal + srtype + " " + methodName + "(" + argString + ")");
-
-            if (null != throwsSpec) {
-                buf.append(" throws ");
-                buf.append(throwsSpec);
-            }
-
-            file.append(addFileStatement(1, buf.toString(), false));
-            file.append(addFileStatement(1, "{", false));
-
-            return this;
-        }
-
-        @Override
-        public void addPackageStatement(AreaType area, ServiceType service, String extraPackage) throws IOException {
-            String packageName = "";
-
-            if (null == area) {
-                packageName = getConfig().getAreaPackage("");
-            } else {
-                packageName += getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase();
-
-                if (null != service) {
-                    packageName += "." + service.getName().toLowerCase();
-                }
-            }
-
-            if (null != extraPackage) {
-                if (0 < packageName.length()) {
-                    packageName += ".";
-                }
-                packageName += extraPackage;
-            }
-
-            file.append(addFileStatement(0, "package " + packageName, true));
-        }
-
-        @Override
-        public void flush() throws IOException {
-            file.flush();
-        }
-
-        @Override
-        public void addInterfaceCloseStatement() throws IOException {
-            file.append(addFileStatement(0, "}", false));
-        }
-
-        @Override
-        public void addInterfaceMethodDeclaration(String scope, CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException {
-            String srtype = createLocalType(rtype);
-            String argString = processArgs(args, true);
-
-            addMultilineComment(1, false, normaliseArgComments(comment, null == rtype ? null : returnComment, args, throwsComment), false);
-
-            StringBuilder buf = new StringBuilder(srtype + " " + methodName + "(" + argString + ")");
-
-            if (null != throwsSpec) {
-                buf.append(" throws ");
-                buf.append(throwsSpec);
-            }
-
-            file.append(addFileStatement(1, buf.toString(), true));
-        }
-
-        @Override
-        public void addInterfaceOpenStatement(String interfaceName, String extendsInterface, String comment) throws IOException {
-            addMultilineComment(0, true, comment, false);
-
-            file.append("public interface ");
-            file.append(interfaceName);
-            if (null != extendsInterface) {
-                file.append(" extends ").append(extendsInterface);
-            }
-            file.append(getLineSeparator());
-            file.append(addFileStatement(0, "{", false));
-        }
-
-        @Override
-        public void addArrayMethodStatement(String arrayVariable, String indexVariable, String arrayMaxSize) throws IOException {
-            addMethodStatement("return " + arrayVariable + "[" + indexVariable + "]", true);
-        }
-
-        @Override
-        public void addSuperMethodStatement(String method, String args) throws IOException {
-            addMethodStatement("super." + method + "(" + args + ")", true);
-        }
-
-        @Override
-        public void addMethodStatement(String statement) throws IOException {
-            addMethodStatement(statement, true);
-        }
-
-        @Override
-        public void addMethodWithDependencyStatement(String statement, String dependency, boolean addSemi) throws IOException {
-            addMethodStatement(statement, addSemi);
-        }
-
-        @Override
-        public void addMethodStatement(String statement, boolean addSemi) throws IOException {
-            if (0 < statement.trim().length()) {
-                file.append(addFileStatement(2, statement, addSemi));
-            }
-        }
-
-        @Override
-        public void addMethodCloseStatement() throws IOException {
-            file.append(addFileStatement(1, "}", false));
-            file.append(getLineSeparator());
-        }
-
-        @Override
-        public void addMultilineComment(int tabCount, boolean preBlankLine, List<String> comments, boolean postBlankLine) throws IOException {
-            if (0 < comments.size()) {
-                if (preBlankLine) {
-                    file.append(getLineSeparator());
-                }
-
-                file.append(addFileStatement(tabCount, "/**", false));
-                for (String comment : comments) {
-                    comment = comment.replaceAll("<", "_");
-                    comment = comment.replaceAll(">", "_");
-                    file.append(addFileStatement(tabCount, " * " + comment, false));
-                }
-                file.append(addFileStatement(tabCount, " */", false));
-
-                if (postBlankLine) {
-                    file.append(getLineSeparator());
-                }
-            }
-        }
-
-        private List<String> normaliseArgComments(String comment, String returnComment, List<CompositeField> argsComments, List<String> throwsComment) {
-            List<String> rv = new LinkedList<>();
-
-            if (null != argsComments) {
-                for (CompositeField arg : argsComments) {
-                    rv.add(arg.getFieldName() + " " + arg.getComment());
-                }
-            }
-
-            return normaliseComments(comment, returnComment, rv, throwsComment);
-        }
-
-        private List<String> normaliseComments(String comment, String returnComment, List<String> argsComments, List<String> throwsComment) {
-            List<String> rv = new LinkedList<>();
-
-            normaliseComment(rv, comment);
-            normaliseComments(rv, StubUtils.conditionalAdd("@param ", argsComments));
-            normaliseComment(rv, StubUtils.conditionalAdd("@return ", returnComment));
-            normaliseComments(rv, StubUtils.conditionalAdd("@throws ", throwsComment));
-
-            return rv;
-        }
-
-        private String processArgs(List<CompositeField> args, boolean includeType) {
-            StringBuilder buf = new StringBuilder();
-            if (null != args && (0 < args.size())) {
-                boolean firstTime = true;
-
-                for (CompositeField arg : args) {
-                    if (firstTime) {
-                        firstTime = false;
-                    } else {
-                        buf.append(", ");
-                    }
-
-                    if (includeType) {
-                        buf.append(createLocalType(arg)).append(" ");
-                    }
-
-                    String name = checkForReservedWords(arg.getFieldName());
-                    name = name.replaceAll("<", "_");
-                    name = name.replaceAll(">", "_");
-                    buf.append(name);
-                }
-            }
-
-            return buf.toString();
-        }
-        private String updateObjectRefType(String fullType) {
-            fullType = "org.ccsds.moims.mo.mal.structures.ObjectRef<"
-                    + fullType.substring(0, fullType.indexOf("ObjectRef"))
-                    + fullType.substring(fullType.indexOf('<') + 1, fullType.indexOf('>'))
-                    + ">";
-            return fullType;
-        }
-        
-        private String createLocalType(CompositeField type) {
-            if (null != type) {
-                String fullType = type.getTypeName();
-                if (fullType.contains("ObjectRef<")) {
-                    fullType = updateObjectRefType(fullType);
-                }
-                if (isNativeType(fullType)) {
-                    NativeTypeDetails dets = getNativeType(fullType);
-
-                    return dets.getLanguageTypeName();
-                } else if (!type.isList() && isAttributeType(type.getTypeReference())) {
-                    AttributeTypeDetails dets = getAttributeDetails(type.getTypeReference());
-                    if (null != dets) {
-                        return dets.getTargetType();
-                    }
-                }
-
-                return fullType;
-            }
-
-            return StdStrings.VOID;
-        }
-
-//    private String createLocalType(String type)
-//    {
-//      if (null != type)
-//      {
-//        String head = "";
-//        String tail = "";
-//
-//        if (type.startsWith("new "))
-//        {
-//          head = "new ";
-//          int tindex = type.indexOf('(');
-//
-//          if (tindex == -1)
-//          {
-//            tindex = type.indexOf('[');
-//          }
-//
-//          tail = type.substring(tindex);
-//          type = type.substring(4, type.length() - tail.length());
-//        }
-//
-//        if (isNativeType(type))
-//        {
-//          NativeTypeDetails dets = getNativeType(type);
-//
-//          type = dets.getLanguageTypeName();
-//        }
-//        else
-//        {
-//          AttributeTypeDetails dets = getAttributeDetails(type);
-//          if (null != dets)
-//          {
-//            type = dets.getTargetType();
-//          }
-//        }
-//
-//        return head + type + tail;
-//      }
-//
-//      return type;
-//    }
+        return new JavaClassWriter(destinationFolderName, className, this);
     }
 }
