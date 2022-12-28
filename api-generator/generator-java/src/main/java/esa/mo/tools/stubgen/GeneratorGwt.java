@@ -319,7 +319,7 @@ public class GeneratorGwt extends GeneratorJava {
                             TypeUtils.createTypeReference(area.getName(),
                                     service.getName().toLowerCase() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false),
                             false, false, null), false, null, null, null);
-            method.addMethodStatement(createMethodCall("this.delegate = delegate"));
+            method.addLine(createMethodCall("this.delegate = delegate"));
             method.addMethodCloseStatement();
         } else {
 //      CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "skeleton Not used in the inheritance pattern (the skeleton is 'this'");
@@ -343,7 +343,7 @@ public class GeneratorGwt extends GeneratorJava {
                                     op.getArgTypes()), throwsMALException);
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
-                    method.addMethodStatement(
+                    method.addLine(
                             createMethodCall(delegateCall + op.getName() + "(" + opArgs + ", null)"));
 
                     method.addMethodCloseStatement();
@@ -355,7 +355,7 @@ public class GeneratorGwt extends GeneratorJava {
                             createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
-                    method.addMethodStatement(
+                    method.addLine(
                             createMethodCall(delegateCall + op.getName() + "(" + opArgs + ", null)"));
 
                     method.addMethodCloseStatement();
@@ -368,7 +368,7 @@ public class GeneratorGwt extends GeneratorJava {
                             createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
-                    method.addMethodStatement(createMethodCall("return " + delegateCall + op.getName() + "(" + opArgs + ", null)"));
+                    method.addLine(createMethodCall("return " + delegateCall + op.getName() + "(" + opArgs + ", null)"));
 
                     method.addMethodCloseStatement();
                     break;

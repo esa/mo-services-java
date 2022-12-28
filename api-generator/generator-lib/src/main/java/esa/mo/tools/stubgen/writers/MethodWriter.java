@@ -39,10 +39,10 @@ public interface MethodWriter {
     /**
      * Adds a statement to the method.
      *
-     * @param statement The statement to add.
+     * @param line The line to add.
      * @throws IOException If there is an IO error.
      */
-    void addMethodStatement(String statement) throws IOException;
+    void addLine(String line) throws IOException;
 
     /**
      * Adds a statement to the method.
@@ -51,7 +51,7 @@ public interface MethodWriter {
      * @param addSemi True if adding a semicolon to the statement.
      * @throws IOException If there is an IO error.
      */
-    void addMethodStatement(String statement, boolean addSemi) throws IOException;
+    void addLine(String statement, boolean addSemi) throws IOException;
 
     /**
      * Adds a statement to the method with type dependency.

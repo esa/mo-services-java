@@ -156,7 +156,7 @@ public class GeneratorJava extends GeneratorLangs {
                         TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false),
                         false, true, "publisherSet The set of broker connections to use when registering and publishing."),
                 false, null, "Creates an instance of this class using the supplied publisher set.", null);
-        method.addMethodStatement("this.publisherSet = publisherSet");
+        method.addLine("this.publisherSet = publisherSet");
         method.addMethodCloseStatement();
 
         CompositeField keyList = createCompositeElementsDetails(file, false, "keys", TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true), true, true, "keys The keys to use in the method");
@@ -167,13 +167,13 @@ public class GeneratorJava extends GeneratorLangs {
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "register", argPSListenerList, throwsExceptions,
                 "Registers this provider implementation to the set of broker connections", null,
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addMethodStatement("publisherSet.register(keys, listener)");
+        method.addLine("publisherSet.register(keys, listener)");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "asyncRegister", argPSListenerList, throwsExceptions,
                 "Asynchronously registers this provider implementation to the set of broker connections", null,
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addMethodStatement("publisherSet.asyncRegister(keys, listener)");
+        method.addLine("publisherSet.asyncRegister(keys, listener)");
         method.addMethodCloseStatement();
 
         List<CompositeField> argList = new LinkedList<>();
@@ -195,24 +195,24 @@ public class GeneratorJava extends GeneratorLangs {
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "publish", argList, throwsExceptions,
                 "Publishes updates to the set of registered broker connections", null,
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addMethodStatement("publisherSet.publish(updateHeaderList" + argNameList + ")");
+        method.addLine("publisherSet.publish(updateHeaderList" + argNameList + ")");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "deregister", null, throwsInteractionAndMALException,
                 "Deregisters this provider implementation from the set of broker connections", null,
                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addMethodStatement("publisherSet.deregister()");
+        method.addLine("publisherSet.deregister()");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "asyncDeregister", Arrays.asList(psListener), throwsExceptions,
                 "Asynchronously deregisters this provider implementation from the set of broker connections", null,
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addMethodStatement("publisherSet.asyncDeregister(listener)");
+        method.addLine("publisherSet.asyncDeregister(listener)");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "close", null, throwsMALException,
                 "Closes this publisher", null, Arrays.asList(throwsMALException + " if there is an implementation exception"));
-        method.addMethodStatement("publisherSet.close()");
+        method.addLine("publisherSet.close()");
         method.addMethodCloseStatement();
 
         file.addClassCloseStatement();
@@ -336,10 +336,10 @@ public class GeneratorJava extends GeneratorLangs {
                         TypeUtils.createTypeReference(null, null, "java.util.ArrayList<" + fqSrcTypeName + ">", false),
                         false, false, "The ArrayList that is used for initialization."),
                 false, null, "Constructor that uses an ArrayList for initialization.", null);
-        method.addMethodStatement("for(" + fqSrcTypeName + " element : elementList)", false);
-        method.addMethodStatement("{", false);
-        method.addMethodStatement("    super.add(element)");
-        method.addMethodStatement("}", false);
+        method.addLine("for(" + fqSrcTypeName + " element : elementList)", false);
+        method.addLine("{", false);
+        method.addLine("    super.add(element)");
+        method.addLine("}", false);
         method.addMethodCloseStatement();
 
         List<CompositeField> argList = new LinkedList<>();
@@ -353,37 +353,37 @@ public class GeneratorJava extends GeneratorLangs {
         method.addMethodStatement("  throw new IllegalArgumentException(\"The added argument cannot be null!\")");
         method.addMethodStatement("}", false);
          */
-        method.addMethodStatement("return super.add(element)");
+        method.addLine("return super.add(element)");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false,
                 true, elementType, "createElement", null, null, "Creates an instance of this type using the default constructor. It is a generic factory method.", "A new instance of this type with default field values.", null);
-        method.addMethodStatement("return new " + listName + "()");
+        method.addLine("return new " + listName + "()");
         method.addMethodCloseStatement();
 
         // create encode method
         method = encodeMethodOpen(file);
-        method.addMethodStatement("org.ccsds.moims.mo.mal.MALListEncoder listEncoder = encoder.createListEncoder(this)");
-        method.addMethodStatement("for (int i = 0; i < size(); i++)", false);
-        method.addMethodStatement("{", false);
-        method.addMethodStatement("  listEncoder.encodeNullable" + listElement.getEncodeCall() + "((" + fqSrcTypeName + ") get(i))");
-        method.addMethodStatement("}", false);
-        method.addMethodStatement("listEncoder.close()");
+        method.addLine("org.ccsds.moims.mo.mal.MALListEncoder listEncoder = encoder.createListEncoder(this)");
+        method.addLine("for (int i = 0; i < size(); i++)", false);
+        method.addLine("{", false);
+        method.addLine("  listEncoder.encodeNullable" + listElement.getEncodeCall() + "((" + fqSrcTypeName + ") get(i))");
+        method.addLine("}", false);
+        method.addLine("listEncoder.close()");
         method.addMethodCloseStatement();
 
         // create decode method
         method = decodeMethodOpen(file, elementType);
-        method.addMethodStatement("org.ccsds.moims.mo.mal.MALListDecoder listDecoder = decoder.createListDecoder(this)");
-        method.addMethodStatement("int decodedSize = listDecoder.size()");
-        method.addMethodStatement("if (decodedSize > 0)", false);
-        method.addMethodStatement("{", false);
-        method.addMethodStatement("  ensureCapacity(decodedSize)");
-        method.addMethodStatement("}", false);
-        method.addMethodStatement("while (listDecoder.hasNext())", false);
-        method.addMethodStatement("{", false);
-        method.addMethodStatement("  add(" + listElement.getDecodeCast() + "listDecoder.decodeNullable" + listElement.getDecodeCall() + "(" + (listElement.isDecodeNeedsNewCall() ? listElement.getNewCall() : "") + "))");
-        method.addMethodStatement("}", false);
-        method.addMethodStatement("return this");
+        method.addLine("org.ccsds.moims.mo.mal.MALListDecoder listDecoder = decoder.createListDecoder(this)");
+        method.addLine("int decodedSize = listDecoder.size()");
+        method.addLine("if (decodedSize > 0)", false);
+        method.addLine("{", false);
+        method.addLine("  ensureCapacity(decodedSize)");
+        method.addLine("}", false);
+        method.addLine("while (listDecoder.hasNext())", false);
+        method.addLine("{", false);
+        method.addLine("  add(" + listElement.getDecodeCast() + "listDecoder.decodeNullable" + listElement.getDecodeCall() + "(" + (listElement.isDecodeNeedsNewCall() ? listElement.getNewCall() : "") + "))");
+        method.addLine("}", false);
+        method.addLine("return this");
         method.addMethodCloseStatement();
 
         addShortFormMethods(file);
@@ -569,7 +569,7 @@ public class GeneratorJava extends GeneratorLangs {
     protected void addServiceConstructor(MethodWriter method, String serviceVar, String serviceVersion, ServiceSummary summary) throws IOException {
         String opCall = serviceVar + "_SERVICE.addOperation(";
         for (OperationSummary op : summary.getOperations()) {
-            method.addMethodStatement(opCall + op.getName().toUpperCase() + "_OP)");
+            method.addLine(opCall + op.getName().toUpperCase() + "_OP)");
         }
     }
 
@@ -632,12 +632,12 @@ public class GeneratorJava extends GeneratorLangs {
 
     @Override
     protected void addVectorAddStatement(LanguageWriter file, MethodWriter method, String variable, String parameter) throws IOException {
-        method.addMethodStatement(variable + ".addElement(" + parameter + ")");
+        method.addLine(variable + ".addElement(" + parameter + ")");
     }
 
     @Override
     protected void addVectorRemoveStatement(LanguageWriter file, MethodWriter method, String variable, String parameter) throws IOException {
-        method.addMethodStatement(variable + ".removeElement(" + parameter + ")");
+        method.addLine(variable + ".removeElement(" + parameter + ")");
     }
 
     @Override
