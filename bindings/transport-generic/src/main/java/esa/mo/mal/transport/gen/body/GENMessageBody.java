@@ -30,7 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALArea;
 import org.ccsds.moims.mo.mal.MALContextFactory;
-import org.ccsds.moims.mo.mal.MALElementFactory;
+import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALService;
@@ -413,29 +413,27 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
     protected Object decodeEncodedElementListBodyPart(
             final MALEncodedElementList meel) throws MALException {
         long sf = (Long) meel.getShortForm();
-        final MALElementFactory ef = MALContextFactory
-                .getElementFactoryRegistry()
-                .lookupElementFactory(sf);
-
-        if (null == ef) {
-            throw new MALException("GEN transport unable to find element "
-                    + "factory for short type: " + sf);
-        }
 
         // create list of correct type
         long lsf = (-((sf) & 0xFFFFFFL)) & 0xFFFFFFL + (sf & 0xFFFFFFFFFF000000L);
-
-        ElementList rv = (ElementList) MALContextFactory
-                .getElementFactoryRegistry()
-                .lookupElementFactory(lsf)
-                .createElement();
+        MALElementsRegistry fr = MALContextFactory.getElementsRegistry();
+        ElementList rv;
+        try {
+            rv = (ElementList) fr.createElement(lsf);
+        } catch (Exception ex) {
+            throw new MALException("The ElementList could not be created!", ex);
+        }
 
         for (MALEncodedElement ele : meel) {
             final ByteArrayInputStream lbais
                     = new ByteArrayInputStream(ele.getEncodedElement().getValue());
             MALElementInputStream lenc = encFactory.createInputStream(lbais);
 
-            rv.add(lenc.readElement(ef.createElement(), ctx));
+            try {
+                rv.add(lenc.readElement(fr.createElement(sf), ctx));
+            } catch (Exception ex) {
+                throw new MALException("The Element could not be created!", ex);
+            }
         }
 
         return rv;
@@ -453,7 +451,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
     protected Object decodeBodyPart(final MALElementInputStream decoder,
             MALEncodingContext ctx, Object sf) throws MALException {
         MALElementInputStream lenc = decoder;
-        
+
         if (wrappedBodyParts) {
             final Blob ele = (Blob) decoder.readElement(new Blob(), null);
             final ByteArrayInputStream lbais = new ByteArrayInputStream(ele.getValue());
@@ -471,15 +469,11 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
             Long shortForm = (Long) sf;
             GENTransport.LOGGER.log(Level.FINER,
                     "GEN Message decoding body part : Type = {0}", shortForm);
-            final MALElementFactory ef = MALContextFactory
-                    .getElementFactoryRegistry()
-                    .lookupElementFactory(shortForm);
-            if (null != ef) {
-                element = (Element) ef.createElement();
-            } else {
-                throw new MALException(
-                        "GEN transport unable to find element factory "
-                        + "for short type: " + shortForm);
+
+            try {
+                element = MALContextFactory.getElementsRegistry().createElement(shortForm);
+            } catch (Exception ex) {
+                throw new MALException("The Element could not be created!", ex);
             }
         }
 

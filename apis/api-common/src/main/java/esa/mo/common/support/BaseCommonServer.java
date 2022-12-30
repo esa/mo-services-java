@@ -25,7 +25,7 @@ import java.util.Arrays;
 import org.ccsds.moims.mo.common.CommonHelper;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
-import org.ccsds.moims.mo.mal.MALElementFactoryRegistry;
+import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALService;
@@ -88,7 +88,7 @@ public abstract class BaseCommonServer extends BaseComServer {
     }
 
     @Override
-    protected void subInitHelpers(MALElementFactoryRegistry bodyElementFactory) throws MALException {
+    protected void subInitHelpers(MALElementsRegistry bodyElementFactory) throws MALException {
         super.subInitHelpers(bodyElementFactory);
 
         CommonHelper.deepInit(bodyElementFactory);

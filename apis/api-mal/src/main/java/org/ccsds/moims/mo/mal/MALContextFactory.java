@@ -44,7 +44,7 @@ public abstract class MALContextFactory {
     private static final HashMap<VersionizedAreaNumber, MALArea> VERSIONIZED_AREA_NUMBER_MAP = new HashMap<>();
     private static final HashMap<String, Integer> AREA_NAME_MAP = new HashMap<>();
     private static final HashMap<Long, Identifier> ERROR_MAP = new HashMap<>();
-    private static final MALElementFactoryRegistry FACTORY_REGISTRY = new MALElementFactoryRegistry();
+    private static final MALElementsRegistry ELEMENTS_REGISTRY = new MALElementsRegistry();
 
     /**
      * Registers a MALArea in the list of areas held by this context factory.
@@ -163,12 +163,12 @@ public abstract class MALContextFactory {
     }
 
     /**
-     * Returns the element factory registry.
+     * Returns the elements registry.
      *
-     * @return The registry.
+     * @return The Elements Registry.
      */
-    public static MALElementFactoryRegistry getElementFactoryRegistry() {
-        return FACTORY_REGISTRY;
+    public static MALElementsRegistry getElementsRegistry() {
+        return ELEMENTS_REGISTRY;
     }
 
     /**
@@ -268,10 +268,8 @@ public abstract class MALContextFactory {
 
         @Override
         public int hashCode() {
-            int hash = 3;
-            hash = 29 * hash + this.areaNumber;
-            hash = 29 * hash + this.version;
-            return hash;
+            int hash = this.areaNumber << 16;
+            return hash + this.version;
         }
 
         @Override

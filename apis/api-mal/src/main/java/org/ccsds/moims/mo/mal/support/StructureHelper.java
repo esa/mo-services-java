@@ -31,10 +31,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -221,46 +218,6 @@ public abstract class StructureHelper {
         }
 
         return false;
-    }
-
-    /**
-     * Returns the list type of the supplied MAL element type.
-     *
-     * @param objIn The MAL element type to return the list type of.
-     * @return The list type or null if not found or null passed in.
-     */
-    public static ElementList elementToElementList(Element objIn) {
-        if (objIn == null) {
-            return null;
-        }
-
-        long l = objIn.getShortForm();
-        long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
-
-        return (ElementList) MALContextFactory
-                .getElementFactoryRegistry()
-                .lookupElementFactory(ll)
-                .createElement();
-    }
-
-    /**
-     * Returns the MAL element type of the supplied list type.
-     *
-     * @param objIn The list type to return the MAL element type of.
-     * @return The MAL element type or null if not found or null passed in.
-     */
-    public static Element elementListToElement(ElementList objIn) {
-        if (objIn == null) {
-            return null;
-        }
-
-        long l = objIn.getShortForm();
-        long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
-
-        return (Element) MALContextFactory
-                .getElementFactoryRegistry()
-                .lookupElementFactory(ll)
-                .createElement();
     }
 
     /**

@@ -24,12 +24,15 @@ import org.ccsds.moims.mo.mal.support.BaseMalServer;
 import org.ccsds.moims.mo.mal.support.StructureHelper;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.com.event.provider.EventInheritanceSkeleton;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
+import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.NotFoundException;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
@@ -128,11 +131,16 @@ public class EventServiceProvider extends EventInheritanceSkeleton {
         eventLinks.add(eventLink);
 
         // Produce ActivityTransferList
-        ElementList eventBodies = StructureHelper.elementToElementList(eventBody);
-        eventBodies.add(eventBody);
+        try {
+            ElementList eventBodies = MALElementsRegistry.elementToElementList(eventBody);
+            eventBodies.add(eventBody);
 
-        // We can now publish the event
-        monitorEventPublisher.publish(updateHeaderList, eventLinks, eventBodies);
+            // We can now publish the event
+            monitorEventPublisher.publish(updateHeaderList, eventLinks, eventBodies);
+        } catch (NotFoundException ex) {
+            Logger.getLogger(EventServiceProvider.class.getName()).log(
+                    Level.SEVERE, "The ElementList could not be created!", ex);
+        }
     }
 
     /**

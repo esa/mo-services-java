@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
+import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -123,8 +124,8 @@ public abstract class BaseMalServer {
             providerMgr = mal.createProviderManager();
         }
 
-        MALHelper.init(MALContextFactory.getElementFactoryRegistry());
-        subInitHelpers(MALContextFactory.getElementFactoryRegistry());
+        MALHelper.init(MALContextFactory.getElementsRegistry());
+        subInitHelpers(MALContextFactory.getElementsRegistry());
 
         if (null == protocol) {
             transport = mal.getTransport(
@@ -261,8 +262,7 @@ public abstract class BaseMalServer {
      * @param bodyElementFactory The MAL element factory registry to use.
      * @throws MALException If there is an error registering.
      */
-    protected abstract void subInitHelpers(
-            org.ccsds.moims.mo.mal.MALElementFactoryRegistry bodyElementFactory) throws MALException;
+    protected abstract void subInitHelpers(MALElementsRegistry bodyElementFactory) throws MALException;
 
     /**
      * Sub classes must implement this and perform any initialisation here.

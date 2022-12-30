@@ -87,13 +87,13 @@ public class TestServiceProvider extends BaseTestServiceProvider
 
   protected void initHelpers() throws MALException
   {
-    MALPrototypeHelper.init(MALContextFactory.getElementFactoryRegistry());
-    IPTestHelper.init(MALContextFactory.getElementFactoryRegistry());
-    DataTestHelper.init(MALContextFactory.getElementFactoryRegistry());
-    ErrorTestHelper.init(MALContextFactory.getElementFactoryRegistry());
-    IPTest2Helper.init(MALContextFactory.getElementFactoryRegistry());
-    MALPrototype2Helper.init(MALContextFactory.getElementFactoryRegistry());
-    org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.init(MALContextFactory.getElementFactoryRegistry());
+    MALPrototypeHelper.init(MALContextFactory.getElementsRegistry());
+    IPTestHelper.init(MALContextFactory.getElementsRegistry());
+    DataTestHelper.init(MALContextFactory.getElementsRegistry());
+    ErrorTestHelper.init(MALContextFactory.getElementsRegistry());
+    IPTest2Helper.init(MALContextFactory.getElementsRegistry());
+    MALPrototype2Helper.init(MALContextFactory.getElementsRegistry());
+    org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.init(MALContextFactory.getElementsRegistry());
 
     TransportInterceptor.instance().setEndpointSendInterceptor(new MALTestEndPointSendInterceptor());
   }

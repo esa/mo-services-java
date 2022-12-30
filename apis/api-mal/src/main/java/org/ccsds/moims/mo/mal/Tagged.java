@@ -24,6 +24,7 @@ import org.ccsds.moims.mo.mal.structures.Element;
 
 /**
  * Class representing a tagged MAL Element.
+ * @param <T> The MAL Element of the tag.
  */
 public class Tagged<T> {
 
@@ -40,7 +41,7 @@ public class Tagged<T> {
     /**
      * Initialises a tagged MAL Element.
      *
-     * @param identity Identity of the MAL Element.
+     * @param tag Tag of the MAL Element.
      * @param body Body of the MAL Element.
      * @throws java.lang.IllegalArgumentException If any argument is null.
      */

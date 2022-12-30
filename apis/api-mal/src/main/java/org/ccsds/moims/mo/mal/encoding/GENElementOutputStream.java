@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.InteractionType;

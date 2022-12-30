@@ -135,7 +135,7 @@ public abstract class BaseLocalMALInstance extends LoggingBase
       defaultMal = malFactory.createMALContext(defaultProps);
       logMessage("MAL created");
 
-      MALHelper.init(MALContextFactory.getElementFactoryRegistry());
+      MALHelper.init(MALContextFactory.getElementsRegistry());
       initHelpers();
 
       defaultConsumerMgr = defaultMal.createConsumerManager();

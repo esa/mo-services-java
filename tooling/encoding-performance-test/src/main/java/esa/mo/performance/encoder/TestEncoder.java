@@ -42,7 +42,7 @@ import org.ccsds.moims.mo.perftest.structures.*;
 public class TestEncoder {
 
     public static void main(String[] args) throws Exception {
-        List<Results> results = new LinkedList<Results>();
+        List<Results> results = new LinkedList<>();
 
         int runCount = 100;
         int pktsPerReport = 1;
@@ -100,7 +100,7 @@ public class TestEncoder {
         }
 
         System.out.println("Creating objects");
-        org.ccsds.moims.mo.perftest.PerfTestHelper.deepInit(MALContextFactory.getElementFactoryRegistry());
+        org.ccsds.moims.mo.perftest.PerfTestHelper.deepInit(MALContextFactory.getElementsRegistry());
 
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("ccsds"));

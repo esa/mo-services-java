@@ -189,9 +189,9 @@ public class DemoConsumerGui extends javax.swing.JFrame {
         malFactory = MALContextFactory.newFactory();
         mal = malFactory.createMALContext(System.getProperties());
 
-        MALHelper.init(MALContextFactory.getElementFactoryRegistry());
-        MALDemoHelper.init(MALContextFactory.getElementFactoryRegistry());
-        BasicMonitorHelper.init(MALContextFactory.getElementFactoryRegistry());
+        MALHelper.init(MALContextFactory.getElementsRegistry());
+        MALDemoHelper.init(MALContextFactory.getElementsRegistry());
+        BasicMonitorHelper.init(MALContextFactory.getElementsRegistry());
 
         consumerMgr = mal.createConsumerManager();
 

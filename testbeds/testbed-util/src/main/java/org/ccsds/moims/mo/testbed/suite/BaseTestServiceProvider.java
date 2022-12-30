@@ -61,7 +61,7 @@ public abstract class BaseTestServiceProvider extends LoggingBase implements Exe
 
       defaultMal = malFactory.createMALContext(malProps);
 
-      MALHelper.init(MALContextFactory.getElementFactoryRegistry());
+      MALHelper.init(MALContextFactory.getElementsRegistry());
       initHelpers();
 
       defaultProviderMgr = defaultMal.createProviderManager();

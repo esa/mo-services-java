@@ -667,9 +667,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         break;
                 }
                 String opArgs = createAdapterMethodsArgs(opTypes, "body", true, false);
-                if(opArgs.contains("ObjectRef<")){
+                if (opArgs.contains("ObjectRef<")) {
                     opArgs = updateObjectRefType(opArgs);
-                }                
+                }
                 method.addLine("    " + op.getName() + subopPostname + "Received(msgHeader" + opArgs + ", qosProperties)");
                 method.addLine("    break");
             }
@@ -1148,10 +1148,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String type = fullType.substring(fullType.indexOf('<') + 1, fullType.indexOf('>'));
         fullType = fullType.replaceAll(path, "org.ccsds.moims.mo.mal.structures.");
         fullType = fullType.replaceAll(type, path + type);
-        
+
         return fullType;
     }
-    
+
     protected void createServiceProviderSkeletonHandler(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary, boolean isDelegate) throws IOException {
         String className = service.getName();
         String comment;
@@ -1252,10 +1252,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("{", false);
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SEND_OP) {
-                String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);   
+                String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 if (opArgs.contains("ObjectRef<")) {
                     opArgs = updateObjectRefType(opArgs);
-                }                
+                }
                 String ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction)");
@@ -1302,7 +1302,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 if (opArgs.contains("ObjectRef<")) {
                     opArgs = updateObjectRefType(opArgs);
-                }                
+                }
                 String opResp = delegateCall + op.getName() + "(" + opArgs + "interaction)";
                 ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
@@ -1326,7 +1326,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 if (opArgs.contains("ObjectRef<")) {
                     opArgs = updateObjectRefType(opArgs);
-                }                
+                }
                 ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
@@ -1349,7 +1349,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 if (opArgs.contains("ObjectRef<")) {
                     opArgs = updateObjectRefType(opArgs);
-                }                
+                }
                 ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
@@ -1418,7 +1418,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String identifierType = createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
-        CompositeField eleFactory = createCompositeElementsDetails(file, false, "bodyElementFactory", TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementFactoryRegistry", false), false, true, "bodyElementFactory The element factory registry to initialise with this helper.");
+        CompositeField eleFactory = createCompositeElementsDetails(file, false, "bodyElementFactory", TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementsRegistry", false), false, true, "bodyElementFactory The element factory registry to initialise with this helper.");
         CompositeField _areaNumberVar = createCompositeElementsDetails(file, false, "_" + areaNameCaps + "_AREA_NUMBER", TypeUtils.createTypeReference(null, null, "int", false), false, false, "Area number literal.");
         CompositeField areaNumberVar = createCompositeElementsDetails(file, false, areaNameCaps + "_AREA_NUMBER", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, false, "Area number instance.");
         CompositeField areaNameVar = createCompositeElementsDetails(file, false, areaNameCaps + "_AREA_NAME", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false), true, false, "Area name constant.");
@@ -1452,6 +1452,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         List<String> typeCalls = new LinkedList<>();
+        List<String> callableHashMap = new LinkedList<>();
 
         if ((null != area.getDataTypes()) && !area.getDataTypes().getFundamentalOrAttributeOrComposite().isEmpty()) {
             for (Object oType : area.getDataTypes().getFundamentalOrAttributeOrComposite()) {
@@ -1460,10 +1461,24 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
                     String clsName = convertClassName(createElementType(file, area.getName(), null, StdStrings.ATTRIBUTE));
                     String factoryName = convertClassName(createElementType(file, area.getName(), null, getConfig().getStructureFolder() + getConfig().getNamingSeparator() + getConfig().getFactoryFolder(), dt.getName() + "Factory"));
+
+                    AttributeTypeDetails details = getAttributeDetails(area.getName(), dt.getName());
+                    String theType;
+
+                    if (details.isNativeType()) {
+                        theType = convertClassName(createElementType(file, StdStrings.MAL, null, StdStrings.UNION)) + "(" + details.getDefaultValue() + ")";
+                    } else {
+                        theType = convertClassName(createElementType(file, area.getName(), null, dt.getName()) + "()");
+                    }
+
+                    String attributeClsName = convertClassName(createElementType(file, area.getName(), null, dt.getName()));
                     String lclsName = convertClassName(createElementType(file, area.getName(), null, dt.getName() + "List"));
                     String lfactoryName = convertClassName(createElementType(file, area.getName(), null, getConfig().getStructureFolder() + getConfig().getNamingSeparator() + getConfig().getFactoryFolder(), dt.getName() + "ListFactory"));
-                    typeCalls.add(clsName + getConfig().getNamingSeparator() + dt.getName().toUpperCase() + "_SHORT_FORM, new " + factoryName + "()");
+                    typeCalls.add(clsName + getConfig().getNamingSeparator() + dt.getName().toUpperCase() + "_SHORT_FORM, new " + attributeClsName + "()");
                     typeCalls.add(lclsName + getConfig().getNamingSeparator() + "SHORT_FORM, new " + lfactoryName + "()");
+
+                    callableHashMap.add(clsName + getConfig().getNamingSeparator() + dt.getName().toUpperCase() + "_SHORT_FORM, () -> new " + theType);
+                    callableHashMap.add(lclsName + getConfig().getNamingSeparator() + "SHORT_FORM, () -> new " + lclsName + "()");
                 } else if (oType instanceof CompositeType) {
                     CompositeType dt = (CompositeType) oType;
 
@@ -1474,6 +1489,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         String lfactoryName = convertClassName(createElementType(file, area.getName(), null, getConfig().getStructureFolder() + getConfig().getNamingSeparator() + getConfig().getFactoryFolder(), dt.getName() + "ListFactory"));
                         typeCalls.add(clsName + getConfig().getNamingSeparator() + "SHORT_FORM, new " + factoryName + "()");
                         typeCalls.add(lclsName + getConfig().getNamingSeparator() + "SHORT_FORM, new " + lfactoryName + "()");
+                        callableHashMap.add(clsName + getConfig().getNamingSeparator() + "SHORT_FORM, () -> new " + clsName + "()");
+                        callableHashMap.add(lclsName + getConfig().getNamingSeparator() + "SHORT_FORM, () -> new " + lclsName + "()");
                     }
                 } else if (oType instanceof EnumerationType) {
                     EnumerationType dt = (EnumerationType) oType;
@@ -1483,6 +1500,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     String lfactoryName = convertClassName(createElementType(file, area.getName(), null, getConfig().getStructureFolder() + getConfig().getNamingSeparator() + getConfig().getFactoryFolder(), dt.getName() + "ListFactory"));
                     typeCalls.add(clsName + getConfig().getNamingSeparator() + "SHORT_FORM, new " + factoryName + "()");
                     typeCalls.add(lclsName + getConfig().getNamingSeparator() + "SHORT_FORM, new " + lfactoryName + "()");
+                    callableHashMap.add(clsName + getConfig().getNamingSeparator() + "SHORT_FORM, () -> " + clsName + ".fromOrdinal(0)");
+                    callableHashMap.add(lclsName + getConfig().getNamingSeparator() + "SHORT_FORM, () -> new " + lclsName + "()");
                 }
             }
         }
@@ -1491,9 +1510,16 @@ public abstract class GeneratorLangs extends GeneratorBase {
         MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false, true, null, "init", Arrays.asList(eleFactory), throwsMALException, "Registers all aspects of this area with the provided element factory", null, Arrays.asList(throwsMALException + " If cannot initialise this helper."));
         method.addLine(convertToNamespace(factoryType + ".registerArea(" + areaNameCaps + "_AREA)"));
 
+        /*
         if (0 < typeCalls.size()) {
             for (String typeCall : typeCalls) {
                 method.addLine(createMethodCall("bodyElementFactory.registerElementFactory(" + typeCall + ")"));
+            }
+        }
+         */
+        if (callableHashMap.size() > 0) {
+            for (String typeCall : callableHashMap) {
+                method.addLine("bodyElementFactory.addCallableElement(" + typeCall + ")");
             }
         }
 
@@ -1532,7 +1558,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String identifierType = createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
-        CompositeField eleFactory = createCompositeElementsDetails(file, false, "bodyElementFactory", TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementFactoryRegistry", false), false, true, "bodyElementFactory The element factory registry to initialise with this helper.");
+        CompositeField eleFactory = createCompositeElementsDetails(file, false, "bodyElementFactory", TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementsRegistry", false), false, true, "bodyElementFactory The element factory registry to initialise with this helper.");
 
         file.addClassOpenStatement(serviceName + "Helper", false, false, null, null, "Helper class for " + serviceName + " service.");
 
@@ -1650,7 +1676,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("if (org.ccsds.moims.mo.mal.MALContextFactory.lookupArea(", false);
         method.addLine("   " + ns + "_NAME,", false);
         method.addLine("   " + ns + "_VERSION) == null) {", false);
-        method.addLine(" " + hlp + ".init(bodyElementFactory);", false);
+        method.addLine("  " + hlp + ".init(bodyElementFactory);", false);
         method.addLine("}", false);
 
         addServiceConstructor(method, serviceVar, String.valueOf(area.getVersion()), summary);
@@ -1664,6 +1690,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodWithDependencyStatement(createMethodCall(ns + ".addService(" + serviceVar + "_SERVICE)"), ns, true);
 
         List<String> typeCalls = new LinkedList<>();
+        List<String> callableHashMap = new LinkedList<>();
+
         if ((null != service.getDataTypes()) && !service.getDataTypes().getCompositeOrEnumeration().isEmpty()) {
             for (Object oType : service.getDataTypes().getCompositeOrEnumeration()) {
                 String typeName = "";
@@ -1672,26 +1700,55 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     typeName = ((EnumerationType) oType).getName();
                 } else if (oType instanceof CompositeType) {
                     typeName = ((CompositeType) oType).getName();
-                    isAbstract = null == ((CompositeType) oType).getShortFormPart();
+                    isAbstract = (null == ((CompositeType) oType).getShortFormPart());
                 }
 
                 if (!isAbstract) {
                     String clsName = convertClassName(createElementType(file, area.getName(), service.getName(), typeName));
+                    String text = "new " + clsName + "()";
+                    if (oType instanceof EnumerationType) {
+                        text = clsName + ".fromOrdinal(0)";
+                    }
+
                     String factoryName = convertClassName(createElementType(file, area.getName(), service.getName(), getConfig().getStructureFolder() + getConfig().getNamingSeparator() + getConfig().getFactoryFolder(), typeName + "Factory"));
                     String lclsName = convertClassName(createElementType(file, area.getName(), service.getName(), typeName + "List"));
                     String lfactoryName = convertClassName(createElementType(file, area.getName(), service.getName(), getConfig().getStructureFolder() + getConfig().getNamingSeparator() + getConfig().getFactoryFolder(), typeName + "ListFactory"));
                     typeCalls.add(clsName + getConfig().getNamingSeparator() + "SHORT_FORM, new " + factoryName + "()");
                     typeCalls.add(lclsName + getConfig().getNamingSeparator() + "SHORT_FORM, new " + lfactoryName + "()");
+                    callableHashMap.add(clsName + getConfig().getNamingSeparator() + "SHORT_FORM, () -> " + text);
+                    callableHashMap.add(lclsName + getConfig().getNamingSeparator() + "SHORT_FORM, () -> new " + lclsName + "()");
                 }
             }
         }
 
-        if (0 < typeCalls.size()) {
+        /*
+        if (typeCalls.size() > 0) {
+            method.addLine("long timestamp_1 = System.currentTimeMillis()");
+
             for (String typeCall : typeCalls) {
                 method.addLine(createMethodCall("bodyElementFactory.registerElementFactory(" + typeCall + ")"));
             }
+
+            method.addLine("timestamp_1 = System.currentTimeMillis() - timestamp_1");
+        }
+         */
+        if (callableHashMap.size() > 0) {
+            // method.addLine("long timestamp_2 = System.currentTimeMillis()");
+
+            for (String typeCall : callableHashMap) {
+                method.addLine("bodyElementFactory.addCallableElement(" + typeCall + ")");
+            }
+
+            // method.addLine("timestamp_2 = System.currentTimeMillis() - timestamp_2");
         }
 
+        /*
+        // Measure performance of Factories vs. callables
+        if (typeCalls.size() > 0 && callableHashMap.size() > 0) {
+            method.addLine("java.util.logging.Logger.getLogger(" + service.getName()
+                    + "Helper.class.getName()).log(java.util.logging.Level.INFO, \"\\nTime 1: \" + timestamp_1 + \"\\nTime 2: \" + timestamp_2 + \"\\nHow many: \" + bodyElementFactory.howMany())");
+        }
+         */
         // register error numbers
         if ((null != service.getErrors()) && !service.getErrors().getError().isEmpty()) {
             String factoryType = createElementType(file, StdStrings.MAL, null, null, "MALContextFactory");
@@ -2198,7 +2255,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected abstract void createListClass(File folder, AreaType area, ServiceType service, String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException;
 
+    @Deprecated
     protected void createFactoryClass(File structureFolder, AreaType area, ServiceType service, String srcTypeName, CompositeField typeDetails, boolean isAttr, boolean isEnum) throws IOException {
+        /*
         // create area structure folder
         File folder = StubUtils.createFolder(structureFolder, getConfig().getFactoryFolder());
         // create a comment for the structure factory folder if supported
@@ -2227,11 +2286,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
             file.addTypeDependency(typeDetails.getTypeName());
             method.addLine("return " + typeDetails.getNewCall());
         }
+
         method.addMethodCloseStatement();
-
         file.addClassCloseStatement();
-
         file.flush();
+        */
     }
 
     protected final void createMultiReturnType(String destinationFolderName, String returnTypeFqName, MultiReturnType returnTypeInfo) throws IOException {

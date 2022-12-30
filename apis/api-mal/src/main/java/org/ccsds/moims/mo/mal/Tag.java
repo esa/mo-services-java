@@ -43,11 +43,13 @@ public class Tag {
     /**
      * Initialises a tagged MAL Element.
      *
-     * @param identity Identity of the MAL Element.
-     * @param body Body of the MAL Element.
+     * @param domain The domain of the Tag.
+     * @param shortFormPart The shortFormPart of the Tag.
+     * @param instanceId The instanceId of the Tag.
      * @throws java.lang.IllegalArgumentException If any argument is null.
      */
-    public Tag(final String domain, final long shortFormPart, final long instanceId) throws IllegalArgumentException {
+    public Tag(final String domain, final long shortFormPart,
+            final long instanceId) throws IllegalArgumentException {
         if (domain == null) {
             throw new IllegalArgumentException("The identity argument cannot be null!");
         }

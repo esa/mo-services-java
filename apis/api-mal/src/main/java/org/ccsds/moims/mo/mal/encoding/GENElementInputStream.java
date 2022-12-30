@@ -21,11 +21,8 @@
 package org.ccsds.moims.mo.mal.encoding;
 
 import org.ccsds.moims.mo.mal.MALContextFactory;
-import org.ccsds.moims.mo.mal.MALElementFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -56,7 +53,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
         if (element == ctx.getHeader()) {
             return dec.decodeElement((Element) element);
         }
-        
+
         if (ctx.getHeader().getIsErrorMessage()) {
             // error messages have a standard format
             if (0 == ctx.getBodyElementIndex()) {
@@ -65,7 +62,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
                 return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
             }
         }
-        
+
         if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
             /*
             // In theory, we should not have to hardcode the decoding part
@@ -75,7 +72,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             MALOperationStage stage = operation.getOperationStage(ctx.getHeader().getInteractionStage());
             int idx = ctx.getBodyElementIndex();
             return dec.decodeElement((Element) stage.getElementShortForms()[idx]);
-            */
+             */
 
             switch (ctx.getHeader().getInteractionStage().getValue()) {
                 case MALPubSubOperation._REGISTER_STAGE:
@@ -102,10 +99,10 @@ public abstract class GENElementInputStream implements MALElementInputStream {
                     }
                 }
                 case MALPubSubOperation._NOTIFY_STAGE: {
-                    int idx = ctx.getBodyElementIndex();
-                    if (0 == idx) {
+                    int index = ctx.getBodyElementIndex();
+                    if (index == 0) {
                         return dec.decodeIdentifier();
-                    } else if (1 == idx) {
+                    } else if (index == 1) {
                         return dec.decodeElement(new UpdateHeaderList());
                     } else {
                         Object sf = ctx.getOperation()
@@ -124,7 +121,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
                     return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
             }
         }
-        
+
         if (null == element) {
             Long shortForm;
 
@@ -170,21 +167,17 @@ public abstract class GENElementInputStream implements MALElementInputStream {
         // Nothing to do for this decoder
     }
 
-    protected Object decodeSubElement(final Long shortForm, 
+    protected Object decodeSubElement(final Long shortForm,
             final MALEncodingContext ctx) throws MALException {
         if (null == shortForm) {
             return null;
         }
 
-        final MALElementFactory ef = MALContextFactory
-                .getElementFactoryRegistry().lookupElementFactory(shortForm);
-
-        if (null == ef) {
-            throw new MALException(
-                    "GEN transport unable to find element factory for short type: "
-                    + shortForm);
+        try {
+            Element e = MALContextFactory.getElementsRegistry().createElement(shortForm);
+            return dec.decodeElement(e);
+        } catch (Exception ex) {
+            throw new MALException("Unable to create element for short form part: " + shortForm);
         }
-
-        return dec.decodeElement((Element) ef.createElement());
     }
 }

@@ -76,7 +76,7 @@ public class TestMAL {
         MALProviderManager providerMgr = mal.createProviderManager();
         MALConsumerManager consumerMgr = mal.createConsumerManager();
 
-        org.ccsds.moims.mo.perftest.PerfTestHelper.deepInit(MALContextFactory.getElementFactoryRegistry());
+        org.ccsds.moims.mo.perftest.PerfTestHelper.deepInit(MALContextFactory.getElementsRegistry());
 
         Date now = new Date();
         Time timestamp = new Time(now.getTime());
