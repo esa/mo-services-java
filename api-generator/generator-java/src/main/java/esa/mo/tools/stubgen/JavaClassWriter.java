@@ -41,7 +41,6 @@ import java.util.List;
 
 /**
  *
- * @author Cesar.Coelho
  */
 public class JavaClassWriter extends AbstractLanguageWriter implements ClassWriterProposed, InterfaceWriter, MethodWriter {
 
@@ -85,7 +84,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addClassOpenStatement(String className, boolean finalClass, boolean abstractClass, 
+    public void addClassOpenStatement(String className, boolean finalClass, boolean abstractClass,
             String extendsClass, String implementsInterface, String comment) throws IOException {
         addMultilineComment(0, true, comment, false);
 
@@ -108,19 +107,19 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addClassVariableProposed(boolean isStatic, boolean isFinal, String scope, 
+    public void addClassVariableProposed(boolean isStatic, boolean isFinal, String scope,
             CompositeField arg, boolean isObject, String initialValue) throws IOException {
         addClassVariable(true, isStatic, isFinal, scope, arg, isObject, false, initialValue);
     }
 
     @Override
-    public void addClassVariable(boolean isStatic, boolean isFinal, String scope, 
+    public void addClassVariable(boolean isStatic, boolean isFinal, String scope,
             CompositeField arg, boolean isObject, String initialValue) throws IOException {
         addClassVariable(false, isStatic, isFinal, scope, arg, isObject, false, initialValue);
     }
 
     @Override
-    public void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg, 
+    public void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg,
             boolean isObject, boolean isArray, List<String> initialValues) throws IOException {
         StringBuilder iniVal = new StringBuilder();
 
@@ -151,8 +150,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         addClassVariable(false, isStatic, isFinal, scope, arg, isObject, isArray, val);
     }
 
-    protected void addClassVariable(boolean isProposed, boolean isStatic, boolean isFinal, 
-            String scope, CompositeField arg, boolean isObject, boolean isArray, String initialValue) throws IOException {
+    protected void addClassVariable(boolean isProposed, boolean isStatic, boolean isFinal, String scope,
+            CompositeField arg, boolean isObject, boolean isArray, String initialValue) throws IOException {
         addMultilineComment(1, false, arg.getComment(), false);
 
         StringBuilder buf = new StringBuilder(scope);
@@ -193,8 +192,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addClassVariableNewInit(boolean isStatic, boolean isFinal, String scope, 
-            CompositeField arg, boolean isObject, boolean isArray, String initialValue, boolean isNewInit) throws IOException {
+    public void addClassVariableNewInit(boolean isStatic, boolean isFinal, String scope, CompositeField arg,
+            boolean isObject, boolean isArray, String initialValue, boolean isNewInit) throws IOException {
         addMultilineComment(1, false, arg.getComment(), false);
 
         StringBuilder buf = new StringBuilder(scope);
@@ -239,8 +238,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     @Override
     public void addConstructorDefault(String className) throws IOException {
-        addMultilineComment(1, false, "Default constructor for " + className, false);
-
+        String comment = "Default constructor for " + className;
+        addMultilineComment(1, false, comment, false);
         addConstructor(StdStrings.PUBLIC, className, null, null, null, null, null).addMethodCloseStatement();
     }
 
@@ -249,15 +248,17 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public MethodWriter addConstructor(String scope, String className, CompositeField arg, 
+    public MethodWriter addConstructor(String scope, String className, CompositeField arg,
             boolean isArgForSuper, String throwsSpec, String comment, String throwsComment) throws IOException {
-        return addConstructor(scope, className, Arrays.asList(arg), (isArgForSuper ? Arrays.asList(arg) : ((List<CompositeField>) null)), throwsSpec, comment, throwsComment);
+        List<CompositeField> fields = (isArgForSuper ? Arrays.asList(arg) : ((List<CompositeField>) null));
+        return addConstructor(scope, className, Arrays.asList(arg), fields, throwsSpec, comment, throwsComment);
     }
 
     @Override
-    public MethodWriter addConstructor(String scope, String className, List<CompositeField> args, 
+    public MethodWriter addConstructor(String scope, String className, List<CompositeField> args,
             List<CompositeField> superArgs, String throwsSpec, String comment, String throwsComment) throws IOException {
-        addMultilineComment(1, false, normaliseArgComments(comment, null, args, Arrays.asList(throwsComment)), false);
+        List<String> comments = normaliseArgComments(comment, null, args, Arrays.asList(throwsComment));
+        addMultilineComment(1, false, comments, false);
 
         StringBuilder buf = new StringBuilder(scope + " " + className + "(" + processArgs(args, true) + ")");
 
@@ -268,7 +269,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
         file.append(addFileStatement(1, buf.toString(), false));
         file.append(addFileStatement(1, "{", false));
-        if ((null != superArgs) && (0 < superArgs.size())) {
+        if ((null != superArgs) && (!superArgs.isEmpty())) {
             file.append(addFileStatement(2, "super(" + processArgs(superArgs, false) + ")", true));
         }
 
@@ -279,7 +280,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     public MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic,
             String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype,
             String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
-        return addMethodOpenStatement(isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, null, null, null);
+        return addMethodOpenStatement(isConst, isStatic, scope, isReturnConst, isReturnActual, rtype,
+                methodName, args, throwsSpec, null, null, null);
     }
 
     @Override
@@ -287,14 +289,16 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype,
             String methodName, List<CompositeField> args, String throwsSpec, String comment,
             String returnComment, List<String> throwsComment) throws IOException {
-        return addMethodOpenStatement(false, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
+        return addMethodOpenStatement(false, isConst, isStatic, scope, isReturnConst,
+                isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst,
-            boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual,
-            CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
-        return addMethodOpenStatement(isVirtual, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, null, null, null);
+    public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic,
+            String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype,
+            String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
+        return addMethodOpenStatement(isVirtual, isConst, isStatic, scope, isReturnConst,
+                isReturnActual, rtype, methodName, args, throwsSpec, null, null, null);
     }
 
     @Override
@@ -302,7 +306,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual,
             CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec,
             String comment, String returnComment, List<String> throwsComment) throws IOException {
-        return addMethodOpenStatement(false, isVirtual, isConst, isStatic, scope, isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
+        return addMethodOpenStatement(false, isVirtual, isConst, isStatic, scope, isReturnConst,
+                isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
     }
 
     @Override
@@ -310,7 +315,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
             boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args,
             String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException {
-        addMultilineComment(1, false, normaliseArgComments(comment, returnComment, args, throwsComment), false);
+        List<String> comments = normaliseArgComments(comment, returnComment, args, throwsComment);
+        addMultilineComment(1, false, comments, false);
 
         String nStatic = "";
 
@@ -327,7 +333,10 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         String srtype = createLocalType(rtype);
         String argString = processArgs(args, true);
 
-        StringBuilder buf = new StringBuilder(scope + " " + nStatic + nFinal + srtype + " " + methodName + "(" + argString + ")");
+        StringBuilder buf = new StringBuilder();
+        buf.append(scope).append(" ").append(nStatic);
+        buf.append(nFinal).append(srtype).append(" ").append(methodName);
+        buf.append("(").append(argString).append(")");
 
         if (null != throwsSpec) {
             buf.append(" throws ");
@@ -343,10 +352,11 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     @Override
     public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
             boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
-            boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args,
-            String throwsSpec, String comment, String returnComment, List<String> throwsComment, boolean isDeprecated) throws IOException {
-
-        addMultilineComment(1, false, normaliseArgComments(comment, returnComment, args, throwsComment), false);
+            boolean isReturnActual, CompositeField rtype, String methodName,
+            List<CompositeField> args, String throwsSpec, String comment, String returnComment,
+            List<String> throwsComment, boolean isDeprecated) throws IOException {
+        List<String> comments = normaliseArgComments(comment, returnComment, args, throwsComment);
+        addMultilineComment(1, false, comments, false);
 
         if (isDeprecated) {
             file.append("  @Deprecated\n");
@@ -405,15 +415,17 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addInterfaceMethodDeclaration(String scope, CompositeField rtype, 
-            String methodName, List<CompositeField> args, String throwsSpec, String comment, 
+    public void addInterfaceMethodDeclaration(String scope, CompositeField rtype,
+            String methodName, List<CompositeField> args, String throwsSpec, String comment,
             String returnComment, List<String> throwsComment) throws IOException {
         String srtype = createLocalType(rtype);
         String argString = processArgs(args, true);
 
-        addMultilineComment(1, false, normaliseArgComments(comment, null == rtype ? null : returnComment, args, throwsComment), false);
+        List<String> comments = normaliseArgComments(comment, null == rtype ? null : returnComment, args, throwsComment);
+        addMultilineComment(1, false, comments, false);
 
-        StringBuilder buf = new StringBuilder(srtype + " " + methodName + "(" + argString + ")");
+        StringBuilder buf = new StringBuilder(srtype + " " + methodName);
+        buf.append("(").append(argString).append(")");
 
         if (null != throwsSpec) {
             buf.append(" throws ");
@@ -424,7 +436,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addInterfaceOpenStatement(String interfaceName, String extendsInterface, String comment) throws IOException {
+    public void addInterfaceOpenStatement(String interfaceName,
+            String extendsInterface, String comment) throws IOException {
         addMultilineComment(0, true, comment, false);
 
         file.append("public interface ");
@@ -437,7 +450,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addArrayMethodStatement(String arrayVariable, String indexVariable, String arrayMaxSize) throws IOException {
+    public void addArrayMethodStatement(String arrayVariable,
+            String indexVariable, String arrayMaxSize) throws IOException {
         addLine("return " + arrayVariable + "[" + indexVariable + "]", true);
     }
 
@@ -452,7 +466,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addMethodWithDependencyStatement(String statement, String dependency, boolean addSemi) throws IOException {
+    public void addMethodWithDependencyStatement(String statement,
+            String dependency, boolean addSemi) throws IOException {
         addLine(statement, addSemi);
     }
 
@@ -470,8 +485,9 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addMultilineComment(int tabCount, boolean preBlankLine, List<String> comments, boolean postBlankLine) throws IOException {
-        if (0 < comments.size()) {
+    public void addMultilineComment(int tabCount, boolean preBlankLine,
+            List<String> comments, boolean postBlankLine) throws IOException {
+        if (!comments.isEmpty()) {
             if (preBlankLine) {
                 file.append(getLineSeparator());
             }
@@ -490,7 +506,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
     }
 
-    private List<String> normaliseArgComments(String comment, String returnComment, List<CompositeField> argsComments, List<String> throwsComment) {
+    private List<String> normaliseArgComments(String comment, String returnComment,
+            List<CompositeField> argsComments, List<String> throwsComment) {
         List<String> rv = new LinkedList<>();
 
         if (null != argsComments) {
@@ -502,7 +519,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         return normaliseComments(comment, returnComment, rv, throwsComment);
     }
 
-    private List<String> normaliseComments(String comment, String returnComment, List<String> argsComments, List<String> throwsComment) {
+    private List<String> normaliseComments(String comment, String returnComment,
+            List<String> argsComments, List<String> throwsComment) {
         List<String> rv = new LinkedList<>();
 
         normaliseComment(rv, comment);
@@ -515,7 +533,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     private String processArgs(List<CompositeField> args, boolean includeType) {
         StringBuilder buf = new StringBuilder();
-        if (null != args && (0 < args.size())) {
+        if (null != args && (!args.isEmpty())) {
             boolean firstTime = true;
 
             for (CompositeField arg : args) {
@@ -540,11 +558,10 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     private String updateObjectRefType(String fullType) {
-        fullType = "org.ccsds.moims.mo.mal.structures.ObjectRef<"
+        return "org.ccsds.moims.mo.mal.structures.ObjectRef<"
                 + fullType.substring(0, fullType.indexOf("ObjectRef"))
                 + fullType.substring(fullType.indexOf('<') + 1, fullType.indexOf('>'))
                 + ">";
-        return fullType;
     }
 
     private String createLocalType(CompositeField type) {

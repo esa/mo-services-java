@@ -73,15 +73,6 @@ public class GeneratorGwt extends GeneratorJava {
     }
 
     @Override
-    protected void createAreaHelperClass(File areaFolder, AreaType area) throws IOException {
-    }
-
-    @Override
-    protected void createServiceHelperClass(File serviceFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-    }
-
-    @Override
     protected void createServiceConsumerInterface(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
         getLog().info("Creating consumer interface: " + service.getName());
