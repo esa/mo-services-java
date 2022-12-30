@@ -145,9 +145,12 @@ public class GeneratorJava extends GeneratorLangs {
         String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
         String throwsExceptions = "java.lang.IllegalArgumentException, " + throwsInteractionAndMALException;
-        CompositeField publisherSetType = createCompositeElementsDetails(file, false, "publisherSet", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false), false, true, null);
+        CompositeField publisherSetType = createCompositeElementsDetails(file, false, "publisherSet", 
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false), 
+                false, true, null);
 
-        file.addClassOpenStatement(publisherName, true, false, null, null, "Publisher class for the " + publisher.operation.getName() + " operation.");
+        file.addClassOpenStatement(publisherName, true, false, null, null, 
+                "Publisher class for the " + publisher.operation.getName() + " operation.");
 
         file.addClassVariable(false, false, StdStrings.PRIVATE, publisherSetType, false, (String) null);
 
@@ -159,25 +162,38 @@ public class GeneratorJava extends GeneratorLangs {
         method.addLine("this.publisherSet = publisherSet");
         method.addMethodCloseStatement();
 
-        CompositeField keyList = createCompositeElementsDetails(file, false, "keys", TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true), true, true, "keys The keys to use in the method");
-        CompositeField psListener = createCompositeElementsDetails(file, false, "listener", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublishInteractionListener", false), false, true, "listener The listener object to use for callback from the publisher");
+        CompositeField keyList = createCompositeElementsDetails(file, false, "keys", 
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true), 
+                true, true, "keys The keys to use in the method");
+        CompositeField psListener = createCompositeElementsDetails(file, false, "listener", 
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublishInteractionListener", false), 
+                false, true, 
+                "listener The listener object to use for callback from the publisher");
         List<CompositeField> argPSListenerList = new LinkedList<>();
         argPSListenerList.add(keyList);
         argPSListenerList.add(psListener);
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "register", argPSListenerList, throwsExceptions,
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, 
+                false, true, null, "register", argPSListenerList, throwsExceptions,
                 "Registers this provider implementation to the set of broker connections", null,
-                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", 
+                        throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", 
+                        throwsMALException + " if there is an implementation exception"));
         method.addLine("publisherSet.register(keys, listener)");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "asyncRegister", argPSListenerList, throwsExceptions,
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, 
+                false, true, null, "asyncRegister", argPSListenerList, throwsExceptions,
                 "Asynchronously registers this provider implementation to the set of broker connections", null,
-                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", 
+                        throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", 
+                        throwsMALException + " if there is an implementation exception"));
         method.addLine("publisherSet.asyncRegister(keys, listener)");
         method.addMethodCloseStatement();
 
         List<CompositeField> argList = new LinkedList<>();
-        argList.add(createCompositeElementsDetails(file, true, "updateHeaderList", TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true, "updateHeaderList The headers of the updates being added"));
+        argList.add(createCompositeElementsDetails(file, true, "updateHeaderList", 
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true, 
+                "updateHeaderList The headers of the updates being added"));
         argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes(), true));
 
         String argNameList = "";
@@ -192,25 +208,34 @@ public class GeneratorJava extends GeneratorLangs {
             argNameList = StubUtils.concatenateStringArguments(true, strList.toArray(new String[0]));
         }
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "publish", argList, throwsExceptions,
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, 
+                false, true, null, "publish", argList, throwsExceptions,
                 "Publishes updates to the set of registered broker connections", null,
-                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", 
+                        throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", 
+                        throwsMALException + " if there is an implementation exception"));
         method.addLine("publisherSet.publish(updateHeaderList" + argNameList + ")");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "deregister", null, throwsInteractionAndMALException,
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, 
+                false, true, null, "deregister", null, throwsInteractionAndMALException,
                 "Deregisters this provider implementation from the set of broker connections", null,
-                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", 
+                        throwsMALException + " if there is an implementation exception"));
         method.addLine("publisherSet.deregister()");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "asyncDeregister", Arrays.asList(psListener), throwsExceptions,
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, 
+                false, true, null, "asyncDeregister", Arrays.asList(psListener), throwsExceptions,
                 "Asynchronously deregisters this provider implementation from the set of broker connections", null,
-                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid", 
+                        throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", 
+                        throwsMALException + " if there is an implementation exception"));
         method.addLine("publisherSet.asyncDeregister(listener)");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "close", null, throwsMALException,
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, 
+                false, true, null, "close", null, throwsMALException,
                 "Closes this publisher", null, Arrays.asList(throwsMALException + " if there is an implementation exception"));
         method.addLine("publisherSet.close()");
         method.addMethodCloseStatement();
@@ -221,7 +246,8 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected void createListClass(File folder, AreaType area, ServiceType service, String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException {
+    protected void createListClass(File folder, AreaType area, ServiceType service, 
+            String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException {
         if (isAbstract) {
             createAbstractListClass(folder, area, service, srcTypeName);
         } else {
@@ -238,7 +264,8 @@ public class GeneratorJava extends GeneratorLangs {
      * @param srcTypeName The name of the element in the list.
      * @throws IOException if there is a problem writing the file.
      */
-    protected void createAbstractListClass(File folder, AreaType area, ServiceType service, String srcTypeName) throws IOException {
+    protected void createAbstractListClass(File folder, AreaType area, 
+            ServiceType service, String srcTypeName) throws IOException {
         String listName = srcTypeName + "List";
 
         getLog().info("Creating list interface " + listName);
@@ -258,9 +285,12 @@ public class GeneratorJava extends GeneratorLangs {
             superTypeReference.setName(name);
         }
 
-        CompositeField listSuperElement = createCompositeElementsDetails(file, false, null, superTypeReference, true, true, "List element.");
+        CompositeField listSuperElement = createCompositeElementsDetails(file, false, null, 
+                superTypeReference, true, true, "List element.");
 
-        file.addInterfaceOpenStatement(listName + "<T extends " + fqSrcTypeName + ">", listSuperElement.getTypeName() + "List<T>", "List class for " + srcTypeName + "." + file.getLineSeparator() + " * @param <T> The type of this list must extend " + srcTypeName);
+        file.addInterfaceOpenStatement(listName + "<T extends " + fqSrcTypeName + ">", 
+                listSuperElement.getTypeName() + "List<T>",
+                "List class for " + srcTypeName + "." + file.getLineSeparator() + " * @param <T> The type of this list must extend " + srcTypeName);
         file.addInterfaceCloseStatement();
 
         file.flush();
@@ -276,7 +306,8 @@ public class GeneratorJava extends GeneratorLangs {
      * @param shortFormPart The short form part of the contained element.
      * @throws IOException if there is a problem writing the file.
      */
-    protected void createConcreteListClass(File folder, AreaType area, ServiceType service, String srcTypeName, Long shortFormPart) throws IOException {
+    protected void createConcreteListClass(File folder, AreaType area, ServiceType service, 
+            String srcTypeName, Long shortFormPart) throws IOException {
         String listName = srcTypeName + "List";
 
         TypeReference srcType = new TypeReference();
@@ -291,7 +322,9 @@ public class GeneratorJava extends GeneratorLangs {
 
         file.addPackageStatement(area, service, getConfig().getStructureFolder());
 
-        CompositeField elementType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false), true, true, null);
+        CompositeField elementType = createCompositeElementsDetails(file, false, "return", 
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false), 
+                true, true, null);
         String fqSrcTypeName = createElementType(file, area, service, srcTypeName);
 
         TypeReference superTypeReference = getCompositeElementSuperType(srcType);
@@ -307,15 +340,18 @@ public class GeneratorJava extends GeneratorLangs {
             }
         }
 
-        CompositeField listSuperElement = createCompositeElementsDetails(file, false, null, superTypeReference, true, true, "List element.");
+        CompositeField listSuperElement = createCompositeElementsDetails(file, false, null, 
+                superTypeReference, true, true, "List element.");
         String sElement = listSuperElement.getTypeName();
         if (sElement.contains("Attribute")) {
             sElement = sElement.replace("Attribute", "Element"); // Needs to be replaced for Attributes
         }
 
-        file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">", sElement + "List<" + fqSrcTypeName + ">", "List class for " + srcTypeName + ".");
+        file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">", 
+                sElement + "List<" + fqSrcTypeName + ">", "List class for " + srcTypeName + ".");
 
-        CompositeField listElement = createCompositeElementsDetails(file, true, null, srcType, true, true, "List element.");
+        CompositeField listElement = createCompositeElementsDetails(file, true, null, 
+                srcType, true, true, "List element.");
 
         addTypeShortFormDetails(file, area, service, -shortFormPart);
 
@@ -347,7 +383,9 @@ public class GeneratorJava extends GeneratorLangs {
         TypeReference type = new TypeReference();
         type.setName("boolean");
         CompositeField rtype = createCompositeElementsDetails(file, false, "element", type, false, true, "List element.");
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, rtype, "add", argList, null, "Adds an element to the list and checks if it is not null.", "The success status.", null);
+        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, 
+                false, true, rtype, "add", argList, null, 
+                "Adds an element to the list and checks if it is not null.", "The success status.", null);
         /*
         method.addMethodStatement("if (element == null){", false);
         method.addMethodStatement("  throw new IllegalArgumentException(\"The added argument cannot be null!\")");
@@ -357,7 +395,9 @@ public class GeneratorJava extends GeneratorLangs {
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false,
-                true, elementType, "createElement", null, null, "Creates an instance of this type using the default constructor. It is a generic factory method.", "A new instance of this type with default field values.", null);
+                true, elementType, "createElement", null, null, 
+                "Creates an instance of this type using the default constructor. It is a generic factory method.", 
+                "A new instance of this type with default field values.", null);
         method.addLine("return new " + listName + "()");
         method.addMethodCloseStatement();
 
@@ -393,7 +433,8 @@ public class GeneratorJava extends GeneratorLangs {
         file.flush();
 
         srcType.setList(Boolean.TRUE);
-        CompositeField listType = createCompositeElementsDetails(file, false, null, srcType, true, true, "List element.");
+        CompositeField listType = createCompositeElementsDetails(file, false, null, 
+                srcType, true, true, "List element.");
         createFactoryClass(folder, area, service, listName, listType, false, false);
     }
 
@@ -421,22 +462,28 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected void createServiceFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
+    protected void createServiceFolderComment(File structureFolder, 
+            AreaType area, ServiceType service) throws IOException {
         createFolderComment(structureFolder, area, service, null, service.getComment());
     }
 
     @Override
-    protected void createServiceConsumerFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
-        createFolderComment(structureFolder, area, service, CONSUMER_FOLDER, "Package containing the consumer stubs for the " + service.getName() + " service.");
+    protected void createServiceConsumerFolderComment(File structureFolder, 
+            AreaType area, ServiceType service) throws IOException {
+        createFolderComment(structureFolder, area, service, CONSUMER_FOLDER, 
+                "Package containing the consumer stubs for the " + service.getName() + " service.");
     }
 
     @Override
-    protected void createServiceProviderFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
-        createFolderComment(structureFolder, area, service, PROVIDER_FOLDER, "Package containing the provider skeletons for the " + service.getName() + " service.");
+    protected void createServiceProviderFolderComment(File structureFolder,
+            AreaType area, ServiceType service) throws IOException {
+        createFolderComment(structureFolder, area, service, PROVIDER_FOLDER, 
+                "Package containing the provider skeletons for the " + service.getName() + " service.");
     }
 
     @Override
-    protected void createServiceMessageBodyFolderComment(String baseFolder, AreaType area, ServiceType service) throws IOException {
+    protected void createServiceMessageBodyFolderComment(String baseFolder, 
+            AreaType area, ServiceType service) throws IOException {
         String basePackageName = getConfig().getAreaPackage(area.getName());
         String packageName = basePackageName + "." + area.getName().toLowerCase();
         if (null != service) {
@@ -454,12 +501,14 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected void createServiceStructureFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
+    protected void createServiceStructureFolderComment(File structureFolder, 
+            AreaType area, ServiceType service) throws IOException {
         createFolderComment(structureFolder, area, service, getConfig().getStructureFolder(), "Package containing types defined in the " + service.getName() + " service.");
     }
 
     @Override
-    protected void createStructureFactoryFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
+    protected void createStructureFactoryFolderComment(File structureFolder, 
+            AreaType area, ServiceType service) throws IOException {
         createFolderComment(structureFolder, area, service,
                 getConfig().getStructureFolder() + "." + getConfig().getFactoryFolder(),
                 "Factory classes for the types defined in the "
@@ -476,7 +525,8 @@ public class GeneratorJava extends GeneratorLangs {
      * @param comment the comment.
      * @throws IOException if there is a problem.
      */
-    protected void createFolderComment(File structureFolder, AreaType area, ServiceType service, String extraPackage, String comment) throws IOException {
+    protected void createFolderComment(File structureFolder, AreaType area, 
+            ServiceType service, String extraPackage, String comment) throws IOException {
         ClassWriter file = createClassFile(structureFolder, JAVA_PACKAGE_COMMENT_FILE_NAME);
 
         createFolderComment(file, area, service, extraPackage, comment);
@@ -492,7 +542,8 @@ public class GeneratorJava extends GeneratorLangs {
      * @param comment the comment.
      * @throws IOException if there is a problem.
      */
-    protected void createFolderComment(ClassWriter file, AreaType area, ServiceType service, String extraPackage, String comment) throws IOException {
+    protected void createFolderComment(ClassWriter file, AreaType area, 
+            ServiceType service, String extraPackage, String comment) throws IOException {
         file.addStatement("/**");
         file.addStatement(comment);
         file.addStatement("*/");
@@ -502,7 +553,8 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType, String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
+    protected CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType,
+            String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
         CompositeField ele;
 
         String typeName = elementType.getName();
@@ -533,18 +585,22 @@ public class GeneratorJava extends GeneratorLangs {
                     encCall = StdStrings.ELEMENT;
                 }
 
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, encCall, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, newCall, comment);
+                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), 
+                        canBeNull, false, encCall, "(" + fqTypeName + ") ", 
+                        StdStrings.ELEMENT, true, newCall, comment);
             }
         } else if (isAttributeType(elementType)) {
             AttributeTypeDetails details = getAttributeDetails(elementType);
             String fqTypeName = createElementType((LanguageWriter) file, elementType, isStructure);
-            ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(), canBeNull, false, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
+            ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(), 
+                    canBeNull, false, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
         } else {
             TypeReference elementTypeIndir = elementType;
 
             // have to work around the fact that JAXB does not replicate the XML type name into Java in all cases
             if (StdStrings.XML.equalsIgnoreCase(elementType.getArea())) {
-                elementTypeIndir = TypeUtils.createTypeReference(elementType.getArea(), elementType.getService(), StubUtils.preCap(elementType.getName()), elementType.isList());
+                elementTypeIndir = TypeUtils.createTypeReference(elementType.getArea(), 
+                        elementType.getService(), StubUtils.preCap(elementType.getName()), elementType.isList());
             }
 
             String fqTypeName = createElementType((LanguageWriter) file, elementTypeIndir, isStructure);
@@ -552,13 +608,21 @@ public class GeneratorJava extends GeneratorLangs {
             if (isEnum(elementType)) {
                 EnumerationType typ = getEnum(elementType);
                 String firstEle = fqTypeName + "." + typ.getItem().get(0).getValue();
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, firstEle, comment);
+                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), 
+                        canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", 
+                        StdStrings.ELEMENT, true, firstEle, comment);
             } else if (StdStrings.ATTRIBUTE.equals(typeName)) {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ATTRIBUTE, "(" + fqTypeName + ") ", StdStrings.ATTRIBUTE, false, "", comment);
+                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), 
+                        canBeNull, false, StdStrings.ATTRIBUTE, "(" + fqTypeName + ") ", 
+                        StdStrings.ATTRIBUTE, false, "", comment);
             } else if (StdStrings.ELEMENT.equals(typeName)) {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, false, "", comment);
+                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), 
+                        canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", 
+                        StdStrings.ELEMENT, false, "", comment);
             } else {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", StdStrings.ELEMENT, true, "new " + fqTypeName + "()", comment);
+                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(), 
+                        canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ", 
+                        StdStrings.ELEMENT, true, "new " + fqTypeName + "()", comment);
             }
         }
 
@@ -566,7 +630,8 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected void addServiceConstructor(MethodWriter method, String serviceVar, String serviceVersion, ServiceSummary summary) throws IOException {
+    protected void addServiceConstructor(MethodWriter method, String serviceVar, 
+            String serviceVersion, ServiceSummary summary) throws IOException {
         String opCall = serviceVar + "_SERVICE.addOperation(";
         for (OperationSummary op : summary.getOperations()) {
             method.addLine(opCall + op.getName().toUpperCase() + "_OP)");
@@ -631,12 +696,14 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected void addVectorAddStatement(LanguageWriter file, MethodWriter method, String variable, String parameter) throws IOException {
+    protected void addVectorAddStatement(LanguageWriter file, MethodWriter method, 
+            String variable, String parameter) throws IOException {
         method.addLine(variable + ".addElement(" + parameter + ")");
     }
 
     @Override
-    protected void addVectorRemoveStatement(LanguageWriter file, MethodWriter method, String variable, String parameter) throws IOException {
+    protected void addVectorRemoveStatement(LanguageWriter file, MethodWriter method, 
+            String variable, String parameter) throws IOException {
         method.addLine(variable + ".removeElement(" + parameter + ")");
     }
 

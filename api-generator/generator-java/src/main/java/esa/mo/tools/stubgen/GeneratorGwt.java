@@ -127,11 +127,6 @@ public class GeneratorGwt extends GeneratorJava {
         file.flush();
     }
 
-    @Override
-    protected void createServiceConsumerStub(File consumerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-    }
-
     protected void createServiceConsumerStub2(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
         getLog().info("Creating consumer stub: " + service.getName());
@@ -176,11 +171,6 @@ public class GeneratorGwt extends GeneratorJava {
         file.addInterfaceCloseStatement();
 
         file.flush();
-    }
-
-    @Override
-    protected void createServiceConsumerAdapter(File consumerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
     }
 
     @Override
