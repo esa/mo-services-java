@@ -27,26 +27,23 @@ import org.ccsds.moims.mo.testbed.util.RemoteProcessRunner;
 /**
  *
  */
-public class RemoteMALInstance extends RemoteProcessRunner
-{
-  static private RemoteMALInstance instance = null;
+public class RemoteMALInstance extends RemoteProcessRunner {
 
-  public static RemoteMALInstance instance() throws Exception
-  {
-    if (null == instance)
-    {
-      // load test specific properties
-      Properties prp = Configuration.getProperties("RemoteMALInstance.properties", true);
-      System.getProperties().putAll(prp);
+    static private RemoteMALInstance instance = null;
 
-      instance = new RemoteMALInstance();
+    public static RemoteMALInstance instance() throws Exception {
+        if (null == instance) {
+            // load test specific properties
+            Properties prp = Configuration.getProperties("RemoteMALInstance.properties", true);
+            System.getProperties().putAll(prp);
+
+            instance = new RemoteMALInstance();
+        }
+
+        return instance;
     }
-    
-    return instance;
-  }
 
-  private RemoteMALInstance() throws Exception
-  {
-    super(System.getProperty(Configuration.REMOTE_MAL_CLASS));
-  }
+    private RemoteMALInstance() throws Exception {
+        super(System.getProperty(Configuration.REMOTE_MAL_CLASS));
+    }
 }

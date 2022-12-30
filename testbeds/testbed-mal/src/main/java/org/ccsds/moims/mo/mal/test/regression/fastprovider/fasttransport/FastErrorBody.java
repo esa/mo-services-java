@@ -28,22 +28,17 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 /**
  *
  */
-public class FastErrorBody extends FastBody implements MALErrorBody
-{
-  public FastErrorBody(Object[] body)
-  {
-    super(body);
-  }
-  
-  public MALStandardError getError() throws MALException
-  {
-   if (1 < body.length)
-    {
-      return new MALStandardError((UInteger) body[0], body[1]);
+public class FastErrorBody extends FastBody implements MALErrorBody {
+
+    public FastErrorBody(Object[] body) {
+        super(body);
     }
-    else
-    {
-      return new MALStandardError((UInteger) body[0], null);
+
+    public MALStandardError getError() throws MALException {
+        if (1 < body.length) {
+            return new MALStandardError((UInteger) body[0], body[1]);
+        } else {
+            return new MALStandardError((UInteger) body[0], null);
+        }
     }
-  }
 }

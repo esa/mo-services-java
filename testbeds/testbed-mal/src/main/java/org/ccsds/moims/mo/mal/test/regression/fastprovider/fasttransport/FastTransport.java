@@ -37,70 +37,60 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 /**
  *
  */
-public class FastTransport implements MALTransport
-{
-  protected static final Random RANDOM_NAME = new Random();
-  protected Map<String, FastEndpoint> endpointMap = new HashMap<String, FastEndpoint>();
+public class FastTransport implements MALTransport {
 
-  public MALEndpoint createEndpoint(String localName, Map map) throws MALException
-  {
-    FastEndpoint ep = new FastEndpoint(this, getLocalName(localName, map));
-    endpointMap.put(ep.getURI().getValue(), ep);
+    protected static final Random RANDOM_NAME = new Random();
+    protected Map<String, FastEndpoint> endpointMap = new HashMap<>();
 
-    return ep;
-  }
+    public MALEndpoint createEndpoint(String localName, Map map) throws MALException {
+        FastEndpoint ep = new FastEndpoint(this, getLocalName(localName, map));
+        endpointMap.put(ep.getURI().getValue(), ep);
 
-  public MALEndpoint getEndpoint(String string) throws IllegalArgumentException, MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  public MALEndpoint getEndpoint(URI uri) throws IllegalArgumentException, MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  public void deleteEndpoint(String string) throws IllegalArgumentException, MALException
-  {
-  }
-
-  public MALBrokerBinding createBroker(String string, Blob blob, QoSLevel[] qsls, UInteger ui, Map map) throws IllegalArgumentException, MALException
-  {
-    return null;
-  }
-
-  public MALBrokerBinding createBroker(MALEndpoint male, Blob blob, QoSLevel[] qsls, UInteger ui, Map map) throws IllegalArgumentException, MALException
-  {
-    return null;
-  }
-
-  public boolean isSupportedQoSLevel(QoSLevel qsl)
-  {
-    return true;
-  }
-
-  public boolean isSupportedInteractionType(InteractionType it)
-  {
-    return !InteractionType.PUBSUB.equals(it);
-  }
-
-  public void close() throws MALException
-  {
-  }
-
-  protected void internalSendMessage(MALMessage malm)
-  {
-    endpointMap.get(malm.getHeader().getURITo().getValue()).internalSendMessage(malm);
-  }
-
-  protected String getLocalName(String localName,
-          final java.util.Map properties)
-  {
-    if ((null == localName) || (0 == localName.length()))
-    {
-      localName = String.valueOf(RANDOM_NAME.nextInt());
+        return ep;
     }
 
-    return localName;
-  }
+    public MALEndpoint getEndpoint(String string) throws IllegalArgumentException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public MALEndpoint getEndpoint(URI uri) throws IllegalArgumentException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void deleteEndpoint(String string) throws IllegalArgumentException, MALException {
+    }
+
+    public MALBrokerBinding createBroker(String string, Blob blob, QoSLevel[] qsls, 
+            UInteger ui, Map map) throws IllegalArgumentException, MALException {
+        return null;
+    }
+
+    public MALBrokerBinding createBroker(MALEndpoint male, Blob blob, QoSLevel[] qsls, 
+            UInteger ui, Map map) throws IllegalArgumentException, MALException {
+        return null;
+    }
+
+    public boolean isSupportedQoSLevel(QoSLevel qsl) {
+        return true;
+    }
+
+    public boolean isSupportedInteractionType(InteractionType it) {
+        return !InteractionType.PUBSUB.equals(it);
+    }
+
+    public void close() throws MALException {
+    }
+
+    protected void internalSendMessage(MALMessage malm) {
+        endpointMap.get(malm.getHeader().getURITo().getValue()).internalSendMessage(malm);
+    }
+
+    protected String getLocalName(String localName,
+            final java.util.Map properties) {
+        if ((null == localName) || (0 == localName.length())) {
+            localName = String.valueOf(RANDOM_NAME.nextInt());
+        }
+
+        return localName;
+    }
 }

@@ -29,32 +29,28 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 /**
  *
  */
-public class FastTransportFactoryImpl extends MALTransportFactory
-{
-  private static final Object MUTEX = new Object();
-  private FastTransport transport = null;
+public class FastTransportFactoryImpl extends MALTransportFactory {
 
-  /**
-   * Constructor.
-   *
-   * @param protocol The protocol string.
-   */
-  public FastTransportFactoryImpl(final String protocol)
-  {
-    super(protocol);
-  }
+    private static final Object MUTEX = new Object();
+    private FastTransport transport = null;
 
-  @Override
-  public MALTransport createTransport(final MALContext malContext, final Map properties) throws MALException
-  {
-    synchronized (MUTEX)
-    {
-      if (null == transport)
-      {
-        transport = new FastTransport();
-      }
-
-      return transport;
+    /**
+     * Constructor.
+     *
+     * @param protocol The protocol string.
+     */
+    public FastTransportFactoryImpl(final String protocol) {
+        super(protocol);
     }
-  }
+
+    @Override
+    public MALTransport createTransport(final MALContext malContext, final Map properties) throws MALException {
+        synchronized (MUTEX) {
+            if (null == transport) {
+                transport = new FastTransport();
+            }
+
+            return transport;
+        }
+    }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-  <!--
+<!--
     Licensed under the European Space Agency Public License, Version 2.0
     You may not use this file except in compliance with the License.
 
@@ -104,9 +104,9 @@
                 <version>1.6.8</version>
                 <extensions>true</extensions>
                 <configuration>
-                  <serverId>ossrh</serverId>
-                  <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                  <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,20 +1,20 @@
-/*******************************************************************************
+/** *****************************************************************************
  * Copyright or © or Copr. CNES
  *
- * This software is a computer program whose purpose is to provide a 
+ * This software is a computer program whose purpose is to provide a
  * framework for the CCSDS Mission Operations services.
  *
  * This software is governed by the CeCILL-C license under French law and
- * abiding by the rules of distribution of free software.  You can  use, 
+ * abiding by the rules of distribution of free software.  You can  use,
  * modify and/ or redistribute the software under the terms of the CeCILL-C
  * license as circulated by CEA, CNRS and INRIA at the following URL
- * "http://www.cecill.info". 
+ * "http://www.cecill.info".
  *
  * As a counterpart to the access to the source code and  rights to copy,
  * modify and redistribute granted by the license, users are provided only
  * with a limited warranty  and the software's author,  the holder of the
  * economic rights,  and the successive licensors  have only  limited
- * liability. 
+ * liability.
  *
  * In this respect, the user's attention is drawn to the risks associated
  * with loading,  using,  modifying and/or developing or reproducing the
@@ -23,13 +23,13 @@
  * therefore means  that it is reserved for developers  and  experienced
  * professionals having in-depth computer knowledge. Users are therefore
  * encouraged to load and test the software's suitability as regards their
- * requirements in conditions enabling the security of their systems and/or 
- * data to be ensured and,  more generally, to use and operate it in the 
- * same conditions as regards security. 
+ * requirements in conditions enabling the security of their systems and/or
+ * data to be ensured and,  more generally, to use and operate it in the
+ * same conditions as regards security.
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C license and that you accept its terms.
- *******************************************************************************/
+ ****************************************************************************** */
 package org.ccsds.moims.mo.mal.test.patterns;
 
 import java.util.Map;
@@ -45,101 +45,88 @@ import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 public class MonitorPublishInteractionListener implements
-    MALPublishInteractionListener
-{
-  public BooleanCondition cond = new BooleanCondition();
+        MALPublishInteractionListener {
 
-  private Long publishRegisterTransactionId;
-  private QoSLevel publishRegisterQoSLevel;
-  private UInteger publishRegisterPriority;
-  
-  private MALMessageHeader header;
-  private MALStandardError error;
+    public BooleanCondition cond = new BooleanCondition();
 
-  public synchronized void publishRegisterAckReceived(MALMessageHeader header, Map props)
-      throws MALException
-  {
-    LoggingBase.logMessage("MonitorPublishInteractionListener.publishRegisterAckReceived(" +
-        header + ')');
-    this.header = header;
-    if (publishRegisterTransactionId == null) {
-      LoggingBase.logMessage("MonitorPublishInteractionListener.acknowledgementReceived, setting transaction id: " + header.getTransactionId() + ')');
-      publishRegisterTransactionId = header.getTransactionId();
-      publishRegisterQoSLevel = header.getQoSlevel();
-      publishRegisterPriority = header.getPriority();
+    private Long publishRegisterTransactionId;
+    private QoSLevel publishRegisterQoSLevel;
+    private UInteger publishRegisterPriority;
+
+    private MALMessageHeader header;
+    private MALStandardError error;
+
+    public synchronized void publishRegisterAckReceived(MALMessageHeader header, Map props)
+            throws MALException {
+        LoggingBase.logMessage("MonitorPublishInteractionListener.publishRegisterAckReceived("
+                + header + ')');
+        this.header = header;
+        if (publishRegisterTransactionId == null) {
+            LoggingBase.logMessage("MonitorPublishInteractionListener.acknowledgementReceived, setting transaction id: " + header.getTransactionId() + ')');
+            publishRegisterTransactionId = header.getTransactionId();
+            publishRegisterQoSLevel = header.getQoSlevel();
+            publishRegisterPriority = header.getPriority();
+        }
+        cond.set();
     }
-    cond.set();
-  }
-  
-  public synchronized void publishDeregisterAckReceived(MALMessageHeader header, Map props)
-      throws MALException
-  {
-    this.header = header;
-    cond.set();
-  }
-  
-  public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body,
-      Map props) throws MALException
-  {
-    errorReceived(header, body.getError());
-  }
-  
-  public void publishErrorReceived(MALMessageHeader header, MALErrorBody body,
-      Map props) throws MALException
-  {
-    errorReceived(header, body.getError());
-  }
 
-  private synchronized void errorReceived(MALMessageHeader header,
-      MALStandardError error) throws MALException
-  {
-    LoggingBase.logMessage("MonitorPublishInteractionListener.errorReceived(" +
-        header + ',' + error + ')');
-    this.header = header;
-    this.error = error;
-    cond.set();
-  }
+    public synchronized void publishDeregisterAckReceived(MALMessageHeader header, Map props)
+            throws MALException {
+        this.header = header;
+        cond.set();
+    }
 
-  public MALMessageHeader getHeader()
-  {
-    return header;
-  }
+    public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body,
+            Map props) throws MALException {
+        errorReceived(header, body.getError());
+    }
 
-  public MALStandardError getError()
-  {
-    return error;
-  }
+    public void publishErrorReceived(MALMessageHeader header, MALErrorBody body,
+            Map props) throws MALException {
+        errorReceived(header, body.getError());
+    }
 
-  public void setHeader(MALMessageHeader header)
-  {
-    this.header = header;
-  }
+    private synchronized void errorReceived(MALMessageHeader header,
+            MALStandardError error) throws MALException {
+        LoggingBase.logMessage("MonitorPublishInteractionListener.errorReceived("
+                + header + ',' + error + ')');
+        this.header = header;
+        this.error = error;
+        cond.set();
+    }
 
-  public void setError(MALStandardError error)
-  {
-    this.error = error;
-  }
+    public MALMessageHeader getHeader() {
+        return header;
+    }
 
-  public Long getPublishRegisterTransactionId()
-  {
-    return publishRegisterTransactionId;
-  }
+    public MALStandardError getError() {
+        return error;
+    }
 
-  public QoSLevel getPublishRegisterQoSLevel()
-  {
-    return publishRegisterQoSLevel;
-  }
+    public void setHeader(MALMessageHeader header) {
+        this.header = header;
+    }
 
-  public UInteger getPublishRegisterPriority()
-  {
-    return publishRegisterPriority;
-  }
-  
-  public String toString() {
-    return '(' + super.toString() + 
-    ",publishRegisterTransactionId=" + publishRegisterTransactionId +
-    ",publishRegisterQoSLevel=" + publishRegisterQoSLevel +
-    ",publishRegisterPriority=" + publishRegisterPriority + ')';
-  }
-  
+    public void setError(MALStandardError error) {
+        this.error = error;
+    }
+
+    public Long getPublishRegisterTransactionId() {
+        return publishRegisterTransactionId;
+    }
+
+    public QoSLevel getPublishRegisterQoSLevel() {
+        return publishRegisterQoSLevel;
+    }
+
+    public UInteger getPublishRegisterPriority() {
+        return publishRegisterPriority;
+    }
+
+    public String toString() {
+        return '(' + super.toString()
+                + ",publishRegisterTransactionId=" + publishRegisterTransactionId
+                + ",publishRegisterQoSLevel=" + publishRegisterQoSLevel
+                + ",publishRegisterPriority=" + publishRegisterPriority + ')';
+    }
 }

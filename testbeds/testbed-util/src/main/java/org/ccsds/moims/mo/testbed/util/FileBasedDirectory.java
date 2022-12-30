@@ -30,198 +30,159 @@ import org.ccsds.moims.mo.mal.structures.URI;
 /**
  *
  */
-public abstract class FileBasedDirectory
-{
-  public static final String FILENAME_EXT = ".uri";
-  public static final String URI_PROPERTY = "uri";
-  public static final String BROKER_PROPERTY = "broker";
-  public static final String AUTH_FILENAME_EXT = ".auth";
-  public static final String AUTHENTICATION_ID_PROPERTY = "authenticationId";
+public abstract class FileBasedDirectory {
 
-  public static final class URIpair
-  {
-    public URI uri = null;
-    public URI broker = null;
-  }
+    public static final String FILENAME_EXT = ".uri";
+    public static final String URI_PROPERTY = "uri";
+    public static final String BROKER_PROPERTY = "broker";
+    public static final String AUTH_FILENAME_EXT = ".auth";
+    public static final String AUTHENTICATION_ID_PROPERTY = "authenticationId";
 
-  public static boolean storeURI(String name, URI uri, URI broker)
-  {
-    if (null != name)
-    {
-      System.out.println("INFO: Storing file: " + name);
-      java.util.Properties prop = new Properties();
+    public static final class URIpair {
 
-      String uriValue = "";
-      String brokerValue = "";
-
-      if ((null != uri) && (null != uri.getValue()))
-      {
-        uriValue = uri.getValue();
-      }
-      else
-      {
-        System.err.println("WARNING: Service uri empty for service : " + name);
-      }
-
-      if ((null != broker) && (null != broker.getValue()))
-      {
-        brokerValue = broker.getValue();
-      }
-      else
-      {
-        System.err.println("WARNING: Broker uri empty for service : " + name);
-      }
-
-      prop.setProperty(URI_PROPERTY, uriValue);
-      prop.setProperty(BROKER_PROPERTY, brokerValue);
-
-      try
-      {
-        prop.store(new java.io.FileOutputStream(name + FILENAME_EXT), "Created: " + new java.util.Date().toString());
-      }
-      catch (IOException ex)
-      {
-        ex.printStackTrace();
-        return false;
-      }
-    }
-    else
-    {
-      System.err.println("ERROR: Could not store URIs: " + uri + " , " + broker);
+        public URI uri = null;
+        public URI broker = null;
     }
 
-    return true;
-  }
+    public static boolean storeURI(String name, URI uri, URI broker) {
+        if (null != name) {
+            System.out.println("INFO: Storing file: " + name);
+            java.util.Properties prop = new Properties();
 
-  public static URIpair loadURIs(String name)
-  {
-    java.util.Properties prop = new Properties();
+            String uriValue = "";
+            String brokerValue = "";
 
-    try
-    {
-      System.out.println("INFO: Loading file: " + name);
-      prop.load(new java.io.FileInputStream(name + FILENAME_EXT));
-    }
-    catch (IOException ex)
-    {
-      ex.printStackTrace();
-      return null;
-    }
+            if ((null != uri) && (null != uri.getValue())) {
+                uriValue = uri.getValue();
+            } else {
+                System.err.println("WARNING: Service uri empty for service : " + name);
+            }
 
-    URIpair pair = new URIpair();
+            if ((null != broker) && (null != broker.getValue())) {
+                brokerValue = broker.getValue();
+            } else {
+                System.err.println("WARNING: Broker uri empty for service : " + name);
+            }
 
-    String uriStr = prop.getProperty(URI_PROPERTY);
-    String brokerStr = prop.getProperty(BROKER_PROPERTY);
+            prop.setProperty(URI_PROPERTY, uriValue);
+            prop.setProperty(BROKER_PROPERTY, brokerValue);
 
-    if (null != uriStr)
-    {
-      pair.uri = new URI(uriStr);
-    }
+            try {
+                prop.store(new java.io.FileOutputStream(name + FILENAME_EXT), "Created: " + new java.util.Date().toString());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                return false;
+            }
+        } else {
+            System.err.println("ERROR: Could not store URIs: " + uri + " , " + broker);
+        }
 
-    if (null != brokerStr)
-    {
-      pair.broker = new URI(brokerStr);
-    }
-
-    return pair;
-  }
-
-  public static boolean storeSharedBrokerAuthenticationId(Blob authId) throws MALException
-  {
-    return storeBrokerAuthenticationId(authId, Configuration.SHARED_BROKER_NAME);
-  }
-
-  public static boolean storePrivateBrokerAuthenticationId(Blob authId) throws MALException
-  {
-    return storeBrokerAuthenticationId(authId, Configuration.PRIVATE_BROKER_NAME);
-  }
-
-  public static boolean storeBrokerAuthenticationId(Blob authId, String brokerName) throws MALException
-  {
-    java.util.Properties prop = new Properties();
-
-    prop.setProperty(AUTHENTICATION_ID_PROPERTY, byteArrayToHexString(authId.getValue()));
-
-    try
-    {
-      prop.store(new java.io.FileOutputStream(brokerName + AUTH_FILENAME_EXT),
-              "Created: " + new java.util.Date().toString());
-    }
-    catch (IOException ex)
-    {
-      ex.printStackTrace();
-      return false;
+        return true;
     }
 
-    return true;
-  }
+    public static URIpair loadURIs(String name) {
+        java.util.Properties prop = new Properties();
 
-  public static Blob loadSharedBrokerAuthenticationId()
-  {
-    return loadBrokerAuthenticationId(Configuration.SHARED_BROKER_NAME);
-  }
+        try {
+            System.out.println("INFO: Loading file: " + name);
+            prop.load(new java.io.FileInputStream(name + FILENAME_EXT));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
 
-  public static Blob loadPrivateBrokerAuthenticationId()
-  {
-    return loadBrokerAuthenticationId(Configuration.PRIVATE_BROKER_NAME);
-  }
+        URIpair pair = new URIpair();
 
-  public static Blob loadBrokerAuthenticationId(String brokerName)
-  {
-    java.util.Properties prop = new Properties();
+        String uriStr = prop.getProperty(URI_PROPERTY);
+        String brokerStr = prop.getProperty(BROKER_PROPERTY);
 
-    try
-    {
-      prop.load(new java.io.FileInputStream(brokerName + AUTH_FILENAME_EXT));
-    }
-    catch (IOException ex)
-    {
-      ex.printStackTrace();
-      return null;
-    }
+        if (null != uriStr) {
+            pair.uri = new URI(uriStr);
+        }
 
-    Blob authenticationId;
+        if (null != brokerStr) {
+            pair.broker = new URI(brokerStr);
+        }
 
-    String authenticationIdStr = prop.getProperty(AUTHENTICATION_ID_PROPERTY);
-
-    if (null != authenticationIdStr)
-    {
-      byte[] buf = hexStringToByteArray(authenticationIdStr);
-      authenticationId = new Blob(buf);
-    }
-    else
-    {
-      authenticationId = new Blob(new byte[0]);
+        return pair;
     }
 
-    return authenticationId;
-  }
-
-  public static String byteArrayToHexString(byte[] data)
-  {
-    StringBuilder hexString = new StringBuilder();
-    for (int i = 0; i < data.length; i++)
-    {
-      String hex = Integer.toHexString(0xFF & data[i]);
-      if (hex.length() == 1)
-      {
-        // could use a for loop, but we're only dealing with a single byte
-        hexString.append('0');
-      }
-      hexString.append(hex);
+    public static boolean storeSharedBrokerAuthenticationId(Blob authId) throws MALException {
+        return storeBrokerAuthenticationId(authId, Configuration.SHARED_BROKER_NAME);
     }
 
-    return hexString.toString();
-  }
-
-  public static byte[] hexStringToByteArray(String s)
-  {
-    int len = s.length();
-    byte[] data = new byte[len / 2];
-    for (int i = 0; i < len; i += 2)
-    {
-      data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
+    public static boolean storePrivateBrokerAuthenticationId(Blob authId) throws MALException {
+        return storeBrokerAuthenticationId(authId, Configuration.PRIVATE_BROKER_NAME);
     }
-    return data;
-  }
+
+    public static boolean storeBrokerAuthenticationId(Blob authId, String brokerName) throws MALException {
+        java.util.Properties prop = new Properties();
+
+        prop.setProperty(AUTHENTICATION_ID_PROPERTY, byteArrayToHexString(authId.getValue()));
+
+        try {
+            prop.store(new java.io.FileOutputStream(brokerName + AUTH_FILENAME_EXT),
+                    "Created: " + new java.util.Date().toString());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    public static Blob loadSharedBrokerAuthenticationId() {
+        return loadBrokerAuthenticationId(Configuration.SHARED_BROKER_NAME);
+    }
+
+    public static Blob loadPrivateBrokerAuthenticationId() {
+        return loadBrokerAuthenticationId(Configuration.PRIVATE_BROKER_NAME);
+    }
+
+    public static Blob loadBrokerAuthenticationId(String brokerName) {
+        java.util.Properties prop = new Properties();
+
+        try {
+            prop.load(new java.io.FileInputStream(brokerName + AUTH_FILENAME_EXT));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        Blob authenticationId;
+
+        String authenticationIdStr = prop.getProperty(AUTHENTICATION_ID_PROPERTY);
+
+        if (null != authenticationIdStr) {
+            byte[] buf = hexStringToByteArray(authenticationIdStr);
+            authenticationId = new Blob(buf);
+        } else {
+            authenticationId = new Blob(new byte[0]);
+        }
+
+        return authenticationId;
+    }
+
+    public static String byteArrayToHexString(byte[] data) {
+        StringBuilder hexString = new StringBuilder();
+        for (int i = 0; i < data.length; i++) {
+            String hex = Integer.toHexString(0xFF & data[i]);
+            if (hex.length() == 1) {
+                // could use a for loop, but we're only dealing with a single byte
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+
+        return hexString.toString();
+    }
+
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
 }

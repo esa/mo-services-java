@@ -1,20 +1,20 @@
-/*******************************************************************************
+/** *****************************************************************************
  * Copyright or © or Copr. CNES
  *
- * This software is a computer program whose purpose is to provide a 
+ * This software is a computer program whose purpose is to provide a
  * framework for the CCSDS Mission Operations services.
  *
  * This software is governed by the CeCILL-C license under French law and
- * abiding by the rules of distribution of free software.  You can  use, 
+ * abiding by the rules of distribution of free software.  You can  use,
  * modify and/ or redistribute the software under the terms of the CeCILL-C
  * license as circulated by CEA, CNRS and INRIA at the following URL
- * "http://www.cecill.info". 
+ * "http://www.cecill.info".
  *
  * As a counterpart to the access to the source code and  rights to copy,
  * modify and redistribute granted by the license, users are provided only
  * with a limited warranty  and the software's author,  the holder of the
  * economic rights,  and the successive licensors  have only  limited
- * liability. 
+ * liability.
  *
  * In this respect, the user's attention is drawn to the risks associated
  * with loading,  using,  modifying and/or developing or reproducing the
@@ -23,13 +23,13 @@
  * therefore means  that it is reserved for developers  and  experienced
  * professionals having in-depth computer knowledge. Users are therefore
  * encouraged to load and test the software's suitability as regards their
- * requirements in conditions enabling the security of their systems and/or 
- * data to be ensured and,  more generally, to use and operate it in the 
- * same conditions as regards security. 
+ * requirements in conditions enabling the security of their systems and/or
+ * data to be ensured and,  more generally, to use and operate it in the
+ * same conditions as regards security.
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C license and that you accept its terms.
- *******************************************************************************/
+ ****************************************************************************** */
 package org.ccsds.moims.mo.mal.test.patterns;
 
 import java.util.Hashtable;
@@ -51,94 +51,85 @@ import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
 import org.ccsds.moims.mo.malprototype.iptest2.provider.IPTest2InheritanceSkeleton;
 import org.ccsds.moims.mo.malprototype.iptest2.provider.MonitorPublisher;
 
-public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton
-{
+public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton {
 
-  public void publishDeregister(TestPublishDeregister _TestPublishRegister, MALInteraction interaction)
-      throws MALInteractionException, MALException
-  {
-    MonitorPublisher publisher = createMonitorPublisher(
-        _TestPublishRegister.getDomain(),
-        _TestPublishRegister.getNetworkZone(),
-        _TestPublishRegister.getSession(),
-        _TestPublishRegister.getSessionName(),
-        _TestPublishRegister.getQos(),
-        new Hashtable(),
-        _TestPublishRegister.getPriority());
-    publisher.deregister();
-  }
-
-  public void publishRegister(TestPublishRegister _TestPublishRegister, MALInteraction interaction)
-      throws MALInteractionException, MALException
-  {
-    MonitorPublisher publisher = createMonitorPublisher(
-        _TestPublishRegister.getDomain(),
-        _TestPublishRegister.getNetworkZone(),
-        _TestPublishRegister.getSession(),
-        _TestPublishRegister.getSessionName(),
-        _TestPublishRegister.getQos(),
-        new Hashtable(),
-        _TestPublishRegister.getPriority());
-
-    publisher.register(_TestPublishRegister.getKeyNames(), new PublisherListener());
-  }
-
-  public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)
-      throws MALInteractionException, MALException
-  {
-    MonitorPublisher publisher = createMonitorPublisher(
-        _TestPublishUpdate.getDomain(),
-        _TestPublishUpdate.getNetworkZone(),
-        _TestPublishUpdate.getSession(),
-        _TestPublishUpdate.getSessionName(),
-        _TestPublishUpdate.getQos(),
-        new Hashtable(),
-        _TestPublishUpdate.getPriority());
-    UpdateHeaderList updateHeaderList = _TestPublishUpdate.getUpdateHeaders();
-    TestUpdateList testUpdateList = _TestPublishUpdate.getUpdates();
-    
-    for (UpdateHeader updateHeader : updateHeaderList) {
-      updateHeader.setDomain(_TestPublishUpdate.getDomain());
-      updateHeader.setSource(new Identifier(""));
-    }
-    
-    publisher.publish(updateHeaderList, testUpdateList);
-  }
-
-  public void testMultipleNotify(TestPublishUpdate _TestPublishRegister, MALInteraction interaction)
-      throws MALException
-  {
-    
-  }
-  
-  static class PublisherListener implements MALPublishInteractionListener {
-
-    public void publishDeregisterAckReceived(MALMessageHeader arg0, Map arg1)
-        throws MALException
-    {
-      // TODO Auto-generated method stub
-      
+    public void publishDeregister(TestPublishDeregister _TestPublishRegister, MALInteraction interaction)
+            throws MALInteractionException, MALException {
+        MonitorPublisher publisher = createMonitorPublisher(
+                _TestPublishRegister.getDomain(),
+                _TestPublishRegister.getNetworkZone(),
+                _TestPublishRegister.getSession(),
+                _TestPublishRegister.getSessionName(),
+                _TestPublishRegister.getQos(),
+                new Hashtable(),
+                _TestPublishRegister.getPriority());
+        publisher.deregister();
     }
 
-    public void publishErrorReceived(MALMessageHeader arg0, MALErrorBody arg1,
-        Map arg2) throws MALException
-    {
-      // TODO Auto-generated method stub
-      
+    public void publishRegister(TestPublishRegister _TestPublishRegister, MALInteraction interaction)
+            throws MALInteractionException, MALException {
+        MonitorPublisher publisher = createMonitorPublisher(
+                _TestPublishRegister.getDomain(),
+                _TestPublishRegister.getNetworkZone(),
+                _TestPublishRegister.getSession(),
+                _TestPublishRegister.getSessionName(),
+                _TestPublishRegister.getQos(),
+                new Hashtable(),
+                _TestPublishRegister.getPriority());
+
+        publisher.register(_TestPublishRegister.getKeyNames(), new PublisherListener());
     }
 
-    public void publishRegisterAckReceived(MALMessageHeader arg0, Map arg1)
-        throws MALException
-    {
-      // TODO Auto-generated method stub
-      
+    public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)
+            throws MALInteractionException, MALException {
+        MonitorPublisher publisher = createMonitorPublisher(
+                _TestPublishUpdate.getDomain(),
+                _TestPublishUpdate.getNetworkZone(),
+                _TestPublishUpdate.getSession(),
+                _TestPublishUpdate.getSessionName(),
+                _TestPublishUpdate.getQos(),
+                new Hashtable(),
+                _TestPublishUpdate.getPriority());
+        UpdateHeaderList updateHeaderList = _TestPublishUpdate.getUpdateHeaders();
+        TestUpdateList testUpdateList = _TestPublishUpdate.getUpdates();
+
+        for (UpdateHeader updateHeader : updateHeaderList) {
+            updateHeader.setDomain(_TestPublishUpdate.getDomain());
+            updateHeader.setSource(new Identifier(""));
+        }
+
+        publisher.publish(updateHeaderList, testUpdateList);
     }
 
-    public void publishRegisterErrorReceived(MALMessageHeader arg0,
-        MALErrorBody arg1, Map arg2) throws MALException
-    {
-      // TODO Auto-generated method stub
-      
+    public void testMultipleNotify(TestPublishUpdate _TestPublishRegister, MALInteraction interaction)
+            throws MALException {
+
     }
-  }
+
+    static class PublisherListener implements MALPublishInteractionListener {
+
+        public void publishDeregisterAckReceived(MALMessageHeader arg0, Map arg1)
+                throws MALException {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void publishErrorReceived(MALMessageHeader arg0, MALErrorBody arg1,
+                Map arg2) throws MALException {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void publishRegisterAckReceived(MALMessageHeader arg0, Map arg1)
+                throws MALException {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void publishRegisterErrorReceived(MALMessageHeader arg0,
+                MALErrorBody arg1, Map arg2) throws MALException {
+            // TODO Auto-generated method stub
+
+        }
+    }
 }

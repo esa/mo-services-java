@@ -20,10 +20,9 @@
  */
 package org.ccsds.moims.mo.testbed.util;
 
-public class StopTest extends Exception
-{
-  public StopTest(String message)
-  {
-    super(message);
-  }
+public class StopTest extends Exception {
+
+    public StopTest(String message) {
+        super(message);
+    }
 }

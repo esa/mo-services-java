@@ -37,71 +37,64 @@ import static org.ccsds.moims.mo.testbed.util.LoggingBase.logMessage;
 /**
  *
  */
-public abstract class BaseTestServiceProvider extends LoggingBase implements Executable
-{
-  protected MALContextFactory malFactory = null;
-  protected MALContext defaultMal = null;
-  protected MALProviderManager defaultProviderMgr = null;
+public abstract class BaseTestServiceProvider extends LoggingBase implements Executable {
 
-  public void execute(Writer out, ExitCondition exitCond, String[] argv) throws Exception
-  {
-    try
-    {
-      logMessage("execute() operation entered!");
-      Properties envPrp = Configuration.getProperties("BaseTestServiceProviderEnv.properties");
-      envPrp.putAll(Configuration.getProperties(this.getClass().getSimpleName() + "Env.properties"));
-      envPrp.putAll(Configuration.getProperties("target/OverrideTestServiceProviderEnv.properties", true));
+    protected MALContextFactory malFactory = null;
+    protected MALContext defaultMal = null;
+    protected MALProviderManager defaultProviderMgr = null;
 
-      logMessage("Protocol: env props: " + envPrp);
-      System.getProperties().putAll(envPrp);
-      
-      malFactory = MALContextFactory.newFactory();
-      Properties malProps = Configuration.getProperties("BaseTestServiceProviderMAL.properties");
-      malProps.putAll(Configuration.getProperties(this.getClass().getSimpleName() + "MAL.properties"));
+    public void execute(Writer out, ExitCondition exitCond, String[] argv) throws Exception {
+        try {
+            logMessage("execute() operation entered!");
+            Properties envPrp = Configuration.getProperties("BaseTestServiceProviderEnv.properties");
+            envPrp.putAll(Configuration.getProperties(this.getClass().getSimpleName() + "Env.properties"));
+            envPrp.putAll(Configuration.getProperties("target/OverrideTestServiceProviderEnv.properties", true));
 
-      defaultMal = malFactory.createMALContext(malProps);
+            logMessage("Protocol: env props: " + envPrp);
+            System.getProperties().putAll(envPrp);
 
-      MALHelper.init(MALContextFactory.getElementsRegistry());
-      initHelpers();
+            malFactory = MALContextFactory.newFactory();
+            Properties malProps = Configuration.getProperties("BaseTestServiceProviderMAL.properties");
+            malProps.putAll(Configuration.getProperties(this.getClass().getSimpleName() + "MAL.properties"));
 
-      defaultProviderMgr = defaultMal.createProviderManager();
+            defaultMal = malFactory.createMALContext(malProps);
 
-      String protocol = getProtocol();
-      logMessage("Protocol: " + protocol);
+            MALHelper.init(MALContextFactory.getElementsRegistry());
+            initHelpers();
 
-      logMessage("Creating providers...");
+            defaultProviderMgr = defaultMal.createProviderManager();
 
-      createProviders();
+            String protocol = getProtocol();
+            logMessage("Protocol: " + protocol);
 
-      logMessage("Ready");
+            logMessage("Creating providers...");
 
-      exitCond.waitForExitSignal();
+            createProviders();
+
+            logMessage("Ready");
+
+            exitCond.waitForExitSignal();
+        } catch (MALException exc) {
+            logMessage("Error: " + exc);
+            exc.printStackTrace();
+        }
     }
-    catch (MALException exc)
-    {
-      logMessage("Error: " + exc);
-      exc.printStackTrace();
+
+    public MALContext getDefaultMal() {
+        return defaultMal;
     }
-  }
 
-  public MALContext getDefaultMal()
-  {
-    return defaultMal;
-  }
+    public MALProviderManager getDefaultProviderMgr() {
+        return defaultProviderMgr;
+    }
 
-  public MALProviderManager getDefaultProviderMgr()
-  {
-    return defaultProviderMgr;
-  }
+    public MALContextFactory getMalFactory() {
+        return malFactory;
+    }
 
-  public MALContextFactory getMalFactory()
-  {
-    return malFactory;
-  }
+    abstract protected String getProtocol();
 
-  abstract protected String getProtocol();
+    abstract protected void initHelpers() throws MALException;
 
-  abstract protected void initHelpers() throws MALException;
-
-  abstract protected void createProviders() throws MALException;
+    abstract protected void createProviders() throws MALException;
 }

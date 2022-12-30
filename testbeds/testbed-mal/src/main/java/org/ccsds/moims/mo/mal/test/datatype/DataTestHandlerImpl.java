@@ -39,249 +39,213 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 /**
  *
  */
-public class DataTestHandlerImpl extends DataTestInheritanceSkeleton
-{
-  private int testIndex = 0;
+public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
 
-  public void setTestDataOffset(Integer _Integer, MALInteraction interaction) throws MALException
-  {
-    int newIndex = 0;
+    private int testIndex = 0;
 
-    if ((null != _Integer) && (_Integer.intValue() > 0))
-    {
-      newIndex = _Integer.intValue();
+    public void setTestDataOffset(Integer _Integer, MALInteraction interaction) throws MALException {
+        int newIndex = 0;
+
+        if ((null != _Integer) && (_Integer.intValue() > 0)) {
+            newIndex = _Integer.intValue();
+        }
+
+        testIndex = newIndex;
     }
 
-    testIndex = newIndex;
-  }
+    public Element testData(Element rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        int i = testIndex++;
 
-  public Element testData(Element rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    int i = testIndex++;
+        _testDataValue(TestData.testAll.get(i), rcvdValue, "data test at step: " + String.valueOf(i));
 
-    _testDataValue(TestData.testAll.get(i), rcvdValue, "data test at step: " + String.valueOf(i));
-
-    return rcvdValue;
-  }
-
-  public Blob testDataBlob(Blob rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage("testDataBlob: " + new String(rcvdValue.getValue()));
-
-    if ((rcvdValue != null) && (rcvdValue.getValue().length != TestData.testBlob.getValue().length))
-    {
-      _testDataValue(new Blob(new File(new String(rcvdValue.getValue())).toURI().toString()), rcvdValue, "Blob file test");
-    }
-    else
-    {
-      _testDataValue(TestData.testBlob, rcvdValue, "Blob buffer test");
+        return rcvdValue;
     }
 
-    return rcvdValue;
-  }
+    public Blob testDataBlob(Blob rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("testDataBlob: " + new String(rcvdValue.getValue()));
 
-  public Boolean testDataBoolean(Boolean rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testBoolean, rcvdValue, "Boolean test");
-    return rcvdValue;
-  }
+        if ((rcvdValue != null) && (rcvdValue.getValue().length != TestData.testBlob.getValue().length)) {
+            _testDataValue(new Blob(new File(new String(rcvdValue.getValue())).toURI().toString()), rcvdValue, "Blob file test");
+        } else {
+            _testDataValue(TestData.testBlob, rcvdValue, "Blob buffer test");
+        }
 
-  public Double testDataDouble(Double rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testDouble, rcvdValue, "Double test");
-    return rcvdValue;
-  }
-
-  public Duration testDataDuration(Duration rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testDuration, rcvdValue, "Duration test");
-    return rcvdValue;
-  }
-
-  public FineTime testDataFineTime(FineTime rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testFineTime, rcvdValue, "FineTime test");
-    return rcvdValue;
-  }
-
-  public Float testDataFloat(Float rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testFloat, rcvdValue, "Float test");
-    return rcvdValue;
-  }
-
-  public Identifier testDataIdentifier(Identifier rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testIdentifier, rcvdValue, "Identifier test");
-    return rcvdValue;
-  }
-
-  public Integer testDataInteger(Integer rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testInteger, rcvdValue, "Integer test");
-    return rcvdValue;
-  }
-
-  public Long testDataLong(Long rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testLong, rcvdValue, "Long test");
-    return rcvdValue;
-  }
-
-  public Byte testDataOctet(Byte rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testOctet, rcvdValue, "Byte test");
-    return rcvdValue;
-  }
-
-  public Short testDataShort(Short rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testShort, rcvdValue, "Short test");
-    return rcvdValue;
-  }
-
-  public String testDataString(String rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testString, rcvdValue, "String test");
-    return rcvdValue;
-  }
-
-  public Time testDataTime(Time rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testTime, rcvdValue, "Time test");
-    return rcvdValue;
-  }
-
-  public URI testDataURI(URI rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testURI, rcvdValue, "URI test");
-    return rcvdValue;
-  }
-
-  public Assertion testDataComposite(Assertion rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testComposite, rcvdValue, "Composite test");
-    return rcvdValue;
-  }
-
-  public SessionType testDataEnumeration(SessionType rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testEnumeration, rcvdValue, "Enumeration test");
-    return rcvdValue;
-  }
-
-  public AssertionList testDataList(AssertionList rcvdValue, MALInteraction interaction) throws MALInteractionException
-  {
-    _testDataValue(TestData.testList, rcvdValue, "List test");
-    return rcvdValue;
-  }
-
-  public UOctet testDataUOctet(UOctet rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    _testDataValue(TestData.testUOctet, rcvdValue, "UOctet test");
-    return rcvdValue;
-  }
-
-  public UShort testDataUShort(UShort rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    _testDataValue(TestData.testUShort, rcvdValue, "UShort test");
-    return rcvdValue;
-  }
-
-  public UInteger testDataUInteger(UInteger rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    _testDataValue(TestData.testUInteger, rcvdValue, "UInteger test");
-    return rcvdValue;
-  }
-
-  public ULong testDataULong(ULong rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    _testDataValue(TestData.testULong, rcvdValue, "ULong test");
-    return rcvdValue;
-  }
-
-  public TestExplicitMultiReturnResponse testExplicitMultiReturn(UOctet _UOctet0, UShort _UShort1, UInteger _UInteger2, ULong _ULong3, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    if (54 == testIndex)
-    {
-      _testDataValue(TestData.testUOctet, _UOctet0, "Explicit multi test part 1");
-      _testDataValue(TestData.testUShort, _UShort1, "Explicit multi test part 2");
-      _testDataValue(TestData.testUInteger, _UInteger2, "Explicit multi test part 3");
-      _testDataValue(TestData.testULong, _ULong3, "Explicit multi test part 4");
+        return rcvdValue;
     }
-    else
-    {
-      _testDataValue(TestData.testUOctet, _UOctet0, "Null multi test part 1");
-      _testDataValue(TestData.testUShort, _UShort1, "Null multi test part 2");
-      _testDataValue(TestData.testUInteger, _UInteger2, "Null multi test part 3");
-      _testDataValue(null, _ULong3, "Null multi test part 4");
+
+    public Boolean testDataBoolean(Boolean rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testBoolean, rcvdValue, "Boolean test");
+        return rcvdValue;
     }
-    return new TestExplicitMultiReturnResponse(_UOctet0, _UShort1, _UInteger2, _ULong3);
-  }
 
-  public TestAbstractMultiReturnResponse testAbstractMultiReturn(UOctet _UOctet0, UShort _UShort1, UInteger _UInteger2, Element _Element3, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    _testDataValue(TestData.testUOctet, _UOctet0, "Abstract multi test part 1");
-    _testDataValue(TestData.testUShort, _UShort1, "Abstract multi test part 2");
-    _testDataValue(TestData.testUInteger, _UInteger2, "Abstract multi test part 3");
-    _testDataValue(TestData.testULong, _Element3, "Abstract multi test part 4");
-    return new TestAbstractMultiReturnResponse(_UOctet0, _UShort1, _UInteger2, _Element3);
-  }
-
-  protected static void _testDataValue(Object testValue, Object rcvdValue, String exString) throws MALInteractionException
-  {
-    LoggingBase.logMessage("DataTestHandlerImpl:" + exString + " : " + testValue + " : " + rcvdValue);
-    
-    if (null != testValue)
-    {
-      if (!testValue.equals(rcvdValue))
-      {
-        // decoding must have failed
-        throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
-                new Union("Failed comparison in provider of " + exString + ", type " + testValue.getClass() + ", expected " + String.valueOf(testValue) + " but received " + String.valueOf(rcvdValue))));
-      }
+    public Double testDataDouble(Double rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testDouble, rcvdValue, "Double test");
+        return rcvdValue;
     }
-    else
-    {
-      if (null != rcvdValue)
-      {
-        // decoding must have failed
-        throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
-                new Union("Failed comparison in provider of " + exString + ", type should be null but is " + rcvdValue.getClass())));
-      }
+
+    public Duration testDataDuration(Duration rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testDuration, rcvdValue, "Duration test");
+        return rcvdValue;
     }
-  }
 
-  public void testEmptyBody(MALInteraction mali) throws MALInteractionException, MALException {
-    // Do nothing
-  }
+    public FineTime testDataFineTime(FineTime rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testFineTime, rcvdValue, "FineTime test");
+        return rcvdValue;
+    }
 
-  public Attribute testMalAttribute(Attribute atrbt, MALInteraction mali) throws MALInteractionException, MALException {
-    return atrbt;
-  }
+    public Float testDataFloat(Float rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testFloat, rcvdValue, "Float test");
+        return rcvdValue;
+    }
 
-  public Composite testMalComposite(Composite cmpst, MALInteraction mali) throws MALInteractionException, MALException {
-    return cmpst;
-  }
+    public Identifier testDataIdentifier(Identifier rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testIdentifier, rcvdValue, "Identifier test");
+        return rcvdValue;
+    }
 
-  public TestPublish testAbstractComposite(TestPublish tp, MALInteraction mali) throws MALInteractionException, MALException {
-    return tp;
-  }
+    public Integer testDataInteger(Integer rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testInteger, rcvdValue, "Integer test");
+        return rcvdValue;
+    }
 
-  public AttributeList testMalAttributeList(AttributeList al, MALInteraction mali) throws MALInteractionException, MALException {
-    return al;
-  }
+    public Long testDataLong(Long rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testLong, rcvdValue, "Long test");
+        return rcvdValue;
+    }
 
-  public ElementList testMalElementList(ElementList el, MALInteraction mali) throws MALInteractionException, MALException {
-    return el;
-  }
+    public Byte testDataOctet(Byte rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testOctet, rcvdValue, "Byte test");
+        return rcvdValue;
+    }
 
-  public CompositeList testMalCompositeList(CompositeList cl, MALInteraction mali) throws MALInteractionException, MALException {
-    return cl;
-  }
+    public Short testDataShort(Short rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testShort, rcvdValue, "Short test");
+        return rcvdValue;
+    }
 
-  public TestPublishList testAbstractCompositeList(TestPublishList tpl, MALInteraction mali) throws MALInteractionException, MALException {
-    return tpl;
-  }
-  
+    public String testDataString(String rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testString, rcvdValue, "String test");
+        return rcvdValue;
+    }
+
+    public Time testDataTime(Time rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testTime, rcvdValue, "Time test");
+        return rcvdValue;
+    }
+
+    public URI testDataURI(URI rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testURI, rcvdValue, "URI test");
+        return rcvdValue;
+    }
+
+    public Assertion testDataComposite(Assertion rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testComposite, rcvdValue, "Composite test");
+        return rcvdValue;
+    }
+
+    public SessionType testDataEnumeration(SessionType rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testEnumeration, rcvdValue, "Enumeration test");
+        return rcvdValue;
+    }
+
+    public AssertionList testDataList(AssertionList rcvdValue, MALInteraction interaction) throws MALInteractionException {
+        _testDataValue(TestData.testList, rcvdValue, "List test");
+        return rcvdValue;
+    }
+
+    public UOctet testDataUOctet(UOctet rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+        _testDataValue(TestData.testUOctet, rcvdValue, "UOctet test");
+        return rcvdValue;
+    }
+
+    public UShort testDataUShort(UShort rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+        _testDataValue(TestData.testUShort, rcvdValue, "UShort test");
+        return rcvdValue;
+    }
+
+    public UInteger testDataUInteger(UInteger rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+        _testDataValue(TestData.testUInteger, rcvdValue, "UInteger test");
+        return rcvdValue;
+    }
+
+    public ULong testDataULong(ULong rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+        _testDataValue(TestData.testULong, rcvdValue, "ULong test");
+        return rcvdValue;
+    }
+
+    public TestExplicitMultiReturnResponse testExplicitMultiReturn(UOctet _UOctet0, UShort _UShort1, 
+            UInteger _UInteger2, ULong _ULong3, MALInteraction interaction) throws MALInteractionException, MALException {
+        if (54 == testIndex) {
+            _testDataValue(TestData.testUOctet, _UOctet0, "Explicit multi test part 1");
+            _testDataValue(TestData.testUShort, _UShort1, "Explicit multi test part 2");
+            _testDataValue(TestData.testUInteger, _UInteger2, "Explicit multi test part 3");
+            _testDataValue(TestData.testULong, _ULong3, "Explicit multi test part 4");
+        } else {
+            _testDataValue(TestData.testUOctet, _UOctet0, "Null multi test part 1");
+            _testDataValue(TestData.testUShort, _UShort1, "Null multi test part 2");
+            _testDataValue(TestData.testUInteger, _UInteger2, "Null multi test part 3");
+            _testDataValue(null, _ULong3, "Null multi test part 4");
+        }
+        return new TestExplicitMultiReturnResponse(_UOctet0, _UShort1, _UInteger2, _ULong3);
+    }
+
+    public TestAbstractMultiReturnResponse testAbstractMultiReturn(UOctet _UOctet0, UShort _UShort1, 
+            UInteger _UInteger2, Element _Element3, MALInteraction interaction) throws MALInteractionException, MALException {
+        _testDataValue(TestData.testUOctet, _UOctet0, "Abstract multi test part 1");
+        _testDataValue(TestData.testUShort, _UShort1, "Abstract multi test part 2");
+        _testDataValue(TestData.testUInteger, _UInteger2, "Abstract multi test part 3");
+        _testDataValue(TestData.testULong, _Element3, "Abstract multi test part 4");
+        return new TestAbstractMultiReturnResponse(_UOctet0, _UShort1, _UInteger2, _Element3);
+    }
+
+    protected static void _testDataValue(Object testValue, Object rcvdValue, String exString) throws MALInteractionException {
+        LoggingBase.logMessage("DataTestHandlerImpl:" + exString + " : " + testValue + " : " + rcvdValue);
+
+        if (null != testValue) {
+            if (!testValue.equals(rcvdValue)) {
+                // decoding must have failed
+                throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
+                        new Union("Failed comparison in provider of " + exString + ", type " + testValue.getClass() + ", expected " + String.valueOf(testValue) + " but received " + String.valueOf(rcvdValue))));
+            }
+        } else {
+            if (null != rcvdValue) {
+                // decoding must have failed
+                throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
+                        new Union("Failed comparison in provider of " + exString + ", type should be null but is " + rcvdValue.getClass())));
+            }
+        }
+    }
+
+    public void testEmptyBody(MALInteraction mali) throws MALInteractionException, MALException {
+        // Do nothing
+    }
+
+    public Attribute testMalAttribute(Attribute atrbt, MALInteraction mali) throws MALInteractionException, MALException {
+        return atrbt;
+    }
+
+    public Composite testMalComposite(Composite cmpst, MALInteraction mali) throws MALInteractionException, MALException {
+        return cmpst;
+    }
+
+    public TestPublish testAbstractComposite(TestPublish tp, MALInteraction mali) throws MALInteractionException, MALException {
+        return tp;
+    }
+
+    public AttributeList testMalAttributeList(AttributeList al, MALInteraction mali) throws MALInteractionException, MALException {
+        return al;
+    }
+
+    public ElementList testMalElementList(ElementList el, MALInteraction mali) throws MALInteractionException, MALException {
+        return el;
+    }
+
+    public CompositeList testMalCompositeList(CompositeList cl, MALInteraction mali) throws MALInteractionException, MALException {
+        return cl;
+    }
+
+    public TestPublishList testAbstractCompositeList(TestPublishList tpl, MALInteraction mali) throws MALInteractionException, MALException {
+        return tpl;
+    }
+
 }

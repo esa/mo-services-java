@@ -39,256 +39,220 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 /**
  *
  */
-public class FastProviderScenario
-{
-  private IPTestStub testService = null;
+public class FastProviderScenario {
 
-  public boolean initialiseConsumer() throws Exception
-  {
-    final java.util.Properties sysProps = System.getProperties();
+    private IPTestStub testService = null;
 
-    sysProps.setProperty("org.ccsds.moims.mo.mal.transport.protocol.fast",
-            "org.ccsds.moims.mo.mal.test.regression.fastprovider.fasttransport.FastTransportFactoryImpl");
+    public boolean initialiseConsumer() throws Exception {
+        final java.util.Properties sysProps = System.getProperties();
 
-    System.setProperties(sysProps);
+        sysProps.setProperty("org.ccsds.moims.mo.mal.transport.protocol.fast",
+                "org.ccsds.moims.mo.mal.test.regression.fastprovider.fasttransport.FastTransportFactoryImpl");
 
-    MALProvider testServiceProvider = LocalMALInstance.instance().getProviderManager().createProvider("FastProvider",
-            "fast",
-            IPTestHelper.IPTEST_SERVICE,
-            new Blob("".getBytes()),
-            new FastIpTestHandlerImpl(),
-            new QoSLevel[]
-            {
-              QoSLevel.ASSURED
-            },
-            new UInteger(1),
-            System.getProperties(),
-            true,
-            null);
+        System.setProperties(sysProps);
 
-    MALConsumer testConsumer = LocalMALInstance.instance().getConsumerManager().createConsumer((String) null,
-            testServiceProvider.getURI(),
-            testServiceProvider.getURI(),
-            IPTestHelper.IPTEST_SERVICE,
-            new Blob("".getBytes()),
-            new IdentifierList(),
-            new Identifier(""),
-            SessionType.LIVE,
-            new Identifier(""),
-            QoSLevel.ASSURED,
-            System.getProperties(),
-            new UInteger(0));
+        MALProvider testServiceProvider = LocalMALInstance.instance().getProviderManager().createProvider("FastProvider",
+                "fast",
+                IPTestHelper.IPTEST_SERVICE,
+                new Blob("".getBytes()),
+                new FastIpTestHandlerImpl(),
+                new QoSLevel[]{
+                    QoSLevel.ASSURED
+                },
+                new UInteger(1),
+                System.getProperties(),
+                true,
+                null);
 
-    testService = new IPTestStub(testConsumer);
+        MALConsumer testConsumer = LocalMALInstance.instance().getConsumerManager().createConsumer((String) null,
+                testServiceProvider.getURI(),
+                testServiceProvider.getURI(),
+                IPTestHelper.IPTEST_SERVICE,
+                new Blob("".getBytes()),
+                new IdentifierList(),
+                new Identifier(""),
+                SessionType.LIVE,
+                new Identifier(""),
+                QoSLevel.ASSURED,
+                System.getProperties(),
+                new UInteger(0));
 
-    return true;
-  }
+        testService = new IPTestStub(testConsumer);
 
-  public boolean normalSubmitCompletesWithoutAnError() throws Exception
-  {
-    LoggingBase.logMessage("Calling SUBMIT correctly");
-    testService.testSubmit(new IPTestDefinition());
-
-    return true;
-  }
-
-  public boolean errorSubmitCompletesWithAnError() throws Exception
-  {
-    try
-    {
-      LoggingBase.logMessage("Calling SUBMIT incorrectly");
-      testService.testSubmit(null);
-      LoggingBase.logMessage("ERROR: Calling SUBMIT incorrectly did not raise an error");
-      return false;
-    }
-    catch (MALInteractionException ex)
-    {
-      LoggingBase.logMessage("Received ACK ERROR correctly");
+        return true;
     }
 
-    return true;
-  }
+    public boolean normalSubmitCompletesWithoutAnError() throws Exception {
+        LoggingBase.logMessage("Calling SUBMIT correctly");
+        testService.testSubmit(new IPTestDefinition());
 
-  public boolean normalRequestCompletesWithoutAnError() throws Exception
-  {
-    LoggingBase.logMessage("Calling REQUEST correctly");
-    testService.request(new IPTestDefinition());
-
-    return true;
-  }
-
-  public boolean errorRequestCompletesWithAnError() throws Exception
-  {
-    try
-    {
-      LoggingBase.logMessage("Calling REQUEST incorrectly");
-      testService.request(null);
-      LoggingBase.logMessage("ERROR: Calling REQUEST incorrectly did not raise an error");
-      return false;
-    }
-    catch (MALInteractionException ex)
-    {
-      LoggingBase.logMessage("Received ACK ERROR correctly");
+        return true;
     }
 
-    return true;
-  }
+    public boolean errorSubmitCompletesWithAnError() throws Exception {
+        try {
+            LoggingBase.logMessage("Calling SUBMIT incorrectly");
+            testService.testSubmit(null);
+            LoggingBase.logMessage("ERROR: Calling SUBMIT incorrectly did not raise an error");
+            return false;
+        } catch (MALInteractionException ex) {
+            LoggingBase.logMessage("Received ACK ERROR correctly");
+        }
 
-  public boolean normalInvokeCompletesWithoutAnError() throws Exception
-  {
-    PatternTest.ResponseListener monitor = new PatternTest.ResponseListener("FastProvider", 1);
-
-    LoggingBase.logMessage("Calling INVOKE");
-    testService.invoke(new IPTestDefinition(), monitor);
-    LoggingBase.logMessage("Received ACK");
-
-    boolean retVal = false;
-
-    try
-    {
-      LoggingBase.logMessage("FastProvider.waiting for responses");
-      retVal = monitor.getCond().waitFor(10000);
-    }
-    catch (InterruptedException ex)
-    {
-      // do nothing, we are expecting this
+        return true;
     }
 
-    boolean ackNotReceived = null == monitor.invokeAckReceivedMsgHeader;
-    boolean responseReceived = null != monitor.invokeResponseReceivedMsgHeader;
+    public boolean normalRequestCompletesWithoutAnError() throws Exception {
+        LoggingBase.logMessage("Calling REQUEST correctly");
+        testService.request(new IPTestDefinition());
 
-    LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
-    LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");
-    LoggingBase.logMessage("FastProvider.ackNotReceived(" + ackNotReceived + ")");
-    LoggingBase.logMessage("FastProvider.responseReceived(" + responseReceived + ")");
-
-    return retVal && monitor.checkCorrectNumberOfReceivedMessages() && ackNotReceived && responseReceived;
-  }
-
-  public boolean errorInvokeCompletesWithAnError() throws Exception
-  {
-    PatternTest.ResponseListener monitor = new PatternTest.ResponseListener("FastProvider", 0);
-
-    boolean retVal = false;
-
-    try
-    {
-      LoggingBase.logMessage("Calling INVOKE incorrectly");
-      testService.invoke(null, monitor);
-      LoggingBase.logMessage("ERROR: Calling INVOKE incorrectly did not raise an error");
-    }
-    catch (MALInteractionException ex)
-    {
-      LoggingBase.logMessage("Received ACK ERROR correctly");
-      retVal = true;
+        return true;
     }
 
-    LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
+    public boolean errorRequestCompletesWithAnError() throws Exception {
+        try {
+            LoggingBase.logMessage("Calling REQUEST incorrectly");
+            testService.request(null);
+            LoggingBase.logMessage("ERROR: Calling REQUEST incorrectly did not raise an error");
+            return false;
+        } catch (MALInteractionException ex) {
+            LoggingBase.logMessage("Received ACK ERROR correctly");
+        }
 
-    if (retVal)
-    {
-      try
-      {
-        LoggingBase.logMessage("FastProvider.waiting for responses");
-        retVal = !monitor.getCond().waitFor(1000);
-      }
-      catch (InterruptedException ex)
-      {
-        retVal = false;
-      }
+        return true;
     }
 
-    boolean ackNotReceived = (null == monitor.invokeAckReceivedMsgHeader) && (null == monitor.invokeAckErrorReceivedMsgHeader);
-    boolean responseNotReceived = (null == monitor.invokeResponseReceivedMsgHeader) && (null == monitor.invokeResponseErrorReceivedMsgHeader);
+    public boolean normalInvokeCompletesWithoutAnError() throws Exception {
+        PatternTest.ResponseListener monitor = new PatternTest.ResponseListener("FastProvider", 1);
 
-    LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
-    LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");
-    LoggingBase.logMessage("FastProvider.ackNotReceived(" + ackNotReceived + ")");
-    LoggingBase.logMessage("FastProvider.responseNotReceived(" + responseNotReceived + ")");
+        LoggingBase.logMessage("Calling INVOKE");
+        testService.invoke(new IPTestDefinition(), monitor);
+        LoggingBase.logMessage("Received ACK");
 
-    return retVal && monitor.checkCorrectNumberOfReceivedMessages() && ackNotReceived && responseNotReceived;
-  }
+        boolean retVal = false;
 
-  public boolean normalProgressCompletesWithoutAnError() throws Exception
-  {
-    PatternTest.ResponseListener monitor = new PatternTest.ResponseListener("FastProvider", 3);
+        try {
+            LoggingBase.logMessage("FastProvider.waiting for responses");
+            retVal = monitor.getCond().waitFor(10000);
+        } catch (InterruptedException ex) {
+            // do nothing, we are expecting this
+        }
 
-    LoggingBase.logMessage("Calling PROGRESS");
-    testService.progress(new IPTestDefinition(), monitor);
-    LoggingBase.logMessage("Received ACK");
+        boolean ackNotReceived = null == monitor.invokeAckReceivedMsgHeader;
+        boolean responseReceived = null != monitor.invokeResponseReceivedMsgHeader;
 
-    boolean retVal = false;
+        LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
+        LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");
+        LoggingBase.logMessage("FastProvider.ackNotReceived(" + ackNotReceived + ")");
+        LoggingBase.logMessage("FastProvider.responseReceived(" + responseReceived + ")");
 
-    try
-    {
-      LoggingBase.logMessage("FastProvider.waiting for responses");
-      retVal = monitor.getCond().waitFor(10000);
-    }
-    catch (InterruptedException ex)
-    {
-      // do nothing, we are expecting this
+        return retVal && monitor.checkCorrectNumberOfReceivedMessages() && ackNotReceived && responseReceived;
     }
 
-    boolean ackNotReceived = null == monitor.progressAckReceivedMsgHeader;
-    boolean update1Received = null != monitor.progressUpdate1ReceivedMsgHeader;
-    boolean update2Received = null != monitor.progressUpdate2ReceivedMsgHeader;
-    boolean responseReceived = null != monitor.progressResponseReceivedMsgHeader;
+    public boolean errorInvokeCompletesWithAnError() throws Exception {
+        PatternTest.ResponseListener monitor = new PatternTest.ResponseListener("FastProvider", 0);
 
-    LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
-    LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");
-    LoggingBase.logMessage("FastProvider.ackNotReceived(" + ackNotReceived + ")");
-    LoggingBase.logMessage("FastProvider.update1Received(" + update1Received + ")");
-    LoggingBase.logMessage("FastProvider.update2Received(" + update2Received + ")");
-    LoggingBase.logMessage("FastProvider.responseReceived(" + responseReceived + ")");
+        boolean retVal = false;
 
-    return retVal && monitor.checkCorrectNumberOfReceivedMessages() && ackNotReceived && update1Received && update2Received && responseReceived;
-  }
+        try {
+            LoggingBase.logMessage("Calling INVOKE incorrectly");
+            testService.invoke(null, monitor);
+            LoggingBase.logMessage("ERROR: Calling INVOKE incorrectly did not raise an error");
+        } catch (MALInteractionException ex) {
+            LoggingBase.logMessage("Received ACK ERROR correctly");
+            retVal = true;
+        }
 
-  public boolean errorProgressCompletesWithAnError() throws Exception
-  {
-    PatternTest.ResponseListener monitor = new PatternTest.ResponseListener("FastProvider", 0);
+        LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
 
-    boolean retVal = false;
+        if (retVal) {
+            try {
+                LoggingBase.logMessage("FastProvider.waiting for responses");
+                retVal = !monitor.getCond().waitFor(1000);
+            } catch (InterruptedException ex) {
+                retVal = false;
+            }
+        }
 
-    try
-    {
-      LoggingBase.logMessage("Calling PROGRESS incorrectly");
-      testService.progress(null, monitor);
-      LoggingBase.logMessage("ERROR: Calling PROGRESS incorrectly did not raise an error");
-    }
-    catch (MALInteractionException ex)
-    {
-      LoggingBase.logMessage("Received ACK ERROR correctly");
-      retVal = true;
-    }
+        boolean ackNotReceived = (null == monitor.invokeAckReceivedMsgHeader) && (null == monitor.invokeAckErrorReceivedMsgHeader);
+        boolean responseNotReceived = (null == monitor.invokeResponseReceivedMsgHeader) && (null == monitor.invokeResponseErrorReceivedMsgHeader);
 
-    LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
+        LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
+        LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");
+        LoggingBase.logMessage("FastProvider.ackNotReceived(" + ackNotReceived + ")");
+        LoggingBase.logMessage("FastProvider.responseNotReceived(" + responseNotReceived + ")");
 
-    if (retVal)
-    {
-      try
-      {
-        LoggingBase.logMessage("FastProvider.waiting for responses");
-        retVal = !monitor.getCond().waitFor(1000);
-      }
-      catch (InterruptedException ex)
-      {
-        retVal = false;
-      }
+        return retVal && monitor.checkCorrectNumberOfReceivedMessages() && ackNotReceived && responseNotReceived;
     }
 
-    boolean ackNotReceived = (null == monitor.progressAckReceivedMsgHeader) && (null == monitor.progressAckErrorReceivedMsgHeader);
-    boolean update1NotReceived = (null == monitor.progressUpdate1ReceivedMsgHeader) && (null == monitor.progressUpdateErrorReceivedMsgHeader);
-    boolean update2NotReceived = (null == monitor.progressUpdate2ReceivedMsgHeader);
-    boolean responseNotReceived = (null == monitor.progressResponseReceivedMsgHeader) && (null == monitor.progressResponseErrorReceivedMsgHeader);
+    public boolean normalProgressCompletesWithoutAnError() throws Exception {
+        PatternTest.ResponseListener monitor = new PatternTest.ResponseListener("FastProvider", 3);
 
-    LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
-    LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");
-    LoggingBase.logMessage("FastProvider.ackNotReceived(" + ackNotReceived + ")");
-    LoggingBase.logMessage("FastProvider.update1Received(" + update1NotReceived + ")");
-    LoggingBase.logMessage("FastProvider.update2Received(" + update2NotReceived + ")");
-    LoggingBase.logMessage("FastProvider.responseReceived(" + responseNotReceived + ")");
+        LoggingBase.logMessage("Calling PROGRESS");
+        testService.progress(new IPTestDefinition(), monitor);
+        LoggingBase.logMessage("Received ACK");
 
-    return retVal && monitor.checkCorrectNumberOfReceivedMessages() && ackNotReceived && update1NotReceived && update2NotReceived && responseNotReceived;
-  }
+        boolean retVal = false;
+
+        try {
+            LoggingBase.logMessage("FastProvider.waiting for responses");
+            retVal = monitor.getCond().waitFor(10000);
+        } catch (InterruptedException ex) {
+            // do nothing, we are expecting this
+        }
+
+        boolean ackNotReceived = null == monitor.progressAckReceivedMsgHeader;
+        boolean update1Received = null != monitor.progressUpdate1ReceivedMsgHeader;
+        boolean update2Received = null != monitor.progressUpdate2ReceivedMsgHeader;
+        boolean responseReceived = null != monitor.progressResponseReceivedMsgHeader;
+
+        LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
+        LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");
+        LoggingBase.logMessage("FastProvider.ackNotReceived(" + ackNotReceived + ")");
+        LoggingBase.logMessage("FastProvider.update1Received(" + update1Received + ")");
+        LoggingBase.logMessage("FastProvider.update2Received(" + update2Received + ")");
+        LoggingBase.logMessage("FastProvider.responseReceived(" + responseReceived + ")");
+
+        return retVal && monitor.checkCorrectNumberOfReceivedMessages() && ackNotReceived && update1Received && update2Received && responseReceived;
+    }
+
+    public boolean errorProgressCompletesWithAnError() throws Exception {
+        PatternTest.ResponseListener monitor = new PatternTest.ResponseListener("FastProvider", 0);
+
+        boolean retVal = false;
+
+        try {
+            LoggingBase.logMessage("Calling PROGRESS incorrectly");
+            testService.progress(null, monitor);
+            LoggingBase.logMessage("ERROR: Calling PROGRESS incorrectly did not raise an error");
+        } catch (MALInteractionException ex) {
+            LoggingBase.logMessage("Received ACK ERROR correctly");
+            retVal = true;
+        }
+
+        LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
+
+        if (retVal) {
+            try {
+                LoggingBase.logMessage("FastProvider.waiting for responses");
+                retVal = !monitor.getCond().waitFor(1000);
+            } catch (InterruptedException ex) {
+                retVal = false;
+            }
+        }
+
+        boolean ackNotReceived = (null == monitor.progressAckReceivedMsgHeader) && (null == monitor.progressAckErrorReceivedMsgHeader);
+        boolean update1NotReceived = (null == monitor.progressUpdate1ReceivedMsgHeader) && (null == monitor.progressUpdateErrorReceivedMsgHeader);
+        boolean update2NotReceived = (null == monitor.progressUpdate2ReceivedMsgHeader);
+        boolean responseNotReceived = (null == monitor.progressResponseReceivedMsgHeader) && (null == monitor.progressResponseErrorReceivedMsgHeader);
+
+        LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
+        LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");
+        LoggingBase.logMessage("FastProvider.ackNotReceived(" + ackNotReceived + ")");
+        LoggingBase.logMessage("FastProvider.update1Received(" + update1NotReceived + ")");
+        LoggingBase.logMessage("FastProvider.update2Received(" + update2NotReceived + ")");
+        LoggingBase.logMessage("FastProvider.responseReceived(" + responseNotReceived + ")");
+
+        return retVal && monitor.checkCorrectNumberOfReceivedMessages() && ackNotReceived && update1NotReceived && update2NotReceived && responseNotReceived;
+    }
 }

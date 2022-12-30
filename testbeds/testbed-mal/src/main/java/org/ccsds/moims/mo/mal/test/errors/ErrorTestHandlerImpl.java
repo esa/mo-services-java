@@ -31,89 +31,75 @@ import org.ccsds.moims.mo.malprototype.errortest.provider.ErrorTestInheritanceSk
 /**
  *
  */
-public class ErrorTestHandlerImpl extends ErrorTestInheritanceSkeleton
-{
-  public Element testAuthenticationFailure(Element _Element, MALInteraction interaction) throws MALException
-  {
-    // should never be reached
-    return null;
-  }
+public class ErrorTestHandlerImpl extends ErrorTestInheritanceSkeleton {
 
-  public Element testAuthorizationFailure(Element _Element, MALInteraction interaction) throws MALException
-  {
-    // should never be reached
-    return null;
-  }
+    public Element testAuthenticationFailure(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
+    }
 
-  public Element testBadEncoding(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.BAD_ENCODING_ERROR_NUMBER, null));
-  }
+    public Element testAuthorizationFailure(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
+    }
 
-  public Element testDeliveryDelayed(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.DELIVERY_DELAYED_ERROR_NUMBER, null));
-  }
+    public Element testBadEncoding(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.BAD_ENCODING_ERROR_NUMBER, null));
+    }
 
-  public Element testDeliveryFailed(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null));
-  }
+    public Element testDeliveryDelayed(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.DELIVERY_DELAYED_ERROR_NUMBER, null));
+    }
 
-  public Element testDeliveryTimedout(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER, null));
-  }
+    public Element testDeliveryFailed(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null));
+    }
 
-  public Element testDestinationLost(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.DESTINATION_LOST_ERROR_NUMBER, null));
-  }
+    public Element testDeliveryTimedout(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER, null));
+    }
 
-  public Element testDestinationTransient(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.DESTINATION_TRANSIENT_ERROR_NUMBER, null));
-  }
+    public Element testDestinationLost(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.DESTINATION_LOST_ERROR_NUMBER, null));
+    }
 
-  public Element testDestinationUnknown(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
-  }
+    public Element testDestinationTransient(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.DESTINATION_TRANSIENT_ERROR_NUMBER, null));
+    }
 
-  public Element testEncryptionFail(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.ENCRYPTION_FAIL_ERROR_NUMBER, null));
-  }
+    public Element testDestinationUnknown(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
+    }
 
-  public Element testUnknown(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.UNKNOWN_ERROR_NUMBER, null));
-  }
+    public Element testEncryptionFail(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.ENCRYPTION_FAIL_ERROR_NUMBER, null));
+    }
 
-  public Element testUnsupportedArea(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER, null));
-  }
+    public Element testUnknown(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.UNKNOWN_ERROR_NUMBER, null));
+    }
 
-  public Element testUnsupportedOperation(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
-  }
+    public Element testUnsupportedArea(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER, null));
+    }
 
-  public Element testUnsupportedVersion(Element _Element, MALInteraction interaction) throws MALInteractionException
-  {
-    throw new MALInteractionException(new MALStandardError(
-        MALHelper.UNSUPPORTED_VERSION_ERROR_NUMBER, null));
-  }
+    public Element testUnsupportedOperation(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
+    }
+
+    public Element testUnsupportedVersion(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MALStandardError(
+                MALHelper.UNSUPPORTED_VERSION_ERROR_NUMBER, null));
+    }
 }

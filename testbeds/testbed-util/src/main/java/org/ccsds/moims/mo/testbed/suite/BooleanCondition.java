@@ -26,52 +26,43 @@ import org.omg.CORBA.BooleanHolder;
 /**
  *
  */
-public final class BooleanCondition
-{
-  private final BooleanHolder isSet = new BooleanHolder(false);
+public final class BooleanCondition {
 
-  public synchronized final void set()
-  {
-    isSet.value = true;
-    notifyAll();
-  }
+    private final BooleanHolder isSet = new BooleanHolder(false);
 
-  public synchronized final void reset()
-  {
-    isSet.value = false;
-    notifyAll();
-  }
-
-  public final boolean waitFor(final long timeout) throws InterruptedException
-  {
-    long timeToGo = timeout;
-    long endTime = System.currentTimeMillis() + timeToGo;
-
-    // Wait until response receieved
-    synchronized (this)
-    {
-      while ((timeToGo > 0) && !isSet.value)
-      {
-        try
-        {
-          this.wait(timeToGo);
-        }
-        catch (InterruptedException ex)
-        {
-          // this can happen
-        }
-
-        // update timeout in case woken up prematurely
-        timeToGo = endTime - System.currentTimeMillis();
-      }
-    }
-    
-    // held value will be true if set, false if timed out
-    if (false == isSet.value)
-    {
-      LoggingBase.logMessage("Condition timed out");
+    public synchronized final void set() {
+        isSet.value = true;
+        notifyAll();
     }
 
-    return isSet.value;
-  }
+    public synchronized final void reset() {
+        isSet.value = false;
+        notifyAll();
+    }
+
+    public final boolean waitFor(final long timeout) throws InterruptedException {
+        long timeToGo = timeout;
+        long endTime = System.currentTimeMillis() + timeToGo;
+
+        // Wait until response receieved
+        synchronized (this) {
+            while ((timeToGo > 0) && !isSet.value) {
+                try {
+                    this.wait(timeToGo);
+                } catch (InterruptedException ex) {
+                    // this can happen
+                }
+
+                // update timeout in case woken up prematurely
+                timeToGo = endTime - System.currentTimeMillis();
+            }
+        }
+
+        // held value will be true if set, false if timed out
+        if (false == isSet.value) {
+            LoggingBase.logMessage("Condition timed out");
+        }
+
+        return isSet.value;
+    }
 }

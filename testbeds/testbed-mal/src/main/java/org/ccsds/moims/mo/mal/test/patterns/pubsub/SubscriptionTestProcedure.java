@@ -1,20 +1,20 @@
-/*******************************************************************************
+/** *****************************************************************************
  * Copyright or © or Copr. CNES
  *
- * This software is a computer program whose purpose is to provide a 
+ * This software is a computer program whose purpose is to provide a
  * framework for the CCSDS Mission Operations services.
  *
  * This software is governed by the CeCILL-C license under French law and
- * abiding by the rules of distribution of free software.  You can  use, 
+ * abiding by the rules of distribution of free software.  You can  use,
  * modify and/ or redistribute the software under the terms of the CeCILL-C
  * license as circulated by CEA, CNRS and INRIA at the following URL
- * "http://www.cecill.info". 
+ * "http://www.cecill.info".
  *
  * As a counterpart to the access to the source code and  rights to copy,
  * modify and redistribute granted by the license, users are provided only
  * with a limited warranty  and the software's author,  the holder of the
  * economic rights,  and the successive licensors  have only  limited
- * liability. 
+ * liability.
  *
  * In this respect, the user's attention is drawn to the risks associated
  * with loading,  using,  modifying and/or developing or reproducing the
@@ -23,13 +23,13 @@
  * therefore means  that it is reserved for developers  and  experienced
  * professionals having in-depth computer knowledge. Users are therefore
  * encouraged to load and test the software's suitability as regards their
- * requirements in conditions enabling the security of their systems and/or 
- * data to be ensured and,  more generally, to use and operate it in the 
- * same conditions as regards security. 
+ * requirements in conditions enabling the security of their systems and/or
+ * data to be ensured and,  more generally, to use and operate it in the
+ * same conditions as regards security.
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C license and that you accept its terms.
- *******************************************************************************/
+ ****************************************************************************** */
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
 import org.ccsds.moims.mo.mal.test.util.Helper;
@@ -58,181 +58,174 @@ import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
-public class SubscriptionTestProcedure extends LoggingBase
-{
-  public static final SessionType SESSION = SessionType.LIVE;
-  public static final Identifier SESSION_NAME = new Identifier("LIVE");
-  public static final QoSLevel QOS_LEVEL = QoSLevel.ASSURED;
-  public static final UInteger PRIORITY = new UInteger(1);
-  
-  private IPTestStub ipTest;
-  
-  private MonitorListener listener;
-  
-  public SubscriptionTestProcedure() {
+public class SubscriptionTestProcedure extends LoggingBase {
 
-  }
-  
-  public boolean useSharedBroker(String sharedBroker) throws Exception {
-    logMessage("SubscriptionTestProcedure.useSharedBroker(" + sharedBroker + ")");
-    
-    boolean shared = Boolean.parseBoolean(sharedBroker);
-    
-    ipTest = LocalMALInstance.instance().ipTestStub(
-        HeaderTestProcedure.AUTHENTICATION_ID, 
-        HeaderTestProcedure.DOMAIN, 
-        HeaderTestProcedure.NETWORK_ZONE, 
-        SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
+    public static final SessionType SESSION = SessionType.LIVE;
+    public static final Identifier SESSION_NAME = new Identifier("LIVE");
+    public static final QoSLevel QOS_LEVEL = QoSLevel.ASSURED;
+    public static final UInteger PRIORITY = new UInteger(1);
 
-    IdentifierList keyNames = new IdentifierList();
-    keyNames.add(Helper.key1);
-      
-    UInteger expectedErrorCode = new UInteger(999);
-    TestPublishRegister testPublishRegister = 
-      new TestPublishRegister(QOS_LEVEL, PRIORITY, 
-          HeaderTestProcedure.DOMAIN, 
-          HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, 
-          keyNames, expectedErrorCode);
-    ipTest.publishRegister(testPublishRegister);
-    
-    listener = new MonitorListener();
-    
-    return true;
-  }
-  
-  public boolean register() throws Exception {
-    logMessage("SubscriptionTestProcedure.register()");
-    
-    SubscriptionFilterList filters = new SubscriptionFilterList();
-    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
-    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+    private IPTestStub ipTest;
 
-    ipTest.asyncMonitorRegister(subscription, listener);
-    synchronized(listener.cond)
-    {
-        listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
-        listener.cond.reset();
+    private MonitorListener listener;
+
+    public SubscriptionTestProcedure() {
+
     }
 
-    return true;
-  }
-  
-  public boolean reregister() throws Exception {
-    logMessage("SubscriptionTestProcedure.reregister()");
-    
-    SubscriptionFilterList filters = new SubscriptionFilterList();
-    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
-    Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+    public boolean useSharedBroker(String sharedBroker) throws Exception {
+        logMessage("SubscriptionTestProcedure.useSharedBroker(" + sharedBroker + ")");
 
-    ipTest.asyncMonitorRegister(subscription, listener);
-    synchronized(listener.cond)
-    {
-        listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
-        listener.cond.reset();
-    }
-    
-    return true;
-  }
-  
-  public boolean publishWithUpdateType(String updateTypeName) throws Exception {
-    logMessage("SubscriptionTestProcedure.publishWithUpdateType(" + updateTypeName + ')');
-    listener.resetState();
+        boolean shared = Boolean.parseBoolean(sharedBroker);
 
-    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList("A")));
-    
-    TestUpdateList updateList = new TestUpdateList();
-    updateList.add(new TestUpdate(0));
-    
-    UInteger expectedErrorCode = new UInteger(999);
-    TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
-        QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE, 
-        SESSION, SESSION_NAME, false, updateHeaderList, updateList, null, expectedErrorCode, false, null);
-    
-    ipTest.publishUpdates(testPublishUpdate);
-    return true;
-  }
-  
-  public boolean publishDeregister() throws Exception
-  {
-    logMessage("SubscriptionTestProcedure.publishDeregister()");
-    UInteger expectedErrorCode = new UInteger(999);
-    TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
-        QOS_LEVEL, PRIORITY, 
-        HeaderTestProcedure.DOMAIN, 
-        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, expectedErrorCode);
-    ipTest.publishDeregister(testPublishDeregister);
-    return true;
-  }
-  
-  public int numberOfNotifiedUpdates() throws Exception {
-    UpdateHeaderList updateHeaderList = listener.getNotifiedUpdates();
-    if (updateHeaderList == null) {
-      return 0;
-    } else {
-      return updateHeaderList.size();
-    }
-  }
-  
-  public boolean transactionIdIsFromTheFirstRegister() throws Exception {
-    UpdateHeaderList updateHeaderList = listener.getNotifiedUpdates();
-    if (updateHeaderList == null) {
-      return false;
-    } else {
-      return updateHeaderList.size() > 0 && listener.isTransactionIdentifierOK();
-    }
-  }
+        ipTest = LocalMALInstance.instance().ipTestStub(
+                HeaderTestProcedure.AUTHENTICATION_ID,
+                HeaderTestProcedure.DOMAIN,
+                HeaderTestProcedure.NETWORK_ZONE,
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
 
-  static class MonitorListener extends IPTestAdapter
-  {
-    private final BooleanCondition cond = new BooleanCondition();
-    private Long firstRegisterTransactionId;
-    
-    private UpdateHeaderList notifiedUpdateHeaders;
-    
-    private boolean transactionIdentifierOK;
-    
-    MonitorListener() {
-      transactionIdentifierOK = false;
-    }
-    
-    @Override
-    public void monitorRegisterAckReceived(MALMessageHeader msgHeader, Map qosProperties)
-    {
-      logMessage("MonitorListener.monitorRegisterAckReceived(" + msgHeader + ")");
-      // Keep the first register transaction id.
-      if (firstRegisterTransactionId == null) {
-        firstRegisterTransactionId = msgHeader.getTransactionId();
-      }
-      cond.set();
+        IdentifierList keyNames = new IdentifierList();
+        keyNames.add(Helper.key1);
+
+        UInteger expectedErrorCode = new UInteger(999);
+        TestPublishRegister testPublishRegister
+                = new TestPublishRegister(QOS_LEVEL, PRIORITY,
+                        HeaderTestProcedure.DOMAIN,
+                        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
+                        keyNames, expectedErrorCode);
+        ipTest.publishRegister(testPublishRegister);
+
+        listener = new MonitorListener();
+
+        return true;
     }
 
-    @Override
-    public void monitorNotifyReceived(MALMessageHeader msgHeader,
-        Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-        TestUpdateList updateList, Map qosProperties)
-    {
-      logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ',' + updateHeaderList + ")");
-      if (msgHeader.getTransactionId().equals(firstRegisterTransactionId)) {
-        transactionIdentifierOK = true;
-      }
-      notifiedUpdateHeaders = updateHeaderList;
+    public boolean register() throws Exception {
+        logMessage("SubscriptionTestProcedure.register()");
+
+        SubscriptionFilterList filters = new SubscriptionFilterList();
+        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+
+        ipTest.asyncMonitorRegister(subscription, listener);
+        synchronized (listener.cond) {
+            listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
+            listener.cond.reset();
+        }
+
+        return true;
     }
 
-    public void resetState() {
-      cond.reset();
-      notifiedUpdateHeaders = null;
-      transactionIdentifierOK = false;
-    }
-    
-    public UpdateHeaderList getNotifiedUpdates() 
-    {
-      return notifiedUpdateHeaders;
+    public boolean reregister() throws Exception {
+        logMessage("SubscriptionTestProcedure.reregister()");
+
+        SubscriptionFilterList filters = new SubscriptionFilterList();
+        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+
+        ipTest.asyncMonitorRegister(subscription, listener);
+        synchronized (listener.cond) {
+            listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
+            listener.cond.reset();
+        }
+
+        return true;
     }
 
-    public boolean isTransactionIdentifierOK()
-    {
-      return transactionIdentifierOK;
+    public boolean publishWithUpdateType(String updateTypeName) throws Exception {
+        logMessage("SubscriptionTestProcedure.publishWithUpdateType(" + updateTypeName + ')');
+        listener.resetState();
+
+        UpdateHeaderList updateHeaderList = new UpdateHeaderList();
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList("A")));
+
+        TestUpdateList updateList = new TestUpdateList();
+        updateList.add(new TestUpdate(0));
+
+        UInteger expectedErrorCode = new UInteger(999);
+        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
+                QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
+                SESSION, SESSION_NAME, false, updateHeaderList, updateList, null, expectedErrorCode, false, null);
+
+        ipTest.publishUpdates(testPublishUpdate);
+        return true;
     }
-  }
+
+    public boolean publishDeregister() throws Exception {
+        logMessage("SubscriptionTestProcedure.publishDeregister()");
+        UInteger expectedErrorCode = new UInteger(999);
+        TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
+                QOS_LEVEL, PRIORITY,
+                HeaderTestProcedure.DOMAIN,
+                HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, expectedErrorCode);
+        ipTest.publishDeregister(testPublishDeregister);
+        return true;
+    }
+
+    public int numberOfNotifiedUpdates() throws Exception {
+        UpdateHeaderList updateHeaderList = listener.getNotifiedUpdates();
+        if (updateHeaderList == null) {
+            return 0;
+        } else {
+            return updateHeaderList.size();
+        }
+    }
+
+    public boolean transactionIdIsFromTheFirstRegister() throws Exception {
+        UpdateHeaderList updateHeaderList = listener.getNotifiedUpdates();
+        if (updateHeaderList == null) {
+            return false;
+        } else {
+            return updateHeaderList.size() > 0 && listener.isTransactionIdentifierOK();
+        }
+    }
+
+    static class MonitorListener extends IPTestAdapter {
+
+        private final BooleanCondition cond = new BooleanCondition();
+        private Long firstRegisterTransactionId;
+
+        private UpdateHeaderList notifiedUpdateHeaders;
+
+        private boolean transactionIdentifierOK;
+
+        MonitorListener() {
+            transactionIdentifierOK = false;
+        }
+
+        @Override
+        public void monitorRegisterAckReceived(MALMessageHeader msgHeader, Map qosProperties) {
+            logMessage("MonitorListener.monitorRegisterAckReceived(" + msgHeader + ")");
+            // Keep the first register transaction id.
+            if (firstRegisterTransactionId == null) {
+                firstRegisterTransactionId = msgHeader.getTransactionId();
+            }
+            cond.set();
+        }
+
+        @Override
+        public void monitorNotifyReceived(MALMessageHeader msgHeader,
+                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
+                TestUpdateList updateList, Map qosProperties) {
+            logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ',' + updateHeaderList + ")");
+            if (msgHeader.getTransactionId().equals(firstRegisterTransactionId)) {
+                transactionIdentifierOK = true;
+            }
+            notifiedUpdateHeaders = updateHeaderList;
+        }
+
+        public void resetState() {
+            cond.reset();
+            notifiedUpdateHeaders = null;
+            transactionIdentifierOK = false;
+        }
+
+        public UpdateHeaderList getNotifiedUpdates() {
+            return notifiedUpdateHeaders;
+        }
+
+        public boolean isTransactionIdentifierOK() {
+            return transactionIdentifierOK;
+        }
+    }
 }

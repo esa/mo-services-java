@@ -22,13 +22,14 @@ package org.ccsds.moims.mo.testbed.util;
 
 import java.io.Writer;
 
-public interface Executable
-{
-  void execute (Writer out, ExitCondition exitCond, String[] argv) throws Exception;
+public interface Executable {
 
-  public interface ExitCondition
-  {
-    void waitForExitSignal();
-    void startExitSignalWaitingThread();
-  }
+    void execute(Writer out, ExitCondition exitCond, String[] argv) throws Exception;
+
+    public interface ExitCondition {
+
+        void waitForExitSignal();
+
+        void startExitSignalWaitingThread();
+    }
 }

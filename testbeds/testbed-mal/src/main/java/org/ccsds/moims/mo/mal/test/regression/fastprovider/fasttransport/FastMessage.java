@@ -29,45 +29,37 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  *
  */
-public class FastMessage implements MALMessage
-{
-  private final MALMessageHeader header;
-  private final Map qoSProperties;
-  private final FastBody body;
+public class FastMessage implements MALMessage {
 
-  public FastMessage(final MALMessageHeader header,
-          final Map qosProperties,
-          final Object... body)
-  {
-    this.header = header;
-    this.qoSProperties = qosProperties;
+    private final MALMessageHeader header;
+    private final Map qoSProperties;
+    private final FastBody body;
 
-    if (header.getIsErrorMessage())
-    {
-      this.body = new FastErrorBody(body);
+    public FastMessage(final MALMessageHeader header,
+            final Map qosProperties,
+            final Object... body) {
+        this.header = header;
+        this.qoSProperties = qosProperties;
+
+        if (header.getIsErrorMessage()) {
+            this.body = new FastErrorBody(body);
+        } else {
+            this.body = new FastBody(body);
+        }
     }
-    else
-    {
-      this.body = new FastBody(body);
+
+    public MALMessageHeader getHeader() {
+        return header;
     }
-  }
 
-  public MALMessageHeader getHeader()
-  {
-    return header;
-  }
+    public MALMessageBody getBody() {
+        return body;
+    }
 
-  public MALMessageBody getBody()
-  {
-    return body;
-  }
+    public Map getQoSProperties() {
+        return qoSProperties;
+    }
 
-  public Map getQoSProperties()
-  {
-    return qoSProperties;
-  }
-
-  public void free() throws MALException
-  {
-  }
+    public void free() throws MALException {
+    }
 }

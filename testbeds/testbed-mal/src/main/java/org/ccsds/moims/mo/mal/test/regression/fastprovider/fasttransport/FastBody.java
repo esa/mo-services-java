@@ -28,32 +28,27 @@ import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 /**
  *
  */
-public class FastBody implements MALMessageBody
-{
-  protected final Object[] body;
+public class FastBody implements MALMessageBody {
 
-  public FastBody(Object[] body)
-  {
-    this.body = body;
-  }
+    protected final Object[] body;
 
-  public int getElementCount()
-  {
-    return body.length;
-  }
+    public FastBody(Object[] body) {
+        this.body = body;
+    }
 
-  public Object getBodyElement(int i, Object o) throws MALException
-  {
-    return body[i];
-  }
+    public int getElementCount() {
+        return body.length;
+    }
 
-  public MALEncodedElement getEncodedBodyElement(int i) throws MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Object getBodyElement(int i, Object o) throws MALException {
+        return body[i];
+    }
 
-  public MALEncodedBody getEncodedBody() throws MALException
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public MALEncodedElement getEncodedBodyElement(int i) throws MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public MALEncodedBody getEncodedBody() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

@@ -1,20 +1,20 @@
-/*******************************************************************************
+/** *****************************************************************************
  * Copyright or © or Copr. CNES
  *
- * This software is a computer program whose purpose is to provide a 
+ * This software is a computer program whose purpose is to provide a
  * framework for the CCSDS Mission Operations services.
  *
  * This software is governed by the CeCILL-C license under French law and
- * abiding by the rules of distribution of free software.  You can  use, 
+ * abiding by the rules of distribution of free software.  You can  use,
  * modify and/ or redistribute the software under the terms of the CeCILL-C
  * license as circulated by CEA, CNRS and INRIA at the following URL
- * "http://www.cecill.info". 
+ * "http://www.cecill.info".
  *
  * As a counterpart to the access to the source code and  rights to copy,
  * modify and redistribute granted by the license, users are provided only
  * with a limited warranty  and the software's author,  the holder of the
  * economic rights,  and the successive licensors  have only  limited
- * liability. 
+ * liability.
  *
  * In this respect, the user's attention is drawn to the risks associated
  * with loading,  using,  modifying and/or developing or reproducing the
@@ -23,13 +23,13 @@
  * therefore means  that it is reserved for developers  and  experienced
  * professionals having in-depth computer knowledge. Users are therefore
  * encouraged to load and test the software's suitability as regards their
- * requirements in conditions enabling the security of their systems and/or 
- * data to be ensured and,  more generally, to use and operate it in the 
- * same conditions as regards security. 
+ * requirements in conditions enabling the security of their systems and/or
+ * data to be ensured and,  more generally, to use and operate it in the
+ * same conditions as regards security.
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C license and that you accept its terms.
- *******************************************************************************/
+ ****************************************************************************** */
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
 import org.ccsds.moims.mo.mal.test.util.Helper;
@@ -63,152 +63,145 @@ import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
-public class SubscriptionSessionNameTestProcedure extends LoggingBase
-{
-  public static final SessionType SESSION = SessionType.LIVE;
-  public static final Identifier SESSION_NAME = new Identifier("LIVE");
-  public static final QoSLevel QOS_LEVEL = QoSLevel.ASSURED;
-  public static final UInteger PRIORITY = new UInteger(1);
+public class SubscriptionSessionNameTestProcedure extends LoggingBase {
 
-  public static final Identifier SUBSCRIPTION_ID = new Identifier(
-      "EntityRequestSubscription");
+    public static final SessionType SESSION = SessionType.LIVE;
+    public static final Identifier SESSION_NAME = new Identifier("LIVE");
+    public static final QoSLevel QOS_LEVEL = QoSLevel.ASSURED;
+    public static final UInteger PRIORITY = new UInteger(1);
 
-  private IPTestStub ipTestToPublish;
-  
-  private IPTestStub ipTestToSubscribe;
-  
-  private MonitorListener listener;
-  
-  private Identifier publisherSessionName;
-  
-  private Identifier subscriberSessionName;
-  
-  private boolean shared;
-  
-  public boolean initiatePublisherWithSessionNameAndSharedBroker(String sessionName, boolean shared) throws Exception
-  {
-    logMessage("SubscriptionSessionNameTestProcedure.initiatePublisherWithSessionNameAndSharedBroker(" + 
-        sessionName + ',' + shared + ")");
-   
-    this.publisherSessionName = new Identifier(sessionName);
-    this.shared = shared;
+    public static final Identifier SUBSCRIPTION_ID = new Identifier(
+            "EntityRequestSubscription");
 
-    ipTestToPublish = LocalMALInstance.instance().ipTestStub(
-        HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
-        HeaderTestProcedure.NETWORK_ZONE, SessionType.SIMULATION, publisherSessionName, QOS_LEVEL,
-        PRIORITY, shared).getStub();
+    private IPTestStub ipTestToPublish;
 
-    UInteger expectedErrorCode = new UInteger(999);
-    TestPublishRegister testPublishRegister = new TestPublishRegister(
-        QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
-        HeaderTestProcedure.NETWORK_ZONE, SessionType.SIMULATION, publisherSessionName, false, Helper.get1TestKey(),
-        expectedErrorCode);
-    ipTestToPublish.publishRegister(testPublishRegister);
-    return true;
-  }
+    private IPTestStub ipTestToSubscribe;
 
-  public boolean subscribeWithSessionNameAndExpectedNotify(String sessionName, int notifyNumber) throws Exception
-  {
-    logMessage("SubscriptionSessionNameTestProcedure.subscribeWithSessionNameAndExpectedNotify("
-        + sessionName + ',' + notifyNumber + ")");
-    
-    this.subscriberSessionName = new Identifier(sessionName);
-    
-    SubscriptionFilterList filters = new SubscriptionFilterList();
-    filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
-    Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
-    
-    listener = new MonitorListener();
-    
-    ipTestToSubscribe = LocalMALInstance.instance().ipTestStub(
-        HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
-        HeaderTestProcedure.NETWORK_ZONE, SessionType.SIMULATION, subscriberSessionName, QOS_LEVEL,
-        PRIORITY, shared).getStub();
-    
-    ipTestToSubscribe.monitorRegister(subscription, listener);
-    
-    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList("A")));
-    
-    TestUpdateList updateList = new TestUpdateList();
-    updateList.add(new TestUpdate(0));
-    
-    UInteger expectedErrorCode = new UInteger(999);
-    TestPublishUpdate testPublishUpdate = new TestPublishUpdate(QOS_LEVEL,
-        PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-        SessionType.SIMULATION, publisherSessionName, false, updateHeaderList, updateList, null, expectedErrorCode, false, null);
-    
-    ipTestToPublish.publishUpdates(testPublishUpdate);
-    
-    synchronized (listener.monitorCond)
-    {
-      listener.monitorCond.waitFor(Configuration.WAIT_TIME_OUT);
-      listener.monitorCond.reset();
-    }
-    
-    IdentifierList idList = new IdentifierList();
-    idList.add(SUBSCRIPTION_ID);
-    ipTestToSubscribe.monitorDeregister(idList);
+    private MonitorListener listener;
 
-    AssertionList assertions = new AssertionList();
-    String procedureName = "PubSub.checkSubscriptionSessionName";
-    assertions.add(new Assertion(procedureName, 
-        "The number of expected notify " + notifyNumber, (notifyNumber == listener.countNotify())));
-    return AssertionHelper.checkAssertions(assertions);
-  }
-  
-  public boolean checkNotifyHeader() {
-    return listener.checkHeaderAssertions();
-  }
+    private Identifier publisherSessionName;
 
-  public boolean publishDeregister() throws Exception
-  {
-    logMessage("SubscriptionSessionNameTestProcedure.publishDeregister()");
-    UInteger expectedErrorCode = new UInteger(999);
-    TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
-        QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
-        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
-        expectedErrorCode);
-    ipTestToPublish.publishDeregister(testPublishDeregister);
-    return true;
-  }
-  
-  class MonitorListener extends IPTestAdapter
-  {
-    private final BooleanCondition monitorCond = new BooleanCondition();
+    private Identifier subscriberSessionName;
 
-    private Vector receivedNotify;
+    private boolean shared;
 
-    MonitorListener()
-    {
-      receivedNotify = new Vector();
-    }
-    
-    @Override
-    public void monitorNotifyReceived(MALMessageHeader msgHeader,
-        Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-        TestUpdateList updateList, Map qosProperties)
-    {
-      logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ','
-          + updateHeaderList + ')');
-      receivedNotify.addElement(msgHeader);
-      monitorCond.set();
+    public boolean initiatePublisherWithSessionNameAndSharedBroker(String sessionName, boolean shared) throws Exception {
+        logMessage("SubscriptionSessionNameTestProcedure.initiatePublisherWithSessionNameAndSharedBroker("
+                + sessionName + ',' + shared + ")");
+
+        this.publisherSessionName = new Identifier(sessionName);
+        this.shared = shared;
+
+        ipTestToPublish = LocalMALInstance.instance().ipTestStub(
+                HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
+                HeaderTestProcedure.NETWORK_ZONE, SessionType.SIMULATION, publisherSessionName, QOS_LEVEL,
+                PRIORITY, shared).getStub();
+
+        UInteger expectedErrorCode = new UInteger(999);
+        TestPublishRegister testPublishRegister = new TestPublishRegister(
+                QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
+                HeaderTestProcedure.NETWORK_ZONE, SessionType.SIMULATION, publisherSessionName, false, Helper.get1TestKey(),
+                expectedErrorCode);
+        ipTestToPublish.publishRegister(testPublishRegister);
+        return true;
     }
 
-    int countNotify()
-    {
-      return receivedNotify.size();
+    public boolean subscribeWithSessionNameAndExpectedNotify(String sessionName, int notifyNumber) throws Exception {
+        logMessage("SubscriptionSessionNameTestProcedure.subscribeWithSessionNameAndExpectedNotify("
+                + sessionName + ',' + notifyNumber + ")");
+
+        this.subscriberSessionName = new Identifier(sessionName);
+
+        SubscriptionFilterList filters = new SubscriptionFilterList();
+        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+
+        listener = new MonitorListener();
+
+        ipTestToSubscribe = LocalMALInstance.instance().ipTestStub(
+                HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
+                HeaderTestProcedure.NETWORK_ZONE, SessionType.SIMULATION, subscriberSessionName, QOS_LEVEL,
+                PRIORITY, shared).getStub();
+
+        ipTestToSubscribe.monitorRegister(subscription, listener);
+
+        UpdateHeaderList updateHeaderList = new UpdateHeaderList();
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList("A")));
+
+        TestUpdateList updateList = new TestUpdateList();
+        updateList.add(new TestUpdate(0));
+
+        UInteger expectedErrorCode = new UInteger(999);
+        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(QOS_LEVEL,
+                PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
+                SessionType.SIMULATION, publisherSessionName, false, updateHeaderList, updateList, null, expectedErrorCode, false, null);
+
+        ipTestToPublish.publishUpdates(testPublishUpdate);
+
+        synchronized (listener.monitorCond) {
+            listener.monitorCond.waitFor(Configuration.WAIT_TIME_OUT);
+            listener.monitorCond.reset();
+        }
+
+        IdentifierList idList = new IdentifierList();
+        idList.add(SUBSCRIPTION_ID);
+        ipTestToSubscribe.monitorDeregister(idList);
+
+        AssertionList assertions = new AssertionList();
+        String procedureName = "PubSub.checkSubscriptionSessionName";
+        assertions.add(new Assertion(procedureName,
+                "The number of expected notify " + notifyNumber, (notifyNumber == listener.countNotify())));
+        return AssertionHelper.checkAssertions(assertions);
     }
-    
-    public boolean checkHeaderAssertions() {
-      AssertionList assertions = new AssertionList();
-      String procedureName = "PubSub.checkSubscriptionSessionName";
-      for (int i = 0; i < receivedNotify.size(); i++) {
-        MALMessageHeader msgHeader = (MALMessageHeader) receivedNotify.elementAt(i);
-        assertions.add(new Assertion(procedureName, 
-            "The session name of the notify is : " + subscriberSessionName, msgHeader.getSessionName().equals(subscriberSessionName)));
-      }
-      return AssertionHelper.checkAssertions(assertions);
+
+    public boolean checkNotifyHeader() {
+        return listener.checkHeaderAssertions();
     }
-  }
+
+    public boolean publishDeregister() throws Exception {
+        logMessage("SubscriptionSessionNameTestProcedure.publishDeregister()");
+        UInteger expectedErrorCode = new UInteger(999);
+        TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
+                QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
+                HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
+                expectedErrorCode);
+        ipTestToPublish.publishDeregister(testPublishDeregister);
+        return true;
+    }
+
+    class MonitorListener extends IPTestAdapter {
+
+        private final BooleanCondition monitorCond = new BooleanCondition();
+
+        private Vector receivedNotify;
+
+        MonitorListener() {
+            receivedNotify = new Vector();
+        }
+
+        @Override
+        public void monitorNotifyReceived(MALMessageHeader msgHeader,
+                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
+                TestUpdateList updateList, Map qosProperties) {
+            logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ','
+                    + updateHeaderList + ')');
+            receivedNotify.addElement(msgHeader);
+            monitorCond.set();
+        }
+
+        int countNotify() {
+            return receivedNotify.size();
+        }
+
+        public boolean checkHeaderAssertions() {
+            AssertionList assertions = new AssertionList();
+            String procedureName = "PubSub.checkSubscriptionSessionName";
+            for (int i = 0; i < receivedNotify.size(); i++) {
+                MALMessageHeader msgHeader = (MALMessageHeader) receivedNotify.elementAt(i);
+                assertions.add(new Assertion(procedureName,
+                        "The session name of the notify is : " + subscriberSessionName, msgHeader.getSessionName().equals(subscriberSessionName)));
+            }
+            return AssertionHelper.checkAssertions(assertions);
+        }
+    }
 }

@@ -49,187 +49,173 @@ import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory.URIpair;
 
-public class TestServiceProvider extends BaseTestServiceProvider
-{
-  public static final Blob DATA_TEST_AUTHENTICATION_ID = new Blob(new byte[]
-          {
-            0x01, 0x00
-          });
-  public static final Blob ERROR_TEST_AUTHENTICATION_ID = new Blob(new byte[]
-          {
-            0x01, 0x01
-          });
-  public static final Blob IP_TEST_AUTHENTICATION_ID = new Blob(new byte[]
-          {
-            0x01, 0x02
-          });
-  public static final String IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME =
-          IPTestHelper.IPTEST_SERVICE_NAME.getValue() + "SharedBroker";
-  public static final String IP_TEST_PROVIDER_FROM_AREA2_NAME =
-          IPTestHelper.IPTEST_SERVICE_NAME.getValue() + "FromArea2";
-  public static final String IP_TEST_PROVIDER_FROM_AREA2_WITH_SHARED_BROKER_NAME =
-          IP_TEST_PROVIDER_FROM_AREA2_NAME + "SharedBroker";
+public class TestServiceProvider extends BaseTestServiceProvider {
 
-  @Override
-  public void execute(Writer out, ExitCondition exitCond, String[] argv) throws Exception
-  {
-    System.getProperties().setProperty(TestAccessControlFactory.FACTORY_PROP_NAME, TestAccessControlFactory.class.getName());
-    logMessage("Access control system property set to: " + System.getProperty(TestAccessControlFactory.FACTORY_PROP_NAME));
+    public static final Blob DATA_TEST_AUTHENTICATION_ID = new Blob(new byte[]{
+        0x01, 0x00
+    });
+    public static final Blob ERROR_TEST_AUTHENTICATION_ID = new Blob(new byte[]{
+        0x01, 0x01
+    });
+    public static final Blob IP_TEST_AUTHENTICATION_ID = new Blob(new byte[]{
+        0x01, 0x02
+    });
+    public static final String IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME
+            = IPTestHelper.IPTEST_SERVICE_NAME.getValue() + "SharedBroker";
+    public static final String IP_TEST_PROVIDER_FROM_AREA2_NAME
+            = IPTestHelper.IPTEST_SERVICE_NAME.getValue() + "FromArea2";
+    public static final String IP_TEST_PROVIDER_FROM_AREA2_WITH_SHARED_BROKER_NAME
+            = IP_TEST_PROVIDER_FROM_AREA2_NAME + "SharedBroker";
 
-    super.execute(out, exitCond, argv);
-  }
+    @Override
+    public void execute(Writer out, ExitCondition exitCond, String[] argv) throws Exception {
+        System.getProperties().setProperty(TestAccessControlFactory.FACTORY_PROP_NAME, TestAccessControlFactory.class.getName());
+        logMessage("Access control system property set to: " + System.getProperty(TestAccessControlFactory.FACTORY_PROP_NAME));
 
-  @Override
-  protected String getProtocol()
-  {
-    return System.getProperty(Configuration.TEST_PROTOCOL);
-  }
+        super.execute(out, exitCond, argv);
+    }
 
-  protected void initHelpers() throws MALException
-  {
-    MALPrototypeHelper.init(MALContextFactory.getElementsRegistry());
-    IPTestHelper.init(MALContextFactory.getElementsRegistry());
-    DataTestHelper.init(MALContextFactory.getElementsRegistry());
-    ErrorTestHelper.init(MALContextFactory.getElementsRegistry());
-    IPTest2Helper.init(MALContextFactory.getElementsRegistry());
-    MALPrototype2Helper.init(MALContextFactory.getElementsRegistry());
-    org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.init(MALContextFactory.getElementsRegistry());
+    @Override
+    protected String getProtocol() {
+        return System.getProperty(Configuration.TEST_PROTOCOL);
+    }
 
-    TransportInterceptor.instance().setEndpointSendInterceptor(new MALTestEndPointSendInterceptor());
-  }
+    protected void initHelpers() throws MALException {
+        MALPrototypeHelper.init(MALContextFactory.getElementsRegistry());
+        IPTestHelper.init(MALContextFactory.getElementsRegistry());
+        DataTestHelper.init(MALContextFactory.getElementsRegistry());
+        ErrorTestHelper.init(MALContextFactory.getElementsRegistry());
+        IPTest2Helper.init(MALContextFactory.getElementsRegistry());
+        MALPrototype2Helper.init(MALContextFactory.getElementsRegistry());
+        org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.init(MALContextFactory.getElementsRegistry());
 
-  protected void createProviders() throws MALException
-  {
-    String protocol = getProtocol();
+        TransportInterceptor.instance().setEndpointSendInterceptor(new MALTestEndPointSendInterceptor());
+    }
 
-    URIpair sharedBrokerUriPair =
-            FileBasedDirectory.loadURIs(Configuration.SHARED_BROKER_NAME);
+    protected void createProviders() throws MALException {
+        String protocol = getProtocol();
 
-    MALInteractionHandler dthandler = new DataTestHandlerImpl();
-    MALInteractionHandler erhandler = new ErrorTestHandlerImpl();
-    MALInteractionHandler iphandler = new IPTestHandlerImpl();
-    MALInteractionHandler ipFromArea2handler = new IPTestFromArea2HandlerImpl();
-    MALInteractionHandler ip2handler = new IPTest2HandlerImpl();
+        URIpair sharedBrokerUriPair
+                = FileBasedDirectory.loadURIs(Configuration.SHARED_BROKER_NAME);
 
-    MALProvider dtprovider = defaultProviderMgr.createProvider(
-            "DataTest",
-            protocol,
-            DataTestHelper.DATATEST_SERVICE,
-            DATA_TEST_AUTHENTICATION_ID,
-            dthandler,
-            new QoSLevel[]
-            {
-              QoSLevel.ASSURED
-            },
-            new UInteger(1), // number of priority levels
-            null,
-            Boolean.FALSE, // isPublisher
-            null);
+        MALInteractionHandler dthandler = new DataTestHandlerImpl();
+        MALInteractionHandler erhandler = new ErrorTestHandlerImpl();
+        MALInteractionHandler iphandler = new IPTestHandlerImpl();
+        MALInteractionHandler ipFromArea2handler = new IPTestFromArea2HandlerImpl();
+        MALInteractionHandler ip2handler = new IPTest2HandlerImpl();
 
-    MALProvider erprovider = defaultProviderMgr.createProvider(
-            "ErrorTest",
-            protocol,
-            ErrorTestHelper.ERRORTEST_SERVICE,
-            ERROR_TEST_AUTHENTICATION_ID,
-            erhandler,
-            new QoSLevel[]
-            {
-              QoSLevel.ASSURED
-            },
-            new UInteger(1), // number of priority levels
-            null,
-            Boolean.FALSE, // isPublisher
-            null);
+        MALProvider dtprovider = defaultProviderMgr.createProvider(
+                "DataTest",
+                protocol,
+                DataTestHelper.DATATEST_SERVICE,
+                DATA_TEST_AUTHENTICATION_ID,
+                dthandler,
+                new QoSLevel[]{
+                    QoSLevel.ASSURED
+                },
+                new UInteger(1), // number of priority levels
+                null,
+                Boolean.FALSE, // isPublisher
+                null);
 
-    MALProvider ipprovider = defaultProviderMgr.createProvider(
-            "IPTest",
-            protocol,
-            IPTestHelper.IPTEST_SERVICE,
-            IP_TEST_AUTHENTICATION_ID,
-            iphandler,
-            new QoSLevel[]
-            {
-              QoSLevel.ASSURED
-            },
-            new UInteger(1), // number of priority levels
-            null,
-            Boolean.TRUE, // isPublisher
-            null);
+        MALProvider erprovider = defaultProviderMgr.createProvider(
+                "ErrorTest",
+                protocol,
+                ErrorTestHelper.ERRORTEST_SERVICE,
+                ERROR_TEST_AUTHENTICATION_ID,
+                erhandler,
+                new QoSLevel[]{
+                    QoSLevel.ASSURED
+                },
+                new UInteger(1), // number of priority levels
+                null,
+                Boolean.FALSE, // isPublisher
+                null);
 
-    FileBasedDirectory.storePrivateBrokerAuthenticationId(
-            ipprovider.getBrokerAuthenticationId());
+        MALProvider ipprovider = defaultProviderMgr.createProvider(
+                "IPTest",
+                protocol,
+                IPTestHelper.IPTEST_SERVICE,
+                IP_TEST_AUTHENTICATION_ID,
+                iphandler,
+                new QoSLevel[]{
+                    QoSLevel.ASSURED
+                },
+                new UInteger(1), // number of priority levels
+                null,
+                Boolean.TRUE, // isPublisher
+                null);
 
-    MALInteractionHandler iphandlerWithSharedBroker = new IPTestHandlerWithSharedBroker();
-    MALProvider ipproviderSharedBroker = defaultProviderMgr.createProvider(
-            IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME,
-            protocol,
-            IPTestHelper.IPTEST_SERVICE,
-            IP_TEST_AUTHENTICATION_ID,
-            iphandlerWithSharedBroker,
-            new QoSLevel[]
-            {
-              QoSLevel.ASSURED
-            },
-            new UInteger(1), // number of priority levels
-            null,
-            Boolean.TRUE, // isPublisher
-            sharedBrokerUriPair.broker);
-    FileBasedDirectory.storeURI(IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME,
-            ipproviderSharedBroker.getURI(), ipproviderSharedBroker.getBrokerURI());
+        FileBasedDirectory.storePrivateBrokerAuthenticationId(
+                ipprovider.getBrokerAuthenticationId());
 
-    MALProvider ipFromArea2providerWithSharedBroker = defaultProviderMgr.createProvider(
-            IP_TEST_PROVIDER_FROM_AREA2_WITH_SHARED_BROKER_NAME,
-            protocol,
-            org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.IPTEST_SERVICE,
-            IP_TEST_AUTHENTICATION_ID,
-            ipFromArea2handler,
-            new QoSLevel[]
-            {
-              QoSLevel.ASSURED
-            },
-            new UInteger(1), // number of priority levels
-            null,
-            Boolean.TRUE, // isPublisher
-            sharedBrokerUriPair.broker);
+        MALInteractionHandler iphandlerWithSharedBroker = new IPTestHandlerWithSharedBroker();
+        MALProvider ipproviderSharedBroker = defaultProviderMgr.createProvider(
+                IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME,
+                protocol,
+                IPTestHelper.IPTEST_SERVICE,
+                IP_TEST_AUTHENTICATION_ID,
+                iphandlerWithSharedBroker,
+                new QoSLevel[]{
+                    QoSLevel.ASSURED
+                },
+                new UInteger(1), // number of priority levels
+                null,
+                Boolean.TRUE, // isPublisher
+                sharedBrokerUriPair.broker);
+        FileBasedDirectory.storeURI(IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME,
+                ipproviderSharedBroker.getURI(), ipproviderSharedBroker.getBrokerURI());
 
-    MALProvider ipFromArea2provider = defaultProviderMgr.createProvider(
-            IP_TEST_PROVIDER_FROM_AREA2_NAME,
-            protocol,
-            org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.IPTEST_SERVICE,
-            IP_TEST_AUTHENTICATION_ID,
-            ipFromArea2handler,
-            new QoSLevel[]
-            {
-              QoSLevel.ASSURED
-            },
-            new UInteger(1), // number of priority levels
-            null,
-            Boolean.TRUE, // isPublisher
-            null);
+        MALProvider ipFromArea2providerWithSharedBroker = defaultProviderMgr.createProvider(
+                IP_TEST_PROVIDER_FROM_AREA2_WITH_SHARED_BROKER_NAME,
+                protocol,
+                org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.IPTEST_SERVICE,
+                IP_TEST_AUTHENTICATION_ID,
+                ipFromArea2handler,
+                new QoSLevel[]{
+                    QoSLevel.ASSURED
+                },
+                new UInteger(1), // number of priority levels
+                null,
+                Boolean.TRUE, // isPublisher
+                sharedBrokerUriPair.broker);
 
-    MALProvider ip2provider = defaultProviderMgr.createProvider(
-            "IPTest2",
-            protocol,
-            IPTest2Helper.IPTEST2_SERVICE,
-            IP_TEST_AUTHENTICATION_ID,
-            ip2handler,
-            new QoSLevel[]
-            {
-              QoSLevel.ASSURED
-            },
-            new UInteger(1), // number of priority levels
-            null,
-            Boolean.TRUE, // isPublisher
-            sharedBrokerUriPair.broker);
+        MALProvider ipFromArea2provider = defaultProviderMgr.createProvider(
+                IP_TEST_PROVIDER_FROM_AREA2_NAME,
+                protocol,
+                org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.IPTEST_SERVICE,
+                IP_TEST_AUTHENTICATION_ID,
+                ipFromArea2handler,
+                new QoSLevel[]{
+                    QoSLevel.ASSURED
+                },
+                new UInteger(1), // number of priority levels
+                null,
+                Boolean.TRUE, // isPublisher
+                null);
 
-    FileBasedDirectory.storePrivateBrokerAuthenticationId(
-            ipprovider.getBrokerAuthenticationId());
+        MALProvider ip2provider = defaultProviderMgr.createProvider(
+                "IPTest2",
+                protocol,
+                IPTest2Helper.IPTEST2_SERVICE,
+                IP_TEST_AUTHENTICATION_ID,
+                ip2handler,
+                new QoSLevel[]{
+                    QoSLevel.ASSURED
+                },
+                new UInteger(1), // number of priority levels
+                null,
+                Boolean.TRUE, // isPublisher
+                sharedBrokerUriPair.broker);
 
-    FileBasedDirectory.storeURI(DataTestHelper.DATATEST_SERVICE_NAME.getValue(), dtprovider.getURI(), dtprovider.getBrokerURI());
-    FileBasedDirectory.storeURI(ErrorTestHelper.ERRORTEST_SERVICE_NAME.getValue(), erprovider.getURI(), erprovider.getBrokerURI());
-    FileBasedDirectory.storeURI(IPTestHelper.IPTEST_SERVICE_NAME.getValue(), ipprovider.getURI(), ipprovider.getBrokerURI());
-    FileBasedDirectory.storeURI(IP_TEST_PROVIDER_FROM_AREA2_NAME, ipFromArea2provider.getURI(), ipFromArea2provider.getBrokerURI());
-    FileBasedDirectory.storeURI(IP_TEST_PROVIDER_FROM_AREA2_WITH_SHARED_BROKER_NAME, ipFromArea2providerWithSharedBroker.getURI(), ipFromArea2providerWithSharedBroker.getBrokerURI());
-    FileBasedDirectory.storeURI(IPTest2Helper.IPTEST2_SERVICE_NAME.getValue(), ip2provider.getURI(), ip2provider.getBrokerURI());
-  }
+        FileBasedDirectory.storePrivateBrokerAuthenticationId(
+                ipprovider.getBrokerAuthenticationId());
+
+        FileBasedDirectory.storeURI(DataTestHelper.DATATEST_SERVICE_NAME.getValue(), dtprovider.getURI(), dtprovider.getBrokerURI());
+        FileBasedDirectory.storeURI(ErrorTestHelper.ERRORTEST_SERVICE_NAME.getValue(), erprovider.getURI(), erprovider.getBrokerURI());
+        FileBasedDirectory.storeURI(IPTestHelper.IPTEST_SERVICE_NAME.getValue(), ipprovider.getURI(), ipprovider.getBrokerURI());
+        FileBasedDirectory.storeURI(IP_TEST_PROVIDER_FROM_AREA2_NAME, ipFromArea2provider.getURI(), ipFromArea2provider.getBrokerURI());
+        FileBasedDirectory.storeURI(IP_TEST_PROVIDER_FROM_AREA2_WITH_SHARED_BROKER_NAME, ipFromArea2providerWithSharedBroker.getURI(), ipFromArea2providerWithSharedBroker.getBrokerURI());
+        FileBasedDirectory.storeURI(IPTest2Helper.IPTEST2_SERVICE_NAME.getValue(), ip2provider.getURI(), ip2provider.getBrokerURI());
+    }
 }

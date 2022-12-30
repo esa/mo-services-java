@@ -29,130 +29,102 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public abstract class LoggingBase
-{
-  static protected PrintStream oldOut = System.out;
-  static protected boolean teeToOut = true;
-  static protected Writer out = null;
-  static protected Date runTime = null;
-  static final private SimpleDateFormat fileFmt = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-  static final private SimpleDateFormat logFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
+public abstract class LoggingBase {
 
-  public LoggingBase()
-  {
-    Date now = new Date();
+    static protected PrintStream oldOut = System.out;
+    static protected boolean teeToOut = true;
+    static protected Writer out = null;
+    static protected Date runTime = null;
+    static final private SimpleDateFormat fileFmt = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
+    static final private SimpleDateFormat logFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
 
-    setRuntime(now.getTime());
-  }
+    public LoggingBase() {
+        Date now = new Date();
 
-  public LoggingBase(boolean ignoreStdOut)
-  {
-    teeToOut = false;
-  }
-
-  static protected void setRuntime(long newValue)
-  {
-    if (null == runTime)
-    {
-      runTime = new Date(newValue);
-    }
-  }
-
-  static protected File createLoggingFile(String filename) throws IOException
-  {
-    return createLoggingFile(filename, null);
-  }
-
-  static protected File createLoggingFile(String filename, File dir) throws IOException
-  {
-    String time = "";
-
-    if (null != runTime)
-    {
-      try
-      {
-        time = fileFmt.format(runTime);
-      }
-      catch (Exception ex)
-      {
-      }
+        setRuntime(now.getTime());
     }
 
-    return File.createTempFile("zzz_CCSDS_" + time + "_" + filename, ".txt", dir);
-  }
+    public LoggingBase(boolean ignoreStdOut) {
+        teeToOut = false;
+    }
 
-  static protected void openLogFile(String filename, String dirname)
-  {
-    if (null == out)
-    {
-      File outDir = null;
-
-      if (null != dirname)
-      {
-        outDir = new File(dirname);
-        if ((!outDir.canWrite()) || (!outDir.isDirectory()))
-        {
-          outDir = null;
+    static protected void setRuntime(long newValue) {
+        if (null == runTime) {
+            runTime = new Date(newValue);
         }
-      }
-
-      if (null != filename)
-      {
-        try
-        {
-          FileOutputStream os = new FileOutputStream(createLoggingFile(filename, outDir));
-          out = new OutputStreamWriter(os);
-          System.setOut(new PrintStream(os));
-          System.setErr(new PrintStream(os));
-
-          logMessage("LOGFILE : " + filename + " : " + outDir);
-          if (null != dirname)
-          {
-            outDir = new File(dirname);
-            logMessage("        : " + outDir.canWrite() + " : " + outDir.isDirectory() + " : " + outDir.toString());
-          }
-        }
-        catch (IOException ex)
-        {
-          ex.printStackTrace();
-          out = null;
-        }
-      }
     }
-  }
 
-  static public void logMessage(String msg)
-  {
-    logMessage(out, msg);
-  }
+    static protected File createLoggingFile(String filename) throws IOException {
+        return createLoggingFile(filename, null);
+    }
 
-  static protected void logMessage(Writer ow, String msg)
-  {
-    Date now = new Date();
-    String str = logFmt.format(now) + " : " + msg;
+    static protected File createLoggingFile(String filename, File dir) throws IOException {
+        String time = "";
 
-    if (null != ow)
-    {
-      try
-      {
-        ow.write(str);
-        ow.write("\n");
-        ow.flush();
-
-        if (teeToOut)
-        {
-          oldOut.println(str);
-          oldOut.flush();
+        if (null != runTime) {
+            try {
+                time = fileFmt.format(runTime);
+            } catch (Exception ex) {
+            }
         }
-      }
-      catch (IOException ex)
-      {
-        // nop
-      }
+
+        return File.createTempFile("zzz_CCSDS_" + time + "_" + filename, ".txt", dir);
     }
-    else
-    {
-      System.out.println(str);
+
+    static protected void openLogFile(String filename, String dirname) {
+        if (null == out) {
+            File outDir = null;
+
+            if (null != dirname) {
+                outDir = new File(dirname);
+                if ((!outDir.canWrite()) || (!outDir.isDirectory())) {
+                    outDir = null;
+                }
+            }
+
+            if (null != filename) {
+                try {
+                    FileOutputStream os = new FileOutputStream(createLoggingFile(filename, outDir));
+                    out = new OutputStreamWriter(os);
+                    System.setOut(new PrintStream(os));
+                    System.setErr(new PrintStream(os));
+
+                    logMessage("LOGFILE : " + filename + " : " + outDir);
+                    if (null != dirname) {
+                        outDir = new File(dirname);
+                        logMessage("        : " + outDir.canWrite() + " : " + outDir.isDirectory() + " : " + outDir.toString());
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    out = null;
+                }
+            }
+        }
     }
-  }
+
+    static public void logMessage(String msg) {
+        logMessage(out, msg);
+    }
+
+    static protected void logMessage(Writer ow, String msg) {
+        Date now = new Date();
+        String str = logFmt.format(now) + " : " + msg;
+
+        if (null != ow) {
+            try {
+                ow.write(str);
+                ow.write("\n");
+                ow.flush();
+
+                if (teeToOut) {
+                    oldOut.println(str);
+                    oldOut.flush();
+                }
+            } catch (IOException ex) {
+                // nop
+            }
+        } else {
+            System.out.println(str);
+        }
+    }
 }

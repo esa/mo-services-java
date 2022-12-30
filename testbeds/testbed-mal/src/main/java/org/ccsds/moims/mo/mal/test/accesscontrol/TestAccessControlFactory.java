@@ -30,34 +30,29 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 /**
  *
  */
-public class TestAccessControlFactory extends MALAccessControlFactory
-{
-  public static final String FACTORY_PROP_NAME = "org.ccsds.moims.mo.mal.accesscontrol.factory.class";
+public class TestAccessControlFactory extends MALAccessControlFactory {
 
-  private static TestAccessControl manager = null;
+    public static final String FACTORY_PROP_NAME = "org.ccsds.moims.mo.mal.accesscontrol.factory.class";
 
-  public TestAccessControlFactory()
-  {
-    LoggingBase.logMessage("TestAccessControlFactory created");
-  }
+    private static TestAccessControl manager = null;
 
-  public MALAccessControl createAccessControl(Map properties) throws MALException
-  {
-    if (null == manager)
-    {
-      manager = new TestAccessControl();
+    public TestAccessControlFactory() {
+        LoggingBase.logMessage("TestAccessControlFactory created");
     }
 
-    return manager;
-  }
+    public MALAccessControl createAccessControl(Map properties) throws MALException {
+        if (null == manager) {
+            manager = new TestAccessControl();
+        }
 
-  public static boolean securityManagerHasBeenCreated()
-  {
-    return null != manager;
-  }
+        return manager;
+    }
 
-  public static TestAccessControl managerInstance()
-  {
-    return manager;
-  }
+    public static boolean securityManagerHasBeenCreated() {
+        return null != manager;
+    }
+
+    public static TestAccessControl managerInstance() {
+        return manager;
+    }
 }

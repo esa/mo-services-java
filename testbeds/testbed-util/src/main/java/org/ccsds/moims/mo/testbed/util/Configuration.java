@@ -29,77 +29,70 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 /**
  *
  */
-public abstract class Configuration
-{
-  public static final String DEFAULT_PROTOCOL = "org.ccsds.moims.mo.mal.transport.default.protocol";
-  public static final String TEST_PROTOCOL = "org.ccsds.moims.mo.testbed.transport.protocol";
-  public static final String TEST_FACTORY_PROP_NAME = "org.ccsds.moims.mo.testbed.transport.factory";
+public abstract class Configuration {
 
-  public static final String LOCAL_MAL_CLASS = "org.ccsds.moims.mo.testbed.local.class";
-  public static final String LOCAL_CONFIGURATION_DIR = "org.ccsds.moims.mo.testbed.local.configuration.dir";
+    public static final String DEFAULT_PROTOCOL = "org.ccsds.moims.mo.mal.transport.default.protocol";
+    public static final String TEST_PROTOCOL = "org.ccsds.moims.mo.testbed.transport.protocol";
+    public static final String TEST_FACTORY_PROP_NAME = "org.ccsds.moims.mo.testbed.transport.factory";
 
-  public static final String REMOTE_CMD_PROPERTY_PREFIX = "org.ccsds.remote.cmdline.";
-  public static final String REMOTE_MAL_CLASS = "org.ccsds.moims.mo.testbed.remote.class";
-  public static final String REMOTE_OUTPUT_DIR = "org.ccsds.moims.mo.testbed.remote.output.dir";
-  public static final String REMOTE_CONFIGURATION_DIR = "org.ccsds.moims.mo.testbed.remote.configuration.dir";
-  public static final String REMOTE_EXTRA_ARGS = "org.ccsds.moims.mo.testbed.remote.extra.args";
-  public static final String REMOTE_CLASSPATH_EXTRA_JARS = "org.ccsds.moims.mo.testbed.remote.classpath.extra";
-  public static final String REMOTE_CLASSPATH_MAVEN_JARS = "org.ccsds.moims.mo.testbed.remote.classpath.maven";
-  public static final String REMOTE_CLASSPATH_FILTER_STRING = "org.ccsds.moims.mo.testbed.remote.classpath.filter";
-  public static final String MOM_CLASSPATH_EXTRA_JARS = "org.ccsds.moims.mo.testbed.mom.classpath.extra";
-  public static final String MOM_CLASSPATH_MAVEN_JARS = "org.ccsds.moims.mo.testbed.mom.classpath.maven";
-  public static final String MOM_CLASSPATH_FILTER_STRING = "org.ccsds.moims.mo.testbed.mom.classpath.filter";
+    public static final String LOCAL_MAL_CLASS = "org.ccsds.moims.mo.testbed.local.class";
+    public static final String LOCAL_CONFIGURATION_DIR = "org.ccsds.moims.mo.testbed.local.configuration.dir";
 
-  public static final String WAIT_TIME_OUT_PROPERTY_NAME = "org.ccsds.moims.mo.testbed.wait.timeout";
-  public static final int WAIT_TIME_OUT = Integer.getInteger(WAIT_TIME_OUT_PROPERTY_NAME, 2000).intValue();
-  public static final Blob DEFAULT_SHARED_BROKER_AUTHENTICATION_ID = new Blob(new byte[] {0x02, 0x01});
-  public static final String TRANSPORT_LEVEL_SHARED_BROKER = "org.ccsds.moims.mo.testbed.transport.level.shared.broker";
-  public static final String SHARED_BROKER_NAME = "SharedBroker";
-  public static final String PRIVATE_BROKER_NAME = "PrivateBroker";
+    public static final String REMOTE_CMD_PROPERTY_PREFIX = "org.ccsds.remote.cmdline.";
+    public static final String REMOTE_MAL_CLASS = "org.ccsds.moims.mo.testbed.remote.class";
+    public static final String REMOTE_OUTPUT_DIR = "org.ccsds.moims.mo.testbed.remote.output.dir";
+    public static final String REMOTE_CONFIGURATION_DIR = "org.ccsds.moims.mo.testbed.remote.configuration.dir";
+    public static final String REMOTE_EXTRA_ARGS = "org.ccsds.moims.mo.testbed.remote.extra.args";
+    public static final String REMOTE_CLASSPATH_EXTRA_JARS = "org.ccsds.moims.mo.testbed.remote.classpath.extra";
+    public static final String REMOTE_CLASSPATH_MAVEN_JARS = "org.ccsds.moims.mo.testbed.remote.classpath.maven";
+    public static final String REMOTE_CLASSPATH_FILTER_STRING = "org.ccsds.moims.mo.testbed.remote.classpath.filter";
+    public static final String MOM_CLASSPATH_EXTRA_JARS = "org.ccsds.moims.mo.testbed.mom.classpath.extra";
+    public static final String MOM_CLASSPATH_MAVEN_JARS = "org.ccsds.moims.mo.testbed.mom.classpath.maven";
+    public static final String MOM_CLASSPATH_FILTER_STRING = "org.ccsds.moims.mo.testbed.mom.classpath.filter";
 
-  public static final String SECURITY_FACTORY_PROP_NAME = "org.ccsds.moims.mo.mal.security.factory.class";
-  private static String _os = null;
-  
-  public static String getOSname()
-  {
-    if (null == _os)
-    {
-      _os = System.getProperty("os.name").replace(' ', '_');
+    public static final String WAIT_TIME_OUT_PROPERTY_NAME = "org.ccsds.moims.mo.testbed.wait.timeout";
+    public static final int WAIT_TIME_OUT = Integer.getInteger(WAIT_TIME_OUT_PROPERTY_NAME, 2000).intValue();
+    public static final Blob DEFAULT_SHARED_BROKER_AUTHENTICATION_ID = new Blob(new byte[]{0x02, 0x01});
+    public static final String TRANSPORT_LEVEL_SHARED_BROKER = "org.ccsds.moims.mo.testbed.transport.level.shared.broker";
+    public static final String SHARED_BROKER_NAME = "SharedBroker";
+    public static final String PRIVATE_BROKER_NAME = "PrivateBroker";
+
+    public static final String SECURITY_FACTORY_PROP_NAME = "org.ccsds.moims.mo.mal.security.factory.class";
+    private static String _os = null;
+
+    public static String getOSname() {
+        if (null == _os) {
+            _os = System.getProperty("os.name").replace(' ', '_');
+        }
+
+        return _os;
     }
 
-    return _os;
-  }
-
-  public static Properties getProperties(String propFileName) throws MALException {
-    return getProperties(propFileName, false);
-  }
-
-  public static Properties getProperties(String propFileName, boolean systemLevel) throws MALException {
-    if (!systemLevel)
-    {
-      String configurationDir = System.getProperty(LOCAL_CONFIGURATION_DIR);
-
-      if ((null != configurationDir) && (0 < configurationDir.length()))
-      {
-        propFileName = configurationDir + "/" + propFileName;
-      }
+    public static Properties getProperties(String propFileName) throws MALException {
+        return getProperties(propFileName, false);
     }
 
-    Properties props = new Properties();
-    java.io.File prpFile = new File(propFileName);
-    if (prpFile.exists())
-    {
-      LoggingBase.logMessage("Loading properties from file: " + prpFile.getPath());
-      try {
-        props.load(new FileInputStream(prpFile));
-      } catch (Exception exc) {
-        throw new MALException(exc.toString(), exc);
-      }
+    public static Properties getProperties(String propFileName, boolean systemLevel) throws MALException {
+        if (!systemLevel) {
+            String configurationDir = System.getProperty(LOCAL_CONFIGURATION_DIR);
+
+            if ((null != configurationDir) && (0 < configurationDir.length())) {
+                propFileName = configurationDir + "/" + propFileName;
+            }
+        }
+
+        Properties props = new Properties();
+        java.io.File prpFile = new File(propFileName);
+        if (prpFile.exists()) {
+            LoggingBase.logMessage("Loading properties from file: " + prpFile.getPath());
+            try {
+                props.load(new FileInputStream(prpFile));
+            } catch (Exception exc) {
+                throw new MALException(exc.toString(), exc);
+            }
+        } else {
+            LoggingBase.logMessage("No properties file found, skipped: " + prpFile.getPath());
+        }
+        return props;
     }
-    else
-    {
-      LoggingBase.logMessage("No properties file found, skipped: " + prpFile.getPath());
-    }
-    return props;
-  }
 }
