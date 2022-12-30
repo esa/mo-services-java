@@ -155,7 +155,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         addAttributeType(StdStrings.XML, "anyURI", getAttributeDetails(StdStrings.MAL, StdStrings.URI));
         addAttributeType(StdStrings.XML, "ObjectRef", getAttributeDetails(StdStrings.MAL, StdStrings.OBJECTREF));
 
-        addAttributeType(StdStrings.XML, "Element", new AttributeTypeDetails(this, "Element", true, "Object", ""));
+        AttributeTypeDetails att = new AttributeTypeDetails(this, "Element", true, "Object", "");
+        addAttributeType(StdStrings.XML, "Element", att);
     }
 
     @Override
@@ -191,7 +192,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     @Override
-    public void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException {
+    public void compile(String destinationFolderName, SpecificationType spec,
+            JAXBElement rootNode) throws IOException, JAXBException {
         for (AreaType area : spec.getArea()) {
             long timestamp = System.currentTimeMillis();
             processArea(destinationFolderName, area, requiredPublishers);
@@ -366,12 +368,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
         reservedWordsMap.put(word, replacement);
     }
 
-    protected void processArea(String destinationFolderName, AreaType area, Map<String, RequiredPublisher> requiredPublishers) throws IOException {
+    protected void processArea(String destinationFolderName, AreaType area,
+            Map<String, RequiredPublisher> requiredPublishers) throws IOException {
         if ((!area.getName().equalsIgnoreCase(StdStrings.COM)) || (generateCOM())) {
             getLog().info("Processing area: " + area.getName());
 
             // create folder
-            File destinationFolder = StubUtils.createFolder(new File(destinationFolderName), getConfig().getAreaPackage(area.getName()).replace('.', '/'));
+            File destinationFolder = StubUtils.createFolder(new File(destinationFolderName),
+                    getConfig().getAreaPackage(area.getName()).replace('.', '/'));
             final File areaFolder = StubUtils.createFolder(destinationFolder, area.getName());
 
             // create a comment for the area folder if supported
@@ -397,8 +401,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             createFundamentalClass(structureFolder, area, null, (FundamentalType) oType);
                         } else if (oType instanceof AttributeType) {
                             String aName = ((AttributeType) oType).getName();
-                            createListClass(structureFolder, area, null, aName, false, ((AttributeType) oType).getShortFormPart());
-                            CompositeField fld = createCompositeElementsDetails(null, false, "fld", TypeUtils.createTypeReference(area.getName(), null, aName, false), true, true, "cmt");
+                            createListClass(structureFolder, area, null, aName,
+                                    false, ((AttributeType) oType).getShortFormPart());
+                            CompositeField fld = createCompositeElementsDetails(null, false, "fld",
+                                    TypeUtils.createTypeReference(area.getName(), null, aName, false),
+                                    true, true, "cmt");
                             createFactoryClass(structureFolder, area, null, aName, fld, true, false);
                         } else if (oType instanceof CompositeType) {
                             createCompositeClass(structureFolder, area, null, (CompositeType) oType);
@@ -424,7 +431,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
     }
 
-    protected void processService(File areaFolder, AreaType area, ServiceType service, 
+    protected void processService(File areaFolder, AreaType area, ServiceType service,
             Map<String, RequiredPublisher> requiredPublishers) throws IOException {
         // create service folders
         File serviceFolder = StubUtils.createFolder(areaFolder, service.getName());
@@ -454,13 +461,15 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 } else if (oType instanceof CompositeType) {
                     createCompositeClass(structureFolder, area, service, (CompositeType) oType);
                 } else {
-                    throw new IllegalArgumentException("Unexpected service (" + area.getName() + ":" + service.getName() + ") level datatype of " + oType.getClass().getName());
+                    throw new IllegalArgumentException("Unexpected service (" + area.getName()
+                            + ":" + service.getName() + ") level datatype of " + oType.getClass().getName());
                 }
             }
         }
     }
 
-    protected void createServiceConsumerClasses(File serviceFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+    protected void createServiceConsumerClasses(File serviceFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
         getLog().info("Creating consumer classes: " + service.getName());
         File consumerFolder = StubUtils.createFolder(serviceFolder, CONSUMER_FOLDER);
         // create a comment for the consumer folder if supported
@@ -470,7 +479,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         createServiceConsumerStub(consumerFolder, area, service, summary);
     }
 
-    protected void createServiceProviderClasses(File serviceFolder, AreaType area, ServiceType service, ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException {
+    protected void createServiceProviderClasses(File serviceFolder, AreaType area, ServiceType service,
+            ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException {
         getLog().info("Creating provider classes: " + service.getName());
         File providerFolder = StubUtils.createFolder(serviceFolder, PROVIDER_FOLDER);
         // create a comment for the provider folder if supported
@@ -482,17 +492,20 @@ public abstract class GeneratorLangs extends GeneratorBase {
         createServiceProviderInteractions(providerFolder, area, service, summary);
     }
 
-    protected void createServiceProviderDelegation(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+    protected void createServiceProviderDelegation(File providerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
         getLog().info("Creating provider delegate class: " + service.getName());
         createServiceProviderSkeletonHandler(providerFolder, area, service, summary, true);
     }
 
-    protected void createServiceProviderInheritance(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+    protected void createServiceProviderInheritance(File providerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
         getLog().info("Creating provider inheritance class: " + service.getName());
         createServiceProviderSkeletonHandler(providerFolder, area, service, summary, false);
     }
 
-    protected void createServiceProviderInteractions(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+    protected void createServiceProviderInteractions(File providerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.INVOKE_OP) {
                 createServiceProviderInvokeInteractionClass(providerFolder, area, service, op);
@@ -502,7 +515,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
     }
 
-    protected void createServiceConsumerAdapter(File consumerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+    protected void createServiceConsumerAdapter(File consumerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
         getLog().info("Creating consumer adapter: " + service.getName());
 
         String areaName = area.getName();
@@ -517,19 +531,33 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String areaHelper = createElementType(file, areaName, null, null, areaName + "Helper");
         String serviceHelper = createElementType(file, areaName, serviceName, null, serviceName + "Helper");
 
-        CompositeField stdHeaderArg = createCompositeElementsDetails(file, false, "msgHeader", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageHeader", false), false, true, "msgHeader The header of the received message");
-        CompositeField stdBodyArg = createCompositeElementsDetails(file, false, "body", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageBody", false), false, true, "body The body of the received message");
-        CompositeField stdNotifyBodyArg = createCompositeElementsDetails(file, false, "body", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALNotifyBody", false), false, true, "body The body of the received message");
-        CompositeField stdErrorBodyArg = createCompositeElementsDetails(file, false, "body", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALErrorBody", false), false, true, "body The body of the received message");
-        CompositeField stdQosArg = createCompositeElementsDetails(file, false, "qosProperties", TypeUtils.createTypeReference(null, null, "Map<_String;_String>", false), false, true, "qosProperties The QoS properties associated with the message");
-        CompositeField stdErrorArg = createCompositeElementsDetails(file, false, "error", TypeUtils.createTypeReference(StdStrings.MAL, null, "MALStandardError", false), false, true, "error The received error message");
+        CompositeField stdHeaderArg = createCompositeElementsDetails(file, false, "msgHeader",
+                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageHeader", false),
+                false, true, "msgHeader The header of the received message");
+        CompositeField stdBodyArg = createCompositeElementsDetails(file, false, "body",
+                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageBody", false),
+                false, true, "body The body of the received message");
+        CompositeField stdNotifyBodyArg = createCompositeElementsDetails(file, false, "body",
+                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALNotifyBody", false),
+                false, true, "body The body of the received message");
+        CompositeField stdErrorBodyArg = createCompositeElementsDetails(file, false, "body",
+                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALErrorBody", false),
+                false, true, "body The body of the received message");
+        CompositeField stdQosArg = createCompositeElementsDetails(file, false, "qosProperties",
+                TypeUtils.createTypeReference(null, null, "Map<_String;_String>", false),
+                false, true, "qosProperties The QoS properties associated with the message");
+        CompositeField stdErrorArg = createCompositeElementsDetails(file, false, "error",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALStandardError", false),
+                false, true, "error The received error message");
         List<CompositeField> stdNoBodyArgs = StubUtils.concatenateArguments(stdHeaderArg, stdQosArg);
         List<CompositeField> stdBodyArgs = StubUtils.concatenateArguments(stdHeaderArg, stdBodyArg, stdQosArg);
         List<CompositeField> stdNotifyBodyArgs = StubUtils.concatenateArguments(stdHeaderArg, stdNotifyBodyArg, stdQosArg);
         List<CompositeField> stdErrorBodyArgs = StubUtils.concatenateArguments(stdHeaderArg, stdErrorBodyArg, stdQosArg);
         List<CompositeField> stdErrorArgs = StubUtils.concatenateArguments(stdHeaderArg, stdErrorArg, stdQosArg);
 
-        file.addClassOpenStatement(className, false, true, createElementType(file, StdStrings.MAL, null, CONSUMER_FOLDER, "MALInteractionAdapter"), null, "Consumer adapter for " + serviceName + " service.");
+        file.addClassOpenStatement(className, false, true,
+                createElementType(file, StdStrings.MAL, null, CONSUMER_FOLDER, "MALInteractionAdapter"),
+                null, "Consumer adapter for " + serviceName + " service.");
 
         // Implement the generation of the adapter
         boolean submitRequired = false;
@@ -539,33 +567,65 @@ public abstract class GeneratorLangs extends GeneratorBase {
         boolean pubsubRequired = false;
 
         if (supportsToValue) {
-            file.addConstructor(StdStrings.PUBLIC, className, createCompositeElementsDetails(file, false, "consumer", TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false), false, true, null), true, null, null, null).addMethodCloseStatement();
+            file.addConstructor(StdStrings.PUBLIC, className,
+                    createCompositeElementsDetails(file, false, "consumer",
+                            TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
+                            false, true, null),
+                    true, null, null, null).addMethodCloseStatement();
         }
 
         for (OperationSummary op : summary.getOperations()) {
             switch (op.getPattern()) {
                 case SUBMIT_OP: {
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "AckReceived", Arrays.asList(stdHeaderArg, stdQosArg), null, "Called by the MAL when a SUBMIT acknowledgement is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "ErrorReceived", stdErrorArgs, null, "Called by the MAL when a SUBMIT acknowledgement error is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "AckReceived",
+                            Arrays.asList(stdHeaderArg, stdQosArg), null,
+                            "Called by the MAL when a SUBMIT acknowledgement is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "ErrorReceived", stdErrorArgs, null,
+                            "Called by the MAL when a SUBMIT acknowledgement error is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
                     submitRequired = true;
                     break;
                 }
                 case REQUEST_OP: {
-                    List<CompositeField> opArgs = StubUtils.concatenateArguments(stdHeaderArg, StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getRetTypes()), stdQosArg));
+                    List<CompositeField> opArgs = StubUtils.concatenateArguments(stdHeaderArg,
+                            StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getRetTypes()), stdQosArg));
 
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "ResponseReceived", opArgs, null, "Called by the MAL when a REQUEST response is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "ErrorReceived", stdErrorArgs, null, "Called by the MAL when a REQUEST response error is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "ResponseReceived",
+                            opArgs, null, "Called by the MAL when a REQUEST response is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "ErrorReceived", stdErrorArgs, null,
+                            "Called by the MAL when a REQUEST response error is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
                     requestRequired = true;
                     break;
                 }
                 case INVOKE_OP: {
-                    List<CompositeField> opArgsA = StubUtils.concatenateArguments(stdHeaderArg, StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getAckTypes()), stdQosArg));
-                    List<CompositeField> opArgsR = StubUtils.concatenateArguments(stdHeaderArg, StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getRetTypes()), stdQosArg));
+                    List<CompositeField> opArgsA = StubUtils.concatenateArguments(stdHeaderArg,
+                            StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getAckTypes()), stdQosArg));
+                    List<CompositeField> opArgsR = StubUtils.concatenateArguments(stdHeaderArg,
+                            StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getRetTypes()), stdQosArg));
 
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "AckReceived", opArgsA, null, "Called by the MAL when an INVOKE acknowledgement is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "ResponseReceived", opArgsR, null, "Called by the MAL when an INVOKE response is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "AckErrorReceived", stdErrorArgs, null, "Called by the MAL when an INVOKE acknowledgement error is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "ResponseErrorReceived", stdErrorArgs, null, "Called by the MAL when an INVOKE response error is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "AckReceived", opArgsA, null,
+                            "Called by the MAL when an INVOKE acknowledgement is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "ResponseReceived", opArgsR, null,
+                            "Called by the MAL when an INVOKE response is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "AckErrorReceived", stdErrorArgs, null,
+                            "Called by the MAL when an INVOKE acknowledgement error is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "ResponseErrorReceived", stdErrorArgs, null,
+                            "Called by the MAL when an INVOKE response error is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
                     invokeRequired = true;
                     break;
                 }
@@ -574,12 +634,30 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     List<CompositeField> opArgsU = StubUtils.concatenateArguments(stdHeaderArg, StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getUpdateTypes()), stdQosArg));
                     List<CompositeField> opArgsR = StubUtils.concatenateArguments(stdHeaderArg, StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getRetTypes()), stdQosArg));
 
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "AckReceived", opArgsA, null, "Called by the MAL when a PROGRESS acknowledgement is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "UpdateReceived", opArgsU, null, "Called by the MAL when a PROGRESS update is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "ResponseReceived", opArgsR, null, "Called by the MAL when a PROGRESS response is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "AckErrorReceived", stdErrorArgs, null, "Called by the MAL when a PROGRESS acknowledgement error is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "UpdateErrorReceived", stdErrorArgs, null, "Called by the MAL when a PROGRESS update error is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "ResponseErrorReceived", stdErrorArgs, null, "Called by the MAL when a PROGRESS response error is received from a provider for the operation " + op.getName(), null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "AckReceived", opArgsA, null,
+                            "Called by the MAL when a PROGRESS acknowledgement is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "UpdateReceived", opArgsU, null,
+                            "Called by the MAL when a PROGRESS update is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "ResponseReceived", opArgsR, null,
+                            "Called by the MAL when a PROGRESS response is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "AckErrorReceived", stdErrorArgs, null,
+                            "Called by the MAL when a PROGRESS acknowledgement error is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "UpdateErrorReceived", stdErrorArgs, null,
+                            "Called by the MAL when a PROGRESS update error is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "ResponseErrorReceived", stdErrorArgs, null,
+                            "Called by the MAL when a PROGRESS response error is received from a provider for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
                     progressRequired = true;
                     break;
                 }
@@ -593,11 +671,28 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
                     List<CompositeField> opArgsU = StubUtils.concatenateArguments(stdHeaderArg, StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, retTypes), stdQosArg));
 
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "RegisterAckReceived", StubUtils.concatenateArguments(stdHeaderArg, stdQosArg), null, "Called by the MAL when a PubSub register acknowledgement is received from a broker for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "RegisterErrorReceived", stdErrorArgs, null, "Called by the MAL when a PubSub register acknowledgement error is received from a broker for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "DeregisterAckReceived", StubUtils.concatenateArguments(stdHeaderArg, stdQosArg), null, "Called by the MAL when a PubSub deregister acknowledgement is received from a broker for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "NotifyReceived", opArgsU, null, "Called by the MAL when a PubSub update is received from a broker for the operation " + op.getName(), null, null).addMethodCloseStatement();
-                    file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "NotifyErrorReceived", stdErrorArgs, null, "Called by the MAL when a PubSub update error is received from a broker for the operation " + op.getName(), null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false,
+                            StdStrings.PUBLIC, false, true, null, op.getName() + "RegisterAckReceived",
+                            StubUtils.concatenateArguments(stdHeaderArg, stdQosArg), null,
+                            "Called by the MAL when a PubSub register acknowledgement is received from a broker for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false,
+                            StdStrings.PUBLIC, false, true, null, op.getName() + "RegisterErrorReceived", stdErrorArgs, null,
+                            "Called by the MAL when a PubSub register acknowledgement error is received from a broker for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false,
+                            StdStrings.PUBLIC, false, true, null, op.getName() + "DeregisterAckReceived",
+                            StubUtils.concatenateArguments(stdHeaderArg, stdQosArg), null,
+                            "Called by the MAL when a PubSub deregister acknowledgement is received from a broker for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false,
+                            StdStrings.PUBLIC, false, true, null, op.getName() + "NotifyReceived",
+                            opArgsU, null, "Called by the MAL when a PubSub update is received from a broker for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
+                    file.addMethodOpenStatement(true, false, false,
+                            StdStrings.PUBLIC, false, true, null, op.getName() + "NotifyErrorReceived",
+                            stdErrorArgs, null, "Called by the MAL when a PubSub update error is received from a broker for the operation " + op.getName(),
+                            null, null).addMethodCloseStatement();
                     pubsubRequired = true;
                     break;
                 }
@@ -605,39 +700,80 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         if (submitRequired || supportsToValue) {
-            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.SUBMIT_OP, "submitAck", "Ack", 0, stdNoBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a SUBMIT acknowledgement is received from a provider.");
-            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.SUBMIT_OP, "submit", "", stdErrorBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a SUBMIT acknowledgement error is received from a provider.");
+            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.SUBMIT_OP,
+                    "submitAck", "Ack", 0, stdNoBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a SUBMIT acknowledgement is received from a provider.");
+            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.SUBMIT_OP,
+                    "submit", "", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a SUBMIT acknowledgement error is received from a provider.");
         }
 
         if (requestRequired || supportsToValue) {
-            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.REQUEST_OP, "requestResponse", "Response", 3, stdBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a REQUEST response is received from a provider.");
-            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.REQUEST_OP, "request", "", stdErrorBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a REQUEST response error is received from a provider.");
+            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.REQUEST_OP,
+                    "requestResponse", "Response", 3, stdBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a REQUEST response is received from a provider.");
+            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.REQUEST_OP,
+                    "request", "", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a REQUEST response error is received from a provider.");
         }
 
         if (invokeRequired || supportsToValue) {
-            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.INVOKE_OP, "invokeAck", "Ack", 1, stdBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when an INVOKE acknowledgement is received from a provider.");
-            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.INVOKE_OP, "invokeAck", "Ack", stdErrorBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when an INVOKE acknowledgement error is received from a provider.");
-            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.INVOKE_OP, "invokeResponse", "Response", 3, stdBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when an INVOKE response is received from a provider.");
-            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.INVOKE_OP, "invokeResponse", "Response", stdErrorBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when an INVOKE response error is received from a provider.");
+            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.INVOKE_OP,
+                    "invokeAck", "Ack", 1, stdBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when an INVOKE acknowledgement is received from a provider.");
+            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.INVOKE_OP,
+                    "invokeAck", "Ack", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when an INVOKE acknowledgement error is received from a provider.");
+            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.INVOKE_OP,
+                    "invokeResponse", "Response", 3, stdBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when an INVOKE response is received from a provider.");
+            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.INVOKE_OP,
+                    "invokeResponse", "Response", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when an INVOKE response error is received from a provider.");
         }
 
         if (progressRequired || supportsToValue) {
-            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PROGRESS_OP, "progressAck", "Ack", 1, stdBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a PROGRESS acknowledgement is received from a provider.");
-            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PROGRESS_OP, "progressAck", "Ack", stdErrorBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a PROGRESS acknowledgement error is received from a provider.");
-            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PROGRESS_OP, "progressUpdate", "Update", 2, stdBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a PROGRESS update is received from a provider.");
-            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PROGRESS_OP, "progressUpdate", "Update", stdErrorBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a PROGRESS update error is received from a provider.");
-            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PROGRESS_OP, "progressResponse", "Response", 3, stdBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a PROGRESS response is received from a provider.");
-            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PROGRESS_OP, "progressResponse", "Response", stdErrorBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a PROGRESS response error is received from a provider.");
+            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PROGRESS_OP,
+                    "progressAck", "Ack", 1, stdBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a PROGRESS acknowledgement is received from a provider.");
+            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PROGRESS_OP,
+                    "progressAck", "Ack", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a PROGRESS acknowledgement error is received from a provider.");
+            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PROGRESS_OP,
+                    "progressUpdate", "Update", 2, stdBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a PROGRESS update is received from a provider.");
+            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PROGRESS_OP,
+                    "progressUpdate", "Update", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a PROGRESS update error is received from a provider.");
+            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PROGRESS_OP,
+                    "progressResponse", "Response", 3, stdBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a PROGRESS response is received from a provider.");
+            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PROGRESS_OP,
+                    "progressResponse", "Response", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a PROGRESS response error is received from a provider.");
         }
 
         if (pubsubRequired || supportsToValue) {
-            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PUBSUB_OP, "registerAck", "RegisterAck", 1, stdNoBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a PubSub register acknowledgement is received from a broker.");
-            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PUBSUB_OP, "register", "Register", stdErrorBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a PubSub register acknowledgement error is received from a broker.");
-            createServiceConsumerAdapterNotifyMethod(file, InteractionPatternEnum.PUBSUB_OP, "notify", "Notify", 2, stdNotifyBodyArgs, areaHelper, areaName, serviceHelper, serviceName, throwsMALException, summary, "Called by the MAL when a PubSub update is received from a broker.");
-            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PUBSUB_OP, "notify", "Notify", stdErrorBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a PubSub update error is received from a broker.");
-            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PUBSUB_OP, "deregisterAck", "DeregisterAck", 1, stdNoBodyArgs, serviceHelper, throwsMALException, summary, "Called by the MAL when a PubSub deregister acknowledgement is received from a broker.");
+            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PUBSUB_OP,
+                    "registerAck", "RegisterAck", 1, stdNoBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a PubSub register acknowledgement is received from a broker.");
+            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PUBSUB_OP,
+                    "register", "Register", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a PubSub register acknowledgement error is received from a broker.");
+            createServiceConsumerAdapterNotifyMethod(file, InteractionPatternEnum.PUBSUB_OP,
+                    "notify", "Notify", 2, stdNotifyBodyArgs, areaHelper, areaName, serviceHelper, serviceName, throwsMALException,
+                    summary, "Called by the MAL when a PubSub update is received from a broker.");
+            createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PUBSUB_OP,
+                    "notify", "Notify", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a PubSub update error is received from a broker.");
+            createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PUBSUB_OP,
+                    "deregisterAck", "DeregisterAck", 1, stdNoBodyArgs, serviceHelper, throwsMALException,
+                    summary, "Called by the MAL when a PubSub deregister acknowledgement is received from a broker.");
 
-            file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false, true, null, "notifyReceivedFromOtherService", stdNotifyBodyArgs, throwsMALException, "Called by the MAL when a PubSub update from another service is received from a broker.", null, Arrays.asList(throwsMALException + " if an error is detected processing the message.")).addMethodCloseStatement();
+            file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false,
+                    true, null, "notifyReceivedFromOtherService", stdNotifyBodyArgs, throwsMALException,
+                    "Called by the MAL when a PubSub update from another service is received from a broker.", null,
+                    Arrays.asList(throwsMALException + " if an error is detected processing the message.")).addMethodCloseStatement();
         }
 
         file.addClassCloseStatement();
@@ -645,8 +781,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
-    protected void createServiceConsumerAdapterMessageMethod(ClassWriter file, InteractionPatternEnum optype, String opname, String subopPostname, int opTypeIndex, List<CompositeField> args, String serviceHelper, String throwsMALException, ServiceSummary summary, String comment) throws IOException {
-        MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC, false, true, null, opname + "Received", args, throwsMALException, comment, null, Arrays.asList(throwsMALException + " if an error is detected processing the message."));
+    protected void createServiceConsumerAdapterMessageMethod(ClassWriter file, InteractionPatternEnum optype,
+            String opname, String subopPostname, int opTypeIndex, List<CompositeField> args,
+            String serviceHelper, String throwsMALException, ServiceSummary summary, String comment) throws IOException {
+        MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
+                false, true, null, opname + "Received", args, throwsMALException, comment, null,
+                Arrays.asList(throwsMALException + " if an error is detected processing the message."));
         method.addLine("switch (" + createMethodCall("msgHeader.getOperation().getValue()") + ")", false);
         method.addLine("{", false);
         for (OperationSummary op : summary.getOperations()) {
@@ -681,8 +821,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
     }
 
-    protected void createServiceConsumerAdapterNotifyMethod(ClassWriter file, InteractionPatternEnum optype, String opname, String subopPostname, int opTypeIndex, List<CompositeField> args, String areaHelper, String areaName, String serviceHelper, String serviceName, String throwsMALException, ServiceSummary summary, String comment) throws IOException {
-        MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC, false, true, null, opname + "Received", args, throwsMALException, comment, null, Arrays.asList(throwsMALException + " if an error is detected processing the message."));
+    protected void createServiceConsumerAdapterNotifyMethod(ClassWriter file, InteractionPatternEnum optype,
+            String opname, String subopPostname, int opTypeIndex, List<CompositeField> args,
+            String areaHelper, String areaName, String serviceHelper, String serviceName,
+            String throwsMALException, ServiceSummary summary, String comment) throws IOException {
+        MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
+                false, true, null, opname + "Received", args, throwsMALException, comment, null,
+                Arrays.asList(throwsMALException + " if an error is detected processing the message."));
 
         method.addLine("if ((" + areaHelper + "." + areaName.toUpperCase() + "_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (" + serviceHelper + "." + serviceName.toUpperCase() + "_SERVICE_NUMBER.equals(msgHeader.getService())))", false);
         method.addLine("{", false);
@@ -715,8 +860,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
     }
 
-    protected void createServiceConsumerAdapterErrorMethod(ClassWriter file, InteractionPatternEnum optype, String opname, String subopPostname, List<CompositeField> args, String serviceHelper, String throwsMALException, ServiceSummary summary, String comment) throws IOException {
-        MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC, false, true, null, opname + "ErrorReceived", args, throwsMALException, comment, null, Arrays.asList(throwsMALException + " if an error is detected processing the message."));
+    protected void createServiceConsumerAdapterErrorMethod(ClassWriter file, InteractionPatternEnum optype,
+            String opname, String subopPostname, List<CompositeField> args, String serviceHelper,
+            String throwsMALException, ServiceSummary summary, String comment) throws IOException {
+        MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
+                false, true, null, opname + "ErrorReceived", args, throwsMALException, comment, null,
+                Arrays.asList(throwsMALException + " if an error is detected processing the message."));
         method.addLine("switch (" + createMethodCall("msgHeader.getOperation().getValue()") + ")", false);
         method.addLine("{", false);
         for (OperationSummary op : summary.getOperations()) {
@@ -734,7 +883,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     }
 
-    protected void createServiceConsumerInterface(File consumerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+    protected void createServiceConsumerInterface(File consumerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
         String serviceName = service.getName();
 
         getLog().info("Creating consumer interface: " + serviceName);
@@ -745,24 +895,43 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         file.addInterfaceOpenStatement(serviceName, null, "Consumer interface for " + serviceName + " service.");
 
-        CompositeField serviceAdapterArg = createCompositeElementsDetails(file, false, "adapter", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + CONSUMER_FOLDER, serviceName + "Adapter", false), false, true, "adapter Listener in charge of receiving the messages from the service provider");
-        CompositeField lastInteractionStage = createCompositeElementsDetails(file, false, "lastInteractionStage", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false), true, true, "lastInteractionStage The last stage of the interaction to continue");
-        CompositeField initiationTimestamp = createCompositeElementsDetails(file, false, "initiationTimestamp", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.TIME, false), true, true, "initiationTimestamp Timestamp of the interaction initiation message");
-        CompositeField transactionId = createCompositeElementsDetails(file, false, "transactionId", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false), true, true, "transactionId Transaction identifier of the interaction to continue");
+        CompositeField serviceAdapterArg = createCompositeElementsDetails(file, false, "adapter",
+                TypeUtils.createTypeReference(area.getName(), service.getName() + "." + CONSUMER_FOLDER, serviceName + "Adapter", false),
+                false, true, "adapter Listener in charge of receiving the messages from the service provider");
+        CompositeField lastInteractionStage = createCompositeElementsDetails(file, false, "lastInteractionStage",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
+                true, true, "lastInteractionStage The last stage of the interaction to continue");
+        CompositeField initiationTimestamp = createCompositeElementsDetails(file, false, "initiationTimestamp",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.TIME, false),
+                true, true, "initiationTimestamp Timestamp of the interaction initiation message");
+        CompositeField transactionId = createCompositeElementsDetails(file, false, "transactionId",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false),
+                true, true, "transactionId Transaction identifier of the interaction to continue");
         List<CompositeField> continueOpArgs = StubUtils.concatenateArguments(lastInteractionStage, initiationTimestamp, transactionId, serviceAdapterArg);
 
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
-        CompositeField msgType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false), false, true, null);
-        CompositeField malConsumer = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false), false, true, null);
+        CompositeField msgType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
+                false, true, null);
+        CompositeField malConsumer = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
+                false, true, null);
 
-        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, malConsumer, "getConsumer", null, null, "Returns the internal MAL consumer object used for sending of messages from this interface", "The MAL consumer object.", null);
+        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, malConsumer, "getConsumer", null, null,
+                "Returns the internal MAL consumer object used for sending of messages from this interface",
+                "The MAL consumer object.", null);
 
         for (OperationSummary op : summary.getOperations()) {
             switch (op.getPattern()) {
                 case SEND_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, op.getName(), createOperationArguments(getConfig(), file, op.getArgTypes()), throwsInteractionAndMALException, op.getOriginalOp().getComment(), "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, op.getName(),
+                            createOperationArguments(getConfig(), file, op.getArgTypes()),
+                            throwsInteractionAndMALException, op.getOriginalOp().getComment(),
+                            "the MAL message sent to initiate the interaction",
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
+                                    throwsMALException + " if there is an implementation exception"));
                     break;
                 }
                 case SUBMIT_OP:
@@ -770,12 +939,17 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
                     String opRetComment = (null == opRetType) ? null : "The return value of the interaction";
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs, throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs, throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     if (supportsAsync) {
                         List<CompositeField> asyncOpArgs = StubUtils.concatenateArguments(opArgs, serviceAdapterArg);
-                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()), asyncOpArgs, throwsInteractionAndMALException, "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType,
+                                "async" + StubUtils.preCap(op.getName()), asyncOpArgs, throwsInteractionAndMALException,
+                                "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction",
+                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     }
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsInteractionAndMALException, "Continues a previously started interaction", null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsInteractionAndMALException, "Continues a previously started interaction", null,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     break;
                 }
                 case INVOKE_OP:
@@ -783,24 +957,42 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     List<CompositeField> opArgs = StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getArgTypes()), serviceAdapterArg);
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
                     String opRetComment = (null == opRetType) ? null : "The acknowledge value of the interaction";
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs, throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs,
+                            throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     if (supportsAsync) {
-                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()), opArgs, throwsInteractionAndMALException, "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()), opArgs,
+                                throwsInteractionAndMALException, "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction",
+                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     }
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsInteractionAndMALException, "Continues a previously started interaction", null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, "continue" + StubUtils.preCap(op.getName()), continueOpArgs,
+                            throwsInteractionAndMALException, "Continues a previously started interaction", null,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     break;
                 }
                 case PUBSUB_OP: {
-                    CompositeField subStr = createCompositeElementsDetails(file, false, "subscription", TypeUtils.createTypeReference(StdStrings.MAL, null, "Subscription", false), true, true, "subscription the subscription to register for");
-                    CompositeField idStr = createCompositeElementsDetails(file, false, "identifierList", TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true), true, true, "identifierList the subscription identifiers to deregister");
+                    CompositeField subStr = createCompositeElementsDetails(file, false, "subscription",
+                            TypeUtils.createTypeReference(StdStrings.MAL, null, "Subscription", false),
+                            true, true, "subscription the subscription to register for");
+                    CompositeField idStr = createCompositeElementsDetails(file, false, "identifierList",
+                            TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true),
+                            true, true, "identifierList the subscription identifiers to deregister");
 
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName() + "Register", StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Register method for the " + op.getName() + " PubSub interaction", null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName() + "Deregister", Arrays.asList(idStr), throwsInteractionAndMALException, "Deregister method for the " + op.getName() + " PubSub interaction", null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName() + "Register", StubUtils.concatenateArguments(subStr, serviceAdapterArg),
+                            throwsInteractionAndMALException, "Register method for the " + op.getName() + " PubSub interaction", null,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName() + "Deregister", Arrays.asList(idStr),
+                            throwsInteractionAndMALException, "Deregister method for the " + op.getName() + " PubSub interaction", null,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     if (supportsAsync) {
                         file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()) + "Register",
-                                StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Register", "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                                StubUtils.concatenateArguments(subStr, serviceAdapterArg),
+                                throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Register", "the MAL message sent to initiate the interaction",
+                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                         file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()) + "Deregister",
-                                StubUtils.concatenateArguments(idStr, serviceAdapterArg), throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Deregister", "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                                StubUtils.concatenateArguments(idStr, serviceAdapterArg),
+                                throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Deregister", "the MAL message sent to initiate the interaction",
+                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     }
                     break;
                 }
@@ -812,7 +1004,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
-    protected void createServiceConsumerStub(File consumerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+    protected void createServiceConsumerStub(File consumerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
         getLog().info("Creating consumer stub: " + service.getName());
 
         String serviceName = service.getName();
@@ -822,34 +1015,59 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         file.addPackageStatement(area, service, CONSUMER_FOLDER);
 
-        CompositeField serviceAdapterArg = createCompositeElementsDetails(file, false, "adapter", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + CONSUMER_FOLDER, serviceName + "Adapter", false), false, true, "adapter Listener in charge of receiving the messages from the service provider");
+        CompositeField serviceAdapterArg = createCompositeElementsDetails(file, false, "adapter",
+                TypeUtils.createTypeReference(area.getName(), service.getName() + "." + CONSUMER_FOLDER, serviceName + "Adapter", false),
+                false, true, "adapter Listener in charge of receiving the messages from the service provider");
 
-        CompositeField lastInteractionStage = createCompositeElementsDetails(file, false, "lastInteractionStage", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false), true, true, "lastInteractionStage The last stage of the interaction to continue");
-        CompositeField initiationTimestamp = createCompositeElementsDetails(file, false, "initiationTimestamp", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.TIME, false), true, true, "initiationTimestamp Timestamp of the interaction initiation message");
-        CompositeField transactionId = createCompositeElementsDetails(file, false, "transactionId", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false), true, true, "transactionId Transaction identifier of the interaction to continue");
+        CompositeField lastInteractionStage = createCompositeElementsDetails(file, false, "lastInteractionStage",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
+                true, true, "lastInteractionStage The last stage of the interaction to continue");
+        CompositeField initiationTimestamp = createCompositeElementsDetails(file, false, "initiationTimestamp",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.TIME, false),
+                true, true, "initiationTimestamp Timestamp of the interaction initiation message");
+        CompositeField transactionId = createCompositeElementsDetails(file, false, "transactionId",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false),
+                true, true, "transactionId Transaction identifier of the interaction to continue");
         List<CompositeField> continueOpArgs = StubUtils.concatenateArguments(lastInteractionStage, initiationTimestamp, transactionId, serviceAdapterArg);
 
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
 
-        CompositeField msgType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false), false, true, null);
-        CompositeField msgBodyType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageBody", false), false, true, null);
-        CompositeField uriType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.URI, false), true, true, null);
+        CompositeField msgType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
+                false, true, null);
+        CompositeField msgBodyType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageBody", false),
+                false, true, null);
+        CompositeField uriType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.URI, false),
+                true, true, null);
         String helperType = createElementType(file, area.getName(), service.getName(), null, serviceName + "Helper") + getConfig().getNamingSeparator();
-        CompositeField consumerType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false), false, true, null);
+        CompositeField consumerType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
+                false, true, null);
         String consumerMethodCall = createMethodCall("consumer.");
-        CompositeField consumerTypeVar = createCompositeElementsDetails(file, false, "consumer", TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false), false, true, null);
+        CompositeField consumerTypeVar = createCompositeElementsDetails(file, false, "consumer",
+                TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
+                false, true, null);
 
         file.addClassOpenStatement(className, false, false, null, createElementType(file, area.getName(), serviceName, CONSUMER_FOLDER, serviceName), "Consumer stub for " + serviceName + " service.");
 
         file.addClassVariable(false, true, StdStrings.PRIVATE, consumerTypeVar, false, (String) null);
 
-        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, createCompositeElementsDetails(file, false, "consumer", TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false), false, true, "consumer The MALConsumer to use in this stub."), false, null, "Wraps a MALconsumer connection with service specific methods that map from the high level service API to the generic MAL API.", null);
+        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className,
+                createCompositeElementsDetails(file, false, "consumer",
+                        TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
+                        false, true, "consumer The MALConsumer to use in this stub."),
+                false, null,
+                "Wraps a MALconsumer connection with service specific methods that map from the high level service API to the generic MAL API.", null);
         method.addLine(createMethodCall("this.consumer = consumer"));
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, createReturnReference(consumerType), "getConsumer", null, null, "Returns the internal MAL consumer object used for sending of messages from this interface", "The MAL consumer object.", null);
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, createReturnReference(consumerType), "getConsumer", null, null,
+                "Returns the internal MAL consumer object used for sending of messages from this interface",
+                "The MAL consumer object.", null);
         method.addLine(createMethodCall("return consumer"));
         method.addMethodCloseStatement();
 
@@ -864,7 +1082,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
             switch (op.getPattern()) {
                 case SEND_OP: {
                     List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
-                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, op.getName(), opArgs, throwsInteractionAndMALException, op.getOriginalOp().getComment(), "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true,
+                            msgType, op.getName(), opArgs, throwsInteractionAndMALException,
+                            op.getOriginalOp().getComment(), "the MAL message sent to initiate the interaction",
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     method.addMethodWithDependencyStatement("return " + consumerMethodCall + createConsumerPatternCall(op) + "(" + operationInstanceVar + ", " + createArgNameOrNull(op.getArgTypes()) + ")", helperType, true);
                     method.addMethodCloseStatement();
                     break;
@@ -880,19 +1101,27 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         opRetComment = "The return value of the interaction";
                     }
                     String opGet = rv + consumerMethodCall + createConsumerPatternCall(op) + "(" + operationInstanceVar + ", " + createArgNameOrNull(op.getArgTypes()) + ")";
-                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, opRetType, op.getName(), opArgs, throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, opRetType, 
+                            op.getName(), opArgs, throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     method.addMethodWithDependencyStatement(opGet, helperType, true);
                     createOperationReturn(file, method, op, opRetType);
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
                         List<CompositeField> asyncOpArgs = StubUtils.concatenateArguments(opArgs, serviceAdapterArg);
-                        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, "async" + StubUtils.preCap(op.getName()), asyncOpArgs, throwsInteractionAndMALException, "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType,
+                                "async" + StubUtils.preCap(op.getName()), asyncOpArgs, throwsInteractionAndMALException,
+                                "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction",
+                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                         method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(createConsumerPatternCall(op)) + "(" + operationInstanceVar + ", adapter, " + createArgNameOrNull(op.getArgTypes()) + ")");
                         method.addMethodCloseStatement();
                     }
 
-                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsInteractionAndMALException, "Continues a previously started interaction", null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null,
+                            "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsInteractionAndMALException,
+                            "Continues a previously started interaction", null,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     method.addLine(consumerMethodCall + "continueInteraction(" + operationInstanceVar + ", lastInteractionStage, initiationTimestamp, transactionId, adapter)");
                     method.addMethodCloseStatement();
                     break;
@@ -908,42 +1137,72 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         opRetComment = "The acknowledge value of the interaction";
                     }
                     String opGet = rv + consumerMethodCall + createConsumerPatternCall(op) + "(" + operationInstanceVar + ", adapter, " + createArgNameOrNull(op.getArgTypes()) + ")";
-                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, opRetType, op.getName(), opArgs, throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                            false, false, opRetType, op.getName(), opArgs,
+                            throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
+                                    throwsMALException + " if there is an implementation exception"));
                     method.addMethodWithDependencyStatement(opGet, helperType, true);
                     createOperationReturn(file, method, op, opRetType);
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
-                        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, "async" + StubUtils.preCap(op.getName()), opArgs, throwsInteractionAndMALException, "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType,
+                                "async" + StubUtils.preCap(op.getName()), opArgs, throwsInteractionAndMALException,
+                                "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction",
+                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                         method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(createConsumerPatternCall(op)) + "(" + operationInstanceVar + ", adapter, " + createArgNameOrNull(op.getArgTypes()) + ")");
                         method.addMethodCloseStatement();
                     }
 
-                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsInteractionAndMALException, "Continues a previously started interaction", null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                            false, true, null, "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsInteractionAndMALException, "Continues a previously started interaction", null,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     method.addLine(consumerMethodCall + "continueInteraction(" + operationInstanceVar + ", lastInteractionStage, initiationTimestamp, transactionId, adapter)");
                     method.addMethodCloseStatement();
                     break;
                 }
                 case PUBSUB_OP: {
-                    CompositeField subStr = createCompositeElementsDetails(file, false, "subscription", TypeUtils.createTypeReference(StdStrings.MAL, null, "Subscription", false), true, true, "subscription the subscription to register for");
-                    CompositeField idStr = createCompositeElementsDetails(file, false, "identifierList", TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true), true, true, "identifierList the subscription identifiers to deregister");
+                    CompositeField subStr = createCompositeElementsDetails(file, false, "subscription",
+                            TypeUtils.createTypeReference(StdStrings.MAL, null, "Subscription", false),
+                            true, true, "subscription the subscription to register for");
+                    CompositeField idStr = createCompositeElementsDetails(file, false, "identifierList",
+                            TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true),
+                            true, true, "identifierList the subscription identifiers to deregister");
 
-                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "Register", StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Register method for the " + op.getName() + " PubSub interaction", null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "Register",
+                            StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Register method for the " + op.getName() + " PubSub interaction", null,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     method.addMethodWithDependencyStatement(consumerMethodCall + getRegisterMethodName() + "(" + operationInstanceVar + ", subscription, adapter)", helperType, true);
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
-                        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, "async" + StubUtils.preCap(op.getName()) + "Register", StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Register", "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                                false, true, msgType,
+                                "async" + StubUtils.preCap(op.getName()) + "Register",
+                                StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException,
+                                "Asynchronous version of method " + op.getName() + "Register", "the MAL message sent to initiate the interaction",
+                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                         method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(getRegisterMethodName()) + "(" + operationInstanceVar + ", subscription, adapter)");
                         method.addMethodCloseStatement();
                     }
 
-                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, op.getName() + "Deregister", Arrays.asList(idStr), throwsInteractionAndMALException, "Deregister method for the " + op.getName() + " PubSub interaction", null, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                            false, true, null, op.getName() + "Deregister",
+                            Arrays.asList(idStr), throwsInteractionAndMALException,
+                            "Deregister method for the " + op.getName() + " PubSub interaction", null,
+                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     method.addLine(consumerMethodCall + getDeregisterMethodName() + "(" + operationInstanceVar + ", identifierList)");
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
-                        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, "async" + StubUtils.preCap(op.getName()) + "Deregister", StubUtils.concatenateArguments(idStr, serviceAdapterArg), throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Deregister", "the MAL message sent to initiate the interaction", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                                false, true, msgType, "async" + StubUtils.preCap(op.getName()) + "Deregister",
+                                StubUtils.concatenateArguments(idStr, serviceAdapterArg),
+                                throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Deregister",
+                                "the MAL message sent to initiate the interaction",
+                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                         method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(getDeregisterMethodName()) + "(" + operationInstanceVar + ", identifierList, adapter)");
                         method.addMethodCloseStatement();
                     }
@@ -967,7 +1226,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         file.addInterfaceOpenStatement(handlerName, null, "Interface that providers of the " + service.getName() + " service must implement to handle the operations of that service.");
 
-        CompositeField intHandler = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false), false, true, "interaction The MAL object representing the interaction in the provider.");
+        CompositeField intHandler = createCompositeElementsDetails(file, false, "interaction",
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false),
+                false, true, "interaction The MAL object representing the interaction in the provider.");
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
@@ -983,15 +1244,24 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     opRetType = createOperationReturnType(file, area, service, op);
                     opRetComment = "The return value of the operation";
                 } else if ((InteractionPatternEnum.INVOKE_OP == op.getPattern()) || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {
-                    serviceHandler = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false), false, true, "interaction The MAL object representing the interaction in the provider.");
+                    serviceHandler = createCompositeElementsDetails(file, false, "interaction",
+                            TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false),
+                            false, true, "interaction The MAL object representing the interaction in the provider.");
                 }
 
-                file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandler), throwsInteractionAndMALException, "Implements the operation " + op.getName(), opRetComment, Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
+                        StubUtils.concatenateArguments(opArgs, serviceHandler), throwsInteractionAndMALException,
+                        "Implements the operation " + op.getName(), opRetComment,
+                        Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
+                                throwsMALException + " if there is an implementation exception"));
             }
         }
 
-        CompositeField skel = createCompositeElementsDetails(file, false, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "skeleton The skeleton to be used");
-        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, "setSkeleton", Arrays.asList(skel), null, "Sets the skeleton to be used for creation of publishers.", null, null);
+        CompositeField skel = createCompositeElementsDetails(file, false, "skeleton",
+                TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false),
+                false, true, "skeleton The skeleton to be used");
+        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, "setSkeleton", Arrays.asList(skel), null,
+                "Sets the skeleton to be used for creation of publishers.", null, null);
 
         file.addInterfaceCloseStatement();
 
@@ -1009,30 +1279,51 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
-        CompositeField msgType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false), false, true, null);
-        CompositeField opType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false), false, true, null);
-        CompositeField opTypeVar = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false), false, false, null);
-        CompositeField errType = createCompositeElementsDetails(file, false, "error", TypeUtils.createTypeReference(StdStrings.MAL, null, "MALStandardError", false), false, true, "error The MAL error to send to the consumer.");
+        CompositeField msgType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
+                false, true, null);
+        CompositeField opType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false),
+                false, true, null);
+        CompositeField opTypeVar = createCompositeElementsDetails(file, false, "interaction",
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false),
+                false, false, null);
+        CompositeField errType = createCompositeElementsDetails(file, false, "error",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALStandardError", false),
+                false, true, "error The MAL error to send to the consumer.");
 
         file.addClassOpenStatement(className, false, false, null, null, "Provider INVOKE interaction class for " + service.getName() + "::" + op.getName() + " operation.");
 
         file.addClassVariable(false, false, StdStrings.PRIVATE, opTypeVar, false, (String) null);
 
-        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false), false, true, "interaction The MAL interaction action object to use."), false, null, "Wraps the provided MAL interaction object with methods for sending responses to an INVOKE interaction from a provider.", null);
+        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className,
+                createCompositeElementsDetails(file, false, "interaction",
+                        TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false),
+                        false, true, "interaction The MAL interaction action object to use."), false, null,
+                "Wraps the provided MAL interaction object with methods for sending responses to an INVOKE interaction from a provider.", null);
         method.addLine(createMethodCall("this.interaction = interaction"));
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, opType, "getInteraction", null, null, "Returns the MAL interaction object used for returning messages from the provider.", "The MAL interaction object provided in the constructor", null);
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, opType, "getInteraction", null, null,
+                "Returns the MAL interaction object used for returning messages from the provider.",
+                "The MAL interaction object provided in the constructor", null);
         method.addLine("return interaction");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, "sendAcknowledgement", createOperationArguments(getConfig(), file, op.getAckTypes()), throwsInteractionAndMALException,
-                "Sends a INVOKE acknowledge to the consumer", "Returns the MAL message created by the acknowledge", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, msgType, "sendAcknowledgement", createOperationArguments(getConfig(), file, op.getAckTypes()), throwsInteractionAndMALException,
+                "Sends a INVOKE acknowledge to the consumer", "Returns the MAL message created by the acknowledge",
+                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
+                        throwsMALException + " if there is an implementation exception"));
         method.addLine(createMethodCall("return interaction.sendAcknowledgement(") + createArgNameOrNull(op.getAckTypes()) + ")");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, "sendResponse", createOperationArguments(getConfig(), file, op.getRetTypes()), throwsInteractionAndMALException,
-                "Sends a INVOKE response to the consumer", "Returns the MAL message created by the response", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, msgType, "sendResponse", createOperationArguments(getConfig(), file, op.getRetTypes()), throwsInteractionAndMALException,
+                "Sends a INVOKE response to the consumer", "Returns the MAL message created by the response",
+                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
+                        throwsMALException + " if there is an implementation exception"));
         method.addLine(createMethodCall("return interaction.sendResponse(") + createArgNameOrNull(op.getRetTypes()) + ")");
         method.addMethodCloseStatement();
 
@@ -1054,35 +1345,52 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
-        CompositeField msgType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false), false, true, null);
-        CompositeField opType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false), false, true, null);
-        CompositeField opTypeVar = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false), false, false, null);
-        CompositeField errType = createCompositeElementsDetails(file, false, "error", TypeUtils.createTypeReference(StdStrings.MAL, null, "MALStandardError", false), false, true, "error The MAL error to send to the consumer.");
+        CompositeField msgType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false), false, true, null);
+        CompositeField opType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false), false, true, null);
+        CompositeField opTypeVar = createCompositeElementsDetails(file, false, "interaction",
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false), false, false, null);
+        CompositeField errType = createCompositeElementsDetails(file, false, "error",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALStandardError", false), false, true, "error The MAL error to send to the consumer.");
 
         file.addClassOpenStatement(className, false, false, null, null, "Provider PROGRESS interaction class for " + service.getName() + "::" + op.getName() + " operation.");
 
-        file.addClassVariable(false, false, StdStrings.PRIVATE, opTypeVar, false, (String) null);
+        file.addClassVariable(false, false, StdStrings.PRIVATE, opTypeVar,
+                false, (String) null);
 
-        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false), false, true, "interaction The MAL interaction action object to use."), false, null, "Wraps the provided MAL interaction object with methods for sending responses to an PROGRESS interaction from a provider.", null);
+        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className,
+                createCompositeElementsDetails(file, false, "interaction",
+                        TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false),
+                        false, true, "interaction The MAL interaction action object to use."), false, null,
+                "Wraps the provided MAL interaction object with methods for sending responses to an PROGRESS interaction from a provider.", null);
         method.addLine(createMethodCall("this.interaction = interaction"));
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, opType, "getInteraction", null, null, "Returns the MAL interaction object used for returning messages from the provider.", "The MAL interaction object provided in the constructor", null);
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, opType, "getInteraction", null, null,
+                "Returns the MAL interaction object used for returning messages from the provider.", "The MAL interaction object provided in the constructor", null);
         method.addLine("return interaction");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, "sendAcknowledgement", createOperationArguments(getConfig(), file, op.getAckTypes()), throwsInteractionAndMALException,
-                "Sends a PROGRESS acknowledge to the consumer", "Returns the MAL message created by the acknowledge", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, msgType, "sendAcknowledgement", createOperationArguments(getConfig(), file, op.getAckTypes()), throwsInteractionAndMALException,
+                "Sends a PROGRESS acknowledge to the consumer", "Returns the MAL message created by the acknowledge",
+                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
         method.addLine(createMethodCall("return interaction.sendAcknowledgement(") + createArgNameOrNull(op.getAckTypes()) + ")");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, "sendUpdate", createOperationArguments(getConfig(), file, op.getUpdateTypes()), throwsInteractionAndMALException,
-                "Sends a PROGRESS update to the consumer", "Returns the MAL message created by the update", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, msgType, "sendUpdate", createOperationArguments(getConfig(), file, op.getUpdateTypes()), throwsInteractionAndMALException,
+                "Sends a PROGRESS update to the consumer", "Returns the MAL message created by the update",
+                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
         method.addLine(createMethodCall("return interaction.sendUpdate(") + createArgNameOrNull(op.getUpdateTypes()) + ")");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, "sendResponse", createOperationArguments(getConfig(), file, op.getRetTypes()), throwsInteractionAndMALException,
-                "Sends a PROGRESS response to the consumer", "Returns the MAL message created by the response", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, msgType, "sendResponse", createOperationArguments(getConfig(), file, op.getRetTypes()), throwsInteractionAndMALException,
+                "Sends a PROGRESS response to the consumer", "Returns the MAL message created by the response",
+                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
         method.addLine(createMethodCall("return interaction.sendResponse(") + createArgNameOrNull(op.getRetTypes()) + ")");
         method.addMethodCloseStatement();
 
@@ -1093,33 +1401,51 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
-    protected void createServiceProviderInteractionErrorHandlers(ClassWriter file, boolean withUpdate, CompositeField msgType, CompositeField errType, String throwsInteractionException, String throwsMALException) throws IOException {
+    protected void createServiceProviderInteractionErrorHandlers(ClassWriter file, boolean withUpdate, CompositeField msgType,
+            CompositeField errType, String throwsInteractionException, String throwsMALException) throws IOException {
         MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, "sendError", Arrays.asList(errType), throwsInteractionException + ", " + throwsMALException,
-                "Sends an error to the consumer", "Returns the MAL message created by the error", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                "Sends an error to the consumer", "Returns the MAL message created by the error",
+                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
         method.addLine(createMethodCall("return interaction.sendError(error)"));
         method.addMethodCloseStatement();
 
         if (withUpdate) {
             method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType, "sendUpdateError", Arrays.asList(errType), throwsInteractionException + ", " + throwsMALException,
-                    "Sends an update error to the consumer", "Returns the MAL message created by the error", Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
+                    "Sends an update error to the consumer", "Returns the MAL message created by the error",
+                    Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
             method.addLine(createMethodCall("return interaction.sendUpdateError(error)"));
             method.addMethodCloseStatement();
         }
     }
 
-    protected void createServiceProviderSkeleton(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException {
+    protected void createServiceProviderSkeleton(File providerFolder, AreaType area, ServiceType service,
+            ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException {
         getLog().info("Creating provider skeleton interface: " + service.getName());
 
         String skeletonName = service.getName() + "Skeleton";
         InterfaceWriter file = createInterfaceFile(providerFolder, skeletonName);
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        CompositeField malDomId = createCompositeElementsDetails(file, false, "domain", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, true), true, true, "domain the domain used for publishing");
-        CompositeField malNetworkZone = createCompositeElementsDetails(file, false, "networkZone", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false), true, true, "networkZone the network zone used for publishing");
-        CompositeField malSession = createCompositeElementsDetails(file, false, "sessionType", TypeUtils.createTypeReference(StdStrings.MAL, null, "SessionType", false), true, true, "sessionType the session used for publishing");
-        CompositeField malSessionName = createCompositeElementsDetails(file, false, "sessionName", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false), true, true, "sessionName the session name used for publishing");
-        CompositeField malqos = createCompositeElementsDetails(file, false, "qos", TypeUtils.createTypeReference(StdStrings.MAL, null, "QoSLevel", false), true, true, "qos the QoS used for publishing");
-        CompositeField malqosprops = createCompositeElementsDetails(file, false, "qosProps", TypeUtils.createTypeReference(null, null, "Map<_String;_String>", false), false, true, "qosProps the QoS properties used for publishing");
-        CompositeField malPriority = createCompositeElementsDetails(file, false, "priority", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, true, "priority the priority used for publishing");
+        CompositeField malDomId = createCompositeElementsDetails(file, false, "domain",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, true),
+                true, true, "domain the domain used for publishing");
+        CompositeField malNetworkZone = createCompositeElementsDetails(file, false, "networkZone",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false),
+                true, true, "networkZone the network zone used for publishing");
+        CompositeField malSession = createCompositeElementsDetails(file, false, "sessionType",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "SessionType", false),
+                true, true, "sessionType the session used for publishing");
+        CompositeField malSessionName = createCompositeElementsDetails(file, false, "sessionName",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER,
+                        false), true, true, "sessionName the session name used for publishing");
+        CompositeField malqos = createCompositeElementsDetails(file, false, "qos",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "QoSLevel", false),
+                true, true, "qos the QoS used for publishing");
+        CompositeField malqosprops = createCompositeElementsDetails(file, false, "qosProps",
+                TypeUtils.createTypeReference(null, null, "Map<_String;_String>", false),
+                false, true, "qosProps the QoS properties used for publishing");
+        CompositeField malPriority = createCompositeElementsDetails(file, false, "priority",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
+                true, true, "priority the priority used for publishing");
 
         file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
@@ -1131,9 +1457,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     String updateType = getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + PROVIDER_FOLDER + "." + StubUtils.preCap(op.getName()) + "Publisher";
                     requiredPublishers.put(updateType, new RequiredPublisher(area, service, op));
                     file.addTypeDependency("Map<_String;_String>");
-                    CompositeField updateTypeField = createCompositeElementsDetails(file, false, "publisher", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false), false, true, null);
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, updateTypeField, "create" + StubUtils.preCap(op.getName()) + "Publisher", StubUtils.concatenateArguments(malDomId, malNetworkZone, malSession, malSessionName, malqos, malqosprops, malPriority), throwsMALException,
-                            "Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName(), "The new publisher object.", Arrays.asList(throwsMALException + " if a problem is detected during creation of the publisher"));
+                    CompositeField updateTypeField = createCompositeElementsDetails(file, false, "publisher",
+                            TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false), false, true, null);
+                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, updateTypeField, "create" + StubUtils.preCap(op.getName()) + "Publisher",
+                            StubUtils.concatenateArguments(malDomId, malNetworkZone, malSession, malSessionName, malqos, malqosprops, malPriority), throwsMALException,
+                            "Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName(),
+                            "The new publisher object.", Arrays.asList(throwsMALException + " if a problem is detected during creation of the publisher"));
                     break;
                 }
             }
@@ -1176,16 +1505,25 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String malString = malStringAsElement(file);
         String malInteger = createElementType(file, StdStrings.MAL, null, StdStrings.INTEGER);
         String stdError = createElementType(file, StdStrings.MAL, null, null, "MALStandardError");
-        CompositeField stdBodyArg = createCompositeElementsDetails(file, false, "body", TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageBody", false), false, true, "body the message body");
+        CompositeField stdBodyArg = createCompositeElementsDetails(file, false, "body",
+                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageBody", false), false, true, "body the message body");
         String stdErrorNs = convertToNamespace("," + stdError + ".," + malString + ".," + malInteger + ".");
-        CompositeField malDomId = createCompositeElementsDetails(file, false, "domain", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, true), true, true, "domain the domain used for publishing");
-        CompositeField malNetworkZone = createCompositeElementsDetails(file, false, "networkZone", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false), true, true, "networkZone the network zone used for publishing");
-        CompositeField malSession = createCompositeElementsDetails(file, false, "sessionType", TypeUtils.createTypeReference(StdStrings.MAL, null, "SessionType", false), true, true, "sessionType the session used for publishing");
-        CompositeField malSessionName = createCompositeElementsDetails(file, false, "sessionName", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false), true, true, "sessionName the session name used for publishing");
-        CompositeField malqos = createCompositeElementsDetails(file, false, "qos", TypeUtils.createTypeReference(StdStrings.MAL, null, "QoSLevel", false), true, true, "qos the QoS used for publishing");
-        CompositeField malqosprops = createCompositeElementsDetails(file, false, "qosProps", TypeUtils.createTypeReference(null, null, "Map<_String;_String>", false), false, true, "qosProps the QoS properties used for publishing");
-        CompositeField malPriority = createCompositeElementsDetails(file, false, "priority", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, true, "priority the priority used for publishing");
-        CompositeField proviedrSetVar = createCompositeElementsDetails(file, false, "providerSet", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProviderSet", false), false, true, null);
+        CompositeField malDomId = createCompositeElementsDetails(file, false, "domain",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, true), true, true, "domain the domain used for publishing");
+        CompositeField malNetworkZone = createCompositeElementsDetails(file, false, "networkZone",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false), true, true, "networkZone the network zone used for publishing");
+        CompositeField malSession = createCompositeElementsDetails(file, false, "sessionType",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "SessionType", false), true, true, "sessionType the session used for publishing");
+        CompositeField malSessionName = createCompositeElementsDetails(file, false, "sessionName",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false), true, true, "sessionName the session name used for publishing");
+        CompositeField malqos = createCompositeElementsDetails(file, false, "qos",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "QoSLevel", false), true, true, "qos the QoS used for publishing");
+        CompositeField malqosprops = createCompositeElementsDetails(file, false, "qosProps",
+                TypeUtils.createTypeReference(null, null, "Map<_String;_String>", false), false, true, "qosProps the QoS properties used for publishing");
+        CompositeField malPriority = createCompositeElementsDetails(file, false, "priority",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, true, "priority the priority used for publishing");
+        CompositeField proviedrSetVar = createCompositeElementsDetails(file, false, "providerSet",
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProviderSet", false), false, true, null);
         List<CompositeField> psArgs = StubUtils.concatenateArguments(malDomId, malNetworkZone, malSession, malSessionName, malqos, malqosprops, malPriority);
 
         String implementsList = createElementType(file, StdStrings.MAL, null, PROVIDER_FOLDER, "MALInteractionHandler") + ", " + createElementType(file, area.getName(), service.getName(), PROVIDER_FOLDER, service.getName() + "Skeleton");
@@ -1197,28 +1535,45 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.addClassVariable(false, false, StdStrings.PRIVATE, proviedrSetVar, false, "(" + helperName + getConfig().getNamingSeparator() + service.getName().toUpperCase() + "_SERVICE)");
 
         if (isDelegate) {
-            CompositeField handlerName = createCompositeElementsDetails(file, false, "delegate", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), false, true, null);
+            CompositeField handlerName = createCompositeElementsDetails(file, false, "delegate",
+                    TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), false, true, null);
             file.addClassVariable(false, false, StdStrings.PRIVATE, handlerName, false, (String) null);
         }
 
         if (isDelegate) {
-            MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, createCompositeElementsDetails(file, false, "delegate", TypeUtils.createTypeReference(area.getName(), service.getName().toLowerCase() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false), false, true, "delegate The interaction handler used for delegation"), false, null, "Creates a delegation skeleton using the supplied delegate.", null);
+            MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className,
+                    createCompositeElementsDetails(file, false, "delegate",
+                            TypeUtils.createTypeReference(area.getName(), service.getName().toLowerCase() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false),
+                            false, true, "delegate The interaction handler used for delegation"), false, null,
+                    "Creates a delegation skeleton using the supplied delegate.", null);
             method.addLine(createMethodCall("this.delegate = delegate"));
             method.addLine(createMethodCall("delegate.setSkeleton(this)"));
             method.addMethodCloseStatement();
         } else {
-            CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "skeleton Not used in the inheritance pattern (the skeleton is 'this'");
-            MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "setSkeleton", Arrays.asList(skeletonName), null, "Implements the setSkeleton method of the handler interface but does nothing as this is the skeleton.", null, null);
+            CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton",
+                    TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false),
+                    false, true, "skeleton Not used in the inheritance pattern (the skeleton is 'this'");
+            MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                    false, true, null, "setSkeleton", Arrays.asList(skeletonName), null,
+                    "Implements the setSkeleton method of the handler interface but does nothing as this is the skeleton.",
+                    null, null);
             method.addLine("// Not used in the inheritance pattern (the skeleton is 'this')");
             method.addMethodCloseStatement();
 
         }
-        CompositeField providerType = createCompositeElementsDetails(file, false, "provider", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProvider", false), false, true, "provider The provider to add");
-        MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "malInitialize", Arrays.asList(providerType), throwsMALException, "Adds the supplied MAL provider to the internal list of providers used for PubSub", null, Arrays.asList(throwsMALException + " If an error is detected."));
+        CompositeField providerType = createCompositeElementsDetails(file, false, "provider",
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProvider", false), false, true, "provider The provider to add");
+        MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, null, "malInitialize", Arrays.asList(providerType), throwsMALException,
+                "Adds the supplied MAL provider to the internal list of providers used for PubSub",
+                null, Arrays.asList(throwsMALException + " If an error is detected."));
         method.addLine(createMethodCall("providerSet.addProvider(provider)"));
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "malFinalize", Arrays.asList(providerType), throwsMALException, "Removes the supplied MAL provider from the internal list of providers used for PubSub", null, Arrays.asList(throwsMALException + " If an error is detected."));
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, null, "malFinalize", Arrays.asList(providerType), throwsMALException,
+                "Removes the supplied MAL provider from the internal list of providers used for PubSub", null,
+                Arrays.asList(throwsMALException + " If an error is detected."));
         method.addLine(createMethodCall("providerSet.removeProvider(provider)"));
         method.addMethodCloseStatement();
 
@@ -1248,7 +1603,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         // SEND handler
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "handleSend", StubUtils.concatenateArguments(createServiceProviderSkeletonSendHandler(file, "interaction", "interaction the interaction object"), stdBodyArg), throwsMALAndInteractionException, "Called by the provider MAL layer on reception of a message to handle the interaction", null, Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "handleSend",
+                StubUtils.concatenateArguments(createServiceProviderSkeletonSendHandler(file, "interaction", "interaction the interaction object"), stdBodyArg),
+                throwsMALAndInteractionException,
+                "Called by the provider MAL layer on reception of a message to handle the interaction", null,
+                Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
         method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ")"), false);
         method.addLine("{", false);
         for (OperationSummary op : summary.getOperations()) {
@@ -1271,7 +1630,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // SUBMIT handler
         CompositeField submitInt = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALSubmit", false), false, true, "interaction the interaction object");
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "handleSubmit", StubUtils.concatenateArguments(submitInt, stdBodyArg), throwsMALAndInteractionException, "Called by the provider MAL layer on reception of a message to handle the interaction", null, Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "handleSubmit",
+                StubUtils.concatenateArguments(submitInt, stdBodyArg), throwsMALAndInteractionException,
+                "Called by the provider MAL layer on reception of a message to handle the interaction", null,
+                Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
         method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ")"), false);
         method.addLine("{", false);
         for (OperationSummary op : summary.getOperations()) {
@@ -1294,8 +1656,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
 
         // REQUEST handler
-        CompositeField requestInt = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALRequest", false), false, true, "interaction the interaction object");
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "handleRequest", StubUtils.concatenateArguments(requestInt, stdBodyArg), throwsMALAndInteractionException, "Called by the provider MAL layer on reception of a message to handle the interaction", null, Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
+        CompositeField requestInt = createCompositeElementsDetails(file, false, "interaction",
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALRequest", false),
+                false, true, "interaction the interaction object");
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null,
+                "handleRequest", StubUtils.concatenateArguments(requestInt, stdBodyArg), throwsMALAndInteractionException,
+                "Called by the provider MAL layer on reception of a message to handle the interaction", null,
+                Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
         method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ")"), false);
         method.addLine("{", false);
         for (OperationSummary op : summary.getOperations()) {
@@ -1318,8 +1685,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
 
         // INVOKE handler
-        CompositeField invokeInt = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false), false, true, "interaction the interaction object");
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "handleInvoke", StubUtils.concatenateArguments(invokeInt, stdBodyArg), throwsMALAndInteractionException, "Called by the provider MAL layer on reception of a message to handle the interaction", null, Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
+        CompositeField invokeInt = createCompositeElementsDetails(file, false, "interaction",
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false),
+                false, true, "interaction the interaction object");
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "handleInvoke",
+                StubUtils.concatenateArguments(invokeInt, stdBodyArg), throwsMALAndInteractionException,
+                "Called by the provider MAL layer on reception of a message to handle the interaction", null,
+                Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
         method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ")"), false);
         method.addLine("{", false);
         for (OperationSummary op : summary.getOperations()) {
@@ -1341,8 +1713,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
 
         // PROGRESS handler
-        CompositeField progressInt = createCompositeElementsDetails(file, false, "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false), false, true, "interaction the interaction object");
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "handleProgress", StubUtils.concatenateArguments(progressInt, stdBodyArg), throwsMALAndInteractionException, "Called by the provider MAL layer on reception of a message to handle the interaction", null, Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
+        CompositeField progressInt = createCompositeElementsDetails(file, false, "interaction",
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false),
+                false, true, "interaction the interaction object");
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "handleProgress",
+                StubUtils.concatenateArguments(progressInt, stdBodyArg), throwsMALAndInteractionException,
+                "Called by the provider MAL layer on reception of a message to handle the interaction", null,
+                Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
         method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ")"), false);
         method.addLine("{", false);
         for (OperationSummary op : summary.getOperations()) {
@@ -1377,7 +1754,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     String arg = op.getName() + "Rt";
                     method.addLine("    " + opRetType.getTypeName() + " " + arg + " = " + opCall);
                     StringBuilder buf = new StringBuilder();
-                    buf.append("(").append(arg).append(" == null) ? null : new ").append(getConfig().getAreaPackage(StdStrings.MAL)).append("mal.").append(getConfig().getStructureFolder()).append(".").append(StdStrings.UNION).append("(").append(arg).append(")");
+                    buf.append("(").append(arg).append(" == null) ? null : new ").append(getConfig().getAreaPackage(StdStrings.MAL));
+                    buf.append("mal.").append(getConfig().getStructureFolder()).append(".").append(StdStrings.UNION);
+                    buf.append("(").append(arg).append(")");
                     method.addLine(createMethodCall("    interaction.sendResponse(" + buf.toString() + ")"));
                 } else {
                     method.addLine(createMethodCall("    interaction.sendResponse(" + opCall + ")"));
@@ -1392,7 +1771,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         buf.append(", ");
                     }
                     if (ti.isNativeType()) {
-                        buf.append("(").append(arg).append(".getBodyElement").append(i).append("()").append(" == null) ? null : new ").append(getConfig().getAreaPackage(StdStrings.MAL)).append("mal.").append(getConfig().getStructureFolder()).append(".").append(StdStrings.UNION).append("(").append(arg).append(".getBodyElement").append(i).append("()").append(")");
+                        buf.append("(").append(arg).append(".getBodyElement").append(i).append("()").append(" == null) ? null : new ");
+                        buf.append(getConfig().getAreaPackage(StdStrings.MAL)).append("mal.").append(getConfig().getStructureFolder());
+                        buf.append(".").append(StdStrings.UNION).append("(").append(arg).append(".getBodyElement").append(i).append("()").append(")");
                     } else {
                         buf.append(arg).append(".getBodyElement").append(i).append("()");
                     }
@@ -1475,9 +1856,15 @@ public abstract class GeneratorLangs extends GeneratorBase {
             String value = item.getValue();
 
             highestIndex = "_" + value + "_INDEX";
-            CompositeField _eNumberVar = createCompositeElementsDetails(file, false, highestIndex, TypeUtils.createTypeReference(null, null, "int", false), false, false, "Enumeration ordinal index for value " + value);
-            CompositeField eValueVar = createCompositeElementsDetails(file, false, value + "_NUM_VALUE", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, false, "Enumeration numeric value for value " + value);
-            CompositeField eInstVar = createCompositeElementsDetails(file, false, value, TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false), true, false, "Enumeration singleton for value " + value);
+            CompositeField _eNumberVar = createCompositeElementsDetails(file, false, highestIndex,
+                    TypeUtils.createTypeReference(null, null, "int", false), false, false,
+                    "Enumeration ordinal index for value " + value);
+            CompositeField eValueVar = createCompositeElementsDetails(file, false, value + "_NUM_VALUE",
+                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, false,
+                    "Enumeration numeric value for value " + value);
+            CompositeField eInstVar = createCompositeElementsDetails(file, false, value,
+                    TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false),
+                    true, false, "Enumeration singleton for value " + value);
             file.addClassVariable(true, true, StdStrings.PUBLIC, _eNumberVar, false, String.valueOf(i));
             file.addClassVariable(true, true, StdStrings.PUBLIC, eValueVar, false, "(" + item.getNvalue() + ")");
             file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + convertToNamespace(convertClassName(fqEnumName) + "._" + value + "_INDEX)"));
@@ -1492,17 +1879,26 @@ public abstract class GeneratorLangs extends GeneratorBase {
             stStr.add("\"" + enumeration.getItem().get(i).getValue() + "\"");
             vaStr.add(enumeration.getItem().get(i).getValue() + "_NUM_VALUE");
         }
-        CompositeField eInstArrVar = createCompositeElementsDetails(file, false, "_ENUMERATIONS", TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false), true, true, "Set of enumeration instances.");
+        CompositeField eInstArrVar = createCompositeElementsDetails(file, false, "_ENUMERATIONS",
+                TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false),
+                true, true, "Set of enumeration instances.");
         file.addClassVariable(true, true, StdStrings.PRIVATE, eInstArrVar, true, true, opStr);
         if (supportsToString) {
-            CompositeField eStrArrVar = createCompositeElementsDetails(file, false, "_ENUMERATION_NAMES", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.STRING, false), true, true, "Set of enumeration string values.");
+            CompositeField eStrArrVar = createCompositeElementsDetails(file, false, "_ENUMERATION_NAMES",
+                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.STRING, false),
+                    true, true, "Set of enumeration string values.");
             file.addClassVariable(true, true, StdStrings.PRIVATE, eStrArrVar, true, true, stStr);
         }
-        CompositeField eValueArrVar = createCompositeElementsDetails(file, false, "_ENUMERATION_NUMERIC_VALUES", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, false, "Set of enumeration values.");
+        CompositeField eValueArrVar = createCompositeElementsDetails(file, false, "_ENUMERATION_NUMERIC_VALUES",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
+                true, false, "Set of enumeration values.");
         file.addClassVariable(true, true, StdStrings.PRIVATE, eValueArrVar, true, true, vaStr);
 
         // create private constructor
-        MethodWriter method = file.addConstructor(StdStrings.PRIVATE, enumName, createCompositeElementsDetails(file, false, "ordinal", TypeUtils.createTypeReference(null, null, "int", false), false, false, null), true, null, null, null);
+        MethodWriter method = file.addConstructor(StdStrings.PRIVATE, enumName,
+                createCompositeElementsDetails(file, false, "ordinal",
+                        TypeUtils.createTypeReference(null, null, "int", false),
+                        false, false, null), true, null, null, null);
         method.addMethodCloseStatement();
 
         if (requiresDefaultConstructors) {
@@ -1511,8 +1907,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // add getters and setters
         if (supportsToString) {
-            CompositeField strType = createCompositeElementsDetails(file, false, "s", TypeUtils.createTypeReference(null, null, "_String", false), false, true, "s The string to search for.");
-            method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, strType, "toString", null, null, "Returns a String object representing this type's value.", "a string representation of the value of this object", null);
+            CompositeField strType = createCompositeElementsDetails(file, false, "s",
+                    TypeUtils.createTypeReference(null, null, "_String", false),
+                    false, true, "s The string to search for.");
+            method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
+                    false, true, strType, "toString", null, null,
+                    "Returns a String object representing this type's value.",
+                    "a string representation of the value of this object", null);
             method.addLine("switch (getOrdinal())", false);
             method.addLine("{", false);
             for (Item item : enumeration.getItem()) {
@@ -1524,7 +1925,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
             method.addLine("}", false);
             method.addMethodCloseStatement();
 
-            method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false, true, enumType, "fromString", Arrays.asList(strType), null, "Returns the enumeration element represented by the supplied string, or null if not matched.", "The matched enumeration element, or null if not matched.", null);
+            method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC,
+                    false, true, enumType, "fromString", Arrays.asList(strType), null,
+                    "Returns the enumeration element represented by the supplied string, or null if not matched.",
+                    "The matched enumeration element, or null if not matched.", null);
             method.addLine("for (int i = 0; i < _ENUMERATION_NAMES.length; i++)", false);
             method.addLine("{", false);
             method.addLine("  if (_ENUMERATION_NAMES[i].equals(s))", false);
@@ -1538,18 +1942,28 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // create getMALValue method
         if (supportsToValue) {
-            method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, elementType, "clone", null, null);
+            method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                    false, false, elementType, "clone", null, null);
             method.addLine("return this");
             method.addMethodCloseStatement();
         }
 
-        CompositeField ordType = createCompositeElementsDetails(file, false, "ordinal", TypeUtils.createTypeReference(null, null, "int", false), false, false, "ordinal The index of the enumeration element to return.");
-        method = file.addMethodOpenStatement(false, false, false, true, StdStrings.PUBLIC, false, false, enumType, "fromOrdinal", Arrays.asList(ordType), null, "Returns the nth element of the enumeration", "The matched enumeration element", null);
+        CompositeField ordType = createCompositeElementsDetails(file, false, "ordinal",
+                TypeUtils.createTypeReference(null, null, "int", false),
+                false, false, "ordinal The index of the enumeration element to return.");
+        method = file.addMethodOpenStatement(false, false, false, true, StdStrings.PUBLIC,
+                false, false, enumType, "fromOrdinal", Arrays.asList(ordType), null,
+                "Returns the nth element of the enumeration", "The matched enumeration element", null);
         method.addArrayMethodStatement("_ENUMERATIONS", "ordinal", highestIndex);
         method.addMethodCloseStatement();
 
-        CompositeField nvType = createCompositeElementsDetails(file, false, "value", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, false, "value The numeric value to search for.");
-        method = file.addMethodOpenStatement(false, false, false, true, StdStrings.PUBLIC, false, false, enumType, "fromNumericValue", Arrays.asList(nvType), null, "Returns the enumeration element represented by the supplied numeric value, or null if not matched.", "The matched enumeration value, or null if not matched.", null);
+        CompositeField nvType = createCompositeElementsDetails(file, false, "value",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
+                true, false, "value The numeric value to search for.");
+        method = file.addMethodOpenStatement(false, false, false, true, StdStrings.PUBLIC,
+                false, false, enumType, "fromNumericValue", Arrays.asList(nvType), null,
+                "Returns the enumeration element represented by the supplied numeric value, or null if not matched.",
+                "The matched enumeration value, or null if not matched.", null);
         method.addLine("for (int i = 0; i < _ENUMERATION_NUMERIC_VALUES.length; i++)", false);
         method.addLine("{", false);
         method.addLine("  if (" + getEnumValueCompare("_ENUMERATION_NUMERIC_VALUES[i]", "value") + ")", false);
@@ -1571,17 +1985,27 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String enumDecoderValue = getEnumDecoderValue(enumSize);
 
         if (enumSize < 256) {
-            CompositeField encodedType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false), true, true, null);
-            method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, encodedType, "getOrdinalUOctet", null, null, "Returns the index of the enumerated item as a {@code UOctet}.", "the index of the enumerated item as a {@code UOctet}.", null);
+            CompositeField encodedType = createCompositeElementsDetails(file, false, "return",
+                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
+                    true, true, null);
+            method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                    false, false, encodedType, "getOrdinalUOctet", null, null,
+                    "Returns the index of the enumerated item as a {@code UOctet}.",
+                    "the index of the enumerated item as a {@code UOctet}.", null);
             method.addLine("return " + enumEncoderValue);
             method.addMethodCloseStatement();
         }
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, uintType, "getNumericValue", null, null, "Returns the numeric value of the enumeration element.", "The numeric value", null);
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, uintType, "getNumericValue", null, null,
+                "Returns the numeric value of the enumeration element.", "The numeric value", null);
         method.addArrayMethodStatement("_ENUMERATION_NUMERIC_VALUES", "ordinal", highestIndex);
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, elementType, "createElement", null, null, "Returns an instance of this type using the first element of the enumeration. It is a generic factory method but just returns an existing element of the enumeration as new values of enumerations cannot be created at runtime.", "The first element of the enumeration.", null);
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, false, elementType, "createElement", null, null,
+                "Returns an instance of this type using the first element of the enumeration. It is a generic factory method but just returns an existing element of the enumeration as new values of enumerations cannot be created at runtime.",
+                "The first element of the enumeration.", null);
         method.addLine("return _ENUMERATIONS[0]");
         method.addMethodCloseStatement();
 
@@ -1712,7 +2136,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         if (!abstractComposite) {
-            MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, elementType, "createElement", null, null, "Creates an instance of this type using the default constructor. It is a generic factory method.", "A new instance of this type with default field values.", null);
+            MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                    false, false, elementType, "createElement", null, null,
+                    "Creates an instance of this type using the default constructor. It is a generic factory method.",
+                    "A new instance of this type with default field values.", null);
             method.addLine("return new " + convertClassName(fqName) + "()");
             method.addMethodCloseStatement();
         }
@@ -1725,10 +2152,19 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // create equals method
         if (supportsEquals) {
-            CompositeField boolType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(null, null, "boolean", false), false, true, "return value");
-            CompositeField intType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(null, null, "int", false), false, true, "return value");
-            CompositeField objType = createCompositeElementsDetails(file, false, "obj", TypeUtils.createTypeReference(null, null, "Object", false), false, true, "obj the object to compare with.");
-            MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, boolType, "equals", Arrays.asList(objType), null, "Compares this object to the specified object. The result is true if and only if the argument is not null and is the same type that contains the same value as this object.", "true if the objects are the same; false otherwise.", null);
+            CompositeField boolType = createCompositeElementsDetails(file, false, "return",
+                    TypeUtils.createTypeReference(null, null, "boolean", false),
+                    false, true, "return value");
+            CompositeField intType = createCompositeElementsDetails(file, false, "return",
+                    TypeUtils.createTypeReference(null, null, "int", false),
+                    false, true, "return value");
+            CompositeField objType = createCompositeElementsDetails(file, false, "obj",
+                    TypeUtils.createTypeReference(null, null, "Object", false),
+                    false, true, "obj the object to compare with.");
+            MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                    false, true, boolType, "equals", Arrays.asList(objType), null,
+                    "Compares this object to the specified object. The result is true if and only if the argument is not null and is the same type that contains the same value as this object.",
+                    "true if the objects are the same; false otherwise.", null);
             method.addLine("if (obj instanceof " + compName + ")", false);
             method.addLine("{", false);
             if (null != parentClass) {
@@ -1761,7 +2197,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
             method.addLine("return false");
             method.addMethodCloseStatement();
 
-            method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, intType, "hashCode", null, null, "Returns a hash code for this object", "a hash code value for this object.", null);
+            method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                    false, true, intType, "hashCode", null, null,
+                    "Returns a hash code for this object", "a hash code value for this object.", null);
             if (null != parentClass) {
                 method.addLine("int hash = super.hashCode()");
             } else {
@@ -1776,8 +2214,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // create toString method
         if (supportsToString) {
-            CompositeField strType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(null, null, "_String", false), false, true, "return value");
-            MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, strType, "toString", null, null, "Returns a String object representing this type's value.", "a string representation of the value of this object", null);
+            CompositeField strType = createCompositeElementsDetails(file, false, "return",
+                    TypeUtils.createTypeReference(null, null, "_String", false),
+                    false, true, "return value");
+            MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                    false, true, strType, "toString", null, null,
+                    "Returns a String object representing this type's value.", "a string representation of the value of this object", null);
             method.addLine("StringBuilder buf = new StringBuilder()");
             method.addLine("buf.append('(')");
 
@@ -1902,7 +2344,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
         file.addClassCloseStatement();
         file.flush();
-        */
+         */
     }
 
     protected final void createMultiReturnType(String destinationFolderName, String returnTypeFqName, MultiReturnType returnTypeInfo) throws IOException {
@@ -1930,7 +2372,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.addConstructorDefault(returnTypeInfo.getShortName());
 
         // if we or our parents have attributes then we need a typed constructor
-        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, returnTypeInfo.getShortName(), argsList, null, null, "Constructs an instance of this type using provided values.", null);
+        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, returnTypeInfo.getShortName(), argsList, null, null,
+                "Constructs an instance of this type using provided values.", null);
 
         for (int i = 0; i < argsList.size(); i++) {
             CompositeField argType = argsList.get(i);
@@ -1941,13 +2384,15 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // add getters and setters
         for (int i = 0; i < argsList.size(); i++) {
-            CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(), returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");
+            CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(),
+                    returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");
             addGetter(file, argType, null);
             addSetter(file, argType, null);
         }
         // add deprecated getters and setters
         for (int i = 0; i < argsList.size(); i++) {
-            CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(), returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");
+            CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(),
+                    returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "__newValue The new value");
             addGetter(file, argType, "BodyElement" + i);
             addSetter(file, argType, "BodyElement" + i);
         }
@@ -1959,8 +2404,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void addTypeShortFormDetails(ClassWriter file, AreaType area, ServiceType service, long sf) throws IOException {
         addTypeShortForm(file, sf);
-        CompositeField areaSfVar = createCompositeElementsDetails(file, false, "AREA_SHORT_FORM", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, false, "Short form for area.");
-        CompositeField areaVVar = createCompositeElementsDetails(file, false, "AREA_VERSION", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false), true, false, "Version for area.");
+        CompositeField areaSfVar = createCompositeElementsDetails(file, false, "AREA_SHORT_FORM",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
+                true, false, "Short form for area.");
+        CompositeField areaVVar = createCompositeElementsDetails(file, false, "AREA_VERSION",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
+                true, false, "Version for area.");
         file.addClassVariable(true, true, StdStrings.PUBLIC, areaSfVar, false, "(" + area.getNumber() + ")");
         file.addClassVariable(true, true, StdStrings.PUBLIC, areaVVar, false, "((short)" + area.getVersion() + ")");
 
@@ -1972,11 +2421,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
             asf += Long.parseLong(Integer.toHexString((int) sf).toUpperCase().substring(2), 16);
         }
         if (null != service) {
-            CompositeField serviceSfVar = createCompositeElementsDetails(file, false, "SERVICE_SHORT_FORM", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, false, "Short form for service.");
+            CompositeField serviceSfVar = createCompositeElementsDetails(file, false, "SERVICE_SHORT_FORM",
+                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, false, "Short form for service.");
             file.addClassVariable(true, true, StdStrings.PUBLIC, serviceSfVar, false, "(" + service.getNumber() + ")");
             asf += ((long) service.getNumber()) << SERVICE_BIT_SHIFT;
         } else {
-            CompositeField serviceSfVar = createCompositeElementsDetails(file, false, "SERVICE_SHORT_FORM", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, false, "Short form for service.");
+            CompositeField serviceSfVar = createCompositeElementsDetails(file, false, "SERVICE_SHORT_FORM",
+                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, false, "Short form for service.");
             file.addClassVariable(true, true, StdStrings.PUBLIC, serviceSfVar, false, "(0)");
         }
 
@@ -1984,38 +2435,55 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected void addTypeShortForm(ClassWriter file, long sf) throws IOException {
-        CompositeField var = createCompositeElementsDetails(file, false, "TYPE_SHORT_FORM", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.INTEGER, false), true, false, "Short form for type.");
+        CompositeField var = createCompositeElementsDetails(file, false, "TYPE_SHORT_FORM",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.INTEGER, false), true, false, "Short form for type.");
         file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(" + sf + ")");
     }
 
     protected void addShortForm(ClassWriter file, long sf) throws IOException {
-        CompositeField var = createCompositeElementsDetails(file, false, "SHORT_FORM", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false), true, false, "Absolute short form for type.");
+        CompositeField var = createCompositeElementsDetails(file, false, "SHORT_FORM",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false), true, false, "Absolute short form for type.");
         file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(" + sf + "L)");
     }
 
     protected void addShortFormMethods(ClassWriter file) throws IOException {
-        CompositeField lonType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false), true, true, null);
-        CompositeField intType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.INTEGER, false), true, true, null);
-        CompositeField ustType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, true, null);
-        CompositeField uocType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false), true, true, null);
+        CompositeField lonType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false), true, true, null);
+        CompositeField intType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.INTEGER, false), true, true, null);
+        CompositeField ustType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, true, null);
+        CompositeField uocType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false), true, true, null);
 
-        MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, lonType, "getShortForm", null, null, "Returns the absolute short form of this type.", "The absolute short form of this type.", null);
+        MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
+                false, true, lonType, "getShortForm", null, null,
+                "Returns the absolute short form of this type.", "The absolute short form of this type.", null);
         method.addLine("return SHORT_FORM");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, intType, "getTypeShortForm", null, null, "Returns the type short form of this type which is unique to the area/service it is defined in but not unique across all types.", "The type short form of this type.", null);
+        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
+                false, true, intType, "getTypeShortForm", null, null,
+                "Returns the type short form of this type which is unique to the area/service it is defined in but not unique across all types.",
+                "The type short form of this type.", null);
         method.addLine("return TYPE_SHORT_FORM");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, ustType, "getAreaNumber", null, null, "Returns the area number of this type.", "The area number of this type.", null);
+        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
+                false, true, ustType, "getAreaNumber", null, null,
+                "Returns the area number of this type.", "The area number of this type.", null);
         method.addLine("return AREA_SHORT_FORM");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, uocType, "getAreaVersion", null, null, "Returns the area version of this type.", "The area number of this type.", null);
+        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
+                false, true, uocType, "getAreaVersion", null, null,
+                "Returns the area version of this type.", "The area number of this type.", null);
         method.addLine("return AREA_VERSION");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false, true, ustType, "getServiceNumber", null, null, "Returns the service number of this type.", "The service number of this type.", null);
+        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
+                false, true, ustType, "getServiceNumber", null, null,
+                "Returns the service number of this type.", "The service number of this type.", null);
         method.addLine("return SERVICE_SHORT_FORM");
         method.addMethodCloseStatement();
     }
@@ -2057,7 +2525,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected CompositeField createServiceProviderSkeletonSendHandler(ClassWriter file, String argumentName, String argumentComment) {
-        return createCompositeElementsDetails(file, false, argumentName, TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false), false, true, argumentComment);
+        return createCompositeElementsDetails(file, false, argumentName,
+                TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false),
+                false, true, argumentComment);
     }
 
     protected void addServiceHelperOperationArgs(LanguageWriter file, OperationSummary op, List<String> opArgs) {
@@ -2392,7 +2862,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     multiReturnTypeMap.put(rt, new MultiReturnType(rt, area, service, shortName, returnTypes));
                 }
 
-                return createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(area.getName().toLowerCase(), service.getName().toLowerCase() + "." + getConfig().getBodyFolder(), shortName, false), false, true, null);
+                return createCompositeElementsDetails(file, false, "return",
+                        TypeUtils.createTypeReference(area.getName().toLowerCase(), service.getName().toLowerCase() + "." + getConfig().getBodyFolder(), shortName, false),
+                        false, true, null);
             }
         }
 
@@ -2450,14 +2922,24 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected MethodWriter encodeMethodOpen(ClassWriter file) throws IOException {
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        CompositeField fld = createCompositeElementsDetails(file, false, "encoder", TypeUtils.createTypeReference(StdStrings.MAL, null, "MALEncoder", false), false, true, "encoder - the encoder to use for encoding");
-        return file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "encode", Arrays.asList(fld), throwsMALException, "Encodes the value of this object using the provided MALEncoder.", null, Arrays.asList(throwsMALException + " if any encoding errors are detected."));
+        CompositeField fld = createCompositeElementsDetails(file, false, "encoder",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALEncoder", false),
+                false, true, "encoder - the encoder to use for encoding");
+        return file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, null, "encode", Arrays.asList(fld), throwsMALException,
+                "Encodes the value of this object using the provided MALEncoder.", null,
+                Arrays.asList(throwsMALException + " if any encoding errors are detected."));
     }
 
     protected MethodWriter decodeMethodOpen(ClassWriter file, CompositeField elementType) throws IOException {
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        CompositeField fld = createCompositeElementsDetails(file, false, "decoder", TypeUtils.createTypeReference(StdStrings.MAL, null, "MALDecoder", false), false, true, "decoder - the decoder to use for decoding");
-        return file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, elementType, "decode", Arrays.asList(fld), throwsMALException, "Decodes the value of this object using the provided MALDecoder.", "Returns this object.", Arrays.asList(throwsMALException + " if any decoding errors are detected."));
+        CompositeField fld = createCompositeElementsDetails(file, false, "decoder",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALDecoder", false),
+                false, true, "decoder - the decoder to use for decoding");
+        return file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, false, elementType, "decode", Arrays.asList(fld),
+                throwsMALException, "Decodes the value of this object using the provided MALDecoder.", "Returns this object.",
+                Arrays.asList(throwsMALException + " if any decoding errors are detected."));
     }
 
     protected String createProviderSkeletonHandlerSwitch() {
