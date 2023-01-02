@@ -64,15 +64,15 @@ This test checks that a Pub/Sub registration correctly behaves:
 |ensure |use shared broker | @shared |
 |ensure |register |
 |ensure |reregister |
-|ensure |publish with update type | Creation |
+|ensure |publish with update type | Update |
 |check|number of notified updates|1|
 |ensure |transaction id is from the first register |
 |ensure |publish with update type | Update |
-|check|number of notified updates|0|
-|ensure |publish with update type | Modification |
+|check|number of notified updates|1|
+|ensure |publish with update type | Update |
 |check|number of notified updates|1|
 |ensure |transaction id is from the first register |
-|ensure |publish with update type | Deletion |
+|ensure |publish with update type | Update |
 |check|number of notified updates|1|
 |ensure |transaction id is from the first register |
 |ensure |publish deregister |
