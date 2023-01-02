@@ -46,7 +46,6 @@ import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import static org.ccsds.moims.mo.mal.test.patterns.pubsub.SubscriptionServiceTestProcedure.SUBSCRIPTION_ID;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
