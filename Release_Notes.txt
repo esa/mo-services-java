@@ -5,7 +5,14 @@
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-Version 9 (TBD)
+Version 10
+	- TBD
+
+Version 9
+	- This release is a hybrid between the old and the new MAL (top API layer -> new MAL; low Transport layer -> old MAL)
+	- Fixes the MAL testbed for the new MAL updates
+	- Lowers memory footprint
+	- Removes the generation of the Type Factories from the APIs. Introduces new MALElementsRegistry
 	- 
 
 Version 8
