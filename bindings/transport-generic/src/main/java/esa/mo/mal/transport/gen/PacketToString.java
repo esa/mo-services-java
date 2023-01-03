@@ -22,7 +22,6 @@ public class PacketToString {
     /**
      * True if string based stream, can be logged as a string rather than hex.
      */
-    private final boolean streamHasStrings = false; // Hard-coded for now
 
     private final byte[] data;
     private String str;
@@ -37,7 +36,6 @@ public class PacketToString {
 
         // very crude and faulty test but it will do for testing
         // Should be removed in the future...
-        // streamHasStrings = streamFactory.getClass().getName().contains("String");
         if (logFullDebug == null) {
             Properties properties = System.getProperties();
             String prop = properties.getProperty(GENTransport.DEBUG_PROPERTY, "false");
@@ -55,11 +53,7 @@ public class PacketToString {
         str = "";
 
         if (logFullDebug && data != null) {
-            if (streamHasStrings) {
-                str = new String(data, UTF8_CHARSET);
-            } else {
-                str = GENHelper.byteArrayToHexString(data);
-            }
+            str = GENHelper.byteArrayToHexString(data);
         }
 
         return str;
