@@ -903,7 +903,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return fullType;
     }
 
-    protected void createServiceProviderSkeletonHandler(File providerFolder, AreaType area, 
+    protected void createServiceProviderSkeletonHandler(File providerFolder, AreaType area,
             ServiceType service, ServiceSummary summary, boolean isDelegate) throws IOException {
         String className = service.getName();
         String comment;
@@ -1475,8 +1475,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         CompositeField elementType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false), true, true, null);
 
         List<CompositeField> compElements = createCompositeElementsList(file, composite);
-        List<CompositeField> superCompElements = new LinkedList<>();
-        createCompositeSuperElementsList(file, parentType, superCompElements);
+        List<CompositeField> superCompElements = createCompositeSuperElementsList(file, parentType);
 
         boolean abstractComposite = (null == composite.getShortFormPart());
         file.addClassOpenStatement(compName, !abstractComposite, abstractComposite, parentClass, parentInterface, composite.getComment());

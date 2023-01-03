@@ -952,7 +952,7 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, composite.getName(), STD_COLOUR, 3);
         docxFile.endRow();
 
-        TypeReference extendsClass;
+        TypeReference extendsClass = null;
         if ((null != composite.getExtends()) && (null != composite.getExtends().getType())) {
             extendsClass = composite.getExtends().getType();
         } else {
@@ -977,8 +977,7 @@ public class GeneratorDocx extends GeneratorDocument {
         }
 
         // create attributes
-        List<CompositeField> compElementsSuper = new ArrayList<>();
-        createCompositeSuperElementsList(docxFile, extendsClass, compElementsSuper);
+        List<CompositeField> superCompElements = createCompositeSuperElementsList(docxFile, extendsClass);
         List<CompositeField> compElements = createCompositeElementsList(docxFile, composite);
 
         if (!compElements.isEmpty()) {
@@ -989,8 +988,8 @@ public class GeneratorDocx extends GeneratorDocument {
             docxFile.addCell(3, COMPOSITE_TABLE_WIDTHS, "Comment", HEADER_COLOUR);
             docxFile.endRow();
 
-            if (!compElementsSuper.isEmpty()) {
-                for (CompositeField element : compElementsSuper) {
+            if (!superCompElements.isEmpty()) {
+                for (CompositeField element : superCompElements) {
                     docxFile.startRow();
                     docxFile.addCell(0, COMPOSITE_TABLE_WIDTHS, element.getFieldName(), FIXED_COLOUR);
                     docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, new TypeRef(element.getTypeReference()), FIXED_COLOUR, 0);

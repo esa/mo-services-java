@@ -500,16 +500,17 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      *
      * @param file Writer to add any type dependencies to.
      * @param type the composite to inspect.
-     * @param lst a list of the element details to populate.
+     * @return a list of the element details to populate.
      */
-    protected void createCompositeSuperElementsList(TargetWriter file,
-            TypeReference type, List<CompositeField> lst) {
+    protected List<CompositeField> createCompositeSuperElementsList(TargetWriter file,
+            TypeReference type) {
+        List<CompositeField> lst = new LinkedList<>();
         if ((null != type) && (!StdStrings.COMPOSITE.equals(type.getName()))) {
             CompositeType theType = compositeTypesMap.get(new TypeKey(type));
             if (null != theType) {
                 // first looks for super types of this one and add their details
                 if ((null != theType.getExtends()) && (!StdStrings.COMPOSITE.equals(theType.getExtends().getType().getName()))) {
-                    createCompositeSuperElementsList(file, theType.getExtends().getType(), lst);
+                    lst.addAll(createCompositeSuperElementsList(file, theType.getExtends().getType()));
                 }
 
                 // now add the details of this type
@@ -527,6 +528,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                 throw new IllegalStateException("Unknown super type of (" + type.getName() + ") for composite");
             }
         }
+        return lst;
     }
 
     /**
