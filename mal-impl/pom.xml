@@ -62,6 +62,11 @@
             <email>sam@brightacension.com</email>
             <url>https://github.com/SamCooper</url>
         </developer>
+        <developer>
+            <id>CesarCoelho</id>
+            <name>Cesar Coelho</name>
+            <url>https://github.com/CesarCoelho</url>
+        </developer>
     </developers>
   
     <dependencies>
