@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package org.ccsds.moims.mo.mal.support;
+package esa.mo.com.support;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

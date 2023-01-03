@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package org.ccsds.moims.mo.mal.support;
+package org.ccsds.moims.mo.testbed.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,10 +32,8 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
@@ -44,14 +42,11 @@ import org.ccsds.moims.mo.mal.structures.URI;
  * times.
  *
  */
+@Deprecated
 public abstract class StructureHelper {
 
     private static final Logger LOGGER = Logger.getLogger("esa.mo.mal");
     private static final Set LOADED_PROPERTIES = new TreeSet();
-
-    private StructureHelper() {
-        // Private default constructor 
-    }
 
     /**
      * Clears the list of loaded property files.
@@ -283,21 +278,4 @@ public abstract class StructureHelper {
         return domainId.toString();
     }
 
-    /**
-     * Create a fine time timestamp using the current system time.
-     *
-     * @return the current time in fine time format.
-     */
-    public static FineTime getTimestamp() {
-        return new FineTime(System.currentTimeMillis());
-    }
-
-    /**
-     * Create a time timestamp using the current system time.
-     *
-     * @return the current time in time format.
-     */
-    public static Time getTimestampMillis() {
-        return new Time(System.currentTimeMillis());
-    }
 }

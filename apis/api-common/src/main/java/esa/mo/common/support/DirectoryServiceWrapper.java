@@ -20,6 +20,7 @@
  */
 package esa.mo.common.support;
 
+import esa.mo.com.support.BaseMalServer;
 import org.ccsds.moims.mo.common.directory.DirectoryHelper;
 import org.ccsds.moims.mo.common.directory.consumer.DirectoryStub;
 import org.ccsds.moims.mo.common.directory.structures.ProviderDetails;
@@ -43,7 +44,6 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.UShortList;
-import org.ccsds.moims.mo.mal.support.BaseMalServer;
 
 /**
  * Simple class that simplifies access to the directory service.
