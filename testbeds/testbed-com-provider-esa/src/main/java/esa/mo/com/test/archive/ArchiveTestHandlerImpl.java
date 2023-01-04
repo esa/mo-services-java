@@ -29,19 +29,17 @@ import org.ccsds.moims.mo.mal.provider.MALInteraction;
 /**
  *
  */
-public class ArchiveTestHandlerImpl extends ArchiveTestInheritanceSkeleton
-{
-  private final TestServiceProvider testService;
-  ArchiveHandlerImpl archiveHandler;
+public class ArchiveTestHandlerImpl extends ArchiveTestInheritanceSkeleton {
 
-  public ArchiveTestHandlerImpl(TestServiceProvider testService, ArchiveHandlerImpl archiveHandler)
-  {
-    this.testService = testService;
-    this.archiveHandler = archiveHandler;
-  }
+    private final TestServiceProvider testService;
+    ArchiveHandlerImpl archiveHandler;
 
-  public void reset(MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    archiveHandler.reset();
-  }
+    public ArchiveTestHandlerImpl(TestServiceProvider testService, ArchiveHandlerImpl archiveHandler) {
+        this.testService = testService;
+        this.archiveHandler = archiveHandler;
+    }
+
+    public void reset(MALInteraction interaction) throws MALInteractionException, MALException {
+        archiveHandler.reset();
+    }
 }

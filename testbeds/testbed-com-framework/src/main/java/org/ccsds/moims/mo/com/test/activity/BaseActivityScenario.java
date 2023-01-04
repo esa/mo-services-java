@@ -34,83 +34,65 @@ import static org.ccsds.moims.mo.com.test.util.COMTestHelper.OBJ_NO_ASE_RELEASE_
 /**
  *
  */
-public abstract class BaseActivityScenario extends LoggingBase
-{
-  protected final String loggingClassName;
-  protected final Identifier ALL_ID = new Identifier("*");
-  protected final Integer ALL_INT = 0;
-  protected MALStandardError lastError = null;
+public abstract class BaseActivityScenario extends LoggingBase {
 
-  public BaseActivityScenario(String loggingClassName)
-  {
-    this.loggingClassName = loggingClassName;
-  }
+    protected final String loggingClassName;
+    protected final Identifier ALL_ID = new Identifier("*");
+    protected final Integer ALL_INT = 0;
+    protected MALStandardError lastError = null;
 
-  public boolean testActivityServiceClientHasBeenCreated() throws Exception
-  {
-    logMessage(loggingClassName + ":testActivityServiceClientHasBeenCreated");
-    return null != LocalMALInstance.instance().activityTestStub();
-  }
-
-  public boolean callResetTestOnServiceProvider() throws Exception
-  {
-    logMessage(loggingClassName + ":callResetTestOnServiceProvider");
-    LocalMALInstance.instance().activityTestStub().resetTest();
-    return true;
-  }
-
-  public void clearLastError()
-  {
-    logMessage(loggingClassName + ":clearLastError");
-    lastError = null;
-  }
-
-  public String lastErrorMessageWas() throws Exception
-  {
-    logMessage(loggingClassName + ":lastErrorMessageWas");
-    if (null != lastError)
-    {
-      // return COMParseHelper.parseErrorCode(lastError.getErrorNumber());
-    }
-    return "No last error";
-  }
-
-  public void waitForReasonableAmountOfTime() throws Exception
-  {
-    Thread.sleep(Configuration.WAIT_TIME_OUT);
-  }
-
-  public void closeTestActivityServiceClient() throws Exception
-  {
-    logMessage(loggingClassName + ":closeTestActivityServiceClient");
-    LocalMALInstance.instance().close();
-  }
-
-  static public String objToEventName(String obj)
-  {
-    String strEventName = "UNKNOWN";
-
-    if (obj.equalsIgnoreCase(OBJ_NO_ASE_RELEASE_STR))
-    {
-      strEventName = "RELEASE";
-    }
-    else if (obj.equalsIgnoreCase(OBJ_NO_ASE_RECEPTION_STR))
-    {
-      strEventName = "RECEPTION";
-    }
-    else if (obj.equalsIgnoreCase(OBJ_NO_ASE_FORWARD_STR))
-    {
-      strEventName = "FORWARD";
-    }
-    else if (obj.equalsIgnoreCase(OBJ_NO_ASE_ACCEPTANCE_STR))
-    {
-      strEventName = "ACCEPTANCE";
-    }
-    else if (obj.equalsIgnoreCase(OBJ_NO_ASE_EXECUTION_STR))
-    {
-      strEventName = "EXECUTION";
+    public BaseActivityScenario(String loggingClassName) {
+        this.loggingClassName = loggingClassName;
     }
 
-    return strEventName;
-  }
+    public boolean testActivityServiceClientHasBeenCreated() throws Exception {
+        logMessage(loggingClassName + ":testActivityServiceClientHasBeenCreated");
+        return null != LocalMALInstance.instance().activityTestStub();
+    }
+
+    public boolean callResetTestOnServiceProvider() throws Exception {
+        logMessage(loggingClassName + ":callResetTestOnServiceProvider");
+        LocalMALInstance.instance().activityTestStub().resetTest();
+        return true;
+    }
+
+    public void clearLastError() {
+        logMessage(loggingClassName + ":clearLastError");
+        lastError = null;
+    }
+
+    public String lastErrorMessageWas() throws Exception {
+        logMessage(loggingClassName + ":lastErrorMessageWas");
+        if (null != lastError) {
+            // return COMParseHelper.parseErrorCode(lastError.getErrorNumber());
+        }
+        return "No last error";
+    }
+
+    public void waitForReasonableAmountOfTime() throws Exception {
+        Thread.sleep(Configuration.WAIT_TIME_OUT);
+    }
+
+    public void closeTestActivityServiceClient() throws Exception {
+        logMessage(loggingClassName + ":closeTestActivityServiceClient");
+        LocalMALInstance.instance().close();
+    }
+
+    static public String objToEventName(String obj) {
+        String strEventName = "UNKNOWN";
+
+        if (obj.equalsIgnoreCase(OBJ_NO_ASE_RELEASE_STR)) {
+            strEventName = "RELEASE";
+        } else if (obj.equalsIgnoreCase(OBJ_NO_ASE_RECEPTION_STR)) {
+            strEventName = "RECEPTION";
+        } else if (obj.equalsIgnoreCase(OBJ_NO_ASE_FORWARD_STR)) {
+            strEventName = "FORWARD";
+        } else if (obj.equalsIgnoreCase(OBJ_NO_ASE_ACCEPTANCE_STR)) {
+            strEventName = "ACCEPTANCE";
+        } else if (obj.equalsIgnoreCase(OBJ_NO_ASE_EXECUTION_STR)) {
+            strEventName = "EXECUTION";
+        }
+
+        return strEventName;
+    }
 }

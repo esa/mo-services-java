@@ -41,67 +41,59 @@ import static org.ccsds.moims.mo.testbed.util.LoggingBase.logMessage;
 /**
  * Returns the URIs needed for connecting to the remote services.
  */
-public abstract class UriCOMTestServiceProvider extends BaseTestServiceProvider
-{
-  public String getProtocol()
-  {
-    return System.getProperty(Configuration.DEFAULT_PROTOCOL);
-  }
+public abstract class UriCOMTestServiceProvider extends BaseTestServiceProvider {
 
-  protected void initHelpers() throws MALException
-  {
-    org.ccsds.moims.mo.com.COMHelper.init(MALContextFactory.getElementsRegistry());
-    ActivityTrackingHelper.init(MALContextFactory.getElementsRegistry());
-    ArchiveHelper.init(MALContextFactory.getElementsRegistry());
-    EventHelper.init(MALContextFactory.getElementsRegistry());
-
-    COMPrototypeHelper.init(MALContextFactory.getElementsRegistry());
-    ActivityTestHelper.init(MALContextFactory.getElementsRegistry());
-    ActivityRelayManagementHelper.init(MALContextFactory.getElementsRegistry());
-    ArchiveTestHelper.init(MALContextFactory.getElementsRegistry());
-    EventTestHelper.init(MALContextFactory.getElementsRegistry());
-  }
-
-  protected void createProviders() throws MALException
-  {
-    logMessage("Create Providers Called");
-
-    List<URItriple> triples = initURIs();
-
-    for (URItriple triple : triples)
-    {
-      FileBasedDirectory.storeURI(triple.getServiceName().getValue(), triple.getServiceURI(), triple.getBrokerURI());
-    }
-  }
-
-  abstract protected List<URItriple> initURIs() throws MALException;
-
-  public static final class URItriple
-  {
-    private final Identifier serviceName;
-    private final URI serviceURI;
-    private final URI brokerURI;
-
-    public URItriple(Identifier serviceName, URI serviceURI, URI brokerURI)
-    {
-      this.serviceName = serviceName;
-      this.serviceURI = serviceURI;
-      this.brokerURI = brokerURI;
+    public String getProtocol() {
+        return System.getProperty(Configuration.DEFAULT_PROTOCOL);
     }
 
-    public Identifier getServiceName()
-    {
-      return serviceName;
+    protected void initHelpers() throws MALException {
+        org.ccsds.moims.mo.com.COMHelper.init(MALContextFactory.getElementsRegistry());
+        ActivityTrackingHelper.init(MALContextFactory.getElementsRegistry());
+        ArchiveHelper.init(MALContextFactory.getElementsRegistry());
+        EventHelper.init(MALContextFactory.getElementsRegistry());
+
+        COMPrototypeHelper.init(MALContextFactory.getElementsRegistry());
+        ActivityTestHelper.init(MALContextFactory.getElementsRegistry());
+        ActivityRelayManagementHelper.init(MALContextFactory.getElementsRegistry());
+        ArchiveTestHelper.init(MALContextFactory.getElementsRegistry());
+        EventTestHelper.init(MALContextFactory.getElementsRegistry());
     }
 
-    public URI getServiceURI()
-    {
-      return serviceURI;
+    protected void createProviders() throws MALException {
+        logMessage("Create Providers Called");
+
+        List<URItriple> triples = initURIs();
+
+        for (URItriple triple : triples) {
+            FileBasedDirectory.storeURI(triple.getServiceName().getValue(), triple.getServiceURI(), triple.getBrokerURI());
+        }
     }
 
-    public URI getBrokerURI()
-    {
-      return brokerURI;
+    abstract protected List<URItriple> initURIs() throws MALException;
+
+    public static final class URItriple {
+
+        private final Identifier serviceName;
+        private final URI serviceURI;
+        private final URI brokerURI;
+
+        public URItriple(Identifier serviceName, URI serviceURI, URI brokerURI) {
+            this.serviceName = serviceName;
+            this.serviceURI = serviceURI;
+            this.brokerURI = brokerURI;
+        }
+
+        public Identifier getServiceName() {
+            return serviceName;
+        }
+
+        public URI getServiceURI() {
+            return serviceURI;
+        }
+
+        public URI getBrokerURI() {
+            return brokerURI;
+        }
     }
-  }
 }

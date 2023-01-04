@@ -31,54 +31,48 @@ import org.ccsds.moims.mo.mal.structures.StringList;
 /**
  *
  */
-public class ActivityRelayInterceptor extends ActivityTestHandlerImpl
-{
-  private final ActivityRelayManagementHandlerImpl relayManager;
+public class ActivityRelayInterceptor extends ActivityTestHandlerImpl {
 
-  public ActivityRelayInterceptor(TestServiceProvider testService, ActivityRelayManagementHandlerImpl relayManager)
-  {
-    super(testService);
+    private final ActivityRelayManagementHandlerImpl relayManager;
 
-    this.relayManager = relayManager;
-  }
+    public ActivityRelayInterceptor(TestServiceProvider testService, ActivityRelayManagementHandlerImpl relayManager) {
+        super(testService);
 
-  @Override
-  public void send(StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    relayManager.passToRelay(null, _StringList0, interaction);
+        this.relayManager = relayManager;
+    }
 
-    super.send(_StringList0, interaction);
-  }
+    @Override
+    public void send(StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException {
+        relayManager.passToRelay(null, _StringList0, interaction);
 
-  @Override
-  public void testSubmit(StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    relayManager.passToRelay(null, _StringList0, interaction);
+        super.send(_StringList0, interaction);
+    }
 
-    super.testSubmit(_StringList0, interaction);
-  }
+    @Override
+    public void testSubmit(StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException {
+        relayManager.passToRelay(null, _StringList0, interaction);
 
-  @Override
-  public StringList request(StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    relayManager.passToRelay(null, _StringList0, interaction);
+        super.testSubmit(_StringList0, interaction);
+    }
 
-    return super.request(_StringList0, interaction);
-  }
+    @Override
+    public StringList request(StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException {
+        relayManager.passToRelay(null, _StringList0, interaction);
 
-  @Override
-  public void invoke(StringList _StringList0, InvokeInteraction interaction) throws MALInteractionException, MALException
-  {
-    relayManager.passToRelay(null, _StringList0, interaction.getInteraction());
+        return super.request(_StringList0, interaction);
+    }
 
-    super.invoke(_StringList0, interaction);
-  }
+    @Override
+    public void invoke(StringList _StringList0, InvokeInteraction interaction) throws MALInteractionException, MALException {
+        relayManager.passToRelay(null, _StringList0, interaction.getInteraction());
 
-  @Override
-  public void progress(StringList _StringList0, ProgressInteraction interaction) throws MALInteractionException, MALException
-  {
-    relayManager.passToRelay(null, _StringList0, interaction.getInteraction());
+        super.invoke(_StringList0, interaction);
+    }
 
-    super.progress(_StringList0, interaction);
-  }
+    @Override
+    public void progress(StringList _StringList0, ProgressInteraction interaction) throws MALInteractionException, MALException {
+        relayManager.passToRelay(null, _StringList0, interaction.getInteraction());
+
+        super.progress(_StringList0, interaction);
+    }
 }

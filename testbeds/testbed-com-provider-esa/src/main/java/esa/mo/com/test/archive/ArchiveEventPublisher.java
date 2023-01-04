@@ -35,7 +35,6 @@ import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
-import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
@@ -64,108 +63,103 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 /**
  * Provides support functions associated with publishing archive events
  */
-public class ArchiveEventPublisher
-{
-  private ArchiveEventPublisherSkeleton archiveEventPublisherSkeleton = null;
-  private MonitorEventPublisher monitorEventPublisher = null;
-  public static final String ARCHIVE_EVENT_NAME = "ArchiveEvent";
-  private final String CLS = "ArchiveEventPublisher";
-  // Count of events created
-  private long eventInstCount = 0;
-  IdentifierList eventDomainId = null;
-  private final Identifier NETWORK = new Identifier("networkZone");
+public class ArchiveEventPublisher {
 
-  /**
-   * Create the publisher object used to transmit events
-   *
-   * @param testService test service provider
-   * @throws MALInteractionException
-   * @throws MALException
-   */
-  public void createPublisher(TestServiceProvider testService) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage(CLS + ":createMonitorEventPublisher " + eventDomainId);
+    private ArchiveEventPublisherSkeleton archiveEventPublisherSkeleton = null;
+    private MonitorEventPublisher monitorEventPublisher = null;
+    public static final String ARCHIVE_EVENT_NAME = "ArchiveEvent";
+    private final String CLS = "ArchiveEventPublisher";
+    // Count of events created
+    private long eventInstCount = 0;
+    IdentifierList eventDomainId = null;
+    private final Identifier NETWORK = new Identifier("networkZone");
 
-    eventDomainId = new IdentifierList();
-    archiveEventPublisherSkeleton = new ArchiveEventPublisherSkeleton();
+    /**
+     * Create the publisher object used to transmit events
+     *
+     * @param testService test service provider
+     * @throws MALInteractionException
+     * @throws MALException
+     */
+    public void createPublisher(TestServiceProvider testService) throws MALInteractionException, MALException {
+        LoggingBase.logMessage(CLS + ":createMonitorEventPublisher " + eventDomainId);
 
-    MALProviderManager malProviderMgr = testService.getDefaultProviderMgr();
+        eventDomainId = new IdentifierList();
+        archiveEventPublisherSkeleton = new ArchiveEventPublisherSkeleton();
 
-    if (malProviderMgr == null)
-    {
-      LoggingBase.logMessage(CLS + ":createMonitorEventPublisher MAL provder NULL!");
-    }
+        MALProviderManager malProviderMgr = testService.getDefaultProviderMgr();
 
-    MALProvider malProvider = malProviderMgr.createProvider("MonitorEventPublisher - Archive Test",
-            null,
-            EventHelper.EVENT_SERVICE,
-            new Blob("".getBytes()),
-            archiveEventPublisherSkeleton,
-            new QoSLevel[]
-            {
-              QoSLevel.ASSURED
-            },
-            new UInteger(1),
-            null,
-            true,
-            null);
-    LoggingBase.logMessage(CLS + ":createMonitorEventPublisher - calling store URI");
-    FileBasedDirectory.storeURI(ARCHIVE_EVENT_NAME,
-            malProvider.getURI(), malProvider.getBrokerURI());
+        if (malProviderMgr == null) {
+            LoggingBase.logMessage(CLS + ":createMonitorEventPublisher MAL provder NULL!");
+        }
 
-    archiveEventPublisherSkeleton.malInitialize(malProvider);
+        MALProvider malProvider = malProviderMgr.createProvider("MonitorEventPublisher - Archive Test",
+                null,
+                EventHelper.EVENT_SERVICE,
+                new Blob("".getBytes()),
+                archiveEventPublisherSkeleton,
+                new QoSLevel[]{
+                    QoSLevel.ASSURED
+                },
+                new UInteger(1),
+                null,
+                true,
+                null);
+        LoggingBase.logMessage(CLS + ":createMonitorEventPublisher - calling store URI");
+        FileBasedDirectory.storeURI(ARCHIVE_EVENT_NAME,
+                malProvider.getURI(), malProvider.getBrokerURI());
 
-    monitorEventPublisher = archiveEventPublisherSkeleton.createMonitorEventPublisher(eventDomainId,
-            NETWORK,
-            SessionType.LIVE,
-            new Identifier("LIVE"),
-            QoSLevel.BESTEFFORT,
-            null,
-            new UInteger(0));
-    /*
+        archiveEventPublisherSkeleton.malInitialize(malProvider);
+
+        monitorEventPublisher = archiveEventPublisherSkeleton.createMonitorEventPublisher(eventDomainId,
+                NETWORK,
+                SessionType.LIVE,
+                new Identifier("LIVE"),
+                QoSLevel.BESTEFFORT,
+                null,
+                new UInteger(0));
+        /*
     final EntityKeyList lst = new EntityKeyList();
     lst.add(new EntityKey(new Identifier("*"), new Long(0), new Long(0), new Long(0)));
-    */
-    IdentifierList keys = new IdentifierList();
-    keys.add(new Identifier("K1"));
-    keys.add(new Identifier("K2"));
-    keys.add(new Identifier("K3"));
-    keys.add(new Identifier("K4"));
+         */
+        IdentifierList keys = new IdentifierList();
+        keys.add(new Identifier("K1"));
+        keys.add(new Identifier("K2"));
+        keys.add(new Identifier("K3"));
+        keys.add(new Identifier("K4"));
 
-    PublisherListener publisherListener = new PublisherListener();
-    monitorEventPublisher.register(keys, publisherListener);
+        PublisherListener publisherListener = new PublisherListener();
+        monitorEventPublisher.register(keys, publisherListener);
 
-  }
+    }
 
-  /**
-   * Generate a EntityKey subkey using fields as specified in COM STD 3.2.4.2b
-   *
-   * @param area
-   * @param service
-   * @param version
-   * @param objectNumber
-   * @return the sub key
-   */
-  static protected Long generateSubKey(int area, int service, int version, int objectNumber)
-  {
-    long subkey = objectNumber;
-    subkey = subkey | (((long) version) << 24);
-    subkey = subkey | ((long) service << 32);
-    subkey = subkey | ((long) area << 48);
+    /**
+     * Generate a EntityKey subkey using fields as specified in COM STD 3.2.4.2b
+     *
+     * @param area
+     * @param service
+     * @param version
+     * @param objectNumber
+     * @return the sub key
+     */
+    static protected Long generateSubKey(int area, int service, int version, int objectNumber) {
+        long subkey = objectNumber;
+        subkey = subkey | (((long) version) << 24);
+        subkey = subkey | ((long) service << 32);
+        subkey = subkey | ((long) area << 48);
 
-    return new Long(subkey);
-  }
+        return new Long(subkey);
+    }
 
-  /**
-   * Populate the event updateheader
-   *
-   * @param updateHeader
-   * @param eventObjectNumber
-   * @param sourceObjectType
-   */
-  private void setUpdateHeader(UpdateHeader updateHeader, UShort eventObjectNumber, ObjectType sourceObjectType)
-  {
-      /*
+    /**
+     * Populate the event updateheader
+     *
+     * @param updateHeader
+     * @param eventObjectNumber
+     * @param sourceObjectType
+     */
+    private void setUpdateHeader(UpdateHeader updateHeader, UShort eventObjectNumber, ObjectType sourceObjectType) {
+        /*
     final EntityKey ekey = new EntityKey(
             new Identifier(eventObjectNumber.toString()),
             generateSubKey(COMHelper.COM_AREA_NUMBER.getValue(),
@@ -178,137 +172,130 @@ public class ArchiveEventPublisher
     updateHeader.setSourceURI(new URI(EventHelper.EVENT_SERVICE_NAME.getValue()));
     updateHeader.setUpdateType(UpdateType.DELETION);
     updateHeader.setTimestamp(timestamp);
-      */
+         */
 
-    AttributeList keyValues = new AttributeList();
-    keyValues.add(new Identifier(eventObjectNumber.toString()));
-    keyValues.add(new Union(ComStructureHelper.generateSubKey(
-                    COMHelper._COM_AREA_NUMBER,
-                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
-                    COMHelper._COM_AREA_VERSION,
-                    0)));
-    keyValues.add(new Union((long) ++eventInstCount));
-    keyValues.add(new Union(ComStructureHelper.generateSubKey(
-                    sourceObjectType.getArea().getValue(),
-                    sourceObjectType.getServiceNumber().getValue(),
-                    sourceObjectType.getAreaVersion().getValue(),
-                    sourceObjectType.getNumber().getValue())));
-    
-    IdentifierList domain = new IdentifierList();
-    domain.add(new Identifier("esa"));
-    domain.add(new Identifier("mission"));
-    
-    updateHeader.setKeyValues(keyValues);
-    updateHeader.setDomain(domain);
-    updateHeader.setSource(new Identifier(EventHelper.EVENT_SERVICE_NAME.getValue()));
-  }
+        AttributeList keyValues = new AttributeList();
+        keyValues.add(new Identifier(eventObjectNumber.toString()));
+        keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                COMHelper._COM_AREA_NUMBER,
+                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                COMHelper._COM_AREA_VERSION,
+                0)));
+        keyValues.add(new Union((long) ++eventInstCount));
+        keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                sourceObjectType.getArea().getValue(),
+                sourceObjectType.getServiceNumber().getValue(),
+                sourceObjectType.getAreaVersion().getValue(),
+                sourceObjectType.getNumber().getValue())));
 
-  /**
-   * Set the objectId fields key & domain
-   *
-   * @param objectId
-   * @param domain
-   * @param objectType
-   * @param instanceId
-   */
-  private void setObjectId(ObjectId objectId, IdentifierList domain, ObjectType objectType, Long instanceId)
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("esa"));
+        domain.add(new Identifier("mission"));
 
-  {
-    objectId.setType(objectType);
-
-    ObjectKey key = new ObjectKey();
-    key.setDomain(domain);
-    key.setInstId(instanceId);
-    objectId.setKey(key);
-  }
-
-  /**
-   * Stores a archive event in the archive. Writes the event directly to the archive rather than using
-   * ArchiveHandlerImpl as this avoids any recursive issues
-   *
-   * @param objectType
-   * @param domain
-   * @param instId
-   * @param timestamp
-   * @param provider
-   * @param objDetails
-   * @param objectNumber
-   */
-  public void storeEvent(ObjectType objectType, IdentifierList domain, Long instId, 
-          Time timestamp, Identifier source, ObjectDetails objDetails, UShort objectNumber)
-  {
-    Archive.inst().add(
-            new ObjectType(COMHelper.COM_AREA_NUMBER, ArchiveHelper.ARCHIVE_SERVICE_NUMBER, COMHelper.COM_AREA_VERSION, objectNumber),
-            eventDomainId,
-            new ArchiveDetails(instId, objDetails, NETWORK, new FineTime(timestamp.getValue()), new URI(source.getValue())), null);
-  }
-
-  /**
-   * Publishes one or more archive service events - as defined in COM specification. These events have no bodies
-   * defined, so the body is not published. Also stores the events in the archive.
-   *
-   * @param objectNumber Object number for event to be published.
-   * @param objectType Object type for event
-   * @param domain Domain for event
-   * @param instIds Instance identifiers, an event is raised for each instance identifier.
-   * @throws MALInteractionException
-   * @throws MALException
-   */
-  public void publishEvents(UShort objectNumber, ObjectType objectType, IdentifierList domain,
-          LongList instIds) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage(CLS + ":publishStoreEvents:" + objectType
-            + ":" + domain + ":" + instIds);
-    ObjectDetailsList objDetailsList = new ObjectDetailsList();
-    UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-    Iterator<Long> instIt = instIds.iterator();
-    while (instIt.hasNext())
-    {
-      ObjectDetails objDetails = new ObjectDetails();
-      // Set source 
-      ObjectId source = new ObjectId();
-      setObjectId(source, eventDomainId,
-              objectType, instIt.next());
-      objDetails.setSource(source);
-      objDetailsList.add(objDetails);
-
-      UpdateHeader uh = new UpdateHeader();
-      setUpdateHeader(uh, objectNumber, objectType);
-      updateHeaderList.add(uh);
-      // elementList.add(null);
-      storeEvent(objectType, eventDomainId, eventInstCount, Time.now(), uh.getSource(), objDetails, objectNumber);
+        updateHeader.setKeyValues(keyValues);
+        updateHeader.setDomain(domain);
+        updateHeader.setSource(new Identifier(EventHelper.EVENT_SERVICE_NAME.getValue()));
     }
 
-    monitorEventPublisher.publish(updateHeaderList, objDetailsList, null);
+    /**
+     * Set the objectId fields key & domain
+     *
+     * @param objectId
+     * @param domain
+     * @param objectType
+     * @param instanceId
+     */
+    private void setObjectId(ObjectId objectId, IdentifierList domain, ObjectType objectType, Long instanceId) {
+        objectId.setType(objectType);
 
-    LoggingBase.logMessage(CLS + ":publishEvents:RET:" + updateHeaderList
-            + ":" + objDetailsList + ":");
-  }
-
-  /**
-   * Listener class used to receive responses to publishing events
-   */
-  public class PublisherListener implements MALPublishInteractionListener
-  {
-
-    public void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException
-    {
-      LoggingBase.logMessage(CLS + ":publishRegisterAckReceived");
+        ObjectKey key = new ObjectKey();
+        key.setDomain(domain);
+        key.setInstId(instanceId);
+        objectId.setKey(key);
     }
 
-    public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
-    {
-      throw new UnsupportedOperationException("Not supported yet.");
+    /**
+     * Stores a archive event in the archive. Writes the event directly to the
+     * archive rather than using ArchiveHandlerImpl as this avoids any recursive
+     * issues
+     *
+     * @param objectType
+     * @param domain
+     * @param instId
+     * @param timestamp
+     * @param provider
+     * @param objDetails
+     * @param objectNumber
+     */
+    public void storeEvent(ObjectType objectType, IdentifierList domain, Long instId,
+            Time timestamp, Identifier source, ObjectDetails objDetails, UShort objectNumber) {
+        Archive.inst().add(
+                new ObjectType(COMHelper.COM_AREA_NUMBER, ArchiveHelper.ARCHIVE_SERVICE_NUMBER, COMHelper.COM_AREA_VERSION, objectNumber),
+                eventDomainId,
+                new ArchiveDetails(instId, objDetails, NETWORK, new FineTime(timestamp.getValue()), new URI(source.getValue())), null);
     }
 
-    public void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
-    {
-      LoggingBase.logMessage("ActivityTestPublisher:publishErrorReceived - " + body.toString());
+    /**
+     * Publishes one or more archive service events - as defined in COM
+     * specification. These events have no bodies defined, so the body is not
+     * published. Also stores the events in the archive.
+     *
+     * @param objectNumber Object number for event to be published.
+     * @param objectType Object type for event
+     * @param domain Domain for event
+     * @param instIds Instance identifiers, an event is raised for each instance
+     * identifier.
+     * @throws MALInteractionException
+     * @throws MALException
+     */
+    public void publishEvents(UShort objectNumber, ObjectType objectType, IdentifierList domain,
+            LongList instIds) throws MALInteractionException, MALException {
+        LoggingBase.logMessage(CLS + ":publishStoreEvents:" + objectType
+                + ":" + domain + ":" + instIds);
+        ObjectDetailsList objDetailsList = new ObjectDetailsList();
+        UpdateHeaderList updateHeaderList = new UpdateHeaderList();
+        Iterator<Long> instIt = instIds.iterator();
+        while (instIt.hasNext()) {
+            ObjectDetails objDetails = new ObjectDetails();
+            // Set source 
+            ObjectId source = new ObjectId();
+            setObjectId(source, eventDomainId,
+                    objectType, instIt.next());
+            objDetails.setSource(source);
+            objDetailsList.add(objDetails);
+
+            UpdateHeader uh = new UpdateHeader();
+            setUpdateHeader(uh, objectNumber, objectType);
+            updateHeaderList.add(uh);
+            // elementList.add(null);
+            storeEvent(objectType, eventDomainId, eventInstCount, Time.now(), uh.getSource(), objDetails, objectNumber);
+        }
+
+        monitorEventPublisher.publish(updateHeaderList, objDetailsList, null);
+
+        LoggingBase.logMessage(CLS + ":publishEvents:RET:" + updateHeaderList
+                + ":" + objDetailsList + ":");
     }
 
-    public void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException
-    {
-      LoggingBase.logMessage(CLS + ":publishRegisterAckReceived");
+    /**
+     * Listener class used to receive responses to publishing events
+     */
+    public class PublisherListener implements MALPublishInteractionListener {
+
+        public void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
+            LoggingBase.logMessage(CLS + ":publishRegisterAckReceived");
+        }
+
+        public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
+            LoggingBase.logMessage("ActivityTestPublisher:publishErrorReceived - " + body.toString());
+        }
+
+        public void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
+            LoggingBase.logMessage(CLS + ":publishRegisterAckReceived");
+        }
     }
-  }
 }

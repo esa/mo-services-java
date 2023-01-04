@@ -48,419 +48,359 @@ import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
-public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton
-{
-  // Define constants used in incoming string list - ther correspnd to execution stages
-  private final String ACCEPTANCE_ERROR = "ACCEPTANCE_ERROR";
-  private final String ACK_ERROR = "ACK_ERROR";
-  private final String RESPONSE_ERROR = "RESPONSE_ERROR";
-  private final String UPDATE = "UPDATE";
-  private final String UPDATE_ERROR = "UPDATE_ERROR";
-  private final TestServiceProvider testService;
-  private MonitorEventPublisher monitorEventPublisher = null;
-  private int instanceIdentifier = 0;
+public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
+    // Define constants used in incoming string list - ther correspnd to execution stages
 
-  public ActivityTestHandlerImpl(TestServiceProvider testService)
-  {
-    this.testService = testService;
-  }
+    private final String ACCEPTANCE_ERROR = "ACCEPTANCE_ERROR";
+    private final String ACK_ERROR = "ACK_ERROR";
+    private final String RESPONSE_ERROR = "RESPONSE_ERROR";
+    private final String UPDATE = "UPDATE";
+    private final String UPDATE_ERROR = "UPDATE_ERROR";
+    private final TestServiceProvider testService;
+    private MonitorEventPublisher monitorEventPublisher = null;
+    private int instanceIdentifier = 0;
 
-  public void resetTest(MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage("ActivityTestHandlerImpl:resetTest");
+    public ActivityTestHandlerImpl(TestServiceProvider testService) {
+        this.testService = testService;
+    }
 
-    if (null == monitorEventPublisher)
-    {
-      LoggingBase.logMessage("ActivityTestHandlerImpl:creating event publisher");
+    public void resetTest(MALInteraction interaction) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("ActivityTestHandlerImpl:resetTest");
 
-      final IdentifierList domain = new IdentifierList();
-      domain.add(new Identifier("esa"));
-      domain.add(new Identifier("mission"));
+        if (null == monitorEventPublisher) {
+            LoggingBase.logMessage("ActivityTestHandlerImpl:creating event publisher");
 
-      monitorEventPublisher = testService.getActivityEventPublisher().createMonitorEventPublisher(domain,
-              new Identifier("GROUND"),
-              SessionType.LIVE,
-              new Identifier("LIVE"),
-              QoSLevel.BESTEFFORT,
-              null,
-              new UInteger(0));
-      
-      /*
+            final IdentifierList domain = new IdentifierList();
+            domain.add(new Identifier("esa"));
+            domain.add(new Identifier("mission"));
+
+            monitorEventPublisher = testService.getActivityEventPublisher().createMonitorEventPublisher(domain,
+                    new Identifier("GROUND"),
+                    SessionType.LIVE,
+                    new Identifier("LIVE"),
+                    QoSLevel.BESTEFFORT,
+                    null,
+                    new UInteger(0));
+
+            /*
       final EntityKeyList lst = new EntityKeyList();
       lst.add(new EntityKey(new Identifier("*"), new Long(0), new Long(0), new Long(0)));
-      */
-      IdentifierList keys = new IdentifierList();
-      keys.add(new Identifier("K1"));
-      keys.add(new Identifier("K2"));
-      keys.add(new Identifier("K3"));
-      keys.add(new Identifier("K4"));
+             */
+            IdentifierList keys = new IdentifierList();
+            keys.add(new Identifier("K1"));
+            keys.add(new Identifier("K2"));
+            keys.add(new Identifier("K3"));
+            keys.add(new Identifier("K4"));
 
-      monitorEventPublisher.register(keys, new ActivityTestPublisher());
-    }
-  }
-
-  public void send(StringList _String, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage("ActivityTestHandlerImpl:send " + _String);
-
-    publishAcceptance(!_String.contains(ACCEPTANCE_ERROR), interaction);
-  }
-
-  public StringList request(StringList _String, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage("ActivityTestHandlerImpl:request " + _String);
-    if (!_String.contains(ACCEPTANCE_ERROR))
-    {
-      publishAcceptance(true, interaction);
-      if ((_String.contains(ACK_ERROR)))
-      {
-        publishExecution(false, interaction, 1, 1);
-        throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
-      }
-      else
-      {
-        publishExecution(!_String.contains(RESPONSE_ERROR), interaction, 1, 1);
-      }
-    }
-    else
-    {
-      publishAcceptance(false, interaction);
-      throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
-    }
-    return _String;
-  }
-
-  public void testSubmit(StringList _String, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage("ActivityTestHandlerImpl:testSubmit " + _String);
-    if (!_String.contains(ACCEPTANCE_ERROR))
-    {
-      publishAcceptance(true, interaction);
-      if ((_String.contains(ACK_ERROR)))
-      {
-        publishExecution(false, interaction, 1, 1);
-        throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
-      }
-      else
-      {
-        publishExecution(true, interaction, 1, 1);
-      }
-    }
-    else
-    {
-      publishAcceptance(false, interaction);
-      throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
-    }
-  }
-
-  public void invoke(StringList _String, InvokeInteraction interaction) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage("ActivityTestHandlerImpl:invoke " + _String);
-    if (_String.contains(ACCEPTANCE_ERROR))
-    {
-      publishAcceptance(false, interaction.getInteraction());
-      if (_String.contains(ACK_ERROR))
-      {
-        publishExecution(false, interaction.getInteraction(), 1, 2);
-      }
-      // TBD error number to be specified
-      interaction.sendError(new MALStandardError(new UInteger(0), null));
-    }
-    else if ((_String.contains(ACK_ERROR)))
-    {
-      publishAcceptance(true, interaction.getInteraction());
-      publishExecution(false, interaction.getInteraction(), 1, 2);
-      // TBD error number to be specified
-      interaction.sendError(new MALStandardError(new UInteger(0), null));
-    }
-    else
-    {
-      publishAcceptance(true, interaction.getInteraction());
-      publishExecution(true, interaction.getInteraction(), 1, 2);
-      interaction.sendAcknowledgement(_String);
-      try
-      {
-        Thread.sleep(100);
-      }
-      catch (Exception ex)
-      {
-      }
-      if (!_String.contains(RESPONSE_ERROR))
-      {
-        publishExecution(true, interaction.getInteraction(), 2, 2);
-        interaction.sendResponse(_String);
-      }
-      else
-      {
-        // TBD error number to be specified
-        publishExecution(false, interaction.getInteraction(), 2, 2);
-        interaction.sendError(new MALStandardError(new UInteger(0), null));
-      }
-    }
-  }
-
-  public void progress(StringList _String, ProgressInteraction interaction) throws MALInteractionException, MALException
-  {
-    boolean bUpdateErr = false;
-    LoggingBase.logMessage("ActivityTestHandlerImpl:progress " + _String);
-    int totalStageCount = noUpdates(_String) + 2; // 2 = 1 for ACK, 1 for RSP
-    int currentStage = 1;
-    if (_String.contains(ACCEPTANCE_ERROR))
-    {
-      publishAcceptance(false, interaction.getInteraction());
-      // TBD error number to be specified
-      if (_String.contains(ACK_ERROR))
-      {
-        publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
-      }
-      interaction.sendError(new MALStandardError(new UInteger(0), null));
-    }
-    else if ((_String.contains(ACK_ERROR)))
-    {
-      publishAcceptance(true, interaction.getInteraction());
-      publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
-      // TBD error number to be specified
-      interaction.sendError(new MALStandardError(new UInteger(0), null));
-    }
-    else
-    {
-      publishExecution(true, interaction.getInteraction(), currentStage++, totalStageCount);
-      publishAcceptance(true, interaction.getInteraction());
-      interaction.sendAcknowledgement(_String);
-      try
-      {
-        Thread.sleep(100);
-      }
-      catch (Exception ex)
-      {
-      }
-      // Send updates
-      for (int i = 0; i < _String.size() && !bUpdateErr; i++)
-      {
-        if (_String.get(i).contains(UPDATE_ERROR))
-        {
-          LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send update ERR");
-          publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
-          interaction.sendUpdateError(new MALStandardError(new UInteger(0), null));
-          bUpdateErr = true;
+            monitorEventPublisher.register(keys, new ActivityTestPublisher());
         }
-        else if (_String.get(i).contains(UPDATE))
-        {
-          LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send UPDATE");
-          publishExecution(true, interaction.getInteraction(), currentStage++, totalStageCount);
-          interaction.sendUpdate(_String);
-          try
-          {
-            Thread.sleep(100);
-          }
-          catch (Exception ex)
-          {
-          }
-        }
-      }
-      if (!bUpdateErr)
-      {
-        if (!_String.contains(RESPONSE_ERROR))
-        {
-          LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send response");
-          publishExecution(true, interaction.getInteraction(), currentStage++, totalStageCount);
-          interaction.sendResponse(_String);
-        }
-        else
-        {
-          LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send response ERR");
-          publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
-          // TBD error number to be specified
-          interaction.sendError(new MALStandardError(new UInteger(0), null));
-        }
-      }
     }
-  }
 
-  public void close(MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    // No actions required at the moment
-  }
+    public void send(StringList _String, MALInteraction interaction) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("ActivityTestHandlerImpl:send " + _String);
 
-  // Generate a EntityKey subkey using fields as specified in COM STD 3.2.4.2b
-  static protected Long generateSubKey(int area, int service, int version, int objectNumber)
-  {
-    long subkey = objectNumber;
-    subkey = subkey | (((long) version) << 24);
-    subkey = subkey | ((long) service << 32);
-    subkey = subkey | ((long) area << 48);
-
-    return new Long(subkey);
-  }
-
-  // Calculates number of update phases in an update list
-  private int noUpdates(StringList _String)
-  {
-    int noUpdates = 0;
-
-    for (int i = 0; i < _String.size(); i++)
-    {
-      if (_String.get(i).contains(UPDATE_ERROR) || _String.get(i).contains(UPDATE))
-      {
-        ++noUpdates;
-      }
+        publishAcceptance(!_String.contains(ACCEPTANCE_ERROR), interaction);
     }
-    return noUpdates;
-  }
 
-  private void publishAcceptance(boolean success, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance malInter = " + interaction);
-
-    // Produce ActivityTransferList
-    ActivityAcceptanceList aal = new ActivityAcceptanceList();
-    ActivityAcceptance aa = new ActivityAcceptance();
-    aa.setSuccess(success);
-    aal.add(aa);
-    // Produce ObjectDetails 
-    ObjectDetailsList odl = new ObjectDetailsList();
-    ObjectDetails objDetails = new ObjectDetails();
-    objDetails.setRelated(null);
-
-    // Set source
-    ObjectId source = new ObjectId();
-    source.setType(COMTestHelper.getOperationActivityType());
-    LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance source = " + source);
-
-    ObjectKey key = new ObjectKey();
-    key.setDomain(interaction.getMessageHeader().getDomain());
-    key.setInstId(new Long(interaction.getMessageHeader().getTransactionId()));
-    if (interaction.getMessageHeader().getTransactionId() == null)
-    {
-      LoggingBase.logMessage("ActivityTestRelayHandlerImpl:getTransactionId = NULL");
+    public StringList request(StringList _String, MALInteraction interaction) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("ActivityTestHandlerImpl:request " + _String);
+        if (!_String.contains(ACCEPTANCE_ERROR)) {
+            publishAcceptance(true, interaction);
+            if ((_String.contains(ACK_ERROR))) {
+                publishExecution(false, interaction, 1, 1);
+                throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
+            } else {
+                publishExecution(!_String.contains(RESPONSE_ERROR), interaction, 1, 1);
+            }
+        } else {
+            publishAcceptance(false, interaction);
+            throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
+        }
+        return _String;
     }
-    LoggingBase.logMessage("ActivityTestHandler:key = " + key);
-    source.setKey(key);
-    objDetails.setSource(source);
-    odl.add(objDetails);
-    // Produce header
-    UpdateHeaderList uhl = new UpdateHeaderList();
-    /*
-    final EntityKey ekey = new EntityKey(
+
+    public void testSubmit(StringList _String, MALInteraction interaction) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("ActivityTestHandlerImpl:testSubmit " + _String);
+        if (!_String.contains(ACCEPTANCE_ERROR)) {
+            publishAcceptance(true, interaction);
+            if ((_String.contains(ACK_ERROR))) {
+                publishExecution(false, interaction, 1, 1);
+                throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
+            } else {
+                publishExecution(true, interaction, 1, 1);
+            }
+        } else {
+            publishAcceptance(false, interaction);
+            throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
+        }
+    }
+
+    public void invoke(StringList _String, InvokeInteraction interaction) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("ActivityTestHandlerImpl:invoke " + _String);
+        if (_String.contains(ACCEPTANCE_ERROR)) {
+            publishAcceptance(false, interaction.getInteraction());
+            if (_String.contains(ACK_ERROR)) {
+                publishExecution(false, interaction.getInteraction(), 1, 2);
+            }
+            // TBD error number to be specified
+            interaction.sendError(new MALStandardError(new UInteger(0), null));
+        } else if ((_String.contains(ACK_ERROR))) {
+            publishAcceptance(true, interaction.getInteraction());
+            publishExecution(false, interaction.getInteraction(), 1, 2);
+            // TBD error number to be specified
+            interaction.sendError(new MALStandardError(new UInteger(0), null));
+        } else {
+            publishAcceptance(true, interaction.getInteraction());
+            publishExecution(true, interaction.getInteraction(), 1, 2);
+            interaction.sendAcknowledgement(_String);
+            try {
+                Thread.sleep(100);
+            } catch (Exception ex) {
+            }
+            if (!_String.contains(RESPONSE_ERROR)) {
+                publishExecution(true, interaction.getInteraction(), 2, 2);
+                interaction.sendResponse(_String);
+            } else {
+                // TBD error number to be specified
+                publishExecution(false, interaction.getInteraction(), 2, 2);
+                interaction.sendError(new MALStandardError(new UInteger(0), null));
+            }
+        }
+    }
+
+    public void progress(StringList _String, ProgressInteraction interaction) throws MALInteractionException, MALException {
+        boolean bUpdateErr = false;
+        LoggingBase.logMessage("ActivityTestHandlerImpl:progress " + _String);
+        int totalStageCount = noUpdates(_String) + 2; // 2 = 1 for ACK, 1 for RSP
+        int currentStage = 1;
+        if (_String.contains(ACCEPTANCE_ERROR)) {
+            publishAcceptance(false, interaction.getInteraction());
+            // TBD error number to be specified
+            if (_String.contains(ACK_ERROR)) {
+                publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
+            }
+            interaction.sendError(new MALStandardError(new UInteger(0), null));
+        } else if ((_String.contains(ACK_ERROR))) {
+            publishAcceptance(true, interaction.getInteraction());
+            publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
+            // TBD error number to be specified
+            interaction.sendError(new MALStandardError(new UInteger(0), null));
+        } else {
+            publishExecution(true, interaction.getInteraction(), currentStage++, totalStageCount);
+            publishAcceptance(true, interaction.getInteraction());
+            interaction.sendAcknowledgement(_String);
+            try {
+                Thread.sleep(100);
+            } catch (Exception ex) {
+            }
+            // Send updates
+            for (int i = 0; i < _String.size() && !bUpdateErr; i++) {
+                if (_String.get(i).contains(UPDATE_ERROR)) {
+                    LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send update ERR");
+                    publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
+                    interaction.sendUpdateError(new MALStandardError(new UInteger(0), null));
+                    bUpdateErr = true;
+                } else if (_String.get(i).contains(UPDATE)) {
+                    LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send UPDATE");
+                    publishExecution(true, interaction.getInteraction(), currentStage++, totalStageCount);
+                    interaction.sendUpdate(_String);
+                    try {
+                        Thread.sleep(100);
+                    } catch (Exception ex) {
+                    }
+                }
+            }
+            if (!bUpdateErr) {
+                if (!_String.contains(RESPONSE_ERROR)) {
+                    LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send response");
+                    publishExecution(true, interaction.getInteraction(), currentStage++, totalStageCount);
+                    interaction.sendResponse(_String);
+                } else {
+                    LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send response ERR");
+                    publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
+                    // TBD error number to be specified
+                    interaction.sendError(new MALStandardError(new UInteger(0), null));
+                }
+            }
+        }
+    }
+
+    public void close(MALInteraction interaction) throws MALInteractionException, MALException {
+        // No actions required at the moment
+    }
+
+    // Generate a EntityKey subkey using fields as specified in COM STD 3.2.4.2b
+    static protected Long generateSubKey(int area, int service, int version, int objectNumber) {
+        long subkey = objectNumber;
+        subkey = subkey | (((long) version) << 24);
+        subkey = subkey | ((long) service << 32);
+        subkey = subkey | ((long) area << 48);
+
+        return new Long(subkey);
+    }
+
+    // Calculates number of update phases in an update list
+    private int noUpdates(StringList _String) {
+        int noUpdates = 0;
+
+        for (int i = 0; i < _String.size(); i++) {
+            if (_String.get(i).contains(UPDATE_ERROR) || _String.get(i).contains(UPDATE)) {
+                ++noUpdates;
+            }
+        }
+        return noUpdates;
+    }
+
+    private void publishAcceptance(boolean success, MALInteraction interaction) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance malInter = " + interaction);
+
+        // Produce ActivityTransferList
+        ActivityAcceptanceList aal = new ActivityAcceptanceList();
+        ActivityAcceptance aa = new ActivityAcceptance();
+        aa.setSuccess(success);
+        aal.add(aa);
+        // Produce ObjectDetails 
+        ObjectDetailsList odl = new ObjectDetailsList();
+        ObjectDetails objDetails = new ObjectDetails();
+        objDetails.setRelated(null);
+
+        // Set source
+        ObjectId source = new ObjectId();
+        source.setType(COMTestHelper.getOperationActivityType());
+        LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance source = " + source);
+
+        ObjectKey key = new ObjectKey();
+        key.setDomain(interaction.getMessageHeader().getDomain());
+        key.setInstId(new Long(interaction.getMessageHeader().getTransactionId()));
+        if (interaction.getMessageHeader().getTransactionId() == null) {
+            LoggingBase.logMessage("ActivityTestRelayHandlerImpl:getTransactionId = NULL");
+        }
+        LoggingBase.logMessage("ActivityTestHandler:key = " + key);
+        source.setKey(key);
+        objDetails.setSource(source);
+        odl.add(objDetails);
+        // Produce header
+        UpdateHeaderList uhl = new UpdateHeaderList();
+
+        /*
+        final EntityKey ekey = new EntityKey(
             new Identifier(COMTestHelper.OBJ_NO_ASE_ACCEPTANCE_STR),
-            generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, 0),
+            generateSubKey(COMHelper._COM_AREA_NUMBER, 
+                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, 
+                    COMHelper._COM_AREA_VERSION, 0),
             new Long(instanceIdentifier++),
-            generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY));
-    */
-    
-    AttributeList keyValues = new AttributeList();
-    keyValues.add(new Identifier(COMTestHelper.OBJ_NO_ASE_ACCEPTANCE_STR));
-    keyValues.add(new Union(ComStructureHelper.generateSubKey(
-                    COMHelper._COM_AREA_NUMBER,
-                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
-                    COMHelper._COM_AREA_VERSION,
-                    0)));
-    keyValues.add(new Union((long) instanceIdentifier++));
-    keyValues.add(new Union(ComStructureHelper.generateSubKey(
-                    COMHelper._COM_AREA_NUMBER,
-                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
-                    COMHelper._COM_AREA_VERSION,
-                    COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
-    
-    LoggingBase.logMessage("ActivityTestHandler: keyValues = " + keyValues);
-    URI uri = interaction.getMessageHeader().getURITo();
-    IdentifierList domain = new IdentifierList();
-    domain.add(new Identifier("esa"));
-    domain.add(new Identifier("mission"));
+            generateSubKey(COMHelper._COM_AREA_NUMBER, 
+                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, 
+                    COMHelper._COM_AREA_VERSION, COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY));
+        */
+        
+        AttributeList keyValues = new AttributeList();
+        keyValues.add(new Identifier(COMTestHelper.OBJ_NO_ASE_ACCEPTANCE_STR));
+        keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                COMHelper._COM_AREA_NUMBER,
+                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                COMHelper._COM_AREA_VERSION,
+                0)));
+        keyValues.add(new Union((long) instanceIdentifier++));
+        keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                COMHelper._COM_AREA_NUMBER,
+                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                COMHelper._COM_AREA_VERSION,
+                COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
-    UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues);
-    uhl.add(uh);
+        LoggingBase.logMessage("ActivityTestHandler: keyValues = " + keyValues);
+        URI uri = interaction.getMessageHeader().getURITo();
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("esa"));
+        domain.add(new Identifier("mission"));
 
-    // We can now publish the event
-    monitorEventPublisher.publish(uhl, odl, aal);
+        UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues);
+        uhl.add(uh);
 
-  }
+        // We can now publish the event
+        monitorEventPublisher.publish(uhl, odl, aal);
 
-  private void publishExecution(boolean success, MALInteraction interaction,
-          int currentStageCount, int totalStageCount) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution malInter = " + interaction);
-    // Produce header
-    UpdateHeaderList uhl = new UpdateHeaderList();
-    /*
+    }
+
+    private void publishExecution(boolean success, MALInteraction interaction,
+            int currentStageCount, int totalStageCount) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution malInter = " + interaction);
+        // Produce header
+        UpdateHeaderList uhl = new UpdateHeaderList();
+        /*
     final EntityKey ekey = new EntityKey(
             new Identifier(COMTestHelper.OBJ_NO_ASE_EXECUTION_STR),
             generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, 0),
             new Long(instanceIdentifier++),
             generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY));
-    */
-    
-    AttributeList keyValues = new AttributeList();
-    keyValues.add(new Identifier(COMTestHelper.OBJ_NO_ASE_EXECUTION_STR));
-    keyValues.add(new Union(ComStructureHelper.generateSubKey(
-                    COMHelper._COM_AREA_NUMBER,
-                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
-                    COMHelper._COM_AREA_VERSION,
-                    0)));
-    keyValues.add(new Union((long) instanceIdentifier++));
-    keyValues.add(new Union(ComStructureHelper.generateSubKey(
-                    COMHelper._COM_AREA_NUMBER,
-                    ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
-                    COMHelper._COM_AREA_VERSION,
-                    COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
-        
-    LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution keyValues = " + keyValues);
-    URI uri = interaction.getMessageHeader().getURITo();
-    IdentifierList domain = new IdentifierList();
-    domain.add(new Identifier("esa"));
-    domain.add(new Identifier("mission"));
-    uhl.add(new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues));
+         */
 
-    // Produce ActivityTransferList
-    ActivityExecutionList ael = new ActivityExecutionList();
-    ActivityExecution activityExecutionInstance = new ActivityExecution();
-    activityExecutionInstance.setExecutionStage(new UInteger(currentStageCount)); // TBD
-    activityExecutionInstance.setStageCount(new UInteger(totalStageCount));
-    activityExecutionInstance.setSuccess(success);
+        AttributeList keyValues = new AttributeList();
+        keyValues.add(new Identifier(COMTestHelper.OBJ_NO_ASE_EXECUTION_STR));
+        keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                COMHelper._COM_AREA_NUMBER,
+                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                COMHelper._COM_AREA_VERSION,
+                0)));
+        keyValues.add(new Union((long) instanceIdentifier++));
+        keyValues.add(new Union(ComStructureHelper.generateSubKey(
+                COMHelper._COM_AREA_NUMBER,
+                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                COMHelper._COM_AREA_VERSION,
+                COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
-    ael.add(activityExecutionInstance);
+        LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution keyValues = " + keyValues);
+        URI uri = interaction.getMessageHeader().getURITo();
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("esa"));
+        domain.add(new Identifier("mission"));
+        uhl.add(new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues));
 
-    // Produce ObjectDetails 
-    ObjectDetailsList odl = new ObjectDetailsList();
-    ObjectDetails objDetails = new ObjectDetails();
-    objDetails.setRelated(null);
+        // Produce ActivityTransferList
+        ActivityExecutionList ael = new ActivityExecutionList();
+        ActivityExecution activityExecutionInstance = new ActivityExecution();
+        activityExecutionInstance.setExecutionStage(new UInteger(currentStageCount)); // TBD
+        activityExecutionInstance.setStageCount(new UInteger(totalStageCount));
+        activityExecutionInstance.setSuccess(success);
 
-    ObjectId source = new ObjectId();
+        ael.add(activityExecutionInstance);
 
-    source.setType(COMTestHelper.getOperationActivityType());
+        // Produce ObjectDetails 
+        ObjectDetailsList odl = new ObjectDetailsList();
+        ObjectDetails objDetails = new ObjectDetails();
+        objDetails.setRelated(null);
 
-    ObjectKey key = new ObjectKey();
-    key.setDomain(interaction.getMessageHeader().getDomain());
-    key.setInstId(interaction.getMessageHeader().getTransactionId());
-    if (interaction.getMessageHeader().getTransactionId() == null)
-    {
-      LoggingBase.logMessage("ActivityTestRelayHandlerImpl:getTransactionId = NULL");
-    }
-    source.setKey(key);
-    objDetails.setSource(source);
-    odl.add(objDetails);
+        ObjectId source = new ObjectId();
 
-    // We can now publish the event
-    monitorEventPublisher.publish(uhl, odl, ael);
-  }
+        source.setType(COMTestHelper.getOperationActivityType());
 
-  public static class ActivityTestPublisher implements MALPublishInteractionListener
-  {
-    public void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException
-    {
+        ObjectKey key = new ObjectKey();
+        key.setDomain(interaction.getMessageHeader().getDomain());
+        key.setInstId(interaction.getMessageHeader().getTransactionId());
+        if (interaction.getMessageHeader().getTransactionId() == null) {
+            LoggingBase.logMessage("ActivityTestRelayHandlerImpl:getTransactionId = NULL");
+        }
+        source.setKey(key);
+        objDetails.setSource(source);
+        odl.add(objDetails);
+
+        // We can now publish the event
+        monitorEventPublisher.publish(uhl, odl, ael);
     }
 
-    public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
-    {
-    }
+    public static class ActivityTestPublisher implements MALPublishInteractionListener {
 
-    public void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
-    {
-      LoggingBase.logMessage("ActivityTestPublisher:publishErrorReceived - " + body.toString());
-    }
+        public void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
+        }
 
-    public void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException
-    {
+        public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
+        }
+
+        public void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
+            LoggingBase.logMessage("ActivityTestPublisher:publishErrorReceived - " + body.toString());
+        }
+
+        public void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
+        }
     }
-  }
 }

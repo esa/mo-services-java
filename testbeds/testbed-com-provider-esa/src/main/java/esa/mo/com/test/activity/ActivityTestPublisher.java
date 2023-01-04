@@ -30,22 +30,18 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 /**
  *
  */
-public class ActivityTestPublisher implements MALPublishInteractionListener
-{
-  public void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException
-  {
-  }
+public class ActivityTestPublisher implements MALPublishInteractionListener {
 
-  public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
-  {
-  }
+    public void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
+    }
 
-  public void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException
-  {
-    LoggingBase.logMessage("ActivityTestPublisher:publishErrorReceived - " + body.toString());
-  }
+    public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
+    }
 
-  public void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException
-  {
-  }
+    public void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
+        LoggingBase.logMessage("ActivityTestPublisher:publishErrorReceived - " + body.toString());
+    }
+
+    public void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
+    }
 }

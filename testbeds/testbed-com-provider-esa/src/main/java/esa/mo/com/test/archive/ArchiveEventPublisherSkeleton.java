@@ -25,7 +25,6 @@ import org.ccsds.moims.mo.com.event.provider.EventInheritanceSkeleton;
 /**
  *
  */
-public class ArchiveEventPublisherSkeleton extends EventInheritanceSkeleton
-{
+public class ArchiveEventPublisherSkeleton extends EventInheritanceSkeleton {
 
 }

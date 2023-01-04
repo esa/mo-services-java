@@ -33,60 +33,51 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 /**
  *
  */
-public class ActivityRelayManagementHandlerImpl extends ActivityRelayManagementInheritanceSkeleton
-{
-  private final TestServiceProvider testService;
-  private final Map<String, ActivityRelayNode> relayMap = new TreeMap();
-  private ActivityRelayNode initialRelay = null;
+public class ActivityRelayManagementHandlerImpl extends ActivityRelayManagementInheritanceSkeleton {
 
-  public ActivityRelayManagementHandlerImpl(TestServiceProvider testService)
-  {
-    this.testService = testService;
-  }
+    private final TestServiceProvider testService;
+    private final Map<String, ActivityRelayNode> relayMap = new TreeMap();
+    private ActivityRelayNode initialRelay = null;
 
-  public void resetTest(MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage("ActivityRelayManagementHandlerImpl:resetTest");
-
-    for (Map.Entry<String, ActivityRelayNode> entry : relayMap.entrySet())
-    {
-      ActivityRelayNode activityRelayNode = entry.getValue();
-      activityRelayNode.close();
+    public ActivityRelayManagementHandlerImpl(TestServiceProvider testService) {
+        this.testService = testService;
     }
 
-    relayMap.clear();
-    initialRelay = null;
-  }
+    public void resetTest(MALInteraction interaction) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("ActivityRelayManagementHandlerImpl:resetTest");
 
-  public void createRelay(String name, String relayTo, MALInteraction interaction) throws MALException
-  {
-    LoggingBase.logMessage("ActivityRelayManagementHandlerImpl:createRelay " + name + ":" + relayTo);
-    ActivityRelayNode node = new ActivityRelayNode(testService, this, testService.getProtocol(), name, relayTo);
-    LoggingBase.logMessage("ActivityRelayManagementHandlerImpl:createRelay complete");
+        for (Map.Entry<String, ActivityRelayNode> entry : relayMap.entrySet()) {
+            ActivityRelayNode activityRelayNode = entry.getValue();
+            activityRelayNode.close();
+        }
 
-    node.init();
-    node.resetTest();
-
-    relayMap.put(name, node);
-    initialRelay = node;
-  }
-
-  public void passToRelay(String relayName, StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException
-  {
-    ActivityRelayNode relay;
-
-    if (null == relayName)
-    {
-      relay = initialRelay;
-    }
-    else
-    {
-      relay = relayMap.get(relayName);
+        relayMap.clear();
+        initialRelay = null;
     }
 
-    if (null != relay)
-    {
-      relay.relayMessage(_StringList0, interaction);
+    public void createRelay(String name, String relayTo, MALInteraction interaction) throws MALException {
+        LoggingBase.logMessage("ActivityRelayManagementHandlerImpl:createRelay " + name + ":" + relayTo);
+        ActivityRelayNode node = new ActivityRelayNode(testService, this, testService.getProtocol(), name, relayTo);
+        LoggingBase.logMessage("ActivityRelayManagementHandlerImpl:createRelay complete");
+
+        node.init();
+        node.resetTest();
+
+        relayMap.put(name, node);
+        initialRelay = node;
     }
-  }
+
+    public void passToRelay(String relayName, StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException {
+        ActivityRelayNode relay;
+
+        if (null == relayName) {
+            relay = initialRelay;
+        } else {
+            relay = relayMap.get(relayName);
+        }
+
+        if (null != relay) {
+            relay.relayMessage(_StringList0, interaction);
+        }
+    }
 }

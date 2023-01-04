@@ -38,36 +38,34 @@ import static org.ccsds.moims.mo.testbed.util.LoggingBase.logMessage;
 /**
  * Use this to test an implementation that is executed externally from here.
  */
-public class DelegateCOMTestServiceProvider extends UriCOMTestServiceProvider
-{
-  protected List<URItriple> initURIs() throws MALException
-  {
-    Properties uriPrp = Configuration.getProperties("ServiceProviderURI.properties", true);
-    logMessage("Delegate: uri props: " + uriPrp);
-    System.getProperties().putAll(uriPrp);
+public class DelegateCOMTestServiceProvider extends UriCOMTestServiceProvider {
 
-    List<URItriple> returnValues = new ArrayList<URItriple>();
+    protected List<URItriple> initURIs() throws MALException {
+        Properties uriPrp = Configuration.getProperties("ServiceProviderURI.properties", true);
+        logMessage("Delegate: uri props: " + uriPrp);
+        System.getProperties().putAll(uriPrp);
 
-    returnValues.add(getServiceURIs(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME));
-    returnValues.add(getServiceURIs(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME));
-    returnValues.add(getServiceURIs(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME)));
-    returnValues.add(getServiceURIs(EventTestHelper.EVENTTEST_SERVICE_NAME));
-    returnValues.add(getServiceURIs(EventHelper.EVENT_SERVICE_NAME));
-    returnValues.add(getServiceURIs(ArchiveHelper.ARCHIVE_SERVICE_NAME));
-    returnValues.add(getServiceURIs(ArchiveTestHelper.ARCHIVETEST_SERVICE_NAME));
-    returnValues.add(getServiceURIs(new Identifier(LocalMALInstance.ARCHIVE_EVENT_NAME)));
+        List<URItriple> returnValues = new ArrayList<>();
 
-    return returnValues;
-  }
+        returnValues.add(getServiceURIs(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME));
+        returnValues.add(getServiceURIs(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME));
+        returnValues.add(getServiceURIs(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME)));
+        returnValues.add(getServiceURIs(EventTestHelper.EVENTTEST_SERVICE_NAME));
+        returnValues.add(getServiceURIs(EventHelper.EVENT_SERVICE_NAME));
+        returnValues.add(getServiceURIs(ArchiveHelper.ARCHIVE_SERVICE_NAME));
+        returnValues.add(getServiceURIs(ArchiveTestHelper.ARCHIVETEST_SERVICE_NAME));
+        returnValues.add(getServiceURIs(new Identifier(LocalMALInstance.ARCHIVE_EVENT_NAME)));
 
-  protected URItriple getServiceURIs(Identifier serviceName)
-  {
-    String servicePropery = serviceName + "URI";
-    String brokerPropery = serviceName + "Broker";
-    logMessage("Looking for provider properties : " + servicePropery + " , " + brokerPropery);
+        return returnValues;
+    }
 
-    URI serviceURI = new URI(System.getProperty(servicePropery));
-    URI brokerURI = new URI(System.getProperty(brokerPropery));
-    return new URItriple(serviceName, serviceURI, brokerURI);
-  }
+    protected URItriple getServiceURIs(Identifier serviceName) {
+        String servicePropery = serviceName + "URI";
+        String brokerPropery = serviceName + "Broker";
+        logMessage("Looking for provider properties : " + servicePropery + " , " + brokerPropery);
+
+        URI serviceURI = new URI(System.getProperty(servicePropery));
+        URI brokerURI = new URI(System.getProperty(brokerPropery));
+        return new URItriple(serviceName, serviceURI, brokerURI);
+    }
 }

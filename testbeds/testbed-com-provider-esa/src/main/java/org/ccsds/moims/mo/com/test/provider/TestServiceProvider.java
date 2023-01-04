@@ -35,83 +35,72 @@ import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 /**
  *
  */
-public class TestServiceProvider extends BaseCOMTestServiceProvider
-{
-  private final ActivityRelayInterceptor activityTestHandler;
-  private final ActivityRelayManagementHandlerImpl activityRelayManagementHandler;
-  private final EventTestHandlerImpl eventTestHandler;
-  private final EventTestDelegationSkeleton eventTestDelegationSkel;
-  private final ArchiveHandlerImpl archiveHandlerImpl;
-  private final ArchiveTestHandlerImpl archiveTestHandlerImpl;
-  private final MonitorEventPublisherSkeleton monitorEventPublisherSkeleton = new MonitorEventPublisherSkeleton();
-  private final EventHandlerImpl eventHandlerImpl = new EventHandlerImpl();
+public class TestServiceProvider extends BaseCOMTestServiceProvider {
 
-  public TestServiceProvider()
-  {
-    eventTestHandler = new EventTestHandlerImpl(this);
-    eventTestDelegationSkel = new EventTestDelegationSkeleton(eventTestHandler);
-    activityRelayManagementHandler = new ActivityRelayManagementHandlerImpl(this);
-    activityTestHandler = new ActivityRelayInterceptor(this, activityRelayManagementHandler);
-    archiveHandlerImpl = new ArchiveHandlerImpl(this);
-    archiveTestHandlerImpl = new ArchiveTestHandlerImpl(this, archiveHandlerImpl);
-  }
+    private final ActivityRelayInterceptor activityTestHandler;
+    private final ActivityRelayManagementHandlerImpl activityRelayManagementHandler;
+    private final EventTestHandlerImpl eventTestHandler;
+    private final EventTestDelegationSkeleton eventTestDelegationSkel;
+    private final ArchiveHandlerImpl archiveHandlerImpl;
+    private final ArchiveTestHandlerImpl archiveTestHandlerImpl;
+    private final MonitorEventPublisherSkeleton monitorEventPublisherSkeleton = new MonitorEventPublisherSkeleton();
+    private final EventHandlerImpl eventHandlerImpl = new EventHandlerImpl();
 
-  public MonitorEventPublisherSkeleton getActivityEventPublisher()
-  {
-    return monitorEventPublisherSkeleton;
-  }
+    public TestServiceProvider() {
+        eventTestHandler = new EventTestHandlerImpl(this);
+        eventTestDelegationSkel = new EventTestDelegationSkeleton(eventTestHandler);
+        activityRelayManagementHandler = new ActivityRelayManagementHandlerImpl(this);
+        activityTestHandler = new ActivityRelayInterceptor(this, activityRelayManagementHandler);
+        archiveHandlerImpl = new ArchiveHandlerImpl(this);
+        archiveTestHandlerImpl = new ArchiveTestHandlerImpl(this, archiveHandlerImpl);
+    }
 
-  @Override
-  protected void initProviders()
-  {
-  }
+    public MonitorEventPublisherSkeleton getActivityEventPublisher() {
+        return monitorEventPublisherSkeleton;
+    }
 
-  @Override
-  protected MALInteractionHandler getActivityTestServiceHandler()
-  {
-    return activityTestHandler;
-  }
+    @Override
+    protected void initProviders() {
+    }
 
-  @Override
-  protected MALInteractionHandler getActivityRelayManagementServiceHandler()
-  {
-    return activityRelayManagementHandler;
-  }
+    @Override
+    protected MALInteractionHandler getActivityTestServiceHandler() {
+        return activityTestHandler;
+    }
 
-  @Override
-  protected MALInteractionHandler getActivityEventHandler()
-  {
-    return monitorEventPublisherSkeleton;
-  }
+    @Override
+    protected MALInteractionHandler getActivityRelayManagementServiceHandler() {
+        return activityRelayManagementHandler;
+    }
 
-  @Override
-  protected MALInteractionHandler getEventTestServiceHandler()
-  {
-    return this.eventTestDelegationSkel;
-  }
+    @Override
+    protected MALInteractionHandler getActivityEventHandler() {
+        return monitorEventPublisherSkeleton;
+    }
 
-  @Override
-  protected MALInteractionHandler getArchiveHandler()
-  {
-    return archiveHandlerImpl;
-  }
+    @Override
+    protected MALInteractionHandler getEventTestServiceHandler() {
+        return this.eventTestDelegationSkel;
+    }
 
-  @Override
-  protected MALInteractionHandler getArchiveTestHandler()
-  {
-    return archiveTestHandlerImpl;
-  }
+    @Override
+    protected MALInteractionHandler getArchiveHandler() {
+        return archiveHandlerImpl;
+    }
 
-  @Override
-  protected MALInteractionHandler getArchiveEventHandler()
-  {
-    // this doesn't seem correct to me
-    return new ArchiveEventHandlerImpl();
-  }
+    @Override
+    protected MALInteractionHandler getArchiveTestHandler() {
+        return archiveTestHandlerImpl;
+    }
 
-  @Override
-  protected MALInteractionHandler getEventServiceHandler()
-  {
-    return eventHandlerImpl;
-  }
+    @Override
+    protected MALInteractionHandler getArchiveEventHandler() {
+        // this doesn't seem correct to me
+        return new ArchiveEventHandlerImpl();
+    }
+
+    @Override
+    protected MALInteractionHandler getEventServiceHandler() {
+        return eventHandlerImpl;
+    }
 }

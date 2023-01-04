@@ -54,376 +54,340 @@ import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
-public class LocalMALInstance extends BaseLocalMALInstance
-{
-  public static final String ACTIVITY_EVENT_NAME = "ActivityEvent";
-  public static final String ARCHIVE_EVENT_NAME = "ArchiveEvent";
-  private ActivityRelayManagementStub activityRelayManagementStub = null;
-  private EventStub activityEventStub = null;
-  private ArchiveStub archiveStub;
-  private ArchiveTestStub archiveTestStub;
-  private EventStub archiveEventStub;
-  private MonitorEventPublisher monitorEventPublisher = null;
-  private EventTestStub eventTestStub = null;
-  private EventStub eventStub = null;
-  private final HashMap<String, ActivityTestStub> activityTestStubs = new HashMap<>();
-  private MALProvider eventPublisherProvider;
+public class LocalMALInstance extends BaseLocalMALInstance {
 
-  public static LocalMALInstance instance() throws MALException
-  {
-    return (LocalMALInstance) binstance();
-  }
+    public static final String ACTIVITY_EVENT_NAME = "ActivityEvent";
+    public static final String ARCHIVE_EVENT_NAME = "ArchiveEvent";
+    private ActivityRelayManagementStub activityRelayManagementStub = null;
+    private EventStub activityEventStub = null;
+    private ArchiveStub archiveStub;
+    private ArchiveTestStub archiveTestStub;
+    private EventStub archiveEventStub;
+    private MonitorEventPublisher monitorEventPublisher = null;
+    private EventTestStub eventTestStub = null;
+    private EventStub eventStub = null;
+    private final HashMap<String, ActivityTestStub> activityTestStubs = new HashMap<>();
+    private MALProvider eventPublisherProvider;
 
-  public LocalMALInstance() throws MALException
-  {
-    super();
-  }
-
-  protected String getProtocol()
-  {
-    return System.getProperty(Configuration.DEFAULT_PROTOCOL);
-  }
-
-  protected void initHelpers() throws MALException
-  {
-    org.ccsds.moims.mo.com.COMHelper.init(MALContextFactory.getElementsRegistry());
-    ActivityTrackingHelper.init(MALContextFactory.getElementsRegistry());
-    ArchiveHelper.init(MALContextFactory.getElementsRegistry());
-    EventHelper.init(MALContextFactory.getElementsRegistry());
-
-    COMPrototypeHelper.init(MALContextFactory.getElementsRegistry());
-    ActivityTestHelper.init(MALContextFactory.getElementsRegistry());
-    ActivityRelayManagementHelper.init(MALContextFactory.getElementsRegistry());
-    EventTestHelper.init(MALContextFactory.getElementsRegistry());
-    ArchiveTestHelper.init(MALContextFactory.getElementsRegistry());
-
-    TransportInterceptor.instance().setEndpointSendInterceptor(new COMInterceptor());
-  }
-
-  public synchronized ActivityTestStub activityTestStub() throws MALException
-  {
-    return activityTestStub("");
-  }
-
-  public synchronized ActivityTestStub activityTestStub(String extraNamePart) throws MALException
-  {
-    ActivityTestStub stub = activityTestStubs.get(extraNamePart);
-    if (null == stub)
-    {
-      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME.getValue());
-
-      final IdentifierList domain = new IdentifierList();
-      domain.add(new Identifier("esa"));
-      domain.add(new Identifier("mission"));
-
-      MALConsumer consumer = defaultConsumerMgr.createConsumer(
-              "ActivityTestConsumer" + extraNamePart,
-              uris.uri,
-              uris.broker,
-              ActivityTestHelper.ACTIVITYTEST_SERVICE,
-              new Blob("".getBytes()),
-              domain,
-              new Identifier("networkZone"),
-              SessionType.LIVE,
-              new Identifier("LIVE"),
-              QoSLevel.BESTEFFORT,
-              new Hashtable(), new UInteger(0));
-
-      stub = new ActivityTestStub(consumer);
-      activityTestStubs.put(extraNamePart, stub);
-    }
-    return stub;
-  }
-
-  public synchronized ActivityRelayManagementStub activityRelayManagementStub() throws MALException
-  {
-    if (null == activityRelayManagementStub)
-    {
-      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME.getValue());
-
-      MALConsumer consumer = defaultConsumerMgr.createConsumer(
-              "ActivityRelayManagementConsumer",
-              uris.uri,
-              uris.broker,
-              ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE,
-              new Blob("".getBytes()),
-              new IdentifierList(),
-              new Identifier("networkZone"),
-              SessionType.LIVE,
-              new Identifier("LIVE"),
-              QoSLevel.BESTEFFORT,
-              new Hashtable(), new UInteger(0));
-
-      activityRelayManagementStub = new ActivityRelayManagementStub(consumer);
+    public static LocalMALInstance instance() throws MALException {
+        return (LocalMALInstance) binstance();
     }
 
-    return activityRelayManagementStub;
-  }
-
-  public synchronized EventStub activityEventStub(String serviceNameSuffix, IdentifierList domain) throws MALException
-  {
-    if (null == activityEventStub)
-    {
-      LoggingBase.logMessage("LocalMALInstance:event stub creating consumer " + serviceNameSuffix + " " + domain);
-      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(LocalMALInstance.ACTIVITY_EVENT_NAME + serviceNameSuffix);
-
-      MALConsumer consumer = defaultConsumerMgr.createConsumer(
-              "Activity Event Monitor consumer",
-              uris.uri,
-              uris.broker,
-              EventHelper.EVENT_SERVICE,
-              new Blob("".getBytes()),
-              domain,
-              new Identifier("GROUND"),
-              SessionType.LIVE,
-              new Identifier("LIVE"),
-              QoSLevel.BESTEFFORT,
-              new Hashtable(), new UInteger(0));
-
-      activityEventStub = new EventStub(consumer);
+    public LocalMALInstance() throws MALException {
+        super();
     }
 
-    return activityEventStub;
-  }
-
-  public synchronized ArchiveStub archiveStub() throws MALException
-  {
-    if (null == archiveStub)
-    {
-      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveHelper.ARCHIVE_SERVICE_NAME.getValue());
-
-      MALConsumer consumer = defaultConsumerMgr.createConsumer(
-              "ArchiveConsumer",
-              uris.uri,
-              uris.broker,
-              ArchiveHelper.ARCHIVE_SERVICE,
-              new Blob("".getBytes()),
-              new IdentifierList(),
-              new Identifier("networkZone"),
-              SessionType.LIVE,
-              new Identifier("LIVE"),
-              QoSLevel.BESTEFFORT,
-              new Hashtable(), new UInteger(0));
-
-      archiveStub = new ArchiveStub(consumer);
+    protected String getProtocol() {
+        return System.getProperty(Configuration.DEFAULT_PROTOCOL);
     }
 
-    return archiveStub;
-  }
+    protected void initHelpers() throws MALException {
+        org.ccsds.moims.mo.com.COMHelper.init(MALContextFactory.getElementsRegistry());
+        ActivityTrackingHelper.init(MALContextFactory.getElementsRegistry());
+        ArchiveHelper.init(MALContextFactory.getElementsRegistry());
+        EventHelper.init(MALContextFactory.getElementsRegistry());
 
-  public synchronized ArchiveTestStub archiveTestStub() throws MALException
-  {
-    if (null == archiveTestStub)
-    {
-      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveTestHelper.ARCHIVETEST_SERVICE_NAME.getValue());
+        COMPrototypeHelper.init(MALContextFactory.getElementsRegistry());
+        ActivityTestHelper.init(MALContextFactory.getElementsRegistry());
+        ActivityRelayManagementHelper.init(MALContextFactory.getElementsRegistry());
+        EventTestHelper.init(MALContextFactory.getElementsRegistry());
+        ArchiveTestHelper.init(MALContextFactory.getElementsRegistry());
 
-      MALConsumer consumer = defaultConsumerMgr.createConsumer(
-              "ArchiveTestConsumer",
-              uris.uri,
-              uris.broker,
-              ArchiveTestHelper.ARCHIVETEST_SERVICE,
-              new Blob("".getBytes()),
-              new IdentifierList(),
-              new Identifier("networkZone"),
-              SessionType.LIVE,
-              new Identifier("LIVE"),
-              QoSLevel.BESTEFFORT,
-              new Hashtable(), new UInteger(0));
-
-      archiveTestStub = new ArchiveTestStub(consumer);
+        TransportInterceptor.instance().setEndpointSendInterceptor(new COMInterceptor());
     }
 
-    return archiveTestStub;
-  }
-
-  public synchronized EventStub archiveEventStub() throws MALException
-  {
-    if (null == archiveEventStub)
-    {
-      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ARCHIVE_EVENT_NAME);
-
-      MALConsumer consumer = defaultConsumerMgr.createConsumer(
-              "ArchiveEventConsumer",
-              uris.uri,
-              uris.broker,
-              EventHelper.EVENT_SERVICE,
-              new Blob("".getBytes()),
-              new IdentifierList(),
-              new Identifier("networkZone"),
-              SessionType.LIVE,
-              new Identifier("LIVE"),
-              QoSLevel.BESTEFFORT,
-              new Hashtable(), new UInteger(0));
-
-      archiveEventStub = new EventStub(consumer);
+    public synchronized ActivityTestStub activityTestStub() throws MALException {
+        return activityTestStub("");
     }
 
-    return archiveEventStub;
-  }
+    public synchronized ActivityTestStub activityTestStub(String extraNamePart) throws MALException {
+        ActivityTestStub stub = activityTestStubs.get(extraNamePart);
+        if (null == stub) {
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME.getValue());
 
-  public synchronized EventTestStub eventTestStub() throws MALException
-  {
-    if (null == eventTestStub)
-    {
-      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(
-              EventTestHelper.EVENTTEST_SERVICE_NAME.getValue());
+            final IdentifierList domain = new IdentifierList();
+            domain.add(new Identifier("esa"));
+            domain.add(new Identifier("mission"));
 
-      final IdentifierList domain = new IdentifierList();
-      domain.add(new Identifier("esa"));
-      domain.add(new Identifier("mission"));
-      MALConsumer consumer = defaultConsumerMgr.createConsumer(
-              "EventTestConsumer",
-              uris.uri,
-              uris.broker,
-              EventTestHelper.EVENTTEST_SERVICE,
-              new Blob("".getBytes()),
-              domain,
-              new Identifier("networkZone"),
-              SessionType.LIVE,
-              new Identifier("LIVE"),
-              QoSLevel.BESTEFFORT,
-              new Hashtable(), new UInteger(0));
+            MALConsumer consumer = defaultConsumerMgr.createConsumer(
+                    "ActivityTestConsumer" + extraNamePart,
+                    uris.uri,
+                    uris.broker,
+                    ActivityTestHelper.ACTIVITYTEST_SERVICE,
+                    new Blob("".getBytes()),
+                    domain,
+                    new Identifier("networkZone"),
+                    SessionType.LIVE,
+                    new Identifier("LIVE"),
+                    QoSLevel.BESTEFFORT,
+                    new Hashtable(), new UInteger(0));
 
-      eventTestStub = new EventTestStub(consumer);
+            stub = new ActivityTestStub(consumer);
+            activityTestStubs.put(extraNamePart, stub);
+        }
+        return stub;
     }
 
-    return eventTestStub;
-  }
+    public synchronized ActivityRelayManagementStub activityRelayManagementStub() throws MALException {
+        if (null == activityRelayManagementStub) {
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME.getValue());
 
-  public synchronized EventStub eventStub(IdentifierList domain) throws MALException
-  {
-    if (null == eventStub)
-    {
-      LoggingBase.logMessage("LocalMALInstance:event stub creating consumer " + domain);
-      FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(EventHelper.EVENT_SERVICE_NAME.getValue());
+            MALConsumer consumer = defaultConsumerMgr.createConsumer(
+                    "ActivityRelayManagementConsumer",
+                    uris.uri,
+                    uris.broker,
+                    ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE,
+                    new Blob("".getBytes()),
+                    new IdentifierList(),
+                    new Identifier("networkZone"),
+                    SessionType.LIVE,
+                    new Identifier("LIVE"),
+                    QoSLevel.BESTEFFORT,
+                    new Hashtable(), new UInteger(0));
 
-      MALConsumer consumer = defaultConsumerMgr.createConsumer(
-              "Event monitor consumer",
-              uris.uri,
-              uris.broker,
-              EventHelper.EVENT_SERVICE,
-              new Blob("".getBytes()),
-              domain,
-              new Identifier("GROUND"),
-              SessionType.LIVE,
-              new Identifier("LIVE"),
-              QoSLevel.BESTEFFORT,
-              new Hashtable(), new UInteger(0));
+            activityRelayManagementStub = new ActivityRelayManagementStub(consumer);
+        }
 
-      eventStub = new EventStub(consumer);
+        return activityRelayManagementStub;
     }
 
-    return eventStub;
-  }
+    public synchronized EventStub activityEventStub(String serviceNameSuffix, IdentifierList domain) throws MALException {
+        if (null == activityEventStub) {
+            LoggingBase.logMessage("LocalMALInstance:event stub creating consumer " + serviceNameSuffix + " " + domain);
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(LocalMALInstance.ACTIVITY_EVENT_NAME + serviceNameSuffix);
 
-  public synchronized MALProviderManager createProviderManager() throws MALException
-  {
-    return (defaultMal.createProviderManager());
-  }
+            MALConsumer consumer = defaultConsumerMgr.createConsumer(
+                    "Activity Event Monitor consumer",
+                    uris.uri,
+                    uris.broker,
+                    EventHelper.EVENT_SERVICE,
+                    new Blob("".getBytes()),
+                    domain,
+                    new Identifier("GROUND"),
+                    SessionType.LIVE,
+                    new Identifier("LIVE"),
+                    QoSLevel.BESTEFFORT,
+                    new Hashtable(), new UInteger(0));
 
-  protected void createMonitorEventPublisher(String relayName) throws MALInteractionException, MALException
-  {
-    LoggingBase.logMessage("LocalMAIInstance:createMonitorEventPublisher relay " + relayName);
+            activityEventStub = new EventStub(consumer);
+        }
 
-    MonitorEventPublisherSkeleton monitorEventPublisherSkeleton = new MonitorEventPublisherSkeleton();
-    FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName);
+        return activityEventStub;
+    }
 
-    eventPublisherProvider = defaultProviderMgr.createProvider("Demo" + "CONSUMER-X",
-            getProtocol(),
-            EventHelper.EVENT_SERVICE,
-            new Blob("".getBytes()),
-            monitorEventPublisherSkeleton,
-            new QoSLevel[]
-    {
-      QoSLevel.ASSURED
-    },
-            new UInteger(1),
-            null,
-            true,
-            uris.broker);
-    LoggingBase.logMessage("ActivityTestHandlerImpl:createMonitorEventPublisher - calling store UI\n");
-    // FileBasedDirectory.storeURI(EventHelper.EVENT_SERVICE_NAME.getValue() + PROVIDER, malProvider.getURI(), malProvider.getBrokerURI());
+    public synchronized ArchiveStub archiveStub() throws MALException {
+        if (null == archiveStub) {
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveHelper.ARCHIVE_SERVICE_NAME.getValue());
 
-    //monitorEventPublisherSkeleton.malInitialize(malProvider);
+            MALConsumer consumer = defaultConsumerMgr.createConsumer(
+                    "ArchiveConsumer",
+                    uris.uri,
+                    uris.broker,
+                    ArchiveHelper.ARCHIVE_SERVICE,
+                    new Blob("".getBytes()),
+                    new IdentifierList(),
+                    new Identifier("networkZone"),
+                    SessionType.LIVE,
+                    new Identifier("LIVE"),
+                    QoSLevel.BESTEFFORT,
+                    new Hashtable(), new UInteger(0));
 
-    final IdentifierList domain = new IdentifierList();
-    domain.add(new Identifier("esa"));
-    domain.add(new Identifier("mission"));
+            archiveStub = new ArchiveStub(consumer);
+        }
 
-    monitorEventPublisher = monitorEventPublisherSkeleton.createMonitorEventPublisher(domain,
-            new Identifier("GROUND"),
-            SessionType.LIVE,
-            new Identifier("LIVE"),
-            QoSLevel.BESTEFFORT,
-            null,
-            new UInteger(0));
-    /*
+        return archiveStub;
+    }
+
+    public synchronized ArchiveTestStub archiveTestStub() throws MALException {
+        if (null == archiveTestStub) {
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveTestHelper.ARCHIVETEST_SERVICE_NAME.getValue());
+
+            MALConsumer consumer = defaultConsumerMgr.createConsumer(
+                    "ArchiveTestConsumer",
+                    uris.uri,
+                    uris.broker,
+                    ArchiveTestHelper.ARCHIVETEST_SERVICE,
+                    new Blob("".getBytes()),
+                    new IdentifierList(),
+                    new Identifier("networkZone"),
+                    SessionType.LIVE,
+                    new Identifier("LIVE"),
+                    QoSLevel.BESTEFFORT,
+                    new Hashtable(), new UInteger(0));
+
+            archiveTestStub = new ArchiveTestStub(consumer);
+        }
+
+        return archiveTestStub;
+    }
+
+    public synchronized EventStub archiveEventStub() throws MALException {
+        if (null == archiveEventStub) {
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ARCHIVE_EVENT_NAME);
+
+            MALConsumer consumer = defaultConsumerMgr.createConsumer(
+                    "ArchiveEventConsumer",
+                    uris.uri,
+                    uris.broker,
+                    EventHelper.EVENT_SERVICE,
+                    new Blob("".getBytes()),
+                    new IdentifierList(),
+                    new Identifier("networkZone"),
+                    SessionType.LIVE,
+                    new Identifier("LIVE"),
+                    QoSLevel.BESTEFFORT,
+                    new Hashtable(), new UInteger(0));
+
+            archiveEventStub = new EventStub(consumer);
+        }
+
+        return archiveEventStub;
+    }
+
+    public synchronized EventTestStub eventTestStub() throws MALException {
+        if (null == eventTestStub) {
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(
+                    EventTestHelper.EVENTTEST_SERVICE_NAME.getValue());
+
+            final IdentifierList domain = new IdentifierList();
+            domain.add(new Identifier("esa"));
+            domain.add(new Identifier("mission"));
+            MALConsumer consumer = defaultConsumerMgr.createConsumer(
+                    "EventTestConsumer",
+                    uris.uri,
+                    uris.broker,
+                    EventTestHelper.EVENTTEST_SERVICE,
+                    new Blob("".getBytes()),
+                    domain,
+                    new Identifier("networkZone"),
+                    SessionType.LIVE,
+                    new Identifier("LIVE"),
+                    QoSLevel.BESTEFFORT,
+                    new Hashtable(), new UInteger(0));
+
+            eventTestStub = new EventTestStub(consumer);
+        }
+
+        return eventTestStub;
+    }
+
+    public synchronized EventStub eventStub(IdentifierList domain) throws MALException {
+        if (null == eventStub) {
+            LoggingBase.logMessage("LocalMALInstance:event stub creating consumer " + domain);
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(EventHelper.EVENT_SERVICE_NAME.getValue());
+
+            MALConsumer consumer = defaultConsumerMgr.createConsumer(
+                    "Event monitor consumer",
+                    uris.uri,
+                    uris.broker,
+                    EventHelper.EVENT_SERVICE,
+                    new Blob("".getBytes()),
+                    domain,
+                    new Identifier("GROUND"),
+                    SessionType.LIVE,
+                    new Identifier("LIVE"),
+                    QoSLevel.BESTEFFORT,
+                    new Hashtable(), new UInteger(0));
+
+            eventStub = new EventStub(consumer);
+        }
+
+        return eventStub;
+    }
+
+    public synchronized MALProviderManager createProviderManager() throws MALException {
+        return (defaultMal.createProviderManager());
+    }
+
+    protected void createMonitorEventPublisher(String relayName) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("LocalMAIInstance:createMonitorEventPublisher relay " + relayName);
+
+        MonitorEventPublisherSkeleton monitorEventPublisherSkeleton = new MonitorEventPublisherSkeleton();
+        FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName);
+
+        eventPublisherProvider = defaultProviderMgr.createProvider("Demo" + "CONSUMER-X",
+                getProtocol(),
+                EventHelper.EVENT_SERVICE,
+                new Blob("".getBytes()),
+                monitorEventPublisherSkeleton,
+                new QoSLevel[]{
+                    QoSLevel.ASSURED
+                },
+                new UInteger(1),
+                null,
+                true,
+                uris.broker);
+        LoggingBase.logMessage("ActivityTestHandlerImpl:createMonitorEventPublisher - calling store UI\n");
+        // FileBasedDirectory.storeURI(EventHelper.EVENT_SERVICE_NAME.getValue() + PROVIDER, malProvider.getURI(), malProvider.getBrokerURI());
+
+        //monitorEventPublisherSkeleton.malInitialize(malProvider);
+        final IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("esa"));
+        domain.add(new Identifier("mission"));
+
+        monitorEventPublisher = monitorEventPublisherSkeleton.createMonitorEventPublisher(domain,
+                new Identifier("GROUND"),
+                SessionType.LIVE,
+                new Identifier("LIVE"),
+                QoSLevel.BESTEFFORT,
+                null,
+                new UInteger(0));
+        /*
     final EntityKeyList lst = new EntityKeyList();
     lst.add(new EntityKey(new Identifier("*"), new Long(0), new Long(0), new Long(0)));
-    */
+         */
 
-    IdentifierList keys = new IdentifierList();
-    keys.add(new Identifier("K1"));
-    keys.add(new Identifier("K2"));
-    keys.add(new Identifier("K3"));
-    keys.add(new Identifier("K4"));
-    monitorEventPublisher.register(keys, new MALPublishInteractionListenerImpl());
-  }
-
-  public MonitorEventPublisher getMonitorEventPublisher(String relay) throws MALInteractionException, MALException
-  {
-    if (monitorEventPublisher == null)
-    {
-      createMonitorEventPublisher(relay);
+        IdentifierList keys = new IdentifierList();
+        keys.add(new Identifier("K1"));
+        keys.add(new Identifier("K2"));
+        keys.add(new Identifier("K3"));
+        keys.add(new Identifier("K4"));
+        monitorEventPublisher.register(keys, new MALPublishInteractionListenerImpl());
     }
 
-    return monitorEventPublisher;
-  }
+    public MonitorEventPublisher getMonitorEventPublisher(String relay) throws MALInteractionException, MALException {
+        if (monitorEventPublisher == null) {
+            createMonitorEventPublisher(relay);
+        }
 
-  // Close all stubes
-  public void close() throws MALInteractionException, MALException
-  {
-    if (activityRelayManagementStub != null)
-    {
-      activityRelayManagementStub.getConsumer().close();
-      activityRelayManagementStub = null;
-    }
-    if (activityEventStub != null)
-    {
-      activityEventStub.getConsumer().close();
-      activityEventStub = null;
-    }
-    if (eventStub != null)
-    {
-      eventStub.getConsumer().close();
-      eventStub = null;
-    }
-    if (monitorEventPublisher != null)
-    {
-      monitorEventPublisher.close();
-      monitorEventPublisher = null;
-    }
-    if (eventTestStub != null)
-    {
-      eventTestStub.getConsumer().close();
-      eventTestStub = null;
+        return monitorEventPublisher;
     }
 
-    Collection<ActivityTestStub> stubs = activityTestStubs.values();
-    for (ActivityTestStub stub : stubs)
-    {
-      stub.getConsumer().close();
-    }
-    activityTestStubs.clear();
+    // Close all stubes
+    public void close() throws MALInteractionException, MALException {
+        if (activityRelayManagementStub != null) {
+            activityRelayManagementStub.getConsumer().close();
+            activityRelayManagementStub = null;
+        }
+        if (activityEventStub != null) {
+            activityEventStub.getConsumer().close();
+            activityEventStub = null;
+        }
+        if (eventStub != null) {
+            eventStub.getConsumer().close();
+            eventStub = null;
+        }
+        if (monitorEventPublisher != null) {
+            monitorEventPublisher.close();
+            monitorEventPublisher = null;
+        }
+        if (eventTestStub != null) {
+            eventTestStub.getConsumer().close();
+            eventTestStub = null;
+        }
 
-    if (eventPublisherProvider != null)
-    {
-      eventPublisherProvider.close();
-      eventPublisherProvider = null;
-    }
-  }
+        Collection<ActivityTestStub> stubs = activityTestStubs.values();
+        for (ActivityTestStub stub : stubs) {
+            stub.getConsumer().close();
+        }
+        activityTestStubs.clear();
 
-  protected void createBrokers() throws MALException
-  {
-  }
+        if (eventPublisherProvider != null) {
+            eventPublisherProvider.close();
+            eventPublisherProvider = null;
+        }
+    }
+
+    protected void createBrokers() throws MALException {
+    }
 }

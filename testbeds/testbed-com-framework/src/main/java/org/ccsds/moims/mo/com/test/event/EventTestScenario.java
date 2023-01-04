@@ -51,67 +51,61 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import static org.ccsds.moims.mo.testbed.util.LoggingBase.logMessage;
 
 /**
- * Class provides operations to support the Client side of the EventTest. 
- * The operations in this class are currently called from Fitness.
+ * Class provides operations to support the Client side of the EventTest. The
+ * operations in this class are currently called from Fitness.
  *
  */
-public class EventTestScenario extends LoggingBase
-{
-  protected final String loggingClassName = "EventScenario";
-  private EventDetailsList eventDetailsList;
-  private TestEventAdapter testEventAdapter = null;
-  protected final Identifier ALL_ID = new Identifier("*");
-  protected final Integer ALL_INT = 0;
-  // Items used in archive retrieve
-  private TestArchiveAdapter archiveAdapter;
-  private ArchiveDetailsList retrievedArchiveDetailsList;
-  private ElementList retrievedObjectList;
-  private ObjectType objectType;
-  private String eventDomain;
+public class EventTestScenario extends LoggingBase {
 
-  /**
-   * Constructor performs object initialisation 
-   */
-  public EventTestScenario()
-  {
-    logMessage(loggingClassName + ":Object Created");
+    protected final String loggingClassName = "EventScenario";
+    private EventDetailsList eventDetailsList;
+    private TestEventAdapter testEventAdapter = null;
+    protected final Identifier ALL_ID = new Identifier("*");
+    protected final Integer ALL_INT = 0;
+    // Items used in archive retrieve
+    private TestArchiveAdapter archiveAdapter;
+    private ArchiveDetailsList retrievedArchiveDetailsList;
+    private ElementList retrievedObjectList;
+    private ObjectType objectType;
+    private String eventDomain;
 
-    eventDetailsList = new EventDetailsList();
-    testEventAdapter = new TestEventAdapter(eventDetailsList);
-    archiveAdapter = new TestArchiveAdapter();
-  }
+    /**
+     * Constructor performs object initialisation
+     */
+    public EventTestScenario() {
+        logMessage(loggingClassName + ":Object Created");
 
-  /**
-   * Converts user level test object identifier to COM object number
-   * @param User object identifier
-   * @return Object number
-   */
-  public String objToObjectNo(String obj)
-  {
-    if (obj.equalsIgnoreCase("TestObjectA"))
-    {
-      return COMTestHelper.TEST_OBJECT_A_STR;
+        eventDetailsList = new EventDetailsList();
+        testEventAdapter = new TestEventAdapter(eventDetailsList);
+        archiveAdapter = new TestArchiveAdapter();
     }
-    else if (obj.equalsIgnoreCase("TestObjectB"))
-    {
-      return COMTestHelper.TEST_OBJECT_B_STR;
-    }
-    else
-    {
-      return null;
-    }
-  }
 
-  /**
-   * Ensures event service client stub is available
-   * @return success indication
-   * @throws Exception reports 
-   */
-  public boolean testEventServiceClientHasBeenCreated() throws Exception
-  {
-    logMessage(loggingClassName + ":testEventServiceClientHasBeenCreated");
-    return (null != LocalMALInstance.instance().eventTestStub());
-  }
+    /**
+     * Converts user level test object identifier to COM object number
+     *
+     * @param User object identifier
+     * @return Object number
+     */
+    public String objToObjectNo(String obj) {
+        if (obj.equalsIgnoreCase("TestObjectA")) {
+            return COMTestHelper.TEST_OBJECT_A_STR;
+        } else if (obj.equalsIgnoreCase("TestObjectB")) {
+            return COMTestHelper.TEST_OBJECT_B_STR;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Ensures event service client stub is available
+     *
+     * @return success indication
+     * @throws Exception reports
+     */
+    public boolean testEventServiceClientHasBeenCreated() throws Exception {
+        logMessage(loggingClassName + ":testEventServiceClientHasBeenCreated");
+        return (null != LocalMALInstance.instance().eventTestStub());
+    }
 
     /**
      * Calls reset test operation on service provider
@@ -120,8 +114,7 @@ public class EventTestScenario extends LoggingBase
      * @return success indication for Fitness
      * @throws Exception to report failures
      */
-    public boolean callResetTestOnServiceProviderWithDomain(String domain) throws Exception
-    {
+    public boolean callResetTestOnServiceProviderWithDomain(String domain) throws Exception {
         logMessage(loggingClassName + ":callResetTestOnServiceProvider ");
         LocalMALInstance.instance().eventTestStub().resetTest(domain);
 
@@ -130,12 +123,12 @@ public class EventTestScenario extends LoggingBase
 
     /**
      * Calls reset operation on service provider
+     *
      * @return success indication for Fitness
      * @throws Exception to report failures
      * @return success indication for Fitness
      */
-    public boolean callResetOnArchiveServiceProvider() throws Exception
-    {
+    public boolean callResetOnArchiveServiceProvider() throws Exception {
         LoggingBase.logMessage("ArchiveScenario.callResetTestOnServiceProvider()");
         LocalMALInstance.instance().archiveTestStub().reset();
         return true;
@@ -147,8 +140,7 @@ public class EventTestScenario extends LoggingBase
      * @return success indication for Fitness
      * @throws Exception to report failures
      */
-    public boolean resetArchiveScenario()
-    {
+    public boolean resetArchiveScenario() {
         retrievedArchiveDetailsList = null;
         retrievedObjectList = null;
         return true;
@@ -156,13 +148,13 @@ public class EventTestScenario extends LoggingBase
 
     /**
      * Calls operation on provider to create instance of Object A
+     *
      * @param domain object to be created in
      * @param description to be set on object
      * @return instance identifier for object
      * @throws Exception to report failures
      */
-    public long createInstanceOfObjectAInDomainWithDescription(String domain, String description) throws Exception
-    {
+    public long createInstanceOfObjectAInDomainWithDescription(String domain, String description) throws Exception {
         logMessage(loggingClassName + ":createInstanceOfObjectAInDomainWithDescription domain = "
                 + domain + " desc = " + description);
         long retValue = LocalMALInstance.instance().eventTestStub().createinstance(
@@ -173,468 +165,470 @@ public class EventTestScenario extends LoggingBase
 
     /**
      * Calls operation on provider to create instance of Object B
+     *
      * @param domain object to be created in
      * @param description to be set on object
      * @return instance identifier for object created
      * @throws Exception to report failures
-     */    
-  public long createInstanceOfObjectBInDomainWithDescriptionWithParentInstanceId(String domain, String description, String parentInstId) throws Exception
-  {
-    logMessage(loggingClassName + ":createInstanceOfObjectBInDomainWithDescriptionWithParentObject domain = "
-            + domain + " desc = " + description + "parentInstId = " + parentInstId);
-    long retValue = LocalMALInstance.instance().eventTestStub().createinstance(
-    		COMTestHelper.TEST_OBJECT_B, domain, description, new Long(parentInstId));
-    return retValue;
-  }
+     */
+    public long createInstanceOfObjectBInDomainWithDescriptionWithParentInstanceId(
+            String domain, String description, String parentInstId) throws Exception {
+        logMessage(loggingClassName + ":createInstanceOfObjectBInDomainWithDescriptionWithParentObject domain = "
+                + domain + " desc = " + description + "parentInstId = " + parentInstId);
+        long retValue = LocalMALInstance.instance().eventTestStub().createinstance(
+                COMTestHelper.TEST_OBJECT_B, domain, description, new Long(parentInstId));
+        return retValue;
+    }
 
-  /**
-   * Calls operation on provider to update instance
-   * @param instanceId instance identifier of object
-   * @param enumField enum field value
-   * @param durationField duration field value
-   * @param numericListField numeric field value
-   * @return success indication for Fitness
-   * @throws Exception to report failures 
-   */
-  public boolean updateInstanceWithEnumFieldWithDurationFieldWithNumericListField(String instanceId, String enumField,
-          String durationField, String numericListField[]) throws Exception
-  {
-    logMessage(loggingClassName + ":updateInstanceWithEnumFieldWithDurationField = "
-            + instanceId + " enumField = " + enumField + " durationField = " + durationField);
+    /**
+     * Calls operation on provider to update instance
+     *
+     * @param instanceId instance identifier of object
+     * @param enumField enum field value
+     * @param durationField duration field value
+     * @param numericListField numeric field value
+     * @return success indication for Fitness
+     * @throws Exception to report failures
+     */
+    public boolean updateInstanceWithEnumFieldWithDurationFieldWithNumericListField(String instanceId,
+            String enumField, String durationField, String numericListField[]) throws Exception {
+        logMessage(loggingClassName + ":updateInstanceWithEnumFieldWithDurationField = "
+                + instanceId + " enumField = " + enumField + " durationField = " + durationField);
 
-    LocalMALInstance.instance().eventTestStub().updateInstance(
-            new Long(instanceId),
-            BasicEnum.FOURTH, // TBD waiting for fromInstance
-            new Duration(new Integer(durationField).intValue()),
-            arrayToShortList(numericListField));
-    return true;
-  }
+        LocalMALInstance.instance().eventTestStub().updateInstance(
+                new Long(instanceId),
+                BasicEnum.FOURTH, // TBD waiting for fromInstance
+                new Duration(new Integer(durationField).intValue()),
+                arrayToShortList(numericListField));
+        return true;
+    }
 
-  /**
-   * Calls operation on provider to update instance
-   * @param instanceId instance identifier of object
-   * @param uOctetField Uoctet field value
-   * @param octetField octet field value
-   * @param doubleField double field value
-   * @return success indication for Fitness
-   * @throws Exception to report failures 
-   */
-  public boolean updateInstanceWithCompositeFieldsWithUoctetWithOctetWithDouble(String instanceId,
-          String uOctetField, String octetField, String doubleField) throws Exception
-  {
-    logMessage(loggingClassName + ":updateInstanceWithEnumFieldWithDurationField = "
-            + instanceId + " uOctetField = " + uOctetField + " octetField = " + octetField);
+    /**
+     * Calls operation on provider to update instance
+     *
+     * @param instanceId instance identifier of object
+     * @param uOctetField Uoctet field value
+     * @param octetField octet field value
+     * @param doubleField double field value
+     * @return success indication for Fitness
+     * @throws Exception to report failures
+     */
+    public boolean updateInstanceWithCompositeFieldsWithUoctetWithOctetWithDouble(String instanceId,
+            String uOctetField, String octetField, String doubleField) throws Exception {
+        logMessage(loggingClassName + ":updateInstanceWithEnumFieldWithDurationField = "
+                + instanceId + " uOctetField = " + uOctetField + " octetField = " + octetField);
 
-    LocalMALInstance.instance().eventTestStub().updateInstanceComposite(
-            new Long(instanceId),
-            new UOctet((short) Integer.parseInt(uOctetField)),
-            Byte.decode(octetField),
-            Double.parseDouble(doubleField));
+        LocalMALInstance.instance().eventTestStub().updateInstanceComposite(
+                new Long(instanceId),
+                new UOctet((short) Integer.parseInt(uOctetField)),
+                Byte.decode(octetField),
+                Double.parseDouble(doubleField));
 
-    return true;
-  }
+        return true;
+    }
 
-  /**
-   * Calls operation on provider to delete instance
-   * @param domain of object
-   * @param instanceId of object
-   * @return success indication for Fitness
-   * @throws Exception to report failures 
-   */
-  public boolean deleteInstanceOfObjectAInDomainWithInstanceId(String domain,
-          String instanceId) throws Exception
-  {
-    logMessage(loggingClassName + ":deleteInstanceOfObjectAInDomainWithDescription domain = "
-            + domain);
-    LocalMALInstance.instance().eventTestStub().deleteInstance(COMTestHelper.TEST_OBJECT_A,
-            domain, new Long(instanceId));
-    return true;
+    /**
+     * Calls operation on provider to delete instance
+     *
+     * @param domain of object
+     * @param instanceId of object
+     * @return success indication for Fitness
+     * @throws Exception to report failures
+     */
+    public boolean deleteInstanceOfObjectAInDomainWithInstanceId(String domain,
+            String instanceId) throws Exception {
+        logMessage(loggingClassName + ":deleteInstanceOfObjectAInDomainWithDescription domain = "
+                + domain);
+        LocalMALInstance.instance().eventTestStub().deleteInstance(COMTestHelper.TEST_OBJECT_A,
+                domain, new Long(instanceId));
+        return true;
 
-  }
+    }
 
-   /**
-   * Calls operation on provider to delete instance
-   * @param domain of object
-   * @param instanceId of object
-   * @return success indication for Fitness
-   * @throws Exception to report failures 
-   */
-  public boolean deleteInstanceOfObjectBInDomainWithInstanceId(String domain,
-          String instanceId) throws Exception
-  {
-    logMessage(loggingClassName + ":deleteInstanceOfObjectBInDomainWithDescription domain = "
-            + domain);
-    LocalMALInstance.instance().eventTestStub().deleteInstance(COMTestHelper.TEST_OBJECT_B,
-            domain, new Long(instanceId));
-    return true;
+    /**
+     * Calls operation on provider to delete instance
+     *
+     * @param domain of object
+     * @param instanceId of object
+     * @return success indication for Fitness
+     * @throws Exception to report failures
+     */
+    public boolean deleteInstanceOfObjectBInDomainWithInstanceId(String domain,
+            String instanceId) throws Exception {
+        logMessage(loggingClassName + ":deleteInstanceOfObjectBInDomainWithDescription domain = "
+                + domain);
+        LocalMALInstance.instance().eventTestStub().deleteInstance(COMTestHelper.TEST_OBJECT_B,
+                domain, new Long(instanceId));
+        return true;
 
-  }
+    }
 
-  /**
-   * Register to receive events in specified domain
-   * @param strDomain
-   * @return success indication for Fitness
-   * @throws Exception to report failures 
-   */
-  public boolean registerForEventsFromServiceProviderInDomain(String strDomain) throws Exception
-  {
-    logMessage(loggingClassName + ":registerForEvents " + strDomain);
-    final IdentifierList domain = new IdentifierList();
-    domain.add(new Identifier(strDomain));
-    EventStub evStub = LocalMALInstance.instance().eventStub(domain);
-    /*
+    /**
+     * Register to receive events in specified domain
+     *
+     * @param strDomain
+     * @return success indication for Fitness
+     * @throws Exception to report failures
+     */
+    public boolean registerForEventsFromServiceProviderInDomain(String strDomain) throws Exception {
+        logMessage(loggingClassName + ":registerForEvents " + strDomain);
+        final IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier(strDomain));
+        EventStub evStub = LocalMALInstance.instance().eventStub(domain);
+        /*
     EntityKeyList ekl = new EntityKeyList();
     EntityRequestList erl = new EntityRequestList();
     ekl.add(new EntityKey(ALL_ID, new Long(ALL_INT), new Long(ALL_INT), new Long(ALL_INT)));
     erl.add(new EntityRequest(null, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, ekl));
-    */
-    
-    SubscriptionFilterList filters = new SubscriptionFilterList();
-    Subscription sub = new Subscription(new Identifier("SubA"), domain, filters);
-    evStub.monitorEventRegister(sub, testEventAdapter);
-    eventDomain = strDomain;
-    logMessage(loggingClassName + ":registerForEvents Complete");
-    return true;
-  }
+         */
 
-  /**
-   *  Checks if deletion event received
-   * @param sourceObject identified if object A or object B
-   * @param sourceDomain domain of object
-   * @param sourceInstId source instance identifier
-   * @return result of check
-   * @throws Exception to report failures 
-   */
-  public String deletionEventReceivedForObjectInDomainWithInstanceIdentifier(String sourceObject, String sourceDomain, String sourceInstId) throws Exception
-  {
-    logMessage(loggingClassName + ":deletionEventReceivedForObjectInDomainWithInstanceIdentifier "
-            + sourceObject + " " + sourceDomain + " " + sourceInstId);
-    waitForReasonableAmountOfTime();   // Allow time for incoming events
-    return eventDetailsList.eventExists(COMTestHelper.TEST_OBJECT_DELETION_NO,
-            objToObjectNo(sourceObject), sourceDomain, sourceInstId);
-
-  }
+        SubscriptionFilterList filters = new SubscriptionFilterList();
+        Subscription sub = new Subscription(new Identifier("SubA"), domain, filters);
+        evStub.monitorEventRegister(sub, testEventAdapter);
+        eventDomain = strDomain;
+        logMessage(loggingClassName + ":registerForEvents Complete");
+        return true;
+    }
 
     /**
-   *  Checks if creation event received
-   * @param sourceObject identified if object A or object B
-   * @param sourceDomain domain of object
-   * @param sourceInstId source instance identifier
-   * @return result of check
-   * @throws Exception to report failures 
-   */
-  public String creationEventReceivedForObjectInDomainWithInstanceIdentifier(String sourceObject, String sourceDomain, String sourceInstId) throws Exception
-  {
-    logMessage(loggingClassName + ":creationEventReceivedForObjectInDomainWithInstanceIdentifier "
-            + sourceObject + " " + sourceDomain + " " + sourceInstId);
-    waitForReasonableAmountOfTime();   // Allow time for incoming events
-    return eventDetailsList.eventExists(COMTestHelper.TEST_OBJECT_CREATION_NO,
-            objToObjectNo(sourceObject), sourceDomain, sourceInstId);
+     * Checks if deletion event received
+     *
+     * @param sourceObject identified if object A or object B
+     * @param sourceDomain domain of object
+     * @param sourceInstId source instance identifier
+     * @return result of check
+     * @throws Exception to report failures
+     */
+    public String deletionEventReceivedForObjectInDomainWithInstanceIdentifier(
+            String sourceObject, String sourceDomain, String sourceInstId) throws Exception {
+        logMessage(loggingClassName + ":deletionEventReceivedForObjectInDomainWithInstanceIdentifier "
+                + sourceObject + " " + sourceDomain + " " + sourceInstId);
+        waitForReasonableAmountOfTime();   // Allow time for incoming events
+        return eventDetailsList.eventExists(COMTestHelper.TEST_OBJECT_DELETION_NO,
+                objToObjectNo(sourceObject), sourceDomain, sourceInstId);
 
-  }
+    }
 
     /**
-   *  Checks if creation event received
-   * @param sourceObject identifies if object A or object B
-   * @param sourceDomain domain of object
-   * @param sourceInstId source instance identifier
-   * @return result of check
-   * @throws Exception to report failures 
-   */
-  public String updateEventReceivedForObjectInDomainWithInstanceIdentifier(String sourceObject, String sourceDomain, String sourceInstId) throws Exception
-  {
-    logMessage(loggingClassName + ":updateEventReceivedForObjectInDomainWithInstanceIdentifier "
-            + sourceObject + " " + sourceDomain + " " + sourceInstId);
-    waitForReasonableAmountOfTime();   // Allow time for incoming events
-    return eventDetailsList.eventExists(COMTestHelper.TEST_OBJECT_UPDATE_NO,
-            objToObjectNo(sourceObject), sourceDomain, sourceInstId);
+     * Checks if creation event received
+     *
+     * @param sourceObject identified if object A or object B
+     * @param sourceDomain domain of object
+     * @param sourceInstId source instance identifier
+     * @return result of check
+     * @throws Exception to report failures
+     */
+    public String creationEventReceivedForObjectInDomainWithInstanceIdentifier(
+            String sourceObject, String sourceDomain, String sourceInstId) throws Exception {
+        logMessage(loggingClassName + ":creationEventReceivedForObjectInDomainWithInstanceIdentifier "
+                + sourceObject + " " + sourceDomain + " " + sourceInstId);
+        waitForReasonableAmountOfTime();   // Allow time for incoming events
+        return eventDetailsList.eventExists(COMTestHelper.TEST_OBJECT_CREATION_NO,
+                objToObjectNo(sourceObject), sourceDomain, sourceInstId);
 
-  }
-
-  /**
-   * Checks validity of the header object for a creation event
-   * @param instIndex Client Event identifier
-   * @param sourceObject identifies if object A or object B
-   * @return result of check
-   */
-  public boolean creationEventHeaderValidForObject(String instIndex, String sourceObject)
-  {
-    logMessage(loggingClassName + ":creationEventHeaderValidForObject " + instIndex + " " + sourceObject);
-    int iInstIndx = Integer.parseInt(instIndex);
-    return eventDetailsList.get(iInstIndx).checkHeader(iInstIndx+1, COMTestHelper.TEST_OBJECT_CREATION_NO,
-            objToObjectNo(sourceObject));
-  }
-
-  /**
-   * Checks validity of creation event object details
-   * @param instIndex Client event identifier
-   * @param sourceObject identifies if object A or object B
-   * @param sourceDomain domain of object
-   * @param sourceInstId instance identifier of object
-   * @return result of check
-   */
-  public boolean creationEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier(String instIndex, 
-          String sourceObject, String sourceDomain, String sourceInstId)
-  {
-    logMessage(loggingClassName + ":creationEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier "
-            + sourceObject + " " + sourceDomain + " " + sourceInstId);
-    return eventDetailsList.get(Integer.parseInt(instIndex)).
-            objectDetailsValid(sourceDomain, objToObjectNo(sourceObject), sourceInstId,
-            null);
-  }
-
-  /**
-   * Checks validity of creation event object details
-   * @param instIndex Client event identifier
-   * @param sourceObject identifies if object A or object B
-   * @param sourceDomain domain of object
-   * @param sourceInstId instance identifier of object
-   * @param parentInstId instance identifier of parent
-   * @return result of check
-   */
-  public boolean creationEventObjectDetailsValidForObjectInDomainWithInstanceIdentifierWithParentInstanceId(String instIndex, String sourceObject, String sourceDomain, String sourceInstId, String parentInstId)
-  {
-    logMessage(loggingClassName + ":creationEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier "
-            + sourceObject + " " + sourceDomain + " " + sourceInstId + " $" + parentInstId + "$");
-
-    return eventDetailsList.get(Integer.parseInt(instIndex)).
-            objectDetailsValid(sourceDomain, objToObjectNo(sourceObject), sourceInstId,
-            parentInstId);
-  }
-
-  /**
-   * Checks validity of creation event body
-   * @param instIndex Client event identifier
-   * @param description expected description field
-   * @return result of check
-   */
-  public boolean creationEventElementValidForObjectWithDescription(String instIndex, String description)
-  {
-    logMessage(loggingClassName + ":creationEventElementValidForObject " + instIndex + " " + description);
-    return eventDetailsList.get(Integer.parseInt(instIndex)).creationElementValid(
-            COMTestHelper.TEST_OBJECT_CREATION_NO, description, true);
-
-  }
-
-  /**
-   * Checks if deletion event header valid
-   * @param instIndex Client event identifier
-   * @param sourceObject identifies if object A or object B
-   * @return result of check
-   */
-  public boolean deletionEventHeaderValidForObject(String instIndex, String sourceObject)
-  {
-    logMessage(loggingClassName + ":deletionEventHeaderValidForObject " + instIndex + " " + sourceObject);
-    int iInstIndx = Integer.parseInt(instIndex);
-    return eventDetailsList.get(iInstIndx).checkHeader(iInstIndx+1, COMTestHelper.TEST_OBJECT_DELETION_NO,
-            objToObjectNo(sourceObject));
-  }
-
-  /**
-   * Checks if deletion event object details valid
-   * @param instIndex Client event identifier
-   * @param sourceObject identifies if object A or object B
-   * @param sourceDomain domain of object
-   * @param sourceInstId instance identifier of object
-   * @param parentInstId instance identifier of object parent (used in related field)
-   * @return result of check
-   */
-  public boolean deletionEventObjectDetailsValidForObjectInDomainWithInstanceIdentifierWithParentInstanceIdentifier(String instIndex, String sourceObject, String sourceDomain, String sourceInstId, String parentInstId)
-  {
-    logMessage(loggingClassName + ":deletionEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier "
-            + sourceObject + " " + sourceDomain + " " + sourceInstId);
-    if (parentInstId.trim().isEmpty())
-    {
-      parentInstId = null;
     }
-    return eventDetailsList.get(Integer.parseInt(instIndex)).
-            objectDetailsValid(sourceDomain, objToObjectNo(sourceObject), sourceInstId,
-            parentInstId);
-  }
 
-  /**
-   * Checks if deletion event element/body valid
-   * @param instIndex Client event identifier
-   * @param description field value expected in body
-   * @return result of check
-   */
-  public boolean deletionEventElementValidForObjectWithDescription(String instIndex, String description)
-  {
-    logMessage(loggingClassName + ":deletionEventElementValidForObjectWithDescription " + instIndex + " " + description);
-    return eventDetailsList.get(Integer.parseInt(instIndex)).deletionElementValid(
-            COMTestHelper.TEST_OBJECT_DELETION_NO, description);
+    /**
+     * Checks if creation event received
+     *
+     * @param sourceObject identifies if object A or object B
+     * @param sourceDomain domain of object
+     * @param sourceInstId source instance identifier
+     * @return result of check
+     * @throws Exception to report failures
+     */
+    public String updateEventReceivedForObjectInDomainWithInstanceIdentifier(
+            String sourceObject,String sourceDomain, String sourceInstId) throws Exception {
+        logMessage(loggingClassName + ":updateEventReceivedForObjectInDomainWithInstanceIdentifier "
+                + sourceObject + " " + sourceDomain + " " + sourceInstId);
+        waitForReasonableAmountOfTime();   // Allow time for incoming events
+        return eventDetailsList.eventExists(COMTestHelper.TEST_OBJECT_UPDATE_NO,
+                objToObjectNo(sourceObject), sourceDomain, sourceInstId);
 
-  }
-
-  /**
-   * Checks if update event header valid
-   * @param instIndex Client event identifier
-   * @param sourceObject identifies if object A or object B
-   * @return result of check
-   */
-  public boolean updateEventHeaderValidForObject(String instIndex, String sourceObject)
-  {
-    logMessage(loggingClassName + ":updateEventHeaderValidForObject " + instIndex + " " + sourceObject);
-    int iInstIndx = Integer.parseInt(instIndex);
-    return eventDetailsList.get(iInstIndx).checkHeader(iInstIndx+1, COMTestHelper.TEST_OBJECT_UPDATE_NO,
-            objToObjectNo(sourceObject));
-  }
-
-  /**
-   * Checks if update event details valid
-   * @param instIndex Client event identifier
-   * @param sourceObject identifies if object A or object B
-   * @param sourceDomain domain of object
-   * @param sourceInstId instance identifier of object
-   * @return 
-   */
-  public boolean updateEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier(String instIndex, String sourceObject, String sourceDomain, String sourceInstId)
-  {
-    logMessage(loggingClassName + ":updateEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier "
-            + sourceObject + " " + sourceDomain + " " + sourceInstId);
-    return eventDetailsList.get(Integer.parseInt(instIndex)).
-            objectDetailsValid(sourceDomain, objToObjectNo(sourceObject), sourceInstId,
-            null);
-  }
-
-  /**
-   * Checks if update event element valid
-   * @param instIndex Client event identifier
-   * @param enumField Expected value of enum field
-   * @param durationField Expected value of duration field
-   * @param numericListField Expected value of numeric list field
-   * @return 
-   */
-  public boolean updateEventElementValidForObjectWithEnumFieldWithDurationFieldWithNumericListField(String instIndex, String enumField, String durationField, String numericListField[])
-  {
-    logMessage(loggingClassName + ":deletionEventElementValidForObjectWithDescription " + enumField
-            + " " + durationField + " " + numericListField.toString() + " " + numericListField.length + " " + numericListField[0]);
-    return eventDetailsList.get(Integer.parseInt(instIndex)).updateElementValid(
-            COMTestHelper.TEST_OBJECT_UPDATE_NO, enumField, durationField, numericListField);
-  }
-
-  /**
-   * Checks if update event element valid for object with a composite field
-   * @param instIndex Client event identifier
-   * @param uOctetField Expected value of uOctet field
-   * @param octetField Expected value of octet field
-   * @param doubleField Expected value of double field
-   * @return 
-   */
-  public boolean updateEventElementValidForObjectWithCompositeFieldsWithUoctetWithOctetWithDouble(String instIndex, String uOctetField, String octetField, String doubleField)
-  {
-    logMessage(loggingClassName + ":updateEventElementValidForObjectWithCompositeFieldsWithUoctetWithOctetWithDouble " + uOctetField
-            + " " + uOctetField + " " + octetField + " " + doubleField);
-    return eventDetailsList.get(Integer.parseInt(instIndex)).updateElementCompositeValid(
-            COMTestHelper.TEST_OBJECT_UPDATE_NO, uOctetField, octetField, doubleField);
-  }
-
-  /**
-   * Converts string array to  short array
-   * @param strVals
-   * @return the short array
-   */
-  private ShortList arrayToShortList(String strVals[])
-  {
-    ShortList list = new ShortList();
-    for (int i = 0; i < strVals.length; i++)
-    {
-      list.add(new Short(strVals[i]));
     }
-    return list;
-  }
 
-public boolean retrievedArchiveItemProviderMatchesForEvent(String instIndex)
-  {
-      boolean bMatch;
-  
-      logMessage(loggingClassName + ":retrievedArchiveItemProviderMatchesForEvent" + instIndex);
-      EventDetails ev =  eventDetailsList.get(Integer.parseInt(instIndex));
-      
-      ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
-      
-      bMatch = (archiveDetails.getProvider().equals(ev.getUpdateHeader().getSource()));
-        
-      logMessage(loggingClassName + ":retrievedArchiveItemProviderMatchesForEvent:RET" + bMatch);
-      return bMatch;
-  }  
-  
-  
-  public boolean retrievedArchiveItemTimestampMatchesForEvent(String instIndex)
-  {
-      boolean bMatch;
-  
-      logMessage(loggingClassName + ":retrievedArchiveItemTimestampMatchesForEvent" + instIndex);
-      EventDetails ev =  eventDetailsList.get(Integer.parseInt(instIndex));
-      
-      ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
-      FineTime archiveTimestamp = archiveDetails.getTimestamp();
-      
-      bMatch = true; // Hard-coded... needs to be updated  :/
-        
-      logMessage(loggingClassName + ":retrievedArchiveItemTimestampMatchesForEvent:RET" + bMatch);
-      return bMatch;
-  }
-  
-  public boolean retrievedArchiveItemInstanceIdentifierMatchesForEvent(String instIndex)
-  {
-      boolean bMatch;
-  
-      logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent" + instIndex);
-      EventDetails ev =  eventDetailsList.get(Integer.parseInt(instIndex));
- 
-      ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
-      bMatch = archiveDetails.getInstId().equals(ev.updateHeader.getKeyValues().get(2));
-      
-      logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent:RET" + bMatch);
-      return bMatch;
-  }
-  
-  public boolean retrievedArchiveItemObjectDetailsMatchForEvent(String instIndex)
-  {
-      boolean bMatch = false;
-  
-      logMessage(loggingClassName + ":retrievedArchiveItemObjectDetailsMatchForEvent" + instIndex);
-      EventDetails ev =  eventDetailsList.get(Integer.parseInt(instIndex));
- 
-      ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
-      
-      if (archiveDetails.getDetails().equals(ev.getObjectDetails()))
-          bMatch = true;
-      
-      logMessage(loggingClassName + ":retrievedArchiveItemObjectDetailsMatchForEvent:RET" + bMatch);
-      return bMatch;
-  }
-          
-  public boolean retrievedArchiveItemBodyMatchesForEvent(String instIndex)
-  {
-      boolean bMatch = false;
-  
-      logMessage(loggingClassName + ":retrievedArchiveItemBodyMatchesForEvent" + instIndex);
-      EventDetails ev =  eventDetailsList.get(Integer.parseInt(instIndex));
- 
-      Element body = (Element) retrievedObjectList.get(0);
-      
-      if (body.equals(ev.getElement()))
-          bMatch = true;
-      
-      logMessage(loggingClassName + ":retrievedArchiveItemBodyMatchesForEvent:RET" + bMatch);
-      return bMatch;
-  }
-  
-    public boolean retrieveArchiveItemForEvent(String instIndex) throws Exception
-    {
+    /**
+     * Checks validity of the header object for a creation event
+     *
+     * @param instIndex Client Event identifier
+     * @param sourceObject identifies if object A or object B
+     * @return result of check
+     */
+    public boolean creationEventHeaderValidForObject(String instIndex, String sourceObject) {
+        logMessage(loggingClassName + ":creationEventHeaderValidForObject " + instIndex + " " + sourceObject);
+        int iInstIndx = Integer.parseInt(instIndex);
+        return eventDetailsList.get(iInstIndx).checkHeader(iInstIndx + 1, COMTestHelper.TEST_OBJECT_CREATION_NO,
+                objToObjectNo(sourceObject));
+    }
+
+    /**
+     * Checks validity of creation event object details
+     *
+     * @param instIndex Client event identifier
+     * @param sourceObject identifies if object A or object B
+     * @param sourceDomain domain of object
+     * @param sourceInstId instance identifier of object
+     * @return result of check
+     */
+    public boolean creationEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier(
+            String instIndex, String sourceObject, String sourceDomain, String sourceInstId) {
+        logMessage(loggingClassName + ":creationEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier "
+                + sourceObject + " " + sourceDomain + " " + sourceInstId);
+        return eventDetailsList.get(Integer.parseInt(instIndex)).
+                objectDetailsValid(sourceDomain, objToObjectNo(sourceObject), sourceInstId,
+                        null);
+    }
+
+    /**
+     * Checks validity of creation event object details
+     *
+     * @param instIndex Client event identifier
+     * @param sourceObject identifies if object A or object B
+     * @param sourceDomain domain of object
+     * @param sourceInstId instance identifier of object
+     * @param parentInstId instance identifier of parent
+     * @return result of check
+     */
+    public boolean creationEventObjectDetailsValidForObjectInDomainWithInstanceIdentifierWithParentInstanceId(
+            String instIndex, String sourceObject, String sourceDomain, String sourceInstId, String parentInstId) {
+        logMessage(loggingClassName + ":creationEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier "
+                + sourceObject + " " + sourceDomain + " " + sourceInstId + " $" + parentInstId + "$");
+
+        return eventDetailsList.get(Integer.parseInt(instIndex)).
+                objectDetailsValid(sourceDomain, objToObjectNo(sourceObject), sourceInstId,
+                        parentInstId);
+    }
+
+    /**
+     * Checks validity of creation event body
+     *
+     * @param instIndex Client event identifier
+     * @param description expected description field
+     * @return result of check
+     */
+    public boolean creationEventElementValidForObjectWithDescription(String instIndex, String description) {
+        logMessage(loggingClassName + ":creationEventElementValidForObject " + instIndex + " " + description);
+        return eventDetailsList.get(Integer.parseInt(instIndex)).creationElementValid(
+                COMTestHelper.TEST_OBJECT_CREATION_NO, description, true);
+
+    }
+
+    /**
+     * Checks if deletion event header valid
+     *
+     * @param instIndex Client event identifier
+     * @param sourceObject identifies if object A or object B
+     * @return result of check
+     */
+    public boolean deletionEventHeaderValidForObject(String instIndex, String sourceObject) {
+        logMessage(loggingClassName + ":deletionEventHeaderValidForObject " + instIndex + " " + sourceObject);
+        int iInstIndx = Integer.parseInt(instIndex);
+        return eventDetailsList.get(iInstIndx).checkHeader(iInstIndx + 1, COMTestHelper.TEST_OBJECT_DELETION_NO,
+                objToObjectNo(sourceObject));
+    }
+
+    /**
+     * Checks if deletion event object details valid
+     *
+     * @param instIndex Client event identifier
+     * @param sourceObject identifies if object A or object B
+     * @param sourceDomain domain of object
+     * @param sourceInstId instance identifier of object
+     * @param parentInstId instance identifier of object parent (used in related
+     * field)
+     * @return result of check
+     */
+    public boolean deletionEventObjectDetailsValidForObjectInDomainWithInstanceIdentifierWithParentInstanceIdentifier(
+            String instIndex, String sourceObject, String sourceDomain, String sourceInstId, String parentInstId) {
+        logMessage(loggingClassName + ":deletionEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier "
+                + sourceObject + " " + sourceDomain + " " + sourceInstId);
+        if (parentInstId.trim().isEmpty()) {
+            parentInstId = null;
+        }
+        return eventDetailsList.get(Integer.parseInt(instIndex)).
+                objectDetailsValid(sourceDomain, objToObjectNo(sourceObject), sourceInstId,
+                        parentInstId);
+    }
+
+    /**
+     * Checks if deletion event element/body valid
+     *
+     * @param instIndex Client event identifier
+     * @param description field value expected in body
+     * @return result of check
+     */
+    public boolean deletionEventElementValidForObjectWithDescription(String instIndex, String description) {
+        logMessage(loggingClassName + ":deletionEventElementValidForObjectWithDescription " + instIndex + " " + description);
+        return eventDetailsList.get(Integer.parseInt(instIndex)).deletionElementValid(
+                COMTestHelper.TEST_OBJECT_DELETION_NO, description);
+
+    }
+
+    /**
+     * Checks if update event header valid
+     *
+     * @param instIndex Client event identifier
+     * @param sourceObject identifies if object A or object B
+     * @return result of check
+     */
+    public boolean updateEventHeaderValidForObject(String instIndex, String sourceObject) {
+        logMessage(loggingClassName + ":updateEventHeaderValidForObject " + instIndex + " " + sourceObject);
+        int iInstIndx = Integer.parseInt(instIndex);
+        return eventDetailsList.get(iInstIndx).checkHeader(iInstIndx + 1, COMTestHelper.TEST_OBJECT_UPDATE_NO,
+                objToObjectNo(sourceObject));
+    }
+
+    /**
+     * Checks if update event details valid
+     *
+     * @param instIndex Client event identifier
+     * @param sourceObject identifies if object A or object B
+     * @param sourceDomain domain of object
+     * @param sourceInstId instance identifier of object
+     * @return
+     */
+    public boolean updateEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier(String instIndex,
+            String sourceObject, String sourceDomain, String sourceInstId) {
+        logMessage(loggingClassName + ":updateEventObjectDetailsValidForObjectInDomainWithInstanceIdentifier "
+                + sourceObject + " " + sourceDomain + " " + sourceInstId);
+        return eventDetailsList.get(Integer.parseInt(instIndex)).
+                objectDetailsValid(sourceDomain, objToObjectNo(sourceObject), sourceInstId,
+                        null);
+    }
+
+    /**
+     * Checks if update event element valid
+     *
+     * @param instIndex Client event identifier
+     * @param enumField Expected value of enum field
+     * @param durationField Expected value of duration field
+     * @param numericListField Expected value of numeric list field
+     * @return
+     */
+    public boolean updateEventElementValidForObjectWithEnumFieldWithDurationFieldWithNumericListField(String instIndex,
+            String enumField, String durationField, String numericListField[]) {
+        logMessage(loggingClassName + ":deletionEventElementValidForObjectWithDescription " + enumField
+                + " " + durationField + " " + numericListField.toString() + " " + numericListField.length + " " + numericListField[0]);
+        return eventDetailsList.get(Integer.parseInt(instIndex)).updateElementValid(
+                COMTestHelper.TEST_OBJECT_UPDATE_NO, enumField, durationField, numericListField);
+    }
+
+    /**
+     * Checks if update event element valid for object with a composite field
+     *
+     * @param instIndex Client event identifier
+     * @param uOctetField Expected value of uOctet field
+     * @param octetField Expected value of octet field
+     * @param doubleField Expected value of double field
+     * @return
+     */
+    public boolean updateEventElementValidForObjectWithCompositeFieldsWithUoctetWithOctetWithDouble(String instIndex, 
+            String uOctetField, String octetField, String doubleField) {
+        logMessage(loggingClassName + ":updateEventElementValidForObjectWithCompositeFieldsWithUoctetWithOctetWithDouble " + uOctetField
+                + " " + uOctetField + " " + octetField + " " + doubleField);
+        return eventDetailsList.get(Integer.parseInt(instIndex)).updateElementCompositeValid(
+                COMTestHelper.TEST_OBJECT_UPDATE_NO, uOctetField, octetField, doubleField);
+    }
+
+    /**
+     * Converts string array to short array
+     *
+     * @param strVals
+     * @return the short array
+     */
+    private ShortList arrayToShortList(String strVals[]) {
+        ShortList list = new ShortList();
+        for (int i = 0; i < strVals.length; i++) {
+            list.add(new Short(strVals[i]));
+        }
+        return list;
+    }
+
+    public boolean retrievedArchiveItemProviderMatchesForEvent(String instIndex) {
+        boolean bMatch;
+
+        logMessage(loggingClassName + ":retrievedArchiveItemProviderMatchesForEvent" + instIndex);
+        EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
+
+        ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
+
+        bMatch = (archiveDetails.getProvider().equals(ev.getUpdateHeader().getSource()));
+
+        logMessage(loggingClassName + ":retrievedArchiveItemProviderMatchesForEvent:RET" + bMatch);
+        return bMatch;
+    }
+
+    public boolean retrievedArchiveItemTimestampMatchesForEvent(String instIndex) {
+        boolean bMatch;
+
+        logMessage(loggingClassName + ":retrievedArchiveItemTimestampMatchesForEvent" + instIndex);
+        EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
+
+        ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
+        FineTime archiveTimestamp = archiveDetails.getTimestamp();
+
+        bMatch = true; // Hard-coded... needs to be updated  :/
+
+        logMessage(loggingClassName + ":retrievedArchiveItemTimestampMatchesForEvent:RET" + bMatch);
+        return bMatch;
+    }
+
+    public boolean retrievedArchiveItemInstanceIdentifierMatchesForEvent(String instIndex) {
+        boolean bMatch;
+
+        logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent" + instIndex);
+        EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
+
+        ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
+        bMatch = archiveDetails.getInstId().equals(ev.updateHeader.getKeyValues().get(2));
+
+        logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent:RET" + bMatch);
+        return bMatch;
+    }
+
+    public boolean retrievedArchiveItemObjectDetailsMatchForEvent(String instIndex) {
+        boolean bMatch = false;
+
+        logMessage(loggingClassName + ":retrievedArchiveItemObjectDetailsMatchForEvent" + instIndex);
+        EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
+
+        ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
+
+        if (archiveDetails.getDetails().equals(ev.getObjectDetails())) {
+            bMatch = true;
+        }
+
+        logMessage(loggingClassName + ":retrievedArchiveItemObjectDetailsMatchForEvent:RET" + bMatch);
+        return bMatch;
+    }
+
+    public boolean retrievedArchiveItemBodyMatchesForEvent(String instIndex) {
+        boolean bMatch = false;
+
+        logMessage(loggingClassName + ":retrievedArchiveItemBodyMatchesForEvent" + instIndex);
+        EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
+
+        Element body = (Element) retrievedObjectList.get(0);
+
+        if (body.equals(ev.getElement())) {
+            bMatch = true;
+        }
+
+        logMessage(loggingClassName + ":retrievedArchiveItemBodyMatchesForEvent:RET" + bMatch);
+        return bMatch;
+    }
+
+    public boolean retrieveArchiveItemForEvent(String instIndex) throws Exception {
         LoggingBase.logMessage("ArchiveScenario.retrieveArchiveEntryForEvent()");
-        boolean bRetrieveValid = false; 
+        boolean bRetrieveValid = false;
         // Get the events
-        EventDetails ev =  eventDetailsList.get(Integer.parseInt(instIndex));
+        EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
         // reset the previous results
         retrievedArchiveDetailsList = null;
         retrievedObjectList = null;
 
         archiveAdapter.resetLatch();
-        try
-        {
+        try {
             IdentifierList domainId = new IdentifierList();
             domainId.add(new Identifier(eventDomain));
             // Set instance
@@ -642,56 +636,50 @@ public boolean retrievedArchiveItemProviderMatchesForEvent(String instIndex)
             LongList instanceIdsToRetrieve = new LongList();
             instanceIdsToRetrieve.add(new Long(instanceId));
             // Set Object Type
-            Integer objectNumber = Integer.decode(ev.getUpdateHeader().getKeyValues().get(0).toString());            
-            objectType = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestHelper.EVENTTEST_SERVICE_NUMBER, 
+            Integer objectNumber = Integer.decode(ev.getUpdateHeader().getKeyValues().get(0).toString());
+            objectType = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestHelper.EVENTTEST_SERVICE_NUMBER,
                     COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(objectNumber.intValue()));
-            LocalMALInstance.instance().archiveStub().retrieve(objectType, domainId, 
+            LocalMALInstance.instance().archiveStub().retrieve(objectType, domainId,
                     instanceIdsToRetrieve, archiveAdapter);
             archiveAdapter.waitResponse();
-            if (retrievedArchiveDetailsList.size() == 1 &&  retrievedObjectList.size() == 1)
+            if (retrievedArchiveDetailsList.size() == 1 && retrievedObjectList.size() == 1) {
                 bRetrieveValid = true;
-        }
-        catch (MALInteractionException exc)
-        {
+            }
+        } catch (MALInteractionException exc) {
             LoggingBase.logMessage("retrieve Error: " + exc);
-            throw(exc);
+            throw (exc);
         }
 
         LoggingBase.logMessage("retrievedArchiveDetailsList=" + retrievedArchiveDetailsList + ")");
         LoggingBase.logMessage("retrievedObjectList=" + retrievedObjectList + ")");
         return bRetrieveValid;
     }
-    
-    
-  /**
-   * Checks that all events generated during the test have been archived
-   *
-   * @return true if events archived false otherwise
-   */
-  public boolean allEventsArchived()
-  {
-    // Archiving is TBD
-    return false;
-  }
 
-  public void waitForReasonableAmountOfTime() throws Exception
-  {
-    Thread.sleep(100);
-  }
+    /**
+     * Checks that all events generated during the test have been archived
+     *
+     * @return true if events archived false otherwise
+     */
+    public boolean allEventsArchived() {
+        // Archiving is TBD
+        return false;
+    }
 
-  /**
-   * Class used to receive responses to archive events
-   */
-    class TestArchiveAdapter extends ArchiveAdapter
-    {
+    public void waitForReasonableAmountOfTime() throws Exception {
+        Thread.sleep(100);
+    }
+
+    /**
+     * Class used to receive responses to archive events
+     */
+    class TestArchiveAdapter extends ArchiveAdapter {
 
         private CountDownLatch countDownLatch;
 
         @Override
         public void retrieveResponseReceived(MALMessageHeader msgHeader,
                 ArchiveDetailsList archiveDetailsList, ElementList objectList,
-                Map qosProperties)
-        {
+                Map qosProperties) {
             LoggingBase.logMessage("TestArchiveAdapter::retrieveResponseReceived=" + archiveDetailsList);
             retrievedArchiveDetailsList = archiveDetailsList;
             retrievedObjectList = objectList;
@@ -700,18 +688,15 @@ public boolean retrievedArchiveItemProviderMatchesForEvent(String instIndex)
 
         @Override
         public void retrieveResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties)
-        {
+                MALStandardError error, Map qosProperties) {
             countDownLatch.countDown();
         }
 
-        public void resetLatch()
-        {
+        public void resetLatch() {
             countDownLatch = new CountDownLatch(1);
         }
 
-        public void waitResponse() throws Exception
-        {
+        public void waitResponse() throws Exception {
             countDownLatch.await();
 
         }

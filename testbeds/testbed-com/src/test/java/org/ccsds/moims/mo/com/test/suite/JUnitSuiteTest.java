@@ -24,7 +24,6 @@ import fitnesse.junit.FitNesseRunner;
 import fitnesse.junit.FitNesseRunner.FitnesseDir;
 import fitnesse.junit.FitNesseRunner.Suite;
 import fitnesse.junit.FitNesseRunner.OutputDir;
-import fitnesse.junit.FitNesseRunner.Port;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,10 +34,9 @@ import org.junit.runner.RunWith;
 @Suite("ComTests.TestDocument")
 @FitnesseDir("src/main/fitnesse")
 @OutputDir(systemProperty = "ccsds.fitnesse.output.dir")
-public class JUnitSuiteTest
-{
-  @Test
-  public void dummy()
-  {
-  }
+public class JUnitSuiteTest {
+
+    @Test
+    public void dummy() {
+    }
 }

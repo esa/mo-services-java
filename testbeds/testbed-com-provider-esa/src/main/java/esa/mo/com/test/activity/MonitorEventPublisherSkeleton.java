@@ -25,6 +25,5 @@ import org.ccsds.moims.mo.com.event.provider.*;
 /**
  *
  */
-public class MonitorEventPublisherSkeleton extends EventInheritanceSkeleton
-{
+public class MonitorEventPublisherSkeleton extends EventInheritanceSkeleton {
 }

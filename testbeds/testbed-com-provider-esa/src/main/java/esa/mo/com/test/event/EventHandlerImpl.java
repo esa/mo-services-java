@@ -25,7 +25,6 @@ import org.ccsds.moims.mo.com.event.provider.EventInheritanceSkeleton;
 /**
  *
  */
-public class EventHandlerImpl extends EventInheritanceSkeleton
-{
+public class EventHandlerImpl extends EventInheritanceSkeleton {
 
 }

@@ -25,101 +25,102 @@ import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
-class TestEventAdapter extends EventAdapter
-{
-  private EventDetailsList eventDetailsList;
+class TestEventAdapter extends EventAdapter {
 
-  public TestEventAdapter(EventDetailsList eventDetailsList)
-  {
-    this.eventDetailsList = eventDetailsList;
-  }
+    private EventDetailsList eventDetailsList;
 
-  public EventDetailsList getEventDetailsList()
-  {
-    return eventDetailsList;
-  }
+    public TestEventAdapter(EventDetailsList eventDetailsList) {
+        this.eventDetailsList = eventDetailsList;
+    }
 
-  /**
-   * Called by the MAL when a PubSub update is received from a broker for the operation monitorEvent.
-   *
-   * @param msgHeader The header of the received message.
-   * @param _Identifier0 Argument number 0 as defined by the service operation.
-   * @param _UpdateHeaderList1 Argument number 1 as defined by the service operation.
-   * @param _ObjectDetailsList2 Argument number 2 as defined by the service operation.
-   * @param _ElementList3 Argument number 3 as defined by the service operation.
-   * @param qosProperties The QoS properties associated with the message.
-   */
-  @Override
-  public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
-          UpdateHeaderList headerList, ObjectDetailsList objectDetailsList,
-          ElementList elementList, java.util.Map qosProperties)
-  {
-    LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY");
-    boolean success = false;
+    public EventDetailsList getEventDetailsList() {
+        return eventDetailsList;
+    }
 
-    LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + msgHeader);
-    LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _Identifier0);
-    LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + headerList);
-    LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + objectDetailsList);
-    LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + elementList);
+    /**
+     * Called by the MAL when a PubSub update is received from a broker for the
+     * operation monitorEvent.
+     *
+     * @param msgHeader The header of the received message.
+     * @param _Identifier0 Argument number 0 as defined by the service
+     * operation.
+     * @param _UpdateHeaderList1 Argument number 1 as defined by the service
+     * operation.
+     * @param _ObjectDetailsList2 Argument number 2 as defined by the service
+     * operation.
+     * @param _ElementList3 Argument number 3 as defined by the service
+     * operation.
+     * @param qosProperties The QoS properties associated with the message.
+     */
+    @Override
+    public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
+            UpdateHeaderList headerList, ObjectDetailsList objectDetailsList,
+            ElementList elementList, java.util.Map qosProperties) {
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY");
+        boolean success = false;
 
-    Identifier objectNumber = (Identifier) headerList.get(0).getKeyValues().get(0);
-    Identifier uri = headerList.get(0).getSource();
-    String strObjectNumber = objectNumber.toString();
-    eventDetailsList.add(new EventDetails(
-            headerList.get(0), objectDetailsList.get(0), (Element) elementList.get(0)));
-  }
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + msgHeader);
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _Identifier0);
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + headerList);
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + objectDetailsList);
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + elementList);
 
-  /**
-   * Called by the MAL when a PubSub register acknowledgement is received from a broker for the operation monitorEvent.
-   *
-   * @param msgHeader The header of the received message.
-   * @param qosProperties The QoS properties associated with the message.
-   */
-  public void monitorEventRegisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, java.util.Map qosProperties)
-  {
-    LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterAckReceived - ERROR");
-  }
+        Identifier objectNumber = (Identifier) headerList.get(0).getKeyValues().get(0);
+        Identifier uri = headerList.get(0).getSource();
+        String strObjectNumber = objectNumber.toString();
+        eventDetailsList.add(new EventDetails(
+                headerList.get(0), objectDetailsList.get(0), (Element) elementList.get(0)));
+    }
 
-  /**
-   * Called by the MAL when a PubSub register acknowledgement error is received from a broker for the operation
-   * monitorEvent.
-   *
-   * @param msgHeader The header of the received message.
-   * @param error The received error message.
-   * @param qosProperties The QoS properties associated with the message.
-   */
-  public void monitorEventRegisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties)
-  {
-    LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterErrorReceived - ERROR");
-  }
+    /**
+     * Called by the MAL when a PubSub register acknowledgement is received from
+     * a broker for the operation monitorEvent.
+     *
+     * @param msgHeader The header of the received message.
+     * @param qosProperties The QoS properties associated with the message.
+     */
+    public void monitorEventRegisterAckReceived(MALMessageHeader msgHeader, java.util.Map qosProperties) {
+        LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterAckReceived - ERROR");
+    }
 
-  /**
-   * Called by the MAL when a PubSub deregister acknowledgement is received from a broker for the operation
-   * monitorEvent.
-   *
-   * @param msgHeader The header of the received message.
-   * @param qosProperties The QoS properties associated with the message.
-   */
-  public void monitorEventDeregisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, java.util.Map qosProperties)
-  {
-    LoggingBase.logMessage("MonitorEventAdapter:monitorEventDeregisterAckReceived - ERROR");
-  }
+    /**
+     * Called by the MAL when a PubSub register acknowledgement error is
+     * received from a broker for the operation monitorEvent.
+     *
+     * @param msgHeader The header of the received message.
+     * @param error The received error message.
+     * @param qosProperties The QoS properties associated with the message.
+     */
+    public void monitorEventRegisterErrorReceived(MALMessageHeader msgHeader,
+            org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
+        LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterErrorReceived - ERROR");
+    }
 
-  /**
-   * Called by the MAL when a PubSub update error is received from a broker for the operation monitorEvent.
-   *
-   * @param msgHeader The header of the received message.
-   * @param error The received error message.
-   * @param qosProperties The QoS properties associated with the message.
-   */
-  public void monitorEventNotifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties)
-  {
-    LoggingBase.logMessage("MonitorEventAdapter:monitorEventDeregisterAckReceived - ERROR");
-  }
+    /**
+     * Called by the MAL when a PubSub deregister acknowledgement is received
+     * from a broker for the operation monitorEvent.
+     *
+     * @param msgHeader The header of the received message.
+     * @param qosProperties The QoS properties associated with the message.
+     */
+    public void monitorEventDeregisterAckReceived(MALMessageHeader msgHeader, java.util.Map qosProperties) {
+        LoggingBase.logMessage("MonitorEventAdapter:monitorEventDeregisterAckReceived - ERROR");
+    }
+
+    /**
+     * Called by the MAL when a PubSub update error is received from a broker
+     * for the operation monitorEvent.
+     *
+     * @param msgHeader The header of the received message.
+     * @param error The received error message.
+     * @param qosProperties The QoS properties associated with the message.
+     */
+    public void monitorEventNotifyErrorReceived(MALMessageHeader msgHeader,
+            org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
+        LoggingBase.logMessage("MonitorEventAdapter:monitorEventDeregisterAckReceived - ERROR");
+    }
 }

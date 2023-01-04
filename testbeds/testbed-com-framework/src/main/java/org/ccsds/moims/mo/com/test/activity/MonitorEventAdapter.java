@@ -34,165 +34,146 @@ import static org.ccsds.moims.mo.com.test.activity.BaseActivityScenario.objToEve
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
-class MonitorEventAdapter extends EventAdapter
-{
-  private MonitorEventDetailsList monitorEventList = new MonitorEventDetailsList();
-  // private MALMessage sentMsg = null;
-  private MALMessageHeader hdr = null;
-  private String pattern = null;
+class MonitorEventAdapter extends EventAdapter {
 
-  /**
-   * Called by the MAL when a PubSub update is received from a broker for the operation monitorEvent.
-   *
-   * @param msgHeader The header of the received message.
-   * @param _Identifier0 Argument number 0 as defined by the service operation.
-   * @param _UpdateHeaderList1 Argument number 1 as defined by the service operation.
-   * @param _ObjectDetailsList2 Argument number 2 as defined by the service operation.
-   * @param _ElementList3 Argument number 3 as defined by the service operation.
-   * @param qosProperties The QoS properties associated with the message.
-   */
-  @Override
-  public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
-          UpdateHeaderList headerList, ObjectDetailsList objectDetailsList,
-          ElementList elementList, java.util.Map qosProperties)
-  {
-    LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY");
-    boolean success = false;
+    private MonitorEventDetailsList monitorEventList = new MonitorEventDetailsList();
+    // private MALMessage sentMsg = null;
+    private MALMessageHeader hdr = null;
+    private String pattern = null;
 
-    // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + msgHeader);
-    // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _Identifier0);
-    // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _UpdateHeaderList1);
-    // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _ObjectDetailsList2);
-    // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _ElementList3);
+    /**
+     * Called by the MAL when a PubSub update is received from a broker for the
+     * operation monitorEvent.
+     *
+     * @param msgHeader The header of the received message.
+     * @param _Identifier0 Argument number 0 as defined by the service
+     * operation.
+     * @param _UpdateHeaderList1 Argument number 1 as defined by the service
+     * operation.
+     * @param _ObjectDetailsList2 Argument number 2 as defined by the service
+     * operation.
+     * @param _ElementList3 Argument number 3 as defined by the service
+     * operation.
+     * @param qosProperties The QoS properties associated with the message.
+     */
+    @Override
+    public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
+            UpdateHeaderList headerList, ObjectDetailsList objectDetailsList,
+            ElementList elementList, java.util.Map qosProperties) {
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY");
+        boolean success = false;
 
-    Identifier objectNumber = (Identifier) headerList.get(0).getKeyValues().get(0);
-    Identifier source = headerList.get(0).getSource();
-    String strObjectNumber = objectNumber.toString();
-    String strEventName = objToEventName(objectNumber.toString());
-    strEventName.trim();
-    if (strObjectNumber.equals(OBJ_NO_ASE_RELEASE_STR) || strObjectNumber.equals(OBJ_NO_ASE_RECEPTION_STR)
-            || strObjectNumber.equals(OBJ_NO_ASE_FORWARD_STR))
-    {
-      ActivityTransfer activityTransferInstance = (ActivityTransfer) elementList.get(0);
-      success = activityTransferInstance.getSuccess();
-      if (!success)
-      {
-        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY RELEASE ERR " + strEventName);
-      }
-    }
-    else if (strObjectNumber.equals(OBJ_NO_ASE_ACCEPTANCE_STR))
-    {
-      ActivityAcceptance activityTransferAcceptance = (ActivityAcceptance) elementList.get(0);
-      success = activityTransferAcceptance.getSuccess();
-    }
-    else if (strObjectNumber.equals(OBJ_NO_ASE_EXECUTION_STR))
-    {
-      ActivityExecution activityTransferExecution = (ActivityExecution) elementList.get(0);
-      success = activityTransferExecution.getSuccess();
-    }
-    // TBC do we need to support multiple updates
-    monitorEventList.add(new MonitorEventDetails(strEventName, source.toString(), success,
-            headerList.get(0), objectDetailsList.get(0), (Element) elementList.get(0)));
-    LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived " + strEventName + " " + success);
-  }
-
-  /**
-   * Called by the MAL when a PubSub register acknowledgement is received from a broker for the operation monitorEvent.
-   *
-   * @param msgHeader The header of the received message.
-   * @param qosProperties The QoS properties associated with the message.
-   */
-  public void monitorEventRegisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, java.util.Map qosProperties)
-  {
-    LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterAckReceived - ERROR");
-  }
-
-  /**
-   * Called by the MAL when a PubSub register acknowledgement error is received from a broker for the operation
-   * monitorEvent.
-   *
-   * @param msgHeader The header of the received message.
-   * @param error The received error message.
-   * @param qosProperties The QoS properties associated with the message.
-   */
-  public void monitorEventRegisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties)
-  {
-    LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterErrorReceived - ERROR");
-  }
-
-  /**
-   * Called by the MAL when a PubSub deregister acknowledgement is received from a broker for the operation
-   * monitorEvent.
-   *
-   * @param msgHeader The header of the received message.
-   * @param qosProperties The QoS properties associated with the message.
-   */
-  public void monitorEventDeregisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, java.util.Map qosProperties)
-  {
-    LoggingBase.logMessage("MonitorEventAdapter:monitorEventDeregisterAckReceived - ERROR");
-  }
-
-  /**
-   * Called by the MAL when a PubSub update error is received from a broker for the operation monitorEvent.
-   *
-   * @param msgHeader The header of the received message.
-   * @param error The received error message.
-   * @param qosProperties The QoS properties associated with the message.
-   */
-  public void monitorEventNotifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties)
-  {
-    LoggingBase.logMessage("MonitorEventAdapter:monitorEventDeregisterAckReceived - ERROR");
-  }
-
-  public MonitorEventDetailsList getMonitorEventList()
-  {
-    return monitorEventList;
-  }
-
-  public void setSentMsg(MALMessageHeader hdr)
-  {
-    this.hdr = hdr;
-  }
-
-  public void setPattern(String aPattern)
-  {
-    pattern = aPattern;
-  }
-
-  public boolean eventDetailsValid(String[] exeactivity, String relays[])
-  {
-    // Calculate total number of execution stages
-    int totalPhases = 0;
-
-    if ("INVOKE".equalsIgnoreCase(pattern))
-    {
-      totalPhases = 2;
-    }
-    else if ("PROGRESS".equalsIgnoreCase(pattern))
-    {
-      // Total phases 2 for ACK & RESPONSE plus one for each PROGRESS
-      totalPhases = 2;
-      for (int i = 0; i < exeactivity.length; i++)
-      {
-        if (exeactivity[i].contains("UPDATE_ERROR") || exeactivity[i].contains("UPDATE"))
-        {
-          ++totalPhases;
+        // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + msgHeader);
+        // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _Identifier0);
+        // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _UpdateHeaderList1);
+        // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _ObjectDetailsList2);
+        // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _ElementList3);
+        Identifier objectNumber = (Identifier) headerList.get(0).getKeyValues().get(0);
+        Identifier source = headerList.get(0).getSource();
+        String strObjectNumber = objectNumber.toString();
+        String strEventName = objToEventName(objectNumber.toString());
+        strEventName.trim();
+        if (strObjectNumber.equals(OBJ_NO_ASE_RELEASE_STR) || strObjectNumber.equals(OBJ_NO_ASE_RECEPTION_STR)
+                || strObjectNumber.equals(OBJ_NO_ASE_FORWARD_STR)) {
+            ActivityTransfer activityTransferInstance = (ActivityTransfer) elementList.get(0);
+            success = activityTransferInstance.getSuccess();
+            if (!success) {
+                LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY RELEASE ERR " + strEventName);
+            }
+        } else if (strObjectNumber.equals(OBJ_NO_ASE_ACCEPTANCE_STR)) {
+            ActivityAcceptance activityTransferAcceptance = (ActivityAcceptance) elementList.get(0);
+            success = activityTransferAcceptance.getSuccess();
+        } else if (strObjectNumber.equals(OBJ_NO_ASE_EXECUTION_STR)) {
+            ActivityExecution activityTransferExecution = (ActivityExecution) elementList.get(0);
+            success = activityTransferExecution.getSuccess();
         }
-      }
+        // TBC do we need to support multiple updates
+        monitorEventList.add(new MonitorEventDetails(strEventName, source.toString(), success,
+                headerList.get(0), objectDetailsList.get(0), (Element) elementList.get(0)));
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived " + strEventName + " " + success);
     }
-    else if ("SEND".equalsIgnoreCase(pattern))
-    {
-      totalPhases = 2;
+
+    /**
+     * Called by the MAL when a PubSub register acknowledgement is received from
+     * a broker for the operation monitorEvent.
+     *
+     * @param msgHeader The header of the received message.
+     * @param qosProperties The QoS properties associated with the message.
+     */
+    public void monitorEventRegisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, java.util.Map qosProperties) {
+        LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterAckReceived - ERROR");
     }
-    else
-    {
-      totalPhases = 1;
+
+    /**
+     * Called by the MAL when a PubSub register acknowledgement error is
+     * received from a broker for the operation monitorEvent.
+     *
+     * @param msgHeader The header of the received message.
+     * @param error The received error message.
+     * @param qosProperties The QoS properties associated with the message.
+     */
+    public void monitorEventRegisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
+        LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterErrorReceived - ERROR");
     }
-    return monitorEventList.eventDetailsValid(pattern, hdr, totalPhases, relays);
-  }
+
+    /**
+     * Called by the MAL when a PubSub deregister acknowledgement is received
+     * from a broker for the operation monitorEvent.
+     *
+     * @param msgHeader The header of the received message.
+     * @param qosProperties The QoS properties associated with the message.
+     */
+    public void monitorEventDeregisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, java.util.Map qosProperties) {
+        LoggingBase.logMessage("MonitorEventAdapter:monitorEventDeregisterAckReceived - ERROR");
+    }
+
+    /**
+     * Called by the MAL when a PubSub update error is received from a broker
+     * for the operation monitorEvent.
+     *
+     * @param msgHeader The header of the received message.
+     * @param error The received error message.
+     * @param qosProperties The QoS properties associated with the message.
+     */
+    public void monitorEventNotifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
+        LoggingBase.logMessage("MonitorEventAdapter:monitorEventDeregisterAckReceived - ERROR");
+    }
+
+    public MonitorEventDetailsList getMonitorEventList() {
+        return monitorEventList;
+    }
+
+    public void setSentMsg(MALMessageHeader hdr) {
+        this.hdr = hdr;
+    }
+
+    public void setPattern(String aPattern) {
+        pattern = aPattern;
+    }
+
+    public boolean eventDetailsValid(String[] exeactivity, String relays[]) {
+        // Calculate total number of execution stages
+        int totalPhases = 0;
+
+        if ("INVOKE".equalsIgnoreCase(pattern)) {
+            totalPhases = 2;
+        } else if ("PROGRESS".equalsIgnoreCase(pattern)) {
+            // Total phases 2 for ACK & RESPONSE plus one for each PROGRESS
+            totalPhases = 2;
+            for (int i = 0; i < exeactivity.length; i++) {
+                if (exeactivity[i].contains("UPDATE_ERROR") || exeactivity[i].contains("UPDATE")) {
+                    ++totalPhases;
+                }
+            }
+        } else if ("SEND".equalsIgnoreCase(pattern)) {
+            totalPhases = 2;
+        } else {
+            totalPhases = 1;
+        }
+        return monitorEventList.eventDetailsValid(pattern, hdr, totalPhases, relays);
+    }
 }
