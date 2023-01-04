@@ -134,12 +134,18 @@ public class InteractionTimeout {
                                 + "was triggered! The timeout is currently "
                                 + "set to: " + timeout + " ms";
                         
-                        handler.handleError(
-                                null,
-                                new MALStandardError(
-                                        MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER,
-                                        msg),
-                                null);
+                            try {
+                                handler.handleError(
+                                        null,
+                                        new MALStandardError(
+                                                MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER,
+                                                msg),
+                                        null);
+                            } catch (Exception ex) {
+                                // Do not allow to kill the thread
+                                Logger.getLogger(InteractionTimeout.class.getName()).log(
+                                    Level.SEVERE, "MAL error handler threw an exception!", ex);
+                            }
                     }
                 } catch (InterruptedException ex) {
                     Logger.getLogger(InteractionTimeout.class.getName()).log(
