@@ -125,6 +125,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
             if (binding == null) {
                 MALBrokerImpl.LOGGER.log(Level.WARNING,
                         "Unable to find binding for NOTIFY message to: {0}", uriTo);
+                handleConsumerCommunicationError(brokerKey, uriTo);
                 continue;
             }
 
