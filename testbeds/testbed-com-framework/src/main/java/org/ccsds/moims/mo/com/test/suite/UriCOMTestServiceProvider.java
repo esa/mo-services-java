@@ -50,16 +50,16 @@ public abstract class UriCOMTestServiceProvider extends BaseTestServiceProvider
 
   protected void initHelpers() throws MALException
   {
-    org.ccsds.moims.mo.com.COMHelper.init(MALContextFactory.getElementFactoryRegistry());
-    ActivityTrackingHelper.init(MALContextFactory.getElementFactoryRegistry());
-    ArchiveHelper.init(MALContextFactory.getElementFactoryRegistry());
-    EventHelper.init(MALContextFactory.getElementFactoryRegistry());
+    org.ccsds.moims.mo.com.COMHelper.init(MALContextFactory.getElementsRegistry());
+    ActivityTrackingHelper.init(MALContextFactory.getElementsRegistry());
+    ArchiveHelper.init(MALContextFactory.getElementsRegistry());
+    EventHelper.init(MALContextFactory.getElementsRegistry());
 
-    COMPrototypeHelper.init(MALContextFactory.getElementFactoryRegistry());
-    ActivityTestHelper.init(MALContextFactory.getElementFactoryRegistry());
-    ActivityRelayManagementHelper.init(MALContextFactory.getElementFactoryRegistry());
-    ArchiveTestHelper.init(MALContextFactory.getElementFactoryRegistry());
-    EventTestHelper.init(MALContextFactory.getElementFactoryRegistry());
+    COMPrototypeHelper.init(MALContextFactory.getElementsRegistry());
+    ActivityTestHelper.init(MALContextFactory.getElementsRegistry());
+    ActivityRelayManagementHelper.init(MALContextFactory.getElementsRegistry());
+    ArchiveTestHelper.init(MALContextFactory.getElementsRegistry());
+    EventTestHelper.init(MALContextFactory.getElementsRegistry());
   }
 
   protected void createProviders() throws MALException
