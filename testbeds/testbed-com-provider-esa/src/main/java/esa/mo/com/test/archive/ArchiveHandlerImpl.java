@@ -44,14 +44,7 @@ import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestHelper;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayload;
-import org.ccsds.moims.mo.comprototype.archivetest.structures.factory.*;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
-import org.ccsds.moims.mo.comprototype.eventtest.structures.factory.ObjectCreationFactory;
-import org.ccsds.moims.mo.comprototype.eventtest.structures.factory.ObjectCreationListFactory;
-import org.ccsds.moims.mo.comprototype.eventtest.structures.factory.ObjectDeletionFactory;
-import org.ccsds.moims.mo.comprototype.eventtest.structures.factory.ObjectDeletionListFactory;
-import org.ccsds.moims.mo.comprototype.eventtest.structures.factory.ObjectUpdateFactory;
-import org.ccsds.moims.mo.comprototype.eventtest.structures.factory.ObjectUpdateListFactory;
 import org.ccsds.moims.mo.comprototype1.COMPrototype1Helper;
 import org.ccsds.moims.mo.comprototype1.test1.Test1Helper;
 import org.ccsds.moims.mo.comprototype1.test2.Test2Helper;
@@ -76,15 +69,6 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
-import org.ccsds.moims.mo.mal.structures.factory.BlobListFactory;
-import org.ccsds.moims.mo.mal.structures.factory.BooleanListFactory;
-import org.ccsds.moims.mo.mal.structures.factory.IdentifierFactory;
-import org.ccsds.moims.mo.mal.structures.factory.IdentifierListFactory;
-import org.ccsds.moims.mo.mal.structures.factory.IntegerListFactory;
-import org.ccsds.moims.mo.mal.structures.factory.LongListFactory;
-import org.ccsds.moims.mo.mal.structures.factory.StringListFactory;
-import org.ccsds.moims.mo.mal.structures.factory.URIFactory;
-import org.ccsds.moims.mo.mal.structures.factory.URIListFactory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -150,6 +134,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
     final UOctet VERSION2 = new UOctet((short) 2);
     // initialise element factory
     MALObjectTypeFactoryRegistry factory = MALObjectTypeFactoryRegistry.inst();
+    /*
     factory.registerElementFactories(
             new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, ArchiveTestHelper.ARCHIVETEST_SERVICE_NUMBER,
                     VERSION1, COMPROTOTYPE_TEST_TEST_OBJECT_OBJ_NO), new TestObjectPayloadFactory(), new TestObjectPayloadListFactory());
@@ -198,7 +183,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton
     factory.registerElementFactories(
             new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestHelper.EVENTTEST_SERVICE_NUMBER,
                     VERSION1, COMPROTOTYPE_TEST_EVENTTEST_OBJECT_UPDATE_OBJ_NO), new ObjectUpdateFactory(), new ObjectUpdateListFactory());
-
+    */
   }
 
   /* Checks all specified instance identifier values exist in a archive details list*/
