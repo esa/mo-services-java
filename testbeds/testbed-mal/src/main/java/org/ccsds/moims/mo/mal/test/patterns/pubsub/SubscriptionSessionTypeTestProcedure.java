@@ -34,7 +34,6 @@ package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
 import org.ccsds.moims.mo.mal.test.util.Helper;
 import java.util.Map;
-import java.util.Vector;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -46,7 +45,6 @@ import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import static org.ccsds.moims.mo.mal.test.patterns.pubsub.SubscriptionSessionNameTestProcedure.SUBSCRIPTION_ID;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -71,8 +69,7 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
     public static final QoSLevel QOS_LEVEL = QoSLevel.ASSURED;
     public static final UInteger PRIORITY = new UInteger(1);
 
-    public static final Identifier SUBSCRIPTION_ID = new Identifier(
-            "EntityRequestSubscription");
+    public static final Identifier SUBSCRIPTION_ID = new Identifier("EntityRequestSubscription");
 
     private IPTestStub ipTestToPublish;
 
@@ -98,11 +95,13 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
                 HeaderTestProcedure.NETWORK_ZONE, publisherSessionType, SESSION_NAME, QOS_LEVEL,
                 PRIORITY, shared).getStub();
 
+        IdentifierList keyNames = new IdentifierList();
+        keyNames.add(Helper.key1);
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishRegister testPublishRegister = new TestPublishRegister(
                 QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, publisherSessionType, SESSION_NAME,
-                false, new IdentifierList(), expectedErrorCode);
+                false, keyNames, expectedErrorCode);
         ipTestToPublish.publishRegister(testPublishRegister);
         return true;
     }
@@ -115,7 +114,7 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null);
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
 
         listener = new MonitorListener();
 
@@ -126,8 +125,9 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
 
         ipTestToSubscribe.monitorRegister(subscription, listener);
 
+        AttributeList keyValues = new AttributeList("A");
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList("A")));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, keyValues));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(0));
@@ -135,7 +135,8 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(QOS_LEVEL,
                 PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-                publisherSessionType, SESSION_NAME, false, updateHeaderList, updateList, null, expectedErrorCode, false, null);
+                publisherSessionType, SESSION_NAME, false, updateHeaderList, 
+                updateList, keyValues, expectedErrorCode, false, null);
 
         ipTestToPublish.publishUpdates(testPublishUpdate);
 
@@ -174,10 +175,10 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
 
         private final BooleanCondition monitorCond = new BooleanCondition();
 
-        private Vector receivedNotify;
+        private java.util.Vector receivedNotify;
 
         MonitorListener() {
-            receivedNotify = new Vector();
+            receivedNotify = new java.util.Vector();
         }
 
         @Override
@@ -200,7 +201,8 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
             for (int i = 0; i < receivedNotify.size(); i++) {
                 MALMessageHeader msgHeader = (MALMessageHeader) receivedNotify.elementAt(i);
                 assertions.add(new Assertion(procedureName,
-                        "The session type of the notify is : " + subscriberSessionType, msgHeader.getSession().equals(subscriberSessionType)));
+                        "The session type of the notify is : " + subscriberSessionType, 
+                        msgHeader.getSession().equals(subscriberSessionType)));
             }
             return AssertionHelper.checkAssertions(assertions);
         }
