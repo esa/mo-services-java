@@ -54,161 +54,161 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
 
-  public Element testData(Element rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
-    LoggingBase.logMessage("testData: small blob");
-    _testDataValue(MalSppSegmentationTest.testSmallBlob, rcvdValue, "small blob data test");
-    return rcvdValue;
-  }
-
-  public Blob testDataBlob(Blob rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
-    LoggingBase.logMessage("testDataBlob: large blob");
-    _testDataValue(MalSppSegmentationTest.testLargeBlob, rcvdValue, "large blob data test");
-    return rcvdValue;
-  }
-
-  protected static void _testDataValue(Object testValue, Object rcvdValue, String exString) throws MALInteractionException {
-    //LoggingBase.logMessage("DataTestHandlerImpl:" + exString + " : " + testValue + " : " + rcvdValue);
-
-    if (null != testValue) {
-      if (!testValue.equals(rcvdValue)) {
-        // decoding must have failed
-        throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
-                new Union("Failed comparison in provider of " + exString + ", type " + testValue.getClass() + ", expected " + String.valueOf(testValue) + " but received " + String.valueOf(rcvdValue))));
-      }
-    } else {
-      if (null != rcvdValue) {
-        // decoding must have failed
-        throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
-                new Union("Failed comparison in provider of " + exString + ", type should be null but is " + rcvdValue.getClass())));
-      }
+    public Element testData(Element rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("testData: small blob");
+        _testDataValue(MalSppSegmentationTest.testSmallBlob, rcvdValue, "small blob data test");
+        return rcvdValue;
     }
-  }
 
-  public void setTestDataOffset(Integer _Integer0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Blob testDataBlob(Blob rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+        LoggingBase.logMessage("testDataBlob: large blob");
+        _testDataValue(MalSppSegmentationTest.testLargeBlob, rcvdValue, "large blob data test");
+        return rcvdValue;
+    }
 
-  public Boolean testDataBoolean(Boolean _Boolean0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    protected static void _testDataValue(Object testValue, Object rcvdValue, String exString) throws MALInteractionException {
+        //LoggingBase.logMessage("DataTestHandlerImpl:" + exString + " : " + testValue + " : " + rcvdValue);
 
-  public Double testDataDouble(Double _Double0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+        if (null != testValue) {
+            if (!testValue.equals(rcvdValue)) {
+                // decoding must have failed
+                throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
+                        new Union("Failed comparison in provider of " + exString + ", type " + testValue.getClass() + ", expected " + String.valueOf(testValue) + " but received " + String.valueOf(rcvdValue))));
+            }
+        } else {
+            if (null != rcvdValue) {
+                // decoding must have failed
+                throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
+                        new Union("Failed comparison in provider of " + exString + ", type should be null but is " + rcvdValue.getClass())));
+            }
+        }
+    }
 
-  public Duration testDataDuration(Duration _Duration0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public void setTestDataOffset(Integer _Integer0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public FineTime testDataFineTime(FineTime _FineTime0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Boolean testDataBoolean(Boolean _Boolean0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public Float testDataFloat(Float _Float0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Double testDataDouble(Double _Double0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public Identifier testDataIdentifier(Identifier _Identifier0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Duration testDataDuration(Duration _Duration0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public Integer testDataInteger(Integer _Integer0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public FineTime testDataFineTime(FineTime _FineTime0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public Long testDataLong(Long _Long0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Float testDataFloat(Float _Float0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public Byte testDataOctet(Byte _Byte0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Identifier testDataIdentifier(Identifier _Identifier0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public Short testDataShort(Short _Short0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Integer testDataInteger(Integer _Integer0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public String testDataString(String rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
-    // Only handle empty string. Non-empty string should cause error already on consumer side.
-    LoggingBase.logMessage("testDataString: empty string");
-    _testDataValue(MalSppSegmentationTest.testEmptyString, rcvdValue, "empty string data test");
-    return rcvdValue;
-  }
+    public Long testDataLong(Long _Long0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public Time testDataTime(Time _Time0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Byte testDataOctet(Byte _Byte0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public URI testDataURI(URI _URI0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Short testDataShort(Short _Short0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public Assertion testDataComposite(Assertion _Assertion0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public String testDataString(String rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+        // Only handle empty string. Non-empty string should cause error already on consumer side.
+        LoggingBase.logMessage("testDataString: empty string");
+        _testDataValue(MalSppSegmentationTest.testEmptyString, rcvdValue, "empty string data test");
+        return rcvdValue;
+    }
 
-  public SessionType testDataEnumeration(SessionType _SessionType0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Time testDataTime(Time _Time0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public AssertionList testDataList(AssertionList _AssertionList0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public URI testDataURI(URI _URI0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public UInteger testDataUInteger(UInteger _UInteger0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public Assertion testDataComposite(Assertion _Assertion0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public ULong testDataULong(ULong _ULong0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public SessionType testDataEnumeration(SessionType _SessionType0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public UOctet testDataUOctet(UOctet _UOctet0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public AssertionList testDataList(AssertionList _AssertionList0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public UShort testDataUShort(UShort _UShort0, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public UInteger testDataUInteger(UInteger _UInteger0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public TestExplicitMultiReturnResponse testExplicitMultiReturn(UOctet _UOctet0, UShort _UShort1, UInteger _UInteger2, ULong _ULong3, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public ULong testDataULong(ULong _ULong0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public TestAbstractMultiReturnResponse testAbstractMultiReturn(UOctet _UOctet0, UShort _UShort1, UInteger _UInteger2, Element _Element3, MALInteraction interaction) throws MALInteractionException, MALException {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    public UOctet testDataUOctet(UOctet _UOctet0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public void testEmptyBody(MALInteraction mali) throws MALInteractionException, MALException {
-    // Do nothing
-  }
+    public UShort testDataUShort(UShort _UShort0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public Attribute testMalAttribute(Attribute atrbt, MALInteraction mali) throws MALInteractionException, MALException {
-    return atrbt;
-  }
+    public TestExplicitMultiReturnResponse testExplicitMultiReturn(UOctet _UOctet0, UShort _UShort1, UInteger _UInteger2, ULong _ULong3, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public Composite testMalComposite(Composite cmpst, MALInteraction mali) throws MALInteractionException, MALException {
-    return cmpst;
-  }
+    public TestAbstractMultiReturnResponse testAbstractMultiReturn(UOctet _UOctet0, UShort _UShort1, UInteger _UInteger2, Element _Element3, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-  public TestPublish testAbstractComposite(TestPublish tp, MALInteraction mali) throws MALInteractionException, MALException {
-    return tp;
-  }
-  
-  public AttributeList testMalAttributeList(AttributeList al, MALInteraction mali) throws MALInteractionException, MALException {
-    return al;
-  }
+    public void testEmptyBody(MALInteraction mali) throws MALInteractionException, MALException {
+        // Do nothing
+    }
 
-  public ElementList testMalElementList(ElementList el, MALInteraction mali) throws MALInteractionException, MALException {
-    return el;
-  }
+    public Attribute testMalAttribute(Attribute atrbt, MALInteraction mali) throws MALInteractionException, MALException {
+        return atrbt;
+    }
 
-  public CompositeList testMalCompositeList(CompositeList cl, MALInteraction mali) throws MALInteractionException, MALException {
-    return cl;
-  }
+    public Composite testMalComposite(Composite cmpst, MALInteraction mali) throws MALInteractionException, MALException {
+        return cmpst;
+    }
 
-  public TestPublishList testAbstractCompositeList(TestPublishList tpl, MALInteraction mali) throws MALInteractionException, MALException {
-    return tpl;
-  }
-  
+    public TestPublish testAbstractComposite(TestPublish tp, MALInteraction mali) throws MALInteractionException, MALException {
+        return tp;
+    }
+
+    public AttributeList testMalAttributeList(AttributeList al, MALInteraction mali) throws MALInteractionException, MALException {
+        return al;
+    }
+
+    public ElementList testMalElementList(ElementList el, MALInteraction mali) throws MALInteractionException, MALException {
+        return el;
+    }
+
+    public CompositeList testMalCompositeList(CompositeList cl, MALInteraction mali) throws MALInteractionException, MALException {
+        return cl;
+    }
+
+    public TestPublishList testAbstractCompositeList(TestPublishList tpl, MALInteraction mali) throws MALInteractionException, MALException {
+        return tpl;
+    }
+
 }

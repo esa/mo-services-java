@@ -1,20 +1,20 @@
-/*******************************************************************************
+/** *****************************************************************************
  * Copyright or © or Copr. CNES
  *
- * This software is a computer program whose purpose is to provide a 
+ * This software is a computer program whose purpose is to provide a
  * framework for the CCSDS Mission Operations services.
  *
  * This software is governed by the CeCILL-C license under French law and
- * abiding by the rules of distribution of free software.  You can  use, 
+ * abiding by the rules of distribution of free software.  You can  use,
  * modify and/ or redistribute the software under the terms of the CeCILL-C
  * license as circulated by CEA, CNRS and INRIA at the following URL
- * "http://www.cecill.info". 
+ * "http://www.cecill.info".
  *
  * As a counterpart to the access to the source code and  rights to copy,
  * modify and redistribute granted by the license, users are provided only
  * with a limited warranty  and the software's author,  the holder of the
  * economic rights,  and the successive licensors  have only  limited
- * liability. 
+ * liability.
  *
  * In this respect, the user's attention is drawn to the risks associated
  * with loading,  using,  modifying and/or developing or reproducing the
@@ -23,13 +23,13 @@
  * therefore means  that it is reserved for developers  and  experienced
  * professionals having in-depth computer knowledge. Users are therefore
  * encouraged to load and test the software's suitability as regards their
- * requirements in conditions enabling the security of their systems and/or 
- * data to be ensured and,  more generally, to use and operate it in the 
- * same conditions as regards security. 
+ * requirements in conditions enabling the security of their systems and/or
+ * data to be ensured and,  more generally, to use and operate it in the
+ * same conditions as regards security.
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C license and that you accept its terms.
- *******************************************************************************/
+ ****************************************************************************** */
 package org.ccsds.moims.mo.malspp.test.util;
 
 import java.util.Arrays;
@@ -38,351 +38,351 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 
 public class SecondaryHeader {
-  
-  private int malsppVersion;
-  
-  private int sduType;
-  
-  private int area;
-  
-  private int service;
-  
-  private int operation;
-  
-  private int areaVersion;
-  
-  private int isError;
-  
-  private int qos;
-  
-  private int session;
-  
-  private int secondaryApid;
-  
-  private int secondaryApidQualifier;
-  
-  private long transactionId;
-  
-  private byte sourceIdFlag;
-  
-  private byte destinationIdFlag;
-  
-  private byte priorityFlag;
-  
-  private byte timestampFlag;
-  
-  private byte networkZoneFlag;
-  
-  private byte sessionNameFlag;
-  
-  private byte domainFlag;
-  
-  private byte authenticationIdFlag;
- 
-  private int sourceId;
-  
-  private int destinationId;
-  
-  private long segmentCounter;
-  
-  private long priority;
-  
-  private long timestamp;
-  
-  private Identifier networkZone;
-  
-  private Identifier sessionName;
-  
-  private IdentifierList domain;
-  
-  private byte[] authenticationId;
 
-  public int getMalsppVersion() {
-    return malsppVersion;
-  }
+    private int malsppVersion;
 
-  public void setMalsppVersion(int malsppVersion) {
-    this.malsppVersion = malsppVersion;
-  }
+    private int sduType;
 
-  /**
-   * @return the sduType
-   */
-  public int getSduType() {
-    return sduType;
-  }
+    private int area;
 
-  /**
-   * @param sduType the sduType to set
-   */
-  public void setSduType(int sduType) {
-    this.sduType = sduType;
-  }
+    private int service;
 
-  /**
-   * @return the area
-   */
-  public int getArea() {
-    return area;
-  }
+    private int operation;
 
-  /**
-   * @param area the area to set
-   */
-  public void setArea(int area) {
-    this.area = area;
-  }
+    private int areaVersion;
 
-  /**
-   * @return the areaVersion
-   */
-  public int getAreaVersion() {
-    return areaVersion;
-  }
+    private int isError;
 
-  /**
-   * @param serviceVersion the areaVersion to set
-   */
-  public void setAreaVersion(int areaVersion) {
-    this.areaVersion = areaVersion;
-  }
+    private int qos;
 
-  /**
-   * @return the service
-   */
-  public int getService() {
-    return service;
-  }
+    private int session;
 
-  /**
-   * @param service the service to set
-   */
-  public void setService(int service) {
-    this.service = service;
-  }
+    private int secondaryApid;
 
-  public int getQos() {
-    return qos;
-  }
+    private int secondaryApidQualifier;
 
-  public void setQos(int qos) {
-    this.qos = qos;
-  }
+    private long transactionId;
 
-  public int getSession() {
-    return session;
-  }
+    private byte sourceIdFlag;
 
-  public void setSession(int session) {
-    this.session = session;
-  }
+    private byte destinationIdFlag;
 
-  public int getSecondaryApid() {
-    return secondaryApid;
-  }
+    private byte priorityFlag;
 
-  public void setSecondaryApid(int secondaryApid) {
-    this.secondaryApid = secondaryApid;
-  }
+    private byte timestampFlag;
 
-  public int getSecondaryApidQualifier() {
-    return secondaryApidQualifier;
-  }
+    private byte networkZoneFlag;
 
-  public void setSecondaryApidQualifier(int secondaryApidQualifier) {
-    this.secondaryApidQualifier = secondaryApidQualifier;
-  }
+    private byte sessionNameFlag;
 
-  public byte getSourceIdFlag() {
-    return sourceIdFlag;
-  }
+    private byte domainFlag;
 
-  public void setSourceIdFlag(byte sourceIdFlag) {
-    this.sourceIdFlag = sourceIdFlag;
-  }
+    private byte authenticationIdFlag;
 
-  public byte getDestinationIdFlag() {
-    return destinationIdFlag;
-  }
+    private int sourceId;
 
-  public void setDestinationIdFlag(byte destinationIdFlag) {
-    this.destinationIdFlag = destinationIdFlag;
-  }
+    private int destinationId;
 
-  public byte getPriorityFlag() {
-    return priorityFlag;
-  }
+    private long segmentCounter;
 
-  public void setPriorityFlag(byte priorityFlag) {
-    this.priorityFlag = priorityFlag;
-  }
+    private long priority;
 
-  public byte getTimestampFlag() {
-    return timestampFlag;
-  }
+    private long timestamp;
 
-  public void setTimestampFlag(byte timestampFlag) {
-    this.timestampFlag = timestampFlag;
-  }
+    private Identifier networkZone;
 
-  public byte getNetworkZoneFlag() {
-    return networkZoneFlag;
-  }
+    private Identifier sessionName;
 
-  public void setNetworkZoneFlag(byte networkZoneFlag) {
-    this.networkZoneFlag = networkZoneFlag;
-  }
+    private IdentifierList domain;
 
-  public byte getSessionNameFlag() {
-    return sessionNameFlag;
-  }
+    private byte[] authenticationId;
 
-  public void setSessionNameFlag(byte sessionNameFlag) {
-    this.sessionNameFlag = sessionNameFlag;
-  }
+    public int getMalsppVersion() {
+        return malsppVersion;
+    }
 
-  public byte getDomainFlag() {
-    return domainFlag;
-  }
+    public void setMalsppVersion(int malsppVersion) {
+        this.malsppVersion = malsppVersion;
+    }
 
-  public void setDomainFlag(byte domainFlag) {
-    this.domainFlag = domainFlag;
-  }
+    /**
+     * @return the sduType
+     */
+    public int getSduType() {
+        return sduType;
+    }
 
-  public byte getAuthenticationIdFlag() {
-    return authenticationIdFlag;
-  }
+    /**
+     * @param sduType the sduType to set
+     */
+    public void setSduType(int sduType) {
+        this.sduType = sduType;
+    }
 
-  public void setAuthenticationIdFlag(byte authenticationIdFlag) {
-    this.authenticationIdFlag = authenticationIdFlag;
-  }
+    /**
+     * @return the area
+     */
+    public int getArea() {
+        return area;
+    }
 
-  public int getSourceId() {
-    return sourceId;
-  }
+    /**
+     * @param area the area to set
+     */
+    public void setArea(int area) {
+        this.area = area;
+    }
 
-  public void setSourceId(int sourceId) {
-    this.sourceId = sourceId;
-  }
+    /**
+     * @return the areaVersion
+     */
+    public int getAreaVersion() {
+        return areaVersion;
+    }
 
-  public int getDestinationId() {
-    return destinationId;
-  }
+    /**
+     * @param serviceVersion the areaVersion to set
+     */
+    public void setAreaVersion(int areaVersion) {
+        this.areaVersion = areaVersion;
+    }
 
-  public void setDestinationId(int destinationId) {
-    this.destinationId = destinationId;
-  }
+    /**
+     * @return the service
+     */
+    public int getService() {
+        return service;
+    }
 
-  /**
-   * @return the operation
-   */
-  public int getOperation() {
-    return operation;
-  }
+    /**
+     * @param service the service to set
+     */
+    public void setService(int service) {
+        this.service = service;
+    }
 
-  /**
-   * @param operation the operation to set
-   */
-  public void setOperation(int operation) {
-    this.operation = operation;
-  }
+    public int getQos() {
+        return qos;
+    }
 
-  /**
-   * @return the transactionId
-   */
-  public long getTransactionId() {
-    return transactionId;
-  }
+    public void setQos(int qos) {
+        this.qos = qos;
+    }
 
-  /**
-   * @param transactionId the transactionId to set
-   */
-  public void setTransactionId(long transactionId) {
-    this.transactionId = transactionId;
-  }
+    public int getSession() {
+        return session;
+    }
 
-  public int getIsError() {
-    return isError;
-  }
+    public void setSession(int session) {
+        this.session = session;
+    }
 
-  public void setIsError(int isError) {
-    this.isError = isError;
-  }
+    public int getSecondaryApid() {
+        return secondaryApid;
+    }
 
-  public long getTimestamp() {
-    return timestamp;
-  }
+    public void setSecondaryApid(int secondaryApid) {
+        this.secondaryApid = secondaryApid;
+    }
 
-  public void setTimestamp(long timestamp) {
-    this.timestamp = timestamp;
-  }
-  
-  public long getPriority() {
-    return priority;
-  }
+    public int getSecondaryApidQualifier() {
+        return secondaryApidQualifier;
+    }
 
-  public void setPriority(long priority) {
-    this.priority = priority;
-  }
+    public void setSecondaryApidQualifier(int secondaryApidQualifier) {
+        this.secondaryApidQualifier = secondaryApidQualifier;
+    }
 
-  public Identifier getNetworkZone() {
-    return networkZone;
-  }
+    public byte getSourceIdFlag() {
+        return sourceIdFlag;
+    }
 
-  public void setNetworkZone(Identifier networkZone) {
-    this.networkZone = networkZone;
-  }
+    public void setSourceIdFlag(byte sourceIdFlag) {
+        this.sourceIdFlag = sourceIdFlag;
+    }
 
-  public Identifier getSessionName() {
-    return sessionName;
-  }
+    public byte getDestinationIdFlag() {
+        return destinationIdFlag;
+    }
 
-  public void setSessionName(Identifier sessionName) {
-    this.sessionName = sessionName;
-  }
+    public void setDestinationIdFlag(byte destinationIdFlag) {
+        this.destinationIdFlag = destinationIdFlag;
+    }
 
-  public IdentifierList getDomain() {
-    return domain;
-  }
+    public byte getPriorityFlag() {
+        return priorityFlag;
+    }
 
-  public void setDomain(IdentifierList domain) {
-    this.domain = domain;
-  }
+    public void setPriorityFlag(byte priorityFlag) {
+        this.priorityFlag = priorityFlag;
+    }
 
-  public byte[] getAuthenticationId() {
-    return authenticationId;
-  }
+    public byte getTimestampFlag() {
+        return timestampFlag;
+    }
 
-  public void setAuthenticationId(byte[] authenticationId) {
-    this.authenticationId = authenticationId;
-  }
+    public void setTimestampFlag(byte timestampFlag) {
+        this.timestampFlag = timestampFlag;
+    }
 
-  public long getSegmentCounter() {
-    return segmentCounter;
-  }
+    public byte getNetworkZoneFlag() {
+        return networkZoneFlag;
+    }
 
-  public void setSegmentCounter(long segmentCounter) {
-    this.segmentCounter = segmentCounter;
-  }
+    public void setNetworkZoneFlag(byte networkZoneFlag) {
+        this.networkZoneFlag = networkZoneFlag;
+    }
 
-  @Override
-  public String toString() {
-    return "MALSPPSecondaryHeader [malsppVersion=" + malsppVersion
-        + ", sduType=" + sduType + ", area=" + area + ", service=" + service
-        + ", operation=" + operation + ", areaVersion=" + areaVersion
-        + ", isError=" + isError + ", qos=" + qos + ", session=" + session
-        + ", secondaryApid=" + secondaryApid + ", secondaryApidQualifier="
-        + secondaryApidQualifier + ", transactionId=" + transactionId
-        + ", sourceIdFlag=" + sourceIdFlag + ", destinationIdFlag="
-        + destinationIdFlag + ", priorityFlag=" + priorityFlag
-        + ", timestampFlag=" + timestampFlag + ", networkZoneFlag="
-        + networkZoneFlag + ", sessionNameFlag=" + sessionNameFlag
-        + ", domainFlag=" + domainFlag + ", authenticationIdFlag="
-        + authenticationIdFlag + ", sourceId=" + sourceId + ", destinationId="
-        + destinationId + ", segmentCounter=" + segmentCounter + ", priority="
-        + priority + ", timestamp=" + timestamp + ", networkZone="
-        + networkZone + ", sessionName=" + sessionName + ", domain=" + domain
-        + ", authenticationId=" + Arrays.toString(authenticationId) + "]";
-  }
+    public byte getSessionNameFlag() {
+        return sessionNameFlag;
+    }
+
+    public void setSessionNameFlag(byte sessionNameFlag) {
+        this.sessionNameFlag = sessionNameFlag;
+    }
+
+    public byte getDomainFlag() {
+        return domainFlag;
+    }
+
+    public void setDomainFlag(byte domainFlag) {
+        this.domainFlag = domainFlag;
+    }
+
+    public byte getAuthenticationIdFlag() {
+        return authenticationIdFlag;
+    }
+
+    public void setAuthenticationIdFlag(byte authenticationIdFlag) {
+        this.authenticationIdFlag = authenticationIdFlag;
+    }
+
+    public int getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(int sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public int getDestinationId() {
+        return destinationId;
+    }
+
+    public void setDestinationId(int destinationId) {
+        this.destinationId = destinationId;
+    }
+
+    /**
+     * @return the operation
+     */
+    public int getOperation() {
+        return operation;
+    }
+
+    /**
+     * @param operation the operation to set
+     */
+    public void setOperation(int operation) {
+        this.operation = operation;
+    }
+
+    /**
+     * @return the transactionId
+     */
+    public long getTransactionId() {
+        return transactionId;
+    }
+
+    /**
+     * @param transactionId the transactionId to set
+     */
+    public void setTransactionId(long transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public int getIsError() {
+        return isError;
+    }
+
+    public void setIsError(int isError) {
+        this.isError = isError;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public long getPriority() {
+        return priority;
+    }
+
+    public void setPriority(long priority) {
+        this.priority = priority;
+    }
+
+    public Identifier getNetworkZone() {
+        return networkZone;
+    }
+
+    public void setNetworkZone(Identifier networkZone) {
+        this.networkZone = networkZone;
+    }
+
+    public Identifier getSessionName() {
+        return sessionName;
+    }
+
+    public void setSessionName(Identifier sessionName) {
+        this.sessionName = sessionName;
+    }
+
+    public IdentifierList getDomain() {
+        return domain;
+    }
+
+    public void setDomain(IdentifierList domain) {
+        this.domain = domain;
+    }
+
+    public byte[] getAuthenticationId() {
+        return authenticationId;
+    }
+
+    public void setAuthenticationId(byte[] authenticationId) {
+        this.authenticationId = authenticationId;
+    }
+
+    public long getSegmentCounter() {
+        return segmentCounter;
+    }
+
+    public void setSegmentCounter(long segmentCounter) {
+        this.segmentCounter = segmentCounter;
+    }
+
+    @Override
+    public String toString() {
+        return "MALSPPSecondaryHeader [malsppVersion=" + malsppVersion
+                + ", sduType=" + sduType + ", area=" + area + ", service=" + service
+                + ", operation=" + operation + ", areaVersion=" + areaVersion
+                + ", isError=" + isError + ", qos=" + qos + ", session=" + session
+                + ", secondaryApid=" + secondaryApid + ", secondaryApidQualifier="
+                + secondaryApidQualifier + ", transactionId=" + transactionId
+                + ", sourceIdFlag=" + sourceIdFlag + ", destinationIdFlag="
+                + destinationIdFlag + ", priorityFlag=" + priorityFlag
+                + ", timestampFlag=" + timestampFlag + ", networkZoneFlag="
+                + networkZoneFlag + ", sessionNameFlag=" + sessionNameFlag
+                + ", domainFlag=" + domainFlag + ", authenticationIdFlag="
+                + authenticationIdFlag + ", sourceId=" + sourceId + ", destinationId="
+                + destinationId + ", segmentCounter=" + segmentCounter + ", priority="
+                + priority + ", timestamp=" + timestamp + ", networkZone="
+                + networkZone + ", sessionName=" + sessionName + ", domain=" + domain
+                + ", authenticationId=" + Arrays.toString(authenticationId) + "]";
+    }
 
 }

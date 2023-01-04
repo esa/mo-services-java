@@ -17,10 +17,9 @@ import org.junit.runner.RunWith;
 @FitnesseDir("src/main/fitnesse")
 @OutputDir(systemProperty = "ccsds.fitnesse.output.dir")
 @Port(systemProperty = "ccsds.fitnesse.port")
-public class JUnitSuiteTest
-{
-  @Test
-  public void dummy()
-  {
-  }
+public class JUnitSuiteTest {
+
+    @Test
+    public void dummy() {
+    }
 }
