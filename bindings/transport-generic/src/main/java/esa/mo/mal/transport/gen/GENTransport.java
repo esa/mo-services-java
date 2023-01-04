@@ -234,8 +234,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
             final boolean wrapBodyParts,
             final MALTransportFactory factory,
             final java.util.Map properties) throws MALException {
-        this(protocol, "://", serviceDelim, '@', supportsRouting,
-                wrapBodyParts, factory, properties);
+        this(protocol, "://", serviceDelim, '@',
+                supportsRouting, wrapBodyParts, factory, properties);
     }
 
     /**
@@ -596,11 +596,11 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
             Set<Long> transactionsToRemove = new HashSet<>();
             for (Map.Entry<Long, GENIncomingMessageProcessor> entrySet : transactionQueues.entrySet()) {
-                Long key = entrySet.getKey();
+                Long transId = entrySet.getKey();
                 GENIncomingMessageProcessor lproc = entrySet.getValue();
 
                 if (lproc.isFinished()) {
-                    transactionsToRemove.add(key);
+                    transactionsToRemove.add(transId);
                 }
             }
 
