@@ -333,9 +333,8 @@ public class GeneratorDocx extends GeneratorDocument {
 
         docxFile.startRow();
         docxFile.addCell(0, SERVICE_OVERVIEW_TABLE_WIDTHS, "Interaction Pattern", HEADER_COLOUR);
-        docxFile.addCell(1, SERVICE_OVERVIEW_TABLE_WIDTHS, "Operation Identifier", HEADER_COLOUR);
-        docxFile.addCell(2, SERVICE_OVERVIEW_TABLE_WIDTHS, "Operation Number", HEADER_COLOUR);
-        docxFile.addCell(3, SERVICE_OVERVIEW_TABLE_WIDTHS, "Support in Replay", HEADER_COLOUR);
+        docxFile.addCell(1, SERVICE_OVERVIEW_TABLE_WIDTHS, "Operation Identifier", HEADER_COLOUR, 2);
+        docxFile.addCell(3, SERVICE_OVERVIEW_TABLE_WIDTHS, "Operation Number", HEADER_COLOUR);
         docxFile.addCell(4, SERVICE_OVERVIEW_TABLE_WIDTHS, "Capability Set", HEADER_COLOUR);
         docxFile.endRow();
 
@@ -352,9 +351,8 @@ public class GeneratorDocx extends GeneratorDocument {
             for (OperationType op : cSet.getSendIPOrSubmitIPOrRequestIP()) {
                 docxFile.startRow();
                 docxFile.addCell(0, SERVICE_OVERVIEW_TABLE_WIDTHS, operationType(op), colour);
-                docxFile.addCell(1, SERVICE_OVERVIEW_TABLE_WIDTHS, op.getName(), colour, "OPERATION_" + service.getName() + "_" + op.getName());
-                docxFile.addCell(2, SERVICE_OVERVIEW_TABLE_WIDTHS, String.valueOf(op.getNumber()), colour);
-                docxFile.addCell(3, SERVICE_OVERVIEW_TABLE_WIDTHS, yesNoType(op.isSupportInReplay()), colour);
+                docxFile.addCell(1, SERVICE_OVERVIEW_TABLE_WIDTHS, op.getName(), colour, "OPERATION_" + service.getName() + "_" + op.getName(), 2);
+                docxFile.addCell(3, SERVICE_OVERVIEW_TABLE_WIDTHS, String.valueOf(op.getNumber()), colour);
                 docxFile.addCell(4, SERVICE_OVERVIEW_TABLE_WIDTHS, String.valueOf(cSet.getNumber()), colour, true, firstRow);
                 docxFile.endRow();
 
@@ -1205,6 +1203,11 @@ public class GeneratorDocx extends GeneratorDocument {
         protected void addCell(int index, int[] widths, String text, String shade, String linkTo) throws IOException {
             StringBuilder buf = createHyperLink(new StringBuilder(), "", text, "", linkTo, true);
             actualAddCell(index, widths, buf.toString(), shade, true, 0, false, false);
+        }
+
+        protected void addCell(int index, int[] widths, String text, String shade, String linkTo, int span) throws IOException {
+            StringBuilder buf = createHyperLink(new StringBuilder(), "", text, "", linkTo, true);
+            actualAddCell(index, widths, buf.toString(), shade, true, span, false, false);
         }
 
         protected void addCell(int index, int[] widths, String text, String shade, boolean centered) throws IOException {
