@@ -43,13 +43,13 @@ import java.util.List;
 /**
  *
  */
-public class CodeGenConsumer {
+public class JavaConsumer {
 
     private final GeneratorLangs generator;
     private final boolean supportsToValue;
     private final boolean supportsAsync;
 
-    public CodeGenConsumer(GeneratorLangs generator, boolean supportsToValue, boolean supportsAsync) {
+    public JavaConsumer(GeneratorLangs generator, boolean supportsToValue, boolean supportsAsync) {
         this.generator = generator;
         this.supportsToValue = supportsToValue;
         this.supportsAsync = supportsAsync;

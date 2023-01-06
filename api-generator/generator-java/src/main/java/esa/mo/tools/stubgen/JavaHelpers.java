@@ -57,11 +57,11 @@ import java.util.Set;
 /**
  *
  */
-public class CodeGenHelpers {
+public class JavaHelpers {
 
     private final GeneratorLangs generator;
 
-    public CodeGenHelpers(GeneratorLangs generator) {
+    public JavaHelpers(GeneratorLangs generator) {
         this.generator = generator;
     }
 

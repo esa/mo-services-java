@@ -382,7 +382,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             createAreaFolderComment(areaFolder, area);
 
             // create area helper
-            CodeGenHelpers helper = new CodeGenHelpers(this);
+            JavaHelpers helper = new JavaHelpers(this);
             helper.createAreaHelperClass(areaFolder, area);
 
             // if area level types exist
@@ -440,7 +440,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // create a comment for the service folder if supported
         createServiceFolderComment(serviceFolder, area, service);
         // create service helper
-        CodeGenHelpers helper = new CodeGenHelpers(this);
+        JavaHelpers helper = new JavaHelpers(this);
         helper.createServiceHelperClass(serviceFolder, area, service, summary);
 
         // create consumer classes
@@ -475,7 +475,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // create a comment for the consumer folder if supported
         createServiceConsumerFolderComment(consumerFolder, area, service);
         createServiceConsumerInterface(consumerFolder, area, service, summary);
-        CodeGenConsumer consumer = new CodeGenConsumer(this, supportsToValue, supportsAsync);
+        JavaConsumer consumer = new JavaConsumer(this, supportsToValue, supportsAsync);
         consumer.createServiceConsumerAdapter(consumerFolder, area, service, summary);
         consumer.createServiceConsumerStub(consumerFolder, area, service, summary);
     }
