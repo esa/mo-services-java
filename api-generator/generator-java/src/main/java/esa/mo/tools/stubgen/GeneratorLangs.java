@@ -894,15 +894,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
-    public static String updateObjectRefType(String fullType) {
-        String path = fullType.substring(fullType.indexOf("org"), fullType.indexOf("ObjectRef"));
-        String type = fullType.substring(fullType.indexOf('<') + 1, fullType.indexOf('>'));
-        fullType = fullType.replaceAll(path, "org.ccsds.moims.mo.mal.structures.");
-        fullType = fullType.replaceAll(type, path + type);
-
-        return fullType;
-    }
-
     protected void createServiceProviderSkeletonHandler(File providerFolder, AreaType area,
             ServiceType service, ServiceSummary summary, boolean isDelegate) throws IOException {
         String className = service.getName();
@@ -1031,13 +1022,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
         method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ") {"), false);
-        
+
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SEND_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                if (opArgs.contains("ObjectRef<")) {
-                    opArgs = updateObjectRefType(opArgs);
-                }
                 String ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction)");
@@ -1061,9 +1049,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SUBMIT_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                if (opArgs.contains("ObjectRef<")) {
-                    opArgs = updateObjectRefType(opArgs);
-                }
                 ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction)");
@@ -1090,13 +1075,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.REQUEST_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                if (opArgs.contains("ObjectRef<")) {
-                    opArgs = updateObjectRefType(opArgs);
-                }
                 String opResp = delegateCall + op.getName() + "(" + opArgs + "interaction)";
                 ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
-                createRequestResponseDecompose(method, op, opResp, createReturnType(file, area, service, op.getName(), "Response", op.getRetTypes()));
+                createRequestResponseDecompose(
+                        method, op,
+                        opResp,
+                        createReturnType(file, area, service, op.getName(), "Response", op.getRetTypes())
+                );
                 method.addLine("    break");
             }
         }
@@ -1119,9 +1105,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.INVOKE_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                if (opArgs.contains("ObjectRef<")) {
-                    opArgs = updateObjectRefType(opArgs);
-                }
                 ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
@@ -1147,9 +1130,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.PROGRESS_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                if (opArgs.contains("ObjectRef<")) {
-                    opArgs = updateObjectRefType(opArgs);
-                }
                 ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
@@ -1942,113 +1922,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 false, true, argumentComment);
     }
 
-    protected void addServiceHelperOperationArgs(LanguageWriter file, OperationSummary op, List<String> opArgs) {
-        opArgs.add(op.getName().toUpperCase() + "_OP_NUMBER");
-        opArgs.add("new " + createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
-        opArgs.add("" + op.getReplay());
-        opArgs.add("new " + createElementType(file, StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");
-
-        switch (op.getPattern()) {
-            case SEND_OP:
-                addMalTypes(this, opArgs, 1, op.getArgTypes(), false);
-                break;
-            case SUBMIT_OP:
-                addMalTypes(this, opArgs, 1, op.getArgTypes(), false);
-                break;
-            case REQUEST_OP:
-                addMalTypes(this, opArgs, 1, op.getArgTypes(), false);
-                addMalTypes(this, opArgs, 2, op.getRetTypes(), false);
-                break;
-            case INVOKE_OP:
-                addMalTypes(this, opArgs, 1, op.getArgTypes(), false);
-                addMalTypes(this, opArgs, 2, op.getAckTypes(), false);
-                addMalTypes(this, opArgs, 3, op.getRetTypes(), false);
-                break;
-            case PROGRESS_OP:
-                addMalTypes(this, opArgs, 1, op.getArgTypes(), false);
-                addMalTypes(this, opArgs, 2, op.getAckTypes(), false);
-                addMalTypes(this, opArgs, 3, op.getUpdateTypes(), false);
-                addMalTypes(this, opArgs, 4, op.getRetTypes(), false);
-                break;
-            case PUBSUB_OP:
-                addMalTypes(this, opArgs, 1, op.getRetTypes(), true);
-                break;
-        }
-    }
-
-    protected void addMalTypes(TypeInformation tiSource, List<String> opArgs, int index, List<TypeInfo> ti, boolean isPubSub) {
-        ArrayList<String> typeArgs = new ArrayList<>();
-        boolean needXmlSchema = false;
-        boolean needMalTypes = false;
-        boolean finalTypeIsAttribute = false;
-        boolean finalTypeIsList = false;
-
-        for (TypeInfo typeInfo : ti) {
-            if (StdStrings.XML.equals(typeInfo.getSourceType().getArea())) {
-                needXmlSchema = true;
-            } else {
-                needMalTypes = true;
-            }
-
-            if (tiSource.isAbstract(typeInfo.getSourceType())) {
-                typeArgs.add("null");
-
-                if (StdStrings.ATTRIBUTE.equals(typeInfo.getSourceType().getName())) {
-                    finalTypeIsAttribute = true;
-                    finalTypeIsList = typeInfo.getSourceType().isList();
-                }
-            } else {
-                finalTypeIsAttribute = false;
-
-                if (isPubSub) {
-                    // this is a bit of a hack for now
-                    if (tiSource.isAttributeNativeType(typeInfo.getSourceType()) || tiSource.isAttributeType(typeInfo.getSourceType())) {
-                        TypeReference tr = typeInfo.getSourceType();
-                        tr.setList(true);
-                        TypeInfo lti = TypeUtils.convertTypeReference(tiSource, tr);
-                        typeArgs.add(lti.getMalShortFormField());
-                        tr.setList(false);
-                    } else {
-                        String field = typeInfo.getMalShortFormField();
-                        int length = field.length() - 11;
-                        typeArgs.add(field.substring(0, length) + "List.SHORT_FORM");
-                    }
-                } else {
-                    typeArgs.add(typeInfo.getMalShortFormField());
-                }
-            }
-        }
-
-        if (needMalTypes && needXmlSchema) {
-            throw new IllegalArgumentException("WARNING: Service specification uses multiple type specifications in the same message! This is not supported.");
-        }
-
-        String shortFormType = (needXmlSchema ? StdStrings.STRING : StdStrings.LONG);
-        String arrayArgs = StubUtils.concatenateStringArguments(false, typeArgs.toArray(new String[0]));
-        String polyArgs = "";
-        if (finalTypeIsAttribute) {
-            Set<String> attribArgs = new HashSet<>();
-
-            for (Map.Entry<TypeKey, AttributeTypeDetails> val : getAttributeTypesMap().entrySet()) {
-                TypeReference tr = new TypeReference();
-                tr.setArea(StdStrings.MAL);
-                tr.setName(val.getValue().getMalType());
-                if (!isAbstract(tr)) {
-                    tr.setList(finalTypeIsList);
-                    TypeInfo lti = TypeUtils.convertTypeReference(this, tr);
-                    attribArgs.add(lti.getMalShortFormField());
-                }
-            }
-            polyArgs = StubUtils.concatenateStringArguments(false, attribArgs.toArray(new String[0]));
-        }
-
-        if (isPubSub) {
-            opArgs.add("new " + shortFormType + "[] {" + arrayArgs + "}, new " + shortFormType + "[0]");
-        } else {
-            opArgs.add("new org.ccsds.moims.mo.mal.MALOperationStage(new org.ccsds.moims.mo.mal.structures.UOctet((short) " + index + "), new " + shortFormType + "[] {" + arrayArgs + "}, new " + shortFormType + "[] {" + polyArgs + "})");
-        }
-    }
-
     protected String createAdapterMethodsArgs(List<TypeInfo> typeInfos, String argNamePrefix, boolean precedingArgs, boolean moreArgs) {
         StringBuilder buf = new StringBuilder();
 
@@ -2056,7 +1929,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
             for (int i = 0; i < typeInfos.size(); i++) {
                 TypeInfo ti = typeInfos.get(i);
 
-                buf.append(createAdapterMethodsArgs(ti, argNamePrefix, i, precedingArgs || (i > 0), moreArgs && i == (typeInfos.size() - 1)));
+                boolean morePrecedingArgs = precedingArgs || (i > 0);
+                boolean evenMoreArgs = moreArgs && i == (typeInfos.size() - 1);
+                buf.append(createAdapterMethodsArgs(ti, argNamePrefix, i, morePrecedingArgs, evenMoreArgs));
             }
         }
 
@@ -2072,14 +1947,18 @@ public abstract class GeneratorLangs extends GeneratorBase {
             }
 
             if (ti.isNativeType()) {
+                // If is is Java native (Short, Long, etc), then needs to be wrapped into a Union type!
                 AttributeTypeDetails details = getAttributeDetails(ti.getSourceType());
-                String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", new " + getConfig().getAreaPackage(StdStrings.MAL) + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + details.getDefaultValue() + "))";
+                String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", "
+                        + "new " + getConfig().getAreaPackage(StdStrings.MAL) + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + details.getDefaultValue() + "))";
                 retStr += "(" + av + " == null) ? null : ((" + getConfig().getAreaPackage(StdStrings.MAL) + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + ") " + av + ").get" + details.getMalType() + "Value()";
             } else {
+                // Not Java native...
                 String ct = ti.getTargetType();
                 String at = null;
                 if (!isAbstract(ti.getSourceType())) {
-                    CompositeField ce = createCompositeElementsDetails(null, false, "", ti.getSourceType(), true, true, null);
+                    CompositeField ce = createCompositeElementsDetails(null, false,
+                            "", ti.getSourceType(), true, true, null);
                     at = ce.getNewCall();
                 }
 

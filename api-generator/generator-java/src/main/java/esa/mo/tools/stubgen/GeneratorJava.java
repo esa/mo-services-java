@@ -561,7 +561,7 @@ public class GeneratorJava extends GeneratorLangs {
 
         String typeName = elementType.getName();
 
-        if (checkType && !isKnownType(elementType)) {
+        if (checkType && !super.isKnownType(elementType)) {
             getLog().warn("Unknown type (" + new TypeKey(elementType)
                     + ") is being referenced as field (" + fieldName + ")");
         }

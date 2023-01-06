@@ -54,7 +54,7 @@ public class CodeGenConsumer {
         this.supportsToValue = supportsToValue;
         this.supportsAsync = supportsAsync;
     }
-    
+
     protected void createServiceConsumerAdapter(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
         generator.getLog().info("Creating consumer adapter: " + service.getName());
@@ -320,7 +320,7 @@ public class CodeGenConsumer {
 
         file.flush();
     }
-    
+
     protected void createServiceConsumerAdapterMessageMethod(ClassWriter file, InteractionPatternEnum optype,
             String opname, String subopPostname, int opTypeIndex, List<CompositeField> args,
             String serviceHelper, String throwsMALException, ServiceSummary summary, String comment) throws IOException {
@@ -348,9 +348,6 @@ public class CodeGenConsumer {
                         break;
                 }
                 String opArgs = generator.createAdapterMethodsArgs(opTypes, "body", true, false);
-                if (opArgs.contains("ObjectRef<")) {
-                    opArgs = generator.updateObjectRefType(opArgs);
-                }
                 method.addLine("    " + op.getName() + subopPostname + "Received(msgHeader" + opArgs + ", qosProperties)");
                 method.addLine("    break");
             }
@@ -419,7 +416,7 @@ public class CodeGenConsumer {
         method.addLine("}", false);
         method.addMethodCloseStatement();
     }
-    
+
     protected void createServiceConsumerStub(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
         generator.getLog().info("Creating consumer stub: " + service.getName());
@@ -516,9 +513,9 @@ public class CodeGenConsumer {
                         rv = msgBodyType.getTypeName() + " body = ";
                         opRetComment = "The return value of the interaction";
                     }
-                    String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op) 
+                    String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op)
                             + "(" + operationInstanceVar + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")";
-                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, opRetType, 
+                    method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, opRetType,
                             op.getName(), opArgs, throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     method.addMethodWithDependencyStatement(opGet, helperType, true);
@@ -631,7 +628,7 @@ public class CodeGenConsumer {
         file.addClassCloseStatement();
         file.flush();
     }
-    
+
     private void createOperationReturn(LanguageWriter file, MethodWriter method, OperationSummary op, CompositeField opRetType) throws IOException {
         List<TypeInfo> targetTypes = op.getRetTypes();
 

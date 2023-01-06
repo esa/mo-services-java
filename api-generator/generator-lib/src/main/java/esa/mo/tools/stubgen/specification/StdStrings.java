@@ -28,6 +28,7 @@ public abstract class StdStrings {
     public static final String MAL = "MAL";
     public static final String COM = "COM";
     public static final String XML = "XML";
+
     public static final String ELEMENT = "Element";
     public static final String COMPOSITE = "Composite";
     public static final String OBJECT = "Object";
@@ -53,6 +54,7 @@ public abstract class StdStrings {
     public static final String URI = "URI";
     public static final String OBJECTREF = "ObjectRef";
     public static final String UNION = "Union";
+
     public static final String VOID = "void";
     public static final String PUBLIC = "public";
     public static final String PRIVATE = "private";
@@ -61,6 +63,4 @@ public abstract class StdStrings {
     public static final String MALMESSAGE = "MALMessage";
     public static final String MALINTERACTION = "MALInteraction";
 
-    private StdStrings() {
-    }
 }

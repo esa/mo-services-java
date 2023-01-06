@@ -335,11 +335,12 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
 
     @Override
     public String createElementType(TargetWriter file, TypeReference type, boolean isStructure) {
-        if (null != type) {
-            return createElementType(file, type.getArea(), type.getService(),
-                    isStructure ? config.getStructureFolder() : null, type.getName());
+        if (type == null) {
+            return null;
         }
-        return null;
+
+        return createElementType(file, type.getArea(), type.getService(),
+                isStructure ? config.getStructureFolder() : null, type.getName());
     }
 
     @Override
@@ -375,10 +376,16 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      */
     public String createElementType(TargetWriter file, String area,
             String service, String extraPackageLevel, String type) {
+        if (area == null) {
+            return type;
+        }
+
         String retVal = "";
 
-        if (null == area) {
-            return type;
+        if (type.contains("ObjectRef<")) {
+            String internalType = type.substring(type.indexOf('<') + 1, type.indexOf('>'));
+            internalType = createElementType(file, area, service, extraPackageLevel, internalType);
+            return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRef<" + internalType + ">");
         }
 
         if (isAttributeType(TypeUtils.createTypeReference(area, service, type, false))) {
@@ -783,15 +790,14 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         private static String createTypeKey(TypeReference type) {
             StringBuilder buf = new StringBuilder();
             buf.append(type.getArea());
+
             if (null != type.getService()) {
-                buf.append(':');
-                buf.append(type.getService());
-                buf.append(':');
+                buf.append(':').append(type.getService()).append(':');
             } else {
                 buf.append(":_:");
             }
-            buf.append(type.getName());
 
+            buf.append(type.getName());
             return buf.toString();
         }
 

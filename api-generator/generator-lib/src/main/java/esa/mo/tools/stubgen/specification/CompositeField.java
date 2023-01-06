@@ -57,9 +57,9 @@ public final class CompositeField {
      * @param newCall The method to create a new instance.
      * @param comment The field comment.
      */
-    public CompositeField(String typeName, TypeReference typeReference, 
+    public CompositeField(String typeName, TypeReference typeReference,
             String fieldName, boolean isList, boolean canBeNull, boolean isActual,
-            String encodeCall, String decodeCast, String decodeCall, 
+            String encodeCall, String decodeCast, String decodeCall,
             boolean decodeNeedsNewCall, String newCall, String comment) {
         this.typeName = typeName;
         this.typeReference = typeReference;
@@ -83,18 +83,9 @@ public final class CompositeField {
      * @param comment The field comment.
      */
     public CompositeField(CompositeField other, String fieldName, String comment) {
-        this.typeName = other.typeName;
-        this.typeReference = other.typeReference;
-        this.fieldName = fieldName;
-        this.list = other.list;
-        this.canBeNull = other.canBeNull;
-        this.isActual = other.isActual;
-        this.encodeCall = other.encodeCall;
-        this.decodeCast = other.decodeCast;
-        this.decodeCall = other.decodeCall;
-        this.decodeNeedsNewCall = other.decodeNeedsNewCall;
-        this.newCall = other.newCall;
-        this.comment = comment;
+        this(other.typeName, other.typeReference, fieldName, other.list,
+                other.canBeNull, other.isActual, other.encodeCall, other.decodeCast,
+                other.decodeCall, other.decodeNeedsNewCall, other.newCall, comment);
     }
 
     /**

@@ -59,33 +59,32 @@ public abstract class TypeUtils {
             String argVersionStr = tiSource.getAreaPackage(tr.getArea())
                     + tr.getArea().toLowerCase() + "." + tr.getArea()
                     + "Helper." + tr.getArea().toUpperCase() + "_AREA_VERSION";
-            TypeInfo ti;
+
             if (tr.isList()) {
                 if (StdStrings.XML.equals(tr.getArea())) {
                     // ToDo proper support for lists of XML types
-                    ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
+                    return new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
                             argTypeStr, tiSource.isAttributeNativeType(tr),
                             getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
                 } else {
                     if (tiSource.isAttributeNativeType(tr)) {
                         String fqName = tiSource.getAreaPackage(StdStrings.MAL)
                                 + "mal.structures." + tr.getName() + "List";
-                        ti = new TypeInfo(tr, fieldName, fieldComment,
+                        return new TypeInfo(tr, fieldName, fieldComment,
                                 tr.getName() + "List", fqName, false,
                                 fqName + ".SHORT_FORM", argVersionStr);
                     } else {
-                        ti = new TypeInfo(tr, fieldName, fieldComment,
+                        return new TypeInfo(tr, fieldName, fieldComment,
                                 tr.getName() + "List", argTypeStr + "List", false,
                                 getTypeShortForm(tiSource, tr, argTypeStr + "List"),
                                 argVersionStr);
                     }
                 }
             } else {
-                ti = new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
+                return new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
                         argTypeStr, tiSource.isAttributeNativeType(tr),
                         getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
             }
-            return ti;
         }
         return null;
     }
@@ -99,19 +98,13 @@ public abstract class TypeUtils {
      */
     public static TypeInfo convertTypeReference(TypeInformation tiSource, TypeRef ttr) {
         if (null != ttr) {
-            String fieldName;
-            String fieldComment;
-            TypeReference tr;
-            if (ttr.isField()) {
-                fieldName = ttr.getFieldRef().getName();
-                fieldComment = ttr.getFieldRef().getComment();
-                tr = ttr.getFieldRef().getType();
-            } else {
-                fieldName = null;
-                fieldComment = null;
-                tr = ttr.getTypeRef();
+            if (!ttr.isField()) {
+                return convertTypeReference(tiSource, ttr.getTypeRef(), null, null);
             }
 
+            String fieldName = ttr.getFieldRef().getName();
+            String fieldComment = ttr.getFieldRef().getComment();
+            TypeReference tr = ttr.getFieldRef().getType();
             return convertTypeReference(tiSource, tr, fieldName, fieldComment);
         }
 
@@ -128,7 +121,7 @@ public abstract class TypeUtils {
      */
     public static List<TypeInfo> convertTypeReferences(TypeInformation tiSource, List<TypeRef> trList) {
         if (null != trList) {
-            List<TypeInfo> tiList = new ArrayList<TypeInfo>(trList.size());
+            List<TypeInfo> tiList = new ArrayList<>(trList.size());
             for (TypeRef tr : trList) {
                 tiList.add(convertTypeReference(tiSource, tr));
             }
@@ -195,6 +188,12 @@ public abstract class TypeUtils {
                             tiSource.getAreaPackage(StdStrings.MAL)
                             + tiSource.convertToNamespace("mal.structures.Attribute.")
                             + type.getName().toUpperCase() + "_SHORT_FORM");
+                }
+
+                if (type.getName().contains("ObjectRef")) {
+                    return tiSource.convertToNamespace(
+                            tiSource.getAreaPackage(StdStrings.MAL)
+                            + "mal.structures.ObjectRef.OBJECTREF_SHORT_FORM");
                 }
 
                 if (tiSource.convertToNamespace("org.ccsds.moims.mo.mal.structures.Element").equals(targetType)) {

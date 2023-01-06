@@ -26,8 +26,10 @@ import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
+import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
+import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AnyTypeReference;
 import esa.mo.xsd.AreaType;
@@ -41,12 +43,16 @@ import esa.mo.xsd.NamedElementReferenceWithCommentType;
 import esa.mo.xsd.PubSubOperationType;
 import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.SupportedFeatures;
+import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -70,22 +76,22 @@ public class CodeGenHelpers {
 
         String throwsMALException = generator.createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String identifierType = generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
-        CompositeField eleFactory = generator.createCompositeElementsDetails(file, false, "bodyElementFactory", 
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementsRegistry", false), 
+        CompositeField eleFactory = generator.createCompositeElementsDetails(file, false, "bodyElementFactory",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementsRegistry", false),
                 false, true, "bodyElementFactory The element factory registry to initialise with this helper.");
 
-        file.addClassOpenStatement(serviceName + "Helper", false, false, null, 
+        file.addClassOpenStatement(serviceName + "Helper", false, false, null,
                 null, "Helper class for " + serviceName + " service.");
 
         // create error numbers
         if ((null != service.getErrors()) && !service.getErrors().getError().isEmpty()) {
             for (ErrorDefinitionType error : service.getErrors().getError()) {
                 String errorNameCaps = error.getName().toUpperCase();
-                CompositeField _errorNumberVar = generator.createCompositeElementsDetails(file, false, "_" + errorNameCaps + "_ERROR_NUMBER", 
-                        TypeUtils.createTypeReference(null, null, "long", false), 
+                CompositeField _errorNumberVar = generator.createCompositeElementsDetails(file, false, "_" + errorNameCaps + "_ERROR_NUMBER",
+                        TypeUtils.createTypeReference(null, null, "long", false),
                         false, true, "Error literal for error " + errorNameCaps);
-                CompositeField errorNumberVar = generator.createCompositeElementsDetails(file, false, errorNameCaps + "_ERROR_NUMBER", 
-                        TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), 
+                CompositeField errorNumberVar = generator.createCompositeElementsDetails(file, false, errorNameCaps + "_ERROR_NUMBER",
+                        TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
                         true, true, "Error instance for error " + errorNameCaps);
 
                 file.addClassVariable(true, true, StdStrings.PUBLIC, _errorNumberVar, false, String.valueOf(error.getNumber()));
@@ -94,23 +100,23 @@ public class CodeGenHelpers {
         }
 
         // COM service should not have its operations generated, these are generated as part of the specific services
-        CompositeField _serviceNumberVar = generator.createCompositeElementsDetails(file, false, "_" + serviceVar + "_SERVICE_NUMBER", 
-                TypeUtils.createTypeReference(null, null, "int", false), 
+        CompositeField _serviceNumberVar = generator.createCompositeElementsDetails(file, false, "_" + serviceVar + "_SERVICE_NUMBER",
+                TypeUtils.createTypeReference(null, null, "int", false),
                 false, false, "Service number literal.");
-        CompositeField serviceNumberVar = generator.createCompositeElementsDetails(file, false, serviceVar + "_SERVICE_NUMBER", 
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), 
+        CompositeField serviceNumberVar = generator.createCompositeElementsDetails(file, false, serviceVar + "_SERVICE_NUMBER",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                 true, false, "Service number instance.");
-        CompositeField serviceNameVar = generator.createCompositeElementsDetails(file, false, serviceVar + "_SERVICE_NAME", 
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false), 
+        CompositeField serviceNameVar = generator.createCompositeElementsDetails(file, false, serviceVar + "_SERVICE_NAME",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false),
                 true, true, "Service name constant.");
         CompositeField serviceInstVar;
         if (service instanceof ExtendedServiceType) {
-            serviceInstVar = generator.createCompositeElementsDetails(file, false, serviceVar + "_SERVICE", 
-                    TypeUtils.createTypeReference(StdStrings.COM, null, "COMService", false), 
+            serviceInstVar = generator.createCompositeElementsDetails(file, false, serviceVar + "_SERVICE",
+                    TypeUtils.createTypeReference(StdStrings.COM, null, "COMService", false),
                     false, true, "Service singleton instance.");
         } else {
-            serviceInstVar = generator.createCompositeElementsDetails(file, false, serviceVar + "_SERVICE", 
-                    TypeUtils.createTypeReference(StdStrings.MAL, null, "MALService", false), 
+            serviceInstVar = generator.createCompositeElementsDetails(file, false, serviceVar + "_SERVICE",
+                    TypeUtils.createTypeReference(StdStrings.MAL, null, "MALService", false),
                     false, true, "Service singleton instance.");
         }
 
@@ -123,17 +129,17 @@ public class CodeGenHelpers {
 
         for (OperationSummary op : summary.getOperations()) {
             String operationInstanceVar = op.getName().toUpperCase();
-            CompositeField _opNumberVar = generator.createCompositeElementsDetails(file, false, "_" + operationInstanceVar + "_OP_NUMBER", 
+            CompositeField _opNumberVar = generator.createCompositeElementsDetails(file, false, "_" + operationInstanceVar + "_OP_NUMBER",
                     TypeUtils.createTypeReference(null, null, "int", false), false, false, "Operation number literal for operation " + operationInstanceVar);
-            CompositeField opNumberVar = generator.createCompositeElementsDetails(file, false, operationInstanceVar + "_OP_NUMBER", 
+            CompositeField opNumberVar = generator.createCompositeElementsDetails(file, false, operationInstanceVar + "_OP_NUMBER",
                     TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, false, "Operation number instance for operation " + operationInstanceVar);
             file.addClassVariable(true, true, StdStrings.PUBLIC, _opNumberVar, false, op.getNumber().toString());
             file.addClassVariable(true, true, StdStrings.PUBLIC, opNumberVar, false, "(_" + operationInstanceVar + "_OP_NUMBER)");
 
-            List<String> opArgs = new LinkedList<>();
-            generator.addServiceHelperOperationArgs(file, op, opArgs);
-            CompositeField opInstVar = generator.createCompositeElementsDetails(file, false, operationInstanceVar + "_OP", 
-                    TypeUtils.createTypeReference(StdStrings.MAL, null, generator.getOperationInstanceType(op), false), false, true, "Operation instance for operation " + operationInstanceVar);
+            List<String> opArgs = this.generateOperationArgs(file, op);
+            CompositeField opInstVar = generator.createCompositeElementsDetails(file, false, operationInstanceVar + "_OP",
+                    TypeUtils.createTypeReference(StdStrings.MAL, null, generator.getOperationInstanceType(op), false),
+                    false, true, "Operation instance for operation " + operationInstanceVar);
             file.addClassVariable(true, true, StdStrings.PUBLIC, opInstVar, false, false, opArgs);
 
             if (op.getPattern() == InteractionPatternEnum.PUBSUB_OP) {
@@ -293,9 +299,9 @@ public class CodeGenHelpers {
 
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false, 
-                true, null, "deepInit", Arrays.asList(eleFactory), throwsMALException, 
-                "Registers all aspects of this service with the provided element factory and any referenced areas/services.", 
+        method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false,
+                true, null, "deepInit", Arrays.asList(eleFactory), throwsMALException,
+                "Registers all aspects of this service with the provided element factory and any referenced areas/services.",
                 null, Arrays.asList(throwsMALException + " If cannot initialise this helper."));
         method.addLine("init(bodyElementFactory)");
         method.addMethodCloseStatement();
@@ -342,26 +348,26 @@ public class CodeGenHelpers {
 
         String throwsMALException = generator.createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String identifierType = generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
-        CompositeField eleFactory = generator.createCompositeElementsDetails(file, false, "bodyElementFactory", 
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementsRegistry", false), 
+        CompositeField eleFactory = generator.createCompositeElementsDetails(file, false, "bodyElementFactory",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementsRegistry", false),
                 false, true, "bodyElementFactory The element factory registry to initialise with this helper.");
-        CompositeField _areaNumberVar = generator.createCompositeElementsDetails(file, false, "_" + areaNameCaps + "_AREA_NUMBER", 
-                TypeUtils.createTypeReference(null, null, "int", false), 
+        CompositeField _areaNumberVar = generator.createCompositeElementsDetails(file, false, "_" + areaNameCaps + "_AREA_NUMBER",
+                TypeUtils.createTypeReference(null, null, "int", false),
                 false, false, "Area number literal.");
-        CompositeField areaNumberVar = generator.createCompositeElementsDetails(file, false, areaNameCaps + "_AREA_NUMBER", 
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), 
+        CompositeField areaNumberVar = generator.createCompositeElementsDetails(file, false, areaNameCaps + "_AREA_NUMBER",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                 true, false, "Area number instance.");
-        CompositeField areaNameVar = generator.createCompositeElementsDetails(file, false, areaNameCaps + "_AREA_NAME", 
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false), 
+        CompositeField areaNameVar = generator.createCompositeElementsDetails(file, false, areaNameCaps + "_AREA_NAME",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false),
                 true, false, "Area name constant.");
-        CompositeField _areaVersionVar = generator.createCompositeElementsDetails(file, false, "_" + areaNameCaps + "_AREA_VERSION", 
-                TypeUtils.createTypeReference(null, null, "short", false), 
+        CompositeField _areaVersionVar = generator.createCompositeElementsDetails(file, false, "_" + areaNameCaps + "_AREA_VERSION",
+                TypeUtils.createTypeReference(null, null, "short", false),
                 false, false, "Area version literal.");
-        CompositeField areaVersionVar = generator.createCompositeElementsDetails(file, false, areaNameCaps + "_AREA_VERSION", 
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false), 
+        CompositeField areaVersionVar = generator.createCompositeElementsDetails(file, false, areaNameCaps + "_AREA_VERSION",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
                 true, false, "Area version instance.");
-        CompositeField areaVar = generator.createCompositeElementsDetails(file, false, areaNameCaps + "_AREA", 
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALArea", false), 
+        CompositeField areaVar = generator.createCompositeElementsDetails(file, false, areaNameCaps + "_AREA",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALArea", false),
                 false, true, "Area singleton instance.");
 
         file.addClassOpenStatement(areaName + "Helper", false, false, null, null, "Helper class for " + areaName + " area.");
@@ -381,9 +387,9 @@ public class CodeGenHelpers {
         if ((null != area.getErrors()) && !area.getErrors().getError().isEmpty()) {
             for (ErrorDefinitionType error : area.getErrors().getError()) {
                 String errorNameCaps = error.getName().toUpperCase();
-                CompositeField _errorNumberVar = generator.createCompositeElementsDetails(file, false, "_" + errorNameCaps + "_ERROR_NUMBER", 
+                CompositeField _errorNumberVar = generator.createCompositeElementsDetails(file, false, "_" + errorNameCaps + "_ERROR_NUMBER",
                         TypeUtils.createTypeReference(null, null, "long", false), false, false, "Error literal for error " + errorNameCaps);
-                CompositeField errorNumberVar = generator.createCompositeElementsDetails(file, false, errorNameCaps + "_ERROR_NUMBER", 
+                CompositeField errorNumberVar = generator.createCompositeElementsDetails(file, false, errorNameCaps + "_ERROR_NUMBER",
                         TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, false, "Error instance for error " + errorNameCaps);
 
                 file.addClassVariable(true, true, StdStrings.PUBLIC, _errorNumberVar, false, String.valueOf(error.getNumber()));
@@ -449,9 +455,9 @@ public class CodeGenHelpers {
         }
 
         String factoryType = generator.createElementType(file, StdStrings.MAL, null, null, "MALContextFactory");
-        MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false, 
-                true, null, "init", Arrays.asList(eleFactory), throwsMALException, 
-                "Registers all aspects of this area with the provided element factory", null, 
+        MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false,
+                true, null, "init", Arrays.asList(eleFactory), throwsMALException,
+                "Registers all aspects of this area with the provided element factory", null,
                 Arrays.asList(throwsMALException + " If cannot initialise this helper."));
         method.addLine(generator.convertToNamespace(factoryType + ".registerArea(" + areaNameCaps + "_AREA)"));
 
@@ -472,15 +478,16 @@ public class CodeGenHelpers {
         if ((null != area.getErrors()) && !area.getErrors().getError().isEmpty()) {
             for (ErrorDefinitionType error : area.getErrors().getError()) {
                 String errorNameCaps = error.getName().toUpperCase();
-                method.addLine(generator.convertToNamespace(factoryType + ".registerError(" + errorNameCaps + "_ERROR_NUMBER, new " + identifierType + "(\"" + error.getName() + "\"))"));
+                method.addLine(generator.convertToNamespace(factoryType + ".registerError("
+                        + errorNameCaps + "_ERROR_NUMBER, new " + identifierType + "(\"" + error.getName() + "\"))"));
             }
         }
 
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false, 
-                true, null, "deepInit", Arrays.asList(eleFactory), throwsMALException, 
-                "Registers all aspects of this area with the provided element factory and any referenced areas and contained services.", 
+        method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false,
+                true, null, "deepInit", Arrays.asList(eleFactory), throwsMALException,
+                "Registers all aspects of this area with the provided element factory and any referenced areas and contained services.",
                 null, Arrays.asList(throwsMALException + " If cannot initialise this helper."));
         method.addLine("init(bodyElementFactory)");
 
@@ -493,5 +500,121 @@ public class CodeGenHelpers {
         method.addMethodCloseStatement();
         file.addClassCloseStatement();
         file.flush();
+    }
+
+    private List<String> generateOperationArgs(LanguageWriter file, OperationSummary op) {
+        List<String> opArgs = new LinkedList<>();
+        // Operation Number
+        opArgs.add(op.getName().toUpperCase() + "_OP_NUMBER");
+        opArgs.add("new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
+        opArgs.add("" + op.getReplay());
+        opArgs.add("new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");
+
+        switch (op.getPattern()) {
+            case SEND_OP:
+                opArgs.add(addMalTypes(1, op.getArgTypes(), false));
+                break;
+            case SUBMIT_OP:
+                opArgs.add(addMalTypes(1, op.getArgTypes(), false));
+                break;
+            case REQUEST_OP:
+                opArgs.add(addMalTypes(1, op.getArgTypes(), false));
+                opArgs.add(addMalTypes(2, op.getRetTypes(), false));
+                break;
+            case INVOKE_OP:
+                opArgs.add(addMalTypes(1, op.getArgTypes(), false));
+                opArgs.add(addMalTypes(2, op.getAckTypes(), false));
+                opArgs.add(addMalTypes(3, op.getRetTypes(), false));
+                break;
+            case PROGRESS_OP:
+                opArgs.add(addMalTypes(1, op.getArgTypes(), false));
+                opArgs.add(addMalTypes(2, op.getAckTypes(), false));
+                opArgs.add(addMalTypes(3, op.getUpdateTypes(), false));
+                opArgs.add(addMalTypes(4, op.getRetTypes(), false));
+                break;
+            case PUBSUB_OP:
+                opArgs.add(addMalTypes(1, op.getRetTypes(), true));
+                break;
+        }
+
+        return opArgs;
+    }
+
+    // Generates the MALOperationStage(...)
+    private String addMalTypes(int index, List<TypeInfo> ti, boolean isPubSub) {
+        ArrayList<String> typeArgs = new ArrayList<>();
+        boolean needXmlSchema = false;
+        boolean needMalTypes = false;
+        boolean finalTypeIsAttribute = false;
+        boolean finalTypeIsList = false;
+
+        for (TypeInfo typeInfo : ti) {
+            TypeReference type = typeInfo.getSourceType();
+
+            if (StdStrings.XML.equals(type.getArea())) {
+                needXmlSchema = true;
+            } else {
+                needMalTypes = true;
+            }
+
+            if (generator.isAbstract(type)) {
+                typeArgs.add("null");
+
+                if (StdStrings.ATTRIBUTE.equals(type.getName())) {
+                    finalTypeIsAttribute = true;
+                    finalTypeIsList = type.isList();
+                }
+            } else {
+                finalTypeIsAttribute = false;
+
+                if (isPubSub) {
+                    // this is a bit of a hack for now
+                    if (generator.isAttributeNativeType(type) || generator.isAttributeType(type)) {
+                        type.setList(true);
+                        TypeInfo lti = TypeUtils.convertTypeReference(generator, type);
+                        typeArgs.add(lti.getMalShortFormField());
+                        type.setList(false);
+                    } else {
+                        String field = typeInfo.getMalShortFormField();
+                        int length = field.length() - 11;
+                        typeArgs.add(field.substring(0, length) + "List.SHORT_FORM");
+                    }
+                } else {
+                    typeArgs.add(typeInfo.getMalShortFormField());
+                }
+            }
+        }
+
+        if (needMalTypes && needXmlSchema) {
+            throw new IllegalArgumentException("WARNING: Service specification uses multiple type specifications in the same message! This is not supported.");
+        }
+
+        String shortFormType = (needXmlSchema ? StdStrings.STRING : StdStrings.LONG);
+        String arrayArgs = StubUtils.concatenateStringArguments(false, typeArgs.toArray(new String[0]));
+        String polyArgs = "";
+        if (finalTypeIsAttribute) {
+            Set<String> attribArgs = new HashSet<>();
+
+            for (Map.Entry<GeneratorBase.TypeKey, AttributeTypeDetails> val : generator.getAttributeTypesMap().entrySet()) {
+                TypeReference tr = new TypeReference();
+                tr.setArea(StdStrings.MAL);
+                tr.setName(val.getValue().getMalType());
+                if (!generator.isAbstract(tr)) {
+                    tr.setList(finalTypeIsList);
+                    TypeInfo lti = TypeUtils.convertTypeReference(generator, tr);
+                    attribArgs.add(lti.getMalShortFormField());
+                }
+            }
+            polyArgs = StubUtils.concatenateStringArguments(false, attribArgs.toArray(new String[0]));
+        }
+
+        if (isPubSub) {
+            return "new " + shortFormType + "[] {" + arrayArgs + "}, new " + shortFormType + "[0]";
+        } else {
+            return "new org.ccsds.moims.mo.mal.MALOperationStage("
+                    + "new org.ccsds.moims.mo.mal.structures.UOctet((short) " + index + "), "
+                    + "new " + shortFormType + "[] {" + arrayArgs + "}, "
+                    + "new " + shortFormType + "[] {" + polyArgs + "})";
+        }
     }
 }

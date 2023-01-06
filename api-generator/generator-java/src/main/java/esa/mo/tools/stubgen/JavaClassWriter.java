@@ -75,12 +75,12 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     @Override
     public void addStatement(String string) throws IOException {
-        file.append(addLine(0, string, false));
+        file.append(makeLine(0, string, false));
     }
 
     @Override
     public void addClassCloseStatement() throws IOException {
-        file.append(addLine(0, "}", false));
+        file.append(makeLine(0, "}", false));
     }
 
     @Override
@@ -128,14 +128,6 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                 iniVal.append(", ");
             }
             String initialValue = initialValues.get(i);
-            if (initialValue.contains("ObjectRef<")) {
-                initialValue = initialValue.substring(0,
-                        initialValue.indexOf("org",
-                                initialValue.indexOf("org",
-                                        initialValue.indexOf("org") + 1) + 1))
-                        + "org.ccsds.moims.mo.mal.structures.ObjectRef.OBJECTREF_SHORT_FORM"
-                        + initialValue.substring(initialValue.indexOf("SHORT_FORM") + 10, initialValue.length());
-            }
             iniVal.append(initialValue);
         }
 
@@ -179,9 +171,9 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
 
         if (isProposed) {
-            file.append(addLine(1, "@org.ccsds.moims.mo.com.Proposed", false));
+            file.append(makeLine(1, "@org.ccsds.moims.mo.com.Proposed", false));
         }
-        file.append(addLine(1, buf.toString(), true));
+        file.append(makeLine(1, buf.toString(), true));
         file.append(getLineSeparator());
     }
 
@@ -223,7 +215,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             }
         }
 
-        file.append(addLine(1, buf.toString(), true));
+        file.append(makeLine(1, buf.toString(), true));
         file.append(getLineSeparator());
     }
 
@@ -263,9 +255,9 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
 
         buf.append(" {");
-        file.append(addLine(1, buf.toString(), false));
+        file.append(makeLine(1, buf.toString(), false));
         if ((null != superArgs) && (!superArgs.isEmpty())) {
-            file.append(addLine(2, "super(" + processArgs(superArgs, false) + ")", true));
+            file.append(makeLine(2, "super(" + processArgs(superArgs, false) + ")", true));
         }
 
         return this;
@@ -330,7 +322,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
 
         buf.append(" {");
-        file.append(addLine(1, buf.toString(), false));
+        file.append(makeLine(1, buf.toString(), false));
 
         return this;
     }
@@ -361,7 +353,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
 
         buf.append(" {");
-        file.append(addLine(1, buf.toString(), false));
+        file.append(makeLine(1, buf.toString(), false));
 
         return this;
     }
@@ -387,7 +379,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             packageName += extraPackage;
         }
 
-        file.append(addLine(0, "package " + packageName, true));
+        file.append(makeLine(0, "package " + packageName, true));
     }
 
     @Override
@@ -397,7 +389,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     @Override
     public void addInterfaceCloseStatement() throws IOException {
-        file.append(addLine(0, "}", false));
+        file.append(makeLine(0, "}", false));
     }
 
     @Override
@@ -418,7 +410,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             buf.append(throwsSpec);
         }
 
-        file.append(addLine(1, buf.toString(), true));
+        file.append(makeLine(1, buf.toString(), true));
     }
 
     @Override
@@ -460,13 +452,13 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     @Override
     public void addLine(String statement, boolean addSemi) throws IOException {
         if (0 < statement.trim().length()) {
-            file.append(addLine(2, statement, addSemi));
+            file.append(makeLine(2, statement, addSemi));
         }
     }
 
     @Override
     public void addMethodCloseStatement() throws IOException {
-        file.append(addLine(1, "}", false));
+        file.append(makeLine(1, "}", false));
         file.append(getLineSeparator());
     }
 
@@ -478,13 +470,13 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                 file.append(getLineSeparator());
             }
 
-            file.append(addLine(tabCount, "/**", false));
+            file.append(makeLine(tabCount, "/**", false));
             for (String comment : comments) {
                 comment = comment.replaceAll("<", "_");
                 comment = comment.replaceAll(">", "_");
-                file.append(addLine(tabCount, " * " + comment, false));
+                file.append(makeLine(tabCount, " * " + comment, false));
             }
-            file.append(addLine(tabCount, " */", false));
+            file.append(makeLine(tabCount, " */", false));
 
             if (postBlankLine) {
                 file.append(getLineSeparator());
@@ -543,19 +535,10 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         return buf.toString();
     }
 
-    private String updateObjectRefType(String fullType) {
-        return "org.ccsds.moims.mo.mal.structures.ObjectRef<"
-                + fullType.substring(0, fullType.indexOf("ObjectRef"))
-                + fullType.substring(fullType.indexOf('<') + 1, fullType.indexOf('>'))
-                + ">";
-    }
-
     private String createLocalType(CompositeField type) {
         if (null != type) {
             String fullType = type.getTypeName();
-            if (fullType.contains("ObjectRef<")) {
-                fullType = updateObjectRefType(fullType);
-            }
+
             if (generator.isNativeType(fullType)) {
                 NativeTypeDetails dets = generator.getNativeType(fullType);
 
