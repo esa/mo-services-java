@@ -55,6 +55,7 @@ public abstract class TestData {
     public static final UOctet testUOctet = new UOctet((short) 255);
     public static final ULong testULong = new ULong(new BigInteger("18446744073709551615"));
     public static final UShort testUShort = new UShort(65535);
+    public static final ObjectRef testObjectRef = new ObjectRef();
 
     public static final Assertion testComposite = new Assertion("Test string", "Second test string", Boolean.FALSE);
     public static final SessionType testEnumeration = SessionType.SIMULATION;
@@ -76,6 +77,7 @@ public abstract class TestData {
 
     static {
         // attribute types
+        testAttributes.add(testObjectRef);
         testAttributes.add(testDuration);
         testAttributes.add(testFineTime);
         testAttributes.add(testIdentifier);

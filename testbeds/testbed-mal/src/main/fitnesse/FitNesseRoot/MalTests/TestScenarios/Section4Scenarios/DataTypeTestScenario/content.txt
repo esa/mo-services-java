@@ -56,6 +56,7 @@ The consumer takes the data from the list one by one, in the same order, and cal
 |check| explicit UInteger type works| OK|
 |check| explicit ULong type works| OK|
 |check| explicit UShort type works| OK|
+|check| explicit Object Ref type works| OK|
 |check| attribute types work| OK|
 |check| enumerations work| OK|
 |check| complete composites work | OK|

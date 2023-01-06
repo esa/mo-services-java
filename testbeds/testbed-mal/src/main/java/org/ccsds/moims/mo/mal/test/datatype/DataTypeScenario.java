@@ -51,7 +51,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit Duration data test...");
         try {
-            rv = subSingleTest(TestData.testDuration, getDataTestStub().testDataDuration(TestData.testDuration), "explicit Duration");
+            rv = subSingleTest(TestData.testDuration, 
+                    getDataTestStub().testDataDuration(TestData.testDuration), "explicit Duration");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Duration");
         }
@@ -65,7 +66,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit FineTime data test...");
         try {
-            rv = subSingleTest(TestData.testFineTime, getDataTestStub().testDataFineTime(TestData.testFineTime), "explicit FineTime");
+            rv = subSingleTest(TestData.testFineTime, 
+                    getDataTestStub().testDataFineTime(TestData.testFineTime), "explicit FineTime");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit FineTime");
         }
@@ -79,7 +81,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit Identifier data test...");
         try {
-            rv = subSingleTest(TestData.testIdentifier, getDataTestStub().testDataIdentifier(TestData.testIdentifier), "explicit Identifier");
+            rv = subSingleTest(TestData.testIdentifier, 
+                    getDataTestStub().testDataIdentifier(TestData.testIdentifier), "explicit Identifier");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Identifier");
         }
@@ -93,7 +96,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit Time data test...");
         try {
-            rv = subSingleTest(TestData.testTime, getDataTestStub().testDataTime(TestData.testTime), "explicit Time");
+            rv = subSingleTest(TestData.testTime, 
+                    getDataTestStub().testDataTime(TestData.testTime), "explicit Time");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Time");
         }
@@ -107,7 +111,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit URI data test...");
         try {
-            rv = subSingleTest(TestData.testURI, getDataTestStub().testDataURI(TestData.testURI), "explicit URI");
+            rv = subSingleTest(TestData.testURI, 
+                    getDataTestStub().testDataURI(TestData.testURI), "explicit URI");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit URI");
         }
@@ -123,7 +128,8 @@ public class DataTypeScenario extends LoggingBase {
         logMessage("   testing byte buffer...");
         try {
             // first try with byte array
-            rv = subSingleTest(TestData.testBlob, getDataTestStub().testDataBlob(TestData.testBlob), "explicit byte Blob");
+            rv = subSingleTest(TestData.testBlob, 
+                    getDataTestStub().testDataBlob(TestData.testBlob), "explicit byte Blob");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Blob");
         }
@@ -134,7 +140,8 @@ public class DataTypeScenario extends LoggingBase {
                 // next try with an actual file
                 File tempFile = createTempFile("TestBlobData");
                 Blob fileBlob = new Blob(tempFile.toURI().toString());
-                rv = subSingleTest(fileBlob, getDataTestStub().testDataBlob(fileBlob), "explicit file Blob");
+                rv = subSingleTest(fileBlob, 
+                        getDataTestStub().testDataBlob(fileBlob), "explicit file Blob");
             } catch (MALInteractionException ex) {
                 rv = subSingleTestExceptionHandler(ex, "explicit Blob");
             }
@@ -149,7 +156,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit Boolean data test...");
         try {
-            rv = subSingleTest(TestData.testBoolean, getDataTestStub().testDataBoolean(TestData.testBoolean), "explicit Boolean");
+            rv = subSingleTest(TestData.testBoolean, 
+                    getDataTestStub().testDataBoolean(TestData.testBoolean), "explicit Boolean");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Boolean");
         }
@@ -163,7 +171,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit Octet data test...");
         try {
-            rv = subSingleTest(TestData.testOctet, getDataTestStub().testDataOctet(TestData.testOctet), "explicit Octet");
+            rv = subSingleTest(TestData.testOctet, 
+                    getDataTestStub().testDataOctet(TestData.testOctet), "explicit Octet");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Octet");
         }
@@ -177,7 +186,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit Double data test...");
         try {
-            rv = subSingleTest(TestData.testDouble, getDataTestStub().testDataDouble(TestData.testDouble), "explicit Double");
+            rv = subSingleTest(TestData.testDouble, 
+                    getDataTestStub().testDataDouble(TestData.testDouble), "explicit Double");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Double");
         }
@@ -191,7 +201,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit Float data test...");
         try {
-            rv = subSingleTest(TestData.testFloat, getDataTestStub().testDataFloat(TestData.testFloat), "explicit Float");
+            rv = subSingleTest(TestData.testFloat, 
+                    getDataTestStub().testDataFloat(TestData.testFloat), "explicit Float");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Float");
         }
@@ -205,7 +216,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit Integer data test...");
         try {
-            rv = subSingleTest(TestData.testInteger, getDataTestStub().testDataInteger(TestData.testInteger), "explicit Integer");
+            rv = subSingleTest(TestData.testInteger, 
+                    getDataTestStub().testDataInteger(TestData.testInteger), "explicit Integer");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Integer");
         }
@@ -219,7 +231,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit Long data test...");
         try {
-            rv = subSingleTest(TestData.testLong, getDataTestStub().testDataLong(TestData.testLong), "explicit Long");
+            rv = subSingleTest(TestData.testLong, 
+                    getDataTestStub().testDataLong(TestData.testLong), "explicit Long");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Long");
         }
@@ -233,7 +246,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit Short data test...");
         try {
-            rv = subSingleTest(TestData.testShort, getDataTestStub().testDataShort(TestData.testShort), "explicit Short");
+            rv = subSingleTest(TestData.testShort, 
+                    getDataTestStub().testDataShort(TestData.testShort), "explicit Short");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Short");
         }
@@ -247,7 +261,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit UOctet data test...");
         try {
-            rv = subSingleTest(TestData.testUOctet, getDataTestStub().testDataUOctet(TestData.testUOctet), "explicit UOctet");
+            rv = subSingleTest(TestData.testUOctet, 
+                    getDataTestStub().testDataUOctet(TestData.testUOctet), "explicit UOctet");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit UOctet");
         }
@@ -261,7 +276,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit UInteger data test...");
         try {
-            rv = subSingleTest(TestData.testUInteger, getDataTestStub().testDataUInteger(TestData.testUInteger), "explicit UInteger");
+            rv = subSingleTest(TestData.testUInteger, 
+                    getDataTestStub().testDataUInteger(TestData.testUInteger), "explicit UInteger");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit UInteger");
         }
@@ -275,7 +291,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit ULong data test...");
         try {
-            rv = subSingleTest(TestData.testULong, getDataTestStub().testDataULong(TestData.testULong), "explicit ULong");
+            rv = subSingleTest(TestData.testULong, 
+                    getDataTestStub().testDataULong(TestData.testULong), "explicit ULong");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit ULong");
         }
@@ -289,11 +306,27 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit UShort data test...");
         try {
-            rv = subSingleTest(TestData.testUShort, getDataTestStub().testDataUShort(TestData.testUShort), "explicit UShort");
+            rv = subSingleTest(TestData.testUShort, 
+                    getDataTestStub().testDataUShort(TestData.testUShort), "explicit UShort");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit UShort");
         }
         logMessage("Finished explicit UShort data test");
+
+        return rv;
+    }
+
+    public String explicitObjectRefTypeWorks() throws MALInteractionException, MALException {
+        String rv;
+
+        logMessage("Starting explicit ObjectRef data test...");
+        try {
+            rv = subSingleTest(TestData.testObjectRef, 
+                    getDataTestStub().testDataObjectRef(TestData.testObjectRef), "explicit ObjectRef");
+        } catch (MALInteractionException ex) {
+            rv = subSingleTestExceptionHandler(ex, "explicit ObjectRef");
+        }
+        logMessage("Finished explicit ObjectRef data test");
 
         return rv;
     }
@@ -303,7 +336,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting explicit String data test...");
         try {
-            rv = subSingleTest(TestData.testString, getDataTestStub().testDataString(TestData.testString), "explicit String");
+            rv = subSingleTest(TestData.testString, 
+                    getDataTestStub().testDataString(TestData.testString), "explicit String");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit String");
         }
@@ -349,7 +383,8 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting list data test...");
         try {
-            rv = subSingleTest(TestData.testList, getDataTestStub().testDataList(TestData.testList), "explicit list");
+            rv = subSingleTest(TestData.testList, 
+                    getDataTestStub().testDataList(TestData.testList), "explicit list");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit list");
         }
@@ -380,11 +415,16 @@ public class DataTypeScenario extends LoggingBase {
         logMessage("Starting multi return data test...");
         try {
             getDataTestStub().setTestDataOffset(54);
-            TestExplicitMultiReturnResponse tv = getDataTestStub().testExplicitMultiReturn(TestData.testUOctet, TestData.testUShort, TestData.testUInteger, TestData.testULong);
-            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement0(), tv.getBodyElement0(), null, "explicit Multi return part 1");
-            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement1(), tv.getBodyElement1(), rv, "explicit Multi return part 2");
-            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement2(), tv.getBodyElement2(), rv, "explicit Multi return part 3");
-            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement3(), tv.getBodyElement3(), rv, "explicit Multi return part 4");
+            TestExplicitMultiReturnResponse tv = getDataTestStub().testExplicitMultiReturn(
+                    TestData.testUOctet, TestData.testUShort, TestData.testUInteger, TestData.testULong);
+            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement0(), 
+                    tv.getBodyElement0(), null, "explicit Multi return part 1");
+            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement1(), 
+                    tv.getBodyElement1(), rv, "explicit Multi return part 2");
+            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement2(), 
+                    tv.getBodyElement2(), rv, "explicit Multi return part 3");
+            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement3(), 
+                    tv.getBodyElement3(), rv, "explicit Multi return part 4");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Multi return");
         }
@@ -398,11 +438,16 @@ public class DataTypeScenario extends LoggingBase {
 
         logMessage("Starting abstract multi return data test...");
         try {
-            TestAbstractMultiReturnResponse tv = getDataTestStub().testAbstractMultiReturn(TestData.testUOctet, TestData.testUShort, TestData.testUInteger, TestData.testULong);
-            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement0(), tv.getBodyElement0(), null, "abstract Multi return part 1");
-            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement1(), tv.getBodyElement1(), rv, "abstract Multi return part 2");
-            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement2(), tv.getBodyElement2(), rv, "abstract Multi return part 3");
-            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement3(), tv.getBodyElement3(), rv, "abstract Multi return part 4");
+            TestAbstractMultiReturnResponse tv = getDataTestStub().testAbstractMultiReturn(
+                    TestData.testUOctet, TestData.testUShort, TestData.testUInteger, TestData.testULong);
+            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement0(), 
+                    tv.getBodyElement0(), null, "abstract Multi return part 1");
+            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement1(), 
+                    tv.getBodyElement1(), rv, "abstract Multi return part 2");
+            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement2(), 
+                    tv.getBodyElement2(), rv, "abstract Multi return part 3");
+            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement3(), 
+                    tv.getBodyElement3(), rv, "abstract Multi return part 4");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "abstract Multi return");
         }
@@ -417,11 +462,16 @@ public class DataTypeScenario extends LoggingBase {
         logMessage("Starting multi return null data test...");
         try {
             getDataTestStub().setTestDataOffset(55);
-            TestExplicitMultiReturnResponse tv = getDataTestStub().testExplicitMultiReturn(TestData.testUOctet, TestData.testUShort, TestData.testUInteger, null);
-            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement0(), tv.getBodyElement0(), null, "null Multi return part 1");
-            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement1(), tv.getBodyElement1(), rv, "null Multi return part 2");
-            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement2(), tv.getBodyElement2(), rv, "null Multi return part 3");
-            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement3(), tv.getBodyElement3(), rv, "null Multi return part 4");
+            TestExplicitMultiReturnResponse tv = getDataTestStub().testExplicitMultiReturn(
+                    TestData.testUOctet, TestData.testUShort, TestData.testUInteger, null);
+            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement0(), 
+                    tv.getBodyElement0(), null, "null Multi return part 1");
+            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement1(), 
+                    tv.getBodyElement1(), rv, "null Multi return part 2");
+            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement2(), 
+                    tv.getBodyElement2(), rv, "null Multi return part 3");
+            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement3(), 
+                    tv.getBodyElement3(), rv, "null Multi return part 4");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "null Multi return");
         }
@@ -490,7 +540,8 @@ public class DataTypeScenario extends LoggingBase {
         return "OK";
     }
 
-    protected String subMultiTest(Object testValue, Object rspnValue, String previousResult, String testMsg) throws MALException {
+    protected String subMultiTest(Object testValue, Object rspnValue, 
+            String previousResult, String testMsg) throws MALException {
         if ((null == previousResult) || ("OK".equals(previousResult))) {
             previousResult = subSingleTest(testValue, rspnValue, testMsg);
         }
@@ -498,10 +549,12 @@ public class DataTypeScenario extends LoggingBase {
         return previousResult;
     }
 
-    protected String subSingleTestExceptionHandler(MALInteractionException ex, String testMsg) throws MALInteractionException {
+    protected String subSingleTestExceptionHandler(MALInteractionException ex, 
+            String testMsg) throws MALInteractionException {
         long errNum = ex.getStandardError().getErrorNumber().getValue();
         if ((MALHelper.BAD_ENCODING_ERROR_NUMBER.getValue() == errNum) || (DataTestHelper.DATA_ERROR_ERROR_NUMBER.getValue() == errNum)) {
-            String msg = "Test " + testMsg + " failed in consumer, encoding error received: " + ex.getStandardError().getExtraInformation().toString();
+            String msg = "Test " + testMsg + " failed in consumer, encoding error received: " 
+                    + ex.getStandardError().getExtraInformation().toString();
             logMessage(msg);
             return msg;
         }

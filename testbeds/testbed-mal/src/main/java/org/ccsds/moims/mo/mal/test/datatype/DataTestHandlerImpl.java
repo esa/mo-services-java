@@ -173,7 +173,13 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         return rcvdValue;
     }
 
-    public TestExplicitMultiReturnResponse testExplicitMultiReturn(UOctet _UOctet0, UShort _UShort1, 
+    public ObjectRef<Identifier> testDataObjectRef(ObjectRef<Identifier> rcvdValue,
+            MALInteraction interaction) throws MALInteractionException, MALException {
+        _testDataValue(TestData.testObjectRef, rcvdValue, "ObjectRef test");
+        return rcvdValue;
+    }
+
+    public TestExplicitMultiReturnResponse testExplicitMultiReturn(UOctet _UOctet0, UShort _UShort1,
             UInteger _UInteger2, ULong _ULong3, MALInteraction interaction) throws MALInteractionException, MALException {
         if (54 == testIndex) {
             _testDataValue(TestData.testUOctet, _UOctet0, "Explicit multi test part 1");
@@ -189,7 +195,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         return new TestExplicitMultiReturnResponse(_UOctet0, _UShort1, _UInteger2, _ULong3);
     }
 
-    public TestAbstractMultiReturnResponse testAbstractMultiReturn(UOctet _UOctet0, UShort _UShort1, 
+    public TestAbstractMultiReturnResponse testAbstractMultiReturn(UOctet _UOctet0, UShort _UShort1,
             UInteger _UInteger2, Element _Element3, MALInteraction interaction) throws MALInteractionException, MALException {
         _testDataValue(TestData.testUOctet, _UOctet0, "Abstract multi test part 1");
         _testDataValue(TestData.testUShort, _UShort1, "Abstract multi test part 2");
@@ -205,13 +211,17 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
             if (!testValue.equals(rcvdValue)) {
                 // decoding must have failed
                 throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
-                        new Union("Failed comparison in provider of " + exString + ", type " + testValue.getClass() + ", expected " + String.valueOf(testValue) + " but received " + String.valueOf(rcvdValue))));
+                        new Union("Failed comparison in provider of " + exString
+                                + ", type " + testValue.getClass() + ", expected "
+                                + String.valueOf(testValue) + " but received "
+                                + String.valueOf(rcvdValue))));
             }
         } else {
             if (null != rcvdValue) {
                 // decoding must have failed
                 throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
-                        new Union("Failed comparison in provider of " + exString + ", type should be null but is " + rcvdValue.getClass())));
+                        new Union("Failed comparison in provider of " + exString
+                                + ", type should be null but is " + rcvdValue.getClass())));
             }
         }
     }
@@ -220,32 +230,38 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         // Do nothing
     }
 
-    public Attribute testMalAttribute(Attribute atrbt, MALInteraction mali) throws MALInteractionException, MALException {
+    public Attribute testMalAttribute(Attribute atrbt,
+            MALInteraction mali) throws MALInteractionException, MALException {
         return atrbt;
     }
 
-    public Composite testMalComposite(Composite cmpst, MALInteraction mali) throws MALInteractionException, MALException {
+    public Composite testMalComposite(Composite cmpst,
+            MALInteraction mali) throws MALInteractionException, MALException {
         return cmpst;
     }
 
-    public TestPublish testAbstractComposite(TestPublish tp, MALInteraction mali) throws MALInteractionException, MALException {
+    public TestPublish testAbstractComposite(TestPublish tp,
+            MALInteraction mali) throws MALInteractionException, MALException {
         return tp;
     }
 
-    public AttributeList testMalAttributeList(AttributeList al, MALInteraction mali) throws MALInteractionException, MALException {
+    public AttributeList testMalAttributeList(AttributeList al,
+            MALInteraction mali) throws MALInteractionException, MALException {
         return al;
     }
 
-    public ElementList testMalElementList(ElementList el, MALInteraction mali) throws MALInteractionException, MALException {
+    public ElementList testMalElementList(ElementList el,
+            MALInteraction mali) throws MALInteractionException, MALException {
         return el;
     }
 
-    public CompositeList testMalCompositeList(CompositeList cl, MALInteraction mali) throws MALInteractionException, MALException {
+    public CompositeList testMalCompositeList(CompositeList cl,
+            MALInteraction mali) throws MALInteractionException, MALException {
         return cl;
     }
 
-    public TestPublishList testAbstractCompositeList(TestPublishList tpl, MALInteraction mali) throws MALInteractionException, MALException {
+    public TestPublishList testAbstractCompositeList(TestPublishList tpl,
+            MALInteraction mali) throws MALInteractionException, MALException {
         return tpl;
     }
-
 }
