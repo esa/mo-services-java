@@ -327,8 +327,8 @@ public class CodeGenConsumer {
         MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
                 false, true, null, opname + "Received", args, throwsMALException, comment, null,
                 Arrays.asList(throwsMALException + " if an error is detected processing the message."));
-        method.addLine("switch (" + generator.createMethodCall("msgHeader.getOperation().getValue()") + ")", false);
-        method.addLine("{", false);
+        method.addLine("switch (" + generator.createMethodCall("msgHeader.getOperation().getValue()") + ") {", false);
+
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceHelper + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
@@ -369,10 +369,9 @@ public class CodeGenConsumer {
                 false, true, null, opname + "Received", args, throwsMALException, comment, null,
                 Arrays.asList(throwsMALException + " if an error is detected processing the message."));
 
-        method.addLine("if ((" + areaHelper + "." + areaName.toUpperCase() + "_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (" + serviceHelper + "." + serviceName.toUpperCase() + "_SERVICE_NUMBER.equals(msgHeader.getService())))", false);
-        method.addLine("{", false);
-        method.addLine("  switch (" + generator.createMethodCall("msgHeader.getOperation().getValue()") + ")", false);
-        method.addLine("  {", false);
+        method.addLine("if ((" + areaHelper + "." + areaName.toUpperCase() + "_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (" + serviceHelper + "." + serviceName.toUpperCase() + "_SERVICE_NUMBER.equals(msgHeader.getService()))) {", false);
+        method.addLine("  switch (" + generator.createMethodCall("msgHeader.getOperation().getValue()") + ") {", false);
+
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceHelper + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
@@ -393,8 +392,7 @@ public class CodeGenConsumer {
         method.addLine("      throw new " + throwsMALException + "(\"Consumer adapter was not expecting operation number \" + msgHeader.getOperation().getValue())");
         method.addLine("  }", false);
         method.addLine("}", false);
-        method.addLine("else", false);
-        method.addLine("{", false);
+        method.addLine("else {", false);
         method.addLine("  notifyReceivedFromOtherService(msgHeader, body, qosProperties)");
         method.addLine("}", false);
         method.addMethodCloseStatement();
@@ -406,8 +404,8 @@ public class CodeGenConsumer {
         MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
                 false, true, null, opname + "ErrorReceived", args, throwsMALException, comment, null,
                 Arrays.asList(throwsMALException + " if an error is detected processing the message."));
-        method.addLine("switch (" + generator.createMethodCall("msgHeader.getOperation().getValue()") + ")", false);
-        method.addLine("{", false);
+        method.addLine("switch (" + generator.createMethodCall("msgHeader.getOperation().getValue()") + ") {", false);
+
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceHelper + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");

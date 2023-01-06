@@ -393,9 +393,9 @@ public class GeneratorXsd extends GeneratorDocument {
             areas.add(areaName);
 
             file = StubUtils.createLowLevelWriter(folder, fileName, ext);
-            file.append(addFileStatement(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>", false));
-            file.append(addFileStatement(0, "<xsd:schema xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"", false));
-            file.append(addFileStatement(0, "            targetNamespace=\"http://www.ccsds.org/schema/" + areaName + "Types\"", false));
+            file.append(addLine(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>", false));
+            file.append(addLine(0, "<xsd:schema xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"", false));
+            file.append(addLine(0, "            targetNamespace=\"http://www.ccsds.org/schema/" + areaName + "Types\"", false));
 
             getLog().info("Creating file " + folder + " " + fileName + "." + ext);
         }
@@ -407,7 +407,7 @@ public class GeneratorXsd extends GeneratorDocument {
          * @param statement The file statement.
          */
         public void addXsdStatement(int tabCount, String statement) {
-            buffer.append(addFileStatement(tabCount, statement, false));
+            buffer.append(addLine(tabCount, statement, false));
         }
 
         @Override
@@ -418,18 +418,18 @@ public class GeneratorXsd extends GeneratorDocument {
         @Override
         public void flush() throws IOException {
             for (String area : areas) {
-                file.append(addFileStatement(0, "            xmlns:" + area.toLowerCase() + "Types=\"http://www.ccsds.org/schema/" + area + "Types\"", false));
+                file.append(addLine(0, "            xmlns:" + area.toLowerCase() + "Types=\"http://www.ccsds.org/schema/" + area + "Types\"", false));
             }
-            file.append(addFileStatement(0, "            elementFormDefault=\"qualified\">", false));
+            file.append(addLine(0, "            elementFormDefault=\"qualified\">", false));
 
             for (String area : areas) {
                 if (!area.equalsIgnoreCase(thisArea)) {
-                    file.append(addFileStatement(1, "<xsd:import namespace=\"http://www.ccsds.org/schema/" + area + "Types\" schemaLocation=\"ServiceDef" + area + "Types.xsd\"/>", false));
+                    file.append(addLine(1, "<xsd:import namespace=\"http://www.ccsds.org/schema/" + area + "Types\" schemaLocation=\"ServiceDef" + area + "Types.xsd\"/>", false));
                 }
             }
 
             file.append(buffer.toString());
-            file.append(addFileStatement(0, "</xsd:schema>", false));
+            file.append(addLine(0, "</xsd:schema>", false));
             file.flush();
         }
 

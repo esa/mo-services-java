@@ -62,10 +62,10 @@ public abstract class AbstractWriter implements TargetWriter {
      * @param addSemi True if a trailing semicolon is required.
      * @return the created string.
      */
-    public String addFileStatement(int tabCount, String statement, boolean addSemi) {
+    public String addLine(int tabCount, String statement, boolean addSemi) {
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < tabCount; i++) {
-            buf.append("  ");
+            buf.append("    ");
         }
 
         buf.append(statement);
@@ -74,7 +74,6 @@ public abstract class AbstractWriter implements TargetWriter {
         }
 
         buf.append(lineSeparator);
-
         return buf.toString();
     }
 }

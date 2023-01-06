@@ -372,8 +372,7 @@ public class GeneratorJava extends GeneratorLangs {
                         TypeUtils.createTypeReference(null, null, "java.util.ArrayList<" + fqSrcTypeName + ">", false),
                         false, false, "The ArrayList that is used for initialization."),
                 false, null, "Constructor that uses an ArrayList for initialization.", null);
-        method.addLine("for(" + fqSrcTypeName + " element : elementList)", false);
-        method.addLine("{", false);
+        method.addLine("for(" + fqSrcTypeName + " element : elementList) {", false);
         method.addLine("    super.add(element)");
         method.addLine("}", false);
         method.addMethodCloseStatement();
@@ -387,7 +386,7 @@ public class GeneratorJava extends GeneratorLangs {
                 false, true, rtype, "add", argList, null, 
                 "Adds an element to the list and checks if it is not null.", "The success status.", null);
         /*
-        method.addMethodStatement("if (element == null){", false);
+        method.addMethodStatement("if (element == null) {", false);
         method.addMethodStatement("  throw new IllegalArgumentException(\"The added argument cannot be null!\")");
         method.addMethodStatement("}", false);
          */
@@ -404,8 +403,7 @@ public class GeneratorJava extends GeneratorLangs {
         // create encode method
         method = encodeMethodOpen(file);
         method.addLine("org.ccsds.moims.mo.mal.MALListEncoder listEncoder = encoder.createListEncoder(this)");
-        method.addLine("for (int i = 0; i < size(); i++)", false);
-        method.addLine("{", false);
+        method.addLine("for (int i = 0; i < size(); i++) {", false);
         method.addLine("  listEncoder.encodeNullable" + listElement.getEncodeCall() + "((" + fqSrcTypeName + ") get(i))");
         method.addLine("}", false);
         method.addLine("listEncoder.close()");
@@ -415,13 +413,12 @@ public class GeneratorJava extends GeneratorLangs {
         method = decodeMethodOpen(file, elementType);
         method.addLine("org.ccsds.moims.mo.mal.MALListDecoder listDecoder = decoder.createListDecoder(this)");
         method.addLine("int decodedSize = listDecoder.size()");
-        method.addLine("if (decodedSize > 0)", false);
-        method.addLine("{", false);
+        method.addLine("if (decodedSize > 0) {", false);
         method.addLine("  ensureCapacity(decodedSize)");
         method.addLine("}", false);
-        method.addLine("while (listDecoder.hasNext())", false);
-        method.addLine("{", false);
-        method.addLine("  add(" + listElement.getDecodeCast() + "listDecoder.decodeNullable" + listElement.getDecodeCall() + "(" + (listElement.isDecodeNeedsNewCall() ? listElement.getNewCall() : "") + "))");
+        method.addLine("while (listDecoder.hasNext()) {", false);
+        method.addLine("  add(" + listElement.getDecodeCast() + "listDecoder.decodeNullable" + listElement.getDecodeCall() 
+                + "(" + (listElement.isDecodeNeedsNewCall() ? listElement.getNewCall() : "") + "))");
         method.addLine("}", false);
         method.addLine("return this");
         method.addMethodCloseStatement();
@@ -490,20 +487,25 @@ public class GeneratorJava extends GeneratorLangs {
             packageName += "." + service.getName().toLowerCase();
         }
 
-        ClassWriter file = createClassFile(baseFolder, (packageName + "." + getConfig().getBodyFolder() + "." + JAVA_PACKAGE_COMMENT_FILE_NAME).replace('.', '/'));
+        String className = packageName + "." + getConfig().getBodyFolder() + "." + JAVA_PACKAGE_COMMENT_FILE_NAME;
+        className = className.replace('.', '/');
+        ClassWriter file = createClassFile(baseFolder, className);
 
-        createFolderComment(file, area, service, getConfig().getBodyFolder(), "Package containing the types for holding compound messages.");
+        createFolderComment(file, area, service, getConfig().getBodyFolder(), 
+                "Package containing the types for holding compound messages.");
     }
 
     @Override
     protected void createAreaStructureFolderComment(File structureFolder, AreaType area) throws IOException {
-        createFolderComment(structureFolder, area, null, getConfig().getStructureFolder(), "Package containing types defined in the " + area.getName() + " area.");
+        createFolderComment(structureFolder, area, null, getConfig().getStructureFolder(), 
+                "Package containing types defined in the " + area.getName() + " area.");
     }
 
     @Override
     protected void createServiceStructureFolderComment(File structureFolder, 
             AreaType area, ServiceType service) throws IOException {
-        createFolderComment(structureFolder, area, service, getConfig().getStructureFolder(), "Package containing types defined in the " + service.getName() + " service.");
+        createFolderComment(structureFolder, area, service, getConfig().getStructureFolder(), 
+                "Package containing types defined in the " + service.getName() + " service.");
     }
 
     @Override
@@ -567,7 +569,8 @@ public class GeneratorJava extends GeneratorLangs {
         if (elementType.isList()) {
 //      if (StdStrings.XML.equals(elementType.getArea()))
 //      {
-//        throw new IllegalArgumentException("XML type of (" + elementType.getService() + ":" + elementType.getName() + ") with maxOccurrs <> 1 is not permitted");
+//        throw new IllegalArgumentException("XML type of (" + elementType.getService() 
+//                + ":" + elementType.getName() + ") with maxOccurrs <> 1 is not permitted");
 //      }
 //      else
             {

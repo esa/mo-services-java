@@ -894,7 +894,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
-    public String updateObjectRefType(String fullType) {
+    public static String updateObjectRefType(String fullType) {
         String path = fullType.substring(fullType.indexOf("org"), fullType.indexOf("ObjectRef"));
         String type = fullType.substring(fullType.indexOf('<') + 1, fullType.indexOf('>'));
         fullType = fullType.replaceAll(path, "org.ccsds.moims.mo.mal.structures.");
@@ -1030,8 +1030,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ")"), false);
-        method.addLine("{", false);
+        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ") {"), false);
+        
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SEND_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
@@ -1056,8 +1056,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 StubUtils.concatenateArguments(submitInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ")"), false);
-        method.addLine("{", false);
+        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ") {"), false);
+
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SUBMIT_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
@@ -1085,8 +1085,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "handleRequest", StubUtils.concatenateArguments(requestInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ")"), false);
-        method.addLine("{", false);
+        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ") {"), false);
+
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.REQUEST_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
@@ -1114,8 +1114,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 StubUtils.concatenateArguments(invokeInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ")"), false);
-        method.addLine("{", false);
+        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ") {"), false);
+
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.INVOKE_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
@@ -1142,8 +1142,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 StubUtils.concatenateArguments(progressInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ")"), false);
-        method.addLine("{", false);
+        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ") {"), false);
+
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.PROGRESS_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
@@ -1336,8 +1336,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     false, true, strType, "toString", null, null,
                     "Returns a String object representing this type's value.",
                     "a string representation of the value of this object", null);
-            method.addLine("switch (getOrdinal())", false);
-            method.addLine("{", false);
+            method.addLine("switch (getOrdinal()) {", false);
+
             for (Item item : enumeration.getItem()) {
                 method.addLine("  case _" + item.getValue() + "_INDEX:", false);
                 method.addLine("    return \"" + item.getValue() + "\"");
@@ -1351,10 +1351,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     false, true, enumType, "fromString", Arrays.asList(strType), null,
                     "Returns the enumeration element represented by the supplied string, or null if not matched.",
                     "The matched enumeration element, or null if not matched.", null);
-            method.addLine("for (int i = 0; i < _ENUMERATION_NAMES.length; i++)", false);
-            method.addLine("{", false);
-            method.addLine("  if (_ENUMERATION_NAMES[i].equals(s))", false);
-            method.addLine("  {", false);
+            method.addLine("for (int i = 0; i < _ENUMERATION_NAMES.length; i++) {", false);
+            method.addLine("  if (_ENUMERATION_NAMES[i].equals(s)) {", false);
             method.addLine("    return _ENUMERATIONS[i]");
             method.addLine("  }", false);
             method.addLine("}", false);
@@ -1386,10 +1384,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 false, false, enumType, "fromNumericValue", Arrays.asList(nvType), null,
                 "Returns the enumeration element represented by the supplied numeric value, or null if not matched.",
                 "The matched enumeration value, or null if not matched.", null);
-        method.addLine("for (int i = 0; i < _ENUMERATION_NUMERIC_VALUES.length; i++)", false);
-        method.addLine("{", false);
-        method.addLine("  if (" + getEnumValueCompare("_ENUMERATION_NUMERIC_VALUES[i]", "value") + ")", false);
-        method.addLine("  {", false);
+        method.addLine("for (int i = 0; i < _ENUMERATION_NUMERIC_VALUES.length; i++) {", false);
+        method.addLine("  if (" + getEnumValueCompare("_ENUMERATION_NUMERIC_VALUES[i]", "value") + ") {", false);
         method.addLine("    return _ENUMERATIONS[i]");
         method.addLine("  }", false);
         method.addLine("}", false);
@@ -1586,28 +1582,23 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     false, true, boolType, "equals", Arrays.asList(objType), null,
                     "Compares this object to the specified object. The result is true if and only if the argument is not null and is the same type that contains the same value as this object.",
                     "true if the objects are the same; false otherwise.", null);
-            method.addLine("if (obj instanceof " + compName + ")", false);
-            method.addLine("{", false);
+            method.addLine("if (obj instanceof " + compName + ") {", false);
+
             if (null != parentClass) {
-                method.addLine("  if (! super.equals(obj))", false);
-                method.addLine("  {", false);
+                method.addLine("  if (! super.equals(obj)) {", false);
                 method.addLine("    return false");
                 method.addLine("  }", false);
             }
             if (!compElements.isEmpty()) {
                 method.addLine("  " + compName + " other = (" + compName + ") obj");
                 for (CompositeField element : compElements) {
-                    method.addLine("  if (" + element.getFieldName() + " == null)", false);
-                    method.addLine("  {", false);
-                    method.addLine("    if (other." + element.getFieldName() + " != null)", false);
-                    method.addLine("    {", false);
+                    method.addLine("  if (" + element.getFieldName() + " == null) {", false);
+                    method.addLine("    if (other." + element.getFieldName() + " != null) {", false);
                     method.addLine("      return false");
                     method.addLine("    }", false);
                     method.addLine("  }", false);
-                    method.addLine("  else", false);
-                    method.addLine("  {", false);
-                    method.addLine("    if (! " + element.getFieldName() + ".equals(other." + element.getFieldName() + "))", false);
-                    method.addLine("    {", false);
+                    method.addLine("  else {", false);
+                    method.addLine("    if (! " + element.getFieldName() + ".equals(other." + element.getFieldName() + ")) {", false);
                     method.addLine("      return false");
                     method.addLine("    }", false);
                     method.addLine("  }", false);
@@ -2294,9 +2285,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     buf.append(getConfig().getStructureFolder());
                     buf.append(".");
                     buf.append(StdStrings.UNION);
-                    buf.append("(");
-                    buf.append(argName);
-                    buf.append(")");
+                    buf.append("(").append(argName).append(")");
                 } else {
                     buf.append(argName);
                 }

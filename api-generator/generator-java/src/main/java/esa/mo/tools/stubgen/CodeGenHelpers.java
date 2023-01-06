@@ -137,7 +137,6 @@ public class CodeGenHelpers {
             file.addClassVariable(true, true, StdStrings.PUBLIC, opInstVar, false, false, opArgs);
 
             if (op.getPattern() == InteractionPatternEnum.PUBSUB_OP) {
-
                 StringBuilder arrayList = new StringBuilder("{");
                 PubSubOperationType lop = (PubSubOperationType) op.getOriginalOp();
                 AnyTypeReference subsKeys = lop.getMessages().getSubscriptionKeys();
