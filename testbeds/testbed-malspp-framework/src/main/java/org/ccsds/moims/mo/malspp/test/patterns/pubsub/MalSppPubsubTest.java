@@ -41,24 +41,22 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.ElementList;
-import org.ccsds.moims.mo.mal.structures.EntityKey;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
-import org.ccsds.moims.mo.mal.structures.EntityRequest;
-import org.ccsds.moims.mo.mal.structures.EntityRequestList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import org.ccsds.moims.mo.mal.structures.UpdateType;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedureImpl;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.PubSubTestCaseHelper;
@@ -94,8 +92,10 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
     public final static Logger logger = fr.dyade.aaa.common.Debug
             .getLogger(MalSppPubsubTest.class.getName());
 
-    public static final EntityKey WILDCARD_ENTITY_KEY = new EntityKey(new Identifier("A"), (long) 0, null, null);
-    public static final EntityKey SPECIAL_ENTITY_KEY = new EntityKey(new Identifier("A"), (long) 1, null, null);
+    //public static final EntityKey WILDCARD_ENTITY_KEY = new EntityKey(new Identifier("A"), (long) 0, null, null);
+    //public static final EntityKey SPECIAL_ENTITY_KEY = new EntityKey(new Identifier("A"), (long) 1, null, null);
+    public static final Long SPECIAL_KEY_VALUE = 1L;
+    public static final Long OTHER_KEY_VALUE = 2L;
 
     private SpacePacketCheck spacePacketCheck = new SpacePacketCheck();
     private MALMessage rcvdMsg = null;
@@ -392,8 +392,10 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         IPTestConsumer ipTestConsumer = getPubsubErrorIPTestStub(domain, session, sessionName, qos);
         IPTest ipTest = ipTestConsumer.getStub();
 
-        Subscription subscription = new Subscription(new Identifier(
-                ErrorBrokerHandler.SUBSCRIPTION_RAISING_ERROR), new EntityRequestList());
+        Subscription subscription = new Subscription(
+                new Identifier(ErrorBrokerHandler.SUBSCRIPTION_RAISING_ERROR),
+                null,
+                new SubscriptionFilterList());
 
         try {
             ipTest.monitorRegister(subscription, new IPTestListener());
@@ -419,7 +421,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         IPTestConsumer ipTestConsumer = getPubsubErrorIPTestStub(domain, session, sessionName, qos);
         IPTest ipTest = ipTestConsumer.getStub();
 
-        Subscription subscription = new Subscription(new Identifier("subscription"), new EntityRequestList());
+        Subscription subscription = new Subscription(new Identifier("subscription"), null, new SubscriptionFilterList());
 
         IPTestListener listener = new IPTestListener();
 
@@ -433,11 +435,13 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 
         //IPTestConsumer errorIpTestConsumer = getPubsubErrorIPTestStub(domain, session, sessionName, qos);
         //IPTest errorIpTest = errorIpTestConsumer.getStub();
+        AttributeList keyValues = new AttributeList();
         UInteger errorCode = MALHelper.INTERNAL_ERROR_NUMBER;
-        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY,
+        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
+                qos, HeaderTestProcedure.PRIORITY,
                 HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, new UpdateHeaderList(),
-                new TestUpdateList(), errorCode, Boolean.FALSE, null);
+                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false,
+                new UpdateHeaderList(), new TestUpdateList(), keyValues, errorCode, Boolean.FALSE, null);
         ipTest.publishUpdates(testPublishUpdate);
 
         listener.waitNotifyError();
@@ -478,7 +482,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
                 sessionName, qos, new Hashtable(), new UInteger(1));
 
         try {
-            publisher.register(new EntityKeyList(), new PublishListener());
+            publisher.register(new IdentifierList(), new PublishListener());
         } catch (MALInteractionException exc) {
             // Expected error
             return true;
@@ -500,25 +504,30 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         IPTest ipTest = ipTestConsumer.getStub();
 
         // Publish Register
-        EntityKeyList entityKeys = new EntityKeyList();
-        entityKeys.add(WILDCARD_ENTITY_KEY);
+        //EntityKeyList entityKeys = new EntityKeyList();
+        //entityKeys.add(WILDCARD_ENTITY_KEY);
+        IdentifierList keyNames = new IdentifierList();
 
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishRegister testPublishRegister
                 = new TestPublishRegister(qos, HeaderTestProcedure.PRIORITY,
                         HeaderTestProcedure.getDomain(domain),
                         HeaderTestProcedure.NETWORK_ZONE, session, sessionName, true,
-                        entityKeys, expectedErrorCode);
+                        keyNames, expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 
         // Register
         Boolean onlyOnChange = false;
+        /*
         EntityRequest entityRequest = new EntityRequest(
                 null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
                 onlyOnChange, entityKeys);
         EntityRequestList entityRequests = new EntityRequestList();
         entityRequests.add(entityRequest);
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, entityRequests);
+         */
+        //Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, entityRequests);
+        SubscriptionFilterList filters = new SubscriptionFilterList();
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, null, filters);
         ipTest.monitorMultiRegister(subscription, new IPTestListener());
 
         return true;
@@ -534,6 +543,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 
         IPTest ipTest = ipTestConsumer.getStub();
 
+        /*
         EntityKey entityKey = null;
         if (mode.equalsIgnoreCase("abstract service-defined")) {
             entityKey = HeaderTestProcedure.RIGHT_ENTITY_KEY;
@@ -543,15 +553,25 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
             logMessage("Unexpected Publish mode: " + mode);
             return false;
         }
+         */
+        AttributeList keyValues = new AttributeList();
+        if (mode.equalsIgnoreCase("abstract service-defined")) {
+            keyValues.add(OTHER_KEY_VALUE);
+        } else if (mode.equalsIgnoreCase("abstract non-service defined")) {
+            keyValues.add(SPECIAL_KEY_VALUE);
+        } else {
+            logMessage("Unexpected Publish mode: " + mode);
+            return false;
+        }
 
         // Publish
-        UpdateHeader updateHeader1 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.CREATION, entityKey);
+        UpdateHeader updateHeader1 = new UpdateHeader(new Identifier(""), null, keyValues);
         TestUpdate update1 = new TestUpdate(new Integer(1));
-        UpdateHeader updateHeader2 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.DELETION, entityKey);
+        UpdateHeader updateHeader2 = new UpdateHeader(new Identifier(""), null, keyValues);
         TestUpdate update2 = new TestUpdate(new Integer(2));
-        UpdateHeader updateHeader3 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.MODIFICATION, entityKey);
+        UpdateHeader updateHeader3 = new UpdateHeader(new Identifier(""), null, keyValues);
         TestUpdate update3 = new TestUpdate(new Integer(3));
-        UpdateHeader updateHeader4 = new UpdateHeader(new Time(System.currentTimeMillis()), new URI(""), UpdateType.UPDATE, entityKey);
+        UpdateHeader updateHeader4 = new UpdateHeader(new Identifier(""), null, keyValues);
         TestUpdate update4 = new TestUpdate(new Integer(4));
 
         UpdateHeaderList updateHeaders = new UpdateHeaderList();
@@ -569,7 +589,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
                 qos, HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE,
-                session, sessionName, true, updateHeaders, updates, expectedErrorCode, false, null);
+                session, sessionName, true, updateHeaders, updates, keyValues, expectedErrorCode, false, null);
 
         ipTest.publishUpdates(testPublishUpdate);
 
@@ -596,13 +616,13 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
                 qos, HeaderTestProcedure.PRIORITY,
                 HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, true, null, expectedErrorCode);
+                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, true, expectedErrorCode);
         ipTest.publishDeregister(testPublishDeregister);
 
         return true;
     }
 
-    private MALMessage createMessage(Object[] body, URI uriTo, MALEndpoint ep, UOctet stage, 
+    private MALMessage createMessage(Object[] body, URI uriTo, MALEndpoint ep, UOctet stage,
             QoSLevel qos, SessionType session, Identifier sessionName, int domain) throws Exception {
         Long transId = 0L;
         try {
@@ -648,21 +668,26 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         MALEndpoint ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
         MALMessage msg = null;
 
-        EntityKeyList entityKeys = new EntityKeyList();
-        entityKeys.add(HeaderTestProcedure.RIGHT_ENTITY_KEY);
+        IdentifierList keyValues = new IdentifierList();
+        Identifier keyName = new Identifier("MyKey");
+        keyValues.add(keyName);
         Boolean onlyOnChange = false;
+        /*
         EntityRequest entityRequest = new EntityRequest(
                 null, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE,
                 onlyOnChange, entityKeys);
         EntityRequestList entityRequests = new EntityRequestList();
         entityRequests.add(entityRequest);
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, entityRequests);
+         */
+        SubscriptionFilterList filters = new SubscriptionFilterList();
+        filters.add(new SubscriptionFilter(keyName, new AttributeList(OTHER_KEY_VALUE)));
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, null, filters);
 
         if ("REGISTER".equalsIgnoreCase(stage)) {
             Object[] body = new Object[]{subscription};
             msg = createMessage(body, uriTo, ep, MALPubSubOperation.REGISTER_STAGE, qos, session, sessionName, domain);
         } else if ("PUBLISH_REGISTER".equalsIgnoreCase(stage)) {
-            Object[] body = new Object[]{entityKeys};
+            Object[] body = new Object[]{keyValues};
             msg = createMessage(body, uriTo, ep, MALPubSubOperation.PUBLISH_REGISTER_STAGE, qos, session, sessionName, domain);
         } else if ("PUBLISH_DEREGISTER".equalsIgnoreCase(stage)) {
             Object[] body = new Object[]{};

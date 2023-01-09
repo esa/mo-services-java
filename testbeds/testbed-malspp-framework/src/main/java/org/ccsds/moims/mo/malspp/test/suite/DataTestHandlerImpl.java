@@ -33,6 +33,7 @@ import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -171,6 +172,11 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public ObjectRef<Identifier> testDataObjectRef(ObjectRef<Identifier> _Identifier_0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public TestExplicitMultiReturnResponse testExplicitMultiReturn(UOctet _UOctet0, UShort _UShort1, UInteger _UInteger2, ULong _ULong3, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -210,5 +216,4 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     public TestPublishList testAbstractCompositeList(TestPublishList tpl, MALInteraction mali) throws MALInteractionException, MALException {
         return tpl;
     }
-
 }

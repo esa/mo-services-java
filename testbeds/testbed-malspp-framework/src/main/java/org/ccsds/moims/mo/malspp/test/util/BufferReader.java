@@ -35,6 +35,7 @@ package org.ccsds.moims.mo.malspp.test.util;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.concurrent.Callable;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -84,10 +85,17 @@ public class BufferReader {
                 TimeScalesFactory.getTAI());
 
         // Initialize BigEnumeration data type
-        MALContextFactory.getElementFactoryRegistry().registerElementFactory(
+        /*
+        MALContextFactory.getElementsRegistry().registerElementFactory(
                 LargeEnumeration.SHORT_FORM, new LargeEnumerationFactory());
-        MALContextFactory.getElementFactoryRegistry().registerElementFactory(
+        MALContextFactory.getElementsRegistry().registerElementFactory(
                 MediumEnumeration.SHORT_FORM, new MediumEnumerationFactory());
+         */
+        MALContextFactory.getElementsRegistry().addCallableElement(
+                LargeEnumeration.SHORT_FORM, () -> new LargeEnumeration(0));
+
+        MALContextFactory.getElementsRegistry().addCallableElement(
+                MediumEnumeration.SHORT_FORM, () -> new MediumEnumeration(0));
     }
 
     private static AbsoluteDate fineTimeMalJavaApiEpoch;

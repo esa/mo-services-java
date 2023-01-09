@@ -456,7 +456,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
     }
 
     public boolean testMalComposite() {
-        Composite composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+        Composite composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null, null);
         Composite res;
         try {
             res = getDataTestStub().testMalComposite(composite);
@@ -471,7 +471,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
     }
 
     public boolean testAbstractComposite() {
-        TestPublish composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+        TestPublish composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null, null);
         Composite res;
         try {
             res = getDataTestStub().testAbstractComposite(composite);
@@ -487,7 +487,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
 
     public boolean testMalAttributeList() {
         UInteger attribute = new UInteger(0xFFFFFFFFL);
-        UIntegerList attributeList = new UIntegerList();
+        AttributeList attributeList = new AttributeList();
         attributeList.add(attribute);
         attributeList.add(attribute);
         AttributeList res;
@@ -504,7 +504,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
     }
 
     public boolean testMalCompositeList() {
-        Composite composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+        Composite composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null, null);
         CompositeList compositeList = new TestPublishUpdateList();
         compositeList.add(composite);
         compositeList.add(composite);
@@ -522,7 +522,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
     }
 
     public boolean testCompositeListSentAsMalElementList() {
-        TestPublishUpdate composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+        TestPublishUpdate composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null, null);
         TestPublishUpdateList compositeList = new TestPublishUpdateList();
         compositeList.add(composite);
         compositeList.add(composite);
@@ -576,7 +576,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
     }
 
     public boolean testCompositeListSentAsMalComposite() {
-        TestPublishUpdate composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+        TestPublishUpdate composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null, null);
         TestPublishUpdateList compositeList = new TestPublishUpdateList();
         compositeList.add(composite);
         compositeList.add(composite);
@@ -594,7 +594,7 @@ public class MalSppDataTypeTest extends DataTypeScenario {
     }
 
     public boolean testAbstractCompositeList() {
-        Composite composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null);
+        Composite composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null, null);
         TestPublishList abstractCompositeList = new TestPublishUpdateList();
         abstractCompositeList.add(composite);
         abstractCompositeList.add(composite);

@@ -40,8 +40,8 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -70,7 +70,7 @@ public class PubsubErrorIPTestHandler extends IPTestInheritanceSkeleton {
     private Hashtable<Publisherkey, MonitorPublisher> publishers;
 
     public PubsubErrorIPTestHandler() {
-        publishers = new Hashtable<PubsubErrorIPTestHandler.Publisherkey, MonitorPublisher>();
+        publishers = new Hashtable<>();
     }
 
     public synchronized MonitorPublisher getMonitorPublisher(TestPublishUpdate testPublishUpdate) throws MALException, MALInteractionException {
@@ -80,7 +80,7 @@ public class PubsubErrorIPTestHandler extends IPTestInheritanceSkeleton {
             publisher = createMonitorPublisher(testPublishUpdate.getDomain(),
                     HeaderTestProcedure.NETWORK_ZONE, testPublishUpdate.getSession(),
                     testPublishUpdate.getSessionName(), testPublishUpdate.getQos(), new Hashtable(), new UInteger(1));
-            publisher.asyncRegister(new EntityKeyList(), new PublishListener());
+            publisher.asyncRegister(new IdentifierList(), new PublishListener());
             publishers.put(key, publisher);
         }
         return publisher;
