@@ -73,7 +73,8 @@ public class AreaTabbedPane extends JTabbedPane {
 
     private final static String DEFAULT_TEMP_DIR = "_temp";
     private final static String DEFAULT_DOCX_DIR = "_docx";
-    private final JLabel generatingLable = new JLabel("Generating...");
+    private final static JLabel LABEL_GENERATING = new JLabel("Generating...");
+    private final static JLabel LABEL_ERROR_GENERATION = new JLabel("The file could not be generated!");
     private final JButton openButton = new JButton("Open Folder");
 
     private final RTextScrollPane textEditorXML;
@@ -136,7 +137,8 @@ public class AreaTabbedPane extends JTabbedPane {
             @Override
             public void actionPerformed(ActionEvent e) {
                 panel.remove(openButton);
-                panel.add(generatingLable);
+                panel.remove(LABEL_ERROR_GENERATION);
+                panel.add(LABEL_GENERATING);
                 panel.revalidate();
                 panel.repaint();
 
@@ -187,7 +189,7 @@ public class AreaTabbedPane extends JTabbedPane {
                         }
                     }));
 
-                    panel.remove(generatingLable);
+                    panel.remove(LABEL_GENERATING);
                     panel.add(openButton);
                     panel.revalidate();
                     panel.repaint();
@@ -197,10 +199,16 @@ public class AreaTabbedPane extends JTabbedPane {
                             "Success! Generated the Book in " + timestamp + " miliseconds!", text);
                     buttonB.revalidate();
                     buttonB.repaint();
-                } catch (IOException ex) {
-                    Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (JAXBException ex) {
-                    Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.SEVERE, null, ex);
+                    panel.remove(LABEL_GENERATING);
+                    panel.add(LABEL_ERROR_GENERATION);
+                    Logger.getLogger(AreaTabbedPane.class.getName()).log(
+                            Level.SEVERE, "Something went wrong...", ex);
+                } catch (Exception ex) {
+                    panel.remove(LABEL_GENERATING);
+                    panel.add(LABEL_ERROR_GENERATION);
+                    Logger.getLogger(AreaTabbedPane.class.getName()).log(
+                            Level.SEVERE, "Something went wrong...", ex);
                 }
             }
         });

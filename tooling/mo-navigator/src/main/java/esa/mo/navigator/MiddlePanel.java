@@ -33,7 +33,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import org.fife.ui.rtextarea.RTextArea;
 
 /**
@@ -59,6 +58,11 @@ public class MiddlePanel extends javax.swing.JPanel {
     public final void setWorkingDirectory(File folder) {
         currentFolder = folder;
         tabsServices.removeAll();
+
+        if (!folder.isDirectory()) {
+            openFolderWithXMLs();
+        }
+
         ArrayList<String> filenames = new ArrayList<>();
         for (final File f : folder.listFiles()) {
             if (f.isFile()) {
@@ -77,23 +81,26 @@ public class MiddlePanel extends javax.swing.JPanel {
         this.add(tabsServices, BorderLayout.CENTER);
     }
 
+    private void openFolderWithXMLs() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(currentFolder);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        switch (fileChooser.showOpenDialog(this)) {
+            case JFileChooser.APPROVE_OPTION:
+                // Open file...
+                setWorkingDirectory(fileChooser.getSelectedFile());
+                break;
+        }
+    }
+
     private JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         JMenuItem open = new JMenuItem("Open Folder with xmls...");
-        final JPanel parent = this;
         open.addActionListener((new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(currentFolder);
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                switch (fileChooser.showOpenDialog(parent)) {
-                    case JFileChooser.APPROVE_OPTION:
-                        // Open file...
-                        setWorkingDirectory(fileChooser.getSelectedFile());
-                        break;
-                }
+                openFolderWithXMLs();
             }
         }));
 
