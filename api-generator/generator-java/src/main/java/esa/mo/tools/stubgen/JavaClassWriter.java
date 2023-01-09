@@ -256,8 +256,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
         signature.append(" {");
         file.append(makeLine(1, signature.toString(), false));
-        //if ((null != superArgs) && (!superArgs.isEmpty())) {
-        if (superArgs != null) {
+        if ((null != superArgs) && (!superArgs.isEmpty())) {
             file.append(makeLine(2, "super(" + processArgs(superArgs, false) + ")", true));
         }
 
