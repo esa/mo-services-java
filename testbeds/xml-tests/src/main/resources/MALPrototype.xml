@@ -1508,6 +1508,20 @@
                     <smc:type area="MAL" name="Boolean" />
                 </smc:field>
             </smc:composite>
+            <smc:composite name="MyFirstObject" shortFormPart="2" comment="">
+                <smc:extends>
+                    <smc:type area="MAL" name="MOObject" />
+                </smc:extends>
+                <smc:field name="procedureName" comment="Name of the test procedure that evaluated the assertion.">
+                    <smc:type area="MAL" name="String" />
+                </smc:field>
+                <smc:field name="Info" comment="Message explaining what the assertion checks.">
+                    <smc:type area="MAL" name="String" />
+                </smc:field>
+                <smc:field name="Result" comment="Boolean indicating whether the assertion succeeded (true) or not (false).">
+                    <smc:type area="MAL" name="Boolean" />
+                </smc:field>
+            </smc:composite>
         </smc:dataTypes>
         <smc:errors>
             <smc:error name="TEST_ERROR" number="70000"
