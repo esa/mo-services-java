@@ -512,27 +512,45 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     protected List<CompositeField> createCompositeSuperElementsList(TargetWriter file,
             TypeReference type) {
         List<CompositeField> lst = new LinkedList<>();
-        if ((null != type) && (!StdStrings.COMPOSITE.equals(type.getName()))) {
-            CompositeType theType = compositeTypesMap.get(new TypeKey(type));
-            if (null != theType) {
-                // first looks for super types of this one and add their details
-                if ((null != theType.getExtends()) && (!StdStrings.COMPOSITE.equals(theType.getExtends().getType().getName()))) {
-                    lst.addAll(createCompositeSuperElementsList(file, theType.getExtends().getType()));
-                }
 
-                // now add the details of this type
-                for (NamedElementReferenceWithCommentType element : theType.getField()) {
-                    CompositeField ele = createCompositeElementsDetails(file,
-                            true,
-                            element.getName(),
-                            element.getType(),
-                            true,
-                            element.isCanBeNull(),
-                            element.getComment());
-                    lst.add(ele);
-                }
-            } else {
-                throw new IllegalStateException("Unknown super type of (" + type.getName() + ") for composite");
+        if ((type != null) && (!StdStrings.COMPOSITE.equals(type.getName()))) {
+            if (StdStrings.MOOBJECT.equals(type.getName())) {
+                TypeReference typeReference = TypeUtils.createTypeReference("MAL", null, "ObjectIdentity", false);
+
+                CompositeField ele = createCompositeElementsDetails(file,
+                        true,
+                        "objectIdentity",
+                        typeReference,
+                        true,
+                        false,
+                        "The identity of the MO Object.");
+                lst.add(ele);
+                return lst;
+            }
+
+            CompositeType theType = compositeTypesMap.get(new TypeKey(type));
+            String typeName = type.getName();
+
+            if (null == theType) {
+                throw new IllegalStateException("Unknown super type of (" + typeName + ") for composite");
+            }
+
+            // first looks for super types of this one and add their details
+            if ((null != theType.getExtends())
+                    && (!StdStrings.COMPOSITE.equals(theType.getExtends().getType().getName()))) {
+                lst.addAll(createCompositeSuperElementsList(file, theType.getExtends().getType()));
+            }
+
+            // now add the details of this type
+            for (NamedElementReferenceWithCommentType element : theType.getField()) {
+                CompositeField ele = createCompositeElementsDetails(file,
+                        true,
+                        element.getName(),
+                        element.getType(),
+                        true,
+                        element.isCanBeNull(),
+                        element.getComment());
+                lst.add(ele);
             }
         }
         return lst;

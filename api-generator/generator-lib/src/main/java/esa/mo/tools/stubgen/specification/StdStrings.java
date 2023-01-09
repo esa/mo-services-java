@@ -31,7 +31,7 @@ public abstract class StdStrings {
 
     public static final String ELEMENT = "Element";
     public static final String COMPOSITE = "Composite";
-    public static final String OBJECT = "Object";
+    public static final String MOOBJECT = "MOObject";
     public static final String ATTRIBUTE = "Attribute";
     public static final String ENUMERATION = "Enumeration";
     public static final String BLOB = "Blob";

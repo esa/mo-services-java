@@ -28,7 +28,6 @@ import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeInfo;
-import esa.mo.tools.stubgen.specification.TypeInformation;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.InterfaceWriter;
@@ -420,7 +419,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 });
 
                 if (!errors_1.isEmpty()) {
-                    throw (IOException) errors_1.poll();
+                    throw (IOException) new IOException(errors_1.poll());
                 }
             }
 
@@ -1430,14 +1429,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createCompositeClass(File folder, AreaType area, ServiceType service, CompositeType composite) throws IOException {
         String compName = composite.getName();
-
         getLog().info("Creating composite class " + compName);
 
         ClassWriter file = createClassFile(folder, compName);
-
         String parentClass = null;
         TypeReference parentType = null;
         String parentInterface = createElementType(file, StdStrings.MAL, null, StdStrings.COMPOSITE);
+
+        // Check if it is an extended Composite Type:
         if ((null != composite.getExtends())
                 && (!StdStrings.MAL.equals(composite.getExtends().getType().getArea()))
                 && (!StdStrings.COMPOSITE.equals(composite.getExtends().getType().getName()))) {
@@ -1446,15 +1445,27 @@ public abstract class GeneratorLangs extends GeneratorBase {
             parentInterface = null;
         }
 
+        // Check if it is an MO Object:
+        if (composite.getExtends() != null
+                && StdStrings.MAL.equals(composite.getExtends().getType().getArea())
+                && StdStrings.MOOBJECT.equals(composite.getExtends().getType().getName())) {
+            parentClass = createElementType(file, composite.getExtends().getType(), true);
+            parentType = composite.getExtends().getType();
+            parentInterface = null;
+        }
+
         file.addPackageStatement(area, service, getConfig().getStructureFolder());
 
-        CompositeField elementType = createCompositeElementsDetails(file, false, "return", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false), true, true, null);
+        CompositeField elementType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
+                true, true, null);
 
         List<CompositeField> compElements = createCompositeElementsList(file, composite);
         List<CompositeField> superCompElements = createCompositeSuperElementsList(file, parentType);
 
         boolean abstractComposite = (null == composite.getShortFormPart());
-        file.addClassOpenStatement(compName, !abstractComposite, abstractComposite, parentClass, parentInterface, composite.getComment());
+        file.addClassOpenStatement(compName, !abstractComposite, abstractComposite,
+                parentClass, parentInterface, composite.getComment());
         String fqName = createElementType(file, area, service, compName);
 
         if (!abstractComposite) {

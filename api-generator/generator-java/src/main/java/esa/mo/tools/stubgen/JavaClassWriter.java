@@ -247,16 +247,17 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         List<String> comments = normaliseArgComments(comment, null, args, Arrays.asList(throwsComment));
         addMultilineComment(1, false, comments, false);
 
-        StringBuilder buf = new StringBuilder(scope + " " + className + "(" + processArgs(args, true) + ")");
+        StringBuilder signature = new StringBuilder(scope + " " + className + "(" + processArgs(args, true) + ")");
 
         if (null != throwsSpec) {
-            buf.append(" throws ");
-            buf.append(throwsSpec);
+            signature.append(" throws ");
+            signature.append(throwsSpec);
         }
 
-        buf.append(" {");
-        file.append(makeLine(1, buf.toString(), false));
-        if ((null != superArgs) && (!superArgs.isEmpty())) {
+        signature.append(" {");
+        file.append(makeLine(1, signature.toString(), false));
+        //if ((null != superArgs) && (!superArgs.isEmpty())) {
+        if (superArgs != null) {
             file.append(makeLine(2, "super(" + processArgs(superArgs, false) + ")", true));
         }
 
