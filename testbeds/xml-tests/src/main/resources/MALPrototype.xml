@@ -1522,6 +1522,42 @@
                     <smc:type area="MAL" name="Boolean" />
                 </smc:field>
             </smc:composite>
+            <smc:composite name="TestBody" shortFormPart="123" comment="An abstract composite example.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Composite" />
+                </smc:extends>
+                <smc:field name="firstItem" comment="Example String item.">
+                    <smc:type area="MAL" name="String" />
+                </smc:field>
+                <smc:field name="secondItem" comment="Example Integer item.">
+                    <smc:type area="MAL" name="Integer" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="AbstractComposite" comment="An abstract composite example.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Composite" />
+                </smc:extends>
+                <smc:field name="firstItem" comment="Example String item.">
+                    <smc:type area="MAL" name="String" />
+                </smc:field>
+                <smc:field name="secondItem" comment="Example Integer item.">
+                    <smc:type area="MAL" name="Integer" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="ComplexStructure" shortFormPart="345" comment="A concrete composite example extending an Abstract composite.">
+                <smc:extends>
+                    <smc:type area="MALPrototype" name="AbstractComposite" />
+                </smc:extends>
+                <smc:field name="third_item" comment="Extra Boolean item.">
+                    <smc:type area="MAL" name="Boolean" />
+                </smc:field>
+                <smc:field name="fourth_item" comment="Example Integer item.">
+                    <smc:type area="MAL" name="Integer" />
+                </smc:field>
+                <smc:field name="last_item" comment="Contained structure.">
+                    <smc:type area="MALPrototype" name="TestBody" />
+                </smc:field>
+            </smc:composite>
         </smc:dataTypes>
         <smc:errors>
             <smc:error name="TEST_ERROR" number="70000"
