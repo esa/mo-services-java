@@ -75,19 +75,44 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
     }
 
     /**
-     * Processes a comment making sure it contain a full stop at the end.
+     * Processes a comment making sure it contain a full stop at the end. It
+     * will also break it into multiple lines if it is longer than 100
+     * characters.
      *
      * @param rv The list to return.
      * @param comment The comment to check.
      * @return the supplied list.
      */
     public static List<String> normaliseComment(List<String> rv, String comment) {
-        if ((null != rv) && (null != comment) && (0 < comment.length())) {
+        if ((null != rv) && (null != comment) && (comment.length() > 0)) {
             if (!comment.endsWith(".")) {
                 comment += ".";
             }
 
-            rv.add(comment);
+            // If the size is less than 80 chars, then put 
+            // it directly, otherwise break it up
+            int LENGTH_THRESHOLD = 80;
+
+            if (comment.length() < LENGTH_THRESHOLD) {
+                rv.add(comment);
+            } else {
+                String[] parts = comment.split(" ");
+                String str = "";
+                int counter = 0;
+
+                for (int i = 0; i < parts.length; i++) {
+                    if (counter > LENGTH_THRESHOLD) {
+                        rv.add(str);
+                        // Reset both the string and the counter
+                        str = "";
+                        counter = 0;
+                    }
+                    str += parts[i] + " ";
+                    counter += 1 + parts[i].length();
+                }
+
+                rv.add(str);
+            }
         }
 
         return rv;

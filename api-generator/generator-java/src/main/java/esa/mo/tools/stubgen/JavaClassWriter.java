@@ -247,7 +247,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         List<String> comments = normaliseArgComments(comment, null, args, Arrays.asList(throwsComment));
         addMultilineComment(1, false, comments, false);
 
-        StringBuilder signature = new StringBuilder(scope + " " + className + "(" + processArgs(args, true) + ")");
+        StringBuilder signature = new StringBuilder(scope + " " + className);
+        signature.append("(").append(processArgs(args, true)).append(")");
 
         if (null != throwsSpec) {
             signature.append(" throws ");
@@ -502,6 +503,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         List<String> rv = new LinkedList<>();
 
         normaliseComment(rv, comment);
+        rv.add(""); // Separation between the comment and params
         normaliseComments(rv, StubUtils.conditionalAdd("@param ", argsComments));
         normaliseComment(rv, StubUtils.conditionalAdd("@return ", returnComment));
         normaliseComments(rv, StubUtils.conditionalAdd("@throws ", throwsComment));
@@ -541,7 +543,6 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
             if (generator.isNativeType(fullType)) {
                 NativeTypeDetails dets = generator.getNativeType(fullType);
-
                 return dets.getLanguageTypeName();
             } else if (!type.isList() && generator.isAttributeType(type.getTypeReference())) {
                 AttributeTypeDetails dets = generator.getAttributeDetails(type.getTypeReference());

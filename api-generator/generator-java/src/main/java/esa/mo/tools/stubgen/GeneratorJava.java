@@ -438,14 +438,14 @@ public class GeneratorJava extends GeneratorLangs {
     @Override
     protected void addTypeShortForm(ClassWriter file, long sf) throws IOException {
         file.addMultilineComment("Short form for type.");
-        file.addStatement("  public static final Integer TYPE_SHORT_FORM = Integer.valueOf(" + sf + ");");
+        file.addStatement("    public static final Integer TYPE_SHORT_FORM = " + sf + ";");
     }
 
     @Override
     protected void addShortForm(ClassWriter file, long sf) throws IOException {
         file.addMultilineComment("Absolute short form for type.");
-        file.addStatement("  public static final Long SHORT_FORM = Long.valueOf(" + sf + "L);");
-        file.addStatement("  private static final long serialVersionUID = " + sf + "L;");
+        file.addStatement("    public static final Long SHORT_FORM = " + sf + "L;");
+        file.addStatement("    private static final long serialVersionUID = " + sf + "L;");
     }
 
     @Override

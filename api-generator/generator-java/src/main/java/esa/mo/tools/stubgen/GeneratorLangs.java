@@ -1576,26 +1576,25 @@ public abstract class GeneratorLangs extends GeneratorBase {
             method.addLine("if (obj instanceof " + compName + ") {", false);
 
             if (null != parentClass) {
-                method.addLine("  if (! super.equals(obj)) {", false);
-                method.addLine("    return false");
-                method.addLine("  }", false);
+                method.addLine("    if (! super.equals(obj)) {", false);
+                method.addLine("        return false");
+                method.addLine("    }", false);
             }
             if (!compElements.isEmpty()) {
                 method.addLine("  " + compName + " other = (" + compName + ") obj");
                 for (CompositeField element : compElements) {
-                    method.addLine("  if (" + element.getFieldName() + " == null) {", false);
-                    method.addLine("    if (other." + element.getFieldName() + " != null) {", false);
-                    method.addLine("      return false");
+                    method.addLine("    if (" + element.getFieldName() + " == null) {", false);
+                    method.addLine("        if (other." + element.getFieldName() + " != null) {", false);
+                    method.addLine("            return false");
+                    method.addLine("        }", false);
+                    method.addLine("    } else {", false);
+                    method.addLine("        if (! " + element.getFieldName() + ".equals(other." + element.getFieldName() + ")) {", false);
+                    method.addLine("            return false");
+                    method.addLine("        }", false);
                     method.addLine("    }", false);
-                    method.addLine("  }", false);
-                    method.addLine("  else {", false);
-                    method.addLine("    if (! " + element.getFieldName() + ".equals(other." + element.getFieldName() + ")) {", false);
-                    method.addLine("      return false");
-                    method.addLine("    }", false);
-                    method.addLine("  }", false);
                 }
             }
-            method.addLine("  return true");
+            method.addLine("    return true");
             method.addLine("}", false);
             method.addLine("return false");
             method.addMethodCloseStatement();
@@ -1813,8 +1812,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
         CompositeField areaVVar = createCompositeElementsDetails(file, false, "AREA_VERSION",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
                 true, false, "Version for area.");
+
         file.addClassVariable(true, true, StdStrings.PUBLIC, areaSfVar, false, "(" + area.getNumber() + ")");
-        file.addClassVariable(true, true, StdStrings.PUBLIC, areaVVar, false, "((short)" + area.getVersion() + ")");
+        file.addClassVariable(true, true, StdStrings.PUBLIC, areaVVar, false, "((short) " + area.getVersion() + ")");
 
         long asf = ((long) area.getNumber()) << AREA_BIT_SHIFT;
         asf += ((long) area.getVersion()) << VERSION_BIT_SHIFT;
