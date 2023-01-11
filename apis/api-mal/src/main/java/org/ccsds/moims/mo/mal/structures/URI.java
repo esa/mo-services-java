@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALDecoder;
@@ -30,6 +31,12 @@ import org.ccsds.moims.mo.mal.MALException;
  * Class representing MAL URI type.
  */
 public class URI implements Attribute {
+
+    /**
+     * Map of cachedRootURIs. This associates a full URI to its root URI.
+     */
+    private final static ConcurrentHashMap<String, String> cachedRootURIs
+            = new ConcurrentHashMap<>();
 
     private String value;
 
@@ -50,7 +57,7 @@ public class URI implements Attribute {
             Logger.getLogger(URI.class.getName()).log(
                     Level.WARNING,
                     "The URI has been initialized with an invalid null value. "
-                            + "Problems might occur while encoding the element.",
+                    + "Problems might occur while encoding the element.",
                     new MALException());
             this.value = "";
         } else {
@@ -70,6 +77,57 @@ public class URI implements Attribute {
      */
     public String getValue() {
         return value;
+    }
+
+    /**
+     * Returns the "root" URI from the full URI.The root URI only contains the
+     * protocol and the main destination and is something unique for all URIs of
+     * the same MAL.Example full URI: maltcp://10.0.0.1:61616-serviceXYZ
+     *
+     * @param delimiter
+     * @param count
+     * @return the root URI, for example maltcp://10.0.0.1:61616
+     */
+    public String getRootURI(char delimiter, int count) {
+        String rootURI = cachedRootURIs.get(value);
+
+        if (rootURI == null) {
+            int serviceDelimPosition = nthIndexOf(value, delimiter, count);
+
+            if (serviceDelimPosition < 0) {
+                // does not exist, return as is
+                return value;
+            }
+
+            rootURI = value.substring(0, serviceDelimPosition);
+            cachedRootURIs.put(value, rootURI);
+        }
+
+        return rootURI;
+    }
+
+    /**
+     * Returns the nth index of a character in a String
+     *
+     * @param uri the uri
+     * @param delimiter the delimiter character
+     * @param count The number of occurrences to skip.
+     * @return the routing part of the URI
+     */
+    public static int nthIndexOf(String uri, char delimiter, int count) {
+        int index = -1;
+
+        while (0 <= count) {
+            index = uri.indexOf(delimiter, index + 1);
+
+            if (-1 == index) {
+                return index;
+            }
+
+            --count;
+        }
+
+        return index;
     }
 
 //  This might be required for XML serialisation and technologies that use that.  

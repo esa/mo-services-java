@@ -188,19 +188,19 @@ public class RMITransport extends GENTransport<byte[], byte[]> {
     protected GENMessageSender<byte[]> createMessageSender(GENMessage msg,
             String remoteRootURI) throws MALException, MALTransmitErrorException {
         RLOGGER.log(Level.FINE,
-                "RMI received request to create connections to URI:{0}", remoteRootURI);
+                "RMI received request to create connections to URI: {0}", remoteRootURI);
 
         try {
             // create new sender for this URI
             return new RMIMessageSender(remoteRootURI);
         } catch (NotBoundException e) {
-            RLOGGER.log(Level.WARNING, "RMI could not connect to :" + remoteRootURI, e);
+            RLOGGER.log(Level.WARNING, "RMI could not connect to: " + remoteRootURI, e);
             throw new MALTransmitErrorException(msg.getHeader(),
                     new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
                     null);
 
         } catch (IOException e) {
-            RLOGGER.log(Level.WARNING, "RMI could not connect to :" + remoteRootURI, e);
+            RLOGGER.log(Level.WARNING, "RMI could not connect to: " + remoteRootURI, e);
             throw new MALTransmitErrorException(msg.getHeader(),
                     new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null),
                     null);

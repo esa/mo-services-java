@@ -198,12 +198,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
     private final ConcurrentHashMap<String, String> cachedRoutingParts
             = new ConcurrentHashMap<>();
     /**
-     * Map of cachedRootURIs. This associates a full URI to its root URI.
-     */
-    private final ConcurrentHashMap<String, String> cachedRootURIs
-            = new ConcurrentHashMap<>();
-
-    /**
      * Value of the
      * org.ccsds.moims.mo.mal.transport.gen.connectwhenconsumeroffline property
      */
@@ -228,6 +222,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
+    @Deprecated
     public GENTransport(final String protocol,
             final char serviceDelim,
             final boolean supportsRouting,
@@ -235,6 +230,26 @@ public abstract class GENTransport<I, O> implements MALTransport {
             final MALTransportFactory factory,
             final java.util.Map properties) throws MALException {
         this(protocol, "://", serviceDelim, '@',
+                supportsRouting, wrapBodyParts, factory, properties);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param protocol The protocol string.
+     * @param supportsRouting True if routing is supported by the naming
+     * convention
+     * @param wrapBodyParts True is body parts should be wrapped in BLOBs
+     * @param factory The factory that created us.
+     * @param properties The QoS properties.
+     * @throws MALException On error.
+     */
+    public GENTransport(final String protocol,
+            final boolean supportsRouting,
+            final boolean wrapBodyParts,
+            final MALTransportFactory factory,
+            final java.util.Map properties) throws MALException {
+        this(protocol, "://", '/', '@',
                 supportsRouting, wrapBodyParts, factory, properties);
     }
 
@@ -421,7 +436,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
         // get the root URI, (e.g. maltcp://10.0.0.1:61616 )
         String destinationURI = msg.getHeader().getURITo().getValue();
-        String remoteRootURI = getRootURI(destinationURI);
+        String remoteRootURI = msg.getHeader().getURITo().getRootURI(serviceDelim, serviceDelimCounter);
 
         // first check if its actually a message to ourselves
         String endpointUriPart = getRoutingPart(destinationURI);
@@ -765,33 +780,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
     }
 
     /**
-     * Returns the "root" URI from the full URI. The root URI only contains the
-     * protocol and the main destination and is something unique for all URIs of
-     * the same MAL.
-     *
-     * @param fullURI the full URI, for example
-     * maltcp://10.0.0.1:61616-serviceXYZ
-     * @return the root URI, for example maltcp://10.0.0.1:61616
-     */
-    public String getRootURI(String fullURI) {
-        String rootURI = cachedRootURIs.get(fullURI);
-
-        if (rootURI == null) {
-            int serviceDelimPosition = nthIndexOf(fullURI, serviceDelim, serviceDelimCounter);
-
-            if (serviceDelimPosition < 0) {
-                // does not exist, return as is      
-                return fullURI;
-            }
-
-            rootURI = fullURI.substring(0, serviceDelimPosition);
-            cachedRootURIs.put(fullURI, rootURI);
-        }
-
-        return rootURI;
-    }
-
-    /**
      * Returns the routing part of the URI.
      *
      * @param uriValue The URI value
@@ -801,7 +789,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
         String routingPart = cachedRoutingParts.get(uriValue);
 
         if (routingPart == null) {
-            final int iFirst = nthIndexOf(uriValue, serviceDelim, serviceDelimCounter);
+            final int iFirst = URI.nthIndexOf(uriValue, serviceDelim, serviceDelimCounter);
             int iSecond = supportsRouting ? uriValue.indexOf(routingDelim)
                     : uriValue.length();
             if (0 > iSecond) {
@@ -813,30 +801,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
         }
 
         return routingPart;
-    }
-
-    /**
-     * Returns the nth index of a character in a String
-     *
-     * @param uriValue The URI value
-     * @param delimiter the delimiter character
-     * @param count The number of occurrences to skip.
-     * @return the routing part of the URI
-     */
-    protected static int nthIndexOf(String uriValue, char delimiter, int count) {
-        int index = -1;
-
-        while (0 <= count) {
-            index = uriValue.indexOf(delimiter, index + 1);
-
-            if (-1 == index) {
-                return index;
-            }
-
-            --count;
-        }
-
-        return index;
     }
 
     /**
@@ -878,9 +842,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
                 // transport supports bi-directional communication
                 // this is the first message received form this reception handler
                 // add the remote base URI it is receiving messages from
-                String sourceURI = msg.getHeader().getURIFrom().getValue();
-                String sourceRootURI = getRootURI(sourceURI);
-
+                URI sourceURI = msg.getHeader().getURIFrom();
+                String sourceRootURI = sourceURI.getRootURI(serviceDelim, serviceDelimCounter);
                 receptionHandler.setRemoteURI(sourceRootURI);
 
                 //register the communication channel with this URI if needed
@@ -889,7 +852,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
         } else {
             // outgoing message
             // get target URI
-            String remoteRootURI = getRootURI(rerouteMessage(msg));
+            URI reroutedMsg = rerouteMessage(msg);
+            String remoteRootURI = reroutedMsg.getRootURI(serviceDelim, serviceDelimCounter);
 
             // get sender if it exists
             sender = outgoingDataChannels.get(remoteRootURI);
@@ -936,8 +900,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
         return sender;
     }
 
-    protected String rerouteMessage(GENMessage message) {
-        return message.getHeader().getURITo().getValue();
+    protected URI rerouteMessage(GENMessage message) {
+        return message.getHeader().getURITo();
     }
 
     /**

@@ -193,7 +193,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     public TCPIPTransport(final String protocol, final char serviceDelim,
             final boolean supportsRouting, final MALTransportFactory factory,
             final java.util.Map properties) throws MALException {
-        super(protocol, serviceDelim, supportsRouting, false, factory, properties);
+        super(protocol, supportsRouting, false, factory, properties);
 
         RLOGGER.fine("TCPIPTransport (constructor)");
 
@@ -768,11 +768,11 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     }
 
     @Override
-    protected String rerouteMessage(GENMessage message) {
+    protected URI rerouteMessage(GENMessage message) {
         String uri = message.getHeader().getURITo().getValue();
 
         if (aliasToIp.isEmpty()) {
-            return uri;
+            return new URI(uri);
         }
 
         int index = uri.indexOf("://") + 3;
@@ -783,9 +783,9 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         String rest = address.substring(portIndex);
 
         if (aliasToIp.containsKey(ip)) {
-            return protocol + aliasToIp.get(ip) + rest;
+            return new URI(protocol + aliasToIp.get(ip) + rest);
         } else {
-            return uri;
+            return new URI(uri);
         }
     }
 }
