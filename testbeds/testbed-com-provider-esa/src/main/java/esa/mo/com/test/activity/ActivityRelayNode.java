@@ -22,6 +22,9 @@ package esa.mo.com.test.activity;
 
 import java.util.Hashtable;
 import java.util.Map;
+import org.ccsds.moims.mo.com.COMHelper;
+import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
+import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransferList;
 import org.ccsds.moims.mo.com.event.EventHelper;
@@ -259,16 +262,23 @@ public class ActivityRelayNode {
         // Produce header
         UpdateHeaderList uhl = new UpdateHeaderList();
 
-        /*
-    final EntityKey ekey = new EntityKey(
-            new Identifier(phase),
-            ActivityTestHandlerImpl.generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, 0),
-            new Long(instIdBaseOffset + (instanceIdentifier++)),
-            ActivityTestHandlerImpl.generateSubKey(COMHelper._COM_AREA_NUMBER, ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, COMHelper._COM_AREA_VERSION, COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY));
+        AttributeList keyValues = new AttributeList();
+        keyValues.add(new Identifier(phase));
+        keyValues.add(new Union(ActivityTestHandlerImpl.generateSubKey(
+                COMHelper._COM_AREA_NUMBER,
+                ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
+                COMHelper._COM_AREA_VERSION,
+                0)
+        ));
+        keyValues.add(new Long(instIdBaseOffset + (instanceIdentifier++)));
+        keyValues.add(new Union(ActivityTestHandlerImpl.generateSubKey(
+                COMHelper._COM_AREA_NUMBER,
+                ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
+                COMHelper._COM_AREA_VERSION,
+                COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
-    final Time timestamp = new Time(System.currentTimeMillis());
-    uhl.add(new UpdateHeader(timestamp, new URI(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName), UpdateType.DELETION, ekey));
-         */
+        uhl.add(new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName), srcMessage.getDomain(), keyValues));
+
         // Produce ActivityTransferList
         ActivityTransferList atl = new ActivityTransferList();
         ActivityTransfer activityTransferInstance = new ActivityTransfer();
