@@ -555,7 +555,7 @@ public class MessageReceive implements MALMessageListener {
                 }
             } else {
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "Unknown notify consumer requested:\n >> uri: {0}\n >> subscriptionId: {1}", 
+                        "Unknown notify consumer requested:\n >> uri: {0}\n >> subscriptionId: {1}",
                         new Object[]{hdr.getURITo(), notifyBody.getSubscriptionId()});
                 ipsmap.listPublishListeners();
             }
@@ -642,7 +642,7 @@ public class MessageReceive implements MALMessageListener {
         if (addr == null) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "lookupAddress failed to find local endpoint for {0}.\n"
-                            + "Available options: {1}",
+                    + "Available options: {1}",
                     new Object[]{key, providerEndpointMap}
             );
         }
@@ -651,7 +651,13 @@ public class MessageReceive implements MALMessageListener {
     }
 
     private UOctet calculateReturnStage(final MALMessageHeader srcHdr) {
-        final short srcInteractionStage = srcHdr.getInteractionStage().getValue();
+        UOctet iStage = srcHdr.getInteractionStage();
+
+        if (iStage == null) {
+            return null;
+        }
+
+        final short srcInteractionStage = iStage.getValue();
 
         switch (srcHdr.getInteractionType().getOrdinal()) {
             case InteractionType._SUBMIT_INDEX:

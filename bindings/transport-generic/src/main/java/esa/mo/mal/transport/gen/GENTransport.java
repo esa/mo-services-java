@@ -724,7 +724,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                     final GENMessage retMsg
                             = (GENMessage) endpoint.createMessage(srcHdr.getAuthenticationId(),
                                     srcHdr.getURIFrom(),
-                                    new Time(new Date().getTime()),
+                                    Time.now(),
                                     srcHdr.getQoSlevel(),
                                     srcHdr.getPriority(),
                                     srcHdr.getDomain(),
@@ -746,16 +746,12 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
                     sendMessage(null, true, retMsg);
                 } else {
-                    LOGGER.log(Level.WARNING,
-                            "Unable to return error number (" + errorNumber
-                            + ") as no endpoint supplied: " + oriMsg.getHeader()
-                    );
+                    LOGGER.log(Level.WARNING, "(1) Unable to return error "
+                            + "number ({0}) as no endpoint supplied: {1}",
+                            new Object[]{errorNumber, oriMsg.getHeader()});
                 }
             } else {
-                LOGGER.log(Level.WARNING,
-                        "Unable to return error number (" + errorNumber
-                        + ") as already a return message: " + oriMsg.getHeader()
-                );
+                throw new MALException("Unknown type/stage!\nType: " + type + "\nStage: " + stage);
             }
         } catch (MALTransmitErrorException ex) {
             LOGGER.log(Level.WARNING,

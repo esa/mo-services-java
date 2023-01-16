@@ -151,7 +151,7 @@ public class BrokerMatcher {
                 return true;
             }
         }
-        
+
         // If one of them is null, then it is false.. the wildcard cases are covered above
         if (consumerIsNull || providerIsNull) {
             return false;
@@ -247,9 +247,11 @@ public class BrokerMatcher {
     }
 
     /**
-     * Checks if the provided domain matches the subscribed domain without wildcard in prefix or suffix
-     * 
-     * @param consumerDomainList The list of domains subscribed by consumers, it can contain wildcard
+     * Checks if the provided domain matches the subscribed domain without
+     * wildcard in prefix or suffix
+     *
+     * @param consumerDomainList The list of domains subscribed by consumers, it
+     * can contain wildcard
      * @param providerDomainList The list of domains provided by providers
      * @param consumerStartIndex The start index of consumerDomainList
      * @param providerStartIndex The start index of providerDomainList
@@ -279,6 +281,11 @@ public class BrokerMatcher {
     public static boolean domainMatchesWildcardDomain(IdentifierList consumerDomainList, IdentifierList providerDomainList) {
         if (consumerDomainList == null || providerDomainList == null) {
             return consumerDomainList == null && providerDomainList == null;
+        }
+
+        // Match it if the consumer registered with a empty list!
+        if (consumerDomainList.isEmpty()) {
+            return true;
         }
 
         boolean matched = false;
