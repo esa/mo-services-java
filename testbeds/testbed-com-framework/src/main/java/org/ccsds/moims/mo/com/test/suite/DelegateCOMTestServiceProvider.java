@@ -23,12 +23,12 @@ package org.ccsds.moims.mo.com.test.suite;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import org.ccsds.moims.mo.com.archive.ArchiveHelper;
-import org.ccsds.moims.mo.com.event.EventHelper;
-import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementHelper;
-import org.ccsds.moims.mo.comprototype.activitytest.ActivityTestHelper;
-import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestHelper;
-import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
+import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
+import org.ccsds.moims.mo.com.event.EventServiceInfo;
+import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo;
+import org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo;
+import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo;
+import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -47,13 +47,13 @@ public class DelegateCOMTestServiceProvider extends UriCOMTestServiceProvider {
 
         List<URItriple> returnValues = new ArrayList<>();
 
-        returnValues.add(getServiceURIs(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME));
-        returnValues.add(getServiceURIs(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME));
+        returnValues.add(getServiceURIs(ActivityTestServiceInfo.ACTIVITYTEST_SERVICE_NAME));
+        returnValues.add(getServiceURIs(ActivityRelayManagementServiceInfo.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME));
         returnValues.add(getServiceURIs(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME)));
-        returnValues.add(getServiceURIs(EventTestHelper.EVENTTEST_SERVICE_NAME));
-        returnValues.add(getServiceURIs(EventHelper.EVENT_SERVICE_NAME));
-        returnValues.add(getServiceURIs(ArchiveHelper.ARCHIVE_SERVICE_NAME));
-        returnValues.add(getServiceURIs(ArchiveTestHelper.ARCHIVETEST_SERVICE_NAME));
+        returnValues.add(getServiceURIs(EventTestServiceInfo.EVENTTEST_SERVICE_NAME));
+        returnValues.add(getServiceURIs(EventServiceInfo.EVENT_SERVICE_NAME));
+        returnValues.add(getServiceURIs(ArchiveServiceInfo.ARCHIVE_SERVICE_NAME));
+        returnValues.add(getServiceURIs(ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NAME));
         returnValues.add(getServiceURIs(new Identifier(LocalMALInstance.ARCHIVE_EVENT_NAME)));
 
         return returnValues;

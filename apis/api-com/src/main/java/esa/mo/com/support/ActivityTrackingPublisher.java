@@ -22,7 +22,7 @@ package esa.mo.com.support;
 
 import java.util.logging.Level;
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
+import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityAcceptance;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityExecution;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
@@ -72,7 +72,7 @@ public class ActivityTrackingPublisher {
      */
     public static final ObjectType OPERATION_ACTIVITY_OBJECT_TYPE = new ObjectType(
             COMHelper.COM_AREA_NUMBER,
-            ActivityTrackingHelper.ACTIVITYTRACKING_SERVICE_NUMBER,
+            ActivityTrackingServiceInfo.ACTIVITYTRACKING_SERVICE_NUMBER,
             COMHelper.COM_AREA_VERSION,
             new UShort(OBJ_NO_ASE_OPERATION_ACTIVITY));
 
@@ -161,7 +161,7 @@ public class ActivityTrackingPublisher {
         keys.add(new Identifier(OBJ_NO_ASE_ACCEPTANCE_STR));
         keys.add(new Union(ComStructureHelper.generateSubKey(
                         COMHelper._COM_AREA_NUMBER,
-                        ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                        ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                         COMHelper._COM_AREA_VERSION,
                         0)));
         keys.add(new Union((long) instanceIdentifier++));
@@ -310,7 +310,7 @@ public class ActivityTrackingPublisher {
         keys.add(new Identifier(OBJ_NO_ASE_EXECUTION_STR));
         keys.add(new Union(ComStructureHelper.generateSubKey(
                         COMHelper._COM_AREA_NUMBER,
-                        ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                        ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                         COMHelper._COM_AREA_VERSION,
                         0)));
         keys.add(new Union((long) instanceIdentifier++));

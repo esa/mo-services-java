@@ -32,8 +32,8 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class MALClose {
 
-    private final MALClose parent;
     private final List<MALClose> children = new LinkedList<>();
+    private final MALClose parent;
 
     /**
      * Initialises the parent field of the closing class.

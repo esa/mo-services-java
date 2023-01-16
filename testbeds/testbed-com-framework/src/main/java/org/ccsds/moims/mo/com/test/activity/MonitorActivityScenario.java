@@ -25,6 +25,7 @@ import esa.mo.com.support.ComStructureHelper;
 import java.util.*;
 import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
+import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransferList;
 import org.ccsds.moims.mo.com.event.consumer.EventStub;
@@ -503,13 +504,13 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         keys.add(new Identifier(COMTestHelper.OBJ_NO_ASE_RELEASE_STR));
         keys.add(new Union(ComStructureHelper.generateSubKey(
                 COMHelper._COM_AREA_NUMBER,
-                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                 COMHelper._COM_AREA_VERSION,
                 0)));
         keys.add(new Union((long) instanceIdentifier++));
         keys.add(new Union(ComStructureHelper.generateSubKey(
                 COMHelper._COM_AREA_NUMBER,
-                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                 COMHelper._COM_AREA_VERSION,
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 

@@ -31,6 +31,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.malprototype.errortest.ErrorTestHelper;
+import org.ccsds.moims.mo.malprototype.errortest.ErrorTestServiceInfo;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -75,20 +76,20 @@ public class TestAccessControl extends LoggingBase implements MALAccessControl {
         }
 
         if (localRejections) {
-            if (msg.getHeader().getServiceArea().getValue() == ErrorTestHelper.ERRORTEST_SERVICE.getArea().getNumber().getValue()
-                    && msg.getHeader().getService().getValue() == ErrorTestHelper._ERRORTEST_SERVICE_NUMBER
+            if (msg.getHeader().getServiceArea().getValue() == ErrorTestHelper.ERRORTEST_SERVICE.getAreaNumber().getValue()
+                    && msg.getHeader().getService().getValue() == ErrorTestServiceInfo._ERRORTEST_SERVICE_NUMBER
                     && msg.getHeader().getInteractionStage().getValue() == 1) {
-                if (msg.getHeader().getOperation().getValue() == ErrorTestHelper._TESTAUTHENTICATIONFAILURE_OP_NUMBER) {
-                    logMessage("Rejecting operation " + ErrorTestHelper.TESTAUTHENTICATIONFAILURE_OP.getName().getValue());
+                if (msg.getHeader().getOperation().getValue() == ErrorTestServiceInfo._TESTAUTHENTICATIONFAILURE_OP_NUMBER) {
+                    logMessage("Rejecting operation " + ErrorTestServiceInfo.TESTAUTHENTICATIONFAILURE_OP.getName().getValue());
                     throw new MALCheckErrorException(new MALStandardError(MALHelper.AUTHENTICATION_FAIL_ERROR_NUMBER,
-                            new Union(errorPrefix + "Rejecting operation " + ErrorTestHelper.TESTAUTHENTICATIONFAILURE_OP.getName().getValue())),
+                            new Union(errorPrefix + "Rejecting operation " + ErrorTestServiceInfo.TESTAUTHENTICATIONFAILURE_OP.getName().getValue())),
                             msg.getQoSProperties());
                 }
 
-                if (msg.getHeader().getOperation().getValue() == ErrorTestHelper._TESTAUTHORIZATIONFAILURE_OP_NUMBER) {
-                    logMessage("Rejecting operation " + ErrorTestHelper.TESTAUTHORIZATIONFAILURE_OP.getName().getValue());
+                if (msg.getHeader().getOperation().getValue() == ErrorTestServiceInfo._TESTAUTHORIZATIONFAILURE_OP_NUMBER) {
+                    logMessage("Rejecting operation " + ErrorTestServiceInfo.TESTAUTHORIZATIONFAILURE_OP.getName().getValue());
                     throw new MALCheckErrorException(new MALStandardError(MALHelper.AUTHORISATION_FAIL_ERROR_NUMBER,
-                            new Union(errorPrefix + "Rejecting operation " + ErrorTestHelper.TESTAUTHORIZATIONFAILURE_OP.getName().getValue())),
+                            new Union(errorPrefix + "Rejecting operation " + ErrorTestServiceInfo.TESTAUTHORIZATIONFAILURE_OP.getName().getValue())),
                             msg.getQoSProperties());
                 }
             }

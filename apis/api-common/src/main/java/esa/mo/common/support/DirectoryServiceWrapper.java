@@ -196,9 +196,9 @@ public class DirectoryServiceWrapper {
         UOctet areaVersion = null;
 
         if (null != service) {
-            areaNumber = service.getArea().getNumber();
-            serviceNumber = service.getNumber();
-            areaVersion = service.getArea().getVersion();
+            areaNumber = service.getAreaNumber();
+            serviceNumber = service.getServiceNumber();
+            areaVersion = new UOctet((short) service.getServiceVersion().getValue());
         }
 
         ServiceKey serviceKey = new ServiceKey(areaNumber, serviceNumber, areaVersion);

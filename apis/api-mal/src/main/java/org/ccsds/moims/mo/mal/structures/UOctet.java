@@ -49,19 +49,35 @@ public class UOctet implements Attribute {
     }
 
     /**
-     * Initialiser constructor.
+     * Constructor.
      *
      * @param value Value to initialise with.
      */
     public UOctet(final short value) {
-        if (0 > value) {
+        if (value < 0) {
             throw new IllegalArgumentException("UOctet argument must not be negative");
         }
-        if (UOctet.MAX_VALUE < value) {
+        if (value > UOctet.MAX_VALUE) {
             throw new IllegalArgumentException(
                     "UOctet argument must not be greater than " + UOctet.MAX_VALUE);
         }
         this.value = value;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param value Value to initialise with.
+     */
+    public UOctet(final int value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("UOctet argument must not be negative");
+        }
+        if (value > UOctet.MAX_VALUE) {
+            throw new IllegalArgumentException(
+                    "UOctet argument must not be greater than " + UOctet.MAX_VALUE);
+        }
+        this.value = (short) value;
     }
 
     @Override
@@ -141,6 +157,6 @@ public class UOctet implements Attribute {
     public String toString() {
         return String.valueOf(value);
     }
-    
+
     private static final long serialVersionUID = Attribute.UOCTET_SHORT_FORM;
 }

@@ -189,10 +189,10 @@ public class ZMTPEndpoint extends GENEndpoint {
                     op.getInteractionType(),
                     interactionStage,
                     transactionId,
-                    op.getService().getArea().getNumber(),
-                    op.getService().getNumber(),
+                    op.getService().getAreaNumber(),
+                    op.getService().getServiceNumber(),
                     op.getNumber(),
-                    op.getService().getArea().getVersion(),
+                    op.getService().getServiceVersion(),
                     isErrorMessage,
                     qosProperties);
 
@@ -236,10 +236,10 @@ public class ZMTPEndpoint extends GENEndpoint {
                     op.getInteractionType(),
                     interactionStage,
                     transactionId,
-                    op.getService().getArea().getNumber(),
-                    op.getService().getNumber(),
+                    op.getService().getAreaNumber(),
+                    op.getService().getServiceNumber(),
                     op.getNumber(),
-                    op.getService().getArea().getVersion(),
+                    op.getService().getServiceVersion(),
                     isErrorMessage,
                     qosProperties);
 

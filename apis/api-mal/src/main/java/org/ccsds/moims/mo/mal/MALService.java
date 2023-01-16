@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
 /**
@@ -37,7 +38,7 @@ public class MALService {
      */
     public static final UShort NULL_SERVICE_NUMBER = new UShort(0);
     private static final ArrayList<MALOperation> EMPTY_SET = new ArrayList<>();
-    
+
     private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
     private final Map<String, MALOperation> operationsByName = new HashMap<>();
     private final Map<Integer, ArrayList<MALOperation>> operationsBySet = new HashMap<>();
@@ -48,27 +49,61 @@ public class MALService {
     private final ArrayList<MALProgressOperation> progressOperations = new ArrayList();
     private final ArrayList<MALPubSubOperation> pubSubOperations = new ArrayList();
 
-    private MALArea area;
-    private final UShort number;
-    private final Identifier name;
-    
+    private final ServiceKey serviceKey;
+    private final Identifier serviceName;
+
     /**
      * Constructs a MALService object.
      *
-     * @param number The service number.
-     * @param name The service name.
+     * @param serviceKey The key of the service.
+     * @param serviceName The name of the service.
+     * @param operations The operations of the service.
      * @throws java.lang.IllegalArgumentException If any arguments are null.
      */
-    public MALService(final UShort number, final Identifier name) throws java.lang.IllegalArgumentException {
-        if (number == null) {
+    public MALService(final ServiceKey serviceKey, final Identifier serviceName,
+            final ArrayList<MALOperation> operations) throws java.lang.IllegalArgumentException {
+        if (serviceKey == null) {
             throw new IllegalArgumentException("Number argument must not be NULL");
         }
-        if (name == null) {
+        if (operations == null) {
             throw new IllegalArgumentException("Name argument must not be NULL");
         }
 
-        this.number = number;
-        this.name = name;
+        this.serviceKey = serviceKey;
+        this.serviceName = serviceName;
+
+        for (MALOperation operation : operations) {
+            this.addOperation(operation);
+        }
+    }
+
+    /**
+     * Constructs a MALService object.
+     *
+     * @param serviceKey The key of the service.
+     * @param serviceName The name of the service.
+     * @param operations The operations of the service.
+     * @throws java.lang.IllegalArgumentException If any arguments are null.
+     */
+    public MALService(final ServiceKey serviceKey, final Identifier serviceName,
+            final MALOperation[] operations) throws java.lang.IllegalArgumentException {
+        if (serviceKey == null) {
+            throw new IllegalArgumentException("Number argument must not be NULL");
+        }
+        if (operations == null) {
+            throw new IllegalArgumentException("Name argument must not be NULL");
+        }
+
+        this.serviceKey = serviceKey;
+        this.serviceName = serviceName;
+
+        for (MALOperation operation : operations) {
+            this.addOperation(operation);
+        }
+    }
+
+    public Identifier getName() {
+        return serviceName;
     }
 
     /**
@@ -77,7 +112,7 @@ public class MALService {
      * @param operation The operation to add.
      * @throws java.lang.IllegalArgumentException If the argument is null.
      */
-    public void addOperation(final MALOperation operation) throws java.lang.IllegalArgumentException {
+    private void addOperation(final MALOperation operation) throws java.lang.IllegalArgumentException {
         if (null != operation) {
             switch (operation.getInteractionType().getOrdinal()) {
                 case InteractionType._SEND_INDEX:
@@ -110,42 +145,39 @@ public class MALService {
     }
 
     /**
-     * Returns the name of the service.
-     *
-     * @return The service name.
-     */
-    public Identifier getName() {
-        return name;
-    }
-
-    /**
-     * Returns the area of the service.
-     *
-     * @return The service area.
-     */
-    public MALArea getArea() {
-        return area;
-    }
-
-    /**
-     * Sets the area of the service.
-     *
-     * @param area The new service area.
-     */
-    void setArea(final MALArea area) throws java.lang.IllegalArgumentException {
-        if (area == null) {
-            throw new IllegalArgumentException("Area argument must not be NULL");
-        }
-        this.area = area;
-    }
-
-    /**
      * Returns the number of the service.
      *
      * @return The service number.
      */
-    public UShort getNumber() {
-        return number;
+    public UShort getServiceNumber() {
+        return serviceKey.getServiceNumber();
+    }
+
+    /**
+     * Returns the area number of the service.
+     *
+     * @return The area number.
+     */
+    public UShort getAreaNumber() {
+        return serviceKey.getAreaNumber();
+    }
+
+    /**
+     * Returns the version number of the service.
+     *
+     * @return The version number.
+     */
+    public UOctet getServiceVersion() {
+        return serviceKey.getServiceVersion();
+    }
+
+    /**
+     * Returns the service key of the service.
+     *
+     * @return The service key.
+     */
+    public ServiceKey getserviceKey() {
+        return serviceKey;
     }
 
     /**

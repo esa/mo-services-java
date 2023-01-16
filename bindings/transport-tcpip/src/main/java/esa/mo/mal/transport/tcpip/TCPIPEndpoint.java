@@ -66,7 +66,7 @@ public class TCPIPEndpoint extends GENEndpoint {
                 service, operation, serviceVersion,
                 isErrorMessage, qosProperties);
         try {
-            return new TCPIPMessage(false, hdr, qosProperties, 
+            return new TCPIPMessage(false, hdr, qosProperties,
                     null, transport.getStreamFactory(), body);
         } catch (MALInteractionException e) {
             throw new MALException("Error creating message", e);
@@ -121,12 +121,13 @@ public class TCPIPEndpoint extends GENEndpoint {
                 uriTo, timestamp, qosLevel, priority, domain, networkZone,
                 session, sessionName, op.getInteractionType(),
                 interactionStage, transactionId,
-                op.getService().getArea().getNumber(),
-                op.getService().getNumber(), op.getNumber(), 
-                op.getService().getArea().getVersion(),
+                op.getService().getAreaNumber(),
+                op.getService().getServiceNumber(),
+                op.getNumber(),
+                op.getService().getServiceVersion(),
                 isErrorMessage, qosProperties);
         try {
-            return new TCPIPMessage(false, hdr, qosProperties, 
+            return new TCPIPMessage(false, hdr, qosProperties,
                     op, transport.getStreamFactory(), body);
         } catch (MALInteractionException e) {
             throw new MALException("Error creating message", e);

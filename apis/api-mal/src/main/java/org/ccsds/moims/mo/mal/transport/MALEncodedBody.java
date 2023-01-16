@@ -27,7 +27,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
  */
 public class MALEncodedBody {
 
-    private Blob encodedBody;
+    private final Blob encodedBody;
 
     /**
      * Constructor.

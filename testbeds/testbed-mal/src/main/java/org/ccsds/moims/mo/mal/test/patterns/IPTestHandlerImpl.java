@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitMultipleErrorException;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
-import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.body.RequestMultiResponse;
 import org.ccsds.moims.mo.malprototype.iptest.provider.*;
 import org.ccsds.moims.mo.malprototype.iptest.structures.*;
@@ -59,7 +59,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         publishInteractionListeners = new Hashtable<>();
         publishers = new Hashtable<>();
         publishersMulti = new Hashtable<>();
-        ipTestProviderFileName = IPTestHelper.IPTEST_SERVICE_NAME.getValue();
+        ipTestProviderFileName = IPTestServiceInfo.IPTEST_SERVICE_NAME.getValue();
     }
 
     public String getIpTestProviderFileName() {
@@ -437,7 +437,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         UShort opNumber = null;
         try {
             if (_TestPublishUpdate.getTestMultiType()) {
-                opNumber = IPTestHelper.MONITORMULTI_OP.getNumber();
+                opNumber = IPTestServiceInfo.MONITORMULTI_OP.getNumber();
                 MonitorMultiPublisher publisher = getMonitorMultiPublisher(
                         _TestPublishUpdate.getDomain(),
                         _TestPublishUpdate.getNetworkZone(),
@@ -460,7 +460,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }*/
                 publisher.publish(updateHeaderList, testUpdateList, testUpdateList);
             } else {
-                opNumber = IPTestHelper.MONITOR_OP.getNumber();
+                opNumber = IPTestServiceInfo.MONITOR_OP.getNumber();
                 MonitorPublisher publisher = getMonitorPublisher(
                         _TestPublishUpdate.getDomain(),
                         _TestPublishUpdate.getNetworkZone(),
@@ -509,7 +509,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         new UOctet(MALPubSubOperation._PUBLISH_STAGE),
                         listener.getPublishRegisterTransactionId(),
                         MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                        IPTestHelper.IPTEST_SERVICE_NUMBER,
+                        IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                         opNumber,
                         MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                         Boolean.TRUE);

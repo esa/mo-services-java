@@ -40,6 +40,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
+import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
 import org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetails;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList;
@@ -60,6 +61,7 @@ import org.ccsds.moims.mo.com.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.com.test.util.COMParseHelper;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestHelper;
+import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObject;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObjectList;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.SubComposite;
@@ -189,8 +191,8 @@ public class ArchiveScenario {
         longList = new LongList();
         resetCompositeFilterSet();
         domain = new IdentifierList();
-        queriedDomains = new ArrayList<IdentifierList>();
-        queriedObjectTypes = new ArrayList<ObjectType>();
+        queriedDomains = new ArrayList<>();
+        queriedObjectTypes = new ArrayList<>();
         return true;
     }
 
@@ -230,7 +232,7 @@ public class ArchiveScenario {
 
     public boolean resetObjectType(int typeNumber) {
         objectType = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER,
-                ArchiveTestHelper.ARCHIVETEST_SERVICE_NUMBER, COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(typeNumber));
+                ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NUMBER, COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(typeNumber));
         return true;
     }
 
@@ -829,7 +831,7 @@ public class ArchiveScenario {
 
         long secondSubKey = 0L;
         secondSubKey |= (COMHelper.COM_AREA.getVersion().getValue() & 0xFF) << 24;
-        secondSubKey |= (ArchiveHelper._ARCHIVE_SERVICE_NUMBER & 0xFFFFL) << 32;
+        secondSubKey |= (ArchiveServiceInfo._ARCHIVE_SERVICE_NUMBER & 0xFFFFL) << 32;
         secondSubKey |= (COMHelper._COM_AREA_NUMBER & 0xFFFFL) << 48;
 
         /*

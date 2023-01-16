@@ -48,7 +48,9 @@ import org.ccsds.moims.mo.mal.transport.MALRegisterBody;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.mal.transport.MALTransmitMultipleErrorException;
 import org.ccsds.moims.mo.malprototype.errortest.ErrorTestHelper;
+import org.ccsds.moims.mo.malprototype.errortest.ErrorTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.testbed.transport.TestEndPoint;
 import org.ccsds.moims.mo.testbed.transport.TestEndPointSendInterceptor;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
@@ -59,9 +61,10 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
  */
 public class MALTestEndPointSendInterceptor implements TestEndPointSendInterceptor {
 
+    @Override
     public void sendMessage(TestEndPoint ep, MALMessage msg) throws MALTransmitErrorException, MALException {
-        if (IPTestHelper.IPTEST_SERVICE.getArea().getNumber().equals(msg.getHeader().getServiceArea())
-                && IPTestHelper.IPTEST_SERVICE_NUMBER.equals(msg.getHeader().getService())) {
+        if (IPTestHelper.IPTEST_SERVICE.getAreaNumber().equals(msg.getHeader().getServiceArea())
+                && IPTestServiceInfo.IPTEST_SERVICE_NUMBER.equals(msg.getHeader().getService())) {
             if (msg.getHeader().getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX) {
                 if (msg.getHeader().getInteractionStage().getValue() == MALPubSubOperation._PUBLISH_REGISTER_STAGE) {
                     MALPublishRegisterBody publishRegisterBody = (MALPublishRegisterBody) msg.getBody();
@@ -93,53 +96,53 @@ public class MALTestEndPointSendInterceptor implements TestEndPointSendIntercept
                     }
                 }
             }
-        } else if (ErrorTestHelper.ERRORTEST_SERVICE.getArea().getNumber().equals(msg.getHeader().getServiceArea())
-                && ErrorTestHelper.ERRORTEST_SERVICE_NUMBER.equals(msg.getHeader().getService())) {
-            if (ErrorTestHelper.TESTDELIVERYFAILED_OP.getNumber().equals(
+        } else if (ErrorTestHelper.ERRORTEST_SERVICE.getAreaNumber().equals(msg.getHeader().getServiceArea())
+                && ErrorTestServiceInfo.ERRORTEST_SERVICE_NUMBER.equals(msg.getHeader().getService())) {
+            if (ErrorTestServiceInfo.TESTDELIVERYFAILED_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), msg.getQoSProperties());
-            } else if (ErrorTestHelper.TESTDELIVERYTIMEDOUT_OP.getNumber().equals(
+            } else if (ErrorTestServiceInfo.TESTDELIVERYTIMEDOUT_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER, null), msg.getQoSProperties());
-            } else if (ErrorTestHelper.TESTDELIVERYDELAYED_OP.getNumber().equals(
+            } else if (ErrorTestServiceInfo.TESTDELIVERYDELAYED_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.DELIVERY_DELAYED_ERROR_NUMBER, null), msg.getQoSProperties());
-            } else if (ErrorTestHelper.TESTDESTINATIONUNKNOWN_OP.getNumber().equals(
+            } else if (ErrorTestServiceInfo.TESTDESTINATIONUNKNOWN_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), msg.getQoSProperties());
-            } else if (ErrorTestHelper.TESTDESTINATIONTRANSIENT_OP.getNumber().equals(
+            } else if (ErrorTestServiceInfo.TESTDESTINATIONTRANSIENT_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.DESTINATION_TRANSIENT_ERROR_NUMBER, null), msg.getQoSProperties());
-            } else if (ErrorTestHelper.TESTDESTINATIONLOST_OP.getNumber().equals(
+            } else if (ErrorTestServiceInfo.TESTDESTINATIONLOST_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.DESTINATION_LOST_ERROR_NUMBER, null), msg.getQoSProperties());
-            } else if (ErrorTestHelper.TESTENCRYPTIONFAIL_OP.getNumber().equals(
+            } else if (ErrorTestServiceInfo.TESTENCRYPTIONFAIL_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.ENCRYPTION_FAIL_ERROR_NUMBER, null), msg.getQoSProperties());
-            } else if (ErrorTestHelper.TESTUNSUPPORTEDAREA_OP.getNumber().equals(
+            } else if (ErrorTestServiceInfo.TESTUNSUPPORTEDAREA_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER, null), msg.getQoSProperties());
-            } else if (ErrorTestHelper.TESTUNSUPPORTEDOPERATION_OP.getNumber().equals(
+            } else if (ErrorTestServiceInfo.TESTUNSUPPORTEDOPERATION_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null), msg.getQoSProperties());
-            } else if (ErrorTestHelper.TESTUNSUPPORTEDVERSION_OP.getNumber().equals(
+            } else if (ErrorTestServiceInfo.TESTUNSUPPORTEDVERSION_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.UNSUPPORTED_VERSION_ERROR_NUMBER, null), msg.getQoSProperties());
-            } else if (ErrorTestHelper.TESTBADENCODING_OP.getNumber().equals(
+            } else if (ErrorTestServiceInfo.TESTBADENCODING_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.BAD_ENCODING_ERROR_NUMBER, null), msg.getQoSProperties());
-            } else if (ErrorTestHelper.TESTUNKNOWN_OP.getNumber().equals(
+            } else if (ErrorTestServiceInfo.TESTUNKNOWN_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.UNKNOWN_ERROR_NUMBER, null), msg.getQoSProperties());
@@ -147,6 +150,7 @@ public class MALTestEndPointSendInterceptor implements TestEndPointSendIntercept
         }
     }
 
+    @Override
     public void sendMessages(TestEndPoint ep, MALMessage[] messages)
             throws MALTransmitMultipleErrorException, MALException {
     }

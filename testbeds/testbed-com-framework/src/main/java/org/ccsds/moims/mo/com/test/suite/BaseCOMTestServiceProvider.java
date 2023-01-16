@@ -24,11 +24,17 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
+import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
 import org.ccsds.moims.mo.com.event.EventHelper;
+import org.ccsds.moims.mo.com.event.EventServiceInfo;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementHelper;
+import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo;
 import org.ccsds.moims.mo.comprototype.activitytest.ActivityTestHelper;
+import org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestHelper;
+import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
+import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
@@ -52,11 +58,11 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
         logMessage("Create Providers Called");
 
         MALTransport transport = defaultMal.getTransport(protocol);
-        MALEndpoint activityEndPoint = transport.createEndpoint(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME.getValue(), new Hashtable());
+        MALEndpoint activityEndPoint = transport.createEndpoint(ActivityTestServiceInfo.ACTIVITYTEST_SERVICE_NAME.getValue(), new Hashtable());
         MALEndpoint activityRelayManagementEndPoint = transport.createEndpoint(
-                ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME.getValue(), new Hashtable());
-        MALEndpoint archiveEndpoint = transport.createEndpoint(ArchiveHelper.ARCHIVE_SERVICE_NAME.getValue(), new Hashtable());
-        MALEndpoint eventTestEndPoint = transport.createEndpoint(EventTestHelper.EVENTTEST_SERVICE_NAME.getValue(), new Hashtable());
+                ActivityRelayManagementServiceInfo.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME.getValue(), new Hashtable());
+        MALEndpoint archiveEndpoint = transport.createEndpoint(ArchiveServiceInfo.ARCHIVE_SERVICE_NAME.getValue(), new Hashtable());
+        MALEndpoint eventTestEndPoint = transport.createEndpoint(EventTestServiceInfo.EVENTTEST_SERVICE_NAME.getValue(), new Hashtable());
 
         initProviders();
 
@@ -166,13 +172,13 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
 
         List<URItriple> returnValues = new ArrayList<URItriple>();
 
-        returnValues.add(new URItriple(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME, activityTestProvider.getURI(), activityTestProvider.getBrokerURI()));
-        returnValues.add(new URItriple(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME, activityRelayManagementProvider.getURI(), activityRelayManagementProvider.getBrokerURI()));
+        returnValues.add(new URItriple(ActivityTestServiceInfo.ACTIVITYTEST_SERVICE_NAME, activityTestProvider.getURI(), activityTestProvider.getBrokerURI()));
+        returnValues.add(new URItriple(ActivityRelayManagementServiceInfo.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME, activityRelayManagementProvider.getURI(), activityRelayManagementProvider.getBrokerURI()));
         returnValues.add(new URItriple(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME), activityEventProvider.getURI(), activityEventProvider.getBrokerURI()));
-        returnValues.add(new URItriple(EventTestHelper.EVENTTEST_SERVICE_NAME, eventTestProvider.getURI(), eventTestProvider.getBrokerURI()));
-        returnValues.add(new URItriple(EventHelper.EVENT_SERVICE_NAME, eventProvider.getURI(), eventProvider.getBrokerURI()));
-        returnValues.add(new URItriple(ArchiveHelper.ARCHIVE_SERVICE_NAME, archiveProvider.getURI(), archiveProvider.getBrokerURI()));
-        returnValues.add(new URItriple(ArchiveTestHelper.ARCHIVETEST_SERVICE_NAME, archiveTestProvider.getURI(), archiveTestProvider.getBrokerURI()));
+        returnValues.add(new URItriple(EventTestServiceInfo.EVENTTEST_SERVICE_NAME, eventTestProvider.getURI(), eventTestProvider.getBrokerURI()));
+        returnValues.add(new URItriple(EventServiceInfo.EVENT_SERVICE_NAME, eventProvider.getURI(), eventProvider.getBrokerURI()));
+        returnValues.add(new URItriple(ArchiveServiceInfo.ARCHIVE_SERVICE_NAME, archiveProvider.getURI(), archiveProvider.getBrokerURI()));
+        returnValues.add(new URItriple(ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NAME, archiveTestProvider.getURI(), archiveTestProvider.getBrokerURI()));
         returnValues.add(new URItriple(new Identifier(LocalMALInstance.ARCHIVE_EVENT_NAME), archiveEventProvider.getURI(), archiveEventProvider.getBrokerURI()));
 
         activityEndPoint.startMessageDelivery();
@@ -184,7 +190,7 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
     }
 
     public void storeActivityRelayURI(String name, URI uri, URI brokerURI) throws MALException {
-        FileBasedDirectory.storeURI(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME.getValue() + name, uri, brokerURI);
+        FileBasedDirectory.storeURI(ActivityTestServiceInfo.ACTIVITYTEST_SERVICE_NAME.getValue() + name, uri, brokerURI);
     }
 
     public MALProvider createActivityRelay(String name,

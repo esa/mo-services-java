@@ -121,11 +121,11 @@ public class TestEncoder {
                 InteractionType.SEND,
                 new UOctet((short) 0),
                 Long.MIN_VALUE,
-                PerfTestHelper.PERFTEST_SERVICE.getArea().getNumber(),
-                PerfTestHelper.PERFTEST_SERVICE.getNumber(),
-                PerfTestHelper.SEND_OP_NUMBER,
-                PerfTestHelper.PERFTEST_SERVICE.getArea().getVersion(),
-                Boolean.FALSE), PerfTestHelper.SEND_OP, 0, null, null);
+                PerfTestHelper.PERFTEST_SERVICE.getAreaNumber(),
+                PerfTestHelper.PERFTEST_SERVICE.getServiceNumber(),
+                PerfTestHelper.PERFTEST_SERVICE.SEND_OP_NUMBER,
+                PerfTestHelper.PERFTEST_SERVICE.getServiceVersion(),
+                Boolean.FALSE), PerfTestHelper.PERFTEST_SERVICE.SEND_OP, 0, null, null);
 
         System.out.println("Running tests");
         for (Results result : results) {

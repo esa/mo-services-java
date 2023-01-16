@@ -401,6 +401,7 @@ public class HelperMisc {
      * @return The name of the service
      * @throws org.ccsds.moims.mo.mal.MALException The area/service is Unknown
      */
+    /*
     public static String serviceKey2name(UShort area, UOctet areaVersion, UShort service)
             throws MALException {
 
@@ -422,6 +423,7 @@ public class HelperMisc {
 
         return malSer.getName().toString();
     }
+    */
 
     public static void setInputProcessorsProperty() {
         System.setProperty("org.ccsds.moims.mo.mal.transport.gen.inputprocessors", "5");

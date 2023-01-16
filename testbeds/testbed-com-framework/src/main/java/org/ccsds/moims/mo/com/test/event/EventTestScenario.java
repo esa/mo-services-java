@@ -31,6 +31,7 @@ import org.ccsds.moims.mo.com.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
+import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
@@ -637,7 +638,7 @@ public class EventTestScenario extends LoggingBase {
             instanceIdsToRetrieve.add(new Long(instanceId));
             // Set Object Type
             Integer objectNumber = Integer.decode(ev.getUpdateHeader().getKeyValues().get(0).toString());
-            objectType = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestHelper.EVENTTEST_SERVICE_NUMBER,
+            objectType = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
                     COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(objectNumber.intValue()));
             LocalMALInstance.instance().archiveStub().retrieve(objectType, domainId,
                     instanceIdsToRetrieve, archiveAdapter);

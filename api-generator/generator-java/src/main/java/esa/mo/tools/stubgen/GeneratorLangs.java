@@ -442,6 +442,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         JavaHelpers helper = new JavaHelpers(this);
         helper.createServiceHelperClass(serviceFolder, area, service, summary);
 
+        // create service info
+        JavaServiceInfo serviceInfo = new JavaServiceInfo(this);
+        serviceInfo.createServiceInfoClass(serviceFolder, area, service, summary);
+
         // create consumer classes
         createServiceConsumerClasses(serviceFolder, area, service, summary);
         // create provider classes
@@ -914,6 +918,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String throwsMALAndInteractionException = throwsInteractionException + ", " + throwsMALException;
         String malHelper = createElementType(file, StdStrings.MAL, null, null, "MALHelper");
         String helperName = createElementType(file, area.getName(), service.getName(), null, service.getName() + "Helper");
+        String serviceInfoName = createElementType(file, area.getName(), service.getName(), null, service.getName() + JavaServiceInfo.SERVICE_INFO);
         String malString = malStringAsElement(file);
         String malInteger = createElementType(file, StdStrings.MAL, null, StdStrings.INTEGER);
         String stdError = createElementType(file, StdStrings.MAL, null, null, "MALStandardError");
@@ -999,7 +1004,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             updateType, "create" + StubUtils.preCap(op.getName()) + "Publisher", psArgs, throwsMALException,
                             "Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName(),
                             "The new publisher object.", Arrays.asList(throwsMALException + " if a problem is detected during creation of the publisher"));
-                    String ns = convertToNamespace(helperName + "." + op.getName().toUpperCase() + "_OP");
+                    String ns = convertToNamespace(serviceInfoName + "." + op.getName().toUpperCase() + "_OP");
                     method.addMethodWithDependencyStatement("return new " + updateType.getTypeName()
                             + createMethodCall("(providerSet.createPublisherSet(") + ns + ", domain, networkZone, sessionType, sessionName, qos, qosProps, priority))", ns, true);
                     method.addMethodCloseStatement();
@@ -1025,7 +1030,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SEND_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                String ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                String ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction)");
                 method.addLine("    break");
@@ -1048,7 +1053,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SUBMIT_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction)");
                 method.addLine(createMethodCall("    interaction.sendAcknowledgement()"));
@@ -1075,7 +1080,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (op.getPattern() == InteractionPatternEnum.REQUEST_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 String opResp = delegateCall + op.getName() + "(" + opArgs + "interaction)";
-                ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 createRequestResponseDecompose(
                         method, op,
@@ -1104,7 +1109,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.INVOKE_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
                 method.addLine("    break");
@@ -1129,7 +1134,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.PROGRESS_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                ns = convertToNamespace(helperName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
                 method.addLine("    break");
@@ -1210,7 +1215,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             TypeKey key = new TypeKey(any.getArea(), any.getService(), String.valueOf(any.getNumber()));
             if (comObjectMap.containsKey(key)) {
                 ModelObjectType refObj = comObjectMap.get(key);
-                rv = convertToNamespace(createElementType(file, any.getArea(), any.getService(), null, any.getService() + "Helper")
+                rv = convertToNamespace(createElementType(file, any.getArea(), any.getService(), null, any.getService() + JavaServiceInfo.SERVICE_INFO)
                         + "." + refObj.getName().toUpperCase() + "_OBJECT_TYPE");
             } else {
                 getLog().warn("Unknown COM object referenced: " + key);
@@ -2248,11 +2253,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     protected void createStructureFactoryFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
     }
 
-    protected abstract void addServiceConstructor(MethodWriter method, String serviceVar, String serviceVersion, ServiceSummary summary) throws IOException;
-
     protected abstract String createAreaHelperClassInitialValue(String areaVar, short areaVersion);
-
-    protected abstract String createServiceHelperClassInitialValue(String serviceVar);
 
     protected abstract void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher op) throws IOException;
 

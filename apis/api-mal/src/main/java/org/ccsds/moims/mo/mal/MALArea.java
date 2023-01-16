@@ -36,7 +36,6 @@ public class MALArea {
     private final Identifier name;
     private final UOctet version;
     private final ArrayList<MALService> services = new ArrayList<>();
-    private final Map<String, MALService> serviceNames = new HashMap<>();
     private final Map<Integer, MALService> serviceNumbers = new HashMap<>();
 
     /**
@@ -101,16 +100,6 @@ public class MALArea {
     }
 
     /**
-     * Returns a contained service identified by its name.
-     *
-     * @param serviceName The name of the service to find.
-     * @return The found service or null if not found.
-     */
-    public synchronized MALService getServiceByName(final Identifier serviceName) {
-        return serviceNames.get(serviceName.getValue());
-    }
-
-    /**
      * Returns a contained service identified by its number.
      *
      * @param serviceNumber The number of the service to find.
@@ -128,12 +117,11 @@ public class MALArea {
      * @throws MALException Thrown if service is already contained.
      */
     public synchronized void addService(final MALService service) throws IllegalArgumentException, MALException {
-        if (!serviceNumbers.containsKey(service.getNumber().getValue())
-                && !(serviceNames.containsKey(service.getName().getValue()))) {
-            service.setArea(this);
+        if (!serviceNumbers.containsKey(service.getServiceNumber().getValue())) {
+            //service.setArea(this);
             services.add(service);
-            serviceNumbers.put(service.getNumber().getValue(), service);
-            serviceNames.put(service.getName().getValue(), service);
+            serviceNumbers.put(service.getServiceNumber().getValue(), service);
+            //serviceNames.put(service.getName().getValue(), service);
         } else {
             throw new MALException("Service already included in area");
         }

@@ -231,10 +231,10 @@ public class GENConcurrentMessageSender {
                     messageHolder.setResult(Boolean.TRUE);
                 } catch (IOException e) {
                     LOGGER.log(Level.WARNING,
-                            "Cannot send packet to destination:{0} informing transport",
+                            "Cannot send message to destination: {0} informing transport",
                             uriTo);
                     LOGGER.log(Level.FINE,
-                            "Cannot send packet to destination:{0} informing transport",
+                            "Cannot send message to destination: {0} informing transport",
                             e);
 
                     //send back reply that the message was not sent successfully

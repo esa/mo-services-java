@@ -312,18 +312,18 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         String srtype = createLocalType(rtype);
         String argString = processArgs(args, true);
 
-        StringBuilder buf = new StringBuilder();
-        buf.append(scope).append(" ").append(nStatic);
-        buf.append(nFinal).append(srtype).append(" ").append(methodName);
-        buf.append("(").append(argString).append(")");
+        StringBuilder methodSignature = new StringBuilder();
+        methodSignature.append(scope).append(" ").append(nStatic);
+        methodSignature.append(nFinal).append(srtype).append(" ").append(methodName);
+        methodSignature.append("(").append(argString).append(")");
 
         if (null != throwsSpec) {
-            buf.append(" throws ");
-            buf.append(throwsSpec);
+            methodSignature.append(" throws ");
+            methodSignature.append(throwsSpec);
         }
 
-        buf.append(" {");
-        file.append(makeLine(1, buf.toString(), false));
+        methodSignature.append(" {");
+        file.append(makeLine(1, methodSignature.toString(), false));
 
         return this;
     }
@@ -346,15 +346,15 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         String srtype = createLocalType(rtype);
         String argString = processArgs(args, true);
 
-        StringBuilder buf = new StringBuilder(scope + " " + nStatic + nFinal + srtype + " " + methodName + "(" + argString + ")");
+        StringBuilder methodSignature = new StringBuilder(scope + " " + nStatic + nFinal + srtype + " " + methodName + "(" + argString + ")");
 
         if (null != throwsSpec) {
-            buf.append(" throws ");
-            buf.append(throwsSpec);
+            methodSignature.append(" throws ");
+            methodSignature.append(throwsSpec);
         }
 
-        buf.append(" {");
-        file.append(makeLine(1, buf.toString(), false));
+        methodSignature.append(" {");
+        file.append(makeLine(1, methodSignature.toString(), false));
 
         return this;
     }

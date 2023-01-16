@@ -70,6 +70,7 @@ public class JavaConsumer {
         String throwsMALException = generator.createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String areaHelper = generator.createElementType(file, areaName, null, null, areaName + "Helper");
         String serviceHelper = generator.createElementType(file, areaName, serviceName, null, serviceName + "Helper");
+        String serviceInfoName = generator.createElementType(file, areaName, serviceName, null, serviceName + JavaServiceInfo.SERVICE_INFO);
 
         CompositeField stdHeaderArg = generator.createCompositeElementsDetails(file, false, "msgHeader",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageHeader", false),
@@ -241,73 +242,73 @@ public class JavaConsumer {
 
         if (submitRequired || supportsToValue) {
             createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.SUBMIT_OP,
-                    "submitAck", "Ack", 0, stdNoBodyArgs, serviceHelper, throwsMALException,
+                    "submitAck", "Ack", 0, stdNoBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a SUBMIT acknowledgement is received from a provider.");
             createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.SUBMIT_OP,
-                    "submit", "", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    "submit", "", stdErrorBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a SUBMIT acknowledgement error is received from a provider.");
         }
 
         if (requestRequired || supportsToValue) {
             createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.REQUEST_OP,
-                    "requestResponse", "Response", 3, stdBodyArgs, serviceHelper, throwsMALException,
+                    "requestResponse", "Response", 3, stdBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a REQUEST response is received from a provider.");
             createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.REQUEST_OP,
-                    "request", "", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    "request", "", stdErrorBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a REQUEST response error is received from a provider.");
         }
 
         if (invokeRequired || supportsToValue) {
             createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.INVOKE_OP,
-                    "invokeAck", "Ack", 1, stdBodyArgs, serviceHelper, throwsMALException,
+                    "invokeAck", "Ack", 1, stdBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when an INVOKE acknowledgement is received from a provider.");
             createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.INVOKE_OP,
-                    "invokeAck", "Ack", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    "invokeAck", "Ack", stdErrorBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when an INVOKE acknowledgement error is received from a provider.");
             createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.INVOKE_OP,
-                    "invokeResponse", "Response", 3, stdBodyArgs, serviceHelper, throwsMALException,
+                    "invokeResponse", "Response", 3, stdBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when an INVOKE response is received from a provider.");
             createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.INVOKE_OP,
-                    "invokeResponse", "Response", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    "invokeResponse", "Response", stdErrorBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when an INVOKE response error is received from a provider.");
         }
 
         if (progressRequired || supportsToValue) {
             createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PROGRESS_OP,
-                    "progressAck", "Ack", 1, stdBodyArgs, serviceHelper, throwsMALException,
+                    "progressAck", "Ack", 1, stdBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PROGRESS acknowledgement is received from a provider.");
             createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PROGRESS_OP,
-                    "progressAck", "Ack", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    "progressAck", "Ack", stdErrorBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PROGRESS acknowledgement error is received from a provider.");
             createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PROGRESS_OP,
-                    "progressUpdate", "Update", 2, stdBodyArgs, serviceHelper, throwsMALException,
+                    "progressUpdate", "Update", 2, stdBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PROGRESS update is received from a provider.");
             createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PROGRESS_OP,
-                    "progressUpdate", "Update", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    "progressUpdate", "Update", stdErrorBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PROGRESS update error is received from a provider.");
             createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PROGRESS_OP,
-                    "progressResponse", "Response", 3, stdBodyArgs, serviceHelper, throwsMALException,
+                    "progressResponse", "Response", 3, stdBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PROGRESS response is received from a provider.");
             createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PROGRESS_OP,
-                    "progressResponse", "Response", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    "progressResponse", "Response", stdErrorBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PROGRESS response error is received from a provider.");
         }
 
         if (pubsubRequired || supportsToValue) {
             createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PUBSUB_OP,
-                    "registerAck", "RegisterAck", 1, stdNoBodyArgs, serviceHelper, throwsMALException,
+                    "registerAck", "RegisterAck", 1, stdNoBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PubSub register acknowledgement is received from a broker.");
             createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PUBSUB_OP,
-                    "register", "Register", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    "register", "Register", stdErrorBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PubSub register acknowledgement error is received from a broker.");
             createServiceConsumerAdapterNotifyMethod(file, InteractionPatternEnum.PUBSUB_OP,
-                    "notify", "Notify", 2, stdNotifyBodyArgs, areaHelper, areaName, serviceHelper, serviceName, throwsMALException,
+                    "notify", "Notify", 2, stdNotifyBodyArgs, areaHelper, areaName, serviceInfoName, serviceName, throwsMALException,
                     summary, "Called by the MAL when a PubSub update is received from a broker.");
             createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PUBSUB_OP,
-                    "notify", "Notify", stdErrorBodyArgs, serviceHelper, throwsMALException,
+                    "notify", "Notify", stdErrorBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PubSub update error is received from a broker.");
             createServiceConsumerAdapterMessageMethod(file, InteractionPatternEnum.PUBSUB_OP,
-                    "deregisterAck", "DeregisterAck", 1, stdNoBodyArgs, serviceHelper, throwsMALException,
+                    "deregisterAck", "DeregisterAck", 1, stdNoBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PubSub deregister acknowledgement is received from a broker.");
 
             file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC, false,
@@ -323,7 +324,7 @@ public class JavaConsumer {
 
     protected void createServiceConsumerAdapterMessageMethod(ClassWriter file, InteractionPatternEnum optype,
             String opname, String subopPostname, int opTypeIndex, List<CompositeField> args,
-            String serviceHelper, String throwsMALException, ServiceSummary summary, String comment) throws IOException {
+            String serviceInfoName, String throwsMALException, ServiceSummary summary, String comment) throws IOException {
         MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
                 false, true, null, opname + "Received", args, throwsMALException, comment, null,
                 Arrays.asList(throwsMALException + " if an error is detected processing the message."));
@@ -331,7 +332,7 @@ public class JavaConsumer {
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
-                String ns = generator.convertToNamespace(serviceHelper + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 List<TypeInfo> opTypes = null;
                 switch (opTypeIndex) {
@@ -360,18 +361,18 @@ public class JavaConsumer {
 
     protected void createServiceConsumerAdapterNotifyMethod(ClassWriter file, InteractionPatternEnum optype,
             String opname, String subopPostname, int opTypeIndex, List<CompositeField> args,
-            String areaHelper, String areaName, String serviceHelper, String serviceName,
+            String areaHelper, String areaName, String serviceInfoName, String serviceName,
             String throwsMALException, ServiceSummary summary, String comment) throws IOException {
         MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
                 false, true, null, opname + "Received", args, throwsMALException, comment, null,
                 Arrays.asList(throwsMALException + " if an error is detected processing the message."));
 
-        method.addLine("if ((" + areaHelper + "." + areaName.toUpperCase() + "_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (" + serviceHelper + "." + serviceName.toUpperCase() + "_SERVICE_NUMBER.equals(msgHeader.getService()))) {", false);
+        method.addLine("if ((" + areaHelper + "." + areaName.toUpperCase() + "_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (" + serviceInfoName + "." + serviceName.toUpperCase() + "_SERVICE_NUMBER.equals(msgHeader.getService()))) {", false);
         method.addLine("  switch (" + generator.createMethodCall("msgHeader.getOperation().getValue()") + ") {", false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
-                String ns = generator.convertToNamespace(serviceHelper + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("    case " + ns, ns, false);
                 List<TypeInfo> opTypes = new LinkedList<>();
                 opTypes.add(0, TypeUtils.convertTypeReference(generator, TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
@@ -396,7 +397,7 @@ public class JavaConsumer {
     }
 
     protected void createServiceConsumerAdapterErrorMethod(ClassWriter file, InteractionPatternEnum optype,
-            String opname, String subopPostname, List<CompositeField> args, String serviceHelper,
+            String opname, String subopPostname, List<CompositeField> args, String serviceInfoName,
             String throwsMALException, ServiceSummary summary, String comment) throws IOException {
         MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
                 false, true, null, opname + "ErrorReceived", args, throwsMALException, comment, null,
@@ -405,7 +406,7 @@ public class JavaConsumer {
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
-                String ns = generator.convertToNamespace(serviceHelper + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + op.getName() + subopPostname + "ErrorReceived(msgHeader, body.getError(), qosProperties)");
                 method.addLine("    break");
@@ -457,6 +458,7 @@ public class JavaConsumer {
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.URI, false),
                 true, true, null);
         String helperType = generator.createElementType(file, area.getName(), service.getName(), null, serviceName + "Helper") + generator.getConfig().getNamingSeparator();
+        String serviceInfoType = generator.createElementType(file, area.getName(), service.getName(), null, serviceName + JavaServiceInfo.SERVICE_INFO) + generator.getConfig().getNamingSeparator();
         CompositeField consumerType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
                 false, true, null);
@@ -491,7 +493,8 @@ public class JavaConsumer {
         }
 
         for (OperationSummary op : summary.getOperations()) {
-            String operationInstanceVar = generator.addressOf(helperType) + op.getName().toUpperCase() + "_OP";
+            //String operationInstanceVar = generator.addressOf(helperType) + op.getName().toUpperCase() + "_OP";
+            String operationInstanceVar = generator.addressOf(serviceInfoType) + op.getName().toUpperCase() + "_OP";
             switch (op.getPattern()) {
                 case SEND_OP: {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());
@@ -637,12 +640,8 @@ public class JavaConsumer {
         }
 
         if ((null != targetTypes) && (!targetTypes.isEmpty())) {
-            if (1 == targetTypes.size()) {
-                if (targetTypes.get(0).isNativeType()) {
-                    method.addLine("return " + generator.createOperationArgReturn(file, method, targetTypes.get(0), "body", 0));
-                } else {
-                    method.addLine("return " + generator.createOperationArgReturn(file, method, targetTypes.get(0), "body", 0));
-                }
+            if (targetTypes.size() == 1) {
+                method.addLine("return " + generator.createOperationArgReturn(file, method, targetTypes.get(0), "body", 0));
             } else {
                 StringBuilder buf = new StringBuilder();
 

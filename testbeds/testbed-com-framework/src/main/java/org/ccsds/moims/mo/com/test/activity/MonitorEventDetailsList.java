@@ -42,6 +42,7 @@ import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
+import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 
 /**
  *
@@ -221,7 +222,7 @@ class MonitorEventDetails {
                         COMHelper.COM_AREA_NUMBER, bTypeValid);
                 bTypeValid = COMChecker.equalsCheck(strObject, "Source.Type.Service",
                         objectDetails.getSource().getType().getService(),
-                        ActivityTrackingHelper.ACTIVITYTRACKING_SERVICE_NUMBER, bTypeValid);
+                        ActivityTrackingServiceInfo.ACTIVITYTRACKING_SERVICE_NUMBER, bTypeValid);
                 bTypeValid = COMChecker.equalsCheck(strObject, "Source.Type.Version",
                         objectDetails.getSource().getType().getAreaVersion(),
                         COMHelper.COM_AREA_VERSION, bTypeValid);

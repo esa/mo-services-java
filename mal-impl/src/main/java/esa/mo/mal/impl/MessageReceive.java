@@ -702,7 +702,7 @@ public class MessageReceive implements MALMessageListener {
         protected EndPointPair(final String localURI, final MALService service) {
             first = localURI;
             if (null != service) {
-                second = (((long) service.getArea().getNumber().getValue()) << 32) + ((long) service.getNumber().getValue());
+                second = (((long) service.getAreaNumber().getValue()) << 32) + ((long) service.getServiceNumber().getValue());
             } else {
                 second = null;
             }

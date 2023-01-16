@@ -35,7 +35,7 @@ import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
-import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
 import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
@@ -111,8 +111,8 @@ public class PatternTest {
                 new UOctet(MALPubSubOperation._REGISTER_STAGE),
                 null, // transaction id not checked here (see below)
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
-                IPTestHelper.MONITOR_OP.getNumber(),
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE);
 
@@ -131,8 +131,8 @@ public class PatternTest {
                 new UOctet(MALPubSubOperation._REGISTER_STAGE),
                 null, // transaction id not checked here (see below)
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
-                IPTestHelper.MONITOR_OP.getNumber(),
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE);
 
@@ -184,21 +184,21 @@ public class PatternTest {
             expectedInitialHeader.setInteractionType(InteractionType.SUBMIT);
             expectedInitialHeader.setInteractionStage(MALSubmitOperation.SUBMIT_STAGE);
             if (callMultiVersion) {
-                expectedInitialHeader.setOperation(IPTestHelper.SUBMITMULTI_OP.getNumber());
+                expectedInitialHeader.setOperation(IPTestServiceInfo.SUBMITMULTI_OP.getNumber());
             } else {
-                expectedInitialHeader.setOperation(IPTestHelper.TESTSUBMIT_OP.getNumber());
+                expectedInitialHeader.setOperation(IPTestServiceInfo.TESTSUBMIT_OP.getNumber());
             }
             testSubmit(monitor, ipTest, callMultiVersion, testDef);
         } else if ("REQUEST".equalsIgnoreCase(pattern)) {
             expectedInitialHeader.setInteractionType(InteractionType.REQUEST);
             expectedInitialHeader.setInteractionStage(MALRequestOperation.REQUEST_STAGE);
             if (callMultiVersion) {
-                expectedInitialHeader.setOperation(IPTestHelper.REQUESTMULTI_OP.getNumber());
+                expectedInitialHeader.setOperation(IPTestServiceInfo.REQUESTMULTI_OP.getNumber());
             } else {
                 if (callEmptyVersion) {
-                    expectedInitialHeader.setOperation(IPTestHelper.TESTREQUESTEMPTYBODY_OP.getNumber());
+                    expectedInitialHeader.setOperation(IPTestServiceInfo.TESTREQUESTEMPTYBODY_OP.getNumber());
                 } else {
-                    expectedInitialHeader.setOperation(IPTestHelper.REQUEST_OP.getNumber());
+                    expectedInitialHeader.setOperation(IPTestServiceInfo.REQUEST_OP.getNumber());
                 }
             }
             testRequest(monitor, ipTest, callMultiVersion, callEmptyVersion, testDef);
@@ -206,12 +206,12 @@ public class PatternTest {
             expectedInitialHeader.setInteractionType(InteractionType.INVOKE);
             expectedInitialHeader.setInteractionStage(MALInvokeOperation.INVOKE_STAGE);
             if (callMultiVersion) {
-                expectedInitialHeader.setOperation(IPTestHelper.INVOKEMULTI_OP.getNumber());
+                expectedInitialHeader.setOperation(IPTestServiceInfo.INVOKEMULTI_OP.getNumber());
             } else {
                 if (callEmptyVersion) {
-                    expectedInitialHeader.setOperation(IPTestHelper.TESTINVOKEEMPTYBODY_OP.getNumber());
+                    expectedInitialHeader.setOperation(IPTestServiceInfo.TESTINVOKEEMPTYBODY_OP.getNumber());
                 } else {
-                    expectedInitialHeader.setOperation(IPTestHelper.INVOKE_OP.getNumber());
+                    expectedInitialHeader.setOperation(IPTestServiceInfo.INVOKE_OP.getNumber());
                 }
             }
             testInvoke(monitor, ipTest, callMultiVersion, callEmptyVersion, testDef);
@@ -219,12 +219,12 @@ public class PatternTest {
             expectedInitialHeader.setInteractionType(InteractionType.PROGRESS);
             expectedInitialHeader.setInteractionStage(MALProgressOperation.PROGRESS_STAGE);
             if (callMultiVersion) {
-                expectedInitialHeader.setOperation(IPTestHelper.PROGRESSMULTI_OP.getNumber());
+                expectedInitialHeader.setOperation(IPTestServiceInfo.PROGRESSMULTI_OP.getNumber());
             } else {
                 if (callEmptyVersion) {
-                    expectedInitialHeader.setOperation(IPTestHelper.TESTPROGRESSEMPTYBODY_OP.getNumber());
+                    expectedInitialHeader.setOperation(IPTestServiceInfo.TESTPROGRESSEMPTYBODY_OP.getNumber());
                 } else {
-                    expectedInitialHeader.setOperation(IPTestHelper.PROGRESS_OP.getNumber());
+                    expectedInitialHeader.setOperation(IPTestServiceInfo.PROGRESS_OP.getNumber());
                 }
             }
             testProgress(monitor, ipTest, callMultiVersion, callEmptyVersion, testDef);

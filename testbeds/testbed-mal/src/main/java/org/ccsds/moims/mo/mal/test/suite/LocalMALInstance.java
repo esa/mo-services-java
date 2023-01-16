@@ -36,12 +36,16 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.test.transport.MALTestEndPointSendInterceptor;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
+import org.ccsds.moims.mo.malprototype.datatest.DataTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
 import org.ccsds.moims.mo.malprototype.errortest.ErrorTestHelper;
+import org.ccsds.moims.mo.malprototype.errortest.ErrorTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.errortest.consumer.ErrorTestStub;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
 import org.ccsds.moims.mo.malprototype.iptest2.IPTest2Helper;
+import org.ccsds.moims.mo.malprototype.iptest2.IPTest2ServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest2.consumer.IPTest2Stub;
 import org.ccsds.moims.mo.malprototype2.MALPrototype2Helper;
 import org.ccsds.moims.mo.testbed.suite.BaseLocalMALInstance;
@@ -127,7 +131,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
 
     public synchronized DataTestStub dataTestStub() throws MALException {
         if (null == dtstub) {
-            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(DataTestHelper.DATATEST_SERVICE_NAME.getValue());
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(DataTestServiceInfo.DATATEST_SERVICE_NAME.getValue());
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
                     "dataTestConsumer",
@@ -150,7 +154,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
 
     public synchronized ErrorTestStub errorTestStub() throws MALException {
         if (null == erstub) {
-            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ErrorTestHelper.ERRORTEST_SERVICE_NAME.getValue());
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ErrorTestServiceInfo.ERRORTEST_SERVICE_NAME.getValue());
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
                     "errorTestConsumer",
@@ -192,8 +196,8 @@ public class LocalMALInstance extends BaseLocalMALInstance {
             logMessage("Loading URIs from file: " + TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
             uris = FileBasedDirectory.loadURIs(TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
         } else {
-            logMessage("Loading URIs from file: " + IPTestHelper.IPTEST_SERVICE_NAME.getValue());
-            uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME.getValue());
+            logMessage("Loading URIs from file: " + IPTestServiceInfo.IPTEST_SERVICE_NAME.getValue());
+            uris = FileBasedDirectory.loadURIs(IPTestServiceInfo.IPTEST_SERVICE_NAME.getValue());
         }
 
         logMessage("The Loaded uris are :\nuri: " + uris.uri + "\nbroker: " + uris.broker);
@@ -278,7 +282,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
         Hashtable qosProperties = new Hashtable();
 
         FileBasedDirectory.URIpair uris
-                = FileBasedDirectory.loadURIs(IPTest2Helper.IPTEST2_SERVICE_NAME.getValue());
+                = FileBasedDirectory.loadURIs(IPTest2ServiceInfo.IPTEST2_SERVICE_NAME.getValue());
 
         if (uris.uri.getValue().startsWith("malamqp")) {
             // The protocol 'malamqp' is used

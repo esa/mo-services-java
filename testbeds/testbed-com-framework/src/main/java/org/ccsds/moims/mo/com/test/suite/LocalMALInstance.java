@@ -25,8 +25,10 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
+import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
 import org.ccsds.moims.mo.com.archive.consumer.ArchiveStub;
 import org.ccsds.moims.mo.com.event.EventHelper;
+import org.ccsds.moims.mo.com.event.EventServiceInfo;
 import org.ccsds.moims.mo.com.event.consumer.EventStub;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.test.activity.MonitorEventPublisherSkeleton;
@@ -34,13 +36,17 @@ import org.ccsds.moims.mo.com.test.util.COMInterceptor;
 import org.ccsds.moims.mo.com.test.util.MALPublishInteractionListenerImpl;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementHelper;
+import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer.ActivityRelayManagementStub;
 import org.ccsds.moims.mo.comprototype.activitytest.ActivityTestHelper;
+import org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.activitytest.consumer.ActivityTestStub;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
 import org.ccsds.moims.mo.comprototype.eventtest.consumer.EventTestStub;
 import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestHelper;
+import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.archivetest.consumer.ArchiveTestStub;
+import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -103,7 +109,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     public synchronized ActivityTestStub activityTestStub(String extraNamePart) throws MALException {
         ActivityTestStub stub = activityTestStubs.get(extraNamePart);
         if (null == stub) {
-            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ActivityTestHelper.ACTIVITYTEST_SERVICE_NAME.getValue());
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ActivityTestServiceInfo.ACTIVITYTEST_SERVICE_NAME.getValue());
 
             final IdentifierList domain = new IdentifierList();
             domain.add(new Identifier("esa"));
@@ -130,7 +136,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
 
     public synchronized ActivityRelayManagementStub activityRelayManagementStub() throws MALException {
         if (null == activityRelayManagementStub) {
-            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME.getValue());
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ActivityRelayManagementServiceInfo.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME.getValue());
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
                     "ActivityRelayManagementConsumer",
@@ -177,7 +183,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
 
     public synchronized ArchiveStub archiveStub() throws MALException {
         if (null == archiveStub) {
-            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveHelper.ARCHIVE_SERVICE_NAME.getValue());
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveServiceInfo.ARCHIVE_SERVICE_NAME.getValue());
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
                     "ArchiveConsumer",
@@ -200,7 +206,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
 
     public synchronized ArchiveTestStub archiveTestStub() throws MALException {
         if (null == archiveTestStub) {
-            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveTestHelper.ARCHIVETEST_SERVICE_NAME.getValue());
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NAME.getValue());
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
                     "ArchiveTestConsumer",
@@ -247,7 +253,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     public synchronized EventTestStub eventTestStub() throws MALException {
         if (null == eventTestStub) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(
-                    EventTestHelper.EVENTTEST_SERVICE_NAME.getValue());
+                    EventTestServiceInfo.EVENTTEST_SERVICE_NAME.getValue());
 
             final IdentifierList domain = new IdentifierList();
             domain.add(new Identifier("esa"));
@@ -274,7 +280,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     public synchronized EventStub eventStub(IdentifierList domain) throws MALException {
         if (null == eventStub) {
             LoggingBase.logMessage("LocalMALInstance:event stub creating consumer " + domain);
-            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(EventHelper.EVENT_SERVICE_NAME.getValue());
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(EventServiceInfo.EVENT_SERVICE_NAME.getValue());
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
                     "Event monitor consumer",

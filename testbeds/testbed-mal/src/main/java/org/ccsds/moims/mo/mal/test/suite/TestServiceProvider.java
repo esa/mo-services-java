@@ -39,9 +39,13 @@ import org.ccsds.moims.mo.mal.test.patterns.pubsub.IPTestHandlerWithSharedBroker
 import org.ccsds.moims.mo.mal.test.transport.MALTestEndPointSendInterceptor;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
+import org.ccsds.moims.mo.malprototype.datatest.DataTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.errortest.ErrorTestHelper;
+import org.ccsds.moims.mo.malprototype.errortest.ErrorTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest2.IPTest2Helper;
+import org.ccsds.moims.mo.malprototype.iptest2.IPTest2ServiceInfo;
 import org.ccsds.moims.mo.malprototype2.MALPrototype2Helper;
 import org.ccsds.moims.mo.testbed.suite.BaseTestServiceProvider;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
@@ -61,9 +65,9 @@ public class TestServiceProvider extends BaseTestServiceProvider {
         0x01, 0x02
     });
     public static final String IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME
-            = IPTestHelper.IPTEST_SERVICE_NAME.getValue() + "SharedBroker";
+            = IPTestServiceInfo.IPTEST_SERVICE_NAME.getValue() + "SharedBroker";
     public static final String IP_TEST_PROVIDER_FROM_AREA2_NAME
-            = IPTestHelper.IPTEST_SERVICE_NAME.getValue() + "FromArea2";
+            = IPTestServiceInfo.IPTEST_SERVICE_NAME.getValue() + "FromArea2";
     public static final String IP_TEST_PROVIDER_FROM_AREA2_WITH_SHARED_BROKER_NAME
             = IP_TEST_PROVIDER_FROM_AREA2_NAME + "SharedBroker";
 
@@ -211,11 +215,11 @@ public class TestServiceProvider extends BaseTestServiceProvider {
         FileBasedDirectory.storePrivateBrokerAuthenticationId(
                 ipprovider.getBrokerAuthenticationId());
 
-        FileBasedDirectory.storeURI(DataTestHelper.DATATEST_SERVICE_NAME.getValue(), dtprovider.getURI(), dtprovider.getBrokerURI());
-        FileBasedDirectory.storeURI(ErrorTestHelper.ERRORTEST_SERVICE_NAME.getValue(), erprovider.getURI(), erprovider.getBrokerURI());
-        FileBasedDirectory.storeURI(IPTestHelper.IPTEST_SERVICE_NAME.getValue(), ipprovider.getURI(), ipprovider.getBrokerURI());
+        FileBasedDirectory.storeURI(DataTestServiceInfo.DATATEST_SERVICE_NAME.getValue(), dtprovider.getURI(), dtprovider.getBrokerURI());
+        FileBasedDirectory.storeURI(ErrorTestServiceInfo.ERRORTEST_SERVICE_NAME.getValue(), erprovider.getURI(), erprovider.getBrokerURI());
+        FileBasedDirectory.storeURI(IPTestServiceInfo.IPTEST_SERVICE_NAME.getValue(), ipprovider.getURI(), ipprovider.getBrokerURI());
         FileBasedDirectory.storeURI(IP_TEST_PROVIDER_FROM_AREA2_NAME, ipFromArea2provider.getURI(), ipFromArea2provider.getBrokerURI());
         FileBasedDirectory.storeURI(IP_TEST_PROVIDER_FROM_AREA2_WITH_SHARED_BROKER_NAME, ipFromArea2providerWithSharedBroker.getURI(), ipFromArea2providerWithSharedBroker.getBrokerURI());
-        FileBasedDirectory.storeURI(IPTest2Helper.IPTEST2_SERVICE_NAME.getValue(), ip2provider.getURI(), ip2provider.getBrokerURI());
+        FileBasedDirectory.storeURI(IPTest2ServiceInfo.IPTEST2_SERVICE_NAME.getValue(), ip2provider.getURI(), ip2provider.getBrokerURI());
     }
 }

@@ -43,6 +43,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.provider.MonitorMultiPublisher;
 import org.ccsds.moims.mo.malprototype.iptest.provider.MonitorPublisher;
 import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
@@ -97,7 +98,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
         UShort opNumber = null;
         try {
             if (_TestPublishRegister.getTestMultiType()) {
-                opNumber = IPTestHelper.MONITORMULTI_OP.getNumber();
+                opNumber = IPTestServiceInfo.MONITORMULTI_OP.getNumber();
                 MonitorMultiPublisher publisher = getMonitorMultiPublisher(
                         _TestPublishRegister.getDomain(),
                         _TestPublishRegister.getNetworkZone(),
@@ -109,7 +110,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister: The keyNames are: " + _TestPublishRegister.getKeyNames());
                 publisher.asyncRegister(_TestPublishRegister.getKeyNames(), listener);
             } else {
-                opNumber = IPTestHelper.MONITOR_OP.getNumber();
+                opNumber = IPTestServiceInfo.MONITOR_OP.getNumber();
                 MonitorPublisher publisher = getMonitorPublisher(
                         _TestPublishRegister.getDomain(),
                         _TestPublishRegister.getNetworkZone(),
@@ -142,7 +143,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 new UOctet(MALPubSubOperation._PUBLISH_REGISTER_STAGE),
                 null,
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 opNumber,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE);
@@ -171,7 +172,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 new UOctet(MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE),
                 publishRegisterMsg.getHeader().getTransactionId(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 opNumber,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(), isErrorTest);
 
@@ -209,9 +210,9 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
 
         UShort opNumber;
         if (_TestPublishUpdate.getTestMultiType()) {
-            opNumber = IPTestHelper.MONITORMULTI_OP.getNumber();
+            opNumber = IPTestServiceInfo.MONITORMULTI_OP.getNumber();
         } else {
-            opNumber = IPTestHelper.MONITOR_OP.getNumber();
+            opNumber = IPTestServiceInfo.MONITOR_OP.getNumber();
         }
 
         MALMessageHeader expectedPublishHeader = new TestMessageHeader(
@@ -229,7 +230,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 new UOctet(MALPubSubOperation._PUBLISH_STAGE),
                 listener.getPublishRegisterTransactionId(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 opNumber,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE);
@@ -266,7 +267,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
         UShort opNumber = null;
         try {
             if (_TestPublishDeregister.getTestMultiType()) {
-                opNumber = IPTestHelper.MONITORMULTI_OP.getNumber();
+                opNumber = IPTestServiceInfo.MONITORMULTI_OP.getNumber();
                 MonitorMultiPublisher publisher = getMonitorMultiPublisher(
                         _TestPublishDeregister.getDomain(),
                         _TestPublishDeregister.getNetworkZone(),
@@ -276,7 +277,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                         _TestPublishDeregister.getPriority());
                 publisher.asyncDeregister(listener);
             } else {
-                opNumber = IPTestHelper.MONITOR_OP.getNumber();
+                opNumber = IPTestServiceInfo.MONITOR_OP.getNumber();
                 MonitorPublisher publisher = getMonitorPublisher(
                         _TestPublishDeregister.getDomain(),
                         _TestPublishDeregister.getNetworkZone(),
@@ -307,7 +308,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 new UOctet(MALPubSubOperation._PUBLISH_DEREGISTER_STAGE),
                 null,
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 opNumber,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE);
@@ -332,7 +333,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 new UOctet(MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE),
                 publishDeregisterMsg.getHeader().getTransactionId(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 opNumber,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE);

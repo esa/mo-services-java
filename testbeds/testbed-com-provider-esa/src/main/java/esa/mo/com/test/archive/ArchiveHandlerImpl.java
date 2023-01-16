@@ -26,6 +26,7 @@ import java.util.Iterator;
 import org.ccsds.moims.mo.com.COMHelper;
 import static org.ccsds.moims.mo.com.COMHelper.*;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
+import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
 import org.ccsds.moims.mo.com.archive.provider.ArchiveInheritanceSkeleton;
 import org.ccsds.moims.mo.com.archive.provider.CountInteraction;
 import org.ccsds.moims.mo.com.archive.provider.QueryInteraction;
@@ -43,6 +44,7 @@ import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestHelper;
+import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayload;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
 import org.ccsds.moims.mo.comprototype1.COMPrototype1Helper;
@@ -232,11 +234,11 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         boolean bRet = false;
 
         if ((objectType.getArea().equals(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER)
-                && objectType.getService().equals(ArchiveTestHelper.ARCHIVETEST_SERVICE_NUMBER)
+                && objectType.getService().equals(ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NUMBER)
                 && objectType.getVersion().equals(COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION)
                 && objectType.getNumber().equals(COMPROTOTYPE_TEST_TEST_OBJECT5_OBJ_NO))
                 || (objectType.getArea().equals(COMHelper.COM_AREA_NUMBER)
-                && objectType.getService().equals(ArchiveHelper.ARCHIVE_SERVICE_NUMBER)
+                && objectType.getService().equals(ArchiveServiceInfo.ARCHIVE_SERVICE_NUMBER)
                 && objectType.getVersion().equals(COMHelper.COM_AREA_VERSION))) {
             bRet = true;
         }

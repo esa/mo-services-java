@@ -43,6 +43,7 @@ import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
+import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.comprototype.activitytest.provider.ActivityTestInheritanceSkeleton;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
@@ -298,13 +299,13 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         keyValues.add(new Identifier(COMTestHelper.OBJ_NO_ASE_ACCEPTANCE_STR));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
                 COMHelper._COM_AREA_NUMBER,
-                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                 COMHelper._COM_AREA_VERSION,
                 0)));
         keyValues.add(new Union((long) instanceIdentifier++));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
                 COMHelper._COM_AREA_NUMBER,
-                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                 COMHelper._COM_AREA_VERSION,
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
@@ -339,13 +340,13 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         keyValues.add(new Identifier(COMTestHelper.OBJ_NO_ASE_EXECUTION_STR));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
                 COMHelper._COM_AREA_NUMBER,
-                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                 COMHelper._COM_AREA_VERSION,
                 0)));
         keyValues.add(new Union((long) instanceIdentifier++));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
                 COMHelper._COM_AREA_NUMBER,
-                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                 COMHelper._COM_AREA_VERSION,
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 

@@ -35,17 +35,10 @@ public class FastMessage implements MALMessage {
     private final Map qoSProperties;
     private final FastBody body;
 
-    public FastMessage(final MALMessageHeader header,
-            final Map qosProperties,
-            final Object... body) {
+    public FastMessage(final MALMessageHeader header, final Map qosProperties, final Object... body) {
         this.header = header;
         this.qoSProperties = qosProperties;
-
-        if (header.getIsErrorMessage()) {
-            this.body = new FastErrorBody(body);
-        } else {
-            this.body = new FastBody(body);
-        }
+        this.body = header.getIsErrorMessage() ? new FastErrorBody(body) : new FastBody(body);
     }
 
     public MALMessageHeader getHeader() {

@@ -26,6 +26,7 @@ import org.ccsds.moims.mo.com.test.util.COMChecker;
 import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
+import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectCreation;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectDeletion;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate;
@@ -136,7 +137,7 @@ class EventDetails {
                 COMTestHelper.getEventTestObjectTypeAsKey((new Integer(sourceObjNumber)).intValue()), bValid);
         // Check source URI
         COMChecker.equalsCheck(strObject, "Header.UpdateType", updateHeader.getSource().toString(),
-                EventTestHelper.EVENTTEST_SERVICE_NAME.toString(), bValid);
+                EventTestServiceInfo.EVENTTEST_SERVICE_NAME.toString(), bValid);
         return bValid;
     }
 
@@ -285,7 +286,7 @@ class EventDetails {
                     COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, bTypeValid);
             bTypeValid = COMChecker.equalsCheck(strObject, check + ".Type.Service",
                     objectId.getType().getService(),
-                    EventTestHelper.EVENTTEST_SERVICE_NUMBER, bTypeValid);
+                    EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER, bTypeValid);
             bTypeValid = COMChecker.equalsCheck(strObject, check + ".Type.Version",
                     objectId.getType().getAreaVersion(),
                     COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, bTypeValid);

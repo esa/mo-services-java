@@ -157,9 +157,9 @@ public class ConnectionProvider {
                 sharedBrokerURI);
 
         IntegerList serviceKey = new IntegerList();
-        serviceKey.add(malService.getArea().getNumber().getValue()); // Area
-        serviceKey.add(malService.getNumber().getValue()); // Service
-        serviceKey.add((int) malService.getArea().getVersion().getValue()); // Version
+        serviceKey.add((int) malService.getAreaNumber().getValue()); // Area
+        serviceKey.add(malService.getServiceNumber().getValue()); // Service
+        serviceKey.add((int) malService.getServiceVersion().getValue()); // Version
 
         primaryConnectionDetails.setProviderURI(serviceProvider.getURI());
         primaryConnectionDetails.setBrokerURI(serviceProvider.getBrokerURI());

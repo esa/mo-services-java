@@ -43,7 +43,7 @@ import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
-import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 
 public class SupportedIpTestProcedure extends LoggingBase {
@@ -62,7 +62,7 @@ public class SupportedIpTestProcedure extends LoggingBase {
         TransportInterceptor.instance().resetSupportedIpCount(InteractionType.PROGRESS);
         TransportInterceptor.instance().resetSupportedIpCount(InteractionType.PUBSUB);
         // Just create a new stub
-        FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME.getValue());
+        FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(IPTestServiceInfo.IPTEST_SERVICE_NAME.getValue());
 
         String uri = uris.uri.getValue();
         uri = uri.substring(uri.indexOf(":"));

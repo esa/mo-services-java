@@ -23,10 +23,12 @@ package esa.mo.com.test.event;
 import esa.mo.com.support.ComStructureHelper;
 import java.util.Hashtable;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
+import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
 import org.ccsds.moims.mo.com.archive.consumer.ArchiveStub;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetails;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList;
 import org.ccsds.moims.mo.com.event.EventHelper;
+import org.ccsds.moims.mo.com.event.EventServiceInfo;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
@@ -36,6 +38,7 @@ import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
+import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.eventtest.provider.EventTestHandler;
 import org.ccsds.moims.mo.comprototype.eventtest.provider.EventTestSkeleton;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum;
@@ -193,7 +196,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
                 true,
                 null);
         LoggingBase.logMessage(CLS + ":createMonitorEventPublisher - calling store UI");
-        FileBasedDirectory.storeURI(EventHelper.EVENT_SERVICE_NAME.getValue(), malProvider.getURI(), malProvider.getBrokerURI());
+        FileBasedDirectory.storeURI(EventServiceInfo.EVENT_SERVICE_NAME.getValue(), malProvider.getURI(), malProvider.getBrokerURI());
 
         monitorEventPublisherSkeleton.malInitialize(malProvider);
 
@@ -319,7 +322,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
 //        domain.add(new Identifier("esa"));
 //        domain.add(new Identifier("mission"));
         archiveStub().store(Boolean.FALSE,
-                new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestHelper.EVENTTEST_SERVICE_NUMBER,
+                new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
                         COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(Integer.parseInt(objectNumber))),
                 eventDomainId,
                 archiveDetailsList,
@@ -395,13 +398,13 @@ public class EventTestHandlerImpl implements EventTestHandler {
         keyValues.add(new Identifier(eventObjectNumber));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
                 COMPrototypeHelper._COMPROTOTYPE_AREA_NUMBER,
-                EventTestHelper._EVENTTEST_SERVICE_NUMBER,
+                EventTestServiceInfo._EVENTTEST_SERVICE_NUMBER,
                 COMPrototypeHelper._COMPROTOTYPE_AREA_VERSION,
                 0)));
         keyValues.add(new Union((long) eventInstCount++));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
                 COMPrototypeHelper._COMPROTOTYPE_AREA_NUMBER,
-                EventTestHelper._EVENTTEST_SERVICE_NUMBER,
+                EventTestServiceInfo._EVENTTEST_SERVICE_NUMBER,
                 COMPrototypeHelper._COMPROTOTYPE_AREA_VERSION,
                 sourceObjectNumber)));
 
@@ -411,13 +414,13 @@ public class EventTestHandlerImpl implements EventTestHandler {
 
         updateHeader.setKeyValues(keyValues);
         updateHeader.setDomain(domain);
-        updateHeader.setSource(new Identifier(EventTestHelper.EVENTTEST_SERVICE_NAME.getValue()));
+        updateHeader.setSource(new Identifier(EventTestServiceInfo.EVENTTEST_SERVICE_NAME.getValue()));
     }
 
     private void setObjectId(ObjectId objectId, String domain, short objectNumber, long instanceId) {
         ObjectType type = new ObjectType();
         type.setArea(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER);
-        type.setService(EventTestHelper.EVENTTEST_SERVICE_NUMBER);
+        type.setService(EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER);
         type.setVersion(COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION);
         type.setNumber(new UShort(objectNumber));
         objectId.setType(type);
@@ -433,7 +436,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
     public synchronized ArchiveStub archiveStub() throws MALException {
         if (null == archiveStub) {
 
-            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveHelper.ARCHIVE_SERVICE_NAME.getValue());
+            FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveServiceInfo.ARCHIVE_SERVICE_NAME.getValue());
 
             final IdentifierList domain = new IdentifierList();
             domain.add(new Identifier("esa"));

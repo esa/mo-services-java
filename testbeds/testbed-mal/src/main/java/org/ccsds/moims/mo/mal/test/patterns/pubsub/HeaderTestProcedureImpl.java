@@ -62,7 +62,7 @@ import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
-import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
 import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestResult;
@@ -179,7 +179,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         if (shared) {
             uris = FileBasedDirectory.loadURIs(TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
         } else {
-            uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME.getValue());
+            uris = FileBasedDirectory.loadURIs(IPTestServiceInfo.IPTEST_SERVICE_NAME.getValue());
         }
         return uris;
     }
@@ -238,8 +238,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 new UOctet(MALPubSubOperation._REGISTER_STAGE),
                 null, // transaction id not checked here (see below)
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
-                IPTestHelper.MONITOR_OP.getNumber(),
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE);
 
@@ -283,8 +283,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 new UOctet(MALPubSubOperation._REGISTER_ACK_STAGE),
                 transactionId,
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
-                IPTestHelper.MONITOR_OP.getNumber(),
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE);
 
@@ -394,8 +394,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 new UOctet(MALPubSubOperation._NOTIFY_STAGE),
                 cc.getTransactionId(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
-                IPTestHelper.MONITOR_OP.getNumber(),
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE);
 
@@ -450,8 +450,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 new UOctet(MALPubSubOperation._NOTIFY_STAGE),
                 cc.getTransactionId(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
-                IPTestHelper.MONITOR_OP.getNumber(),
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.TRUE);
 
@@ -580,8 +580,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 new UOctet(MALPubSubOperation._DEREGISTER_STAGE),
                 null, // transaction id not checked here (see below)
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
-                IPTestHelper.MONITOR_OP.getNumber(),
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE);
 
@@ -620,8 +620,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 new UOctet(MALPubSubOperation._DEREGISTER_ACK_STAGE),
                 transactionId,
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
-                IPTestHelper.MONITOR_OP.getNumber(),
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE);
 
@@ -756,8 +756,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 MALPubSubOperation.REGISTER_ACK_STAGE,
                 monitorRegisterHeader.getTransactionId(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
-                IPTestHelper.MONITOR_OP.getNumber(),
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.TRUE);
 

@@ -25,9 +25,12 @@ import java.util.Iterator;
 import java.util.Map;
 import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
+import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
+import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetails;
 import org.ccsds.moims.mo.com.event.EventHelper;
+import org.ccsds.moims.mo.com.event.EventServiceInfo;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
@@ -178,7 +181,7 @@ public class ArchiveEventPublisher {
         keyValues.add(new Identifier(eventObjectNumber.toString()));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
                 COMHelper._COM_AREA_NUMBER,
-                ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER,
+                ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                 COMHelper._COM_AREA_VERSION,
                 0)));
         keyValues.add(new Union((long) ++eventInstCount));
@@ -194,7 +197,7 @@ public class ArchiveEventPublisher {
 
         updateHeader.setKeyValues(keyValues);
         updateHeader.setDomain(domain);
-        updateHeader.setSource(new Identifier(EventHelper.EVENT_SERVICE_NAME.getValue()));
+        updateHeader.setSource(new Identifier(EventServiceInfo.EVENT_SERVICE_NAME.getValue()));
     }
 
     /**
@@ -230,7 +233,7 @@ public class ArchiveEventPublisher {
     public void storeEvent(ObjectType objectType, IdentifierList domain, Long instId,
             Time timestamp, Identifier source, ObjectDetails objDetails, UShort objectNumber) {
         Archive.inst().add(
-                new ObjectType(COMHelper.COM_AREA_NUMBER, ArchiveHelper.ARCHIVE_SERVICE_NUMBER, COMHelper.COM_AREA_VERSION, objectNumber),
+                new ObjectType(COMHelper.COM_AREA_NUMBER, ArchiveServiceInfo.ARCHIVE_SERVICE_NUMBER, COMHelper.COM_AREA_VERSION, objectNumber),
                 eventDomainId,
                 new ArchiveDetails(instId, objDetails, NETWORK, new FineTime(timestamp.getValue()), new URI(source.getValue())), null);
     }

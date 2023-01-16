@@ -23,9 +23,9 @@ package org.ccsds.moims.mo.com.test.util;
 import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
+import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
-import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
+import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 
 /**
  *
@@ -64,7 +64,7 @@ public class COMTestHelper {
     public static ObjectType getOperationActivityType() {
         ObjectType type = new ObjectType();
         type.setArea(COMHelper.COM_AREA_NUMBER);
-        type.setService(ActivityTrackingHelper.ACTIVITYTRACKING_SERVICE_NUMBER);
+        type.setService(ActivityTrackingServiceInfo.ACTIVITYTRACKING_SERVICE_NUMBER);
         type.setVersion(COMHelper.COM_AREA_VERSION);
         type.setNumber(new UShort(OBJ_NO_ASE_OPERATION_ACTIVITY));
         return type;
@@ -76,7 +76,7 @@ public class COMTestHelper {
 
         iKey = (long) objectNumber;
         iKey = iKey | (long) COMHelper._COM_AREA_NUMBER << 48;
-        iKey = iKey | (long) ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER << 32;
+        iKey = iKey | (long) ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER << 32;
         iKey = iKey | (long) COMHelper._COM_AREA_VERSION << 24;
         return iKey;
     }
@@ -86,7 +86,7 @@ public class COMTestHelper {
 
         iKey = (long) objectNumber;
         iKey = iKey | (long) COMPrototypeHelper._COMPROTOTYPE_AREA_NUMBER << 48;
-        iKey = iKey | (long) EventTestHelper._EVENTTEST_SERVICE_NUMBER << 32;
+        iKey = iKey | (long) EventTestServiceInfo._EVENTTEST_SERVICE_NUMBER << 32;
         iKey = iKey | (long) COMPrototypeHelper._COMPROTOTYPE_AREA_VERSION << 24;
         return iKey;
     }
