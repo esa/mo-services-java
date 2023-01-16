@@ -112,7 +112,7 @@ public class TestEndPoint implements MALEndpoint {
                 initialHeader.getURITo(),
                 authId,
                 initialHeader.getURIFrom(),
-                new Time(System.currentTimeMillis()),
+                Time.now(),
                 initialHeader.getQoSlevel(),
                 initialHeader.getPriority(),
                 initialHeader.getDomain(),

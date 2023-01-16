@@ -60,7 +60,6 @@ import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.com.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.com.test.util.COMParseHelper;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
-import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestHelper;
 import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObject;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObjectList;
