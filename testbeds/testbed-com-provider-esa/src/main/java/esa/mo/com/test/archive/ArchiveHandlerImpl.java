@@ -23,9 +23,10 @@ package esa.mo.com.test.archive;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.com.COMHelper;
 import static org.ccsds.moims.mo.com.COMHelper.*;
-import org.ccsds.moims.mo.com.archive.ArchiveHelper;
 import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
 import org.ccsds.moims.mo.com.archive.provider.ArchiveInheritanceSkeleton;
 import org.ccsds.moims.mo.com.archive.provider.CountInteraction;
@@ -43,32 +44,44 @@ import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
-import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestHelper;
 import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo;
+import org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObjectList;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayload;
-import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
+import org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayloadList;
+import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectCreation;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectCreationList;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectDeletion;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectDeletionList;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdateList;
 import org.ccsds.moims.mo.comprototype1.COMPrototype1Helper;
-import org.ccsds.moims.mo.comprototype1.test1.Test1Helper;
-import org.ccsds.moims.mo.comprototype1.test2.Test2Helper;
+import org.ccsds.moims.mo.comprototype1.test1.Test1ServiceInfo;
+import org.ccsds.moims.mo.comprototype1.test2.Test2ServiceInfo;
 import org.ccsds.moims.mo.comprototype2.COMPrototype2Helper;
-import org.ccsds.moims.mo.mal.MALElementFactory;
+import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.BlobList;
+import org.ccsds.moims.mo.mal.structures.BooleanList;
 import org.ccsds.moims.mo.mal.structures.Composite;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Enumeration;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.IntegerList;
 import org.ccsds.moims.mo.mal.structures.LongList;
+import org.ccsds.moims.mo.mal.structures.StringList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UIntegerList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.URIList;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
@@ -92,22 +105,29 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
 
     // Object numbers 
     private final UShort COMPROTOTYPE_TEST_TEST_OBJECT_OBJ_NO = new UShort(1);
+    private final UShort COMPROTOTYPE_TEST_TEST_OBJECT2_OBJ_NO = new UShort(2);
     private final UShort COMPROTOTYPE_TEST_TEST_OBJECT3_OBJ_NO = new UShort(3);
     private final UShort COMPROTOTYPE_TEST_TEST_OBJECT4_OBJ_NO = new UShort(4);
     private final UShort COMPROTOTYPE_TEST_TEST_OBJECT5_OBJ_NO = new UShort(5);
     private final UShort COMPROTOTYPE_TEST_TEST_OBJECT6_OBJ_NO = new UShort(6);
     private final UShort COMPROTOTYPE_TEST_TEST_OBJECT7_OBJ_NO = new UShort(7);
+
     private final UShort COMPROTOTYPE1_TEST1_TEST_OBJECTA_OBJ_NO = new UShort(1);
     private final UShort COMPROTOTYPE1_TEST2_TEST_OBJECTA_OBJ_NO = new UShort(2);
+
     private final UShort COMPROTOTYPE2_TEST1_TEST_OBJECTA_OBJ_NO = new UShort(1);
+
     private final UShort COMPROTOTYPE2_TEST2_TEST_OBJECTA_OBJ_NO = new UShort(1);
     private final UShort COMPROTOTYPE2_TEST2_TEST_OBJECTB_OBJ_NO = new UShort(2);
     private final UShort COMPROTOTYPE2_TEST2_TEST_OBJECTC_OBJ_NO = new UShort(3);
+
     private final UShort COMPROTOTYPE_TEST_EVENTTEST_OBJECT_CREATION_OBJ_NO = new UShort(3001);
     private final UShort COMPROTOTYPE_TEST_EVENTTEST_OBJECT_DELETION_OBJ_NO = new UShort(3002);
     private final UShort COMPROTOTYPE_TEST_EVENTTEST_OBJECT_UPDATE_OBJ_NO = new UShort(3003);
     // identifier wildcard used in vaious checks
     private final static Identifier IDENTIFIER_WILDCARD = new Identifier("*");
+
+    private final MALElementsRegistry registry = new MALElementsRegistry();
 
     // Enum used to classify filter
     private enum FilterType {
@@ -133,57 +153,67 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         final UOctet VERSION1 = new UOctet((short) 1);
         final UOctet VERSION2 = new UOctet((short) 2);
         // initialise element factory
-        MALObjectTypeFactoryRegistry factory = MALObjectTypeFactoryRegistry.inst();
-        /*
-    factory.registerElementFactories(
-            new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, ArchiveTestHelper.ARCHIVETEST_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE_TEST_TEST_OBJECT_OBJ_NO), new TestObjectPayloadFactory(), new TestObjectPayloadListFactory());
-    factory.registerElementFactories(
-            new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, ArchiveTestHelper.ARCHIVETEST_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE_TEST_TEST_OBJECT3_OBJ_NO), null, new EnumeratedObjectListFactory());
-    factory.registerElementFactories(
-            new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, ArchiveTestHelper.ARCHIVETEST_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE_TEST_TEST_OBJECT4_OBJ_NO), null, new BlobListFactory());
-    factory.registerElementFactories(
-            new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, ArchiveTestHelper.ARCHIVETEST_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE_TEST_TEST_OBJECT6_OBJ_NO), new IdentifierFactory(), new IdentifierListFactory());
-    factory.registerElementFactories(
-            new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, ArchiveTestHelper.ARCHIVETEST_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE_TEST_TEST_OBJECT7_OBJ_NO), new URIFactory(), new URIListFactory());
-    factory.registerElementFactories(
-            new ObjectType(COMPrototype1Helper.COMPROTOTYPE1_AREA_NUMBER, Test1Helper.TEST1_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE1_TEST1_TEST_OBJECTA_OBJ_NO), new TestObjectPayloadFactory(), new TestObjectPayloadListFactory());
-    factory.registerElementFactories(
-            new ObjectType(COMPrototype1Helper.COMPROTOTYPE1_AREA_NUMBER, Test2Helper.TEST2_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE1_TEST2_TEST_OBJECTA_OBJ_NO), null, new LongListFactory());
-    factory.registerElementFactories(
-            new ObjectType(COMPrototype2Helper.COMPROTOTYPE2_AREA_NUMBER, org.ccsds.moims.mo.comprototype2.test1.Test1Helper.TEST1_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE2_TEST2_TEST_OBJECTA_OBJ_NO),
-            null, new IntegerListFactory());
-    factory.registerElementFactories(
-            new ObjectType(COMPrototype2Helper.COMPROTOTYPE2_AREA_NUMBER, org.ccsds.moims.mo.comprototype2.test2.Test2Helper.TEST2_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE2_TEST2_TEST_OBJECTA_OBJ_NO),
-            null, new BooleanListFactory());
-    factory.registerElementFactories(
-            new ObjectType(COMPrototype2Helper.COMPROTOTYPE2_AREA_NUMBER, org.ccsds.moims.mo.comprototype2.test2.Test2Helper.TEST2_SERVICE_NUMBER,
-                    VERSION2, COMPROTOTYPE2_TEST2_TEST_OBJECTA_OBJ_NO),
-            null, new StringListFactory());
+        try {
+            MALHelper.deepInit(registry);
+            COMPrototypeHelper.deepInit(registry);
+            COMPrototype1Helper.deepInit(registry);
+            COMPrototype2Helper.deepInit(registry);
+        } catch (Exception ex) {
+            Logger.getLogger(ArchiveHandlerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-    factory.registerElementFactories(
-            new ObjectType(COMPrototype2Helper.COMPROTOTYPE2_AREA_NUMBER, org.ccsds.moims.mo.comprototype2.test2.Test2Helper.TEST2_SERVICE_NUMBER,
-                    VERSION2, COMPROTOTYPE2_TEST2_TEST_OBJECTB_OBJ_NO),
-            null, new LongListFactory());
+        MALObjectTypeRegistry factory = MALObjectTypeRegistry.inst();
 
-    factory.registerElementFactories(
-            new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestHelper.EVENTTEST_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE_TEST_EVENTTEST_OBJECT_CREATION_OBJ_NO), new ObjectCreationFactory(), new ObjectCreationListFactory());
-    factory.registerElementFactories(
-            new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestHelper.EVENTTEST_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE_TEST_EVENTTEST_OBJECT_DELETION_OBJ_NO), new ObjectDeletionFactory(), new ObjectDeletionListFactory());
-    factory.registerElementFactories(
-            new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestHelper.EVENTTEST_SERVICE_NUMBER,
-                    VERSION1, COMPROTOTYPE_TEST_EVENTTEST_OBJECT_UPDATE_OBJ_NO), new ObjectUpdateFactory(), new ObjectUpdateListFactory());
-         */
+        factory.registerElements(
+                new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE_TEST_TEST_OBJECT_OBJ_NO), new TestObjectPayload(), new TestObjectPayloadList());
+        factory.registerElements(
+                new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE_TEST_TEST_OBJECT3_OBJ_NO), null, new EnumeratedObjectList());
+        factory.registerElements(
+                new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE_TEST_TEST_OBJECT4_OBJ_NO), null, new BlobList());
+        factory.registerElements(
+                new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE_TEST_TEST_OBJECT6_OBJ_NO), new Identifier(), new IdentifierList());
+        factory.registerElements(
+                new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE_TEST_TEST_OBJECT7_OBJ_NO), new URI(), new URIList());
+
+        factory.registerElements(
+                new ObjectType(COMPrototype1Helper.COMPROTOTYPE1_AREA_NUMBER, Test1ServiceInfo.TEST1_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE1_TEST1_TEST_OBJECTA_OBJ_NO), new TestObjectPayload(), new TestObjectPayloadList());
+        factory.registerElements(
+                new ObjectType(COMPrototype1Helper.COMPROTOTYPE1_AREA_NUMBER, Test2ServiceInfo.TEST2_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE1_TEST2_TEST_OBJECTA_OBJ_NO), null, new LongList());
+
+        factory.registerElements(
+                new ObjectType(COMPrototype2Helper.COMPROTOTYPE2_AREA_NUMBER, Test1ServiceInfo.TEST1_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE2_TEST2_TEST_OBJECTA_OBJ_NO),
+                null, new IntegerList());
+
+        factory.registerElements(
+                new ObjectType(COMPrototype2Helper.COMPROTOTYPE2_AREA_NUMBER, Test2ServiceInfo.TEST2_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE2_TEST2_TEST_OBJECTA_OBJ_NO),
+                null, new BooleanList());
+        factory.registerElements(
+                new ObjectType(COMPrototype2Helper.COMPROTOTYPE2_AREA_NUMBER, Test2ServiceInfo.TEST2_SERVICE_NUMBER,
+                        VERSION2, COMPROTOTYPE2_TEST2_TEST_OBJECTA_OBJ_NO),
+                null, new StringList());
+        factory.registerElements(
+                new ObjectType(COMPrototype2Helper.COMPROTOTYPE2_AREA_NUMBER, Test2ServiceInfo.TEST2_SERVICE_NUMBER,
+                        VERSION2, COMPROTOTYPE2_TEST2_TEST_OBJECTC_OBJ_NO),
+                null, new LongList());
+
+        factory.registerElements(
+                new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE_TEST_EVENTTEST_OBJECT_CREATION_OBJ_NO), new ObjectCreation(), new ObjectCreationList());
+        factory.registerElements(
+                new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE_TEST_EVENTTEST_OBJECT_DELETION_OBJ_NO), new ObjectDeletion(), new ObjectDeletionList());
+        factory.registerElements(
+                new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
+                        VERSION1, COMPROTOTYPE_TEST_EVENTTEST_OBJECT_UPDATE_OBJ_NO), new ObjectUpdate(), new ObjectUpdateList());
     }
 
     /* Checks all specified instance identifier values exist in a archive details list*/
@@ -202,7 +232,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         for (int instCnt = 0; instCnt < instIds.size(); instCnt++) {
             boolean matchFound = false;
             // 0 = wildcard so no check required
-            if (instIds.get(instCnt).longValue() != 0) {
+            if (instIds.get(instCnt) != 0) {
                 for (int archCnt = 0; archCnt < archiveObjects.size(); archCnt++) {
                     if (instIds.get(instCnt).longValue()
                             == archiveObjects.get(archCnt).getArchiveDetails().getInstId().longValue()) {
@@ -214,7 +244,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                 }
             }
         }
-        if (errorList.size() != 0) {
+        if (!errorList.isEmpty()) {
             LoggingBase.logMessage(CLS + "checkAllInstancesExist:throw Ex " + errorList);
             throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, errorList));
         }
@@ -298,7 +328,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         if (!domainMatches(objectId.getKey().getDomain(), qObjectId.getKey().getDomain())) {
             bMatch = false;
         }
-        if (!(qObjectId.getKey().getInstId().longValue() == 0
+        if (!(qObjectId.getKey().getInstId() == 0
                 || qObjectId.getKey().getInstId().equals(objectId.getKey().getInstId()))) {
             bMatch = false;
         }
@@ -318,7 +348,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
     private boolean matchesFilter(Long numericVal, Long numericFilterVal,
             ExpressionOperator operator) throws MALInteractionException {
         boolean bMatch;
-        LoggingBase.logMessage(CLS + ":matchesFilter:numeric:" + numericVal.longValue() + ":"
+        LoggingBase.logMessage(CLS + ":matchesFilter:numeric:" + numericVal + ":"
                 + ":" + operator.getOrdinal());
         if (numericFilterVal != null) {
             switch (operator.getOrdinal()) {
@@ -757,7 +787,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                 LoggingBase.logMessage(CLS + ":applyArchiveQuery provider No Match:"
                         + archiveQuery.getProvider() + ":" + nextObj);
             }
-            if (!(archiveQuery.getRelated().longValue() == 0
+            if (!(archiveQuery.getRelated() == 0
                     || nextObj.getArchiveDetails().getDetails().getRelated().equals(archiveQuery.getRelated()))) {
                 match = false;
                 LoggingBase.logMessage(CLS + ":applyArchiveQuery Related No Match:"
@@ -875,7 +905,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
     private ArrayList<Archive.ArchiveObjectList> createDomainObjectTypeLists(
             Archive.ArchiveObjectList objs) {
         LoggingBase.logMessage(CLS + ":createDomainObjectTypeLists: " + objs.size());
-        ArrayList<Archive.ArchiveObjectList> lists = new ArrayList<Archive.ArchiveObjectList>();
+        ArrayList<Archive.ArchiveObjectList> lists = new ArrayList<>();
         ObjectType objectType;
         IdentifierList domain;
         Archive.ArchiveObjectList domainObjectTypeList;
@@ -987,19 +1017,17 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      * @return element list
      */
     private ElementList createElementList(ObjectType objectType) throws MALInteractionException, MALException {
-        ElementList elementList = null;
-        MALElementFactory factory = MALObjectTypeFactoryRegistry.inst().lookupElementlistFactory(objectType);
-        if (factory != null) {
-            elementList = (ElementList) factory.createElement();
-            if (elementList == null) {
-                throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER, null));
-            }
-        } else {
-            LoggingBase.logMessage(CLS + ":returnQueryResults:Raise ERR - Element List Creation " + objectType);
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
-                    null));
+        ElementList element = MALObjectTypeRegistry.inst().lookupElementlist(objectType);
+
+        try {
+            Long spf = element.getShortForm();
+            return (ElementList) registry.createElement(spf);
+        } catch (Exception ex1) {
+            Logger.getLogger(ArchiveHandlerImpl.class.getName()).log(Level.SEVERE,
+                    CLS + ":returnQueryResults:Raise ERR - Element List Creation " + objectType, ex1);
         }
-        return elementList;
+
+        return null;
     }
 
     /**
@@ -1011,6 +1039,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      * @param interaction Interaction used to return errors
      * @throws MALInteractionException to report failures
      */
+    @Override
     public void retrieve(ObjectType objectType, IdentifierList domain, LongList instIds,
             RetrieveInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":retrieve Domain:" + domain);
@@ -1053,7 +1082,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             }
         }
         // If no entries returned set returned lists to NULL
-        if (archiveDetailsList.size() == 0) {
+        if (archiveDetailsList.isEmpty()) {
             archiveDetailsList = null;
             elementList = null;
         }
@@ -1075,6 +1104,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      * @param interaction Interaction used to return results
      * @throws MALInteractionException used to report invalid query
      */
+    @Override
     public void query(Boolean bodyRequired, ObjectType objectType, ArchiveQueryList archiveQueryList,
             QueryFilterList queryFilterList, QueryInteraction interaction)
             throws MALInteractionException, MALException {
@@ -1083,7 +1113,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             LoggingBase.logMessage(CLS + ":query:Filter List" + queryFilterList);
         }
         UIntegerList failedQueries = new UIntegerList();
-        ArrayList<Archive.ArchiveObjectList> returnedLists = new ArrayList<Archive.ArchiveObjectList>();
+        ArrayList<Archive.ArchiveObjectList> returnedLists = new ArrayList<>();
 
         interaction.sendAcknowledgement();
         // Wait for short time to ensure ACK has been sent
@@ -1146,6 +1176,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      * @throws MALInteractionException
      * @throws MALException
      */
+    @Override
     public void count(ObjectType objectType, ArchiveQueryList archiveQueryList, QueryFilterList queryFilterList,
             CountInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":count:" + objectType + ":" + archiveQueryList);
@@ -1154,7 +1185,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         }
         UIntegerList failedQueries = new UIntegerList();
         LongList countResults = new LongList();
-        ArrayList<Archive.ArchiveObjectList> returnedLists = new ArrayList<Archive.ArchiveObjectList>();
+        ArrayList<Archive.ArchiveObjectList> returnedLists = new ArrayList<>();
 
         interaction.sendAcknowledgement();
         // Wait for short time to ensure ACK has been sent
@@ -1234,7 +1265,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
     private LongList getInstids(ArchiveDetailsList archiveDetailsList) {
         LongList instIds = new LongList();
         for (int i = 0; i < archiveDetailsList.size(); i++) {
-            instIds.add(archiveDetailsList.get(i).getInstId().longValue());
+            instIds.add(archiveDetailsList.get(i).getInstId());
         }
         return instIds;
     }
@@ -1249,12 +1280,12 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
     private void checkInstIdDuplicates(ArchiveDetailsList archiveDetailsList) throws MALInteractionException {
         UIntegerList errorList = new UIntegerList();
         for (int i = 0; i < archiveDetailsList.size(); i++) {
-            long instId = archiveDetailsList.get(i).getInstId().longValue();
+            long instId = archiveDetailsList.get(i).getInstId();
             LoggingBase.logMessage("CHK DUPL " + i + " " + instId);
             if (instId != 0) {
                 for (int j = 0; j < i; j++) {
-                    LoggingBase.logMessage("CHK DUPL " + i + " " + instId + " " + j + " " + archiveDetailsList.get(j).getInstId().longValue());
-                    if (archiveDetailsList.get(j).getInstId().longValue() == instId) {
+                    LoggingBase.logMessage("CHK DUPL " + i + " " + instId + " " + j + " " + archiveDetailsList.get(j).getInstId());
+                    if (archiveDetailsList.get(j).getInstId() == instId) {
                         LoggingBase.logMessage(CLS + ":checkInstIdDuplicates:Raise ERR - ");
                         errorList.add(new UInteger(i));
                         throw new MALInteractionException(new MALStandardError(DUPLICATE_ERROR_NUMBER, errorList));
@@ -1273,12 +1304,8 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      * @return result of check
      */
     private boolean containsWildcard(ObjectType objectType) {
-        if (objectType.getArea().getValue() == 0 || objectType.getService().getValue() == 0
-                || objectType.getVersion().getValue() == 0 || objectType.getNumber().getValue() == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return (objectType.getArea().getValue() == 0 || objectType.getService().getValue() == 0
+                || objectType.getVersion().getValue() == 0 || objectType.getNumber().getValue() == 0);
     }
 
     /**
@@ -1343,7 +1370,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             }
 
             // Check clause (f) instId aready used
-            long instId = archiveDetails.getInstId().longValue();
+            long instId = archiveDetails.getInstId();
             if (!setInstId && archive.contains(objectType, domain, instId)) {
                 LoggingBase.logMessage(CLS + ":checkStoreValidity:Raise ERR - InstId");
                 errorList.add(new UInteger(i));
@@ -1368,6 +1395,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      * @throws MALInteractionException
      * @throws MALException
      */
+    @Override
     public LongList store(Boolean setInstId, ObjectType objectType, IdentifierList domain,
             ArchiveDetailsList archiveDetailsList, ElementList elementList, MALInteraction interaction)
             throws MALInteractionException, MALException {
@@ -1378,13 +1406,13 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         try {
             checkStoreValidity(setInstId, objectType, domain, archiveDetailsList, elementList);
             for (int i = 0; i < archiveDetailsList.size(); i++) {
-                if (archiveDetailsList.get(i).getInstId().longValue() == 0) {
+                if (archiveDetailsList.get(i).getInstId() == 0) {
                     archiveDetailsList.get(i).setInstId((++lastInstanceId));
                     instIds.add(new Long(lastInstanceId));
                 } else {
                     instIds.add(archiveDetailsList.get(i).getInstId());
-                    if (archiveDetailsList.get(i).getInstId().longValue() > lastInstanceId) {
-                        lastInstanceId = archiveDetailsList.get(i).getInstId().longValue();
+                    if (archiveDetailsList.get(i).getInstId() > lastInstanceId) {
+                        lastInstanceId = archiveDetailsList.get(i).getInstId();
                     }
                 }
                 if (elementList != null) {
@@ -1423,6 +1451,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      * @throws MALInteractionException
      * @throws MALException
      */
+    @Override
     public void update(ObjectType objectType, IdentifierList domain,
             ArchiveDetailsList archiveDetailsList, ElementList elementList, MALInteraction interaction)
             throws MALInteractionException, MALException {
@@ -1446,7 +1475,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             LoggingBase.logMessage(CLS + ":update:instance has wildcard");
             UIntegerList errorList = new UIntegerList();
             for (int i = 0; i < instIds.size(); i++) {
-                if (instIds.get(i).longValue() == 0) {
+                if (instIds.get(i) == 0) {
                     errorList.add(new UInteger(i));
                 }
             }
@@ -1475,6 +1504,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      * @throws MALInteractionException
      * @throws MALException
      */
+    @Override
     public LongList delete(ObjectType objectType, IdentifierList domain, LongList instIds,
             MALInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":delete ObjectType:" + objectType + ":Domain:"

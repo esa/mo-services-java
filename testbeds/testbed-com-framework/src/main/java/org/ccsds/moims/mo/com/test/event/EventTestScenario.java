@@ -30,7 +30,6 @@ import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.com.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
-import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum;
 import org.ccsds.moims.mo.mal.MALInteractionException;

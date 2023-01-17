@@ -161,7 +161,7 @@ public class ArchiveEventPublisher {
      * @param eventObjectNumber
      * @param sourceObjectType
      */
-    private void setUpdateHeader(UpdateHeader updateHeader, UShort eventObjectNumber, ObjectType sourceObjectType) {
+    private UpdateHeader setUpdateHeader(UShort eventObjectNumber, ObjectType sourceObjectType) {
         /*
     final EntityKey ekey = new EntityKey(
             new Identifier(eventObjectNumber.toString()),
@@ -177,11 +177,12 @@ public class ArchiveEventPublisher {
     updateHeader.setTimestamp(timestamp);
          */
 
+        UpdateHeader updateHeader = new UpdateHeader();
         AttributeList keyValues = new AttributeList();
         keyValues.add(new Identifier(eventObjectNumber.toString()));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
                 COMHelper._COM_AREA_NUMBER,
-                ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
+                ArchiveServiceInfo.ARCHIVE_SERVICE_NUMBER.getValue(),
                 COMHelper._COM_AREA_VERSION,
                 0)));
         keyValues.add(new Union((long) ++eventInstCount));
@@ -198,6 +199,7 @@ public class ArchiveEventPublisher {
         updateHeader.setKeyValues(keyValues);
         updateHeader.setDomain(domain);
         updateHeader.setSource(new Identifier(EventServiceInfo.EVENT_SERVICE_NAME.getValue()));
+        return updateHeader;
     }
 
     /**
@@ -226,7 +228,7 @@ public class ArchiveEventPublisher {
      * @param domain
      * @param instId
      * @param timestamp
-     * @param provider
+     * @param source
      * @param objDetails
      * @param objectNumber
      */
@@ -267,8 +269,7 @@ public class ArchiveEventPublisher {
             objDetails.setSource(source);
             objDetailsList.add(objDetails);
 
-            UpdateHeader uh = new UpdateHeader();
-            setUpdateHeader(uh, objectNumber, objectType);
+            UpdateHeader uh = setUpdateHeader(objectNumber, objectType);
             updateHeaderList.add(uh);
             // elementList.add(null);
             storeEvent(objectType, eventDomainId, eventInstCount, Time.now(), uh.getSource(), objDetails, objectNumber);

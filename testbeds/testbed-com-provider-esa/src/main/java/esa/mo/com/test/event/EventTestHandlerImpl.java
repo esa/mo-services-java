@@ -37,7 +37,6 @@ import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
-import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.eventtest.provider.EventTestHandler;
 import org.ccsds.moims.mo.comprototype.eventtest.provider.EventTestSkeleton;

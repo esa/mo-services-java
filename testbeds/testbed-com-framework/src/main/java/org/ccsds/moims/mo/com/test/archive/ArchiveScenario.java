@@ -39,7 +39,6 @@ import java.util.StringTokenizer;
 import java.util.concurrent.CountDownLatch;
 
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.archive.ArchiveHelper;
 import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
 import org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetails;
@@ -847,8 +846,7 @@ public class ArchiveScenario {
     entityRequestList.add(entityRequest);
          */
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription subscription = new Subscription(
-                ARCHIVE_EVENT_SUBSCRIPTION, domain, filters);
+        Subscription subscription = new Subscription(ARCHIVE_EVENT_SUBSCRIPTION, domain, filters);
         try {
             LoggingBase.logMessage("subscribeToArchiveEvents:: calling monitorEventRegister");
             LocalMALInstance.instance().archiveEventStub()
@@ -1106,8 +1104,8 @@ public class ArchiveScenario {
         queriedObjectList = null;
         returnedError = null;
         invalidQueryIndexes = null;
-        queriedDomains = new ArrayList<IdentifierList>();
-        queriedObjectTypes = new ArrayList<ObjectType>();
+        queriedDomains = new ArrayList<>();
+        queriedObjectTypes = new ArrayList<>();
 
         archiveAdapter.resetLatch();
         LoggingBase.logMessage("Query:returnBodies=" + returnBodies + ")");

@@ -23,99 +23,98 @@ package esa.mo.com.test.archive;
 import java.util.Map;
 import java.util.HashMap;
 import org.ccsds.moims.mo.com.structures.ObjectType;
-import org.ccsds.moims.mo.mal.MALElementFactory;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ElementList;
 
 /**
  *
- * Holds a map of MALElementFactorys for the element and the associated
+ * Holds a map of MALElements for the element and the associated
  * elementList indexed on ObjectType.
  */
-public class MALObjectTypeFactoryRegistry {
+public class MALObjectTypeRegistry {
 
-    private final Map<String, ElementFactories> factoryMap = new HashMap();
+    private final Map<String, ElementsReg> elements = new HashMap();
 
-    private static MALObjectTypeFactoryRegistry instance = null;
+    private static MALObjectTypeRegistry instance = null;
 
-    public static MALObjectTypeFactoryRegistry inst() {
+    public static MALObjectTypeRegistry inst() {
         if (instance == null) {
-            instance = new MALObjectTypeFactoryRegistry();
+            instance = new MALObjectTypeRegistry();
         }
-        return instance;
 
+        return instance;
     }
 
     /**
-     * Registers a element factory in the map using the supplied short form
+     * Registers an element in the map using the supplied short form
      * object as the key.
      *
      * @param objectType The object type used for lookup.
-     * @param elementFactory The element factory.
+     * @param element
+     * @param elementList
      * @throws IllegalArgumentException If either supplied argument is null.
      */
-    public void registerElementFactories(final ObjectType objectType,
-            final MALElementFactory elementFactory,
-            final MALElementFactory elementListFactory)
-            throws IllegalArgumentException {
-        if ((null == elementListFactory)) {
+    public void registerElements(final ObjectType objectType, final Element element,
+            final ElementList elementList) throws IllegalArgumentException {
+        if ((null == elementList)) {
             throw new IllegalArgumentException("NULL argument");
         }
 
-        factoryMap.put(objectType.toString(), new ElementFactories(elementFactory, elementListFactory));
+        elements.put(objectType.toString(), new ElementsReg(element, elementList));
     }
 
     /**
-     * Returns a MALElementFactory for the supplied object Type, or null if not
+     * Returns a Element for the supplied object Type, or null if not
      * found.
      *
      * @param objectType The short form to search for.
-     * @return The MALELementFactory or null if not found.
+     * @return The Element or null if not found.
      * @throws IllegalArgumentException If supplied argument is null.
      */
-    public MALElementFactory lookupElementFactory(final ObjectType objectType)
-            throws IllegalArgumentException {
+    public Element lookupElement(final ObjectType objectType) throws IllegalArgumentException {
         if (null == objectType) {
             throw new IllegalArgumentException("NULL argument");
         }
 
-        return factoryMap.get(objectType.toString()).getElementFactory();
+        return elements.get(objectType.toString()).getElement();
     }
 
     /**
-     * Returns a MALElementFactory, for the list, for the supplied object Type,
+     * Returns a ElementList, for the list, for the supplied object Type,
      * or null if not found.
      *
      * @param objectType The short form to search for.
-     * @return The MALELementFactory or null if not found.
+     * @return The ElementList or null if not found.
      * @throws IllegalArgumentException If supplied argument is null.
      */
-    public MALElementFactory lookupElementlistFactory(final ObjectType objectType)
+    public ElementList lookupElementlist(final ObjectType objectType)
             throws IllegalArgumentException {
         if (null == objectType) {
             throw new IllegalArgumentException("NULL argument");
         }
-        if (factoryMap.get(objectType.toString()) != null) {
-            return factoryMap.get(objectType.toString()).getElementListFactory();
+        if (elements.get(objectType.toString()) != null) {
+            return elements.get(objectType.toString()).getElementList();
         } else {
             return null;
         }
     }
 
-    private class ElementFactories {
+    private class ElementsReg {
 
-        private final MALElementFactory elementFactory;
-        private final MALElementFactory elementListFactory;
+        private final Element element;
+        private final ElementList elementList;
 
-        public ElementFactories(MALElementFactory elementFactory, MALElementFactory elementListFactory) {
-            this.elementFactory = elementFactory;
-            this.elementListFactory = elementListFactory;
+        public ElementsReg(Element element, ElementList elementList) {
+            this.element = element;
+            this.elementList = elementList;
         }
 
-        public MALElementFactory getElementFactory() {
-            return elementFactory;
+        public Element getElement() {
+            return element;
         }
 
-        public MALElementFactory getElementListFactory() {
-            return elementListFactory;
+        public ElementList getElementList() {
+            return elementList;
         }
 
     }
