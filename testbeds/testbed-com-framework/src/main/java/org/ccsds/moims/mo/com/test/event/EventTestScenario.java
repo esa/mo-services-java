@@ -58,12 +58,11 @@ import static org.ccsds.moims.mo.testbed.util.LoggingBase.logMessage;
 public class EventTestScenario extends LoggingBase {
 
     protected final String loggingClassName = "EventScenario";
-    private EventDetailsList eventDetailsList;
-    private TestEventAdapter testEventAdapter = null;
     protected final Identifier ALL_ID = new Identifier("*");
     protected final Integer ALL_INT = 0;
-    // Items used in archive retrieve
-    private TestArchiveAdapter archiveAdapter;
+    private final EventDetailsList eventDetailsList;
+    private final TestArchiveAdapter archiveAdapter;
+    private TestEventAdapter testEventAdapter = null;
     private ArchiveDetailsList retrievedArchiveDetailsList;
     private ElementList retrievedObjectList;
     private ObjectType objectType;
@@ -83,7 +82,7 @@ public class EventTestScenario extends LoggingBase {
     /**
      * Converts user level test object identifier to COM object number
      *
-     * @param User object identifier
+     * @param obj object identifier
      * @return Object number
      */
     public String objToObjectNo(String obj) {
@@ -126,7 +125,6 @@ public class EventTestScenario extends LoggingBase {
      *
      * @return success indication for Fitness
      * @throws Exception to report failures
-     * @return success indication for Fitness
      */
     public boolean callResetOnArchiveServiceProvider() throws Exception {
         LoggingBase.logMessage("ArchiveScenario.callResetTestOnServiceProvider()");
@@ -138,7 +136,6 @@ public class EventTestScenario extends LoggingBase {
      * Resets archive related test details
      *
      * @return success indication for Fitness
-     * @throws Exception to report failures
      */
     public boolean resetArchiveScenario() {
         retrievedArchiveDetailsList = null;
@@ -168,6 +165,7 @@ public class EventTestScenario extends LoggingBase {
      *
      * @param domain object to be created in
      * @param description to be set on object
+     * @param parentInstId
      * @return instance identifier for object created
      * @throws Exception to report failures
      */
@@ -338,7 +336,7 @@ public class EventTestScenario extends LoggingBase {
      * @throws Exception to report failures
      */
     public String updateEventReceivedForObjectInDomainWithInstanceIdentifier(
-            String sourceObject,String sourceDomain, String sourceInstId) throws Exception {
+            String sourceObject, String sourceDomain, String sourceInstId) throws Exception {
         logMessage(loggingClassName + ":updateEventReceivedForObjectInDomainWithInstanceIdentifier "
                 + sourceObject + " " + sourceDomain + " " + sourceInstId);
         waitForReasonableAmountOfTime();   // Allow time for incoming events
@@ -522,7 +520,7 @@ public class EventTestScenario extends LoggingBase {
      * @param doubleField Expected value of double field
      * @return
      */
-    public boolean updateEventElementValidForObjectWithCompositeFieldsWithUoctetWithOctetWithDouble(String instIndex, 
+    public boolean updateEventElementValidForObjectWithCompositeFieldsWithUoctetWithOctetWithDouble(String instIndex,
             String uOctetField, String octetField, String doubleField) {
         logMessage(loggingClassName + ":updateEventElementValidForObjectWithCompositeFieldsWithUoctetWithOctetWithDouble " + uOctetField
                 + " " + uOctetField + " " + octetField + " " + doubleField);
@@ -545,75 +543,52 @@ public class EventTestScenario extends LoggingBase {
     }
 
     public boolean retrievedArchiveItemProviderMatchesForEvent(String instIndex) {
-        boolean bMatch;
-
         logMessage(loggingClassName + ":retrievedArchiveItemProviderMatchesForEvent" + instIndex);
         EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
 
         ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
 
-        bMatch = (archiveDetails.getProvider().equals(ev.getUpdateHeader().getSource()));
+        boolean bMatch = (archiveDetails.getProvider().getValue().equals(ev.getUpdateHeader().getSource().getValue()));
 
         logMessage(loggingClassName + ":retrievedArchiveItemProviderMatchesForEvent:RET" + bMatch);
         return bMatch;
     }
 
     public boolean retrievedArchiveItemTimestampMatchesForEvent(String instIndex) {
-        boolean bMatch;
-
         logMessage(loggingClassName + ":retrievedArchiveItemTimestampMatchesForEvent" + instIndex);
         EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
-
         ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
         FineTime archiveTimestamp = archiveDetails.getTimestamp();
 
-        bMatch = true; // Hard-coded... needs to be updated  :/
+        boolean bMatch = true; // Hard-coded... needs to be updated  :/
 
         logMessage(loggingClassName + ":retrievedArchiveItemTimestampMatchesForEvent:RET" + bMatch);
         return bMatch;
     }
 
     public boolean retrievedArchiveItemInstanceIdentifierMatchesForEvent(String instIndex) {
-        boolean bMatch;
-
         logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent" + instIndex);
         EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
-
         ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
-        bMatch = archiveDetails.getInstId().equals(ev.updateHeader.getKeyValues().get(2));
-
+        boolean bMatch = archiveDetails.getInstId().equals(ev.updateHeader.getKeyValues().get(2));
         logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent:RET" + bMatch);
         return bMatch;
     }
 
     public boolean retrievedArchiveItemObjectDetailsMatchForEvent(String instIndex) {
-        boolean bMatch = false;
-
         logMessage(loggingClassName + ":retrievedArchiveItemObjectDetailsMatchForEvent" + instIndex);
         EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
-
         ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
-
-        if (archiveDetails.getDetails().equals(ev.getObjectDetails())) {
-            bMatch = true;
-        }
-
+        boolean bMatch = (archiveDetails.getDetails().equals(ev.getObjectDetails()));
         logMessage(loggingClassName + ":retrievedArchiveItemObjectDetailsMatchForEvent:RET" + bMatch);
         return bMatch;
     }
 
     public boolean retrievedArchiveItemBodyMatchesForEvent(String instIndex) {
-        boolean bMatch = false;
-
         logMessage(loggingClassName + ":retrievedArchiveItemBodyMatchesForEvent" + instIndex);
         EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
-
         Element body = (Element) retrievedObjectList.get(0);
-
-        if (body.equals(ev.getElement())) {
-            bMatch = true;
-        }
-
+        boolean bMatch = (body.equals(ev.getElement()));
         logMessage(loggingClassName + ":retrievedArchiveItemBodyMatchesForEvent:RET" + bMatch);
         return bMatch;
     }
@@ -632,13 +607,13 @@ public class EventTestScenario extends LoggingBase {
             IdentifierList domainId = new IdentifierList();
             domainId.add(new Identifier(eventDomain));
             // Set instance
-            long instanceId = (Long) ev.getUpdateHeader().getKeyValues().get(2);
+            Long instanceId = (Long) ev.getUpdateHeader().getKeyValues().get(2);
             LongList instanceIdsToRetrieve = new LongList();
-            instanceIdsToRetrieve.add(new Long(instanceId));
+            instanceIdsToRetrieve.add(instanceId);
             // Set Object Type
             Integer objectNumber = Integer.decode(ev.getUpdateHeader().getKeyValues().get(0).toString());
             objectType = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
-                    COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(objectNumber.intValue()));
+                    COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(objectNumber));
             LocalMALInstance.instance().archiveStub().retrieve(objectType, domainId,
                     instanceIdsToRetrieve, archiveAdapter);
             archiveAdapter.waitResponse();

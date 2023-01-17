@@ -90,7 +90,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
     // Count of test object instances created - also use as instanceId
     private long eventInstCount = 1;
     // Maintain a list hold description for each instance created
-    private java.util.ArrayList<TestObjectDetails> testObjectDetailsList = new java.util.ArrayList<>();
+    private final java.util.ArrayList<TestObjectDetails> testObjectDetailsList = new java.util.ArrayList<>();
     // Archive stub used to archive events 
     private ArchiveStub archiveStub;
     // Event numbers allocated to events
@@ -132,10 +132,9 @@ public class EventTestHandlerImpl implements EventTestHandler {
             Long parentInstId, MALInteraction inter) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":createInstance domain = "
                 + domain + " desc = " + desc);
-        testObjectDetailsList.add(new TestObjectDetails(domain, objectNumber.shortValue(),
-                parentInstId, desc));
-        publishTestObjectCreation(desc, domain, true, instCount, objectNumber,
-                parentInstId, inter);
+        testObjectDetailsList.add(new TestObjectDetails(domain, objectNumber, parentInstId, desc));
+        publishTestObjectCreation(desc, domain, true,
+                instCount, objectNumber, parentInstId, inter);
         return new Long(instCount++);
     }
 
@@ -144,7 +143,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
             throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":deleteInstance domain = "
                 + domain + " instId = " + instId);
-        publishTestObjectDeletion(domain, instId.longValue(), objectNumber, inter);
+        publishTestObjectDeletion(domain, instId, objectNumber, inter);
     }
 
     @Override
@@ -153,7 +152,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
             throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":updateInstance instId = "
                 + instId + " enumField = " + enumField + " durationField = " + durationField);
-        publishTestObjectUpdate(instId.longValue(),
+        publishTestObjectUpdate(instId,
                 enumField, durationField, shortListField, null, null, null, interaction);
     }
 
@@ -162,7 +161,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
             MALInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":updateInstance instId = "
                 + instId + " uOctetField = " + uOctetField + " octetField = " + octetField);
-        publishTestObjectUpdate(instId.longValue(),
+        publishTestObjectUpdate(instId,
                 null, null, null, uOctetField, octetField, doubleField, interaction);
     }
 
@@ -248,8 +247,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
         ObjectDetails objDetails = new ObjectDetails();
 
         // Set source 
-        ObjectId source = new ObjectId();
-        setObjectId(source, sourceDomain, sourceObjectNumber, sourceInstId);
+        ObjectId source = setObjectId(sourceDomain, sourceObjectNumber, sourceInstId);
         objDetails.setSource(source);
         // Set related (if supplied)
         if (relatedInstId != null) {
@@ -287,8 +285,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
         ObjectDetails objDetails = new ObjectDetails();
 
         // Set source 
-        ObjectId source = new ObjectId();
-        setObjectId(source, sourceDomain, sourceObjectNumber, sourceInstId);
+        ObjectId source = setObjectId(sourceDomain, sourceObjectNumber, sourceInstId);
         objDetails.setSource(source);
         // Set related (if supplied)
         if (testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId != null) {
@@ -352,9 +349,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
         ObjectDetailsList objDetailsList = new ObjectDetailsList();
         ObjectDetails objDetails = new ObjectDetails();
         // Set source 
-        ObjectId source = new ObjectId();
-        setObjectId(source, domain,
-                sourceObjectNumber, sourceInstId);
+        ObjectId source = setObjectId(domain, sourceObjectNumber, sourceInstId);
         objDetails.setSource(source);
         // Set related (if supplied)
         if (testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId != null) {
@@ -416,7 +411,8 @@ public class EventTestHandlerImpl implements EventTestHandler {
         updateHeader.setSource(new Identifier(EventTestServiceInfo.EVENTTEST_SERVICE_NAME.getValue()));
     }
 
-    private void setObjectId(ObjectId objectId, String domain, short objectNumber, long instanceId) {
+    private ObjectId setObjectId(String domain, short objectNumber, long instanceId) {
+        ObjectId objectId = new ObjectId();
         ObjectType type = new ObjectType();
         type.setArea(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER);
         type.setService(EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER);
@@ -430,6 +426,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
         key.setDomain(domainIdent);
         key.setInstId(instanceId);
         objectId.setKey(key);
+        return objectId;
     }
 
     public synchronized ArchiveStub archiveStub() throws MALException {
