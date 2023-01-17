@@ -23,6 +23,8 @@ package org.ccsds.moims.mo.mal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -123,7 +125,10 @@ public class MALArea {
             serviceNumbers.put(service.getServiceNumber().getValue(), service);
             //serviceNames.put(service.getName().getValue(), service);
         } else {
-            throw new MALException("Service already included in area");
+            // throw new MALException("Service already included in area");
+            // Just log a message instead of throwing an exception!
+            Logger.getLogger(MALArea.class.getName()).log(Level.WARNING,
+                    "Service already included in area! Service: {0}", service.getName());
         }
     }
 }

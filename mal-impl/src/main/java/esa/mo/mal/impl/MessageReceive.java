@@ -214,7 +214,7 @@ public class MessageReceive implements MALMessageListener {
 
             if (null == rspnInteractionStage) {
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "Unable to return error, already a return message ({0})", ex);
+                        "(1) Unable to return error, already a return message!", ex);
             } else {
                 sender.returnError(address,
                         msg.getHeader(),
@@ -231,7 +231,7 @@ public class MessageReceive implements MALMessageListener {
 
             if (null == rspnInteractionStage) {
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "Unable to return error, already a return message ({0})", ex);
+                        "(2) Unable to return error, already a return message!", ex);
             } else {
                 sender.returnError(address, msg.getHeader(), rspnInteractionStage, ex);
             }
