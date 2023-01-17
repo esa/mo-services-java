@@ -71,7 +71,8 @@ public class SuiteManagement extends LoggingBase {
         // If it didn't start correctly lock the code here forever and display an error!
         if (!res) {
             logMessage("The remote process is not running therefore the tests will all fail. "
-                    + "Make sure the remote process is running before running the tests!");
+                    + "Make sure the remote process is running before running the tests! "
+                    + "Check the log file (zzz_*) in the surefire-reports folder.");
             Thread.sleep(Long.MAX_VALUE);
         }
 
