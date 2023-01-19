@@ -4,7 +4,9 @@ Releasing
 Prerequisites
 -------------
 
-1. Create an account in Maven Central, on the Sonatype issues site (central.sonatype.org/publish/publish-guide/). Ask an existing publisher to open an issue requesting publishing permissions for int.esa.ccsds.mo projects.
+1. Get permissions to publish on Maven Central (sonatype)
+  * Create a user [here][create_user]
+  * Ask for permissions on the existing ticket [here][sonatype_ticket]
 
 2. In `~/.m2/settings.xml`, set the following:
 
@@ -45,5 +47,10 @@ If you found a problem, drop it with the command:
 6. Visit Sonatype Nexus and promote the artifact.
 
 
+Complete Maven Central publishing guide available [here][sonatype_guide]!
+
+ [create_user]: https://issues.sonatype.org/secure/Signup!default.jspa
+ [sonatype_ticket]: https://issues.sonatype.org/browse/OSSRH-38566
+ [sonatype_guide]:  central.sonatype.org/publish/publish-guide/
  [gnupg]: https://www.gnupg.org/
  [example]: https://square.github.io/okio/releasing/#prerequisite-gpg-keys
