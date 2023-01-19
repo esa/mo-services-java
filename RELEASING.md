@@ -4,7 +4,7 @@ Releasing
 Prerequisites
 -------------
 
-1. Create an account in Maven Central, on the Sonatype issues site (central.sonartype.org/publish/publish-guide/). Ask an existing publisher to open an issue requesting publishing permissions for int.esa.ccsds.mo projects.
+1. Create an account in Maven Central, on the Sonatype issues site (central.sonatype.org/publish/publish-guide/). Ask an existing publisher to open an issue requesting publishing permissions for int.esa.ccsds.mo projects.
 
 2. In `~/.m2/settings.xml`, set the following:
 
