@@ -1,33 +1,12 @@
 Releasing
 =========
 
-1. Update the RELEASE_NOTES.md for the impending release.
-2. Update the versions of the pom files.
-3. `git commit -am "Update changelog for X.Y.Z."` (where X.Y.Z is the new version).
-4. Run the command:  (Prepare it with: `mvn release:prepare -DdryRun`)
-```
-'mvn clean source:jar javadoc:jar verify && mvn clean release:clean && mvn release:prepare release:perform'
-```
-4.1 For each project:
-    * `What is the release version for "<<Project_Name>>"? (int.esa.ccsds.mo:ARTIFACT_ID) X.Y:` - hit Enter.
-4.2 For each project:
-    * `What is SCM release tag or label for "<<Project_Name>>"? (int.esa.ccsds.mo:ARTIFACT_ID) X.Y:` - hit Enter.
-    * `What is the new development version for "<<Project_Name>>"? (int.esa.ccsds.mo:ARTIFACT_ID) X.(Y + 1)-SNAPSHOT:` - enter `X.(Y + 1).0-SNAPSHOT`.
-4.3  Enter your GPG Passphrase when prompted.
-5. Visit Sonatype Nexus and promote the artifact.
-
-If step 4 or 5 fails:
-
-  * Drop the Sonatype repo, 
-  * Fix the problem,
-  * Manully revert the version change in `pom.xml` made by `mvn-release`,
-  * Commit,
-  * And start again at step 4.
-
 Prerequisites
 -------------
 
-In `~/.m2/settings.xml`, set the following:
+1. Create an account in Maven Central, on the Sonatype issues site (central.sonartype.org/publish/publish-guide/). Ask an existing publisher to open an issue requesting publishing permissions for int.esa.ccsds.mo projects.
+
+2. In `~/.m2/settings.xml`, set the following:
 
 ```xml
 <settings>
@@ -41,9 +20,30 @@ In `~/.m2/settings.xml`, set the following:
 </settings>
 ```
 
-In your shell's `.rc` file, set the following:
-
-
+3. Make sure you have a GPG client installed. Check [GNUPG][gnupg]
 Refer to the [GPG Keys][example] guide if you need to set up GPG keys for signing.
 
+Release to Maven Central
+-------------
+
+1. Update the RELEASE_NOTES.md for the impending release.
+2. Update the versions of the pom files. Example, from: 9.0-SNAPSHOT to: 9.0
+3. `git commit -am "Update changelog for X.Y"` (where X.Y is the new version).
+4. Deploy to OSSRH and Maven Central (and enter your GPG Passphrase when prompted):
+```
+'mvn clean deploy'
+```
+5. Inspect the staging repository in the Nexus Repository Manager and either trigger a release or drop it:
+```
+'mvn nexus-staging:release'
+```
+If you found a problem, drop it with the command:
+```
+'mvn nexus-staging:drop'
+```
+
+6. Visit Sonatype Nexus and promote the artifact.
+
+
+ [gnupg]: https://www.gnupg.org/
  [example]: https://square.github.io/okio/releasing/#prerequisite-gpg-keys
