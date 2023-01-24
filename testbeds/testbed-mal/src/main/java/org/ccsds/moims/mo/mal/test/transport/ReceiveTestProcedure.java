@@ -43,7 +43,7 @@ import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransitionList;
+import org.ccsds.moims.mo.malprototype.structures.IPTestTransitionList;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 
 public class ReceiveTestProcedure {

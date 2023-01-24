@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.mal.test.patterns.PatternTest;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
+import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**

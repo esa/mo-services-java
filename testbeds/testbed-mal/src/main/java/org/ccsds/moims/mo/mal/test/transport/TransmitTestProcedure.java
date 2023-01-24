@@ -44,7 +44,7 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransitionList;
+import org.ccsds.moims.mo.malprototype.structures.IPTestTransitionList;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 
 public class TransmitTestProcedure {
