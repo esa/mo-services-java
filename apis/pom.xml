@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>9.0-SNAPSHOT</version>
+        <version>9.0</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>apis</artifactId>
-    <version>9.0-SNAPSHOT</version>
+    <version>9.0</version>
     <packaging>pom</packaging>
     <name>ESA MO APIs</name>
 

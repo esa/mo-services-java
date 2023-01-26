@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>9.0-SNAPSHOT</version>
+        <version>9.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>transport-zmtp</artifactId>
     <packaging>jar</packaging>
-    <version>9.0-SNAPSHOT</version>
+    <version>9.0</version>
 
     <name>ESA MO Transport - ZMTP</name>
     <description>A Java ZeroMQ Transport Protocol binding for CCSDS MAL</description>

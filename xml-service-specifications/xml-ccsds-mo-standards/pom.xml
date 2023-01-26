@@ -18,7 +18,7 @@
 
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>xml-ccsds-mo-standards</artifactId>
-    <version>9.0-SNAPSHOT</version>
+    <version>9.0</version>
     <packaging>jar</packaging>
 
     <name>ESA MO XML services - MO Standards</name>

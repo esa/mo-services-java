@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>9.0-SNAPSHOT</version>
+        <version>9.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>generator-java</artifactId>
-    <version>9.0-SNAPSHOT</version>
+    <version>9.0</version>
     <packaging>jar</packaging>
 
     <name>ESA MO API Generator - Java</name>
@@ -67,7 +67,7 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>generator-lib</artifactId>
-            <version>9.0-SNAPSHOT</version>
+            <version>9.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>

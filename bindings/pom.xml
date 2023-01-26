@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>9.0-SNAPSHOT</version>
+        <version>9.0</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>bindings-reactor</artifactId>
-    <version>9.0-SNAPSHOT</version>
+    <version>9.0</version>
     <packaging>pom</packaging>
     <name>ESA MO Bindings - Encodings and Transports</name>
 
