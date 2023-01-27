@@ -68,10 +68,12 @@ public class ZMTPMessageHeader extends GENMessageHeader {
 
     /**
      * Used Encoding.
-     * <li>0 - fixed binary
-     * <li>1 - variable binary
-     * <li>2 - split binary
-     * <li>3 - other, in additional field
+     * <ul>
+     * <li>0 - fixed binary</li>
+     * <li>1 - variable binary</li>
+     * <li>2 - split binary</li>
+     * <li>3 - other, in additional field</li>
+     * </ul>
      */
     protected byte encodingId;
 
@@ -91,9 +93,9 @@ public class ZMTPMessageHeader extends GENMessageHeader {
      * Constructor.
      *
      * @param configuration The ZMTP configuration to use for this message
-     * header
+     * header.
      * @param transport Respective ZMTP transport that this message header is
-     * being handled by
+     * being handled by.
      *
      */
     public ZMTPMessageHeader(ZMTPConfiguration configuration, ZMTPTransport transport) {
@@ -498,21 +500,27 @@ public class ZMTPMessageHeader extends GENMessageHeader {
     }
 
     /**
-     * @return the encodingId
+     * Returns the encoding ID.
+     *
+     * @return the encodingId.
      */
     public byte getEncodingId() {
         return encodingId;
     }
 
     /**
-     * @param encodingId the encodingId to set
+     * Sets the encoding ID.
+     *
+     * @param encodingId the encodingId to set.
      */
     public void setEncodingId(byte encodingId) {
         this.encodingId = encodingId;
     }
 
     /**
-     * @param encodingExtendedId the encodingExtendedId to set
+     * Sets the encoding extended ID.
+     *
+     * @param encodingExtendedId the encodingExtendedId to set.
      */
     public void setEncodingExtendedId(short encodingExtendedId) {
         this.encodingExtendedId = encodingExtendedId;

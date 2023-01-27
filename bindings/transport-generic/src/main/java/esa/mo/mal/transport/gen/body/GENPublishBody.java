@@ -75,6 +75,7 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
      * @param wrappedBodyParts True if the encoded body parts are wrapped in
      * BLOBs.
      * @param encFactory The encoder stream factory to use.
+     * @param encBodyBytes The enc body bytes.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
@@ -94,6 +95,7 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
      * @param wrappedBodyParts True if the encoded body parts are wrapped in
      * BLOBs.
      * @param encFactory The encoder stream factory to use.
+     * @param encBodyBytes The enc body bytes.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      * @param offset The offset in the message parts where the updates start.

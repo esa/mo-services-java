@@ -52,7 +52,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
      *
      * @param folder The folder to create the file in.
      * @param className The class name.
-     * @param generator
+     * @param generator The java code generator.
      * @throws IOException If any problems creating the file.
      */
     public JavaClassWriter(File folder, String className, GeneratorJava generator) throws IOException {
@@ -65,7 +65,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
      *
      * @param destinationFolderName Folder to create the file in.
      * @param className The file name.
-     * @param generator
+     * @param generator The java code generator.
      * @throws IOException If any problems creating the file.
      */
     public JavaClassWriter(String destinationFolderName, String className, GeneratorJava generator) throws IOException {
@@ -472,9 +472,12 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             }
 
             file.append(makeLine(tabCount, "/**", false));
+            
             for (String comment : comments) {
-                comment = comment.replaceAll("<", "_");
-                comment = comment.replaceAll(">", "_");
+                if (!comment.contains("<T>")) {
+                    comment = comment.replaceAll("<", "_");
+                    comment = comment.replaceAll(">", "_");
+                }
                 file.append(makeLine(tabCount, " * " + comment, false));
             }
             file.append(makeLine(tabCount, " */", false));

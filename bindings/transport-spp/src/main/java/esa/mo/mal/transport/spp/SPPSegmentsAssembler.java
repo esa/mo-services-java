@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.MALException;
 public class SPPSegmentsAssembler {
 
     // use TreeMap so that key is kept sorted
-    private final TreeMap<Long, SPPSegment> segmentsMap = new TreeMap<Long, SPPSegment>();
+    private final TreeMap<Long, SPPSegment> segmentsMap = new TreeMap<>();
     private final long sequenceIndex;
     private int totalSize = 0;
     private boolean receivedFirst = false;
@@ -81,8 +81,11 @@ public class SPPSegmentsAssembler {
 
     /**
      * Tries to get a message if there is one that can be assembled from the
-     * segments. Returns null if the message is still not available.
+     * segments.Returns null if the message is still not available.
      *
+     * @param transport The transport.
+     * @param apid The APID.
+     * @param apidQualifier The APID qualifier.
      * @return A new message or null if there are none available.
      * @throws MALException if any of the segments header could not be decoded.
      */

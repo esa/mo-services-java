@@ -98,7 +98,7 @@ public interface Generator {
     /**
      * Pre process an XSD specification to load in the type definitions.
      *
-     * @param spec The specification to process.
+     * @param spec The schema spec to process.
      * @throws IOException If there are problems reading the file.
      * @throws JAXBException If there are problems reading any XML Schema
      * definitions.

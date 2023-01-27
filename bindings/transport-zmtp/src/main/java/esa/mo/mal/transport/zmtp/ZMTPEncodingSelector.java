@@ -54,8 +54,7 @@ public class ZMTPEncodingSelector {
     public static final String ENCODING_SPLIT_BINARY_FACTORY
             = "esa.mo.mal.encoder.binary.split.SplitBinaryStreamFactory";
 
-    protected Map<Integer, MALElementStreamFactory> encodingFactories
-            = new HashMap<Integer, MALElementStreamFactory>();
+    protected Map<Integer, MALElementStreamFactory> encodingFactories = new HashMap<>();
 
     /**
      * Encoding ID used for outgoing messages.
@@ -104,7 +103,9 @@ public class ZMTPEncodingSelector {
     }
 
     /**
-     * @param header Outbound message header to apply the encoding id on
+     * Sets the encoding ID to the header.
+     *
+     * @param header Outbound message header to apply the encoding id on.
      */
     public void applyEncodingIdToHeader(ZMTPMessageHeader header) {
         header.setEncodingId(outboundEncodingId);
@@ -112,15 +113,14 @@ public class ZMTPEncodingSelector {
     }
 
     /**
+     * Selects a body decoder basing on encoding id and encoding extended id
+     * from given message header.
+     *
      * @param header Inbound message header to use for selection
      * @return Selected encoding stream factory
-     *
-     * Selects a body decoder basing on encoding id and encoding extended id
-     * from given message header
-     * @throws MALException
+     * @throws MALException The MAL Element Stream Factory.
      */
-    public MALElementStreamFactory getDecoderStreamFactory(ZMTPMessageHeader header)
-            throws MALException {
+    public MALElementStreamFactory getDecoderStreamFactory(ZMTPMessageHeader header) throws MALException {
         // Currently selected encoding (2 bit field from header)
         byte encodingId = header.getEncodingId();
         // Extended encoding ID (used when encoding id = 3)

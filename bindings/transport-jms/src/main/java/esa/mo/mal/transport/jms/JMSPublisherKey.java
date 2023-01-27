@@ -49,7 +49,7 @@ public final class JMSPublisherKey implements Comparable {
     /**
      * Constructor.
      *
-     * @param key Entity key.
+     * @param keys The keys.
      */
     public JMSPublisherKey(final NamedValueList keys) {
         super();
@@ -119,7 +119,7 @@ public final class JMSPublisherKey implements Comparable {
      * Returns true if this key matches supplied argument taking into account
      * wildcards.
      *
-     * @param rhs Key to match against.
+     * @param keys Key to match against.
      * @return True if matches.
      */
     public boolean matches(final NamedValueList keys) {

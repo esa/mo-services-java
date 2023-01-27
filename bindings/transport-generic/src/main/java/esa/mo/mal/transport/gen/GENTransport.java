@@ -502,7 +502,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * destination in order for them to be re-established.
      *
      * @param uriTo the connection handler that received this message
-     * @param receptionHandler
+     * @param receptionHandler The reception handler to pass them to.
      */
     public void closeConnection(final String uriTo, final GENReceptionHandler receptionHandler) {
         String localUriTo = uriTo;
@@ -543,7 +543,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * the destination in order for them to be re-established.
      *
      * @param uriTo the connection handler that received this message
-     * @param receptionHandler
+     * @param receptionHandler The reception handler to pass them to.
      */
     public void communicationError(String uriTo, GENReceptionHandler receptionHandler) {
         LOGGER.log(Level.WARNING, "Communication Error with uri: {0} ", uriTo);

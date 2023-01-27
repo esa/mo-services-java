@@ -23,7 +23,7 @@ package esa.mo.mal.impl;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Class that generates a unique transaction id counter that can be used by the 
+ * Class that generates a unique transaction id counter that can be used by the
  * MAL interactions for the transactionId field.
  *
  * The following constant defines a time epoch for the MAL transaction id. The
@@ -31,11 +31,13 @@ import java.util.concurrent.atomic.AtomicLong;
  * used to subtract from the UNIX time used as the seed for the transaction id.
  * It gives us an effective time range for transaction values from the MAL epoch
  * until approximately year 2045.
- *
+ * <br>
  * The transaction number is made up as follows:
- * <--        (Part A)        |   (Part B)   |      (Part C)         -->
- * <--         40bits         |   8 bits     |      16 bits          -->
- * <--  Time (ms resolution)  |  Randomness  |  Transaction Counter  -->
+ * <pre>
+ *  |        (Part A)        |   (Part B)   |      (Part C)         |
+ *  |        40  bits        |    8 bits    |      16  bits         |
+ *  |  Time (ms resolution)  |  Randomness  |  Transaction Counter  |
+ * </pre>
  */
 public class TransactionIdCounter {
 

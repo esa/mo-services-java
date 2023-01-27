@@ -237,8 +237,8 @@ public class HelperMisc {
                 } else {
                     Logger.getLogger(HelperMisc.class.getName()).log(Level.WARNING,
                             "The file provider.properties does not exist on the "
-                                    + "path: {}. Is the application working directory "
-                                    + "configured properly?", providerFile);
+                            + "path: {}. Is the application working directory "
+                            + "configured properly?", providerFile);
                 }
             }
 
@@ -251,8 +251,8 @@ public class HelperMisc {
                 } else {
                     Logger.getLogger(HelperMisc.class.getName()).log(Level.WARNING,
                             "The file settings.properties does not exist on the "
-                                    + "path: {}. Is the application working directory "
-                                    + "configured properly?", settingsFile);
+                            + "path: {}. Is the application working directory "
+                            + "configured properly?", settingsFile);
                 }
             }
 
@@ -269,8 +269,8 @@ public class HelperMisc {
             } else {
                 Logger.getLogger(HelperMisc.class.getName()).log(Level.WARNING,
                         "The file transport.properties does not exist on the "
-                                + "path: {}. Is the application working directory "
-                                + "configured properly?", transport_file_path);
+                        + "path: {}. Is the application working directory "
+                        + "configured properly?", transport_file_path);
             }
 
             if (useSharedBroker) {
@@ -401,7 +401,7 @@ public class HelperMisc {
      * @return The name of the service
      * @throws org.ccsds.moims.mo.mal.MALException The area/service is Unknown
      */
-    /*
+    @Deprecated
     public static String serviceKey2name(UShort area, UOctet areaVersion, UShort service)
             throws MALException {
 
@@ -423,10 +423,8 @@ public class HelperMisc {
 
         return malSer.getName().toString();
     }
-    */
 
     public static void setInputProcessorsProperty() {
         System.setProperty("org.ccsds.moims.mo.mal.transport.gen.inputprocessors", "5");
     }
-
 }

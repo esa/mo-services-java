@@ -35,11 +35,11 @@ public class ComStructureHelper {
      * Generate a EntityKey sub key using fields as specified in COM STD
      * 3.2.4.2b
      *
-     * @param area
-     * @param service
-     * @param version
-     * @param objectNumber
-     * @return
+     * @param area The area.
+     * @param service The service.
+     * @param version The version.
+     * @param objectNumber The object number.
+     * @return The short form part of the object.
      */
     public static Long generateSubKey(int area, int service, int version, int objectNumber) {
         long subkey = objectNumber;
@@ -54,8 +54,8 @@ public class ComStructureHelper {
      * Generate a EntityKey sub key using fields as specified in COM STD
      * 3.2.4.2b
      *
-     * @param objectType
-     * @return
+     * @param objectType The object type.
+     * @return The short form part of the object.
      */
     public static Long generateSubKey(ObjectType objectType) {
         return generateSubKey(objectType.getArea().getValue(),

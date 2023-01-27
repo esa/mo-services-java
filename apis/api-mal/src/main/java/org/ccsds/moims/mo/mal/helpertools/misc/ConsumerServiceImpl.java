@@ -38,7 +38,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 public abstract class ConsumerServiceImpl {
 
     protected ConnectionConsumer connection = new ConnectionConsumer();
-    protected HashMap<Identifier, Object> servicesMap = new HashMap<Identifier, Object>();
+    protected HashMap<Identifier, Object> servicesMap = new HashMap<>();
     protected MALConsumer tmConsumer;
     protected SingleConnectionDetails connectionDetails;
 
@@ -75,12 +75,15 @@ public abstract class ConsumerServiceImpl {
      * @param subsystem Name of the subsystem
      * @param service Definition of the consumed service
      * @return Wrapped MALconsumer
-     * @throws org.ccsds.moims.mo.mal.MALException
-     * @throws java.net.MalformedURLException
+     * @throws org.ccsds.moims.mo.mal.MALException if the service could not be
+     * started.
+     * @throws java.net.MalformedURLException if the service could not be
+     * started.
      */
     public Object createConsumer(String subsystem, MALService service) throws MALException, MalformedURLException {
 
-        Logger.getLogger(ConsumerServiceImpl.class.getName()).log(Level.INFO, "URI" + this.connectionDetails.getProviderURI().toString() + "@" + subsystem);
+        Logger.getLogger(ConsumerServiceImpl.class.getName()).log(Level.INFO,
+                "URI" + this.connectionDetails.getProviderURI().toString() + "@" + subsystem);
 
         MALConsumer consumer = connection.startService(
                 new URI(this.connectionDetails.getProviderURI().toString() + "@" + subsystem),

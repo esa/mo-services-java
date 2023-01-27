@@ -349,7 +349,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     /**
      * Initialize a server socket, if this is a provider
      *
-     * @throws org.ccsds.moims.mo.mal.MALException
+     * @throws org.ccsds.moims.mo.mal.MALException if the TCP/IP server could
+     * not be initialised.
      */
     @Override
     public void init() throws MALException {
@@ -709,9 +710,9 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     /**
      * Get a tuple from a URI which contains the host and port information.
      *
-     * @param addr
-     * @return
-     * @throws MALException
+     * @param addr The address.
+     * @return The connection tuple.
+     * @throws MALException if URI is malformed.
      */
     private ConnectionTuple getConnectionParts(String addr) throws MALException {
 

@@ -22,8 +22,6 @@ package esa.mo.mal.impl.pubsub;
 
 import esa.mo.mal.impl.broker.BrokerMatcher;
 import esa.mo.mal.impl.broker.MALBrokerImpl;
-import esa.mo.mal.impl.pubsub.SubscriptionConsumer;
-import esa.mo.mal.impl.pubsub.UpdateKeyValues;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -76,6 +74,15 @@ public class Subscriptions {
      * The generateNotifyMessage method returns a NotifyMessage object if there
      * are matches with any of the subscriptions, or a null if there are no
      * matches.
+     *
+     * @param srcHdr The MAL message header.
+     * @param srcDomainId The source domain.
+     * @param updateHeaderList The update header list.
+     * @param publishBody The publish body.
+     * @param keyNames The key names.
+     * @return The Notify message body.
+     * @throws org.ccsds.moims.mo.mal.MALException if the key values size does
+     * not match the key names size.
      */
     public NotifyMessageBody generateNotifyMessage(final MALMessageHeader srcHdr,
             final IdentifierList srcDomainId,

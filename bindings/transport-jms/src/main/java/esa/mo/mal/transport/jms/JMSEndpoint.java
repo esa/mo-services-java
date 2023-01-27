@@ -58,10 +58,8 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
     private final Queue messageSink;
     private final Session qs;
     private final JMSQueueHandler rspnHandler;
-    private final Map<String, JMSConsumeHandler> consumeHandlerMap
-            = new TreeMap<String, JMSConsumeHandler>();
-    private final Map<String, JMSPublishHandler> publishHandlerMap
-            = new TreeMap<String, JMSPublishHandler>();
+    private final Map<String, JMSConsumeHandler> consumeHandlerMap = new TreeMap<>();
+    private final Map<String, JMSPublishHandler> publishHandlerMap = new TreeMap<>();
     final Object interruption = new Object();
 
     /**
@@ -71,6 +69,9 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
      * @param localName Endpoint local MAL name.
      * @param routingName Endpoint local routing name.
      * @param baseuri The URI string for this end point.
+     * @param qs The session.
+     * @param q The queue.
+     * @throws java.lang.Exception if the endpoint could not be created.
      */
     public JMSEndpoint(final JMSTransport transport, final String localName,
             final String routingName, String baseuri, Session qs, Queue q) throws Exception {
@@ -269,7 +270,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         }
 
         // create response and do callback
-        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), 
+        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false),
                 null, null, transport.getStreamFactory(), (Object[]) null);
         receiveMessage(returnMsg);
     }
@@ -287,9 +288,8 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         }
 
         // details.setKeyList(hdr, ((MALPublishRegisterBody) msg.getBody()).getEntityKeyList());
-
         // create response and do callback
-        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), 
+        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false),
                 null, null, transport.getStreamFactory(), (Object[]) null);
         receiveMessage(returnMsg);
     }
@@ -335,14 +335,14 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         }
 
         // create response and do callback
-        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), 
+        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false),
                 null, null, transport.getStreamFactory(), (Object[]) null);
         receiveMessage(returnMsg);
     }
 
     protected void internalHandlePublishDeregister(final GENMessage msg,
             Session lqs) throws MALException, MALInteractionException {
-        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false), 
+        GENMessage returnMsg = new GENMessage(false, createReturnHeader(msg, false),
                 null, null, transport.getStreamFactory(), (Object[]) null);
 
         JMSPublishHandler hdlr = publishHandlerMap.remove(createProviderKey(msg.getHeader()));

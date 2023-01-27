@@ -55,6 +55,7 @@ public class GENPublishRegisterBody extends GENMessageBody implements MALPublish
      * @param wrappedBodyParts True if the encoded body parts are wrapped in
      * BLOBs.
      * @param encFactory The encoder stream factory to use.
+     * @param encBodyBytes The enc body bytes.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */

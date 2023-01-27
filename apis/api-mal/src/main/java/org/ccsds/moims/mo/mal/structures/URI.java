@@ -84,8 +84,8 @@ public class URI implements Attribute {
      * protocol and the main destination and is something unique for all URIs of
      * the same MAL.Example full URI: maltcp://10.0.0.1:61616-serviceXYZ
      *
-     * @param delimiter
-     * @param count
+     * @param delimiter the delimiter character.
+     * @param count The number of occurrences to skip.
      * @return the root URI, for example maltcp://10.0.0.1:61616
      */
     public String getRootURI(char delimiter, int count) {
@@ -109,8 +109,8 @@ public class URI implements Attribute {
     /**
      * Returns the nth index of a character in a String
      *
-     * @param uri the uri
-     * @param delimiter the delimiter character
+     * @param uri The uri.
+     * @param delimiter the delimiter character.
      * @param count The number of occurrences to skip.
      * @return the routing part of the URI
      */

@@ -170,8 +170,8 @@ public class ConnectionConsumer {
      * @param uriP The service provider URI
      * @param uriB The broker URI
      * @param domain The service domain
-     * @param qosLevels
-     * @param priorityLevels
+     * @param qosLevels The QoS levels
+     * @param priorityLevels The priority levels.
      * @param malService Definition of the consumed service
      * @return The MALConsumer
      * @throws org.ccsds.moims.mo.mal.MALException when there's an error during
@@ -213,7 +213,7 @@ public class ConnectionConsumer {
     }
 
     /**
-     * Loads the URIs from the default properties file
+     * Loads the URIs from the default properties file.
      *
      * @return The connection details object generated from the file
      * @throws java.net.MalformedURLException when the MALconsumer is not
@@ -241,7 +241,7 @@ public class ConnectionConsumer {
 
     /**
      * Returns a subscription object with wildcards in all four fields of the
-     * entity keys field
+     * entity keys field.
      *
      * @return The subscription object
      */
@@ -266,9 +266,10 @@ public class ConnectionConsumer {
      * Returns a subscription object with the entity keys field set as the
      * provided keys
      *
-     * @param subkeys The subkeys
+     * @param filters The filters
      * @return The subscription object
      */
+    @Deprecated
     public static Subscription subscriptionKeys(final SubscriptionFilterList filters) {
         final Identifier subscriptionId = new Identifier("SUB");
         return ConnectionConsumer.subscriptionKeys(subscriptionId, filters);
@@ -289,9 +290,10 @@ public class ConnectionConsumer {
      * provided keys
      *
      * @param subscriptionId The subscription Identifier
-     * @param subkeys The subkeys
+     * @param filters The filters
      * @return The subscription object
      */
+    @Deprecated
     public static Subscription subscriptionKeys(final Identifier subscriptionId,
             final SubscriptionFilterList filters) {
         return new Subscription(subscriptionId, null, filters);

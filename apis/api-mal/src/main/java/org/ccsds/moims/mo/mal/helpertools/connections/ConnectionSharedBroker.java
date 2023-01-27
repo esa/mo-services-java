@@ -50,8 +50,8 @@ public class ConnectionSharedBroker {
     /**
      * Closes any existing service brokers and recreates them.
      *
-     * @param brokerName
-     * @return
+     * @param brokerName The name to assign to the broker.
+     * @return The MAL Broker binding.
      * @throws MALException On error.
      */
     public MALBrokerBinding startBroker(String brokerName) throws MALException {

@@ -331,7 +331,7 @@ public class StubGenerator extends AbstractMojo {
      * Sets the package bindings, held in AREA/package pairs or URI/package
      * pairs for JAXB
      *
-     * @param packageBindings
+     * @param packageBindings The package bindings.
      */
     public void setPackageBindings(HashMap<String, String> packageBindings) {
         this.packageBindings = packageBindings;

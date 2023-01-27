@@ -26,6 +26,8 @@ import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * Class representing MAL ObjectRef type.
+ *
+ * @param <T> The type of the MO Object.
  */
 public class ObjectRef<T> implements Attribute {
 
@@ -47,11 +49,15 @@ public class ObjectRef<T> implements Attribute {
     }
 
     /**
-     * Initialiser constructor.
+     * Constructor.
      *
-     * @param value Value to initialise with.
+     * @param domain The domain.
+     * @param area The area.
+     * @param type The type.
+     * @param key The key.
+     * @param objectVersion The object version.
      */
-    public ObjectRef(final String domain, final Identifier area, final Identifier type, 
+    public ObjectRef(final String domain, final Identifier area, final Identifier type,
             final Identifier key, final UInteger objectVersion) {
         this.domain = domain;
         this.area = area;
@@ -91,7 +97,7 @@ public class ObjectRef<T> implements Attribute {
     public Identifier getType() {
         return type;
     }
-    
+
     /**
      * Returns the key.
      *
@@ -109,7 +115,7 @@ public class ObjectRef<T> implements Attribute {
     public UInteger getObjectVersion() {
         return objectVersion;
     }
-    
+
     @Override
     public Long getShortForm() {
         return Attribute.OBJECTREF_SHORT_FORM;
@@ -143,7 +149,7 @@ public class ObjectRef<T> implements Attribute {
     @Override
     public Element decode(final MALDecoder decoder) throws MALException {
         return decoder.decodeObjectRef();
-        
+
     }
 
     @Override
@@ -157,19 +163,19 @@ public class ObjectRef<T> implements Attribute {
         if (!(obj instanceof ObjectRef)) {
             return false;
         }
-        if(!domain.equals(((ObjectRef) obj).getDomain())){
+        if (!domain.equals(((ObjectRef) obj).getDomain())) {
             return false;
         }
-        if(!area.equals(((ObjectRef) obj).getArea())){
+        if (!area.equals(((ObjectRef) obj).getArea())) {
             return false;
         }
-        if(!type.equals(((ObjectRef) obj).getType())){
+        if (!type.equals(((ObjectRef) obj).getType())) {
             return false;
         }
-        if(!key.equals(((ObjectRef) obj).getKey())){
+        if (!key.equals(((ObjectRef) obj).getKey())) {
             return false;
         }
-        if(!objectVersion.equals(((ObjectRef) obj).getObjectVersion())){
+        if (!objectVersion.equals(((ObjectRef) obj).getObjectVersion())) {
             return false;
         }
         return true;
@@ -177,14 +183,14 @@ public class ObjectRef<T> implements Attribute {
 
     @Override
     public int hashCode() {
-        return domain.hashCode() + area.hashCode() + type.hashCode() 
+        return domain.hashCode() + area.hashCode() + type.hashCode()
                 + key.hashCode() + objectVersion.hashCode();
     }
 
     @Override
     public String toString() {
         return String.valueOf(domain) + ":" + String.valueOf(area) + ":"
-                + String.valueOf(type) + ":" + String.valueOf(key) + ":" 
+                + String.valueOf(type) + ":" + String.valueOf(key) + ":"
                 + String.valueOf(objectVersion) + ":";
     }
     private static final long serialVersionUID = Attribute.OBJECTREF_SHORT_FORM;

@@ -52,20 +52,22 @@ public class SPPMessage extends GENMessage {
     /**
      * Constructor.
      *
+     * @param hdrStreamFactory The header stream factory.
      * @param configuration The SPP configuration to use for this message.
+     * @param segmentCounter The segment counter.
      * @param wrapBodyParts True if the encoded body parts should be wrapped in
      * BLOBs.
      * @param header The message header to use.
      * @param qosProperties The QoS properties for this message.
      * @param operation The details of the operation being encoding, can be
      * null.
+     * @param encFactory The encoding factory.
      * @param body the body of the message.
      * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation
      * is unknown.
      */
     public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
-            final SPPConfiguration configuration,
-            final SPPSegmentCounter segmentCounter,
+            final SPPConfiguration configuration, final SPPSegmentCounter segmentCounter,
             boolean wrapBodyParts, GENMessageHeader header, Map qosProperties,
             MALOperation operation, MALElementStreamFactory encFactory,
             Object... body) throws MALInteractionException {
@@ -79,7 +81,9 @@ public class SPPMessage extends GENMessage {
     /**
      * Constructor.
      *
+     * @param hdrStreamFactory The header stream factory.
      * @param configuration The SPP configuration to use for this message.
+     * @param segmentCounter The segment counter.
      * @param wrapBodyParts True if the encoded body parts should be wrapped in
      * BLOBs.
      * @param readHeader True if the header should be read from the packet.
@@ -104,7 +108,9 @@ public class SPPMessage extends GENMessage {
     /**
      * Constructor.
      *
+     * @param hdrStreamFactory The header stream factory.
      * @param configuration The SPP configuration to use for this message.
+     * @param segmentCounter The segment counter.
      * @param wrapBodyParts True if the encoded body parts should be wrapped in
      * BLOBs.
      * @param readHeader True if the header should be read from the stream.

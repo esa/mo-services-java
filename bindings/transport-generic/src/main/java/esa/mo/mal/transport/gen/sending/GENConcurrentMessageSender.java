@@ -76,7 +76,7 @@ public class GENConcurrentMessageSender {
      * given URI.
      *
      * @param transport reference to the transport
-     * @param targetURI
+     * @param targetURI The target URI.
      */
     public GENConcurrentMessageSender(GENTransport transport, String targetURI) {
         outgoingQueue = new LinkedBlockingQueue<>();

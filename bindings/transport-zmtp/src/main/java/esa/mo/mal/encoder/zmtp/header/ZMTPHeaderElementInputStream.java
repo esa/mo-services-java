@@ -35,6 +35,7 @@ public class ZMTPHeaderElementInputStream extends FixedBinaryElementInputStream 
      *
      * @param is Input stream to read from.
      * @param transport The parent transport.
+     * @param timeHandler The time handler.
      */
     public ZMTPHeaderElementInputStream(final java.io.InputStream is, 
             ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
@@ -54,5 +55,4 @@ public class ZMTPHeaderElementInputStream extends FixedBinaryElementInputStream 
             final BinaryTimeHandler timeHandler) {
         super(new ZMTPHeaderDecoder(buf, offset, transport, timeHandler));
     }
-
 }

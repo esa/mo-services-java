@@ -37,7 +37,7 @@ public abstract class MOObject implements Composite {
     /**
      * Constructor.
      *
-     * @param objectIdentity
+     * @param objectIdentity The identity of the MO Object.
      */
     public MOObject(ObjectIdentity objectIdentity) {
         this.objectIdentity = objectIdentity;

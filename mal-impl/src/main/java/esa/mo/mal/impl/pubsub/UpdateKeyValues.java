@@ -61,7 +61,7 @@ public final class UpdateKeyValues {
      *
      * @param srcHdr Update message header.
      * @param domainId Update domain.
-     * @param keyValues
+     * @param keyValues Key values.
      */
     public UpdateKeyValues(final MALMessageHeader srcHdr,
             final IdentifierList domainId, final List<NamedValue> keyValues) {
