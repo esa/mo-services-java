@@ -20,7 +20,7 @@
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
         <version>9.0</version>
-        <relativePath>../../parent/pom.xml</relativePath>
+        <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
     <groupId>int.esa.ccsds.mo</groupId>
