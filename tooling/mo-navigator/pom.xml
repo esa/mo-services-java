@@ -25,7 +25,7 @@
 
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>mo-navigator</artifactId>
-    <version>1.0</version>
+    <version>9.0</version>
     <packaging>jar</packaging>
     
     <name>ESA MO Navigator</name>
