@@ -43,24 +43,23 @@ Prerequisites
 Release to Maven Central
 -------------
 
-1. Do the following tasks:
+1. Do the following tasks sequentially:
     * Update the RELEASE_NOTES.md for the impending release
     * Make sure the javadocs generation does not have any errors:  `mvn javadoc:javadoc`
     * Make sure the MO Testbeds are passing
-	
-2. Update the versions of the pom files. Example, from: 9.0-SNAPSHOT to: 9.0
-`git commit -am "Updates the project versions to X.Y"`
+    * Update the versions of ALL the pom files. Example, from: 9.0-SNAPSHOT to: 9.0
+    * Delete the local ~/.m2/repository and make sure that the project can be built from scratch
 
-3. Compile the projects with sources and javadocs (and enter your GPG Passphrase when prompted) and deploy to OSSRH (Maven Central):
+2. Compile the projects with sources and javadocs (and enter your GPG Passphrase when prompted) and deploy to OSSRH (Maven Central):
 ```
 mvn clean deploy -P release
 ```
 
-4. Inspect the staging repository in the Nexus Repository Manager [here][oss]
+3. Inspect the staging repository in the Nexus Repository Manager [here][oss]
     * Release it if everything looks alright 
     * Or Drop it if there are errors
 
-5. Tag the release in GitHub
+4. Tag the release in GitHub
 
 
 Extra
@@ -74,4 +73,3 @@ Complete Maven Central publishing guide available [here][sonatype_guide]!
  [example]: https://square.github.io/okio/releasing/#prerequisite-gpg-keys
  [gnupg_guide]:  https://central.sonatype.org/publish/requirements/gpg/
  [oss]: https://oss.sonatype.org/#stagingRepositories
- 
