@@ -42,7 +42,8 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
      * Constructor.
      *
      * @param src Byte array to read from.
-     * @param transport Parent transport
+     * @param transport Parent transport.
+     * @param timeHandler The time handler.
      */
     public ZMTPHeaderDecoder(final byte[] src, final ZMTPTransport transport,
             final BinaryTimeHandler timeHandler) {
@@ -55,6 +56,7 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
      *
      * @param is Input stream to read from.
      * @param transport Parent transport
+     * @param timeHandler The time handler.
      */
     public ZMTPHeaderDecoder(final java.io.InputStream is, 
             final ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
@@ -67,7 +69,8 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
      *
      * @param src Byte array to read from.
      * @param offset index in array to start reading from.
-     * @param transport Parent transport
+     * @param transport Parent transport.
+     * @param timeHandler The time handler.
      */
     public ZMTPHeaderDecoder(final byte[] src, final int offset, 
             final ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
@@ -79,7 +82,8 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
      * Constructor.
      *
      * @param src Source buffer holder to use.
-     * @param transport Parent transport
+     * @param transport Parent transport.
+     * @param timeHandler The time handler.
      */
     protected ZMTPHeaderDecoder(final FixedBinaryBufferHolder src, 
             final ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
@@ -94,20 +98,20 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
     }
 
     /**
-     * Reads Varint-encoded UInteger
+     * Reads Varint-encoded UInteger.
      *
-     * @return Decoded UInteger
-     * @throws MALException
+     * @return The decoded UInteger.
+     * @throws MALException if it could not be decoded.
      */
     public UInteger decodeVariableUInteger() throws MALException {
         return new UInteger(getVariableUnsigned());
     }
 
     /**
-     * Reads Varint-encoded Integer
+     * Reads Varint-encoded Integer.
      *
-     * @return Decoded Integer
-     * @throws MALException
+     * @return Decoded Integer.
+     * @throws MALException if it could not be decoded.
      */
     public Integer decodeVariableInteger() throws MALException {
         return (int) getVariableSigned();
@@ -117,13 +121,13 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
      * Reads unsigned Varint
      *
      * @return Decoded unsigned Varint stored as long
-     * @throws MALException
+     * @throws MALException if it could not be decoded.
      */
     public long getVariableUnsigned() throws MALException {
         long value = 0L;
         int i = 0;
         long b;
-        while (((b = sourceBuffer.get8()) & 0x80L) != 0) {
+        while (((b = sourceBuffer.read8()) & 0x80L) != 0) {
             value |= (b & 0x7F) << i;
             i += 7;
         }
@@ -131,10 +135,10 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
     }
 
     /**
-     * Reads signed Varint
+     * Reads signed Varint.
      *
-     * @return Decoded signed Varint stored as long
-     * @throws MALException
+     * @return Decoded signed Varint stored as long.
+     * @throws MALException if it could not be decoded.
      */
     public int getVariableSigned() throws MALException {
         final long raw = getVariableUnsigned();
@@ -160,7 +164,7 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
                         + mdk + ". Missing directory entry.");
             }
         } else {
-            ret = new String(sourceBuffer.directGetBytes(lengthOrMDK));
+            ret = new String(sourceBuffer.readBytes(lengthOrMDK));
         }
         return ret;
     }
@@ -177,7 +181,7 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
 
     @Override
     public String decodeNullableString() throws MALException {
-        if (sourceBuffer.isNotNull()) {
+        if (sourceBuffer.readIsNotNull()) {
             return decodeString();
         }
         return null;
@@ -207,6 +211,6 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
         if (len < 0) {
             throw new MALException("Negative blob length: " + len);
         }
-        return new Blob(sourceBuffer.directGetBytes(len));
+        return new Blob(sourceBuffer.readBytes(len));
     }
 }

@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 
 /**
  * Implements the MALDecoder interface for a fixed length binary encoding.
@@ -110,30 +111,30 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
         }
 
         @Override
-        public long getSignedLong() throws MALException {
-            final long raw = getUnsignedLong();
+        public long readSignedLong() throws MALException {
+            final long raw = readUnsignedLong();
             final long temp = (((raw << 63) >> 63) ^ raw) >> 1;
             return temp ^ (raw & (1L << 63));
         }
 
         @Override
-        public int getSignedInt() throws MALException {
-            final int raw = getUnsignedInt();
+        public int readSignedInt() throws MALException {
+            final int raw = readUnsignedInt();
             final int temp = (((raw << 31) >> 31) ^ raw) >> 1;
             return temp ^ (raw & (1 << 31));
         }
 
         @Override
-        public short getSignedShort() throws MALException {
-            return (short) getSignedInt();
+        public short readSignedShort() throws MALException {
+            return (short) readSignedInt();
         }
 
         @Override
-        public long getUnsignedLong() throws MALException {
+        public long readUnsignedLong() throws MALException {
             long value = 0L;
             int i = 0;
             long b;
-            while (((b = get8()) & 128L) != 0) {
+            while (((b = read8()) & 128L) != 0) {
                 value |= (b & 127) << i;
                 i += 7;
             }
@@ -141,16 +142,16 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
         }
 
         @Override
-        public long getUnsignedLong32() throws MALException {
-            return getUnsignedLong();
+        public long readUnsignedLong32() throws MALException {
+            return readUnsignedLong();
         }
 
         @Override
-        public int getUnsignedInt() throws MALException {
+        public int readUnsignedInt() throws MALException {
             int value = 0;
             int i = 0;
             int b;
-            while (((b = get8()) & 128) != 0) {
+            while (((b = read8()) & 128) != 0) {
                 value |= (b & 127) << i;
                 i += 7;
             }
@@ -158,26 +159,26 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
         }
 
         @Override
-        public int getUnsignedInt16() throws MALException {
-            return getUnsignedInt();
+        public int readUnsignedInt16() throws MALException {
+            return readUnsignedInt();
         }
 
         @Override
-        public int getUnsignedShort() throws MALException {
-            return getUnsignedInt();
+        public int readUnsignedShort() throws MALException {
+            return readUnsignedInt();
         }
 
         @Override
-        public short getUnsignedShort8() throws MALException {
-            return (short) (get8() & 0xFF);
+        public short readUnsignedShort8() throws MALException {
+            return (short) (read8() & 0xFF);
         }
 
         @Override
-        public BigInteger getBigInteger() throws MALException {
+        public BigInteger readBigInteger() throws MALException {
             int i = 0;
             int b;
             BigInteger rv = BigInteger.ZERO;
-            while (((b = get8()) & 128) != 0) {
+            while (((b = read8()) & 128) != 0) {
                 rv = rv.or((new BigInteger(Integer.toString(b)).and(B_127)).shiftLeft(i));
                 i += 7;
             }

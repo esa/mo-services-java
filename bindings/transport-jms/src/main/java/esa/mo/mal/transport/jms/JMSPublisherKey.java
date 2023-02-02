@@ -20,8 +20,15 @@
  */
 package esa.mo.mal.transport.jms;
 
-import org.ccsds.moims.mo.mal.structures.EntityKey;
+import java.util.HashMap;
+import java.util.Map;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperAttributes;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
  * Simple class that represents a MAL update key.
@@ -34,23 +41,22 @@ public final class JMSPublisherKey implements Comparable {
     private static final String ALL_ID = "*";
     private static final Long ALL_NUMBER = 0L;
     private static final int HASH_MAGIC_NUMBER = 47;
-    public final String key1;
-    public final Long key2;
-    public final Long key3;
-    public final Long key4;
+    /**
+     * The set of subkeys.
+     */
+    private final HashMap<String, Attribute> subkeys = new HashMap<>();
 
     /**
      * Constructor.
      *
-     * @param lst Entity key.
+     * @param keys The keys.
      */
-    public JMSPublisherKey(final EntityKey lst) {
+    public JMSPublisherKey(final NamedValueList keys) {
         super();
 
-        this.key1 = getIdValue(lst.getFirstSubKey());
-        this.key2 = lst.getSecondSubKey();
-        this.key3 = lst.getThirdSubKey();
-        this.key4 = lst.getFourthSubKey();
+        for (NamedValue subkey : keys) {
+            subkeys.put(subkey.getName().getValue(), subkey.getValue());
+        }
     }
 
     @Override
@@ -62,43 +68,50 @@ public final class JMSPublisherKey implements Comparable {
             return false;
         }
         final JMSPublisherKey other = (JMSPublisherKey) obj;
-        if ((this.key1 == null) ? (other.key1 != null) : !this.key1.equals(other.key1)) {
+        if (this.subkeys.size() != other.subkeys.size()) {
             return false;
         }
-        if ((this.key2 == null) ? (other.key2 != null) : !this.key2.equals(other.key2)) {
-            return false;
+        for (Map.Entry<String, Attribute> entry : subkeys.entrySet()) {
+            String key = entry.getKey();
+            Object otherValue = other.subkeys.get(key);
+            if (otherValue == null || !this.subkeys.get(key).equals(otherValue)) {
+                return false;
+            }
         }
-        if ((this.key3 == null) ? (other.key3 != null) : !this.key3.equals(other.key3)) {
-            return false;
-        }
-
-        return !((this.key4 == null) ? (other.key4 != null) : !this.key4.equals(other.key4));
+        return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = HASH_MAGIC_NUMBER * hash + (this.key1 != null ? this.key1.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + (this.key2 != null ? this.key2.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + (this.key3 != null ? this.key3.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + (this.key4 != null ? this.key4.hashCode() : 0);
+        for (Map.Entry<String, Attribute> entry : subkeys.entrySet()) {
+            Attribute value = entry.getValue();
+            hash = HASH_MAGIC_NUMBER * hash + (value != null ? value.hashCode() : 0);
+        }
         return hash;
     }
 
     @Override
     public int compareTo(final Object o) {
         final JMSPublisherKey rhs = (JMSPublisherKey) o;
-        int rv = compareSubkey(this.key1, rhs.key1);
-        if (0 == rv) {
-            rv = compareSubkey(this.key2, rhs.key2);
-            if (0 == rv) {
-                rv = compareSubkey(this.key3, rhs.key3);
-                if (0 == rv) {
-                    rv = compareSubkey(this.key4, rhs.key4);
+
+        int rv = 0;
+
+        for (Map.Entry<String, Attribute> entry : subkeys.entrySet()) {
+            String key = entry.getKey();
+            Attribute value = entry.getValue();
+
+            if (value instanceof Union) {
+                rv = compareSubkey(
+                        ((Union) this.subkeys.get(key)).getLongValue(),
+                        ((Union) rhs.subkeys.get(key)).getLongValue()
+                );
+
+                if (rv != 0) {
+                    return rv;
                 }
             }
         }
-
         return rv;
     }
 
@@ -106,24 +119,21 @@ public final class JMSPublisherKey implements Comparable {
      * Returns true if this key matches supplied argument taking into account
      * wildcards.
      *
-     * @param rhs Key to match against.
+     * @param keys Key to match against.
      * @return True if matches.
      */
-    public boolean matches(final EntityKey rhs) {
-        if (null != rhs) {
-            boolean matched = matchedSubkey(key1, getIdValue(rhs.getFirstSubKey()));
-
-            if (matched) {
-                matched = matchedSubkey(key2, rhs.getSecondSubKey());
-                if (matched) {
-                    matched = matchedSubkey(key3, rhs.getThirdSubKey());
-                    if (matched) {
-                        matched = matchedSubkey(key4, rhs.getFourthSubKey());
-                    }
+    public boolean matches(final NamedValueList keys) {
+        if (null != keys) {
+            for(NamedValue nv : keys){
+                boolean matched = matchedSubkeyWithWildcard(nv.getValue(), 
+                        this.subkeys.get(nv.getName().getValue()));
+                
+                if(!matched){
+                    return false;
                 }
             }
-
-            return matched;
+            
+            return true;
         }
 
         return false;
@@ -165,6 +175,44 @@ public final class JMSPublisherKey implements Comparable {
         return 0;
     }
 
+    /**
+     * Compares two String sub-keys taking into account wildcard values.
+     *
+     * @param myKeyPart The first key part.
+     * @param theirKeyPart The second key part.
+     * @return True if they match or one is the wildcard.
+     */
+    protected static boolean matchedSubkeyWithWildcard(final Attribute myKeyPart, final Attribute theirKeyPart) {
+        // Are we handling strings?
+        if(HelperMisc.isStringAttribute(myKeyPart) && HelperMisc.isStringAttribute(theirKeyPart)){
+            String first = HelperAttributes.attribute2string(myKeyPart);
+            String second = HelperAttributes.attribute2string(theirKeyPart);
+            
+            if (ALL_ID.equals(first) || ALL_ID.equals(second)) {
+                return true;
+            }
+        }
+        
+        // Are we not handling strings?
+        if(!HelperMisc.isStringAttribute(myKeyPart) && !HelperMisc.isStringAttribute(theirKeyPart)){
+            Object first = HelperAttributes.attribute2JavaType(myKeyPart);
+            Object second = HelperAttributes.attribute2JavaType(theirKeyPart);
+            
+            if(first instanceof Long){
+                if (ALL_NUMBER.equals((Long) first) || ALL_NUMBER.equals((Long) second)) {
+                    return true;
+                }
+            }
+        }
+        
+        if ((null == myKeyPart) || (null == theirKeyPart)) {
+            return (null == myKeyPart) && (null == theirKeyPart);
+        }
+
+        return myKeyPart.equals(theirKeyPart);
+    }
+
+    @Deprecated
     private static boolean matchedSubkey(final String myKeyPart, final String theirKeyPart) {
         if (ALL_ID.equals(myKeyPart) || ALL_ID.equals(theirKeyPart)) {
             return true;
@@ -177,6 +225,7 @@ public final class JMSPublisherKey implements Comparable {
         return myKeyPart.equals(theirKeyPart);
     }
 
+    @Deprecated
     private static boolean matchedSubkey(final Long myKeyPart, final Long theirKeyPart) {
         if (ALL_NUMBER.equals(myKeyPart) || ALL_NUMBER.equals(theirKeyPart)) {
             return true;
@@ -201,13 +250,12 @@ public final class JMSPublisherKey implements Comparable {
     public String toString() {
         final StringBuilder buf = new StringBuilder();
         buf.append('[');
-        buf.append(this.key1);
-        buf.append('.');
-        buf.append(this.key2);
-        buf.append('.');
-        buf.append(this.key3);
-        buf.append('.');
-        buf.append(this.key4);
+        for (Map.Entry<String, Attribute> entry : subkeys.entrySet()) {
+            buf.append(entry.getKey());
+            buf.append('=');
+            buf.append(entry.getValue());
+            buf.append(';');
+        }
         buf.append(']');
         return buf.toString();
     }

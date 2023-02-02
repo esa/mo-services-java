@@ -20,9 +20,9 @@
  */
 package esa.mo.mal.encoder.string;
 
-import esa.mo.mal.encoder.gen.GENElementOutputStream;
-import esa.mo.mal.encoder.gen.GENEncoder;
 import java.io.OutputStream;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
+import org.ccsds.moims.mo.mal.encoding.GENElementOutputStream;
 
 /**
  * Implements the MALElementOutputStream interface for String encodings.
@@ -39,7 +39,7 @@ public class StringElementOutputStream extends GENElementOutputStream {
     }
 
     @Override
-    protected GENEncoder createEncoder(OutputStream os) {
+    protected Encoder createEncoder(OutputStream os) {
         return new StringEncoder(os);
     }
 }

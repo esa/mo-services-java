@@ -25,6 +25,7 @@ import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import org.ccsds.moims.mo.mal.MALListDecoder;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 
 /**
  * Implements the MALDecoder interface for a split binary encoding.
@@ -103,7 +104,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.variable.Varia
         }
 
         @Override
-        public boolean getBool() throws MALException {
+        public boolean readBool() throws MALException {
             // ensure that the bit buffer has been loaded first
             if (!getSplitInputReader().bitStoreLoaded) {
                 getSplitInputReader().loadBitStore();

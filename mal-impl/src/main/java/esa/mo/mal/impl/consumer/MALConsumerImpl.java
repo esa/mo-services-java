@@ -146,10 +146,9 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
 
     @Override
     public Blob setAuthenticationId(Blob newAuthenticationId) {
-        Blob rv = details.authenticationId;
+        Blob previous = details.authenticationId;
         details.authenticationId = newAuthenticationId;
-
-        return rv;
+        return previous;
     }
 
     @Override

@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
-import esa.mo.mal.encoder.gen.GENDecoder;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -28,6 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
+import org.ccsds.moims.mo.mal.encoding.Decoder;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -35,7 +36,7 @@ import org.ccsds.moims.mo.mal.structures.Time;
 /**
  * Implements the MALDecoder interface for a binary encoding.
  */
-public abstract class BaseBinaryDecoder extends GENDecoder {
+public abstract class BaseBinaryDecoder extends Decoder {
 
     protected static final java.util.logging.Logger LOGGER = Logger.getLogger(
             BaseBinaryDecoder.class.getName());
@@ -84,7 +85,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder {
     public BinaryTimeHandler getTimeHandler() {
         return timeHandler;
     }
-
+    
     /**
      * Internal class that is used to hold the byte buffer. Derived classes
      * should extend this (and replace it in the constructors).
@@ -123,8 +124,8 @@ public abstract class BaseBinaryDecoder extends GENDecoder {
         }
 
         @Override
-        public String getString() throws MALException {
-            final int len = getUnsignedInt();
+        public String readString() throws MALException {
+            final int len = readUnsignedInt();
 
             if (len >= 0) {
                 buf.checkBuffer(len);
@@ -137,37 +138,37 @@ public abstract class BaseBinaryDecoder extends GENDecoder {
         }
 
         @Override
-        public byte get8() throws MALException {
+        public byte read8() throws MALException {
             return buf.get8();
         }
 
         @Override
-        public byte[] getBytes() throws MALException {
-            return directGetBytes(getUnsignedInt());
+        public byte[] readBytes() throws MALException {
+            return readBytes(readUnsignedInt());
         }
 
         @Override
-        public boolean getBool() throws MALException {
-            return !(0 == get8());
+        public boolean readBool() throws MALException {
+            return !(0 == read8());
         }
 
         @Override
-        public boolean isNotNull() throws MALException {
-            return getBool();
+        public boolean readIsNotNull() throws MALException {
+            return readBool();
         }
 
         @Override
-        public float getFloat() throws MALException {
-            return Float.intBitsToFloat(getSignedInt());
+        public float readFloat() throws MALException {
+            return Float.intBitsToFloat(readSignedInt());
         }
 
         @Override
-        public double getDouble() throws MALException {
-            return Double.longBitsToDouble(getSignedLong());
+        public double readDouble() throws MALException {
+            return Double.longBitsToDouble(readSignedLong());
         }
 
         @Override
-        public byte[] directGetBytes(final int size) throws MALException {
+        public byte[] readBytes(final int size) throws MALException {
             return buf.directGetBytes(size);
         }
     }
@@ -266,7 +267,7 @@ public abstract class BaseBinaryDecoder extends GENDecoder {
                         for (int i = 0; i < existingContentRemaining; ++i) {
                             destBuf[i] = this.buf[this.offset + i];
                         }
-
+                        
                         // the start of the data in the buffer has moved to zero now
                         this.buf = destBuf;
                         this.offset = 0;

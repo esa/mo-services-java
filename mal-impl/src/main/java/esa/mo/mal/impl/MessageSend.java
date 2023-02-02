@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.impl;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +77,7 @@ public class MessageSend {
      *
      * @param details Message details structure.
      * @param op The operation.
-     * @param entityKeys List of keys that can be published.
+     * @param keys List of keys to be published.
      * @param listener Error callback interface.
      * @return Publish transaction identifier.
      * @throws MALInteractionException if there is a problem during the
@@ -87,16 +86,17 @@ public class MessageSend {
      */
     public Long publishRegister(final MessageDetails details,
             final MALPubSubOperation op,
-            final EntityKeyList entityKeys,
+            final IdentifierList keys,
             final MALPublishInteractionListener listener)
             throws MALInteractionException, MALException {
         ipsmap.registerPublishListener(details, listener);
+        IdentifierList publishedKeys = (keys != null) ? keys :  new IdentifierList();
 
         return initiateSynchronousInteraction(details,
                 op,
                 MALPubSubOperation.PUBLISH_REGISTER_STAGE,
                 (MALPublishInteractionListener) null,
-                entityKeys);
+                publishedKeys);
     }
 
     /**
@@ -145,7 +145,7 @@ public class MessageSend {
      *
      * @param details Message details structure.
      * @param op The operation.
-     * @param entityKeys List of keys that can be published.
+     * @param keys List of keys that can be published.
      * @param listener Response callback interface.
      * @return The sent MAL message.
      * @throws MALInteractionException if there is a problem during the
@@ -154,13 +154,14 @@ public class MessageSend {
      */
     public MALMessage publishRegisterAsync(final MessageDetails details,
             final MALPubSubOperation op,
-            final EntityKeyList entityKeys,
+            final IdentifierList keys,
             final MALPublishInteractionListener listener)
             throws MALInteractionException, MALException {
         ipsmap.registerPublishListener(details, listener);
+        IdentifierList publishedKeys = (keys != null) ? keys :  new IdentifierList();
         final Long transId = icmap.createTransaction(false, listener);
         return initiateAsynchronousInteraction(details,
-                createMessage(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE, entityKeys));
+                createMessage(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE, publishedKeys));
     }
 
     /**
@@ -468,9 +469,11 @@ public class MessageSend {
         MALMessage msg = null;
 
         try {
-            msg = msgAddress.endpoint.createMessage(msgAddress.authenticationId,
+            MALEndpoint endpoint = msgAddress.getEndpoint();
+            msg = endpoint.createMessage(
+                    msgAddress.getAuthenticationId(),
                     srcHdr.getURIFrom(),
-                    new Time(new Date().getTime()),
+                    Time.now(),
                     lvl,
                     srcHdr.getPriority(),
                     srcHdr.getDomain(),
@@ -484,7 +487,7 @@ public class MessageSend {
                     qosProperties,
                     rspn);
 
-            msgAddress.endpoint.sendMessage(msg);
+            endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
@@ -522,10 +525,11 @@ public class MessageSend {
         MALMessage msg = null;
 
         try {
-            msg = msgAddress.endpoint.createMessage(
-                    msgAddress.authenticationId,
+            MALEndpoint endpoint = msgAddress.getEndpoint();
+            msg = endpoint.createMessage(
+                    msgAddress.getAuthenticationId(),
                     srcHdr.getURIFrom(),
-                    new Time(new Date().getTime()),
+                    Time.now(),
                     lvl,
                     srcHdr.getPriority(),
                     srcHdr.getDomain(),
@@ -539,7 +543,7 @@ public class MessageSend {
                     qosProperties,
                     rspn);
 
-            msgAddress.endpoint.sendMessage(msg);
+            endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
@@ -652,9 +656,7 @@ public class MessageSend {
             MALMessage msg) throws MALInteractionException, MALException {
         try {
             msg = securityManager.check(msg);
-
             details.endpoint.sendMessage(msg);
-
             final MALMessage rtn = icmap.waitForResponse(transId);
 
             if (null != rtn) {
@@ -686,7 +688,6 @@ public class MessageSend {
             MALMessage msg) throws MALInteractionException, MALException {
         try {
             msg = securityManager.check(msg);
-
             details.endpoint.sendMessage(msg);
         } catch (IllegalArgumentException ex) {
             throw new MALException("IllegalArgumentException", ex);
@@ -711,10 +712,11 @@ public class MessageSend {
                 level = srcHdr.getQoSlevel();
             }
 
-            msg = msgAddress.endpoint.createMessage(
-                    msgAddress.authenticationId,
+            MALEndpoint endpoint = msgAddress.getEndpoint();
+            msg = endpoint.createMessage(
+                    msgAddress.getAuthenticationId(),
                     srcHdr.getURIFrom(),
-                    new Time(new Date().getTime()),
+                    Time.now(),
                     level,
                     srcHdr.getPriority(),
                     srcHdr.getDomain(),
@@ -730,9 +732,10 @@ public class MessageSend {
                     srcHdr.getAreaVersion(),
                     true,
                     new HashMap(),
-                    error.getErrorNumber(), error.getExtraInformation());
+                    error.getErrorNumber(), 
+                    error.getExtraInformation());
 
-            msgAddress.endpoint.sendMessage(msg);
+            endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "Error returning error to consumer : {0} : {1}", new Object[]{
@@ -766,7 +769,7 @@ public class MessageSend {
 
         return details.endpoint.createMessage(details.authenticationId,
                 to,
-                new Time(new Date().getTime()),
+                Time.now(),
                 details.qosLevel,
                 details.priority,
                 details.domain,
@@ -794,7 +797,7 @@ public class MessageSend {
 
         return details.endpoint.createMessage(details.authenticationId,
                 to,
-                new Time(new Date().getTime()),
+                Time.now(),
                 details.qosLevel,
                 details.priority,
                 details.domain,

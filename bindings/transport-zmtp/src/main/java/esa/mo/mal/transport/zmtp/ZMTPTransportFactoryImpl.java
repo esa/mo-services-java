@@ -44,12 +44,12 @@ public class ZMTPTransportFactoryImpl extends MALTransportFactory {
     }
 
     @Override
-    public MALTransport createTransport(final MALContext malContext, 
+    public MALTransport createTransport(final MALContext malContext,
             final Map properties) throws MALException {
         synchronized (MUTEX) {
             if (null == transport) {
-                transport = new ZMTPTransport(getProtocol(), '/', false, this, 
-                        properties, new ZMTPURIMapping(properties));
+                transport = new ZMTPTransport(getProtocol(), false,
+                        this, properties, new ZMTPURIMapping(properties));
                 transport.init();
             }
 

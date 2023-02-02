@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Licensed under the European Space Agency Public License, Version 2.0
+    You may not use this file except in compliance with the License.
+
+    Except as expressly set forth in this License, the Software is provided to
+    You on an "as is" basis and without warranties of any kind, including without
+    limitation merchantability, fitness for a particular purpose, absence of
+    defects or errors, accuracy or non-infringement of intellectual property rights.
+ 
+    See the License for the specific language governing permissions and limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+        <groupId>int.esa.ccsds.mo</groupId>
+        <artifactId>parent</artifactId>
+        <version>9.0</version>
+        <relativePath>../../parent/pom.xml</relativePath>
+    </parent>
+  
+    <artifactId>testbed-pom</artifactId>
+    <packaging>pom</packaging>
+    <version>9.0</version>
+    <name>CCSDS MOIMS MO Testbed POM</name>
+
+    <organization>
+        <name>CCSDS</name>
+        <url>http://www.ccsds.org</url>
+    </organization>
+  
+    <licenses>
+        <license>
+            <name>The European Space Agency Public License, Version 2.0</name>
+            <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_ESA.md</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>CeCILL-C FREE SOFTWARE LICENSE AGREEMENT</name>
+            <url>https://raw.github.com/esa/CCSDS_MO_TESTBEDS/master/LICENCE_CNES.md</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:esa/mo-services-java.git</connection>
+        <developerConnection>scm:git:git@github.com:esa/mo-services-java.git</developerConnection>
+        <url>https://github.com/esa/mo-services-java</url>
+    </scm>
+  
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/esa/mo-services-java/issues</url>
+    </issueManagement>
+  
+    <developers>
+        <developer>
+            <id>SamCooper</id>
+            <name>Sam Cooper</name>
+            <email>sam@brightascension.com</email>
+            <url>https://github.com/SamCooper</url>
+        </developer>
+        <developer>
+            <id>DavidFeliot</id>
+            <name>David Feliot</name>
+            <email>david.feliot@scalagent.com</email>
+            <url>https://github.com/DavidFeliot</url>
+        </developer>
+    </developers>
+  
+    <properties>
+        <ant.plugin.version>1.7</ant.plugin.version>
+        <ant.version>1.8.1</ant.version>
+        <ant.trax.version>1.8.0</ant.trax.version>
+        <fitnesse.version>20140901</fitnesse.version>
+        <jacoco.version>0.7.1.201405082137</jacoco.version>
+        <junit.version>4.8.1</junit.version>
+        <fitnesse.output.dir>${project.build.directory}/surefire-reports</fitnesse.output.dir>
+        <ccsds.testbed.util.version>9.0</ccsds.testbed.util.version>
+        <cnes.version>3.2.2-SNAPSHOT</cnes.version>
+        <joram.version>5.9.0</joram.version>
+    </properties>
+  
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.fitnesse</groupId>
+                <artifactId>fitnesse</artifactId>
+                <version>${fitnesse.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>testbed-util</artifactId>
+                <version>${ccsds.testbed.util.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ccsds.moims.mo</groupId>
+                <artifactId>cnes-mal-api</artifactId>
+                <version>${cnes.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fr.cnes.mal</groupId>
+                <artifactId>mal-impl-broker</artifactId>
+                <version>${cnes.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fr.cnes.mal</groupId>
+                <artifactId>mal-impl-base</artifactId>
+                <version>${cnes.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fr.cnes.mal</groupId>
+                <artifactId>mal-impl-security</artifactId>
+                <version>${cnes.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fr.cnes.malamqp</groupId>
+                <artifactId>mal-amqp</artifactId>
+                <version>${cnes.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fr.cnes.maljoram</groupId>
+                <artifactId>mal-joram-malencoding</artifactId>
+                <version>${cnes.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fr.cnes.maljoram</groupId>
+                <artifactId>mal-joram-client</artifactId>
+                <version>${cnes.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fr.cnes.maljoram</groupId>
+                <artifactId>mal-joram-remote</artifactId>
+                <version>${cnes.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fr.cnes.maljoram</groupId>
+                <artifactId>mal-joram-mom</artifactId>
+                <version>${cnes.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.joram</groupId>
+                <artifactId>joram-mom-amqp</artifactId>
+                <version>${joram.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+  
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/..</directory>
+                <includes>
+                    <include>LICENCE_ESA.md</include>
+                    <include>LICENCE_CNES.md</include>
+                </includes>
+            </resource>
+        </resources>
+    
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>unpack</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>unpack</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>int.esa.ccsds.mo</groupId>
+                                        <artifactId>testbed-util</artifactId>
+                                        <version>${ccsds.testbed.util.version}</version>
+                                        <type>jar</type>
+                                        <overWrite>true</overWrite>
+                                        <outputDirectory>${project.build.directory}</outputDirectory>
+                                        <includes>deployment/**/*,xslt/*</includes>
+                                    </artifactItem>
+                                </artifactItems>
+                                <overWriteReleases>false</overWriteReleases>
+                                <overWriteSnapshots>true</overWriteSnapshots>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>reserve-ports</id>
+                            <phase>process-test-resources</phase>
+                            <goals>
+                                <goal>reserve-network-port</goal>
+                            </goals>
+                            <configuration>
+                                <portNames>
+                                    <portName>fitnesse.port</portName>
+                                </portNames>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>reports</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                            <configuration>
+                                <dataFile>${project.build.directory}/jacoco.execr</dataFile>
+                                <outputDirectory>${project.reporting.outputDirectory}/jacocor</outputDirectory>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>report_merged</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                            <configuration>
+                                <dataFile>${project.build.directory}/merged.jacoco</dataFile>
+                                <outputDirectory>${project.reporting.outputDirectory}/jacocom</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>        
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.7.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${ant.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>fix-unix-permissions</id>
+                            <phase>process-test-resources</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target>
+                                    <chmod file="${basedir}/executeProcess.sh" perm="ugo+rx"/>
+                                </target>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>merge_reports</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target>
+                                    <taskdef resource="org/jacoco/ant/antlib.xml" classpathref="maven.plugin.classpath" />
+                                    <merge destfile="${project.build.directory}/merged.jacoco">
+                                        <fileset dir="${project.build.directory}" includes="jacoco.*"/>
+                                    </merge>
+                                </target>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>check-for-complete-document</id>
+                            <phase>pre-site</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <exportAntProperties>true</exportAntProperties>
+                                <target>
+                                    <condition property="complete.document.available">
+                                        <resourceexists>
+                                            <file file="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"/>
+                                        </resourceexists>
+                                    </condition>
+                                </target>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>cleanup-html</id>
+                            <phase>site</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target if="complete.document.available">
+                                    <get src="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" dest="${project.build.directory}/xslt/xhtml1-strict.dtd" skipexisting="true"/>
+                                    <get src="http://www.w3.org/TR/xhtml1/DTD/xhtml-lat1.ent" dest="${project.build.directory}/xslt/xhtml-lat1.ent" skipexisting="true"/>
+                                    <get src="http://www.w3.org/TR/xhtml1/DTD/xhtml-symbol.ent" dest="${project.build.directory}/xslt/xhtml-symbol.ent" skipexisting="true"/>
+                                    <get src="http://www.w3.org/TR/xhtml1/DTD/xhtml-special.ent" dest="${project.build.directory}/xslt/xhtml-special.ent" skipexisting="true"/>
+                                    <replaceregexp file="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"
+                                                   match=".*&#60;html>"
+                                                   replace="&#60;!DOCTYPE html PUBLIC &#34;-//W3C//DTD XHTML 1.0 Strict//EN&#34; &#34;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&#34;>&#60;html>" flags="g" encoding="UTF8" />
+                                    <replaceregexp file="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"
+                                                   match="_TABLENUMBER=[0-9]*"
+                                                   replace="" flags="g" encoding="UTF8" />
+                                    <replaceregexp file="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"
+                                                   match="\#(scriptTable_[0-9]+_[0-9]+(/scriptTable_[0-9]+_[0-9]+)*)"
+                                                   replace='"\#\1"' flags="g" encoding="UTF8" />
+                                    <replaceregexp file="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"
+                                                   match="class=pass"
+                                                   replace='class="pass"' flags="g" encoding="UTF8"/>
+                                    <replaceregexp file="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"
+                                                   match="class=fail"
+                                                   replace='class="fail"' flags="g" encoding="UTF8"/>
+                                    <replaceregexp file="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"
+                                                   match='\\\"'
+                                                   replace='\"' flags="g" encoding="UTF8"/>
+                                    <replaceregexp file="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"
+                                                   match='script>var existingContent = .*?a name=\"scriptTable'
+                                                   replace='a name=\"scriptTable' flags="gs" encoding="UTF8"/>
+                                    <replaceregexp file="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"
+                                                   match='div>";.*?script>'
+                                                   replace='div>' flags="gs" encoding="UTF8"/>
+                                    <replaceregexp file="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"
+                                                   match='\\r\\n\\t'
+                                                   replace="&#13;&#10;&#09;" flags="g" encoding="UTF8"/>
+                                    <replaceregexp file="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"
+                                                   match='^&#60;/pre>&#60;/div>$'
+                                                   replace="&#60;/pre>&#60;/div>&#60;/a>" flags="g" encoding="UTF8"/>
+                                    <xslt in="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument.html"
+                                          out="${fitnesse.output.dir}/${fitnesse.toplevel.test}.CompleteDocument-out.html"
+                                          style="${project.build.directory}/xslt/trinidad_transform.xsl"
+                                          force="yes">
+                                        <xmlcatalog>
+                                            <dtd
+                                                publicId="-//W3C//DTD XHTML 1.0 Strict//EN"
+                                                location="${project.build.directory}/xslt/xhtml1-strict.dtd"/>
+                                        </xmlcatalog>
+                                    </xslt>
+                                </target>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant</artifactId>
+                            <version>${ant.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant-nodeps</artifactId>
+                            <version>${ant.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant-trax</artifactId>
+                            <version>${ant.trax.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.jacoco</groupId>
+                            <artifactId>org.jacoco.ant</artifactId>
+                            <version>${jacoco.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

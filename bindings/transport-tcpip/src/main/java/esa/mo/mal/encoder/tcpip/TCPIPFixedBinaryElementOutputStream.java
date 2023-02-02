@@ -25,7 +25,7 @@ import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
-import esa.mo.mal.encoder.gen.GENEncoder;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
 import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
 
 import org.ccsds.moims.mo.mal.MALException;
@@ -55,7 +55,7 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
      * Create a split binary encoder for the body
      */
     @Override
-    protected GENEncoder createEncoder(OutputStream os) {
+    protected Encoder createEncoder(OutputStream os) {
         return new TCPIPFixedBinaryEncoder(os, timeHandler);
     }
 

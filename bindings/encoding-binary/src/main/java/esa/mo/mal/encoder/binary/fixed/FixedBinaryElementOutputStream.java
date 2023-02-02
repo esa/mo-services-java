@@ -21,6 +21,7 @@
 package esa.mo.mal.encoder.binary.fixed;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
 
 /**
  * Implements the MALElementOutputStream interface for a fixed length binary
@@ -49,7 +50,7 @@ public class FixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary.ba
     }
 
     @Override
-    protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os) {
+    protected Encoder createEncoder(java.io.OutputStream os) {
         return new FixedBinaryEncoder(os, timeHandler, shortLengthField);
     }
 }

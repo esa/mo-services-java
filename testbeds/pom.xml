@@ -18,13 +18,13 @@
   
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>POM</artifactId>
-        <version>8</version>
-        <relativePath/>
+        <artifactId>parent</artifactId>
+        <version>9.0</version>
+        <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>REACTOR_TESTBEDS</artifactId>
-    <version>8.0</version>
+    <version>9.0</version>
     <packaging>pom</packaging>
     <name>ESA CCSDS Testbed reactor build</name>
 
@@ -62,17 +62,17 @@
     </developers>
 
     <modules>
-        <module>MOIMS_TESTBED_POM</module>
-        <module>MOIMS_TESTBED_UTIL</module>
-        <module>MOIMS_TESTBED_MAL</module>
-        <module>MOIMS_TESTBED_COM_FRAMEWORK</module>
-        <module>MOIMS_TESTBED_COM_PROVIDER_ESA</module>
-        <module>MOIMS_TESTBED_COM</module>
-        <!--
-            <module>MOIMS_TESTBED_UTIL_SPP</module>
-            <module>MOIMS_TESTBED_MALSPP_FRAMEWORK</module>
-            <module>MOIMS_TESTBED_MALSPP</module>
-        -->
+        <module>testbed-pom</module>
+        <module>xml-tests</module>
+        <module>test-apis</module>
+        <module>testbed-util</module>
+        <module>testbed-mal</module>
+        <module>testbed-com-framework</module>
+        <module>testbed-com-provider-esa</module>
+        <module>testbed-com</module>
+        <module>testbed-util-spp</module>
+        <module>testbed-malspp-framework</module>
+        <module>testbed-malspp</module>
     </modules>
   
     <profiles>

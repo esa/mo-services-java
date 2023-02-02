@@ -18,16 +18,16 @@
   
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>POM</artifactId>
-        <version>8</version>
+        <artifactId>parent</artifactId>
+        <version>9.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>TRANSPORT_GEN</artifactId>
+    <artifactId>transport-generic</artifactId>
     <packaging>jar</packaging>
-    <version>8.0</version>
+    <version>9.0</version>
 
-    <name>ESA Transport - Generic Framework</name>
+    <name>ESA MO Transport - Generic Framework</name>
     <description>A base Java framework for CCSDS MAL transports</description>
     <url>http://www.esa.int</url>
   
@@ -39,7 +39,7 @@
     <licenses>
         <license>
             <name>The European Space Agency Public License, Version 2.0</name>
-            <url>https://raw.github.com/esa/CCSDS_MO_TRANS/master/LICENCE.md</url>
+            <url>https://raw.githubusercontent.com/esa/mo-services-java/master/LICENCE.md</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -67,11 +67,7 @@
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>API_MAL</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>ENCODING_GEN</artifactId>
+            <artifactId>api-mal</artifactId>
         </dependency>
     </dependencies>
 

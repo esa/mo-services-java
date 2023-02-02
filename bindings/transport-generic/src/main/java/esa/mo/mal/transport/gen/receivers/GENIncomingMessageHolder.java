@@ -21,7 +21,7 @@
 package esa.mo.mal.transport.gen.receivers;
 
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.PacketToString;
 
 /**
  * Simple structure class for holding related aspects of a decoded MAL message.
@@ -39,7 +39,7 @@ public final class GENIncomingMessageHolder {
     /**
      * A string representation for debug tracing.
      */
-    public final GENTransport.PacketToString smsg;
+    public final PacketToString smsg;
 
     /**
      * Constructor.
@@ -49,7 +49,7 @@ public final class GENIncomingMessageHolder {
      * @param smsg A string representation for debug tracing.
      */
     public GENIncomingMessageHolder(final Long transactionId, 
-            final GENMessage malMsg, final GENTransport.PacketToString smsg) {
+            final GENMessage malMsg, final PacketToString smsg) {
         this.transactionId = transactionId;
         this.malMsg = malMsg;
         this.smsg = smsg;

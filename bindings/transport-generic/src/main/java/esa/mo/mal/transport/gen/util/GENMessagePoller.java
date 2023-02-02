@@ -113,29 +113,23 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
             try {
                 messageReceiver.receiveMessage();
             } catch (InterruptedException ex) {
-                LOGGER.log(Level.INFO, "Client closing connection: {0}", remoteURI);
+                LOGGER.log(Level.INFO, "(1) Client closing connection: {0}", remoteURI);
 
                 transport.closeConnection(remoteURI, this);
                 close();
-
-                //and terminate
-                bContinue = false;
+                bContinue = false; // and terminate
             } catch (EOFException ex) {
-                LOGGER.log(Level.INFO, "Client closing connection: {0}", remoteURI);
+                LOGGER.log(Level.INFO, "(2) Client closing connection: {0}", remoteURI);
 
                 transport.closeConnection(remoteURI, this);
                 close();
-
-                //and terminate
-                bContinue = false;
+                bContinue = false; // and terminate
             } catch (IOException e) {
                 LOGGER.log(Level.WARNING, "Cannot read message from client", e);
 
                 transport.communicationError(remoteURI, this);
                 close();
-
-                //and terminate
-                bContinue = false;
+                bContinue = false; // and terminate
             }
         }
     }

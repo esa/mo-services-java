@@ -38,7 +38,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 public class MALPublisherSet {
 
     private final MALProviderSet providerSet;
-    private final Set<MALPublisher> subpublishers = new HashSet<MALPublisher>();
+    private final Set<MALPublisher> subpublishers = new HashSet<>();
     private final MALPubSubOperation op;
     private final IdentifierList domain;
     private final Identifier networkZone;
@@ -110,17 +110,17 @@ public class MALPublisherSet {
      * The method synchronously registers through all the MALPublishers of this
      * MALPublisherSet.
      *
-     * @param entityKeyList Keys of the entities that are to be published
+     * @param keys Keys of the subscriptions that are to be published
      * @param listener Listener in charge of receiving the messages PUBLISH
      * ERROR
      * @throws java.lang.IllegalArgumentException If entityKeyList is null.
      * @throws MALInteractionException If thrown by the contained MALPublishers.
      * @throws MALException If thrown by the contained MALPublishers.
      */
-    public void register(final EntityKeyList entityKeyList, final MALPublishInteractionListener listener)
+    public void register(final IdentifierList keys, final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         for (MALPublisher p : subpublishers) {
-            p.register(entityKeyList, listener);
+            p.register(keys, listener);
         }
     }
 
@@ -162,7 +162,7 @@ public class MALPublisherSet {
      * The method asynchronously registers through all the MALPublishers of this
      * MALPublisherSet.
      *
-     * @param entityKeyList Keys of the entities that are to be published
+     * @param keys Keys of the subscriptions that are to be published
      * @param listener Listener in charge of receiving the messages PUBLISH
      * REGISTER ACK, PUBLISH REGISTER ERROR and PUBLISH ERROR
      * @return The message sent.
@@ -171,11 +171,11 @@ public class MALPublisherSet {
      * @throws MALInteractionException If thrown by the contained MALPublishers.
      * @throws MALException If thrown by the contained MALPublishers.
      */
-    public MALMessage asyncRegister(final EntityKeyList entityKeyList, final MALPublishInteractionListener listener)
+    public MALMessage asyncRegister(final IdentifierList keys, final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         MALMessage rv = null;
         for (MALPublisher p : subpublishers) {
-            rv = p.asyncRegister(entityKeyList, listener);
+            rv = p.asyncRegister(keys, listener);
         }
 
         return rv;

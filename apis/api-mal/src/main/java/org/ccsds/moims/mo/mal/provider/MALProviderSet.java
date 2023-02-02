@@ -37,9 +37,9 @@ import org.ccsds.moims.mo.mal.structures.*;
  */
 public class MALProviderSet {
 
+    private final Set<MALPublisherSet> publisherSets = new HashSet<>();
+    private final Set<MALProvider> providers = new HashSet<>();
     private final MALService service;
-    private final Set<MALProvider> providers = new HashSet<MALProvider>();
-    private final Set<MALPublisherSet> publisherSets = new HashSet<MALPublisherSet>();
 
     /**
      * Constructs a provider set.
@@ -91,8 +91,8 @@ public class MALProviderSet {
                 remotePublisherPriority);
         publisherSets.add(rv);
 
-        for (MALProvider e : providers) {
-            rv.createPublisher(e);
+        for (MALProvider provider : providers) {
+            rv.createPublisher(provider);
         }
 
         return rv;
@@ -109,12 +109,12 @@ public class MALProviderSet {
      */
     public void addProvider(final MALProvider provider)
             throws java.lang.IllegalArgumentException, MALException {
-        if ((provider.getService().getArea().getNumber().getValue() != service.getArea().getNumber().getValue())
-                || (provider.getService().getNumber().getValue() != service.getNumber().getValue())) {
-            throw new MALException("Adding provider of service "
-                    + provider.getService().getName()
-                    + " to a provider set for service "
-                    + service.getName());
+        if ((provider.getService().getAreaNumber().getValue() != service.getAreaNumber().getValue())
+                || (provider.getService().getServiceNumber().getValue() != service.getServiceNumber().getValue())) {
+            throw new MALException("Adding provider of service number "
+                    + provider.getService().getServiceNumber()
+                    + " to a provider set for service number "
+                    + service.getServiceNumber());
         }
 
         providers.add(provider);

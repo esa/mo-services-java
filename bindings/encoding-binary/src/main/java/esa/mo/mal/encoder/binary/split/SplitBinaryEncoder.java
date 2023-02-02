@@ -22,9 +22,9 @@ package esa.mo.mal.encoder.binary.split;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a split binary
@@ -76,7 +76,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
     public void encodeString(String val) throws MALException {
 
         try {
-            outputStream.addString(val);
+            outputStream.writeString(val);
         } catch (IOException e) {
             throw new MALException(ENCODING_EXCEPTION_STR, e);
         }
@@ -88,12 +88,12 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
         try {
             if (value != null) {
                 // encode presence flag
-                outputStream.addNotNull();
+                outputStream.writeNotNull();
                 // encode element as String
                 encodeString(value);
             } else {
                 // encode presence flag
-                outputStream.addIsNull();
+                outputStream.writeIsNull();
 
             }
         } catch (IOException e) {
@@ -143,7 +143,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
         }
 
         @Override
-        public void addBool(boolean value) throws IOException {
+        public void writeBool(boolean value) throws IOException {
             if (value) {
                 setBit(bitIndex);
             }
@@ -151,28 +151,28 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
         }
 
         @Override
-        public void addIsNull() throws IOException {
+        public void writeIsNull() throws IOException {
             ++bitIndex;
         }
 
         @Override
-        public void addNotNull() throws IOException {
+        public void writeNotNull() throws IOException {
             setBit(bitIndex);
             ++bitIndex;
         }
 
         @Override
-        public void directAdd(final byte[] value, int os, int ln) throws IOException {
+        public void write(final byte[] value, int os, int ln) throws IOException {
             baos.write(value, os, ln);
         }
 
         @Override
-        public void directAdd(final byte[] val) throws IOException {
+        public void write(final byte[] val) throws IOException {
             baos.write(val);
         }
 
         @Override
-        public void directAdd(final byte val) throws IOException {
+        public void write(final byte val) throws IOException {
             baos.write(val);
         }
 
@@ -185,7 +185,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
         }
 
         public void addFixedUnsignedLong(long value) throws IOException {
-            directAdd(java.nio.ByteBuffer.allocate(8).putLong(value).array());
+            write(java.nio.ByteBuffer.allocate(8).putLong(value).array());
         }
 
         private void setBit(int bitIndex) {

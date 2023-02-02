@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-  <!--
+<!--
     Licensed under the European Space Agency Public License, Version 2.0
     You may not use this file except in compliance with the License.
 
@@ -18,15 +18,15 @@
   
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>POM</artifactId>
-        <version>8</version>
+        <artifactId>parent</artifactId>
+        <version>9.0</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>REACTOR_APIS</artifactId>
-    <version>8.0</version>
+    <artifactId>apis</artifactId>
+    <version>9.0</version>
     <packaging>pom</packaging>
-    <name>ESA CCSDS APIs reactor build</name>
+    <name>ESA MO APIs</name>
 
     <organization>
         <name>ESA</name>
@@ -36,7 +36,7 @@
     <licenses>
         <license>
             <name>The European Space Agency Public License, Version 2.0</name>
-            <url>https://raw.github.com/esa/CCSDS_MO_APIS/master/LICENCE.md</url>
+            <url>https://raw.githubusercontent.com/esa/mo-services-java/master/LICENCE.md</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -61,13 +61,14 @@
         </developer>
     </developers>
 
+    <properties>
+        <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+    </properties>
+
     <modules>
         <module>api-mal</module>
         <module>api-com</module>
         <module>api-common</module>
         <module>api-mc</module>
-        <module>test-api-mal</module>
-        <module>test-api-com</module>
-        <module>test-api-mc</module>
     </modules>
 </project>

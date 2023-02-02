@@ -188,17 +188,16 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
    * Constructor.
    *
    * @param protocol The protocol string.
-   * @param serviceDelim The delimiter to use for separating the URL
    * @param supportsRouting True if routing is supported by the naming convention
    * @param wrapBodyParts True is body parts should be wrapped in BLOBs
    * @param factory The factory that created us.
    * @param properties The transport binding properties.
    * @throws MALException On error.
      */
-    public ZMTPTransport(final String protocol, final char serviceDelim, final boolean supportsRouting,
+    public ZMTPTransport(final String protocol, final boolean supportsRouting,
             final MALTransportFactory factory, final java.util.Map properties,
             final ZMTPURIMapping uriMapping) throws MALException {
-        super(protocol, serviceDelim, supportsRouting, false, factory, properties);
+        super(protocol, supportsRouting, false, factory, properties);
         // First assume minimal default config
         defaultConfiguration = new ZMTPConfiguration();
 
@@ -356,8 +355,7 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
             String mappedRemoteURI = uriMapping.getRemotePtpZmtpUri(remoteRootURI);
             ZMQ.Socket socket = openSocket(getZmqContext(),
                     ZMTP_COMMUNICATION_PATTERN_P2P, mappedRemoteURI, false);
-            ZMTPChannelSource channelSource = new ZMTPChannelSource(socket);
-            return channelSource;
+            return new ZMTPChannelSource(socket);
         } catch (IllegalArgumentException e) {
             RLOGGER.log(Level.WARNING,
                     "Malformed parameters when creating sender to : {0}", remoteRootURI);

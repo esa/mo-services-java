@@ -67,8 +67,7 @@ public class ZMTPURIMapping {
                 throw new MALException("Malformed URI (missing port): " + MalUri);
             }
             // The URI that ZMTP binds to
-            String localURI = "tcp://*:" + Integer.toString(uri.getPort());
-            return localURI;
+            return "tcp://*:" + Integer.toString(uri.getPort());
         } catch (URISyntaxException e) {
             throw new MALException("Malformed URI: " + MalUri);
         }
@@ -92,8 +91,7 @@ public class ZMTPURIMapping {
                     throw new MALException("Malformed URI (missing port): " + MalUri);
                 }
                 // The URI that ZMTP binds to
-                String localURI = "tcp://*:" + Integer.toString(uri.getPort() + 1);
-                return localURI;
+                return "tcp://*:" + Integer.toString(uri.getPort() + 1);
             } catch (URISyntaxException e) {
                 throw new MALException("Malformed URI: " + MalUri);
             }
@@ -114,8 +112,7 @@ public class ZMTPURIMapping {
                 throw new MALException("Malformed URI (missing port): " + MalUri);
             }
             // The URI that ZMTP connects to
-            String remoteURI = "tcp://" + uri.getHost() + ":" + Integer.toString(uri.getPort());
-            return remoteURI;
+            return "tcp://" + uri.getHost() + ":" + Integer.toString(uri.getPort());
         } catch (URISyntaxException e) {
             throw new MALException("Malformed URI: " + MalUri);
         }
@@ -139,9 +136,8 @@ public class ZMTPURIMapping {
                     throw new MALException("Malformed URI (missing port): " + MalUri);
                 }
                 // The URI that ZMTP connects to
-                String remoteURI = "tcp://" + uri.getHost() + ":"
+                return "tcp://" + uri.getHost() + ":"
                         + Integer.toString(uri.getPort() + 1);
-                return remoteURI;
             } catch (URISyntaxException e) {
                 throw new MALException("Malformed URI: " + MalUri);
             }

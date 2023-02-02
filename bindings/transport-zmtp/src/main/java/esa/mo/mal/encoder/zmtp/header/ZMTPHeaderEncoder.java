@@ -22,6 +22,7 @@ package esa.mo.mal.encoder.zmtp.header;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
+import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 import esa.mo.mal.transport.zmtp.ZMTPTransport;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -79,10 +80,10 @@ public class ZMTPHeaderEncoder extends FixedBinaryEncoder {
 
     protected void addVariableUnsignedInt(long value) throws IOException {
         while ((value & -128L) != 0L) {
-            outputStream.directAdd((byte) (((int) value & 127) | 128));
+            outputStream.write((byte) (((int) value & 127) | 128));
             value >>>= 7;
         }
-        outputStream.directAdd((byte) ((int) value & 127));
+        outputStream.write((byte) ((int) value & 127));
     }
 
     @Override
@@ -104,7 +105,7 @@ public class ZMTPHeaderEncoder extends FixedBinaryEncoder {
             if (key == -1) {
                 byte[] stringBytes = value.getBytes(UTF8_CHARSET);
                 addVariableSignedInt(stringBytes.length);
-                outputStream.directAdd(stringBytes);
+                outputStream.write(stringBytes);
             } else {
                 key = -key;
                 addVariableSignedInt(key);
@@ -132,7 +133,7 @@ public class ZMTPHeaderEncoder extends FixedBinaryEncoder {
         try {
             byte[] blobBytes = value.getValue();
             addVariableUnsignedInt(blobBytes.length);
-            outputStream.directAdd(blobBytes);
+            outputStream.write(blobBytes);
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }

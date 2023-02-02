@@ -198,10 +198,9 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
 
     @Override
     public String getRoutingPart(String uriValue) {
-        String endpointUriPart = uriValue;
-        int iFirst = endpointUriPart.indexOf(protocolDelim) + 1;
+        int iFirst = uriValue.indexOf(protocolDelim) + 1;
 
-        return endpointUriPart.substring(iFirst);
+        return uriValue.substring(iFirst);
     }
 
     @Override

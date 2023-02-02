@@ -56,6 +56,7 @@ public class GENErrorBody extends GENMessageBody implements MALErrorBody {
      * @param wrappedBodyParts True if the encoded body parts are wrapped in
      * BLOBs.
      * @param encFactory The encoder stream factory to use.
+     * @param encBodyBytes The enc body bytes.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
@@ -70,11 +71,7 @@ public class GENErrorBody extends GENMessageBody implements MALErrorBody {
     @Override
     public MALStandardError getError() throws MALException {
         decodeMessageBody();
-
-        if (1 < messageParts.length) {
-            return new MALStandardError((UInteger) messageParts[0], messageParts[1]);
-        } else {
-            return new MALStandardError((UInteger) messageParts[0], null);
-        }
+        Object extraInfo = (messageParts.length > 1) ? messageParts[1] : null;
+        return new MALStandardError((UInteger) messageParts[0], extraInfo);
     }
 }

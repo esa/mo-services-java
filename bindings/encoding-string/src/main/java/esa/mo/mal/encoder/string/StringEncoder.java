@@ -20,20 +20,21 @@
  */
 package esa.mo.mal.encoder.string;
 
-import esa.mo.mal.encoder.gen.GENEncoder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.math.BigInteger;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
+import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**
  * The implementation of the MALEncoder and MALListEncoder interfaces for the
  * String encoding.
  */
-public class StringEncoder extends GENEncoder {
+public class StringEncoder extends Encoder {
 
     public static final String STR_DELIM = "|";
     public static final String STR_NULL = "_";
@@ -57,10 +58,10 @@ public class StringEncoder extends GENEncoder {
         try {
             if (null != value) {
                 // Initial delim to represent not-null
-                outputStream.addString("");
+                outputStream.writeString("");
                 value.encode(this);
             } else {
-                outputStream.addIsNull();
+                outputStream.writeIsNull();
             }
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
@@ -86,92 +87,92 @@ public class StringEncoder extends GENEncoder {
         }
 
         @Override
-        public void addBytes(byte[] value) throws IOException {
+        public void writeBytes(byte[] value) throws IOException {
             add(byteArrayToHexString(value));
         }
 
         @Override
-        public void addString(String value) throws IOException {
+        public void writeString(String value) throws IOException {
             add(value);
         }
 
         @Override
-        public void addFloat(float value) throws IOException {
+        public void writeFloat(float value) throws IOException {
             add(Float.toString(value));
         }
 
         @Override
-        public void addDouble(double value) throws IOException {
+        public void writeDouble(double value) throws IOException {
             add(Double.toString(value));
         }
 
         @Override
-        public void addBigInteger(BigInteger value) throws IOException {
+        public void writeBigInteger(BigInteger value) throws IOException {
             add(value.toString());
         }
 
         @Override
-        public void addSignedLong(long value) throws IOException {
+        public void writeSignedLong(long value) throws IOException {
             add(Long.toString(value));
         }
 
         @Override
-        public void addSignedInt(int value) throws IOException {
+        public void writeSignedInt(int value) throws IOException {
             add(Integer.toString(value));
         }
 
         @Override
-        public void addSignedShort(short value) throws IOException {
+        public void writeSignedShort(short value) throws IOException {
             add(Short.toString(value));
         }
 
         @Override
-        public void addUnsignedLong(long value) throws IOException {
+        public void writeUnsignedLong(long value) throws IOException {
             add(Long.toString(value));
         }
 
         @Override
-        public void addUnsignedLong32(long value) throws IOException {
+        public void writeUnsignedLong32(long value) throws IOException {
             add(Long.toString(value));
         }
 
         @Override
-        public void addUnsignedInt(int value) throws IOException {
+        public void writeUnsignedInt(int value) throws IOException {
             add(Integer.toString(value));
         }
 
         @Override
-        public void addUnsignedInt16(int value) throws IOException {
+        public void writeUnsignedInt16(int value) throws IOException {
             add(Integer.toString(value));
         }
 
         @Override
-        public void addUnsignedShort(int value) throws IOException {
+        public void writeUnsignedShort(int value) throws IOException {
             add(Integer.toString(value));
         }
 
         @Override
-        public void addUnsignedShort8(short value) throws IOException {
+        public void writeUnsignedShort8(short value) throws IOException {
             add(Short.toString(value));
         }
 
         @Override
-        public void addByte(byte value) throws IOException {
+        public void writeByte(byte value) throws IOException {
             add(Byte.toString(value));
         }
 
         @Override
-        public void addBool(boolean value) throws IOException {
+        public void writeBool(boolean value) throws IOException {
             add(Boolean.toString(value));
         }
 
         @Override
-        public void addNotNull() throws IOException {
+        public void writeNotNull() throws IOException {
             // do nothing
         }
 
         @Override
-        public void addIsNull() throws IOException {
+        public void writeIsNull() throws IOException {
             buffer.append(STR_NULL);
             buffer.append(STR_DELIM);
         }

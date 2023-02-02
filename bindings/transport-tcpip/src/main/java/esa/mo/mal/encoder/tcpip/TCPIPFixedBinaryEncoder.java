@@ -78,22 +78,22 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
 
         encodeUInteger(new UInteger(output.length));
         try {
-            outputStream.directAdd(output);
+            outputStream.write(output);
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
     }
 
     /**
-     * Encode a long
+     * Encodes a long.
      *
-     * @param val
-     * @throws MALException
+     * @param value The value to be encoded.
+     * @throws MALException if it cannot be encoded.
      */
-    public void encodeMALLong(Long val) throws MALException {
+    public void encodeMALLong(Long value) throws MALException {
 
         try {
-            outputStream.addSignedLong(val);
+            outputStream.writeSignedLong(value);
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
@@ -101,7 +101,10 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
 
     /**
      * Encode an unsigned integer using split-binary encoding for a 4-byte
-     * variable sized int
+     * variable sized int.
+     *
+     * @param value The value to be encoded.
+     * @throws MALException if it cannot be encoded.
      */
     @Override
     public void encodeUInteger(final UInteger value) throws MALException {
@@ -114,7 +117,10 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
     }
 
     /**
-     * Encode a nullable identifier
+     * Encode a nullable identifier.
+     *
+     * @param value The value to be encoded.
+     * @throws MALException if it cannot be encoded.
      */
     @Override
     public void encodeNullableIdentifier(final Identifier value) throws MALException {
@@ -131,7 +137,10 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
     }
 
     /**
-     * Encode an identifier
+     * Encode an identifier.
+     *
+     * @param value The value to be encoded.
+     * @throws MALException if it cannot be encoded.
      */
     @Override
     public void encodeIdentifier(final Identifier value) throws MALException {
@@ -140,7 +149,10 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
     }
 
     /**
-     * Encode a blob
+     * Encode a blob.
+     *
+     * @param value The value to be encoded.
+     * @throws MALException if it cannot be encoded.
      */
     @Override
     public void encodeBlob(final Blob value) throws MALException {
@@ -151,7 +163,7 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
 
         if (value.getLength() > 0) {
             try {
-                outputStream.directAdd(byteValue);
+                outputStream.write(byteValue);
             } catch (IOException ex) {
                 throw new MALException(ENCODING_EXCEPTION_STR, ex);
             }

@@ -20,23 +20,32 @@
  */
 package org.ccsds.moims.mo.com;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceKey;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
 /**
- *
+ * This class is deprecated. It is only here for backward compatibility with
+ * the old MAL.
  */
+@Deprecated
 public class COMService extends MALService {
 
-    private final Map<Integer, COMObject> objectsByNumber = new HashMap<Integer, COMObject>();
-    private final Map<String, COMObject> objectsByName = new HashMap<String, COMObject>();
+    private final Map<Integer, COMObject> objectsByNumber = new HashMap<>();
+    private final Map<String, COMObject> objectsByName = new HashMap<>();
 
-    public COMService(UShort number, Identifier name) {
-        super(number, name);
+    public COMService(final ServiceKey serviceKey, final Identifier serviceName, final ArrayList<MALOperation> operations) {
+        super(serviceKey, serviceName, operations);
+    }
+
+    public COMService(final ServiceKey serviceKey, final Identifier serviceName, final MALOperation[] operations) {
+        super(serviceKey, serviceName, operations);
     }
 
     /**

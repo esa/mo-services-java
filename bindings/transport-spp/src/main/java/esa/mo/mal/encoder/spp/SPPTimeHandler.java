@@ -104,7 +104,7 @@ public class SPPTimeHandler extends BinaryTimeHandler {
     public Duration decodeDuration(final BaseBinaryDecoder.BaseBinaryBufferHolder sourceBuffer) 
             throws MALException {
         long s = getIntFromBytes(sourceBuffer, 4) * 1000;
-        byte[] ss = sourceBuffer.directGetBytes(3);
+        byte[] ss = sourceBuffer.readBytes(3);
 
         byte[] b = new byte[4];
         b[0] = 0;
@@ -125,8 +125,8 @@ public class SPPTimeHandler extends BinaryTimeHandler {
             int ms = (int) (tm % 1000);
             int s = (int) (tm / 1000);
 
-            outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(s).array(), 0, 4);
-            outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(ms).array(), 1, 3);
+            outputStream.write(java.nio.ByteBuffer.allocate(4).putInt(s).array(), 0, 4);
+            outputStream.write(java.nio.ByteBuffer.allocate(4).putInt(ms).array(), 1, 3);
         } catch (IOException ex) {
             throw new MALException(IO_EXCEPTION_STR, ex);
         }
@@ -135,7 +135,7 @@ public class SPPTimeHandler extends BinaryTimeHandler {
     public Time decodeTime(final BaseBinaryDecoder.BaseBinaryBufferHolder sourceBuffer) 
             throws MALException {
         long s = getIntFromBytes(sourceBuffer, timeMajorUnitFieldLength);
-        byte[] fs = sourceBuffer.directGetBytes(timeMinorUnitFieldLength);
+        byte[] fs = sourceBuffer.readBytes(timeMinorUnitFieldLength);
 
         double subseconds = 0;
         for (int i = fs.length - 1; i >= 0; --i) {
@@ -177,12 +177,12 @@ public class SPPTimeHandler extends BinaryTimeHandler {
             }
 
             int ff = Math.min(4, timeMajorUnitFieldLength);
-            outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt(s).array(), 4 - ff, ff);
+            outputStream.write(java.nio.ByteBuffer.allocate(4).putInt(s).array(), 4 - ff, ff);
 
             double subseconds = ((double) ms) / 1000.0;
             for (int i = 0; i < timeMinorUnitFieldLength; ++i) {
                 subseconds = subseconds * 256.0;
-                outputStream.directAdd((byte) subseconds);
+                outputStream.write((byte) subseconds);
             }
         } catch (IOException ex) {
             throw new MALException(IO_EXCEPTION_STR, ex);
@@ -192,7 +192,7 @@ public class SPPTimeHandler extends BinaryTimeHandler {
     public FineTime decodeFineTime(final BaseBinaryDecoder.BaseBinaryBufferHolder sourceBuffer)
             throws MALException {
         long s = getIntFromBytes(sourceBuffer, fineTimeMajorUnitFieldLength);
-        byte[] fs = sourceBuffer.directGetBytes(fineTimeMinorUnitFieldLength);
+        byte[] fs = sourceBuffer.readBytes(fineTimeMinorUnitFieldLength);
 
         double subseconds = 0;
         for (int i = fs.length - 1; i >= 0; --i) {
@@ -234,12 +234,12 @@ public class SPPTimeHandler extends BinaryTimeHandler {
             }
 
             int ff = Math.min(4, fineTimeMajorUnitFieldLength);
-            outputStream.directAdd(java.nio.ByteBuffer.allocate(4).putInt((int) s).array(), 4 - ff, ff);
+            outputStream.write(java.nio.ByteBuffer.allocate(4).putInt((int) s).array(), 4 - ff, ff);
 
             double subseconds = ((double) ms) / 1000000000000.0;
             for (int i = 0; i < fineTimeMinorUnitFieldLength; ++i) {
                 subseconds = subseconds * 256.0;
-                outputStream.directAdd((byte) subseconds);
+                outputStream.write((byte) subseconds);
             }
         } catch (IOException ex) {
             throw new MALException(IO_EXCEPTION_STR, ex);
@@ -248,7 +248,7 @@ public class SPPTimeHandler extends BinaryTimeHandler {
 
     private int getIntFromBytes(final BaseBinaryDecoder.BaseBinaryBufferHolder sourceBuffer,
             int countToRead) throws MALException {
-        byte[] fs = sourceBuffer.directGetBytes(countToRead);
+        byte[] fs = sourceBuffer.readBytes(countToRead);
 
         byte[] b = new byte[4];
         b[0] = 0;

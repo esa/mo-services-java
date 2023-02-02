@@ -38,7 +38,7 @@ import esa.mo.mal.transport.jms.util.StructureHelper;
  */
 public class JMSConsumeHandler extends JMSQueueHandler {
 
-    private final List<MessageConsumer> consumerList = new LinkedList<MessageConsumer>();
+    private final List<MessageConsumer> consumerList = new LinkedList<>();
     private final UOctet version;
     private Identifier subId = null;
     private URI URIFrom = null;
@@ -76,7 +76,7 @@ public class JMSConsumeHandler extends JMSQueueHandler {
         }
 
         // decompose subscription into required subscriptions
-        EntityRequestList entities = subscription.getEntities();
+        SubscriptionFilterList filters = subscription.getFilters();
         subId = subscription.getSubscriptionId();
 
         // need to clear all previous bindings
@@ -85,13 +85,13 @@ public class JMSConsumeHandler extends JMSQueueHandler {
 
         String sdomain = StructureHelper.domainToString(msg.getHeader().getDomain());
 
-        for (EntityRequest entitie : entities) {
-            EntityRequest rqst = (EntityRequest) entitie;
+        for (SubscriptionFilter filter : filters) {
             buf.append('(');
             // insert request specific filters
             StringBuilder pbuf = new StringBuilder();
             boolean pvalueSet;
-            IdentifierList sdl = rqst.getSubDomain();
+            /*
+            IdentifierList sdl = filter.getSubDomain();
             if ((null != sdl) && (0 < sdl.size())) {
                 boolean wildcard = false;
                 int trunc = 0;
@@ -130,19 +130,13 @@ public class JMSConsumeHandler extends JMSQueueHandler {
                 createRoutingKeyBoolean(pbuf, JMSEndpoint.MOD_PROPERTY, true, pvalueSet);
             }
             buf.append(pbuf);
+            */
+            /*
             StringBuilder ebuf = new StringBuilder();
             EntityKeyList entityKeys = rqst.getEntityKeys();
             for (EntityKey entityKey : entityKeys) {
                 EntityKey id = (EntityKey) entityKey;
                 StringBuilder lbuf = new StringBuilder();
-                boolean valueSet = createRoutingKeyIdentifier(lbuf,
-                        JMSEndpoint.EID_PROPERTY, id.getFirstSubKey());
-                valueSet = createRoutingKeyLong(lbuf, JMSEndpoint.DID_PROPERTY,
-                        id.getSecondSubKey(), valueSet);
-                valueSet = createRoutingKeyLong(lbuf, JMSEndpoint.OID_PROPERTY,
-                        id.getThirdSubKey(), valueSet);
-                createRoutingKeyLong(lbuf, JMSEndpoint.SID_PROPERTY,
-                        id.getFourthSubKey(), valueSet);
                 if (lbuf.length() > 0) {
                     if (notFirst) {
                         ebuf.append(" OR ");
@@ -167,6 +161,7 @@ public class JMSConsumeHandler extends JMSQueueHandler {
                 }
             }
             buf.append(')');
+            */
         }
         JMSTransport.RLOGGER.log(Level.FINE, "JMS Registering to {0} for {1}",
                 new Object[]{providerExchangeName, buf.toString()});

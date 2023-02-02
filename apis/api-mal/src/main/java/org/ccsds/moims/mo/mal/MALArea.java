@@ -20,9 +20,11 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -35,9 +37,8 @@ public class MALArea {
     private final UShort number;
     private final Identifier name;
     private final UOctet version;
-    private MALService[] services = new MALService[0];
-    private final Map<String, MALService> serviceNames = new HashMap<String, MALService>();
-    private final Map<Integer, MALService> serviceNumbers = new HashMap<Integer, MALService>();
+    private final ArrayList<MALService> services = new ArrayList<>();
+    private final Map<Integer, MALService> serviceNumbers = new HashMap<>();
 
     /**
      * MALArea constructor.
@@ -92,31 +93,12 @@ public class MALArea {
     }
 
     /**
-     * Returns an array of MAL Services contained in this area.
+     * Returns the services in this MAL Area.
      *
-     * @return The array of MAL services in this area, or an empty array if none
-     * contained.
+     * @return The services in this MAL Area.
      */
-    public final MALService[] getServices() {
-        MALService[] rv;
-
-        synchronized (this) {
-            rv = Arrays.copyOf(services, services.length);
-        }
-
-        return rv;
-    }
-
-    /**
-     * Returns a contained service identified by its name.
-     *
-     * @param serviceName The name of the service to find.
-     * @return The found service or null if not found.
-     */
-    public MALService getServiceByName(final Identifier serviceName) {
-        synchronized (this) {
-            return (MALService) serviceNames.get(serviceName.getValue());
-        }
+    public final ArrayList<MALService> getServices() {
+        return services;
     }
 
     /**
@@ -125,10 +107,8 @@ public class MALArea {
      * @param serviceNumber The number of the service to find.
      * @return The found service or null if not found.
      */
-    public MALService getServiceByNumber(final UShort serviceNumber) {
-        synchronized (this) {
-            return (MALService) serviceNumbers.get(serviceNumber.getValue());
-        }
+    public synchronized MALService getServiceByNumber(final UShort serviceNumber) {
+        return serviceNumbers.get(serviceNumber.getValue());
     }
 
     /**
@@ -138,22 +118,17 @@ public class MALArea {
      * @throws IllegalArgumentException Thrown if argument is NULL.
      * @throws MALException Thrown if service is already contained.
      */
-    public void addService(final MALService service) throws IllegalArgumentException, MALException {
-        synchronized (this) {
-            if (!serviceNumbers.containsKey(service.getNumber().getValue())
-                    && !(serviceNames.containsKey(service.getName().getValue()))) {
-                service.setArea(this);
-
-                final MALService[] t = new MALService[services.length + 1];
-                System.arraycopy(services, 0, t, 0, services.length);
-                t[services.length] = service;
-                services = t;
-
-                serviceNumbers.put(service.getNumber().getValue(), service);
-                serviceNames.put(service.getName().getValue(), service);
-            } else {
-                throw new MALException("Service already included in area");
-            }
+    public synchronized void addService(final MALService service) throws IllegalArgumentException, MALException {
+        if (!serviceNumbers.containsKey(service.getServiceNumber().getValue())) {
+            //service.setArea(this);
+            services.add(service);
+            serviceNumbers.put(service.getServiceNumber().getValue(), service);
+            //serviceNames.put(service.getName().getValue(), service);
+        } else {
+            // throw new MALException("Service already included in area");
+            // Just log a message instead of throwing an exception!
+            Logger.getLogger(MALArea.class.getName()).log(Level.WARNING,
+                    "Service already included in area! Service: {0}", service.getName());
         }
     }
 }

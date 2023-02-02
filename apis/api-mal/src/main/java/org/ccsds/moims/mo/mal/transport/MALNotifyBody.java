@@ -27,7 +27,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
  * The MALNotifyBody interface gives access to the body of the NOTIFY message
  * defined by the PUBLISH-SUBSCRIBE interaction.
  */
-public interface MALNotifyBody extends MALPublishBody {
+public interface MALNotifyBody extends MALMessageBody {
 
     /**
      * The method returns the identifier of the subscription from this NOTIFY

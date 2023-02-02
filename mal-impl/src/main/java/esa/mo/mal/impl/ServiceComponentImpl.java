@@ -91,16 +91,11 @@ public abstract class ServiceComponentImpl extends MALClose {
             this.expectedQos = null;
         }
         this.priorityLevelNumber = priorityLevelNumber;
-        if (null != defaultQoSProperties) {
-            this.defaultQoSProperties = defaultQoSProperties;
-        } else {
-            this.defaultQoSProperties = null;
-        }
-
+        this.defaultQoSProperties = (defaultQoSProperties != null) ? defaultQoSProperties : null;
         this.transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
         this.endpoint = transport.createEndpoint(localName, defaultQoSProperties);
         this.localUri = this.endpoint.getURI();
-        this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
+        this.msgAddress = new Address(endpoint, authenticationId, handler);
         this.receiveHandler.registerProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
         this.endpoint.setMessageListener(this.receiveHandler);
         this.endpoint.startMessageDelivery();
@@ -143,16 +138,11 @@ public abstract class ServiceComponentImpl extends MALClose {
             this.expectedQos = null;
         }
         this.priorityLevelNumber = priorityLevelNumber;
-        if (null != defaultQoSProperties) {
-            this.defaultQoSProperties = defaultQoSProperties;
-        } else {
-            this.defaultQoSProperties = null;
-        }
-
+        this.defaultQoSProperties = (defaultQoSProperties != null) ? defaultQoSProperties : null;
         this.endpoint = endPoint;
         this.transport = TransportSingleton.instance(endpoint.getURI(), impl.getInitialProperties());
         this.localUri = this.endpoint.getURI();
-        this.msgAddress = new Address(endpoint, endpoint.getURI(), authenticationId, handler);
+        this.msgAddress = new Address(endpoint, authenticationId, handler);
         this.receiveHandler.registerProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
         this.endpoint.setMessageListener(this.receiveHandler);
     }
@@ -197,13 +187,12 @@ public abstract class ServiceComponentImpl extends MALClose {
      * Sets the authentication identifier used by this component.
      *
      * @param newAuthenticationId the new authentication identifier to use.
-     * @return the Authentication Id.
+     * @return the previous Authentication Id.
      */
     public Blob setAuthenticationId(Blob newAuthenticationId) {
-        Blob rv = this.authenticationId;
+        Blob previous = this.authenticationId;
         this.authenticationId = newAuthenticationId;
-
-        return rv;
+        return previous;
     }
 
     /**

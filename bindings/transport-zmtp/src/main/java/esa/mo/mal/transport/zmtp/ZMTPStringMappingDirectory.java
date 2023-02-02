@@ -36,8 +36,8 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class ZMTPStringMappingDirectory {
 
-    private final Map<Integer, String> keyToValueMap = new HashMap<Integer, String>();
-    private final Map<String, Integer> valueToKeyMap = new HashMap<String, Integer>();
+    private final Map<Integer, String> keyToValueMap = new HashMap<>();
+    private final Map<String, Integer> valueToKeyMap = new HashMap<>();
 
     /**
      * Cleans currently stored String Mapping Directory and loads String Mapping
@@ -48,7 +48,7 @@ public class ZMTPStringMappingDirectory {
      * 1234 malzmtp://12.3.4.5:6789/Demo
      *
      * @param filePath Path to the file containing the directory
-     * @throws MALException
+     * @throws MALException if the directory could not be loaded.
      */
     public void loadDirectory(String filePath) throws MALException {
         keyToValueMap.clear();

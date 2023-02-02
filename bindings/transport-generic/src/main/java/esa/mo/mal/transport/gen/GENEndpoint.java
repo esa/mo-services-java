@@ -220,10 +220,10 @@ public class GENEndpoint implements MALEndpoint {
                     op.getInteractionType(),
                     interactionStage,
                     transactionId,
-                    op.getService().getArea().getNumber(),
-                    op.getService().getNumber(),
+                    op.getService().getAreaNumber(),
+                    op.getService().getServiceNumber(),
                     op.getNumber(),
-                    op.getService().getArea().getVersion(),
+                    op.getService().getServiceVersion(),
                     isErrorMessage,
                     qosProperties),
                     qosProperties,
@@ -264,10 +264,10 @@ public class GENEndpoint implements MALEndpoint {
                     op.getInteractionType(),
                     interactionStage,
                     transactionId,
-                    op.getService().getArea().getNumber(),
-                    op.getService().getNumber(),
+                    op.getService().getAreaNumber(),
+                    op.getService().getServiceNumber(),
                     op.getNumber(),
-                    op.getService().getArea().getVersion(),
+                    op.getService().getServiceVersion(),
                     isErrorMessage,
                     qosProperties),
                     qosProperties,
@@ -285,7 +285,7 @@ public class GENEndpoint implements MALEndpoint {
 
     @Override
     public void sendMessages(final MALMessage[] msgList) throws MALTransmitMultipleErrorException {
-        final List<MALTransmitErrorException> v = new LinkedList<MALTransmitErrorException>();
+        final List<MALTransmitErrorException> v = new LinkedList<>();
 
         try {
             final Object multiSendHandle = internalCreateMultiSendHandle(msgList);

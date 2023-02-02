@@ -18,16 +18,16 @@
   
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>POM</artifactId>
-        <version>8</version>
+        <artifactId>parent</artifactId>
+        <version>9.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>API_COM</artifactId>
-    <version>8.0</version>
+    <artifactId>api-com</artifactId>
+    <version>9.0</version>
     <packaging>jar</packaging>
 
-    <name>ESA COM Java API</name>
+    <name>ESA MO API - COM</name>
     <description>The CCSDS COM API for Java</description>
     <url>http://www.esa.int</url>
   
@@ -39,7 +39,7 @@
     <licenses>
         <license>
             <name>The European Space Agency Public License, Version 2.0</name>
-            <url>https://raw.github.com/esa/CCSDS_MO_APIS/master/LICENCE.md</url>
+            <url>https://raw.githubusercontent.com/esa/mo-services-java/master/LICENCE.md</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -74,7 +74,7 @@
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>API_MAL</artifactId>
+            <artifactId>api-mal</artifactId>
         </dependency>
     </dependencies>
 
@@ -107,7 +107,7 @@
             </plugin>
             <plugin>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>StubGenerator</artifactId>
+                <artifactId>api-generator-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -55,7 +55,7 @@ class MALPublisherImpl implements MALPublisher {
     private final QoSLevel remotePublisherQos;
     private final Map remotePublisherQosProps;
     private final UInteger remotePublisherPriority;
-    private final Map<AddressKey, Long> transIdMap = new HashMap<AddressKey, Long>();
+    private final Map<AddressKey, Long> transIdMap = new HashMap<>();
 
     MALPublisherImpl(final MALProviderImpl parent,
             final MessageSend handler,
@@ -90,7 +90,7 @@ class MALPublisherImpl implements MALPublisher {
     }
 
     @Override
-    public void register(final EntityKeyList entityKeys, final MALPublishInteractionListener listener)
+    public void register(final IdentifierList keys, final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(
                 parent.getEndpoint(),
@@ -112,11 +112,12 @@ class MALPublisherImpl implements MALPublisher {
                 networkZone.getValue(),
                 sessionType,
                 sessionName.getValue(),
-                handler.publishRegister(details, operation, entityKeys, listener));
+                handler.publishRegister(details, operation, keys, listener));
     }
 
     @Override
-    public MALMessage asyncRegister(final EntityKeyList entityKeys, final MALPublishInteractionListener listener)
+    public MALMessage asyncRegister(final IdentifierList keys, 
+            final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(parent.getEndpoint(),
                 parent.getURI(),
@@ -133,7 +134,7 @@ class MALPublisherImpl implements MALPublisher {
                 remotePublisherPriority);
 
         final MALMessage msg = handler.publishRegisterAsync(details,
-                operation, entityKeys, listener);
+                operation, keys, listener);
 
         setTransId(parent.getBrokerURI(),
                 domain,

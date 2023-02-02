@@ -18,16 +18,16 @@
   
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>POM</artifactId>
-        <version>8</version>
+        <artifactId>parent</artifactId>
+        <version>9.0</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>MAL_IMPL</artifactId>
+    <artifactId>mal-impl</artifactId>
     <packaging>jar</packaging>
-    <version>8.0</version>
+    <version>9.0</version>
 
-    <name>ESA MAL Java Implementation</name>
+    <name>ESA MO MAL Java Implementation</name>
     <description>The ESA implementation of the CCSDS MAL in Java</description>
     <url>http://www.esa.int</url>
   
@@ -39,7 +39,7 @@
     <licenses>
         <license>
             <name>The European Space Agency Public License, Version 2.0</name>
-            <url>https://raw.github.com/esa/CCSDS_MAL_IMPL/master/LICENCE.md</url>
+            <url>https://raw.githubusercontent.com/esa/mo-services-java/master/LICENCE.md</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -62,14 +62,24 @@
             <email>sam@brightacension.com</email>
             <url>https://github.com/SamCooper</url>
         </developer>
+        <developer>
+            <id>CesarCoelho</id>
+            <name>Cesar Coelho</name>
+            <url>https://github.com/CesarCoelho</url>
+        </developer>
     </developers>
   
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>API_MAL</artifactId>
-            <version>8.0</version>
+            <artifactId>api-mal</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>        
     </dependencies>
 
     <build>

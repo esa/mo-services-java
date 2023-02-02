@@ -20,10 +20,11 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
-import esa.mo.mal.encoder.gen.GENEncoder;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
+import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -33,7 +34,7 @@ import org.ccsds.moims.mo.mal.structures.Time;
  * encoding.
  *
  */
-public abstract class BaseBinaryEncoder extends GENEncoder {
+public abstract class BaseBinaryEncoder extends Encoder {
 
     protected BinaryTimeHandler timeHandler;
 
@@ -91,54 +92,53 @@ public abstract class BaseBinaryEncoder extends GENEncoder {
         }
 
         @Override
-        public void addBytes(final byte[] value) throws IOException {
-
+        public void writeBytes(final byte[] value) throws IOException {
             if (null == value) {
-                addUnsignedInt(0);
-                throw new IOException("StreamHolder.addBytes: null value supplied!");
+                writeUnsignedInt(0);
+                throw new IOException("StreamHolder.writeBytes: null value supplied!");
             } else {
-                addUnsignedInt(value.length);
-                directAdd(value);
+                writeUnsignedInt(value.length);
+                write(value);
             }
         }
 
         @Override
-        public void addString(String value) throws IOException {
-            addBytes(value.getBytes(UTF8_CHARSET));
+        public void writeString(String value) throws IOException {
+            writeBytes(value.getBytes(UTF8_CHARSET));
         }
 
         @Override
-        public void addFloat(float value) throws IOException {
-            addSignedInt(Float.floatToRawIntBits(value));
+        public void writeFloat(float value) throws IOException {
+            writeSignedInt(Float.floatToRawIntBits(value));
         }
 
         @Override
-        public void addDouble(double value) throws IOException {
-            addSignedLong(Double.doubleToRawLongBits(value));
+        public void writeDouble(double value) throws IOException {
+            writeSignedLong(Double.doubleToRawLongBits(value));
         }
 
         @Override
-        public void addByte(byte value) throws IOException {
-            directAdd(value);
+        public void writeByte(byte value) throws IOException {
+            write(value);
         }
 
         @Override
-        public void addBool(boolean value) throws IOException {
+        public void writeBool(boolean value) throws IOException {
             if (value) {
-                directAdd((byte) 1);
+                write((byte) 1);
             } else {
-                directAdd((byte) 0);
+                write((byte) 0);
             }
         }
 
         @Override
-        public void addNotNull() throws IOException {
-            directAdd((byte) 1);
+        public void writeNotNull() throws IOException {
+            write((byte) 1);
         }
 
         @Override
-        public void addIsNull() throws IOException {
-            directAdd((byte) 0);
+        public void writeIsNull() throws IOException {
+            write((byte) 0);
         }
 
         public OutputStream getOutputStream() {

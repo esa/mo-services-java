@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.Arrays;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 
 /**
@@ -32,7 +31,6 @@ public class MALOperationStage {
     private final UOctet number;
     private final Object[] elementShortForms;
     private final Object[] lastElementShortForms;
-    private MALOperation operation;
 
     /**
      * Constructs an operation stage using the supplied arguments.
@@ -57,8 +55,8 @@ public class MALOperationStage {
             throw new IllegalArgumentException("Last element short forms argument must not be NULL");
         }
         this.number = number;
-        this.elementShortForms = Arrays.copyOf(elementShortForms, elementShortForms.length);
-        this.lastElementShortForms = Arrays.copyOf(lastElementShortForms, lastElementShortForms.length);
+        this.elementShortForms = elementShortForms;
+        this.lastElementShortForms = lastElementShortForms;
     }
 
     /**
@@ -88,18 +86,5 @@ public class MALOperationStage {
     public Object[] getLastElementShortForms() {
         // returns the internal reference for performance reasons
         return lastElementShortForms;
-    }
-
-    /**
-     * Returns the associated operation object.
-     *
-     * @return The operation objects.
-     */
-    public MALOperation getOperation() {
-        return operation;
-    }
-
-    void setOperation(final MALOperation operation) {
-        this.operation = operation;
     }
 }

@@ -22,6 +22,7 @@ package esa.mo.mal.transport.tcpip;
 
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
+import esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -40,9 +41,7 @@ import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
  *
  * This class manages both the transmitting and receiving of messages.
  */
-public class TCPIPTransportDataTransceiver implements
-        esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver<TCPIPPacketInfoHolder>,
-        GENMessageSender {
+public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPacketInfoHolder>, GENMessageSender {
 
     private boolean closed = false;
     private final static int HEADER_SIZE = 23;
@@ -160,8 +159,7 @@ public class TCPIPTransportDataTransceiver implements
     @Override
     public void close() {
         closed = true;
-        RLOGGER.log(Level.FINE,
-                "Closing client connection at port {0}", socket.getLocalPort());
+        RLOGGER.log(Level.FINE, "Closing connection: {0}", socket.toString());
 
         try {
             socket.close();

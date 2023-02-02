@@ -32,8 +32,8 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class MALClose {
 
+    private final List<MALClose> children = new LinkedList<>();
     private final MALClose parent;
-    private final List<MALClose> children = new LinkedList<MALClose>();
 
     /**
      * Initialises the parent field of the closing class.
@@ -94,7 +94,7 @@ public class MALClose {
      * @param child The child to add.
      * @return Returns the passed in child.
      */
-    protected MALClose addChild(final MALClose child) {
+    protected final MALClose addChild(final MALClose child) {
         synchronized (children) {
             children.add(child);
         }

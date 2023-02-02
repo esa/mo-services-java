@@ -67,8 +67,8 @@ public class BinaryTimeHandler {
         }
 
         try {
-            streamHolder.directAdd(java.nio.ByteBuffer.allocate(2).putShort((short) days).array());
-            streamHolder.directAdd(java.nio.ByteBuffer.allocate(4).putInt((int) millisecondsInDay).array());
+            streamHolder.write(java.nio.ByteBuffer.allocate(2).putShort((short) days).array());
+            streamHolder.write(java.nio.ByteBuffer.allocate(4).putInt((int) millisecondsInDay).array());
         } catch (IOException ex) {
             throw new MALException(IO_EXCEPTION_STR, ex);
         }
@@ -98,9 +98,9 @@ public class BinaryTimeHandler {
                     "Overflow of unsigned 16-bit days ({0}) when encoding MAL FineTime", days));
         }
         try {
-            streamHolder.directAdd(java.nio.ByteBuffer.allocate(2).putShort((short) days).array());
-            streamHolder.directAdd(java.nio.ByteBuffer.allocate(4).putInt((int) millisecondsInDay).array());
-            streamHolder.directAdd(
+            streamHolder.write(java.nio.ByteBuffer.allocate(2).putShort((short) days).array());
+            streamHolder.write(java.nio.ByteBuffer.allocate(4).putInt((int) millisecondsInDay).array());
+            streamHolder.write(
                     java.nio.ByteBuffer.allocate(4).putInt((int) picosecondsInMillisecond).array());
         } catch (IOException ex) {
             throw new MALException(IO_EXCEPTION_STR, ex);
@@ -117,7 +117,7 @@ public class BinaryTimeHandler {
     public void encodeDuration(final BaseBinaryEncoder.BaseBinaryStreamHolder streamHolder,
             Duration value) throws MALException {
         try {
-            streamHolder.addDouble(value.getValue());
+            streamHolder.writeDouble(value.getValue());
         } catch (IOException ex) {
             throw new MALException(IO_EXCEPTION_STR, ex);
         }
@@ -134,9 +134,9 @@ public class BinaryTimeHandler {
     public Time decodeTime(final BaseBinaryDecoder.BaseBinaryBufferHolder inputBufferHolder) throws
             MALException {
         // Suppress sign extensions to use a full unsigned range
-        long days = java.nio.ByteBuffer.wrap(inputBufferHolder.directGetBytes(2)).getShort() & 0xFFFFL;
+        long days = java.nio.ByteBuffer.wrap(inputBufferHolder.readBytes(2)).getShort() & 0xFFFFL;
         long millisecondsInDay
-                = java.nio.ByteBuffer.wrap(inputBufferHolder.directGetBytes(4)).getInt() & 0xFFFFFFFFL;
+                = java.nio.ByteBuffer.wrap(inputBufferHolder.readBytes(4)).getInt() & 0xFFFFFFFFL;
         long timestamp = days * MILLISECONDS_IN_DAY;
         timestamp += millisecondsInDay;
         timestamp -= MILLISECONDS_FROM_CCSDS_TO_UNIX_EPOCH;
@@ -154,11 +154,11 @@ public class BinaryTimeHandler {
     public FineTime decodeFineTime(final BaseBinaryDecoder.BaseBinaryBufferHolder inputBufferHolder)
             throws MALException {
         // Suppress sign extensions to use a full unsigned range
-        long days = java.nio.ByteBuffer.wrap(inputBufferHolder.directGetBytes(2)).getShort() & 0xFFFFL;
+        long days = java.nio.ByteBuffer.wrap(inputBufferHolder.readBytes(2)).getShort() & 0xFFFFL;
         long millisecondsInDay
-                = java.nio.ByteBuffer.wrap(inputBufferHolder.directGetBytes(4)).getInt() & 0xFFFFFFFFL;
+                = java.nio.ByteBuffer.wrap(inputBufferHolder.readBytes(4)).getInt() & 0xFFFFFFFFL;
         long picosecondsInMillisecond
-                = java.nio.ByteBuffer.wrap(inputBufferHolder.directGetBytes(4)).getInt() & 0xFFFFFFFFL;
+                = java.nio.ByteBuffer.wrap(inputBufferHolder.readBytes(4)).getInt() & 0xFFFFFFFFL;
         long timestamp = days * NANOSECONDS_IN_DAY;
         timestamp += millisecondsInDay * ONE_MILLION;
         timestamp += picosecondsInMillisecond / 1000;
@@ -175,6 +175,6 @@ public class BinaryTimeHandler {
      */
     public Duration decodeDuration(final BaseBinaryDecoder.BaseBinaryBufferHolder inputBufferHolder)
             throws MALException {
-        return new Duration(inputBufferHolder.getDouble());
+        return new Duration(inputBufferHolder.readDouble());
     }
 }

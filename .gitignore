@@ -1,8 +1,4 @@
-/stub-generator/generator-docs/target/
-/stub-generator/generator-java/target/
-/stub-generator/generator-libs/target/
-/stub-generator/generator-lib/target/
-/stub-generator/generator-if/target/
-/stub-generator/xml-jaxb/target/
-/stub-generator/plugin-temp/target/
-/stub-generator/plugin/target/
+**/target
+.idea/
+/mal-impl/nbproject/
+/apis/api-mal/nbproject/

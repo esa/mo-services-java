@@ -45,7 +45,7 @@ import esa.mo.mal.transport.jms.util.StructureHelper;
 public class JMSPublishHandler {
 
     private final JMSTransport jtransport;
-    private final Set<JMSPublisherKey> keySet = new TreeSet<JMSPublisherKey>();
+    private final Set<JMSPublisherKey> keySet = new TreeSet<>();
     private final QoSLevel registerQoS;
     private IdentifierList domain = null;
 
@@ -54,10 +54,10 @@ public class JMSPublishHandler {
         this.registerQoS = msg.getHeader().getQoSlevel();
     }
 
-    void setKeyList(MALMessageHeader hdr, EntityKeyList l) {
+    void setKeyList(MALMessageHeader hdr, List<NamedValueList> l) {
         domain = hdr.getDomain();
         keySet.clear();
-        for (EntityKey l1 : l) {
+        for (NamedValueList l1 : l) {
             keySet.add(new JMSPublisherKey(l1));
         }
     }
@@ -87,6 +87,7 @@ public class JMSPublishHandler {
         List[] valueLists = body.getUpdateLists((List[]) null);
         java.util.Vector<PublishEntry> publishList = new Vector<PublishEntry>(headerList.size());
 
+                /*
         try {
             for (int i = 0; i < headerList.size(); ++i) {
                 UpdateHeader uhdr = headerList.get(i);
@@ -101,6 +102,7 @@ public class JMSPublishHandler {
                     new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, new Union(ex.getLocalizedMessage())),
                     msg.getQoSProperties());
         }
+                */
 
         String exchangeName = providerExchangeName
                 + ":" + msg.getHeader().getSession().toString()
@@ -126,11 +128,13 @@ public class JMSPublishHandler {
                     objMsg.setIntProperty(JMSEndpoint.ARR_PROPERTY, area);
                     objMsg.setIntProperty(JMSEndpoint.SVC_PROPERTY, service);
                     objMsg.setIntProperty(JMSEndpoint.OPN_PROPERTY, operation);
+                    /*
                     objMsg.setStringProperty(JMSEndpoint.EID_PROPERTY,
                             publishEntry.eKey.getFirstSubKey().getValue());
                     objMsg.setObjectProperty(JMSEndpoint.DID_PROPERTY, publishEntry.eKey.getSecondSubKey());
                     objMsg.setObjectProperty(JMSEndpoint.OID_PROPERTY, publishEntry.eKey.getThirdSubKey());
                     objMsg.setObjectProperty(JMSEndpoint.SID_PROPERTY, publishEntry.eKey.getFourthSubKey());
+                    */
                     objMsg.setBooleanProperty(JMSEndpoint.MOD_PROPERTY, publishEntry.isModification);
                     objMsg.setObject(publishEntry.update);
                     sender.send(objMsg);
@@ -138,7 +142,7 @@ public class JMSPublishHandler {
                     JMSTransport.RLOGGER.log(Level.FINE,
                             "JMS Sending data to {0} with {1} and ({2}, {3}, {4}, {5})",
                             new Object[]{destTopic.getTopicName(),
-                                publishEntry.eKey, ldomain, area, service, operation});
+                                publishEntry.attList, ldomain, area, service, operation});
                 } catch (Exception e) {
                     JMSTransport.RLOGGER.log(Level.WARNING,
                             "JMS Error occurred when sending data {0}", e);
@@ -154,17 +158,17 @@ public class JMSPublishHandler {
         return null;
     }
 
-    public void deregister(GENMessage returnMsg) {
-        returnMsg.getHeader().setQoSlevel(registerQoS);
+    public QoSLevel getRegisterQoS() {
+        return registerQoS;
     }
 
     protected void preCheckAllowedToPublish(MALMessageHeader hdr,
             UpdateHeaderList updateList) throws MALTransmitErrorException {
         if (StructureHelper.isSubDomainOf(domain, hdr.getDomain())) {
+            /*
             EntityKeyList lst = new EntityKeyList();
             for (UpdateHeader updateList1 : updateList) {
-                UpdateHeader update = (UpdateHeader) updateList1;
-                EntityKey updateKey = update.getKey();
+                EntityKey updateKey = ((UpdateHeader) updateList1).getKey();
                 boolean matched = false;
                 for (JMSPublisherKey key : keySet) {
                     if (key.matches(updateKey)) {
@@ -184,6 +188,7 @@ public class JMSPublishHandler {
                 throw new MALTransmitErrorException(hdr,
                         new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, lst), null);
             }
+                */
         } else {
             JMSTransport.RLOGGER.warning("ERR : Provider not allowed to publish to the domain");
             throw new MALTransmitErrorException(hdr,

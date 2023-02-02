@@ -76,7 +76,7 @@ public class GENConcurrentMessageSender {
      * given URI.
      *
      * @param transport reference to the transport
-     * @param targetURI
+     * @param targetURI The target URI.
      */
     public GENConcurrentMessageSender(GENTransport transport, String targetURI) {
         outgoingQueue = new LinkedBlockingQueue<>();
@@ -167,13 +167,13 @@ public class GENConcurrentMessageSender {
      */
     public synchronized void terminate() {
         LOGGER.log(Level.INFO,
-                "Terminating all processing threads for sender for URI:{0}",
+                "Terminating all processing threads for sender for URI: {0}",
                 targetURI);
 
         for (GENSenderThread t : processingThreads) {
             // this will cause all threads to terminate
             LOGGER.log(Level.FINE,
-                    "Terminating sender processing thread for URI:{0}",
+                    "Terminating sender processing thread for URI: {0}",
                     t.getUriTo());
             t.interrupt();
         }
@@ -231,10 +231,10 @@ public class GENConcurrentMessageSender {
                     messageHolder.setResult(Boolean.TRUE);
                 } catch (IOException e) {
                     LOGGER.log(Level.WARNING,
-                            "Cannot send packet to destination:{0} informing transport",
+                            "Cannot send message to destination: {0} informing transport",
                             uriTo);
                     LOGGER.log(Level.FINE,
-                            "Cannot send packet to destination:{0} informing transport",
+                            "Cannot send message to destination: {0} informing transport",
                             e);
 
                     //send back reply that the message was not sent successfully

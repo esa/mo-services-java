@@ -1,0 +1,69 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO MAL Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+*!
+!1 Test Scenarios
+A scenario is comprised of several test cases. Each test case launch several test procedures.
+Scenarios, test cases and procedures are uniquely identified by a name. The also have a status that can be RUN, DONE or FAIL.
+
+All the scenarios are coordinated at the consumer side:
+ * They are started by a consumer initiating an interaction
+ * The status of scenarios, test cases and procedures is determined on the consumer side.
+
+Of course, assertions can be checked on both side: consumer and provider.
+
+A test procedure is in charge of checking a set of assertions. There are two possible results for an assertion: OK (the assertion succeeded) or ERROR (the assertion failed).
+
+A test procedure is DONE if it completes and if all the assertions are OK. If it is not completed, its status is RUN. If it is completed and if at least one assertion is in ERROR then its status is FAIL.
+
+A test case is DONE if all the test procedures complete with the status DONE. If at least one procedure is not completed, its status is RUN. If all the procedures have completed and if at least one of them is FAIL then the test case status is FAIL.
+
+A scenario is DONE if all the test cases complete with the status DONE. If at least one test case is not completed, its status is RUN. If all the test cases have completed and if at least one of them is FAIL then the scenario status is FAIL.
+
+Providers are implemented as specified in section 3.
+
+Two processes are launched:
+ 1 The first one is called the "!-TestCoordinator-!" process. It launches the test procedures.
+ 2 The second one is called the "!-TestPeer-!" process.
+
+The "!-TestPeer-!" process instantiates the following providers:
+ * IPTest provider with a private broker
+ * IPTest provider with a shared broker
+ * !-DataTest-! provider without broker
+
+It writes the URIs of providers and brokers into a properties file that is read by the !-TestCoordinator-! process.
+
+The !-TestCoordinator-! process is launched after the !-TestPeer-! started in order that:
+ * The providers are ready to be called
+ * The URIs properties file is ready to be read by the !-TestCoordinator-!
+
+!2 IP test scenario
+Two test cases are defined:
+ * The first one tests every interaction pattern except the Pub/Sub pattern.
+ * The second one is dedicated to the Pub/Sub pattern which is different as it does not involve the provider in the same way and it is more complex. Several aspects of the Pub/Sub pattern need to be tested. One test procedure is done for each of them.
+Pub/Sub tests are to be done with a private and a shared broker.
+
+Two constraints are required in order to check the IP state charts:
+ * no message loss
+ * FIFO message ordering is required
+
+''As a consequence, the Best Effort !-QoS-! can only be used if the specific transport layer ensures in the context of the test bed that messages are delivered exactly once and according to a FIFO ordering.''

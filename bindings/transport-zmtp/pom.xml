@@ -18,16 +18,16 @@
 
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>POM</artifactId>
-        <version>8</version>
+        <artifactId>parent</artifactId>
+        <version>9.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>TRANSPORT_ZMTP</artifactId>
+    <artifactId>transport-zmtp</artifactId>
     <packaging>jar</packaging>
-    <version>8.0</version>
+    <version>9.0</version>
 
-    <name>ESA Transport - ZMTP</name>
+    <name>ESA MO Transport - ZMTP</name>
     <description>A Java ZeroMQ Transport Protocol binding for CCSDS MAL</description>
     <url>http://www.esa.int</url>
 
@@ -39,7 +39,7 @@
     <licenses>
         <license>
             <name>The European Space Agency Public License, Version 2.0</name>
-            <url>https://raw.github.com/esa/CCSDS_MO_TRANS/master/LICENCE.md</url>
+            <url>https://raw.githubusercontent.com/esa/mo-services-java/master/LICENCE.md</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -66,11 +66,11 @@
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>API_MAL</artifactId>
+            <artifactId>api-mal</artifactId>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>TRANSPORT_GEN</artifactId>
+            <artifactId>transport-generic</artifactId>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.zeromq/jeromq -->
         <dependency>
@@ -80,13 +80,13 @@
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>ENCODING_BINARY</artifactId>
+            <artifactId>encoding-binary</artifactId>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

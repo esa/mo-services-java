@@ -33,19 +33,19 @@ public final class Address {
     /**
      * The endpoint to use with this Address.
      */
-    public final MALEndpoint endpoint;
+    private final MALEndpoint endpoint;
     /**
      * The URI that this Address represents.
      */
-    public final URI uri;
+    private final URI uri;
     /**
      * The authentication Id of this Address.
      */
-    public final Blob authenticationId;
+    private final Blob authenticationId;
     /**
      * The internal interaction handler that uses this address.
      */
-    public final MALInteractionHandler handler;
+    private final MALInteractionHandler handler;
 
     /**
      * Constructor.
@@ -63,5 +63,34 @@ public final class Address {
         this.uri = uri;
         this.authenticationId = authenticationId;
         this.handler = handler;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param endpoint Endpoint.
+     * @param authenticationId Authentication identifier.
+     * @param handler Interaction handler.
+     */
+    public Address(final MALEndpoint endpoint,
+            final Blob authenticationId,
+            final MALInteractionHandler handler) {
+        this(endpoint, endpoint.getURI(), authenticationId, handler);
+    }
+
+    public MALEndpoint getEndpoint() {
+        return endpoint;
+    }
+
+    public URI getURI() {
+        return uri;
+    }
+
+    public Blob getAuthenticationId() {
+        return authenticationId;
+    }
+
+    public MALInteractionHandler getHandler() {
+        return handler;
     }
 }

@@ -227,6 +227,33 @@ public class Union implements Attribute {
         return (String) value;
     }
 
+    /**
+     * Returns true if the value is null.
+     *
+     * @return True if null, false otherwise.
+     */
+    public boolean isNull() {
+        return (value == null);
+    }
+
+    /**
+     * Returns true if the value is zero.
+     *
+     * @return True if zero, false otherwise.
+     */
+    public boolean isZero() {
+        if (value == null) {
+            return false;
+        }
+
+        // Long is expected to happen many times! Therefore should return fast!
+        if (value instanceof Long) {
+            return value.equals(0L);
+        }
+
+        return "0".equals(String.valueOf(value));
+    }
+
     @Override
     public Long getShortForm() {
         return shortForm;

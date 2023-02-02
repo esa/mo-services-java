@@ -25,7 +25,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.EntityKeyList;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.transport.MALPublishRegisterBody;
 
 /**
@@ -55,6 +55,7 @@ public class GENPublishRegisterBody extends GENMessageBody implements MALPublish
      * @param wrappedBodyParts True if the encoded body parts are wrapped in
      * BLOBs.
      * @param encFactory The encoder stream factory to use.
+     * @param encBodyBytes The enc body bytes.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
@@ -67,7 +68,8 @@ public class GENPublishRegisterBody extends GENMessageBody implements MALPublish
     }
 
     @Override
-    public EntityKeyList getEntityKeyList() throws MALException {
-        return (EntityKeyList) getBodyElement(0, new EntityKeyList());
+    public IdentifierList getSubscriptionKeyNames() throws MALException {
+        IdentifierList keyNames = (IdentifierList) getBodyElement(0, new IdentifierList());
+        return (keyNames != null) ? keyNames : new IdentifierList();
     }
 }

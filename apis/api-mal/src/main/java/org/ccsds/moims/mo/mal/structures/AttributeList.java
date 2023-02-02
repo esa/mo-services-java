@@ -20,11 +20,116 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import java.util.ArrayList;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+
 /**
- * List interface for Attributes.
- *
- * @param <T> The type of the list, no requirement to extend Attribute so that
- * native Java types can be used.
+ * The Attributes list. The added and removed objects to this class might or
+ * might not be wrapped in a Union type. It is the responsibility of this class
+ * to be able to handle each case when trying to encode and when passing the
+ * values to the user.
  */
-public interface AttributeList<T> extends ElementList<T> {
+public class AttributeList extends java.util.ArrayList<Object> implements Element {
+
+    /**
+     * Default constructor.
+     *
+     * @param attribute An attribute to be added to the list.
+     */
+    public AttributeList(Object attribute) {
+        super();
+        super.add(attribute);
+    }
+
+    /**
+     * Default constructor.
+     */
+    public AttributeList() {
+        super();
+    }
+
+    @Override
+    public Element createElement() {
+        return new AttributeList();
+    }
+
+    @Override
+    public Long getShortForm() {
+        throw new UnsupportedOperationException("This method should never be called!");
+    }
+
+    @Override
+    public UShort getAreaNumber() {
+        return UShort.ATTRIBUTE_AREA_NUMBER;
+    }
+
+    @Override
+    public UOctet getAreaVersion() {
+        return UOctet.AREA_VERSION;
+    }
+
+    @Override
+    public UShort getServiceNumber() {
+        return UShort.ATTRIBUTE_SERVICE_NUMBER;
+    }
+
+    @Override
+    public Integer getTypeShortForm() {
+        throw new UnsupportedOperationException("This method should never be called!");
+    }
+
+    @Override
+    public Object get(int index) {
+        return Attribute.attribute2JavaType(super.get(index));
+    }
+
+    /**
+     * Returns a list with all Attributes in this object. It casts them to MO
+     * Attribute type when necessary.
+     *
+     * @return The list of Attributes wrapped in a Union type when it is needed.
+     */
+    public ArrayList<Attribute> getAsAttributes() {
+        ArrayList<Attribute> attributes = new ArrayList<>();
+        for (Object obj : this) {
+            attributes.add((Attribute) Attribute.javaType2Attribute(obj));
+        }
+        return attributes;
+    }
+
+    @Override
+    public void encode(MALEncoder encoder) throws MALException {
+        int size = this.size();
+        encoder.encodeInteger(size);
+
+        for (int i = 0; i < size; i++) {
+            Object objToEncode = super.get(i);
+
+            if (!(objToEncode instanceof Attribute)) {
+                objToEncode = Attribute.javaType2Attribute(objToEncode);
+            }
+
+            if (objToEncode != null && !(objToEncode instanceof Attribute)) {
+                throw new MALException("The object is not an Attribute type! "
+                        + "It is: " + objToEncode.getClass().getCanonicalName()
+                        + " - With value: " + objToEncode.toString());
+            }
+
+            encoder.encodeNullableAttribute((Attribute) objToEncode);
+        }
+    }
+
+    @Override
+    public Element decode(MALDecoder decoder) throws MALException {
+        int size = decoder.decodeInteger();
+        AttributeList newObj = new AttributeList();
+
+        for (int i = 0; i < size; i++) {
+            newObj.add(decoder.decodeNullableAttribute());
+        }
+
+        return newObj;
+    }
 }

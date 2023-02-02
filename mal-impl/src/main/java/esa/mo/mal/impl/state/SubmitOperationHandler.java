@@ -45,7 +45,7 @@ public class SubmitOperationHandler extends BaseOperationHandler {
     /**
      * Constructor.
      *
-     * @param syncOperation true if this is a synchronous call.
+     * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
     public SubmitOperationHandler(final boolean syncOperation,
@@ -96,7 +96,7 @@ public class SubmitOperationHandler extends BaseOperationHandler {
     public void processStage(final MessageHandlerDetails details) throws MALInteractionException {
         if (details.isAckStage()) {
             try {
-                if (syncOperation) {
+                if (isSynchronous) {
                     responseHolder.signalResponse(false, details.getMessage());
                 } else {
                     informListener(details.getMessage());
@@ -116,7 +116,7 @@ public class SubmitOperationHandler extends BaseOperationHandler {
     @Override
     public synchronized void handleError(final MALMessageHeader hdr,
             final MALStandardError err, final Map qosMap) {
-        if (syncOperation) {
+        if (isSynchronous) {
             responseHolder.signalResponse(true,
                     new DummyMessage(hdr, new DummyErrorBody(err), qosMap));
         } else {

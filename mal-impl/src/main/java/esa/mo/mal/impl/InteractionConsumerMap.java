@@ -52,20 +52,18 @@ import org.ccsds.moims.mo.mal.transport.*;
  */
 public class InteractionConsumerMap {
 
-    private final Map<Long, BaseOperationHandler> transMap
-            = new HashMap<Long, BaseOperationHandler>();
+    private final Map<Long, BaseOperationHandler> transMap = new HashMap<>();
 
-    private final Map<Long, OperationResponseHolder> syncOpResponseMap
-            = new HashMap<Long, OperationResponseHolder>();
+    private final Map<Long, OperationResponseHolder> syncOpResponseMap = new HashMap<>();
 
-    // This object will be shared across. It is thread-safe
+    // This object will be shared across. It is thread-safe, so can be static!
     private final static InteractionTimeout INTERACTION_TIMEOUT = new InteractionTimeout();
 
     public Long createTransaction(final int interactionType,
             final boolean syncOperation,
             final MALInteractionListener listener) throws MALInteractionException {
         synchronized (transMap) {
-            final Long oTransId = InteractionTransaction.getTransactionId(transMap.keySet());
+            final Long oTransId = TransactionIdCounter.nextTransactionId();
 
             BaseOperationHandler handler = null;
             OperationResponseHolder responseHandler = new OperationResponseHolder(listener);
@@ -115,7 +113,7 @@ public class InteractionConsumerMap {
 
     public Long createTransaction(final boolean syncOperation, final MALPublishInteractionListener listener) {
         synchronized (transMap) {
-            final Long oTransId = InteractionTransaction.getTransactionId(transMap.keySet());
+            final Long oTransId = TransactionIdCounter.nextTransactionId();
 
             OperationResponseHolder responseHolder = new OperationResponseHolder(listener);
             transMap.put(oTransId, new PubSubOperationHandler(syncOperation, responseHolder));
@@ -183,11 +181,7 @@ public class InteractionConsumerMap {
             }
         }
 
-        MALMessage retVal = null;
-
-        // do the wait
-        if (null != holder) {
-            // wait for the bat signal
+        if (holder != null) { // Wait until ready...
             holder.waitForResponseSignal();
 
             // delete entry from trans map
@@ -198,12 +192,11 @@ public class InteractionConsumerMap {
             }
 
             synchronized (holder) {
-                // must have value now
-                retVal = holder.getResult();
+                return holder.getResult(); // must have value now
             }
         }
 
-        return retVal;
+        return null;
     }
 
     public void handleStage(final MALMessage msg) throws MALInteractionException, MALException {

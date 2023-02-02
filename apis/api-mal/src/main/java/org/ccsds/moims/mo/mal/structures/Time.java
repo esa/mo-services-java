@@ -39,9 +39,11 @@ public class Time implements Attribute {
     }
 
     /**
-     * Initialiser constructor.
+     * Initialises the object with a certain time. The value shall be the 
+     * difference, measured in milliseconds, between the current time and 
+     * midnight, January 1, 1970 UTC.
      *
-     * @param value Value to initialise with.
+     * @param value The time to instantiate the object (Unix time).
      */
     public Time(final long value) {
         this.value = value;
@@ -61,11 +63,19 @@ public class Time implements Attribute {
         return value;
     }
 
-//  This might be required for XML serialisation and technologies that use that.  
-//  public void setValue(long value)
-//  {
-//    this.value = value;
-//  }
+    /**
+     * Returns the current time encapsulated in a Time type.
+     *
+     * @return The current time.
+     */
+    public static Time now() {
+        return new Time(System.currentTimeMillis());
+    }
+    
+    public FineTime toFineTime() {
+      return new FineTime(value * ONE_MILLION);
+    }
+
     @Override
     public Long getShortForm() {
         return Attribute.TIME_SHORT_FORM;

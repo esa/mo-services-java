@@ -56,7 +56,7 @@ public class OperationResponseHolder {
     }
 
     public void waitForResponseSignal() {
-        // wait for the bat signal
+        // wait for the response signal
         synchronized (responseSignal) {
             while (!responseSignal.getValue()) {
                 try {

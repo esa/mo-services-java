@@ -23,6 +23,7 @@ package esa.mo.mal.encoder.string;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 
 /**
  * The implementation of the MALListDecoder interfaces for the String encoding.
@@ -39,12 +40,11 @@ public class StringListDecoder extends StringDecoder implements MALListDecoder {
      * @param srcBuffer Buffer to manage.
      * @throws MALException If cannot decode size of list.
      */
-    public StringListDecoder(final List list, final BufferHolder srcBuffer)
-            throws MALException {
+    public StringListDecoder(final List list, final BufferHolder srcBuffer) throws MALException {
         super(srcBuffer);
 
         this.list = list;
-        size = sourceBuffer.getSignedInt();
+        size = sourceBuffer.readSignedInt();
     }
 
     @Override

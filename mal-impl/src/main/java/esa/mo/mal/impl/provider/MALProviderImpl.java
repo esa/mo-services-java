@@ -38,10 +38,10 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 /**
  * MALProvider implementation.
  */
-class MALProviderImpl extends ServiceComponentImpl implements MALProvider {
+public class MALProviderImpl extends ServiceComponentImpl implements MALProvider {
 
+    private final Map<String, MALPublisher> publishers = new HashMap<>();
     private final boolean isPublisher;
-    private final Map<String, MALPublisher> publishers = new HashMap<String, MALPublisher>();
     private final URI sharedBrokerUri;
     private final MALBrokerBinding localBrokerBinding;
     private final URI localBrokerUri;
@@ -162,7 +162,7 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider {
             final Map remotePublisherQosProps,
             final UInteger remotePublisherPriority)
             throws IllegalArgumentException, MALException {
-        final String key = createPublisherKey(op,
+        final String key = this.createPublisherKey(op,
                 domain,
                 networkZone,
                 sessionType,
@@ -240,7 +240,7 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider {
         }
     }
 
-    String createPublisherKey(final MALPubSubOperation op,
+    private String createPublisherKey(final MALPubSubOperation op,
             final IdentifierList domain,
             final Identifier networkZone,
             final SessionType sessionType,
@@ -248,13 +248,13 @@ class MALProviderImpl extends ServiceComponentImpl implements MALProvider {
             final QoSLevel remotePublisherQos,
             final UInteger remotePublisherPriority) {
         final StringBuilder buf = new StringBuilder();
-        buf.append(op.getNumber());
-        buf.append(domain);
-        buf.append(networkZone);
-        buf.append(sessionType);
-        buf.append(sessionName);
-        buf.append(remotePublisherQos);
-        buf.append(remotePublisherPriority);
+        buf.append(op.getNumber()).append(":");
+        buf.append(domain).append(":");
+        buf.append(networkZone).append(":");
+        buf.append(sessionType).append(":");
+        buf.append(sessionName).append(":");
+        buf.append(remotePublisherQos).append(":");
+        buf.append(remotePublisherPriority).append(":");
         return buf.toString();
     }
 }

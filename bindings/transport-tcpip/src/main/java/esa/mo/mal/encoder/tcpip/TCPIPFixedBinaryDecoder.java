@@ -30,6 +30,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 import org.ccsds.moims.mo.mal.MALListDecoder;
 
 /**
@@ -62,11 +63,11 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
 
     @Override
     public String decodeString() throws MALException {
-        return sourceBuffer.getString();
+        return sourceBuffer.readString();
     }
 
     public Long decodeMALLong() throws MALException {
-        return sourceBuffer.getSignedLong();
+        return sourceBuffer.readSignedLong();
     }
 
     public UInteger decodeUInteger() throws MALException {
@@ -99,7 +100,7 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
             return null;
         }
 
-        return new Blob(sourceBuffer.directGetBytes(sz));
+        return new Blob(sourceBuffer.readBytes(sz));
     }
 
     public int getBufferOffset() {
@@ -120,8 +121,8 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
         }
 
         @Override
-        public String getString() throws MALException {
-            final long len = getUnsignedInt();
+        public String readString() throws MALException {
+            final long len = readUnsignedInt();
 
             if (len > Integer.MAX_VALUE) {
                 throw new MALException("Value is too big to decode! "
@@ -143,11 +144,11 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
          * Decode an unsigned int using a split-binary approach
          */
         @Override
-        public int getUnsignedInt() throws MALException {
+        public int readUnsignedInt() throws MALException {
             int value = 0;
             int i = 0;
             int b;
-            while (((b = get8()) & 0x80) != 0) {
+            while (((b = read8()) & 0x80) != 0) {
                 value |= (b & 0x7F) << i;
                 i += 7;
             }
@@ -158,7 +159,7 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
             long value = 0;
             int i = 0;
             long b;
-            while (((b = get8()) & 0x80) != 0) {
+            while (((b = read8()) & 0x80) != 0) {
                 value |= (b & 0x7F) << i;
                 i += 7;
             }

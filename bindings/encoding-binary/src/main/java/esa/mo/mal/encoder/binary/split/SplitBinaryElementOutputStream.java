@@ -21,6 +21,7 @@
 package esa.mo.mal.encoder.binary.split;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
 
 /**
  * Implements the MALElementOutputStream interface for a split binary encoding.
@@ -39,7 +40,7 @@ public class SplitBinaryElementOutputStream extends esa.mo.mal.encoder.binary.va
     }
 
     @Override
-    protected esa.mo.mal.encoder.gen.GENEncoder createEncoder(java.io.OutputStream os) {
+    protected Encoder createEncoder(java.io.OutputStream os) {
         return new SplitBinaryEncoder(os, timeHandler);
     }
 }

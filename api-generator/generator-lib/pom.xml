@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!--
+    Licensed under the European Space Agency Public License, Version 2.0
+    You may not use this file except in compliance with the License.
+
+    Except as expressly set forth in this License, the Software is provided to
+    You on an "as is" basis and without warranties of any kind, including without
+    limitation merchantability, fitness for a particular purpose, absence of
+    defects or errors, accuracy or non-infringement of intellectual property rights.
+ 
+    See the License for the specific language governing permissions and limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+        <groupId>int.esa.ccsds.mo</groupId>
+        <artifactId>parent</artifactId>
+        <version>9.0</version>
+        <relativePath>../../parent/pom.xml</relativePath>
+    </parent>
+  
+    <artifactId>generator-lib</artifactId>
+    <version>9.0</version>
+    <packaging>jar</packaging>
+  
+    <name>ESA MO API Generator - Library</name>
+  
+    <organization>
+        <name>ESA</name>
+        <url>http://www.esa.int</url>
+    </organization>
+  
+    <licenses>
+        <license>
+            <name>The European Space Agency Public License, Version 2.0</name>
+            <url>https://raw.githubusercontent.com/esa/mo-services-java/master/LICENCE.md</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:esa/mo-services-java.git</connection>
+        <developerConnection>scm:git:git@github.com:esa/mo-services-java.git</developerConnection>
+        <url>https://github.com/esa/mo-services-java</url>
+    </scm>
+  
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/esa/mo-services-java/issues</url>
+    </issueManagement>
+  
+    <developers>
+        <developer>
+            <id>SamCooper</id>
+            <name>Sam Cooper</name>
+            <email>sam@brightascension.com</email>
+            <url>https://github.com/SamCooper</url>
+        </developer>
+    </developers>
+
+    <properties>
+        <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
+        <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
+        <ccsds.specification.download.filter>**/*.xsd</ccsds.specification.download.filter>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>3.8.6</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>generator-interfaces</artifactId>
+            <version>9.0</version>
+        </dependency>
+    </dependencies>
+  
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/..</directory>
+                <includes>
+                    <include>LICENCE.md</include>
+                </includes>
+            </resource>
+        </resources>
+    
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

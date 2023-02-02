@@ -24,6 +24,7 @@ import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 
 /**
  *
@@ -42,14 +43,12 @@ public class FixedBinaryListDecoder extends FixedBinaryDecoder implements MALLis
      * @param timeHandler Time handler to reuse.
      * @throws MALException If cannot decode size of list.
      */
-    public FixedBinaryListDecoder(final List list,
-            final BufferHolder sourceBuffer,
-            final BinaryTimeHandler timeHandler)
-            throws MALException {
+    public FixedBinaryListDecoder(final List list, final BufferHolder sourceBuffer,
+            final BinaryTimeHandler timeHandler) throws MALException {
         super(sourceBuffer, timeHandler);
 
         this.list = list;
-        this.listSize = sourceBuffer.getUnsignedInt();
+        this.listSize = sourceBuffer.readUnsignedInt();
     }
 
     /**

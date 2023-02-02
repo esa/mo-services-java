@@ -20,10 +20,12 @@
  */
 package esa.mo.mal.encoder.string;
 
+import org.ccsds.moims.mo.mal.encoding.GENElementInputStream;
+
 /**
  * Implements the MALElementInputStream interface for String encodings.
  */
-public class StringElementInputStream extends esa.mo.mal.encoder.gen.GENElementInputStream {
+public class StringElementInputStream extends GENElementInputStream {
 
     /**
      * Constructor.

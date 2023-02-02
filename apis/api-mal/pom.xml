@@ -18,16 +18,16 @@
   
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>POM</artifactId>
-        <version>8</version>
+        <artifactId>parent</artifactId>
+        <version>9.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>API_MAL</artifactId>
-    <version>8.0</version>
+    <artifactId>api-mal</artifactId>
+    <version>9.0</version>
     <packaging>jar</packaging>
   
-    <name>ESA MAL Java API</name>
+    <name>ESA MO API - MAL</name>
     <description>An implementation of the Java API for the CCSDS MAL</description>
     <url>http://www.esa.int</url>
   
@@ -39,7 +39,7 @@
     <licenses>
         <license>
             <name>The European Space Agency Public License, Version 2.0</name>
-            <url>https://raw.github.com/esa/CCSDS_MO_APIS/master/LICENCE.md</url>
+            <url>https://raw.githubusercontent.com/esa/mo-services-java/master/LICENCE.md</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -67,7 +67,7 @@
     <properties>
         <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
         <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
-        <ccsds.specification.download.filter>**/area001-v001-MAL.xml</ccsds.specification.download.filter>
+        <ccsds.specification.download.filter>**/area001-v002-MAL.xml</ccsds.specification.download.filter>
     </properties>
 
     <build>
@@ -99,7 +99,7 @@
             </plugin>
             <plugin>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>StubGenerator</artifactId>
+                <artifactId>api-generator-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -107,4 +107,24 @@
             </plugin>
         </plugins>
     </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

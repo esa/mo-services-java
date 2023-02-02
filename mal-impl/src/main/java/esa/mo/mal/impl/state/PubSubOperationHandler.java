@@ -34,7 +34,7 @@ public final class PubSubOperationHandler extends SubmitOperationHandler {
     /**
      * Constructor.
      *
-     * @param syncOperation true if this is a synchronous call.
+     * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
     public PubSubOperationHandler(final boolean syncOperation,
@@ -68,8 +68,8 @@ public final class PubSubOperationHandler extends SubmitOperationHandler {
     protected void informListener(final MALMessage msg) throws MALException {
         if (msg.getHeader().getIsErrorMessage()) {
             responseHolder.getListener().registerErrorReceived(
-                    msg.getHeader(), 
-                    (MALErrorBody) msg.getBody(), 
+                    msg.getHeader(),
+                    (MALErrorBody) msg.getBody(),
                     msg.getQoSProperties());
         } else if ((MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue())
                 || (MALPubSubOperation._REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue())) {
