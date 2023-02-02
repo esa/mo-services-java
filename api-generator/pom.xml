@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-  <!--
+<!--
     Licensed under the European Space Agency Public License, Version 2.0
     You may not use this file except in compliance with the License.
 
@@ -60,6 +60,10 @@
             <url>https://github.com/SamCooper</url>
         </developer>
     </developers>
+
+    <properties>
+        <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+    </properties>
 
     <modules>
         <module>xml-jaxb</module>

@@ -67,6 +67,10 @@
         </developer>
     </developers>
 
+    <properties>
+        <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+    </properties>
+
     <modules>
         <module>xml-ccsds-mo-standards</module>
         <module>xml-ccsds-mo-prototypes</module>
