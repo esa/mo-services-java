@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>9.0</version>
+        <version>10.0-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>transport-file</artifactId>
     <packaging>jar</packaging>
-    <version>9.0</version>
+    <version>10.0-SNAPSHOT</version>
 
     <name>ESA MO Transport - File</name>
     <description>A Java File based transport for CCSDS MAL</description>

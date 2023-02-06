@@ -17,7 +17,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>parent</artifactId>
-    <version>9.0</version>
+    <version>10.0-SNAPSHOT</version>
     <packaging>pom</packaging>
   
     <name>ESA MO POM</name>
@@ -74,21 +74,21 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ccsds.specification.version>9.0</ccsds.specification.version>
-        <extra.specification.version>9.0</extra.specification.version>
-        <esa.stubgen.version>9.0</esa.stubgen.version>
-        <esa.api.mal.version>9.0</esa.api.mal.version>
-        <esa.api.com.version>9.0</esa.api.com.version>
-        <esa.api.mc.version>9.0</esa.api.mc.version>
-        <esa.api.common.version>9.0</esa.api.common.version>
-        <esa.mal.version>9.0</esa.mal.version>
-        <esa.string.encoder.version>9.0</esa.string.encoder.version>
-        <esa.binary.encoder.version>9.0</esa.binary.encoder.version>
-        <esa.gen.transport.version>9.0</esa.gen.transport.version>
-        <esa.rmi.transport.version>9.0</esa.rmi.transport.version>
-        <esa.tcpip.transport.version>9.0</esa.tcpip.transport.version>
-        <esa.jms.transport.version>9.0</esa.jms.transport.version>
-        <esa.spp.transport.version>9.0</esa.spp.transport.version>
+        <ccsds.specification.version>10.0-SNAPSHOT</ccsds.specification.version>
+        <extra.specification.version>10.0-SNAPSHOT</extra.specification.version>
+        <esa.stubgen.version>10.0-SNAPSHOT</esa.stubgen.version>
+        <esa.api.mal.version>10.0-SNAPSHOT</esa.api.mal.version>
+        <esa.api.com.version>10.0-SNAPSHOT</esa.api.com.version>
+        <esa.api.mc.version>10.0-SNAPSHOT</esa.api.mc.version>
+        <esa.api.common.version>10.0-SNAPSHOT</esa.api.common.version>
+        <esa.mal.version>10.0-SNAPSHOT</esa.mal.version>
+        <esa.string.encoder.version>10.0-SNAPSHOT</esa.string.encoder.version>
+        <esa.binary.encoder.version>10.0-SNAPSHOT</esa.binary.encoder.version>
+        <esa.gen.transport.version>10.0-SNAPSHOT</esa.gen.transport.version>
+        <esa.rmi.transport.version>10.0-SNAPSHOT</esa.rmi.transport.version>
+        <esa.tcpip.transport.version>10.0-SNAPSHOT</esa.tcpip.transport.version>
+        <esa.jms.transport.version>10.0-SNAPSHOT</esa.jms.transport.version>
+        <esa.spp.transport.version>10.0-SNAPSHOT</esa.spp.transport.version>
     
         <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
         <ccsds.specification.download.group>int.esa.ccsds.mo</ccsds.specification.download.group>
