@@ -56,7 +56,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
 
         if (ctx.getHeader().getIsErrorMessage()) {
             // error messages have a standard format
-            if (0 == ctx.getBodyElementIndex()) {
+            if (ctx.getBodyElementIndex() == 0) {
                 return dec.decodeUInteger();
             } else {
                 return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
@@ -169,15 +169,19 @@ public abstract class GENElementInputStream implements MALElementInputStream {
 
     protected Object decodeSubElement(final Long shortForm,
             final MALEncodingContext ctx) throws MALException {
-        if (null == shortForm) {
+        if (shortForm == null) {
             return null;
         }
 
         try {
             Element e = MALContextFactory.getElementsRegistry().createElement(shortForm);
-            return dec.decodeElement(e);
+            try {
+                return dec.decodeElement(e);
+            } catch (Exception ex) {
+                throw new MALException("Unable to decode element: " + e.toString(), ex);
+            }
         } catch (Exception ex) {
-            throw new MALException("Unable to create element for short form part: " + shortForm);
+            throw new MALException("Unable to create element for short form part: " + shortForm, ex);
         }
     }
 }

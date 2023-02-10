@@ -48,8 +48,8 @@ import org.ccsds.moims.mo.com.archive.structures.ArchiveQueryList;
 import org.ccsds.moims.mo.com.archive.structures.CompositeFilter;
 import org.ccsds.moims.mo.com.archive.structures.CompositeFilterList;
 import org.ccsds.moims.mo.com.archive.structures.CompositeFilterSet;
-import org.ccsds.moims.mo.com.archive.structures.CompositeFilterSetList;
 import org.ccsds.moims.mo.com.archive.structures.ExpressionOperator;
+import org.ccsds.moims.mo.com.archive.structures.QueryFilterList;
 import org.ccsds.moims.mo.com.event.consumer.EventAdapter;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
@@ -134,7 +134,7 @@ public class ArchiveScenario {
 
     private ArchiveQueryList archiveQueryList;
 
-    private CompositeFilterSetList compositeFilterSetList;
+    private QueryFilterList compositeFilterSetList;
 
     private CompositeFilterSet compositeFilterSet;
 
@@ -210,7 +210,7 @@ public class ArchiveScenario {
     }
 
     public boolean resetCompositeFilterSetList() {
-        compositeFilterSetList = new CompositeFilterSetList();
+        compositeFilterSetList = new QueryFilterList();
         return true;
     }
 

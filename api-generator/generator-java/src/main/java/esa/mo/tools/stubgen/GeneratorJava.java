@@ -23,8 +23,6 @@ package esa.mo.tools.stubgen;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
-import esa.mo.tools.stubgen.specification.OperationSummary;
-import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
@@ -267,32 +265,28 @@ public class GeneratorJava extends GeneratorLangs {
     protected void createAbstractListClass(File folder, AreaType area,
             ServiceType service, String srcTypeName) throws IOException {
         String listName = srcTypeName + "List";
-
         getLog().info("Creating list interface " + listName);
 
-        InterfaceWriter file = createInterfaceFile(folder, listName);
-
+        JavaClassWriter file = (JavaClassWriter) createInterfaceFile(folder, listName);
         file.addPackageStatement(area, service, getConfig().getStructureFolder());
 
         TypeReference typeRef = TypeUtils.createTypeReference(area.getName(), (null == service) ? null : service.getName(), srcTypeName, false);
         TypeReference superTypeReference = getCompositeElementSuperType(typeRef);
         String fqSrcTypeName = createElementType(file, area, service, srcTypeName);
 
-        if (null == superTypeReference) {
+        if (superTypeReference == null) {
             superTypeReference = new TypeReference();
             superTypeReference.setArea(StdStrings.MAL);
             String name = (isComposite(typeRef)) ? StdStrings.COMPOSITE : StdStrings.ELEMENT;
             superTypeReference.setName(name);
         }
 
-        CompositeField listSuperElement = createCompositeElementsDetails(file, false, null,
-                superTypeReference, true, true, "List element.");
+        file.addClassOpenStatement(listName, true, false,
+                "org.ccsds.moims.mo.mal.structures.PolymorphicList",
+                null, "List class for " + srcTypeName + ".");
 
-        file.addInterfaceOpenStatement(listName + "<T extends " + fqSrcTypeName + ">",
-                listSuperElement.getTypeName() + "List<T>",
-                "List class for " + srcTypeName + "." + file.getLineSeparator() + " * @param <T> The type of this list must extend " + srcTypeName);
-        file.addInterfaceCloseStatement();
-
+        file.addConstructorDefault(listName); // create blank constructor
+        file.addClassCloseStatement();
         file.flush();
     }
 
@@ -327,8 +321,10 @@ public class GeneratorJava extends GeneratorLangs {
                 true, true, null);
         String fqSrcTypeName = createElementType(file, area, service, srcTypeName);
 
-        TypeReference superTypeReference = getCompositeElementSuperType(srcType);
-        if (null == superTypeReference) {
+        // Figure out the super type
+        TypeReference superTypeReference = null;
+
+        if (superTypeReference == null) {
             superTypeReference = new TypeReference();
             superTypeReference.setArea(StdStrings.MAL);
             if (isAttributeType(srcType)) {
@@ -426,7 +422,6 @@ public class GeneratorJava extends GeneratorLangs {
         addShortFormMethods(file);
 
         file.addClassCloseStatement();
-
         file.flush();
 
         srcType.setList(Boolean.TRUE);
@@ -634,7 +629,8 @@ public class GeneratorJava extends GeneratorLangs {
 
     @Override
     protected String createAreaHelperClassInitialValue(String areaVar, short areaVersion) {
-        return "(" + areaVar + "_AREA_NUMBER, " + areaVar + "_AREA_NAME, new org.ccsds.moims.mo.mal.structures.UOctet((short) " + areaVersion + "))";
+        return "(" + areaVar + "_AREA_NUMBER, " + areaVar + "_AREA_NAME, "
+                + "new org.ccsds.moims.mo.mal.structures.UOctet((short) " + areaVersion + "))";
     }
 
     @Override

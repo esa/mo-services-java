@@ -23,6 +23,7 @@ package esa.mo.com.test.archive;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.com.COMHelper;
@@ -979,17 +980,20 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
 
                 // Loop through each object and populate archive details & element
                 Iterator<Archive.ArchiveObject> objsIt = nextList.iterator();
+
                 while (objsIt.hasNext()) {
                     Archive.ArchiveObject nextObj = objsIt.next();
-
                     archiveDetailsList.add(nextObj.getArchiveDetails());
+
                     if (elementList != null) {
                         elementList.add(nextObj.getElement());
                     }
                 }
+
                 if (!returnObjectType) {
                     objectType = null;
                 }
+
                 if (listsIt.hasNext()) {
                     LoggingBase.logMessage(CLS + ":returnQueryResults:send update: " + archiveDetailsList.size() + ":" + archiveDetailsList);
                     if (elementList != null) {

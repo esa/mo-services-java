@@ -226,8 +226,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     @Override
     public void addConstructorDefault(String className) throws IOException {
         String comment = "Default constructor for " + className;
-        addMultilineComment(1, false, comment, false);
-        addConstructor(StdStrings.PUBLIC, className, null, null, null, null, null).addMethodCloseStatement();
+        addConstructor(StdStrings.PUBLIC, className, null, null, null, comment, null).addMethodCloseStatement();
     }
 
     @Override
@@ -472,12 +471,13 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             }
 
             file.append(makeLine(tabCount, "/**", false));
-            
+
             for (String comment : comments) {
                 if (!comment.contains("<T>")) {
                     comment = comment.replaceAll("<", "_");
                     comment = comment.replaceAll(">", "_");
                 }
+                comment = comment.replace("\n", " * \n");
                 file.append(makeLine(tabCount, " * " + comment, false));
             }
             file.append(makeLine(tabCount, " */", false));

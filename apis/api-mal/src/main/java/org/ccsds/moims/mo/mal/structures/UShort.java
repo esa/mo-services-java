@@ -30,13 +30,14 @@ import org.ccsds.moims.mo.mal.MALException;
 public class UShort implements Attribute {
 
     /**
-     *
+     * The area number for all Attributes.
      */
     public static final UShort ATTRIBUTE_AREA_NUMBER = new UShort(1);
     /**
-     *
+     * The service number for all Attributes.
      */
     public static final UShort ATTRIBUTE_SERVICE_NUMBER = new UShort(0);
+
     private int value;
 
     /**

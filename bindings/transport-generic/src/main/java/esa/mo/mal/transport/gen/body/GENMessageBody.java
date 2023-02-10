@@ -41,6 +41,7 @@ import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
+import org.ccsds.moims.mo.mal.structures.PolymorphicList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
@@ -106,6 +107,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
      * @param wrappedBodyParts True if the encoded body parts are wrapped in
      * BLOBs.
      * @param encFactory The encoder stream factory to use.
+     * @param encBodyBytes The encoder body bytes.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
@@ -161,8 +163,16 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
 
         Object rv = messageParts[index];
 
+        // Up-cast the List if it is a polymorphic list!
+        if (element != null && rv instanceof PolymorphicList) {
+            for (Element entry : (PolymorphicList) rv) {
+                ((PolymorphicList) element).add(entry);
+            }
+            return element;
+        }
+
         if (rv instanceof MALEncodedElementList) {
-            System.out.println("getBodyElement requesting encoded body list : "
+            System.out.println("getBodyElement requesting encoded body list: "
                     + this.decodedBody + " : " + ((MALEncodedElementList) rv).getShortForm());
             rv = decodeEncodedElementListBodyPart(((MALEncodedElementList) rv));
             messageParts[index] = rv;

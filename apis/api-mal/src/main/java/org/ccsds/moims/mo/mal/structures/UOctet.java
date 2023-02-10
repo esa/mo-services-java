@@ -33,6 +33,7 @@ public class UOctet implements Attribute {
      * Version for area.
      */
     public static final UOctet AREA_VERSION = new UOctet((short) 1);
+
     private short value;
 
     /**

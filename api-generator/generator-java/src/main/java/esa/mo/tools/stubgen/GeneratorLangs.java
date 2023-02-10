@@ -648,7 +648,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-        file.addInterfaceOpenStatement(handlerName, null, "Interface that providers of the " + service.getName() + " service must implement to handle the operations of that service.");
+        file.addInterfaceOpenStatement(handlerName, null,
+                "Interface that providers of the " + service.getName() + " service must implement to handle the operations of that service.");
 
         CompositeField intHandler = createCompositeElementsDetails(file, false, "interaction",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false),
@@ -1111,7 +1112,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
-                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
+                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs
+                        + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
                 method.addLine("    break");
             }
         }
@@ -1959,7 +1961,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         if ((null != ti.getTargetType()) && !(StdStrings.VOID.equals(ti.getTargetType()))) {
             if (precedingArgs) {
-                retStr = ", ";
+                retStr = ",\n                ";
             }
 
             if (ti.isNativeType()) {
@@ -1972,10 +1974,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 // Not Java native...
                 String ct = ti.getTargetType();
                 String at = null;
+
                 if (!isAbstract(ti.getSourceType())) {
                     CompositeField ce = createCompositeElementsDetails(null, false,
                             "", ti.getSourceType(), true, true, null);
                     at = ce.getNewCall();
+                }
+                if (at == null && ct.contains("List") && !ct.contains(".Element") && !ct.contains(".Composite")) {
+                    at = "new " + ct + "()";
                 }
 
                 String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", " + at + ")";
@@ -1983,7 +1989,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             }
 
             if (moreArgs) {
-                retStr += ", ";
+                retStr += ",\n                ";
             }
         }
 
@@ -2113,8 +2119,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String ct = ti.getTargetType();
                 String at = null;
                 if (!isAbstract(ti.getSourceType())) {
-                    CompositeField ce = createCompositeElementsDetails(null, false, "", ti.getSourceType(), true, true, null);
+                    CompositeField ce = createCompositeElementsDetails(null, false, "",
+                            ti.getSourceType(), true, true, null);
                     at = ce.getNewCall();
+                }
+                if (at == null && ct.contains("List") && !ct.contains(".Element") && !ct.contains(".Composite")) {
+                    at = "new " + ct + "()";
                 }
 
                 av = argName + ".getBodyElement(" + argIndex + ", " + at + ")";
@@ -2129,9 +2139,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected CompositeField createReturnType(LanguageWriter file, AreaType area, ServiceType service, String opName, String messageType, List<TypeInfo> returnTypes) {
-        if ((null != returnTypes) && (0 < returnTypes.size())) {
+        if ((null != returnTypes) && (!returnTypes.isEmpty())) {
             if (1 == returnTypes.size()) {
-                return createCompositeElementsDetails(file, false, "return", returnTypes.get(0).getSourceType(), true, true, null);
+                return createCompositeElementsDetails(file, false, "return",
+                        returnTypes.get(0).getSourceType(), true, true, null);
             } else {
                 String shortName = StubUtils.preCap(opName) + messageType;
                 String rt = getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + getConfig().getBodyFolder() + "." + shortName;
