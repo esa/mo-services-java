@@ -96,22 +96,24 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
             if (comment.length() < LENGTH_THRESHOLD) {
                 rv.add(comment);
             } else {
-                String[] parts = comment.split(" ");
-                String str = "";
-                int counter = 0;
+                for (String paragraph : comment.split("\n")) {
+                    String[] parts = paragraph.split(" ");
+                    String str = "";
+                    int counter = 0;
 
-                for (int i = 0; i < parts.length; i++) {
-                    if (counter > LENGTH_THRESHOLD) {
-                        rv.add(str);
-                        // Reset both the string and the counter
-                        str = "";
-                        counter = 0;
+                    for (int i = 0; i < parts.length; i++) {
+                        if (counter > LENGTH_THRESHOLD) {
+                            rv.add(str);
+                            // Reset both the string and the counter
+                            str = "";
+                            counter = 0;
+                        }
+                        str += parts[i] + " ";
+                        counter += 1 + parts[i].length();
                     }
-                    str += parts[i] + " ";
-                    counter += 1 + parts[i].length();
-                }
 
-                rv.add(str);
+                    rv.add(str);
+                }
             }
         }
 
