@@ -477,7 +477,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                     comment = comment.replaceAll("<", "_");
                     comment = comment.replaceAll(">", "_");
                 }
-                comment = comment.replace("\n", " * \n");
+                // comment = comment.replace("\n", "\n     * ");
                 file.append(makeLine(tabCount, " * " + comment, false));
             }
             file.append(makeLine(tabCount, " */", false));

@@ -1408,7 +1408,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                 false, false, elementType, "createElement", null, null,
-                "Returns an instance of this type using the first element of the enumeration. It is a generic factory method but just returns an existing element of the enumeration as new values of enumerations cannot be created at runtime.",
+                "Returns an instance of this type using the first element of the enumeration. "
+                + "It is a generic factory method but just returns an existing element of the "
+                + "enumeration as new values of enumerations cannot be created at runtime.",
                 "The first element of the enumeration.", null);
         method.addLine("return _ENUMERATIONS[0]");
         method.addMethodCloseStatement();
@@ -1430,7 +1432,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
 
         createListClass(folder, area, service, enumName, false, enumeration.getShortFormPart());
-        CompositeField fld = createCompositeElementsDetails(file, false, "fld", TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false), true, true, "cmt");
+        CompositeField fld = createCompositeElementsDetails(file, false, "fld",
+                TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false),
+                true, true, "cmt");
         createFactoryClass(folder, area, service, enumName, fld, false, true);
     }
 

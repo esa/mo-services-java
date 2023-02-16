@@ -60,7 +60,8 @@ public class JavaServiceInfo {
         this.generator = generator;
     }
 
-    public void createServiceInfoClass(File serviceFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+    public void createServiceInfoClass(File serviceFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
         generator.getLog().info("Creating service helper class: " + service.getName());
         ClassWriterProposed file = generator.createClassFile(serviceFolder, service.getName() + SERVICE_INFO);
 
@@ -100,9 +101,11 @@ public class JavaServiceInfo {
         for (OperationSummary op : summary.getOperations()) {
             String operationInstanceVar = op.getName().toUpperCase();
             CompositeField _opNumberVar = generator.createCompositeElementsDetails(file, false, "_" + operationInstanceVar + "_OP_NUMBER",
-                    TypeUtils.createTypeReference(null, null, "int", false), false, false, "Operation number literal for operation " + operationInstanceVar);
+                    TypeUtils.createTypeReference(null, null, "int", false),
+                    false, false, "Operation number literal for operation " + operationInstanceVar);
             CompositeField opNumberVar = generator.createCompositeElementsDetails(file, false, operationInstanceVar + "_OP_NUMBER",
-                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, false, "Operation number instance for operation " + operationInstanceVar);
+                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
+                    true, false, "Operation number instance for operation " + operationInstanceVar);
             file.addClassVariable(true, true, StdStrings.PUBLIC, _opNumberVar, false, op.getNumber().toString());
             file.addClassVariable(true, true, StdStrings.PUBLIC, opNumberVar, false, "(_" + operationInstanceVar + "_OP_NUMBER)");
 
@@ -198,7 +201,8 @@ public class JavaServiceInfo {
         }
 
         // Constructor - shouldn't it be started with the constructor method?
-        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, serviceName + SERVICE_INFO, null, null, null, null, null);
+        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, serviceName + SERVICE_INFO,
+                null, null, null, null, null);
         method.addLine("super(SERVICE_KEY, " + serviceVar + "_SERVICE_NAME" + ", OPERATIONS)");
 
         if (!comObjectCalls.isEmpty()) {
@@ -212,19 +216,32 @@ public class JavaServiceInfo {
         file.flush();
     }
 
-    protected void createComObjectHelperDetails(ClassWriterProposed file, List<String> comObjectCalls, String areaHelperObject, String serviceVar, ModelObjectType obj, boolean isEvent) throws IOException {
+    protected void createComObjectHelperDetails(ClassWriterProposed file, List<String> comObjectCalls,
+            String areaHelperObject, String serviceVar, ModelObjectType obj, boolean isEvent) throws IOException {
         String objNameCaps = obj.getName().toUpperCase();
         comObjectCalls.add(objNameCaps);
 
-        CompositeField _objNumberVar = generator.createCompositeElementsDetails(file, false, "_" + objNameCaps + "_OBJECT_NUMBER", TypeUtils.createTypeReference(null, null, "int", false), false, true, "Literal for object " + objNameCaps);
-        CompositeField objNumberVar = generator.createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT_NUMBER", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false), true, true, "Instance for object " + objNameCaps);
-        CompositeField objectNameVar = generator.createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT_NAME", TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false), true, true, "Object name constant.");
-        CompositeField objectTypeVar = generator.createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT_TYPE", TypeUtils.createTypeReference(StdStrings.COM, null, "ObjectType", false), true, true, "Object type constant.");
+        CompositeField _objNumberVar = generator.createCompositeElementsDetails(file, false, "_" + objNameCaps + "_OBJECT_NUMBER",
+                TypeUtils.createTypeReference(null, null, "int", false),
+                false, true, "Literal for object " + objNameCaps);
+        CompositeField objNumberVar = generator.createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT_NUMBER",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
+                true, true, "Instance for object " + objNameCaps);
+        CompositeField objectNameVar = generator.createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT_NAME",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false),
+                true, true, "Object name constant.");
+        CompositeField objectTypeVar = generator.createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT_TYPE",
+                TypeUtils.createTypeReference(StdStrings.COM, null, "ObjectType", false),
+                true, true, "Object type constant.");
 
-        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, _objNumberVar, false, String.valueOf(obj.getNumber()));
-        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objNumberVar, false, "(_" + objNameCaps + "_OBJECT_NUMBER)");
-        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objectNameVar, false, "(\"" + obj.getName() + "\")");
-        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objectTypeVar, false, "(" + areaHelperObject + "_NUMBER, " + serviceVar + "_SERVICE_NUMBER, " + areaHelperObject + "_VERSION, " + objNameCaps + "_OBJECT_NUMBER)");
+        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, _objNumberVar, false,
+                String.valueOf(obj.getNumber()));
+        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objNumberVar, false,
+                "(_" + objNameCaps + "_OBJECT_NUMBER)");
+        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objectNameVar, false,
+                "(\"" + obj.getName() + "\")");
+        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objectTypeVar, false,
+                "(" + areaHelperObject + "_NUMBER, " + serviceVar + "_SERVICE_NUMBER, " + areaHelperObject + "_VERSION, " + objNameCaps + "_OBJECT_NUMBER)");
 
         boolean hasRelated = null != obj.getRelatedObject();
         boolean hasSource = null != obj.getSourceObject();
@@ -233,9 +250,12 @@ public class JavaServiceInfo {
         String relatedShortForm = generator.getReferenceShortForm(file, obj.getRelatedObject());
         String sourceShortForm = generator.getReferenceShortForm(file, obj.getSourceObject());
 
-        CompositeField objectInstVar = generator.createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT", TypeUtils.createTypeReference(StdStrings.COM, null, "COMObject", false), false, true, "Object instance.");
+        CompositeField objectInstVar = generator.createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT",
+                TypeUtils.createTypeReference(StdStrings.COM, null, "COMObject", false),
+                false, true, "Object instance.");
         file.addClassVariableProposed(true, false, StdStrings.PUBLIC, objectInstVar, true,
-                "(" + objNameCaps + "_OBJECT_TYPE, " + objNameCaps + "_OBJECT_NAME, " + bodyShortForm + ", " + hasRelated + ", " + relatedShortForm + ", " + hasSource + ", " + sourceShortForm + ", " + isEvent + ")");
+                "(" + objNameCaps + "_OBJECT_TYPE, " + objNameCaps + "_OBJECT_NAME, " + bodyShortForm + ", "
+                + hasRelated + ", " + relatedShortForm + ", " + hasSource + ", " + sourceShortForm + ", " + isEvent + ")");
     }
 
     private List<String> generateOperationArgs(LanguageWriter file, OperationSummary op) {
