@@ -155,18 +155,18 @@ public class GeneratorJava extends GeneratorLangs {
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, publisherName,
                 createCompositeElementsDetails(file, false, "publisherSet",
                         TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false),
-                        false, true, "publisherSet The set of broker connections to use when registering and publishing."),
+                        false, true, "The set of broker connections to use when registering and publishing."),
                 false, null, "Creates an instance of this class using the supplied publisher set.", null);
         method.addLine("this.publisherSet = publisherSet");
         method.addMethodCloseStatement();
 
         CompositeField keyList = createCompositeElementsDetails(file, false, "keys",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true),
-                true, true, "keys The keys to use in the method");
+                true, true, "The keys to use in the method");
         CompositeField psListener = createCompositeElementsDetails(file, false, "listener",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublishInteractionListener", false),
                 false, true,
-                "listener The listener object to use for callback from the publisher");
+                "The listener object to use for callback from the publisher");
         List<CompositeField> argPSListenerList = new LinkedList<>();
         argPSListenerList.add(keyList);
         argPSListenerList.add(psListener);
@@ -191,7 +191,7 @@ public class GeneratorJava extends GeneratorLangs {
         List<CompositeField> argList = new LinkedList<>();
         argList.add(createCompositeElementsDetails(file, true, "updateHeaderList",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true,
-                "updateHeaderList The headers of the updates being added"));
+                "The headers of the updates being added"));
         argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes(), true));
 
         String argNameList = "";
@@ -357,7 +357,7 @@ public class GeneratorJava extends GeneratorLangs {
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, listName,
                 createCompositeElementsDetails(file, false, "initialCapacity",
                         TypeUtils.createTypeReference(null, null, "int", false),
-                        false, false, "initialCapacity the required initial capacity."),
+                        false, false, "The required initial capacity."),
                 true, null, "Constructor that initialises the capacity of the list.", null);
         method.addMethodCloseStatement();
 
@@ -373,10 +373,12 @@ public class GeneratorJava extends GeneratorLangs {
         method.addMethodCloseStatement();
 
         List<CompositeField> argList = new LinkedList<>();
-        argList.add(createCompositeElementsDetails(file, true, "element", srcType, true, true, "List element."));
+        argList.add(createCompositeElementsDetails(file, true, "element",
+                srcType, true, true, "List element."));
         TypeReference type = new TypeReference();
         type.setName("boolean");
-        CompositeField rtype = createCompositeElementsDetails(file, false, "element", type, false, true, "List element.");
+        CompositeField rtype = createCompositeElementsDetails(file, false, "element",
+                type, false, true, "List element.");
         method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
                 false, true, rtype, "add", argList, null,
                 "Adds an element to the list and checks if it is not null.", "The success status.", null);

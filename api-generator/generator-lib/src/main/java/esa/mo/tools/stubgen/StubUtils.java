@@ -157,7 +157,7 @@ public abstract class StubUtils {
             String ext) throws IOException {
         File file = new File(folder, name + "." + ext);
         file.createNewFile();
-        
+
         if (!file.exists()) {
             throw new IOException("Unable to create file: " + file.getPath());
         }
@@ -177,7 +177,7 @@ public abstract class StubUtils {
         String prefix = (parentFolder != null) ? parentFolder.getPath() + File.separator : "";
         File folder = new File(prefix + name.toLowerCase());
         folder.mkdirs();
-        
+
         if (!folder.exists()) {
             throw new FileNotFoundException("Failed to create directory: " + folder.getPath());
         }
@@ -278,7 +278,7 @@ public abstract class StubUtils {
      */
     public static List<CompositeField> concatenateArguments(CompositeField firstArg,
             List<CompositeField>... args) {
-        List<CompositeField> lst = new LinkedList<CompositeField>();
+        List<CompositeField> lst = new LinkedList<>();
         lst.add(firstArg);
 
         for (List<CompositeField> elem : args) {
@@ -300,8 +300,5 @@ public abstract class StubUtils {
         firstArg.addAll(Arrays.asList(args));
 
         return firstArg;
-    }
-
-    private StubUtils() {
     }
 }

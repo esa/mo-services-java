@@ -20,14 +20,18 @@
  */
 package esa.mo.tools.stubgen;
 
+import static esa.mo.tools.stubgen.GeneratorLangs.TRANSPORT_FOLDER;
+import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
+import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.ErrorDefinitionType;
 import esa.mo.xsd.ServiceType;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  *
@@ -84,14 +88,17 @@ public class JavaExceptions {
         method_1.addMethodCloseStatement();
 
         // Constructor with a String
-        /*
         ArrayList<CompositeField> args = new ArrayList<>();
-        args.add(new CompositeField(""));
+        CompositeField field = generator.createCompositeElementsDetails(file, false, "message",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "String", false),
+                false, true, "The message of the exception.");
+        args.add(field);
+
         MethodWriter method_2 = file.addConstructor(StdStrings.PUBLIC, className,
                 args, null, null, "Constructs a new " + className + " exception.", null);
         method_2.addLine("super(message)");
         method_2.addMethodCloseStatement();
-         */
+
         file.addClassCloseStatement();
         file.flush();
     }

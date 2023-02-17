@@ -303,7 +303,7 @@ public class GeneratorGwt extends GeneratorJava {
             method.addLine(createMethodCall("this.delegate = delegate"));
             method.addMethodCloseStatement();
         } else {
-//      CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "skeleton Not used in the inheritance pattern (the skeleton is 'this'");
+//      CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "Not used in the inheritance pattern (the skeleton is 'this'");
 //      MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "setSkeleton", Arrays.asList(skeletonName), null);
 //      method.addMethodStatement("// Not used in the inheritance pattern (the skeleton is 'this')");
 //      method.addMethodCloseStatement();
