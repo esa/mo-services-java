@@ -112,7 +112,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
         this.supportsToValue = supportsToValue;
         this.supportsAsync = supportsAsync;
         this.requiresDefaultConstructors = requiresDefaultConstructors;
-        this.supportPolymorphic = false;
     }
 
     @Override
@@ -339,24 +338,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     /**
-     * Does the generator need to support fully polymorphic types.
-     *
-     * @return the supportPolymorphic
-     */
-    public boolean isFullyPolymorphic() {
-        return supportPolymorphic;
-    }
-
-    /**
-     * Sets the support polymorphic value.
-     *
-     * @param supportPolymorphic the supportPolymorphic to set
-     */
-    public void setSupportFullyPolymorphicTypes(boolean supportPolymorphic) {
-        this.supportPolymorphic = supportPolymorphic;
-    }
-
-    /**
      * To be used by derived generators to add an entry to the reserved word
      * map.
      *
@@ -377,12 +358,16 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     getConfig().getAreaPackage(area.getName()).replace('.', '/'));
             final File areaFolder = StubUtils.createFolder(destinationFolder, area.getName());
 
-            // create a comment for the area folder if supported
+            // Create a comment for the area folder if supported
             createAreaFolderComment(areaFolder, area);
 
-            // create area helper
+            // Create Area Helper
             JavaHelpers helper = new JavaHelpers(this);
             helper.createAreaHelperClass(areaFolder, area);
+
+            // Create Area Exceptions
+            JavaExceptions exceptions = new JavaExceptions(this);
+            exceptions.createAreaExceptions(areaFolder, area);
 
             // if area level types exist
             if (generateStructures && (null != area.getDataTypes()) && !area.getDataTypes().getFundamentalOrAttributeOrComposite().isEmpty()) {
@@ -1536,8 +1521,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
             // contructor will look the same as the one with all arguments. So, 
             // same type signature and therefore that needs to be avoided.
             if (hasNonNullable && !allArgsNonNullable) {
-                MethodWriter method2 = file.addConstructor(StdStrings.PUBLIC, compName, argsNonNullable,
-                        superArgsNonNullable, null, "Constructor that initialises the non-nullable values of the structure.", null);
+                MethodWriter method2 = file.addConstructor(StdStrings.PUBLIC, compName,
+                        argsNonNullable, superArgsNonNullable, null,
+                        "Constructor that initialises the non-nullable values of the structure.", null);
 
                 for (CompositeField element : compElements) {
                     String ending = (!element.isCanBeNull()) ? element.getFieldName() : "null";
@@ -1664,7 +1650,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         for (CompositeField element : compElements) {
             boolean isAbstract = isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
-            if (isAbstract && !isFullyPolymorphic()) {
+            if (isAbstract) {
                 getLog().error("Type " + fqName + " has field " + element.getFieldName() + " that is an abstract type, this is not supported in the current configuration.");
             } else if (isAbstract && !element.isList()) {
                 method.addLine(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + "PolymorphicElement(" + element.getFieldName() + ")"));
@@ -1686,10 +1672,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         for (CompositeField element : compElements) {
             boolean isAbstract = isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
-            if (isAbstract && !isFullyPolymorphic()) {
+            if (isAbstract) {
                 // do nothing, already raised an error
             } else if (isAbstract && !element.isList()) {
-                method.addLine(element.getFieldName() + " = " + element.getDecodeCast() + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + "PolymorphicElement()"));
+                method.addLine(element.getFieldName() + " = " + element.getDecodeCast()
+                        + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + "PolymorphicElement()"));
             } else {
                 String castString = element.getDecodeCast();
                 if (castString.contains("AttributeList")) {
@@ -2057,7 +2044,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             }
             case INVOKE_OP:
             case PROGRESS_OP: {
-                if ((null != op.getAckTypes()) && (0 < op.getAckTypes().size())) {
+                if ((null != op.getAckTypes()) && (!op.getAckTypes().isEmpty())) {
                     return createReturnReference(createReturnType(file, area, service, op.getName(), "Ack", op.getAckTypes()));
                 }
                 break;

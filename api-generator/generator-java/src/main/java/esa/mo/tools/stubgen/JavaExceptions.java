@@ -45,19 +45,32 @@ public class JavaExceptions {
             ServiceType service, ServiceSummary summary) throws IOException {
         generator.getLog().info("Creating service Exceptions for service: " + service.getName());
 
-        for (ErrorDefinitionType error : summary.getService().getErrors().getError()) {
-            this.generateExceptions(serviceFolder, area, service, error);
+        if (summary.getService().getErrors() != null && summary.getService().getErrors().getError() != null) {
+            for (ErrorDefinitionType error : summary.getService().getErrors().getError()) {
+                this.generateException(serviceFolder, area, service, error);
+            }
         }
     }
 
-    public void generateExceptions(File serviceFolder, AreaType area,
+    public void createAreaExceptions(File areaFolder, AreaType area) throws IOException {
+        generator.getLog().info("Creating Area Exceptions for area: " + area.getName());
+
+        if (area.getErrors() != null && area.getErrors().getError() != null) {
+            for (ErrorDefinitionType error : area.getErrors().getError()) {
+                this.generateException(areaFolder, area, null, error);
+            }
+        }
+    }
+
+    public void generateException(File folder, AreaType area,
             ServiceType service, ErrorDefinitionType error) throws IOException {
-        generator.getLog().info("Creating service Exception: " + error.getName());
+        generator.getLog().info("Creating Exception: " + error.getName());
 
         // Needs to be converted to Camel case in the future!
-        String className = error.getName() + EXCEPTION;
+        String inCamelCase = convertToCamelCase(error.getName());
+        String className = inCamelCase + EXCEPTION;
 
-        ClassWriterProposed file = generator.createClassFile(serviceFolder, className);
+        ClassWriterProposed file = generator.createClassFile(folder, className);
         file.addPackageStatement(area, service, null);
 
         // Appends the class name
@@ -81,5 +94,23 @@ public class JavaExceptions {
          */
         file.addClassCloseStatement();
         file.flush();
+    }
+
+    private String convertToCamelCase(String text) {
+        // Is it all Upper Case?
+        if (text.equals(text.toUpperCase())) {
+            StringBuilder all = new StringBuilder();
+            // Split by underscore:
+            for (String part : text.split("_")) {
+                // Convert to Camel case:
+                StringBuilder camelCase = new StringBuilder(part.toLowerCase());
+                camelCase.setCharAt(0, part.charAt(0));
+                all.append(camelCase.toString());
+            }
+
+            return all.toString();
+        }
+
+        return text;
     }
 }

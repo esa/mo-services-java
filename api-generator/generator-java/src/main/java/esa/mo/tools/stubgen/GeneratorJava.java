@@ -96,7 +96,7 @@ public class GeneratorJava extends GeneratorLangs {
         super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
         setRequiresDefaultConstructors(Boolean.valueOf(extraProperties.get("java.requiresDefaultConstructors")));
-        setSupportFullyPolymorphicTypes(Boolean.valueOf(extraProperties.get("java.supportFullyPolymorphicTypes")));
+        //setSupportFullyPolymorphicTypes(Boolean.valueOf(extraProperties.get("java.supportFullyPolymorphicTypes")));
 
         addAttributeType(StdStrings.MAL, StdStrings.BLOB, false, "Blob", "");
         addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, true, "Boolean", "Boolean.FALSE");
@@ -272,7 +272,6 @@ public class GeneratorJava extends GeneratorLangs {
 
         TypeReference typeRef = TypeUtils.createTypeReference(area.getName(), (null == service) ? null : service.getName(), srcTypeName, false);
         TypeReference superTypeReference = getCompositeElementSuperType(typeRef);
-        String fqSrcTypeName = createElementType(file, area, service, srcTypeName);
 
         if (superTypeReference == null) {
             superTypeReference = new TypeReference();
@@ -446,7 +445,7 @@ public class GeneratorJava extends GeneratorLangs {
     @Override
     protected void createAreaFolderComment(File structureFolder, AreaType area) throws IOException {
         String cmt = area.getComment();
-        if (null == cmt) {
+        if (cmt == null) {
             cmt = "The " + area.getName() + " area.";
         }
 
@@ -578,7 +577,7 @@ public class GeneratorJava extends GeneratorLangs {
 
                 String newCall = null;
                 String encCall = null;
-                if (!isAbstract(elementType) || isFullyPolymorphic()) {
+                if (!isAbstract(elementType)) {
                     newCall = "new " + fqTypeName + "()";
                     encCall = StdStrings.ELEMENT;
                 }
