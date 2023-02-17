@@ -942,6 +942,30 @@
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
+                <smc:requestIP name="testInnerAbstractMultiReturn" number="133"
+                               supportInReplay="false"
+                               comment="This operation checks that multiple types with a not final abstract type can be sent and received explicitly">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type area="MAL" name="UOctet" />
+                            <smc:type area="MAL" name="Element" />
+                            <smc:type area="MAL" name="Element" />
+                            <smc:type area="MAL" name="UInteger" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type area="MAL" name="UOctet" />
+                            <smc:type area="MAL" name="Element" />
+                            <smc:type area="MAL" name="Element" />
+                            <smc:type area="MAL" name="UInteger" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype" service="DataTest"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
             </smc:capabilitySet>
             <smc:errors>
                 <smc:error name="DATA_ERROR" number="70001"
@@ -1554,6 +1578,25 @@
                 </smc:field>
                 <smc:field name="last_item" comment="Contained structure.">
                     <smc:type area="MALPrototype" name="TestBody" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="BasicAbstractComposite" shortFormPart="346" comment="A concrete composite example extending an Abstract composite.">
+                <smc:extends>
+                    <smc:type area="MALPrototype" name="AbstractComposite" />
+                </smc:extends>
+            </smc:composite>
+            <smc:composite name="StructureWithAbstractField" shortFormPart="347" comment="A concrete composite example extending an Abstract composite.">
+                <smc:extends>
+                    <smc:type area="MALPrototype" name="AbstractComposite" />
+                </smc:extends>
+                <smc:field name="abstract_item" comment="Contained abstract structure.">
+                    <smc:type area="MALPrototype" name="AbstractComposite" />
+                </smc:field>
+                <smc:field name="third_item" comment="Extra Boolean item.">
+                    <smc:type area="MAL" name="Boolean" />
+                </smc:field>
+                <smc:field name="fourth_item" comment="Example Integer item.">
+                    <smc:type area="MAL" name="Integer" />
                 </smc:field>
             </smc:composite>
         </smc:dataTypes>

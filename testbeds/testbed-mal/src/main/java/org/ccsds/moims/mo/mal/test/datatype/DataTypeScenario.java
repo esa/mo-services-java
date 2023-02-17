@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
+import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
@@ -417,14 +418,14 @@ public class DataTypeScenario extends LoggingBase {
             getDataTestStub().setTestDataOffset(54);
             TestExplicitMultiReturnResponse tv = getDataTestStub().testExplicitMultiReturn(
                     TestData.testUOctet, TestData.testUShort, TestData.testUInteger, TestData.testULong);
-            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement0(), 
-                    tv.getBodyElement0(), null, "explicit Multi return part 1");
-            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement1(), 
-                    tv.getBodyElement1(), rv, "explicit Multi return part 2");
-            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement2(), 
-                    tv.getBodyElement2(), rv, "explicit Multi return part 3");
-            rv = subMultiTest(TestData.testMultiReturnExplicit.getBodyElement3(), 
-                    tv.getBodyElement3(), rv, "explicit Multi return part 4");
+            rv = subMultiTest(TestData.testMultiReturnExplicit.get_UOctet0(), 
+                    tv.get_UOctet0(), null, "explicit Multi return part 1");
+            rv = subMultiTest(TestData.testMultiReturnExplicit.get_UShort1(), 
+                    tv.get_UShort1(), rv, "explicit Multi return part 2");
+            rv = subMultiTest(TestData.testMultiReturnExplicit.get_UInteger2(), 
+                    tv.get_UInteger2(), rv, "explicit Multi return part 3");
+            rv = subMultiTest(TestData.testMultiReturnExplicit.get_ULong3(), 
+                    tv.get_ULong3(), rv, "explicit Multi return part 4");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Multi return");
         }
@@ -440,18 +441,41 @@ public class DataTypeScenario extends LoggingBase {
         try {
             TestAbstractMultiReturnResponse tv = getDataTestStub().testAbstractMultiReturn(
                     TestData.testUOctet, TestData.testUShort, TestData.testUInteger, TestData.testULong);
-            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement0(), 
-                    tv.getBodyElement0(), null, "abstract Multi return part 1");
-            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement1(), 
-                    tv.getBodyElement1(), rv, "abstract Multi return part 2");
-            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement2(), 
-                    tv.getBodyElement2(), rv, "abstract Multi return part 3");
-            rv = subMultiTest(TestData.testMultiReturnAbstract.getBodyElement3(), 
-                    tv.getBodyElement3(), rv, "abstract Multi return part 4");
+            rv = subMultiTest(TestData.testMultiReturnAbstract.get_UOctet0(), 
+                    tv.get_UOctet0(), null, "abstract Multi return part 1");
+            rv = subMultiTest(TestData.testMultiReturnAbstract.get_UShort1(), 
+                    tv.get_UShort1(), rv, "abstract Multi return part 2");
+            rv = subMultiTest(TestData.testMultiReturnAbstract.get_UInteger2(), 
+                    tv.get_UInteger2(), rv, "abstract Multi return part 3");
+            rv = subMultiTest(TestData.testMultiReturnAbstract.get_Element3(), 
+                    tv.get_Element3(), rv, "abstract Multi return part 4");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "abstract Multi return");
         }
         logMessage("Finished abstract multi return data test");
+
+        return rv;
+    }
+
+    public String innerAbstractMultiReturnWorks() throws MALInteractionException, MALException {
+        String rv;
+
+        logMessage("Starting abstract multi return data test...");
+        try {
+            TestInnerAbstractMultiReturnResponse tv = getDataTestStub().testInnerAbstractMultiReturn(
+                    TestData.testUOctet, TestData.testULong, TestData.testUShort, TestData.testUInteger);
+            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_UOctet0(), 
+                    tv.get_UOctet0(), null, "inner abstract Multi return part 1");
+            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_Element1(), 
+                    tv.get_Element1(), rv, "inner abstract Multi return part 2");
+            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_Element2(), 
+                    tv.get_Element2(), rv, "inner abstract Multi return part 3");
+            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_UInteger3(), 
+                    tv.get_UInteger3(), rv, "inner abstract Multi return part 4");
+        } catch (MALInteractionException ex) {
+            rv = subSingleTestExceptionHandler(ex, "inner abstract Multi return");
+        }
+        logMessage("Finished inner abstract multi return data test");
 
         return rv;
     }
@@ -476,6 +500,14 @@ public class DataTypeScenario extends LoggingBase {
             rv = subSingleTestExceptionHandler(ex, "null Multi return");
         }
         logMessage("Finished multi return null data test");
+
+        return rv;
+    }
+
+    public String polymorphicTypesWork() throws MALInteractionException, MALException {
+        logMessage("Starting polymorphic types data test...");
+        String rv = subTest(TestData.testIndexes[6], TestData.testPolymorphicTypes);
+        logMessage("Finished polymorphic types data test");
 
         return rv;
     }

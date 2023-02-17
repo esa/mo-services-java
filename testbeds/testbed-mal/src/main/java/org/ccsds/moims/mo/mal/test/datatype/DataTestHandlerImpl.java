@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
+import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.provider.DataTestInheritanceSkeleton;
 import org.ccsds.moims.mo.malprototype.structures.TestPublish;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishList;
@@ -202,6 +203,19 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         _testDataValue(TestData.testUInteger, _UInteger2, "Abstract multi test part 3");
         _testDataValue(TestData.testULong, _Element3, "Abstract multi test part 4");
         return new TestAbstractMultiReturnResponse(_UOctet0, _UShort1, _UInteger2, _Element3);
+    }
+
+    public TestInnerAbstractMultiReturnResponse testInnerAbstractMultiReturn(UOctet _UOctet0,
+                                                                             Element _Element1,
+                                                                             Element _Element2,
+                                                                             UInteger _UInteger3,
+                                                                             MALInteraction interaction) throws MALInteractionException,
+                                                                                                         MALException {
+      _testDataValue(TestData.testUOctet, _UOctet0, "Abstract multi test part 1");
+      _testDataValue(TestData.testULong, _Element1, "Abstract multi test part 2");
+      _testDataValue(TestData.testUShort, _Element2, "Abstract multi test part 3");
+      _testDataValue(TestData.testUInteger, _UInteger3, "Abstract multi test part 4");
+      return new TestInnerAbstractMultiReturnResponse(_UOctet0, _Element1, _Element2, _UInteger3);
     }
 
     protected static void _testDataValue(Object testValue, Object rcvdValue, String exString) throws MALInteractionException {

@@ -25,11 +25,18 @@ import java.util.Vector;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
+import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.structures.TestPublish;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
+import org.ccsds.moims.mo.malprototype.structures.BasicAbstractComposite;
+import org.ccsds.moims.mo.malprototype.structures.TestBody;
+import org.ccsds.moims.mo.malprototype.structures.AbstractComposite;
+import org.ccsds.moims.mo.malprototype.structures.ComplexStructure;
+import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractField;
+import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractFieldList;
 
 /**
  *
@@ -68,14 +75,28 @@ public abstract class TestData {
     public static final Vector testAbstracts = new Vector();
     public static final Vector testNulls = new Vector();
     public static final Vector testCompositeWithNulls = new Vector();
+    public static final Vector testPolymorphicTypes = new Vector();
 
     public static final TestExplicitMultiReturnResponse testMultiReturnExplicit = new TestExplicitMultiReturnResponse(testUOctet, testUShort, testUInteger, testULong);
     public static final TestAbstractMultiReturnResponse testMultiReturnAbstract = new TestAbstractMultiReturnResponse(testUOctet, testUShort, testUInteger, testULong);
+    public static final TestInnerAbstractMultiReturnResponse testMultiReturnInnerAbstract = new TestInnerAbstractMultiReturnResponse(testUOctet, testULong, testUShort, testUInteger);
     public static final TestExplicitMultiReturnResponse testMultiReturnNull = new TestExplicitMultiReturnResponse(testUOctet, testUShort, testUInteger, null);
 
+    public static final TestBody testBody = new TestBody(testString, testInteger);
+    public static final ComplexStructure testComplexStructure = new ComplexStructure(testString, testInteger, testBoolean, testInteger, testBody);
+    public static final BasicAbstractComposite testBasicAbstractComposite = new BasicAbstractComposite(testString, testInteger);
+    public static final StructureWithAbstractField testStructureWithAbstractField0 = new StructureWithAbstractField(testString, testInteger, testBasicAbstractComposite, testBoolean, testInteger);
+    public static final StructureWithAbstractField testStructureWithAbstractField1 = new StructureWithAbstractField(testString, testInteger, testComplexStructure, testBoolean, testInteger);
+    public static final StructureWithAbstractField testStructureWithAbstractField2 = new StructureWithAbstractField(testString, testInteger, testStructureWithAbstractField0, testBoolean, testInteger);
+    public static final StructureWithAbstractField testStructureWithAbstractField3 = new StructureWithAbstractField(testString, testInteger, testStructureWithAbstractField1, testBoolean, testInteger);
+    public static final StructureWithAbstractFieldList testStructureWithAbstractFieldSingleTypedList1 = new StructureWithAbstractFieldList();
+    public static final StructureWithAbstractFieldList testStructureWithAbstractFieldSingleTypedList2 = new StructureWithAbstractFieldList();
+    public static final StructureWithAbstractFieldList testStructureWithAbstractFieldMultipleTypedList = new StructureWithAbstractFieldList();
+    
     public static final int[] testIndexes;
 
     static {
+      
         // attribute types
         testAttributes.add(testObjectRef);
         testAttributes.add(testDuration);
@@ -139,6 +160,26 @@ public abstract class TestData {
         // composites with null
         testCompositeWithNulls.add(new Pair(null, testURI));
 
+        // Polymorphic composites and lists
+        testStructureWithAbstractFieldSingleTypedList1.add(testStructureWithAbstractField0);
+        testStructureWithAbstractFieldSingleTypedList1.add(testStructureWithAbstractField0);
+        testStructureWithAbstractFieldSingleTypedList1.add(testStructureWithAbstractField0);
+        testStructureWithAbstractFieldSingleTypedList2.add(testStructureWithAbstractField0);
+        testStructureWithAbstractFieldSingleTypedList2.add(testStructureWithAbstractField1);
+        testStructureWithAbstractFieldSingleTypedList2.add(testStructureWithAbstractField2);
+        testStructureWithAbstractFieldSingleTypedList2.add(testStructureWithAbstractField3);
+        
+        testPolymorphicTypes.add(testBody);
+        testPolymorphicTypes.add(testComplexStructure);
+        testPolymorphicTypes.add(testBasicAbstractComposite);
+        testPolymorphicTypes.add(testStructureWithAbstractField0);
+        testPolymorphicTypes.add(testStructureWithAbstractField1);
+        testPolymorphicTypes.add(testStructureWithAbstractField2);
+        testPolymorphicTypes.add(testStructureWithAbstractField3);
+        testPolymorphicTypes.add(testStructureWithAbstractFieldSingleTypedList1);
+        testPolymorphicTypes.add(testStructureWithAbstractFieldSingleTypedList2);
+        testPolymorphicTypes.add(testStructureWithAbstractFieldMultipleTypedList);
+        
         // concatenate all together for simplicity in service provider
         testAll.addAll(testAttributes);
         testAll.addAll(testEnumerations);
@@ -146,14 +187,16 @@ public abstract class TestData {
         testAll.addAll(testAbstracts);
         testAll.addAll(testNulls);
         testAll.addAll(testCompositeWithNulls);
+        testAll.addAll(testPolymorphicTypes);
 
         // calculate the test indexes
-        testIndexes = new int[6];
+        testIndexes = new int[7];
         testIndexes[0] = 0;
         testIndexes[1] = testIndexes[0] + testAttributes.size();
         testIndexes[2] = testIndexes[1] + testEnumerations.size();
         testIndexes[3] = testIndexes[2] + testComposites.size();
         testIndexes[4] = testIndexes[3] + testAbstracts.size();
         testIndexes[5] = testIndexes[4] + testNulls.size();
+        testIndexes[6] = testIndexes[5] + testCompositeWithNulls.size();
     }
 }
