@@ -79,7 +79,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     public void sendMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
             MALInteraction interaction) throws MALInteractionException, MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
     public void testSubmit(IPTestDefinition _IPTestDefinition, MALInteraction interaction) throws MALInteractionException {
@@ -206,11 +206,13 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
     }
 
-    public void invokeMulti(IPTestDefinition _IPTestDefinition0, Element _Element1, InvokeMultiInteraction interaction) throws MALInteractionException, MALException {
+    public void invokeMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
+            InvokeMultiInteraction interaction) throws MALInteractionException, MALException {
         invoke(_IPTestDefinition0, new InvokeMultiToInvokeInteractionMapper(interaction));
     }
 
-    public void testInvokeEmptyBody(IPTestDefinition _IPTestDefinition, TestInvokeEmptyBodyInteraction interaction) throws MALInteractionException, MALException {
+    public void testInvokeEmptyBody(IPTestDefinition _IPTestDefinition,
+            TestInvokeEmptyBodyInteraction interaction) throws MALInteractionException, MALException {
         invoke(_IPTestDefinition, new InvokeEmptyToInvokeInteractionMapper(interaction));
     }
 
@@ -753,8 +755,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     + transmitMultipleRequestCount + " == 1", (transmitMultipleRequestCount == 1)));
             if (transmitMultipleRequestCount != 0) {
                 MALMessage[] messages = TransportInterceptor.instance().getLastSentMessages();
-                assertions.add(new Assertion("TestMultipleNotify", "TransmitMultiple last sent messages not null", (messages != null)));
-                assertions.add(new Assertion("TestMultipleNotify", "TransmitMultiple last sent messages count "
+                assertions.add(new Assertion("TestMultipleNotify",
+                        "TransmitMultiple last sent messages not null", (messages != null)));
+                assertions.add(new Assertion("TestMultipleNotify",
+                        "TransmitMultiple last sent messages count "
                         + messages.length + " == 2", (messages.length == 2)));
             }
 

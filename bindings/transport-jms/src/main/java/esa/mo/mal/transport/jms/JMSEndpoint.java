@@ -198,7 +198,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
                         break;
                     }
                     default: {
-                        throw new UnsupportedOperationException(
+                        throw new java.lang.UnsupportedOperationException(
                                 "JMS should not be sending this PubSub message stage.: "
                                 + msg.getHeader().getInteractionStage().getValue());
                     }

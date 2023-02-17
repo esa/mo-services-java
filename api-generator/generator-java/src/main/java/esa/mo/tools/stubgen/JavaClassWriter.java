@@ -26,8 +26,6 @@ import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.writers.AbstractLanguageWriter;
-import static esa.mo.tools.stubgen.writers.AbstractLanguageWriter.normaliseComment;
-import static esa.mo.tools.stubgen.writers.AbstractLanguageWriter.normaliseComments;
 import esa.mo.tools.stubgen.writers.InterfaceWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
@@ -302,37 +300,17 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
             boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args,
             String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException {
-        List<String> comments = normaliseArgComments(comment, returnComment, args, throwsComment);
-        addMultilineComment(1, false, comments, false);
-
-        String nStatic = (isStatic) ? "static " : "";
-        String nFinal = (isFinal) ? "final " : "";
-
-        String srtype = createLocalType(rtype);
-        String argString = processArgs(args, true);
-
-        StringBuilder methodSignature = new StringBuilder();
-        methodSignature.append(scope).append(" ").append(nStatic);
-        methodSignature.append(nFinal).append(srtype).append(" ").append(methodName);
-        methodSignature.append("(").append(argString).append(")");
-
-        if (null != throwsSpec) {
-            methodSignature.append(" throws ");
-            methodSignature.append(throwsSpec);
-        }
-
-        methodSignature.append(" {");
-        file.append(makeLine(1, methodSignature.toString(), false));
-
-        return this;
+        return addMethodOpenStatement(isFinal, isVirtual, isConst, isStatic, scope,
+                isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec,
+                comment, returnComment, throwsComment, false);
     }
 
     @Override
     public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
             boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
-            boolean isReturnActual, CompositeField rtype, String methodName,
-            List<CompositeField> args, String throwsSpec, String comment, String returnComment,
-            List<String> throwsComment, boolean isDeprecated) throws IOException {
+            boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args,
+            String throwsSpec, String comment, String returnComment, List<String> throwsComment,
+            boolean isDeprecated) throws IOException {
         List<String> comments = normaliseArgComments(comment, returnComment, args, throwsComment);
         addMultilineComment(1, false, comments, false);
 
@@ -345,11 +323,13 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         String srtype = createLocalType(rtype);
         String argString = processArgs(args, true);
 
-        StringBuilder methodSignature = new StringBuilder(scope + " " + nStatic + nFinal + srtype + " " + methodName + "(" + argString + ")");
+        StringBuilder methodSignature = new StringBuilder();
+        methodSignature.append(scope).append(" ").append(nStatic);
+        methodSignature.append(nFinal).append(srtype).append(" ").append(methodName);
+        methodSignature.append("(").append(argString).append(")");
 
         if (null != throwsSpec) {
-            methodSignature.append(" throws ");
-            methodSignature.append(throwsSpec);
+            methodSignature.append(" throws ").append(throwsSpec);
         }
 
         methodSignature.append(" {");
@@ -367,12 +347,12 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         } else {
             packageName += generator.getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase();
 
-            if (null != service) {
+            if (service != null) {
                 packageName += "." + service.getName().toLowerCase();
             }
         }
 
-        if (null != extraPackage) {
+        if (extraPackage != null) {
             if (0 < packageName.length()) {
                 packageName += ".";
             }
@@ -477,7 +457,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                     comment = comment.replaceAll("<", "_");
                     comment = comment.replaceAll(">", "_");
                 }
-                comment = comment.replace("\n", " * \n");
+                // comment = comment.replace("\n", "\n     * ");
                 file.append(makeLine(tabCount, " * " + comment, false));
             }
             file.append(makeLine(tabCount, " */", false));
@@ -560,45 +540,4 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         return StdStrings.VOID;
     }
 
-//    private String createLocalType(String type)
-//    {
-//      if (null != type)
-//      {
-//        String head = "";
-//        String tail = "";
-//
-//        if (type.startsWith("new "))
-//        {
-//          head = "new ";
-//          int tindex = type.indexOf('(');
-//
-//          if (tindex == -1)
-//          {
-//            tindex = type.indexOf('[');
-//          }
-//
-//          tail = type.substring(tindex);
-//          type = type.substring(4, type.length() - tail.length());
-//        }
-//
-//        if (isNativeType(type))
-//        {
-//          NativeTypeDetails dets = getNativeType(type);
-//
-//          type = dets.getLanguageTypeName();
-//        }
-//        else
-//        {
-//          AttributeTypeDetails dets = getAttributeDetails(type);
-//          if (null != dets)
-//          {
-//            type = dets.getTargetType();
-//          }
-//        }
-//
-//        return head + type + tail;
-//      }
-//
-//      return type;
-//    }
 }
