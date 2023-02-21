@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal.encoding;
 
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
@@ -387,6 +388,21 @@ public abstract class Decoder implements MALDecoder {
     public Element decodeNullableElement(final Element element) throws MALException {
         if (sourceBuffer.readIsNotNull()) {
             return element.decode(this);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Element decodeNullableAbstractElement() throws MALException {
+        if (sourceBuffer.readIsNotNull()) {
+            Long sfp = decodeLong();
+            try {
+                Element type = MALContextFactory.getElementsRegistry().createElement(sfp);
+                return type.decode(this);
+            } catch (Exception ex) {
+                throw new MALException("The Element could not be created!", ex);
+            }
         }
 
         return null;

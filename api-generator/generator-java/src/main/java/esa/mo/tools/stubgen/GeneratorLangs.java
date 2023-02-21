@@ -1712,7 +1712,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (CompositeField element : compElements) {
             boolean isAbstract = isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
             if (isAbstract) {
-                getLog().error("Type " + fqName + " has field " + element.getFieldName() + " that is an abstract type, this is not supported in the current configuration.");
+                method.addLine(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + "AbstractElement(" + element.getFieldName() + ")"));
             } else if (isAbstract && !element.isList()) {
                 method.addLine(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + "PolymorphicElement(" + element.getFieldName() + ")"));
             } else {
@@ -1733,13 +1733,16 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         for (CompositeField element : compElements) {
             boolean isAbstract = isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
+            String castString = element.getDecodeCast();
+
             if (isAbstract) {
+                method.addLine(element.getFieldName() + " = " + castString
+                        + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + "AbstractElement()"));
                 // do nothing, already raised an error
             } else if (isAbstract && !element.isList()) {
                 method.addLine(element.getFieldName() + " = " + element.getDecodeCast()
                         + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + "PolymorphicElement()"));
             } else {
-                String castString = element.getDecodeCast();
                 if (castString.contains("AttributeList")) {
                     // This is when the Element is set as the abstract AttributeList type
                     String attNew = "new org.ccsds.moims.mo.mal.structures.AttributeList()";

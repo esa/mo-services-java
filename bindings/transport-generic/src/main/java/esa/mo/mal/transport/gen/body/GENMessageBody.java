@@ -408,7 +408,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
             GENTransport.LOGGER.fine("GEN Message decoded body");
         } catch (MALException ex) {
             GENTransport.LOGGER.log(Level.WARNING,
-                    "GEN Message body ERROR on decode : {0}", ex);
+                    "Unable to decode the Message Body!", ex);
             throw ex;
         }
     }

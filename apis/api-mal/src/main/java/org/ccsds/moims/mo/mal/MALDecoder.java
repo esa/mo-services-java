@@ -353,6 +353,15 @@ public interface MALDecoder {
     Element decodeNullableElement(Element element) throws java.lang.IllegalArgumentException, MALException;
 
     /**
+     * Decodes an Element that may be null.
+     *
+     * @return The decoded Element or null.
+     * @throws IllegalArgumentException If the argument is null.
+     * @throws MALException If an error detected during decoding.
+     */
+    Element decodeNullableAbstractElement() throws java.lang.IllegalArgumentException, MALException;
+
+    /**
      * Decodes an Attribute.
      *
      * @return The decoded Attribute.

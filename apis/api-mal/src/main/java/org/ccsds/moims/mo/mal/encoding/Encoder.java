@@ -486,7 +486,7 @@ public abstract class Encoder implements MALListEncoder {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
     }
-    
+
     @Override
     public void encodeObjectRef(final ObjectRef value) throws IllegalArgumentException, MALException {
         try {
@@ -563,7 +563,7 @@ public abstract class Encoder implements MALListEncoder {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
     }
-    
+
     @Override
     public void encodeElement(final Element value) throws MALException {
         checkForNull(value);
@@ -575,6 +575,21 @@ public abstract class Encoder implements MALListEncoder {
         try {
             if (value != null) {
                 outputStream.writeNotNull();
+                value.encode(this);
+            } else {
+                outputStream.writeIsNull();
+            }
+        } catch (IOException ex) {
+            throw new MALException(ENCODING_EXCEPTION_STR, ex);
+        }
+    }
+
+    @Override
+    public void encodeNullableAbstractElement(final Element value) throws MALException {
+        try {
+            if (value != null) {
+                outputStream.writeNotNull();
+                encodeLong(value.getShortForm());
                 value.encode(this);
             } else {
                 outputStream.writeIsNull();
