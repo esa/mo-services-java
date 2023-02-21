@@ -394,6 +394,17 @@ public abstract class Decoder implements MALDecoder {
     }
 
     @Override
+    public Element decodeAbstractElement() throws MALException {
+        Long sfp = decodeLong();
+        try {
+            Element type = MALContextFactory.getElementsRegistry().createElement(sfp);
+            return type.decode(this);
+        } catch (Exception ex) {
+            throw new MALException("The Element could not be created!", ex);
+        }
+    }
+
+    @Override
     public Element decodeNullableAbstractElement() throws MALException {
         if (sourceBuffer.readIsNotNull()) {
             Long sfp = decodeLong();

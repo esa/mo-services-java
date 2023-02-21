@@ -592,6 +592,20 @@ public class LineDecoder implements MALDecoder {
     }
 
     @Override
+    public Element decodeAbstractElement() throws IllegalArgumentException, MALException {
+        String sfpString = removeFirst();
+        Long sfp = internalDecodeLong(sfpString);
+        pushBack(sfpString);
+
+        try {
+            Element type = MALContextFactory.getElementsRegistry().createElement(sfp);
+            return type.decode(this);
+        } catch (Exception ex) {
+            throw new MALException("The Element could not be created!", ex);
+        }
+    }
+
+    @Override
     public Element decodeNullableAbstractElement() throws IllegalArgumentException, MALException {
         final String strVal = removeFirst();
 

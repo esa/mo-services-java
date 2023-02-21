@@ -585,6 +585,12 @@ public abstract class Encoder implements MALListEncoder {
     }
 
     @Override
+    public void encodeAbstractElement(final Element value) throws MALException {
+        encodeLong(value.getShortForm());
+        value.encode(this);
+    }
+
+    @Override
     public void encodeNullableAbstractElement(final Element value) throws MALException {
         try {
             if (value != null) {

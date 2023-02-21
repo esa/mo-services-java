@@ -369,6 +369,14 @@ public interface MALEncoder {
     void encodeNullableElement(Element element) throws MALException;
 
     /**
+     * Encodes an Abstract Element.
+     *
+     * @param element The Element to encode.
+     * @throws MALException If an error detected during encoding.
+     */
+    public void encodeAbstractElement(final Element element) throws MALException;
+
+    /**
      * Encodes an Abstract Element that may be null.
      *
      * @param element The Element to encode.
