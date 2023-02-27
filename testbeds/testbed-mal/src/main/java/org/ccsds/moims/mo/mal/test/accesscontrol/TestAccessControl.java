@@ -107,8 +107,8 @@ public class TestAccessControl extends LoggingBase implements MALAccessControl {
             }
 
             if ((null != authId) && (0 < authId.length)) {
-                // The assumption here is that the authId is a byte representation of a UTF16 char string, so need to swap 16bit
-                //   values
+                // The assumption here is that the authId is a byte representation
+                // of a UTF16 char string, so need to swap 16 bit values
                 byte[] nauthId = new byte[authId.length];
 
                 final int count = (nauthId.length) - 1;
@@ -117,7 +117,6 @@ public class TestAccessControl extends LoggingBase implements MALAccessControl {
                 }
 
                 logMessage("Swapping authentication from " + new String(authId) + " to " + new String(nauthId));
-
                 msg.getHeader().setAuthenticationId(new Blob(nauthId));
             }
         }

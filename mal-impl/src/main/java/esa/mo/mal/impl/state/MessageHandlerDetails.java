@@ -34,27 +34,40 @@ public final class MessageHandlerDetails {
     private final MALMessage message;
     private final boolean needToReturnAnException;
 
-    protected MessageHandlerDetails(boolean isAckStage, MALMessage msg) {
+    /**
+     * Creates a Message Handler for a non-error message.
+     *
+     * @param isAckStage If it is a ack stage.
+     * @param msg The MAL message.
+     */
+    public MessageHandlerDetails(boolean isAckStage, MALMessage msg) {
         this.ackStage = isAckStage;
         this.message = msg;
         this.needToReturnAnException = false;
     }
 
-    protected MessageHandlerDetails(boolean isAckStage, MALMessage src, UInteger errNum) {
+    /**
+     * Creates a Message Handler for an error message.
+     *
+     * @param isAckStage If it is a ack stage.
+     * @param msg The MAL message.
+     * @param errNum The error number.
+     */
+    public MessageHandlerDetails(boolean isAckStage, MALMessage msg, UInteger errNum) {
         this.ackStage = isAckStage;
-        src.getHeader().setIsErrorMessage(true);
+        msg.getHeader().setIsErrorMessage(true);
         this.message = new DummyMessage(
-                src.getHeader(),
+                msg.getHeader(),
                 new DummyErrorBody(new MALStandardError(errNum, null)),
-                src.getQoSProperties());
+                msg.getQoSProperties());
         this.needToReturnAnException = true;
     }
 
-    protected boolean isAckStage() {
+    public boolean isAckStage() {
         return ackStage;
     }
 
-    protected MALMessage getMessage() {
+    public MALMessage getMessage() {
         return message;
     }
 

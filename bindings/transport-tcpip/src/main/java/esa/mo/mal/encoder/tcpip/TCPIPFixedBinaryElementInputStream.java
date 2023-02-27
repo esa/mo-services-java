@@ -33,6 +33,10 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementInputStream;
 import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
 
 /**
  * Manage the decoding of an incoming TCPIP Message. Separate decoders are used
@@ -84,22 +88,21 @@ public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputS
                     + "Must be instance of TCPIPMessageHeader");
         }
 
-        TCPIPMessageHeader header = (TCPIPMessageHeader) element;
+        TCPIPMessageHeader headersrc = (TCPIPMessageHeader) element;
 
         short versionAndSDU = dec.decodeUOctet().getValue();
-        header.versionNumber = (versionAndSDU >> 0x5);
         short sduType = (short) (versionAndSDU & 0x1f);
-        header.setServiceArea(new UShort(dec.decodeShort()));
-        header.setService(new UShort(dec.decodeShort()));
-        header.setOperation(new UShort(dec.decodeShort()));
-        header.setAreaVersion(dec.decodeUOctet());
+
+        UShort serviceArea = new UShort(dec.decodeShort());
+        UShort service = new UShort(dec.decodeShort());
+        UShort operation = new UShort(dec.decodeShort());
+        UOctet serviceVersion = dec.decodeUOctet();
 
         short parts = dec.decodeUOctet().getValue();
-        header.setIsErrorMessage((((parts & 0x80) >> 7) == 0x1));
-        header.setQoSlevel(QoSLevel.fromOrdinal(((parts & 0x70) >> 4)));
-        header.setSession(SessionType.fromOrdinal(parts & 0xF));
+        Boolean isErrorMessage = (((parts & 0x80) >> 7) == 0x1);
+        QoSLevel qosLevel = QoSLevel.fromOrdinal(((parts & 0x70) >> 4));
+        SessionType session = SessionType.fromOrdinal(parts & 0xF);
         Long transactionId = ((TCPIPFixedBinaryDecoder) dec).decodeMALLong();
-        header.setTransactionId(transactionId);
 
         short flags = dec.decodeUOctet().getValue(); // flags
         boolean sourceIdFlag = (((flags & 0x80) >> 7) == 0x1);
@@ -111,54 +114,50 @@ public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputS
         boolean domainFlag = (((flags & 0x2) >> 1) == 0x1);
         boolean authenticationIdFlag = ((flags & 0x1) == 0x1);
 
-        header.setEncodingId(dec.decodeUOctet().getValue());
+        short encodingId = dec.decodeUOctet().getValue();
         int bodyLength = (int) dec.decodeInteger();
-        header.setBodyLength(bodyLength);
+        URI uriFrom = headersrc.getURIFrom();
+        URI uriTo = headersrc.getURITo();
 
         if (sourceIdFlag) {
             String sourceId = dec.decodeString();
             if (isURI(sourceId)) {
-                header.setURIFrom(new URI(sourceId));
+                uriFrom = new URI(sourceId);
             } else {
-                String from = header.getURIFrom() + sourceId;
-                header.setURIFrom(new URI(from));
+                String from = headersrc.getURIFrom() + sourceId;
+                uriFrom = new URI(from);
             }
         }
         if (destinationIdFlag) {
             String destinationId = dec.decodeString();
             if (isURI(destinationId)) {
-                header.setURITo(new URI(destinationId));
+                uriTo = new URI(destinationId);
             } else {
-                String to = header.getURITo() + destinationId;
-                header.setURITo(new URI(to));
+                String to = headersrc.getURITo() + destinationId;
+                uriTo = new URI(to);
             }
         }
-        if (priorityFlag) {
-            header.setPriority(dec.decodeUInteger());
-        }
-        if (timestampFlag) {
-            header.setTimestamp(dec.decodeTime());
-        }
-        if (networkZoneFlag) {
-            header.setNetworkZone(dec.decodeIdentifier());
-        }
-        if (sessionNameFlag) {
-            header.setSessionName(dec.decodeIdentifier());
-        }
-        if (domainFlag) {
-            IdentifierList list = (IdentifierList) new IdentifierList().decode(dec);
-            header.setDomain(list);
-        }
-        if (authenticationIdFlag) {
-            header.setAuthenticationId(dec.decodeBlob());
-        } else {
-            header.setAuthenticationId(new Blob());
-        }
+
+        UInteger priority = (priorityFlag) ? dec.decodeUInteger() : headersrc.getPriority();
+        Time timestamp = (timestampFlag) ? dec.decodeTime() : headersrc.getTimestamp();
+        Identifier networkZone = (networkZoneFlag) ? dec.decodeIdentifier() : headersrc.getNetworkZone();
+        Identifier sessionName = (sessionNameFlag) ? dec.decodeIdentifier() : headersrc.getSessionName();
+        IdentifierList domain = (domainFlag) ? (IdentifierList) new IdentifierList().decode(dec) : headersrc.getDomain();
+        Blob authenticationId = (authenticationIdFlag) ? dec.decodeBlob() : new Blob();
+
+        TCPIPMessageHeader header = new TCPIPMessageHeader(uriFrom, headersrc.getServiceFrom(),
+                authenticationId, uriTo, headersrc.getServiceTo(), timestamp,
+                qosLevel, priority, domain, networkZone, session, sessionName,
+                null, null, transactionId, serviceArea,
+                service, operation, serviceVersion, isErrorMessage);
 
         header.setInteractionType(sduType);
         header.setInteractionStage(sduType);
+        header.setEncodingId(encodingId);
+        header.setBodyLength(bodyLength);
 
         header.decodedHeaderBytes = ((TCPIPFixedBinaryDecoder) dec).getBufferOffset();
+        header.versionNumber = (versionAndSDU >> 0x5);
 
         // debug information
         /*

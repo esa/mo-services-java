@@ -79,21 +79,26 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder {
     @Override
     public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
         // build header
-        GENMessageHeader hdr = new GENMessageHeader();
-        hdr.setURITo(uri);
-        hdr.setTimestamp(new Time(new java.util.Date().getTime()));
-        hdr.setInteractionType(InteractionType.PUBSUB);
-        hdr.setInteractionStage(MALPubSubOperation.NOTIFY_STAGE);
-        hdr.setAreaVersion(version);
-        hdr.setIsErrorMessage(false);
-        hdr.setURIFrom(URIFrom);
-        hdr.setAuthenticationId(new Blob(JMSTransport.authId));
-        hdr.setQoSlevel(level);
-        hdr.setPriority(priority);
-        hdr.setNetworkZone(networkZone);
-        hdr.setSession(session);
-        hdr.setSessionName(sessionName);
-        hdr.setTransactionId(transactionId);
+        GENMessageHeader hdr = new GENMessageHeader(
+                URIFrom,
+                new Blob(JMSTransport.authId),
+                uri,
+                Time.now(),
+                level,
+                priority,
+                null,
+                networkZone,
+                session,
+                sessionName,
+                InteractionType.PUBSUB,
+                MALPubSubOperation.NOTIFY_STAGE,
+                transactionId,
+                null,
+                null,
+                null,
+                version,
+                false);
+
         try {
             byte[] data = jmsUpdate.getDat();
             ByteArrayInputStream baos = new ByteArrayInputStream(data);

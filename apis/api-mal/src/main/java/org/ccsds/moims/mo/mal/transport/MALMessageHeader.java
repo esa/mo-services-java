@@ -65,25 +65,11 @@ public interface MALMessageHeader {
     org.ccsds.moims.mo.mal.structures.URI getURITo();
 
     /**
-     * Sets the field URIto.
-     *
-     * @param newValue The new value to set.
-     */
-    void setURITo(org.ccsds.moims.mo.mal.structures.URI newValue);
-
-    /**
      * Returns the field timestamp.
      *
      * @return the field timestamp.
      */
     org.ccsds.moims.mo.mal.structures.Time getTimestamp();
-
-    /**
-     * Sets the field timestamp.
-     *
-     * @param newValue The new value to set.
-     */
-    void setTimestamp(org.ccsds.moims.mo.mal.structures.Time newValue);
 
     /**
      * Returns the field QoSlevel.
@@ -107,25 +93,11 @@ public interface MALMessageHeader {
     UInteger getPriority();
 
     /**
-     * Sets the field priority.
-     *
-     * @param newValue The new value to set.
-     */
-    void setPriority(UInteger newValue);
-
-    /**
      * Returns the field domain.
      *
      * @return the field domain.
      */
     org.ccsds.moims.mo.mal.structures.IdentifierList getDomain();
-
-    /**
-     * Sets the field domain.
-     *
-     * @param newValue The new value to set.
-     */
-    void setDomain(org.ccsds.moims.mo.mal.structures.IdentifierList newValue);
 
     /**
      * Returns the field networkZone.
@@ -135,25 +107,11 @@ public interface MALMessageHeader {
     org.ccsds.moims.mo.mal.structures.Identifier getNetworkZone();
 
     /**
-     * Sets the field networkZone.
-     *
-     * @param newValue The new value to set.
-     */
-    void setNetworkZone(org.ccsds.moims.mo.mal.structures.Identifier newValue);
-
-    /**
      * Returns the field session.
      *
      * @return the field session.
      */
     org.ccsds.moims.mo.mal.structures.SessionType getSession();
-
-    /**
-     * Sets the field session.
-     *
-     * @param newValue The new value to set.
-     */
-    void setSession(org.ccsds.moims.mo.mal.structures.SessionType newValue);
 
     /**
      * Returns the field sessionName.
@@ -163,25 +121,11 @@ public interface MALMessageHeader {
     org.ccsds.moims.mo.mal.structures.Identifier getSessionName();
 
     /**
-     * Sets the field sessionName.
-     *
-     * @param newValue The new value to set.
-     */
-    void setSessionName(org.ccsds.moims.mo.mal.structures.Identifier newValue);
-
-    /**
      * Returns the field interactionType.
      *
      * @return the field interactionType.
      */
     org.ccsds.moims.mo.mal.structures.InteractionType getInteractionType();
-
-    /**
-     * Sets the field interactionType.
-     *
-     * @param newValue The new value to set.
-     */
-    void setInteractionType(org.ccsds.moims.mo.mal.structures.InteractionType newValue);
 
     /**
      * Returns the field interactionStage.
@@ -191,25 +135,11 @@ public interface MALMessageHeader {
     UOctet getInteractionStage();
 
     /**
-     * Sets the field interactionStage.
-     *
-     * @param newValue The new value to set.
-     */
-    void setInteractionStage(UOctet newValue);
-
-    /**
      * Returns the field transactionId.
      *
      * @return the field transactionId.
      */
     Long getTransactionId();
-
-    /**
-     * Sets the field transactionId.
-     *
-     * @param newValue The new value to set.
-     */
-    void setTransactionId(Long newValue);
 
     /**
      * Returns the field area.
@@ -219,25 +149,11 @@ public interface MALMessageHeader {
     org.ccsds.moims.mo.mal.structures.UShort getServiceArea();
 
     /**
-     * Sets the field area.
-     *
-     * @param newValue The new value to set.
-     */
-    void setServiceArea(org.ccsds.moims.mo.mal.structures.UShort newValue);
-
-    /**
      * Returns the field service.
      *
      * @return the field service.
      */
     org.ccsds.moims.mo.mal.structures.UShort getService();
-
-    /**
-     * Sets the field service.
-     *
-     * @param newValue The new value to set.
-     */
-    void setService(org.ccsds.moims.mo.mal.structures.UShort newValue);
 
     /**
      * Returns the field operation.
@@ -247,25 +163,11 @@ public interface MALMessageHeader {
     org.ccsds.moims.mo.mal.structures.UShort getOperation();
 
     /**
-     * Sets the field operation.
-     *
-     * @param newValue The new value to set.
-     */
-    void setOperation(org.ccsds.moims.mo.mal.structures.UShort newValue);
-
-    /**
      * Returns the field version.
      *
      * @return the field version.
      */
     UOctet getAreaVersion();
-
-    /**
-     * Sets the field version.
-     *
-     * @param newValue The new value to set.
-     */
-    void setAreaVersion(UOctet newValue);
 
     /**
      * Returns the field isError.

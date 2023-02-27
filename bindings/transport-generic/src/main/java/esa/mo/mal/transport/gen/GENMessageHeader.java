@@ -144,28 +144,13 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
     }
 
     @Override
-    public void setDomain(final IdentifierList domain) {
-        this.domain = domain;
-    }
-
-    @Override
     public UOctet getInteractionStage() {
         return interactionStage;
     }
 
     @Override
-    public void setInteractionStage(final UOctet interactionStage) {
-        this.interactionStage = interactionStage;
-    }
-
-    @Override
     public InteractionType getInteractionType() {
         return interactionType;
-    }
-
-    @Override
-    public void setInteractionType(final InteractionType interactionType) {
-        this.interactionType = interactionType;
     }
 
     @Override
@@ -184,28 +169,13 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
     }
 
     @Override
-    public void setNetworkZone(final Identifier networkZone) {
-        this.networkZone = networkZone;
-    }
-
-    @Override
     public UShort getOperation() {
         return operation;
     }
 
     @Override
-    public void setOperation(final UShort operation) {
-        this.operation = operation;
-    }
-
-    @Override
     public UInteger getPriority() {
         return priority;
-    }
-
-    @Override
-    public void setPriority(final UInteger priority) {
-        this.priority = priority;
     }
 
     @Override
@@ -224,18 +194,8 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
     }
 
     @Override
-    public void setService(final UShort service) {
-        this.service = service;
-    }
-
-    @Override
     public UShort getServiceArea() {
         return serviceArea;
-    }
-
-    @Override
-    public void setServiceArea(final UShort serviceArea) {
-        this.serviceArea = serviceArea;
     }
 
     @Override
@@ -244,18 +204,8 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
     }
 
     @Override
-    public void setAreaVersion(final UOctet areaVersion) {
-        this.areaVersion = areaVersion;
-    }
-
-    @Override
     public SessionType getSession() {
         return session;
-    }
-
-    @Override
-    public void setSession(final SessionType session) {
-        this.session = session;
     }
 
     @Override
@@ -264,18 +214,8 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
     }
 
     @Override
-    public void setSessionName(final Identifier sessionName) {
-        this.sessionName = sessionName;
-    }
-
-    @Override
     public Time getTimestamp() {
         return timestamp;
-    }
-
-    @Override
-    public void setTimestamp(final Time timestamp) {
-        this.timestamp = timestamp;
     }
 
     @Override
@@ -284,18 +224,8 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
     }
 
     @Override
-    public void setTransactionId(final Long transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    @Override
     public URI getURITo() {
         return URITo;
-    }
-
-    @Override
-    public void setURITo(final URI urITo) {
-        this.URITo = urITo;
     }
 
     @Override
@@ -372,44 +302,25 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
     @Override
     public String toString() {
         final StringBuilder str = new StringBuilder("GENMessageHeader{");
-        str.append("URIFrom=");
-        str.append(URIFrom);
-        str.append(", authenticationId=");
-        str.append(authenticationId);
-        str.append(", URITo=");
-        str.append(URITo);
-        str.append(", timestamp=");
-        str.append(timestamp);
-        str.append(", QoSlevel=");
-        str.append(QoSlevel);
-        str.append(", priority=");
-        str.append(priority);
-        str.append(", domain=");
-        str.append(domain);
-        str.append(", networkZone=");
-        str.append(networkZone);
-        str.append(", session=");
-        str.append(session);
-        str.append(", sessionName=");
-        str.append(sessionName);
-        str.append(", interactionType=");
-        str.append(interactionType);
-        str.append(", interactionStage=");
-        str.append(interactionStage);
-        str.append(", transactionId=");
-        str.append(transactionId);
-        str.append(", serviceArea=");
-        str.append(serviceArea);
-        str.append(", service=");
-        str.append(service);
-        str.append(", operation=");
-        str.append(operation);
-        str.append(", serviceVersion=");
-        str.append(areaVersion);
-        str.append(", isErrorMessage=");
-        str.append(isErrorMessage);
+        str.append("URIFrom=").append(URIFrom);
+        str.append(", authenticationId=").append(authenticationId);
+        str.append(", URITo=").append(URITo);
+        str.append(", timestamp=").append(timestamp);
+        str.append(", QoSlevel=").append(QoSlevel);
+        str.append(", priority=").append(priority);
+        str.append(", domain=").append(domain);
+        str.append(", networkZone=").append(networkZone);
+        str.append(", session=").append(session);
+        str.append(", sessionName=").append(sessionName);
+        str.append(", interactionType=").append(interactionType);
+        str.append(", interactionStage=").append(interactionStage);
+        str.append(", transactionId=").append(transactionId);
+        str.append(", serviceArea=").append(serviceArea);
+        str.append(", service=").append(service);
+        str.append(", operation=").append(operation);
+        str.append(", serviceVersion=").append(areaVersion);
+        str.append(", isErrorMessage=").append(isErrorMessage);
         str.append('}');
-
         return str.toString();
     }
 }

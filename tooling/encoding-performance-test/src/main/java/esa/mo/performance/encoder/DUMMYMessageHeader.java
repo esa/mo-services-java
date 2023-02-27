@@ -92,7 +92,7 @@ public class DUMMYMessageHeader implements MALMessageHeader, Element {
     }
 
     @Override
-    public void setAuthenticationId(Blob authenticationId) {
+    public void setAuthenticationId(final Blob authenticationId) {
         this.authenticationId = authenticationId;
     }
 
@@ -102,28 +102,13 @@ public class DUMMYMessageHeader implements MALMessageHeader, Element {
     }
 
     @Override
-    public void setDomain(IdentifierList domain) {
-        this.domain = domain;
-    }
-
-    @Override
     public UOctet getInteractionStage() {
         return interactionStage;
     }
 
     @Override
-    public void setInteractionStage(UOctet interactionStage) {
-        this.interactionStage = interactionStage;
-    }
-
-    @Override
     public InteractionType getInteractionType() {
         return interactionType;
-    }
-
-    @Override
-    public void setInteractionType(InteractionType interactionType) {
-        this.interactionType = interactionType;
     }
 
     @Override
@@ -142,28 +127,13 @@ public class DUMMYMessageHeader implements MALMessageHeader, Element {
     }
 
     @Override
-    public void setNetworkZone(Identifier networkZone) {
-        this.networkZone = networkZone;
-    }
-
-    @Override
     public UShort getOperation() {
         return operation;
     }
 
     @Override
-    public void setOperation(UShort operation) {
-        this.operation = operation;
-    }
-
-    @Override
     public UInteger getPriority() {
         return priority;
-    }
-
-    @Override
-    public void setPriority(UInteger priority) {
-        this.priority = priority;
     }
 
     @Override
@@ -182,18 +152,8 @@ public class DUMMYMessageHeader implements MALMessageHeader, Element {
     }
 
     @Override
-    public void setService(UShort service) {
-        this.service = service;
-    }
-
-    @Override
     public UShort getServiceArea() {
         return serviceArea;
-    }
-
-    @Override
-    public void setServiceArea(UShort serviceArea) {
-        this.serviceArea = serviceArea;
     }
 
     @Override
@@ -202,18 +162,8 @@ public class DUMMYMessageHeader implements MALMessageHeader, Element {
     }
 
     @Override
-    public void setAreaVersion(UOctet areaVersion) {
-        this.areaVersion = areaVersion;
-    }
-
-    @Override
     public SessionType getSession() {
         return session;
-    }
-
-    @Override
-    public void setSession(SessionType session) {
-        this.session = session;
     }
 
     @Override
@@ -222,18 +172,8 @@ public class DUMMYMessageHeader implements MALMessageHeader, Element {
     }
 
     @Override
-    public void setSessionName(Identifier sessionName) {
-        this.sessionName = sessionName;
-    }
-
-    @Override
     public Time getTimestamp() {
         return timestamp;
-    }
-
-    @Override
-    public void setTimestamp(Time timestamp) {
-        this.timestamp = timestamp;
     }
 
     @Override
@@ -242,18 +182,8 @@ public class DUMMYMessageHeader implements MALMessageHeader, Element {
     }
 
     @Override
-    public void setTransactionId(Long transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    @Override
     public URI getURITo() {
         return URITo;
-    }
-
-    @Override
-    public void setURITo(URI uriTo) {
-        this.URITo = uriTo;
     }
 
     @Override

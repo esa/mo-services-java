@@ -30,8 +30,8 @@ import org.ccsds.moims.mo.mal.MALStandardError;
  */
 public class MALTransmitErrorException extends MALInteractionException {
 
-    private MALMessageHeader header;
-    private Map qosProperties;
+    private final MALMessageHeader header;
+    private final Map qosProperties;
 
     /**
      * Constructor.
@@ -42,8 +42,7 @@ public class MALTransmitErrorException extends MALInteractionException {
      * transmitted
      */
     public MALTransmitErrorException(final MALMessageHeader header,
-            final MALStandardError standardError,
-            final Map qosProperties) {
+            final MALStandardError standardError, final Map qosProperties) {
         super(standardError);
         this.header = header;
         this.qosProperties = qosProperties;

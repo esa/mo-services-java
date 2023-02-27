@@ -392,42 +392,34 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
     }
 
     static GENMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError, short stage) {
-        GENMessageHeader hdr = new GENMessageHeader();
         MALMessageHeader srcHdr = sourceMessage.getHeader();
-
-        hdr.setURIFrom(srcHdr.getURITo());
-        hdr.setURITo(srcHdr.getURIFrom());
-        hdr.setAuthenticationId(new Blob(JMSTransport.authId));
-        hdr.setTimestamp(new Time(new java.util.Date().getTime()));
-        hdr.setQoSlevel(srcHdr.getQoSlevel());
-        hdr.setPriority(srcHdr.getPriority());
-        hdr.setDomain(srcHdr.getDomain());
-        hdr.setNetworkZone(srcHdr.getNetworkZone());
-        hdr.setSession(srcHdr.getSession());
-        hdr.setSessionName(srcHdr.getSessionName());
-        hdr.setInteractionType(srcHdr.getInteractionType());
-        hdr.setInteractionStage(new UOctet(stage));
-        hdr.setTransactionId(srcHdr.getTransactionId());
-        hdr.setServiceArea(srcHdr.getServiceArea());
-        hdr.setService(srcHdr.getService());
-        hdr.setOperation(srcHdr.getOperation());
-        hdr.setAreaVersion(srcHdr.getAreaVersion());
-        hdr.setIsErrorMessage(isError);
-
-        return hdr;
+        return new GENMessageHeader(
+                srcHdr.getURITo(),
+                new Blob(JMSTransport.authId),
+                srcHdr.getURIFrom(),
+                Time.now(),
+                srcHdr.getQoSlevel(),
+                srcHdr.getPriority(),
+                srcHdr.getDomain(),
+                srcHdr.getNetworkZone(),
+                srcHdr.getSession(),
+                srcHdr.getSessionName(),
+                srcHdr.getInteractionType(),
+                new UOctet(stage),
+                srcHdr.getTransactionId(),
+                srcHdr.getServiceArea(),
+                srcHdr.getService(),
+                srcHdr.getOperation(),
+                srcHdr.getAreaVersion(),
+                isError);
     }
 
     private static String createProviderKey(MALMessageHeader details) {
         StringBuilder buf = new StringBuilder();
-
-        buf.append(details.getSession());
-        buf.append(':');
-        buf.append(details.getSessionName());
-        buf.append(':');
-        buf.append(details.getNetworkZone());
-        buf.append(':');
+        buf.append(details.getSession()).append(':');
+        buf.append(details.getSessionName()).append(':');
+        buf.append(details.getNetworkZone()).append(':');
         buf.append(details.getDomain());
-
         return buf.toString();
     }
 
