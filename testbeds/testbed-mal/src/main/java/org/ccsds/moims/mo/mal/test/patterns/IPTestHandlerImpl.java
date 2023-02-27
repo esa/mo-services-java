@@ -45,12 +45,14 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
  */
 public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
-    private Identifier transactionId;
-    protected AssertionList assertions;
+    // The code will wait on this PERIOD: ~630 times !
+    private final static int PERIOD = 250; // in ms
     private final Hashtable<PublishInteractionListenerKey, MALPublishInteractionListener> publishInteractionListeners;
     private final Hashtable<PublisherKey, MonitorPublisher> publishers;
     private final Hashtable<PublisherKey, MonitorMultiPublisher> publishersMulti;
 
+    protected AssertionList assertions;
+    private Identifier transactionId;
     private String ipTestProviderFileName;
 
     public IPTestHandlerImpl() {
@@ -167,12 +169,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                 switch (transId) {
                     case 1:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendResponse("");
                         break;
                     case 2:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
                         break;
                     case 3:
@@ -180,12 +182,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         break;
                     case 4:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendResponse("");
                         break;
                     case 5:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
                         break;
                     case 6:
@@ -193,7 +195,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         break;
                     case 7:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendResponse("");
                         break;
                     default:
@@ -223,7 +225,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
             interaction.sendAcknowledgement(null);
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(PERIOD);
             } catch (Exception ex) {
                 // do nothing
             }
@@ -233,7 +235,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
             interaction.sendUpdate(null);
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(PERIOD);
             } catch (Exception ex) {
                 // do nothing
             }
@@ -246,12 +248,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                 switch (transId) {
                     case 1:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendResponse("");
                         break;
                     case 2:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
                         break;
                     case 3:
@@ -259,36 +261,36 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         break;
                     case 4:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendResponse("");
                         break;
                     case 5:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendUpdateError(new MALStandardError(new UInteger(999), new Union("No error")));
                         break;
                     case 6:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
                         break;
                     case 7:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendResponse("");
                         break;
                     case 8:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
                         break;
                     case 9:
@@ -296,42 +298,42 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         break;
                     case 10:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendResponse("");
                         break;
                     case 11:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendResponse("");
                         break;
                     case 12:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendUpdateError(new MALStandardError(new UInteger(999), new Union("No error")));
                         break;
                     case 13:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendUpdateError(new MALStandardError(new UInteger(999), new Union("No error")));
                         break;
                     case 14:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(1000);
+                        Thread.sleep(PERIOD);
                         interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
                         break;
                     default:
