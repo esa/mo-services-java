@@ -280,34 +280,34 @@ public class GENEndpoint implements MALEndpoint {
 
     @Override
     public void sendMessage(final MALMessage msg) throws MALTransmitErrorException {
-        internalSendMessage(null, true, (GENMessage) msg);
+        this.internalSendMessage(null, true, (GENMessage) msg);
     }
 
     @Override
     public void sendMessages(final MALMessage[] msgList) throws MALTransmitMultipleErrorException {
-        final List<MALTransmitErrorException> v = new LinkedList<>();
+        final List<MALTransmitErrorException> exceptions = new LinkedList<>();
 
         try {
             final Object multiSendHandle = internalCreateMultiSendHandle(msgList);
 
             for (int idx = 0; idx < msgList.length; idx++) {
                 try {
-                    internalSendMessage(multiSendHandle, idx == (msgList.length - 1),
-                            (GENMessage) msgList[idx]);
+                    boolean isLast = (idx == (msgList.length - 1));
+                    this.internalSendMessage(multiSendHandle, isLast, (GENMessage) msgList[idx]);
                 } catch (MALTransmitErrorException ex) {
-                    v.add(ex);
+                    exceptions.add(ex);
                 }
             }
 
             internalCloseMultiSendHandle(multiSendHandle, msgList);
         } catch (Exception ex) {
-            v.add(new MALTransmitErrorException(null,
+            exceptions.add(new MALTransmitErrorException(null,
                     new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, new Union(ex.getMessage())),
                     null));
         }
 
-        if (!v.isEmpty()) {
-            throw new MALTransmitMultipleErrorException(v.toArray(new MALTransmitErrorException[v.size()]));
+        if (!exceptions.isEmpty()) {
+            throw new MALTransmitMultipleErrorException(exceptions.toArray(new MALTransmitErrorException[exceptions.size()]));
         }
     }
 
@@ -328,17 +328,17 @@ public class GENEndpoint implements MALEndpoint {
     /**
      * Callback method when a message is received for this endpoint.
      *
-     * @param pmsg The received message.
+     * @param msg The received message.
      * @throws MALException on an error.
      */
-    public void receiveMessage(final MALMessage pmsg) throws MALException {
+    public void receiveMessage(final MALMessage msg) throws MALException {
         if (active && (null != messageListener)) {
-            messageListener.onMessage(this, pmsg);
+            messageListener.onMessage(this, msg);
         } else {
             GENTransport.LOGGER.log(Level.WARNING,
                     "GENEndpoint ({0}) Discarding message active({1}) listener({2}) {3}",
                     new Object[]{
-                        localName, active, messageListener, pmsg.toString()
+                        localName, active, messageListener, msg.toString()
                     });
         }
     }
@@ -346,12 +346,12 @@ public class GENEndpoint implements MALEndpoint {
     /**
      * Callback method when multiple messages are received for this endpoint.
      *
-     * @param pmsgs The received messages.
+     * @param msgs The received messages.
      * @throws MALException on an error.
      */
-    public void receiveMessages(final GENMessage[] pmsgs) throws MALException {
+    public void receiveMessages(final GENMessage[] msgs) throws MALException {
         if (active && (null != messageListener)) {
-            messageListener.onMessages(this, pmsgs);
+            messageListener.onMessages(this, msgs);
         } else {
             GENTransport.LOGGER.log(Level.WARNING,
                     "GENEndpoint ({0}) Discarding messages active({1}) listener({2})",

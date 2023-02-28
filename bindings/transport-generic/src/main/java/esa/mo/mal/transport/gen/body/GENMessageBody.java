@@ -161,27 +161,27 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
             IllegalArgumentException, MALException {
         decodeMessageBody();
 
-        Object rv = messageParts[index];
+        Object bodyPart = messageParts[index];
 
         // Up-cast the List if it is a polymorphic list!
-        if (element != null && rv instanceof PolymorphicList) {
-            for (Element entry : (PolymorphicList) rv) {
+        if (element != null && bodyPart instanceof PolymorphicList) {
+            for (Element entry : (PolymorphicList) bodyPart) {
                 ((PolymorphicList) element).add(entry);
             }
             return element;
         }
 
-        if (rv instanceof MALEncodedElementList) {
+        if (bodyPart instanceof MALEncodedElementList) {
             System.out.println("getBodyElement requesting encoded body list: "
-                    + this.decodedBody + " : " + ((MALEncodedElementList) rv).getShortForm());
-            rv = decodeEncodedElementListBodyPart(((MALEncodedElementList) rv));
-            messageParts[index] = rv;
+                    + this.decodedBody + " : " + ((MALEncodedElementList) bodyPart).getShortForm());
+            bodyPart = decodeEncodedElementListBodyPart(((MALEncodedElementList) bodyPart));
+            messageParts[index] = bodyPart;
         }
-        if (rv instanceof MALEncodedElement) {
+        if (bodyPart instanceof MALEncodedElement) {
             System.out.println("getBodyElement requesting encoded body : " + this.decodedBody);
         }
 
-        return rv;
+        return bodyPart;
     }
 
     @Override
@@ -427,9 +427,9 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
         // create list of correct type
         long lsf = (-((sf) & 0xFFFFFFL)) & 0xFFFFFFL + (sf & 0xFFFFFFFFFF000000L);
         MALElementsRegistry fr = MALContextFactory.getElementsRegistry();
-        ElementList rv;
+        ElementList elementList;
         try {
-            rv = (ElementList) fr.createElement(lsf);
+            elementList = (ElementList) fr.createElement(lsf);
         } catch (Exception ex) {
             throw new MALException("The ElementList could not be created!", ex);
         }
@@ -440,13 +440,13 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
             MALElementInputStream lenc = encFactory.createInputStream(lbais);
 
             try {
-                rv.add(lenc.readElement(fr.createElement(sf), ctx));
+                elementList.add(lenc.readElement(fr.createElement(sf), ctx));
             } catch (Exception ex) {
                 throw new MALException("The Element could not be created!", ex);
             }
         }
 
-        return rv;
+        return elementList;
     }
 
     /**

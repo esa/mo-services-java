@@ -80,7 +80,7 @@ public class MALProviderSet {
             final Map remotePublisherQosProps,
             final UInteger remotePublisherPriority)
             throws java.lang.IllegalArgumentException, MALException {
-        final MALPublisherSet rv = new MALPublisherSet(this,
+        final MALPublisherSet publisherSet = new MALPublisherSet(this,
                 op,
                 domain,
                 networkZone,
@@ -89,13 +89,13 @@ public class MALProviderSet {
                 remotePublisherQos,
                 remotePublisherQosProps,
                 remotePublisherPriority);
-        publisherSets.add(rv);
+        publisherSets.add(publisherSet);
 
         for (MALProvider provider : providers) {
-            rv.createPublisher(provider);
+            publisherSet.createPublisher(provider);
         }
 
-        return rv;
+        return publisherSet;
     }
 
     /**
@@ -119,8 +119,8 @@ public class MALProviderSet {
 
         providers.add(provider);
 
-        for (MALPublisherSet e : publisherSets) {
-            e.createPublisher(provider);
+        for (MALPublisherSet publisherSet : publisherSets) {
+            publisherSet.createPublisher(provider);
         }
     }
 
@@ -135,9 +135,9 @@ public class MALProviderSet {
      */
     public boolean removeProvider(final MALProvider provider) throws java.lang.IllegalArgumentException {
         providers.remove(provider);
-        for (MALPublisherSet e : publisherSets) {
+        for (MALPublisherSet publisherSet : publisherSets) {
             try {
-                e.deletePublisher(provider);
+                publisherSet.deletePublisher(provider);
             } catch (MALException ex) {
                 // ToDo
             }

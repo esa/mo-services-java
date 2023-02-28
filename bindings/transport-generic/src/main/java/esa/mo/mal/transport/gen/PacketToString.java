@@ -37,7 +37,6 @@ public class PacketToString {
     /**
      * True if string based stream, can be logged as a string rather than hex.
      */
-
     private final byte[] data;
     private String str;
 
@@ -56,7 +55,6 @@ public class PacketToString {
             String prop = properties.getProperty(GENTransport.DEBUG_PROPERTY, "false");
             logFullDebug = Boolean.valueOf(prop);
         }
-
     }
 
     @Override

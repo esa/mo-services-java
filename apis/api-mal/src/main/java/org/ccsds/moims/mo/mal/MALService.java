@@ -37,7 +37,6 @@ public class MALService {
      * Number representing a non-existent service.
      */
     public static final UShort NULL_SERVICE_NUMBER = new UShort(0);
-    private static final ArrayList<MALOperation> EMPTY_SET = new ArrayList<>();
 
     private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
     private final Map<String, MALOperation> operationsByName = new HashMap<>();
@@ -207,8 +206,8 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public ArrayList<MALOperation> getOperationsByCapabilitySet(final int capabilitySet) {
-        final ArrayList<MALOperation> rv = operationsBySet.get(capabilitySet);
-        return ((null == rv) ? EMPTY_SET : rv);
+        final ArrayList<MALOperation> operations = operationsBySet.get(capabilitySet);
+        return (operations == null) ? new ArrayList<>() : operations;
     }
 
     /**
@@ -271,13 +270,13 @@ public class MALService {
         operationsByName.put(op.getName().getValue(), op);
         operationsByNumber.put(op.getNumber().getValue(), op);
 
-        ArrayList<MALOperation> v = operationsBySet.get(op.getCapabilitySet().getValue());
+        ArrayList<MALOperation> operations = operationsBySet.get(op.getCapabilitySet().getValue());
 
-        if (v == null) {
-            v = new ArrayList<>();
+        if (operations == null) {
+            operations = new ArrayList<>();
         }
 
-        v.add(op);
-        operationsBySet.put(op.getCapabilitySet().getValue(), v);
+        operations.add(op);
+        operationsBySet.put(op.getCapabilitySet().getValue(), operations);
     }
 }

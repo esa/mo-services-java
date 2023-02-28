@@ -53,12 +53,12 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class GENMessage implements MALMessage, java.io.Serializable {
 
+    private static final long serialVersionUID = 222222222222222L;
     protected final GENMessageHeader header;
     protected final GENMessageBody body;
     protected final Map qosProperties;
     protected final boolean wrapBodyParts;
     protected MALOperation operation = null;
-    private static final long serialVersionUID = 222222222222222L;
 
     /**
      * Constructor.
@@ -196,15 +196,6 @@ public class GENMessage implements MALMessage, java.io.Serializable {
     @Override
     public void free() throws MALException {
         // do nothing in the GEN case.
-    }
-
-    /**
-     * Returns true if this message will wrap body parts in blobs.
-     *
-     * @return True if wrapping is enabled.
-     */
-    public boolean isWrapBodyParts() {
-        return wrapBodyParts;
     }
 
     /**

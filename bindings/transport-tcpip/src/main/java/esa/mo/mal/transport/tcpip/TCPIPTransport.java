@@ -193,7 +193,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     public TCPIPTransport(final String protocol, final char serviceDelim,
             final boolean supportsRouting, final MALTransportFactory factory,
             final java.util.Map properties) throws MALException {
-        super(protocol, supportsRouting, false, factory, properties);
+        super(protocol, serviceDelim, supportsRouting, false, factory, properties);
 
         RLOGGER.fine("TCPIPTransport (constructor)");
 

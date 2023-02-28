@@ -119,8 +119,8 @@ public class MALPublisherSet {
      */
     public void register(final IdentifierList keys, final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        for (MALPublisher p : subpublishers) {
-            p.register(keys, listener);
+        for (MALPublisher publisher : subpublishers) {
+            publisher.register(keys, listener);
         }
     }
 
@@ -137,12 +137,12 @@ public class MALPublisherSet {
      */
     public MALMessage publish(final UpdateHeaderList updateHeaderList, final java.util.List... updateLists)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        MALMessage rv = null;
+        MALMessage msg = null;
         for (MALPublisher p : subpublishers) {
-            rv = p.publish(updateHeaderList, updateLists);
+            msg = p.publish(updateHeaderList, updateLists);
         }
 
-        return rv;
+        return msg;
     }
 
     /**
@@ -173,12 +173,12 @@ public class MALPublisherSet {
      */
     public MALMessage asyncRegister(final IdentifierList keys, final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        MALMessage rv = null;
+        MALMessage msg = null;
         for (MALPublisher p : subpublishers) {
-            rv = p.asyncRegister(keys, listener);
+            msg = p.asyncRegister(keys, listener);
         }
 
-        return rv;
+        return msg;
     }
 
     /**
@@ -194,12 +194,12 @@ public class MALPublisherSet {
      */
     public MALMessage asyncDeregister(final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        MALMessage rv = null;
+        MALMessage msg = null;
         for (MALPublisher p : subpublishers) {
-            rv = p.asyncDeregister(listener);
+            msg = p.asyncDeregister(listener);
         }
 
-        return rv;
+        return msg;
     }
 
     /**

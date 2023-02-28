@@ -71,10 +71,8 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     protected final SPPSourceSequenceCounterSimple ssc;
     protected final int defaultApidQualifier;
     protected final int defaultApid;
-    protected final Map<QualifiedApid, SPPConfiguration> apidConfigurations
-            = new HashMap<QualifiedApid, SPPConfiguration>();
-    protected final Map<QualifiedApid, Map<Long, SPPSegmentsHandler>> segmentHandlers
-            = new HashMap<QualifiedApid, Map<Long, SPPSegmentsHandler>>();
+    protected final Map<QualifiedApid, SPPConfiguration> apidConfigurations = new HashMap<>();
+    protected final Map<QualifiedApid, Map<Long, SPPSegmentsHandler>> segmentHandlers = new HashMap<>();
     /**
      * The stream factory used for encoding and decoding message headers.
      */
@@ -211,6 +209,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
                 wrapBodyParts, properties);
     }
 
+    @Override
     protected GENOutgoingMessageHolder<List<ByteBuffer>> internalEncodeMessage(
             final String destinationRootURI,
             final String destinationURI,
@@ -223,7 +222,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
 
         int sequenceFlags = (buf[2] & 0xC0) >> 6;
 
-        List<ByteBuffer> encodedMessage = new ArrayList<ByteBuffer>();
+        List<ByteBuffer> encodedMessage = new ArrayList<>();
 
         if (3 == sequenceFlags) {
             encodedMessage.add(ByteBuffer.wrap(buf));
@@ -283,13 +282,12 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
         } else {
             // find packet segment handler
             final Long transactionId = (long) java.nio.ByteBuffer.wrap(packet).getLong(18);
-
-            Map<Long, SPPSegmentsHandler> map
-                    = segmentHandlers.get(new QualifiedApid(apidQualifier, apid));
+            QualifiedApid qAPID = new QualifiedApid(apidQualifier, apid);
+            Map<Long, SPPSegmentsHandler> map = segmentHandlers.get(qAPID);
 
             if (null == map) {
-                map = new HashMap<Long, SPPSegmentsHandler>();
-                segmentHandlers.put(new QualifiedApid(apidQualifier, apid), map);
+                map = new HashMap<>();
+                segmentHandlers.put(qAPID, map);
             }
 
             SPPSegmentsHandler segmentHandler = map.get(transactionId);

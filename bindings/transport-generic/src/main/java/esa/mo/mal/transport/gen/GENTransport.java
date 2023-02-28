@@ -176,14 +176,12 @@ public abstract class GENTransport<I, O> implements MALTransport {
     /**
      * The map of message queues, segregated by transaction id.
      */
-    private final Map<Long, GENIncomingMessageProcessor> transactionQueues
-            = new HashMap<>();
+    private final Map<Long, IncomingMessageDispatcher> transactionQueues = new HashMap<>();
     /**
      * Map of outgoing channels. This associates a URI to a transport resource
      * that is able to send messages to this URI.
      */
-    private final Map<String, GENConcurrentMessageSender> outgoingDataChannels
-            = new HashMap<>();
+    private final Map<String, GENConcurrentMessageSender> outgoingDataChannels = new HashMap<>();
     /**
      * The stream factory used for encoding and decoding messages.
      */
@@ -195,8 +193,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
     /**
      * Map of cachedRoutingParts. This associates a URI to its Routing part.
      */
-    private final ConcurrentHashMap<String, String> cachedRoutingParts
-            = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> cachedRoutingParts = new ConcurrentHashMap<>();
     /**
      * Value of the
      * org.ccsds.moims.mo.mal.transport.gen.connectwhenconsumeroffline property
@@ -222,7 +219,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
-    @Deprecated
     public GENTransport(final String protocol,
             final char serviceDelim,
             final boolean supportsRouting,
@@ -230,26 +226,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
             final MALTransportFactory factory,
             final java.util.Map properties) throws MALException {
         this(protocol, "://", serviceDelim, '@',
-                supportsRouting, wrapBodyParts, factory, properties);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param protocol The protocol string.
-     * @param supportsRouting True if routing is supported by the naming
-     * convention
-     * @param wrapBodyParts True is body parts should be wrapped in BLOBs
-     * @param factory The factory that created us.
-     * @param properties The QoS properties.
-     * @throws MALException On error.
-     */
-    public GENTransport(final String protocol,
-            final boolean supportsRouting,
-            final boolean wrapBodyParts,
-            final MALTransportFactory factory,
-            final java.util.Map properties) throws MALException {
-        this(protocol, "://", '/', '@',
                 supportsRouting, wrapBodyParts, factory, properties);
     }
 
@@ -290,8 +266,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
                 streamFactory.getClass().getName());
 
         if (protocolDelim.contains("" + serviceDelim)) {
-            serviceDelimCounter
-                    = protocolDelim.length() - protocolDelim.replace("" + serviceDelim, "").length();
+            String replaced = protocolDelim.replace("" + serviceDelim, "");
+            serviceDelimCounter = protocolDelim.length() - replaced.length();
         } else {
             serviceDelimCounter = 0;
         }
@@ -424,8 +400,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param msg The message to send.
      * @throws MALTransmitErrorException On transmit error.
      */
-    public void sendMessage(final Object multiSendHandle,
-            final boolean lastForHandle,
+    public void sendMessage(final Object multiSendHandle, final boolean lastForHandle,
             final GENMessage msg) throws MALTransmitErrorException {
         if ((null == msg.getHeader().getURITo())
                 || (null == msg.getHeader().getURITo().getValue())) {
@@ -598,21 +573,21 @@ public abstract class GENTransport<I, O> implements MALTransport {
                 new Object[]{malMsg.malMsg.getHeader().getTransactionId(), malMsg.smsg});
 
         synchronized (transactionQueues) {
-            GENIncomingMessageProcessor proc = transactionQueues.get(malMsg.transactionId);
+            IncomingMessageDispatcher dispatcher = transactionQueues.get(malMsg.transactionId);
 
-            if (null == proc) {
-                proc = new GENIncomingMessageProcessor(malMsg);
-                transactionQueues.put(malMsg.transactionId, proc);
-                dispatcherExecutor.submit(proc);
-            } else if (proc.addMessage(malMsg)) {
+            if (dispatcher == null) {
+                dispatcher = new IncomingMessageDispatcher(this, malMsg);
+                transactionQueues.put(malMsg.transactionId, dispatcher);
+                dispatcherExecutor.submit(dispatcher);
+            } else if (dispatcher.addMessage(malMsg)) {
                 // need to resubmit this to the processing threads
-                dispatcherExecutor.submit(proc);
+                dispatcherExecutor.submit(dispatcher);
             }
 
             Set<Long> transactionsToRemove = new HashSet<>();
-            for (Map.Entry<Long, GENIncomingMessageProcessor> entrySet : transactionQueues.entrySet()) {
+            for (Map.Entry<Long, IncomingMessageDispatcher> entrySet : transactionQueues.entrySet()) {
                 Long transId = entrySet.getKey();
-                GENIncomingMessageProcessor lproc = entrySet.getValue();
+                IncomingMessageDispatcher lproc = entrySet.getValue();
 
                 if (lproc.isFinished()) {
                     transactionsToRemove.add(transId);
@@ -633,7 +608,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param msg The source message.
      * @param smsg The message in a string representation for logging.
      */
-    protected void dispatchMessage(final GENMessage msg, PacketToString smsg) {
+    public void dispatchMessage(final GENMessage msg, PacketToString smsg) {
         try {
             LOGGER.log(Level.FINE, "Processing message : {0} : {1}",
                     new Object[]{msg.getHeader().getTransactionId(), smsg});
@@ -769,7 +744,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
      */
     protected String getLocalName(String localName, final java.util.Map properties) {
         if ((null == localName) || (0 == localName.length())) {
-            localName = String.valueOf(RANDOM_NAME.nextInt() & Integer.MAX_VALUE); // setting sign bit as zero
+            // This sets the "sign bit" as zero, to avoid having negative numbers:
+            localName = String.valueOf(RANDOM_NAME.nextInt() & Integer.MAX_VALUE);
         }
 
         return localName;
@@ -886,7 +862,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
                             null);
                 }
             } else if (null == sender && !connectWhenConsumerOffline) {
-                LOGGER.log(Level.FINE, "Could not locate an outgoing data channel and the connectWhenConsumerOffline property prevents establishing a new one");
+                LOGGER.log(Level.FINE, "Could not locate an outgoing data channel and "
+                        + "the connectWhenConsumerOffline property prevents establishing a new one");
                 throw new MALTransmitErrorException(msg.getHeader(),
                         new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
                         null);
@@ -1024,78 +1001,4 @@ public abstract class GENTransport<I, O> implements MALTransport {
     protected abstract GENMessageSender createMessageSender(GENMessage msg,
             String remoteRootURI) throws MALException, MALTransmitErrorException;
 
-    /**
-     * This Runnable task is responsible for processing the already decoded
-     * message. It holds a queue of messages split on transaction id so that
-     * messages with the same transaction id get processed in reception order.
-     *
-     */
-    private final class GENIncomingMessageProcessor implements Runnable {
-
-        private final Queue<GENIncomingMessageHolder> malMsgs = new ArrayDeque<>();
-        private boolean finished = false;
-
-        /**
-         * Constructor
-         *
-         * @param malMsg The MAL message.
-         */
-        public GENIncomingMessageProcessor(final GENIncomingMessageHolder malMsg) {
-            malMsgs.add(malMsg);
-        }
-
-        /**
-         * Adds a message to the internal queue. If the thread associated with
-         * this executor has finished it resets the flag and returns true to
-         * indicate that it should be resubmitted for more processing to the
-         * Executor pool.
-         *
-         * @param malMsg The decoded message.
-         * @return True if this needs to be resubmitted to the processing
-         * executor pool.
-         */
-        public synchronized boolean addMessage(final GENIncomingMessageHolder malMsg) {
-            malMsgs.add(malMsg);
-
-            if (finished) {
-                finished = false;
-
-                // need to resubmit this to the processing threads
-                return true;
-            }
-
-            return false;
-        }
-
-        /**
-         * Returns true if this thread has finished processing its queue.
-         *
-         * @return True if finished processing queue.
-         */
-        public synchronized boolean isFinished() {
-            return finished;
-        }
-
-        @Override
-        public void run() {
-            GENIncomingMessageHolder msg;
-
-            synchronized (this) {
-                msg = malMsgs.poll();
-            }
-
-            while (null != msg) {
-                // send message for further processing and routing
-                dispatchMessage(msg.malMsg, msg.smsg);
-
-                synchronized (this) {
-                    msg = malMsgs.poll();
-
-                    if (null == msg) {
-                        finished = true;
-                    }
-                }
-            }
-        }
-    }
 }

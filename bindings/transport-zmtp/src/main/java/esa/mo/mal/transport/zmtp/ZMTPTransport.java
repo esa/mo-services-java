@@ -197,7 +197,7 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
     public ZMTPTransport(final String protocol, final boolean supportsRouting,
             final MALTransportFactory factory, final java.util.Map properties,
             final ZMTPURIMapping uriMapping) throws MALException {
-        super(protocol, supportsRouting, false, factory, properties);
+        super(protocol, '/', supportsRouting, false, factory, properties);
         // First assume minimal default config
         defaultConfiguration = new ZMTPConfiguration();
 

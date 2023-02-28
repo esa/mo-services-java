@@ -217,15 +217,15 @@ public class StubGenerator extends AbstractMojo {
             final org.apache.maven.plugin.logging.Log logger) {
         loadGenerators(logger);
 
-        List<Map.Entry<String, String>> rv = new ArrayList<>(GENERATOR_MAP.size());
+        List<Map.Entry<String, String>> availableGens = new ArrayList<>(GENERATOR_MAP.size());
 
         for (Generator g : GENERATOR_MAP.values()) {
             String shortName = g.getShortName();
             String description = g.getDescription();
-            rv.add(new AbstractMap.SimpleEntry<>(shortName, description));
+            availableGens.add(new AbstractMap.SimpleEntry<>(shortName, description));
         }
 
-        return rv;
+        return availableGens;
     }
 
     /**
