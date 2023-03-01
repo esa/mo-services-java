@@ -160,7 +160,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         encoder.encodeUShort(serviceArea);
         encoder.encodeUShort(service);
         encoder.encodeUShort(operation);
-        encoder.encodeUOctet(areaVersion);
+        encoder.encodeUOctet(serviceVersion);
         encoder.encodeUOctet(new UOctet((short) (getErrorBit() | getQoSLevelBits() | getSessionBits())));
         encoder.encodeLong(transactionId);
         encoder.encodeUOctet(new UOctet((short) (getEncodingIdBits() | configuration.getFlags())));
@@ -209,7 +209,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         serviceArea = decoder.decodeUShort();
         service = decoder.decodeUShort();
         operation = decoder.decodeUShort();
-        areaVersion = decoder.decodeUOctet();
+        serviceVersion = decoder.decodeUOctet();
 
         final short moHdrPt1 = decoder.decodeUOctet().getValue();
         extractError(moHdrPt1);
@@ -416,7 +416,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         str.append(", operation=");
         str.append(operation);
         str.append(", serviceVersion=");
-        str.append(areaVersion);
+        str.append(serviceVersion);
         str.append(", isErrorMessage=");
         str.append(isErrorMessage);
         str.append('}');

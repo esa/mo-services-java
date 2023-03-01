@@ -729,7 +729,7 @@ public class MessageSend {
                     srcHdr.getServiceArea(),
                     srcHdr.getService(),
                     srcHdr.getOperation(),
-                    srcHdr.getAreaVersion(),
+                    srcHdr.getServiceVersion(),
                     true,
                     new HashMap(),
                     error.getErrorNumber(), 

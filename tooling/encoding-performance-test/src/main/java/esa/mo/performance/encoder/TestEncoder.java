@@ -107,7 +107,7 @@ public class TestEncoder {
         domain.add(new Identifier("mission"));
         domain.add(null);
         Identifier nz = new Identifier("network");
-        MALEncodingContext ctx = new MyMALContext(new DUMMYMessageHeader(
+        MALEncodingContext ctx = new MyMALContext(new MALMessageHeader(
                 new URI("from"),
                 new Blob("".getBytes()),
                 new URI("to"),

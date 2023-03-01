@@ -84,7 +84,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
 
         if (null == operation) {
             MALArea area = MALContextFactory.lookupArea(
-                    this.header.getServiceArea(), this.header.getAreaVersion());
+                    this.header.getServiceArea(), this.header.getServiceVersion());
             if (null == area) {
                 throw new MALInteractionException(new MALStandardError(
                         MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER, null));

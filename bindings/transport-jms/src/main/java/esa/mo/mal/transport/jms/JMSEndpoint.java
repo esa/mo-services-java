@@ -249,7 +249,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
 
                 handler = new JMSConsumeHandler(this, interruption, qs, dest, subscriptionKey,
                         msg.getHeader().getServiceArea(), msg.getHeader().getService(),
-                        msg.getHeader().getOperation(), msg.getHeader().getAreaVersion());
+                        msg.getHeader().getOperation(), msg.getHeader().getServiceVersion());
                 consumeHandlerMap.put(subscriptionKey, handler);
             } catch (NameNotFoundException e) {
                 JMSTransport.RLOGGER.log(Level.WARNING,
@@ -410,7 +410,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
                 srcHdr.getServiceArea(),
                 srcHdr.getService(),
                 srcHdr.getOperation(),
-                srcHdr.getAreaVersion(),
+                srcHdr.getServiceVersion(),
                 isError);
     }
 

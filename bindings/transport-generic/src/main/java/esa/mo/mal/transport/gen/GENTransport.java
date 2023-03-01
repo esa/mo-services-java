@@ -712,7 +712,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                                     srcHdr.getServiceArea(),
                                     srcHdr.getService(),
                                     srcHdr.getOperation(),
-                                    srcHdr.getAreaVersion(),
+                                    srcHdr.getServiceVersion(),
                                     true,
                                     oriMsg.getQoSProperties(),
                                     errorNumber, new Union(errorMsg));

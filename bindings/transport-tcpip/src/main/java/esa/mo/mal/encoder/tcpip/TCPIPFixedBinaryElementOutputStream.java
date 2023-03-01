@@ -101,7 +101,7 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         enc.encodeShort((short) header.getServiceArea().getValue());
         enc.encodeShort((short) header.getService().getValue());
         enc.encodeShort((short) header.getOperation().getValue());
-        enc.encodeUOctet(header.getAreaVersion());
+        enc.encodeUOctet(header.getServiceVersion());
 
         short parts = (short) (((header.getIsErrorMessage() ? 0x1 : 0x0) << 7)
                 | (header.getQoSlevel().getOrdinal() << 4)

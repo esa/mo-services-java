@@ -51,7 +51,7 @@ public abstract class BaseInteractionImpl implements MALInteraction {
         this.msg = msg;
         MALMessageHeader header = msg.getHeader();
         this.operation = MALContextFactory
-                .lookupArea(header.getServiceArea(), header.getAreaVersion())
+                .lookupArea(header.getServiceArea(), header.getServiceVersion())
                 .getServiceByNumber(header.getService())
                 .getOperationByNumber(header.getOperation());
 

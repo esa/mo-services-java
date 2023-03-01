@@ -34,7 +34,6 @@ import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.body.RequestMultiResponse;
 import org.ccsds.moims.mo.malprototype.iptest.provider.*;
 import org.ccsds.moims.mo.malprototype.structures.*;
-import org.ccsds.moims.mo.testbed.transport.TestMessageHeader;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
@@ -496,7 +495,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                 expectedErrorCode = MALHelper.INCORRECT_STATE_ERROR_NUMBER;
                 expectedExtraInfo = null;
             } else {
-                TestMessageHeader expectedPublishErrorHeader = new TestMessageHeader(
+                MALMessageHeader expectedPublishErrorHeader = new MALMessageHeader(
                         uris.broker,
                         getBrokerAuthenticationId(),
                         uris.uri,

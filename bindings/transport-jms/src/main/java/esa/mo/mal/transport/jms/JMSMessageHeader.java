@@ -36,7 +36,7 @@ public class JMSMessageHeader extends GENMessageHeader {
                 srcHeader.getSessionName(), srcHeader.getInteractionType(),
                 srcHeader.getInteractionStage(), srcHeader.getTransactionId(),
                 update.getServiceArea(), update.getService(),
-                update.getOperation(), srcHeader.getAreaVersion(),
+                update.getOperation(), srcHeader.getServiceVersion(),
                 srcHeader.getIsErrorMessage());
     }
 }

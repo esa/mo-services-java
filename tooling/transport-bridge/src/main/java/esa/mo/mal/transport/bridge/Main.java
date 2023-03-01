@@ -197,7 +197,7 @@ public class Main {
                 sourceHdr.getServiceArea(),
                 sourceHdr.getService(),
                 sourceHdr.getOperation(),
-                sourceHdr.getAreaVersion(),
+                sourceHdr.getServiceVersion(),
                 sourceHdr.getIsErrorMessage(),
                 srcMessage.getQoSProperties(),
                 body.getEncodedBody());

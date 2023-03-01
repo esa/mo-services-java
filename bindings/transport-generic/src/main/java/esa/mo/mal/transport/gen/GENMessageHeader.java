@@ -29,26 +29,8 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * A generic implementation of the message header interface.
  */
-public class GENMessageHeader implements MALMessageHeader, Composite {
+public class GENMessageHeader extends MALMessageHeader implements Composite {
 
-    protected URI URIFrom;
-    protected Blob authenticationId;
-    protected URI URITo;
-    protected Time timestamp;
-    protected QoSLevel QoSlevel;
-    protected UInteger priority;
-    protected IdentifierList domain;
-    protected Identifier networkZone;
-    protected SessionType session;
-    protected Identifier sessionName;
-    protected InteractionType interactionType;
-    protected UOctet interactionStage;
-    protected Long transactionId;
-    protected UShort serviceArea;
-    protected UShort service;
-    protected UShort operation;
-    protected UOctet areaVersion;
-    protected Boolean isErrorMessage;
     protected static final long serialVersionUID = 111111111111111L;
 
     /**
@@ -98,134 +80,9 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
             final UShort operation,
             final UOctet serviceVersion,
             final Boolean isErrorMessage) {
-        this.URIFrom = uriFrom;
-        this.authenticationId = authenticationId;
-        this.URITo = uriTo;
-        this.timestamp = timestamp;
-        this.QoSlevel = qosLevel;
-        this.priority = priority;
-        this.domain = domain;
-        this.networkZone = networkZone;
-        this.session = session;
-        this.sessionName = sessionName;
-        this.interactionType = interactionType;
-        this.interactionStage = interactionStage;
-        this.transactionId = transactionId;
-        this.serviceArea = serviceArea;
-        this.service = service;
-        this.operation = operation;
-        this.areaVersion = serviceVersion;
-        this.isErrorMessage = isErrorMessage;
-    }
-
-    @Override
-    public URI getURIFrom() {
-        return URIFrom;
-    }
-
-    @Override
-    public void setURIFrom(final URI urIFrom) {
-        this.URIFrom = urIFrom;
-    }
-
-    @Override
-    public Blob getAuthenticationId() {
-        return authenticationId;
-    }
-
-    @Override
-    public void setAuthenticationId(final Blob authenticationId) {
-        this.authenticationId = authenticationId;
-    }
-
-    @Override
-    public IdentifierList getDomain() {
-        return domain;
-    }
-
-    @Override
-    public UOctet getInteractionStage() {
-        return interactionStage;
-    }
-
-    @Override
-    public InteractionType getInteractionType() {
-        return interactionType;
-    }
-
-    @Override
-    public Boolean getIsErrorMessage() {
-        return isErrorMessage;
-    }
-
-    @Override
-    public void setIsErrorMessage(final Boolean isErrorMessage) {
-        this.isErrorMessage = isErrorMessage;
-    }
-
-    @Override
-    public Identifier getNetworkZone() {
-        return networkZone;
-    }
-
-    @Override
-    public UShort getOperation() {
-        return operation;
-    }
-
-    @Override
-    public UInteger getPriority() {
-        return priority;
-    }
-
-    @Override
-    public QoSLevel getQoSlevel() {
-        return QoSlevel;
-    }
-
-    @Override
-    public void setQoSlevel(final QoSLevel qoSLevel) {
-        this.QoSlevel = qoSLevel;
-    }
-
-    @Override
-    public UShort getService() {
-        return service;
-    }
-
-    @Override
-    public UShort getServiceArea() {
-        return serviceArea;
-    }
-
-    @Override
-    public UOctet getAreaVersion() {
-        return areaVersion;
-    }
-
-    @Override
-    public SessionType getSession() {
-        return session;
-    }
-
-    @Override
-    public Identifier getSessionName() {
-        return sessionName;
-    }
-
-    @Override
-    public Time getTimestamp() {
-        return timestamp;
-    }
-
-    @Override
-    public Long getTransactionId() {
-        return transactionId;
-    }
-
-    @Override
-    public URI getURITo() {
-        return URITo;
+        super(uriFrom, authenticationId, uriTo, timestamp, qosLevel, priority,
+                domain, networkZone, session, sessionName, interactionType, interactionStage,
+                transactionId, serviceArea, service, operation, serviceVersion, isErrorMessage);
     }
 
     @Override
@@ -251,7 +108,7 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
         encoder.encodeNullableUShort(serviceArea);
         encoder.encodeNullableUShort(service);
         encoder.encodeNullableUShort(operation);
-        encoder.encodeNullableUOctet(areaVersion);
+        encoder.encodeNullableUOctet(serviceVersion);
         encoder.encodeNullableBoolean(isErrorMessage);
     }
 
@@ -273,7 +130,7 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
         serviceArea = decoder.decodeNullableUShort();
         service = decoder.decodeNullableUShort();
         operation = decoder.decodeNullableUShort();
-        areaVersion = decoder.decodeNullableUOctet();
+        serviceVersion = decoder.decodeNullableUOctet();
         isErrorMessage = decoder.decodeNullableBoolean();
 
         return this;
@@ -282,6 +139,11 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
     @Override
     public UShort getAreaNumber() {
         return new UShort(0);
+    }
+
+    @Override
+    public UOctet getAreaVersion() {
+        return new UOctet(0);
     }
 
     @Override
@@ -318,7 +180,7 @@ public class GENMessageHeader implements MALMessageHeader, Composite {
         str.append(", serviceArea=").append(serviceArea);
         str.append(", service=").append(service);
         str.append(", operation=").append(operation);
-        str.append(", serviceVersion=").append(areaVersion);
+        str.append(", serviceVersion=").append(serviceVersion);
         str.append(", isErrorMessage=").append(isErrorMessage);
         str.append('}');
         return str.toString();

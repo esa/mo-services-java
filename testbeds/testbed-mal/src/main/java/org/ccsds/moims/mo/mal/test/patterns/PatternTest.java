@@ -45,7 +45,6 @@ import org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.transport.TestEndPoint;
-import org.ccsds.moims.mo.testbed.transport.TestMessageHeader;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
@@ -201,7 +200,7 @@ public class PatternTest {
         MALMessage msg = TransportInterceptor.instance().getLastSentMessage(ipTestConsumer.getConsumer().getURI());
         MALMessageHeader msgHeader = msg.getHeader();
 
-        TestMessageHeader expectedInitialHeader = new TestMessageHeader(
+        MALMessageHeader expectedInitialHeader = new MALMessageHeader(
                 ipTestConsumer.getConsumer().getURI(),
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 msgHeader.getURITo(),
@@ -223,7 +222,7 @@ public class PatternTest {
 
         AssertionHelper.checkHeader("PatternTest.checkHeader", assertions, msgHeader, expectedInitialHeader);
 
-        MALMessageHeader expectedFinalHeader = new TestMessageHeader(
+        MALMessageHeader expectedFinalHeader = new MALMessageHeader(
                 msgHeader.getURITo(),
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 ipTestConsumer.getConsumer().getURI(),
@@ -287,7 +286,7 @@ public class PatternTest {
     }
 
     private MALMessageHeader swapInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage) {
-        return new TestMessageHeader(
+        return new MALMessageHeader(
                 expectedFinalHeader.getURIFrom(),
                 expectedFinalHeader.getAuthenticationId(),
                 expectedFinalHeader.getURITo(),
@@ -304,7 +303,7 @@ public class PatternTest {
                 expectedFinalHeader.getServiceArea(),
                 expectedFinalHeader.getService(),
                 expectedFinalHeader.getOperation(),
-                expectedFinalHeader.getAreaVersion(),
+                expectedFinalHeader.getServiceVersion(),
                 expectedFinalHeader.getIsErrorMessage());
     }
 
@@ -543,7 +542,7 @@ public class PatternTest {
             isError = true;
         }
 
-        MALMessageHeader brokenHeader = new TestMessageHeader(srcHdr.getURIFrom(),
+        MALMessageHeader brokenHeader = new MALMessageHeader(srcHdr.getURIFrom(),
                 srcHdr.getAuthenticationId(),
                 srcHdr.getURITo(),
                 srcHdr.getTimestamp(),
@@ -559,7 +558,7 @@ public class PatternTest {
                 srcHdr.getServiceArea(),
                 srcHdr.getService(),
                 srcHdr.getOperation(),
-                srcHdr.getAreaVersion(),
+                srcHdr.getServiceVersion(),
                 isError);
 
         MALMessage brokenMessage;

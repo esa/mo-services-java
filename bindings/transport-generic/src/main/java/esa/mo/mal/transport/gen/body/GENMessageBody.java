@@ -332,7 +332,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
             if (null == ctx.getOperation()) {
                 MALMessageHeader header = ctx.getHeader();
                 MALArea area = MALContextFactory
-                        .lookupArea(header.getServiceArea(), header.getAreaVersion());
+                        .lookupArea(header.getServiceArea(), header.getServiceVersion());
                 if (null != area) {
                     MALService service = area.getServiceByNumber(header.getService());
                     if (null != service) {
@@ -344,7 +344,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
                             GENTransport.LOGGER.log(Level.SEVERE,
                                     "Operation for unknown area/version/service/op received ({0}, {1}, {2}, {3})",
                                     new Object[]{
-                                        header.getServiceArea(), header.getAreaVersion(), header.getService(),
+                                        header.getServiceArea(), header.getServiceVersion(), header.getService(),
                                         header.getOperation()
                                     });
                         }
@@ -352,13 +352,13 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
                         GENTransport.LOGGER.log(Level.SEVERE,
                                 "Operation for unknown area/version/service received ({0}, {1}, {2})",
                                 new Object[]{
-                                    header.getServiceArea(), header.getAreaVersion(), header.getService()
+                                    header.getServiceArea(), header.getServiceVersion(), header.getService()
                                 });
                     }
                 } else {
                     GENTransport.LOGGER.log(Level.SEVERE,
                             "Operation for unknown area/version received ({0}, {1})", new Object[]{
-                                header.getServiceArea(), header.getAreaVersion()
+                                header.getServiceArea(), header.getServiceVersion()
                             });
                 }
             }

@@ -113,8 +113,8 @@ public class AssertionHelper {
                     expectedHeader.getURIFrom());
             checkEquality(procedureName, assertions, "URIto", header.getURITo(),
                     expectedHeader.getURITo());
-            checkEquality(procedureName, assertions, "Version", header.getAreaVersion(),
-                    expectedHeader.getAreaVersion());
+            checkEquality(procedureName, assertions, "Version", header.getServiceVersion(),
+                    expectedHeader.getServiceVersion());
         }
     }
 

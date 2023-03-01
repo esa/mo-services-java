@@ -303,8 +303,8 @@ public class TCPIPMessageHeader extends GENMessageHeader {
         str.append(service);
         str.append(", operation=");
         str.append(operation);
-        str.append(", areaVersion=");
-        str.append(areaVersion);
+        str.append(", serviceVersion=");
+        str.append(serviceVersion);
         str.append(", isErrorMessage=");
         str.append(isErrorMessage);
         str.append(", QoSlevel=");

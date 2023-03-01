@@ -167,7 +167,7 @@ public class SPPMessageHeader extends GENMessageHeader {
         encoder.encodeUShort(serviceArea);
         encoder.encodeUShort(service);
         encoder.encodeUShort(operation);
-        encoder.encodeUOctet(areaVersion);
+        encoder.encodeUOctet(serviceVersion);
         encoder.encodeUShort(new UShort(
                 getErrorFlag(isErrorMessage) | getQoSLevelBits() | getSessionBits() | secondaryApid));
         encoder.encodeUShort(new UShort(secondaryApidQualifier));
@@ -238,7 +238,7 @@ public class SPPMessageHeader extends GENMessageHeader {
         serviceArea = decoder.decodeUShort();
         service = decoder.decodeUShort();
         operation = decoder.decodeUShort();
-        areaVersion = decoder.decodeUOctet();
+        serviceVersion = decoder.decodeUOctet();
         final int moHdrPt1 = decoder.decodeUShort().getValue();
         int apidQualifier = decoder.decodeUShort().getValue();
         transactionId = decoder.decodeLong();
@@ -330,50 +330,6 @@ public class SPPMessageHeader extends GENMessageHeader {
         isErrorMessage = 0 != (moHdrPt1 & 0x8000);
 
         return this;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder str = new StringBuilder("SPPMessageHeader{");
-        str.append("URIFrom=");
-        str.append(URIFrom);
-        str.append(", authenticationId=");
-        str.append(authenticationId);
-        str.append(", URITo=");
-        str.append(URITo);
-        str.append(", timestamp=");
-        str.append(timestamp);
-        str.append(", QoSlevel=");
-        str.append(QoSlevel);
-        str.append(", priority=");
-        str.append(priority);
-        str.append(", domain=");
-        str.append(domain);
-        str.append(", networkZone=");
-        str.append(networkZone);
-        str.append(", session=");
-        str.append(session);
-        str.append(", sessionName=");
-        str.append(sessionName);
-        str.append(", interactionType=");
-        str.append(interactionType);
-        str.append(", interactionStage=");
-        str.append(interactionStage);
-        str.append(", transactionId=");
-        str.append(transactionId);
-        str.append(", serviceArea=");
-        str.append(serviceArea);
-        str.append(", service=");
-        str.append(service);
-        str.append(", operation=");
-        str.append(operation);
-        str.append(", serviceVersion=");
-        str.append(areaVersion);
-        str.append(", isErrorMessage=");
-        str.append(isErrorMessage);
-        str.append('}');
-
-        return str.toString();
     }
 
     public SPPConfiguration getConfiguration() {

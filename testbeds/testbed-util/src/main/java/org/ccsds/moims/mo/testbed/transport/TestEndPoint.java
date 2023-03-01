@@ -108,7 +108,7 @@ public class TestEndPoint implements MALEndpoint {
             MALMessageHeader initialHeader,
             Blob authId,
             UOctet stage) {
-        TestMessageHeader res = new TestMessageHeader(
+        MALMessageHeader res = new MALMessageHeader(
                 initialHeader.getURITo(),
                 authId,
                 initialHeader.getURIFrom(),
@@ -125,7 +125,7 @@ public class TestEndPoint implements MALEndpoint {
                 initialHeader.getServiceArea(),
                 initialHeader.getService(),
                 initialHeader.getOperation(),
-                initialHeader.getAreaVersion(),
+                initialHeader.getServiceVersion(),
                 Boolean.TRUE);
         return res;
     }

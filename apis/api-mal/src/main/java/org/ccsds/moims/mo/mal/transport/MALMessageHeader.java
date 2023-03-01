@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2023      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -20,166 +20,305 @@
  */
 package org.ccsds.moims.mo.mal.transport;
 
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.UShort;
 
 /**
- * The MALMessageHeader structure is used to hold all fields that are passed for
- * each message exchanged between a consumer and provider.
+ * The MALMessageHeader structure is used to hold the header fields that exist
+ * in the header of MAL messages.
  */
-public interface MALMessageHeader {
+public class MALMessageHeader {
+
+    protected URI URIFrom;
+    protected Blob authenticationId;
+    protected URI URITo;
+    protected Time timestamp;
+    protected QoSLevel QoSlevel;
+    protected UInteger priority;
+    protected IdentifierList domain;
+    protected Identifier networkZone;
+    protected SessionType session;
+    protected Identifier sessionName;
+    protected InteractionType interactionType;
+    protected UOctet interactionStage;
+    protected Long transactionId;
+    protected UShort serviceArea;
+    protected UShort service;
+    protected UShort operation;
+    protected UOctet serviceVersion;
+    protected Boolean isErrorMessage;
+
+    /**
+     * Constructor.
+     */
+    public MALMessageHeader() {
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param uriFrom URI of the message source
+     * @param authenticationId Authentication identifier of the message
+     * @param uriTo URI of the message destination
+     * @param timestamp Timestamp of the message
+     * @param qosLevel QoS level of the message
+     * @param priority Priority of the message
+     * @param domain Domain of the service provider
+     * @param networkZone Network zone of the service provider
+     * @param session Session of the service provider
+     * @param sessionName Session name of the service provider
+     * @param interactionType Interaction type of the operation
+     * @param interactionStage Interaction stage of the interaction
+     * @param transactionId Transaction identifier of the interaction, may be
+     * null.
+     * @param serviceArea Area number of the service
+     * @param service Service number
+     * @param operation Operation number
+     * @param serviceVersion Service version number
+     * @param isErrorMessage Flag indicating if the message conveys an error
+     */
+    public MALMessageHeader(final URI uriFrom,
+            final Blob authenticationId,
+            final URI uriTo,
+            final Time timestamp,
+            final QoSLevel qosLevel,
+            final UInteger priority,
+            final IdentifierList domain,
+            final Identifier networkZone,
+            final SessionType session,
+            final Identifier sessionName,
+            final InteractionType interactionType,
+            final UOctet interactionStage,
+            final Long transactionId,
+            final UShort serviceArea,
+            final UShort service,
+            final UShort operation,
+            final UOctet serviceVersion,
+            final Boolean isErrorMessage) {
+        this.URIFrom = uriFrom;
+        this.authenticationId = authenticationId;
+        this.URITo = uriTo;
+        this.timestamp = timestamp;
+        this.QoSlevel = qosLevel;
+        this.priority = priority;
+        this.domain = domain;
+        this.networkZone = networkZone;
+        this.session = session;
+        this.sessionName = sessionName;
+        this.interactionType = interactionType;
+        this.interactionStage = interactionStage;
+        this.transactionId = transactionId;
+        this.serviceArea = serviceArea;
+        this.service = service;
+        this.operation = operation;
+        this.serviceVersion = serviceVersion;
+        this.isErrorMessage = isErrorMessage;
+    }
 
     /**
      * Returns the field URIfrom.
      *
      * @return the field URIfrom.
      */
-    org.ccsds.moims.mo.mal.structures.URI getURIFrom();
+    public URI getURIFrom() {
+        return URIFrom;
+    }
 
     /**
      * Sets the field URIfrom.
      *
-     * @param newValue The new value to set.
+     * @param urIFrom The new value to set.
      */
-    void setURIFrom(org.ccsds.moims.mo.mal.structures.URI newValue);
+    public void setURIFrom(final URI urIFrom) {
+        this.URIFrom = urIFrom;
+    }
 
     /**
      * Returns the field authenticationId.
      *
      * @return the field authenticationId.
      */
-    org.ccsds.moims.mo.mal.structures.Blob getAuthenticationId();
+    public Blob getAuthenticationId() {
+        return authenticationId;
+    }
 
     /**
      * Sets the field authenticationId.
      *
      * @param newValue The new value to set.
      */
-    void setAuthenticationId(org.ccsds.moims.mo.mal.structures.Blob newValue);
+    public void setAuthenticationId(final Blob newValue) {
+        this.authenticationId = newValue;
+    }
 
     /**
      * Returns the field URIto.
      *
      * @return the field URIto.
      */
-    org.ccsds.moims.mo.mal.structures.URI getURITo();
+    public URI getURITo() {
+        return URITo;
+    }
 
     /**
      * Returns the field timestamp.
      *
      * @return the field timestamp.
      */
-    org.ccsds.moims.mo.mal.structures.Time getTimestamp();
+    public Time getTimestamp() {
+        return timestamp;
+    }
 
     /**
      * Returns the field QoSlevel.
      *
      * @return the field QoSlevel.
      */
-    org.ccsds.moims.mo.mal.structures.QoSLevel getQoSlevel();
+    public QoSLevel getQoSlevel() {
+        return QoSlevel;
+    }
 
     /**
      * Sets the field QoSlevel.
      *
      * @param newValue The new value to set.
      */
-    void setQoSlevel(org.ccsds.moims.mo.mal.structures.QoSLevel newValue);
+    public void setQoSlevel(final QoSLevel newValue) {
+        this.QoSlevel = newValue;
+    }
 
     /**
      * Returns the field priority.
      *
      * @return the field priority.
      */
-    UInteger getPriority();
+    public UInteger getPriority() {
+        return priority;
+    }
 
     /**
      * Returns the field domain.
      *
      * @return the field domain.
      */
-    org.ccsds.moims.mo.mal.structures.IdentifierList getDomain();
+    public IdentifierList getDomain() {
+        return domain;
+    }
 
     /**
      * Returns the field networkZone.
      *
      * @return the field networkZone.
      */
-    org.ccsds.moims.mo.mal.structures.Identifier getNetworkZone();
+    public Identifier getNetworkZone() {
+        return networkZone;
+    }
 
     /**
      * Returns the field session.
      *
      * @return the field session.
      */
-    org.ccsds.moims.mo.mal.structures.SessionType getSession();
+    public SessionType getSession() {
+        return session;
+    }
 
     /**
      * Returns the field sessionName.
      *
      * @return the field sessionName.
      */
-    org.ccsds.moims.mo.mal.structures.Identifier getSessionName();
+    public Identifier getSessionName() {
+        return sessionName;
+    }
 
     /**
      * Returns the field interactionType.
      *
      * @return the field interactionType.
      */
-    org.ccsds.moims.mo.mal.structures.InteractionType getInteractionType();
+    public InteractionType getInteractionType() {
+        return interactionType;
+    }
 
     /**
      * Returns the field interactionStage.
      *
      * @return the field interactionStage.
      */
-    UOctet getInteractionStage();
+    public UOctet getInteractionStage() {
+        return interactionStage;
+    }
 
     /**
      * Returns the field transactionId.
      *
      * @return the field transactionId.
      */
-    Long getTransactionId();
+    public Long getTransactionId() {
+        return transactionId;
+    }
 
     /**
      * Returns the field area.
      *
      * @return the field area.
      */
-    org.ccsds.moims.mo.mal.structures.UShort getServiceArea();
+    public UShort getServiceArea() {
+        return serviceArea;
+    }
 
     /**
      * Returns the field service.
      *
      * @return the field service.
      */
-    org.ccsds.moims.mo.mal.structures.UShort getService();
+    public UShort getService() {
+        return service;
+    }
 
     /**
      * Returns the field operation.
      *
      * @return the field operation.
      */
-    org.ccsds.moims.mo.mal.structures.UShort getOperation();
+    public UShort getOperation() {
+        return operation;
+    }
 
     /**
      * Returns the field version.
      *
      * @return the field version.
      */
-    UOctet getAreaVersion();
+    public UOctet getServiceVersion() {
+        return serviceVersion;
+    }
 
     /**
      * Returns the field isError.
      *
      * @return the field isError.
      */
-    Boolean getIsErrorMessage();
+    public Boolean getIsErrorMessage() {
+        return isErrorMessage;
+    }
 
     /**
      * Sets the field isError.
      *
-     * @param newValue The new value to set.
+     * @param isErrorMessage The new value to set.
      */
-    void setIsErrorMessage(Boolean newValue);
+    public void setIsErrorMessage(final Boolean isErrorMessage) {
+        this.isErrorMessage = isErrorMessage;
+    }
 }

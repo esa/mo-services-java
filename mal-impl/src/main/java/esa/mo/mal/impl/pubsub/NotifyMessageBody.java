@@ -80,7 +80,7 @@ public class NotifyMessageBody {
         this.area = srcHdr.getServiceArea();
         this.service = srcHdr.getService();
         this.operation = srcHdr.getOperation();
-        this.version = srcHdr.getAreaVersion();
+        this.version = srcHdr.getServiceVersion();
     }
 
     @Override

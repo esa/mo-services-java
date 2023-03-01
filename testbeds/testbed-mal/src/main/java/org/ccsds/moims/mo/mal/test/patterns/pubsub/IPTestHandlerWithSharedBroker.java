@@ -42,7 +42,6 @@ import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
-import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.provider.MonitorMultiPublisher;
 import org.ccsds.moims.mo.malprototype.iptest.provider.MonitorPublisher;
@@ -50,7 +49,6 @@ import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
-import org.ccsds.moims.mo.testbed.transport.TestMessageHeader;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
@@ -128,7 +126,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
 
         listener.cond.reset();
 
-        MALMessageHeader expectedPublishRegisterHeader = new TestMessageHeader(
+        MALMessageHeader expectedPublishRegisterHeader = new MALMessageHeader(
                 uris.uri,
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 uris.broker,
@@ -157,7 +155,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
 
         boolean isErrorTest = (_TestPublishRegister.getErrorCode().getValue() != 999);
 
-        MALMessageHeader expectedPublishRegisterAckHeader = new TestMessageHeader(
+        MALMessageHeader expectedPublishRegisterAckHeader = new MALMessageHeader(
                 uris.broker,
                 FileBasedDirectory.loadSharedBrokerAuthenticationId(),
                 uris.uri,
@@ -215,7 +213,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
             opNumber = IPTestServiceInfo.MONITOR_OP.getNumber();
         }
 
-        MALMessageHeader expectedPublishHeader = new TestMessageHeader(
+        MALMessageHeader expectedPublishHeader = new MALMessageHeader(
                 uris.uri,
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 uris.broker,
@@ -293,7 +291,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
 
         listener.cond.reset();
 
-        MALMessageHeader expectedPublishDeregisterHeader = new TestMessageHeader(
+        MALMessageHeader expectedPublishDeregisterHeader = new MALMessageHeader(
                 uris.uri,
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 uris.broker,
@@ -318,7 +316,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
         AssertionHelper.checkHeader("PubSub.checkPublishDeregisterHeader", assertions,
                 publishDeregisterMsg.getHeader(), expectedPublishDeregisterHeader);
 
-        MALMessageHeader expectedPublishDeregisterAckHeader = new TestMessageHeader(
+        MALMessageHeader expectedPublishDeregisterAckHeader = new MALMessageHeader(
                 uris.broker,
                 FileBasedDirectory.loadSharedBrokerAuthenticationId(),
                 uris.uri,

@@ -75,7 +75,6 @@ import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.transport.TestEndPoint;
-import org.ccsds.moims.mo.testbed.transport.TestMessageHeader;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
@@ -223,7 +222,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             listener.monitorRegisterCond.reset();
         }
 
-        TestMessageHeader expectedMonitorRegisterHeader = new TestMessageHeader(
+        MALMessageHeader expectedMonitorRegisterHeader = new MALMessageHeader(
                 ipTestConsumer.getConsumer().getURI(),
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 uris.broker,
@@ -268,7 +267,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             return false;
         }
 
-        TestMessageHeader expectedMonitorRegisterAckHeader = new TestMessageHeader(
+        MALMessageHeader expectedMonitorRegisterAckHeader = new MALMessageHeader(
                 uris.broker,
                 brokerAuthId,
                 ipTestConsumer.getConsumer().getURI(),
@@ -379,7 +378,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         FileBasedDirectory.URIpair uris = getProviderURIs(shared);
         Blob brokerAuthId = HeaderTestProcedure.getBrokerAuthId(shared);
 
-        TestMessageHeader expectedMonitorNotifyHeader = new TestMessageHeader(
+        MALMessageHeader expectedMonitorNotifyHeader = new MALMessageHeader(
                 uris.broker,
                 brokerAuthId,
                 ipTestConsumer.getConsumer().getURI(),
@@ -435,7 +434,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         Blob brokerAuthId = HeaderTestProcedure.getBrokerAuthId(shared);
 
-        TestMessageHeader expectedMonitorNotifyErrorHeader = new TestMessageHeader(
+        MALMessageHeader expectedMonitorNotifyErrorHeader = new MALMessageHeader(
                 uris.broker,
                 brokerAuthId,
                 ipTestConsumer.getConsumer().getURI(),
@@ -565,7 +564,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             consumerContext.listener.monitorDeregisterCond.reset();
         }
 
-        TestMessageHeader expectedDemonitorRegisterHeader = new TestMessageHeader(
+        MALMessageHeader expectedDemonitorRegisterHeader = new MALMessageHeader(
                 ipTestConsumer.getConsumer().getURI(),
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 uris.broker,
@@ -605,7 +604,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             return false;
         }
 
-        TestMessageHeader expectedMonitorDeregisterAckHeader = new TestMessageHeader(
+        MALMessageHeader expectedMonitorDeregisterAckHeader = new MALMessageHeader(
                 uris.broker,
                 brokerAuthId,
                 ipTestConsumer.getConsumer().getURI(),
@@ -741,7 +740,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             return false;
         }
 
-        TestMessageHeader expectedMonitorRegisterErrorHeader = new TestMessageHeader(
+        MALMessageHeader expectedMonitorRegisterErrorHeader = new MALMessageHeader(
                 uris.broker,
                 brokerAuthId,
                 ipTestConsumer.getConsumer().getURI(),
