@@ -20,24 +20,22 @@
  */
 package esa.mo.mal.transport.tcpip;
 
+import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
 import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryStreamFactory;
+import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.GENMessageHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.logging.Level;
 import java.util.Map;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
-
-import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
-import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
-import java.util.logging.Level;
 
 /**
  * This TCPIP implementation of MAL Message provides encoding methods for
