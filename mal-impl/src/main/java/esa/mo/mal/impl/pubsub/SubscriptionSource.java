@@ -52,15 +52,11 @@ public class SubscriptionSource {
      * @param hdr The message header of the subscription message.
      */
     public SubscriptionSource(final MALMessageHeader hdr) {
-        this.signatureURI = hdr.getURIFrom().getValue();
+        this.signatureURI = hdr.getFrom().getValue();
         msgHeaderDetails = new NotifyMessageHeader(
-                hdr.getURIFrom(),
+                hdr.getFrom(),
                 hdr.getTransactionId(),
-                hdr.getSession(),
-                hdr.getSessionName(),
-                hdr.getQoSlevel(),
-                null,
-                hdr.getPriority());
+                null);
     }
 
     /**
@@ -120,10 +116,15 @@ public class SubscriptionSource {
             IdentifierList keyNames) throws MALException {
         MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signatureURI);
 
-        final IdentifierList srcDomainId = srcHdr.getDomain();
+        //final IdentifierList srcDomainId = srcHdr.getDomain();
+        IdentifierList srcDomainId = null;
         final List<NotifyMessageBody> msgs = new LinkedList<>();
 
         for (Subscriptions sub : subs.values()) {
+            if (!updateHeaderList.isEmpty()){
+                srcDomainId = updateHeaderList.get(0).getDomain();
+            }
+            
             NotifyMessageBody subUpdate = sub.generateNotifyMessage(
                     srcHdr, srcDomainId, updateHeaderList, publishBody, keyNames);
 

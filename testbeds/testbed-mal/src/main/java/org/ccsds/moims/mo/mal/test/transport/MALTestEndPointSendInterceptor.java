@@ -84,7 +84,7 @@ public class MALTestEndPointSendInterceptor implements TestEndPointSendIntercept
                     Subscription subscription = registerBody.getSubscription();
 
                     if (subscription.getSubscriptionId().equals(HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID)) {
-                        Blob authId = HeaderTestProcedure.getBrokerAuthId(HeaderTestProcedure.isSharedbroker(msg.getHeader().getURITo()));
+                        Blob authId = HeaderTestProcedure.getBrokerAuthId(HeaderTestProcedure.isSharedbroker(msg.getHeader().getTo()));
 
                         MALMessageHeader errorHeader = TestEndPoint.createErrorHeader(msg.getHeader(),
                                 authId, MALPubSubOperation.REGISTER_ACK_STAGE);

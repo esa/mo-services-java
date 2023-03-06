@@ -250,7 +250,7 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
                 TestUpdateList updateList, Map qosProperties) {
             logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ','
                     + updateHeaderList + ')');
-            notifiedDomains.add(msgHeader.getDomain());
+            notifiedDomains.add(updateHeaderList.get(0).getDomain());
             monitorCond.set();
         }
 

@@ -402,16 +402,17 @@ public abstract class GENTransport<I, O> implements MALTransport {
      */
     public void sendMessage(final Object multiSendHandle, final boolean lastForHandle,
             final GENMessage msg) throws MALTransmitErrorException {
-        if ((null == msg.getHeader().getURITo())
-                || (null == msg.getHeader().getURITo().getValue())) {
-            throw new MALTransmitErrorException(msg.getHeader(),
+        MALMessageHeader header = msg.getHeader();
+
+        if ((null == header.getTo()) || (null == header.getTo().getValue())) {
+            throw new MALTransmitErrorException(header,
                     new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                             "URI To field must not be null"), qosProperties);
         }
 
         // get the root URI, (e.g. maltcp://10.0.0.1:61616 )
-        String destinationURI = msg.getHeader().getURITo().getValue();
-        String remoteRootURI = msg.getHeader().getURITo().getRootURI(serviceDelim, serviceDelimCounter);
+        String destinationURI = header.getTo().getValue();
+        String remoteRootURI = header.getTo().getRootURI(serviceDelim, serviceDelimCounter);
 
         // first check if its actually a message to ourselves
         String endpointUriPart = getRoutingPart(destinationURI);
@@ -425,7 +426,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             // if local then just send internally
             receiveIncomingMessage(
                     new GENIncomingMessageHolder(
-                            msg.getHeader().getTransactionId(), msg, new PacketToString(null)));
+                            header.getTransactionId(), msg, new PacketToString(null)));
         } else {
             try {
                 LOGGER.log(Level.FINE,
@@ -445,7 +446,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                     // data was not sent succesfully, throw an exception for the
                     // higher MAL layers
                     throw new MALTransmitErrorException(
-                            msg.getHeader(),
+                            header,
                             new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null),
                             null);
                 }
@@ -458,13 +459,13 @@ public abstract class GENTransport<I, O> implements MALTransport {
             } catch (InterruptedException e) {
                 LOGGER.log(Level.SEVERE, "Interrupted while waiting for data reply", e);
                 throw new MALTransmitErrorException(
-                        msg.getHeader(),
+                        header,
                         new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null),
                         null);
             } catch (Exception t) {
                 LOGGER.log(Level.SEVERE, "Could not send message!", t);
                 throw new MALTransmitErrorException(
-                        msg.getHeader(),
+                        header,
                         new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null),
                         null);
             }
@@ -613,7 +614,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             LOGGER.log(Level.FINE, "Processing message : {0} : {1}",
                     new Object[]{msg.getHeader().getTransactionId(), smsg});
 
-            String endpointUriPart = getRoutingPart(msg.getHeader().getURITo().getValue());
+            String endpointUriPart = getRoutingPart(msg.getHeader().getTo().getValue());
             final GENEndpoint endpoint = endpointRoutingMap.get(endpointUriPart);
 
             if (endpoint != null) {
@@ -698,14 +699,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
                     final GENMessage retMsg
                             = (GENMessage) endpoint.createMessage(srcHdr.getAuthenticationId(),
-                                    srcHdr.getURIFrom(),
+                                    srcHdr.getFrom(),
                                     Time.now(),
-                                    srcHdr.getQoSlevel(),
-                                    srcHdr.getPriority(),
-                                    srcHdr.getDomain(),
-                                    srcHdr.getNetworkZone(),
-                                    srcHdr.getSession(),
-                                    srcHdr.getSessionName(),
                                     srcHdr.getInteractionType(),
                                     new UOctet((short) (srcHdr.getInteractionStage().getValue() + 1)),
                                     srcHdr.getTransactionId(),
@@ -714,10 +709,11 @@ public abstract class GENTransport<I, O> implements MALTransport {
                                     srcHdr.getOperation(),
                                     srcHdr.getServiceVersion(),
                                     true,
+                                    srcHdr.getSupplements(),
                                     oriMsg.getQoSProperties(),
                                     errorNumber, new Union(errorMsg));
 
-                    retMsg.getHeader().setURIFrom(srcHdr.getURITo());
+                    retMsg.getHeader().setFrom(srcHdr.getTo());
 
                     sendMessage(null, true, retMsg);
                 } else {
@@ -814,7 +810,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                 // transport supports bi-directional communication
                 // this is the first message received form this reception handler
                 // add the remote base URI it is receiving messages from
-                URI sourceURI = msg.getHeader().getURIFrom();
+                URI sourceURI = msg.getHeader().getFrom();
                 String sourceRootURI = sourceURI.getRootURI(serviceDelim, serviceDelimCounter);
                 receptionHandler.setRemoteURI(sourceRootURI);
 
@@ -874,7 +870,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
     }
 
     protected URI rerouteMessage(GENMessage message) {
-        return message.getHeader().getURITo();
+        return message.getHeader().getTo();
     }
 
     /**

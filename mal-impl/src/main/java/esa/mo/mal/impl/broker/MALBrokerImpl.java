@@ -30,8 +30,6 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.transport.*;
 
 /**
  * Implementation of the MALBroker interface.
@@ -43,19 +41,16 @@ public class MALBrokerImpl extends MALClose implements MALBroker {
      */
     public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl.broker");
     private final MALBrokerHandler handler;
-    private final boolean handlerIsLocalType;
     private final List<MALBrokerBindingImpl> bindings = new LinkedList<>();
 
     MALBrokerImpl(final MALClose parent) throws MALException {
         super(parent);
         this.handler = (MALBrokerHandlerImpl) super.addChild(createBrokerHandler());
-        handlerIsLocalType = true;
     }
 
     MALBrokerImpl(final MALClose parent, MALBrokerHandler handler) throws MALException {
         super(parent);
         this.handler = handler;
-        handlerIsLocalType = false;
     }
 
     /**
@@ -70,20 +65,6 @@ public class MALBrokerImpl extends MALClose implements MALBroker {
     @Override
     public MALBrokerBinding[] getBindings() {
         return bindings.toArray(new MALBrokerBinding[bindings.size()]);
-    }
-
-    /**
-     * Returns the QoS used when contacting the provider.
-     *
-     * @param hdr The supplied header message.
-     * @return The required QoS level.
-     */
-    public QoSLevel getProviderQoSLevel(final MALMessageHeader hdr) {
-        if (handlerIsLocalType) {
-            return ((MALBrokerHandlerImpl) handler).getProviderQoSLevel(hdr);
-        }
-
-        return QoSLevel.BESTEFFORT;
     }
 
     /**

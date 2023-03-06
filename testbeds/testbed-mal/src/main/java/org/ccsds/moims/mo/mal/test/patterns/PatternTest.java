@@ -203,14 +203,8 @@ public class PatternTest {
         MALMessageHeader expectedInitialHeader = new MALMessageHeader(
                 ipTestConsumer.getConsumer().getURI(),
                 HeaderTestProcedure.AUTHENTICATION_ID,
-                msgHeader.getURITo(),
+                msgHeader.getTo(),
                 new Time(time_1),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.DOMAIN,
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 interactionType,
                 interactionStage,
                 null, // transaction id not checked here (see below)
@@ -218,21 +212,16 @@ public class PatternTest {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 operation,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                msgHeader.getSupplements());
 
         AssertionHelper.checkHeader("PatternTest.checkHeader", assertions, msgHeader, expectedInitialHeader);
 
         MALMessageHeader expectedFinalHeader = new MALMessageHeader(
-                msgHeader.getURITo(),
+                msgHeader.getTo(),
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 ipTestConsumer.getConsumer().getURI(),
                 new Time(time_2),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.DOMAIN,
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 interactionType,
                 interactionStage,
                 msgHeader.getTransactionId(),
@@ -240,7 +229,8 @@ public class PatternTest {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 expectedInitialHeader.getOperation(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                msgHeader.getSupplements());
 
         sendInitialFaultyTransitions(initialFaultyTransList, expectedFinalHeader);
 
@@ -287,16 +277,10 @@ public class PatternTest {
 
     private MALMessageHeader swapInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage) {
         return new MALMessageHeader(
-                expectedFinalHeader.getURIFrom(),
+                expectedFinalHeader.getFrom(),
                 expectedFinalHeader.getAuthenticationId(),
-                expectedFinalHeader.getURITo(),
+                expectedFinalHeader.getTo(),
                 expectedFinalHeader.getTimestamp(),
-                expectedFinalHeader.getQoSlevel(),
-                expectedFinalHeader.getPriority(),
-                expectedFinalHeader.getDomain(),
-                expectedFinalHeader.getNetworkZone(),
-                expectedFinalHeader.getSession(),
-                expectedFinalHeader.getSessionName(),
                 expectedFinalHeader.getInteractionType(),
                 interactionStage,
                 expectedFinalHeader.getTransactionId(),
@@ -304,7 +288,8 @@ public class PatternTest {
                 expectedFinalHeader.getService(),
                 expectedFinalHeader.getOperation(),
                 expectedFinalHeader.getServiceVersion(),
-                expectedFinalHeader.getIsErrorMessage());
+                expectedFinalHeader.getIsErrorMessage(),
+                expectedFinalHeader.getSupplements());
     }
 
     private boolean addSubmitReturnAssertions(ResponseListener monitor, int procedureId, MALMessageHeader expectedFinalHeader) throws Exception {
@@ -506,14 +491,14 @@ public class PatternTest {
     }
 
     private void setupInitialFaultyTransitions(List initialFaultyTransList) {
-        if (0 < initialFaultyTransList.size()) {
+        if (!initialFaultyTransList.isEmpty()) {
             LoggingBase.logMessage("PatternTest.setupInitialFaultyTransitions blocking incoming messages to set up faulty initial messages");
             ep.blockReceivedMessages();
         }
     }
 
     private void sendInitialFaultyTransitions(List initialFaultyTransList, MALMessageHeader hdr) throws Exception {
-        if (0 < initialFaultyTransList.size()) {
+        if (!initialFaultyTransList.isEmpty()) {
             for (int i = 0; i < initialFaultyTransList.size(); i++) {
                 IPTestTransitionType transition = (IPTestTransitionType) initialFaultyTransList.get(i);
 
@@ -526,7 +511,7 @@ public class PatternTest {
     }
 
     private void sendFinalFaultyTransitions(List finalFaultyTransList, MALMessageHeader hdr) throws Exception {
-        if (0 < finalFaultyTransList.size()) {
+        if (!finalFaultyTransList.isEmpty()) {
             for (int i = 0; i < finalFaultyTransList.size(); i++) {
                 IPTestTransitionType transition = (IPTestTransitionType) finalFaultyTransList.get(i);
 
@@ -538,20 +523,16 @@ public class PatternTest {
     private void transmitBrokenMessage(MALMessageHeader srcHdr, IPTestTransitionType transitionType) throws Exception {
         boolean isError = false;
 
-        if ((IPTestTransitionType.ACK_ERROR == transitionType) || (IPTestTransitionType.UPDATE_ERROR == transitionType) || (IPTestTransitionType.RESPONSE_ERROR == transitionType)) {
+        if ((IPTestTransitionType.ACK_ERROR == transitionType)
+                || (IPTestTransitionType.UPDATE_ERROR == transitionType)
+                || (IPTestTransitionType.RESPONSE_ERROR == transitionType)) {
             isError = true;
         }
 
-        MALMessageHeader brokenHeader = new MALMessageHeader(srcHdr.getURIFrom(),
+        MALMessageHeader brokenHeader = new MALMessageHeader(srcHdr.getFrom(),
                 srcHdr.getAuthenticationId(),
-                srcHdr.getURITo(),
+                srcHdr.getTo(),
                 srcHdr.getTimestamp(),
-                srcHdr.getQoSlevel(),
-                srcHdr.getPriority(),
-                srcHdr.getDomain(),
-                srcHdr.getNetworkZone(),
-                srcHdr.getSession(),
-                srcHdr.getSessionName(),
                 srcHdr.getInteractionType(),
                 transitionTypeToInteractionStage(transitionType, srcHdr.getInteractionType()),
                 srcHdr.getTransactionId(),
@@ -559,7 +540,8 @@ public class PatternTest {
                 srcHdr.getService(),
                 srcHdr.getOperation(),
                 srcHdr.getServiceVersion(),
-                isError);
+                isError,
+                srcHdr.getSupplements());
 
         MALMessage brokenMessage;
         if (isError) {

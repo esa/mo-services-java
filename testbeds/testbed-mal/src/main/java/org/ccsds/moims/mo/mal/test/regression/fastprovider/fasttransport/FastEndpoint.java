@@ -25,13 +25,9 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -55,9 +51,11 @@ public class FastEndpoint implements MALEndpoint {
         this.localName = localName;
     }
 
+    @Override
     public void startMessageDelivery() throws MALException {
     }
 
+    @Override
     public void stopMessageDelivery() throws MALException {
     }
 
@@ -65,12 +63,6 @@ public class FastEndpoint implements MALEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final InteractionType interactionType,
             final UOctet interactionStage,
             final Long transactionId,
@@ -79,18 +71,13 @@ public class FastEndpoint implements MALEndpoint {
             final UShort operation,
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final Map qosProperties,
             final Object... body) throws IllegalArgumentException, MALException {
         return new FastMessage(createMessageHeader(getURI(),
                 authenticationId,
                 uriTo,
                 timestamp,
-                qosLevel,
-                priority,
-                domain,
-                networkZone,
-                session,
-                sessionName,
                 interactionType,
                 interactionStage,
                 transactionId,
@@ -98,7 +85,8 @@ public class FastEndpoint implements MALEndpoint {
                 service,
                 operation,
                 serviceVersion,
-                isErrorMessage),
+                isErrorMessage,
+                supplements),
                 qosProperties,
                 body);
     }
@@ -107,14 +95,9 @@ public class FastEndpoint implements MALEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final Long transactionId,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final MALOperation op,
             final UOctet interactionStage,
             final Map qosProperties,
@@ -123,12 +106,6 @@ public class FastEndpoint implements MALEndpoint {
                 authenticationId,
                 uriTo,
                 timestamp,
-                qosLevel,
-                priority,
-                domain,
-                networkZone,
-                session,
-                sessionName,
                 op.getInteractionType(),
                 interactionStage,
                 transactionId,
@@ -136,19 +113,13 @@ public class FastEndpoint implements MALEndpoint {
                 op.getService().getServiceNumber(),
                 op.getNumber(),
                 op.getService().getServiceVersion(),
-                isErrorMessage),
+                isErrorMessage,
+                supplements),
                 qosProperties,
                 body);
     }
 
-    public MALMessage createMessage(Blob blob, URI uri, Time time, QoSLevel qsl, UInteger ui, IdentifierList il, Identifier idntfr, SessionType st, Identifier idntfr1, InteractionType it, UOctet uoctet, Long l, UShort ushort, UShort ushort1, UShort ushort2, UOctet uoctet1, Boolean bln, Map map, MALEncodedBody maleb) throws IllegalArgumentException, MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public MALMessage createMessage(Blob blob, URI uri, Time time, QoSLevel qsl, UInteger ui, IdentifierList il, Identifier idntfr, SessionType st, Identifier idntfr1, Long l, Boolean bln, MALOperation malo, UOctet uoctet, Map map, MALEncodedBody maleb) throws IllegalArgumentException, MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    @Override
     public void sendMessage(MALMessage malm) throws IllegalArgumentException, MALTransmitErrorException, MALException {
         transport.internalSendMessage(malm);
     }
@@ -157,21 +128,26 @@ public class FastEndpoint implements MALEndpoint {
         ml.onMessage(this, malm);
     }
 
+    @Override
     public void sendMessages(MALMessage[] malms) throws IllegalArgumentException, MALException {
     }
 
+    @Override
     public void setMessageListener(MALMessageListener ml) throws MALException {
         this.ml = ml;
     }
 
+    @Override
     public URI getURI() {
         return new URI("fast://" + localName);
     }
 
+    @Override
     public String getLocalName() {
         return localName;
     }
 
+    @Override
     public void close() throws MALException {
     }
 
@@ -179,12 +155,6 @@ public class FastEndpoint implements MALEndpoint {
             final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final InteractionType interactionType,
             final UOctet interactionStage,
             final Long transactionId,
@@ -192,17 +162,12 @@ public class FastEndpoint implements MALEndpoint {
             final UShort service,
             final UShort operation,
             final UOctet serviceVersion,
-            final Boolean isErrorMessage) {
+            final Boolean isErrorMessage,
+            final NamedValueList supplements) {
         return new GENMessageHeader(uriFrom,
                 authenticationId,
                 uriTo,
                 timestamp,
-                qosLevel,
-                priority,
-                domain,
-                networkZone,
-                session,
-                sessionName,
                 interactionType,
                 interactionStage,
                 transactionId,
@@ -210,6 +175,25 @@ public class FastEndpoint implements MALEndpoint {
                 service,
                 operation,
                 serviceVersion,
-                isErrorMessage);
+                isErrorMessage,
+                supplements);
     }
+
+    @Override
+    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
+            InteractionType interactionType, UOctet interactionStage, Long transactionId,
+            UShort serviceAreaNumber, UShort serviceNumber, UShort operationNumber,
+            UOctet areaVersion, Boolean isErrorMessage, NamedValueList supplements,
+            Map qosProperties, MALEncodedBody body) throws IllegalArgumentException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
+            Long transactionId, Boolean isErrorMessage, NamedValueList supplements,
+            MALOperation op, UOctet interactionStage, Map qosProperties,
+            MALEncodedBody body) throws IllegalArgumentException, MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

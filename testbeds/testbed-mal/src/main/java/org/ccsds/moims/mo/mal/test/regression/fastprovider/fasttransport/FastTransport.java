@@ -60,12 +60,12 @@ public class FastTransport implements MALTransport {
     public void deleteEndpoint(String string) throws IllegalArgumentException, MALException {
     }
 
-    public MALBrokerBinding createBroker(String string, Blob blob, QoSLevel[] qsls, 
+    public MALBrokerBinding createBroker(String string, Blob blob, QoSLevel[] qsls,
             UInteger ui, Map map) throws IllegalArgumentException, MALException {
         return null;
     }
 
-    public MALBrokerBinding createBroker(MALEndpoint male, Blob blob, QoSLevel[] qsls, 
+    public MALBrokerBinding createBroker(MALEndpoint male, Blob blob, QoSLevel[] qsls,
             UInteger ui, Map map) throws IllegalArgumentException, MALException {
         return null;
     }
@@ -82,7 +82,7 @@ public class FastTransport implements MALTransport {
     }
 
     protected void internalSendMessage(MALMessage malm) {
-        endpointMap.get(malm.getHeader().getURITo().getValue()).internalSendMessage(malm);
+        endpointMap.get(malm.getHeader().getTo().getValue()).internalSendMessage(malm);
     }
 
     protected String getLocalName(String localName,

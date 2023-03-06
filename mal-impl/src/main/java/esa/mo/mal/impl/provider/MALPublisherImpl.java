@@ -34,7 +34,6 @@ import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublisher;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Implementation of the MALPublisher interface.
@@ -116,7 +115,7 @@ class MALPublisherImpl implements MALPublisher {
     }
 
     @Override
-    public MALMessage asyncRegister(final IdentifierList keys, 
+    public MALMessage asyncRegister(final IdentifierList keys,
             final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(parent.getEndpoint(),
@@ -282,9 +281,6 @@ class MALPublisherImpl implements MALPublisher {
 
         private final String uri;
         private final IdentifierList domain;
-        private final String networkZone;
-        private final int session;
-        private final String sessionName;
 
         /**
          * Constructor.
@@ -302,22 +298,6 @@ class MALPublisherImpl implements MALPublisher {
                 final String sessionName) {
             this.uri = uri.getValue();
             this.domain = domain;
-            this.networkZone = networkZone;
-            this.session = session.getOrdinal();
-            this.sessionName = sessionName;
-        }
-
-        /**
-         * Constructor.
-         *
-         * @param hdr Source message.
-         */
-        public AddressKey(final MALMessageHeader hdr) {
-            this.uri = hdr.getURITo().getValue();
-            this.domain = hdr.getDomain();
-            this.networkZone = hdr.getNetworkZone().getValue();
-            this.session = hdr.getSession().getOrdinal();
-            this.sessionName = hdr.getSessionName().getValue();
         }
 
         @Override
@@ -342,27 +322,6 @@ class MALPublisherImpl implements MALPublisher {
                         return false;
                     }
                 }
-                if (networkZone == null) {
-                    if (other.networkZone != null) {
-                        return false;
-                    }
-                } else {
-                    if (!networkZone.equals(other.networkZone)) {
-                        return false;
-                    }
-                }
-                if (session != other.session) {
-                    return false;
-                }
-                if (sessionName == null) {
-                    if (other.sessionName != null) {
-                        return false;
-                    }
-                } else {
-                    if (!sessionName.equals(other.sessionName)) {
-                        return false;
-                    }
-                }
                 return true;
             }
             return false;
@@ -373,9 +332,6 @@ class MALPublisherImpl implements MALPublisher {
             int hash = 7;
             hash = 53 * hash + (this.uri != null ? this.uri.hashCode() : 0);
             hash = 53 * hash + (this.domain != null ? this.domain.hashCode() : 0);
-            hash = 53 * hash + (this.networkZone != null ? this.networkZone.hashCode() : 0);
-            hash = 53 * hash + this.session;
-            hash = 53 * hash + (this.sessionName != null ? this.sessionName.hashCode() : 0);
             return hash;
         }
 
@@ -384,24 +340,8 @@ class MALPublisherImpl implements MALPublisher {
             final AddressKey other = (AddressKey) o;
 
             if (uri.equals(other.uri)) {
-                if (domain.equals(other.domain)) {
-                    if (networkZone.equals(other.networkZone)) {
-                        if (session == other.session) {
-                            if (sessionName.equals(other.sessionName)) {
-                                return 0;
-                            } else {
-                                return sessionName.compareTo(other.sessionName);
-                            }
-                        } else {
-                            return session - other.session;
-                        }
-                    } else {
-                        return networkZone.compareTo(other.networkZone);
-                    }
-                } else {
-                    return (StructureHelper.domainToString(domain))
-                            .compareTo(StructureHelper.domainToString(other.domain));
-                }
+                return (StructureHelper.domainToString(domain))
+                        .compareTo(StructureHelper.domainToString(other.domain));
             } else {
                 return uri.compareTo(other.uri);
             }

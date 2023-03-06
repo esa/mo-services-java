@@ -103,10 +103,15 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         enc.encodeShort((short) header.getOperation().getValue());
         enc.encodeUOctet(header.getServiceVersion());
 
+        /*
         short parts = (short) (((header.getIsErrorMessage() ? 0x1 : 0x0) << 7)
                 | (header.getQoSlevel().getOrdinal() << 4)
                 | header.getSession().getOrdinal());
-
+        */
+        short parts = (short) (((header.getIsErrorMessage() ? 0x1 : 0x0) << 7)
+                | (1 << 4)
+                | 1);
+        
         enc.encodeUOctet(new UOctet(parts));
         ((TCPIPFixedBinaryEncoder) enc).encodeMALLong(header.getTransactionId());
 
@@ -120,17 +125,20 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
 
         // encode rest of header
         if (!header.getServiceFrom().isEmpty()) {
-            enc.encodeString(header.getURIFrom().toString());
+            enc.encodeString(header.getFrom().toString());
         }
         if (!header.getServiceTo().isEmpty()) {
-            enc.encodeString(header.getURITo().toString());
+            enc.encodeString(header.getTo().toString());
         }
+        /*
         if (header.getPriority() != null) {
             enc.encodeUInteger(header.getPriority());
         }
+        */
         if (header.getTimestamp() != null) {
             enc.encodeTime(header.getTimestamp());
         }
+        /*
         if (header.getNetworkZone() != null) {
             enc.encodeIdentifier(header.getNetworkZone());
         }
@@ -140,9 +148,15 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         if (header.getDomain() != null && header.getDomain().size() > 0) {
             header.getDomain().encode(enc);
         }
+        */
         if (header.getAuthenticationId() != null && header.getAuthenticationId().getLength() > 0) {
             enc.encodeBlob(header.getAuthenticationId());
         }
+        /*
+        if (header.getSupplements() != null) {
+            header.getSupplements().encode(enc);
+        }
+        */
     }
 
     /**
@@ -160,12 +174,15 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         if (!header.getServiceTo().isEmpty()) {
             result |= (0x1 << 6);
         }
+        /*
         if (header.getPriority() != null) {
             result |= (0x1 << 5);
         }
+        */
         if (header.getTimestamp() != null) {
             result |= (0x1 << 4);
         }
+        /*
         if (header.getNetworkZone() != null) {
             result |= (0x1 << 3);
         }
@@ -175,6 +192,8 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         if (header.getDomain() != null && header.getDomain().size() > 0) {
             result |= (0x1 << 1);
         }
+        */
+            
         if (header.getAuthenticationId() != null && header.getAuthenticationId().getLength() > 0) {
             result |= 0x1;
         }

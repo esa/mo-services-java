@@ -93,7 +93,7 @@ public class TransportInterceptor {
     }
 
     public void messageSent(MALMessage msg) {
-        lastSentMessageTable.put(msg.getHeader().getURIFrom(), msg);
+        lastSentMessageTable.put(msg.getHeader().getFrom(), msg);
         lastSentMessage.add(msg);
     }
 

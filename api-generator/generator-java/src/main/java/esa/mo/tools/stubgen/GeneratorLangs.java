@@ -1057,7 +1057,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ") {"), false);
+        String opNumber = createProviderSkeletonHandlerSwitch();
+        method.addLine(createMethodCall("switch (" + opNumber + ") {"), false);
+ 
+        String msg = "Unknown operation: \" + " + opNumber + " + \" - className: " + className + " - method: ";
+        String unkErrorMsg;
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SEND_OP) {
@@ -1070,9 +1074,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         method.addLine("  default:", false);
         String ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
+        unkErrorMsg = "(\"" + msg + "Send\")";
         method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
                 + "(new " + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString + "(\"Unknown operation\"") + ")))", ns + stdErrorNs, true);
+                        + "new " + malString) + unkErrorMsg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1084,7 +1089,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 StubUtils.concatenateArguments(submitInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ") {"), false);
+        method.addLine(createMethodCall("switch (" + opNumber + ") {"), false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SUBMIT_OP) {
@@ -1098,9 +1103,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         method.addLine("  default:", false);
         ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
+        unkErrorMsg = "(\"" + msg + "Submit\")";
         method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError(new "
                 + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString + "(\"Unknown operation\"") + ")))"), ns + stdErrorNs, true);
+                        + "new " + malString) + unkErrorMsg + "))"), ns + stdErrorNs, true);
+        method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
+                + "(new " + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
+                        + "new " + malString) + unkErrorMsg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1112,7 +1121,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "handleRequest", StubUtils.concatenateArguments(requestInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ") {"), false);
+        method.addLine(createMethodCall("switch (" + opNumber + ") {"), false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.REQUEST_OP) {
@@ -1130,9 +1139,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         method.addLine("  default:", false);
         ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
+        unkErrorMsg = "(\"" + msg + "Request\")";
         method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError(new "
-                + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", new " + malString + "(\"Unknown operation\"")
-                + ")))"), ns + stdErrorNs, true);
+                + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
+                        + "new " + malString) + unkErrorMsg + "))"), ns + stdErrorNs, true);
+        method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
+                + "(new " + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
+                        + "new " + malString) + unkErrorMsg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1144,7 +1157,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 StubUtils.concatenateArguments(invokeInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ") {"), false);
+        method.addLine(createMethodCall("switch (" + opNumber + ") {"), false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.INVOKE_OP) {
@@ -1158,9 +1171,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         method.addLine("  default:", false);
         ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
+        unkErrorMsg = "(\"" + msg + "Invoke\")";
         method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError(new "
                 + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString + "(\"Unknown operation\"") + ")))"), ns + stdErrorNs, true);
+                        + "new " + malString) + unkErrorMsg + "))"), ns + stdErrorNs, true);
+        method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
+                + "(new " + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
+                        + "new " + malString) + unkErrorMsg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1172,7 +1189,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 StubUtils.concatenateArguments(progressInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + createProviderSkeletonHandlerSwitch() + ") {"), false);
+        method.addLine(createMethodCall("switch (" + opNumber + ") {"), false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.PROGRESS_OP) {
@@ -1185,9 +1202,17 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         method.addLine("  default:", false);
         ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
-        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError(new "
-                + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString + "(\"Unknown operation\"") + ")))"), ns + stdErrorNs, true);
+        unkErrorMsg = "(\"" + msg + "Progress\")";
+        method.addMethodWithDependencyStatement(
+                createMethodCall("    interaction.sendError(new "
+                        + convertToNamespace(stdError + "("
+                                + errorCodeAsReference(file, ns) + ", "
+                                + "new " + malString) + unkErrorMsg + "))"),
+                ns + stdErrorNs, true);
+        method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
+                + "(new " + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
+                        + "new " + malString) + unkErrorMsg + "))",
+                ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 

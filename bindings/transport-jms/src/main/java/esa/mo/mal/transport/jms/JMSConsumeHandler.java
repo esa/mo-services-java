@@ -42,11 +42,6 @@ public class JMSConsumeHandler extends JMSQueueHandler {
     private final UOctet version;
     private Identifier subId = null;
     private URI URIFrom = null;
-    private QoSLevel level = null;
-    private UInteger priority = null;
-    private Identifier networkZone = null;
-    private SessionType session = null;
-    private Identifier sessionName = null;
     private Long transactionId = null;
 
     public JMSConsumeHandler(JMSEndpoint endPoint, Object interruption,
@@ -64,12 +59,7 @@ public class JMSConsumeHandler extends JMSQueueHandler {
 
         //this.queueSession = transport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
         MALMessageHeader hdr = msg.getHeader();
-        URIFrom = hdr.getURITo();
-        level = hdr.getQoSlevel();
-        priority = hdr.getPriority();
-        networkZone = hdr.getNetworkZone();
-        session = hdr.getSession();
-        sessionName = hdr.getSessionName();
+        URIFrom = hdr.getTo();
 
         if (null == transactionId) {
             transactionId = hdr.getTransactionId();
@@ -83,7 +73,7 @@ public class JMSConsumeHandler extends JMSQueueHandler {
         StringBuilder buf = new StringBuilder();
         boolean notFirst = false;
 
-        String sdomain = StructureHelper.domainToString(msg.getHeader().getDomain());
+        String sdomain = StructureHelper.domainToString(subscription.getDomain());
 
         for (SubscriptionFilter filter : filters) {
             buf.append('(');
@@ -130,8 +120,8 @@ public class JMSConsumeHandler extends JMSQueueHandler {
                 createRoutingKeyBoolean(pbuf, JMSEndpoint.MOD_PROPERTY, true, pvalueSet);
             }
             buf.append(pbuf);
-            */
-            /*
+             */
+ /*
             StringBuilder ebuf = new StringBuilder();
             EntityKeyList entityKeys = rqst.getEntityKeys();
             for (EntityKey entityKey : entityKeys) {
@@ -161,7 +151,7 @@ public class JMSConsumeHandler extends JMSQueueHandler {
                 }
             }
             buf.append(')');
-            */
+             */
         }
         JMSTransport.RLOGGER.log(Level.FINE, "JMS Registering to {0} for {1}",
                 new Object[]{providerExchangeName, buf.toString()});
@@ -286,7 +276,6 @@ public class JMSConsumeHandler extends JMSQueueHandler {
     @Override
     protected GENIncomingMessageDecoder createMessageDecoder(JMSUpdate update) {
         return new JMSIncomingPSMessageDecoder(endPoint.getJtransport(), update,
-                endPoint.getURI(), version, subId, URIFrom, level, priority,
-                networkZone, session, sessionName, transactionId);
+                endPoint.getURI(), version, subId, URIFrom, transactionId);
     }
 }

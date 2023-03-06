@@ -112,12 +112,6 @@ public class TestEncoder {
                 new Blob("".getBytes()),
                 new URI("to"),
                 new Time(12345678),
-                QoSLevel.ASSURED,
-                new UInteger(1),
-                domain,
-                nz,
-                SessionType.LIVE,
-                new Identifier("LIVE"),
                 InteractionType.SEND,
                 new UOctet((short) 0),
                 Long.MIN_VALUE,
@@ -125,7 +119,8 @@ public class TestEncoder {
                 PerfTestHelper.PERFTEST_SERVICE.getServiceNumber(),
                 PerfTestHelper.PERFTEST_SERVICE.SEND_OP_NUMBER,
                 PerfTestHelper.PERFTEST_SERVICE.getServiceVersion(),
-                Boolean.FALSE), PerfTestHelper.PERFTEST_SERVICE.SEND_OP, 0, null, null);
+                Boolean.FALSE, new NamedValueList()), 
+                PerfTestHelper.PERFTEST_SERVICE.SEND_OP, 0, null, null);
 
         System.out.println("Running tests");
         for (Results result : results) {

@@ -56,12 +56,6 @@ public interface MALEndpoint {
      * @param authenticationId Authentication identifier of the message
      * @param uriTo URI of the message destination
      * @param timestamp Timestamp of the message
-     * @param qosLevel QoS level of the message
-     * @param priority Priority of the message
-     * @param domain Domain of the service provider
-     * @param networkZone Network zone of the service provider
-     * @param session Session of the service provider
-     * @param sessionName Session name of the service provider
      * @param interactionType Interaction type of the operation
      * @param interactionStage Interaction stage of the interaction
      * @param transactionId Transaction identifier of the interaction, may be
@@ -71,6 +65,7 @@ public interface MALEndpoint {
      * @param operationNumber Operation number
      * @param areaVersion Area version number
      * @param isErrorMessage Flag indicating if the message conveys an error
+     * @param supplements The header supplements
      * @param qosProperties QoS properties of the message, may be null.
      * @param body Message body elements
      * @return The created message.
@@ -82,12 +77,6 @@ public interface MALEndpoint {
             Blob authenticationId,
             URI uriTo,
             Time timestamp,
-            QoSLevel qosLevel,
-            UInteger priority,
-            IdentifierList domain,
-            Identifier networkZone,
-            SessionType session,
-            Identifier sessionName,
             InteractionType interactionType,
             UOctet interactionStage,
             Long transactionId,
@@ -96,6 +85,7 @@ public interface MALEndpoint {
             UShort operationNumber,
             UOctet areaVersion,
             Boolean isErrorMessage,
+            NamedValueList supplements,
             Map qosProperties,
             Object... body)
             throws java.lang.IllegalArgumentException, MALException;
@@ -106,12 +96,6 @@ public interface MALEndpoint {
      * @param authenticationId Authentication identifier of the message
      * @param uriTo URI of the message destination
      * @param timestamp Timestamp of the message
-     * @param qosLevel QoS level of the message
-     * @param priority Priority of the message
-     * @param domain Domain of the service provider
-     * @param networkZone Network zone of the service provider
-     * @param session Session of the service provider
-     * @param sessionName Session name of the service provider
      * @param interactionType Interaction type of the operation
      * @param interactionStage Interaction stage of the interaction
      * @param transactionId Transaction identifier of the interaction, may be
@@ -121,6 +105,7 @@ public interface MALEndpoint {
      * @param operationNumber Operation number
      * @param areaVersion Area version number
      * @param isErrorMessage Flag indicating if the message conveys an error
+     * @param supplements The header supplements
      * @param qosProperties QoS properties of the message, may be null.
      * @param body The already encoded message body
      * @return The created message.
@@ -132,12 +117,6 @@ public interface MALEndpoint {
             Blob authenticationId,
             URI uriTo,
             Time timestamp,
-            QoSLevel qosLevel,
-            UInteger priority,
-            IdentifierList domain,
-            Identifier networkZone,
-            SessionType session,
-            Identifier sessionName,
             InteractionType interactionType,
             UOctet interactionStage,
             Long transactionId,
@@ -146,6 +125,7 @@ public interface MALEndpoint {
             UShort operationNumber,
             UOctet areaVersion,
             Boolean isErrorMessage,
+            NamedValueList supplements,
             Map qosProperties,
             MALEncodedBody body)
             throws java.lang.IllegalArgumentException, MALException;
@@ -156,15 +136,10 @@ public interface MALEndpoint {
      * @param authenticationId Authentication identifier of the message
      * @param uriTo URI of the message destination
      * @param timestamp Timestamp of the message
-     * @param qosLevel QoS level of the message
-     * @param priority Priority of the message
-     * @param domain Domain of the service provider
-     * @param networkZone Network zone of the service provider
-     * @param session Session of the service provider
-     * @param sessionName Session name of the service provider
      * @param transactionId Transaction identifier of the interaction, may be
      * null.
      * @param isErrorMessage Flag indicating if the message conveys an error
+     * @param supplements The header supplements
      * @param op Operation represented as a MALOperation
      * @param interactionStage Interaction stage of the interaction
      * @param qosProperties QoS properties of the message, may be null.
@@ -178,14 +153,9 @@ public interface MALEndpoint {
             Blob authenticationId,
             URI uriTo,
             Time timestamp,
-            QoSLevel qosLevel,
-            UInteger priority,
-            IdentifierList domain,
-            Identifier networkZone,
-            SessionType session,
-            Identifier sessionName,
             Long transactionId,
             Boolean isErrorMessage,
+            NamedValueList supplements,
             MALOperation op,
             UOctet interactionStage,
             Map qosProperties,
@@ -198,15 +168,10 @@ public interface MALEndpoint {
      * @param authenticationId Authentication identifier of the message
      * @param uriTo URI of the message destination
      * @param timestamp Timestamp of the message
-     * @param qosLevel QoS level of the message
-     * @param priority Priority of the message
-     * @param domain Domain of the service provider
-     * @param networkZone Network zone of the service provider
-     * @param session Session of the service provider
-     * @param sessionName Session name of the service provider
      * @param transactionId Transaction identifier of the interaction, may be
      * null.
      * @param isErrorMessage Flag indicating if the message conveys an error
+     * @param supplements The header supplements
      * @param op Operation represented as a MALOperation
      * @param interactionStage Interaction stage of the interaction
      * @param qosProperties QoS properties of the message, may be null.
@@ -220,14 +185,9 @@ public interface MALEndpoint {
             Blob authenticationId,
             URI uriTo,
             Time timestamp,
-            QoSLevel qosLevel,
-            UInteger priority,
-            IdentifierList domain,
-            Identifier networkZone,
-            SessionType session,
-            Identifier sessionName,
             Long transactionId,
             Boolean isErrorMessage,
+            NamedValueList supplements,
             MALOperation op,
             UOctet interactionStage,
             Map qosProperties,

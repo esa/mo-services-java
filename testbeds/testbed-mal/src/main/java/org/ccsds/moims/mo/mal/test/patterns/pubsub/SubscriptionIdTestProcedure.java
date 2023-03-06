@@ -137,7 +137,8 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
                 QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, false, updateHeaderList, updateList, null, expectedErrorCode, false, null);
+                SESSION, SESSION_NAME, false, updateHeaderList,
+                updateList, null, expectedErrorCode, false, null);
 
         ipTest.publishUpdates(testPublishUpdate);
         return true;

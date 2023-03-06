@@ -48,22 +48,18 @@ public class TCPIPEndpoint extends GENEndpoint {
 
     @Override
     public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo, final Time timestamp, final QoSLevel qosLevel,
-            final UInteger priority, final IdentifierList domain,
-            final Identifier networkZone, final SessionType session,
-            final Identifier sessionName,
+            final URI uriTo, final Time timestamp,
             final InteractionType interactionType,
             final UOctet interactionStage, final Long transactionId,
             final UShort serviceArea, final UShort service,
             final UShort operation, final UOctet serviceVersion,
-            final Boolean isErrorMessage, final Map qosProperties,
-            final Object... body) throws MALException {
+            final Boolean isErrorMessage, final NamedValueList supplements,
+            final Map qosProperties, final Object... body) throws MALException {
         GENMessageHeader hdr = createMessageHeader(getURI(), authenticationId,
-                uriTo, timestamp, qosLevel, priority, domain, networkZone,
-                session, sessionName, interactionType,
+                uriTo, timestamp, interactionType,
                 interactionStage, transactionId, serviceArea,
                 service, operation, serviceVersion,
-                isErrorMessage, qosProperties);
+                isErrorMessage, supplements, qosProperties);
         try {
             return new TCPIPMessage(false, hdr, qosProperties,
                     null, transport.getStreamFactory(), body);
@@ -74,16 +70,13 @@ public class TCPIPEndpoint extends GENEndpoint {
 
     @Override
     public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo, final Time timestamp, final QoSLevel qosLevel,
-            final UInteger priority, final IdentifierList domain,
-            final Identifier networkZone, final SessionType session,
-            final Identifier sessionName,
+            final URI uriTo, final Time timestamp,
             final InteractionType interactionType,
             final UOctet interactionStage, final Long transactionId,
             final UShort serviceArea, final UShort service,
             final UShort operation, final UOctet serviceVersion,
-            final Boolean isErrorMessage, final Map qosProperties,
-            final MALEncodedBody body) throws MALException {
+            final Boolean isErrorMessage, final NamedValueList supplements,
+            final Map qosProperties, final MALEncodedBody body) throws MALException {
         return null;
     }
 
@@ -91,14 +84,9 @@ public class TCPIPEndpoint extends GENEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final Long transactionId,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final MALOperation op,
             final UOctet interactionStage,
             final Map qosProperties,
@@ -109,22 +97,18 @@ public class TCPIPEndpoint extends GENEndpoint {
 
     @Override
     public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo, final Time timestamp, final QoSLevel qosLevel,
-            final UInteger priority, final IdentifierList domain,
-            final Identifier networkZone, final SessionType session,
-            final Identifier sessionName, final Long transactionId,
-            final Boolean isErrorMessage, final MALOperation op,
-            final UOctet interactionStage, final Map qosProperties,
-            final Object... body) throws MALException {
+            final URI uriTo, final Time timestamp, final Long transactionId,
+            final Boolean isErrorMessage, final NamedValueList supplements,
+            final MALOperation op, final UOctet interactionStage,
+            final Map qosProperties, final Object... body) throws MALException {
         GENMessageHeader hdr = createMessageHeader(getURI(), authenticationId,
-                uriTo, timestamp, qosLevel, priority, domain, networkZone,
-                session, sessionName, op.getInteractionType(),
+                uriTo, timestamp, op.getInteractionType(),
                 interactionStage, transactionId,
                 op.getService().getAreaNumber(),
                 op.getService().getServiceNumber(),
                 op.getNumber(),
                 op.getService().getServiceVersion(),
-                isErrorMessage, qosProperties);
+                isErrorMessage, supplements, qosProperties);
         try {
             return new TCPIPMessage(false, hdr, qosProperties,
                     op, transport.getStreamFactory(), body);
@@ -143,22 +127,18 @@ public class TCPIPEndpoint extends GENEndpoint {
     @Override
     public GENMessageHeader createMessageHeader(final URI uriFrom,
             Blob authenticationId, final URI uriTo, final Time timestamp,
-            final QoSLevel qosLevel, final UInteger priority,
-            final IdentifierList domain, final Identifier networkZone,
-            final SessionType session, final Identifier sessionName,
-            final InteractionType interactionType,
-            final UOctet interactionStage, final Long transactionId,
-            final UShort serviceArea, final UShort service,
+            final InteractionType interactionType, final UOctet interactionStage,
+            final Long transactionId, final UShort serviceArea, final UShort service,
             final UShort operation, final UOctet serviceVersion,
-            final Boolean isErrorMessage, final Map qosProperties) {
+            final Boolean isErrorMessage, final NamedValueList supplements,
+            final Map qosProperties) {
         String serviceFrom = transport.getRoutingPart(uriFrom.toString());
         String serviceTo = transport.getRoutingPart(uriTo.toString());
 
         return new TCPIPMessageHeader(uriFrom, serviceFrom, authenticationId,
-                uriTo, serviceTo, timestamp, qosLevel, priority, domain,
-                networkZone, session, sessionName, interactionType,
+                uriTo, serviceTo, timestamp, interactionType,
                 interactionStage, transactionId, serviceArea, service,
-                operation, serviceVersion, isErrorMessage);
+                operation, serviceVersion, isErrorMessage, supplements);
     }
 
 }

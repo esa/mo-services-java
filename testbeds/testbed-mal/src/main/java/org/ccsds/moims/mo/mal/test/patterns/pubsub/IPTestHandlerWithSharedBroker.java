@@ -54,6 +54,9 @@ import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
+/**
+ * Provider side
+ */
 public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
 
     private String ipTestProviderWithSharedBrokerFileName;
@@ -72,53 +75,47 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
     }
 
     @Override
-    protected void doPublishRegister(
-            TestPublishRegister _TestPublishRegister,
+    protected void doPublishRegister(TestPublishRegister publishRegister,
             MonitorPublishInteractionListener listener) throws MALInteractionException, MALException {
-        LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister(" + _TestPublishRegister + ')');
+        LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister(" + publishRegister + ')');
         FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ipTestProviderWithSharedBrokerFileName);
+
+        String key = publishRegister.getDomain().toString()
+                + publishRegister.getNetworkZone().toString()
+                + publishRegister.getSession().toString()
+                + publishRegister.getSessionName().toString();
+
         // Reset the listener
         listener.setHeader(null);
         listener.setError(null);
+        listener.setKey(key);
 
         Time timestamp = new Time(System.currentTimeMillis());
 
-        QoSLevel firstPublishRegisterQoSLevel = listener.getPublishRegisterQoSLevel();
-        if (firstPublishRegisterQoSLevel == null) {
-            firstPublishRegisterQoSLevel = _TestPublishRegister.getQos();
-        }
-
-        UInteger firstPublishRegisterPriority = listener.getPublishRegisterPriority();
-        if (firstPublishRegisterPriority == null) {
-            firstPublishRegisterPriority = _TestPublishRegister.getPriority();
-        }
-
         UShort opNumber = null;
         try {
-            if (_TestPublishRegister.getTestMultiType()) {
+            if (publishRegister.getTestMultiType()) {
                 opNumber = IPTestServiceInfo.MONITORMULTI_OP.getNumber();
-                MonitorMultiPublisher publisher = getMonitorMultiPublisher(
-                        _TestPublishRegister.getDomain(),
-                        _TestPublishRegister.getNetworkZone(),
-                        _TestPublishRegister.getSession(),
-                        _TestPublishRegister.getSessionName(),
-                        _TestPublishRegister.getQos(),
-                        _TestPublishRegister.getPriority());
+                MonitorMultiPublisher publisher = getMonitorMultiPublisher(publishRegister.getDomain(),
+                        publishRegister.getNetworkZone(),
+                        publishRegister.getSession(),
+                        publishRegister.getSessionName(),
+                        publishRegister.getQos(),
+                        publishRegister.getPriority());
 
-                LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister: The keyNames are: " + _TestPublishRegister.getKeyNames());
-                publisher.asyncRegister(_TestPublishRegister.getKeyNames(), listener);
+                LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister: The keyNames are: " + publishRegister.getKeyNames());
+                publisher.asyncRegister(publishRegister.getKeyNames(), listener);
             } else {
                 opNumber = IPTestServiceInfo.MONITOR_OP.getNumber();
-                MonitorPublisher publisher = getMonitorPublisher(
-                        _TestPublishRegister.getDomain(),
-                        _TestPublishRegister.getNetworkZone(),
-                        _TestPublishRegister.getSession(),
-                        _TestPublishRegister.getSessionName(),
-                        _TestPublishRegister.getQos(),
-                        _TestPublishRegister.getPriority());
+                MonitorPublisher publisher = getMonitorPublisher(publishRegister.getDomain(),
+                        publishRegister.getNetworkZone(),
+                        publishRegister.getSession(),
+                        publishRegister.getSessionName(),
+                        publishRegister.getQos(),
+                        publishRegister.getPriority());
 
-                LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister: The keyNames are: " + _TestPublishRegister.getKeyNames());
-                publisher.asyncRegister(_TestPublishRegister.getKeyNames(), listener);
+                LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister: The keyNames are: " + publishRegister.getKeyNames());
+                publisher.asyncRegister(publishRegister.getKeyNames(), listener);
             }
             listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
         } catch (InterruptedException e) {
@@ -131,12 +128,6 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 uris.broker,
                 timestamp,
-                _TestPublishRegister.getQos(),
-                _TestPublishRegister.getPriority(),
-                _TestPublishRegister.getDomain(),
-                _TestPublishRegister.getNetworkZone(),
-                _TestPublishRegister.getSession(),
-                _TestPublishRegister.getSessionName(),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._PUBLISH_REGISTER_STAGE),
                 null,
@@ -144,7 +135,8 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 opNumber,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
         MALMessage publishRegisterMsg = TransportInterceptor.instance().getLastSentMessage(uris.uri);
 
@@ -153,26 +145,22 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
         AssertionHelper.checkHeader("PubSub.checkPublishRegisterHeader", assertions,
                 publishRegisterMsg.getHeader(), expectedPublishRegisterHeader);
 
-        boolean isErrorTest = (_TestPublishRegister.getErrorCode().getValue() != 999);
+        boolean isErrorTest = (publishRegister.getErrorCode().getValue() != 999);
 
         MALMessageHeader expectedPublishRegisterAckHeader = new MALMessageHeader(
                 uris.broker,
                 FileBasedDirectory.loadSharedBrokerAuthenticationId(),
                 uris.uri,
                 publishRegisterMsg.getHeader().getTimestamp(),
-                firstPublishRegisterQoSLevel,
-                firstPublishRegisterPriority,
-                _TestPublishRegister.getDomain(),
-                _TestPublishRegister.getNetworkZone(),
-                _TestPublishRegister.getSession(),
-                _TestPublishRegister.getSessionName(),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE),
                 publishRegisterMsg.getHeader().getTransactionId(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 opNumber,
-                MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(), isErrorTest);
+                MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
+                isErrorTest,
+                new NamedValueList());
 
         String procedureName;
         if (isErrorTest) {
@@ -185,29 +173,31 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
         AssertionHelper.checkHeader(procedureName, assertions,
                 publishRegisterAck, expectedPublishRegisterAckHeader);
 
-        if (_TestPublishRegister.getErrorCode().getValue() != 999) {
+        if (publishRegister.getErrorCode().getValue() != 999) {
             MALStandardError error = listener.getError();
             assertions.add(new Assertion(procedureName,
                     "Error received", (error != null)));
             if (error != null) {
                 AssertionHelper.checkEquality(procedureName,
                         assertions, "errorNumber", error.getErrorNumber(),
-                        _TestPublishRegister.getErrorCode());
+                        publishRegister.getErrorCode());
             }
         }
     }
 
     @Override
-    public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction) throws MALException {
-        LoggingBase.logMessage("IPTestHandlerWithSharedBroker.publishUpdates(" + _TestPublishUpdate + ')');
+    public void publishUpdates(TestPublishUpdate publishUpdate, MALInteraction interaction) throws MALException {
+        LoggingBase.logMessage("IPTestHandlerWithSharedBroker.publishUpdates(" + publishUpdate + ')');
         FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ipTestProviderWithSharedBrokerFileName);
 
-        MonitorPublishInteractionListener listener = getPublishInteractionListener(
-                _TestPublishUpdate.getDomain(), _TestPublishUpdate.getNetworkZone(),
-                _TestPublishUpdate.getSession(), _TestPublishUpdate.getSessionName());
+        MonitorPublishInteractionListener listener = defaultListener;
+        String key = publishUpdate.getDomain().toString()
+                + publishUpdate.getNetworkZone().toString()
+                + publishUpdate.getSession().toString()
+                + publishUpdate.getSessionName().toString();
 
         UShort opNumber;
-        if (_TestPublishUpdate.getTestMultiType()) {
+        if (publishUpdate.getTestMultiType()) {
             opNumber = IPTestServiceInfo.MONITORMULTI_OP.getNumber();
         } else {
             opNumber = IPTestServiceInfo.MONITOR_OP.getNumber();
@@ -218,25 +208,20 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 uris.broker,
                 new Time(System.currentTimeMillis()),
-                _TestPublishUpdate.getQos(),
-                _TestPublishUpdate.getPriority(),
-                _TestPublishUpdate.getDomain(),
-                _TestPublishUpdate.getNetworkZone(),
-                _TestPublishUpdate.getSession(),
-                _TestPublishUpdate.getSessionName(),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._PUBLISH_STAGE),
-                listener.getPublishRegisterTransactionId(),
+                listener.getPublishRegisterTransactionId(key),
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 opNumber,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
-        super.publishUpdates(_TestPublishUpdate, interaction);
+        super.publishUpdates(publishUpdate, interaction);
 
-        if (_TestPublishUpdate.getErrorCode().getValue() != 999
-                && _TestPublishUpdate.getIsException().booleanValue()) {
+        if (publishUpdate.getErrorCode().getValue() != 999
+                && publishUpdate.getIsException()) {
             // No Publish message is expected to be sent
             return;
         }
@@ -296,12 +281,6 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 uris.broker,
                 timestamp,
-                _TestPublishDeregister.getQos(),
-                _TestPublishDeregister.getPriority(),
-                _TestPublishDeregister.getDomain(),
-                _TestPublishDeregister.getNetworkZone(),
-                _TestPublishDeregister.getSession(),
-                _TestPublishDeregister.getSessionName(),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._PUBLISH_DEREGISTER_STAGE),
                 null,
@@ -309,7 +288,8 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 opNumber,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
         MALMessage publishDeregisterMsg = TransportInterceptor.instance().getLastSentMessage(uris.uri);
 
@@ -321,12 +301,6 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 FileBasedDirectory.loadSharedBrokerAuthenticationId(),
                 uris.uri,
                 publishDeregisterMsg.getHeader().getTimestamp(),
-                listener.getPublishRegisterQoSLevel(),
-                listener.getPublishRegisterPriority(),
-                _TestPublishDeregister.getDomain(),
-                _TestPublishDeregister.getNetworkZone(),
-                _TestPublishDeregister.getSession(),
-                _TestPublishDeregister.getSessionName(),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE),
                 publishDeregisterMsg.getHeader().getTransactionId(),
@@ -334,7 +308,8 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 opNumber,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
         MALMessageHeader publishDeregisterAck = listener.getHeader();
         AssertionHelper.checkHeader("PubSub.checkPublishDeregisterAckHeader", assertions,

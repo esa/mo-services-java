@@ -22,20 +22,17 @@ package esa.mo.mal.encoder.tcpip;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SessionType;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UShort;
-
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementInputStream;
 import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 
 /**
@@ -100,31 +97,31 @@ public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputS
 
         short parts = dec.decodeUOctet().getValue();
         Boolean isErrorMessage = (((parts & 0x80) >> 7) == 0x1);
-        QoSLevel qosLevel = QoSLevel.fromOrdinal(((parts & 0x70) >> 4));
-        SessionType session = SessionType.fromOrdinal(parts & 0xF);
+        //QoSLevel qosLevel = QoSLevel.fromOrdinal(((parts & 0x70) >> 4));
+        //SessionType session = SessionType.fromOrdinal(parts & 0xF);
         Long transactionId = ((TCPIPFixedBinaryDecoder) dec).decodeMALLong();
 
         short flags = dec.decodeUOctet().getValue(); // flags
         boolean sourceIdFlag = (((flags & 0x80) >> 7) == 0x1);
         boolean destinationIdFlag = (((flags & 0x40) >> 6) == 0x1);
-        boolean priorityFlag = (((flags & 0x20) >> 5) == 0x1);
+        //boolean priorityFlag = (((flags & 0x20) >> 5) == 0x1);
         boolean timestampFlag = (((flags & 0x10) >> 4) == 0x1);
-        boolean networkZoneFlag = (((flags & 0x8) >> 3) == 0x1);
-        boolean sessionNameFlag = (((flags & 0x4) >> 2) == 0x1);
-        boolean domainFlag = (((flags & 0x2) >> 1) == 0x1);
+        //boolean networkZoneFlag = (((flags & 0x8) >> 3) == 0x1);
+        //boolean sessionNameFlag = (((flags & 0x4) >> 2) == 0x1);
+        //boolean domainFlag = (((flags & 0x2) >> 1) == 0x1);
         boolean authenticationIdFlag = ((flags & 0x1) == 0x1);
 
         short encodingId = dec.decodeUOctet().getValue();
         int bodyLength = (int) dec.decodeInteger();
-        URI uriFrom = headersrc.getURIFrom();
-        URI uriTo = headersrc.getURITo();
+        URI uriFrom = headersrc.getFrom();
+        URI uriTo = headersrc.getTo();
 
         if (sourceIdFlag) {
             String sourceId = dec.decodeString();
             if (isURI(sourceId)) {
                 uriFrom = new URI(sourceId);
             } else {
-                String from = headersrc.getURIFrom() + sourceId;
+                String from = headersrc.getFrom() + sourceId;
                 uriFrom = new URI(from);
             }
         }
@@ -133,23 +130,23 @@ public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputS
             if (isURI(destinationId)) {
                 uriTo = new URI(destinationId);
             } else {
-                String to = headersrc.getURITo() + destinationId;
+                String to = headersrc.getTo() + destinationId;
                 uriTo = new URI(to);
             }
         }
 
-        UInteger priority = (priorityFlag) ? dec.decodeUInteger() : headersrc.getPriority();
+        //UInteger priority = (priorityFlag) ? dec.decodeUInteger() : null;
         Time timestamp = (timestampFlag) ? dec.decodeTime() : headersrc.getTimestamp();
-        Identifier networkZone = (networkZoneFlag) ? dec.decodeIdentifier() : headersrc.getNetworkZone();
-        Identifier sessionName = (sessionNameFlag) ? dec.decodeIdentifier() : headersrc.getSessionName();
-        IdentifierList domain = (domainFlag) ? (IdentifierList) new IdentifierList().decode(dec) : headersrc.getDomain();
+        //Identifier networkZone = (networkZoneFlag) ? dec.decodeIdentifier() : null;
+        //Identifier sessionName = (sessionNameFlag) ? dec.decodeIdentifier() : null;
+        //IdentifierList domain = (domainFlag) ? (IdentifierList) new IdentifierList().decode(dec) : null;
         Blob authenticationId = (authenticationIdFlag) ? dec.decodeBlob() : new Blob();
+        //NamedValueList supplements = (NamedValueList) dec.decodeNullableElement(new NamedValueList());
 
         TCPIPMessageHeader header = new TCPIPMessageHeader(uriFrom, headersrc.getServiceFrom(),
                 authenticationId, uriTo, headersrc.getServiceTo(), timestamp,
-                qosLevel, priority, domain, networkZone, session, sessionName,
                 null, null, transactionId, serviceArea,
-                service, operation, serviceVersion, isErrorMessage);
+                service, operation, serviceVersion, isErrorMessage, new NamedValueList());
 
         header.setInteractionType(sduType);
         header.setInteractionStage(sduType);

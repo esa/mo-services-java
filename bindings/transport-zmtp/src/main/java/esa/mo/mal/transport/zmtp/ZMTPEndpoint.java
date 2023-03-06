@@ -31,6 +31,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -63,12 +64,6 @@ public class ZMTPEndpoint extends GENEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final InteractionType interactionType,
             final UOctet interactionStage,
             final Long transactionId,
@@ -77,6 +72,7 @@ public class ZMTPEndpoint extends GENEndpoint {
             final UShort operation,
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final Map qosProperties,
             final Object... body) throws MALException {
         try {
@@ -84,12 +80,6 @@ public class ZMTPEndpoint extends GENEndpoint {
                     authenticationId,
                     uriTo,
                     timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
                     interactionType,
                     interactionStage,
                     transactionId,
@@ -98,6 +88,7 @@ public class ZMTPEndpoint extends GENEndpoint {
                     operation,
                     serviceVersion,
                     isErrorMessage,
+                    supplements,
                     qosProperties);
             return new ZMTPMessage(
                     ((ZMTPTransport) transport).getHeaderStreamFactory(),
@@ -112,12 +103,6 @@ public class ZMTPEndpoint extends GENEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final InteractionType interactionType,
             final UOctet interactionStage,
             final Long transactionId,
@@ -126,6 +111,7 @@ public class ZMTPEndpoint extends GENEndpoint {
             final UShort operation,
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final Map qosProperties,
             final MALEncodedBody body) throws MALException {
         try {
@@ -134,12 +120,6 @@ public class ZMTPEndpoint extends GENEndpoint {
                     authenticationId,
                     uriTo,
                     timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
                     interactionType,
                     interactionStage,
                     transactionId,
@@ -148,6 +128,7 @@ public class ZMTPEndpoint extends GENEndpoint {
                     operation,
                     serviceVersion,
                     isErrorMessage,
+                    supplements,
                     qosProperties);
             return new ZMTPMessage(
                     ((ZMTPTransport) transport).getHeaderStreamFactory(),
@@ -162,14 +143,9 @@ public class ZMTPEndpoint extends GENEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final Long transactionId,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final MALOperation op,
             final UOctet interactionStage,
             final Map qosProperties,
@@ -180,12 +156,6 @@ public class ZMTPEndpoint extends GENEndpoint {
                     authenticationId,
                     uriTo,
                     timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
                     op.getInteractionType(),
                     interactionStage,
                     transactionId,
@@ -194,6 +164,7 @@ public class ZMTPEndpoint extends GENEndpoint {
                     op.getNumber(),
                     op.getService().getServiceVersion(),
                     isErrorMessage,
+                    supplements,
                     qosProperties);
 
             return new ZMTPMessage(
@@ -209,14 +180,9 @@ public class ZMTPEndpoint extends GENEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final Long transactionId,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final MALOperation op,
             final UOctet interactionStage,
             final Map qosProperties,
@@ -227,12 +193,6 @@ public class ZMTPEndpoint extends GENEndpoint {
                     authenticationId,
                     uriTo,
                     timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
                     op.getInteractionType(),
                     interactionStage,
                     transactionId,
@@ -241,6 +201,7 @@ public class ZMTPEndpoint extends GENEndpoint {
                     op.getNumber(),
                     op.getService().getServiceVersion(),
                     isErrorMessage,
+                    supplements,
                     qosProperties);
 
             return new ZMTPMessage(((ZMTPTransport) transport).getHeaderStreamFactory(),
@@ -256,12 +217,6 @@ public class ZMTPEndpoint extends GENEndpoint {
             Blob authenticationId,
             URI uriTo,
             Time timestamp,
-            QoSLevel qosLevel,
-            UInteger priority,
-            IdentifierList domain,
-            Identifier networkZone,
-            SessionType session,
-            Identifier sessionName,
             InteractionType interactionType,
             UOctet interactionStage,
             Long transactionId,
@@ -270,6 +225,7 @@ public class ZMTPEndpoint extends GENEndpoint {
             UShort operation,
             UOctet serviceVersion,
             Boolean isErrorMessage,
+            NamedValueList supplements,
             Map qosProperties) {
         ZMTPMessageHeader header = new ZMTPMessageHeader(
                 new ZMTPConfiguration(configuration, qosProperties),
@@ -278,12 +234,6 @@ public class ZMTPEndpoint extends GENEndpoint {
                 authenticationId,
                 uriTo,
                 timestamp,
-                qosLevel,
-                priority,
-                domain,
-                networkZone,
-                session,
-                sessionName,
                 interactionType,
                 interactionStage,
                 transactionId,
@@ -291,7 +241,8 @@ public class ZMTPEndpoint extends GENEndpoint {
                 service,
                 operation,
                 serviceVersion,
-                isErrorMessage);
+                isErrorMessage,
+                supplements);
         ((ZMTPTransport) transport).getBodyEncodingSelector().applyEncodingIdToHeader(header);
         return header;
     }

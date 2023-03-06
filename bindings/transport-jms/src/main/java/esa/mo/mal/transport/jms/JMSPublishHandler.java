@@ -46,25 +46,15 @@ public class JMSPublishHandler {
 
     private final JMSTransport jtransport;
     private final Set<JMSPublisherKey> keySet = new TreeSet<>();
-    private final QoSLevel registerQoS;
     private IdentifierList domain = null;
 
     public JMSPublishHandler(JMSTransport jtransport, final GENMessage msg) {
         this.jtransport = jtransport;
-        this.registerQoS = msg.getHeader().getQoSlevel();
-    }
-
-    void setKeyList(MALMessageHeader hdr, List<NamedValueList> l) {
-        domain = hdr.getDomain();
-        keySet.clear();
-        for (NamedValueList l1 : l) {
-            keySet.add(new JMSPublisherKey(l1));
-        }
     }
 
     protected GENMessage publish(final GENMessage msg, Session lqs) throws MALException,
             MALTransmitErrorException, MALInteractionException {
-        final String strURL = msg.getHeader().getURITo().getValue();
+        final String strURL = msg.getHeader().getTo().getValue();
         final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
         final String providerExchangeName = strURL.substring(iSecond + 1);
 
@@ -104,11 +94,8 @@ public class JMSPublishHandler {
         }
                 */
 
-        String exchangeName = providerExchangeName
-                + ":" + msg.getHeader().getSession().toString()
-                + ":" + msg.getHeader().getSessionName();
-        String ldomain = StructureHelper.domainToString(msg.getHeader().getDomain());
-        String lnetwork = msg.getHeader().getNetworkZone().getValue();
+        String exchangeName = providerExchangeName;
+        //String ldomain = StructureHelper.domainToString(msg.getHeader().getDomain());
         int area = msg.getHeader().getServiceArea().getValue();
         int service = msg.getHeader().getService().getValue();
         int operation = msg.getHeader().getOperation().getValue();
@@ -123,8 +110,7 @@ public class JMSPublishHandler {
             for (PublishEntry publishEntry : publishList) {
                 try {
                     ObjectMessage objMsg = lqs.createObjectMessage();
-                    objMsg.setStringProperty(JMSEndpoint.DOM_PROPERTY, ldomain);
-                    objMsg.setStringProperty(JMSEndpoint.NET_PROPERTY, lnetwork);
+                    //objMsg.setStringProperty(JMSEndpoint.DOM_PROPERTY, ldomain);
                     objMsg.setIntProperty(JMSEndpoint.ARR_PROPERTY, area);
                     objMsg.setIntProperty(JMSEndpoint.SVC_PROPERTY, service);
                     objMsg.setIntProperty(JMSEndpoint.OPN_PROPERTY, operation);
@@ -140,9 +126,9 @@ public class JMSPublishHandler {
                     sender.send(objMsg);
 
                     JMSTransport.RLOGGER.log(Level.FINE,
-                            "JMS Sending data to {0} with {1} and ({2}, {3}, {4}, {5})",
+                            "JMS Sending data to {0} with {1} and ({2}, {3}, {4})",
                             new Object[]{destTopic.getTopicName(),
-                                publishEntry.attList, ldomain, area, service, operation});
+                                publishEntry.attList, area, service, operation});
                 } catch (Exception e) {
                     JMSTransport.RLOGGER.log(Level.WARNING,
                             "JMS Error occurred when sending data {0}", e);
@@ -158,14 +144,10 @@ public class JMSPublishHandler {
         return null;
     }
 
-    public QoSLevel getRegisterQoS() {
-        return registerQoS;
-    }
-
     protected void preCheckAllowedToPublish(MALMessageHeader hdr,
             UpdateHeaderList updateList) throws MALTransmitErrorException {
-        if (StructureHelper.isSubDomainOf(domain, hdr.getDomain())) {
             /*
+        if (StructureHelper.isSubDomainOf(domain, hdr.getDomain())) {
             EntityKeyList lst = new EntityKeyList();
             for (UpdateHeader updateList1 : updateList) {
                 EntityKey updateKey = ((UpdateHeader) updateList1).getKey();
@@ -188,12 +170,12 @@ public class JMSPublishHandler {
                 throw new MALTransmitErrorException(hdr,
                         new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, lst), null);
             }
-                */
         } else {
             JMSTransport.RLOGGER.warning("ERR : Provider not allowed to publish to the domain");
             throw new MALTransmitErrorException(hdr,
                     new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null),
                     null);
         }
+                */
     }
 }

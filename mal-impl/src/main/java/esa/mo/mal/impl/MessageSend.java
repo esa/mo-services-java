@@ -452,7 +452,6 @@ public class MessageSend {
      * @param msgAddress Address structure to use for return message.
      * @param srcHdr Message header to use as reference for return messages
      * header.
-     * @param lvl The QoS level to use.
      * @param rspnInteractionStage Interaction stage to use on the response.
      * @param rspn Response message body.
      * @param qosProperties The QoS properties.
@@ -461,7 +460,6 @@ public class MessageSend {
      */
     public MALMessage returnResponse(final Address msgAddress,
             final MALMessageHeader srcHdr,
-            final QoSLevel lvl,
             final UOctet rspnInteractionStage,
             final MALOperation operation,
             final Map qosProperties,
@@ -472,16 +470,11 @@ public class MessageSend {
             MALEndpoint endpoint = msgAddress.getEndpoint();
             msg = endpoint.createMessage(
                     msgAddress.getAuthenticationId(),
-                    srcHdr.getURIFrom(),
+                    srcHdr.getFrom(),
                     Time.now(),
-                    lvl,
-                    srcHdr.getPriority(),
-                    srcHdr.getDomain(),
-                    srcHdr.getNetworkZone(),
-                    srcHdr.getSession(),
-                    srcHdr.getSessionName(),
                     srcHdr.getTransactionId(),
                     false,
+                    srcHdr.getSupplements(),
                     operation,
                     rspnInteractionStage,
                     qosProperties,
@@ -490,13 +483,13 @@ public class MessageSend {
             endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         } catch (MALTransmitErrorException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         } catch (RuntimeException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         }
 
         return msg;
@@ -528,16 +521,11 @@ public class MessageSend {
             MALEndpoint endpoint = msgAddress.getEndpoint();
             msg = endpoint.createMessage(
                     msgAddress.getAuthenticationId(),
-                    srcHdr.getURIFrom(),
+                    srcHdr.getFrom(),
                     Time.now(),
-                    lvl,
-                    srcHdr.getPriority(),
-                    srcHdr.getDomain(),
-                    srcHdr.getNetworkZone(),
-                    srcHdr.getSession(),
-                    srcHdr.getSessionName(),
                     srcHdr.getTransactionId(),
                     false,
+                    srcHdr.getSupplements(),
                     operation,
                     rspnInteractionStage,
                     qosProperties,
@@ -546,13 +534,13 @@ public class MessageSend {
             endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         } catch (MALTransmitErrorException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         } catch (RuntimeException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getURIFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         }
 
         return msg;
@@ -574,7 +562,6 @@ public class MessageSend {
             final MALException error) {
         return initiateReturnError(msgAddress,
                 srcHdr,
-                srcHdr.getQoSlevel(),
                 rspnInteractionStage,
                 new MALStandardError(
                         MALHelper.INTERNAL_ERROR_NUMBER,
@@ -598,7 +585,6 @@ public class MessageSend {
             final MALStandardError error) {
         return initiateReturnError(msgAddress,
                 srcHdr,
-                srcHdr.getQoSlevel(),
                 rspnInteractionStage,
                 error);
     }
@@ -613,7 +599,7 @@ public class MessageSend {
             throw new MALException("ERROR: Error with one way send : IllegalArgumentException : ", ex);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error with one way send : {0}", msg.getHeader().getURITo());
+                    "Error with one way send : {0}", msg.getHeader().getTo());
             throw ex;
         }
 
@@ -652,34 +638,36 @@ public class MessageSend {
     }
 
     private MALMessageBody initiateSynchronousInteraction(final Long transId,
-            final MessageDetails details,
-            MALMessage msg) throws MALInteractionException, MALException {
+            final MessageDetails details, MALMessage msg) throws MALInteractionException, MALException {
         try {
             msg = securityManager.check(msg);
             details.endpoint.sendMessage(msg);
             final MALMessage rtn = icmap.waitForResponse(transId);
 
-            if (null != rtn) {
-                // handle possible return error
-                if (rtn.getHeader().getIsErrorMessage()) {
-                    if (rtn.getBody() instanceof MALErrorBody) {
-                        throw new MALInteractionException(((MALErrorBody) rtn.getBody()).getError());
-                    }
-
-                    throw new MALInteractionException(new MALStandardError(
-                            MALHelper.BAD_ENCODING_ERROR_NUMBER,
-                            new Union("Return message marked as error but did not contain a MALException")));
+            if (rtn == null) {
+                throw new MALException("Return message was null!");
+            }
+            
+            // handle possible return error
+            if (rtn.getHeader().getIsErrorMessage()) {
+                if (rtn.getBody() instanceof MALErrorBody) {
+                    MALStandardError error = ((MALErrorBody) rtn.getBody()).getError();
+                    MALContextFactoryImpl.LOGGER.log(Level.SEVERE,
+                            "Something went wrong! {0}", error);
+                    throw new MALInteractionException(error);
                 }
 
-                return rtn.getBody();
+                throw new MALInteractionException(new MALStandardError(
+                        MALHelper.BAD_ENCODING_ERROR_NUMBER,
+                        new Union("Return message marked as error but did not contain a MALException")));
             }
 
-            throw new MALException("Return message was null");
+            return rtn.getBody(); // All Good!
         } catch (IllegalArgumentException ex) {
             throw new MALException("IllegalArgumentException", ex);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error with consumer : {0}", msg.getHeader().getURITo());
+                    "Error with consumer : {0}", msg.getHeader().getTo());
             throw ex;
         }
     }
@@ -693,7 +681,7 @@ public class MessageSend {
             throw new MALException("IllegalArgumentException", ex);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error with consumer : {0}", msg.getHeader().getURITo());
+                    "Error with consumer : {0}", msg.getHeader().getTo());
             throw ex;
         }
 
@@ -702,27 +690,17 @@ public class MessageSend {
 
     private MALMessage initiateReturnError(final Address msgAddress,
             final MALMessageHeader srcHdr,
-            QoSLevel level,
             final UOctet rspnInteractionStage,
             final MALStandardError error) {
         MALMessage msg = null;
+        URI destination = srcHdr.getFrom();
 
         try {
-            if (null == level) {
-                level = srcHdr.getQoSlevel();
-            }
-
             MALEndpoint endpoint = msgAddress.getEndpoint();
             msg = endpoint.createMessage(
                     msgAddress.getAuthenticationId(),
-                    srcHdr.getURIFrom(),
+                    destination,
                     Time.now(),
-                    level,
-                    srcHdr.getPriority(),
-                    srcHdr.getDomain(),
-                    srcHdr.getNetworkZone(),
-                    srcHdr.getSession(),
-                    srcHdr.getSessionName(),
                     srcHdr.getInteractionType(),
                     rspnInteractionStage,
                     srcHdr.getTransactionId(),
@@ -731,6 +709,7 @@ public class MessageSend {
                     srcHdr.getOperation(),
                     srcHdr.getServiceVersion(),
                     true,
+                    srcHdr.getSupplements(),
                     new HashMap(),
                     error.getErrorNumber(), 
                     error.getExtraInformation());
@@ -738,19 +717,13 @@ public class MessageSend {
             endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning error to consumer : {0} : {1}", new Object[]{
-                        srcHdr.getURIFrom(), ex
-                    });
+                    "(1) Error returning error to consumer: " + destination, ex);
         } catch (MALTransmitErrorException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning error to consumer : {0} : {1}", new Object[]{
-                        srcHdr.getURIFrom(), ex
-                    });
+                    "(2) Error returning error to consumer: " + destination, ex);
         } catch (RuntimeException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning error to consumer : {0} : {1}", new Object[]{
-                        srcHdr.getURIFrom(), ex
-                    });
+                    "(3) Error returning error to consumer: " + destination, ex);
         }
 
         return msg;
@@ -770,14 +743,9 @@ public class MessageSend {
         return details.endpoint.createMessage(details.authenticationId,
                 to,
                 Time.now(),
-                details.qosLevel,
-                details.priority,
-                details.domain,
-                details.networkZone,
-                details.sessionType,
-                details.sessionName,
                 transactionId,
                 Boolean.FALSE,
+                new NamedValueList(),
                 op,
                 interactionStage,
                 details.qosProps,
@@ -798,14 +766,9 @@ public class MessageSend {
         return details.endpoint.createMessage(details.authenticationId,
                 to,
                 Time.now(),
-                details.qosLevel,
-                details.priority,
-                details.domain,
-                details.networkZone,
-                details.sessionType,
-                details.sessionName,
                 transactionId,
                 Boolean.FALSE,
+                new NamedValueList(),
                 op,
                 interactionStage,
                 details.qosProps,

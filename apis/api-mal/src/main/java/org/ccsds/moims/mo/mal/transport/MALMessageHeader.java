@@ -20,14 +20,12 @@
  */
 package org.ccsds.moims.mo.mal.transport;
 
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -38,16 +36,10 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public class MALMessageHeader {
 
-    protected URI URIFrom;
+    protected URI from;
     protected Blob authenticationId;
-    protected URI URITo;
+    protected URI to;
     protected Time timestamp;
-    protected QoSLevel QoSlevel;
-    protected UInteger priority;
-    protected IdentifierList domain;
-    protected Identifier networkZone;
-    protected SessionType session;
-    protected Identifier sessionName;
     protected InteractionType interactionType;
     protected UOctet interactionStage;
     protected Long transactionId;
@@ -56,6 +48,7 @@ public class MALMessageHeader {
     protected UShort operation;
     protected UOctet serviceVersion;
     protected Boolean isErrorMessage;
+    protected NamedValueList supplements;
 
     /**
      * Constructor.
@@ -66,16 +59,10 @@ public class MALMessageHeader {
     /**
      * Constructor.
      *
-     * @param uriFrom URI of the message source
+     * @param from URI of the message source
      * @param authenticationId Authentication identifier of the message
-     * @param uriTo URI of the message destination
+     * @param to URI of the message destination
      * @param timestamp Timestamp of the message
-     * @param qosLevel QoS level of the message
-     * @param priority Priority of the message
-     * @param domain Domain of the service provider
-     * @param networkZone Network zone of the service provider
-     * @param session Session of the service provider
-     * @param sessionName Session name of the service provider
      * @param interactionType Interaction type of the operation
      * @param interactionStage Interaction stage of the interaction
      * @param transactionId Transaction identifier of the interaction, may be
@@ -85,17 +72,12 @@ public class MALMessageHeader {
      * @param operation Operation number
      * @param serviceVersion Service version number
      * @param isErrorMessage Flag indicating if the message conveys an error
+     * @param supplements The header supplements
      */
-    public MALMessageHeader(final URI uriFrom,
+    public MALMessageHeader(final URI from,
             final Blob authenticationId,
-            final URI uriTo,
+            final URI to,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final InteractionType interactionType,
             final UOctet interactionStage,
             final Long transactionId,
@@ -103,17 +85,12 @@ public class MALMessageHeader {
             final UShort service,
             final UShort operation,
             final UOctet serviceVersion,
-            final Boolean isErrorMessage) {
-        this.URIFrom = uriFrom;
+            final Boolean isErrorMessage,
+            final NamedValueList supplements) {
+        this.from = from;
         this.authenticationId = authenticationId;
-        this.URITo = uriTo;
+        this.to = to;
         this.timestamp = timestamp;
-        this.QoSlevel = qosLevel;
-        this.priority = priority;
-        this.domain = domain;
-        this.networkZone = networkZone;
-        this.session = session;
-        this.sessionName = sessionName;
         this.interactionType = interactionType;
         this.interactionStage = interactionStage;
         this.transactionId = transactionId;
@@ -122,24 +99,25 @@ public class MALMessageHeader {
         this.operation = operation;
         this.serviceVersion = serviceVersion;
         this.isErrorMessage = isErrorMessage;
+        this.supplements = supplements;
     }
 
     /**
-     * Returns the field URIfrom.
+     * Returns the field from.
      *
-     * @return the field URIfrom.
+     * @return the field from.
      */
-    public URI getURIFrom() {
-        return URIFrom;
+    public URI getFrom() {
+        return from;
     }
 
     /**
-     * Sets the field URIfrom.
+     * Sets the field from.
      *
-     * @param urIFrom The new value to set.
+     * @param newValue The new value to set.
      */
-    public void setURIFrom(final URI urIFrom) {
-        this.URIFrom = urIFrom;
+    public void setFrom(final URI newValue) {
+        this.from = newValue;
     }
 
     /**
@@ -161,12 +139,12 @@ public class MALMessageHeader {
     }
 
     /**
-     * Returns the field URIto.
+     * Returns the field to.
      *
-     * @return the field URIto.
+     * @return the field to.
      */
-    public URI getURITo() {
-        return URITo;
+    public URI getTo() {
+        return to;
     }
 
     /**
@@ -176,69 +154,6 @@ public class MALMessageHeader {
      */
     public Time getTimestamp() {
         return timestamp;
-    }
-
-    /**
-     * Returns the field QoSlevel.
-     *
-     * @return the field QoSlevel.
-     */
-    public QoSLevel getQoSlevel() {
-        return QoSlevel;
-    }
-
-    /**
-     * Sets the field QoSlevel.
-     *
-     * @param newValue The new value to set.
-     */
-    public void setQoSlevel(final QoSLevel newValue) {
-        this.QoSlevel = newValue;
-    }
-
-    /**
-     * Returns the field priority.
-     *
-     * @return the field priority.
-     */
-    public UInteger getPriority() {
-        return priority;
-    }
-
-    /**
-     * Returns the field domain.
-     *
-     * @return the field domain.
-     */
-    public IdentifierList getDomain() {
-        return domain;
-    }
-
-    /**
-     * Returns the field networkZone.
-     *
-     * @return the field networkZone.
-     */
-    public Identifier getNetworkZone() {
-        return networkZone;
-    }
-
-    /**
-     * Returns the field session.
-     *
-     * @return the field session.
-     */
-    public SessionType getSession() {
-        return session;
-    }
-
-    /**
-     * Returns the field sessionName.
-     *
-     * @return the field sessionName.
-     */
-    public Identifier getSessionName() {
-        return sessionName;
     }
 
     /**
@@ -320,5 +235,29 @@ public class MALMessageHeader {
      */
     public void setIsErrorMessage(final Boolean isErrorMessage) {
         this.isErrorMessage = isErrorMessage;
+    }
+
+    /**
+     * Returns the field supplements.
+     *
+     * @return the field supplements.
+     */
+    public NamedValueList getSupplements() {
+        return supplements;
+    }
+
+    /**
+     * Returns the supplement value for a given key.
+     *
+     * @param key
+     * @return the supplement value for the provided key.
+     */
+    public Attribute getSupplementValue(String key) {
+        for (NamedValue pair : supplements) {
+            if (pair.getValue().equals(key)) {
+                return pair.getValue();
+            }
+        }
+        return null;
     }
 }

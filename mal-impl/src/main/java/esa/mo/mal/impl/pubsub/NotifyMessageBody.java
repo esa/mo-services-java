@@ -38,10 +38,6 @@ public class NotifyMessageBody {
      */
     private final IdentifierList domain;
     /**
-     * PubSub network zone.
-     */
-    private final Identifier networkZone;
-    /**
      * PubSub area.
      */
     private final UShort area;
@@ -71,12 +67,11 @@ public class NotifyMessageBody {
     private final java.util.List[] updateList;
 
     public NotifyMessageBody(Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-            java.util.List[] notifyList, MALMessageHeader srcHdr) {
+            java.util.List[] notifyList, MALMessageHeader srcHdr, IdentifierList domain) {
         this.subscriptionId = subscriptionId;
         this.updateHeaderList = updateHeaderList;
         this.updateList = notifyList;
-        this.domain = srcHdr.getDomain();
-        this.networkZone = srcHdr.getNetworkZone();
+        this.domain = domain;
         this.area = srcHdr.getServiceArea();
         this.service = srcHdr.getService();
         this.operation = srcHdr.getOperation();
@@ -87,7 +82,6 @@ public class NotifyMessageBody {
     public String toString() {
         final StringBuilder buf = new StringBuilder();
         buf.append(" >> domain: ").append(domain);
-        buf.append("\n >> networkZone: ").append(networkZone);
         buf.append("\n >> area/service/version/operation: ");
         buf.append(area).append("/").append(service).append("/");
         buf.append(version).append("/").append(operation);
@@ -98,10 +92,6 @@ public class NotifyMessageBody {
 
     public IdentifierList getDomain() {
         return domain;
-    }
-
-    public Identifier getNetworkZone() {
-        return networkZone;
     }
 
     public UShort getArea() {

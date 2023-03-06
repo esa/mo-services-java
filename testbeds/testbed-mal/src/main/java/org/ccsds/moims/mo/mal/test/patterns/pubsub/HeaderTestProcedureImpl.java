@@ -46,6 +46,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -81,6 +82,9 @@ import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
 
+/**
+ * This is the Consumer
+ */
 public class HeaderTestProcedureImpl extends LoggingBase {
 
     protected LocalMALInstance.IPTestConsumer ipTestConsumer;
@@ -136,14 +140,15 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTestConsumer = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
+                HeaderTestProcedure.NETWORK_ZONE,
+                session, sessionName, qos,
                 HeaderTestProcedure.PRIORITY, shared);
     }
 
     public boolean initiatePublishRegisterWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,
-            String sessionType, String sharedBroker, int domain)
-            throws Exception {
-        logMessage("initiatePublishRegisterWithQosAndSessionAndSharedBrokerAndDomain(" + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
+            String sessionType, String sharedBroker, int domain) throws Exception {
+        logMessage("initiatePublishRegisterWithQosAndSessionAndSharedBrokerAndDomain("
+                + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
         resetAssertions();
 
         QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
@@ -183,9 +188,10 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         return uris;
     }
 
-    public boolean initiateRegisterWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel, String sessionType, String sharedBroker, int domain)
-            throws Exception {
-        logMessage("initiateRegisterWithQosAndSessionAndSharedBrokerAndDomain(" + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
+    public boolean initiateRegisterWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,
+            String sessionType, String sharedBroker, int domain) throws Exception {
+        logMessage("initiateRegisterWithQosAndSessionAndSharedBrokerAndDomain("
+                + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
         resetAssertions();
 
         QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
@@ -227,12 +233,6 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 uris.broker,
                 new Time(timeBeforeRegister),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._REGISTER_STAGE),
                 null, // transaction id not checked here (see below)
@@ -240,7 +240,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
         MALMessage registerMsg = TransportInterceptor.instance().getLastSentMessage(ipTestConsumer.getConsumer().getURI());
         MALMessageHeader monitorRegisterHeader = registerMsg.getHeader();
@@ -272,12 +273,6 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 brokerAuthId,
                 ipTestConsumer.getConsumer().getURI(),
                 new Time(timeBeforeRegister),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._REGISTER_ACK_STAGE),
                 transactionId,
@@ -285,7 +280,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
         AssertionHelper.checkHeader(procedureName, assertions,
                 monitorRegisterAckHeader,
@@ -300,7 +296,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
     public boolean initiatePublishWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,
             String sessionType, String sharedBroker, int domain) throws Exception {
-        logMessage("initiatePublishWithQosAndSessionAndSharedBrokerAndDomain(" + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
+        logMessage("initiatePublishWithQosAndSessionAndSharedBrokerAndDomain("
+                + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
         resetAssertions();
 
         QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
@@ -346,8 +343,10 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         cc.setPublishTimeStamp(new Time(System.currentTimeMillis()));
 
         UInteger errorCode = new UInteger(999);
-        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, updateHeaders, updates, keyValues, errorCode, Boolean.FALSE, null);
+        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos,
+                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
+                HeaderTestProcedure.NETWORK_ZONE, session, sessionName,
+                false, updateHeaders, updates, keyValues, errorCode, Boolean.FALSE, null);
         ipTest.publishUpdates(testPublishUpdate);
 
         return true;
@@ -383,12 +382,6 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 brokerAuthId,
                 ipTestConsumer.getConsumer().getURI(),
                 cc.getPublishTimeStamp(),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._NOTIFY_STAGE),
                 cc.getTransactionId(),
@@ -396,7 +389,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
         MALMessageHeader monitorNotifyHeader = cc.getListener().getMonitorNotifyHeader();
 
@@ -439,12 +433,6 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 brokerAuthId,
                 ipTestConsumer.getConsumer().getURI(),
                 cc.getPublishTimeStamp(),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._NOTIFY_STAGE),
                 cc.getTransactionId(),
@@ -452,7 +440,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.TRUE);
+                Boolean.TRUE,
+                new NamedValueList());
 
         TestEndPoint ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
 
@@ -479,6 +468,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
     public boolean initiatePublishErrorWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,
             String sessionType, String sharedBroker, int domain) throws Exception {
+        LoggingBase.logMessage("\n\n------------- Consumer Side -------------\n");
         logMessage("initiatePublishErrorWithQosAndSession(" + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
         resetAssertions();
 
@@ -516,10 +506,15 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         // failedKeyValues.add(new Identifier("myvalu"));
         // Failed failedKeyValues should be null because the 
         // extra information no longer exists in the new book!
-        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session,
-                sessionName, false, updateHeaders, updates, keyValues, errorCode,
+        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos,
+                HeaderTestProcedure.PRIORITY,
+                HeaderTestProcedure.getDomain(domain),
+                HeaderTestProcedure.NETWORK_ZONE,
+                session,
+                sessionName, false, updateHeaders,
+                updates, keyValues, errorCode,
                 Boolean.FALSE, null);
+
         ipTest.publishUpdates(testPublishUpdate);
 
         return true;
@@ -569,12 +564,6 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 uris.broker,
                 new Time(timeBeforeDeregister),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._DEREGISTER_STAGE),
                 null, // transaction id not checked here (see below)
@@ -582,7 +571,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
         MALMessage deregisterMsg = TransportInterceptor.instance().getLastSentMessage(ipTestConsumer.getConsumer().getURI());
         MALMessageHeader monitorDeregisterHeader = deregisterMsg.getHeader();
@@ -609,12 +599,6 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 brokerAuthId,
                 ipTestConsumer.getConsumer().getURI(),
                 new Time(timeBeforeDeregister),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._DEREGISTER_ACK_STAGE),
                 transactionId,
@@ -622,7 +606,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
         AssertionHelper.checkHeader(procedureName, assertions,
                 monitorDeregisterAckHeader,
@@ -745,12 +730,6 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 brokerAuthId,
                 ipTestConsumer.getConsumer().getURI(),
                 new Time(timeBeforeRegister),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 MALPubSubOperation.REGISTER_ACK_STAGE,
                 monitorRegisterHeader.getTransactionId(),
@@ -758,7 +737,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.TRUE);
+                Boolean.TRUE,
+                new NamedValueList());
 
         AssertionHelper.checkHeader(procedureName, assertions,
                 monitorRegisterErrorHeader, expectedMonitorRegisterErrorHeader);

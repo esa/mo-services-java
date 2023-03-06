@@ -154,7 +154,7 @@ public class Subscriptions {
 
         if (!notifyHeaders.isEmpty()) {
             return new NotifyMessageBody(new Identifier(subscriptionId),
-                    notifyHeaders, notifyLists, srcHdr);
+                    notifyHeaders, notifyLists, srcHdr, srcDomainId);
 
         }
 

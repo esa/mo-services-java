@@ -33,17 +33,10 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 public final class PublisherSource {
 
     private final String uri;
-    private final QoSLevel qosLevel;
     private IdentifierList subscriptionKeyNames;
 
-    public PublisherSource(final String uri, final QoSLevel qosLevel) {
-        super();
+    public PublisherSource(final String uri) {
         this.uri = uri;
-        this.qosLevel = qosLevel;
-    }
-
-    public QoSLevel getQosLevel() {
-        return qosLevel;
     }
 
     public IdentifierList getSubscriptionKeyNames() {

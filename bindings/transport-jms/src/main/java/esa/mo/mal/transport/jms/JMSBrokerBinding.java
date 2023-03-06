@@ -63,7 +63,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
         this.authenticationId = newAuthenticationId;
         return previous;
     }
-    
+
     @Override
     public URI getURI() {
         return uri;
@@ -80,10 +80,9 @@ public class JMSBrokerBinding implements MALBrokerBinding {
     }
 
     @Override
-    public MALMessage sendNotify(UShort area, UShort service, UShort operation, UOctet version,
-            URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone,
-            SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps,
-            UInteger notifyPriority, Identifier subscriptionId, UpdateHeaderList updateHeaderList,
+    public MALMessage sendNotify(UShort area, UShort service, UShort operation,
+            UOctet version, URI subscriber, Long transactionId, IdentifierList domainId,
+            Map notifyQosProps, Identifier subscriptionId, UpdateHeaderList updateHeaderList,
             List... updateList) throws IllegalArgumentException, MALInteractionException, MALException {
         JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendNotify1");
         return null;

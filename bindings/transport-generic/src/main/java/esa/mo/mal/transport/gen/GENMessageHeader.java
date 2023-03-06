@@ -46,12 +46,6 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
      * @param authenticationId Authentication identifier of the message
      * @param uriTo URI of the message destination
      * @param timestamp Timestamp of the message
-     * @param qosLevel QoS level of the message
-     * @param priority Priority of the message
-     * @param domain Domain of the service provider
-     * @param networkZone Network zone of the service provider
-     * @param session Session of the service provider
-     * @param sessionName Session name of the service provider
      * @param interactionType Interaction type of the operation
      * @param interactionStage Interaction stage of the interaction
      * @param transactionId Transaction identifier of the interaction, may be
@@ -61,17 +55,12 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
      * @param operation Operation number
      * @param serviceVersion Service version number
      * @param isErrorMessage Flag indicating if the message conveys an error
+     * @param supplements The header supplements
      */
     public GENMessageHeader(final URI uriFrom,
             final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final InteractionType interactionType,
             final UOctet interactionStage,
             final Long transactionId,
@@ -79,10 +68,11 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
             final UShort service,
             final UShort operation,
             final UOctet serviceVersion,
-            final Boolean isErrorMessage) {
-        super(uriFrom, authenticationId, uriTo, timestamp, qosLevel, priority,
-                domain, networkZone, session, sessionName, interactionType, interactionStage,
-                transactionId, serviceArea, service, operation, serviceVersion, isErrorMessage);
+            final Boolean isErrorMessage,
+            final NamedValueList supplements) {
+        super(uriFrom, authenticationId, uriTo, timestamp, interactionType,
+                interactionStage, transactionId, serviceArea, service, operation,
+                serviceVersion, isErrorMessage, supplements);
     }
 
     @Override
@@ -92,16 +82,10 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
 
     @Override
     public void encode(final MALEncoder encoder) throws MALException {
-        encoder.encodeNullableURI(URIFrom);
+        encoder.encodeNullableURI(from);
         encoder.encodeNullableBlob(authenticationId);
-        encoder.encodeNullableURI(URITo);
+        encoder.encodeNullableURI(to);
         encoder.encodeNullableTime(timestamp);
-        encoder.encodeNullableElement(QoSlevel);
-        encoder.encodeNullableUInteger(priority);
-        encoder.encodeNullableElement(domain);
-        encoder.encodeNullableIdentifier(networkZone);
-        encoder.encodeNullableElement(session);
-        encoder.encodeNullableIdentifier(sessionName);
         encoder.encodeNullableElement(interactionType);
         encoder.encodeNullableUOctet(interactionStage);
         encoder.encodeNullableLong(transactionId);
@@ -110,20 +94,15 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
         encoder.encodeNullableUShort(operation);
         encoder.encodeNullableUOctet(serviceVersion);
         encoder.encodeNullableBoolean(isErrorMessage);
+        encoder.encodeNullableElement(supplements);
     }
 
     @Override
     public Element decode(final MALDecoder decoder) throws MALException {
-        URIFrom = decoder.decodeNullableURI();
+        from = decoder.decodeNullableURI();
         authenticationId = decoder.decodeNullableBlob();
-        URITo = decoder.decodeNullableURI();
+        to = decoder.decodeNullableURI();
         timestamp = decoder.decodeNullableTime();
-        QoSlevel = (QoSLevel) decoder.decodeNullableElement(QoSLevel.BESTEFFORT);
-        priority = decoder.decodeNullableUInteger();
-        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
-        networkZone = decoder.decodeNullableIdentifier();
-        session = (SessionType) decoder.decodeNullableElement(SessionType.LIVE);
-        sessionName = decoder.decodeNullableIdentifier();
         interactionType = (InteractionType) decoder.decodeNullableElement(InteractionType.SEND);
         interactionStage = decoder.decodeNullableUOctet();
         transactionId = decoder.decodeNullableLong();
@@ -132,6 +111,7 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
         operation = decoder.decodeNullableUShort();
         serviceVersion = decoder.decodeNullableUOctet();
         isErrorMessage = decoder.decodeNullableBoolean();
+        supplements = (NamedValueList) decoder.decodeNullableElement(new NamedValueList());
 
         return this;
     }
@@ -164,16 +144,10 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
     @Override
     public String toString() {
         final StringBuilder str = new StringBuilder("GENMessageHeader{");
-        str.append("URIFrom=").append(URIFrom);
+        str.append("from=").append(from);
         str.append(", authenticationId=").append(authenticationId);
-        str.append(", URITo=").append(URITo);
+        str.append(", to=").append(to);
         str.append(", timestamp=").append(timestamp);
-        str.append(", QoSlevel=").append(QoSlevel);
-        str.append(", priority=").append(priority);
-        str.append(", domain=").append(domain);
-        str.append(", networkZone=").append(networkZone);
-        str.append(", session=").append(session);
-        str.append(", sessionName=").append(sessionName);
         str.append(", interactionType=").append(interactionType);
         str.append(", interactionStage=").append(interactionStage);
         str.append(", transactionId=").append(transactionId);
@@ -182,6 +156,7 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
         str.append(", operation=").append(operation);
         str.append(", serviceVersion=").append(serviceVersion);
         str.append(", isErrorMessage=").append(isErrorMessage);
+        str.append(", supplements=").append(supplements);
         str.append('}');
         return str.toString();
     }

@@ -60,26 +60,23 @@ public class TestEndPoint implements MALEndpoint {
     }
 
     public MALMessage createMessage(Blob authenticationId, URI uRITo,
-            Time timestamp, QoSLevel qoSlevel, UInteger priority,
-            IdentifierList domain, Identifier networkZone, SessionType session,
-            Identifier sessionName, InteractionType interactionType,
+            Time timestamp, InteractionType interactionType,
             UOctet interactionStage, Long transactionId, UShort serviceArea,
             UShort service, UShort operation, UOctet serviceVersion,
-            Boolean isErrorMessage, Map qosProperties, Object... body)
-            throws MALException {
-        return delegate.createMessage(authenticationId, uRITo, timestamp, qoSlevel,
-                priority, domain, networkZone, session, sessionName, interactionType,
-                interactionStage, transactionId, serviceArea, service, operation,
-                serviceVersion, isErrorMessage, qosProperties, body);
+            Boolean isErrorMessage, NamedValueList supplements,
+            Map qosProperties, Object... body) throws MALException {
+        return delegate.createMessage(authenticationId, uRITo, timestamp,
+                interactionType, interactionStage, transactionId, serviceArea,
+                service, operation, serviceVersion,
+                isErrorMessage, supplements, qosProperties, body);
     }
 
-    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp, QoSLevel qosLevel,
-            UInteger priority, IdentifierList domain, Identifier networkZone, SessionType session,
-            Identifier sessionName, Long transactionId, Boolean isErrorMessage, MALOperation op,
-            UOctet interactionStage, Map qosProperties, Object... body) throws IllegalArgumentException, MALException {
-        return delegate.createMessage(authenticationId, uriTo, timestamp, qosLevel,
-                priority, domain, networkZone, session, sessionName,
-                transactionId, isErrorMessage, op, interactionStage, qosProperties, body);
+    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
+            Long transactionId, Boolean isErrorMessage, NamedValueList supplements,
+            MALOperation op, UOctet interactionStage, Map qosProperties,
+            Object... body) throws IllegalArgumentException, MALException {
+        return delegate.createMessage(authenticationId, uriTo, timestamp, transactionId,
+                isErrorMessage, supplements, op, interactionStage, qosProperties, body);
     }
 
     public String getLocalName() {
@@ -104,21 +101,13 @@ public class TestEndPoint implements MALEndpoint {
                 msg.getHeader().getInteractionType());
     }
 
-    public static MALMessageHeader createErrorHeader(
-            MALMessageHeader initialHeader,
-            Blob authId,
-            UOctet stage) {
+    public static MALMessageHeader createErrorHeader(MALMessageHeader initialHeader,
+            Blob authId, UOctet stage) {
         MALMessageHeader res = new MALMessageHeader(
-                initialHeader.getURITo(),
+                initialHeader.getTo(),
                 authId,
-                initialHeader.getURIFrom(),
+                initialHeader.getFrom(),
                 Time.now(),
-                initialHeader.getQoSlevel(),
-                initialHeader.getPriority(),
-                initialHeader.getDomain(),
-                initialHeader.getNetworkZone(),
-                initialHeader.getSession(),
-                initialHeader.getSessionName(),
                 initialHeader.getInteractionType(),
                 stage,
                 initialHeader.getTransactionId(),
@@ -126,12 +115,12 @@ public class TestEndPoint implements MALEndpoint {
                 initialHeader.getService(),
                 initialHeader.getOperation(),
                 initialHeader.getServiceVersion(),
-                Boolean.TRUE);
+                Boolean.TRUE,
+                initialHeader.getSupplements());
         return res;
     }
 
-    public void sendMessages(MALMessage[] messages)
-            throws MALTransmitMultipleErrorException, MALException {
+    public void sendMessages(MALMessage[] messages) throws MALTransmitMultipleErrorException, MALException {
         if (null != TransportInterceptor.instance().getEndpointSendInterceptor()) {
             TransportInterceptor.instance().getEndpointSendInterceptor().sendMessages(this, messages);
         }
@@ -319,25 +308,24 @@ public class TestEndPoint implements MALEndpoint {
         delegate.stopMessageDelivery();
     }
 
-    public MALMessage createMessage(Blob arg0, URI arg1, Time arg2,
-            QoSLevel arg3, UInteger arg4, IdentifierList arg5, Identifier arg6,
-            SessionType arg7, Identifier arg8, Long arg9, Boolean arg10,
-            MALOperation arg11, UOctet arg12, Map arg13, MALEncodedBody arg14)
-            throws IllegalArgumentException, MALException {
-        return delegate.createMessage(arg0, arg1, arg2, arg3,
-                arg4, arg5, arg6, arg7, arg8, arg9,
-                arg10, arg11, arg12, arg13, arg14);
+    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
+            InteractionType interactionType, UOctet interactionStage, Long transactionId,
+            UShort serviceAreaNumber, UShort serviceNumber, UShort operationNumber,
+            UOctet areaVersion, Boolean isErrorMessage, NamedValueList supplements,
+            Map qosProperties, MALEncodedBody body) throws IllegalArgumentException, MALException {
+        return delegate.createMessage(authenticationId, uriTo, timestamp,
+                interactionType, interactionStage, transactionId,
+                serviceAreaNumber, serviceNumber, operationNumber,
+                areaVersion, isErrorMessage, supplements,
+                qosProperties, body);
     }
 
-    public MALMessage createMessage(Blob arg0, URI arg1, Time arg2,
-            QoSLevel arg3, UInteger arg4, IdentifierList arg5, Identifier arg6,
-            SessionType arg7, Identifier arg8, InteractionType arg9, UOctet arg10,
-            Long arg11, UShort arg12, UShort arg13, UShort arg14, UOctet arg15,
-            Boolean arg16, Map arg17, MALEncodedBody arg18)
-            throws IllegalArgumentException, MALException {
-        return delegate.createMessage(arg0, arg1, arg2, arg3,
-                arg4, arg5, arg6, arg7, arg8, arg9,
-                arg10, arg11, arg12, arg13,
-                arg14, arg15, arg16, arg17, arg18);
+    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
+            Long transactionId, Boolean isErrorMessage, NamedValueList supplements,
+            MALOperation op, UOctet interactionStage, Map qosProperties,
+            MALEncodedBody body) throws IllegalArgumentException, MALException {
+        return delegate.createMessage(authenticationId, uriTo, timestamp,
+                transactionId, isErrorMessage, supplements, op, interactionStage,
+                qosProperties, body);
     }
 }

@@ -228,7 +228,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
             MALInteractionException {
         // get components parts of messsage
         Subscription subscription = (Subscription) msg.getBody().getBodyElement(0, new Subscription());
-        final String strURL = msg.getHeader().getURITo().getValue();
+        final String strURL = msg.getHeader().getTo().getValue();
         final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
         final String providerExchangeName = strURL.substring(iSecond + 1);
 
@@ -242,9 +242,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         } else {
             try {
                 // get the queue
-                String exchangeName = providerExchangeName
-                        + ":" + msg.getHeader().getSession().toString()
-                        + ":" + msg.getHeader().getSessionName();
+                String exchangeName = providerExchangeName;
                 Topic dest = jtransport.getAdministrator().getTopic(lqs, exchangeName);
 
                 handler = new JMSConsumeHandler(this, interruption, qs, dest, subscriptionKey,
@@ -316,7 +314,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
             throws MALException, MALInteractionException {
         // get components parts of messsage
         IdentifierList subList = (IdentifierList) msg.getBody().getBodyElement(0, new IdentifierList());
-        final String strURL = msg.getHeader().getURITo().getValue();
+        final String strURL = msg.getHeader().getTo().getValue();
         final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
         final String providerExchangeName = strURL.substring(iSecond + 1);
 
@@ -347,7 +345,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
 
         JMSPublishHandler hdlr = publishHandlerMap.remove(createProviderKey(msg.getHeader()));
         if (null != hdlr) {
-            returnMsg.getHeader().setQoSlevel(hdlr.getRegisterQoS());
+            //returnMsg.getHeader().setQoSlevel(hdlr.getRegisterQoS());
             JMSTransport.RLOGGER.log(Level.FINE,
                     "Removing JMS publisher details: {0}", msg.getHeader());
         }
@@ -394,16 +392,10 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
     static GENMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError, short stage) {
         MALMessageHeader srcHdr = sourceMessage.getHeader();
         return new GENMessageHeader(
-                srcHdr.getURITo(),
+                srcHdr.getTo(),
                 new Blob(JMSTransport.authId),
-                srcHdr.getURIFrom(),
+                srcHdr.getFrom(),
                 Time.now(),
-                srcHdr.getQoSlevel(),
-                srcHdr.getPriority(),
-                srcHdr.getDomain(),
-                srcHdr.getNetworkZone(),
-                srcHdr.getSession(),
-                srcHdr.getSessionName(),
                 srcHdr.getInteractionType(),
                 new UOctet(stage),
                 srcHdr.getTransactionId(),
@@ -411,15 +403,13 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
                 srcHdr.getService(),
                 srcHdr.getOperation(),
                 srcHdr.getServiceVersion(),
-                isError);
+                isError,
+                srcHdr.getSupplements());
     }
 
     private static String createProviderKey(MALMessageHeader details) {
         StringBuilder buf = new StringBuilder();
-        buf.append(details.getSession()).append(':');
-        buf.append(details.getSessionName()).append(':');
-        buf.append(details.getNetworkZone()).append(':');
-        buf.append(details.getDomain());
+        buf.append(details.getFrom());
         return buf.toString();
     }
 

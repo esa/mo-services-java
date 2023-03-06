@@ -35,6 +35,7 @@ package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 import org.ccsds.moims.mo.mal.test.util.Helper;
 import java.util.Map;
 import java.util.Vector;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -196,11 +197,14 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
         public boolean checkHeaderAssertions() {
             AssertionList assertions = new AssertionList();
             String procedureName = "PubSub.checkSubscriptionNetwork";
+
             for (int i = 0; i < receivedNotify.size(); i++) {
                 MALMessageHeader msgHeader = (MALMessageHeader) receivedNotify.elementAt(i);
-                assertions.add(new Assertion(procedureName,
+                Attribute value = msgHeader.getSupplementValue("network");
+                Assertion assertion = new Assertion(procedureName,
                         "The network zone of the notify is : " + publishNetworkId,
-                        msgHeader.getNetworkZone().equals(publishNetworkId)));
+                        publishNetworkId.equals(value));
+                assertions.add(assertion);
             }
             return AssertionHelper.checkAssertions(assertions);
         }

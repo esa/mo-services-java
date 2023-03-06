@@ -189,6 +189,7 @@ public abstract class BaseLocalMALInstance extends LoggingBase {
 
         @Override
         public int hashCode() {
+//            return authenticationId.hashCode();
             return authenticationId.hashCode()
                     + domain.hashCode()
                     + networkZone.hashCode()

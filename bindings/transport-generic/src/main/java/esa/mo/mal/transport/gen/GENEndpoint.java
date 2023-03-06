@@ -101,12 +101,6 @@ public class GENEndpoint implements MALEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final InteractionType interactionType,
             final UOctet interactionStage,
             final Long transactionId,
@@ -115,6 +109,7 @@ public class GENEndpoint implements MALEndpoint {
             final UShort operation,
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final Map qosProperties,
             final Object... body) throws IllegalArgumentException, MALException {
         try {
@@ -122,12 +117,6 @@ public class GENEndpoint implements MALEndpoint {
                     authenticationId,
                     uriTo,
                     timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
                     interactionType,
                     interactionStage,
                     transactionId,
@@ -136,6 +125,7 @@ public class GENEndpoint implements MALEndpoint {
                     operation,
                     serviceVersion,
                     isErrorMessage,
+                    supplements,
                     qosProperties),
                     qosProperties, null, transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
@@ -147,12 +137,6 @@ public class GENEndpoint implements MALEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final InteractionType interactionType,
             final UOctet interactionStage,
             final Long transactionId,
@@ -161,6 +145,7 @@ public class GENEndpoint implements MALEndpoint {
             final UShort operation,
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final Map qosProperties,
             final MALEncodedBody body) 
             throws IllegalArgumentException, MALException {
@@ -169,12 +154,6 @@ public class GENEndpoint implements MALEndpoint {
                     authenticationId,
                     uriTo,
                     timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
                     interactionType,
                     interactionStage,
                     transactionId,
@@ -183,6 +162,7 @@ public class GENEndpoint implements MALEndpoint {
                     operation,
                     serviceVersion,
                     isErrorMessage,
+                    supplements,
                     qosProperties),
                     qosProperties, null, transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
@@ -194,14 +174,9 @@ public class GENEndpoint implements MALEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final Long transactionId,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final MALOperation op,
             final UOctet interactionStage,
             final Map qosProperties,
@@ -211,12 +186,6 @@ public class GENEndpoint implements MALEndpoint {
                     authenticationId,
                     uriTo,
                     timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
                     op.getInteractionType(),
                     interactionStage,
                     transactionId,
@@ -225,6 +194,7 @@ public class GENEndpoint implements MALEndpoint {
                     op.getNumber(),
                     op.getService().getServiceVersion(),
                     isErrorMessage,
+                    supplements,
                     qosProperties),
                     qosProperties,
                     op,
@@ -238,14 +208,9 @@ public class GENEndpoint implements MALEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final Long transactionId,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final MALOperation op,
             final UOctet interactionStage,
             final Map qosProperties,
@@ -255,12 +220,6 @@ public class GENEndpoint implements MALEndpoint {
                     authenticationId,
                     uriTo,
                     timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
                     op.getInteractionType(),
                     interactionStage,
                     transactionId,
@@ -269,6 +228,7 @@ public class GENEndpoint implements MALEndpoint {
                     op.getNumber(),
                     op.getService().getServiceVersion(),
                     isErrorMessage,
+                    supplements,
                     qosProperties),
                     qosProperties,
                     op,
@@ -413,12 +373,6 @@ public class GENEndpoint implements MALEndpoint {
      * @param authenticationId Authentication identifier of the message
      * @param uriTo URI of the message destination
      * @param timestamp Timestamp of the message
-     * @param qosLevel QoS level of the message
-     * @param priority Priority of the message
-     * @param domain Domain of the service provider
-     * @param networkZone Network zone of the service provider
-     * @param session Session of the service provider
-     * @param sessionName Session name of the service provider
      * @param interactionType Interaction type of the operation
      * @param interactionStage Interaction stage of the interaction
      * @param transactionId Transaction identifier of the interaction, may be
@@ -428,6 +382,7 @@ public class GENEndpoint implements MALEndpoint {
      * @param operation Operation number
      * @param serviceVersion Service version number
      * @param isErrorMessage Flag indicating if the message conveys an error
+     * @param supplements The header supplements
      * @param qosProperties QoS properties of the message, may be null.
      * @return the new message header.
      */
@@ -435,12 +390,6 @@ public class GENEndpoint implements MALEndpoint {
             final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final InteractionType interactionType,
             final UOctet interactionStage,
             final Long transactionId,
@@ -449,17 +398,12 @@ public class GENEndpoint implements MALEndpoint {
             final UShort operation,
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final Map qosProperties) {
         return new GENMessageHeader(uriFrom,
                 authenticationId,
                 uriTo,
                 timestamp,
-                qosLevel,
-                priority,
-                domain,
-                networkZone,
-                session,
-                sessionName,
                 interactionType,
                 interactionStage,
                 transactionId,
@@ -467,6 +411,7 @@ public class GENEndpoint implements MALEndpoint {
                 service,
                 operation,
                 serviceVersion,
-                isErrorMessage);
+                isErrorMessage,
+                supplements);
     }
 }

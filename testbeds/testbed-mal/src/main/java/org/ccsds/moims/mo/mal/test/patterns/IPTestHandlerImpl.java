@@ -20,10 +20,10 @@
  */
 package org.ccsds.moims.mo.mal.test.patterns;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
-import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -40,24 +40,23 @@ import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
- *
+ * Provider side
  */
 public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     // The code will wait on this PERIOD: ~630 times !
     private final static int PERIOD = 250; // in ms
-    private final Hashtable<PublishInteractionListenerKey, MALPublishInteractionListener> publishInteractionListeners;
-    private final Hashtable<PublisherKey, MonitorPublisher> publishers;
-    private final Hashtable<PublisherKey, MonitorMultiPublisher> publishersMulti;
+    private final HashMap<PublisherKey, MonitorPublisher> publishers;
+    private final HashMap<PublisherKey, MonitorMultiPublisher> publishersMulti;
+    protected MonitorPublishInteractionListener defaultListener = new MonitorPublishInteractionListener();
 
     protected AssertionList assertions;
     private Identifier transactionId;
     private String ipTestProviderFileName;
 
     public IPTestHandlerImpl() {
-        publishInteractionListeners = new Hashtable<>();
-        publishers = new Hashtable<>();
-        publishersMulti = new Hashtable<>();
+        publishers = new HashMap<>();
+        publishersMulti = new HashMap<>();
         ipTestProviderFileName = IPTestServiceInfo.IPTEST_SERVICE_NAME.getValue();
     }
 
@@ -74,15 +73,18 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         assertions = new AssertionList();
     }
 
+    @Override
     public void send(IPTestDefinition _IPTestDefinition, MALInteraction interaction) throws MALException {
         // to do
     }
 
+    @Override
     public void sendMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
             MALInteraction interaction) throws MALInteractionException, MALException {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void testSubmit(IPTestDefinition _IPTestDefinition, MALInteraction interaction) throws MALInteractionException {
         if (null != _IPTestDefinition) {
             int transId = Integer.parseInt(_IPTestDefinition.getProcedureName());
@@ -105,11 +107,13 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
     }
 
+    @Override
     public void submitMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
             MALInteraction interaction) throws MALInteractionException, MALException {
         testSubmit(_IPTestDefinition0, interaction);
     }
 
+    @Override
     public String request(IPTestDefinition _IPTestDefinition, MALInteraction interaction) throws MALInteractionException {
         if (null != _IPTestDefinition) {
             try {
@@ -138,16 +142,19 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         return "Hello";
     }
 
+    @Override
     public RequestMultiResponse requestMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
             MALInteraction interaction) throws MALInteractionException, MALException {
         return new RequestMultiResponse(request(_IPTestDefinition0, interaction), null);
     }
 
+    @Override
     public void testRequestEmptyBody(IPTestDefinition _IPTestDefinition,
             MALInteraction interaction) throws MALInteractionException, MALException {
         request(_IPTestDefinition, interaction);
     }
 
+    @Override
     public void invoke(IPTestDefinition _IPTestDefinition, InvokeInteraction interaction)
             throws MALInteractionException, MALException {
         if (null == _IPTestDefinition) {
@@ -207,16 +214,19 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
     }
 
+    @Override
     public void invokeMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
             InvokeMultiInteraction interaction) throws MALInteractionException, MALException {
         invoke(_IPTestDefinition0, new InvokeMultiToInvokeInteractionMapper(interaction));
     }
 
+    @Override
     public void testInvokeEmptyBody(IPTestDefinition _IPTestDefinition,
             TestInvokeEmptyBodyInteraction interaction) throws MALInteractionException, MALException {
         invoke(_IPTestDefinition, new InvokeEmptyToInvokeInteractionMapper(interaction));
     }
 
+    @Override
     public void progress(IPTestDefinition _IPTestDefinition, ProgressInteraction interaction)
             throws MALInteractionException, MALException {
         if (null == _IPTestDefinition) {
@@ -345,28 +355,33 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
     }
 
+    @Override
     public void progressMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
             ProgressMultiInteraction interaction) throws MALInteractionException, MALException {
         progress(_IPTestDefinition0, new ProgressMultiToProgressInteractionMapper(interaction));
     }
 
+    @Override
     public void testProgressEmptyBody(IPTestDefinition _IPTestDefinition,
             TestProgressEmptyBodyInteraction interaction) throws MALInteractionException, MALException {
         progress(_IPTestDefinition, new ProgressEmptyToProgressInteractionMapper(interaction));
     }
 
-    public void publishRegister(TestPublishRegister _TestPublishRegister, MALInteraction interaction)
+    @Override
+    public void publishRegister(TestPublishRegister publishRegister, MALInteraction interaction)
             throws MALInteractionException, MALException {
-        LoggingBase.logMessage("IPTestHandlerImpl.publishRegister(" + _TestPublishRegister + ')');
+        LoggingBase.logMessage("IPTestHandlerImpl.publishRegister(" + publishRegister + ')');
         resetAssertions();
-        PublishInteractionListenerKey key = new PublishInteractionListenerKey(
-                _TestPublishRegister.getDomain(),
-                _TestPublishRegister.getNetworkZone(),
-                _TestPublishRegister.getSession(),
-                _TestPublishRegister.getSessionName());
-        MonitorPublishInteractionListener listener = getPublishInteractionListener(key);
 
-        doPublishRegister(_TestPublishRegister, listener);
+        String key = publishRegister.getDomain().toString()
+                + publishRegister.getNetworkZone().toString()
+                + publishRegister.getSession().toString()
+                + publishRegister.getSessionName().toString();
+
+        MonitorPublishInteractionListener listener = defaultListener;
+        listener.setKey(key);
+
+        doPublishRegister(publishRegister, listener);
         // The Publish Register header is checked with a shared broker
         // (see test.patterns.pubsub.IPTestHandlerWithSharedBroker)
     }
@@ -410,18 +425,21 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         listener.cond.reset();
     }
 
-    public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction) throws MALException {
-        LoggingBase.logMessage("IPTestHandlerImpl.publishUpdates(" + _TestPublishUpdate + ')');
+    @Override
+    public void publishUpdates(TestPublishUpdate publishUpdate, MALInteraction interaction) throws MALException {
+        LoggingBase.logMessage("\n\n------------- Provider Side -------------\n");
+        LoggingBase.logMessage("IPTestHandlerImpl.publishUpdates(" + publishUpdate + ')');
         resetAssertions();
 
-        TestUpdateList testUpdateList = _TestPublishUpdate.getUpdates();
+        TestUpdateList testUpdateList = publishUpdate.getUpdates();
+        String key = publishUpdate.getDomain().toString()
+                + publishUpdate.getNetworkZone().toString()
+                + publishUpdate.getSession().toString()
+                + publishUpdate.getSessionName().toString();
 
-        PublishInteractionListenerKey key = new PublishInteractionListenerKey(
-                _TestPublishUpdate.getDomain(),
-                _TestPublishUpdate.getNetworkZone(),
-                _TestPublishUpdate.getSession(),
-                _TestPublishUpdate.getSessionName());
-        MonitorPublishInteractionListener listener = getPublishInteractionListener(key);
+        FileBasedDirectory.URIpair uris = getProviderURIs();
+        MonitorPublishInteractionListener listener = defaultListener;
+
         Time timestamp = new Time(System.currentTimeMillis());
 
         // Reset the listener
@@ -432,43 +450,31 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         MALStandardError raisedPublishError = null;
 
         // Set time stamp and Source URI
-        FileBasedDirectory.URIpair uris = getProviderURIs();
-        UpdateHeaderList updateHeaderList = _TestPublishUpdate.getUpdateHeaders();
+        UpdateHeaderList updateHeaderList = publishUpdate.getUpdateHeaders();
 
         UShort opNumber = null;
         try {
-            if (_TestPublishUpdate.getTestMultiType()) {
+            if (publishUpdate.getTestMultiType()) {
                 opNumber = IPTestServiceInfo.MONITORMULTI_OP.getNumber();
                 MonitorMultiPublisher publisher = getMonitorMultiPublisher(
-                        _TestPublishUpdate.getDomain(),
-                        _TestPublishUpdate.getNetworkZone(),
-                        _TestPublishUpdate.getSession(),
-                        _TestPublishUpdate.getSessionName(),
-                        _TestPublishUpdate.getQos(),
-                        _TestPublishUpdate.getPriority());
-                /*boolean specialSubKey = false;
-        try {
-            specialSubKey = updateHeaderList.get(0).getKey().getSecondSubKey() == 1;
-        } catch (NullPointerException ex) {} catch (IndexOutOfBoundsException ex) {}
-        if (specialSubKey) {
-            IntegerList integerUpdateList = new IntegerList();
-            for (int i = 0; i < testUpdateList.size(); i++) {
-                integerUpdateList.add(testUpdateList.get(i).getCounter());
-            }
-            publisher.publish(updateHeaderList, testUpdateList, integerUpdateList);
-        } else {
-            publisher.publish(updateHeaderList, testUpdateList, testUpdateList);
-        }*/
+                        publishUpdate.getDomain(),
+                        publishUpdate.getNetworkZone(),
+                        publishUpdate.getSession(),
+                        publishUpdate.getSessionName(),
+                        publishUpdate.getQos(),
+                        publishUpdate.getPriority());
+
                 publisher.publish(updateHeaderList, testUpdateList, testUpdateList);
             } else {
+                // Normal case (not TestMultiType)
                 opNumber = IPTestServiceInfo.MONITOR_OP.getNumber();
                 MonitorPublisher publisher = getMonitorPublisher(
-                        _TestPublishUpdate.getDomain(),
-                        _TestPublishUpdate.getNetworkZone(),
-                        _TestPublishUpdate.getSession(),
-                        _TestPublishUpdate.getSessionName(),
-                        _TestPublishUpdate.getQos(),
-                        _TestPublishUpdate.getPriority());
+                        publishUpdate.getDomain(),
+                        publishUpdate.getNetworkZone(),
+                        publishUpdate.getSession(),
+                        publishUpdate.getSessionName(),
+                        publishUpdate.getQos(),
+                        publishUpdate.getPriority());
                 publisher.publish(updateHeaderList, testUpdateList);
             }
         } catch (MALInteractionException exc) {
@@ -486,37 +492,19 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
         listener.cond.reset();
 
-        if (_TestPublishUpdate.getErrorCode().getValue() != 999) {
+        if (publishUpdate.getErrorCode().getValue() != 999) {
             MALStandardError error;
             UInteger expectedErrorCode;
             Object expectedExtraInfo;
-            if (_TestPublishUpdate.getIsException().booleanValue()) {
+
+            if (publishUpdate.getIsException()) {
                 error = raisedPublishError;
                 expectedErrorCode = MALHelper.INCORRECT_STATE_ERROR_NUMBER;
                 expectedExtraInfo = null;
             } else {
-                MALMessageHeader expectedPublishErrorHeader = new MALMessageHeader(
-                        uris.broker,
-                        getBrokerAuthenticationId(),
-                        uris.uri,
-                        timestamp,
-                        listener.getPublishRegisterQoSLevel(),
-                        listener.getPublishRegisterPriority(),
-                        _TestPublishUpdate.getDomain(),
-                        _TestPublishUpdate.getNetworkZone(),
-                        _TestPublishUpdate.getSession(),
-                        _TestPublishUpdate.getSessionName(),
-                        InteractionType.PUBSUB,
-                        new UOctet(MALPubSubOperation._PUBLISH_STAGE),
-                        listener.getPublishRegisterTransactionId(),
-                        MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                        IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
-                        opNumber,
-                        MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                        Boolean.TRUE);
-
                 MALMessageHeader publishHeader = listener.getHeader();
 
+                // Check if the header is not null
                 assertions.add(new Assertion("PubSub.checkPublishErrorHeader",
                         "Publish Error received", (publishHeader != null)));
 
@@ -524,12 +512,27 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     return;
                 }
 
+                MALMessageHeader expectedPublishErrorHeader = new MALMessageHeader(
+                        uris.broker,
+                        getBrokerAuthenticationId(),
+                        uris.uri,
+                        timestamp,
+                        InteractionType.PUBSUB,
+                        new UOctet(MALPubSubOperation._PUBLISH_STAGE),
+                        listener.getPublishRegisterTransactionId(key),
+                        MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
+                        IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                        opNumber,
+                        MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
+                        Boolean.TRUE,
+                        new NamedValueList());
+
                 AssertionHelper.checkHeader("PubSub.checkPublishErrorHeader",
                         assertions, publishHeader, expectedPublishErrorHeader);
 
                 error = listener.getError();
-                expectedErrorCode = _TestPublishUpdate.getErrorCode();
-                expectedExtraInfo = _TestPublishUpdate.getFailedKeyValues();
+                expectedErrorCode = publishUpdate.getErrorCode();
+                expectedExtraInfo = publishUpdate.getFailedKeyValues();
             }
 
             assertions.add(new Assertion("PubSub.checkPublishError",
@@ -550,64 +553,55 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
             assertions.add(new Assertion("PubSub.checkPublish",
                     "Successful Publish", (publishHeader == null)));
         }
+
+        LoggingBase.logMessage("------------------------\n\n");
     }
 
-    public void publishDeregister(TestPublishDeregister _TestPublishDeregister, MALInteraction interaction)
+    @Override
+    public void publishDeregister(TestPublishDeregister publishDeregister, MALInteraction interaction)
             throws MALInteractionException, MALException {
-        LoggingBase.logMessage("IPTestHandlerImpl.publishDeregister(" + _TestPublishDeregister + ')');
+        LoggingBase.logMessage("IPTestHandlerImpl.publishDeregister(" + publishDeregister + ')');
         resetAssertions();
-        PublishInteractionListenerKey key = new PublishInteractionListenerKey(
-                _TestPublishDeregister.getDomain(),
-                _TestPublishDeregister.getNetworkZone(),
-                _TestPublishDeregister.getSession(),
-                _TestPublishDeregister.getSessionName());
 
-        // Should reuse the listener to check the header
-        //removePublishInteractionListener(key);
-        //MonitorPublishInteractionListener listener = new MonitorPublishInteractionListener();
-        MonitorPublishInteractionListener listener = getPublishInteractionListener(key);
+        MonitorPublishInteractionListener listener = defaultListener;
 
-        doPublishDeregister(_TestPublishDeregister, listener);
+        doPublishDeregister(publishDeregister, listener);
         // The Publish Deregister header is checked with a shared broker
         // (see test.patterns.pubsub.IPTestHandlerWithSharedBroker)
 
-        if (_TestPublishDeregister.getTestMultiType()) {
-            MonitorMultiPublisher publisher = getMonitorMultiPublisher(
-                    _TestPublishDeregister.getDomain(),
-                    _TestPublishDeregister.getNetworkZone(),
-                    _TestPublishDeregister.getSession(),
-                    _TestPublishDeregister.getSessionName(),
-                    _TestPublishDeregister.getQos(),
-                    _TestPublishDeregister.getPriority());
+        if (publishDeregister.getTestMultiType()) {
+            MonitorMultiPublisher publisher = getMonitorMultiPublisher(publishDeregister.getDomain(),
+                    publishDeregister.getNetworkZone(),
+                    publishDeregister.getSession(),
+                    publishDeregister.getSessionName(),
+                    publishDeregister.getQos(),
+                    publishDeregister.getPriority());
             publisher.close();
-            removeMonitorMultiPublisher(
-                    _TestPublishDeregister.getDomain(),
-                    _TestPublishDeregister.getNetworkZone(),
-                    _TestPublishDeregister.getSession(),
-                    _TestPublishDeregister.getSessionName(),
-                    _TestPublishDeregister.getQos(),
-                    _TestPublishDeregister.getPriority());
+            removeMonitorMultiPublisher(publishDeregister.getDomain(),
+                    publishDeregister.getNetworkZone(),
+                    publishDeregister.getSession(),
+                    publishDeregister.getSessionName(),
+                    publishDeregister.getQos(),
+                    publishDeregister.getPriority());
             if (publishersMulti.isEmpty()) {
-                publishInteractionListeners.clear();
+                defaultListener = new MonitorPublishInteractionListener();
             }
         } else {
-            MonitorPublisher publisher = getMonitorPublisher(
-                    _TestPublishDeregister.getDomain(),
-                    _TestPublishDeregister.getNetworkZone(),
-                    _TestPublishDeregister.getSession(),
-                    _TestPublishDeregister.getSessionName(),
-                    _TestPublishDeregister.getQos(),
-                    _TestPublishDeregister.getPriority());
+            MonitorPublisher publisher = getMonitorPublisher(publishDeregister.getDomain(),
+                    publishDeregister.getNetworkZone(),
+                    publishDeregister.getSession(),
+                    publishDeregister.getSessionName(),
+                    publishDeregister.getQos(),
+                    publishDeregister.getPriority());
             publisher.close();
-            removeMonitorPublisher(
-                    _TestPublishDeregister.getDomain(),
-                    _TestPublishDeregister.getNetworkZone(),
-                    _TestPublishDeregister.getSession(),
-                    _TestPublishDeregister.getSessionName(),
-                    _TestPublishDeregister.getQos(),
-                    _TestPublishDeregister.getPriority());
+            removeMonitorPublisher(publishDeregister.getDomain(),
+                    publishDeregister.getNetworkZone(),
+                    publishDeregister.getSession(),
+                    publishDeregister.getSessionName(),
+                    publishDeregister.getQos(),
+                    publishDeregister.getPriority());
             if (publishers.isEmpty()) {
-                publishInteractionListeners.clear();
+                defaultListener = new MonitorPublishInteractionListener();
             }
         }
     }
@@ -642,19 +636,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         listener.cond.reset();
     }
 
+    @Override
     public IPTestResult getResult(Element _Element, MALInteraction interaction) throws MALException {
         LoggingBase.logMessage("IPTest: assertions = " + assertions);
         return new IPTestResult(transactionId, assertions);
-    }
-
-    private MonitorPublishInteractionListener getPublishInteractionListener(PublishInteractionListenerKey key) {
-        MonitorPublishInteractionListener listener
-                = (MonitorPublishInteractionListener) publishInteractionListeners.get(key);
-        if (listener == null) {
-            listener = new MonitorPublishInteractionListener();
-            publishInteractionListeners.put(key, listener);
-        }
-        return listener;
     }
 
     protected MonitorPublisher getMonitorPublisher(IdentifierList domain, Identifier networkZone,
@@ -693,18 +678,6 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         publishersMulti.remove(key);
     }
 
-    private void removePublishInteractionListener(PublishInteractionListenerKey key) {
-        publishInteractionListeners.remove(key);
-    }
-
-    public MonitorPublishInteractionListener getPublishInteractionListener(
-            IdentifierList domain, Identifier networkZone, SessionType session,
-            Identifier sessionName) {
-        PublishInteractionListenerKey key = new PublishInteractionListenerKey(
-                domain, networkZone, session, sessionName);
-        return getPublishInteractionListener(key);
-    }
-
     protected FileBasedDirectory.URIpair getProviderURIs() {
         return FileBasedDirectory.loadURIs(ipTestProviderFileName);
     }
@@ -713,6 +686,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         return FileBasedDirectory.loadPrivateBrokerAuthenticationId();
     }
 
+    @Override
     public void testMultipleNotify(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)
             throws MALInteractionException, MALException {
         resetAssertions();

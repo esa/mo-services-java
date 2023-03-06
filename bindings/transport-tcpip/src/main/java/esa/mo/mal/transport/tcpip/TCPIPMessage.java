@@ -106,8 +106,8 @@ public class TCPIPMessage extends GENMessage {
 
     @Override
     public String toString() {
-        return "TCPIPMessage {URIFrom:" + header.getURIFrom()
-                + "URITo:" + header.getURITo() + "}";
+        return "TCPIPMessage {URIFrom:" + header.getFrom()
+                + "URITo:" + header.getTo() + "}";
     }
 
     /**

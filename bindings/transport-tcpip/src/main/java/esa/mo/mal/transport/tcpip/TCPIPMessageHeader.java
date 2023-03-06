@@ -20,8 +20,9 @@
  */
 package esa.mo.mal.transport.tcpip;
 
+import esa.mo.mal.transport.gen.GENMessageHeader;
+import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
 import java.util.logging.Level;
-
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
@@ -32,20 +33,12 @@ import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
-
-import esa.mo.mal.transport.gen.GENMessageHeader;
-
-import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
 
 public class TCPIPMessageHeader extends GENMessageHeader {
 
@@ -69,21 +62,19 @@ public class TCPIPMessageHeader extends GENMessageHeader {
     }
 
     public TCPIPMessageHeader(URI uriFrom, URI uriTo) {
-        this.URIFrom = uriFrom;
-        this.URITo = uriTo;
+        this.from = uriFrom;
+        this.to = uriTo;
     }
 
     public TCPIPMessageHeader(URI uriFrom, String serviceFrom,
             Blob authenticationId, URI uriTo, String serviceTo, Time timestamp,
-            QoSLevel qosLevel, UInteger priority, IdentifierList domain,
-            Identifier networkZone, SessionType session,
-            Identifier sessionName, InteractionType interactionType,
-            UOctet interactionStage, Long transactionId, UShort serviceArea,
-            UShort service, UShort operation, UOctet serviceVersion,
-            Boolean isErrorMessage) {
-        super(uriFrom, authenticationId, uriTo, timestamp, qosLevel, priority,
-                domain, networkZone, session, sessionName, interactionType, interactionStage,
-                transactionId, serviceArea, service, operation, serviceVersion, isErrorMessage);
+            InteractionType interactionType, UOctet interactionStage, 
+            Long transactionId, UShort serviceArea, UShort service, 
+            UShort operation, UOctet serviceVersion,
+            Boolean isErrorMessage, NamedValueList supplements) {
+        super(uriFrom, authenticationId, uriTo, timestamp, interactionType,
+                interactionStage, transactionId, serviceArea, service,
+                operation, serviceVersion, isErrorMessage, supplements);
         this.serviceFrom = serviceFrom;
         this.serviceTo = serviceTo;
     }
@@ -307,32 +298,22 @@ public class TCPIPMessageHeader extends GENMessageHeader {
         str.append(serviceVersion);
         str.append(", isErrorMessage=");
         str.append(isErrorMessage);
-        str.append(", QoSlevel=");
-        str.append(QoSlevel);
-        str.append(", session=");
-        str.append(session);
         str.append(", transactionId=");
         str.append(transactionId);
-        str.append(", priority=");
-        str.append(priority);
         str.append(", timestamp=");
         str.append(timestamp);
-        str.append(", networkZone=");
-        str.append(networkZone);
-        str.append(", sessionName=");
-        str.append(sessionName);
-        str.append(", domain=");
-        str.append(domain);
         str.append(", authenticationId=");
         str.append(authenticationId);
         str.append(", URIFrom=");
-        str.append(URIFrom);
+        str.append(from);
         str.append(", URITo=");
-        str.append(URITo);
+        str.append(to);
         str.append(", interactionType=");
         str.append(interactionType);
         str.append(", interactionStage=");
         str.append(interactionStage);
+        str.append(", supplements=");
+        str.append(supplements);
         str.append('}');
 
         return str.toString();

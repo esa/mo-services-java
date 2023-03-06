@@ -37,29 +37,32 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 class InteractionPubSubMap {
 
-    private final Map<StringPair, MALPublishInteractionListener> publisherMap = new HashMap<>();
+    private final Map<String, MALPublishInteractionListener> publisherMap = new HashMap<>();
     private final Map<String, Map<String, MALInteractionListener>> errorMap = new HashMap<>();
     private final Map<StringPair, MALInteractionListener> notifyMap = new HashMap<>();
 
     public void registerPublishListener(final MessageDetails details, final MALPublishInteractionListener listener) {
-        final StringPair id = new StringPair(details.uriFrom.getValue(), createProviderKey(details));
+        //final StringPair id = new StringPair(details.uriFrom.getValue(), createProviderKey(details));
+        final String id = details.uriFrom.getValue();
 
         synchronized (publisherMap) {
             publisherMap.put(id, listener);
-            MALContextFactoryImpl.LOGGER.log(Level.FINE, "Adding publisher: {0}", id);
+            MALContextFactoryImpl.LOGGER.log(Level.INFO, "Adding publisher: {0}", id);
         }
     }
 
     public MALPublishInteractionListener getPublishListener(final URI uri, final MALMessageHeader mshHdr) {
-        final StringPair id = new StringPair(uri.getValue(), createProviderKey(mshHdr));
+        //final StringPair id = new StringPair(uri.getValue(), createProviderKey(mshHdr));
         MALPublishInteractionListener list;
 
         synchronized (publisherMap) {
-            list = publisherMap.get(id);
+            // list = publisherMap.get(id);
+            list = publisherMap.get(uri.getValue());
         }
 
         if (list != null) {
-            MALContextFactoryImpl.LOGGER.log(Level.FINE, "Getting publisher: {0}", id);
+            //MALContextFactoryImpl.LOGGER.log(Level.FINE, "Getting publisher: {0}", id);
+            MALContextFactoryImpl.LOGGER.log(Level.INFO, "Getting publisher: {0}", uri.getValue());
         }
 
         return list;
@@ -72,7 +75,7 @@ class InteractionPubSubMap {
         synchronized (publisherMap) {
             str.append("Starting dump of publisher map\n");
 
-            for (StringPair e : publisherMap.keySet()) {
+            for (String e : publisherMap.keySet()) {
                 str.append("  >> ").append(e).append("\n");
             }
         }
@@ -94,7 +97,8 @@ class InteractionPubSubMap {
     }
 
     public MALPublishInteractionListener getPublishListenerAndRemove(final URI uri, final MessageDetails details) {
-        final StringPair id = new StringPair(uri.getValue(), createProviderKey(details));
+        //final StringPair id = new StringPair(uri.getValue(), createProviderKey(details));
+        final String id = uri.getValue();
         MALPublishInteractionListener list;
 
         synchronized (publisherMap) {
@@ -102,7 +106,8 @@ class InteractionPubSubMap {
         }
 
         if (null != list) {
-            MALContextFactoryImpl.LOGGER.log(Level.FINE, "Removing publisher: {0}", id);
+            //MALContextFactoryImpl.LOGGER.log(Level.FINE, "Removing publisher: {0}", id);
+            MALContextFactoryImpl.LOGGER.log(Level.FINE, "Removing publisher: {0}", uri.getValue());
         }
 
         return list;
@@ -204,21 +209,19 @@ class InteractionPubSubMap {
         }
     }
 
+    /*
     private static String createProviderKey(final MessageDetails details) {
         final StringBuilder buf = new StringBuilder();
-        buf.append(details.sessionType).append(':');
-        buf.append(details.sessionName).append(':');
-        buf.append(details.networkZone).append(':');
         buf.append(details.domain);
         return buf.toString();
     }
+    */
 
+    /*
     private static String createProviderKey(final MALMessageHeader details) {
         final StringBuilder buf = new StringBuilder();
-        buf.append(details.getSession()).append(':');
-        buf.append(details.getSessionName()).append(':');
-        buf.append(details.getNetworkZone()).append(':');
         buf.append(details.getDomain());
         return buf.toString();
     }
+    */
 }

@@ -35,7 +35,6 @@ import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.provider.*;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.*;
@@ -47,10 +46,10 @@ public class MessageReceive implements MALMessageListener {
 
     private final MessageSend sender;
     private final MALAccessControl securityManager;
-    private final InteractionConsumerMap icmap;
+    private final InteractionConsumerMap consumersMap;
     private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
     private final Map<EndPointPair, Address> providerEndpointMap = new HashMap();
-    private final InteractionPubSubMap ipsmap;
+    private final InteractionPubSubMap pubSubMap;
 
     MessageReceive(final MessageSend sender,
             final MALAccessControl securityManager,
@@ -59,8 +58,8 @@ public class MessageReceive implements MALMessageListener {
             final Map<String, MALBrokerBindingImpl> brokerBindingMap) {
         this.sender = sender;
         this.securityManager = securityManager;
-        this.icmap = imap;
-        this.ipsmap = psmap;
+        this.consumersMap = imap;
+        this.pubSubMap = psmap;
         this.brokerBindingMap = brokerBindingMap;
     }
 
@@ -76,7 +75,7 @@ public class MessageReceive implements MALMessageListener {
             final Map qosMap) {
         MALContextFactoryImpl.LOGGER.severe("MAL Receiving Transmission ERROR!");
 
-        icmap.handleError(srcMessageHeader, err, qosMap);
+        consumersMap.handleError(srcMessageHeader, err, qosMap);
     }
 
     @Override
@@ -117,7 +116,7 @@ public class MessageReceive implements MALMessageListener {
                             handleSubmit(msg, address);
                             break;
                         case MALSubmitOperation._SUBMIT_ACK_STAGE:
-                            icmap.handleStage(msg);
+                            consumersMap.handleStage(msg);
                             break;
                         default:
                             throw new MALException("Received unexpected stage of " + stage);
@@ -130,7 +129,7 @@ public class MessageReceive implements MALMessageListener {
                             handleRequest(msg, address);
                             break;
                         case MALRequestOperation._REQUEST_RESPONSE_STAGE:
-                            icmap.handleStage(msg);
+                            consumersMap.handleStage(msg);
                             break;
                         default:
                             throw new MALException("Received unexpected stage of " + stage);
@@ -144,7 +143,7 @@ public class MessageReceive implements MALMessageListener {
                             break;
                         case MALInvokeOperation._INVOKE_ACK_STAGE:
                         case MALInvokeOperation._INVOKE_RESPONSE_STAGE:
-                            icmap.handleStage(msg);
+                            consumersMap.handleStage(msg);
                             break;
                         default:
                             throw new MALException("Received unexpected stage of " + stage);
@@ -159,7 +158,7 @@ public class MessageReceive implements MALMessageListener {
                         case MALProgressOperation._PROGRESS_ACK_STAGE:
                         case MALProgressOperation._PROGRESS_UPDATE_STAGE:
                         case MALProgressOperation._PROGRESS_RESPONSE_STAGE:
-                            icmap.handleStage(msg);
+                            consumersMap.handleStage(msg);
                             break;
                         default:
                             throw new MALException("Received unexpected stage of " + stage);
@@ -171,7 +170,7 @@ public class MessageReceive implements MALMessageListener {
                         case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
                         case MALPubSubOperation._DEREGISTER_ACK_STAGE:
                         case MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE:
-                            icmap.handleStage(msg);
+                            consumersMap.handleStage(msg);
                             break;
                         case MALPubSubOperation._REGISTER_STAGE:
                             address = lookupAddress(callingEndpoint, null);
@@ -376,20 +375,19 @@ public class MessageReceive implements MALMessageListener {
     private void handleRegister(final MALMessage msg, final Address address)
             throws MALInteractionException, MALException {
         // find relevant broker
-        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
+        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getTo().getValue());
 
         if (null != brokerHandler) {
             if (msg.getBody() instanceof MALRegisterBody) {
                 // update register list
                 final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
-                brokerHandler.addSubscriber(msg.getHeader().getURIFrom().getValue());
+                brokerHandler.addSubscriber(msg.getHeader().getFrom().getValue());
                 brokerHandler.getBrokerImpl().getHandler().handleRegister(
                         interaction, (MALRegisterBody) msg.getBody());
 
                 // because we don't pass this upwards, we have to generate the ack
                 sender.returnResponse(address,
                         msg.getHeader(),
-                        msg.getHeader().getQoSlevel(),
                         MALPubSubOperation.REGISTER_ACK_STAGE,
                         interaction.getOperation(),
                         interaction.getQoSProperties(),
@@ -417,7 +415,7 @@ public class MessageReceive implements MALMessageListener {
     private void handlePublishRegister(final MALMessage msg,
             final Address address) throws MALInteractionException, MALException {
         // find relevant broker
-        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
+        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getTo().getValue());
 
         if (null != brokerHandler) {
             if (msg.getBody() instanceof MALPublishRegisterBody) {
@@ -425,13 +423,9 @@ public class MessageReceive implements MALMessageListener {
                 final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
                 brokerHandler.getBrokerImpl().getHandler().handlePublishRegister(interaction, (MALPublishRegisterBody) msg.getBody());
 
-                // need to use QOSlevel and priority from original publish register
-                final QoSLevel lvl = brokerHandler.getBrokerImpl().getProviderQoSLevel(msg.getHeader());
-
                 // because we don't pass this upwards, we have to generate the ack
                 sender.returnResponse(address,
                         msg.getHeader(),
-                        lvl,
                         MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE,
                         interaction.getOperation(),
                         interaction.getQoSProperties(),
@@ -460,9 +454,10 @@ public class MessageReceive implements MALMessageListener {
     private void handlePublish(final MALMessage msg,
             final Address address) throws MALInteractionException {
         if (msg.getHeader().getIsErrorMessage()) {
+            
             if (msg.getBody() instanceof MALErrorBody) {
                 try {
-                    MALPublishInteractionListener listener = ipsmap.getPublishListener(msg.getHeader().getURITo(),
+                    MALPublishInteractionListener listener = pubSubMap.getPublishListener(msg.getHeader().getTo(),
                             msg.getHeader());
 
                     if (listener != null) {
@@ -470,8 +465,8 @@ public class MessageReceive implements MALMessageListener {
                     } else {
                         MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                                 "Unknown publisher for PUBLISH error: {0}",
-                                msg.getHeader().getURITo());
-                        ipsmap.listPublishListeners();
+                                msg.getHeader().getTo());
+                        pubSubMap.listPublishListeners();
                     }
                 } catch (MALException ex) {
                     MALContextFactoryImpl.LOGGER.log(Level.WARNING,
@@ -480,7 +475,7 @@ public class MessageReceive implements MALMessageListener {
             }
         } else {
             // find relevant broker
-            final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
+            final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getTo().getValue());
 
             if (null != brokerHandler) {
                 if (msg.getBody() instanceof MALPublishBody) {
@@ -501,7 +496,7 @@ public class MessageReceive implements MALMessageListener {
                 } else {
                     MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                             "Unexpected body type for PUBLISH: {0}",
-                            msg.getHeader().getURITo());
+                            msg.getHeader().getTo());
                     sender.returnError(address,
                             msg.getHeader(),
                             MALPubSubOperation.PUBLISH_STAGE,
@@ -526,7 +521,7 @@ public class MessageReceive implements MALMessageListener {
         final MALMessageHeader hdr = msg.getHeader();
 
         if (hdr.getIsErrorMessage()) {
-            final Map<String, MALInteractionListener> listeners = ipsmap.getNotifyListenersAndRemove(hdr.getURITo());
+            final Map<String, MALInteractionListener> listeners = pubSubMap.getNotifyListenersAndRemove(hdr.getTo());
 
             if (listeners != null) {
                 final MALErrorBody err = (MALErrorBody) msg.getBody();
@@ -540,11 +535,11 @@ public class MessageReceive implements MALMessageListener {
                 }
             } else {
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "Unknown notify consumer requested: {0}", hdr.getURITo());
+                        "Unknown notify consumer requested: {0}", hdr.getTo());
             }
         } else {
             final MALNotifyBody notifyBody = (MALNotifyBody) msg.getBody();
-            final MALInteractionListener rcv = ipsmap.getNotifyListener(hdr.getURITo(), notifyBody.getSubscriptionId());
+            final MALInteractionListener rcv = pubSubMap.getNotifyListener(hdr.getTo(), notifyBody.getSubscriptionId());
 
             if (rcv != null) {
                 try {
@@ -556,8 +551,8 @@ public class MessageReceive implements MALMessageListener {
             } else {
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                         "Unknown notify consumer requested:\n >> uri: {0}\n >> subscriptionId: {1}",
-                        new Object[]{hdr.getURITo(), notifyBody.getSubscriptionId()});
-                ipsmap.listPublishListeners();
+                        new Object[]{hdr.getTo(), notifyBody.getSubscriptionId()});
+                pubSubMap.listPublishListeners();
             }
         }
     }
@@ -565,7 +560,7 @@ public class MessageReceive implements MALMessageListener {
     private void handleDeregister(final MALMessage msg,
             final Address address) throws MALInteractionException {
         // find relevant broker
-        String uri = msg.getHeader().getURITo().getValue();
+        String uri = msg.getHeader().getTo().getValue();
         final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(uri);
 
         if (null != brokerHandler) {
@@ -573,12 +568,11 @@ public class MessageReceive implements MALMessageListener {
                 // update register list
                 final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
                 brokerHandler.getBrokerImpl().getHandler().handleDeregister(interaction, (MALDeregisterBody) msg.getBody());
-                brokerHandler.removeSubscriber(msg.getHeader().getURIFrom().getValue());
+                brokerHandler.removeSubscriber(msg.getHeader().getFrom().getValue());
 
                 // because we don't pass this upwards, we have to generate the ack
                 sender.returnResponse(address,
                         msg.getHeader(),
-                        msg.getHeader().getQoSlevel(),
                         MALPubSubOperation.DEREGISTER_ACK_STAGE,
                         interaction.getOperation(),
                         interaction.getQoSProperties(),
@@ -602,15 +596,9 @@ public class MessageReceive implements MALMessageListener {
     private void handlePublishDeregister(final MALMessage msg,
             final Address address) throws MALInteractionException, MALException {
         // find relevant broker
-        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getURITo().getValue());
+        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getTo().getValue());
 
         if (null != brokerHandler) {
-            // get the correct qos for the dergister
-            QoSLevel lvl = brokerHandler.getBrokerImpl().getProviderQoSLevel(msg.getHeader());
-            if (null == lvl) {
-                lvl = msg.getHeader().getQoSlevel();
-            }
-
             // update register list
             final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
             brokerHandler.getBrokerImpl().getHandler().handlePublishDeregister(interaction);
@@ -618,7 +606,6 @@ public class MessageReceive implements MALMessageListener {
             // because we don't pass this upwards, we have to generate the ack
             sender.returnResponse(address,
                     msg.getHeader(),
-                    lvl,
                     MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE,
                     interaction.getOperation(),
                     interaction.getQoSProperties(),
@@ -642,9 +629,10 @@ public class MessageReceive implements MALMessageListener {
         if (addr == null) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "lookupAddress failed to find local endpoint for {0}.\n"
-                    + "Available options: {1}",
+                    + "Available options: \n{1}\n",
                     new Object[]{key, providerEndpointMap}
             );
+            Thread.dumpStack();
         }
 
         return addr;
@@ -757,20 +745,21 @@ public class MessageReceive implements MALMessageListener {
             if (this.first == null ? other.first != null : !this.first.equals(other.first)) {
                 return false;
             }
-            return !(this.second == null ? other.second != null : !this.second.equals(other.second));
+            return true;
+            //return !(this.second == null ? other.second != null : !this.second.equals(other.second));
         }
 
         @Override
         public int hashCode() {
             int hash = 5;
             hash = HASH_VALUE * hash + (this.first != null ? this.first.hashCode() : 0);
-            hash = HASH_VALUE * hash + (this.second != null ? this.second.hashCode() : 0);
+            //hash = HASH_VALUE * hash + (this.second != null ? this.second.hashCode() : 0);
             return hash;
         }
 
         @Override
         public String toString() {
-            return "EndPointPair{" + "first=" + first + ", second=" + second + '}';
+            return "`nEndPointPair{" + "first=" + first + ", second=" + second + '}';
         }
     }
 }

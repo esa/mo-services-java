@@ -32,6 +32,7 @@ import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -51,28 +52,17 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder {
     final UOctet version;
     final Identifier subId;
     final URI URIFrom;
-    final QoSLevel level;
-    final UInteger priority;
-    final Identifier networkZone;
-    final SessionType session;
-    final Identifier sessionName;
     final Long transactionId;
 
     public JMSIncomingPSMessageDecoder(final JMSTransport transport,
             JMSUpdate jmsUpdate, URI uri, UOctet version, Identifier subId,
-            URI URIFrom, QoSLevel level, UInteger priority, Identifier networkZone,
-            SessionType session, Identifier sessionName, Long transactionId) {
+            URI URIFrom, Long transactionId) {
         this.transport = transport;
         this.jmsUpdate = jmsUpdate;
         this.uri = uri;
         this.version = version;
         this.subId = subId;
         this.URIFrom = URIFrom;
-        this.level = level;
-        this.priority = priority;
-        this.networkZone = networkZone;
-        this.session = session;
-        this.sessionName = sessionName;
         this.transactionId = transactionId;
     }
 
@@ -84,12 +74,6 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder {
                 new Blob(JMSTransport.authId),
                 uri,
                 Time.now(),
-                level,
-                priority,
-                null,
-                networkZone,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 MALPubSubOperation.NOTIFY_STAGE,
                 transactionId,
@@ -97,7 +81,8 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder {
                 null,
                 null,
                 version,
-                false);
+                false,
+                new NamedValueList());
 
         try {
             byte[] data = jmsUpdate.getDat();

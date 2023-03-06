@@ -770,7 +770,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
     @Override
     protected URI rerouteMessage(GENMessage message) {
-        String uri = message.getHeader().getURITo().getValue();
+        String uri = message.getHeader().getTo().getValue();
 
         if (aliasToIp.isEmpty()) {
             return new URI(uri);

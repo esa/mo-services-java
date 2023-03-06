@@ -71,12 +71,7 @@ public interface MALBrokerBinding {
      * @param subscriber Subscriber’s URI
      * @param transactionId Transaction identifier of the NOTIFY message
      * @param domainId Domain of the NOTIFY message
-     * @param networkZone Network zone of the NOTIFY message
-     * @param sessionType Session type of the NOTIFY message
-     * @param sessionName Session name of the NOTIFY message
-     * @param notifyQos QoS level of the NOTIFY message
      * @param notifyQosProps QoS properties of the NOTIFY message
-     * @param notifyPriority Priority of the NOTIFY message
      * @param subscriptionId Subscription identifier
      * @param updateHeaderList List of update headers
      * @param updateList Lists of updates
@@ -98,12 +93,7 @@ public interface MALBrokerBinding {
             URI subscriber,
             Long transactionId,
             IdentifierList domainId,
-            Identifier networkZone,
-            SessionType sessionType,
-            Identifier sessionName,
-            QoSLevel notifyQos,
             Map notifyQosProps,
-            UInteger notifyPriority,
             Identifier subscriptionId,
             UpdateHeaderList updateHeaderList,
             java.util.List... updateList)

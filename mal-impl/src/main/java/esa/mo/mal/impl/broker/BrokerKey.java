@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.impl.broker;
 
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
@@ -29,10 +30,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class BrokerKey implements Comparable {
 
-    private static final int HASH_MAGIC_NUMBER = 79;
     private final String uri;
-    private final int session;
-    private final String sessionName;
 
     /**
      * Constructor.
@@ -40,22 +38,17 @@ public class BrokerKey implements Comparable {
      * @param hdr Source message.
      */
     public BrokerKey(final MALMessageHeader hdr) {
-        this.uri = hdr.getURITo().getValue();
-        this.session = hdr.getSession().getOrdinal();
-        this.sessionName = hdr.getSessionName().getValue();
+        this.uri = hdr.getTo().getValue();
     }
 
     /**
      * Constructor.
      *
      * @param uri Broker URI
-     * @param session Broker session enumeration ordinal
-     * @param sessionName Broker session name
      */
-    public BrokerKey(String uri, int session, String sessionName) {
+    public BrokerKey(String uri) {
         this.uri = uri;
-        this.session = session;
-        this.sessionName = sessionName;
+        MALBrokerImpl.LOGGER.log(Level.INFO, "The BrokerKey has url: ", uri);
     }
 
     @Override
@@ -63,56 +56,22 @@ public class BrokerKey implements Comparable {
         if (obj instanceof BrokerKey) {
             final BrokerKey other = (BrokerKey) obj;
             if (uri == null) {
-                if (other.uri != null) {
-                    return false;
-                }
+                return (other.uri == null);
             } else {
-                if (!uri.equals(other.uri)) {
-                    return false;
-                }
+                return uri.equals(other.uri);
             }
-            if (session != other.session) {
-                return false;
-            }
-            if (sessionName == null) {
-                if (other.sessionName != null) {
-                    return false;
-                }
-            } else {
-                if (!sessionName.equals(other.sessionName)) {
-                    return false;
-                }
-            }
-            return true;
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = HASH_MAGIC_NUMBER * hash + (this.uri != null ? this.uri.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + this.session;
-        hash = HASH_MAGIC_NUMBER * hash + (this.sessionName != null ? this.sessionName.hashCode() : 0);
-        return hash;
+        return uri.hashCode();
     }
 
     @Override
     public int compareTo(final Object o) {
         final BrokerKey other = (BrokerKey) o;
-
-        if (uri.equals(other.uri)) {
-            if (session == other.session) {
-                if (sessionName.equals(other.sessionName)) {
-                    return 0;
-                } else {
-                    return sessionName.compareTo(other.sessionName);
-                }
-            } else {
-                return session - other.session;
-            }
-        } else {
-            return uri.compareTo(other.uri);
-        }
+        return uri.compareTo(other.uri);
     }
 }

@@ -93,4 +93,9 @@ public final class Address {
     public MALInteractionHandler getHandler() {
         return handler;
     }
+    
+    @Override
+    public String toString() {
+        return "uri=" + uri + " - authenticationId=" + authenticationId;
+    }
 }

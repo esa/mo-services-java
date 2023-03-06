@@ -180,6 +180,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
             Identifier sessionName, QoSLevel qosLevel, UInteger priority, boolean shared) throws MALException {
         StubKey key = new StubKey(authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, priority, shared);
         IPTestConsumer ipconsumer = (IPTestConsumer) ipstubs.get(key);
+
         if (ipconsumer == null) {
             ipconsumer = newIPTestStub(null, authenticationId, domain, networkZone,
                     sessionType, sessionName, qosLevel, priority, shared);

@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -120,7 +121,8 @@ public class ActivityTrackingPublisher {
                 "ActivityTracking:publishAcceptance source = {0}", source);
 
         ObjectKey key = new ObjectKey();
-        key.setDomain(interaction.getMessageHeader().getDomain());
+        //key.setDomain(interaction.getMessageHeader().getDomain());
+        key.setDomain(new IdentifierList());
         key.setInstId(interaction.getMessageHeader().getTransactionId());
         if (interaction.getMessageHeader().getTransactionId() == null) {
             BaseMalServer.LOGGER.fine("ActivityTracking:getTransactionId = NULL");
@@ -169,7 +171,7 @@ public class ActivityTrackingPublisher {
         
         BaseMalServer.LOGGER.log(Level.FINE, "ActivityTracking:eKey = {0}", keys);
 
-        URI uriTo = interaction.getMessageHeader().getURITo();
+        URI uriTo = interaction.getMessageHeader().getTo();
         UpdateHeader uh = new UpdateHeader(new Identifier(uriTo.getValue()), null, keys);
 
         // We can now publish the event
@@ -276,11 +278,15 @@ public class ActivityTrackingPublisher {
             BaseMalServer.LOGGER.fine("ActivityTracking:getTransactionId = NULL");
         }
 
+        /*
         ObjectId source = new ObjectId(OPERATION_ACTIVITY_OBJECT_TYPE,
                 new ObjectKey(interaction.getMessageHeader().getDomain(),
                         interaction.getMessageHeader().getTransactionId()));
+        */
+        ObjectId source = new ObjectId(OPERATION_ACTIVITY_OBJECT_TYPE,
+                new ObjectKey(new IdentifierList(), interaction.getMessageHeader().getTransactionId()));
 
-        publishExecutionEvent(interaction.getMessageHeader().getURITo(),
+        publishExecutionEvent(interaction.getMessageHeader().getTo(),
                 success,
                 currentStageCount,
                 totalStageCount,
