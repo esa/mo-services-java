@@ -23,7 +23,6 @@ package esa.mo.com.test.activity;
 import java.util.Hashtable;
 import java.util.Map;
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransferList;
@@ -277,7 +276,11 @@ public class ActivityRelayNode {
                 COMHelper._COM_AREA_VERSION,
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
-        uhl.add(new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName), srcMessage.getDomain(), keyValues));
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("esa"));
+        domain.add(new Identifier("mission"));
+        
+        uhl.add(new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName), domain, keyValues));
 
         // Produce ActivityTransferList
         ActivityTransferList atl = new ActivityTransferList();
@@ -294,7 +297,7 @@ public class ActivityRelayNode {
         source.setType(COMTestHelper.getOperationActivityType());
 
         ObjectKey key = new ObjectKey();
-        key.setDomain(srcMessage.getDomain());
+        key.setDomain(domain);
         if (srcMessage.getTransactionId() == null) {
             LoggingBase.logMessage("ActivityRelayNode:getTransactionId = NULL");
         } else {

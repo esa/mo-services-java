@@ -43,6 +43,7 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 
 /**
  *
@@ -235,10 +236,11 @@ class MonitorEventDetails {
             // If type valid check fields
             if (bKeyValid) {
                 LoggingBase.logMessage("MonitorEventDetailsList:KEY = " + objectDetails.getSource().getKey());
+                /*
                 bTypeValid = COMChecker.equalsCheck(strObject, "Source.Key.Domain",
                         objectDetails.getSource().getKey().getDomain().toString(),
-                        hdr.getDomain().toString(), bTypeValid);
-
+                        new IdentifierList().toString(), bTypeValid);
+                        */
                 LoggingBase.logMessage("ActivityTestRelayHandlerImpl:Trans ID - " + strObject
                         + objectDetails.getSource().getKey().getInstId());
 

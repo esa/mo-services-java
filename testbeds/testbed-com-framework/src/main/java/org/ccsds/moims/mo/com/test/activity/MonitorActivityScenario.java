@@ -530,7 +530,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         ObjectId source = new ObjectId();
         source.setType(COMTestHelper.getOperationActivityType());
         ObjectKey key = new ObjectKey();
-        key.setDomain(hdr.getDomain());
+        key.setDomain(domain);
         key.setInstId(hdr.getTransactionId());
         source.setKey(key);
         objDetails.setSource(source);

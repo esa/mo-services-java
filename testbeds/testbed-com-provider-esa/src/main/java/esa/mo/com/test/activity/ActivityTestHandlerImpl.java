@@ -271,7 +271,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance source = " + source);
 
         ObjectKey key = new ObjectKey();
-        key.setDomain(interaction.getMessageHeader().getDomain());
+        key.setDomain(new IdentifierList());
         key.setInstId(new Long(interaction.getMessageHeader().getTransactionId()));
         if (interaction.getMessageHeader().getTransactionId() == null) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:getTransactionId = NULL");
@@ -310,7 +310,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
         LoggingBase.logMessage("ActivityTestHandler: keyValues = " + keyValues);
-        URI uri = interaction.getMessageHeader().getURITo();
+        URI uri = interaction.getMessageHeader().getTo();
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
@@ -351,7 +351,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution keyValues = " + keyValues);
-        URI uri = interaction.getMessageHeader().getURITo();
+        URI uri = interaction.getMessageHeader().getTo();
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
@@ -376,7 +376,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         source.setType(COMTestHelper.getOperationActivityType());
 
         ObjectKey key = new ObjectKey();
-        key.setDomain(interaction.getMessageHeader().getDomain());
+        key.setDomain(domain);
         key.setInstId(interaction.getMessageHeader().getTransactionId());
         if (interaction.getMessageHeader().getTransactionId() == null) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:getTransactionId = NULL");

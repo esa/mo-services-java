@@ -23,7 +23,6 @@ package esa.mo.com.test.archive;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.com.COMHelper;
@@ -96,7 +95,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
 
     private final TestServiceProvider testService;
     private Archive archive;
-    long lastInstanceId;
+    private long lastInstanceId;
     private final String CLS = "ArchiveHandlerImpl:";
     ArchiveEventPublisher archiveEventPublisher;
     // Event object numbers
@@ -144,7 +143,6 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         this.testService = testService;
         init();
         archive = Archive.inst();
-
     }
 
     /**
