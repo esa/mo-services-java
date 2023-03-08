@@ -278,4 +278,24 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
             MALInteraction mali) throws MALInteractionException, MALException {
         return tpl;
     }
+
+    @Override
+    public ObjectRef<Identifier> createObject(MOObject _MOObject0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public ObjectRef<Identifier> createObjectFromFields(String _String0, Integer _Integer1, String _String2, Boolean _Boolean3, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void deleteObject(ObjectRef<Identifier> _Identifier_0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public MOObject getObject(ObjectRef<Identifier> _Identifier_0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
