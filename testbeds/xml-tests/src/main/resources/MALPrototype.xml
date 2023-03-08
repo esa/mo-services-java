@@ -1618,7 +1618,7 @@
                     <smc:type area="MAL" name="Boolean" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="TestObjectBase" shortFormPart="20" comment="">
+            <smc:composite name="TestObjectBase" comment="">
                 <smc:extends>
                     <smc:type area="MAL" name="MOObject" />
                 </smc:extends>
@@ -1633,10 +1633,10 @@
                 <smc:extends>
                     <smc:type area="MALPrototype" name="TestObjectBase" />
                 </smc:extends>
-                <smc:field name="firstItem" comment="Another example String item.">
+                <smc:field name="thirdItem" comment="Another example String item.">
                     <smc:type area="MAL" name="String" />
                 </smc:field>
-                <smc:field name="secondItem" comment="Example Boolean item.">
+                <smc:field name="fourthItem" comment="Example Boolean item.">
                     <smc:type area="MAL" name="Boolean" />
                 </smc:field>
             </smc:composite>
