@@ -153,7 +153,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         buf.append(" ");
         buf.append(arg.getFieldName());
 
-        if (null != initialValue) {
+        if (initialValue != null) {
             if (isArray) {
                 buf.append(" = {").append(initialValue).append("}");
             } else if (generator.isNativeType(arg.getTypeName())) {

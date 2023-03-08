@@ -316,13 +316,12 @@ public class JavaServiceInfo {
             if (generator.isAbstract(type)) {
                 typeArgs.add("null");
 
-                if (StdStrings.ATTRIBUTE.equals(type.getName())) {
+                if (StdStrings.ATTRIBUTE.equals(type.getName())
+                        || StdStrings.MOOBJECT.equals(type.getName())) {
                     finalTypeIsAttribute = true;
                     finalTypeIsList = type.isList();
                 }
             } else {
-                finalTypeIsAttribute = false;
-
                 if (isPubSub) {
                     // this is a bit of a hack for now
                     if (generator.isAttributeNativeType(type) || generator.isAttributeType(type)) {
@@ -364,12 +363,16 @@ public class JavaServiceInfo {
             polyArgs = StubUtils.concatenateStringArguments(false, attribArgs.toArray(new String[0]));
         }
 
+        String initNewLine = "\n            ";
+        String newLine = "\n                    ";
+
         if (isPubSub) {
-            return "new " + shortFormType + "[] {" + arrayArgs + "}, new " + shortFormType + "[0]";
+            return "new " + shortFormType + "[] {" + arrayArgs + "}," + newLine
+                    + "new " + shortFormType + "[0]";
         } else {
-            return "new org.ccsds.moims.mo.mal.MALOperationStage("
-                    + "new org.ccsds.moims.mo.mal.structures.UOctet((short) " + index + "), "
-                    + "new " + shortFormType + "[] {" + arrayArgs + "}, "
+            return initNewLine + "new org.ccsds.moims.mo.mal.MALOperationStage(" + newLine
+                    + "new org.ccsds.moims.mo.mal.structures.UOctet((short) " + index + ")," + newLine
+                    + "new " + shortFormType + "[] {" + arrayArgs + "}," + newLine
                     + "new " + shortFormType + "[] {" + polyArgs + "})";
         }
     }

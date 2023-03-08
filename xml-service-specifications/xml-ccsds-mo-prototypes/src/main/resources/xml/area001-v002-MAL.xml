@@ -12,7 +12,7 @@
                     <mal:type area="MAL" name="Element"/>
                 </mal:extends>
             </mal:fundamental>
-            <mal:fundamental name="Object" comment="Object is the base structure for composite structures that contain a set of elements for MO Objects.">
+            <mal:fundamental name="MOObject" comment="Object is the base structure for composite structures that contain a set of elements for MO Objects.">
                 <mal:extends>
                     <mal:type area="MAL" name="Composite"/>
                 </mal:extends>

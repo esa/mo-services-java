@@ -247,7 +247,7 @@ public class GeneratorJava extends GeneratorLangs {
     protected void createListClass(File folder, AreaType area, ServiceType service,
             String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException {
         if (isAbstract) {
-            createAbstractListClass(folder, area, service, srcTypeName);
+            createPolymorphicListClass(folder, area, service, srcTypeName);
         } else {
             createConcreteListClass(folder, area, service, srcTypeName, shortFormPart);
         }
@@ -262,7 +262,7 @@ public class GeneratorJava extends GeneratorLangs {
      * @param srcTypeName The name of the element in the list.
      * @throws IOException if there is a problem writing the file.
      */
-    protected void createAbstractListClass(File folder, AreaType area,
+    protected void createPolymorphicListClass(File folder, AreaType area,
             ServiceType service, String srcTypeName) throws IOException {
         String listName = srcTypeName + "List";
         getLog().info("Creating list interface " + listName);
@@ -320,19 +320,15 @@ public class GeneratorJava extends GeneratorLangs {
                 true, true, null);
         String fqSrcTypeName = createElementType(file, area, service, srcTypeName);
 
-        // Figure out the super type
-        TypeReference superTypeReference = null;
+        TypeReference superTypeReference = new TypeReference();
+        superTypeReference.setArea(StdStrings.MAL);
 
-        if (superTypeReference == null) {
-            superTypeReference = new TypeReference();
-            superTypeReference.setArea(StdStrings.MAL);
-            if (isAttributeType(srcType)) {
-                superTypeReference.setName(StdStrings.ATTRIBUTE);
-            } else if (isEnum(srcType)) {
-                superTypeReference.setName(StdStrings.ENUMERATION);
-            } else {
-                superTypeReference.setName(StdStrings.COMPOSITE);
-            }
+        if (isAttributeType(srcType)) {
+            superTypeReference.setName(StdStrings.ATTRIBUTE);
+        } else if (isEnum(srcType)) {
+            superTypeReference.setName(StdStrings.ENUMERATION);
+        } else {
+            superTypeReference.setName(StdStrings.COMPOSITE);
         }
 
         CompositeField listSuperElement = createCompositeElementsDetails(file, false, null,

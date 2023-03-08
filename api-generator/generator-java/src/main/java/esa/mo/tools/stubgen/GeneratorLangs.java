@@ -154,6 +154,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         AttributeTypeDetails att = new AttributeTypeDetails(this, "Element", true, "Object", "");
         addAttributeType(StdStrings.XML, "Element", att);
+
+        AttributeTypeDetails att1 = new AttributeTypeDetails(this, "MOObject", true, "Object", "");
+        addAttributeType(StdStrings.XML, "Element", att1);
     }
 
     @Override
@@ -1059,7 +1062,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
         String opNumber = createProviderSkeletonHandlerSwitch();
         method.addLine(createMethodCall("switch (" + opNumber + ") {"), false);
- 
+
         String msg = "Unknown operation: \" + " + opNumber + " + \" - className: " + className + " - method: ";
         String unkErrorMsg;
 
@@ -1221,7 +1224,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
-    private void createRequestResponseDecompose(MethodWriter method, OperationSummary op, String opCall, CompositeField opRetType) throws IOException {
+    private void createRequestResponseDecompose(MethodWriter method, OperationSummary op,
+            String opCall, CompositeField opRetType) throws IOException {
         List<TypeInfo> targetTypes = op.getRetTypes();
 
         if ((null != targetTypes) && (!targetTypes.isEmpty())) {
@@ -2066,12 +2070,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
             if (ti.isNativeType()) {
                 // If is is Java native (Short, Long, etc), then needs to be wrapped into a Union type!
+                String unionType = getConfig().getAreaPackage(StdStrings.MAL)
+                        + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION;
+
                 AttributeTypeDetails details = getAttributeDetails(ti.getSourceType());
                 String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", "
-                        + "new " + getConfig().getAreaPackage(StdStrings.MAL) + "mal."
-                        + getConfig().getStructureFolder() + "." + StdStrings.UNION + "(" + details.getDefaultValue() + "))";
-                retStr += "(" + av + " == null) ? null : ((" + getConfig().getAreaPackage(StdStrings.MAL)
-                        + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION + ") " + av + ").get" + details.getMalType() + "Value()";
+                        + "new " + unionType + "(" + details.getDefaultValue() + "))";
+                retStr += "(" + av + " == null) ? null : ((" + unionType + ") " + av + ").get" + details.getMalType() + "Value()";
             } else {
                 // Not Java native...
                 String ct = ti.getTargetType();
@@ -2084,6 +2089,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 }
                 if (at == null && ct.contains("List") && !ct.contains(".Element") && !ct.contains(".Composite")) {
                     at = "new " + ct + "()";
+                }
+                if (ct.contains(".MOObject")) {
+                    at = "null";
                 }
 
                 String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", " + at + ")";
@@ -2207,40 +2215,47 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return rv;
     }
 
-    protected String createOperationArgReturn(LanguageWriter file, MethodWriter method, TypeInfo ti, String argName, int argIndex) throws IOException {
-        if ((null != ti.getTargetType()) && !(StdStrings.VOID.equals(ti.getTargetType()))) {
+    protected String createOperationArgReturn(LanguageWriter file, MethodWriter method,
+            TypeInfo typeInfo, String argName, int argIndex) throws IOException {
+        if ((null != typeInfo.getTargetType()) && !(StdStrings.VOID.equals(typeInfo.getTargetType()))) {
             String eleType = "Object";
             String tv = argName + argIndex;
             String av;
-            String rv;
-            if (ti.isNativeType()) {
-                AttributeTypeDetails details = getAttributeDetails(ti.getSourceType());
-                av = argName + ".getBodyElement(" + argIndex + ", new " + createElementType(file, StdStrings.MAL, null, StdStrings.UNION) + "(" + details.getDefaultValue() + "))";
-                rv = "(" + tv + " == null) ? null : ((" + createElementType(file, StdStrings.MAL, null, StdStrings.UNION) + ") " + tv + ").get" + details.getMalType() + "Value()";
+            String returnParameter;
+
+            if (typeInfo.isNativeType()) {
+                AttributeTypeDetails details = getAttributeDetails(typeInfo.getSourceType());
+                String elementType = createElementType(file, StdStrings.MAL, null, StdStrings.UNION);
+                av = argName + ".getBodyElement(" + argIndex + ", new " + elementType + "(" + details.getDefaultValue() + "))";
+                returnParameter = "(" + tv + " == null) ? null : ((" + elementType + ") " + tv + ").get" + details.getMalType() + "Value()";
             } else {
-                String ct = ti.getTargetType();
+                String ct = typeInfo.getTargetType();
                 String at = null;
-                if (!isAbstract(ti.getSourceType())) {
+                if (!isAbstract(typeInfo.getSourceType())) {
                     CompositeField ce = createCompositeElementsDetails(null, false, "",
-                            ti.getSourceType(), true, true, null);
+                            typeInfo.getSourceType(), true, true, null);
                     at = ce.getNewCall();
                 }
                 if (at == null && ct.contains("List") && !ct.contains(".Element") && !ct.contains(".Composite")) {
                     at = "new " + ct + "()";
                 }
+                if (ct.contains(".MOObject")) {
+                    at = "null";
+                }
 
                 av = argName + ".getBodyElement(" + argIndex + ", " + at + ")";
-                rv = "(" + ct + ") " + tv;
+                returnParameter = "(" + ct + ") " + tv;
             }
 
             method.addLine(eleType + " " + tv + " = (" + eleType + ") " + av);
-            return rv;
+            return returnParameter;
         }
 
         return "";
     }
 
-    protected CompositeField createReturnType(LanguageWriter file, AreaType area, ServiceType service, String opName, String messageType, List<TypeInfo> returnTypes) {
+    protected CompositeField createReturnType(LanguageWriter file, AreaType area,
+            ServiceType service, String opName, String messageType, List<TypeInfo> returnTypes) {
         if ((null != returnTypes) && (!returnTypes.isEmpty())) {
             if (1 == returnTypes.size()) {
                 return createCompositeElementsDetails(file, false, "return",
