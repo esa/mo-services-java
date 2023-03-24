@@ -171,7 +171,7 @@ public class ActivityTrackingPublisher {
         
         BaseMalServer.LOGGER.log(Level.FINE, "ActivityTracking:eKey = {0}", keys);
 
-        URI uriTo = interaction.getMessageHeader().getTo();
+        URI uriTo = interaction.getMessageHeader().getToURI();
         UpdateHeader uh = new UpdateHeader(new Identifier(uriTo.getValue()), null, keys);
 
         // We can now publish the event
@@ -286,7 +286,7 @@ public class ActivityTrackingPublisher {
         ObjectId source = new ObjectId(OPERATION_ACTIVITY_OBJECT_TYPE,
                 new ObjectKey(new IdentifierList(), interaction.getMessageHeader().getTransactionId()));
 
-        publishExecutionEvent(interaction.getMessageHeader().getTo(),
+        publishExecutionEvent(interaction.getMessageHeader().getToURI(),
                 success,
                 currentStageCount,
                 totalStageCount,

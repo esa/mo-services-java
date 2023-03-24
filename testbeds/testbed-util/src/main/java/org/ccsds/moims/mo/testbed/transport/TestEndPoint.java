@@ -104,9 +104,9 @@ public class TestEndPoint implements MALEndpoint {
     public static MALMessageHeader createErrorHeader(MALMessageHeader initialHeader,
             Blob authId, UOctet stage) {
         MALMessageHeader res = new MALMessageHeader(
-                initialHeader.getTo(),
+                initialHeader.getToURI(),
                 authId,
-                initialHeader.getFrom(),
+                initialHeader.getFromURI(),
                 Time.now(),
                 initialHeader.getInteractionType(),
                 stage,

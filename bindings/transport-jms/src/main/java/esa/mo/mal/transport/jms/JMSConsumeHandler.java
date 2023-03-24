@@ -59,7 +59,7 @@ public class JMSConsumeHandler extends JMSQueueHandler {
 
         //this.queueSession = transport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
         MALMessageHeader hdr = msg.getHeader();
-        URIFrom = hdr.getTo();
+        URIFrom = hdr.getToURI();
 
         if (null == transactionId) {
             transactionId = hdr.getTransactionId();

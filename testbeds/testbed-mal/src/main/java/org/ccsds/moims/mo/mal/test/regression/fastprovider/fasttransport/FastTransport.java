@@ -82,7 +82,7 @@ public class FastTransport implements MALTransport {
     }
 
     protected void internalSendMessage(MALMessage malm) {
-        endpointMap.get(malm.getHeader().getTo().getValue()).internalSendMessage(malm);
+        endpointMap.get(malm.getHeader().getToURI().getValue()).internalSendMessage(malm);
     }
 
     protected String getLocalName(String localName,

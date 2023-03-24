@@ -310,7 +310,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
         LoggingBase.logMessage("ActivityTestHandler: keyValues = " + keyValues);
-        URI uri = interaction.getMessageHeader().getTo();
+        URI uri = interaction.getMessageHeader().getToURI();
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
@@ -351,7 +351,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution keyValues = " + keyValues);
-        URI uri = interaction.getMessageHeader().getTo();
+        URI uri = interaction.getMessageHeader().getToURI();
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));

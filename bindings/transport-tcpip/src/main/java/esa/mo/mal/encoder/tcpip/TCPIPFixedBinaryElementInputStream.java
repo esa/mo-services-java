@@ -113,15 +113,15 @@ public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputS
 
         short encodingId = dec.decodeUOctet().getValue();
         int bodyLength = (int) dec.decodeInteger();
-        URI uriFrom = headersrc.getFrom();
-        URI uriTo = headersrc.getTo();
+        URI uriFrom = headersrc.getFromURI();
+        URI uriTo = headersrc.getToURI();
 
         if (sourceIdFlag) {
             String sourceId = dec.decodeString();
             if (isURI(sourceId)) {
                 uriFrom = new URI(sourceId);
             } else {
-                String from = headersrc.getFrom() + sourceId;
+                String from = headersrc.getFromURI() + sourceId;
                 uriFrom = new URI(from);
             }
         }
@@ -130,7 +130,7 @@ public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputS
             if (isURI(destinationId)) {
                 uriTo = new URI(destinationId);
             } else {
-                String to = headersrc.getTo() + destinationId;
+                String to = headersrc.getToURI() + destinationId;
                 uriTo = new URI(to);
             }
         }

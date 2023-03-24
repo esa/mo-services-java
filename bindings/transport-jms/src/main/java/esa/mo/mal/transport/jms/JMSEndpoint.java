@@ -228,7 +228,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
             MALInteractionException {
         // get components parts of messsage
         Subscription subscription = (Subscription) msg.getBody().getBodyElement(0, new Subscription());
-        final String strURL = msg.getHeader().getTo().getValue();
+        final String strURL = msg.getHeader().getToURI().getValue();
         final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
         final String providerExchangeName = strURL.substring(iSecond + 1);
 
@@ -314,7 +314,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
             throws MALException, MALInteractionException {
         // get components parts of messsage
         IdentifierList subList = (IdentifierList) msg.getBody().getBodyElement(0, new IdentifierList());
-        final String strURL = msg.getHeader().getTo().getValue();
+        final String strURL = msg.getHeader().getToURI().getValue();
         final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
         final String providerExchangeName = strURL.substring(iSecond + 1);
 
@@ -392,9 +392,9 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
     static GENMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError, short stage) {
         MALMessageHeader srcHdr = sourceMessage.getHeader();
         return new GENMessageHeader(
-                srcHdr.getTo(),
+                srcHdr.getToURI(),
                 new Blob(JMSTransport.authId),
-                srcHdr.getFrom(),
+                srcHdr.getFromURI(),
                 Time.now(),
                 srcHdr.getInteractionType(),
                 new UOctet(stage),
@@ -409,7 +409,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
 
     private static String createProviderKey(MALMessageHeader details) {
         StringBuilder buf = new StringBuilder();
-        buf.append(details.getFrom());
+        buf.append(details.getFromURI());
         return buf.toString();
     }
 

@@ -82,9 +82,9 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
 
     @Override
     public void encode(final MALEncoder encoder) throws MALException {
-        encoder.encodeNullableURI(from);
+        encoder.encodeNullableIdentifier(from);
         encoder.encodeNullableBlob(authenticationId);
-        encoder.encodeNullableURI(to);
+        encoder.encodeNullableIdentifier(to);
         encoder.encodeNullableTime(timestamp);
         encoder.encodeNullableElement(interactionType);
         encoder.encodeNullableUOctet(interactionStage);
@@ -99,9 +99,9 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
 
     @Override
     public Element decode(final MALDecoder decoder) throws MALException {
-        from = decoder.decodeNullableURI();
+        from = decoder.decodeNullableIdentifier();
         authenticationId = decoder.decodeNullableBlob();
-        to = decoder.decodeNullableURI();
+        to = decoder.decodeNullableIdentifier();
         timestamp = decoder.decodeNullableTime();
         interactionType = (InteractionType) decoder.decodeNullableElement(InteractionType.SEND);
         interactionStage = decoder.decodeNullableUOctet();

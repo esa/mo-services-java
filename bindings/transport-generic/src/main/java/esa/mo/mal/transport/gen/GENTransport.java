@@ -404,15 +404,15 @@ public abstract class GENTransport<I, O> implements MALTransport {
             final GENMessage msg) throws MALTransmitErrorException {
         MALMessageHeader header = msg.getHeader();
 
-        if ((null == header.getTo()) || (null == header.getTo().getValue())) {
+        if ((null == header.getToURI()) || (null == header.getToURI().getValue())) {
             throw new MALTransmitErrorException(header,
                     new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                             "URI To field must not be null"), qosProperties);
         }
 
         // get the root URI, (e.g. maltcp://10.0.0.1:61616 )
-        String destinationURI = header.getTo().getValue();
-        String remoteRootURI = header.getTo().getRootURI(serviceDelim, serviceDelimCounter);
+        String destinationURI = header.getToURI().getValue();
+        String remoteRootURI = header.getToURI().getRootURI(serviceDelim, serviceDelimCounter);
 
         // first check if its actually a message to ourselves
         String endpointUriPart = getRoutingPart(destinationURI);
@@ -614,7 +614,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             LOGGER.log(Level.FINE, "Processing message : {0} : {1}",
                     new Object[]{msg.getHeader().getTransactionId(), smsg});
 
-            String endpointUriPart = getRoutingPart(msg.getHeader().getTo().getValue());
+            String endpointUriPart = getRoutingPart(msg.getHeader().getToURI().getValue());
             final GENEndpoint endpoint = endpointRoutingMap.get(endpointUriPart);
 
             if (endpoint != null) {
@@ -699,7 +699,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
                     final GENMessage retMsg
                             = (GENMessage) endpoint.createMessage(srcHdr.getAuthenticationId(),
-                                    srcHdr.getFrom(),
+                                    srcHdr.getFromURI(),
                                     Time.now(),
                                     srcHdr.getInteractionType(),
                                     new UOctet((short) (srcHdr.getInteractionStage().getValue() + 1)),
@@ -713,7 +713,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                                     oriMsg.getQoSProperties(),
                                     errorNumber, new Union(errorMsg));
 
-                    retMsg.getHeader().setFrom(srcHdr.getTo());
+                    retMsg.getHeader().setFromURI(srcHdr.getToURI());
 
                     sendMessage(null, true, retMsg);
                 } else {
@@ -810,7 +810,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                 // transport supports bi-directional communication
                 // this is the first message received form this reception handler
                 // add the remote base URI it is receiving messages from
-                URI sourceURI = msg.getHeader().getFrom();
+                URI sourceURI = msg.getHeader().getFromURI();
                 String sourceRootURI = sourceURI.getRootURI(serviceDelim, serviceDelimCounter);
                 receptionHandler.setRemoteURI(sourceRootURI);
 
@@ -870,7 +870,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
     }
 
     protected URI rerouteMessage(GENMessage message) {
-        return message.getHeader().getTo();
+        return message.getHeader().getToURI();
     }
 
     /**

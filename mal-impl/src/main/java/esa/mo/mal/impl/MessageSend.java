@@ -470,7 +470,7 @@ public class MessageSend {
             MALEndpoint endpoint = msgAddress.getEndpoint();
             msg = endpoint.createMessage(
                     msgAddress.getAuthenticationId(),
-                    srcHdr.getFrom(),
+                    srcHdr.getFromURI(),
                     Time.now(),
                     srcHdr.getTransactionId(),
                     false,
@@ -483,13 +483,13 @@ public class MessageSend {
             endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
         } catch (MALTransmitErrorException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
         } catch (RuntimeException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
         }
 
         return msg;
@@ -521,7 +521,7 @@ public class MessageSend {
             MALEndpoint endpoint = msgAddress.getEndpoint();
             msg = endpoint.createMessage(
                     msgAddress.getAuthenticationId(),
-                    srcHdr.getFrom(),
+                    srcHdr.getFromURI(),
                     Time.now(),
                     srcHdr.getTransactionId(),
                     false,
@@ -534,13 +534,13 @@ public class MessageSend {
             endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
         } catch (MALTransmitErrorException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
         } catch (RuntimeException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
         }
 
         return msg;
@@ -599,7 +599,7 @@ public class MessageSend {
             throw new MALException("ERROR: Error with one way send : IllegalArgumentException : ", ex);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error with one way send : {0}", msg.getHeader().getTo());
+                    "Error with one way send : {0}", msg.getHeader().getToURI());
             throw ex;
         }
 
@@ -667,7 +667,7 @@ public class MessageSend {
             throw new MALException("IllegalArgumentException", ex);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error with consumer : {0}", msg.getHeader().getTo());
+                    "Error with consumer : {0}", msg.getHeader().getToURI());
             throw ex;
         }
     }
@@ -681,7 +681,7 @@ public class MessageSend {
             throw new MALException("IllegalArgumentException", ex);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error with consumer : {0}", msg.getHeader().getTo());
+                    "Error with consumer : {0}", msg.getHeader().getToURI());
             throw ex;
         }
 
@@ -693,7 +693,7 @@ public class MessageSend {
             final UOctet rspnInteractionStage,
             final MALStandardError error) {
         MALMessage msg = null;
-        URI destination = srcHdr.getFrom();
+        URI destination = srcHdr.getFromURI();
 
         try {
             MALEndpoint endpoint = msgAddress.getEndpoint();

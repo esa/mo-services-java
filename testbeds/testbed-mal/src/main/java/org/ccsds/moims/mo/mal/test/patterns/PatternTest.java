@@ -203,7 +203,7 @@ public class PatternTest {
         MALMessageHeader expectedInitialHeader = new MALMessageHeader(
                 ipTestConsumer.getConsumer().getURI(),
                 HeaderTestProcedure.AUTHENTICATION_ID,
-                msgHeader.getTo(),
+                msgHeader.getToURI(),
                 new Time(time_1),
                 interactionType,
                 interactionStage,
@@ -218,7 +218,7 @@ public class PatternTest {
         AssertionHelper.checkHeader("PatternTest.checkHeader", assertions, msgHeader, expectedInitialHeader);
 
         MALMessageHeader expectedFinalHeader = new MALMessageHeader(
-                msgHeader.getTo(),
+                msgHeader.getToURI(),
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 ipTestConsumer.getConsumer().getURI(),
                 new Time(time_2),
@@ -277,9 +277,9 @@ public class PatternTest {
 
     private MALMessageHeader swapInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage) {
         return new MALMessageHeader(
-                expectedFinalHeader.getFrom(),
+                expectedFinalHeader.getFromURI(),
                 expectedFinalHeader.getAuthenticationId(),
-                expectedFinalHeader.getTo(),
+                expectedFinalHeader.getToURI(),
                 expectedFinalHeader.getTimestamp(),
                 expectedFinalHeader.getInteractionType(),
                 interactionStage,
@@ -529,9 +529,9 @@ public class PatternTest {
             isError = true;
         }
 
-        MALMessageHeader brokenHeader = new MALMessageHeader(srcHdr.getFrom(),
+        MALMessageHeader brokenHeader = new MALMessageHeader(srcHdr.getFromURI(),
                 srcHdr.getAuthenticationId(),
-                srcHdr.getTo(),
+                srcHdr.getToURI(),
                 srcHdr.getTimestamp(),
                 srcHdr.getInteractionType(),
                 transitionTypeToInteractionStage(transitionType, srcHdr.getInteractionType()),

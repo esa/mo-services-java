@@ -153,8 +153,8 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         encoder.encodeUOctet(new UOctet((short) (getErrorBit() | getQoSLevelBits() | getSessionBits())));
         encoder.encodeLong(transactionId);
         encoder.encodeUOctet(new UOctet((short) (getEncodingIdBits() | configuration.getFlags())));
-        encoder.encodeURI(from);
-        encoder.encodeURI(to);
+        encoder.encodeIdentifier(from);
+        encoder.encodeIdentifier(to);
         if (getEncodingId() == 3) {
             encoder.encodeUOctet(new UOctet(getEncodingExtendedId()));
         }
@@ -212,8 +212,8 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         transactionId = decoder.decodeLong();
         short flags = decoder.decodeUOctet().getValue();
         extractEncodingId(flags);
-        from = decoder.decodeURI();
-        to = decoder.decodeURI();
+        from = decoder.decodeIdentifier();
+        to = decoder.decodeIdentifier();
 
         if (getEncodingId() == 3) {
             setEncodingExtendedId(decoder.decodeUOctet().getValue());

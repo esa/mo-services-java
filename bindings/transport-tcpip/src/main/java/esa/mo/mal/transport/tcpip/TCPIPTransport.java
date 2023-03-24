@@ -45,6 +45,7 @@ import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -558,7 +559,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         }
 
         // preset header
-        TCPIPMessageHeader header = new TCPIPMessageHeader(new URI(from), new URI(to));
+        TCPIPMessageHeader header = new TCPIPMessageHeader(new Identifier(from), new Identifier(to));
 
         // msg with decoded header and empty body
         byte[] packetData = packetInfo.getPacketData();
@@ -770,7 +771,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
     @Override
     protected URI rerouteMessage(GENMessage message) {
-        String uri = message.getHeader().getTo().getValue();
+        String uri = message.getHeader().getToURI().getValue();
 
         if (aliasToIp.isEmpty()) {
             return new URI(uri);

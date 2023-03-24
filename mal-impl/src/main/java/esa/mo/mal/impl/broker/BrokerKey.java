@@ -38,7 +38,7 @@ public class BrokerKey implements Comparable {
      * @param hdr Source message.
      */
     public BrokerKey(final MALMessageHeader hdr) {
-        this.uri = hdr.getTo().getValue();
+        this.uri = hdr.getToURI().getValue();
     }
 
     /**

@@ -22,6 +22,7 @@ package org.ccsds.moims.mo.mal.transport;
 
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
@@ -36,9 +37,9 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public class MALMessageHeader {
 
-    protected URI from;
+    protected Identifier from;
     protected Blob authenticationId;
-    protected URI to;
+    protected Identifier to;
     protected Time timestamp;
     protected InteractionType interactionType;
     protected UOctet interactionStage;
@@ -87,9 +88,9 @@ public class MALMessageHeader {
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
             final NamedValueList supplements) {
-        this.from = from;
+        this.from = new Identifier(from.getValue());
         this.authenticationId = authenticationId;
-        this.to = to;
+        this.to = new Identifier(to.getValue());
         this.timestamp = timestamp;
         this.interactionType = interactionType;
         this.interactionStage = interactionStage;
@@ -107,8 +108,17 @@ public class MALMessageHeader {
      *
      * @return the field from.
      */
-    public URI getFrom() {
-        return from;
+    public URI getFromURI() {
+        return new URI(from.getValue());
+    }
+
+    /**
+     * Returns the field from.
+     *
+     * @return the field from.
+     */
+    public Identifier getFrom() {
+        return new Identifier(from.getValue());
     }
 
     /**
@@ -116,8 +126,8 @@ public class MALMessageHeader {
      *
      * @param newValue The new value to set.
      */
-    public void setFrom(final URI newValue) {
-        this.from = newValue;
+    public void setFromURI(final URI newValue) {
+        this.from = new Identifier(newValue.getValue());
     }
 
     /**
@@ -143,8 +153,8 @@ public class MALMessageHeader {
      *
      * @return the field to.
      */
-    public URI getTo() {
-        return to;
+    public URI getToURI() {
+        return new URI(to.getValue());
     }
 
     /**

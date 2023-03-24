@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.spp;
 
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
@@ -31,7 +32,7 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation {
     }
 
     @Override
-    public short getApid(URI uri) {
+    public short getApid(Identifier uri) {
         String val = uri.getValue();
 
         int i = val.indexOf('/') + 1;
@@ -53,7 +54,7 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation {
     }
 
     @Override
-    public int getQualifier(URI uri) {
+    public int getQualifier(Identifier uri) {
         String val = uri.getValue();
 
         int i = val.indexOf(':') + 1;
@@ -66,7 +67,7 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation {
     }
 
     @Override
-    public boolean hasSubId(URI uri) {
+    public boolean hasSubId(Identifier uri) {
         String val = uri.getValue();
         int i = val.indexOf('/') + 1;
 
@@ -74,7 +75,7 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation {
     }
 
     @Override
-    public short getSubId(URI uri) {
+    public short getSubId(Identifier uri) {
         String val = uri.getValue();
 
         int i = val.indexOf('/') + 1;
@@ -84,7 +85,7 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation {
     }
 
     @Override
-    public URI getURI(Integer apidQualifier, short apid, Short subId) {
+    public Identifier getURI(Integer apidQualifier, short apid, Short subId) {
         StringBuilder buf = new StringBuilder("malspp:");
         if (null != apidQualifier) {
             buf.append(apidQualifier);
@@ -98,6 +99,6 @@ public class SPPURIRepresentationSimple implements SPPURIRepresentation {
             buf.append(subId);
         }
 
-        return new URI(buf.toString());
+        return new Identifier(buf.toString());
     }
 }

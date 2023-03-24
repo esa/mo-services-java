@@ -54,7 +54,7 @@ public class JMSPublishHandler {
 
     protected GENMessage publish(final GENMessage msg, Session lqs) throws MALException,
             MALTransmitErrorException, MALInteractionException {
-        final String strURL = msg.getHeader().getTo().getValue();
+        final String strURL = msg.getHeader().getToURI().getValue();
         final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
         final String providerExchangeName = strURL.substring(iSecond + 1);
 

@@ -304,8 +304,8 @@ public class SPPEndpoint extends GENEndpoint {
         private final UShort operation;
 
         public SegmentIndex(GENMessageHeader hdr) {
-            this.uriFrom = hdr.getFrom();
-            this.uriTo = hdr.getTo();
+            this.uriFrom = hdr.getFromURI();
+            this.uriTo = hdr.getToURI();
             this.interactionType = hdr.getInteractionType();
             this.transactionId = hdr.getTransactionId();
             this.serviceArea = hdr.getAreaNumber();

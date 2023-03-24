@@ -141,7 +141,7 @@ public class Main {
         public void onMessage(MALEndpoint callingEndpoint, MALMessage srcMessage) {
             try {
                 System.out.println("Received message from: "
-                        + srcMessage.getHeader().getFrom().getValue());
+                        + srcMessage.getHeader().getFromURI().getValue());
 
                 // copy source message into destination message format
                 MALMessage dMsg = cloneForwardMessage(destination, srcMessage);
@@ -172,13 +172,13 @@ public class Main {
         MALMessageHeader sourceHdr = srcMessage.getHeader();
         MALMessageBody body = srcMessage.getBody();
 
-        System.out.println("cloneForwardMessage from : " + sourceHdr.getFrom()
-                + "    :    " + sourceHdr.getTo());
-        String endpointUriPart = sourceHdr.getTo().getValue();
+        System.out.println("cloneForwardMessage from : " + sourceHdr.getFromURI()
+                + "    :    " + sourceHdr.getToURI());
+        String endpointUriPart = sourceHdr.getToURI().getValue();
         final int iSecond = endpointUriPart.indexOf("@");
         endpointUriPart = endpointUriPart.substring(iSecond + 1, endpointUriPart.length());
         URI to = new URI(endpointUriPart);
-        URI from = new URI(destination.getURI().getValue() + "@" + sourceHdr.getFrom().getValue());
+        URI from = new URI(destination.getURI().getValue() + "@" + sourceHdr.getFromURI().getValue());
         System.out.println("cloneForwardMessage      : " + from + "    :    " + to);
 
         MALMessage destMessage = destination.createMessage(
@@ -198,7 +198,7 @@ public class Main {
                 body.getEncodedBody()
         );
 
-        destMessage.getHeader().setFrom(from);
+        destMessage.getHeader().setFromURI(from);
 
         return destMessage;
     }

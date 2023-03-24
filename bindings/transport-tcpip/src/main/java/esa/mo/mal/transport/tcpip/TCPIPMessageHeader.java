@@ -33,6 +33,7 @@ import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -61,7 +62,7 @@ public class TCPIPMessageHeader extends GENMessageHeader {
     public TCPIPMessageHeader() {
     }
 
-    public TCPIPMessageHeader(URI uriFrom, URI uriTo) {
+    public TCPIPMessageHeader(Identifier uriFrom, Identifier uriTo) {
         this.from = uriFrom;
         this.to = uriTo;
     }

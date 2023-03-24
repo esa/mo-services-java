@@ -181,7 +181,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         //StringPair pair = new StringPair(hdr.getFrom().getValue(), providerKey);
 
         // if (subs.remove(pair) != null) {
-        if (subs.remove(hdr.getFrom().getValue()) != null) {
+        if (subs.remove(hdr.getFromURI().getValue()) != null) {
             MALBrokerImpl.LOGGER.log(Level.FINE, "Removing publisher! Details: {0}", hdr);
         }
 
@@ -281,7 +281,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     private SubscriptionSource getConsumerEntry(final BrokerKey key,
             final MALMessageHeader hdr, final boolean create) {
         final Map<String, SubscriptionSource> subs = this.getConsumerSubscriptions(key);
-        final String signature = hdr.getFrom().getValue();
+        final String signature = hdr.getFromURI().getValue();
         SubscriptionSource subSource = subs.get(signature);
 
         if ((subSource == null) && (create)) {
@@ -312,7 +312,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
             final MALMessageHeader hdr, final boolean create) {
         final Map<String, PublisherSource> subs = this.getProviderSubscriptions(key);
         //String providerKey = createProviderKey(hdr);
-        String uriFrom = hdr.getFrom().getValue();
+        String uriFrom = hdr.getFromURI().getValue();
         //StringPair pair = new StringPair(uriFrom, providerKey);
         //PublisherSource publisher = subs.get(pair);
         PublisherSource publisher = subs.get(uriFrom);
