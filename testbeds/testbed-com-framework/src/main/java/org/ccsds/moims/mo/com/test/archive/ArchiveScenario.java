@@ -232,7 +232,9 @@ public class ArchiveScenario {
 
     public boolean resetObjectType(int typeNumber) {
         objectType = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER,
-                ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NUMBER, COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(typeNumber));
+                ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NUMBER,
+                COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION,
+                new UShort(typeNumber));
         return true;
     }
 
@@ -296,7 +298,8 @@ public class ArchiveScenario {
     }
 
     public boolean addArchiveDetailsWithInstanceIdAndNetworkAndTimestamp(long instanceId, String network, String timestamp) {
-        return addArchiveDetailsWithInstanceIdAndNetworkAndTimestampAndProviderUri(instanceId, network, timestamp, DEFAULT_PROVIDER_URI);
+        return addArchiveDetailsWithInstanceIdAndNetworkAndTimestampAndProviderUri(instanceId,
+                network, timestamp, DEFAULT_PROVIDER_URI);
     }
 
     public boolean addArchiveDetailsWithInstanceIdAndNetworkAndTimestampAndProviderUri(
@@ -327,13 +330,14 @@ public class ArchiveScenario {
         return true;
     }
 
-    public boolean addArchiveQueryWithDomainAndSortingOrderAndField(String filterDomainToParse, String sortingOrderToParse, String fieldNameToParse) {
+    public boolean addArchiveQueryWithDomainAndSortingOrderAndField(String filterDomainToParse,
+            String sortingOrderToParse, String fieldNameToParse) {
         IdentifierList filterDomain = new IdentifierList();
         parseDomain(filterDomainToParse, filterDomain);
         Boolean sortingOrder = COMParseHelper.parseBoolean(sortingOrderToParse);
         String fieldName = COMParseHelper.parseString(fieldNameToParse);
-        ArchiveQuery archiveQuery = new ArchiveQuery(filterDomain,
-                null, null, 0L, null, null, null, sortingOrder, fieldName);
+        ArchiveQuery archiveQuery = new ArchiveQuery(filterDomain, null,
+                null, 0L, null, null, null, sortingOrder, fieldName);
         archiveQueryList.add(archiveQuery);
         return true;
     }
@@ -1366,7 +1370,5 @@ public class ArchiveScenario {
                 LoggingBase.logMessage("monitorEventNotifyReceived::Body:NULL");
             }
         }
-
     }
-
 }

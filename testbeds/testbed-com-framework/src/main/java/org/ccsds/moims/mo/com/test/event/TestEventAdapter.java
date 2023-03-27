@@ -25,13 +25,14 @@ import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 class TestEventAdapter extends EventAdapter {
 
-    private EventDetailsList eventDetailsList;
+    private final EventDetailsList eventDetailsList;
 
     public TestEventAdapter(EventDetailsList eventDetailsList) {
         this.eventDetailsList = eventDetailsList;
@@ -69,11 +70,12 @@ class TestEventAdapter extends EventAdapter {
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + objectDetailsList);
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + elementList);
 
-        Identifier objectNumber = (Identifier) headerList.get(0).getKeyValues().get(0);
-        Identifier uri = headerList.get(0).getSource();
+        UpdateHeader updateHeader = headerList.get(0);
+        Identifier objectNumber = (Identifier) updateHeader.getKeyValues().get(0);
+        Identifier uri = updateHeader.getSource();
         String strObjectNumber = objectNumber.toString();
         eventDetailsList.add(new EventDetails(
-                headerList.get(0), objectDetailsList.get(0), (Element) elementList.get(0)));
+                updateHeader, objectDetailsList.get(0), (Element) elementList.get(0)));
     }
 
     /**

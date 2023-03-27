@@ -250,10 +250,10 @@ public class GENEndpoint implements MALEndpoint {
         try {
             final Object multiSendHandle = internalCreateMultiSendHandle(msgList);
 
-            for (int idx = 0; idx < msgList.length; idx++) {
+            for (int i = 0; i < msgList.length; i++) {
                 try {
-                    boolean isLast = (idx == (msgList.length - 1));
-                    this.internalSendMessage(multiSendHandle, isLast, (GENMessage) msgList[idx]);
+                    boolean isLast = (i == (msgList.length - 1));
+                    this.internalSendMessage(multiSendHandle, isLast, (GENMessage) msgList[i]);
                 } catch (MALTransmitErrorException ex) {
                     exceptions.add(ex);
                 }

@@ -153,7 +153,7 @@ public class EventTestScenario extends LoggingBase {
      */
     public long createInstanceOfObjectAInDomainWithDescription(String domain, String description) throws Exception {
         logMessage(loggingClassName + ":createInstanceOfObjectAInDomainWithDescription domain = "
-                + domain + " desc = " + description);
+                + domain + " description = " + description);
         long retValue = LocalMALInstance.instance().eventTestStub().createinstance(
                 COMTestHelper.TEST_OBJECT_A, domain, description, null);
 
@@ -273,15 +273,9 @@ public class EventTestScenario extends LoggingBase {
         final IdentifierList domain = new IdentifierList();
         domain.add(new Identifier(strDomain));
         EventStub evStub = LocalMALInstance.instance().eventStub(domain);
-        /*
-    EntityKeyList ekl = new EntityKeyList();
-    EntityRequestList erl = new EntityRequestList();
-    ekl.add(new EntityKey(ALL_ID, new Long(ALL_INT), new Long(ALL_INT), new Long(ALL_INT)));
-    erl.add(new EntityRequest(null, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, ekl));
-         */
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription sub = new Subscription(new Identifier("SubA"), domain, filters);
+        Subscription sub = new Subscription(new Identifier("SubA"), null, filters);
         evStub.monitorEventRegister(sub, testEventAdapter);
         eventDomain = strDomain;
         logMessage(loggingClassName + ":registerForEvents Complete");
@@ -318,12 +312,12 @@ public class EventTestScenario extends LoggingBase {
      */
     public String creationEventReceivedForObjectInDomainWithInstanceIdentifier(
             String sourceObject, String sourceDomain, String sourceInstId) throws Exception {
-        logMessage(loggingClassName + ":creationEventReceivedForObjectInDomainWithInstanceIdentifier "
-                + sourceObject + " " + sourceDomain + " " + sourceInstId);
+        logMessage(loggingClassName + ":creationEventReceivedForObjectInDomainWithInstanceIdentifier"
+                + " sourceObject=" + sourceObject + " sourceDomain=" + sourceDomain + " sourceInstId=" + sourceInstId);
         waitForReasonableAmountOfTime();   // Allow time for incoming events
+        String objNo = objToObjectNo(sourceObject);
         return eventDetailsList.eventExists(COMTestHelper.TEST_OBJECT_CREATION_NO,
-                objToObjectNo(sourceObject), sourceDomain, sourceInstId);
-
+                objNo, sourceDomain, sourceInstId);
     }
 
     /**
@@ -597,7 +591,8 @@ public class EventTestScenario extends LoggingBase {
         LoggingBase.logMessage("ArchiveScenario.retrieveArchiveEntryForEvent()");
         boolean bRetrieveValid = false;
         // Get the events
-        EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
+        Integer id = Integer.valueOf(instIndex);
+        EventDetails ev = eventDetailsList.get(id);
         // reset the previous results
         retrievedArchiveDetailsList = null;
         retrievedObjectList = null;
@@ -641,7 +636,7 @@ public class EventTestScenario extends LoggingBase {
     }
 
     public void waitForReasonableAmountOfTime() throws Exception {
-        Thread.sleep(100);
+        Thread.sleep(500);
     }
 
     /**

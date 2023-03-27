@@ -237,22 +237,22 @@ public class MessageReceive implements MALMessageListener {
         }
     }
 
-    public void registerProviderEndpoint(final String localURI,
+    public void addProviderEndpoint(final String localURI,
             final MALService service, final Address address) {
         final EndPointPair key = new EndPointPair(localURI, service);
 
         if (!providerEndpointMap.containsKey(key)) {
-            MALContextFactoryImpl.LOGGER.log(Level.FINE,
+            MALContextFactoryImpl.LOGGER.log(Level.INFO,
                     "registerProviderEndpoint for {0}", key);
             providerEndpointMap.put(key, address);
         }
     }
 
-    public void deregisterProviderEndpoint(final String localURI, final MALService service) {
+    public void removeProviderEndpoint(final String localURI, final MALService service) {
         final EndPointPair key = new EndPointPair(localURI, service);
 
         if (providerEndpointMap.containsKey(key)) {
-            MALContextFactoryImpl.LOGGER.log(Level.FINE,
+            MALContextFactoryImpl.LOGGER.log(Level.INFO,
                     "deregisterProviderEndpoint for {0}", key);
             providerEndpointMap.remove(key);
         }
@@ -454,7 +454,7 @@ public class MessageReceive implements MALMessageListener {
     private void handlePublish(final MALMessage msg,
             final Address address) throws MALInteractionException {
         if (msg.getHeader().getIsErrorMessage()) {
-            
+
             if (msg.getBody() instanceof MALErrorBody) {
                 try {
                     MALPublishInteractionListener listener = pubSubMap.getPublishListener(msg.getHeader().getToURI(),
@@ -628,9 +628,9 @@ public class MessageReceive implements MALMessageListener {
 
         if (addr == null) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "lookupAddress failed to find local endpoint for {0}.\n"
-                    + "Available options: \n{1}\n",
-                    new Object[]{key, providerEndpointMap}
+                    "lookupAddress failed to find local endpoint for:\n  >> {0}"
+                    + "\nAvailable options: \n{1}\n",
+                    new Object[]{key, providerEndpointMap.toString()}
             );
             Thread.dumpStack();
         }
@@ -738,28 +738,27 @@ public class MessageReceive implements MALMessageListener {
             if (obj == null) {
                 return false;
             }
-            if (getClass() != obj.getClass()) {
+            if (this.getClass() != obj.getClass()) {
                 return false;
             }
             final EndPointPair other = (EndPointPair) obj;
             if (this.first == null ? other.first != null : !this.first.equals(other.first)) {
                 return false;
             }
-            return true;
-            //return !(this.second == null ? other.second != null : !this.second.equals(other.second));
+            return !(this.second == null ? other.second != null : !this.second.equals(other.second));
         }
 
         @Override
         public int hashCode() {
             int hash = 5;
             hash = HASH_VALUE * hash + (this.first != null ? this.first.hashCode() : 0);
-            //hash = HASH_VALUE * hash + (this.second != null ? this.second.hashCode() : 0);
+            hash = HASH_VALUE * hash + (this.second != null ? this.second.hashCode() : 0);
             return hash;
         }
 
         @Override
         public String toString() {
-            return "`nEndPointPair{" + "first=" + first + ", second=" + second + '}';
+            return "EndPointPair{" + "first=" + first + ", second=" + second + '}';
         }
     }
 }

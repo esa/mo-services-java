@@ -722,7 +722,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                             new Object[]{errorNumber, oriMsg.getHeader()});
                 }
             } else {
-                throw new MALException("Unknown type/stage!\nType: " + type + "\nStage: " + stage);
+                throw new MALException("Unknown type/stage! Type: " + type + " - Stage: " + stage);
             }
         } catch (MALTransmitErrorException ex) {
             LOGGER.log(Level.WARNING,

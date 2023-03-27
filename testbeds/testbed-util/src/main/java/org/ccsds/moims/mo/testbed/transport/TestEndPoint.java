@@ -87,6 +87,7 @@ public class TestEndPoint implements MALEndpoint {
         return delegate.getURI();
     }
 
+    @Override
     public void sendMessage(MALMessage msg) throws MALTransmitErrorException, MALException {
         TransportInterceptor.instance().messageSent(msg);
 

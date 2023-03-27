@@ -40,7 +40,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
  */
 public class MALProviderImpl extends ServiceComponentImpl implements MALProvider {
 
-    private final Map<String, MALPublisher> publishers = new HashMap<>();
+    private final Map<String, MALPublisher> pubsubPublishers = new HashMap<>();
     private final boolean isPublisher;
     private final URI sharedBrokerUri;
     private final MALBrokerBinding localBrokerBinding;
@@ -169,7 +169,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 sessionName,
                 remotePublisherQos,
                 remotePublisherPriority);
-        MALPublisher pub = publishers.get(key);
+        MALPublisher pub = pubsubPublishers.get(key);
 
         if (null == pub) {
             pub = new MALPublisherImpl(this,
@@ -181,7 +181,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                     remotePublisherQos,
                     remotePublisherQosProps,
                     remotePublisherPriority);
-            publishers.put(key, pub);
+            pubsubPublishers.put(key, pub);
         }
 
         return pub;

@@ -52,7 +52,7 @@ import org.ccsds.moims.mo.mal.transport.*;
  */
 public class InteractionConsumerMap {
 
-    private final Map<Long, BaseOperationHandler> transMap = new HashMap<>();
+    private final Map<Long, BaseOperationHandler> transactions = new HashMap<>();
 
     private final Map<Long, OperationResponseHolder> syncOpResponseMap = new HashMap<>();
 
@@ -62,7 +62,7 @@ public class InteractionConsumerMap {
     public Long createTransaction(final int interactionType,
             final boolean syncOperation,
             final MALInteractionListener listener) throws MALInteractionException {
-        synchronized (transMap) {
+        synchronized (transactions) {
             final Long oTransId = TransactionIdCounter.nextTransactionId();
 
             BaseOperationHandler handler = null;
@@ -96,8 +96,8 @@ public class InteractionConsumerMap {
                     );
             }
 
-            if (null != handler) {
-                transMap.put(oTransId, handler);
+            if (handler != null) {
+                transactions.put(oTransId, handler);
                 INTERACTION_TIMEOUT.insertInQueue(handler);
 
                 if (syncOperation) {
@@ -111,12 +111,12 @@ public class InteractionConsumerMap {
         }
     }
 
-    public Long createTransaction(final boolean syncOperation, final MALPublishInteractionListener listener) {
-        synchronized (transMap) {
+    public Long createPubSubTransaction(final boolean syncOperation, final MALPublishInteractionListener listener) {
+        synchronized (transactions) {
             final Long oTransId = TransactionIdCounter.nextTransactionId();
 
             OperationResponseHolder responseHolder = new OperationResponseHolder(listener);
-            transMap.put(oTransId, new PubSubOperationHandler(syncOperation, responseHolder));
+            transactions.put(oTransId, new PubSubOperationHandler(syncOperation, responseHolder));
 
             if (syncOperation) {
                 synchronized (syncOpResponseMap) {
@@ -132,8 +132,8 @@ public class InteractionConsumerMap {
             final UOctet lastInteractionStage,
             final Long oTransId,
             final MALInteractionListener listener) throws MALException, MALInteractionException {
-        synchronized (transMap) {
-            if (transMap.containsKey(oTransId)) {
+        synchronized (transactions) {
+            if (transactions.containsKey(oTransId)) {
                 throw new MALException("Transaction Id already in use and cannot be continued");
             }
 
@@ -165,7 +165,7 @@ public class InteractionConsumerMap {
                     );
             }
 
-            transMap.put(oTransId, handler);
+            transactions.put(oTransId, handler);
         }
     }
 
@@ -201,40 +201,36 @@ public class InteractionConsumerMap {
 
     public void handleStage(final MALMessage msg) throws MALInteractionException, MALException {
         final Long id = msg.getHeader().getTransactionId();
-        BaseOperationHandler handler = null;
+        BaseOperationHandler handler;
         MessageHandlerDetails dets = null;
 
-        synchronized (transMap) {
-            if (transMap.containsKey(id)) {
-                handler = transMap.get(id);
-            } else {
-                MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "The transaction handler could not be found for transactionId: {0}"
-                        + "\nMessage header: {1}\n"
-                        + "This error usually happens because the messages "
+        synchronized (transactions) {
+            handler = transactions.get(id);
+
+            if (handler == null) {
+                String txt = "The transaction handler could not be found for transactionId: "
+                        + id + "\nMessage header: " + msg.getHeader()
+                        + "\n This error usually happens because the messages "
                         + "are being received out-of-order in the MAL layer. "
                         + "The problem is typically in the transport layer "
-                        + "and usually is related with threading.",
-                        new Object[]{id, msg.getHeader()}
-                );
+                        + "and usually is related with threading.";
+
+                MALContextFactoryImpl.LOGGER.log(Level.WARNING, txt);
+                throw new MALException(txt);
             }
 
-            if (null != handler) {
-                dets = handler.handleStage(msg);
+            dets = handler.handleStage(msg);
 
-                // delete entry from trans map
-                if (handler.finished()) {
-                    MALContextFactoryImpl.LOGGER.log(Level.FINE,
-                            "Removing handler from service maps: {0}", id);
-                    transMap.remove(id);
-                }
+            // delete entry from trans map
+            if (handler.finished()) {
+                MALContextFactoryImpl.LOGGER.log(Level.FINE,
+                        "Removing handler from service maps: {0}", id);
+                transactions.remove(id);
             }
         }
 
-        if (null != handler) {
-            synchronized (handler) {
-                handler.processStage(dets);
-            }
+        synchronized (handler) {
+            handler.processStage(dets);
         }
     }
 
@@ -242,9 +238,9 @@ public class InteractionConsumerMap {
         final Long id = hdr.getTransactionId();
         BaseOperationHandler handler = null;
 
-        synchronized (transMap) {
-            if (transMap.containsKey(id)) {
-                handler = transMap.get(id);
+        synchronized (transactions) {
+            if (transactions.containsKey(id)) {
+                handler = transactions.get(id);
             } else {
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                         "No key found in service maps to get listener! {0} {1}",
@@ -252,15 +248,15 @@ public class InteractionConsumerMap {
                 );
             }
 
-            if (null != handler) {
+            if (handler != null) {
                 // delete entry from trans map
                 MALContextFactoryImpl.LOGGER.log(Level.FINE,
                         "Removing handler from service maps: {0}", id);
-                transMap.remove(id);
+                transactions.remove(id);
             }
         }
 
-        if (null != handler) {
+        if (handler != null) {
             synchronized (handler) {
                 handler.handleError(hdr, err, qosMap);
             }

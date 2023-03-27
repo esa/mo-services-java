@@ -50,7 +50,7 @@ public final class MessageDetails {
     /**
      * The service being used.
      */
-    public final MALService service;
+    private final MALService service;
     /**
      * The authentication id being used.
      */

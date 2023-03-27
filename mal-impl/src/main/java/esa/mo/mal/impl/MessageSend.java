@@ -159,7 +159,7 @@ public class MessageSend {
             throws MALInteractionException, MALException {
         ipsmap.registerPublishListener(details, listener);
         IdentifierList publishedKeys = (keys != null) ? keys :  new IdentifierList();
-        final Long transId = icmap.createTransaction(false, listener);
+        final Long transId = icmap.createPubSubTransaction(false, listener);
         return initiateAsynchronousInteraction(details,
                 createMessage(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE, publishedKeys));
     }
@@ -200,7 +200,7 @@ public class MessageSend {
             final MALPublishInteractionListener listener)
             throws MALInteractionException, MALException {
         ipsmap.getPublishListenerAndRemove(details.endpoint.getURI(), details);
-        final Long transId = icmap.createTransaction(false, listener);
+        final Long transId = icmap.createPubSubTransaction(false, listener);
         return initiateAsynchronousInteraction(details,
                 createMessage(details, op, transId, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, (Object[]) null));
     }
@@ -630,7 +630,7 @@ public class MessageSend {
             final UOctet syncStage,
             final MALPublishInteractionListener listener,
             final Object... msgBody) throws MALInteractionException, MALException {
-        final Long transId = icmap.createTransaction(true, listener);
+        final Long transId = icmap.createPubSubTransaction(true, listener);
 
         initiateSynchronousInteraction(transId, details, createMessage(details, op, transId, syncStage, msgBody));
 

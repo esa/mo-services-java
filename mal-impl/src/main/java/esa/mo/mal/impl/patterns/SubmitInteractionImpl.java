@@ -43,8 +43,7 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public SubmitInteractionImpl(final MessageSend sender,
-            final Address address,
+    public SubmitInteractionImpl(final MessageSend sender, final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);
     }

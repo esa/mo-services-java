@@ -37,9 +37,10 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
  */
 public class COMInterceptor implements TestEndPointSendInterceptor {
 
+    @Override
     public void sendMessage(TestEndPoint ep, MALMessage msg) throws MALTransmitErrorException, MALException {
         LoggingBase.logMessage("COMInterceptor:sendMsg header" + msg.getHeader());
-        
+
         // Only intercept following operations on activity test - send, tesSubmit, request, invoke, progress
         if (msg.getHeader().getService().getValue() == 4 && msg.getHeader().getOperation().getValue() >= 200
                 && msg.getHeader().getOperation().getValue() <= 204 && msg.getBody().getElementCount() == 1) {
@@ -47,14 +48,15 @@ public class COMInterceptor implements TestEndPointSendInterceptor {
             LoggingBase.logMessage("COMInterceptor:sendMsg BODY " + msg.getBody().getClass().toString());
             StringList myStr = (StringList) ((MALMessageBody) msg.getBody()).getBodyElement(0, null);
             LoggingBase.logMessage("COMInterceptor:sendMsg BODY string list = " + msg.getHeader().getTransactionId());
+
             if (myStr.contains("RELEASE_ERROR")) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
                         MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER, msg), msg.getQoSProperties());
-
             }
         }
     }
 
+    @Override
     public void sendMessages(TestEndPoint ep, MALMessage[] messages)
             throws MALTransmitMultipleErrorException, MALException {
     }
