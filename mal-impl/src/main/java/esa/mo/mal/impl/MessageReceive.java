@@ -454,7 +454,6 @@ public class MessageReceive implements MALMessageListener {
     private void handlePublish(final MALMessage msg,
             final Address address) throws MALInteractionException {
         if (msg.getHeader().getIsErrorMessage()) {
-
             if (msg.getBody() instanceof MALErrorBody) {
                 try {
                     MALPublishInteractionListener listener = pubSubMap.getPublishListener(msg.getHeader().getToURI(),
