@@ -171,8 +171,8 @@ public class ActivityTrackingPublisher {
         
         BaseMalServer.LOGGER.log(Level.FINE, "ActivityTracking:eKey = {0}", keys);
 
-        URI uriTo = interaction.getMessageHeader().getToURI();
-        UpdateHeader uh = new UpdateHeader(new Identifier(uriTo.getValue()), null, keys);
+        Identifier to = interaction.getMessageHeader().getTo();
+        UpdateHeader uh = new UpdateHeader(to, null, keys);
 
         // We can now publish the event
         eventProvider.publishSingleEvent(uh, objDetails, aa);
@@ -286,7 +286,7 @@ public class ActivityTrackingPublisher {
         ObjectId source = new ObjectId(OPERATION_ACTIVITY_OBJECT_TYPE,
                 new ObjectKey(new IdentifierList(), interaction.getMessageHeader().getTransactionId()));
 
-        publishExecutionEvent(interaction.getMessageHeader().getToURI(),
+        publishExecutionEvent(interaction.getMessageHeader().getTo(),
                 success,
                 currentStageCount,
                 totalStageCount,
@@ -304,7 +304,7 @@ public class ActivityTrackingPublisher {
      * @throws MALInteractionException On error.
      * @throws MALException On error.
      */
-    public void publishExecutionEvent(final URI eventSourceURI, final boolean success,
+    public void publishExecutionEvent(final Identifier eventSourceURI, final boolean success,
             final int currentStageCount, final int totalStageCount,
             final ObjectId source) throws MALInteractionException, MALException {
         BaseMalServer.LOGGER.log(Level.FINE,
@@ -325,7 +325,7 @@ public class ActivityTrackingPublisher {
         BaseMalServer.LOGGER.log(Level.FINE,
                 "ActivityTracking:publishexecution ekey = {0}", keys);
 
-        UpdateHeader uh = new UpdateHeader(new Identifier(eventSourceURI.getValue()), null, keys);
+        UpdateHeader uh = new UpdateHeader(eventSourceURI, null, keys);
 
         // Produce ActivityTransferList
         ActivityExecution activityExecutionInstance = new ActivityExecution();

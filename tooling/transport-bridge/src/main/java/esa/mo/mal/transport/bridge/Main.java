@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.*;
 
@@ -172,13 +173,13 @@ public class Main {
         MALMessageHeader sourceHdr = srcMessage.getHeader();
         MALMessageBody body = srcMessage.getBody();
 
-        System.out.println("cloneForwardMessage from : " + sourceHdr.getFromURI()
-                + "    :    " + sourceHdr.getToURI());
-        String endpointUriPart = sourceHdr.getToURI().getValue();
+        System.out.println("cloneForwardMessage from : " + sourceHdr.getFrom()
+                + "    :    " + sourceHdr.getTo());
+        String endpointUriPart = sourceHdr.getTo().getValue();
         final int iSecond = endpointUriPart.indexOf("@");
         endpointUriPart = endpointUriPart.substring(iSecond + 1, endpointUriPart.length());
         URI to = new URI(endpointUriPart);
-        URI from = new URI(destination.getURI().getValue() + "@" + sourceHdr.getFromURI().getValue());
+        Identifier from = new Identifier(destination.getURI().getValue() + "@" + sourceHdr.getFrom().getValue());
         System.out.println("cloneForwardMessage      : " + from + "    :    " + to);
 
         MALMessage destMessage = destination.createMessage(
@@ -198,7 +199,7 @@ public class Main {
                 body.getEncodedBody()
         );
 
-        destMessage.getHeader().setFromURI(from);
+        destMessage.getHeader().setFrom(from);
 
         return destMessage;
     }

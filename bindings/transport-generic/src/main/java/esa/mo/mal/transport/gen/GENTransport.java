@@ -404,14 +404,14 @@ public abstract class GENTransport<I, O> implements MALTransport {
             final GENMessage msg) throws MALTransmitErrorException {
         MALMessageHeader header = msg.getHeader();
 
-        if ((null == header.getToURI()) || (null == header.getToURI().getValue())) {
+        if ((null == header.getTo()) || (null == header.getTo().getValue())) {
             throw new MALTransmitErrorException(header,
                     new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                             "URI To field must not be null"), qosProperties);
         }
 
         // get the root URI, (e.g. maltcp://10.0.0.1:61616 )
-        String destinationURI = header.getToURI().getValue();
+        String destinationURI = header.getTo().getValue();
         String remoteRootURI = header.getToURI().getRootURI(serviceDelim, serviceDelimCounter);
 
         // first check if its actually a message to ourselves
@@ -614,7 +614,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             LOGGER.log(Level.FINE, "Processing message : {0} : {1}",
                     new Object[]{msg.getHeader().getTransactionId(), smsg});
 
-            String endpointUriPart = getRoutingPart(msg.getHeader().getToURI().getValue());
+            String endpointUriPart = getRoutingPart(msg.getHeader().getTo().getValue());
             final GENEndpoint endpoint = endpointRoutingMap.get(endpointUriPart);
 
             if (endpoint != null) {
@@ -713,7 +713,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                                     oriMsg.getQoSProperties(),
                                     errorNumber, new Union(errorMsg));
 
-                    retMsg.getHeader().setFromURI(srcHdr.getToURI());
+                    retMsg.getHeader().setFrom(srcHdr.getTo());
 
                     sendMessage(null, true, retMsg);
                 } else {

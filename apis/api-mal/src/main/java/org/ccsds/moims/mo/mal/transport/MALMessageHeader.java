@@ -108,6 +108,7 @@ public class MALMessageHeader {
      *
      * @return the field from.
      */
+    @Deprecated
     public URI getFromURI() {
         return new URI(from.getValue());
     }
@@ -118,7 +119,7 @@ public class MALMessageHeader {
      * @return the field from.
      */
     public Identifier getFrom() {
-        return new Identifier(from.getValue());
+        return this.from;
     }
 
     /**
@@ -126,8 +127,8 @@ public class MALMessageHeader {
      *
      * @param newValue The new value to set.
      */
-    public void setFromURI(final URI newValue) {
-        this.from = new Identifier(newValue.getValue());
+    public void setFrom(final Identifier newValue) {
+        this.from = newValue;
     }
 
     /**
@@ -153,8 +154,18 @@ public class MALMessageHeader {
      *
      * @return the field to.
      */
+    @Deprecated
     public URI getToURI() {
         return new URI(to.getValue());
+    }
+
+    /**
+     * Returns the field to.
+     *
+     * @return the field to.
+     */
+    public Identifier getTo() {
+        return to;
     }
 
     /**
