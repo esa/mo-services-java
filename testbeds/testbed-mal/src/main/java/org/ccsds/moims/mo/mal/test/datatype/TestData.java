@@ -130,6 +130,34 @@ public abstract class TestData {
         testEnumerations.add(SessionType.LIVE);
         testEnumerations.add(SessionType.REPLAY);
         testEnumerations.add(SessionType.SIMULATION);
+        
+        testEnumerations.add(AreaNumber.MAL);
+        testEnumerations.add(AreaNumber.COM);
+        testEnumerations.add(AreaNumber.COMMON);
+        testEnumerations.add(AreaNumber.MC);
+        testEnumerations.add(AreaNumber.MPS);
+        testEnumerations.add(AreaNumber.SM);
+        testEnumerations.add(AreaNumber.MDPD);
+        
+        testEnumerations.add(AttributeType.BLOB);
+        testEnumerations.add(AttributeType.BOOLEAN);
+        testEnumerations.add(AttributeType.DURATION);
+        testEnumerations.add(AttributeType.FLOAT);
+        testEnumerations.add(AttributeType.DOUBLE);
+        testEnumerations.add(AttributeType.IDENTIFIER);
+        testEnumerations.add(AttributeType.OCTET);
+        testEnumerations.add(AttributeType.UOCTET);
+        testEnumerations.add(AttributeType.SHORT);
+        testEnumerations.add(AttributeType.USHORT);
+        testEnumerations.add(AttributeType.INTEGER);
+        testEnumerations.add(AttributeType.UINTEGER);
+        testEnumerations.add(AttributeType.LONG);
+        testEnumerations.add(AttributeType.ULONG);
+        testEnumerations.add(AttributeType.STRING);
+        testEnumerations.add(AttributeType.TIME);
+        testEnumerations.add(AttributeType.FINETIME);
+        testEnumerations.add(AttributeType.URI);
+        testEnumerations.add(AttributeType.OBJECTREF);
 
         // complete composites
         testComposites.add(testComposite);
