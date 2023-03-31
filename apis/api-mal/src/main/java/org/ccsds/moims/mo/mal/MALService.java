@@ -216,7 +216,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALSendOperation[] getSendOperations() {
-        return (MALSendOperation[]) sendOperations.toArray();
+        return (MALSendOperation[]) sendOperations.toArray(new MALSendOperation[0]);
     }
 
     /**
@@ -225,7 +225,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALSubmitOperation[] getSubmitOperations() {
-        return (MALSubmitOperation[]) submitOperations.toArray();
+        return (MALSubmitOperation[]) submitOperations.toArray(new MALSubmitOperation[0]);
     }
 
     /**
@@ -234,7 +234,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALRequestOperation[] getRequestOperations() {
-        return (MALRequestOperation[]) requestOperations.toArray();
+        return (MALRequestOperation[]) requestOperations.toArray(new MALRequestOperation[0]);
     }
 
     /**
@@ -243,7 +243,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALInvokeOperation[] getInvokeOperations() {
-        return (MALInvokeOperation[]) invokeOperations.toArray();
+        return (MALInvokeOperation[]) invokeOperations.toArray(new MALInvokeOperation[0]);
     }
 
     /**
@@ -252,7 +252,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALProgressOperation[] getProgressOperations() {
-        return (MALProgressOperation[]) progressOperations.toArray();
+        return (MALProgressOperation[]) progressOperations.toArray(new MALProgressOperation[0]);
     }
 
     /**
@@ -261,7 +261,7 @@ public class MALService {
      * @return The set of operations or an empty array if not found.
      */
     public MALPubSubOperation[] getPubSubOperations() {
-        return (MALPubSubOperation[]) pubSubOperations.toArray();
+        return (MALPubSubOperation[]) pubSubOperations.toArray(new MALPubSubOperation[0]);
     }
 
     private void initOperation(final MALOperation op) {
