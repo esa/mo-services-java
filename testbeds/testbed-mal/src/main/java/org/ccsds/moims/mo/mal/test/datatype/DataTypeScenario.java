@@ -29,13 +29,20 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.CompositeList;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
+import org.ccsds.moims.mo.malprototype.structures.AbstractComposite;
+import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
+import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractField;
+import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractFieldList;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -512,6 +519,57 @@ public class DataTypeScenario extends LoggingBase {
         return rv;
     }
 
+    public String polymorphicAbstractCompositeListsWork() throws MALInteractionException, MALException {
+      logMessage("Starting polymorphic AbstractComposite list parameter test...");
+      String rv;
+      AbstractCompositeList res;
+//      try {
+        // the next statement does not compile as a StructureWithAbstractFieldList
+        // (i.e. java.util.ArrayList<StructureWithAbstractField> in the current mapping)
+        // cannot be converted to a AbstractCompositeList
+        // (i.e. java.util.ArrayList<Element> in the current mapping)
+//        res = getDataTestStub().testPolymorphicAbstractCompositeList(TestData.testStructureWithAbstractFieldSingleTypedList1);
+        res = null;
+        rv = subSingleTest(TestData.testStructureWithAbstractFieldSingleTypedList1,
+                           res, "testStructureWithAbstractFieldSingleTypedList1");
+        logMessage("The current Java mapping prevents this test from compiling.");
+//      } catch (MALInteractionException ex) {
+//        rv = subSingleTestExceptionHandler(ex, "testStructureWithAbstractFieldSingleTypedList1");
+//      }
+      logMessage("Finished polymorphic AbstractComposite list parameter test");
+      return rv;
+    }
+
+    public String polymorphicMalCompositeListsWork() throws MALInteractionException, MALException {
+      logMessage("Starting polymorphic MAL Composite list parameter test...");
+      String rv;
+      CompositeList res;
+      try {
+        res = getDataTestStub().testPolymorphicMalCompositeList(TestData.testStructureWithAbstractFieldSingleTypedList1);
+        rv = subSingleTest(TestData.testStructureWithAbstractFieldSingleTypedList1,
+                           res, "testStructureWithAbstractFieldSingleTypedList1");
+      } catch (MALInteractionException ex) {
+        rv = subSingleTestExceptionHandler(ex, "testStructureWithAbstractFieldSingleTypedList1");
+      }
+      logMessage("Finished polymorphic MAL Composite list parameter test");
+      return rv;
+    }
+
+    public String polymorphicMalElementListsWork() throws MALInteractionException, MALException {
+      logMessage("Starting polymorphic MAL Element list parameter test...");
+      String rv;
+      ElementList res;
+      try {
+        res = getDataTestStub().testPolymorphicMalElementList(TestData.testStructureWithAbstractFieldSingleTypedList1);
+        rv = subSingleTest(TestData.testStructureWithAbstractFieldSingleTypedList1,
+                           res, "testStructureWithAbstractFieldSingleTypedList1");
+      } catch (MALInteractionException ex) {
+        rv = subSingleTestExceptionHandler(ex, "testStructureWithAbstractFieldSingleTypedList1");
+      }
+      logMessage("Finished polymorphic MAL Element list parameter test");
+      return rv;
+    }
+    
     protected String subTest(int reportingOffset, Vector testdata) throws MALInteractionException, MALException {
         DataTestStub stub = getDataTestStub();
 

@@ -35,6 +35,7 @@ import org.ccsds.moims.mo.malprototype.structures.TestPublish;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishList;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
+import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -297,5 +298,20 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     @Override
     public MOObject getObject(ObjectRef<Identifier> _Identifier_0, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public AbstractCompositeList testPolymorphicAbstractCompositeList(AbstractCompositeList bacl,
+            MALInteraction interaction) throws MALInteractionException, MALException {
+      return bacl;
+    }
+
+    public CompositeList testPolymorphicMalCompositeList(CompositeList cl,
+            MALInteraction interaction) throws MALInteractionException, MALException {
+      return cl;
+    }
+
+    public ElementList testPolymorphicMalElementList(ElementList el,
+            MALInteraction interaction) throws MALInteractionException, MALException {
+      return el;
     }
 }

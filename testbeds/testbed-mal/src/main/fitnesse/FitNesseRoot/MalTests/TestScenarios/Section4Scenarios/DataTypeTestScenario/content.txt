@@ -69,3 +69,6 @@ The consumer takes the data from the list one by one, in the same order, and cal
 |check| inner abstract multi return works | OK|
 |check| multi return with nulls work| OK|
 |check| polymorphic types work | OK|
+|check| polymorphic abstract composite lists work | OK|
+|check| polymorphic mal composite lists work | OK|
+|check| polymorphic mal element lists work | OK|

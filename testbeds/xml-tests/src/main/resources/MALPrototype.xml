@@ -966,6 +966,60 @@
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
+                <smc:requestIP name="testPolymorphicAbstractCompositeList" number="134"
+                               supportInReplay="false"
+                               comment="This operation checks that various concrete values can be sent and received explicitly as a list of abstract composite">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type list="true" area="MALPrototype" name="AbstractComposite" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type list="true" area="MALPrototype" name="AbstractComposite" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype" service="DataTest"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
+                <smc:requestIP name="testPolymorphicMalCompositeList" number="135"
+                               supportInReplay="false"
+                               comment="This operation checks that various concrete values can be sent and received explicitly as a list of MAL Composite">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type list="true" area="MAL" name="Composite" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type list="true" area="MAL" name="Composite" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype" service="DataTest"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
+                <smc:requestIP name="testPolymorphicMalElementList" number="136"
+                               supportInReplay="false"
+                               comment="This operation checks that various concrete values can be sent and received explicitly as a list of MAL Element">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type list="true" area="MAL" name="Element" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type list="true" area="MAL" name="Element" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype" service="DataTest"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
             </smc:capabilitySet>
             <smc:capabilitySet number="200">
                 <smc:requestIP name="createObject" number="201"
