@@ -96,6 +96,6 @@ public final class Address {
     
     @Override
     public String toString() {
-        return "uri=" + uri + " - authenticationId=" + authenticationId;
+        return "Address(uri=" + uri + " - authenticationId=" + authenticationId + ")";
     }
 }

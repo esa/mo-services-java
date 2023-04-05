@@ -222,7 +222,7 @@ public class MessageReceive implements MALMessageListener {
             }
         } catch (MALException ex) {
             // try to determine address info if null
-            if (null == address) {
+            if (address == null) {
                 address = lookupAddress(callingEndpoint, msg);
             }
 
@@ -242,7 +242,7 @@ public class MessageReceive implements MALMessageListener {
         final EndPointPair key = new EndPointPair(localURI, service);
 
         if (!providerEndpointMap.containsKey(key)) {
-            MALContextFactoryImpl.LOGGER.log(Level.INFO,
+            MALContextFactoryImpl.LOGGER.log(Level.FINE,
                     "registerProviderEndpoint for {0}", key);
             providerEndpointMap.put(key, address);
         }
@@ -252,7 +252,7 @@ public class MessageReceive implements MALMessageListener {
         final EndPointPair key = new EndPointPair(localURI, service);
 
         if (providerEndpointMap.containsKey(key)) {
-            MALContextFactoryImpl.LOGGER.log(Level.INFO,
+            MALContextFactoryImpl.LOGGER.log(Level.FINE,
                     "deregisterProviderEndpoint for {0}", key);
             providerEndpointMap.remove(key);
         }
@@ -631,7 +631,6 @@ public class MessageReceive implements MALMessageListener {
                     + "\nAvailable options: \n{1}\n",
                     new Object[]{key, providerEndpointMap.toString()}
             );
-            Thread.dumpStack();
         }
 
         return addr;
@@ -757,7 +756,7 @@ public class MessageReceive implements MALMessageListener {
 
         @Override
         public String toString() {
-            return "EndPointPair{" + "first=" + first + ", second=" + second + '}';
+            return "\nEndPointPair{" + "first=" + first + ", second=" + second + '}';
         }
     }
 }
