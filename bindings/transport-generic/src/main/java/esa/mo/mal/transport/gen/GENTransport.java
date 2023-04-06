@@ -343,7 +343,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
         final String strRoutingName = getLocalName(localName, localProperties);
         GENEndpoint endpoint = endpointRoutingMap.get(strRoutingName);
 
-        if (null == endpoint) {
+        if (endpoint == null) {
             LOGGER.log(Level.FINE, "Creating endpoint {0} : {1}",
                     new Object[]{localName, strRoutingName});
             endpoint = internalCreateEndpoint(localName, strRoutingName, localProperties);
@@ -643,7 +643,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                         "Error occurred: " + e.toString() + " : " + wrt.toString());
             } catch (MALException ex) {
                 LOGGER.log(Level.SEVERE,
-                        "Error occurred while trying to return error smg!", ex);
+                        "Error occurred while trying to return error msg!", ex);
             }
         } catch (Error e) {
             // This is bad, Java errors are serious, 
@@ -679,9 +679,10 @@ public abstract class GENTransport<I, O> implements MALTransport {
             final UInteger errorNumber,
             final String errorMsg) throws MALException {
         try {
-            final int type = oriMsg.getHeader().getInteractionType().getOrdinal();
-            final short stage = (null != oriMsg.getHeader().getInteractionStage())
-                    ? oriMsg.getHeader().getInteractionStage().getValue() : 0;
+            final MALMessageHeader srcHdr = oriMsg.getHeader();
+            final int type = srcHdr.getInteractionType().getOrdinal();
+            final short stage = (null != srcHdr.getInteractionStage())
+                    ? srcHdr.getInteractionStage().getValue() : 0;
 
             // first check that message should be responded to
             if (((type == InteractionType._SUBMIT_INDEX) && (stage == MALSubmitOperation._SUBMIT_STAGE))
@@ -692,7 +693,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
                     || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._DEREGISTER_STAGE))
                     || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._PUBLISH_REGISTER_STAGE))
                     || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._PUBLISH_DEREGISTER_STAGE))) {
-                final MALMessageHeader srcHdr = oriMsg.getHeader();
 
                 if ((null == ep) && (!endpointMalMap.isEmpty())) {
                     GENEndpoint endpoint = endpointMalMap.entrySet().iterator().next().getValue();
@@ -717,9 +717,9 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
                     sendMessage(null, true, retMsg);
                 } else {
-                    LOGGER.log(Level.WARNING, "(1) Unable to return error "
-                            + "number ({0}) as no endpoint supplied: {1}",
-                            new Object[]{errorNumber, oriMsg.getHeader()});
+                    LOGGER.log(Level.WARNING, "(1) Unable to return error"
+                            + " number ({0}) as no endpoint supplied: {1}",
+                            new Object[]{errorNumber, srcHdr});
                 }
             } else {
                 throw new MALException("Unknown type/stage! Type: " + type + " - Stage: " + stage);

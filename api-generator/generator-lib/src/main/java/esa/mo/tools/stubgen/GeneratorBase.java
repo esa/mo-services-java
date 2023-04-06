@@ -387,6 +387,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             internalType = createElementType(file, area, service, extraPackageLevel, internalType);
             return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRef<" + internalType + ">");
         }
+        if (type.contains("ObjectRef(")) {
+            String internalType = type.substring(type.indexOf('(') + 1, type.indexOf(')'));
+            internalType = createElementType(file, area, service, extraPackageLevel, internalType);
+            return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRef<" + internalType + ">");
+        }
 
         if (isAttributeType(TypeUtils.createTypeReference(area, service, type, false))) {
             AttributeTypeDetails details = getAttributeDetails(area, type);

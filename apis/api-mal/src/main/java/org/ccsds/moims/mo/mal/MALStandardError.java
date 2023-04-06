@@ -22,13 +22,12 @@ package org.ccsds.moims.mo.mal;
 
 import java.io.Serializable;
 import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 
 /**
  * Represents a MAL error.
  */
-public class MALStandardError implements Serializable {
+public class MALStandardError extends Exception implements Serializable {
 
     private final UInteger errorNumber;
     private final Object extraInformation;
@@ -45,6 +44,8 @@ public class MALStandardError implements Serializable {
      */
     public MALStandardError(final UInteger errorNumber, final Object extraInformation)
             throws java.lang.IllegalArgumentException {
+        super();
+
         if (errorNumber == null) {
             throw new IllegalArgumentException("Number argument must not be NULL");
         }
@@ -71,29 +72,13 @@ public class MALStandardError implements Serializable {
         return extraInformation;
     }
 
-    /**
-     * Looks up the associated error name for the error number associated with
-     * this standard error.
-     *
-     * @return The error name or null if not known.
-     */
-    public Identifier getErrorName() {
-        return MALContextFactory.lookupError(errorNumber);
-    }
-
     @Override
     public String toString() {
         final StringBuilder buf = new StringBuilder();
-
         buf.append("(");
-        buf.append("errorNumber=");
-        buf.append(errorNumber);
-        buf.append(",errorName=");
-        buf.append(MALContextFactory.lookupError(errorNumber));
-        buf.append(",extraInformation=");
-        buf.append(extraInformation);
+        buf.append("errorNumber=").append(errorNumber);
+        buf.append(",extraInformation=").append(extraInformation);
         buf.append(")");
-
         return buf.toString();
     }
 }

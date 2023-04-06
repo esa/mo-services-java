@@ -227,8 +227,8 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         } catch (IllegalArgumentException ex1) {
             throw new MALException("Internal error encoding header of message", ex1);
         } catch (MALException ex2) {
-            throw new MALException("Internal error encoding message for message"
-                    + "with header: " + header.toString(), ex2);
+            throw new MALException("Internal error encoding message for"
+                    + " message with header:\n" + header.toString(), ex2);
         }
     }
 

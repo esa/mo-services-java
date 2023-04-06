@@ -97,11 +97,17 @@ public class MALElementsRegistry {
             return null;
         }
 
+        // Is it already a List?
+        if (obj instanceof ElementList) {
+            return (ElementList) obj;
+        }
+
         long l = obj.getShortForm();
         long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
 
         try {
-            return (ElementList) MALContextFactory.getElementsRegistry().createElement(ll);
+            Element createdElement = MALContextFactory.getElementsRegistry().createElement(ll);
+            return (ElementList) createdElement;
         } catch (Exception ex) {
             throw new NotFoundException("The element could not be found in the MAL ElementFactory!"
                     + " The object type is: " + obj.getClass().getSimpleName()

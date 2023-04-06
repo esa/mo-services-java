@@ -57,7 +57,7 @@ public class JavaConsumer {
 
     protected void createServiceConsumerAdapter(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        generator.getLog().info("Creating consumer adapter: " + service.getName());
+        generator.getLog().info(" > Creating consumer adapter: " + service.getName());
 
         String areaName = area.getName();
         String serviceName = service.getName();
@@ -420,7 +420,7 @@ public class JavaConsumer {
 
     protected void createServiceConsumerStub(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        generator.getLog().info("Creating consumer stub: " + service.getName());
+        generator.getLog().info(" > Creating consumer stub: " + service.getName());
 
         String serviceName = service.getName();
         String className = serviceName + "Stub";

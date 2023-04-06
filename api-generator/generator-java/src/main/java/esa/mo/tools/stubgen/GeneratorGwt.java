@@ -75,7 +75,7 @@ public class GeneratorGwt extends GeneratorJava {
     @Override
     protected void createServiceConsumerInterface(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info("Creating consumer interface: " + service.getName());
+        getLog().info(" > Creating consumer interface: " + service.getName());
 
         InterfaceWriter file = createInterfaceFile(consumerFolder, service.getName() + "GWT");
         String serviceName = service.getName();
@@ -129,7 +129,7 @@ public class GeneratorGwt extends GeneratorJava {
 
     protected void createServiceConsumerStub2(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info("Creating consumer stub: " + service.getName());
+        getLog().info(" > Creating consumer stub: " + service.getName());
 
         String serviceName = service.getName();
 
@@ -176,7 +176,7 @@ public class GeneratorGwt extends GeneratorJava {
     @Override
     protected void createServiceProviderHandler(File providerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info("Creating provider handler interface: " + service.getName());
+        getLog().info(" > Creating provider handler interface: " + service.getName());
 
         String handlerName = service.getName() + "Handler";
         InterfaceWriter file = createInterfaceFile(providerFolder, handlerName);

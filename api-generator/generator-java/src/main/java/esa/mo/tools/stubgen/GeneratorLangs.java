@@ -194,11 +194,15 @@ public abstract class GeneratorLangs extends GeneratorBase {
     @Override
     public void compile(String destinationFolderName, SpecificationType spec,
             JAXBElement rootNode) throws IOException, JAXBException {
+        long totalTime = System.currentTimeMillis();
+        
         for (AreaType area : spec.getArea()) {
             long timestamp = System.currentTimeMillis();
             processArea(destinationFolderName, area, requiredPublishers);
             timestamp = System.currentTimeMillis() - timestamp;
-            getLog().info("-----------\nProcessed " + area.getName() + " area in " + timestamp + " ms");
+            getLog().info("-----------");
+            getLog().info("Processed " + area.getName() + " area in " + timestamp + " ms");
+            getLog().info("-----------");
         }
 
         for (Map.Entry<String, MultiReturnType> entry : multiReturnTypeMap.entrySet()) {
@@ -206,6 +210,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
             MultiReturnType rt = entry.getValue();
             createMultiReturnType(destinationFolderName, string, rt);
         }
+
+        getLog().info("-----------");
+        totalTime = System.currentTimeMillis() - totalTime;
+        getLog().info("Processed all Areas in " + totalTime + " ms");
     }
 
     @Override
@@ -419,6 +427,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void processService(File areaFolder, AreaType area, ServiceType service,
             Map<String, RequiredPublisher> requiredPublishers) throws IOException {
+        this.getLog().info("Processing service: " + service.getName());
         // create service folders
         File serviceFolder = StubUtils.createFolder(areaFolder, service.getName());
         // load service operation details
@@ -460,7 +469,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createServiceConsumerClasses(File serviceFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info("Creating consumer classes: " + service.getName());
+        getLog().info(" > Creating consumer classes: " + service.getName());
         File consumerFolder = StubUtils.createFolder(serviceFolder, CONSUMER_FOLDER);
         // create a comment for the consumer folder if supported
         createServiceConsumerFolderComment(consumerFolder, area, service);
@@ -472,7 +481,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createServiceProviderClasses(File serviceFolder, AreaType area, ServiceType service,
             ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException {
-        getLog().info("Creating provider classes: " + service.getName());
+        getLog().info(" > Creating provider classes: " + service.getName());
         File providerFolder = StubUtils.createFolder(serviceFolder, PROVIDER_FOLDER);
         // create a comment for the provider folder if supported
         createServiceProviderFolderComment(providerFolder, area, service);
@@ -485,13 +494,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createServiceProviderDelegation(File providerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info("Creating provider delegate class: " + service.getName());
+        getLog().info(" > Creating provider delegate class: " + service.getName());
         createServiceProviderSkeletonHandler(providerFolder, area, service, summary, true);
     }
 
     protected void createServiceProviderInheritance(File providerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info("Creating provider inheritance class: " + service.getName());
+        getLog().info(" > Creating provider inheritance class: " + service.getName());
         createServiceProviderSkeletonHandler(providerFolder, area, service, summary, false);
     }
 
@@ -510,7 +519,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             ServiceType service, ServiceSummary summary) throws IOException {
         String serviceName = service.getName();
 
-        getLog().info("Creating consumer interface: " + serviceName);
+        getLog().info(" > Creating consumer interface: " + serviceName);
 
         InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName);
 
@@ -640,7 +649,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected void createServiceProviderHandler(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info("Creating provider handler interface: " + service.getName());
+        getLog().info(" > Creating provider handler interface: " + service.getName());
 
         String handlerName = service.getName() + "Handler";
         InterfaceWriter file = createInterfaceFile(providerFolder, handlerName);
@@ -695,7 +704,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createServiceProviderInvokeInteractionClass(File providerFolder, AreaType area, ServiceType service, OperationSummary op) throws IOException {
         String className = StubUtils.preCap(op.getName()) + "Interaction";
-        getLog().info("Creating provider invoke interaction class: " + className);
+        getLog().info(" > Creating provider invoke interaction class: " + className);
 
         ClassWriter file = createClassFile(providerFolder, className);
 
@@ -765,7 +774,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     protected void createServiceProviderProgressInteractionClass(File providerFolder,
             AreaType area, ServiceType service, OperationSummary op) throws IOException {
         String className = StubUtils.preCap(op.getName()) + "Interaction";
-        getLog().info("Creating provider progress interaction class: " + className);
+        getLog().info(" > Creating provider progress interaction class: " + className);
 
         ClassWriter file = createClassFile(providerFolder, className);
 
@@ -860,7 +869,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createServiceProviderSkeleton(File providerFolder, AreaType area, ServiceType service,
             ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException {
-        getLog().info("Creating provider skeleton interface: " + service.getName());
+        getLog().info(" > Creating provider skeleton interface: " + service.getName());
 
         String skeletonName = service.getName() + "Skeleton";
         InterfaceWriter file = createInterfaceFile(providerFolder, skeletonName);
@@ -1308,7 +1317,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String enumName = enumeration.getName();
         long enumSize = enumeration.getItem().size();
 
-        getLog().info("Creating enumeration class " + enumName);
+        getLog().info(" > Creating Enumeration class: " + enumName);
 
         ClassWriter file = createClassFile(folder, enumName);
 
@@ -1514,7 +1523,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createCompositeClass(File folder, AreaType area, ServiceType service, CompositeType composite) throws IOException {
         String compName = composite.getName();
-        getLog().info("Creating composite class " + compName);
+        getLog().info(" > Creating Composite class: " + compName);
 
         ClassWriter file = createClassFile(folder, compName);
         String parentClass = null;
@@ -1816,7 +1825,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         String factoryName = srcTypeName + "Factory";
 
-        getLog().info("Creating factory class " + factoryName);
+        getLog().info(" > Creating factory class " + factoryName);
 
         ClassWriter file = createClassFile(folder, factoryName);
 
@@ -1851,7 +1860,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected final void createMultiReturnType(String destinationFolderName, String returnTypeFqName, MultiReturnType returnTypeInfo) throws IOException {
-        getLog().info("Creating multiple return class class " + returnTypeFqName);
+        getLog().info(" > Creating multiple return class class " + returnTypeFqName);
 
         // create a comment for the body folder if supported
         createServiceMessageBodyFolderComment(destinationFolderName, returnTypeInfo.getArea(), returnTypeInfo.getService());

@@ -20,7 +20,6 @@
  */
 package esa.mo.tools.stubgen;
 
-import static esa.mo.tools.stubgen.GeneratorLangs.TRANSPORT_FOLDER;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
@@ -47,7 +46,10 @@ public class JavaExceptions {
 
     public void createServiceExceptions(File serviceFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        generator.getLog().info("Creating service Exceptions for service: " + service.getName());
+        generator.getLog().warn("The service Exceptions must be moved to Area "
+                + "level! This is just supported for backward compatibility. "
+                + "Check the Errors defined in service: " + service.getName());
+        generator.getLog().info(" > Creating service Exceptions for service: " + service.getName());
 
         if (summary.getService().getErrors() != null && summary.getService().getErrors().getError() != null) {
             for (ErrorDefinitionType error : summary.getService().getErrors().getError()) {
@@ -57,7 +59,7 @@ public class JavaExceptions {
     }
 
     public void createAreaExceptions(File areaFolder, AreaType area) throws IOException {
-        generator.getLog().info("Creating Area Exceptions for area: " + area.getName());
+        generator.getLog().info(" > Creating Area Exceptions for area: " + area.getName());
 
         if (area.getErrors() != null && area.getErrors().getError() != null) {
             for (ErrorDefinitionType error : area.getErrors().getError()) {
@@ -68,7 +70,7 @@ public class JavaExceptions {
 
     public void generateException(File folder, AreaType area,
             ServiceType service, ErrorDefinitionType error) throws IOException {
-        generator.getLog().info("Creating Exception: " + error.getName());
+        generator.getLog().info(" > Creating Exception: " + error.getName());
 
         // Needs to be converted to Camel case in the future!
         String inCamelCase = convertToCamelCase(error.getName());
@@ -78,13 +80,25 @@ public class JavaExceptions {
         file.addPackageStatement(area, service, null);
 
         // Appends the class name
-        file.addClassOpenStatement(className, true, false, "Exception",
+        String extendsClass = "org.ccsds.moims.mo.mal.MALStandardError";
+        file.addClassOpenStatement(className, true, false, extendsClass,
                 null, "The " + className + " exception. " + error.getComment());
+
+        String errorDescription = "\"\"";
+        if (error.getExtraInformation() != null) {
+            errorDescription = "\"" + error.getExtraInformation().getComment() + "\"";
+        }
+
+        // Add the Error number as a static final variable
+        CompositeField errorNumberVar = generator.createCompositeElementsDetails(file, false, "ERROR_NUMBER",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
+                true, true, "The Error number.");
+        file.addClassVariable(true, true, StdStrings.PUBLIC, errorNumberVar, false, "(" + String.valueOf(error.getNumber()) + ")");
 
         // Constructor without parameters
         MethodWriter method_1 = file.addConstructor(StdStrings.PUBLIC, className,
                 null, null, null, "Constructs a new " + className + " exception.", null);
-        method_1.addLine("super()");
+        method_1.addLine("super(ERROR_NUMBER, " + errorDescription + ")");
         method_1.addMethodCloseStatement();
 
         // Constructor with a String
@@ -96,14 +110,14 @@ public class JavaExceptions {
 
         MethodWriter method_2 = file.addConstructor(StdStrings.PUBLIC, className,
                 args, null, null, "Constructs a new " + className + " exception.", null);
-        method_2.addLine("super(message)");
+        method_2.addLine("super(ERROR_NUMBER, " + "message)");
         method_2.addMethodCloseStatement();
 
         file.addClassCloseStatement();
         file.flush();
     }
 
-    private String convertToCamelCase(String text) {
+    public static String convertToCamelCase(String text) {
         // Is it all Upper Case?
         if (text.equals(text.toUpperCase())) {
             StringBuilder all = new StringBuilder();

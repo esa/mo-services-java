@@ -132,7 +132,7 @@ public class GeneratorJava extends GeneratorLangs {
 
     @Override
     public void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher publisher) throws IOException {
-        getLog().info("Creating publisher class " + fqPublisherName);
+        getLog().info(" > Creating Publisher class: " + fqPublisherName);
 
         String publisherName = fqPublisherName.substring(fqPublisherName.lastIndexOf('.') + 1);
         ClassWriter file = createClassFile(destinationFolderName, fqPublisherName.replace('.', '/'));
@@ -262,10 +262,10 @@ public class GeneratorJava extends GeneratorLangs {
      * @param srcTypeName The name of the element in the list.
      * @throws IOException if there is a problem writing the file.
      */
-    protected void createPolymorphicListClass(File folder, AreaType area,
+    private void createPolymorphicListClass(File folder, AreaType area,
             ServiceType service, String srcTypeName) throws IOException {
         String listName = srcTypeName + "List";
-        getLog().info("Creating list interface " + listName);
+        getLog().info(" > Creating PolymorphicList class: " + listName);
 
         JavaClassWriter file = (JavaClassWriter) createInterfaceFile(folder, listName);
         file.addPackageStatement(area, service, getConfig().getStructureFolder());
@@ -299,7 +299,7 @@ public class GeneratorJava extends GeneratorLangs {
      * @param shortFormPart The short form part of the contained element.
      * @throws IOException if there is a problem writing the file.
      */
-    protected void createConcreteListClass(File folder, AreaType area, ServiceType service,
+    private void createConcreteListClass(File folder, AreaType area, ServiceType service,
             String srcTypeName, Long shortFormPart) throws IOException {
         String listName = srcTypeName + "List";
 
@@ -310,7 +310,7 @@ public class GeneratorJava extends GeneratorLangs {
         }
 
         srcType.setName(srcTypeName);
-        getLog().info("Creating list class " + listName);
+        getLog().info(" > Creating List class: " + listName);
         ClassWriter file = createClassFile(folder, listName);
 
         file.addPackageStatement(area, service, getConfig().getStructureFolder());

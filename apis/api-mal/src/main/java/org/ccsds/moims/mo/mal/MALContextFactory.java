@@ -43,7 +43,7 @@ public abstract class MALContextFactory {
     private static final HashMap<String, Class> MAL_MAP = new HashMap<>();
     private static final HashMap<VersionizedAreaNumber, MALArea> VERSIONIZED_AREA_NUMBER_MAP = new HashMap<>();
     private static final HashMap<String, Integer> AREA_NAME_MAP = new HashMap<>();
-    private static final HashMap<Long, Identifier> ERROR_MAP = new HashMap<>();
+    private static final HashMap<Long, Identifier> ERRORS = new HashMap<>();
     private static final MALElementsRegistry ELEMENTS_REGISTRY = new MALElementsRegistry();
 
     /**
@@ -81,27 +81,35 @@ public abstract class MALContextFactory {
     /**
      * Registers an Error number to an Error name.
      *
+     * @param areaNumber The Area number.
+     * @param areaVersion The Area version.
      * @param errorNumber The number to use.
      * @param errorName The matching name to the number.
      * @throws java.lang.IllegalArgumentException if either is null.
      * @throws MALException If already registered the number.
      */
-    public static void registerError(final UInteger errorNumber, final Identifier errorName)
-            throws java.lang.IllegalArgumentException, MALException {
-        if ((null == errorNumber) || (null == errorName)) {
+    public static void registerError(UShort areaNumber, UOctet areaVersion, UInteger errorNumber,
+            Identifier errorName) throws java.lang.IllegalArgumentException, MALException {
+        if (areaNumber == null || areaVersion == null || errorNumber == null || errorName == null) {
             throw new IllegalArgumentException("NULL argument");
         }
 
-        synchronized (ERROR_MAP) {
-            final Long num = errorNumber.getValue();
-            final Identifier currentMapping = ERROR_MAP.get(num);
+        synchronized (ERRORS) {
+            final Long key = generateKey(areaNumber, areaVersion, errorNumber);
+            final Identifier name = ERRORS.get(key);
 
-            if ((null != currentMapping) && !(currentMapping.equals(errorName))) {
-                throw new MALException("Error already registered with a different name");
+            if ((name != null) && !(name.equals(errorName))) {
+                throw new MALException("Error already registered with a different name!");
             }
 
-            ERROR_MAP.put(errorNumber.getValue(), errorName);
+            ERRORS.put(key, errorName);
         }
+    }
+
+    private static long generateKey(UShort areaNumber, UOctet areaVersion, UInteger errorNumber) {
+        return ((long) areaNumber.getValue()) << 48
+                | ((long) areaVersion.getValue()) << 32
+                | ((long) errorNumber.getValue());
     }
 
     /**
@@ -112,7 +120,7 @@ public abstract class MALContextFactory {
      * @return The matched MALArea or null if not found.
      * @throws IllegalArgumentException If an argument is null.
      */
-    public static MALArea lookupArea(final Identifier areaName, final UOctet version) 
+    public static MALArea lookupArea(final Identifier areaName, final UOctet version)
             throws IllegalArgumentException {
         if (null == areaName) {
             throw new IllegalArgumentException("NULL area argument");
@@ -139,7 +147,7 @@ public abstract class MALContextFactory {
      * @return The matched MALArea or null if not found.
      * @throws IllegalArgumentException If an argument is null.
      */
-    public static MALArea lookupArea(final UShort areaNumber, final UOctet version) 
+    public static MALArea lookupArea(final UShort areaNumber, final UOctet version)
             throws IllegalArgumentException {
         if (null == areaNumber) {
             throw new IllegalArgumentException("NULL area argument");
@@ -155,11 +163,14 @@ public abstract class MALContextFactory {
     /**
      * Look up an error name from its number.
      *
+     * @param areaNumber The Area number.
+     * @param areaVersion The Area version.
      * @param errorNumber The error name.
      * @return The error number or null if not found.
      */
-    public static Identifier lookupError(final UInteger errorNumber) {
-        return ERROR_MAP.get(errorNumber.getValue());
+    public static Identifier lookupError(UShort areaNumber, UOctet areaVersion, UInteger errorNumber) {
+        Long key = generateKey(areaNumber, areaVersion, errorNumber);
+        return ERRORS.get(key);
     }
 
     /**

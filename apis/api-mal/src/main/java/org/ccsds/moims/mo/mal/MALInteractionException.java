@@ -37,7 +37,7 @@ public class MALInteractionException extends Exception {
      */
     public MALInteractionException(final MALStandardError error) {
         super(
-                ((null != error) && (null != error.getExtraInformation()))
+                ((error != null) && (error.getExtraInformation() != null))
                 ? error.getExtraInformation().toString() : null
         );
 
