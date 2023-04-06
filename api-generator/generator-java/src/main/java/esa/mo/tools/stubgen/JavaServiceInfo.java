@@ -20,7 +20,6 @@
  */
 package esa.mo.tools.stubgen;
 
-import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.OperationSummary;
@@ -42,11 +41,8 @@ import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -140,13 +136,15 @@ public class JavaServiceInfo {
                 CompositeField _opKeyNamesVar = generator.createCompositeElementsDetails(file, false, "_" + operationInstanceVar + "_OP_KEY_NAMES",
                         TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.structures.Identifier []", false),
                         false, false, "Key names instance for " + operationInstanceVar + " operation of pubsub interaction pattern");
-                file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, _opKeyNamesVar, false, false, arrayList.toString(), false);
+                file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, _opKeyNamesVar,
+                        false, false, arrayList.toString(), false);
 
                 CompositeField opKeyNamesVar = generator.createCompositeElementsDetails(file, false, operationInstanceVar + "_OP_KEY_NAMES",
                         TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.structures.IdentifierList", false),
                         false, false, "Key names instance for " + operationInstanceVar + " operation of pubsub interaction pattern");
                 file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, opKeyNamesVar, false, false,
-                        "new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(_" + operationInstanceVar + "_OP_KEY_NAMES)))", false);
+                        "new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(_"
+                        + operationInstanceVar + "_OP_KEY_NAMES)))", false);
             }
 
             // Prepare the list of operations...
@@ -301,8 +299,6 @@ public class JavaServiceInfo {
         ArrayList<String> typeArgs = new ArrayList<>();
         boolean needXmlSchema = false;
         boolean needMalTypes = false;
-        boolean finalTypeIsAttribute = false;
-        boolean finalTypeIsList = false;
 
         for (TypeInfo typeInfo : ti) {
             TypeReference type = typeInfo.getSourceType();
@@ -315,12 +311,6 @@ public class JavaServiceInfo {
 
             if (generator.isAbstract(type)) {
                 typeArgs.add("null");
-
-                if (StdStrings.ATTRIBUTE.equals(type.getName())
-                        || StdStrings.MOOBJECT.equals(type.getName())) {
-                    finalTypeIsAttribute = true;
-                    finalTypeIsList = type.isList();
-                }
             } else {
                 if (isPubSub) {
                     // this is a bit of a hack for now
@@ -341,39 +331,22 @@ public class JavaServiceInfo {
         }
 
         if (needMalTypes && needXmlSchema) {
-            throw new IllegalArgumentException("WARNING: Service specification uses multiple type specifications in the same message! This is not supported.");
+            throw new IllegalArgumentException("WARNING: Service specification uses multiple"
+                    + " type specifications in the same message! This is not supported.");
         }
 
         String shortFormType = (needXmlSchema ? StdStrings.STRING : StdStrings.LONG);
         String arrayArgs = StubUtils.concatenateStringArguments(false, typeArgs.toArray(new String[0]));
-        String polyArgs = "";
-        if (finalTypeIsAttribute) {
-            Set<String> attribArgs = new HashSet<>();
-
-            for (Map.Entry<GeneratorBase.TypeKey, AttributeTypeDetails> val : generator.getAttributeTypesMap().entrySet()) {
-                TypeReference tr = new TypeReference();
-                tr.setArea(StdStrings.MAL);
-                tr.setName(val.getValue().getMalType());
-                if (!generator.isAbstract(tr)) {
-                    tr.setList(finalTypeIsList);
-                    TypeInfo lti = TypeUtils.convertTypeReference(generator, tr);
-                    attribArgs.add(lti.getMalShortFormField());
-                }
-            }
-            polyArgs = StubUtils.concatenateStringArguments(false, attribArgs.toArray(new String[0]));
-        }
 
         String initNewLine = "\n            ";
         String newLine = "\n                    ";
 
         if (isPubSub) {
-            return "new " + shortFormType + "[] {" + arrayArgs + "}," + newLine
-                    + "new " + shortFormType + "[0]";
+            return "new " + shortFormType + "[] {" + arrayArgs + "}";
         } else {
             return initNewLine + "new org.ccsds.moims.mo.mal.MALOperationStage(" + newLine
-                    + "new org.ccsds.moims.mo.mal.structures.UOctet((short) " + index + ")," + newLine
-                    + "new " + shortFormType + "[] {" + arrayArgs + "}," + newLine
-                    + "new " + shortFormType + "[] {" + polyArgs + "})";
+                    + "new org.ccsds.moims.mo.mal.structures.UOctet(" + index + ")," + newLine
+                    + "new " + shortFormType + "[] {" + arrayArgs + "})";
         }
     }
 }

@@ -23,7 +23,6 @@ package org.ccsds.moims.mo.mal.encoding;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -44,7 +43,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
      * @param pdec Decoder to use.
      */
     protected GENElementInputStream(Decoder pdec) {
-        dec = pdec;
+        this.dec = pdec;
     }
 
     @Override
@@ -100,6 +99,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
                 }
                 case MALPubSubOperation._NOTIFY_STAGE: {
                     int index = ctx.getBodyElementIndex();
+
                     if (index == 0) {
                         return dec.decodeIdentifier();
                     } else if (index == 1) {
@@ -110,7 +110,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
                                 .getElementShortForms()[ctx.getBodyElementIndex()];
 
                         // element is defined as an abstract type
-                        if (null == sf) {
+                        if (sf == null) {
                             sf = dec.decodeAbstractElementType(true);
                         }
 
@@ -123,27 +123,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
         }
 
         if (null == element) {
-            Long shortForm;
-
-            // dirty check to see if we are trying to decode an 
-            // abstract Attribute (and not a list of them either)
-            Object[] finalEleShortForms = ctx.getOperation().getOperationStage(
-                    ctx.getHeader().getInteractionStage()).getLastElementShortForms();
-
-            if ((null != finalEleShortForms)
-                    && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length)
-                    && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0)) {
-                Byte sf = dec.decodeNullableOctet();
-                if (null == sf) {
-                    return null;
-                }
-
-                shortForm = Attribute.ABSOLUTE_AREA_SERVICE_NUMBER
-                        + dec.internalDecodeAttributeType(sf);
-            } else {
-                shortForm = dec.decodeAbstractElementType(true);
-            }
-
+            Long shortForm = dec.decodeAbstractElementType(true);
             return decodeSubElement(shortForm, ctx);
         } else {
             return dec.decodeNullableElement((Element) element);

@@ -28,35 +28,29 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
  */
 public class MALOperationStage {
 
-    private final UOctet number;
+    private final UOctet stageNumber;
+
+    // Should be Long for normal MAL types or String for XML types:
     private final Object[] elementShortForms;
-    private final Object[] lastElementShortForms;
 
     /**
      * Constructs an operation stage using the supplied arguments.
      *
-     * @param number Number of the interaction stage.
+     * @param stageNumber Number of the interaction stage.
      * @param elementShortForms Short forms of the body element types.
-     * @param lastElementShortForms Short forms of the types that can be used
-     * for the last element in case of polymorphism.
      * @throws java.lang.IllegalArgumentException If any of the arguments are
      * null.
      */
-    public MALOperationStage(final UOctet number,
-            final Object[] elementShortForms,
-            final Object[] lastElementShortForms) throws java.lang.IllegalArgumentException {
-        if (number == null) {
+    public MALOperationStage(final UOctet stageNumber,
+            final Object[] elementShortForms) throws java.lang.IllegalArgumentException {
+        if (stageNumber == null) {
             throw new IllegalArgumentException("Number argument must not be NULL");
         }
         if (elementShortForms == null) {
             throw new IllegalArgumentException("Element short forms argument must not be NULL");
         }
-        if (lastElementShortForms == null) {
-            throw new IllegalArgumentException("Last element short forms argument must not be NULL");
-        }
-        this.number = number;
+        this.stageNumber = stageNumber;
         this.elementShortForms = elementShortForms;
-        this.lastElementShortForms = lastElementShortForms;
     }
 
     /**
@@ -65,7 +59,7 @@ public class MALOperationStage {
      * @return the stage number.
      */
     public UOctet getNumber() {
-        return number;
+        return stageNumber;
     }
 
     /**
@@ -76,15 +70,5 @@ public class MALOperationStage {
     public Object[] getElementShortForms() {
         // returns the internal reference for performance reasons
         return elementShortForms;
-    }
-
-    /**
-     * Returns the last element short forms.
-     *
-     * @return The last element short forms.
-     */
-    public Object[] getLastElementShortForms() {
-        // returns the internal reference for performance reasons
-        return lastElementShortForms;
     }
 }

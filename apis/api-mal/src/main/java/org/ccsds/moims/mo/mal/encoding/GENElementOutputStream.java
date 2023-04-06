@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UOctet;
@@ -49,7 +48,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
 
     @Override
     public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException {
-        if (null == enc) {
+        if (enc == null) {
             this.enc = createEncoder(dos);
         }
 
@@ -58,14 +57,14 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             return;
         }
         
-        if (null == element) {
+        if (element == null) {
             enc.encodeNullableElement(null);
             return;
         }
         
         if (ctx.getHeader().getIsErrorMessage()) {
             // error messages have a standard format
-            if (0 == ctx.getBodyElementIndex()) {
+            if (ctx.getBodyElementIndex() == 0) {
                 ((Element) element).encode(enc);
             } else {
                 encodeSubElement((Element) element, null, null);
@@ -135,26 +134,11 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
         }
     }
 
-    protected void encodeSubElement(final Element e, final Object sf,
+    protected void encodeSubElement(final Element e, final Object shortForm,
             final MALEncodingContext ctx) throws MALException {
-        if (null == sf) {
-            // dirty check to see if we are trying to decode an 
-            // abstract Attribute (and not a list of them either)
-            Object[] finalEleShortForms = null;
-            if (null != ctx) {
-                finalEleShortForms = ctx.getOperation().getOperationStage(
-                        ctx.getHeader().getInteractionStage()).getLastElementShortForms();
-            }
-
-            if ((null != finalEleShortForms)
-                    && (Attribute._URI_TYPE_SHORT_FORM == finalEleShortForms.length)
-                    && ((((Long) finalEleShortForms[0]) & 0x800000L) == 0)) {
-                enc.encodeNullableOctet(enc.internalEncodeAttributeType(e.getTypeShortForm().byteValue()));
-            } else {
-                enc.encodeAbstractElementType(e.getShortForm(), true);
-            }
-
-            // now encode the element
+        // Check if the element is abstract or not based on the shortForm
+        if (shortForm == null) {
+            enc.encodeAbstractElementType(e.getShortForm(), true);
             enc.encodeElement(e);
         } else {
             enc.encodeNullableElement(e);

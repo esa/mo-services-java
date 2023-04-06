@@ -35,9 +35,9 @@ public abstract class TestStructureBuilder {
         for (int i = 0; i < pktsPerReport; i++) {
             AttributeList lst = new AttributeList();
             lst.add(new Identifier("1"));
-            lst.add(new AttributeList(new Union(1L)));
-            lst.add(new AttributeList(new Union((long) (i + 1))));
-            lst.add(new AttributeList(null));
+            lst.add(new Union(1L));
+            lst.add(new Union((long) (i + 1)));
+            lst.add(null);
             
             updateHeader.add(new UpdateHeader(new Identifier(""), null, lst));
             objectId.add(null);

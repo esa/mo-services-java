@@ -115,21 +115,21 @@ public class MALPubSubOperation extends MALOperation {
      */
     public static final UOctet PUBLISH_DEREGISTER_ACK_STAGE = new UOctet(_PUBLISH_DEREGISTER_ACK_STAGE);
     private static final MALOperationStage PUBSUB_REG_OPERATION_STAGE
-            = new MALOperationStage(REGISTER_STAGE, new Object[]{Subscription.SHORT_FORM}, new Object[0]);
+            = new MALOperationStage(REGISTER_STAGE, new Long[]{Subscription.SHORT_FORM});
     private static final MALOperationStage PUBSUB_REGACK_OPERATION_STAGE
-            = new MALOperationStage(REGISTER_ACK_STAGE, new Object[0], new Object[0]);
+            = new MALOperationStage(REGISTER_ACK_STAGE, new Long[0]);
     private static final MALOperationStage PUBSUB_PUBREG_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_REGISTER_STAGE, new Object[]{IdentifierList.SHORT_FORM}, new Object[0]);
+            = new MALOperationStage(PUBLISH_REGISTER_STAGE, new Long[]{IdentifierList.SHORT_FORM});
     private static final MALOperationStage PUBSUB_PUBREGACK_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_REGISTER_ACK_STAGE, new Object[0], new Object[0]);
+            = new MALOperationStage(PUBLISH_REGISTER_ACK_STAGE, new Long[0]);
     private static final MALOperationStage PUBSUB_DEREG_OPERATION_STAGE
-            = new MALOperationStage(DEREGISTER_STAGE, new Object[]{IdentifierList.SHORT_FORM}, new Object[0]);
+            = new MALOperationStage(DEREGISTER_STAGE, new Long[]{IdentifierList.SHORT_FORM});
     private static final MALOperationStage PUBSUB_DEREGACK_OPERATION_STAGE
-            = new MALOperationStage(DEREGISTER_ACK_STAGE, new Object[0], new Object[0]);
+            = new MALOperationStage(DEREGISTER_ACK_STAGE, new Long[0]);
     private static final MALOperationStage PUBSUB_PUBDEREG_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_DEREGISTER_STAGE, new Object[0], new Object[0]);
+            = new MALOperationStage(PUBLISH_DEREGISTER_STAGE, new Long[0]);
     private static final MALOperationStage PUBSUB_PUBDEREGACK_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_DEREGISTER_ACK_STAGE, new Object[0], new Object[0]);
+            = new MALOperationStage(PUBLISH_DEREGISTER_ACK_STAGE, new Long[0]);
     private final MALOperationStage pubSubPublishStage;
     private final MALOperationStage pubSubNotifyStage;
 
@@ -144,9 +144,6 @@ public class MALPubSubOperation extends MALOperation {
      * @param updateListShortForms Absolute short forms of the update lists
      * transmitted by the PUBLISH/NOTIFY message of a PUBLISH-SUBSCRIBE
      * operation.
-     * @param lastUpdateListShortForms Absolute short forms of the update lists
-     * that can be assigned to the last element of the PUBLISH/NOTIFY message
-     * body
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
@@ -154,15 +151,14 @@ public class MALPubSubOperation extends MALOperation {
             final Identifier name,
             final Boolean replayable,
             final UShort capabilitySet,
-            final Object[] updateListShortForms,
-            final Object[] lastUpdateListShortForms)
+            final Long[] updateListShortForms)
             throws java.lang.IllegalArgumentException {
         super(number, name, replayable, InteractionType.PUBSUB, capabilitySet);
 
-        final Object[] pSF = new Object[updateListShortForms.length + 1];
-        final Object[] nSF = new Object[updateListShortForms.length + 2];
+        final Long[] pSF = new Long[updateListShortForms.length + 1];
+        final Long[] nSF = new Long[updateListShortForms.length + 2];
         for (int i = 0; i < updateListShortForms.length; i++) {
-            final Object v = updateListShortForms[i];
+            final Long v = updateListShortForms[i];
             pSF[i + 1] = v;
             nSF[i + 2] = v;
         }
@@ -170,8 +166,8 @@ public class MALPubSubOperation extends MALOperation {
         nSF[1] = UpdateHeaderList.SHORT_FORM;
         pSF[0] = nSF[1];
 
-        this.pubSubPublishStage = new MALOperationStage(PUBLISH_STAGE, pSF, lastUpdateListShortForms);
-        this.pubSubNotifyStage = new MALOperationStage(NOTIFY_STAGE, nSF, lastUpdateListShortForms);
+        this.pubSubPublishStage = new MALOperationStage(PUBLISH_STAGE, pSF);
+        this.pubSubNotifyStage = new MALOperationStage(NOTIFY_STAGE, nSF);
     }
 
     /**
