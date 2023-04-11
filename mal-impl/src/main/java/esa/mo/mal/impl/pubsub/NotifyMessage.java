@@ -20,12 +20,10 @@
  */
 package esa.mo.mal.impl.pubsub;
 
-import java.util.List;
-
 /**
  * The NotifyMessageSet holds a set of notify message for a single subscription
  */
-public final class NotifyMessageSet {
+public final class NotifyMessage {
 
     /**
      * Message header.
@@ -35,19 +33,28 @@ public final class NotifyMessageSet {
     /**
      * Message bodies.
      */
-    private final List<NotifyMessageBody> bodies;
+    private final NotifyMessageBody body;
 
-    public NotifyMessageSet(NotifyMessageHeader header, List<NotifyMessageBody> bodies) {
+    public NotifyMessage(NotifyMessageHeader header, NotifyMessageBody body) {
         this.header = header;
-        this.bodies = bodies;
+        this.body = body;
     }
 
-    public NotifyMessageHeader getDetails() {
+    /**
+     * Returns the header of the Notify message.
+     *
+     * @return The header of the Notify message.
+     */
+    public NotifyMessageHeader getHeader() {
         return header;
     }
 
-    public List<NotifyMessageBody> getBodies() {
-        return bodies;
+    /**
+     * Returns the body of the Notify message.
+     *
+     * @return The body of the Notify message.
+     */
+    public NotifyMessageBody getBody() {
+        return body;
     }
-
 }

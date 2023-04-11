@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.impl.broker;
 
-import esa.mo.mal.impl.pubsub.NotifyMessageSet;
+import esa.mo.mal.impl.pubsub.NotifyMessage;
 import esa.mo.mal.impl.pubsub.NotifyMessageBody;
 import esa.mo.mal.impl.pubsub.SubscriptionSource;
 import esa.mo.mal.impl.pubsub.PublisherSource;
@@ -39,6 +39,7 @@ import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALDeregisterBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -113,11 +114,11 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         // Generate the Notify Messages (the matching is done inside it!)
         PublisherSource s = this.getPublisherSource(brokerKey, hdr, false);
         IdentifierList subKeys = s.getSubscriptionKeyNames();
-        final List<NotifyMessageSet> notifyList = generateNotifyMessages(brokerKey, hdr, body, subKeys);
+        final List<NotifyMessage> notifyList = generateNotifyMessages(brokerKey, hdr, body, subKeys);
 
         // Dispatch the Notify messages
-        for (NotifyMessageSet notifyMessageSet : notifyList) {
-            String uriTo = notifyMessageSet.getDetails().uriTo.getValue();
+        for (NotifyMessage notifyMessageSet : notifyList) {
+            String uriTo = notifyMessageSet.getHeader().getUriTo().getValue();
             MALBrokerBinding binding = this.getBroker(uriTo);
 
             if (binding == null) {
@@ -127,25 +128,25 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                 continue;
             }
 
-            for (NotifyMessageBody msgBody : notifyMessageSet.getBodies()) {
-                try {
-                    binding.sendNotify(msgBody.getArea(),
-                            msgBody.getService(),
-                            msgBody.getOperation(),
-                            msgBody.getVersion(),
-                            notifyMessageSet.getDetails().uriTo,
-                            notifyMessageSet.getDetails().transactionId,
-                            msgBody.getDomain(),
-                            notifyMessageSet.getDetails().qosProps,
-                            msgBody.getSubscriptionId(),
-                            msgBody.getUpdateHeaderList(),
-                            msgBody.getUpdateList());
-                } catch (MALTransmitErrorException ex) {
-                    MALBrokerImpl.LOGGER.log(Level.WARNING,
-                            "Unable to send NOTIFY message:\n{0}", msgBody.toString());
+            NotifyMessageBody msgBody = notifyMessageSet.getBody();
 
-                    handleConsumerCommunicationError(brokerKey, uriTo);
-                }
+            try {
+                binding.sendNotify(msgBody.getArea(),
+                        msgBody.getService(),
+                        msgBody.getOperation(),
+                        msgBody.getVersion(),
+                        new URI(notifyMessageSet.getHeader().getUriTo().getValue()),
+                        notifyMessageSet.getHeader().getTransactionId(),
+                        msgBody.getDomain(),
+                        notifyMessageSet.getHeader().getQosProps(),
+                        msgBody.getSubscriptionId(),
+                        msgBody.getUpdateHeaderList(),
+                        msgBody.getUpdateList());
+            } catch (MALTransmitErrorException ex) {
+                MALBrokerImpl.LOGGER.log(Level.WARNING,
+                        "Unable to send NOTIFY message:\n{0}", msgBody.toString());
+
+                handleConsumerCommunicationError(brokerKey, uriTo);
             }
         }
     }
@@ -196,7 +197,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         return null;
     }
 
-    private synchronized List<NotifyMessageSet> generateNotifyMessages(
+    private synchronized List<NotifyMessage> generateNotifyMessages(
             final String brokerKey, final MALMessageHeader hdr,
             final MALPublishBody publishBody, IdentifierList keyNames)
             throws MALInteractionException, MALException {
@@ -214,7 +215,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         final UpdateHeaderList updateHeaders = publishBody.getUpdateHeaderList();
         details.checkPublish(hdr, updateHeaders);
 
-        List<NotifyMessageSet> lst = new LinkedList<>();
+        List<NotifyMessage> lst = new LinkedList<>();
 
         if (updateHeaders != null) {
             Map<String, SubscriptionSource> rv = this.getConsumerSubscriptions(brokerKey);
@@ -223,9 +224,10 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
             // the notify list if it matches the published updates
             for (SubscriptionSource subSource : rv.values()) {
                 try {
-                    NotifyMessageSet nms = subSource.generateNotifyList(hdr, updateHeaders, publishBody, keyNames);
-                    if (nms != null) {
-                        lst.add(nms);
+                    List<NotifyMessage> list = subSource.generateNotifyList(hdr, updateHeaders, publishBody, keyNames);
+
+                    for (NotifyMessage msg : list) {
+                        lst.add(msg);
                     }
                 } catch (MALException ex) {
                     MALBrokerImpl.LOGGER.warning(ex.getMessage());

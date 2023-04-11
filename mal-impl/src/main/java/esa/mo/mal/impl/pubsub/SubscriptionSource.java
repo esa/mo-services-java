@@ -53,10 +53,7 @@ public class SubscriptionSource {
      */
     public SubscriptionSource(final MALMessageHeader hdr) {
         this.signatureURI = hdr.getFrom().getValue();
-        msgHeaderDetails = new NotifyMessageHeader(
-                hdr.getFromURI(),
-                hdr.getTransactionId(),
-                null);
+        msgHeaderDetails = new NotifyMessageHeader(hdr.getFrom(), hdr.getTransactionId(), null);
     }
 
     /**
@@ -110,30 +107,40 @@ public class SubscriptionSource {
         updateIds();
     }
 
-    public NotifyMessageSet generateNotifyList(final MALMessageHeader srcHdr,
+    /**
+     * Creates the list of Notify messages to be sent.
+     *
+     * @param srcHdr The source Header.
+     * @param updateHeaderList The list of Update Headers.
+     * @param publishBody The publish body.
+     * @param keyNames The key names.
+     * @return the list of Notify messages.
+     * @throws MALException if one of the Notify messages could not be
+     * generated.
+     */
+    public List<NotifyMessage> generateNotifyList(final MALMessageHeader srcHdr,
             final UpdateHeaderList updateHeaderList,
             final MALPublishBody publishBody,
             IdentifierList keyNames) throws MALException {
         MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signatureURI);
 
-        //final IdentifierList srcDomainId = srcHdr.getDomain();
         IdentifierList srcDomainId = null;
-        final List<NotifyMessageBody> msgs = new LinkedList<>();
+        final List<NotifyMessage> notifyMsgs = new LinkedList<>();
 
         for (Subscriptions sub : subs.values()) {
-            if (!updateHeaderList.isEmpty()){
+            if (!updateHeaderList.isEmpty()) {
                 srcDomainId = updateHeaderList.get(0).getDomain();
             }
-            
+
             NotifyMessageBody subUpdate = sub.generateNotifyMessage(
                     srcHdr, srcDomainId, updateHeaderList, publishBody, keyNames);
 
             if (subUpdate != null) {
-                msgs.add(subUpdate);
+                notifyMsgs.add(new NotifyMessage(msgHeaderDetails, subUpdate));
             }
         }
 
-        return (msgs.isEmpty()) ? null : new NotifyMessageSet(msgHeaderDetails, msgs);
+        return notifyMsgs;
     }
 
     public void removeSubscriptions(final IdentifierList subscriptionIds) {

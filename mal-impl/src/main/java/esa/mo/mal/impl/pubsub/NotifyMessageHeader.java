@@ -21,7 +21,7 @@
 package esa.mo.mal.impl.pubsub;
 
 import java.util.Map;
-import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 
 /**
  *
@@ -32,15 +32,15 @@ public class NotifyMessageHeader {
     /**
      * The URI of the subscriber.
      */
-    public final URI uriTo;
+    private final Identifier uriTo;
     /**
      * The transaction id of the subscription.
      */
-    public final Long transactionId;
+    private final Long transactionId;
     /**
      * The QoS properties of the subscription.
      */
-    public final Map qosProps;
+    private final Map qosProps;
 
     /**
      * Constructor.
@@ -49,9 +49,36 @@ public class NotifyMessageHeader {
      * @param transactionId The transaction id of the subscription.
      * @param qosProps The QoS properties of the subscription.
      */
-    public NotifyMessageHeader(URI uriTo, Long transactionId, Map qosProps) {
+    public NotifyMessageHeader(Identifier uriTo, Long transactionId, Map qosProps) {
         this.uriTo = uriTo;
         this.transactionId = transactionId;
         this.qosProps = qosProps;
+    }
+
+    /**
+     * Returns the URI To.
+     *
+     * @return The URI To.
+     */
+    public Identifier getUriTo() {
+        return uriTo;
+    }
+
+    /**
+     * Returns the transactionId.
+     *
+     * @return The transactionId.
+     */
+    public Long getTransactionId() {
+        return transactionId;
+    }
+
+    /**
+     * Returns the QoS properties.
+     *
+     * @return The QoS properties.
+     */
+    public Map getQosProps() {
+        return qosProps;
     }
 }
