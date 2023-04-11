@@ -66,14 +66,14 @@ public class GENEndpoint implements MALEndpoint {
 
     @Override
     public void startMessageDelivery() throws MALException {
-        GENTransport.LOGGER.log(Level.FINE, 
+        GENTransport.LOGGER.log(Level.FINE,
                 "GENEndpoint ({0}) Activating message delivery", localName);
         active = true;
     }
 
     @Override
     public void stopMessageDelivery() throws MALException {
-        GENTransport.LOGGER.log(Level.FINE, 
+        GENTransport.LOGGER.log(Level.FINE,
                 "GENEndpoint ({0}) Deactivating message delivery", localName);
         active = false;
     }
@@ -147,7 +147,7 @@ public class GENEndpoint implements MALEndpoint {
             final Boolean isErrorMessage,
             final NamedValueList supplements,
             final Map qosProperties,
-            final MALEncodedBody body) 
+            final MALEncodedBody body)
             throws IllegalArgumentException, MALException {
         try {
             return new GENMessage(wrapBodyParts, createMessageHeader(getURI(),
@@ -400,9 +400,9 @@ public class GENEndpoint implements MALEndpoint {
             final Boolean isErrorMessage,
             final NamedValueList supplements,
             final Map qosProperties) {
-        return new GENMessageHeader(uriFrom,
+        return new GENMessageHeader(new Identifier(uriFrom.getValue()),
                 authenticationId,
-                uriTo,
+                new Identifier(uriTo.getValue()),
                 timestamp,
                 interactionType,
                 interactionStage,

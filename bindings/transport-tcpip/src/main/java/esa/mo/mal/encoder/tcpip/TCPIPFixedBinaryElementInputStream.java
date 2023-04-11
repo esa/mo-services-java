@@ -27,11 +27,11 @@ import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 
@@ -113,25 +113,25 @@ public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputS
 
         short encodingId = dec.decodeUOctet().getValue();
         int bodyLength = (int) dec.decodeInteger();
-        URI uriFrom = headersrc.getFromURI();
-        URI uriTo = headersrc.getToURI();
+        Identifier uriFrom = headersrc.getFrom();
+        Identifier uriTo = headersrc.getTo();
 
         if (sourceIdFlag) {
             String sourceId = dec.decodeString();
             if (isURI(sourceId)) {
-                uriFrom = new URI(sourceId);
+                uriFrom = new Identifier(sourceId);
             } else {
-                String from = headersrc.getFromURI() + sourceId;
-                uriFrom = new URI(from);
+                String from = headersrc.getFrom() + sourceId;
+                uriFrom = new Identifier(from);
             }
         }
         if (destinationIdFlag) {
             String destinationId = dec.decodeString();
             if (isURI(destinationId)) {
-                uriTo = new URI(destinationId);
+                uriTo = new Identifier(destinationId);
             } else {
-                String to = headersrc.getToURI() + destinationId;
-                uriTo = new URI(to);
+                String to = headersrc.getTo() + destinationId;
+                uriTo = new Identifier(to);
             }
         }
 

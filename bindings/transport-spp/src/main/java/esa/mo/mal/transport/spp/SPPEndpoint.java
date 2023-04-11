@@ -31,6 +31,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -265,9 +266,10 @@ public class SPPEndpoint extends GENEndpoint {
         return new SPPMessageHeader(
                 ((SPPBaseTransport) transport).getHeaderStreamFactory(),
                 new SPPConfiguration(configuration, qosProperties),
-                forceTC, apidQualifier, uriRep, ssCounter, getURI(),
+                forceTC, apidQualifier, uriRep, ssCounter,
+                new Identifier(getURI().getValue()),
                 authenticationId,
-                uriTo,
+                new Identifier(uriTo.getValue()),
                 timestamp,
                 interactionType,
                 interactionStage,
@@ -295,8 +297,8 @@ public class SPPEndpoint extends GENEndpoint {
 
     private static class SegmentIndex {
 
-        private final URI uriFrom;
-        private final URI uriTo;
+        private final Identifier uriFrom;
+        private final Identifier uriTo;
         private final InteractionType interactionType;
         private final Long transactionId;
         private final UShort serviceArea;
@@ -304,8 +306,8 @@ public class SPPEndpoint extends GENEndpoint {
         private final UShort operation;
 
         public SegmentIndex(GENMessageHeader hdr) {
-            this.uriFrom = hdr.getFromURI();
-            this.uriTo = hdr.getToURI();
+            this.uriFrom = hdr.getFrom();
+            this.uriTo = hdr.getTo();
             this.interactionType = hdr.getInteractionType();
             this.transactionId = hdr.getTransactionId();
             this.serviceArea = hdr.getAreaNumber();
@@ -366,7 +368,7 @@ public class SPPEndpoint extends GENEndpoint {
                     || !this.sessionName.equals(other.sessionName))) {
                 return false;
             }
-            */
+             */
             if (this.interactionType != other.interactionType
                     && (this.interactionType == null
                     || !this.interactionType.equals(other.interactionType))) {

@@ -229,9 +229,9 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         }
 
         MALMessageHeader expectedMonitorRegisterHeader = new MALMessageHeader(
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 HeaderTestProcedure.AUTHENTICATION_ID,
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 new Time(timeBeforeRegister),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._REGISTER_STAGE),
@@ -269,9 +269,9 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         }
 
         MALMessageHeader expectedMonitorRegisterAckHeader = new MALMessageHeader(
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 brokerAuthId,
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 new Time(timeBeforeRegister),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._REGISTER_ACK_STAGE),
@@ -378,9 +378,9 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         Blob brokerAuthId = HeaderTestProcedure.getBrokerAuthId(shared);
 
         MALMessageHeader expectedMonitorNotifyHeader = new MALMessageHeader(
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 brokerAuthId,
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 cc.getPublishTimeStamp(),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._NOTIFY_STAGE),
@@ -429,9 +429,9 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         Blob brokerAuthId = HeaderTestProcedure.getBrokerAuthId(shared);
 
         MALMessageHeader expectedMonitorNotifyErrorHeader = new MALMessageHeader(
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 brokerAuthId,
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 cc.getPublishTimeStamp(),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._NOTIFY_STAGE),
@@ -560,9 +560,9 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         }
 
         MALMessageHeader expectedDemonitorRegisterHeader = new MALMessageHeader(
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 HeaderTestProcedure.AUTHENTICATION_ID,
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 new Time(timeBeforeDeregister),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._DEREGISTER_STAGE),
@@ -595,9 +595,9 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         }
 
         MALMessageHeader expectedMonitorDeregisterAckHeader = new MALMessageHeader(
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 brokerAuthId,
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 new Time(timeBeforeDeregister),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._DEREGISTER_ACK_STAGE),
@@ -726,9 +726,9 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         }
 
         MALMessageHeader expectedMonitorRegisterErrorHeader = new MALMessageHeader(
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 brokerAuthId,
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 new Time(timeBeforeRegister),
                 InteractionType.PUBSUB,
                 MALPubSubOperation.REGISTER_ACK_STAGE,

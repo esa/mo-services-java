@@ -29,9 +29,9 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 public class JMSMessageHeader extends GENMessageHeader {
 
     public JMSMessageHeader(MALMessageHeader srcHeader, JMSUpdate update) {
-        super(srcHeader.getFromURI(), srcHeader.getAuthenticationId(),
-                srcHeader.getToURI(), srcHeader.getTimestamp(), 
-                srcHeader.getInteractionType(), srcHeader.getInteractionStage(), 
+        super(srcHeader.getFrom(), srcHeader.getAuthenticationId(),
+                srcHeader.getTo(), srcHeader.getTimestamp(),
+                srcHeader.getInteractionType(), srcHeader.getInteractionStage(),
                 srcHeader.getTransactionId(), update.getServiceArea(), update.getService(),
                 update.getOperation(), srcHeader.getServiceVersion(),
                 srcHeader.getIsErrorMessage(), srcHeader.getSupplements());

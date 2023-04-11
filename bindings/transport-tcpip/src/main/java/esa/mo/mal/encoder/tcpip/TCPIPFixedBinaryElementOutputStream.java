@@ -125,10 +125,10 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
 
         // encode rest of header
         if (!header.getServiceFrom().isEmpty()) {
-            enc.encodeString(header.getFromURI().toString());
+            enc.encodeString(header.getFrom().toString());
         }
         if (!header.getServiceTo().isEmpty()) {
-            enc.encodeString(header.getToURI().toString());
+            enc.encodeString(header.getTo().toString());
         }
         /*
         if (header.getPriority() != null) {

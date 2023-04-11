@@ -102,10 +102,10 @@ public class AssertionHelper {
                 checkEquality(procedureName, assertions, "TransactionId", header
                         .getTransactionId(), expectedHeader.getTransactionId());
             }
-            checkEquality(procedureName, assertions, "From", header.getFromURI(),
-                    expectedHeader.getFromURI());
-            checkEquality(procedureName, assertions, "To", header.getToURI(),
-                    expectedHeader.getToURI());
+            checkEquality(procedureName, assertions, "From", header.getFrom(),
+                    expectedHeader.getFrom());
+            checkEquality(procedureName, assertions, "To", header.getTo(),
+                    expectedHeader.getTo());
             checkEquality(procedureName, assertions, "Version", header.getServiceVersion(),
                     expectedHeader.getServiceVersion());
         }

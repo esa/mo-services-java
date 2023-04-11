@@ -25,6 +25,7 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -164,9 +165,9 @@ public class FastEndpoint implements MALEndpoint {
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
             final NamedValueList supplements) {
-        return new GENMessageHeader(uriFrom,
+        return new GENMessageHeader(new Identifier(uriFrom.getValue()),
                 authenticationId,
-                uriTo,
+                new Identifier(uriTo.getValue()),
                 timestamp,
                 interactionType,
                 interactionStage,

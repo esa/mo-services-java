@@ -75,9 +75,9 @@ public class MALMessageHeader {
      * @param isErrorMessage Flag indicating if the message conveys an error
      * @param supplements The header supplements
      */
-    public MALMessageHeader(final URI from,
+    public MALMessageHeader(final Identifier from,
             final Blob authenticationId,
-            final URI to,
+            final Identifier to,
             final Time timestamp,
             final InteractionType interactionType,
             final UOctet interactionStage,
@@ -88,9 +88,9 @@ public class MALMessageHeader {
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
             final NamedValueList supplements) {
-        this.from = new Identifier(from.getValue());
+        this.from = from;
         this.authenticationId = authenticationId;
-        this.to = new Identifier(to.getValue());
+        this.to = to;
         this.timestamp = timestamp;
         this.interactionType = interactionType;
         this.interactionStage = interactionStage;
@@ -268,17 +268,37 @@ public class MALMessageHeader {
     }
 
     /**
-     * Returns the supplement value for a given key.
+     * Returns the supplement value for a given key name.
      *
-     * @param key
+     * @param keyName The key name.
      * @return the supplement value for the provided key.
      */
-    public Attribute getSupplementValue(String key) {
+    public Attribute getSupplementValue(String keyName) {
         for (NamedValue pair : supplements) {
-            if (pair.getValue().equals(key)) {
+            if (pair.getName().getValue().equals(keyName)) {
                 return pair.getValue();
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder str = new StringBuilder("MALMessageHeader{");
+        str.append("from=").append(from);
+        str.append(", authenticationId=").append(authenticationId);
+        str.append(", to=").append(to);
+        str.append(", timestamp=").append(timestamp);
+        str.append(", interactionType=").append(interactionType);
+        str.append(", interactionStage=").append(interactionStage);
+        str.append(", transactionId=").append(transactionId);
+        str.append(", serviceArea=").append(serviceArea);
+        str.append(", service=").append(service);
+        str.append(", operation=").append(operation);
+        str.append(", serviceVersion=").append(serviceVersion);
+        str.append(", isErrorMessage=").append(isErrorMessage);
+        str.append(", supplements=").append(supplements);
+        str.append('}');
+        return str.toString();
     }
 }

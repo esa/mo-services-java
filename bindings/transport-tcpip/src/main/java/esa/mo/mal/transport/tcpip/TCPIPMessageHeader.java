@@ -38,7 +38,6 @@ import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
 public class TCPIPMessageHeader extends GENMessageHeader {
@@ -67,8 +66,8 @@ public class TCPIPMessageHeader extends GENMessageHeader {
         this.to = uriTo;
     }
 
-    public TCPIPMessageHeader(URI uriFrom, String serviceFrom,
-            Blob authenticationId, URI uriTo, String serviceTo, Time timestamp,
+    public TCPIPMessageHeader(Identifier uriFrom, String serviceFrom,
+            Blob authenticationId, Identifier uriTo, String serviceTo, Time timestamp,
             InteractionType interactionType, UOctet interactionStage, 
             Long transactionId, UShort serviceArea, UShort service, 
             UShort operation, UOctet serviceVersion,

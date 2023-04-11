@@ -70,9 +70,9 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder {
     public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
         // build header
         GENMessageHeader hdr = new GENMessageHeader(
-                URIFrom,
+                new Identifier(URIFrom.getValue()),
                 new Blob(JMSTransport.authId),
-                uri,
+                new Identifier(uri.getValue()),
                 Time.now(),
                 InteractionType.PUBSUB,
                 MALPubSubOperation.NOTIFY_STAGE,

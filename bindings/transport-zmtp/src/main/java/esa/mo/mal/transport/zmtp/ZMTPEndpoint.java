@@ -230,9 +230,9 @@ public class ZMTPEndpoint extends GENEndpoint {
         ZMTPMessageHeader header = new ZMTPMessageHeader(
                 new ZMTPConfiguration(configuration, qosProperties),
                 null,
-                getURI(),
+                new Identifier(getURI().getValue()),
                 authenticationId,
-                uriTo,
+                new Identifier(uriTo.getValue()),
                 timestamp,
                 interactionType,
                 interactionStage,

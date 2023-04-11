@@ -392,9 +392,9 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
     static GENMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError, short stage) {
         MALMessageHeader srcHdr = sourceMessage.getHeader();
         return new GENMessageHeader(
-                srcHdr.getToURI(),
+                srcHdr.getTo(),
                 new Blob(JMSTransport.authId),
-                srcHdr.getFromURI(),
+                srcHdr.getFrom(),
                 Time.now(),
                 srcHdr.getInteractionType(),
                 new UOctet(stage),
@@ -409,7 +409,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
 
     private static String createProviderKey(MALMessageHeader details) {
         StringBuilder buf = new StringBuilder();
-        buf.append(details.getFromURI());
+        buf.append(details.getFrom());
         return buf.toString();
     }
 

@@ -37,11 +37,11 @@ import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
 /**
@@ -120,12 +120,12 @@ public class ZMTPMessageHeader extends GENMessageHeader {
      * @param isErrorMessage Flag indicating if the message conveys an error
      * @param supplements The supplements
      */
-    public ZMTPMessageHeader(ZMTPConfiguration configuration, ZMTPTransport transport, URI uriFrom,
-            Blob authenticationId, URI uriTo, Time timestamp,
+    public ZMTPMessageHeader(ZMTPConfiguration configuration, ZMTPTransport transport,
+            Identifier uriFrom, Blob authenticationId, Identifier uriTo, Time timestamp,
             InteractionType interactionType, UOctet interactionStage, Long transactionId,
             UShort serviceArea, UShort service, UShort operation, UOctet serviceVersion,
             Boolean isErrorMessage, NamedValueList supplements) {
-        super(uriFrom, authenticationId, uriTo, timestamp, interactionType, 
+        super(uriFrom, authenticationId, uriTo, timestamp, interactionType,
                 interactionStage, transactionId, serviceArea, service,
                 operation, serviceVersion, isErrorMessage, supplements);
 
@@ -162,7 +162,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         if (configuration.isPriorityFlag()) {
             encoder.encodeVariableUInteger(priority);
         }
-        */
+         */
         if (configuration.isTimestampFlag()) {
             encoder.encodeTime(timestamp);
         }
@@ -176,7 +176,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         if (configuration.isDomainFlag()) {
             encoder.encodeElement(domain);
         }
-        */
+         */
         if (configuration.isAuthFlag()) {
             encoder.encodeBlob(authenticationId);
         }
@@ -224,7 +224,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         } else {
             priority = new UInteger(0);
         }
-        */
+         */
         if (0 != (flags & 0x10)) {
             timestamp = decoder.decodeTime();
         } else {
@@ -251,7 +251,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
                 domain.add(new Identifier(defaultDomainTokenizer.nextToken()));
             }
         }
-        */
+         */
         if (0 != (flags & 0x01)) {
             authenticationId = decoder.decodeBlob();
         } else if (configuration.getDefaultAuth().length() > 0) {
@@ -350,8 +350,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
     protected void extractSession(final short moHdrErrQosSess) {
         session = SessionType.fromOrdinal(moHdrErrQosSess & 0x0F);
     }
-    */
-
+     */
     protected short getErrorBit() {
         if (isErrorMessage) {
             return 0x80;

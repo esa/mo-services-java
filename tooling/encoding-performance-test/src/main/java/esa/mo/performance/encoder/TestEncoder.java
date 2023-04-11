@@ -108,9 +108,9 @@ public class TestEncoder {
         domain.add(null);
         Identifier nz = new Identifier("network");
         MALEncodingContext ctx = new MyMALContext(new MALMessageHeader(
-                new URI("from"),
+                new Identifier("from"),
                 new Blob("".getBytes()),
-                new URI("to"),
+                new Identifier("to"),
                 new Time(12345678),
                 InteractionType.SEND,
                 new UOctet((short) 0),

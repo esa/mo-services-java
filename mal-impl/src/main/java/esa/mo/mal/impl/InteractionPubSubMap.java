@@ -50,7 +50,7 @@ class InteractionPubSubMap {
         }
     }
 
-    public MALPublishInteractionListener getPublishListener(final URI uri, final MALMessageHeader mshHdr) {
+    public MALPublishInteractionListener getPublishListener(final Identifier uri, final MALMessageHeader mshHdr) {
         MALPublishInteractionListener list;
 
         synchronized (publisherMap) {
@@ -130,7 +130,7 @@ class InteractionPubSubMap {
         }
     }
 
-    public MALInteractionListener getNotifyListener(final URI uri, final Identifier subscription) {
+    public MALInteractionListener getNotifyListener(final Identifier uri, final Identifier subscription) {
         final StringPair id = new StringPair(uri.getValue(), subscription.getValue());
 
         MALContextFactoryImpl.LOGGER.log(Level.FINE,
@@ -154,9 +154,8 @@ class InteractionPubSubMap {
         return null;
     }
 
-    public Map<String, MALInteractionListener> getNotifyListenersAndRemove(final URI uriValue) {
+    public Map<String, MALInteractionListener> getNotifyListenersAndRemove(final String uri) {
         synchronized (notifyMap) {
-            final String uri = uriValue.getValue();
             final Map<String, MALInteractionListener> ent = errorMap.get(uri);
 
             if (ent != null) {

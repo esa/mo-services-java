@@ -104,12 +104,12 @@ public class SPPMessageHeader extends GENMessageHeader {
      */
     public SPPMessageHeader(final MALElementStreamFactory secondaryDecoder,
             SPPConfiguration configuration, Boolean forceTC, int primaryApidQualifier,
-            SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter, URI uriFrom,
-            Blob authenticationId, URI uriTo, Time timestamp,
+            SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter, Identifier uriFrom,
+            Blob authenticationId, Identifier uriTo, Time timestamp,
             InteractionType interactionType, UOctet interactionStage, Long transactionId,
             UShort serviceArea, UShort service, UShort operation, UOctet serviceVersion,
             Boolean isErrorMessage, NamedValueList supplements) {
-        super(uriFrom, authenticationId, uriTo, timestamp, interactionType, 
+        super(uriFrom, authenticationId, uriTo, timestamp, interactionType,
                 interactionStage, transactionId, serviceArea, service,
                 operation, serviceVersion, isErrorMessage, supplements);
 
@@ -197,8 +197,7 @@ public class SPPMessageHeader extends GENMessageHeader {
         if (configuration.isPriority()) {
             usurperEncoder.encodeUInteger(priority);
         }
-        */
-
+         */
         if (configuration.isTimestamp()) {
             usurperEncoder.encodeTime(timestamp);
         }
@@ -215,8 +214,7 @@ public class SPPMessageHeader extends GENMessageHeader {
         if (configuration.isDomain()) {
             usurperEncoder.encodeElement(domain);
         }
-        */
-
+         */
         if (configuration.isAuth()) {
             usurperEncoder.encodeBlob(authenticationId);
         }
@@ -273,7 +271,7 @@ public class SPPMessageHeader extends GENMessageHeader {
         } else {
             priority = new UInteger(0);
         }
-        */
+         */
         if (0 != (flags & 0x10)) {
             timestamp = usurperDecoder.decodeTime();
         } else {
@@ -295,7 +293,7 @@ public class SPPMessageHeader extends GENMessageHeader {
         } else {
             domain = new IdentifierList();
         }
-        */
+         */
         if (0 != (flags & 0x01)) {
             authenticationId = usurperDecoder.decodeBlob();
         } else {
@@ -576,7 +574,7 @@ public class SPPMessageHeader extends GENMessageHeader {
                 return MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE;
         }
 
-        LOGGER.log(Level.WARNING, 
+        LOGGER.log(Level.WARNING,
                 "SPPMessageHeader: Unknown sdu value recieved during decoding of {0}",
                 sduType);
         return null;

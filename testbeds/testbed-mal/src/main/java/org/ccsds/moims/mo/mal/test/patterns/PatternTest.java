@@ -201,9 +201,9 @@ public class PatternTest {
         MALMessageHeader msgHeader = msg.getHeader();
 
         MALMessageHeader expectedInitialHeader = new MALMessageHeader(
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 HeaderTestProcedure.AUTHENTICATION_ID,
-                msgHeader.getToURI(),
+                msgHeader.getTo(),
                 new Time(time_1),
                 interactionType,
                 interactionStage,
@@ -218,9 +218,9 @@ public class PatternTest {
         AssertionHelper.checkHeader("PatternTest.checkHeader", assertions, msgHeader, expectedInitialHeader);
 
         MALMessageHeader expectedFinalHeader = new MALMessageHeader(
-                msgHeader.getToURI(),
+                msgHeader.getTo(),
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 new Time(time_2),
                 interactionType,
                 interactionStage,
@@ -277,9 +277,9 @@ public class PatternTest {
 
     private MALMessageHeader swapInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage) {
         return new MALMessageHeader(
-                expectedFinalHeader.getFromURI(),
+                expectedFinalHeader.getFrom(),
                 expectedFinalHeader.getAuthenticationId(),
-                expectedFinalHeader.getToURI(),
+                expectedFinalHeader.getTo(),
                 expectedFinalHeader.getTimestamp(),
                 expectedFinalHeader.getInteractionType(),
                 interactionStage,
@@ -529,9 +529,10 @@ public class PatternTest {
             isError = true;
         }
 
-        MALMessageHeader brokenHeader = new MALMessageHeader(srcHdr.getFromURI(),
+        MALMessageHeader brokenHeader = new MALMessageHeader(
+                srcHdr.getFrom(),
                 srcHdr.getAuthenticationId(),
-                srcHdr.getToURI(),
+                srcHdr.getTo(),
                 srcHdr.getTimestamp(),
                 srcHdr.getInteractionType(),
                 transitionTypeToInteractionStage(transitionType, srcHdr.getInteractionType()),

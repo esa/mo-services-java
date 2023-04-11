@@ -483,13 +483,13 @@ public class MessageSend {
             endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         } catch (MALTransmitErrorException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         } catch (RuntimeException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         }
 
         return msg;
@@ -534,13 +534,13 @@ public class MessageSend {
             endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         } catch (MALTransmitErrorException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         } catch (RuntimeException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFromURI() + " : ", ex);
+                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         }
 
         return msg;
@@ -599,7 +599,7 @@ public class MessageSend {
             throw new MALException("ERROR: Error with one way send : IllegalArgumentException : ", ex);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error with one way send : {0}", msg.getHeader().getToURI());
+                    "Error with one way send : {0}", msg.getHeader().getTo());
             throw ex;
         }
 
@@ -667,7 +667,7 @@ public class MessageSend {
             throw new MALException("IllegalArgumentException", ex);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error with consumer : {0}", msg.getHeader().getToURI());
+                    "Error with consumer : {0}", msg.getHeader().getTo());
             throw ex;
         }
     }
@@ -681,7 +681,7 @@ public class MessageSend {
             throw new MALException("IllegalArgumentException", ex);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error with consumer : {0}", msg.getHeader().getToURI());
+                    "Error with consumer : {0}", msg.getHeader().getTo());
             throw ex;
         }
 

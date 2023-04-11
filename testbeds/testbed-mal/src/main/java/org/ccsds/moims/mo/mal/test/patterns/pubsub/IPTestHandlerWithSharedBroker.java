@@ -124,9 +124,9 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
         listener.cond.reset();
 
         MALMessageHeader expectedPublishRegisterHeader = new MALMessageHeader(
-                uris.uri,
+                new Identifier(uris.uri.getValue()),
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 timestamp,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._PUBLISH_REGISTER_STAGE),
@@ -148,9 +148,9 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
         boolean isErrorTest = (publishRegister.getErrorCode().getValue() != 999);
 
         MALMessageHeader expectedPublishRegisterAckHeader = new MALMessageHeader(
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 FileBasedDirectory.loadSharedBrokerAuthenticationId(),
-                uris.uri,
+                new Identifier(uris.uri.getValue()),
                 publishRegisterMsg.getHeader().getTimestamp(),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE),
@@ -204,9 +204,9 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
         }
 
         MALMessageHeader expectedPublishHeader = new MALMessageHeader(
-                uris.uri,
+                new Identifier(uris.uri.getValue()),
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 new Time(System.currentTimeMillis()),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._PUBLISH_STAGE),
@@ -277,9 +277,9 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
         listener.cond.reset();
 
         MALMessageHeader expectedPublishDeregisterHeader = new MALMessageHeader(
-                uris.uri,
+                new Identifier(uris.uri.getValue()),
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 timestamp,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._PUBLISH_DEREGISTER_STAGE),
@@ -297,9 +297,9 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 publishDeregisterMsg.getHeader(), expectedPublishDeregisterHeader);
 
         MALMessageHeader expectedPublishDeregisterAckHeader = new MALMessageHeader(
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 FileBasedDirectory.loadSharedBrokerAuthenticationId(),
-                uris.uri,
+                new Identifier(uris.uri.getValue()),
                 publishDeregisterMsg.getHeader().getTimestamp(),
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE),

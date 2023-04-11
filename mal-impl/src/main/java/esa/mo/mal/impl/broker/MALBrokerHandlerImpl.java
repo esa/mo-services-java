@@ -298,7 +298,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
             final MALMessageHeader hdr, final boolean create) {
         final Map<String, PublisherSource> subs = this.getProviderSubscriptions(key);
         //String providerKey = createProviderKey(hdr);
-        String uriFrom = hdr.getFromURI().getValue();
+        String uriFrom = hdr.getFrom().getValue();
         //StringPair pair = new StringPair(uriFrom, providerKey);
         //PublisherSource publisher = subs.get(pair);
         PublisherSource publisher = subs.get(uriFrom);

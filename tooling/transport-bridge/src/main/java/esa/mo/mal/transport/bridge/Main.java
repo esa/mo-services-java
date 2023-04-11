@@ -142,7 +142,7 @@ public class Main {
         public void onMessage(MALEndpoint callingEndpoint, MALMessage srcMessage) {
             try {
                 System.out.println("Received message from: "
-                        + srcMessage.getHeader().getFromURI().getValue());
+                        + srcMessage.getHeader().getFrom().getValue());
 
                 // copy source message into destination message format
                 MALMessage dMsg = cloneForwardMessage(destination, srcMessage);

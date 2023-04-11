@@ -513,9 +513,9 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                 }
 
                 MALMessageHeader expectedPublishErrorHeader = new MALMessageHeader(
-                        uris.broker,
+                        new Identifier(uris.broker.getValue()),
                         getBrokerAuthenticationId(),
-                        uris.uri,
+                        new Identifier(uris.uri.getValue()),
                         timestamp,
                         InteractionType.PUBSUB,
                         new UOctet(MALPubSubOperation._PUBLISH_STAGE),

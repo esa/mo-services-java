@@ -135,10 +135,11 @@ public class TCPIPEndpoint extends GENEndpoint {
         String serviceFrom = transport.getRoutingPart(uriFrom.toString());
         String serviceTo = transport.getRoutingPart(uriTo.toString());
 
-        return new TCPIPMessageHeader(uriFrom, serviceFrom, authenticationId,
-                uriTo, serviceTo, timestamp, interactionType,
-                interactionStage, transactionId, serviceArea, service,
-                operation, serviceVersion, isErrorMessage, supplements);
+        return new TCPIPMessageHeader(new Identifier(uriFrom.getValue()),
+                serviceFrom, authenticationId, new Identifier(uriTo.getValue()),
+                serviceTo, timestamp, interactionType, interactionStage,
+                transactionId, serviceArea, service, operation,
+                serviceVersion, isErrorMessage, supplements);
     }
 
 }

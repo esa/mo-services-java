@@ -57,9 +57,9 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
      * @param isErrorMessage Flag indicating if the message conveys an error
      * @param supplements The header supplements
      */
-    public GENMessageHeader(final URI uriFrom,
+    public GENMessageHeader(final Identifier uriFrom,
             final Blob authenticationId,
-            final URI uriTo,
+            final Identifier uriTo,
             final Time timestamp,
             final InteractionType interactionType,
             final UOctet interactionStage,
@@ -139,25 +139,5 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
     @Override
     public Integer getTypeShortForm() {
         return 0;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder str = new StringBuilder("GENMessageHeader{");
-        str.append("from=").append(from);
-        str.append(", authenticationId=").append(authenticationId);
-        str.append(", to=").append(to);
-        str.append(", timestamp=").append(timestamp);
-        str.append(", interactionType=").append(interactionType);
-        str.append(", interactionStage=").append(interactionStage);
-        str.append(", transactionId=").append(transactionId);
-        str.append(", serviceArea=").append(serviceArea);
-        str.append(", service=").append(service);
-        str.append(", operation=").append(operation);
-        str.append(", serviceVersion=").append(serviceVersion);
-        str.append(", isErrorMessage=").append(isErrorMessage);
-        str.append(", supplements=").append(supplements);
-        str.append('}');
-        return str.toString();
     }
 }

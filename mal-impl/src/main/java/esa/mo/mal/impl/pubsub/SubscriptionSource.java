@@ -52,7 +52,7 @@ public class SubscriptionSource {
      * @param hdr The message header of the subscription message.
      */
     public SubscriptionSource(final MALMessageHeader hdr) {
-        this.signatureURI = hdr.getFromURI().getValue();
+        this.signatureURI = hdr.getFrom().getValue();
         msgHeaderDetails = new NotifyMessageHeader(
                 hdr.getFromURI(),
                 hdr.getTransactionId(),
