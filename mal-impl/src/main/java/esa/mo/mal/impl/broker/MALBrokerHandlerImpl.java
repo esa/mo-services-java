@@ -114,7 +114,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         // Generate the Notify Messages (the matching is done inside it!)
         PublisherSource s = this.getPublisherSource(brokerKey, hdr, false);
         IdentifierList subKeys = s.getSubscriptionKeyNames();
-        final List<NotifyMessage> notifyList = generateNotifyMessages(brokerKey, hdr, body, subKeys);
+        final List<NotifyMessage> notifyList = this.generateNotifyMessages(brokerKey, hdr, body, subKeys);
 
         // Dispatch the Notify messages
         for (NotifyMessage notifyMessageSet : notifyList) {

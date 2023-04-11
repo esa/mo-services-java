@@ -273,8 +273,8 @@ public class GENMessage implements MALMessage, java.io.Serializable {
 
     private GENMessageBody createMessageBody(final MALElementStreamFactory encFactory,
             final Object[] bodyElements) {
-        MALEncodingContext ctx = new MALEncodingContext(header,
-                operation, 0, qosProperties, qosProperties);
+        MALEncodingContext ctx = new MALEncodingContext(header, operation,
+                0, qosProperties, qosProperties);
 
         if (header.getIsErrorMessage()) {
             return new GENErrorBody(ctx, encFactory, bodyElements);

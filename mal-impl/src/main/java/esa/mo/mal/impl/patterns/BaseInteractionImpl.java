@@ -43,8 +43,7 @@ public abstract class BaseInteractionImpl implements MALInteraction {
     private final MALOperation operation;
     private final Map qosProperties = new HashMap();
 
-    BaseInteractionImpl(final MessageSend sender,
-            final Address address,
+    public BaseInteractionImpl(final MessageSend sender, final Address address,
             final MALMessage msg) throws MALInteractionException {
         this.sender = sender;
         this.address = address;
@@ -81,8 +80,7 @@ public abstract class BaseInteractionImpl implements MALInteraction {
     }
 
     @Override
-    public void setQoSProperty(final String name,
-            final Object value) {
+    public void setQoSProperty(final String name, final Object value) {
         qosProperties.put(name, value);
     }
 
@@ -108,14 +106,9 @@ public abstract class BaseInteractionImpl implements MALInteraction {
      * @return the sent message.
      * @throws MALException On error.
      */
-    protected MALMessage returnResponse(final UOctet stage,
-            final Object... result) throws MALException {
-        return sender.returnResponse(address,
-                msg.getHeader(),
-                stage,
-                operation,
-                qosProperties,
-                result);
+    protected MALMessage returnResponse(final UOctet stage, final Object... result) throws MALException {
+        return sender.returnResponse(address, msg.getHeader(),
+                stage, operation, qosProperties, result);
     }
 
     /**
@@ -126,14 +119,9 @@ public abstract class BaseInteractionImpl implements MALInteraction {
      * @return the sent message.
      * @throws MALException On error.
      */
-    protected MALMessage returnResponse(final UOctet stage,
-            final MALEncodedBody body) throws MALException {
-        return sender.returnResponse(address,
-                msg.getHeader(),
-                stage,
-                operation,
-                qosProperties,
-                body);
+    protected MALMessage returnResponse(final UOctet stage, final MALEncodedBody body) throws MALException {
+        return sender.returnResponse(address, msg.getHeader(),
+                stage, operation, qosProperties, body);
     }
 
     /**
@@ -144,8 +132,7 @@ public abstract class BaseInteractionImpl implements MALInteraction {
      * @return the sent message.
      * @throws MALException On error.
      */
-    protected MALMessage returnError(final UOctet stage,
-            final MALStandardError error) throws MALException {
+    protected MALMessage returnError(final UOctet stage, final MALStandardError error) throws MALException {
         return sender.returnError(address, msg.getHeader(), stage, error);
     }
 }

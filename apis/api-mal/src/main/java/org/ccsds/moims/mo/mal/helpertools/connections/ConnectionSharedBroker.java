@@ -69,7 +69,8 @@ public class ConnectionSharedBroker {
                 new UInteger(1),
                 new Hashtable());
 
-        Logger.getLogger(ConnectionSharedBroker.class.getName()).log(Level.INFO, "Shared Broker URI: {0}", brokerBinding.getURI());
+        Logger.getLogger(ConnectionSharedBroker.class.getName()).log(Level.INFO,
+                "Shared Broker URI: {0}", brokerBinding.getURI());
 
         // Write the URIs on a text file
         BufferedWriter wrt = null;
@@ -78,7 +79,8 @@ public class ConnectionSharedBroker {
             wrt.append(HelperConnections.PROPERTY_SHARED_BROKER + "=" + brokerBinding.getURI());
             wrt.newLine();
         } catch (IOException ex) {
-            Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING, "Unable to write URI information to properties file {0}", ex);
+            Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
+                    "Unable to write URI information to properties file {0}", ex);
         } finally {
             if (wrt != null) {
                 try {
@@ -105,7 +107,8 @@ public class ConnectionSharedBroker {
             }
 
         } catch (MALException ex) {
-            Logger.getLogger(ConnectionSharedBroker.class.getName()).log(Level.WARNING, "Exception during close down of the broker {0}", ex);
+            Logger.getLogger(ConnectionSharedBroker.class.getName()).log(Level.WARNING,
+                    "Exception during close down of the broker {0}", ex);
         }
     }
 
@@ -117,7 +120,8 @@ public class ConnectionSharedBroker {
         try {
             wrt = new BufferedWriter(new FileWriter(HelperMisc.SHARED_BROKER_URI, false));
         } catch (IOException ex) {
-            Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING, "Unable to reset URI information from properties file {0}", ex);
+            Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
+                    "Unable to reset URI information from properties file {0}", ex);
         } finally {
             if (wrt != null) {
                 try {

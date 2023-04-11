@@ -55,29 +55,27 @@ public final class ConfigurationProviderSingleton {
         initializeIfNeeded();
         return SESSION;
     }
-    
+
     public static Identifier getSourceSessionName() {
         return SESSION_NAME;
     }
 
-    private static synchronized void initializeIfNeeded(){
-        if (!isInitialized){
+    private static synchronized void initializeIfNeeded() {
+        if (!isInitialized) {
             init();
             isInitialized = true;
         }
     }
-    
 
     public static ConfigurationProviderSingleton getInstance() {
         return INSTANCE;
     }
 
     /**
-     * Initializes the class ConfigurationProviderSingleton
-     * with the values made available in the properties files.
-     * This includes the generation of the domain from the PROPERTY_DOMAIN
-     * property or from a composition of the properties: ORGANIZATION_NAME,
-     * MISSION_NAME, MO_APP_NAME
+     * Initializes the class ConfigurationProviderSingleton with the values made
+     * available in the properties files. This includes the generation of the
+     * domain from the PROPERTY_DOMAIN property or from a composition of the
+     * properties: ORGANIZATION_NAME, MISSION_NAME, MO_APP_NAME
      *
      * It also generates the network zone field from the properties:
      * ORGANIZATION_NAME, MISSION_NAME, NETWORK_ZONE, DEVICE_NAME
