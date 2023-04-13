@@ -63,11 +63,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             if (ctx.getBodyElementIndex() == 0) {
                 ((Element) element).encode(enc);
             } else {
-                if (element == null) {
-                    enc.encodeNullableElement(null);
-                    return;
-                }
-                encodeSubElement((Element) element, null, null);
+                encodeAbstractSubElement((Element) element);
             }
             return;
         }
@@ -99,7 +95,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
                     return;
                 default:
                     // This should never happen...
-                    encodeSubElement((Element) element, null, null);
+                    encodeAbstractSubElement((Element) element);
                     return;
             }
         }
@@ -118,7 +114,11 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
                     .getOperationStage(stage)
                     .getElementShortForms()[ctx.getBodyElementIndex()];
 
-            encodeSubElement(e, sf, ctx);
+            if (sf == null) {
+                encodeAbstractSubElement(e);
+            } else {
+                enc.encodeNullableElement(e);
+            }
         }
     }
 
@@ -131,10 +131,11 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
         // Is it encoding an abstract element?
         if (sf == null) {
             if (element != null) {
-                enc.encodeAbstractElementType(element.getShortForm(), true);
-                enc.encodeNullableElement(element); // If the element is null
+                enc.encodeAbstractElementSFP(element.getShortForm(), true);
+                enc.encodeNullableElement(element);
             } else {
-                enc.encodeAbstractElementType(null, true);
+                // If the element is null
+                enc.encodeAbstractElementSFP(null, true);
             }
         } else {
             // Not abstract type:
@@ -155,7 +156,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
     public void close() throws MALException {
         try {
             dos.close();
-            if (null != enc) {
+            if (enc != null) {
                 enc.close();
             }
         } catch (IOException ex) {
@@ -163,14 +164,12 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
         }
     }
 
-    protected void encodeSubElement(final Element element, final Object shortForm,
-            final MALEncodingContext ctx) throws MALException {
-        // Check if the element is abstract or not based on the shortForm
-        if (shortForm == null) {
-            enc.encodeAbstractElementType(element.getShortForm(), true);
+    protected void encodeAbstractSubElement(final Element element) throws MALException {
+        if (element != null) {
+            enc.encodeAbstractElementSFP(element.getShortForm(), true);
             enc.encodeElement(element);
         } else {
-            enc.encodeNullableElement(element);
+            enc.encodeAbstractElementSFP(null, true);
         }
     }
 

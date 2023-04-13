@@ -63,7 +63,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
                 return dec.decodeUInteger();
             }
 
-            return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
+            return decodeAbstractSubElement();
         }
 
         if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
@@ -102,13 +102,12 @@ public abstract class GENElementInputStream implements MALElementInputStream {
                     }
                 }
                 default:
-                    return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
+                    return decodeAbstractSubElement();
             }
         }
 
         if (element == null) {
-            Long shortForm = dec.decodeAbstractElementType(true);
-            return decodeSubElement(shortForm, ctx);
+            return decodeAbstractSubElement();
         } else {
             return dec.decodeNullableElement((Element) element);
         }
@@ -121,7 +120,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
 
         // element is defined as an abstract type
         if (sf == null) {
-            sf = dec.decodeAbstractElementType(true);
+            sf = dec.decodeAbstractElementSFP(true);
 
             if (sf == null) {
                 return null;
@@ -155,8 +154,9 @@ public abstract class GENElementInputStream implements MALElementInputStream {
         // Nothing to do for this decoder
     }
 
-    protected Object decodeSubElement(final Long shortForm,
-            final MALEncodingContext ctx) throws MALException {
+    protected Object decodeAbstractSubElement() throws MALException {
+        Long shortForm = dec.decodeAbstractElementSFP(true);
+
         if (shortForm == null) {
             return null;
         }
@@ -166,7 +166,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             try {
                 return dec.decodeElement(e);
             } catch (Exception ex) {
-                throw new MALException("Unable to decode element '" + e.toString(), ex);
+                throw new MALException("Unable to decode element: " + e.toString(), ex);
             }
         } catch (Exception ex) {
             throw new MALException("Unable to create element for short form part: " + shortForm, ex);

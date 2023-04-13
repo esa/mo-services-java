@@ -636,7 +636,7 @@ public abstract class Encoder implements MALListEncoder {
      * @param withNull If true encode a isNull field
      * @throws MALException if there is an error
      */
-    public void encodeAbstractElementType(final Long value, boolean withNull) throws MALException {
+    public void encodeAbstractElementSFP(final Long value, boolean withNull) throws MALException {
         if (withNull) {
             encodeNullableLong(value);
         } else {
@@ -663,8 +663,8 @@ public abstract class Encoder implements MALListEncoder {
      * @throws MALException if value is NULL
      */
     protected void checkForNull(Object value) throws MALException {
-        if (null == value) {
-            throw new MALException("Null value supplied in a non-nullable field");
+        if (value == null) {
+            throw new MALException("Null value supplied in a non-nullable field!");
         }
     }
 }
