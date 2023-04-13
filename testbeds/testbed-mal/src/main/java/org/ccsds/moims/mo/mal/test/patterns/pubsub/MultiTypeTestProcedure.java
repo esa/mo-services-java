@@ -165,7 +165,7 @@ public class MultiTypeTestProcedure extends LoggingBase {
                 listener.monitorCond.reset();
             }
 
-            if (listener.getNotifiedUpdateHeaders().size() != 1) {
+            if (listener.getNotifiedUpdateHeader() == null) {
                 return false;
             }
         }
@@ -175,36 +175,36 @@ public class MultiTypeTestProcedure extends LoggingBase {
     static class MonitorListener extends IPTestAdapter {
 
         private final BooleanCondition monitorCond = new BooleanCondition();
-        private UpdateHeaderList notifiedUpdateHeaders;
-        private TestUpdateList notifiedUpdates;
-        private ElementList notifiedElementUpdates;
+        private UpdateHeader notifiedUpdateHeader;
+        private TestUpdate notifiedUpdate;
+        private Element notifiedElementUpdate;
 
         @Override
         public void monitorMultiNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, ElementList _ElementList3, Map qosProperties) {
-            notifiedUpdateHeaders = updateHeaderList;
-            notifiedUpdates = updateList;
-            notifiedElementUpdates = _ElementList3;
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Element _Element, Map qosProperties) {
+            notifiedUpdateHeader = updateHeader;
+            notifiedUpdate = update;
+            notifiedElementUpdate = _Element;
             monitorCond.set();
         }
 
         public void reset() {
-            notifiedUpdateHeaders = null;
-            notifiedUpdates = null;
-            notifiedElementUpdates = null;
+            notifiedUpdateHeader = null;
+            notifiedUpdate = null;
+            notifiedElementUpdate = null;
         }
 
-        public TestUpdateList getNotifiedUpdates() {
-            return notifiedUpdates;
+        public UpdateHeader getNotifiedUpdateHeader() {
+            return notifiedUpdateHeader;
         }
 
-        public ElementList getNotifiedElementUpdates() {
-            return notifiedElementUpdates;
+        public TestUpdate getNotifiedUpdate() {
+            return notifiedUpdate;
         }
 
-        public UpdateHeaderList getNotifiedUpdateHeaders() {
-            return notifiedUpdateHeaders;
+        public Element getNotifiedElementUpdate() {
+            return notifiedElementUpdate;
         }
     }
 }

@@ -54,17 +54,17 @@ public class JMSPublishHandler {
 
     protected GENMessage publish(final GENMessage msg, Session lqs) throws MALException,
             MALTransmitErrorException, MALInteractionException {
-        final String strURL = msg.getHeader().getToURI().getValue();
+        final String strURL = msg.getHeader().getTo().getValue();
         final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
         final String providerExchangeName = strURL.substring(iSecond + 1);
 
         // decompose update list into separate updates
         MALMessageHeader hdr = msg.getHeader();
         GENPublishBody body = (GENPublishBody) msg.getBody();
-        UpdateHeaderList headerList = body.getUpdateHeaderList();
+        UpdateHeader header = body.getUpdateHeader();
 
         try {
-            preCheckAllowedToPublish(hdr, headerList);
+            preCheckAllowedToPublish(hdr, header);
         } catch (MALTransmitErrorException ex) {
             // create response and do callback
             return new GENMessage(false,
@@ -74,8 +74,8 @@ public class JMSPublishHandler {
                     ex.getStandardError().getExtraInformation());
         }
 
-        List[] valueLists = body.getUpdateLists((List[]) null);
-        java.util.Vector<PublishEntry> publishList = new Vector<PublishEntry>(headerList.size());
+        Object[] valueLists = body.getUpdateObjects();
+        java.util.Vector<PublishEntry> publishList = new Vector<PublishEntry>();
 
                 /*
         try {
@@ -145,7 +145,7 @@ public class JMSPublishHandler {
     }
 
     protected void preCheckAllowedToPublish(MALMessageHeader hdr,
-            UpdateHeaderList updateList) throws MALTransmitErrorException {
+            UpdateHeader header) throws MALTransmitErrorException {
             /*
         if (StructureHelper.isSubDomainOf(domain, hdr.getDomain())) {
             EntityKeyList lst = new EntityKeyList();

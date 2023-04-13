@@ -22,7 +22,6 @@ package esa.mo.mal.impl.broker;
 
 import esa.mo.mal.impl.MALContextImpl;
 import esa.mo.mal.impl.ServiceComponentImpl;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -66,8 +65,8 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
         this.endpoint.startMessageDelivery();
 
         MALBrokerImpl.LOGGER.log(Level.FINE,
-                "Creating internal MAL Broker for localName: {0} on protocol: {1} with URI: {2}", 
-                new Object[]{ localName, protocol, this.localUri});
+                "Creating internal MAL Broker for localName: {0} on protocol: {1} with URI: {2}",
+                new Object[]{localName, protocol, this.localUri});
     }
 
     MALBrokerBindingImpl(final MALBrokerImpl parent,
@@ -90,7 +89,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
         this.brokerImpl = parent;
 
         MALBrokerImpl.LOGGER.log(Level.INFO,
-                "Creating internal MAL Broker for localName: {0} with URI: {1}", 
+                "Creating internal MAL Broker for localName: {0} with URI: {1}",
                 new Object[]{
                     localName, this.localUri
                 });
@@ -110,15 +109,16 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final IdentifierList domainId,
             final Map notifyQosProps,
             final Identifier subscriptionId,
-            final UpdateHeaderList updateHeaderList,
-            final List... updateList) 
+            final UpdateHeader updateHeader,
+            final Object... updateObjects)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final Object[] body = new Object[2 + updateList.length];
+        final Object[] body = new Object[2 + updateObjects.length];
         body[0] = subscriptionId;
-        body[1] = updateHeaderList;
+        body[1] = updateHeader;
         int i = 2;
-        for (Object object : updateList) {
-            body[i++] = object;
+        for (Object object : updateObjects) {
+            body[i] = object;
+            i++;
         }
 
         final MALMessage msg = endpoint.createMessage(authenticationId,
@@ -137,7 +137,6 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 body);
 
         endpoint.sendMessage(msg);
-
         return msg;
     }
 
@@ -153,14 +152,15 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final Map notifyQosProps,
             final UInteger notifyPriority,
             final Identifier subscriptionId,
-            final UpdateHeaderList updateHeaderList,
-            final List... updateList) throws IllegalArgumentException, MALInteractionException, MALException {
-        final Object[] body = new Object[2 + updateList.length];
+            final UpdateHeader updateHeader,
+            final Object... updateObjects) throws IllegalArgumentException, MALInteractionException, MALException {
+        final Object[] body = new Object[2 + updateObjects.length];
         body[0] = subscriptionId;
-        body[1] = updateHeaderList;
+        body[1] = updateHeader;
         int i = 2;
-        for (Object object : updateList) {
-            body[i++] = object;
+        for (Object object : updateObjects) {
+            body[i] = object;
+            i++;
         }
 
         final MALMessage msg = endpoint.createMessage(authenticationId,
@@ -175,7 +175,6 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 body);
 
         endpoint.sendMessage(msg);
-
         return msg;
     }
 
@@ -193,7 +192,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final QoSLevel notifyQos,
             final Map notifyQosProps,
             final UInteger notifyPriority,
-            final MALStandardError error) 
+            final MALStandardError error)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 subscriber,
@@ -211,7 +210,6 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 error.getErrorNumber(), error.getExtraInformation());
 
         endpoint.sendMessage(msg);
-
         return msg;
     }
 
@@ -226,7 +224,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final QoSLevel notifyQos,
             final Map notifyQosProps,
             final UInteger notifyPriority,
-            final MALStandardError error) 
+            final MALStandardError error)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MALMessage msg = endpoint.createMessage(
                 authenticationId,
@@ -241,7 +239,6 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 error.getErrorNumber(), error.getExtraInformation());
 
         endpoint.sendMessage(msg);
-
         return msg;
     }
 
@@ -277,7 +274,6 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 error.getErrorNumber(), error.getExtraInformation());
 
         endpoint.sendMessage(msg);
-
         return msg;
     }
 
@@ -306,7 +302,6 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 error.getErrorNumber(), error.getExtraInformation());
 
         endpoint.sendMessage(msg);
-
         return msg;
     }
 

@@ -128,18 +128,18 @@ public class MALPublisherSet {
      * The method ‘publish’ publishes updates through all the MALPublishers of
      * this MALPublisherSet.
      *
-     * @param updateHeaderList Published UpdateHeaders
-     * @param updateLists Lists of updates to be published
+     * @param updateHeader Published UpdateHeader.
+     * @param updateValues The published values of the Update message.
      * @return The message sent.
-     * @throws java.lang.IllegalArgumentException If updateHeaderList is null.
+     * @throws java.lang.IllegalArgumentException If updateHeader is null.
      * @throws MALInteractionException If thrown by the contained MALPublishers.
      * @throws MALException If thrown by the contained MALPublishers.
      */
-    public MALMessage publish(final UpdateHeaderList updateHeaderList, final java.util.List... updateLists)
+    public MALMessage publish(final UpdateHeader updateHeader, final Object... updateValues)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         MALMessage msg = null;
         for (MALPublisher p : subpublishers) {
-            msg = p.publish(updateHeaderList, updateLists);
+            msg = p.publish(updateHeader, updateValues);
         }
 
         return msg;

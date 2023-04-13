@@ -366,8 +366,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         ipTest = ipTestConsumer.getStub();
 
-        ConsumerContext cc
-                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker));
+        ConsumerKey consumerKey = new ConsumerKey(qosLevel, sessionType, sharedBroker);
+        ConsumerContext cc = (ConsumerContext) consumerContexts.get(consumerKey);
 
         if (cc == null) {
             logMessage("The consumer context has not been found.");
@@ -790,8 +790,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         @Override
         public synchronized void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
             monitorNotifyHeader = msgHeader;
             monitorNotifyCond.set();
         }

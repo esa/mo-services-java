@@ -21,12 +21,11 @@
 package esa.mo.mal.transport.gen.body;
 
 import java.io.ByteArrayInputStream;
-import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 
@@ -37,7 +36,7 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
 
     private static final long serialVersionUID = 222222222222227L;
     private final int offset;
-    private UpdateHeaderList hdrList = null;
+    private UpdateHeader header = null;
 
     /**
      * Constructor.
@@ -111,48 +110,33 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
     }
 
     @Override
-    public int getUpdateCount() throws MALException {
-        if (null == hdrList) {
-            getUpdateHeaderList();
-        }
-
-        return hdrList.size();
+    public UpdateHeader getUpdateHeader() throws MALException {
+        header = (UpdateHeader) getBodyElement(offset, new UpdateHeader());
+        return header;
     }
 
     @Override
-    public UpdateHeaderList getUpdateHeaderList() throws MALException {
-        hdrList = (UpdateHeaderList) getBodyElement(offset, new UpdateHeaderList());
-        return hdrList;
-    }
-
-    @Override
-    public List getUpdateList(final int listIndex, final List updateList) throws MALException {
-        return (List) getBodyElement(offset + listIndex + 1, updateList);
-    }
-
-    @Override
-    public List[] getUpdateLists(final List... updateLists) throws MALException {
+    public Object[] getUpdateObjects() throws MALException {
         decodeMessageBody();
 
-        final List[] rv = new List[messageParts.length - offset - 1];
+        final Object[] updateObjects = new Object[messageParts.length - offset - 1];
 
-        for (int i = 0; i < rv.length; i++) {
-            rv[i] = (List) messageParts[i + offset + 1];
+        for (int i = 0; i < updateObjects.length; i++) {
+            updateObjects[i] = (Object) messageParts[offset + 1 + i];
         }
 
-        return rv;
+        return updateObjects;
     }
 
     @Override
-    public Object getUpdate(final int listIndex, final int updateIndex) throws MALException {
+    public Object getUpdateObject(final int updateIndex) throws MALException {
         decodeMessageBody();
 
-        return ((List) (messageParts[offset + 1 + listIndex])).get(updateIndex);
+        return (Object) messageParts[offset + 1 + updateIndex];
     }
 
     @Override
-    public MALEncodedElement getEncodedUpdate(final int listIndex, 
-            final int updateIndex) throws MALException {
+    public MALEncodedElement getEncodedUpdate(final int updateIndex) throws MALException {
         //ToDo
         throw new MALException("Not supported yet.");
     }

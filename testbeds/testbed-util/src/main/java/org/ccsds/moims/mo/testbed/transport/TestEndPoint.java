@@ -146,8 +146,8 @@ public class TestEndPoint implements MALEndpoint {
     }
 
     public MALMessage createTestMessage(MALMessageHeader header, Identifier id,
-            UpdateHeaderList updateHeaders, List[] updateLists, Map props) {
-        return new TestMessage(header, new TestNotifyBody(id, updateHeaders, updateLists), props);
+            UpdateHeader updateHeader, Object[] updateObjects, Map props) {
+        return new TestMessage(header, new TestNotifyBody(id, updateHeader, updateObjects), props);
     }
 
     public MALMessage createTestMessage(MALMessageHeader header, MALStandardError error, Map props) {
@@ -300,8 +300,8 @@ public class TestEndPoint implements MALEndpoint {
 
         @Override
         public String toString() {
-            return "TestMessage [header=" + header + ", body=" + body + ", props="
-                    + props + "]";
+            return "TestMessage [header=" + header
+                    + ", body=" + body + ", props=" + props + "]";
         }
     }
 

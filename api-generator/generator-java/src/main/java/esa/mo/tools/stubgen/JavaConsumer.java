@@ -171,9 +171,12 @@ public class JavaConsumer {
                     break;
                 }
                 case PROGRESS_OP: {
-                    List<CompositeField> opArgsA = StubUtils.concatenateArguments(stdHeaderArg, StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, op.getAckTypes()), stdQosArg));
-                    List<CompositeField> opArgsU = StubUtils.concatenateArguments(stdHeaderArg, StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, op.getUpdateTypes()), stdQosArg));
-                    List<CompositeField> opArgsR = StubUtils.concatenateArguments(stdHeaderArg, StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, op.getRetTypes()), stdQosArg));
+                    List<CompositeField> opArgsA = StubUtils.concatenateArguments(stdHeaderArg,
+                            StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, op.getAckTypes()), stdQosArg));
+                    List<CompositeField> opArgsU = StubUtils.concatenateArguments(stdHeaderArg,
+                            StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, op.getUpdateTypes()), stdQosArg));
+                    List<CompositeField> opArgsR = StubUtils.concatenateArguments(stdHeaderArg,
+                            StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, op.getRetTypes()), stdQosArg));
 
                     file.addMethodOpenStatement(true, false, false, StdStrings.PUBLIC,
                             false, true, null, op.getName() + "AckReceived", opArgsA, null,
@@ -204,13 +207,18 @@ public class JavaConsumer {
                 }
                 case PUBSUB_OP: {
                     List<TypeInfo> retTypes = new LinkedList<>();
-                    retTypes.add(0, TypeUtils.convertTypeReference(generator, TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
-                    retTypes.add(1, TypeUtils.convertTypeReference(generator, TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true)));
+                    retTypes.add(0, TypeUtils.convertTypeReference(generator,
+                            TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
+                    retTypes.add(1, TypeUtils.convertTypeReference(generator,
+                            TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false)));
+
                     for (TypeInfo ti : op.getRetTypes()) {
-                        retTypes.add(TypeUtils.convertTypeReference(generator, TypeUtils.createTypeReference(ti.getSourceType().getArea(), ti.getSourceType().getService(), ti.getSourceType().getName(), true)));
+                        retTypes.add(TypeUtils.convertTypeReference(generator,
+                                TypeUtils.createTypeReference(ti.getSourceType().getArea(), ti.getSourceType().getService(), ti.getSourceType().getName(), ti.getSourceType().isList())));
                     }
 
-                    List<CompositeField> opArgsU = StubUtils.concatenateArguments(stdHeaderArg, StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, retTypes), stdQosArg));
+                    List<CompositeField> opArgsU = StubUtils.concatenateArguments(stdHeaderArg,
+                            StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, retTypes), stdQosArg));
 
                     file.addMethodOpenStatement(true, false, false,
                             StdStrings.PUBLIC, false, true, null, op.getName() + "RegisterAckReceived",
@@ -367,7 +375,9 @@ public class JavaConsumer {
                 false, true, null, opname + "Received", args, throwsMALException, comment, null,
                 Arrays.asList(throwsMALException + " if an error is detected processing the message."));
 
-        method.addLine("if ((" + areaHelper + "." + areaName.toUpperCase() + "_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (" + serviceInfoName + "." + serviceName.toUpperCase() + "_SERVICE_NUMBER.equals(msgHeader.getService()))) {", false);
+        method.addLine("if ((" + areaHelper + "." + areaName.toUpperCase() + "_AREA_NUMBER.equals(msgHeader.getServiceArea()))"
+                + " && "
+                + "(" + serviceInfoName + "." + serviceName.toUpperCase() + "_SERVICE_NUMBER.equals(msgHeader.getService()))) {", false);
         method.addLine("  switch (" + generator.createMethodCall("msgHeader.getOperation().getValue()") + ") {", false);
 
         for (OperationSummary op : summary.getOperations()) {
@@ -375,10 +385,14 @@ public class JavaConsumer {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("    case " + ns, ns, false);
                 List<TypeInfo> opTypes = new LinkedList<>();
-                opTypes.add(0, TypeUtils.convertTypeReference(generator, TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
-                opTypes.add(1, TypeUtils.convertTypeReference(generator, TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true)));
+                opTypes.add(0, TypeUtils.convertTypeReference(generator,
+                        TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
+                opTypes.add(1, TypeUtils.convertTypeReference(generator,
+                        TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false)));
+
                 for (TypeInfo ti : op.getRetTypes()) {
-                    opTypes.add(TypeUtils.convertTypeReference(generator, TypeUtils.createTypeReference(ti.getSourceType().getArea(), ti.getSourceType().getService(), ti.getSourceType().getName(), true)));
+                    opTypes.add(TypeUtils.convertTypeReference(generator,
+                            TypeUtils.createTypeReference(ti.getSourceType().getArea(), ti.getSourceType().getService(), ti.getSourceType().getName(), ti.getSourceType().isList())));
                 }
 
                 String opArgs = generator.createAdapterMethodsArgs(opTypes, "body", true, false);
@@ -467,7 +481,9 @@ public class JavaConsumer {
                 TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
                 false, true, null);
 
-        file.addClassOpenStatement(className, false, false, null, generator.createElementType(file, area.getName(), serviceName, CONSUMER_FOLDER, serviceName), "Consumer stub for " + serviceName + " service.");
+        file.addClassOpenStatement(className, false, false, null,
+                generator.createElementType(file, area.getName(), serviceName, CONSUMER_FOLDER, serviceName),
+                "Consumer stub for " + serviceName + " service.");
 
         file.addClassVariable(false, true, StdStrings.PRIVATE, consumerTypeVar, false, (String) null);
 
@@ -480,7 +496,8 @@ public class JavaConsumer {
         method.addLine(generator.createMethodCall("this.consumer = consumer"));
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, generator.createReturnReference(consumerType), "getConsumer", null, null,
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false,
+                generator.createReturnReference(consumerType), "getConsumer", null, null,
                 "Returns the internal MAL consumer object used for sending of messages from this interface",
                 "The MAL consumer object.", null);
         method.addLine(generator.createMethodCall("return consumer"));
@@ -502,7 +519,9 @@ public class JavaConsumer {
                             msgType, op.getName(), opArgs, throwsInteractionAndMALException,
                             op.getOriginalOp().getComment(), "the MAL message sent to initiate the interaction",
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-                    method.addMethodWithDependencyStatement("return " + consumerMethodCall + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")", helperType, true);
+                    method.addMethodWithDependencyStatement("return " + consumerMethodCall
+                            + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar
+                            + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")", helperType, true);
                     method.addMethodCloseStatement();
                     break;
                 }

@@ -20,6 +20,11 @@
  */
 package org.ccsds.moims.mo.mal.transport;
 
+import org.ccsds.moims.mo.mal.MALInvokeOperation;
+import org.ccsds.moims.mo.mal.MALProgressOperation;
+import org.ccsds.moims.mo.mal.MALPubSubOperation;
+import org.ccsds.moims.mo.mal.MALRequestOperation;
+import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -300,5 +305,54 @@ public class MALMessageHeader {
         str.append(", supplements=").append(supplements);
         str.append('}');
         return str.toString();
+    }
+
+    public UOctet calculateReturnStage() {
+        UOctet iStage = this.getInteractionStage();
+
+        if (iStage == null) {
+            return null;
+        }
+
+        final short srcInteractionStage = iStage.getValue();
+
+        switch (this.getInteractionType().getOrdinal()) {
+            case InteractionType._SUBMIT_INDEX:
+                if (MALSubmitOperation._SUBMIT_STAGE == srcInteractionStage) {
+                    return MALSubmitOperation.SUBMIT_ACK_STAGE;
+                }
+            case InteractionType._REQUEST_INDEX:
+                if (MALRequestOperation._REQUEST_STAGE == srcInteractionStage) {
+                    return MALRequestOperation.REQUEST_RESPONSE_STAGE;
+                }
+            case InteractionType._INVOKE_INDEX:
+                if (MALInvokeOperation._INVOKE_STAGE == srcInteractionStage) {
+                    return MALInvokeOperation.INVOKE_ACK_STAGE;
+                }
+            case InteractionType._PROGRESS_INDEX:
+                if (MALProgressOperation._PROGRESS_STAGE == srcInteractionStage) {
+                    return MALProgressOperation.PROGRESS_ACK_STAGE;
+                }
+            case InteractionType._PUBSUB_INDEX:
+                switch (srcInteractionStage) {
+                    case MALPubSubOperation._REGISTER_STAGE:
+                        return MALPubSubOperation.REGISTER_ACK_STAGE;
+                    case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
+                        return MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE;
+                    case MALPubSubOperation._PUBLISH_STAGE:
+                        return MALPubSubOperation.PUBLISH_STAGE;
+                    case MALPubSubOperation._DEREGISTER_STAGE:
+                        return MALPubSubOperation.DEREGISTER_ACK_STAGE;
+                    case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
+                        return MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE;
+                    default:
+                    // no op
+                }
+                break;
+            default:
+            // no op
+        }
+
+        return null;
     }
 }

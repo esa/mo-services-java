@@ -157,8 +157,8 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
     }
 
     @Override
-    public Object getBodyElement(final int index, final Object element) throws
-            IllegalArgumentException, MALException {
+    public Object getBodyElement(final int index, final Object element)
+            throws IllegalArgumentException, MALException {
         decodeMessageBody();
 
         Object bodyPart = messageParts[index];
@@ -186,7 +186,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
 
     @Override
     public MALEncodedElement getEncodedBodyElement(final int index) throws MALException {
-        if (-1 == index) {
+        if (index == -1) {
             // want the complete message body
             return new MALEncodedElement((Blob) encBodyElements.readElement(new Blob(), null));
         } else {
@@ -256,7 +256,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
 
                 for (int i = 0; i < count; i++) {
                     Object sf = null;
-                    if (null != ctx) {
+                    if (ctx != null) {
                         ctx.setBodyElementIndex(i);
 
                         if (!ctx.getHeader().getIsErrorMessage()) {
@@ -329,7 +329,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
         decodedBody = true;
 
         try {
-            if (null == ctx.getOperation()) {
+            if (ctx.getOperation() == null) {
                 MALMessageHeader header = ctx.getHeader();
                 MALArea area = MALContextFactory
                         .lookupArea(header.getServiceArea(), header.getServiceVersion());
@@ -338,14 +338,14 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
                     if (null != service) {
                         MALOperation op = service.getOperationByNumber(header.getOperation());
 
-                        if (null != op) {
+                        if (op != null) {
                             ctx.setOperation(op);
                         } else {
                             GENTransport.LOGGER.log(Level.SEVERE,
                                     "Operation for unknown area/version/service/op received ({0}, {1}, {2}, {3})",
                                     new Object[]{
-                                        header.getServiceArea(), header.getServiceVersion(), header.getService(),
-                                        header.getOperation()
+                                        header.getServiceArea(), header.getServiceVersion(),
+                                        header.getService(), header.getOperation()
                                     });
                         }
                     } else {
@@ -357,26 +357,29 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
                     }
                 } else {
                     GENTransport.LOGGER.log(Level.SEVERE,
-                            "Operation for unknown area/version received ({0}, {1})", new Object[]{
-                                header.getServiceArea(), header.getServiceVersion()
-                            });
+                            "Operation for unknown area/version received ({0}, {1})",
+                            new Object[]{header.getServiceArea(), header.getServiceVersion()});
                 }
             }
 
             if (ctx.getHeader().getIsErrorMessage()) {
                 bodyPartCount = 2;
             } else {
+                UOctet interactionStage = ctx.getHeader().getInteractionStage();
                 bodyPartCount = ctx.getOperation()
-                        .getOperationStage(ctx.getHeader().getInteractionStage())
+                        .getOperationStage(interactionStage)
                         .getElementShortForms().length;
             }
+
             GENTransport.LOGGER.log(Level.FINE,
                     "GEN Message decoding body! bodyPartCount: {0}", bodyPartCount);
             messageParts = new Object[bodyPartCount];
 
+            UOctet interactionStage = ctx.getHeader().getInteractionStage();
+
             if (bodyPartCount == 1) {
                 Object sf = ctx.getOperation()
-                        .getOperationStage(ctx.getHeader().getInteractionStage())
+                        .getOperationStage(interactionStage)
                         .getElementShortForms()[0];
                 messageParts[0] = decodeBodyPart(encBodyElements, ctx, sf);
             } else if (bodyPartCount > 1) {
@@ -388,24 +391,26 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
                     benc = encFactory.createInputStream(bais);
                 }
 
+                // Iterate through each message part and decode it
                 for (int i = 0; i < bodyPartCount; i++) {
-                    GENTransport.LOGGER.log(Level.FINE,
-                            "GEN Message decoding body part : {0}", i);
-                    Object sf = null;
-
                     ctx.setBodyElementIndex(i);
+                    Object sf = null;
 
                     if (!ctx.getHeader().getIsErrorMessage()) {
                         sf = ctx.getOperation()
-                                .getOperationStage(ctx.getHeader().getInteractionStage())
+                                .getOperationStage(interactionStage)
                                 .getElementShortForms()[i];
                     }
 
-                    messageParts[i] = decodeBodyPart(benc, ctx, sf);
+                    try {
+                        messageParts[i] = decodeBodyPart(benc, ctx, sf);
+                    } catch (Exception ex) {
+                        Logger.getLogger(GENMessageBody.class.getName()).log(Level.SEVERE,
+                                "Error decoding Body part with index: " + i, ex);
+                        throw ex;
+                    }
                 }
             }
-
-            GENTransport.LOGGER.fine("GEN Message decoded body");
         } catch (MALException ex) {
             GENTransport.LOGGER.log(Level.WARNING,
                     "Unable to decode the Message Body!", ex);
@@ -469,13 +474,15 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
         }
 
         // work out whether it is a MAL element or JAXB element we have received
-        if ((sf instanceof String)) {
+        if (sf instanceof String) {
             throw new MALException("Marshalling and unmarshalling of "
                     + "JAXB elements is no longer supported!");
         }
 
         Object element = null;
-        if (null != sf) {
+
+        // It is not an abstract element:
+        if (sf != null) {
             Long shortForm = (Long) sf;
             GENTransport.LOGGER.log(Level.FINER,
                     "GEN Message decoding body part : Type = {0}", shortForm);

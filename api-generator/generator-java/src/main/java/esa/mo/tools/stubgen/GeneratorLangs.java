@@ -195,7 +195,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     public void compile(String destinationFolderName, SpecificationType spec,
             JAXBElement rootNode) throws IOException, JAXBException {
         long totalTime = System.currentTimeMillis();
-        
+
         for (AreaType area : spec.getArea()) {
             long timestamp = System.currentTimeMillis();
             processArea(destinationFolderName, area, requiredPublishers);
@@ -1522,10 +1522,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected void createCompositeClass(File folder, AreaType area, ServiceType service, CompositeType composite) throws IOException {
-        String compName = composite.getName();
-        getLog().info(" > Creating Composite class: " + compName);
+        String className = composite.getName();
+        getLog().info(" > Creating Composite class: " + className);
 
-        ClassWriter file = createClassFile(folder, compName);
+        ClassWriter file = createClassFile(folder, className);
         String parentClass = null;
         TypeReference parentType = null;
         String parentInterface = createElementType(file, StdStrings.MAL, null, StdStrings.COMPOSITE);
@@ -1558,9 +1558,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
         List<CompositeField> superCompElements = createCompositeSuperElementsList(file, parentType);
 
         boolean abstractComposite = (null == composite.getShortFormPart());
-        file.addClassOpenStatement(compName, !abstractComposite, abstractComposite,
+        file.addClassOpenStatement(className, !abstractComposite, abstractComposite,
                 parentClass, parentInterface, composite.getComment());
-        String fqName = createElementType(file, area, service, compName);
+        String fqName = createElementType(file, area, service, className);
 
         if (!abstractComposite) {
             addTypeShortFormDetails(file, area, service, composite.getShortFormPart());
@@ -1574,7 +1574,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         // create blank constructor
-        file.addConstructorDefault(compName);
+        file.addConstructorDefault(className);
 
         // if we or our parents have attributes then we need a typed constructor
         if (!compElements.isEmpty() || !superCompElements.isEmpty()) {
@@ -1602,7 +1602,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             }
 
             // Creates constructor with all arguments
-            MethodWriter method = file.addConstructor(StdStrings.PUBLIC, compName, args,
+            MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, args,
                     superArgs, null, "Constructor that initialises the values of the structure.", null);
 
             for (CompositeField element : compElements) {
@@ -1619,7 +1619,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             // contructor will look the same as the one with all arguments. So, 
             // same type signature and therefore that needs to be avoided.
             if (hasNonNullable && !allArgsNonNullable) {
-                MethodWriter method2 = file.addConstructor(StdStrings.PUBLIC, compName,
+                MethodWriter method2 = file.addConstructor(StdStrings.PUBLIC, className,
                         argsNonNullable, superArgsNonNullable, null,
                         "Constructor that initialises the non-nullable values of the structure.", null);
 
@@ -1669,7 +1669,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     "Compares this object to the specified object. The result is true if and only if the "
                     + "argument is not null and is the same type that contains the same value as this object.",
                     "true if the objects are the same; false otherwise.", null);
-            method.addLine("if (obj instanceof " + compName + ") {", false);
+            method.addLine("if (obj instanceof " + className + ") {", false);
 
             if (null != parentClass) {
                 method.addLine("    if (! super.equals(obj)) {", false);
@@ -1677,7 +1677,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 method.addLine("    }", false);
             }
             if (!compElements.isEmpty()) {
-                method.addLine("  " + compName + " other = (" + compName + ") obj");
+                method.addLine("  " + className + " other = (" + className + ") obj");
                 for (CompositeField element : compElements) {
                     method.addLine("    if (" + element.getFieldName() + " == null) {", false);
                     method.addLine("        if (other." + element.getFieldName() + " != null) {", false);
@@ -1719,7 +1719,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     false, true, strType, "toString", null, null,
                     "Returns a String object representing this type's value.", "a string representation of the value of this object", null);
             method.addLine("StringBuilder buf = new StringBuilder()");
-            method.addLine("buf.append('(')");
+            method.addLine("buf.append(\"(" + className + ": \")");
 
             String prefixSeparator = "";
 
@@ -1744,9 +1744,22 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // create encode method
         MethodWriter method = encodeMethodOpen(file);
-        if (null != parentClass) {
+        if (parentClass != null) {
             method.addSuperMethodStatement("encode", "encoder");
         }
+
+        // Add the if condition to check if there are null fields for non-nullable fields!
+        for (int i = 0; i < compElements.size(); i++) {
+            CompositeField element = compElements.get(i);
+            String fieldName = element.getFieldName();
+
+            if (!element.isCanBeNull()) {
+                method.addLine("if (" + fieldName + " == null) {", false);
+                method.addLine("    throw new org.ccsds.moims.mo.mal.MALException(\"The field '" + fieldName + "' cannot be null!\")");
+                method.addLine("}", false);
+            }
+        }
+
         for (CompositeField element : compElements) {
             boolean isAbstract = isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
             if (isAbstract) {
@@ -1803,13 +1816,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         file.flush();
 
-        createListClass(folder, area, service, compName, abstractComposite, composite.getShortFormPart());
+        createListClass(folder, area, service, className, abstractComposite, composite.getShortFormPart());
 
         if (!abstractComposite) {
             CompositeField fld = createCompositeElementsDetails(file, false, "fld",
-                    TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), compName, false),
+                    TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), className, false),
                     true, true, "cmt");
-            createFactoryClass(folder, area, service, compName, fld, false, false);
+            createFactoryClass(folder, area, service, className, fld, false, false);
         }
     }
 
@@ -2182,11 +2195,17 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return null;
     }
 
-    protected List<CompositeField> createOperationArguments(GeneratorConfiguration config, LanguageWriter file, List<TypeInfo> opArgs) {
+    protected List<CompositeField> createOperationArguments(GeneratorConfiguration config,
+            LanguageWriter file, List<TypeInfo> opArgs) {
         return createOperationArguments(config, file, opArgs, false);
     }
 
-    protected List<CompositeField> createOperationArguments(GeneratorConfiguration config, LanguageWriter file, List<TypeInfo> opArgs, boolean forceList) {
+    @Deprecated
+    protected List<CompositeField> createOperationArguments(GeneratorConfiguration config,
+            LanguageWriter file, List<TypeInfo> opArgs, boolean forceList) {
+        // This method should be without the forceList boolean argument
+        // because it was used in the PUB-SUB but no longer is used
+
         List<CompositeField> rv = new LinkedList<>();
 
         if (null != opArgs) {
@@ -2199,7 +2218,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     tir_new.setService(tir.getService());
                     tir_new.setName(tir.getName());
                     tir_new.setList(true);
-
                     tir = tir_new;
                 }
 

@@ -163,20 +163,20 @@ public class SubscriptionTestProcedure extends LoggingBase {
     }
 
     public int numberOfNotifiedUpdates() throws Exception {
-        UpdateHeaderList updateHeaderList = listener.getNotifiedUpdates();
-        if (updateHeaderList == null) {
+        UpdateHeader updateHeader = listener.getNotifiedUpdate();
+        if (updateHeader == null) {
             return 0;
         } else {
-            return updateHeaderList.size();
+            return 1;
         }
     }
 
     public boolean transactionIdIsFromTheFirstRegister() throws Exception {
-        UpdateHeaderList updateHeaderList = listener.getNotifiedUpdates();
-        if (updateHeaderList == null) {
+        UpdateHeader updateHeader = listener.getNotifiedUpdate();
+        if (updateHeader == null) {
             return false;
         } else {
-            return updateHeaderList.size() > 0 && listener.isTransactionIdentifierOK();
+            return listener.isTransactionIdentifierOK();
         }
     }
 
@@ -185,7 +185,7 @@ public class SubscriptionTestProcedure extends LoggingBase {
         private final BooleanCondition cond = new BooleanCondition();
         private Long firstRegisterTransactionId;
 
-        private UpdateHeaderList notifiedUpdateHeaders;
+        private UpdateHeader notifiedUpdateHeader;
 
         private boolean transactionIdentifierOK;
 
@@ -205,23 +205,23 @@ public class SubscriptionTestProcedure extends LoggingBase {
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
-            logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ',' + updateHeaderList + ")");
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
+            logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ',' + updateHeader + ")");
             if (msgHeader.getTransactionId().equals(firstRegisterTransactionId)) {
                 transactionIdentifierOK = true;
             }
-            notifiedUpdateHeaders = updateHeaderList;
+            notifiedUpdateHeader = updateHeader;
         }
 
         public void resetState() {
             cond.reset();
-            notifiedUpdateHeaders = null;
+            notifiedUpdateHeader = null;
             transactionIdentifierOK = false;
         }
 
-        public UpdateHeaderList getNotifiedUpdates() {
-            return notifiedUpdateHeaders;
+        public UpdateHeader getNotifiedUpdate() {
+            return notifiedUpdateHeader;
         }
 
         public boolean isTransactionIdentifierOK() {

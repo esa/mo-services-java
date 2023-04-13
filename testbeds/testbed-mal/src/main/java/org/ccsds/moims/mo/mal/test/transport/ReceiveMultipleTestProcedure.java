@@ -146,8 +146,8 @@ public class ReceiveMultipleTestProcedure {
         MALMessage notifyMessage = ep.createTestMessage(
                 listener.getLastNotifyHeader(),
                 HeaderTestProcedure.SUBSCRIPTION_ID,
-                new UpdateHeaderList(),
-                new List[]{new TestUpdateList()}, new Hashtable());
+                new UpdateHeader(),
+                new Object[]{new TestUpdate()}, new Hashtable());
         LoggingBase.logMessage("notifyMessage = " + notifyMessage);
 
         // Reinject it twice (cloning is useless)
@@ -177,7 +177,7 @@ public class ReceiveMultipleTestProcedure {
         private int notifyCount;
 
         MonitorListener() {
-            notifyHeaders = new ArrayList<MALMessageHeader>();
+            notifyHeaders = new ArrayList<>();
             notifyCount = 1;
         }
 
@@ -187,9 +187,9 @@ public class ReceiveMultipleTestProcedure {
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
-            LoggingBase.logMessage("monitorNotifyReceived(" + msgHeader + ',' + updateHeaderList + ')');
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
+            LoggingBase.logMessage("monitorNotifyReceived(" + msgHeader + ',' + updateHeader + ')');
             notifyHeaders.add(msgHeader);
             if (notifyHeaders.size() == notifyCount) {
                 cond.set();

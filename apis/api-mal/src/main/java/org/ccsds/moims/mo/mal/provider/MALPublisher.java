@@ -22,8 +22,9 @@ package org.ccsds.moims.mo.mal.provider;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
@@ -35,8 +36,8 @@ public interface MALPublisher {
     /**
      * Publishes a list of updates.
      *
-     * @param updateHeaderList Published UpdateHeaders
-     * @param updateLists Lists of updates to be published
+     * @param updateHeader Published UpdateHeader.
+     * @param updateValues The published values of the Update message.
      * @return The MALMessage that has been sent.
      * @throws java.lang.IllegalArgumentException If the parameter
      * ‘updateHeaderList’ is NULL.
@@ -45,7 +46,7 @@ public interface MALPublisher {
      * @throws MALInteractionException If a MAL standard error occurs during the
      * initiation message sending.
      */
-    MALMessage publish(UpdateHeaderList updateHeaderList, java.util.List... updateLists)
+    MALMessage publish(UpdateHeader updateHeader, Object... updateValues)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**

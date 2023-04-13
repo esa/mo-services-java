@@ -42,14 +42,13 @@ import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
 import org.ccsds.moims.mo.malprototype2.iptest.provider.IPTestInheritanceSkeleton;
 import org.ccsds.moims.mo.malprototype2.iptest.provider.Monitor2Publisher;
 import org.ccsds.moims.mo.malprototype2.iptest.provider.MonitorPublisher;
@@ -122,30 +121,29 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
                 new Hashtable(),
                 _TestPublishUpdate.getPriority());
 
-        UpdateHeaderList updateHeaderList = _TestPublishUpdate.getUpdateHeaders();
-        TestUpdateList testUpdateList = _TestPublishUpdate.getUpdates();
+        UpdateHeader updateHeader = _TestPublishUpdate.getUpdateHeaders().get(0);
+        TestUpdate testUpdate = _TestPublishUpdate.getUpdates().get(0);
+        updateHeader.setDomain(_TestPublishUpdate.getDomain());
+        updateHeader.setSource(new Identifier(""));
 
-        for (UpdateHeader updateHeader : updateHeaderList) {
-            updateHeader.setDomain(_TestPublishUpdate.getDomain());
-            updateHeader.setSource(new Identifier(""));
-        }
-
-        publisher.publish(updateHeaderList, testUpdateList);
-        publisher2.publish(updateHeaderList, testUpdateList);
+        publisher.publish(updateHeader, testUpdate);
+        publisher2.publish(updateHeader, testUpdate);
     }
 
-    public void testMultipleNotify(TestPublishUpdate _TestPublishRegister, MALInteraction interaction)
-            throws MALException {
+    public void testMultipleNotify(TestPublishUpdate _TestPublishRegister,
+            MALInteraction interaction) throws MALException {
 
     }
 
     @Override
-    public void testObjectRefSubmit(ObjectRef<TestPublishUpdate> _ObjectRef_TestPublishUpdate_0, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void testObjectRefSubmit(ObjectRef<TestPublishUpdate> _ObjectRef_TestPublishUpdate_0,
+            MALInteraction interaction) throws MALInteractionException, MALException {
 
     }
 
     @Override
-    public void testObjectRefSend(ObjectRef<IPTestDefinition> _ObjectRef_IPTestDefinition_0, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void testObjectRefSend(ObjectRef<IPTestDefinition> _ObjectRef_IPTestDefinition_0,
+            MALInteraction interaction) throws MALInteractionException, MALException {
 
     }
 

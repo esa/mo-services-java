@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.encoding;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALOperationStage;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -56,23 +57,24 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             ((Element) element).encode(enc);
             return;
         }
-        
-        if (element == null) {
-            enc.encodeNullableElement(null);
-            return;
-        }
-        
+
         if (ctx.getHeader().getIsErrorMessage()) {
             // error messages have a standard format
             if (ctx.getBodyElementIndex() == 0) {
                 ((Element) element).encode(enc);
             } else {
+                if (element == null) {
+                    enc.encodeNullableElement(null);
+                    return;
+                }
                 encodeSubElement((Element) element, null, null);
             }
             return;
-        } 
-        
+        }
+
         if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
+            int index = ctx.getBodyElementIndex();
+
             switch (ctx.getHeader().getInteractionStage().getValue()) {
                 case MALPubSubOperation._REGISTER_STAGE:
                 case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
@@ -80,36 +82,63 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
                     ((Element) element).encode(enc);
                     return;
                 case MALPubSubOperation._PUBLISH_STAGE:
-                    if ((0 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(
-                            ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()])) {
-                        encodeSubElement((Element) element, null, null);
-                    } else {
+                    if (index == 0) {
                         ((Element) element).encode(enc);
+                    } else {
+                        encodePublishNotifyMessages((Element) element, ctx);
                     }
                     return;
                 case MALPubSubOperation._NOTIFY_STAGE:
-                    if ((1 < ctx.getBodyElementIndex()) && (null == ctx.getOperation().getOperationStage(
-                            ctx.getHeader().getInteractionStage()).getElementShortForms()[ctx.getBodyElementIndex()])) {
-                        encodeSubElement((Element) element, null, null);
-                    } else {
+                    if (index == 0) {
                         ((Element) element).encode(enc);
+                    } else if (index == 1) {
+                        ((Element) element).encode(enc);
+                    } else {
+                        encodePublishNotifyMessages((Element) element, ctx);
                     }
                     return;
                 default:
+                    // This should never happen...
                     encodeSubElement((Element) element, null, null);
+                    return;
+            }
+        }
+
+        if (element == null) {
+            enc.encodeNullableElement(null);
+            return;
+        }
+
+        if (element instanceof Element) {
+            // encode the short form if it is not fixed in the operation
+            final Element e = (Element) element;
+
+            UOctet stage = ctx.getHeader().getInteractionStage();
+            Object sf = ctx.getOperation()
+                    .getOperationStage(stage)
+                    .getElementShortForms()[ctx.getBodyElementIndex()];
+
+            encodeSubElement(e, sf, ctx);
+        }
+    }
+
+    private void encodePublishNotifyMessages(final Element element,
+            final MALEncodingContext ctx) throws MALException {
+        UOctet stage = ctx.getHeader().getInteractionStage();
+        MALOperationStage op = ctx.getOperation().getOperationStage(stage);
+        Object sf = op.getElementShortForms()[ctx.getBodyElementIndex()];
+
+        // Is it encoding an abstract element?
+        if (sf == null) {
+            if (element != null) {
+                enc.encodeAbstractElementType(element.getShortForm(), true);
+                enc.encodeNullableElement(element); // If the element is null
+            } else {
+                enc.encodeAbstractElementType(null, true);
             }
         } else {
-            if (element instanceof Element) {
-                // encode the short form if it is not fixed in the operation
-                final Element e = (Element) element;
-
-                UOctet stage = ctx.getHeader().getInteractionStage();
-                Object sf = ctx.getOperation()
-                        .getOperationStage(stage)
-                        .getElementShortForms()[ctx.getBodyElementIndex()];
-
-                encodeSubElement(e, sf, ctx);
-            }
+            // Not abstract type:
+            enc.encodeNullableElement(element);
         }
     }
 
@@ -134,14 +163,14 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
         }
     }
 
-    protected void encodeSubElement(final Element e, final Object shortForm,
+    protected void encodeSubElement(final Element element, final Object shortForm,
             final MALEncodingContext ctx) throws MALException {
         // Check if the element is abstract or not based on the shortForm
         if (shortForm == null) {
-            enc.encodeAbstractElementType(e.getShortForm(), true);
-            enc.encodeElement(e);
+            enc.encodeAbstractElementType(element.getShortForm(), true);
+            enc.encodeElement(element);
         } else {
-            enc.encodeNullableElement(e);
+            enc.encodeNullableElement(element);
         }
     }
 

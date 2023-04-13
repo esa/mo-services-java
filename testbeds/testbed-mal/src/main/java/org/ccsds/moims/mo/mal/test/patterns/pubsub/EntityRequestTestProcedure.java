@@ -47,6 +47,7 @@ import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.test.patterns.IPTestHandlerImpl;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.test.util.Helper;
@@ -188,9 +189,10 @@ public class EntityRequestTestProcedure extends LoggingBase {
 
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
-                QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, false, updateHeaderList, updateList, null, expectedErrorCode,
-                Boolean.FALSE, null);
+                QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
+                HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME,
+                false, updateHeaderList, updateList, null,
+                expectedErrorCode, Boolean.FALSE, null);
 
         ipTest.publishUpdates(testPublishUpdate);
 
@@ -283,11 +285,9 @@ public class EntityRequestTestProcedure extends LoggingBase {
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
-            for (UpdateHeader updateHeader : updateHeaderList) {
-                notifiedKeyValues.add(updateHeader.getKeyValues());
-            }
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate updateList, Map qosProperties) {
+            notifiedKeyValues.add(updateHeader.getKeyValues());
         }
 
         ArrayList<AttributeList> getNotifiedKeys() {

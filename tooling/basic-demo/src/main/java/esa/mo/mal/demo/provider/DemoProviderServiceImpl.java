@@ -49,7 +49,6 @@ import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.maldemo.MALDemoHelper;
@@ -149,9 +148,9 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
                 true,
                 sharedBrokerURI);
 
-        DemoProviderGui.LOGGER.log(Level.INFO, 
+        DemoProviderGui.LOGGER.log(Level.INFO,
                 "Demo Service URI       : {0}", demoServiceProvider.getURI());
-        DemoProviderGui.LOGGER.log(Level.INFO, 
+        DemoProviderGui.LOGGER.log(Level.INFO,
                 "Demo Service broker URI: {0}", demoServiceProvider.getBrokerURI());
 
         final IdentifierList domain = new IdentifierList();
@@ -178,7 +177,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
             wrt.newLine();
             wrt.close();
         } catch (IOException ex) {
-            DemoProviderGui.LOGGER.log(Level.WARNING, 
+            DemoProviderGui.LOGGER.log(Level.WARNING,
                     "Unable to write URI information to properties file {0}", ex);
         }
 
@@ -204,7 +203,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
                 mal.close();
             }
         } catch (MALException ex) {
-            DemoProviderGui.LOGGER.log(Level.WARNING, 
+            DemoProviderGui.LOGGER.log(Level.WARNING,
                     "Exception during close down of the provider {0}", ex);
         }
     }
@@ -353,10 +352,10 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
         try {
             registerPublisher();
 
-            final List<Map.Entry<UpdateHeaderList, BasicUpdateList>> updateList = generateUpdates();
+            final List<Map.Entry<UpdateHeader, BasicUpdate>> updateList = generateUpdates();
 
             if (0 < updateList.size()) {
-                for (Map.Entry<UpdateHeaderList, BasicUpdateList> entry : updateList) {
+                for (Map.Entry<UpdateHeader, BasicUpdate> entry : updateList) {
                     publisher.publish(entry.getKey(), entry.getValue());
                 }
             }
@@ -369,7 +368,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
         }
     }
 
-    private List<Map.Entry<UpdateHeaderList, BasicUpdateList>> generateUpdates() {
+    private List<Map.Entry<UpdateHeader, BasicUpdate>> generateUpdates() {
         final short currentValue = ++gCurrentValue;
         final int poolSize = gPoolSize;
         final int blockSize = gBlockSize;
@@ -380,46 +379,35 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
                     currentValue, poolSize, blockSize
                 });
 
-        final List<Map.Entry<UpdateHeaderList, BasicUpdateList>> updateList = new LinkedList<>();
+        final List<Map.Entry<UpdateHeader, BasicUpdate>> updateList = new LinkedList<>();
 
         for (int i = 0; i < poolSize;) {
-            final UpdateHeaderList hdrLst = new UpdateHeaderList();
-            final BasicUpdateList lst = new BasicUpdateList();
-
-            for (int j = 0; (j < blockSize) && (i < poolSize); ++j, ++i) {
-                generateUpdate(hdrLst, lst, currentValue, i);
-            }
-
-            updateList.add(new AbstractMap.SimpleEntry<>(hdrLst, lst));
+            BasicUpdate basic = new BasicUpdate(currentValue);
+            AttributeList keyValues = new AttributeList();
+            keyValues.add(new Identifier(String.valueOf(i)));
+            UpdateHeader hdr = new UpdateHeader(new Identifier("SomeURI"), null, keyValues);
+            updateList.add(new AbstractMap.SimpleEntry<>(hdr, basic));
         }
 
         return updateList;
     }
 
-    private void generateUpdate(final UpdateHeaderList hdrLst,
-            final BasicUpdateList lst, final short currentValue, final int i) {
-        AttributeList keyValues = new AttributeList();
-        keyValues.add(new Identifier(String.valueOf(i)));
-        hdrLst.add(new UpdateHeader(new Identifier("SomeURI"), null, keyValues));
-        lst.add(new BasicUpdate(currentValue));
-    }
-
     private static final class PublishInteractionListener implements MALPublishInteractionListener {
 
         @Override
-        public void publishDeregisterAckReceived(final MALMessageHeader header, 
+        public void publishDeregisterAckReceived(final MALMessageHeader header,
                 final Map qosProperties) throws MALException {
             DemoProviderGui.LOGGER.fine("PublishInteractionListener::publishDeregisterAckReceived");
         }
 
         @Override
-        public void publishErrorReceived(final MALMessageHeader header, 
+        public void publishErrorReceived(final MALMessageHeader header,
                 final MALErrorBody body, final Map qosProperties) throws MALException {
             DemoProviderGui.LOGGER.fine("PublishInteractionListener::publishErrorReceived");
         }
 
         @Override
-        public void publishRegisterAckReceived(final MALMessageHeader header, 
+        public void publishRegisterAckReceived(final MALMessageHeader header,
                 final Map qosProperties) throws MALException {
             DemoProviderGui.LOGGER.fine("PublishInteractionListener::publishRegisterAckReceived");
         }

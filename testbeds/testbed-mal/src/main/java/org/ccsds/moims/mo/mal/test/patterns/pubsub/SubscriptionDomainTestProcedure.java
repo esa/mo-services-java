@@ -45,6 +45,7 @@ import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.test.patterns.IPTestHandlerImpl;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -246,11 +247,11 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
             logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ','
-                    + updateHeaderList + ')');
-            notifiedDomains.add(updateHeaderList.get(0).getDomain());
+                    + updateHeader + ')');
+            notifiedDomains.add(updateHeader.getDomain());
             monitorCond.set();
         }
 

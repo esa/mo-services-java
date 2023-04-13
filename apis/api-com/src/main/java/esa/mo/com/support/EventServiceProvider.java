@@ -22,25 +22,19 @@ package esa.mo.com.support;
 
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.ccsds.moims.mo.com.event.provider.EventInheritanceSkeleton;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
-import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.NotFoundException;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -92,22 +86,6 @@ public class EventServiceProvider extends EventInheritanceSkeleton {
     }
 
     /**
-     * Publishes a set of COM events.
-     *
-     * @param updateHeaderList The update headers
-     * @param eventLinks The COM event links.
-     * @param eventBody The Com event bodies.
-     * @throws MALInteractionException On error.
-     * @throws MALException On error.
-     */
-    public void publishEvents(final UpdateHeaderList updateHeaderList,
-            final ObjectDetailsList eventLinks,
-            final ElementList eventBody)
-            throws MALInteractionException, MALException {
-        monitorEventPublisher.publish(updateHeaderList, eventLinks, eventBody);
-    }
-
-    /**
      * Publishes a single COM event.
      *
      * @param updateHeader The update header
@@ -120,25 +98,8 @@ public class EventServiceProvider extends EventInheritanceSkeleton {
             final ObjectDetails eventLink,
             final Element eventBody)
             throws MALInteractionException, MALException {
-        // Produce header
-        UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(updateHeader);
-
-        // Produce ObjectDetails
-        ObjectDetailsList eventLinks = new ObjectDetailsList();
-        eventLinks.add(eventLink);
-
-        // Produce ActivityTransferList
-        try {
-            ElementList eventBodies = MALElementsRegistry.elementToElementList(eventBody);
-            eventBodies.add(eventBody);
-
-            // We can now publish the event
-            monitorEventPublisher.publish(updateHeaderList, eventLinks, eventBodies);
-        } catch (NotFoundException ex) {
-            Logger.getLogger(EventServiceProvider.class.getName()).log(
-                    Level.SEVERE, "The ElementList could not be created!", ex);
-        }
+        // We can now publish the event
+        monitorEventPublisher.publish(updateHeader, eventLink, eventBody);
     }
 
     /**

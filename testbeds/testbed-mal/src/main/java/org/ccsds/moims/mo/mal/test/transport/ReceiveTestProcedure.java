@@ -65,7 +65,8 @@ public class ReceiveTestProcedure {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false).getStub();
+                SESSION, SESSION_NAME, QOS_LEVEL,
+                PRIORITY, false).getStub();
         return true;
     }
 

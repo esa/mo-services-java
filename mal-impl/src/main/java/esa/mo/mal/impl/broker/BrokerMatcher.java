@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.impl.broker;
 
-import esa.mo.mal.impl.pubsub.SubscriptionConsumer;
+import esa.mo.mal.impl.pubsub.SingleSubscription;
 import esa.mo.mal.impl.pubsub.UpdateKeyValues;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -56,13 +56,13 @@ public class BrokerMatcher {
      * @param searchSet list of subscriptions from customers
      * @return boolean match found or not
      */
-    public static boolean keyValuesMatchSubs(final UpdateKeyValues values, final ArrayList<SubscriptionConsumer> searchSet) {
+    public static boolean keyValuesMatchSubs(final UpdateKeyValues values, final ArrayList<SingleSubscription> searchSet) {
         if (values == null || searchSet == null) {
             return false;
         }
 
         boolean matched = false;
-        for (SubscriptionConsumer subscriptionKey : searchSet) {
+        for (SingleSubscription subscriptionKey : searchSet) {
             MALBrokerImpl.LOGGER.log(Level.FINE, "Checking: {0}\nAgainst: {1}",
                     new Object[]{values, subscriptionKey});
 

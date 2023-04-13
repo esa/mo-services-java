@@ -125,8 +125,8 @@ public class JavaServiceInfo {
                             if (type.isField()) {
                                 NamedElementReferenceWithCommentType field = type.getFieldRef();
                                 arrayList.append(prefix);
-                                prefix = ",";
-                                arrayList = arrayList.append("new org.ccsds.moims.mo.mal.structures.Identifier(\"").append(field.getName()).append("\")");
+                                prefix = ",\n            ";
+                                arrayList.append("new org.ccsds.moims.mo.mal.structures.Identifier(\"").append(field.getName()).append("\")");
                             }
                         }
                     }
@@ -257,12 +257,13 @@ public class JavaServiceInfo {
     }
 
     private List<String> generateOperationArgs(LanguageWriter file, OperationSummary op) {
-        List<String> opArgs = new LinkedList<>();
+        String initNewLine = "\n            ";
         // Operation Number
+        List<String> opArgs = new LinkedList<>();
         opArgs.add(op.getName().toUpperCase() + "_OP_NUMBER");
-        opArgs.add("new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
-        opArgs.add("" + op.getReplay());
-        opArgs.add("new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");
+        opArgs.add(initNewLine + "new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
+        opArgs.add(initNewLine + "" + op.getReplay());
+        opArgs.add(initNewLine + "new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");
 
         switch (op.getPattern()) {
             case SEND_OP:
@@ -312,21 +313,7 @@ public class JavaServiceInfo {
             if (generator.isAbstract(type)) {
                 typeArgs.add("null");
             } else {
-                if (isPubSub) {
-                    // this is a bit of a hack for now
-                    if (generator.isAttributeNativeType(type) || generator.isAttributeType(type)) {
-                        type.setList(true);
-                        TypeInfo lti = TypeUtils.convertTypeReference(generator, type);
-                        typeArgs.add(lti.getMalShortFormField());
-                        type.setList(false);
-                    } else {
-                        String field = typeInfo.getMalShortFormField();
-                        int length = field.length() - 11;
-                        typeArgs.add(field.substring(0, length) + "List.SHORT_FORM");
-                    }
-                } else {
-                    typeArgs.add(typeInfo.getMalShortFormField());
-                }
+                typeArgs.add(typeInfo.getMalShortFormField());
             }
         }
 
@@ -344,8 +331,10 @@ public class JavaServiceInfo {
         if (isPubSub) {
             return "new " + shortFormType + "[] {" + arrayArgs + "}";
         } else {
-            return initNewLine + "new org.ccsds.moims.mo.mal.MALOperationStage(" + newLine
-                    + "new org.ccsds.moims.mo.mal.structures.UOctet(" + index + ")," + newLine
+            return initNewLine + "new org.ccsds.moims.mo.mal.MALOperationStage("
+                    + newLine
+                    + "new org.ccsds.moims.mo.mal.structures.UOctet(" + index + "),"
+                    + newLine
                     + "new " + shortFormType + "[] {" + arrayArgs + "})";
         }
     }

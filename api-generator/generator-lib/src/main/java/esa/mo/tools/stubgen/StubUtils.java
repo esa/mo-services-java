@@ -281,8 +281,8 @@ public abstract class StubUtils {
         List<CompositeField> lst = new LinkedList<>();
         lst.add(firstArg);
 
-        for (List<CompositeField> elem : args) {
-            lst.addAll(elem);
+        for (List<CompositeField> fields : args) {
+            lst.addAll(fields);
         }
 
         return lst;

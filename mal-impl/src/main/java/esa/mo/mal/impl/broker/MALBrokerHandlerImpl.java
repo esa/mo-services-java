@@ -40,7 +40,7 @@ import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALDeregisterBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
@@ -140,8 +140,8 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                         msgBody.getDomain(),
                         notifyMessageSet.getHeader().getQosProps(),
                         msgBody.getSubscriptionId(),
-                        msgBody.getUpdateHeaderList(),
-                        msgBody.getUpdateList());
+                        msgBody.getUpdateHeader(),
+                        msgBody.getUpdateObjects());
             } catch (MALTransmitErrorException ex) {
                 MALBrokerImpl.LOGGER.log(Level.WARNING,
                         "Unable to send NOTIFY message:\n{0}", msgBody.toString());
@@ -212,23 +212,18 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                     MALHelper.INCORRECT_STATE_ERROR_NUMBER, msg));
         }
 
-        final UpdateHeaderList updateHeaders = publishBody.getUpdateHeaderList();
-        details.checkPublish(hdr, updateHeaders);
-
-        List<NotifyMessage> lst = new LinkedList<>();
+        final UpdateHeader updateHeaders = publishBody.getUpdateHeader();
+        List<NotifyMessage> notifyMessages = new LinkedList<>();
 
         if (updateHeaders != null) {
             Map<String, SubscriptionSource> rv = this.getConsumerSubscriptions(brokerKey);
 
-            // Iterate through all the consumer subscriptions and generate
-            // the notify list if it matches the published updates
+            // Iterate through all the consumers and generate
+            // the notify list if it matches with any of the subscriptions
             for (SubscriptionSource subSource : rv.values()) {
                 try {
-                    List<NotifyMessage> list = subSource.generateNotifyList(hdr, updateHeaders, publishBody, keyNames);
-
-                    for (NotifyMessage msg : list) {
-                        lst.add(msg);
-                    }
+                    List<NotifyMessage> list = subSource.generateNotifyMessages(hdr, updateHeaders, publishBody, keyNames);
+                    notifyMessages.addAll(list);
                 } catch (MALException ex) {
                     MALBrokerImpl.LOGGER.warning(ex.getMessage());
                     throw new MALInteractionException(new MALStandardError(
@@ -237,7 +232,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
             }
         }
 
-        return lst;
+        return notifyMessages;
     }
 
     private synchronized void report(final String key) {

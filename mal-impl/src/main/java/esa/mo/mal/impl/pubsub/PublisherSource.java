@@ -55,36 +55,4 @@ public final class PublisherSource {
         }
         MALBrokerImpl.LOGGER.log(Level.FINE, "  END Provider ( {0} )", uri);
     }
-
-    /*
-    public void checkPublish(final MALMessageHeader hdr, 
-            final UpdateHeaderList updateList) throws MALInteractionException {
-        if (StructureHelper.isSubDomainOf(domain, hdr.getDomain())) {
-            // Check if the number of key matches:
-            for (final UpdateHeader update : updateList) {
-                if(update.getKeyValues().size() != keySet.size()) {
-                    MALBrokerImpl.LOGGER.warning("The number of published keys does not match!");
-                    throw new MALInteractionException(new MALStandardError(
-                            MALHelper.UNKNOWN_ERROR_NUMBER, "The number of published keys does not match!"));
-                }
-            }
-        } else {
-            MALBrokerImpl.LOGGER.warning("Provider not allowed to publish to the domain");
-            throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null));
-        }
-    }
-    */
-    public void checkPublish(final MALMessageHeader hdr, 
-            final UpdateHeaderList updateList) throws MALInteractionException {
-        // Check if the number of key matches:
-        /*
-        for (final UpdateHeader update : updateList) {
-            if(update.getKeyValues().size() != keySet.size()) {
-                MALBrokerImpl.LOGGER.warning("The number of published keys does not match!");
-                throw new MALInteractionException(new MALStandardError(
-                        MALHelper.UNKNOWN_ERROR_NUMBER, "The number of published keys does not match!"));
-            }
-        }
-        */
-    }
 }

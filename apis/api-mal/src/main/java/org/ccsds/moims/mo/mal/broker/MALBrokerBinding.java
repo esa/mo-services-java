@@ -73,8 +73,8 @@ public interface MALBrokerBinding {
      * @param domainId Domain of the NOTIFY message
      * @param notifyQosProps QoS properties of the NOTIFY message
      * @param subscriptionId Subscription identifier
-     * @param updateHeaderList List of update headers
-     * @param updateList Lists of updates
+     * @param updateHeader Update header
+     * @param updateObjects Update objects
      * @return The sent MALMessage.
      * @throws java.lang.IllegalArgumentException If at least one of the
      * arguments, except ‘notifyQoSProps’, is NULL
@@ -95,8 +95,8 @@ public interface MALBrokerBinding {
             IdentifierList domainId,
             Map notifyQosProps,
             Identifier subscriptionId,
-            UpdateHeaderList updateHeaderList,
-            java.util.List... updateList)
+            UpdateHeader updateHeader,
+            Object... updateObjects)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**
@@ -116,8 +116,8 @@ public interface MALBrokerBinding {
      * @param notifyQosProps QoS properties of the NOTIFY message
      * @param notifyPriority Priority of the NOTIFY message
      * @param subscriptionId Subscription identifier
-     * @param updateHeaderList List of update headers
-     * @param updateList Lists of updates
+     * @param updateHeader Update header
+     * @param updateObjects Update objects
      * @return The sent MALMessage.
      * @throws java.lang.IllegalArgumentException If at least one of the
      * arguments, except ‘notifyQoSProps’, is NULL
@@ -140,8 +140,8 @@ public interface MALBrokerBinding {
             Map notifyQosProps,
             UInteger notifyPriority,
             Identifier subscriptionId,
-            UpdateHeaderList updateHeaderList,
-            java.util.List... updateList)
+            UpdateHeader updateHeader,
+            Object... updateObjects)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**

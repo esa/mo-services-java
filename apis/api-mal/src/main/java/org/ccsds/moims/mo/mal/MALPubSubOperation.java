@@ -27,7 +27,7 @@ import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 
 /**
  * Class representing a Publish-Subscribe operation.
@@ -157,14 +157,18 @@ public class MALPubSubOperation extends MALOperation {
 
         final Long[] pSF = new Long[updateListShortForms.length + 1];
         final Long[] nSF = new Long[updateListShortForms.length + 2];
+
         for (int i = 0; i < updateListShortForms.length; i++) {
             final Long v = updateListShortForms[i];
             pSF[i + 1] = v;
             nSF[i + 2] = v;
         }
+        // Publish message:
+        pSF[0] = UpdateHeader.SHORT_FORM;
+
+        // Notify message:
         nSF[0] = Attribute.IDENTIFIER_SHORT_FORM;
-        nSF[1] = UpdateHeaderList.SHORT_FORM;
-        pSF[0] = nSF[1];
+        nSF[1] = UpdateHeader.SHORT_FORM;
 
         this.pubSubPublishStage = new MALOperationStage(PUBLISH_STAGE, pSF);
         this.pubSubNotifyStage = new MALOperationStage(NOTIFY_STAGE, nSF);
@@ -179,8 +183,7 @@ public class MALPubSubOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber)
-            throws IllegalArgumentException {
+    public MALOperationStage getOperationStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }

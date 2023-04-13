@@ -175,7 +175,7 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
                 listener.monitorCond.reset();
             }
 
-            if (listener.getNotifiedUpdateHeaders().size() != 1) {
+            if (listener.getNotifiedUpdateHeader() == null) {
                 return false;
             }
         }
@@ -186,30 +186,30 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
 
         private final BooleanCondition monitorCond = new BooleanCondition();
 
-        private UpdateHeaderList notifiedUpdateHeaders;
+        private UpdateHeader notifiedUpdateHeader;
 
-        private TestUpdateList notifiedUpdates;
+        private TestUpdate notifiedUpdate;
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
-            notifiedUpdateHeaders = updateHeaderList;
-            notifiedUpdates = updateList;
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
+            notifiedUpdateHeader = updateHeader;
+            notifiedUpdate = update;
             monitorCond.set();
         }
 
         public void reset() {
-            notifiedUpdateHeaders = null;
-            notifiedUpdates = null;
+            notifiedUpdateHeader = null;
+            notifiedUpdate = null;
         }
 
-        public TestUpdateList getNotifiedUpdates() {
-            return notifiedUpdates;
+        public UpdateHeader getNotifiedUpdateHeader() {
+            return notifiedUpdateHeader;
         }
 
-        public UpdateHeaderList getNotifiedUpdateHeaders() {
-            return notifiedUpdateHeaders;
+        public TestUpdate getNotifiedUpdate() {
+            return notifiedUpdate;
         }
     }
 }

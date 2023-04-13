@@ -45,7 +45,7 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     // The code will wait on this PERIOD: ~630 times !
-    private final static int PERIOD = 250; // in ms
+    public static final int PERIOD = 250; // in ms
     private final HashMap<PublisherKey, MonitorPublisher> publishers;
     private final HashMap<PublisherKey, MonitorMultiPublisher> publishersMulti;
     protected MonitorPublishInteractionListener defaultListener = new MonitorPublishInteractionListener();
@@ -454,28 +454,33 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
         UShort opNumber = null;
         try {
-            if (publishUpdate.getTestMultiType()) {
-                opNumber = IPTestServiceInfo.MONITORMULTI_OP.getNumber();
-                MonitorMultiPublisher publisher = getMonitorMultiPublisher(
-                        publishUpdate.getDomain(),
-                        publishUpdate.getNetworkZone(),
-                        publishUpdate.getSession(),
-                        publishUpdate.getSessionName(),
-                        publishUpdate.getQos(),
-                        publishUpdate.getPriority());
+            for (int i = 0; i < testUpdateList.size(); i++) {
+                UpdateHeader updateHeader = updateHeaderList.get(i);
+                TestUpdate testUpdate = testUpdateList.get(i);
 
-                publisher.publish(updateHeaderList, testUpdateList, testUpdateList);
-            } else {
-                // Normal case (not TestMultiType)
-                opNumber = IPTestServiceInfo.MONITOR_OP.getNumber();
-                MonitorPublisher publisher = getMonitorPublisher(
-                        publishUpdate.getDomain(),
-                        publishUpdate.getNetworkZone(),
-                        publishUpdate.getSession(),
-                        publishUpdate.getSessionName(),
-                        publishUpdate.getQos(),
-                        publishUpdate.getPriority());
-                publisher.publish(updateHeaderList, testUpdateList);
+                if (publishUpdate.getTestMultiType()) {
+                    opNumber = IPTestServiceInfo.MONITORMULTI_OP.getNumber();
+                    MonitorMultiPublisher publisher = getMonitorMultiPublisher(
+                            publishUpdate.getDomain(),
+                            publishUpdate.getNetworkZone(),
+                            publishUpdate.getSession(),
+                            publishUpdate.getSessionName(),
+                            publishUpdate.getQos(),
+                            publishUpdate.getPriority());
+
+                    publisher.publish(updateHeader, testUpdate, testUpdateList);
+                } else {
+                    // Normal case (not TestMultiType)
+                    opNumber = IPTestServiceInfo.MONITOR_OP.getNumber();
+                    MonitorPublisher publisher = getMonitorPublisher(
+                            publishUpdate.getDomain(),
+                            publishUpdate.getNetworkZone(),
+                            publishUpdate.getSession(),
+                            publishUpdate.getSessionName(),
+                            publishUpdate.getQos(),
+                            publishUpdate.getPriority());
+                    publisher.publish(updateHeader, testUpdate);
+                }
             }
         } catch (MALInteractionException exc) {
             LoggingBase.logMessage("Publish error: " + exc);
@@ -705,7 +710,11 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
         MALException expectedException = null;
         try {
-            publisher.publish(updateHeaderList, testUpdateList);
+            for (int i = 0; i < updateHeaderList.size(); i++) {
+                UpdateHeader updateHeader = updateHeaderList.get(i);
+                TestUpdate testUpdate = testUpdateList.get(i);
+                publisher.publish(updateHeader, testUpdate);
+            }
         } catch (MALTransmitMultipleErrorException exc) {
             expectedException = exc;
         }

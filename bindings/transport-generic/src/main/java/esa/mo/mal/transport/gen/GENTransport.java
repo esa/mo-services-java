@@ -404,7 +404,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             final GENMessage msg) throws MALTransmitErrorException {
         MALMessageHeader header = msg.getHeader();
 
-        if ((null == header.getTo()) || (null == header.getTo().getValue())) {
+        if (header.getTo() == null || header.getTo().getValue() == null) {
             throw new MALTransmitErrorException(header,
                     new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                             "URI To field must not be null"), qosProperties);
@@ -649,7 +649,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             // This is bad, Java errors are serious, 
             // so inform the other side if we can
             LOGGER.log(Level.SEVERE,
-                    "Error occurred when processing message : {0}", e);
+                    "Error occurred when processing message!", e);
 
             final StringWriter wrt = new StringWriter();
             e.printStackTrace(new PrintWriter(wrt));

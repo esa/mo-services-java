@@ -41,15 +41,14 @@ import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
 import org.ccsds.moims.mo.malprototype.iptest2.provider.IPTest2InheritanceSkeleton;
 import org.ccsds.moims.mo.malprototype.iptest2.provider.MonitorPublisher;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
 
 public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton {
 
@@ -90,15 +89,12 @@ public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton {
                 _TestPublishUpdate.getQos(),
                 new Hashtable(),
                 _TestPublishUpdate.getPriority());
-        UpdateHeaderList updateHeaderList = _TestPublishUpdate.getUpdateHeaders();
-        TestUpdateList testUpdateList = _TestPublishUpdate.getUpdates();
+        UpdateHeader updateHeader = _TestPublishUpdate.getUpdateHeaders().get(0);
+        TestUpdate testUpdate = _TestPublishUpdate.getUpdates().get(0);
+        updateHeader.setDomain(_TestPublishUpdate.getDomain());
+        updateHeader.setSource(new Identifier(""));
 
-        for (UpdateHeader updateHeader : updateHeaderList) {
-            updateHeader.setDomain(_TestPublishUpdate.getDomain());
-            updateHeader.setSource(new Identifier(""));
-        }
-
-        publisher.publish(updateHeaderList, testUpdateList);
+        publisher.publish(updateHeader, testUpdate);
     }
 
     public void testMultipleNotify(TestPublishUpdate _TestPublishRegister, MALInteraction interaction)

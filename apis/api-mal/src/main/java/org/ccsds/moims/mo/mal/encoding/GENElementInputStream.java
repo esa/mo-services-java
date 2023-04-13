@@ -20,14 +20,18 @@
  */
 package org.ccsds.moims.mo.mal.encoding;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALOperationStage;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 
 /**
  * Extends the MALElementInputStream interface to enable aware transport access
@@ -57,9 +61,9 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             // error messages have a standard format
             if (ctx.getBodyElementIndex() == 0) {
                 return dec.decodeUInteger();
-            } else {
-                return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
             }
+
+            return decodeSubElement(dec.decodeAbstractElementType(true), ctx);
         }
 
         if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
@@ -72,6 +76,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             int idx = ctx.getBodyElementIndex();
             return dec.decodeElement((Element) stage.getElementShortForms()[idx]);
              */
+            int index = ctx.getBodyElementIndex();
 
             switch (ctx.getHeader().getInteractionStage().getValue()) {
                 case MALPubSubOperation._REGISTER_STAGE:
@@ -81,40 +86,19 @@ public abstract class GENElementInputStream implements MALElementInputStream {
                 case MALPubSubOperation._DEREGISTER_STAGE:
                     return dec.decodeElement(new IdentifierList());
                 case MALPubSubOperation._PUBLISH_STAGE: {
-                    int idx = ctx.getBodyElementIndex();
-                    if (0 == idx) {
-                        return dec.decodeElement(new UpdateHeaderList());
+                    if (index == 0) {
+                        return dec.decodeElement(new UpdateHeader());
                     } else {
-                        Object sf = ctx.getOperation()
-                                .getOperationStage(ctx.getHeader().getInteractionStage())
-                                .getElementShortForms()[ctx.getBodyElementIndex()];
-
-                        // element is defined as an abstract type
-                        if (null == sf) {
-                            sf = dec.decodeAbstractElementType(true);
-                        }
-
-                        return decodeSubElement((Long) sf, ctx);
+                        return decodePublishNotifyMessages(ctx);
                     }
                 }
                 case MALPubSubOperation._NOTIFY_STAGE: {
-                    int index = ctx.getBodyElementIndex();
-
                     if (index == 0) {
                         return dec.decodeIdentifier();
                     } else if (index == 1) {
-                        return dec.decodeElement(new UpdateHeaderList());
+                        return dec.decodeElement(new UpdateHeader());
                     } else {
-                        Object sf = ctx.getOperation()
-                                .getOperationStage(ctx.getHeader().getInteractionStage())
-                                .getElementShortForms()[ctx.getBodyElementIndex()];
-
-                        // element is defined as an abstract type
-                        if (sf == null) {
-                            sf = dec.decodeAbstractElementType(true);
-                        }
-
-                        return decodeSubElement((Long) sf, ctx);
+                        return decodePublishNotifyMessages(ctx);
                     }
                 }
                 default:
@@ -122,12 +106,36 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             }
         }
 
-        if (null == element) {
+        if (element == null) {
             Long shortForm = dec.decodeAbstractElementType(true);
             return decodeSubElement(shortForm, ctx);
         } else {
             return dec.decodeNullableElement((Element) element);
         }
+    }
+
+    private Object decodePublishNotifyMessages(final MALEncodingContext ctx) throws MALException {
+        UOctet stage = ctx.getHeader().getInteractionStage();
+        MALOperationStage op = ctx.getOperation().getOperationStage(stage);
+        Object sf = op.getElementShortForms()[ctx.getBodyElementIndex()];
+
+        // element is defined as an abstract type
+        if (sf == null) {
+            sf = dec.decodeAbstractElementType(true);
+
+            if (sf == null) {
+                return null;
+            }
+        }
+
+        try {
+            Element e = MALContextFactory.getElementsRegistry().createElement((Long) sf);
+            return dec.decodeNullableElement(e);
+        } catch (Exception ex) {
+            Logger.getLogger(GENElementInputStream.class.getName()).log(Level.SEVERE,
+                    "The Element could not be created or decoded!", ex);
+        }
+        return null;
     }
 
     /**
@@ -158,7 +166,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             try {
                 return dec.decodeElement(e);
             } catch (Exception ex) {
-                throw new MALException("Unable to decode element: " + e.toString(), ex);
+                throw new MALException("Unable to decode element '" + e.toString(), ex);
             }
         } catch (Exception ex) {
             throw new MALException("Unable to create element for short form part: " + shortForm, ex);

@@ -200,12 +200,14 @@ public class PublishRegisterTestProcedure extends LoggingBase {
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate updateList, Map qosProperties) {
             LoggingBase.logMessage("PublishRegisterTestProcedure.MonitorListener.monitorNotifyReceived: "
             );
-            notifiedUpdateHeaders = updateHeaderList;
-            notifiedUpdates = updateList;
+            notifiedUpdateHeaders = new UpdateHeaderList();
+            notifiedUpdateHeaders.add(updateHeader);
+            notifiedUpdates = new TestUpdateList();
+            notifiedUpdates.add(updateList);
         }
 
         public TestUpdateList getNotifiedUpdates() {

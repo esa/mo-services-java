@@ -181,10 +181,10 @@ public class SubscriptionSessionNameTestProcedure extends LoggingBase {
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
             logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ','
-                    + updateHeaderList + ')');
+                    + updateHeader + ')');
             receivedNotify.addElement(msgHeader);
             monitorCond.set();
         }

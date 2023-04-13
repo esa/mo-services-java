@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.transport.jms;
 
-import java.util.List;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -82,8 +81,8 @@ public class JMSBrokerBinding implements MALBrokerBinding {
     @Override
     public MALMessage sendNotify(UShort area, UShort service, UShort operation,
             UOctet version, URI subscriber, Long transactionId, IdentifierList domainId,
-            Map notifyQosProps, Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-            List... updateList) throws IllegalArgumentException, MALInteractionException, MALException {
+            Map notifyQosProps, Identifier subscriptionId, UpdateHeader updateHeader,
+            Object... updateObjects) throws IllegalArgumentException, MALInteractionException, MALException {
         JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendNotify1");
         return null;
     }
@@ -92,7 +91,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
     public MALMessage sendNotify(MALOperation op, URI subscriber, Long transactionId,
             IdentifierList domainId, Identifier networkZone, SessionType sessionType,
             Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority,
-            Identifier subscriptionId, UpdateHeaderList updateHeaderList, List... updateList) throws
+            Identifier subscriptionId, UpdateHeader updateHeader, Object... updateObjects) throws
             IllegalArgumentException, MALInteractionException, MALException {
         JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendNotify2");
         return null;

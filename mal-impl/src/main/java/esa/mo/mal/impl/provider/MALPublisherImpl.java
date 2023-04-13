@@ -24,7 +24,6 @@ import esa.mo.mal.impl.MessageDetails;
 import esa.mo.mal.impl.MessageSend;
 import esa.mo.mal.impl.util.StructureHelper;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -146,7 +145,7 @@ class MALPublisherImpl implements MALPublisher {
     }
 
     @Override
-    public MALMessage publish(final UpdateHeaderList updateHeaderList, final List... updateLists)
+    public MALMessage publish(final UpdateHeader updateHeader, final Object... updateValues)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(parent.getEndpoint(),
                 parent.getURI(),
@@ -171,9 +170,9 @@ class MALPublisherImpl implements MALPublisher {
         if (null != tid) {
             LOGGER.log(Level.FINE, "Publisher using transaction Id of: {0}", tid);
 
-            final Object[] body = new Object[updateLists.length + 1];
-            body[0] = updateHeaderList;
-            System.arraycopy(updateLists, 0, body, 1, updateLists.length);
+            final Object[] body = new Object[updateValues.length + 1];
+            body[0] = updateHeader;
+            System.arraycopy(updateValues, 0, body, 1, updateValues.length);
 
             return handler.onewayInteraction(details, tid, operation,
                     MALPubSubOperation.PUBLISH_STAGE, body);

@@ -50,7 +50,7 @@ public class UInteger implements Attribute {
      * @param value Value to initialise with.
      */
     public UInteger(final long value) {
-        if (0 > value) {
+        if (value < 0) {
             throw new IllegalArgumentException("UInteger argument must not be negative");
         }
         if (UInteger.MAX_VALUE < value) {

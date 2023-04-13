@@ -34,7 +34,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Simple class that represents a MAL subscription.
  */
-public final class SubscriptionConsumer {
+public final class SingleSubscription {
 
     /**
      * Hash function magic number.
@@ -56,7 +56,7 @@ public final class SubscriptionConsumer {
      * @param operation subscription operation
      * @param filters subscription filters
      */
-    public SubscriptionConsumer(final IdentifierList domain, final UShort area,
+    public SingleSubscription(final IdentifierList domain, final UShort area,
             final UShort service, final UShort operation, final SubscriptionFilterList filters) {
         this.domain = domain;
         this.area = area;
@@ -72,7 +72,7 @@ public final class SubscriptionConsumer {
      * @param hdr Subscription message header.
      * @param filters The filters of the subscription.
      */
-    public SubscriptionConsumer(final IdentifierList domain,
+    public SingleSubscription(final IdentifierList domain,
             final MALMessageHeader hdr, final SubscriptionFilterList filters) {
         this(domain, hdr.getServiceArea(), hdr.getService(), hdr.getOperation(), filters);
     }
@@ -96,7 +96,7 @@ public final class SubscriptionConsumer {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final SubscriptionConsumer other = (SubscriptionConsumer) obj;
+        final SingleSubscription other = (SingleSubscription) obj;
         if (!super.equals(obj)) {
             return false;
         }

@@ -33,29 +33,27 @@
 package org.ccsds.moims.mo.testbed.transport;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALNotifyBody;
 
 public class TestNotifyBody implements MALNotifyBody {
 
-    private Identifier id;
+    private final Identifier id;
 
-    private UpdateHeaderList updateHeaders;
+    private final UpdateHeader updateHeader;
 
-    private List[] updateLists;
+    private final Object[] updateObjects;
 
-    public TestNotifyBody(Identifier id, UpdateHeaderList updateHeaders,
-            List[] updateLists) {
+    public TestNotifyBody(Identifier id, UpdateHeader updateHeader, Object[] updateObjects) {
         super();
         this.id = id;
-        this.updateHeaders = updateHeaders;
-        this.updateLists = updateLists;
+        this.updateHeader = updateHeader;
+        this.updateObjects = updateObjects;
     }
 
     public MALEncodedBody getBodyElement() throws MALException {
@@ -68,9 +66,9 @@ public class TestNotifyBody implements MALNotifyBody {
             case 0:
                 return id;
             case 1:
-                return updateHeaders;
+                return updateHeader;
             default:
-                return updateLists[index - 2];
+                return updateObjects[index - 2];
         }
     }
 
@@ -86,34 +84,19 @@ public class TestNotifyBody implements MALNotifyBody {
         throw new MALException("Invalid call");
     }
 
-    public Object getUpdate(int listIndex, int updateIndex) throws MALException {
-        return updateLists[listIndex].get(updateIndex);
+    public UpdateHeader getUpdateHeader() throws MALException {
+        return updateHeader;
     }
 
-    public int getUpdateCount() throws MALException {
-        return updateHeaders.size();
-    }
-
-    public UpdateHeaderList getUpdateHeaderList() throws MALException {
-        return updateHeaders;
-    }
-
-    public List getUpdateList(int listIndex, List arg0) throws MALException {
-        return updateLists[listIndex];
-    }
-
-    public List[] getUpdateLists(List... arg0) throws MALException {
-        return updateLists;
-    }
-
+    @Override
     public Identifier getSubscriptionId() throws MALException {
         return id;
     }
 
     @Override
     public String toString() {
-        return "TestNotifyBody [id=" + id + ", updateHeaders=" + updateHeaders
-                + ", updateLists=" + Arrays.toString(updateLists) + "]";
+        return "TestNotifyBody [id=" + id + ", updateHeader=" + updateHeader
+                + ", updateObjects=" + Arrays.toString(updateObjects) + "]";
     }
 
     public MALEncodedBody getEncodedBody() throws MALException {

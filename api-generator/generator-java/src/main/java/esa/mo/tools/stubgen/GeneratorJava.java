@@ -189,10 +189,10 @@ public class GeneratorJava extends GeneratorLangs {
         method.addMethodCloseStatement();
 
         List<CompositeField> argList = new LinkedList<>();
-        argList.add(createCompositeElementsDetails(file, true, "updateHeaderList",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true,
+        argList.add(createCompositeElementsDetails(file, true, "updateHeader",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false), true, true,
                 "The headers of the updates being added"));
-        argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes(), true));
+        argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes(), false));
 
         String argNameList = "";
 
@@ -212,7 +212,7 @@ public class GeneratorJava extends GeneratorLangs {
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.publish(updateHeaderList" + argNameList + ")");
+        method.addLine("publisherSet.publish(updateHeader" + argNameList + ")");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
@@ -406,11 +406,14 @@ public class GeneratorJava extends GeneratorLangs {
         method = decodeMethodOpen(file, elementType);
         method.addLine("org.ccsds.moims.mo.mal.MALListDecoder listDecoder = decoder.createListDecoder(this)");
         method.addLine("int decodedSize = listDecoder.size()");
+        method.addLine("if (decodedSize > 1000000) {", false); // Adds a safe check! Limit it to a max of 1 million entries!
+        method.addLine("    throw new org.ccsds.moims.mo.mal.MALException(\"The decoded list size is too big: \" + decodedSize)");
+        method.addLine("}", false);
         method.addLine("if (decodedSize > 0) {", false);
-        method.addLine("  ensureCapacity(decodedSize)");
+        method.addLine("    ensureCapacity(decodedSize)");
         method.addLine("}", false);
         method.addLine("while (listDecoder.hasNext()) {", false);
-        method.addLine("  add(" + listElement.getDecodeCast() + "listDecoder.decodeNullable" + listElement.getDecodeCall()
+        method.addLine("    add(" + listElement.getDecodeCast() + "listDecoder.decodeNullable" + listElement.getDecodeCall()
                 + "(" + (listElement.isDecodeNeedsNewCall() ? listElement.getNewCall() : "") + "))");
         method.addLine("}", false);
         method.addLine("return this");

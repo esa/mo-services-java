@@ -28,10 +28,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 
@@ -40,8 +43,9 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
  */
 public class SubscriptionSource {
 
+    // Subscriptions from the this consumer by subscriptionId
     private final HashMap<String, Subscriptions> subs = new HashMap<>();
-    private final ArrayList<SubscriptionConsumer> required = new ArrayList<>();
+    private final ArrayList<SingleSubscription> required = new ArrayList<>();
     private final NotifyMessageHeader msgHeaderDetails;
     private final String signatureURI;
     private int commsErrorCount = 0;
@@ -111,32 +115,50 @@ public class SubscriptionSource {
      * Creates the list of Notify messages to be sent.
      *
      * @param srcHdr The source Header.
-     * @param updateHeaderList The list of Update Headers.
+     * @param updateHeader The list of Update Headers.
      * @param publishBody The publish body.
      * @param keyNames The key names.
      * @return the list of Notify messages.
      * @throws MALException if one of the Notify messages could not be
      * generated.
      */
-    public List<NotifyMessage> generateNotifyList(final MALMessageHeader srcHdr,
-            final UpdateHeaderList updateHeaderList,
-            final MALPublishBody publishBody,
+    public List<NotifyMessage> generateNotifyMessages(final MALMessageHeader srcHdr,
+            final UpdateHeader updateHeader, final MALPublishBody publishBody,
             IdentifierList keyNames) throws MALException {
-        MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signatureURI);
+        MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SubscriptionSource: {0}", signatureURI);
 
-        IdentifierList srcDomainId = null;
+        IdentifierList srcDomainId = (updateHeader == null) ? null : updateHeader.getDomain();
+        AttributeList keyValues = updateHeader.getKeyValues();
+
+        if (keyValues.size() != keyNames.size()) {
+            throw new MALException("The keyValues size don't match the providerNames "
+                    + "size: " + keyValues.size() + "!=" + keyNames.size()
+                    + "\nkeyNames: " + keyNames.toString()
+                    + "\nkeyValues: " + keyValues.toString());
+        }
+
+        // Prepare the Key-Value list
+        List<NamedValue> providerKeyValues = new ArrayList<>();
+
+        for (int j = 0; j < keyNames.size(); j++) {
+            Identifier name = keyNames.get(j);
+            Object value = keyValues.get(j);
+            value = (Attribute) Attribute.javaType2Attribute(value);
+            providerKeyValues.add(new NamedValue(name, (Attribute) value));
+        }
+
+        UpdateKeyValues providerUpdates = new UpdateKeyValues(srcHdr, srcDomainId, providerKeyValues);
         final List<NotifyMessage> notifyMsgs = new LinkedList<>();
 
+        // Iterate through all existing subscriptions from this consumer
         for (Subscriptions sub : subs.values()) {
-            if (!updateHeaderList.isEmpty()) {
-                srcDomainId = updateHeaderList.get(0).getDomain();
-            }
-
-            NotifyMessageBody subUpdate = sub.generateNotifyMessage(
-                    srcHdr, srcDomainId, updateHeaderList, publishBody, keyNames);
-
-            if (subUpdate != null) {
-                notifyMsgs.add(new NotifyMessage(msgHeaderDetails, subUpdate));
+            if (sub.matchesAnySubscription(providerUpdates)) {
+                // add update for this consumer because at least one
+                // of the subscriptions matched the published Keys
+                Object[] updateObjects = publishBody.getUpdateObjects();
+                NotifyMessageBody body = new NotifyMessageBody(sub.getSubscriptionId(),
+                        updateHeader, updateObjects, srcHdr, srcDomainId);
+                notifyMsgs.add(new NotifyMessage(msgHeaderDetails, body));
             }
         }
 

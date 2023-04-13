@@ -21,7 +21,6 @@
 package esa.mo.mal.impl.broker;
 
 import esa.mo.mal.impl.util.MALClose;
-import java.util.List;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -76,8 +75,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final IdentifierList domainId,
             final Map notifyQosProps,
             final Identifier subscriptionId,
-            final UpdateHeaderList updateHeaderList,
-            final List... updateList)
+            final UpdateHeader updateHeader,
+            final Object... updateObjects)
             throws IllegalArgumentException, MALInteractionException, MALException {
         return transportDelegate.sendNotify(area,
                 service,
@@ -88,8 +87,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
                 domainId,
                 notifyQosProps,
                 subscriptionId,
-                updateHeaderList,
-                updateList);
+                updateHeader,
+                updateObjects);
     }
 
     @Override
@@ -104,8 +103,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final Map notifyQosProps,
             final UInteger notifyPriority,
             final Identifier subscriptionId,
-            final UpdateHeaderList updateHeaderList,
-            final List... updateList)
+            final UpdateHeader updateHeader,
+            final Object... updateObjects)
             throws IllegalArgumentException, MALInteractionException, MALException {
         return transportDelegate.sendNotify(op,
                 subscriber,
@@ -118,8 +117,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
                 notifyQosProps,
                 notifyPriority,
                 subscriptionId,
-                updateHeaderList,
-                updateList);
+                updateHeader,
+                updateObjects);
     }
 
     @Override

@@ -20,12 +20,11 @@
  */
 package esa.mo.mal.impl.pubsub;
 
-import java.util.List;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
@@ -60,17 +59,17 @@ public class NotifyMessageBody {
     /**
      * PubSub update headers.
      */
-    private final UpdateHeaderList updateHeaderList;
+    private final UpdateHeader updateHeader;
     /**
      * PubSub updates.
      */
-    private final java.util.List[] updateList;
+    private final Object[] updateObjects;
 
-    public NotifyMessageBody(Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-            java.util.List[] notifyList, MALMessageHeader srcHdr, IdentifierList domain) {
+    public NotifyMessageBody(Identifier subscriptionId, UpdateHeader updateHeader,
+            Object[] notifyList, MALMessageHeader srcHdr, IdentifierList domain) {
         this.subscriptionId = subscriptionId;
-        this.updateHeaderList = updateHeaderList;
-        this.updateList = notifyList;
+        this.updateHeader = updateHeader;
+        this.updateObjects = notifyList;
         this.domain = domain;
         this.area = srcHdr.getServiceArea();
         this.service = srcHdr.getService();
@@ -86,7 +85,7 @@ public class NotifyMessageBody {
         buf.append(area).append("/").append(service).append("/");
         buf.append(version).append("/").append(operation);
         buf.append("\n >> subscriptionId: ").append(subscriptionId);
-        buf.append("\n >> updateHeaderList: ").append(updateHeaderList);
+        buf.append("\n >> updateHeaderList: ").append(updateHeader);
         return buf.toString();
     }
 
@@ -114,11 +113,11 @@ public class NotifyMessageBody {
         return subscriptionId;
     }
 
-    public UpdateHeaderList getUpdateHeaderList() {
-        return updateHeaderList;
+    public UpdateHeader getUpdateHeader() {
+        return updateHeader;
     }
 
-    public List[] getUpdateList() {
-        return updateList;
+    public Object[] getUpdateObjects() {
+        return updateObjects;
     }
 }
