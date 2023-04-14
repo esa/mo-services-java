@@ -26,7 +26,6 @@ import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 
 /**
@@ -37,6 +36,7 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
     private static final long serialVersionUID = 222222222222227L;
     private final int offset;
     private UpdateHeader header = null;
+    private Object[] updateObjects = null;
 
     /**
      * Constructor.
@@ -111,7 +111,9 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
 
     @Override
     public UpdateHeader getUpdateHeader() throws MALException {
-        header = (UpdateHeader) getBodyElement(offset, new UpdateHeader());
+        if (header == null) {
+            header = (UpdateHeader) getBodyElement(offset, new UpdateHeader());
+        }
         return header;
     }
 
@@ -119,12 +121,13 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
     public Object[] getUpdateObjects() throws MALException {
         decodeMessageBody();
 
-        final Object[] updateObjects = new Object[messageParts.length - offset - 1];
+        if (updateObjects == null) {
+            updateObjects = new Object[messageParts.length - offset - 1];
 
-        for (int i = 0; i < updateObjects.length; i++) {
-            updateObjects[i] = (Object) messageParts[offset + 1 + i];
+            for (int i = 0; i < updateObjects.length; i++) {
+                updateObjects[i] = (Object) messageParts[offset + 1 + i];
+            }
         }
-
         return updateObjects;
     }
 
@@ -133,11 +136,5 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
         decodeMessageBody();
 
         return (Object) messageParts[offset + 1 + updateIndex];
-    }
-
-    @Override
-    public MALEncodedElement getEncodedUpdate(final int updateIndex) throws MALException {
-        //ToDo
-        throw new MALException("Not supported yet.");
     }
 }

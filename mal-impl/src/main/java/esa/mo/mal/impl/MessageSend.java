@@ -713,13 +713,16 @@ public class MessageSend {
             endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "(1) Error returning error to consumer: " + destination, ex);
+                    "(1) Error occurred while trying to return error to consumer: "
+                    + destination, ex);
         } catch (MALTransmitErrorException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "(2) Error returning error to consumer: " + destination, ex);
+                    "(2) Error occurred while trying to return error to consumer: "
+                    + destination, ex);
         } catch (RuntimeException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "(3) Error returning error to consumer: " + destination, ex);
+                    "(3) Error occurred while trying to return error to consumer: "
+                    + destination, ex);
         }
 
         return msg;

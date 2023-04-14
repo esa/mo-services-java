@@ -22,9 +22,8 @@ package esa.mo.mal.impl.pubsub;
 
 import esa.mo.mal.impl.broker.MALBrokerImpl;
 import java.util.logging.Level;
-import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 
 /**
  * Represents a publisher (provider) in a broker, so contains the list of
@@ -49,7 +48,7 @@ public final class PublisherSource {
 
     public void report() {
         MALBrokerImpl.LOGGER.log(Level.FINE, "  START Provider ( {0} )", uri);
-        // MALBrokerImpl.LOGGER.log(Level.FINE, "    Domain : {0}", StructureHelper.domainToString(domain));
+
         for (Identifier key : subscriptionKeyNames) {
             MALBrokerImpl.LOGGER.log(Level.FINE, "    Allowed key: {0}", key);
         }

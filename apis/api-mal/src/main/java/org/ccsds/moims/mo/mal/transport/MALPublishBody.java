@@ -49,18 +49,8 @@ public interface MALPublishBody extends MALMessageBody {
      * The method returns an Update from the message.
      *
      * @param updateIndex Index of the update, starting from 0.
-     * @return The decoded update.
+     * @return The decoded update value on the provided index.
      * @throws MALException If an error occurs
      */
     Object getUpdateObject(final int updateIndex) throws MALException;
-
-    /**
-     * The method returns an encoded Update from the message.
-     *
-     * @param updateIndex Index of the update, starting from 0.
-     * @return The encoded update.
-     * @throws MALException If the transport encoding format does support
-     * separately decoding the updates or if another error occurs.
-     */
-    MALEncodedElement getEncodedUpdate(int updateIndex) throws MALException;
 }
