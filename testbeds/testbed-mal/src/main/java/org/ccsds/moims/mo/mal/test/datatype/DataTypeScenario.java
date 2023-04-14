@@ -29,7 +29,6 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Composite;
 import org.ccsds.moims.mo.mal.structures.CompositeList;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
@@ -39,10 +38,7 @@ import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResp
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
-import org.ccsds.moims.mo.malprototype.structures.AbstractComposite;
 import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
-import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractField;
-import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractFieldList;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -523,19 +519,16 @@ public class DataTypeScenario extends LoggingBase {
         logMessage("Starting polymorphic AbstractComposite list parameter test...");
         String rv;
         AbstractCompositeList res;
-//      try {
-        // the next statement does not compile as a StructureWithAbstractFieldList
-        // (i.e. java.util.ArrayList<StructureWithAbstractField> in the current mapping)
-        // cannot be converted to a AbstractCompositeList
-        // (i.e. java.util.ArrayList<Element> in the current mapping)
-//        res = getDataTestStub().testPolymorphicAbstractCompositeList(TestData.testStructureWithAbstractFieldSingleTypedList1);
-        res = null;
-        rv = subSingleTest(TestData.testStructureWithAbstractFieldSingleTypedList1,
-                res, "testStructureWithAbstractFieldSingleTypedList1");
-        logMessage("The current Java mapping prevents this test from compiling.");
-//      } catch (MALInteractionException ex) {
-//        rv = subSingleTestExceptionHandler(ex, "testStructureWithAbstractFieldSingleTypedList1");
-//      }
+        try {
+            AbstractCompositeList abstractList = new AbstractCompositeList();
+            abstractList.addAll(TestData.testStructureWithAbstractFieldSingleTypedList1);
+            res = getDataTestStub().testPolymorphicAbstractCompositeList(abstractList);
+            rv = subSingleTest(abstractList,
+                    res, "testStructureWithAbstractFieldSingleTypedList1");
+            logMessage("The current Java mapping prevents this test from compiling.");
+        } catch (MALInteractionException ex) {
+            rv = subSingleTestExceptionHandler(ex, "testStructureWithAbstractFieldSingleTypedList1");
+        }
         logMessage("Finished polymorphic AbstractComposite list parameter test");
         return rv;
     }
