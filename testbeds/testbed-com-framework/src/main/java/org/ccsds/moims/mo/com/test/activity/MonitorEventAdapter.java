@@ -24,7 +24,7 @@ import org.ccsds.moims.mo.com.activitytracking.structures.ActivityAcceptance;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityExecution;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
 import org.ccsds.moims.mo.com.event.consumer.EventAdapter;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
+import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import static org.ccsds.moims.mo.com.test.util.COMTestHelper.OBJ_NO_ASE_ACCEPTANCE_STR;
 import static org.ccsds.moims.mo.com.test.util.COMTestHelper.OBJ_NO_ASE_EXECUTION_STR;
 import static org.ccsds.moims.mo.com.test.util.COMTestHelper.OBJ_NO_ASE_FORWARD_STR;
@@ -32,9 +32,8 @@ import static org.ccsds.moims.mo.com.test.util.COMTestHelper.OBJ_NO_ASE_RECEPTIO
 import static org.ccsds.moims.mo.com.test.util.COMTestHelper.OBJ_NO_ASE_RELEASE_STR;
 import static org.ccsds.moims.mo.com.test.activity.BaseActivityScenario.objToEventName;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
@@ -52,18 +51,16 @@ class MonitorEventAdapter extends EventAdapter {
      * @param msgHeader The header of the received message.
      * @param _Identifier0 Argument number 0 as defined by the service
      * operation.
-     * @param _UpdateHeaderList1 Argument number 1 as defined by the service
+     * @param header Argument number 1 as defined by the service operation.
+     * @param objectDetails Argument number 2 as defined by the service
      * operation.
-     * @param _ObjectDetailsList2 Argument number 2 as defined by the service
-     * operation.
-     * @param _ElementList3 Argument number 3 as defined by the service
-     * operation.
+     * @param element Argument number 3 as defined by the service operation.
      * @param qosProperties The QoS properties associated with the message.
      */
     @Override
     public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
-            UpdateHeaderList headerList, ObjectDetailsList objectDetailsList,
-            ElementList elementList, java.util.Map qosProperties) {
+            UpdateHeader header, ObjectDetails objectDetails,
+            Element element, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY");
         boolean success = false;
 
@@ -72,28 +69,28 @@ class MonitorEventAdapter extends EventAdapter {
         // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _UpdateHeaderList1);
         // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _ObjectDetailsList2);
         // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _ElementList3);
-        Identifier objectNumber = (Identifier) headerList.get(0).getKeyValues().get(0);
-        Identifier source = headerList.get(0).getSource();
+        Identifier objectNumber = (Identifier) header.getKeyValues().get(0);
+        Identifier source = header.getSource();
         String strObjectNumber = objectNumber.toString();
         String strEventName = objToEventName(objectNumber.toString());
         strEventName.trim();
         if (strObjectNumber.equals(OBJ_NO_ASE_RELEASE_STR) || strObjectNumber.equals(OBJ_NO_ASE_RECEPTION_STR)
                 || strObjectNumber.equals(OBJ_NO_ASE_FORWARD_STR)) {
-            ActivityTransfer activityTransferInstance = (ActivityTransfer) elementList.get(0);
+            ActivityTransfer activityTransferInstance = (ActivityTransfer) element;
             success = activityTransferInstance.getSuccess();
             if (!success) {
                 LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY RELEASE ERR " + strEventName);
             }
         } else if (strObjectNumber.equals(OBJ_NO_ASE_ACCEPTANCE_STR)) {
-            ActivityAcceptance activityTransferAcceptance = (ActivityAcceptance) elementList.get(0);
+            ActivityAcceptance activityTransferAcceptance = (ActivityAcceptance) element;
             success = activityTransferAcceptance.getSuccess();
         } else if (strObjectNumber.equals(OBJ_NO_ASE_EXECUTION_STR)) {
-            ActivityExecution activityTransferExecution = (ActivityExecution) elementList.get(0);
+            ActivityExecution activityTransferExecution = (ActivityExecution) element;
             success = activityTransferExecution.getSuccess();
         }
         // TBC do we need to support multiple updates
         monitorEventList.add(new MonitorEventDetails(strEventName, source.toString(), success,
-                headerList.get(0), objectDetailsList.get(0), (Element) elementList.get(0)));
+                header, objectDetails, (Element) element));
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived " + strEventName + " " + success);
     }
 
@@ -116,7 +113,8 @@ class MonitorEventAdapter extends EventAdapter {
      * @param error The received error message.
      * @param qosProperties The QoS properties associated with the message.
      */
-    public void monitorEventRegisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
+    public void monitorEventRegisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+            org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterErrorReceived - ERROR");
     }
 
@@ -139,7 +137,8 @@ class MonitorEventAdapter extends EventAdapter {
      * @param error The received error message.
      * @param qosProperties The QoS properties associated with the message.
      */
-    public void monitorEventNotifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
+    public void monitorEventNotifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+            org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorEventDeregisterAckReceived - ERROR");
     }
 

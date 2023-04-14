@@ -20,17 +20,13 @@
  */
 package org.ccsds.moims.mo.com.test.activity;
 
-import static esa.mo.com.support.ActivityTrackingPublisher.OBJ_NO_ASE_ACCEPTANCE_STR;
 import esa.mo.com.support.ComStructureHelper;
 import java.util.*;
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
-import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransferList;
 import org.ccsds.moims.mo.com.event.consumer.EventStub;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.com.test.suite.LocalMALInstance;
@@ -490,8 +486,6 @@ public class MonitorActivityScenario extends BaseActivityScenario {
             MALMessageHeader hdr) throws MALInteractionException, MALException {
         LoggingBase.logMessage(loggingClassName + ":publishReleaseEvent " + withSuccess);
 
-        // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
         /*
     final EntityKey ekey = new EntityKey(
             new Identifier(COMTestHelper.OBJ_NO_ASE_RELEASE_STR),
@@ -514,16 +508,14 @@ public class MonitorActivityScenario extends BaseActivityScenario {
                 COMHelper._COM_AREA_VERSION,
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
-        uhl.add(new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + "CONSUMER"), domain, keys));
+        // Produce header
+        UpdateHeader uh = new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + "CONSUMER"), domain, keys);
 
-        // Produce ActivityTransferList
-        ActivityTransferList atl = new ActivityTransferList();
+        // Produce ActivityTransfer
         ActivityTransfer activityTransferInstance = new ActivityTransfer();
         activityTransferInstance.setSuccess(withSuccess);
-        atl.add(activityTransferInstance);
 
         // Produce ObjectDetails 
-        ObjectDetailsList odl = new ObjectDetailsList();
         ObjectDetails objDetails = new ObjectDetails();
         objDetails.setRelated(null);
 
@@ -534,10 +526,9 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         key.setInstId(hdr.getTransactionId());
         source.setKey(key);
         objDetails.setSource(source);
-        odl.add(objDetails);
 
         // We can now publish the event
-        LocalMALInstance.instance().getMonitorEventPublisher(relay).publish(uhl, odl, atl);
+        LocalMALInstance.instance().getMonitorEventPublisher(relay).publish(uh, objDetails, activityTransferInstance);
         LoggingBase.logMessage(loggingClassName + ":publishReleaseEvent END");
     }
 

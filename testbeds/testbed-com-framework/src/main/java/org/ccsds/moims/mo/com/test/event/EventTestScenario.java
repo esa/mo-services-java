@@ -402,7 +402,6 @@ public class EventTestScenario extends LoggingBase {
         logMessage(loggingClassName + ":creationEventElementValidForObject " + instIndex + " " + description);
         return eventDetailsList.get(Integer.parseInt(instIndex)).creationElementValid(
                 COMTestHelper.TEST_OBJECT_CREATION_NO, description, true);
-
     }
 
     /**

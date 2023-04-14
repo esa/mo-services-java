@@ -255,15 +255,9 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
     private void publishAcceptance(boolean success, MALInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance malInter = " + interaction);
 
-        // Produce ActivityTransferList
-        ActivityAcceptanceList aal = new ActivityAcceptanceList();
+        // Produce ActivityTransfer
         ActivityAcceptance aa = new ActivityAcceptance();
         aa.setSuccess(success);
-        aal.add(aa);
-        // Produce ObjectDetails 
-        ObjectDetailsList odl = new ObjectDetailsList();
-        ObjectDetails objDetails = new ObjectDetails();
-        objDetails.setRelated(null);
 
         // Set source
         ObjectId source = new ObjectId();
@@ -278,10 +272,11 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         }
         LoggingBase.logMessage("ActivityTestHandler:key = " + key);
         source.setKey(key);
+
+        // Produce ObjectDetails
+        ObjectDetails objDetails = new ObjectDetails();
+        objDetails.setRelated(null);
         objDetails.setSource(source);
-        odl.add(objDetails);
-        // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
 
         /*
         final EntityKey ekey = new EntityKey(
@@ -293,8 +288,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             generateSubKey(COMHelper._COM_AREA_NUMBER, 
                     ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, 
                     COMHelper._COM_AREA_VERSION, COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY));
-        */
-        
+         */
         AttributeList keyValues = new AttributeList();
         keyValues.add(new Identifier(COMTestHelper.OBJ_NO_ASE_ACCEPTANCE_STR));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
@@ -315,19 +309,17 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
 
+        // Produce header
         UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues);
-        uhl.add(uh);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, odl, aal);
+        monitorEventPublisher.publish(uh, objDetails, aa);
 
     }
 
     private void publishExecution(boolean success, MALInteraction interaction,
             int currentStageCount, int totalStageCount) throws MALInteractionException, MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution malInter = " + interaction);
-        // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
         /*
     final EntityKey ekey = new EntityKey(
             new Identifier(COMTestHelper.OBJ_NO_ASE_EXECUTION_STR),
@@ -355,19 +347,17 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
-        uhl.add(new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues));
+
+        // Produce header
+        UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues);
 
         // Produce ActivityTransferList
-        ActivityExecutionList ael = new ActivityExecutionList();
         ActivityExecution activityExecutionInstance = new ActivityExecution();
         activityExecutionInstance.setExecutionStage(new UInteger(currentStageCount)); // TBD
         activityExecutionInstance.setStageCount(new UInteger(totalStageCount));
         activityExecutionInstance.setSuccess(success);
 
-        ael.add(activityExecutionInstance);
-
         // Produce ObjectDetails 
-        ObjectDetailsList odl = new ObjectDetailsList();
         ObjectDetails objDetails = new ObjectDetails();
         objDetails.setRelated(null);
 
@@ -383,10 +373,9 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         }
         source.setKey(key);
         objDetails.setSource(source);
-        odl.add(objDetails);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, odl, ael);
+        monitorEventPublisher.publish(uh, objDetails, activityExecutionInstance);
     }
 
     public static class ActivityTestPublisher implements MALPublishInteractionListener {

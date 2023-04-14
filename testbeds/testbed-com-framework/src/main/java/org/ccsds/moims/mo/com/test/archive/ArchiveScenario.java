@@ -59,14 +59,12 @@ import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.com.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.com.test.util.COMParseHelper;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
-import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestHelper;
 import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObject;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObjectList;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.SubComposite;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayload;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayloadList;
-import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -75,6 +73,7 @@ import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.BlobList;
 import org.ccsds.moims.mo.mal.structures.BooleanList;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -1354,18 +1353,19 @@ public class ArchiveScenario {
 
         @Override
         public void monitorEventNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                ObjectDetailsList monitorEventUpdateList1,
-                ElementList monitorEventUpdateList2, Map qosProperties) {
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                ObjectDetails monitorEventUpdate,
+                Element monitorEventUpdate2, Map qosProperties) {
 
-            LoggingBase.logMessage("monitorEventNotifyReceived::" + updateHeaderList);
-            notifiedUpdateHeaderList.addAll(updateHeaderList);
-            if (monitorEventUpdateList1 != null) {
-                notifiedObjectDetailsList.addAll(monitorEventUpdateList1);
+            LoggingBase.logMessage("monitorEventNotifyReceived::" + updateHeader);
+
+            notifiedUpdateHeaderList.add(updateHeader);
+            if (monitorEventUpdate != null) {
+                notifiedObjectDetailsList.add(monitorEventUpdate);
             }
-            if (monitorEventUpdateList2 != null) {
-                notifiedEventBodyList.addAll(monitorEventUpdateList2);
-                LoggingBase.logMessage("monitorEventNotifyReceived::Body:" + monitorEventUpdateList2);
+            if (monitorEventUpdate2 != null) {
+                notifiedEventBodyList.add(monitorEventUpdate2);
+                LoggingBase.logMessage("monitorEventNotifyReceived::Body:" + monitorEventUpdate2);
             } else {
                 LoggingBase.logMessage("monitorEventNotifyReceived::Body:NULL");
             }

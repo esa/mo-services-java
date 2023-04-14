@@ -24,16 +24,12 @@ import esa.mo.com.support.ComStructureHelper;
 import java.util.Iterator;
 import java.util.Map;
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
-import org.ccsds.moims.mo.com.archive.ArchiveHelper;
 import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetails;
 import org.ccsds.moims.mo.com.event.EventHelper;
 import org.ccsds.moims.mo.com.event.EventServiceInfo;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.com.structures.ObjectType;
@@ -57,7 +53,6 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
@@ -257,28 +252,23 @@ public class ArchiveEventPublisher {
             LongList instIds) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":publishStoreEvents:" + objectType
                 + ":" + domain + ":" + instIds);
-        ObjectDetailsList objDetailsList = new ObjectDetailsList();
-        UpdateHeaderList updateHeaderList = new UpdateHeaderList();
+
         Iterator<Long> instIt = instIds.iterator();
         while (instIt.hasNext()) {
             ObjectDetails objDetails = new ObjectDetails();
             // Set source 
             ObjectId source = new ObjectId();
-            setObjectId(source, eventDomainId,
-                    objectType, instIt.next());
+            setObjectId(source, eventDomainId, objectType, instIt.next());
             objDetails.setSource(source);
-            objDetailsList.add(objDetails);
 
             UpdateHeader uh = setUpdateHeader(objectNumber, objectType);
-            updateHeaderList.add(uh);
             // elementList.add(null);
             storeEvent(objectType, eventDomainId, eventInstCount, Time.now(), uh.getSource(), objDetails, objectNumber);
+
+            monitorEventPublisher.publish(uh, objDetails, null);
+
+            LoggingBase.logMessage(CLS + ":publishEvents:RET:" + uh + ":" + objDetails + ":");
         }
-
-        monitorEventPublisher.publish(updateHeaderList, objDetailsList, null);
-
-        LoggingBase.logMessage(CLS + ":publishEvents:RET:" + updateHeaderList
-                + ":" + objDetailsList + ":");
     }
 
     /**

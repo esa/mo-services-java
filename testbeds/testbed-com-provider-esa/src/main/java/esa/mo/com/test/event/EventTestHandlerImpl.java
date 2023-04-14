@@ -31,7 +31,6 @@ import org.ccsds.moims.mo.com.event.EventHelper;
 import org.ccsds.moims.mo.com.event.EventServiceInfo;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.com.structures.ObjectType;
@@ -70,7 +69,6 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
@@ -243,7 +241,6 @@ public class EventTestHandlerImpl implements EventTestHandler {
         ocl.add(oc);
 
         // Produce ObjectDetails 
-        ObjectDetailsList odl = new ObjectDetailsList();
         ObjectDetails objDetails = new ObjectDetails();
 
         // Set source 
@@ -254,19 +251,15 @@ public class EventTestHandlerImpl implements EventTestHandler {
             objDetails.setRelated(relatedInstId);
         }
 
-        odl.add(objDetails);
         // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
         UpdateHeader uh = new UpdateHeader();
         setUpdateHeader(uh, TEST_OBJECT_CREATION_NO, sourceInstId);
-        uhl.add(uh);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, odl, ocl);
+        monitorEventPublisher.publish(uh, objDetails, oc);
 
         // Write the event to the archive
         storeInArchive(objDetails, uh, ocl, TEST_OBJECT_CREATION_NO);
-
     }
 
     protected void publishTestObjectDeletion(String sourceDomain,
@@ -281,10 +274,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
         odl.add(od);
 
         // Produce ObjectDetails 
-        ObjectDetailsList objDetailsList = new ObjectDetailsList();
         ObjectDetails objDetails = new ObjectDetails();
-
-        // Set source 
         ObjectId source = setObjectId(sourceDomain, sourceObjectNumber, sourceInstId);
         objDetails.setSource(source);
         // Set related (if supplied)
@@ -292,15 +282,12 @@ public class EventTestHandlerImpl implements EventTestHandler {
             objDetails.setRelated(testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId);
         }
 
-        objDetailsList.add(objDetails);
         // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
         UpdateHeader uh = new UpdateHeader();
         setUpdateHeader(uh, TEST_OBJECT_DELETION_NO, sourceInstId);
-        uhl.add(uh);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, objDetailsList, odl);
+        monitorEventPublisher.publish(uh, objDetails, od);
 
         // Write the event to the archive
         storeInArchive(objDetails, uh, odl, TEST_OBJECT_DELETION_NO);
@@ -323,7 +310,6 @@ public class EventTestHandlerImpl implements EventTestHandler {
                 eventDomainId,
                 archiveDetailsList,
                 elementList);
-
     }
 
     protected void publishTestObjectUpdate(long sourceInstId,
@@ -346,7 +332,6 @@ public class EventTestHandlerImpl implements EventTestHandler {
         // Produce ObjectDetails 
         short sourceObjectNumber = testObjectDetailsList.get((int) (sourceInstId - 1)).objectNumber;
         String domain = testObjectDetailsList.get((int) (sourceInstId - 1)).domain;
-        ObjectDetailsList objDetailsList = new ObjectDetailsList();
         ObjectDetails objDetails = new ObjectDetails();
         // Set source 
         ObjectId source = setObjectId(domain, sourceObjectNumber, sourceInstId);
@@ -355,16 +340,13 @@ public class EventTestHandlerImpl implements EventTestHandler {
         if (testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId != null) {
             objDetails.setRelated(testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId);
         }
-        objDetailsList.add(objDetails);
 
         // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
         UpdateHeader uh = new UpdateHeader();
         setUpdateHeader(uh, TEST_OBJECT_UPDATE_NO, sourceInstId);
-        uhl.add(uh);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, objDetailsList, oul);
+        monitorEventPublisher.publish(uh, objDetails, ou);
 
         // Write the event to the archive
         storeInArchive(objDetails, uh, oul, TEST_OBJECT_UPDATE_NO);

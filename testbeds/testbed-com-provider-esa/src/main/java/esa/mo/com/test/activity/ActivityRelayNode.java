@@ -25,13 +25,11 @@ import java.util.Map;
 import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
-import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransferList;
 import org.ccsds.moims.mo.com.event.EventHelper;
 import org.ccsds.moims.mo.com.event.consumer.EventAdapter;
 import org.ccsds.moims.mo.com.event.consumer.EventStub;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
@@ -258,9 +256,6 @@ public class ActivityRelayNode {
 
         LoggingBase.logMessage("publishReceptionOrForward " + relayName + " " + withSuccess);
 
-        // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
-
         AttributeList keyValues = new AttributeList();
         keyValues.add(new Identifier(phase));
         keyValues.add(new Union(ActivityTestHandlerImpl.generateSubKey(
@@ -279,17 +274,15 @@ public class ActivityRelayNode {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
-        
-        uhl.add(new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName), domain, keyValues));
 
-        // Produce ActivityTransferList
-        ActivityTransferList atl = new ActivityTransferList();
+        // Produce header
+        UpdateHeader uh = new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName), domain, keyValues);
+
+        // Produce ActivityTransfer
         ActivityTransfer activityTransferInstance = new ActivityTransfer();
         activityTransferInstance.setSuccess(withSuccess);
-        atl.add(activityTransferInstance);
 
         // Produce ObjectDetails 
-        ObjectDetailsList odl = new ObjectDetailsList();
         ObjectDetails objDetails = new ObjectDetails();
         objDetails.setRelated(null);
 
@@ -306,10 +299,9 @@ public class ActivityRelayNode {
         LoggingBase.logMessage("ActivityRelayNode:key = " + key);
         source.setKey(key);
         objDetails.setSource(source);
-        odl.add(objDetails);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, odl, atl);
+        monitorEventPublisher.publish(uh, objDetails, activityTransferInstance);
         LoggingBase.logMessage("ActivityRelayNode:publishReceptionStatus - END " + relayName);
     }
 
@@ -348,18 +340,18 @@ public class ActivityRelayNode {
          */
         @Override
         public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
-                UpdateHeaderList _UpdateHeaderList1, ObjectDetailsList _ObjectDetailsList2,
-                ElementList _ElementList3, java.util.Map qosProperties) {
+                UpdateHeader updateHeader, ObjectDetails objectDetails,
+                Element element, java.util.Map qosProperties) {
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY");
 
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR" + msgHeader);
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ID0" + _Identifier0);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR1" + _UpdateHeaderList1);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ODL2" + _ObjectDetailsList2);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY EL3" + _ElementList3);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR1" + updateHeader);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ODL2" + objectDetails);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY EL3" + element);
 
             try {
-                monitorEventPublisher.publish(_UpdateHeaderList1, _ObjectDetailsList2, _ElementList3);
+                monitorEventPublisher.publish(updateHeader, objectDetails, element);
             } catch (MALInteractionException ex1) {
                 LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived FAILURE " + ex1);
             } catch (MALException ex2) {
