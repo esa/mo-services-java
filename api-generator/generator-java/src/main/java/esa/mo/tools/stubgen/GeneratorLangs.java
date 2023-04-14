@@ -2222,7 +2222,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 }
 
                 String argName;
-                if (null != ti.getFieldName()) {
+                if (ti.getFieldName() != null) {
                     argName = ti.getFieldName();
                 } else {
                     argName = "_" + TypeUtils.shortTypeName(config.getNamingSeparator(), ti.getTargetType()) + i;

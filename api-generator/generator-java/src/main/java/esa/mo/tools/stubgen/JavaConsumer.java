@@ -36,6 +36,7 @@ import esa.mo.xsd.AreaType;
 import esa.mo.xsd.ServiceType;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -208,17 +209,20 @@ public class JavaConsumer {
                 case PUBSUB_OP: {
                     List<TypeInfo> retTypes = new LinkedList<>();
                     retTypes.add(0, TypeUtils.convertTypeReference(generator,
-                            TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
+                            TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false),
+                            "subscriptionId", "The subscriptionId of the subscription."));
                     retTypes.add(1, TypeUtils.convertTypeReference(generator,
-                            TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false)));
+                            TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false),
+                            "updateHeader", "The Update header."));
 
                     for (TypeInfo ti : op.getRetTypes()) {
-                        retTypes.add(TypeUtils.convertTypeReference(generator,
-                                TypeUtils.createTypeReference(ti.getSourceType().getArea(), ti.getSourceType().getService(), ti.getSourceType().getName(), ti.getSourceType().isList())));
+                        retTypes.add(ti);
                     }
 
-                    List<CompositeField> opArgsU = StubUtils.concatenateArguments(stdHeaderArg,
-                            StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, retTypes), stdQosArg));
+                    List<CompositeField> opArgsU = new ArrayList<>();
+                    opArgsU.add(stdHeaderArg);
+                    opArgsU.addAll(StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, retTypes)));
+                    opArgsU.add(stdQosArg);
 
                     file.addMethodOpenStatement(true, false, false,
                             StdStrings.PUBLIC, false, true, null, op.getName() + "RegisterAckReceived",
@@ -226,7 +230,8 @@ public class JavaConsumer {
                             "Called by the MAL when a PubSub register acknowledgement is received from a broker for the operation " + op.getName(),
                             null, null).addMethodCloseStatement();
                     file.addMethodOpenStatement(true, false, false,
-                            StdStrings.PUBLIC, false, true, null, op.getName() + "RegisterErrorReceived", stdErrorArgs, null,
+                            StdStrings.PUBLIC, false, true, null, op.getName() + "RegisterErrorReceived",
+                            stdErrorArgs, null,
                             "Called by the MAL when a PubSub register acknowledgement error is received from a broker for the operation " + op.getName(),
                             null, null).addMethodCloseStatement();
                     file.addMethodOpenStatement(true, false, false,
