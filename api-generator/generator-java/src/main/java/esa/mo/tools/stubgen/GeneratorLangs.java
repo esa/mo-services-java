@@ -1717,7 +1717,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     false, true, "return value");
             MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                     false, true, strType, "toString", null, null,
-                    "Returns a String object representing this type's value.", "a string representation of the value of this object", null);
+                    "Returns a String object representing this type's value.",
+                    "a string representation of the value of this object", null);
             method.addLine("StringBuilder buf = new StringBuilder()");
             method.addLine("buf.append(\"(" + className + ": \")");
 
@@ -1762,16 +1763,22 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         for (CompositeField element : compElements) {
             boolean isAbstract = isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
+            String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
+            String fieldName = element.getFieldName();
+
             if (isAbstract) {
-                method.addLine(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + "AbstractElement(" + element.getFieldName() + ")"));
-            } else if (isAbstract && !element.isList()) {
-                method.addLine(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + "PolymorphicElement(" + element.getFieldName() + ")"));
+                if (element.isList()) { // Abstract List?
+                    // The Abstract Lists do not not need an SPF because we know what we will get!
+                    method.addLine(createMethodCall("encoder.encode" + canBeNullStr + "Element(" + fieldName + ")"));
+                } else {
+                    method.addLine(createMethodCall("encoder.encode" + canBeNullStr + "AbstractElement(" + fieldName + ")"));
+                }
             } else {
                 if (element.getEncodeCall() != null) {
-                    method.addLine(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + element.getEncodeCall() + "(" + element.getFieldName() + ")"));
+                    method.addLine(createMethodCall("encoder.encode" + canBeNullStr + element.getEncodeCall() + "(" + fieldName + ")"));
                 } else {
                     // This is when the Element is set as the abstract Attribute type
-                    method.addLine(createMethodCall("encoder.encode" + (element.isCanBeNull() ? "Nullable" : "") + "Element(" + element.getFieldName() + ")"));
+                    method.addLine(createMethodCall("encoder.encode" + canBeNullStr + "Element(" + fieldName + ")"));
                 }
             }
         }
@@ -1784,24 +1791,31 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         for (CompositeField element : compElements) {
             boolean isAbstract = isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
+            String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
             String castString = element.getDecodeCast();
 
             if (isAbstract) {
-                method.addLine(element.getFieldName() + " = " + castString
-                        + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + "AbstractElement()"));
-                // do nothing, already raised an error
-            } else if (isAbstract && !element.isList()) {
-                method.addLine(element.getFieldName() + " = " + element.getDecodeCast()
-                        + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + "PolymorphicElement()"));
+                if (element.isList()) { // Abstract List?
+                    // Strip the parenthesis around the cast: "(abc) " -> "abc"
+                    // Note: Yes, the string has a space at the end... that's why we have: length() - 2
+                    String classPath = castString.substring(1, castString.length() - 2);
+                    method.addLine(element.getFieldName() + " = " + castString
+                            + createMethodCall("decoder.decode" + canBeNullStr
+                                    + "Element(new " + classPath + "())"));
+                } else {
+                    method.addLine(element.getFieldName() + " = " + castString
+                            + createMethodCall("decoder.decode" + canBeNullStr + "AbstractElement()"));
+                }
             } else {
                 if (castString.contains("AttributeList")) {
                     // This is when the Element is set as the abstract AttributeList type
                     String attNew = "new org.ccsds.moims.mo.mal.structures.AttributeList()";
                     method.addLine(element.getFieldName() + " = " + castString
-                            + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + element.getDecodeCall() + "(" + attNew + ")"));
+                            + createMethodCall("decoder.decode" + canBeNullStr + element.getDecodeCall() + "(" + attNew + ")"));
                 } else {
                     method.addLine(element.getFieldName() + " = " + castString
-                            + createMethodCall("decoder.decode" + (element.isCanBeNull() ? "Nullable" : "") + element.getDecodeCall() + "(" + (element.isDecodeNeedsNewCall() ? element.getNewCall() : "") + ")"));
+                            + createMethodCall("decoder.decode" + canBeNullStr + element.getDecodeCall()
+                                    + "(" + (element.isDecodeNeedsNewCall() ? element.getNewCall() : "") + ")"));
                 }
             }
         }
@@ -2361,13 +2375,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 Arrays.asList(throwsMALException + " if any encoding errors are detected."));
     }
 
-    protected MethodWriter decodeMethodOpen(ClassWriter file, CompositeField elementType) throws IOException {
+    protected MethodWriter decodeMethodOpen(ClassWriter file, CompositeField returnType) throws IOException {
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField fld = createCompositeElementsDetails(file, false, "decoder",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALDecoder", false),
                 false, true, "The decoder to use for decoding.");
         return file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, false, elementType, "decode", Arrays.asList(fld),
+                false, false, returnType, "decode", Arrays.asList(fld),
                 throwsMALException, "Decodes the value of this object using the provided MALDecoder.", "Returns this object.",
                 Arrays.asList(throwsMALException + " if any decoding errors are detected."));
     }

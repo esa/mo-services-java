@@ -1672,6 +1672,38 @@
                     <smc:type area="MAL" name="Boolean" />
                 </smc:field>
             </smc:composite>
+            <smc:composite name="Auto" comment="An abstract composite for cars.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Composite" />
+                </smc:extends>
+                <smc:field name="engine" comment="The engine of the car.">
+                    <smc:type area="MAL" name="String" />
+                </smc:field>
+                <smc:field name="chassis" comment="The chassis of the car.">
+                    <smc:type area="MAL" name="String" />
+                </smc:field>
+                <smc:field name="windows" comment="The windows of the car.">
+                    <smc:type list="true" area="MAL" name="String" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="Lamborghini" shortFormPart="120" comment="The composite representing a Lamborghini car.">
+                <smc:extends>
+                    <smc:type area="MALPrototype" name="Auto" />
+                </smc:extends>
+            </smc:composite>
+            <smc:composite name="Porsche" shortFormPart="121" comment="The composite representing a Porsche car.">
+                <smc:extends>
+                    <smc:type area="MALPrototype" name="Auto" />
+                </smc:extends>
+            </smc:composite>
+            <smc:composite name="Garage" shortFormPart="122" comment="The composite representing a Garage with multiple cars.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Composite" />
+                </smc:extends>
+                <smc:field name="cars" comment="The list of cars parked in the garage.">
+                    <smc:type list="true" area="MALPrototype" name="Auto" />
+                </smc:field>
+            </smc:composite>
             <smc:composite name="TestObjectBase" comment="">
                 <smc:extends>
                     <smc:type area="MAL" name="MOObject" />

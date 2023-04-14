@@ -123,7 +123,6 @@ public class PolymorphicList extends java.util.ArrayList<Element> implements Ele
     @Override
     public Element decode(MALDecoder decoder) throws MALException {
         int size = decoder.decodeInteger();
-        PolymorphicList newObj = new PolymorphicList();
 
         for (int i = 0; i < size; i++) {
             Long sfp = decoder.decodeLong();
@@ -131,7 +130,7 @@ public class PolymorphicList extends java.util.ArrayList<Element> implements Ele
             // Edge case when one of the entries is null
             if (sfp == 0) {
                 decoder.decodeNullableElement(null);
-                newObj.add(null);
+                this.add(null);
                 continue;
             }
 
@@ -143,10 +142,9 @@ public class PolymorphicList extends java.util.ArrayList<Element> implements Ele
                         "The element could not be decoded!", ex);
             }
 
-            Element decodedElement = decoder.decodeNullableElement(element);
-            newObj.add(decodedElement);
+            this.add(decoder.decodeNullableElement(element));
         }
 
-        return newObj;
+        return this;
     }
 }

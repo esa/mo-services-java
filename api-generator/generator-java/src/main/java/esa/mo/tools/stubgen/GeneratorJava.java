@@ -285,6 +285,9 @@ public class GeneratorJava extends GeneratorLangs {
                 null, "List class for " + srcTypeName + ".");
 
         file.addConstructorDefault(listName); // create blank constructor
+
+        // The add and addAll methods need to be overridden to check
+        // if the Element that we are adding is an instance of the type
         file.addClassCloseStatement();
         file.flush();
     }
