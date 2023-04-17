@@ -21,12 +21,11 @@
 package org.ccsds.moims.mo.mal.structures;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALListDecoder;
+import org.ccsds.moims.mo.mal.MALListEncoder;
 
 /**
  * The polymorphic list allows elements of different types to be added on the
@@ -97,54 +96,23 @@ public class PolymorphicList extends java.util.ArrayList<Element> implements Ele
 
     @Override
     public void encode(MALEncoder encoder) throws MALException {
-        int size = this.size();
-        encoder.encodeInteger(size);
-
-        for (int i = 0; i < size; i++) {
-            Element objToEncode = (Element) super.get(i);
-
-            if (objToEncode != null && !(objToEncode instanceof Composite)) {
-                throw new MALException("The object is not an Element type! "
-                        + "It is: " + objToEncode.getClass().getCanonicalName()
-                        + " - With value: " + objToEncode.toString());
-            }
-
-            if (objToEncode != null) {
-                encoder.encodeLong(objToEncode.getShortForm());
-                encoder.encodeNullableElement(objToEncode);
-            } else {
-                // Edge case when one of the entries is null
-                encoder.encodeLong(0L);
-                encoder.encodeNullableElement(objToEncode);
-            }
+        MALListEncoder listEncoder = encoder.createListEncoder(this);
+        for (int i = 0; i < size(); i++) {
+            listEncoder.encodeNullableAbstractElement(get(i));
         }
+        listEncoder.close();
     }
 
     @Override
     public Element decode(MALDecoder decoder) throws MALException {
-        int size = decoder.decodeInteger();
-
-        for (int i = 0; i < size; i++) {
-            Long sfp = decoder.decodeLong();
-
-            // Edge case when one of the entries is null
-            if (sfp == 0) {
-                decoder.decodeNullableElement(null);
-                this.add(null);
-                continue;
-            }
-
-            Element element = null;
-            try {
-                element = MALContextFactory.getElementsRegistry().createElement(sfp);
-            } catch (Exception ex) {
-                Logger.getLogger(PolymorphicList.class.getName()).log(Level.SEVERE,
-                        "The element could not be decoded!", ex);
-            }
-
-            this.add(decoder.decodeNullableElement(element));
+        MALListDecoder listDecoder = decoder.createListDecoder(this);
+        int decodedSize = listDecoder.size();
+        if (decodedSize > 0) {
+            ensureCapacity(decodedSize);
         }
-
+        while (listDecoder.hasNext()) {
+            add((Element) listDecoder.decodeNullableAbstractElement());
+        }
         return this;
     }
 }
