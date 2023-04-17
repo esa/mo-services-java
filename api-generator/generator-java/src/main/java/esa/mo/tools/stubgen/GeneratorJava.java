@@ -264,21 +264,18 @@ public class GeneratorJava extends GeneratorLangs {
      */
     private void createPolymorphicListClass(File folder, AreaType area,
             ServiceType service, String srcTypeName) throws IOException {
+        TypeReference srcType = new TypeReference();
+        srcType.setArea(area.getName());
+        if (null != service) {
+            srcType.setService(service.getName());
+        }
+
+        srcType.setName(srcTypeName);
         String listName = srcTypeName + "List";
         getLog().info(" > Creating PolymorphicList class: " + listName);
 
-        JavaClassWriter file = (JavaClassWriter) createInterfaceFile(folder, listName);
+        JavaClassWriter file = (JavaClassWriter) createClassFile(folder, listName);
         file.addPackageStatement(area, service, getConfig().getStructureFolder());
-
-        TypeReference typeRef = TypeUtils.createTypeReference(area.getName(), (null == service) ? null : service.getName(), srcTypeName, false);
-        TypeReference superTypeReference = getCompositeElementSuperType(typeRef);
-
-        if (superTypeReference == null) {
-            superTypeReference = new TypeReference();
-            superTypeReference.setArea(StdStrings.MAL);
-            String name = (isComposite(typeRef)) ? StdStrings.COMPOSITE : StdStrings.ELEMENT;
-            superTypeReference.setName(name);
-        }
 
         file.addClassOpenStatement(listName, true, false,
                 "org.ccsds.moims.mo.mal.structures.PolymorphicList",
@@ -286,8 +283,28 @@ public class GeneratorJava extends GeneratorLangs {
 
         file.addConstructorDefault(listName); // create blank constructor
 
-        // The add and addAll methods need to be overridden to check
-        // if the Element that we are adding is an instance of the type
+        TypeReference argElement = new TypeReference();
+        argElement.setArea(StdStrings.MAL);
+        argElement.setName(StdStrings.ELEMENT);
+
+        List<CompositeField> argList = new LinkedList<>();
+        argList.add(createCompositeElementsDetails(file, true, "element",
+                argElement, true, true, "The element to be added."));
+        TypeReference type = new TypeReference();
+        type.setName("boolean");
+        CompositeField rtype = createCompositeElementsDetails(file, false, "element",
+                type, false, true, "List element.");
+        MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
+                false, true, rtype, "add", argList, null,
+                "Adds an element to the list and checks if the type is correct.",
+                "The success status.", null);
+
+        method.addLine("if (!(element instanceof " + srcTypeName + ")) {", false);
+        method.addLine("  throw new java.lang.ClassCastException(\"The added element does not extend the type: " + srcTypeName + "\")");
+        method.addLine("}", false);
+        method.addLine("return super.add(element)");
+        method.addMethodCloseStatement();
+
         file.addClassCloseStatement();
         file.flush();
     }
@@ -380,11 +397,11 @@ public class GeneratorJava extends GeneratorLangs {
                 type, false, true, "List element.");
         method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
                 false, true, rtype, "add", argList, null,
-                "Adds an element to the list and checks if it is not null.", "The success status.", null);
+                "Adds an element to the list.", "The success status.", null);
         /*
-        method.addMethodStatement("if (element == null) {", false);
-        method.addMethodStatement("  throw new IllegalArgumentException(\"The added argument cannot be null!\")");
-        method.addMethodStatement("}", false);
+        method.addLine("if (element == null) {", false);
+        method.addLine("  throw new IllegalArgumentException(\"The added argument cannot be null!\")");
+        method.addLine("}", false);
          */
         method.addLine("return super.add(element)");
         method.addMethodCloseStatement();
