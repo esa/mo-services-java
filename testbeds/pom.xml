@@ -63,16 +63,18 @@
 
     <modules>
         <module>testbed-pom</module>
+        <module>testbed-util</module>
         <module>xml-tests</module>
         <module>test-apis</module>
-        <module>testbed-util</module>
         <module>testbed-mal</module>
         <module>testbed-com-framework</module>
         <module>testbed-com-provider-esa</module>
         <module>testbed-com</module>
         <module>testbed-util-spp</module>
+        <!--
         <module>testbed-malspp-framework</module>
         <module>testbed-malspp</module>
+        -->
     </modules>
   
     <profiles>
