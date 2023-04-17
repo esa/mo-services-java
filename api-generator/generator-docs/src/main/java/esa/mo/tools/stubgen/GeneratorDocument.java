@@ -79,7 +79,7 @@ public abstract class GeneratorDocument extends GeneratorBase {
     }
 
     @Override
-    protected CompositeField createCompositeElementsDetails(TargetWriter file, 
+    public CompositeField createCompositeElementsDetails(TargetWriter file, 
             boolean checkType, String fieldName, TypeReference elementType, 
             boolean isStructure, boolean canBeNull, String comment) {
         CompositeField ele;

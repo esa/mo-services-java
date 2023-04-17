@@ -18,8 +18,11 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.tools.stubgen;
+package esa.mo.tools.stubgen.java;
 
+import esa.mo.tools.stubgen.ClassWriterProposed;
+import esa.mo.tools.stubgen.GeneratorConfiguration;
+import esa.mo.tools.stubgen.GeneratorLangs;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
@@ -197,7 +200,7 @@ public class JavaHelpers {
         file.flush();
     }
 
-    protected void createAreaHelperClass(File areaFolder, AreaType area) throws IOException {
+    public void createAreaHelperClass(File areaFolder, AreaType area) throws IOException {
         generator.getLog().info(" > Creating area helper class: " + area.getName());
         ClassWriter file = generator.createClassFile(areaFolder, area.getName() + "Helper");
 

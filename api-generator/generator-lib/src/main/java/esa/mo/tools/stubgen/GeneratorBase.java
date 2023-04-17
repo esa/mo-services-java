@@ -606,7 +606,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      *
      * @return the logger.
      */
-    protected Log getLog() {
+    public Log getLog() {
         return logger;
     }
 
@@ -860,7 +860,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param comment The comment with the field.
      * @return the element details.
      */
-    protected abstract CompositeField createCompositeElementsDetails(
+    public abstract CompositeField createCompositeElementsDetails(
             TargetWriter file,
             boolean checkType,
             String fieldName,

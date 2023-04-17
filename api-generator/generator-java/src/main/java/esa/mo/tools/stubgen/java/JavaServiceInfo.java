@@ -18,8 +18,11 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.tools.stubgen;
+package esa.mo.tools.stubgen.java;
 
+import esa.mo.tools.stubgen.ClassWriterProposed;
+import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.StubUtils;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.OperationSummary;

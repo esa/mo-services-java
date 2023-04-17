@@ -18,8 +18,10 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.tools.stubgen;
+package esa.mo.tools.stubgen.java;
 
+import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.StubUtils;
 import static esa.mo.tools.stubgen.GeneratorLangs.CONSUMER_FOLDER;
 import static esa.mo.tools.stubgen.GeneratorLangs.TRANSPORT_FOLDER;
 import esa.mo.tools.stubgen.specification.CompositeField;
@@ -56,7 +58,7 @@ public class JavaConsumer {
         this.supportsAsync = supportsAsync;
     }
 
-    protected void createServiceConsumerAdapter(File consumerFolder, AreaType area,
+    public void createServiceConsumerAdapter(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
         generator.getLog().info(" > Creating consumer adapter: " + service.getName());
 
@@ -437,7 +439,7 @@ public class JavaConsumer {
         method.addMethodCloseStatement();
     }
 
-    protected void createServiceConsumerStub(File consumerFolder, AreaType area,
+    public void createServiceConsumerStub(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
         generator.getLog().info(" > Creating consumer stub: " + service.getName());
 

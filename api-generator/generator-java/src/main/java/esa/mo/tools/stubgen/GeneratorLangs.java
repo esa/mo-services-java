@@ -20,6 +20,10 @@
  */
 package esa.mo.tools.stubgen;
 
+import esa.mo.tools.stubgen.java.JavaServiceInfo;
+import esa.mo.tools.stubgen.java.JavaExceptions;
+import esa.mo.tools.stubgen.java.JavaConsumer;
+import esa.mo.tools.stubgen.java.JavaHelpers;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
@@ -1278,7 +1282,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
     }
 
-    protected String getReferenceShortForm(AnyTypeReference ref) {
+    public String getReferenceShortForm(AnyTypeReference ref) {
         String rv = null;
 
         if ((null != ref) && (null != ref.getAny()) && (!ref.getAny().isEmpty())) {
@@ -1289,7 +1293,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return rv;
     }
 
-    protected String getReferenceShortForm(TargetWriter file, OptionalObjectReference oor) {
+    public String getReferenceShortForm(TargetWriter file, OptionalObjectReference oor) {
         String rv = null;
 
         if ((null != oor) && (null != oor.getObjectType())) {
@@ -1843,7 +1847,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     protected abstract void createListClass(File folder, AreaType area, ServiceType service, String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException;
 
     @Deprecated
-    protected void createFactoryClass(File structureFolder, AreaType area, ServiceType service, String srcTypeName, CompositeField typeDetails, boolean isAttr, boolean isEnum) throws IOException {
+    public void createFactoryClass(File structureFolder, AreaType area, ServiceType service, String srcTypeName, CompositeField typeDetails, boolean isAttr, boolean isEnum) throws IOException {
         /*
         // create area structure folder
         File folder = StubUtils.createFolder(structureFolder, getConfig().getFactoryFolder());
@@ -1943,7 +1947,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
-    protected void addTypeShortFormDetails(ClassWriter file, AreaType area, ServiceType service, long sf) throws IOException {
+    public void addTypeShortFormDetails(ClassWriter file, AreaType area, ServiceType service, long sf) throws IOException {
         addTypeShortForm(file, sf);
         CompositeField areaSfVar = createCompositeElementsDetails(file, false, "AREA_SHORT_FORM",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
@@ -1992,7 +1996,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(" + sf + "L)");
     }
 
-    protected void addShortFormMethods(ClassWriter file) throws IOException {
+    public void addShortFormMethods(ClassWriter file) throws IOException {
         CompositeField lonType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false),
                 true, true, null);
@@ -2080,7 +2084,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 false, true, argumentComment);
     }
 
-    protected String createAdapterMethodsArgs(List<TypeInfo> typeInfos, String argNamePrefix, boolean precedingArgs, boolean moreArgs) {
+    public String createAdapterMethodsArgs(List<TypeInfo> typeInfos, String argNamePrefix, boolean precedingArgs, boolean moreArgs) {
         StringBuilder buf = new StringBuilder();
 
         if (null != typeInfos) {
@@ -2096,7 +2100,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return buf.toString();
     }
 
-    protected String createAdapterMethodsArgs(TypeInfo ti, String argName, int argIndex, boolean precedingArgs, boolean moreArgs) {
+    public String createAdapterMethodsArgs(TypeInfo ti, String argName, int argIndex, boolean precedingArgs, boolean moreArgs) {
         String retStr = "";
 
         if ((null != ti.getTargetType()) && !(StdStrings.VOID.equals(ti.getTargetType()))) {
@@ -2142,7 +2146,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return retStr;
     }
 
-    protected String checkForReservedWords(String arg) {
+    public String checkForReservedWords(String arg) {
         if (null != arg) {
             String replacementWord = reservedWordsMap.get(arg);
             if (null != replacementWord) {
@@ -2153,7 +2157,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return arg;
     }
 
-    protected String createConsumerPatternCall(OperationSummary op) {
+    public String createConsumerPatternCall(OperationSummary op) {
         switch (op.getPattern()) {
             case SEND_OP:
                 return "send";
@@ -2170,7 +2174,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return null;
     }
 
-    protected String getOperationInstanceType(OperationSummary op) {
+    public String getOperationInstanceType(OperationSummary op) {
         switch (op.getPattern()) {
             case SEND_OP:
                 return getConfig().getSendOperationType();
@@ -2189,7 +2193,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return null;
     }
 
-    protected CompositeField createOperationReturnType(LanguageWriter file, AreaType area, ServiceType service, OperationSummary op) {
+    public CompositeField createOperationReturnType(LanguageWriter file, AreaType area, ServiceType service, OperationSummary op) {
         switch (op.getPattern()) {
             case REQUEST_OP: {
                 if (null != op.getRetTypes()) {
@@ -2209,13 +2213,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return null;
     }
 
-    protected List<CompositeField> createOperationArguments(GeneratorConfiguration config,
+    public List<CompositeField> createOperationArguments(GeneratorConfiguration config,
             LanguageWriter file, List<TypeInfo> opArgs) {
         return createOperationArguments(config, file, opArgs, false);
     }
 
     @Deprecated
-    protected List<CompositeField> createOperationArguments(GeneratorConfiguration config,
+    public List<CompositeField> createOperationArguments(GeneratorConfiguration config,
             LanguageWriter file, List<TypeInfo> opArgs, boolean forceList) {
         // This method should be without the forceList boolean argument
         // because it was used in the PUB-SUB but no longer is used
@@ -2256,7 +2260,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return rv;
     }
 
-    protected String createOperationArgReturn(LanguageWriter file, MethodWriter method,
+    public String createOperationArgReturn(LanguageWriter file, MethodWriter method,
             TypeInfo typeInfo, String argName, int argIndex) throws IOException {
         if ((null != typeInfo.getTargetType()) && !(StdStrings.VOID.equals(typeInfo.getTargetType()))) {
             String eleType = "Object";
@@ -2364,7 +2368,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return getConfig().getNullValue();
     }
 
-    protected MethodWriter encodeMethodOpen(ClassWriter file) throws IOException {
+    public MethodWriter encodeMethodOpen(ClassWriter file) throws IOException {
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField fld = createCompositeElementsDetails(file, false, "encoder",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALEncoder", false),
@@ -2375,7 +2379,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 Arrays.asList(throwsMALException + " if any encoding errors are detected."));
     }
 
-    protected MethodWriter decodeMethodOpen(ClassWriter file, CompositeField returnType) throws IOException {
+    public MethodWriter decodeMethodOpen(ClassWriter file, CompositeField returnType) throws IOException {
         String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField fld = createCompositeElementsDetails(file, false, "decoder",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALDecoder", false),
@@ -2390,11 +2394,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return "interaction.getOperation().getNumber().getValue()";
     }
 
-    protected CompositeField createReturnReference(CompositeField targetType) {
+    public CompositeField createReturnReference(CompositeField targetType) {
         return targetType;
     }
 
-    protected String createMethodCall(String call) {
+    public String createMethodCall(String call) {
         return call;
     }
 
@@ -2422,7 +2426,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     protected void createStructureFactoryFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
     }
 
-    protected abstract String createAreaHelperClassInitialValue(String areaVar, short areaVersion);
+    public abstract String createAreaHelperClassInitialValue(String areaVar, short areaVersion);
 
     protected abstract void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher op) throws IOException;
 
@@ -2432,7 +2436,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected abstract String createStaticClassReference(String type);
 
-    protected abstract String addressOf(String object);
+    public abstract String addressOf(String object);
 
     protected abstract String createArraySize(boolean isActual, String type, String variable);
 
@@ -2444,9 +2448,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected abstract String getOctetCallMethod();
 
-    protected abstract String getRegisterMethodName();
+    public abstract String getRegisterMethodName();
 
-    protected abstract String getDeregisterMethodName();
+    public abstract String getDeregisterMethodName();
 
     protected abstract String getEnumValueCompare(String lhs, String rhs);
 
@@ -2456,9 +2460,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected abstract String getNullValue();
 
-    protected abstract ClassWriterProposed createClassFile(File folder, String className) throws IOException;
+    public abstract ClassWriterProposed createClassFile(File folder, String className) throws IOException;
 
-    protected abstract ClassWriter createClassFile(String destinationFolderName, String className) throws IOException;
+    public abstract ClassWriter createClassFile(String destinationFolderName, String className) throws IOException;
 
     protected abstract InterfaceWriter createInterfaceFile(File folder, String className) throws IOException;
 

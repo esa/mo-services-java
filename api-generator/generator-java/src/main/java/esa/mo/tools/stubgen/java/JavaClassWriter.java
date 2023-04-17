@@ -18,8 +18,11 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.tools.stubgen;
+package esa.mo.tools.stubgen.java;
 
+import esa.mo.tools.stubgen.ClassWriterProposed;
+import esa.mo.tools.stubgen.GeneratorJava;
+import esa.mo.tools.stubgen.StubUtils;
 import static esa.mo.tools.stubgen.GeneratorJava.JAVA_FILE_EXT;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
