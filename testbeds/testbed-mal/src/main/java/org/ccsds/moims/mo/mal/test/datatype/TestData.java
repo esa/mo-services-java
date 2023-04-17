@@ -169,9 +169,12 @@ public abstract class TestData {
         domId.add(testIdentifier);
         domId.add(testIdentifier);
         domId.add(testIdentifier);
+        AttributeList testKeyValues = new AttributeList();
+        testKeyValues.add(new Identifier("TestValue"));
+        testKeyValues.add(new String("TestValue"));
         TestPublish a = new TestPublishRegister(QoSLevel.QUEUED, testUInteger, domId, testIdentifier, testEnumeration, testIdentifier, false, null, testUInteger);
-        TestPublish b = new TestPublishUpdate(QoSLevel.QUEUED, testUInteger, domId, testIdentifier, testEnumeration, testIdentifier, false, null, null, null, testUInteger, testBoolean, (AttributeList) null);
-        TestPublish c = new TestPublishUpdate(QoSLevel.QUEUED, testUInteger, domId, testIdentifier, testEnumeration, testIdentifier, false, null, null, null, testUInteger, testBoolean, (AttributeList) null);
+        TestPublish b = new TestPublishUpdate(QoSLevel.QUEUED, testUInteger, domId, testIdentifier, testEnumeration, testIdentifier, false, null, null, testKeyValues, testUInteger, testBoolean, (AttributeList) null);
+        TestPublish c = new TestPublishUpdate(QoSLevel.QUEUED, testUInteger, domId, testIdentifier, testEnumeration, testIdentifier, false, null, null, testKeyValues, testUInteger, testBoolean, (AttributeList) null);
         testAbstracts.add(a);
         testAbstracts.add(b);
         testAbstracts.add(c);
