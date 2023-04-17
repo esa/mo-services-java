@@ -59,7 +59,7 @@
 <!--        <ccsds.specification.version>1.7</ccsds.specification.version>    -->
         <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
         <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
-        <ccsds.specification.download.filter>**/area004-v002-Monitor-and-Control.xml</ccsds.specification.download.filter>
+        <ccsds.specification.download.filter>**/area005-v001-Mission-Data-Product-Distribution.xml</ccsds.specification.download.filter>
         <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
         <ccsds.specification.download.ref-filter>**/area001-v002-MAL.xml, **/area002-v001-COM.xml</ccsds.specification.download.ref-filter>
     </properties>

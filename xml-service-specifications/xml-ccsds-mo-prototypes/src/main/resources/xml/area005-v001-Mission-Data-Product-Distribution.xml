@@ -2,7 +2,7 @@
 <!--
   Copyright European Space Agency, 2023
 
-  Generated from MPS Blue Book DraftH4 29/03/2023
+  Generated from MPS Blue Book DraftH4 17/04/2023
 -->
 <mal:specification
   xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema"
@@ -1610,7 +1610,7 @@ A UInteger giving a secondary error code that details the reason for invalidity.
           <mal:type area="MAL" list="False" name="Identifier"/>
         </mal:field>
         <mal:field name="durationSpec" nullable="True" comment="Supports calculation of an estimated duration of an Activity Instance.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="children" nullable="True" comment="Set of Activity Details specifying child activities, optionally with repetition.">
           <mal:type area="MPS" list="False" name="ActivityNode"/>
@@ -1951,11 +1951,11 @@ Note that the activityRef and activityOffset attributes are only relevant in the
           <mal:type area="MPS" list="False" name="Slider"/>
         </mal:field>
         <mal:field name="activityOffset" nullable="True" comment="Specifies an offset in time for the ActivityInstance from any defined Repetition.  Default is no offset.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="relatedEvent" nullable="True" comment="Object Type: EventInstance.
 Specifies a related Event (or Event Group) for the ActivityInstance.  Argument specifications and constraints may reference arguments and attributes of the RelatedEvent.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="comments" nullable="True" comment="Any notes associated with the ActivityDetails.">
           <mal:type area="MAL" list="False" name="String"/>
@@ -2181,10 +2181,10 @@ Default = Step.">
           <mal:type area="MPS" list="False" name="InterpolationTypeEnum"/>
         </mal:field>
         <mal:field name="start" nullable="False" comment="Start of time range covered by the profile segment.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Time&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="end" nullable="False" comment="End of time range covered by the profile segment">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Time&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="startIncluded" nullable="False" comment="Indicates whether the start time is included in the profile segment.
 Default = True.">
@@ -2205,7 +2205,7 @@ The data type of the value can be any valid MAL Attribute type, but must match t
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="time" nullable="False" comment="Time of resource data point">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Time&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="value" nullable="False" comment="Value of resource data point">
           <mal:type area="MAL" list="False" name="Attribute"/>
@@ -2234,10 +2234,10 @@ Default = Step.">
           <mal:type area="MPS" list="False" name="InterpolationTypeEnum"/>
         </mal:field>
         <mal:field name="start" nullable="False" comment="Relative start of time range covered by the relative profile segment.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="end" nullable="False" comment="Relative end of time range covered by the relative profile segment">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="startIncluded" nullable="False" comment="Indicates whether the start time is included in the relative profile segment.
 Default = True.">
@@ -2258,7 +2258,7 @@ Specific sub-types exist for each allowed data type for a Resource.  These repla
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="time" nullable="False" comment="Relative time of resource data point">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="value" nullable="False" comment="Value of resource data point">
           <mal:type area="MAL" list="False" name="Attribute"/>
@@ -3097,10 +3097,10 @@ The expressions are themselves text strings which comprise a sequence of operand
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="start" nullable="False" comment="Start time of the time window.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Time&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="end" nullable="False" comment="End time of the time window.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Time&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
       </mal:composite>
 
@@ -3110,17 +3110,17 @@ The expressions are themselves text strings which comprise a sequence of operand
         </mal:extends>
         <mal:field name="startEvent" nullable="False" comment="Object Type: EventInstance.
 The start of the event window is relative to the referenced startEvent.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef>&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="startOffset" nullable="False" comment="The start of the event window is offset by the defined time period from the startEvent.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="endEvent" nullable="False" comment="Object Type: EventInstance.
 The end of the event window is relative to the referenced endEvent.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef>&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="endOffset" nullable="False" comment="The end of the event window is offset by the defined time period from the endEvent.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
       </mal:composite>
 
@@ -3267,7 +3267,7 @@ Default = False">
           <mal:type area="MPS" list="false" name="ConditionalConstraint"/>
         </mal:extends>
         <mal:field name="constraint" nullable="False" comment="Potentially complex conditional expression that must evaluate to TRUE for the constraint to be met.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Boolean&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
       </mal:composite>
 
@@ -3280,7 +3280,7 @@ DurationConstraint: a restriction on the duration of the planning activity in th
         </mal:extends>
         <mal:field name="activityRef" nullable="True" comment="Object Type: ActivityInstance.
 Identifies the constrained planning activity. If omitted the activity containing the constraint is assumed.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
       </mal:composite>
 
@@ -3289,7 +3289,7 @@ Identifies the constrained planning activity. If omitted the activity containing
           <mal:type area="MPS" list="false" name="TemporalConstraint"/>
         </mal:extends>
         <mal:field name="time" nullable="False" comment="The time at which the planning activity must be planned.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Time&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="timeRef" nullable="False" comment="The point in the duration of the planning activity that is time constrained.
 0:  the start of the planning activity
@@ -3318,10 +3318,10 @@ Identifies the constrained planning activity. If omitted the activity containing
           <mal:type area="MPS" list="false" name="TemporalConstraint"/>
         </mal:extends>
         <mal:field name="minDuration" nullable="False" comment="Specifies the minimum duration of the planning activity">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="maxDuration" nullable="False" comment="Specifies the maximum duration of the planning activity">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
       </mal:composite>
 
@@ -3332,11 +3332,11 @@ Two objects are identified:  the predecessor which must be followed in the Plan 
         </mal:extends>
         <mal:field name="predecessor" nullable="False" comment="Object Type: ActivityInstance | EventInstance
 Identifies the planning activity or planning event that must occur first on the Plan .">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="successor" nullable="False" comment="Object Type: ActivityInstance | EventInstance
 Identifies the planning activity or planning event that must follow the predecessor on the Plan .">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="predecessorRef" nullable="False" comment="Point on the predecessor that must be followed by the successor">
           <mal:type area="MPS" list="False" name="Slider"/>
@@ -3345,10 +3345,10 @@ Identifies the planning activity or planning event that must follow the predeces
           <mal:type area="MPS" list="False" name="Slider"/>
         </mal:field>
         <mal:field name="minOffset" nullable="False" comment="Minimum period between the specified points on the predecessor and successor.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="maxOffset" nullable="False" comment="Maximum period between the specified points on the predecessor and successor.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
       </mal:composite>
 
@@ -3368,11 +3368,11 @@ Specifies the definition (class) of excluded planning activities and planning ev
         </mal:extends>
         <mal:field name="activityRef" nullable="True" comment="Object Type: ActivityInstance.
 Identifies the planning activity for which the argument constraint applies.  If omitted the activity containing the constraint is assumed.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef>&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="objectRef" nullable="True" comment="Object Type: ActivityInstance | EventInstance
 Identifies the Object (planning activity or planning event) whose argument is to be referenced.  If omitted the activity containing the constraint is assumed.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="argName" nullable="False" comment="Identifies the specific argument of the referenced Object whose value is to be compared">
           <mal:type area="MAL" list="False" name="Identifier"/>
@@ -3393,7 +3393,7 @@ The contains operator only applies to strings and may be case sensitive or insen
         </mal:extends>
         <mal:field name="activityRef" nullable="True" comment="Object Type: ActivityInstance.
 Identifies the planning activity for which the resource constraint applies.  If omitted the activity containing the constraint is assumed.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="resourceRef" nullable="False" comment="Object Type: Resource
 Identifies the planning resource that is constrained for the duration of the planning activity.">
@@ -3428,10 +3428,10 @@ The attributes of the complex resource constraint extend or modify those of the 
           <mal:type area="MPS" list="False" name="Slider"/>
         </mal:field>
         <mal:field name="startOffset" nullable="False" comment="Offset from startRef that specifies the start of the constraint period.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="endOffset" nullable="False" comment="Offset from endRef that specifies the end of the constraint period.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="value" nullable="False" comment="ResourceProfile specifying an evolving value over time against which the value of the planning resource is to be compared.
 See §3.2.4.2">
@@ -3446,7 +3446,7 @@ As for complex resource constraints, the period over which the function constrai
         </mal:extends>
         <mal:field name="activityRef" nullable="True" comment="Object Type: ActivityInstance.
 Identifies the planning activity for which the function constraint applies. If omitted the activity containing the constraint is assumed.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="startRef" nullable="False" comment="Identifies the point in the duration of the referenced planning activity to which the start of the constraint period relates.">
           <mal:type area="MPS" list="False" name="Slider"/>
@@ -3455,10 +3455,10 @@ Identifies the planning activity for which the function constraint applies. If o
           <mal:type area="MPS" list="False" name="Slider"/>
         </mal:field>
         <mal:field name="startOffset" nullable="False" comment="Offset from startRef that specifies the start of the constraint period.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="endOffset" nullable="False" comment="Offset from endRef that specifies the end of the constraint period.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="function" nullable="False" comment="Specifies the Function to be applied and its set of input arguments.">
           <mal:type area="MPS" list="False" name="FunctionDetails"/>
@@ -3471,7 +3471,7 @@ Identifies the planning activity for which the function constraint applies. If o
         </mal:extends>
         <mal:field name="activityRef" nullable="True" comment="Object Type: ActivityInstance.
 Identifies the planning activity for which the geometric constraint applies. If omitted the activity containing the constraint is assumed.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="startRef" nullable="False" comment="Identifies the point in the duration of the referenced planning activity to which the start of the constraint period relates.">
           <mal:type area="MPS" list="False" name="Slider"/>
@@ -3480,10 +3480,10 @@ Identifies the planning activity for which the geometric constraint applies. If 
           <mal:type area="MPS" list="False" name="Slider"/>
         </mal:field>
         <mal:field name="startOffset" nullable="False" comment="Offset from startRef that specifies the start of the constraint period.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="endOffset" nullable="False" comment="Offset from endRef that specifies the end of the constraint period.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
       </mal:composite>
 
@@ -3492,10 +3492,10 @@ Identifies the planning activity for which the geometric constraint applies. If 
           <mal:type area="MPS" list="false" name="GeometricConstraint"/>
         </mal:extends>
         <mal:field name="position" nullable="False" comment="Specifies the required position expressed using any concrete position type.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="tolerance" nullable="False" comment="Specifies the maximum distance or angle from the required position that satisfies the constraint, effectively defining a sphere around the required position.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="units" nullable="True" comment="Optional.  The tolerance unit name, as defined in [PRM] annex D.
 Default = “km”, but “deg” is more relevant for an OrbitalPosition.">
@@ -3539,10 +3539,10 @@ Default = FALSE">
           <mal:type area="MPS" list="false" name="GeometricConstraint"/>
         </mal:extends>
         <mal:field name="revolutionAngle" nullable="False" comment="Angle of revolution">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="tolerance" nullable="False" comment="Tolerance in the angle of revolution">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="units" nullable="True" comment="Optional.  The angular unit name, as defined in [PRM] annex D.
 Default = “deg”.">
@@ -3555,16 +3555,16 @@ Default = “deg”.">
           <mal:type area="MPS" list="false" name="GeometricConstraint"/>
         </mal:extends>
         <mal:field name="observer" nullable="False" comment="Position of the observer [Object1]">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="target" nullable="False" comment="Position of the target [Object2]">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="minDistance" nullable="False" comment="Minimum distance between observer and target">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="maxDistance" nullable="False" comment="Maximum distance between observer and target">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="units" nullable="True" comment="Optional.  The distance unit name, as defined in [PRM] annex D.
 Default = “km”.">
@@ -3577,19 +3577,19 @@ Default = “km”.">
           <mal:type area="MPS" list="false" name="GeometricConstraint"/>
         </mal:extends>
         <mal:field name="centreObject" nullable="False" comment="Position of the central object.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="targetObject1" nullable="False" comment="Position of target object 1.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="targetObject2" nullable="False" comment="Position of target object 2.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="minAngle" nullable="False" comment="Minimum angle subtended at the central object by target objects 1 and 2..">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="maxAngle" nullable="False" comment="Maximum angle subtended at the central object by target objects 1 and 2.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="units" nullable="True" comment="Optional.  The angular unit name, as defined in [PRM] annex D.
 Default = “deg”.">
@@ -3603,7 +3603,7 @@ Default = “deg”.">
         </mal:extends>
         <mal:field name="activityRef" nullable="True" comment="Object Type: ActivityInstance | ActivityDefinition.
 Identifies the planning activity for which the resource effect applies.  May be either an ActivityDefinition or an ActivityInstance.  If omitted the activity containing the effect is assumed.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="resourceRef" nullable="False" comment="Object Type: Resource
 Identifies the planning resource that is constrained for the duration of the planning activity.">
@@ -3621,7 +3621,7 @@ Identifies the planning resource that is constrained for the duration of the pla
           <mal:type area="MPS" list="False" name="Slider"/>
         </mal:field>
         <mal:field name="timeOffset" nullable="False" comment="Offset from timeRef that specifies the time at which the Effect is to be applied.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="operator" nullable="False" comment="Operation to be performed on the planning resource.  One of: SET, INCREMENT, DECREMENT.
 Increment and decrement are only applicable to numeric data types.">
@@ -3644,10 +3644,10 @@ With the complex effect, the value of the impacted planning resource can be evol
           <mal:type area="MPS" list="False" name="Slider"/>
         </mal:field>
         <mal:field name="startOffset" nullable="False" comment="Offset from startRef that specifies the start of the effect period.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="endOffset" nullable="False" comment="Offset from endRef that specifies the end of the effect period.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="operator" nullable="False" comment="Operation to be performed on the planning resource.  One of: SET, INCREMENT, DECREMENT.
 Increment and decrement are only applicable to numeric data types.">
@@ -3706,13 +3706,13 @@ See §3.2.4.2">
           <mal:type area="MPS" list="false" name="Trigger"/>
         </mal:extends>
         <mal:field name="centreObject" nullable="False" comment="Position of the central object.  The trigger angle is that subtended at the central object by target objects 1 and 2.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="targetObject1" nullable="False" comment="Position of target object 1.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="targetObject2" nullable="False" comment="Position of target object 2.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="angleMargin" nullable="False" comment="The trigger occurs if the angle is within ± angleMargin of the trigger angle.">
           <mal:type area="MPS" list="False" name="Angle"/>
@@ -3755,13 +3755,13 @@ If not specified repetition continues indefinitely.">
           <mal:type area="MPS" list="false" name="Repetition"/>
         </mal:extends>
         <mal:field name="initialTime" nullable="False" comment="Nominal time of first occurrence.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Time&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="separation" nullable="False" comment="The required time interval between occurrences.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="tolerance" nullable="False" comment="The allowed tolerance (+/-) in the required time between occurrences, the interpretation of which is dependent on the separationType.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Duration&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
       </mal:composite>
 
@@ -3776,16 +3776,16 @@ If not specified repetition continues indefinitely.">
           <mal:type area="MPS" list="false" name="LocationRepetition"/>
         </mal:extends>
         <mal:field name="initialPosition" nullable="False" comment="Nominal position of first occurrence.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="repetitionDirection" nullable="False" comment="Direction of repetition.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Direction&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="separation" nullable="False" comment="The required Distance between occurrences.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="tolerance" nullable="False" comment="The allowed tolerance (+/-) in the required distance between occurrences, the interpretation of which is dependent on the separationType.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="units" nullable="True" comment="The units used for separation and tolerance">
           <mal:type area="MAL" list="False" name="String"/>
@@ -3797,22 +3797,22 @@ If not specified repetition continues indefinitely.">
           <mal:type area="MPS" list="false" name="LocationRepetition"/>
         </mal:extends>
         <mal:field name="orbitNumber" nullable="False" comment="Orbit number for the first occurrence.  Depending on the relativeOrbit flag, the orbit number may be absolute (since start of mission) or relative (to the orbital repeat cycle).">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Long&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="relativeOrbit" nullable="False" comment="Flag indicating if the orbit number is absolute or relative to the orbital repeat cycle.">
           <mal:type area="MAL" list="False" name="Boolean"/>
         </mal:field>
         <mal:field name="orbitSeparation" nullable="False" comment="The required number of orbits separation between occurrences.  If orbitNumber is Relative and the required repetition is once per repeat cycle, this is the number of orbits in the repeat cycle, but the value 0 may also be used.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Long&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="angleSeparation" nullable="False" comment="The required angular separation between occurrences.  This allows for multiple repetitions within an orbit.  The value 0 indicates only one occurrence within the orbit.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="orbitAngle" nullable="False" comment="The required position of the first occurrence within the orbit expressed as an angle.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="tolerance" nullable="False" comment="The allowed tolerance (+/-) in the required orbital angle.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="units" nullable="True" comment="The units used for orbitAngle, angularSeparation and tolerance">
           <mal:type area="MAL" list="False" name="String"/>
@@ -3830,16 +3830,16 @@ If not specified repetition continues indefinitely.">
           <mal:type area="MPS" list="false" name="PointingRepetition"/>
         </mal:extends>
         <mal:field name="initialDirection" nullable="False" comment="Nominal direction of first occurrence.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Direction&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="targetDirection" nullable="False" comment="Specifies the direction of repetition as line connecting the initial and target directions.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Direction&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="separation" nullable="False" comment="The required angle between occurrences.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="tolerance" nullable="False" comment="The allowed tolerance (+/-) in the required angle between occurrences, the interpretation of which is dependent on the separationType.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="units" nullable="True" comment="The units used for separation and tolerance">
           <mal:type area="MAL" list="False" name="String"/>
@@ -3851,13 +3851,13 @@ If not specified repetition continues indefinitely.">
           <mal:type area="MPS" list="false" name="PointingRepetition"/>
         </mal:extends>
         <mal:field name="revsSeparation" nullable="False" comment="The required number of revolutions between occurrences.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Long&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="revsTolerance" nullable="False" comment="The allowed tolerance (+/-) in the required number of revolutions between occurrences, the interpretation of which is dependent on the separationType.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Long&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="revAngle" nullable="True" comment="Specifies the angle within a revolution.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="units" nullable="True" comment="The units used for revAngle ">
           <mal:type area="MAL" list="False" name="String"/>
@@ -3869,23 +3869,23 @@ If not specified repetition continues indefinitely.">
           <mal:type area="MPS" list="false" name="Repetition"/>
         </mal:extends>
         <mal:field name="centreObject" nullable="False" comment="Position of the central object.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="targetObject1" nullable="False" comment="Position of target object 1.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="targetObject2" nullable="False" comment="Position of target object 2.">
-          <mal:type area="MPS" list="False" name="Expression&lt;Position&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="initialAngle" nullable="False" comment="Initial angle subtended at the central object by target objects 1 and 2.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="separation" nullable="False" comment="The required angle between occurrences.
 If this is zero, this implies that repetition is between multiple occurrences of the initialAngle.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="tolerance" nullable="False" comment="The allowed tolerance (+/-) in the required angle between occurrences, the interpretation of which is dependent on the separationType.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Double&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="units" nullable="True" comment="The units used for separation and tolerance ">
           <mal:type area="MAL" list="False" name="String"/>
@@ -3898,13 +3898,13 @@ If this is zero, this implies that repetition is between multiple occurrences of
         </mal:extends>
         <mal:field name="eventRef" nullable="False" comment="Object Type: EventDefinition.
 Reference to an EventDefinition (type of event)">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::ObjectRef&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="separation" nullable="False" comment="Number of occurrences of the planning event required between occurrences of the planning activity.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Long&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
         <mal:field name="tolerance" nullable="False" comment="The allowed tolerance (+/-) in the number of occurrences of the planning event between occurrences of the planning activity, the interpretation of which is dependent on the separationType.">
-          <mal:type area="MPS" list="False" name="Expression&lt;MAL::Long&gt;"/>
+          <mal:type area="MPS" list="False" name="Expression"/>
         </mal:field>
       </mal:composite>
 
