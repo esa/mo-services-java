@@ -299,7 +299,7 @@ public class GeneratorJava extends GeneratorLangs {
                 "Adds an element to the list and checks if the type is correct.",
                 "The success status.", null);
 
-        method.addLine("if (!(element instanceof " + srcTypeName + ")) {", false);
+        method.addLine("if (element != null && !(element instanceof " + srcTypeName + ")) {", false);
         method.addLine("  throw new java.lang.ClassCastException(\"The added element does not extend the type: " + srcTypeName + "\")");
         method.addLine("}", false);
         method.addLine("return super.add(element)");
