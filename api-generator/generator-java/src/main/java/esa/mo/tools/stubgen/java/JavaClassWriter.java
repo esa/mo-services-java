@@ -385,12 +385,12 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         List<String> comments = normaliseArgComments(comment, null == rtype ? null : returnComment, args, throwsComment);
         addMultilineComment(1, false, comments, false);
 
-        StringBuilder buf = new StringBuilder(srtype + " " + methodName);
+        StringBuilder buf = new StringBuilder();
+        buf.append(srtype).append(" ").append(methodName);
         buf.append("(").append(argString).append(")");
 
         if (null != throwsSpec) {
-            buf.append(" throws ");
-            buf.append(throwsSpec);
+            buf.append(" throws ").append(throwsSpec);
         }
 
         file.append(makeLine(1, buf.toString(), true));
@@ -506,7 +506,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                 if (firstTime) {
                     firstTime = false;
                 } else {
-                    buf.append(", ");
+                    buf.append(",\n            ");
                 }
 
                 if (includeType) {
