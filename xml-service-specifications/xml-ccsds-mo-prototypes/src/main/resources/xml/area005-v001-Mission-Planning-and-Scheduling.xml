@@ -2,7 +2,7 @@
 <!--
   Copyright European Space Agency, 2023
 
-  Generated from MPS Blue Book DraftH4 17/04/2023
+  Generated from MPS Blue Book DraftH5 17/04/2023
 -->
 <mal:specification
   xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema"
@@ -732,7 +732,7 @@ Note: it is implementation dependent whether SubPlans are initially ACTIVATED an
           <mal:messages>
             <mal:request>
               <mal:field name = "subPlanIDs" canBeNull = "False" comment = "">
-                <mal:type area="MAL" list="True" name="Identifier[SubPlan]"/>
+                <mal:type area="MAL" list="True" name="Identifier"/>
               </mal:field>
             </mal:request>
             <mal:response>
@@ -762,7 +762,7 @@ The service provider returns a list of SubPlanActivationStatus data structures c
           <mal:messages>
             <mal:request>
               <mal:field name = "subPlanIDs" canBeNull = "False" comment = "">
-                <mal:type area="MAL" list="True" name="Identifier[SubPlan]"/>
+                <mal:type area="MAL" list="True" name="Identifier"/>
               </mal:field>
               <mal:field name = "deactivationMode" canBeNull = "False" comment = "">
                 <mal:type area="MAL" list="False" name="String"/>
@@ -789,7 +789,7 @@ A UInteger giving a secondary error code that details the reason for invalidity.
           <mal:messages>
             <mal:request>
               <mal:field name = "subPlanIDs" canBeNull = "False" comment = "">
-                <mal:type area="MAL" list="True" name="Identifier[SubPlan]"/>
+                <mal:type area="MAL" list="True" name="Identifier"/>
               </mal:field>
             </mal:request>
             <mal:response>
@@ -1146,7 +1146,7 @@ A UInteger giving a secondary error code that details the reason for invalidity.
           <mal:messages>
             <mal:progress>
               <mal:field name = "domains" canBeNull = "False" comment = "">
-                <mal:type area="MAL" list="True" name="Identifier[Domain]"/>
+                <mal:type area="MAL" list="True" name="Identifier"/>
               </mal:field>
               <mal:field name = "dataType" canBeNull = "False" comment = "">
                 <mal:type area="MAL" list="True" name="AttributeType"/>
@@ -1263,7 +1263,7 @@ A set of Plans with a common precursor may be submitted to a plan execution func
                 <mal:type area="MAL" list="False" name="ObjectRef&lt;Plan&gt;"/>
               </mal:field>
               <mal:field name = "status" canBeNull = "False" comment = "">
-                <mal:type area="MPS" list="False" name="PlanStatus"/>
+                <mal:type area="MPS" list="False" name="PlanStatusEnum"/>
               </mal:field>
               <mal:field name = "isAlternate" canBeNull = "False" comment = "">
                 <mal:type area="MAL" list="False" name="Boolean"/>
@@ -1936,13 +1936,13 @@ The information held on planning users is outside the scope of this standard.  T
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="PlanDetailUpdate" shortFormPart="0" comment="E1: Specifically in the case of reporting the detailed execution status of a plan, updates may be reported for multiple object types: planning activities, planning events and planning resources. To support this an abstract type of PlanDetailUpdate is defined as follows.">
+      <mal:composite name="PlanDetailUpdate" comment="E1: Specifically in the case of reporting the detailed execution status of a plan, updates may be reported for multiple object types: planning activities, planning events and planning resources. To support this an abstract type of PlanDetailUpdate is defined as follows.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
       </mal:composite>
 
-      <mal:composite name="ActivityDetails" shortFormPart="0" comment="E1: Contains the information required to create one or more ActivityInstances, including the specification of argument values and constraints.
+      <mal:composite name="ActivityDetails" comment="E1: Contains the information required to create one or more ActivityInstances, including the specification of argument values and constraints.
 Note that the activityRef and activityOffset attributes are only relevant in the case that a Repetition has been specified in a parent ActivityNode.  Temporal and sequential constraints associated with the ActivityInstance can be specified as constraints attached to a concrete SimpleActivityDetails structure.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
@@ -2827,7 +2827,7 @@ Sub-plans are not defined as objects within the MPS model.  Individual activitie
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="Position" shortFormPart="0" comment="E6: ">
+      <mal:composite name="Position" comment="E6: ">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
@@ -2927,7 +2927,7 @@ Default = “m”.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="Direction" shortFormPart="0" comment="E6: ">
+      <mal:composite name="Direction" comment="E6: ">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
@@ -3020,7 +3020,7 @@ Default = “deg”.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="PhysicalValue" shortFormPart="0" comment="E6: PhysicalValue is an abstract base type for the specific value types defined below.  Only specific value types are used in the pointing constraint definitions below.">
+      <mal:composite name="PhysicalValue" comment="E6: PhysicalValue is an abstract base type for the specific value types defined below.  Only specific value types are used in the pointing constraint definitions below.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
@@ -3191,7 +3191,7 @@ Item Definition (key and version)">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="ValidationDetails" shortFormPart="0" comment="E1: ">
+      <mal:composite name="ValidationDetails" comment="E1: ">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
@@ -3233,7 +3233,7 @@ Item Definition (key and version)">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="Constraint" shortFormPart="0" comment="E1: ">
+      <mal:composite name="Constraint" comment="E1: ">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
@@ -3256,7 +3256,7 @@ Default = False">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="ConditionalConstraint" shortFormPart="0" comment="E1: ">
+      <mal:composite name="ConditionalConstraint" comment="E1: ">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Constraint"/>
         </mal:extends>
@@ -3271,7 +3271,7 @@ Default = False">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="TemporalConstraint" shortFormPart="0" comment="E2: Temporal constraints impose a restriction on when a planning activity can appear in a plan.  The abstract type TemporalConstraint identifies the planning activity that is subject to the constraint, while concrete sub-types allow the specification of three different types of temporal constraint:
+      <mal:composite name="TemporalConstraint" comment="E2: Temporal constraints impose a restriction on when a planning activity can appear in a plan.  The abstract type TemporalConstraint identifies the planning activity that is subject to the constraint, while concrete sub-types allow the specification of three different types of temporal constraint:
 TimeConstraint:  the time at which the planning activity is to be planned
 TimeWindowConstraint:  a time window within which the planning activity is to be planned
 DurationConstraint: a restriction on the duration of the planning activity in the plan ">
@@ -3387,7 +3387,7 @@ The contains operator only applies to strings and may be case sensitive or insen
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="ResourceConstraint" shortFormPart="0" comment="E5: ">
+      <mal:composite name="ResourceConstraint" comment="E5: ">
         <mal:extends>
           <mal:type area="MPS" list="false" name="ConditionalConstraint"/>
         </mal:extends>
@@ -3465,7 +3465,7 @@ Identifies the planning activity for which the function constraint applies. If o
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="GeometricConstraint" shortFormPart="0" comment="E7: ">
+      <mal:composite name="GeometricConstraint" comment="E7: ">
         <mal:extends>
           <mal:type area="MPS" list="false" name="ConditionalConstraint"/>
         </mal:extends>
@@ -3597,7 +3597,7 @@ Default = “deg”.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="Effect" shortFormPart="0" comment="E5: ">
+      <mal:composite name="Effect" comment="E5: ">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Constraint"/>
         </mal:extends>
@@ -3659,7 +3659,7 @@ See §3.2.4.2">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="Trigger" shortFormPart="0" comment="E1: All sub-classes of Trigger include the time at which they are predicted to occur (in advance of execution); and, where applicable, the time at which they actually occurred (post execution).">
+      <mal:composite name="Trigger" comment="E1: All sub-classes of Trigger include the time at which they are predicted to occur (in advance of execution); and, where applicable, the time at which they actually occurred (post execution).">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
@@ -3731,7 +3731,7 @@ See §3.2.4.2">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="Repetition" shortFormPart="0" comment="E1: A repetition is used to specify the repeated instantiation of a [set of] planning activities.  Multiple sub-types of Repetition are defined to support the specification of repeat cycles by different criteria.  It can be used in the context of a planning request to specify a standing order for repeated execution of the [set of] planning activities.
+      <mal:composite name="Repetition" comment="E1: A repetition is used to specify the repeated instantiation of a [set of] planning activities.  Multiple sub-types of Repetition are defined to support the specification of repeat cycles by different criteria.  It can be used in the context of a planning request to specify a standing order for repeated execution of the [set of] planning activities.
 In the context of an ActivityNode embedded within a planning request (see 3.2.2.3), it is possible to nest one Repetition inside another, enabling the specification of complex repetitive sequences of activities.
 All sub-types have the following attributes:">
         <mal:extends>
@@ -3765,7 +3765,7 @@ If not specified repetition continues indefinitely.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="LocationRepetition" shortFormPart="0" comment="E6: A sub-type of Repetition based on Position.  Separate concrete sub-types provide for repetitions based on generic position and orbital position.">
+      <mal:composite name="LocationRepetition" comment="E6: A sub-type of Repetition based on Position.  Separate concrete sub-types provide for repetitions based on generic position and orbital position.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Repetition"/>
         </mal:extends>
@@ -3819,7 +3819,7 @@ If not specified repetition continues indefinitely.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="PointingRepetition" shortFormPart="0" comment="E6: A sub-type of Repetition based on Pointing.  Concrete sub-types provide for repetition based on direction and revolutions.">
+      <mal:composite name="PointingRepetition" comment="E6: A sub-type of Repetition based on Pointing.  Concrete sub-types provide for repetition based on direction and revolutions.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Repetition"/>
         </mal:extends>
