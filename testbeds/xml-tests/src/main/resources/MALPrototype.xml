@@ -929,10 +929,10 @@
                                comment="This operation checks that a basic ObjectRef type can be sent and received explicitly">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MAL" name="ObjectRef&lt;Identifier&gt;" />
+                            <smc:type area="MAL" name="ObjectRef(Identifier)" />
                         </smc:request>
                         <smc:response>
-                            <smc:type area="MAL" name="ObjectRef&lt;Identifier&gt;" />
+                            <smc:type area="MAL" name="ObjectRef(Identifier)" />
                         </smc:response>
                     </smc:messages>
                     <smc:errors>
@@ -1030,7 +1030,7 @@
                             <smc:type area="MAL" name="MOObject" />
                         </smc:request>
                         <smc:response>
-                            <smc:type area="MAL" name="ObjectRef&lt;Identifier&gt;" />
+                            <smc:type area="MAL" name="ObjectRef(Identifier)" />
                         </smc:response>
                     </smc:messages>
                     <smc:errors>
@@ -1051,7 +1051,7 @@
                             <smc:type area="MAL" name="Boolean" />
                         </smc:request>
                         <smc:response>
-                            <smc:type area="MAL" name="ObjectRef&lt;Identifier&gt;" />
+                            <smc:type area="MAL" name="ObjectRef(Identifier)" />
                         </smc:response>
                     </smc:messages>
                     <smc:errors>
@@ -1066,7 +1066,7 @@
                                comment="This operation deletes an MO Object">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MAL" name="ObjectRef&lt;Identifier&gt;" />
+                            <smc:type area="MAL" name="ObjectRef(Identifier)" />
                         </smc:submit>
                     </smc:messages>
                     <smc:errors>
@@ -1081,7 +1081,7 @@
                                comment="This operation gets an MO Object value from its reference">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MAL" name="ObjectRef&lt;Identifier&gt;" />
+                            <smc:type area="MAL" name="ObjectRef(Identifier)" />
                         </smc:request>
                         <smc:response>
                             <smc:type area="MAL" name="MOObject" />
@@ -1873,7 +1873,7 @@
                     <smc:messages>
                         <smc:submit>
                             <smc:type area="MALPrototype"
-                                      name="ObjectRef&lt;TestPublishUpdate&gt;" />
+                                      name="ObjectRef(TestPublishUpdate)" />
                         </smc:submit>
                     </smc:messages>
 
@@ -1884,7 +1884,7 @@
                     <smc:messages>
                         <smc:send>
                             <smc:type area="MALPrototype"
-                                      name="ObjectRef&lt;IPTestDefinition&gt;" />
+                                      name="ObjectRef(IPTestDefinition)" />
                         </smc:send>
                     </smc:messages>
                 </smc:sendIP>   
