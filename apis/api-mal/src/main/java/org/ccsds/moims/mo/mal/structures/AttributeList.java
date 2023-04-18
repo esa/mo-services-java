@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALListDecoder;
+import org.ccsds.moims.mo.mal.MALListEncoder;
 
 /**
  * The Attributes list. The added and removed objects to this class might or
@@ -101,35 +103,27 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
 
     @Override
     public void encode(MALEncoder encoder) throws MALException {
-        int size = this.size();
-        encoder.encodeInteger(size);
-
-        for (int i = 0; i < size; i++) {
+        MALListEncoder listEncoder = encoder.createListEncoder(this);
+        for (int i = 0; i < size(); i++) {
             Object objToEncode = super.get(i);
-
             if (!(objToEncode instanceof Attribute)) {
                 objToEncode = Attribute.javaType2Attribute(objToEncode);
             }
-
-            if (objToEncode != null && !(objToEncode instanceof Attribute)) {
-                throw new MALException("The object is not an Attribute type! "
-                        + "It is: " + objToEncode.getClass().getCanonicalName()
-                        + " - With value: " + objToEncode.toString());
-            }
-
-            encoder.encodeNullableAttribute((Attribute) objToEncode);
+            listEncoder.encodeNullableAttribute((Attribute) objToEncode);
         }
+        listEncoder.close();
     }
 
     @Override
     public Element decode(MALDecoder decoder) throws MALException {
-        int size = decoder.decodeInteger();
-        AttributeList newObj = new AttributeList();
-
-        for (int i = 0; i < size; i++) {
-            newObj.add(decoder.decodeNullableAttribute());
+        MALListDecoder listDecoder = decoder.createListDecoder(this);
+        int decodedSize = listDecoder.size();
+        if (decodedSize > 0) {
+            ensureCapacity(decodedSize);
         }
-
-        return newObj;
+        while (listDecoder.hasNext()) {
+            add(Attribute.attribute2JavaType(listDecoder.decodeNullableAttribute()));
+        }
+        return this;
     }
 }
