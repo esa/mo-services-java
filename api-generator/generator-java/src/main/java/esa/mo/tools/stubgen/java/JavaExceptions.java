@@ -91,16 +91,14 @@ public class JavaExceptions {
             errorDescription = "\"" + error.getExtraInformation().getComment() + "\"";
         }
 
-        // Add the Error number as a static final variable
-        CompositeField errorNumberVar = generator.createCompositeElementsDetails(file, false, "ERROR_NUMBER",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
-                true, true, "The Error number.");
-        file.addClassVariable(true, true, StdStrings.PUBLIC, errorNumberVar, false, "(" + String.valueOf(error.getNumber()) + ")");
+        // Construct path to Error in the Helper
+        String errorNameCaps = error.getName().toUpperCase();
+        String errorPath = area.getName() + "Helper." + errorNameCaps + "_ERROR_NUMBER";
 
         // Constructor without parameters
         MethodWriter method_1 = file.addConstructor(StdStrings.PUBLIC, className,
                 null, null, null, "Constructs a new " + className + " exception.", null);
-        method_1.addLine("super(ERROR_NUMBER, " + errorDescription + ")");
+        method_1.addLine("super(" + errorPath + ", " + errorDescription + ")");
         method_1.addMethodCloseStatement();
 
         // Constructor with a String
@@ -112,7 +110,7 @@ public class JavaExceptions {
 
         MethodWriter method_2 = file.addConstructor(StdStrings.PUBLIC, className,
                 args, null, null, "Constructs a new " + className + " exception.", null);
-        method_2.addLine("super(ERROR_NUMBER, " + "message)");
+        method_2.addLine("super(" + errorPath + ", " + "message)");
         method_2.addMethodCloseStatement();
 
         file.addClassCloseStatement();
