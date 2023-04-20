@@ -2,7 +2,7 @@
 <!--
   Copyright European Space Agency, 2023
 
-  Generated from MPS Blue Book DraftH5 17/04/2023
+  Generated from MPS Blue Book DraftH5 18/04/2023
 -->
 <mal:specification
   xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema"
@@ -82,7 +82,7 @@ The response returns a list of RequestSummaryStatus structures containing the id
             </mal:request>
             <mal:response>
               <mal:field name = "requestSummaries" canBeNull = "False" comment = "">
-                <mal:type area="MPS" list="True" name="RequestSummaryStatu"/>
+                <mal:type area="MPS" list="True" name="RequestSummaryStatus"/>
               </mal:field>
             </mal:response>
           </mal:messages>
