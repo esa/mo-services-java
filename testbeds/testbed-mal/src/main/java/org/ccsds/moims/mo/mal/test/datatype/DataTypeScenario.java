@@ -39,6 +39,7 @@ import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResp
 import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
 import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
+import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractFieldList;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -515,49 +516,125 @@ public class DataTypeScenario extends LoggingBase {
         return rv;
     }
 
+    /**
+     * Checks various parameter values for an operation parameter declared as a
+     * List<AbstractComposite>.
+     */
     public String polymorphicAbstractCompositeListsWork() throws MALInteractionException, MALException {
         logMessage("Starting polymorphic AbstractComposite list parameter test...");
         String rv;
         AbstractCompositeList res;
         try {
+            /*
+             * We must make sure that the parameter value is provided to the MAL level
+             * with the expected type. The current proposed mapping actually provides
+             * the parameter value with the List<Element> MAL type, which is not what
+             * is expected.
+             */
             AbstractCompositeList abstractList = new AbstractCompositeList();
             abstractList.addAll(TestData.testStructureWithAbstractFieldSingleTypedList1);
             res = getDataTestStub().testPolymorphicAbstractCompositeList(abstractList);
             rv = subSingleTest(abstractList,
                     res, "testStructureWithAbstractFieldSingleTypedList1");
-            logMessage("The current Java mapping prevents this test from compiling.");
+            logMessage("The current Java mapping does not pass the proper concrete type.");
+            // TODO SL forward changes to the next functions
+            /*
+             * ALTERNATE CODE
+             * The following code uses a Java mapping that should enable the proper type
+             * to be passed to the MAL, but remains to be implemented in the stub generator.
+             *
+            // homogeneous concrete list type List<StructureWithAbstractField>
+            AbstractCompositeList abstractList = new AbstractCompositeList(
+                    TestData.testStructureWithAbstractFieldSingleTypedList1);
+            res = getDataTestStub().testPolymorphicAbstractCompositeList(abstractList);
+            rv = subMultiTest(abstractList,
+                    res, null, "testStructureWithAbstractFieldSingleTypedList1");
+            // homogeneous concrete list type List<StructureWithAbstractField>
+            // with inner field abstract_item holding heterogeneous values
+            abstractList = new AbstractCompositeList(
+                    TestData.testStructureWithAbstractFieldSingleTypedList2);
+            res = getDataTestStub().testPolymorphicAbstractCompositeList(abstractList);
+            rv = subMultiTest(abstractList,
+                    res, rv, "testStructureWithAbstractFieldSingleTypedList2");
+            // heterogeneous concrete list type List<Element>
+            abstractList = new AbstractCompositeList(
+                    TestData.testAbstractCompositeMultipleTypedList);
+            res = getDataTestStub().testPolymorphicAbstractCompositeList(abstractList);
+            rv = subMultiTest(abstractList,
+                    res, rv, "testAbstractCompositeMultipleTypedList");
+             *
+             * END OF ALTERNATE CODE
+             */
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "testStructureWithAbstractFieldSingleTypedList1");
+            rv = subSingleTestExceptionHandler(ex, "polymorphicAbstractCompositeListsWork");
         }
         logMessage("Finished polymorphic AbstractComposite list parameter test");
         return rv;
     }
 
+    /**
+     * Checks various parameter values for an operation parameter declared as a
+     * List<Composite>.
+     */
     public String polymorphicMalCompositeListsWork() throws MALInteractionException, MALException {
         logMessage("Starting polymorphic MAL Composite list parameter test...");
         String rv;
         CompositeList res;
         try {
+            // homogeneous concrete list type List<StructureWithAbstractField>
             res = getDataTestStub().testPolymorphicMalCompositeList(TestData.testStructureWithAbstractFieldSingleTypedList1);
-            rv = subSingleTest(TestData.testStructureWithAbstractFieldSingleTypedList1,
-                    res, "testStructureWithAbstractFieldSingleTypedList1");
+            rv = subMultiTest(TestData.testStructureWithAbstractFieldSingleTypedList1,
+                    res, null, "testStructureWithAbstractFieldSingleTypedList1");
+            // homogeneous concrete list type List<StructureWithAbstractField>
+            // with inner field abstract_item holding heterogeneous values
+            res = getDataTestStub().testPolymorphicMalCompositeList(TestData.testStructureWithAbstractFieldSingleTypedList2);
+            rv = subMultiTest(TestData.testStructureWithAbstractFieldSingleTypedList2,
+                    res, rv, "testStructureWithAbstractFieldSingleTypedList2");
+            // heterogeneous concrete list type List<Element>
+            /*
+             * COMPILING ERROR
+             * The method testPolymorphicMalCompositeList(CompositeList) in the type DataTestStub
+             * is not applicable for the arguments (AbstractCompositeList)
+             *
+            res = getDataTestStub().testPolymorphicMalCompositeList(TestData.testAbstractCompositeMultipleTypedList);
+             *
+             * END OF COMPILING ERROR
+             */
+            res = null;
+            rv = subMultiTest(TestData.testAbstractCompositeMultipleTypedList,
+                    res, rv, "testAbstractCompositeMultipleTypedList");
+            logMessage("The current Java mapping prevents this test from compiling.");
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "testStructureWithAbstractFieldSingleTypedList1");
+            rv = subSingleTestExceptionHandler(ex, "polymorphicMalCompositeListsWork");
         }
         logMessage("Finished polymorphic MAL Composite list parameter test");
         return rv;
     }
 
+    /**
+     * Checks various parameter values for an operation parameter declared as a
+     * List<Element>.
+     */
     public String polymorphicMalElementListsWork() throws MALInteractionException, MALException {
         logMessage("Starting polymorphic MAL Element list parameter test...");
         String rv;
         ElementList res;
         try {
+            // homogeneous concrete list type List<StructureWithAbstractField>
             res = getDataTestStub().testPolymorphicMalElementList(TestData.testStructureWithAbstractFieldSingleTypedList1);
-            rv = subSingleTest(TestData.testStructureWithAbstractFieldSingleTypedList1,
-                    res, "testStructureWithAbstractFieldSingleTypedList1");
+            rv = subMultiTest(TestData.testStructureWithAbstractFieldSingleTypedList1,
+                    res, null, "testStructureWithAbstractFieldSingleTypedList1");
+            // homogeneous concrete list type List<StructureWithAbstractField>
+            // with inner field abstract_item holding heterogeneous values
+            res = getDataTestStub().testPolymorphicMalElementList(TestData.testStructureWithAbstractFieldSingleTypedList2);
+            rv = subMultiTest(TestData.testStructureWithAbstractFieldSingleTypedList2,
+                    res, null, "testStructureWithAbstractFieldSingleTypedList2");
+            // heterogeneous concrete list type List<Element>
+            res = getDataTestStub().testPolymorphicMalElementList(TestData.testAbstractCompositeMultipleTypedList);
+            rv = subMultiTest(TestData.testAbstractCompositeMultipleTypedList,
+                    res, null, "testAbstractCompositeMultipleTypedList");
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "testStructureWithAbstractFieldSingleTypedList1");
+            rv = subSingleTestExceptionHandler(ex, "polymorphicMalElementListsWork");
         }
         logMessage("Finished polymorphic MAL Element list parameter test");
         return rv;

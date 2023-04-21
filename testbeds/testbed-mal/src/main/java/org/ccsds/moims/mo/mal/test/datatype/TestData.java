@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.malprototype.structures.BasicAbstractComposite;
 import org.ccsds.moims.mo.malprototype.structures.TestBody;
 import org.ccsds.moims.mo.malprototype.structures.AbstractComposite;
+import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
 import org.ccsds.moims.mo.malprototype.structures.ComplexStructure;
 import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractField;
 import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractFieldList;
@@ -88,10 +89,10 @@ public abstract class TestData {
     public static final StructureWithAbstractField testStructureWithAbstractField0 = new StructureWithAbstractField(testString, testInteger, testBasicAbstractComposite, testBoolean, testInteger);
     public static final StructureWithAbstractField testStructureWithAbstractField1 = new StructureWithAbstractField(testString, testInteger, testComplexStructure, testBoolean, testInteger);
     public static final StructureWithAbstractField testStructureWithAbstractField2 = new StructureWithAbstractField(testString, testInteger, testStructureWithAbstractField0, testBoolean, testInteger);
-    public static final StructureWithAbstractField testStructureWithAbstractField3 = new StructureWithAbstractField(testString, testInteger, testStructureWithAbstractField1, testBoolean, testInteger);
+    public static final StructureWithAbstractField testStructureWithAbstractField3 = new StructureWithAbstractField(testString, testInteger, testStructureWithAbstractField2, testBoolean, testInteger);
     public static final StructureWithAbstractFieldList testStructureWithAbstractFieldSingleTypedList1 = new StructureWithAbstractFieldList();
     public static final StructureWithAbstractFieldList testStructureWithAbstractFieldSingleTypedList2 = new StructureWithAbstractFieldList();
-    public static final StructureWithAbstractFieldList testStructureWithAbstractFieldMultipleTypedList = new StructureWithAbstractFieldList();
+    public static final AbstractCompositeList testAbstractCompositeMultipleTypedList = new AbstractCompositeList();
     
     public static final int[] testIndexes;
 
@@ -199,6 +200,12 @@ public abstract class TestData {
         testStructureWithAbstractFieldSingleTypedList2.add(testStructureWithAbstractField1);
         testStructureWithAbstractFieldSingleTypedList2.add(testStructureWithAbstractField2);
         testStructureWithAbstractFieldSingleTypedList2.add(testStructureWithAbstractField3);
+        testAbstractCompositeMultipleTypedList.add(testBasicAbstractComposite);
+        testAbstractCompositeMultipleTypedList.add(testComplexStructure);
+        testAbstractCompositeMultipleTypedList.add(testStructureWithAbstractField0);
+        testAbstractCompositeMultipleTypedList.add(testStructureWithAbstractField1);
+        testAbstractCompositeMultipleTypedList.add(testStructureWithAbstractField2);
+        testAbstractCompositeMultipleTypedList.add(testStructureWithAbstractField3);
         
         testPolymorphicTypes.add(testBody);
         testPolymorphicTypes.add(testComplexStructure);
@@ -209,7 +216,7 @@ public abstract class TestData {
         testPolymorphicTypes.add(testStructureWithAbstractField3);
         testPolymorphicTypes.add(testStructureWithAbstractFieldSingleTypedList1);
         testPolymorphicTypes.add(testStructureWithAbstractFieldSingleTypedList2);
-        testPolymorphicTypes.add(testStructureWithAbstractFieldMultipleTypedList);
+        testPolymorphicTypes.add(testAbstractCompositeMultipleTypedList);
         
         // concatenate all together for simplicity in service provider
         testAll.addAll(testAttributes);
