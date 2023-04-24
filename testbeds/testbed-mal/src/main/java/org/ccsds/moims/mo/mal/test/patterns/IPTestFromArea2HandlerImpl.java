@@ -44,6 +44,7 @@ import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.malprototype.structures.Auto;
 import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
@@ -136,13 +137,13 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
     }
 
     @Override
-    public void testObjectRefSubmit(ObjectRef<TestPublishUpdate> _ObjectRef_TestPublishUpdate_0,
+    public void testObjectRefSubmit(ObjectRef<Auto> _ObjectRef_TestPublishUpdate_0,
             MALInteraction interaction) throws MALInteractionException, MALException {
 
     }
 
     @Override
-    public void testObjectRefSend(ObjectRef<IPTestDefinition> _ObjectRef_IPTestDefinition_0,
+    public void testObjectRefSend(ObjectRef<Auto> _ObjectRef_IPTestDefinition_0,
             MALInteraction interaction) throws MALInteractionException, MALException {
 
     }

@@ -36,6 +36,7 @@ import org.ccsds.moims.mo.malprototype.structures.TestPublishList;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
+import org.ccsds.moims.mo.malprototype.structures.Auto;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -175,7 +176,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         return rcvdValue;
     }
 
-    public ObjectRef<Identifier> testDataObjectRef(ObjectRef<Identifier> rcvdValue,
+    public ObjectRef<Auto> testDataObjectRef(ObjectRef<Auto> rcvdValue,
             MALInteraction interaction) throws MALInteractionException, MALException {
         _testDataValue(TestData.testObjectRef, rcvdValue, "ObjectRef test");
         return rcvdValue;
@@ -197,8 +198,8 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         return new TestExplicitMultiReturnResponse(_UOctet0, _UShort1, _UInteger2, _ULong3);
     }
 
-    public TestAbstractMultiReturnResponse testAbstractMultiReturn(UOctet _UOctet0, UShort _UShort1,
-            UInteger _UInteger2, Element _Element3, MALInteraction interaction) throws MALInteractionException, MALException {
+    public TestAbstractMultiReturnResponse testAbstractMultiReturn(UOctet _UOctet0, UShort _UShort1, UInteger _UInteger2,
+            Element _Element3, MALInteraction interaction) throws MALInteractionException, MALException {
         _testDataValue(TestData.testUOctet, _UOctet0, "Abstract multi test part 1");
         _testDataValue(TestData.testUShort, _UShort1, "Abstract multi test part 2");
         _testDataValue(TestData.testUInteger, _UInteger2, "Abstract multi test part 3");
@@ -206,17 +207,13 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         return new TestAbstractMultiReturnResponse(_UOctet0, _UShort1, _UInteger2, _Element3);
     }
 
-    public TestInnerAbstractMultiReturnResponse testInnerAbstractMultiReturn(UOctet _UOctet0,
-                                                                             Element _Element1,
-                                                                             Element _Element2,
-                                                                             UInteger _UInteger3,
-                                                                             MALInteraction interaction) throws MALInteractionException,
-                                                                                                         MALException {
-      _testDataValue(TestData.testUOctet, _UOctet0, "Abstract multi test part 1");
-      _testDataValue(TestData.testULong, _Element1, "Abstract multi test part 2");
-      _testDataValue(TestData.testUShort, _Element2, "Abstract multi test part 3");
-      _testDataValue(TestData.testUInteger, _UInteger3, "Abstract multi test part 4");
-      return new TestInnerAbstractMultiReturnResponse(_UOctet0, _Element1, _Element2, _UInteger3);
+    public TestInnerAbstractMultiReturnResponse testInnerAbstractMultiReturn(UOctet _UOctet0, Element _Element1,
+            Element _Element2, UInteger _UInteger3, MALInteraction interaction) throws MALInteractionException, MALException {
+        _testDataValue(TestData.testUOctet, _UOctet0, "Abstract multi test part 1");
+        _testDataValue(TestData.testULong, _Element1, "Abstract multi test part 2");
+        _testDataValue(TestData.testUShort, _Element2, "Abstract multi test part 3");
+        _testDataValue(TestData.testUInteger, _UInteger3, "Abstract multi test part 4");
+        return new TestInnerAbstractMultiReturnResponse(_UOctet0, _Element1, _Element2, _UInteger3);
     }
 
     protected static void _testDataValue(Object testValue, Object rcvdValue, String exString) throws MALInteractionException {
@@ -281,37 +278,37 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     }
 
     @Override
-    public ObjectRef<Identifier> createObject(MOObject _MOObject0, MALInteraction interaction) throws MALInteractionException, MALException {
+    public ObjectRef<Auto> createObject(MOObject _MOObject0, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public ObjectRef<Identifier> createObjectFromFields(String _String0, Integer _Integer1, String _String2, Boolean _Boolean3, MALInteraction interaction) throws MALInteractionException, MALException {
+    public ObjectRef<Auto> createObjectFromFields(String _String0, Integer _Integer1, String _String2, Boolean _Boolean3, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void deleteObject(ObjectRef<Identifier> _Identifier_0, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void deleteObject(ObjectRef<Auto> _Identifier_0, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public MOObject getObject(ObjectRef<Identifier> _Identifier_0, MALInteraction interaction) throws MALInteractionException, MALException {
+    public MOObject getObject(ObjectRef<Auto> _Identifier_0, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public AbstractCompositeList testPolymorphicAbstractCompositeList(AbstractCompositeList bacl,
             MALInteraction interaction) throws MALInteractionException, MALException {
-      return bacl;
+        return bacl;
     }
 
     public CompositeList testPolymorphicMalCompositeList(CompositeList cl,
             MALInteraction interaction) throws MALInteractionException, MALException {
-      return cl;
+        return cl;
     }
 
     public ElementList testPolymorphicMalElementList(ElementList el,
             MALInteraction interaction) throws MALInteractionException, MALException {
-      return el;
+        return el;
     }
 }
