@@ -2215,29 +2215,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     public List<CompositeField> createOperationArguments(GeneratorConfiguration config,
             LanguageWriter file, List<TypeInfo> opArgs) {
-        return createOperationArguments(config, file, opArgs, false);
-    }
-
-    @Deprecated
-    public List<CompositeField> createOperationArguments(GeneratorConfiguration config,
-            LanguageWriter file, List<TypeInfo> opArgs, boolean forceList) {
-        // This method should be without the forceList boolean argument
-        // because it was used in the PUB-SUB but no longer is used
-
         List<CompositeField> rv = new LinkedList<>();
 
         if (null != opArgs) {
             for (int i = 0; i < opArgs.size(); i++) {
                 TypeInfo ti = opArgs.get(i);
                 TypeReference tir = ti.getSourceType();
-                if (forceList) {
-                    TypeReference tir_new = new TypeReference();
-                    tir_new.setArea(tir.getArea());
-                    tir_new.setService(tir.getService());
-                    tir_new.setName(tir.getName());
-                    tir_new.setList(true);
-                    tir = tir_new;
-                }
 
                 String argName;
                 if (ti.getFieldName() != null) {

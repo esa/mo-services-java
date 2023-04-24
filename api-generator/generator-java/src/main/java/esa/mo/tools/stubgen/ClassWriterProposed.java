@@ -61,5 +61,6 @@ public interface ClassWriterProposed extends ClassWriter {
      * @throws IOException If there is an IO error.
      */
     void addClassVariableNewInit(boolean isStatic, boolean isFinal, String scope,
-            CompositeField type, boolean isObject, boolean isArray, String initialValue, boolean isNewInit) throws IOException;     
+            CompositeField type, boolean isObject, boolean isArray,
+            String initialValue, boolean isNewInit) throws IOException;
 }

@@ -194,11 +194,11 @@ public class GeneratorJava extends GeneratorLangs {
         argList.add(createCompositeElementsDetails(file, true, "updateHeader",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false), true, true,
                 "The headers of the updates being added"));
-        argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes(), false));
+        argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes()));
 
         String argNameList = "";
 
-        if (1 < argList.size()) {
+        if (argList.size() > 1) {
             List<String> strList = new LinkedList<>();
 
             for (int i = 1; i < argList.size(); i++) {
