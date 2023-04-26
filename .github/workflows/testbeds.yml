@@ -15,9 +15,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-mo-services-java-${{ hashFiles('**/pom.xml') }}
 
-  testbed-mal:
+  build-testbeds:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -30,7 +30,30 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-mo-services-java-${{ hashFiles('**/pom.xml') }}
+      - name: Run the testbeds install
+        run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests install # disable malspp for now
+        working-directory: testbeds
+      - name: Cache Maven local repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-mo-testbeds-${{ hashFiles('**/pom.xml') }}
+
+  testbed-mal:
+    needs: build-testbeds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Restore Maven local repository from cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-mo-testbeds-${{ hashFiles('**/pom.xml') }}
       - name: Run the Testbed for MAL
         run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-mal
@@ -42,7 +65,7 @@ jobs:
           path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-com:
-    needs: build
+    needs: build-testbeds
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -54,7 +77,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-mo-testbeds-${{ hashFiles('**/pom.xml') }}
       - name: Run the Testbed for COM
         run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-com
@@ -64,3 +87,28 @@ jobs:
         with:
           name: testbed-com-report
           path: testbeds/testbed-com/target/surefire-reports/
+
+  testbed-malspp:
+    if: ${{ false }}  # disable for now
+    needs: build-testbeds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Restore Maven local repository from cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-mo-testbeds-${{ hashFiles('**/pom.xml') }}
+      - name: Run the Testbed for MAL/SPP
+        run: mvn --batch-mode --update-snapshots -P DLR test
+        working-directory: testbeds/testbed-malspp
+      - name: Upload report for MAL/SPP testbed
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: testbed-malspp-report
+          path: testbeds/testbed-malspp/target/surefire-reports/

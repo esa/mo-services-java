@@ -55,6 +55,6 @@
         <module>mal-impl</module>
         <module>bindings</module>
         <module>tooling</module>
-        <module>testbeds</module>
+        <!--<module>testbeds</module> -->
     </modules>
 </project>
