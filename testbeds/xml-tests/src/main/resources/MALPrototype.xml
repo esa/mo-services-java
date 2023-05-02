@@ -1020,6 +1020,43 @@
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
+                <smc:requestIP name="testPolymorphicObjectRefTypes" number="137"
+                               supportInReplay="false"
+                               comment="This operation checks the ObjectRef(T) polymorphism in operation type signature and in composite fields">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type area="MALPrototype" name="Garage" />
+                            <smc:type area="MALPrototype" name="ObjectRef(Porsche)" />
+                            <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
+                            <!-- the general form required by the MAL is ObjectRef(Element), but it does not compile - ->
+                            <smc:type area="MAL" name="ObjectRef(Element)" /> -->
+                            <smc:type area="MAL" name="ObjectRef(MOObject)" />
+                            <!-- temporarily remove code that does not compile - ->
+                            <smc:type list="true" area="MALPrototype" name="ObjectRef(Porsche)" />
+                            <smc:type list="true" area="MALPrototype" name="ObjectRef(Auto)" />
+                            <smc:type list="true" area="MAL" name="ObjectRef(Element)" />
+                            <!- - -->
+                        </smc:request>
+                        <smc:response>
+                            <smc:type area="MALPrototype" name="Garage" />
+                            <smc:type area="MAL" name="String" comment="to remove when the next fields are added back"/>
+                            <!-- temporarily remove code that does not compile - ->
+                            <smc:type area="MALPrototype" name="ObjectRef(Porsche)" />
+                            <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
+                            <smc:type area="MAL" name="ObjectRef(Element)" />
+                            <smc:type list="true" area="MALPrototype" name="ObjectRef(Porsche)" />
+                            <smc:type list="true" area="MALPrototype" name="ObjectRef(Auto)" />
+                            <smc:type list="true" area="MAL" name="ObjectRef(Element)" />
+                            <!- - -->
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype" service="DataTest"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
             </smc:capabilitySet>
             <smc:capabilitySet number="200">
                 <smc:requestIP name="createObject" number="201"
@@ -1672,7 +1709,7 @@
                     <smc:type area="MAL" name="Boolean" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="Auto" comment="An abstract composite for cars.">
+            <smc:composite name="Auto" comment="An abstract object type for cars.">
                 <smc:extends>
                     <smc:type area="MAL" name="MOObject" />
                 </smc:extends>
@@ -1686,23 +1723,45 @@
                     <smc:type list="true" area="MAL" name="String" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="Lamborghini" shortFormPart="120" comment="The composite representing a Lamborghini car.">
+            <smc:composite name="Lamborghini" shortFormPart="120" comment="The object representing a Lamborghini car.">
                 <smc:extends>
                     <smc:type area="MALPrototype" name="Auto" />
                 </smc:extends>
             </smc:composite>
-            <smc:composite name="Porsche" shortFormPart="121" comment="The composite representing a Porsche car.">
+            <smc:composite name="Porsche" shortFormPart="121" comment="The object representing a Porsche car.">
                 <smc:extends>
                     <smc:type area="MALPrototype" name="Auto" />
                 </smc:extends>
             </smc:composite>
-            <smc:composite name="Garage" shortFormPart="122" comment="The composite representing a Garage with multiple cars.">
+            <smc:composite name="Garage" shortFormPart="122" comment="The object representing a Garage with multiple references to cars.">
                 <smc:extends>
-                    <smc:type area="MAL" name="Composite" />
+                    <smc:type area="MAL" name="MOObject" />
                 </smc:extends>
-                <smc:field name="cars" comment="The list of cars parked in the garage.">
-                    <smc:type list="true" area="MALPrototype" name="Auto" />
+                <smc:field name="courtesyCarAsPorsche" comment="The Porsche courtesy car offered by the garage.">
+                    <smc:type area="MALPrototype" name="ObjectRef(Porsche)" />
                 </smc:field>
+                <smc:field name="courtesyCarAsAuto" comment="The courtesy car offered by the garage.">
+                    <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
+                </smc:field>
+                <!-- temporarily change the type to match the type of the test operation - ->
+                <smc:field name="courtesyCarAsObject" comment="The courtesy car offered by the garage.">
+                    <smc:type area="MAL" name="ObjectRef(Element)" />
+                </smc:field>
+                <!- - -->
+                <smc:field name="courtesyCarAsObject" comment="The courtesy car offered by the garage.">
+                    <smc:type area="MAL" name="ObjectRef(MOObject)" />
+                </smc:field>
+                <!-- temporarily remove code that does not compile - ->
+                <smc:field name="carsAsPorsches" comment="The list of Porsche cars parked in the garage.">
+                    <smc:type list="true" area="MALPrototype" name="ObjectRef(Porsche)" />
+                </smc:field>
+                <smc:field name="carsAsAutos" comment="The list of cars parked in the garage.">
+                    <smc:type list="true" area="MALPrototype" name="ObjectRef(Auto)" />
+                </smc:field>
+                <smc:field name="carsAsObjects" comment="The list of cars parked in the garage.">
+                    <smc:type list="true" area="MAL" name="ObjectRef(Element)" />
+                </smc:field>
+                <!- - -->
             </smc:composite>
             <smc:composite name="TestObjectBase" comment="">
                 <smc:extends>

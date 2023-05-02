@@ -72,3 +72,4 @@ The consumer takes the data from the list one by one, in the same order, and cal
 |check| polymorphic abstract composite lists work | OK|
 |check| polymorphic mal composite lists work | OK|
 |check| polymorphic mal element lists work | OK|
+|check| polymorphic object ref types work | OK|

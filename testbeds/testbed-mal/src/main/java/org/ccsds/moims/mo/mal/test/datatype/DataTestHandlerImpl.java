@@ -30,6 +30,7 @@ import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
+import org.ccsds.moims.mo.malprototype.datatest.body.TestPolymorphicObjectRefTypesResponse;
 import org.ccsds.moims.mo.malprototype.datatest.provider.DataTestInheritanceSkeleton;
 import org.ccsds.moims.mo.malprototype.structures.TestPublish;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishList;
@@ -37,6 +38,8 @@ import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
 import org.ccsds.moims.mo.malprototype.structures.Auto;
+import org.ccsds.moims.mo.malprototype.structures.Garage;
+import org.ccsds.moims.mo.malprototype.structures.Porsche;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -310,5 +313,17 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     public ElementList testPolymorphicMalElementList(ElementList el,
             MALInteraction interaction) throws MALInteractionException, MALException {
         return el;
+    }
+
+    @Override
+    public TestPolymorphicObjectRefTypesResponse testPolymorphicObjectRefTypes(
+            Garage _Garage0,
+            ObjectRef<Porsche> _Porsche_1,
+            ObjectRef<Auto> _Auto_2,
+//            ObjectRef<Element> _Element_3,
+            ObjectRef<MOObject> _Element_3,
+            MALInteraction interaction) throws MALInteractionException, MALException {
+      // return new TestPolymorphicObjectRefTypesResponse(_Garage0, _Porsche_1, _Auto_2, _Element_3);
+      return new TestPolymorphicObjectRefTypesResponse(_Garage0, "TODO remove");
     }
 }

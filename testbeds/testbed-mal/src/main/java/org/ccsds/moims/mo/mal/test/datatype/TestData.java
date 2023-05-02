@@ -21,8 +21,15 @@
 package org.ccsds.moims.mo.mal.test.datatype;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
+import java.util.stream.Collectors;
+
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
@@ -36,6 +43,9 @@ import org.ccsds.moims.mo.malprototype.structures.TestBody;
 import org.ccsds.moims.mo.malprototype.structures.AbstractComposite;
 import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
 import org.ccsds.moims.mo.malprototype.structures.ComplexStructure;
+import org.ccsds.moims.mo.malprototype.structures.Garage;
+import org.ccsds.moims.mo.malprototype.structures.Lamborghini;
+import org.ccsds.moims.mo.malprototype.structures.Porsche;
 import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractField;
 import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractFieldList;
 
@@ -94,6 +104,30 @@ public abstract class TestData {
     public static final StructureWithAbstractFieldList testStructureWithAbstractFieldSingleTypedList2 = new StructureWithAbstractFieldList();
     public static final AbstractCompositeList testAbstractCompositeMultipleTypedList = new AbstractCompositeList();
     
+    public static final String testDomainAsString = "CCSDS.MAL.prototype";
+    public static final IdentifierList testDomain = new IdentifierList
+        (Arrays.stream(testDomainAsString.split("."))
+         .map(s -> new Identifier(s))
+         .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
+    public static Garage testGarage;
+    // TODO find the type Identifier from the Element
+    public static final ObjectRef<Lamborghini> testCourtesyCar =
+        new ObjectRef<>(testDomainAsString, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+            new Identifier("Lamborghini"), new Identifier("car0"), new UInteger(1));
+    public static final ObjectRef<Lamborghini> testCarL1 =
+        new ObjectRef<>(testDomainAsString, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+            new Identifier("Lamborghini"), new Identifier("carL1"), new UInteger(1));
+    public static final ObjectRef<Lamborghini> testCarL2 =
+        new ObjectRef<>(testDomainAsString, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+            new Identifier("Lamborghini"), new Identifier("carL2"), new UInteger(1));
+    public static final ObjectRef<Porsche> testCarP1 =
+        new ObjectRef<>(testDomainAsString, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+            new Identifier("Porsche"), new Identifier("carP1"), new UInteger(1));
+    public static final ObjectRef<Porsche> testCarP2 =
+        new ObjectRef<>(testDomainAsString, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+            new Identifier("Porsche"), new Identifier("carP2"), new UInteger(1));
+    public static final ObjectRefList testCars = new ObjectRefList();
+    public static final ObjectRefList testPorscheCars = new ObjectRefList();
     public static final int[] testIndexes;
 
     static {
@@ -236,5 +270,28 @@ public abstract class TestData {
         testIndexes[4] = testIndexes[3] + testAbstracts.size();
         testIndexes[5] = testIndexes[4] + testNulls.size();
         testIndexes[6] = testIndexes[5] + testCompositeWithNulls.size();
+        
+        // finalize the definition of the test ObjectRef elements
+        testCars.add(testCarL1);
+        testCars.add(testCarL2);
+        testCars.add(testCarP1);
+        testCars.add(testCarP2);
+        testPorscheCars.add(testCarP1);
+        testPorscheCars.add(testCarP2);
+        // TODO find the type Identifier more programmatically
+        ObjectIdentity garageId = new ObjectIdentity
+            (testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+             new Identifier("Garage"), new Identifier("garage"), new UInteger(1));
+        testGarage = new Garage(garageId);
+        testGarage.setCourtesyCarAsPorsche(null);
+        // TODO the next 2 lines do not compile
+//        testGarage.setCourtesyCarAsAuto(testCourtesyCar);
+//        testGarage.setCourtesyCarAsObject(testCourtesyCar);
+        testGarage.setCourtesyCarAsAuto(null);
+        testGarage.setCourtesyCarAsObject(null);
+        // TODO the stub generated code does not compile
+//        testGarage.setCarAsPorsche(testPorscheCars);
+//        testGarage.setCarAsAuto(testCars);
+//        testGarage.setCarAsObject(testCars);
     }
 }

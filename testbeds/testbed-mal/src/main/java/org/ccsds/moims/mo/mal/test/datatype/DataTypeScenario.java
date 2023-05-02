@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
+import org.ccsds.moims.mo.malprototype.datatest.body.TestPolymorphicObjectRefTypesResponse;
 import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
 import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
 import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractFieldList;
@@ -628,15 +629,52 @@ public class DataTypeScenario extends LoggingBase {
             // with inner field abstract_item holding heterogeneous values
             res = getDataTestStub().testPolymorphicMalElementList(TestData.testStructureWithAbstractFieldSingleTypedList2);
             rv = subMultiTest(TestData.testStructureWithAbstractFieldSingleTypedList2,
-                    res, null, "testStructureWithAbstractFieldSingleTypedList2");
+                    res, rv, "testStructureWithAbstractFieldSingleTypedList2");
             // heterogeneous concrete list type List<Element>
             res = getDataTestStub().testPolymorphicMalElementList(TestData.testAbstractCompositeMultipleTypedList);
             rv = subMultiTest(TestData.testAbstractCompositeMultipleTypedList,
-                    res, null, "testAbstractCompositeMultipleTypedList");
+                    res, rv, "testAbstractCompositeMultipleTypedList");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "polymorphicMalElementListsWork");
         }
         logMessage("Finished polymorphic MAL Element list parameter test");
+        return rv;
+    }
+
+    /**
+     * Checks various polymorphic forms of an ObjectRef.
+     */
+    public String polymorphicObjectRefTypesWork() throws MALInteractionException, MALException {
+        logMessage("Starting polymorphic ObjectRef types parameter test...");
+        String rv;
+        TestPolymorphicObjectRefTypesResponse res;
+        try {
+            res = getDataTestStub().testPolymorphicObjectRefTypes
+                (TestData.testGarage,
+                 TestData.testGarage.getCourtesyCarAsPorsche(),
+                 TestData.testGarage.getCourtesyCarAsAuto(),
+                 TestData.testGarage.getCourtesyCarAsObject());
+            rv = subMultiTest(TestData.testGarage,
+                    res.get_Garage0(), null, "polymorphicObjectRefTypesWork param 1");
+            // temporarily removed tests
+//            rv = subMultiTest(TestData.testGarage.getCourtesyCarAsPorsche(),
+//                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 2");
+//            rv = subMultiTest(TestData.testGarage.getCourtesyCarAsAuto(),
+//                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 3");
+//            rv = subMultiTest(TestData.testGarage.getCourtesyCarAsObject(),
+//                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 4");
+//            rv = subMultiTest(TestData.testGarage.getCarsAsPorsches(),
+//                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 5");
+//            rv = subMultiTest(TestData.testGarage.getCarsAsAutos(),
+//                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 6");
+//            rv = subMultiTest(TestData.testGarage.getCarsAsObjects(),
+//                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 7");
+            rv = subMultiTest(null,
+                    "compilation errors", rv, "polymorphicObjectRefTypesWork compilation errors");
+        } catch (MALInteractionException ex) {
+            rv = subSingleTestExceptionHandler(ex, "polymorphicObjectRefTypesWork");
+        }
+        logMessage("Finished polymorphic ObjectRef types parameter test");
         return rv;
     }
 
