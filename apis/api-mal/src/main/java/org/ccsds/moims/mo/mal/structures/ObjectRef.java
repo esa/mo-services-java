@@ -29,7 +29,7 @@ import org.ccsds.moims.mo.mal.MALException;
  *
  * @param <T> The type of the MO Object.
  */
-public class ObjectRef<T extends MOObject> implements Attribute {
+public class ObjectRef<T extends Element> implements Attribute {
 
     private final String domain;
     private final Identifier area;
