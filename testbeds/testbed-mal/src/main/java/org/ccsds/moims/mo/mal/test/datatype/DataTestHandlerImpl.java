@@ -21,12 +21,17 @@
 package org.ccsds.moims.mo.mal.test.datatype;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.stream.Collectors;
+
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
+import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
@@ -39,6 +44,7 @@ import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
 import org.ccsds.moims.mo.malprototype.structures.Auto;
 import org.ccsds.moims.mo.malprototype.structures.Garage;
+import org.ccsds.moims.mo.malprototype.structures.Lamborghini;
 import org.ccsds.moims.mo.malprototype.structures.Porsche;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
@@ -225,7 +231,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         if (null != testValue) {
             if (!testValue.equals(rcvdValue)) {
                 // decoding must have failed
-                throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
+                throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                         new Union("Failed comparison in provider of " + exString
                                 + ", type " + testValue.getClass() + ", expected "
                                 + String.valueOf(testValue) + " but received "
@@ -234,7 +240,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         } else {
             if (null != rcvdValue) {
                 // decoding must have failed
-                throw new MALInteractionException(new MALStandardError(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
+                throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                         new Union("Failed comparison in provider of " + exString
                                 + ", type should be null but is " + rcvdValue.getClass())));
             }
@@ -280,24 +286,147 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         return tpl;
     }
 
+    // Operations related to the MOObject assertions
+    public static final String testDomainAsString = "CCSDS.MAL.prototype";
+    public static final IdentifierList testDomain = new IdentifierList
+        (Arrays.stream(testDomainAsString.split("\\."))
+         .map(s -> new Identifier(s))
+         .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
+    HashMap<ObjectIdentity, Auto> autoList = new HashMap<>();
+
     @Override
-    public ObjectRef<Auto> createObject(MOObject _MOObject0, MALInteraction interaction) throws MALInteractionException, MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public ObjectRef<Auto> createObject(Auto auto, MALInteraction interaction) throws MALInteractionException, MALException {
+        if (auto == null) {
+          throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.TEST_ERROR_ERROR_NUMBER,
+                  new Union("Unexpected exception - null object value.")));
+        }
+        // MO Objects have a unique and an immutable identity
+        ObjectIdentity autoId0 = new ObjectIdentity
+            (auto.getObjectIdentity().getDomainId(),
+             auto.getObjectIdentity().getAreaId(),
+             auto.getObjectIdentity().getTypeId(),
+             auto.getObjectIdentity().getKeyId(),
+             new UInteger(0));
+        Auto lastAuto = autoList.get(autoId0);
+        long versionUpdate = auto.getObjectIdentity().getVersionId().getValue();
+        if (lastAuto == null) {
+          if (versionUpdate != 1) {
+            throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                    new Union("Wrong version for new object.")));
+          }
+        } else {
+          versionUpdate -= lastAuto.getObjectIdentity().getVersionId().getValue();
+          if (versionUpdate == 0) {
+            throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.TEST_OBJECT_EXISTS_ERROR_NUMBER,
+                    new Union("Object already exists.")));
+          } else if (versionUpdate != 1) {
+            throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                    new Union("Wrong version for updated object.")));
+          }
+        }
+        // check the identity type
+        // TODO improve Java mapping to allow simpler checking code
+        String expectedAutoType = null;
+        if (auto instanceof Lamborghini) {
+          expectedAutoType = "Lamborghini";
+        } else if (auto instanceof Porsche) {
+          expectedAutoType = "Porsche";
+        } else {
+          throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                  new Union("Unexpected Auto value.")));
+        }
+        if (! expectedAutoType.equals(auto.getObjectIdentity().getTypeId().getValue())) {
+          throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                  new Union("Illegal type field value.")));
+        }
+
+        autoList.put(autoId0, auto);
+        autoList.put(auto.getObjectIdentity(), auto);
+        // the domain is a List<Identifier> in ObjectIdentity, but it is a String in ObjectRef
+        String domain = auto.getObjectIdentity().getDomainId()
+            .stream().map(id -> String.valueOf(id))
+            .collect(Collectors.joining("."));
+        // use an untyped ObjectRef, unsure this code is correct
+        return new ObjectRef
+            (domain,
+             auto.getObjectIdentity().getAreaId(),
+             auto.getObjectIdentity().getTypeId(),
+             auto.getObjectIdentity().getKeyId(),
+             auto.getObjectIdentity().getVersionId());
     }
 
     @Override
-    public ObjectRef<Auto> createObjectFromFields(String _String0, Integer _Integer1, String _String2, Boolean _Boolean3, MALInteraction interaction) throws MALInteractionException, MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public ObjectRef<Auto> createObjectFromFields(Identifier autoType, Identifier key, Boolean update, String engine, String chassis, StringList windows, MALInteraction interaction) throws MALInteractionException, MALException {
+        ObjectIdentity autoId0 = new ObjectIdentity
+            (testDomain,
+             MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+             autoType,
+             key,
+             new UInteger(0));
+        Auto auto = autoList.get(autoId0);
+        if (auto != null && !update.booleanValue()) {
+          throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                  new Union("Object already exists.")));
+        }
+        ObjectIdentity autoId = new ObjectIdentity
+            (autoId0.getDomainId(),
+             autoId0.getAreaId(),
+             autoId0.getTypeId(),
+             autoId0.getKeyId(),
+             auto == null ? new UInteger(1) : new UInteger(auto.getObjectIdentity().getVersionId().getValue()+1));
+
+        if (new Identifier("Lamborghini").equals(autoType)) {
+          auto = new Lamborghini(autoId);
+        } else if (new Identifier("Porsche").equals(autoType)) {
+          auto = new Porsche(autoId);
+        } else {
+          throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                  new Union("Unexpected Auto value.")));
+        }
+        auto.setEngine(engine);
+        auto.setChassis(chassis);
+        auto.setWindows(windows);
+        return createObject(auto, interaction);
     }
 
     @Override
-    public void deleteObject(ObjectRef<Auto> _Identifier_0, MALInteraction interaction) throws MALInteractionException, MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void deleteObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALInteractionException, MALException {
+        IdentifierList testDomain = new IdentifierList
+            (Arrays.stream(autoRef.getDomain().split("."))
+             .map(s -> new Identifier(s))
+             .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
+        ObjectIdentity autoId = new ObjectIdentity
+            (testDomain,
+             autoRef.getArea(),
+             autoRef.getType(),
+             autoRef.getKey(),
+             autoRef.getObjectVersion());
+        Auto auto = autoList.remove(autoId);
+        if (new UInteger(0).equals(autoRef.getObjectVersion())) {
+          // remove all versions of the object
+          for (long ov = auto.getObjectIdentity().getVersionId().getValue(); --ov > 0;) {
+            autoId.setVersionId(new UInteger(ov));
+            autoList.remove(autoId);
+          }
+        }
     }
 
-    @Override
-    public MOObject getObject(ObjectRef<Auto> _Identifier_0, MALInteraction interaction) throws MALInteractionException, MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    /**
+     * Gets an object from its reference.
+     */
+    public Auto getObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALInteractionException, MALException {
+        IdentifierList testDomain = new IdentifierList
+            (Arrays.stream(autoRef.getDomain().split("\\."))
+             .map(s -> new Identifier(s))
+             .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
+        ObjectIdentity autoId = new ObjectIdentity
+            (testDomain,
+             autoRef.getArea(),
+             autoRef.getType(),
+             autoRef.getKey(),
+             autoRef.getObjectVersion());
+        Auto auto = autoList.get(autoId);
+        return auto;
     }
 
     public AbstractCompositeList testPolymorphicAbstractCompositeList(AbstractCompositeList bacl,

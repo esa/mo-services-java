@@ -351,7 +351,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -369,7 +369,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -387,7 +387,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -405,7 +405,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -423,7 +423,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -441,7 +441,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -459,7 +459,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -477,7 +477,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -495,7 +495,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -513,7 +513,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -531,7 +531,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -549,7 +549,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -567,7 +567,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -585,7 +585,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -603,7 +603,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -621,7 +621,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -639,7 +639,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -657,7 +657,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -675,7 +675,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -693,7 +693,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -711,7 +711,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -729,7 +729,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -753,7 +753,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -777,7 +777,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -793,7 +793,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -811,7 +811,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -829,7 +829,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -847,7 +847,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -865,7 +865,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -883,7 +883,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -901,7 +901,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -919,7 +919,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -937,7 +937,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -961,7 +961,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -979,7 +979,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -997,7 +997,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -1015,7 +1015,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -1052,7 +1052,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -1064,7 +1064,7 @@
                                comment="This operation creates a new MO Object from a full value">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MAL" name="MOObject" />
+                            <smc:type area="MALPrototype" name="Auto" />
                         </smc:request>
                         <smc:response>
                             <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
@@ -1072,8 +1072,8 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
-                                      name="DATA_ERROR" />
+                            <smc:type area="MALPrototype"
+                                      name="TEST_OBJECT_EXISTS" />
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
@@ -1082,10 +1082,12 @@
                                comment="This operation creates a new MO Object from fields values">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MAL" name="String" />
-                            <smc:type area="MAL" name="Integer" />
-                            <smc:type area="MAL" name="String" />
-                            <smc:type area="MAL" name="Boolean" />
+                            <smc:type area="MAL" name="Identifier" comment="autoType" />
+                            <smc:type area="MAL" name="Identifier" comment="key" />
+                            <smc:type area="MAL" name="Boolean" comment="update" />
+                            <smc:type area="MAL" name="String" comment="engine" />
+                            <smc:type area="MAL" name="String" comment="chassis" />
+                            <smc:type list="true" area="MAL" name="String" comment="windows" />
                         </smc:request>
                         <smc:response>
                             <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
@@ -1093,8 +1095,8 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
-                                      name="DATA_ERROR" />
+                            <smc:type area="MALPrototype"
+                                      name="TEST_OBJECT_EXISTS" />
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
@@ -1108,7 +1110,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -1121,21 +1123,17 @@
                             <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
                         </smc:request>
                         <smc:response>
-                            <smc:type area="MAL" name="MOObject" />
+                            <smc:type area="MALPrototype" name="Auto" />
                         </smc:response>
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
             </smc:capabilitySet>
-            <smc:errors>
-                <smc:error name="DATA_ERROR" number="70001"
-                           comment="Data interoperability error" />
-            </smc:errors>
         </smc:service>
         <smc:service name="ErrorTest" number="3">
             <smc:capabilitySet number="100">
@@ -1842,8 +1840,12 @@
             </smc:composite>
         </smc:dataTypes>
         <smc:errors>
-            <smc:error name="TEST_ERROR" number="70000"
+            <smc:error name="TEST_ERROR" number="0"
                        comment="Fake error for testing." />
+            <smc:error name="DATA_ERROR" number="1"
+                       comment="Data interoperability error." />
+            <smc:error name="TEST_OBJECT_EXISTS" number="2"
+                       comment="MO Object already exists." />
         </smc:errors>
     </smc:area>
     <smc:area name="MALPrototype2" number="101" version="1">
