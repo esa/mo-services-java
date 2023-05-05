@@ -68,7 +68,7 @@ After building the main repository, navigate to the `testbeds` directory. When b
 ```bash
 mvn clean install -P ESA
 ```
-This will download and install the required dependencies and execute the tests. After running `mvn clean install` once, the tests can be executed by  Once finished, navigate to the report directory `testbed-mal/target/surefire-reports/` and open `TestDocument.html` to see the test results.
+This will download and install the required dependencies and execute the tests. After running `mvn clean install` once, the tests can be executed by running `mvn surefire:test -P ESA`. Once finished, navigate to the report directory `testbed-mal/target/surefire-reports/` and open `TestDocument.html` to see the test results.
 
 Logs of the test run can be found in the report directory in `zzz_CCSDS_[...].txt`.
 
