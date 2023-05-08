@@ -21,8 +21,8 @@
 package esa.mo.tools.stubgen;
 
 import esa.mo.tools.stubgen.java.JavaClassWriter;
+import esa.mo.tools.stubgen.java.JavaComposites;
 import esa.mo.tools.stubgen.java.JavaLists;
-import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
 import esa.mo.tools.stubgen.specification.StdStrings;
@@ -33,7 +33,6 @@ import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.AreaType;
-import esa.mo.xsd.EnumerationType;
 import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.TypeReference;
 import java.io.File;
@@ -249,7 +248,7 @@ public class GeneratorJava extends GeneratorLangs {
     protected void createListClass(File folder, AreaType area, ServiceType service,
             String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException {
         JavaLists javaLists = new JavaLists(this);
-        
+
         if (isAbstract) {
             javaLists.createPolymorphicListClass(folder, area, service, srcTypeName);
         } else {
@@ -352,7 +351,6 @@ public class GeneratorJava extends GeneratorLangs {
     protected void createFolderComment(File structureFolder, AreaType area,
             ServiceType service, String extraPackage, String comment) throws IOException {
         ClassWriter file = createClassFile(structureFolder, JAVA_PACKAGE_COMMENT_FILE_NAME);
-
         createFolderComment(file, area, service, extraPackage, comment);
     }
 
@@ -372,86 +370,15 @@ public class GeneratorJava extends GeneratorLangs {
         file.addStatement(comment);
         file.addStatement("*/");
         file.addPackageStatement(area, service, extraPackage);
-
         file.flush();
     }
 
     @Override
     public CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType,
             String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
-        CompositeField ele;
-
-        String typeName = elementType.getName();
-
-        if (checkType && !super.isKnownType(elementType)) {
-            getLog().warn("Unknown type (" + new TypeKey(elementType)
-                    + ") is being referenced as field (" + fieldName + ")");
-        }
-
-        if (elementType.isList()) {
-//      if (StdStrings.XML.equals(elementType.getArea()))
-//      {
-//        throw new IllegalArgumentException("XML type of (" + elementType.getService() 
-//                + ":" + elementType.getName() + ") with maxOccurrs <> 1 is not permitted");
-//      }
-//      else
-            {
-                String fqTypeName;
-                if (isAttributeNativeType(elementType)) {
-                    fqTypeName = createElementType((LanguageWriter) file, StdStrings.MAL, null, typeName + "List");
-                } else {
-                    fqTypeName = createElementType((LanguageWriter) file, elementType, true) + "List";
-                }
-
-                String newCall = null;
-                String encCall = null;
-                if (!isAbstract(elementType)) {
-                    newCall = "new " + fqTypeName + "()";
-                    encCall = StdStrings.ELEMENT;
-                }
-
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
-                        canBeNull, false, encCall, "(" + fqTypeName + ") ",
-                        StdStrings.ELEMENT, true, newCall, comment);
-            }
-        } else if (isAttributeType(elementType)) {
-            AttributeTypeDetails details = getAttributeDetails(elementType);
-            String fqTypeName = createElementType((LanguageWriter) file, elementType, isStructure);
-            ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(),
-                    canBeNull, false, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
-        } else {
-            TypeReference elementTypeIndir = elementType;
-
-            // have to work around the fact that JAXB does not replicate the XML type name into Java in all cases
-            if (StdStrings.XML.equalsIgnoreCase(elementType.getArea())) {
-                elementTypeIndir = TypeUtils.createTypeReference(elementType.getArea(),
-                        elementType.getService(), StubUtils.preCap(elementType.getName()), elementType.isList());
-            }
-
-            String fqTypeName = createElementType((LanguageWriter) file, elementTypeIndir, isStructure);
-
-            if (isEnum(elementType)) {
-                EnumerationType typ = getEnum(elementType);
-                String firstEle = fqTypeName + "." + typ.getItem().get(0).getValue();
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
-                        canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ",
-                        StdStrings.ELEMENT, true, firstEle, comment);
-            } else if (StdStrings.ATTRIBUTE.equals(typeName)) {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
-                        canBeNull, false, StdStrings.ATTRIBUTE, "(" + fqTypeName + ") ",
-                        StdStrings.ATTRIBUTE, false, "", comment);
-            } else if (StdStrings.ELEMENT.equals(typeName)) {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
-                        canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ",
-                        StdStrings.ELEMENT, false, "", comment);
-            } else {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
-                        canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ",
-                        StdStrings.ELEMENT, true, "new " + fqTypeName + "()", comment);
-            }
-        }
-
-        return ele;
+        JavaComposites javaComposites = new JavaComposites(this);
+        return javaComposites.createCompositeElementsDetails(file, checkType, fieldName,
+                elementType, isStructure, canBeNull, comment);
     }
 
     @Override
