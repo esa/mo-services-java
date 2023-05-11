@@ -144,6 +144,11 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <finalName>${project.artifactId}</finalName>
+                    <archive>
+                      <manifest>
+                        <mainClass>esa.mo.navigator.AppGUI</mainClass>
+                      </manifest>
+                    </archive>
                 </configuration>
                 <executions>
                     <execution>
