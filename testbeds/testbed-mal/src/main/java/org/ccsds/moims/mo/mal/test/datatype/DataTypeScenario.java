@@ -663,11 +663,11 @@ public class DataTypeScenario extends LoggingBase {
         String rv;
         TestPolymorphicObjectRefTypesResponse res;
         try {
-            res = getDataTestStub().testPolymorphicObjectRefTypes
-                (TestData.testGarage,
-                 TestData.testGarage.getCourtesyCarAsPorsche(),
-                 TestData.testGarage.getCourtesyCarAsAuto(),
-                 TestData.testGarage.getCourtesyCarAsObject());
+            res = getDataTestStub().testPolymorphicObjectRefTypes(
+                    TestData.testGarage,
+                    TestData.testGarage.getCarsAsPorsches(),
+                    TestData.testGarage.getCarsAsAutos(),
+                    TestData.testGarage.getCarsAsObjects());
             rv = subMultiTest(TestData.testGarage,
                     res.get_Garage0(), null, "polymorphicObjectRefTypesWork param 1");
             // temporarily removed tests
@@ -693,120 +693,112 @@ public class DataTypeScenario extends LoggingBase {
     }
 
     public static final ObjectIdentity getObjectIdentityFromObjectRef(ObjectRef objRef) {
-      IdentifierList domainId = null;
-      if (objRef.getDomain() != null) {
-        domainId = new IdentifierList
-            (Arrays.stream(objRef.getDomain().split("\\."))
-             .map(s -> new Identifier(s))
-             .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
-      }
-      return new ObjectIdentity
-          (domainId,
-           objRef.getArea(),
-           objRef.getType(),
-           objRef.getKey(),
-           objRef.getObjectVersion());
+        IdentifierList domainId = null;
+        if (objRef.getDomain() != null) {
+            domainId = new IdentifierList(Arrays.stream(objRef.getDomain().split("\\."))
+                    .map(s -> new Identifier(s))
+                    .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
+        }
+        return new ObjectIdentity(domainId,
+                objRef.getArea(),
+                objRef.getType(),
+                objRef.getKey(),
+                objRef.getObjectVersion());
     }
 
     public static final ObjectRef getObjectRefFromObjectIdentity(ObjectIdentity objId) {
-      String domain = null;
-      if (objId.getDomainId() != null) {
-        domain = objId.getDomainId()
-            .stream().map(id -> String.valueOf(id))
-            .collect(Collectors.joining("."));
-      }
-      return new ObjectRef
-          (domain,
-           objId.getAreaId(),
-           objId.getTypeId(),
-           objId.getKeyId(),
-           objId.getVersionId());
+        String domain = null;
+        if (objId.getDomainId() != null) {
+            domain = objId.getDomainId()
+                    .stream().map(id -> String.valueOf(id))
+                    .collect(Collectors.joining("."));
+        }
+        return new ObjectRef(domain,
+                objId.getAreaId(),
+                objId.getTypeId(),
+                objId.getKeyId(),
+                objId.getVersionId());
     }
 
     public String objectAssertionsAreChecked() throws MALInteractionException, MALException {
-      logMessage("Starting Object assertions are checked test...");
-      String rv = null;
-      try {
-        StringList windows1 = new StringList();
-        windows1.add("front");
-        windows1.add("left side");
-        windows1.add("right side");
-        windows1.add("rooftop");
-        StringList windows2 = new StringList();
-        windows2.add("front");
-        windows2.add("left side");
-        windows2.add("right side");
-        windows2.add("rear");
-        // create a first object
-        ObjectRef<Auto> autoRef1 = getDataTestStub().createObjectFromFields
-            (new Identifier("Lamborghini"), new Identifier("my first car"), false,
-             "V12 L539 - 850 CV", "Monocoque CFRP", windows1);
-        // create another object with exactly the same identity, must fail
-        ObjectIdentity autoId2 = getObjectIdentityFromObjectRef(autoRef1);
-        Lamborghini auto2 = new Lamborghini
-            (autoId2,
-             "V12 LE3512 - 750 CV",
-             "Monocoque CFRP",
-             windows2);
-        ObjectRef<Auto> autoRef2 = null;
+        logMessage("Starting Object assertions are checked test...");
+        String rv = null;
         try {
-          autoRef2 = getDataTestStub().createObject(auto2);
+            StringList windows1 = new StringList();
+            windows1.add("front");
+            windows1.add("left side");
+            windows1.add("right side");
+            windows1.add("rooftop");
+            StringList windows2 = new StringList();
+            windows2.add("front");
+            windows2.add("left side");
+            windows2.add("right side");
+            windows2.add("rear");
+            // create a first object
+            ObjectRef<Auto> autoRef1 = getDataTestStub().createObjectFromFields(
+                    new Identifier("Lamborghini"), new Identifier("my first car"), false,
+                    "V12 L539 - 850 CV", "Monocoque CFRP", windows1);
+            // create another object with exactly the same identity, must fail
+            ObjectIdentity autoId2 = getObjectIdentityFromObjectRef(autoRef1);
+            Lamborghini auto2 = new Lamborghini(autoId2,
+                    "V12 LE3512 - 750 CV",
+                    "Monocoque CFRP",
+                    windows2);
+            ObjectRef<Auto> autoRef2 = null;
+            try {
+                autoRef2 = getDataTestStub().createObject(auto2);
+            } catch (MALInteractionException ex) {
+                rv = subMultiTest(MALPrototypeHelper.TEST_OBJECT_EXISTS_ERROR_NUMBER,
+                        ex.getStandardError().getErrorNumber(),
+                        rv,
+                        "Expected object already exists error for Object identity is unique test");
+            }
+            rv = subMultiTest(null, autoRef2, rv, "Expecting object already exists error for Object identity is unique test");
+
+            // create a valid Object identity
+            autoId2.setVersionId(new UInteger(autoId2.getVersionId().getValue() + 1));
+            // use it for a wrong typed object
+            // this could be detected by the Java mapping at object creation
+            Porsche porsche2 = new Porsche(autoId2,
+                    "V12 LE3512 - 750 CV",
+                    "Monocoque CFRP",
+                    windows2);
+            ObjectRef<Auto> porscheRef2 = null;
+            try {
+                porscheRef2 = getDataTestStub().createObject(porsche2);
+            } catch (MALInteractionException ex) {
+                rv = subMultiTest(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                        ex.getStandardError().getErrorNumber(),
+                        rv,
+                        "Wrong type error for Object identity type check");
+            }
+            rv = subMultiTest(null, porscheRef2, rv, "Expecting wrong type error for Object identity type check");
+
+            // create a revision of the first object
+            autoRef2 = getDataTestStub().createObject(auto2);
+            rv = subMultiTest(autoId2.getVersionId(), autoRef2.getObjectVersion(), rv,
+                    "New version of first object created");
+            // get the latest version of an object
+            ObjectRef<Auto> autoRef0 = new ObjectRef<>(autoRef1.getDomain(),
+                    autoRef1.getArea(),
+                    autoRef1.getType(),
+                    autoRef1.getKey(),
+                    new UInteger(0));
+            Auto auto0 = getDataTestStub().getObject(autoRef0);
+            rv = subMultiTest(auto2.getObjectIdentity(), auto0.getObjectIdentity(), rv,
+                    "Latest object version, field objectIdentity");
+            rv = subMultiTest(auto2.getEngine(), auto0.getEngine(), rv,
+                    "Latest object version, field engine");
+            rv = subMultiTest(auto2.getChassis(), auto0.getChassis(), rv,
+                    "Latest object version, field chassis");
+            rv = subMultiTest(auto2.getWindows(), auto0.getWindows(), rv,
+                    "Latest object version, field windows");
+
         } catch (MALInteractionException ex) {
-          rv = subMultiTest
-              (MALPrototypeHelper.TEST_OBJECT_EXISTS_ERROR_NUMBER,
-               ex.getStandardError().getErrorNumber(),
-               rv,
-               "Expected object already exists error for Object identity is unique test");
+            rv = subSingleTestExceptionHandler(ex, "Object assertions are checked test");
         }
-        rv = subMultiTest(null, autoRef2, rv, "Expecting object already exists error for Object identity is unique test");
-
-        // create a valid Object identity
-        autoId2.setVersionId(new UInteger(autoId2.getVersionId().getValue()+1));
-        // use it for a wrong typed object
-        // this could be detected by the Java mapping at object creation
-        Porsche porsche2 = new Porsche
-            (autoId2,
-             "V12 LE3512 - 750 CV",
-             "Monocoque CFRP",
-             windows2);
-        ObjectRef<Auto> porscheRef2 = null;
-        try {
-          porscheRef2 = getDataTestStub().createObject(porsche2);
-        } catch (MALInteractionException ex) {
-          rv = subMultiTest
-              (MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
-               ex.getStandardError().getErrorNumber(),
-               rv,
-               "Wrong type error for Object identity type check");
-        }
-        rv = subMultiTest(null, porscheRef2, rv, "Expecting wrong type error for Object identity type check");
-
-        // create a revision of the first object
-        autoRef2 = getDataTestStub().createObject(auto2);
-        rv = subMultiTest(autoId2.getVersionId(), autoRef2.getObjectVersion(), rv,
-                          "New version of first object created");
-        // get the latest version of an object
-        ObjectRef<Auto> autoRef0 = new ObjectRef<>
-            (autoRef1.getDomain(),
-             autoRef1.getArea(),
-             autoRef1.getType(),
-             autoRef1.getKey(),
-             new UInteger(0));
-        Auto auto0 = getDataTestStub().getObject(autoRef0);
-        rv = subMultiTest(auto2.getObjectIdentity(), auto0.getObjectIdentity(), rv,
-                          "Latest object version, field objectIdentity");
-        rv = subMultiTest(auto2.getEngine(), auto0.getEngine(), rv,
-            "Latest object version, field engine");
-        rv = subMultiTest(auto2.getChassis(), auto0.getChassis(), rv,
-            "Latest object version, field chassis");
-        rv = subMultiTest(auto2.getWindows(), auto0.getWindows(), rv,
-            "Latest object version, field windows");
-
-      } catch (MALInteractionException ex) {
-        rv = subSingleTestExceptionHandler(ex, "Object assertions are checked test");
-      }
-      logMessage("Finished Object assertions are checked test");
-      return rv;
+        logMessage("Finished Object assertions are checked test");
+        return rv;
     }
 
     protected String subTest(int reportingOffset, Vector testdata) throws MALInteractionException, MALException {

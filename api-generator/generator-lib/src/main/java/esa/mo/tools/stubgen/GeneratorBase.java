@@ -259,7 +259,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
 
     @Override
     public boolean isAttributeNativeType(TypeReference type) {
-        return isAttributeType(type) && (getAttributeDetails(type).isNativeType());
+        return isAttributeType(type) && getAttributeDetails(type).isNativeType();
     }
 
     /**
@@ -273,7 +273,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             type = type.substring(0, type.indexOf('<'));
         }
         NativeTypeDetails rType = nativeTypesMap.get(type);
-        if (null == rType) {
+        if (rType == null) {
             rType = new NativeTypeDetails("<Unknown native type of " + type + ">", false, false, null);
         }
         return rType;
@@ -363,6 +363,23 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         return createElementType(file, areaName, serviceName, config.getStructureFolder(), type);
     }
 
+    public static String extractTypeFromObjectRef(String type) {
+        if (!type.contains(StdStrings.OBJECTREF)) {
+            return type;
+        }
+        if (type.contains(StdStrings.OBJECTREF + "<") || type.contains(StdStrings.OBJECTREF + "List<")) {
+            return type.substring(type.indexOf('<') + 1, type.indexOf('>'));
+        }
+        if (type.contains(StdStrings.OBJECTREF + "(") || type.contains(StdStrings.OBJECTREF + "List(")) {
+            return type.substring(type.indexOf('(') + 1, type.indexOf(')'));
+        }
+        return type;
+    }
+
+    public static boolean isObjectRef(String type) {
+        return !extractTypeFromObjectRef(type).equals(type);
+    }
+
     /**
      * Creates the full name of a type from the supplied details.
      *
@@ -382,15 +399,15 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
 
         String retVal = "";
 
-        if (type.contains("ObjectRef<")) {
-            String internalType = type.substring(type.indexOf('<') + 1, type.indexOf('>'));
+        if (type.contains("ObjectRef<") || type.contains("ObjectRef(")) {
+            String internalType = extractTypeFromObjectRef(type);
             internalType = createElementType(file, area, service, extraPackageLevel, internalType);
             return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRef<" + internalType + ">");
         }
-        if (type.contains("ObjectRef(")) {
-            String internalType = type.substring(type.indexOf('(') + 1, type.indexOf(')'));
+        if (type.contains("ObjectRefList<") || type.contains("ObjectRefList(")) {
+            String internalType = extractTypeFromObjectRef(type);
             internalType = createElementType(file, area, service, extraPackageLevel, internalType);
-            return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRef<" + internalType + ">");
+            return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRefList<" + internalType + ">");
         }
 
         if (isAttributeType(TypeUtils.createTypeReference(area, service, type, false))) {
@@ -518,7 +535,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             TypeReference type) {
         List<CompositeField> lst = new LinkedList<>();
 
-        if ((type != null) && (!StdStrings.COMPOSITE.equals(type.getName()))) {
+        if (type != null && !StdStrings.COMPOSITE.equals(type.getName())) {
             if (StdStrings.MOOBJECT.equals(type.getName())) {
                 TypeReference typeReference = TypeUtils.createTypeReference("MAL", null, "ObjectIdentity", false);
 
@@ -534,10 +551,10 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             }
 
             CompositeType theType = compositeTypesMap.get(new TypeKey(type));
-            String typeName = type.getName();
 
-            if (null == theType) {
-                throw new IllegalStateException("Unknown super type of (" + typeName + ") for composite");
+            if (theType == null) {
+                String typeName = type.getName();
+                throw new IllegalStateException("Unknown composite super type: " + typeName);
             }
 
             // first looks for super types of this one and add their details

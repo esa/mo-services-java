@@ -20,6 +20,7 @@
  */
 package esa.mo.tools.stubgen.specification;
 
+import esa.mo.tools.stubgen.GeneratorBase;
 import esa.mo.xsd.TypeReference;
 import esa.mo.xsd.NamedElementReferenceWithCommentType;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public abstract class TypeUtils {
      */
     public static TypeInfo convertTypeReference(TypeInformation tiSource,
             TypeReference tr, String fieldName, String fieldComment) {
-        if (null != tr) {
+        if (tr != null) {
             String argTypeStr = tiSource.createElementType(null, tr, true);
             String argVersionStr = tiSource.getAreaPackage(tr.getArea())
                     + tr.getArea().toLowerCase() + "." + tr.getArea()
@@ -74,6 +75,14 @@ public abstract class TypeUtils {
                                 tr.getName() + "List", fqName, false,
                                 fqName + ".SHORT_FORM", argVersionStr);
                     } else {
+                        if (GeneratorBase.isObjectRef(argTypeStr)) {
+                            argTypeStr = argTypeStr.substring(0, argTypeStr.length() - 1); // Strip the last '>'
+                            return new TypeInfo(tr, fieldName, fieldComment,
+                                    tr.getName() + "List", argTypeStr + "List>", false,
+                                    getTypeShortForm(tiSource, tr, argTypeStr + "List>"),
+                                    argVersionStr);
+                        }
+
                         return new TypeInfo(tr, fieldName, fieldComment,
                                 tr.getName() + "List", argTypeStr + "List", false,
                                 getTypeShortForm(tiSource, tr, argTypeStr + "List"),

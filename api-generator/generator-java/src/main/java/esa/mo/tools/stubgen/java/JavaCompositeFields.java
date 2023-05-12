@@ -28,61 +28,54 @@ import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
-import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.EnumerationType;
 import esa.mo.xsd.TypeReference;
 
 /**
  *
  */
-public class JavaComposites {
+public class JavaCompositeFields {
 
     private final GeneratorLangs generator;
 
-    public JavaComposites(GeneratorLangs generator) {
+    public JavaCompositeFields(GeneratorLangs generator) {
         this.generator = generator;
     }
 
-    public CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType,
+    public CompositeField createCompositeElementsDetails(LanguageWriter file, boolean checkType,
             String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
         CompositeField ele;
 
         String typeName = elementType.getName();
-
-        if (!generator.isKnownType(elementType)) {
-            generator.getLog().warn("Unknown type (" + new GeneratorBase.TypeKey(elementType)
-                    + ") is being referenced as field (" + fieldName + ")");
-        }
+        boolean isObjectRef = GeneratorBase.isObjectRef(typeName);
 
         if (elementType.isList()) {
-//      if (StdStrings.XML.equals(elementType.getArea()))
-//      {
-//        throw new IllegalArgumentException("XML type of (" + elementType.getService() 
-//                + ":" + elementType.getName() + ") with maxOccurrs <> 1 is not permitted");
-//      }
-//      else
-            {
-                String fqTypeName;
-                if (generator.isAttributeNativeType(elementType)) {
-                    fqTypeName = generator.createElementType((LanguageWriter) file, StdStrings.MAL, null, typeName + "List");
+            String fqTypeName;
+            if (generator.isAttributeNativeType(elementType)) {
+                fqTypeName = generator.createElementType(file, StdStrings.MAL, null, typeName + "List");
+            } else {
+                if (isObjectRef) {
+                    String temp = generator.createElementType(file, elementType, true);
+                    String lastCharRemoved = temp.substring(0, temp.length() - 1); // Strip the last '>'
+                    fqTypeName = lastCharRemoved + "List>";
                 } else {
-                    fqTypeName = generator.createElementType((LanguageWriter) file, elementType, true) + "List";
+                    fqTypeName = generator.createElementType(file, elementType, true) + "List";
                 }
-
-                String newCall = null;
-                String encCall = null;
-                if (!generator.isAbstract(elementType)) {
-                    newCall = "new " + fqTypeName + "()";
-                    encCall = StdStrings.ELEMENT;
-                }
-
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
-                        canBeNull, false, encCall, "(" + fqTypeName + ") ",
-                        StdStrings.ELEMENT, true, newCall, comment);
             }
+
+            String newCall = null;
+            String encCall = null;
+            if (!generator.isAbstract(elementType)) {
+                newCall = "new " + fqTypeName + "()";
+                encCall = StdStrings.ELEMENT;
+            }
+
+            ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
+                    canBeNull, false, encCall, "(" + fqTypeName + ") ",
+                    StdStrings.ELEMENT, true, newCall, comment);
         } else if (generator.isAttributeType(elementType)) {
             AttributeTypeDetails details = generator.getAttributeDetails(elementType);
-            String fqTypeName = generator.createElementType((LanguageWriter) file, elementType, isStructure);
+            String fqTypeName = generator.createElementType(file, elementType, isStructure);
             ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(),
                     canBeNull, false, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
         } else {
@@ -94,7 +87,7 @@ public class JavaComposites {
                         elementType.getService(), StubUtils.preCap(elementType.getName()), elementType.isList());
             }
 
-            String fqTypeName = generator.createElementType((LanguageWriter) file, elementTypeIndir, isStructure);
+            String fqTypeName = generator.createElementType(file, elementTypeIndir, isStructure);
 
             if (generator.isEnum(elementType)) {
                 EnumerationType typ = generator.getEnum(elementType);

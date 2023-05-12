@@ -21,7 +21,7 @@
 package esa.mo.tools.stubgen;
 
 import esa.mo.tools.stubgen.java.JavaClassWriter;
-import esa.mo.tools.stubgen.java.JavaComposites;
+import esa.mo.tools.stubgen.java.JavaCompositeFields;
 import esa.mo.tools.stubgen.java.JavaLists;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
@@ -376,9 +376,9 @@ public class GeneratorJava extends GeneratorLangs {
     @Override
     public CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType,
             String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
-        JavaComposites javaComposites = new JavaComposites(this);
-        return javaComposites.createCompositeElementsDetails(file, checkType, fieldName,
-                elementType, isStructure, canBeNull, comment);
+        JavaCompositeFields javaComposites = new JavaCompositeFields(this);
+        return javaComposites.createCompositeElementsDetails((LanguageWriter) file,
+                checkType, fieldName, elementType, isStructure, canBeNull, comment);
     }
 
     @Override

@@ -98,6 +98,12 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
         file.append("class ").append(className);
         if (null != extendsClass) {
+            // The "Object" type in java is mapped to the MOObject class
+            String moObject = "." + StdStrings.MOOBJECT;
+            if (extendsClass.endsWith(moObject)) {
+                String replacement = "." + StdStrings.MOOBJECT_MAPPED_TYPE_IN_JAVA;
+                extendsClass = extendsClass.replace(moObject, replacement);
+            }
             file.append(" extends ").append(extendsClass);
         }
         if (null != implementsInterface) {
@@ -499,7 +505,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     private String processArgs(List<CompositeField> args, boolean includeType) {
         StringBuilder buf = new StringBuilder();
-        if (null != args && (!args.isEmpty())) {
+        if (args != null && (!args.isEmpty())) {
             boolean firstTime = true;
 
             for (CompositeField arg : args) {
@@ -524,7 +530,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     private String createLocalType(CompositeField type) {
-        if (null != type) {
+        if (type != null) {
             String fullType = type.getTypeName();
 
             if (generator.isNativeType(fullType)) {
