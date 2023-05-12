@@ -50,29 +50,21 @@ public class ParserXML {
      * @param text The text
      * @return The parsed Data
      * @throws javax.xml.bind.JAXBException
+     * @throws org.xml.sax.SAXException
      */
-    public static SpecificationType parseXML(String text) throws JAXBException {
-        JAXBContext jaxbContext;
-        try {
-            jaxbContext = JAXBContext.newInstance(SpecificationType.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            boolean validate = false;
+    public static SpecificationType parseXML(String text) throws JAXBException, SAXException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(SpecificationType.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        boolean validate = false;
 
-            if (validate) {
-                SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-                Schema schema = schemaFactory.newSchema(XmlSpecLoader.class.getResource(SERVICE_SCHEMA_RESOURCE));
-                jaxbUnmarshaller.setSchema(schema);
-            }
-
-            StreamSource streamSource = new StreamSource(new StringReader(text));
-            return (SpecificationType) ((JAXBElement) jaxbUnmarshaller.unmarshal(streamSource)).getValue();
-        } catch (JAXBException ex) {
-            Logger.getLogger(ParserXML.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SAXException ex) {
-            Logger.getLogger(ParserXML.class.getName()).log(Level.SEVERE, null, ex);
+        if (validate) {
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = schemaFactory.newSchema(XmlSpecLoader.class.getResource(SERVICE_SCHEMA_RESOURCE));
+            jaxbUnmarshaller.setSchema(schema);
         }
-        
-        return null;
+
+        StreamSource streamSource = new StreamSource(new StringReader(text));
+        return (SpecificationType) ((JAXBElement) jaxbUnmarshaller.unmarshal(streamSource)).getValue();
     }
 
 }

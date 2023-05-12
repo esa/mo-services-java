@@ -66,8 +66,6 @@ public class ParserMOSDL {
             ParseTreeWalker.DEFAULT.walk(parseListener, parseTree);
         } catch (RecognitionException ex) {
             throw new IOException("1. The text is not valid!", ex);
-        } catch (NullPointerException ex) {
-            throw new IOException("2. The text is not valid, on line: TBD", ex);
         }
 
         return spec;
