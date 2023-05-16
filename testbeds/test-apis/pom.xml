@@ -18,9 +18,9 @@
   
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>testbed-pom</artifactId>
         <version>10.0-SNAPSHOT</version>
-        <relativePath>../parent/pom.xml</relativePath>
+        <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>test-apis</artifactId>

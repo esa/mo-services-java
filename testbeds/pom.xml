@@ -63,9 +63,9 @@
 
     <modules>
         <module>testbed-pom</module>
+        <module>testbed-util</module>
         <module>xml-tests</module>
         <module>test-apis</module>
-        <module>testbed-util</module>
         <module>testbed-mal</module>
         <module>testbed-com-framework</module>
         <module>testbed-com-provider-esa</module>
