@@ -1512,7 +1512,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("return fromOrdinal(" + createMethodCall("decoder.decode" + enumOrdinalType + "()" + enumDecoderValue + ")"));
         method.addMethodCloseStatement();
 
-        addShortFormMethods(file);
+        addShortFormMethods(file, area, service);
 
         file.addClassCloseStatement();
 
@@ -1827,7 +1827,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
 
         if (!abstractComposite) {
-            addShortFormMethods(file);
+            addShortFormMethods(file, area, service);
         }
 
         file.addClassCloseStatement();
@@ -1949,15 +1949,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     public void addTypeShortFormDetails(ClassWriter file, AreaType area, ServiceType service, long sf) throws IOException {
         addTypeShortForm(file, sf);
-        CompositeField areaSfVar = createCompositeElementsDetails(file, false, "AREA_SHORT_FORM",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
-                true, false, "Short form for area.");
-        CompositeField areaVVar = createCompositeElementsDetails(file, false, "AREA_VERSION",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
-                true, false, "Version for area.");
-
-        file.addClassVariable(true, true, StdStrings.PUBLIC, areaSfVar, false, "(" + area.getNumber() + ")");
-        file.addClassVariable(true, true, StdStrings.PUBLIC, areaVVar, false, "((short) " + area.getVersion() + ")");
 
         long asf = ((long) area.getNumber()) << AREA_BIT_SHIFT;
         asf += ((long) area.getVersion()) << VERSION_BIT_SHIFT;
@@ -1965,18 +1956,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
             asf += sf;
         } else {
             asf += Long.parseLong(Integer.toHexString((int) sf).toUpperCase().substring(2), 16);
-        }
-        if (null != service) {
-            CompositeField serviceSfVar = createCompositeElementsDetails(file, false, "SERVICE_SHORT_FORM",
-                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
-                    true, false, "Short form for service.");
-            file.addClassVariable(true, true, StdStrings.PUBLIC, serviceSfVar, false, "(" + service.getNumber() + ")");
-            asf += ((long) service.getNumber()) << SERVICE_BIT_SHIFT;
-        } else {
-            CompositeField serviceSfVar = createCompositeElementsDetails(file, false, "SERVICE_SHORT_FORM",
-                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
-                    true, false, "Short form for service.");
-            file.addClassVariable(true, true, StdStrings.PUBLIC, serviceSfVar, false, "(0)");
         }
 
         addShortForm(file, asf);
@@ -1996,7 +1975,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(" + sf + "L)");
     }
 
-    public void addShortFormMethods(ClassWriter file) throws IOException {
+    public void addShortFormMethods(ClassWriter file, AreaType area, ServiceType service) throws IOException {
         CompositeField lonType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false),
                 true, true, null);
@@ -2023,22 +2002,30 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("return TYPE_SHORT_FORM");
         method.addMethodCloseStatement();
 
+        String helperArea = createElementType(file, area.getName(), null, null, area.getName() + "Helper");
         method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
                 false, true, ustType, "getAreaNumber", null, null,
                 "Returns the area number of this type.", "The area number of this type.", null);
-        method.addLine("return AREA_SHORT_FORM");
+        method.addLine("return " + helperArea + "." + area.getName().toUpperCase() + "_AREA_NUMBER");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
                 false, true, uocType, "getAreaVersion", null, null,
                 "Returns the area version of this type.", "The area number of this type.", null);
-        method.addLine("return AREA_VERSION");
+        method.addLine("return " + helperArea + "." + area.getName().toUpperCase() + "_AREA_VERSION");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
                 false, true, ustType, "getServiceNumber", null, null,
                 "Returns the service number of this type.", "The service number of this type.", null);
-        method.addLine("return SERVICE_SHORT_FORM");
+
+        if (service != null) {
+            String serviceInfo = createElementType(file, area.getName(), service.getName(), null, service.getName() + "ServiceInfo");
+            method.addLine("return " + serviceInfo + "." + service.getName().toUpperCase() + "_SERVICE_NUMBER");
+        } else {
+            method.addLine("return new org.ccsds.moims.mo.mal.structures.UShort(0)");
+        }
+
         method.addMethodCloseStatement();
     }
 
