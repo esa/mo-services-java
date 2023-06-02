@@ -67,7 +67,7 @@ public class PublishRegisterTestProcedure extends LoggingBase {
 
     public static final Identifier SUBSCRIPTION_ID = new Identifier("PublishRegisterSubscription");
 
-    private boolean shared;
+    private boolean withSharedBroker;
 
     private IPTestStub ipTest;
 
@@ -80,19 +80,19 @@ public class PublishRegisterTestProcedure extends LoggingBase {
     public boolean useSharedBroker(String sharedBroker) throws Exception {
         LoggingBase.logMessage("PublishRegisterTestProcedure.useSharedBroker("
                 + sharedBroker + ')');
-        shared = Boolean.parseBoolean(sharedBroker);
+        withSharedBroker = Boolean.parseBoolean(sharedBroker);
 
         ipTest = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, withSharedBroker).getStub();
 
         listener = new MonitorListener();
         return true;
     }
 
-    public boolean publishRegisterWithTheEntities(String entities) throws Exception {
+    public boolean publishRegisterWithKeyNames(String entities) throws Exception {
         LoggingBase.logMessage("PublishRegisterTestProcedure.publishRegisterWithTheEntities("
                 + entities + ')');
         publishRegistered = true;
@@ -111,7 +111,7 @@ public class PublishRegisterTestProcedure extends LoggingBase {
         return true;
     }
 
-    public boolean publishWithEntityAndExpectError(String entityKeyValue, String error) throws Exception {
+    public boolean publishWithSubscriptionKeyValuesAndExpectError(String entityKeyValue, String error) throws Exception {
         LoggingBase.logMessage("PublishRegisterTestProcedure.publishWithEntityAndExpectError("
                 + entityKeyValue + ',' + error + ')');
         listener.clear();
