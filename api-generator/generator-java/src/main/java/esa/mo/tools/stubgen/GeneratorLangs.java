@@ -457,16 +457,24 @@ public abstract class GeneratorLangs extends GeneratorBase {
             File structureFolder = StubUtils.createFolder(serviceFolder, getConfig().getStructureFolder());
             // create a comment for the structure folder if supported
             createServiceStructureFolderComment(structureFolder, area, service);
+            String name;
 
             for (Object oType : service.getDataTypes().getCompositeOrEnumeration()) {
                 if (oType instanceof EnumerationType) {
                     createEnumerationClass(structureFolder, area, service, (EnumerationType) oType);
+                    name = ((EnumerationType) oType).getName();
                 } else if (oType instanceof CompositeType) {
                     createCompositeClass(structureFolder, area, service, (CompositeType) oType);
+                    name = ((CompositeType) oType).getName();
                 } else {
                     throw new IllegalArgumentException("Unexpected service (" + area.getName()
                             + ":" + service.getName() + ") level datatype of " + oType.getClass().getName());
                 }
+
+                this.getLog().warn("Warning! The data structure " + name
+                        + " is set at Service-level in the " + service.getName()
+                        + " service! Please move this data structure to Area-level"
+                        + " in order to be compatible with the latest MO Standard.");
             }
         }
     }
