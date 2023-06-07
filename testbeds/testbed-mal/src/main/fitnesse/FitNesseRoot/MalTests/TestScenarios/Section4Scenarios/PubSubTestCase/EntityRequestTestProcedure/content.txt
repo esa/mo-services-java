@@ -63,15 +63,15 @@ The consumer does the following actions:
 The consumer checks that the expected keys are received and only them (see table below).
 
 !*> Sub scenario definitions
-|scenario| entity request | shared |
+|scenario| entity request | with shared broker |
 |ensure |initiate publisher with entities | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4,B.[null].[null].[null],Q.2.3.[null] | and shared broker | @shared |
-|ensure |subscribe to pattern | A.[null].[null].[null] | and expected entities | A.[null].[null].[null] |
-|ensure |subscribe to pattern | A.*.[null].[null] | and expected entities | A.[null].[null].[null],A.2.[null].[null] |
-|ensure |subscribe to pattern | A.*.*.* | and expected entities | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4 |
-|ensure |subscribe to pattern | A.2.[null].[null] | and expected entities | A.2.[null].[null] |
-|ensure |subscribe to pattern | A.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null] |
-|ensure |subscribe to pattern | *.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null],Q.2.3.[null] |
-|ensure |subscribe to pattern | B.*.*.* | and expected entities | B.[null].[null].[null] |
+|ensure |subscribe to entity key values | A.[null].[null].[null] | and expected entities | A.[null].[null].[null] |
+|ensure |subscribe to entity key values | A.*.[null].[null] | and expected entities | A.[null].[null].[null],A.2.[null].[null] |
+|ensure |subscribe to entity key values | A.*.*.* | and expected entities | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4 |
+|ensure |subscribe to entity key values | A.2.[null].[null] | and expected entities | A.2.[null].[null] |
+|ensure |subscribe to entity key values | A.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null] |
+|ensure |subscribe to entity key values | *.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null],Q.2.3.[null] |
+|ensure |subscribe to entity key values | B.*.*.* | and expected entities | B.[null].[null].[null] |
 |ensure |publish deregister |
 ***********!
 

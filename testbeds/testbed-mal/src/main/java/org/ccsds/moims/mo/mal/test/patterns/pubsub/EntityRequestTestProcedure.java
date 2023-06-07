@@ -167,13 +167,13 @@ public class EntityRequestTestProcedure extends LoggingBase {
         }
     }
 
-    public boolean subscribeToPatternAndExpectedEntities(String pattern, String expectedEntities)
+    public boolean subscribeToEntityKeyValuesAndExpectedEntities(String keyValues, String expectedEntities)
             throws Exception {
-        logMessage("EntityRequestTestProcedure.subscribeToPatternAndCheckExpectedEntities({"
-                + pattern + "},{" + expectedEntities + "})");
+        logMessage("EntityRequestTestProcedure.subscribeToEntityKeyValuesAndExpectedEntities({"
+                + keyValues + "},{" + expectedEntities + "})");
 
         ArrayList<AttributeList> expectedKeyValues = parseAllKeyValues(expectedEntities);
-        AttributeList values = parse4KeyValues(pattern);
+        AttributeList values = parse4KeyValues(keyValues);
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(0)))));
