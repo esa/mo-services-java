@@ -31,8 +31,11 @@ import esa.mo.xsd.util.XmlHelper;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -46,6 +49,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -111,7 +115,6 @@ public class AreaTabbedPane extends JTabbedPane {
         panelMOSDL.add(buttonB, BorderLayout.NORTH);
         panelMOSDL.add(textEditorMOSDL, BorderLayout.CENTER);
 
-        //panelDocs.setLayout(new BorderLayout());
         JButton generateDocs = createButtonDocs(textEditorXML, panelDocs, true);
         panelDocs.add(generateDocs);
 
@@ -223,8 +226,10 @@ public class AreaTabbedPane extends JTabbedPane {
         RSyntaxTextArea textArea = new RSyntaxTextArea(20, 60);
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
         textArea.setCodeFoldingEnabled(true);
-        this.displayFindTextAreaOnPanel(textArea, panelXML);
-        return new RTextScrollPane(textArea);
+        displayFindTextAreaOnPanel(textArea, panelXML);
+        RTextScrollPane pane = new RTextScrollPane(textArea);
+        addZoomingToScrollPane(pane);
+        return pane;
     }
 
     private RTextScrollPane createTextEditorMOSDL(JPanel panelMOSDL) {
@@ -236,9 +241,10 @@ public class AreaTabbedPane extends JTabbedPane {
         //scheme.setStyle(Token.COMMENT_DOCUMENTATION, new Style(Color.blue));
         scheme.setStyle(Token.COMMENT_DOCUMENTATION, scheme.getStyle(Token.COMMENT_EOL));
         textArea.revalidate();
-        this.displayFindTextAreaOnPanel(textArea, panelMOSDL);
+        displayFindTextAreaOnPanel(textArea, panelMOSDL);
 
         RTextScrollPane textPane = new RTextScrollPane(textArea);
+        addZoomingToScrollPane(textPane);
         CompletionProvider provider = AutoCompleteForMOSDL.createCompletionProvider();
         AutoCompletion ac = new AutoCompletion(provider);
         ac.install(textArea);
@@ -254,7 +260,24 @@ public class AreaTabbedPane extends JTabbedPane {
         return textPane;
     }
 
-    private void displayFindTextAreaOnPanel(final RSyntaxTextArea textArea, final JPanel panel) {
+    private static void addZoomingToScrollPane(final RTextScrollPane scrollPane) {
+        MouseWheelListener listener = new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                if (e.isControlDown()) {
+                    Font font = scrollPane.getTextArea().getFont();
+                    // Is it zooming in or zooming out?
+                    float diff = (e.getWheelRotation() < 0) ? 1.0f : -1.0f;
+                    float size = font.getSize() + diff;
+                    scrollPane.getTextArea().setFont(font.deriveFont(size));
+                }
+            }
+        };
+
+        scrollPane.addMouseWheelListener(listener);
+    }
+
+    private static void displayFindTextAreaOnPanel(final RSyntaxTextArea textArea, final JPanel panel) {
         final SearchToolbar toolbar = new SearchToolbar(textArea);
         final AtomicBoolean isvisible = new AtomicBoolean(false);
         toolbar.init();
