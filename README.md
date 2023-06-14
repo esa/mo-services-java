@@ -41,7 +41,7 @@ The deployment of standardized interoperable interfaces between operating Agenci
 
 ## Building Prerequisites
 
-1. Install Java SDK 1.8 (will also work with JAVA 11, but 1.8 is recommended. SDK 17 is not supported.)
+1. Install Java SDK 1.8 (SDK 11 and 17 are not supported - See GitHub Workflows)
 ```bash
 sudo apt-get install openjdk-8-jdk
 ```
