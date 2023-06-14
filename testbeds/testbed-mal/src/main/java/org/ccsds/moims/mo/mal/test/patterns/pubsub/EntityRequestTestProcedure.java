@@ -78,7 +78,8 @@ public class EntityRequestTestProcedure extends LoggingBase {
 
     private IPTestStub ipTest;
 
-    public boolean initiatePublisherWithEntitiesAndSharedBroker(String entities, String sharedBroker) throws Exception {
+    // TODO: rename to: prepare test to use the following subsctiption key values
+    public boolean prepareTestToUseTheFollowingSubscriptionKeyValuesAndSharedBroker(String entities, String sharedBroker) throws Exception {
         logMessage("EntityRequestTestProcedure.initiatePublisherWithEntitiesAndSharedBroker({"
                 + entities + "}," + sharedBroker + ")");
 
@@ -167,7 +168,7 @@ public class EntityRequestTestProcedure extends LoggingBase {
         }
     }
 
-    public boolean subscribeToEntityKeyValuesAndExpectedEntities(String keyValues, String expectedEntities)
+    public boolean subscribeToSubscriptionKeyNamesAndExpectedEntities(String keyValues, String expectedEntities)
             throws Exception {
         logMessage("EntityRequestTestProcedure.subscribeToEntityKeyValuesAndExpectedEntities({"
                 + keyValues + "},{" + expectedEntities + "})");

@@ -39,39 +39,43 @@
 
 *******!
 !4 Test procedure: entity request
-This test checks that the entity requests are correctly interpreted by the broker, in particular the expression used to define the expected entities.
-A list of entity keys is defined:
- * A
- * A.2
- * A.2.3
+
+At first, publishRegister() is called to instantiate the broker with four subscription key names: K1, K2, K3 and K4.
+
+This test checks that the subscription requests are correctly interpreted by the broker, in particular the expression used to define the expected entities.
+A list of subscription key values is defined:
+ * A.[null].[null].[null]
+ * A.2.[null].[null]
+ * A.2.3.[null]
  * A.2.3.4
- * B
- * Q.2.3
-A list of entity request expressions is defined:
- * A
- * A.[null]
- * A.*
- * A.2.[null]
- * A.2.*
- * [null].B.[null]
- * *.2.*
- * *
+ * B.[null].[null].[null]
+ * Q.2.3.[null]
+
+A list of subscription request expressions is defined:
+ * A.[null].[null].[null]
+ * A.*.[null].[null]
+ * A.*.*.*
+ * A.2.[null].[null]
+ * A.2.*.[null]
+ * *.2.*.[null]
+ * B.*.*.*
+
 The consumer does the following actions:
  * Creation of one subscription for each expression and registration.
- * Trigger the publication of one !-TestUpdate-! for each entity key.
+ * Trigger the publication of one !-TestUpdate-! for each subscription key values.
  
 The consumer checks that the expected keys are received and only them (see table below).
 
 !*> Sub scenario definitions
 |scenario| entity request | with shared broker |
-|ensure |initiate publisher with entities | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4,B.[null].[null].[null],Q.2.3.[null] | and shared broker | @shared |
-|ensure |subscribe to entity key values | A.[null].[null].[null] | and expected entities | A.[null].[null].[null] |
-|ensure |subscribe to entity key values | A.*.[null].[null] | and expected entities | A.[null].[null].[null],A.2.[null].[null] |
-|ensure |subscribe to entity key values | A.*.*.* | and expected entities | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4 |
-|ensure |subscribe to entity key values | A.2.[null].[null] | and expected entities | A.2.[null].[null] |
-|ensure |subscribe to entity key values | A.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null] |
-|ensure |subscribe to entity key values | *.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null],Q.2.3.[null] |
-|ensure |subscribe to entity key values | B.*.*.* | and expected entities | B.[null].[null].[null] |
+|ensure |prepare test to use the following subscription key values | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4,B.[null].[null].[null],Q.2.3.[null] | and shared broker | @shared |
+|ensure |subscribe to subscription key names | A.[null].[null].[null] | and expected entities | A.[null].[null].[null] |
+|ensure |subscribe to subscription key names | A.*.[null].[null] | and expected entities | A.[null].[null].[null],A.2.[null].[null] |
+|ensure |subscribe to subscription key names | A.*.*.* | and expected entities | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4 |
+|ensure |subscribe to subscription key names | A.2.[null].[null] | and expected entities | A.2.[null].[null] |
+|ensure |subscribe to subscription key names | A.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null] |
+|ensure |subscribe to subscription key names | *.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null],Q.2.3.[null] |
+|ensure |subscribe to subscription key names | B.*.*.* | and expected entities | B.[null].[null].[null] |
 |ensure |publish deregister |
 ***********!
 
