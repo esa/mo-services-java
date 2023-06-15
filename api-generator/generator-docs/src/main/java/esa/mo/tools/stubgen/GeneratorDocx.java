@@ -20,26 +20,26 @@
  */
 package esa.mo.tools.stubgen;
 
-import static esa.mo.tools.stubgen.GeneratorDocument.splitString;
+import esa.mo.tools.stubgen.docx.DocxNumberingWriter;
+import esa.mo.tools.stubgen.docx.DocxBaseWriter;
+import esa.mo.tools.stubgen.docx.GeneratorUtils;
+import esa.mo.tools.stubgen.docx.DocxWriter;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.specification.TypeUtils.TypeRef;
-import esa.mo.tools.stubgen.writers.AbstractWriter;
 import esa.mo.xsd.*;
 import esa.mo.xsd.EnumerationType.Item;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import org.w3c.dom.Element;
+import org.apache.batik.transcoder.TranscoderException;
 
 /**
  * Generates a MS Word compliant docx file of the service specification.
@@ -56,7 +56,7 @@ public class GeneratorDocx extends GeneratorDocument {
         2250, 1685, 2801, 1185, 1185
     };
     private static final int[] OPERATION_OVERVIEW_TABLE_WIDTHS = new int[]{
-        2395, 2538, 4067
+        2300, 1700, 1000, 4000
     };
     private static final int[] OPERATION_ERROR_TABLE_WIDTHS = new int[]{
         2250, 2250, 4500
@@ -84,7 +84,8 @@ public class GeneratorDocx extends GeneratorDocument {
      * @param logger The logger to use.
      */
     public GeneratorDocx(org.apache.maven.plugin.logging.Log logger) {
-        super(logger, new GeneratorConfiguration("", "", "", "", "", "", "", "", "", "", "", ""));
+        super(logger, new GeneratorConfiguration("", "", "", "",
+                "", "", "", "", "", "", "", ""));
     }
 
     @Override
@@ -122,14 +123,19 @@ public class GeneratorDocx extends GeneratorDocument {
     public void compile(String destFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException {
         for (AreaType area : spec.getArea()) {
             String destinationFolderName = destFolderName + "/" + area.getName();
-            DocxNumberingWriter docxNumberingFile = new DocxNumberingWriter(destinationFolderName + "/word", "numbering", "xml");
-            DocxWriter docxServiceFile = new DocxWriter(destinationFolderName + "/word", "document", "xml", docxNumberingFile);
+            String folder = destinationFolderName + "/word";
+            String ext = "xml";
+            getLog().info("Creating file " + folder + " numbering." + ext);
+            DocxNumberingWriter docxNumberingFile = new DocxNumberingWriter(folder, "numbering", ext);
+
+            getLog().info("Creating file " + folder + " document." + ext);
+            DocxWriter docxServiceFile = new DocxWriter(folder, "document", ext, docxNumberingFile);
             DocxBaseWriter docxDataFile = new DocxBaseWriter();
 
             // create DOCX target area
-            StubUtils.createResource(destinationFolderName, "[Content_Types]", "xml", "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\"><Default Extension=\"png\" ContentType=\"image/png\"/><Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/><Default Extension=\"xml\" ContentType=\"application/xml\"/><Override PartName=\"/word/document.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml\"/><Override PartName=\"/word/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml\"/><Override PartName=\"/word/numbering.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml\"/></Types>");
+            StubUtils.createResource(destinationFolderName, "[Content_Types]", ext, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\"><Default Extension=\"png\" ContentType=\"image/png\"/><Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/><Default Extension=\"xml\" ContentType=\"application/xml\"/><Override PartName=\"/word/document.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml\"/><Override PartName=\"/word/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml\"/><Override PartName=\"/word/numbering.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml\"/></Types>");
             StubUtils.createResource(destinationFolderName + "/_rels", "", "rels", "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"word/document.xml\"/></Relationships>");
-            StubUtils.createResource(destinationFolderName + "/word", "styles", "xml", "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><w:styles xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii=\"Calibri\" w:eastAsia=\"Times New Roman\" w:hAnsi=\"Calibri\" w:cs=\"Times New Roman\"/><w:sz w:val=\"22\"/><w:szCs w:val=\"22\"/><w:lang w:val=\"en-GB\" w:eastAsia=\"en-GB\" w:bidi=\"ar-SA\"/></w:rPr></w:rPrDefault><w:pPrDefault/></w:docDefaults><w:latentStyles w:defLockedState=\"0\" w:defUIPriority=\"99\" w:defSemiHidden=\"1\" w:defUnhideWhenUsed=\"1\" w:defQFormat=\"0\" w:count=\"267\"><w:lsdException w:name=\"Normal\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 1\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 2\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 3\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 4\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 5\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 6\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 7\" w:locked=\"1\" w:uiPriority=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 8\" w:locked=\"1\" w:uiPriority=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 9\" w:locked=\"1\" w:uiPriority=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"toc 1\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 2\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 3\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 4\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 5\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 6\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 7\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 8\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 9\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"caption\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Title\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Default Paragraph Font\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Subtitle\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Strong\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Emphasis\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Table Grid\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Placeholder Text\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"No Spacing\" w:semiHidden=\"0\" w:uiPriority=\"1\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Light Shading\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Revision\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"List Paragraph\" w:semiHidden=\"0\" w:uiPriority=\"34\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Quote\" w:semiHidden=\"0\" w:uiPriority=\"29\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Intense Quote\" w:semiHidden=\"0\" w:uiPriority=\"30\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Medium List 2 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Subtle Emphasis\" w:semiHidden=\"0\" w:uiPriority=\"19\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Intense Emphasis\" w:semiHidden=\"0\" w:uiPriority=\"21\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Subtle Reference\" w:semiHidden=\"0\" w:uiPriority=\"31\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Intense Reference\" w:semiHidden=\"0\" w:uiPriority=\"32\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Book Title\" w:semiHidden=\"0\" w:uiPriority=\"33\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Bibliography\" w:uiPriority=\"37\"/><w:lsdException w:name=\"TOC Heading\" w:uiPriority=\"39\" w:qFormat=\"1\"/></w:latentStyles><w:style w:type=\"paragraph\" w:default=\"1\" w:styleId=\"Normal\"><w:name w:val=\"Normal\"/><w:qFormat/><w:rsid w:val=\"008E3E32\"/></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading1\"><w:name w:val=\"heading 1\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading1Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:pPr><w:keepNext/><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"0\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Arial\" w:hAnsi=\"Arial\" w:cs=\"Arial\"/><w:b/><w:bCs/><w:kern w:val=\"32\"/><w:sz w:val=\"32\"/><w:szCs w:val=\"32\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading2\"><w:name w:val=\"heading 2\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading2Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:pPr><w:keepNext/><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"1\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Arial\" w:hAnsi=\"Arial\" w:cs=\"Arial\"/><w:b/><w:bCs/><w:i/><w:iCs/><w:sz w:val=\"28\"/><w:szCs w:val=\"28\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading3\"><w:name w:val=\"heading 3\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading3Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:pPr><w:keepNext/><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"2\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Arial\" w:hAnsi=\"Arial\" w:cs=\"Arial\"/><w:b/><w:bCs/><w:sz w:val=\"26\"/><w:szCs w:val=\"26\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading4\"><w:name w:val=\"heading 4\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading4Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:pPr><w:keepNext/><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"3\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Times New Roman\" w:hAnsi=\"Times New Roman\"/><w:b/><w:bCs/><w:sz w:val=\"28\"/><w:szCs w:val=\"28\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading5\"><w:name w:val=\"heading 5\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading5Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:pPr><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"4\"/></w:pPr><w:rPr><w:b/><w:bCs/><w:i/><w:iCs/><w:sz w:val=\"26\"/><w:szCs w:val=\"26\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading6\"><w:name w:val=\"heading 6\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading6Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:pPr><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"5\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Times New Roman\" w:hAnsi=\"Times New Roman\"/><w:b/><w:bCs/></w:rPr></w:style><w:style w:type=\"character\" w:default=\"1\" w:styleId=\"DefaultParagraphFont\"><w:name w:val=\"Default Paragraph Font\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/></w:style><w:style w:type=\"table\" w:default=\"1\" w:styleId=\"TableNormal\"><w:name w:val=\"Normal Table\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:unhideWhenUsed/><w:qFormat/><w:tblPr><w:tblInd w:w=\"0\" w:type=\"dxa\"/><w:tblCellMar><w:top w:w=\"0\" w:type=\"dxa\"/><w:left w:w=\"108\" w:type=\"dxa\"/><w:bottom w:w=\"0\" w:type=\"dxa\"/><w:right w:w=\"108\" w:type=\"dxa\"/></w:tblCellMar></w:tblPr></w:style><w:style w:type=\"numbering\" w:default=\"1\" w:styleId=\"NoList\"><w:name w:val=\"No List\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:unhideWhenUsed/></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading1Char\"><w:name w:val=\"Heading 1 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading1\"/><w:uiPriority w:val=\"99\"/><w:locked/><w:rPr><w:rFonts w:ascii=\"Cambria\" w:hAnsi=\"Cambria\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/><w:kern w:val=\"32\"/><w:sz w:val=\"32\"/><w:szCs w:val=\"32\"/></w:rPr></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading2Char\"><w:name w:val=\"Heading 2 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading2\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:locked/><w:rPr><w:rFonts w:ascii=\"Cambria\" w:hAnsi=\"Cambria\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/><w:i/><w:iCs/><w:sz w:val=\"28\"/><w:szCs w:val=\"28\"/></w:rPr></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading3Char\"><w:name w:val=\"Heading 3 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading3\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:locked/><w:rPr><w:rFonts w:ascii=\"Cambria\" w:hAnsi=\"Cambria\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/><w:sz w:val=\"26\"/><w:szCs w:val=\"26\"/></w:rPr></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading4Char\"><w:name w:val=\"Heading 4 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading4\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:rPr><w:rFonts w:ascii=\"Calibri\" w:hAnsi=\"Calibri\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/><w:sz w:val=\"28\"/><w:szCs w:val=\"28\"/></w:rPr></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading5Char\"><w:name w:val=\"Heading 5 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading5\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:rPr><w:rFonts w:ascii=\"Calibri\" w:hAnsi=\"Calibri\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/><w:i/><w:iCs/><w:sz w:val=\"26\"/><w:szCs w:val=\"26\"/></w:rPr></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading6Char\"><w:name w:val=\"Heading 6 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading6\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:rPr><w:rFonts w:ascii=\"Calibri\" w:hAnsi=\"Calibri\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Caption\"><w:name w:val=\"caption\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:rPr><w:b/><w:bCs/><w:sz w:val=\"20\"/><w:szCs w:val=\"20\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:customStyle=\"1\" w:styleId=\"TableTitle\"><w:name w:val=\"_Table_Title\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:uiPriority w:val=\"99\"/><w:rsid w:val=\"006673F3\"/><w:pPr><w:keepNext/><w:keepLines/><w:suppressAutoHyphens/><w:spacing w:before=\"480\" w:after=\"240\"/><w:jc w:val=\"center\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Times New Roman\" w:hAnsi=\"Times New Roman\"/><w:b/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/><w:lang w:val=\"en-US\" w:eastAsia=\"en-US\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"ListParagraph\"><w:name w:val=\"List Paragraph\"/><w:basedOn w:val=\"Normal\"/><w:uiPriority w:val=\"34\"/><w:qFormat/><w:rsid w:val=\"0052240D\"/><w:pPr><w:ind w:left=\"720\"/><w:contextualSpacing/></w:pPr></w:style><w:style w:type=\"character\" w:styleId=\"Hyperlink\"><w:name w:val=\"Hyperlink\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:uiPriority w:val=\"99\"/><w:unhideWhenUsed/><w:rsid w:val=\"000712F8\"/><w:rPr><w:color w:val=\"0000FF\" w:themeColor=\"hyperlink\"/><w:u w:val=\"single\"/></w:rPr></w:style><w:style w:type=\"character\" w:styleId=\"FollowedHyperlink\"><w:name w:val=\"FollowedHyperlink\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:unhideWhenUsed/><w:rsid w:val=\"000712F8\"/><w:rPr><w:color w:val=\"800080\" w:themeColor=\"followedHyperlink\"/><w:u w:val=\"single\"/></w:rPr></w:style></w:styles>");
+            StubUtils.createResource(folder, "styles", ext, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><w:styles xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii=\"Calibri\" w:eastAsia=\"Times New Roman\" w:hAnsi=\"Calibri\" w:cs=\"Times New Roman\"/><w:sz w:val=\"22\"/><w:szCs w:val=\"22\"/><w:lang w:val=\"en-GB\" w:eastAsia=\"en-GB\" w:bidi=\"ar-SA\"/></w:rPr></w:rPrDefault><w:pPrDefault/></w:docDefaults><w:latentStyles w:defLockedState=\"0\" w:defUIPriority=\"99\" w:defSemiHidden=\"1\" w:defUnhideWhenUsed=\"1\" w:defQFormat=\"0\" w:count=\"267\"><w:lsdException w:name=\"Normal\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 1\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 2\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 3\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 4\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 5\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 6\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 7\" w:locked=\"1\" w:uiPriority=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 8\" w:locked=\"1\" w:uiPriority=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"heading 9\" w:locked=\"1\" w:uiPriority=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"toc 1\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 2\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 3\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 4\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 5\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 6\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 7\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 8\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"toc 9\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"caption\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Title\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Default Paragraph Font\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Subtitle\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Strong\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Emphasis\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Table Grid\" w:locked=\"1\" w:semiHidden=\"0\" w:uiPriority=\"0\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Placeholder Text\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"No Spacing\" w:semiHidden=\"0\" w:uiPriority=\"1\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Light Shading\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Revision\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"List Paragraph\" w:semiHidden=\"0\" w:uiPriority=\"34\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Quote\" w:semiHidden=\"0\" w:uiPriority=\"29\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Intense Quote\" w:semiHidden=\"0\" w:uiPriority=\"30\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Medium List 2 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 1\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 2\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 3\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 4\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 5\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Shading Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"60\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light List Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"61\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Light Grid Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"62\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 1 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"63\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Shading 2 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"64\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 1 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"65\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium List 2 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"66\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 1 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"67\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 2 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"68\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Medium Grid 3 Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"69\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Dark List Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"70\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Shading Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"71\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful List Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"72\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Colorful Grid Accent 6\" w:semiHidden=\"0\" w:uiPriority=\"73\" w:unhideWhenUsed=\"0\"/><w:lsdException w:name=\"Subtle Emphasis\" w:semiHidden=\"0\" w:uiPriority=\"19\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Intense Emphasis\" w:semiHidden=\"0\" w:uiPriority=\"21\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Subtle Reference\" w:semiHidden=\"0\" w:uiPriority=\"31\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Intense Reference\" w:semiHidden=\"0\" w:uiPriority=\"32\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Book Title\" w:semiHidden=\"0\" w:uiPriority=\"33\" w:unhideWhenUsed=\"0\" w:qFormat=\"1\"/><w:lsdException w:name=\"Bibliography\" w:uiPriority=\"37\"/><w:lsdException w:name=\"TOC Heading\" w:uiPriority=\"39\" w:qFormat=\"1\"/></w:latentStyles><w:style w:type=\"paragraph\" w:default=\"1\" w:styleId=\"Normal\"><w:name w:val=\"Normal\"/><w:qFormat/><w:rsid w:val=\"008E3E32\"/></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading1\"><w:name w:val=\"heading 1\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading1Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:pPr><w:keepNext/><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"0\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Arial\" w:hAnsi=\"Arial\" w:cs=\"Arial\"/><w:b/><w:bCs/><w:kern w:val=\"32\"/><w:sz w:val=\"32\"/><w:szCs w:val=\"32\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading2\"><w:name w:val=\"heading 2\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading2Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:pPr><w:keepNext/><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"1\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Arial\" w:hAnsi=\"Arial\" w:cs=\"Arial\"/><w:b/><w:bCs/><w:i/><w:iCs/><w:sz w:val=\"28\"/><w:szCs w:val=\"28\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading3\"><w:name w:val=\"heading 3\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading3Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:pPr><w:keepNext/><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"2\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Arial\" w:hAnsi=\"Arial\" w:cs=\"Arial\"/><w:b/><w:bCs/><w:sz w:val=\"26\"/><w:szCs w:val=\"26\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading4\"><w:name w:val=\"heading 4\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading4Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:pPr><w:keepNext/><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"3\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Times New Roman\" w:hAnsi=\"Times New Roman\"/><w:b/><w:bCs/><w:sz w:val=\"28\"/><w:szCs w:val=\"28\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading5\"><w:name w:val=\"heading 5\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading5Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:pPr><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"4\"/></w:pPr><w:rPr><w:b/><w:bCs/><w:i/><w:iCs/><w:sz w:val=\"26\"/><w:szCs w:val=\"26\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Heading6\"><w:name w:val=\"heading 6\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:link w:val=\"Heading6Char\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:pPr><w:spacing w:before=\"240\" w:after=\"60\"/><w:outlineLvl w:val=\"5\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Times New Roman\" w:hAnsi=\"Times New Roman\"/><w:b/><w:bCs/></w:rPr></w:style><w:style w:type=\"character\" w:default=\"1\" w:styleId=\"DefaultParagraphFont\"><w:name w:val=\"Default Paragraph Font\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/></w:style><w:style w:type=\"table\" w:default=\"1\" w:styleId=\"TableNormal\"><w:name w:val=\"Normal Table\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:unhideWhenUsed/><w:qFormat/><w:tblPr><w:tblInd w:w=\"0\" w:type=\"dxa\"/><w:tblCellMar><w:top w:w=\"0\" w:type=\"dxa\"/><w:left w:w=\"108\" w:type=\"dxa\"/><w:bottom w:w=\"0\" w:type=\"dxa\"/><w:right w:w=\"108\" w:type=\"dxa\"/></w:tblCellMar></w:tblPr></w:style><w:style w:type=\"numbering\" w:default=\"1\" w:styleId=\"NoList\"><w:name w:val=\"No List\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:unhideWhenUsed/></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading1Char\"><w:name w:val=\"Heading 1 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading1\"/><w:uiPriority w:val=\"99\"/><w:locked/><w:rPr><w:rFonts w:ascii=\"Cambria\" w:hAnsi=\"Cambria\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/><w:kern w:val=\"32\"/><w:sz w:val=\"32\"/><w:szCs w:val=\"32\"/></w:rPr></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading2Char\"><w:name w:val=\"Heading 2 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading2\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:locked/><w:rPr><w:rFonts w:ascii=\"Cambria\" w:hAnsi=\"Cambria\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/><w:i/><w:iCs/><w:sz w:val=\"28\"/><w:szCs w:val=\"28\"/></w:rPr></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading3Char\"><w:name w:val=\"Heading 3 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading3\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:locked/><w:rPr><w:rFonts w:ascii=\"Cambria\" w:hAnsi=\"Cambria\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/><w:sz w:val=\"26\"/><w:szCs w:val=\"26\"/></w:rPr></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading4Char\"><w:name w:val=\"Heading 4 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading4\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:rPr><w:rFonts w:ascii=\"Calibri\" w:hAnsi=\"Calibri\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/><w:sz w:val=\"28\"/><w:szCs w:val=\"28\"/></w:rPr></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading5Char\"><w:name w:val=\"Heading 5 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading5\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:rPr><w:rFonts w:ascii=\"Calibri\" w:hAnsi=\"Calibri\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/><w:i/><w:iCs/><w:sz w:val=\"26\"/><w:szCs w:val=\"26\"/></w:rPr></w:style><w:style w:type=\"character\" w:customStyle=\"1\" w:styleId=\"Heading6Char\"><w:name w:val=\"Heading 6 Char\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:link w:val=\"Heading6\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:locked/><w:rsid w:val=\"008E3E32\"/><w:rPr><w:rFonts w:ascii=\"Calibri\" w:hAnsi=\"Calibri\" w:cs=\"Times New Roman\"/><w:b/><w:bCs/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"Caption\"><w:name w:val=\"caption\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:uiPriority w:val=\"99\"/><w:qFormat/><w:locked/><w:rPr><w:b/><w:bCs/><w:sz w:val=\"20\"/><w:szCs w:val=\"20\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:customStyle=\"1\" w:styleId=\"TableTitle\"><w:name w:val=\"_Table_Title\"/><w:basedOn w:val=\"Normal\"/><w:next w:val=\"Normal\"/><w:uiPriority w:val=\"99\"/><w:rsid w:val=\"006673F3\"/><w:pPr><w:keepNext/><w:keepLines/><w:suppressAutoHyphens/><w:spacing w:before=\"480\" w:after=\"240\"/><w:jc w:val=\"center\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Times New Roman\" w:hAnsi=\"Times New Roman\"/><w:b/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/><w:lang w:val=\"en-US\" w:eastAsia=\"en-US\"/></w:rPr></w:style><w:style w:type=\"paragraph\" w:styleId=\"ListParagraph\"><w:name w:val=\"List Paragraph\"/><w:basedOn w:val=\"Normal\"/><w:uiPriority w:val=\"34\"/><w:qFormat/><w:rsid w:val=\"0052240D\"/><w:pPr><w:ind w:left=\"720\"/><w:contextualSpacing/></w:pPr></w:style><w:style w:type=\"character\" w:styleId=\"Hyperlink\"><w:name w:val=\"Hyperlink\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:uiPriority w:val=\"99\"/><w:unhideWhenUsed/><w:rsid w:val=\"000712F8\"/><w:rPr><w:color w:val=\"0000FF\" w:themeColor=\"hyperlink\"/><w:u w:val=\"single\"/></w:rPr></w:style><w:style w:type=\"character\" w:styleId=\"FollowedHyperlink\"><w:name w:val=\"FollowedHyperlink\"/><w:basedOn w:val=\"DefaultParagraphFont\"/><w:uiPriority w:val=\"99\"/><w:semiHidden/><w:unhideWhenUsed/><w:rsid w:val=\"000712F8\"/><w:rPr><w:color w:val=\"800080\" w:themeColor=\"followedHyperlink\"/><w:u w:val=\"single\"/></w:rPr></w:style></w:styles>");
 
             if ((!area.getName().equalsIgnoreCase(StdStrings.COM)) || (generateCOM())) {
                 getLog().info("Processing area: " + area.getName());
@@ -139,7 +145,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 docxServiceFile.addComment(area.getComment());
                 for (DocumentationType documentation : area.getDocumentation()) {
                     docxServiceFile.addTitle(2, documentation.getName());
-                    docxServiceFile.addNumberedComment(splitString(null, documentation.getContent()));
+                    docxServiceFile.addNumberedComment(GeneratorUtils.splitString(null, documentation.getContent()));
                 }
 
                 // create services
@@ -151,7 +157,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
                     for (DocumentationType documentation : service.getDocumentation()) {
                         docxServiceFile.addTitle(3, documentation.getName());
-                        docxServiceFile.addNumberedComment(splitString(null, documentation.getContent()));
+                        docxServiceFile.addNumberedComment(GeneratorUtils.splitString(null, documentation.getContent()));
                     }
 
                     if (!StdStrings.COM.equalsIgnoreCase(service.getName())) {
@@ -165,7 +171,7 @@ public class GeneratorDocx extends GeneratorDocument {
                             String str = cSet.getComment();
 
                             if (null != str) {
-                                comments.addAll(splitString(null, str));
+                                comments.addAll(GeneratorUtils.splitString(null, str));
                             }
                         }
 
@@ -269,7 +275,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     }
                 }
 
-                if (0 < errors.size()) {
+                if (!errors.isEmpty()) {
                     docxDataFile.addComment("The following table lists the errors defined in this specification:");
 
                     docxDataFile.startTable(ERROR_TABLE_WIDTHS, area.getName() + " Error Codes");
@@ -305,7 +311,7 @@ public class GeneratorDocx extends GeneratorDocument {
             filenames.add("word/styles.xml");
             filenames.add("word/numbering.xml");
 
-            for (int j = 1; j < docxServiceFile.imageIndex; j++) {
+            for (int j = 1; j < docxServiceFile.IMAGE_INDEX; j++) {
                 filenames.add("word/media/image" + j + ".png");
             }
 
@@ -370,7 +376,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
             if (null != features.getObjects()) {
                 docxFile.addTitle(3, "COM usage");
-                docxFile.addNumberedComment(splitString(null, features.getObjects().getComment()));
+                docxFile.addNumberedComment(GeneratorUtils.splitString(null, features.getObjects().getComment()));
 
                 if (!features.getObjects().getObject().isEmpty()) {
                     hasCOMobjects = true;
@@ -400,7 +406,8 @@ public class GeneratorDocx extends GeneratorDocument {
 
                         if (null != obj.getRelatedObject()) {
                             if (null != obj.getRelatedObject().getObjectType()) {
-                                docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, service, obj.getRelatedObject().getObjectType()), null);
+                                String text = GeneratorUtils.createFQTypeName(area, service, obj.getRelatedObject().getObjectType());
+                                docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, text, null);
                             } else {
                                 if (null != obj.getRelatedObject().getComment()) {
                                     docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getRelatedObject().getComment(), null);
@@ -414,7 +421,8 @@ public class GeneratorDocx extends GeneratorDocument {
 
                         if (null != obj.getSourceObject()) {
                             if (null != obj.getSourceObject().getObjectType()) {
-                                docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, service, obj.getSourceObject().getObjectType()), null);
+                                String text = GeneratorUtils.createFQTypeName(area, service, obj.getSourceObject().getObjectType());
+                                docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, text, null);
                             } else {
                                 if (null != obj.getSourceObject().getComment()) {
                                     docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getSourceObject().getComment(), null);
@@ -440,7 +448,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
                 DocxBaseWriter evntTable = new DocxBaseWriter(docxFile.getNumberWriter());
                 evntTable.addTitle(3, "COM Event Service usage");
-                evntTable.addNumberedComment(splitString(null, features.getEvents().getComment()));
+                evntTable.addNumberedComment(GeneratorUtils.splitString(null, features.getEvents().getComment()));
 
                 evntTable.startTable(SERVICE_COM_TYPES_TABLE_WIDTHS, service.getName() + " Service Events");
 
@@ -465,7 +473,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
                     if (null != evnt.getRelatedObject()) {
                         if (null != evnt.getRelatedObject().getObjectType()) {
-                            evntTable.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, service, evnt.getRelatedObject().getObjectType()), null);
+                            evntTable.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, GeneratorUtils.createFQTypeName(area, service, evnt.getRelatedObject().getObjectType()), null);
                         } else {
                             if (null != evnt.getRelatedObject().getComment()) {
                                 evntTable.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, evnt.getRelatedObject().getComment(), null);
@@ -479,7 +487,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
                     if (null != evnt.getSourceObject()) {
                         if (null != evnt.getSourceObject().getObjectType()) {
-                            evntTable.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, createFQTypeName(area, service, evnt.getSourceObject().getObjectType()), null);
+                            evntTable.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, GeneratorUtils.createFQTypeName(area, service, evnt.getSourceObject().getObjectType()), null);
                         } else {
                             if (null != evnt.getSourceObject().getComment()) {
                                 evntTable.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, evnt.getSourceObject().getComment(), null);
@@ -519,7 +527,11 @@ public class GeneratorDocx extends GeneratorDocument {
                 if (includeDiagrams) {
                     for (AnyTypeReferenceWithId any : service.getFeatures().getDiagram()) {
                         for (Object o : any.getAny()) {
-                            docxFile.addDiagram(o);
+                            try {
+                                docxFile.addDiagram(o);
+                            } catch (TranscoderException ex) {
+                                getLog().error("|Execption thrown rasterizing image", ex);
+                            }
                         }
                     }
                 } else {
@@ -532,7 +544,7 @@ public class GeneratorDocx extends GeneratorDocument {
             if (null != features.getArchiveUsage()) {
                 DocxBaseWriter archiveUsage = new DocxBaseWriter(docxFile.getNumberWriter());
                 archiveUsage.addTitle(3, "COM Archive Service usage");
-                archiveUsage.addNumberedComment(splitString(null, features.getArchiveUsage().getComment()));
+                archiveUsage.addNumberedComment(GeneratorUtils.splitString(null, features.getArchiveUsage().getComment()));
 
                 docxFile.appendBuffer(archiveUsage.getBuffer());
             }
@@ -540,7 +552,7 @@ public class GeneratorDocx extends GeneratorDocument {
             if (null != features.getActivityUsage()) {
                 DocxBaseWriter activityUsage = new DocxBaseWriter(docxFile.getNumberWriter());
                 activityUsage.addTitle(3, "COM Activity Service usage");
-                activityUsage.addNumberedComment(splitString(null, features.getActivityUsage().getComment()));
+                activityUsage.addNumberedComment(GeneratorUtils.splitString(null, features.getActivityUsage().getComment()));
 
                 docxFile.appendBuffer(activityUsage.getBuffer());
             }
@@ -552,7 +564,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
         docxFile.startRow();
         docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "Operation Identifier", HEADER_COLOUR);
-        docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, op.getName(), STD_COLOUR, 2);
+        docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, op.getName(), STD_COLOUR, 3);
         docxFile.endRow();
 
         if (op instanceof SendOperationType) {
@@ -607,7 +619,7 @@ public class GeneratorDocx extends GeneratorDocument {
     private void drawOperationPattern(DocxBaseWriter docxFile, String patternType) throws IOException {
         docxFile.startRow();
         docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "Interaction Pattern", HEADER_COLOUR);
-        docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, patternType, FIXED_COLOUR, 2);
+        docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, patternType, FIXED_COLOUR, 3);
         docxFile.endRow();
     }
 
@@ -615,7 +627,7 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.startRow();
         docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "Subscription Keys", HEADER_COLOUR);
 
-        if ((null == types) || (0 == types.size())) {
+        if (types == null || types.isEmpty()) {
             docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, "Empty", FIXED_COLOUR, 2);
         } else {
             docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, includeMessageFieldNames, oldStyle, area, service, types, null, 2);
@@ -628,23 +640,24 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.startRow();
         docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "Pattern Sequence", HEADER_COLOUR);
         docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, "Message", HEADER_COLOUR);
-        docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "Type Signature", HEADER_COLOUR);
+        docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "Nullable", HEADER_COLOUR);
+        docxFile.addCell(3, OPERATION_OVERVIEW_TABLE_WIDTHS, "Type Signature", HEADER_COLOUR);
         docxFile.endRow();
     }
 
-    private void drawOperationMessageDetails(DocxBaseWriter docxFile, AreaType area, ServiceType service, boolean isIn, String message, List<TypeRef> types) throws IOException {
+    private void drawOperationMessageDetails(DocxBaseWriter docxFile, AreaType area,
+            ServiceType service, boolean isIn, String message, List<TypeRef> types) throws IOException {
         docxFile.startRow();
-        if (isIn) {
-            docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "IN", FIXED_COLOUR);
-        } else {
-            docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "OUT", FIXED_COLOUR);
-        }
+        String inOut = (isIn) ? "IN" : "OUT";
+        docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, inOut, FIXED_COLOUR);
         docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, message, FIXED_COLOUR);
 
-        if ((null == types) || (0 == types.size())) {
-            docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "Empty", FIXED_COLOUR);
+        if (types == null || types.isEmpty()) {
+            docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, "-", FIXED_COLOUR);
+            docxFile.addCell(3, OPERATION_OVERVIEW_TABLE_WIDTHS, "-", FIXED_COLOUR);
         } else {
-            docxFile.addCell(2, OPERATION_OVERVIEW_TABLE_WIDTHS, includeMessageFieldNames, oldStyle, area, service, types, null);
+            docxFile.addCellNullability(2, OPERATION_OVERVIEW_TABLE_WIDTHS, types, null, 0);
+            docxFile.addCell(3, OPERATION_OVERVIEW_TABLE_WIDTHS, includeMessageFieldNames, oldStyle, area, service, types, null);
         }
         docxFile.endRow();
     }
@@ -688,12 +701,12 @@ public class GeneratorDocx extends GeneratorDocument {
     private void addMessageStructureDetails(DocxBaseWriter docxFile, List<AnyTypeReference> msgs) throws IOException {
         List<String> strings = null;
         for (AnyTypeReference msg : msgs) {
-            strings = splitString(strings, msg.getComment());
+            strings = GeneratorUtils.splitString(strings, msg.getComment());
 
             List<TypeRef> refs = TypeUtils.getTypeListViaXSDAny(msg.getAny());
             for (TypeRef typeRef : refs) {
                 if (typeRef.isField()) {
-                    strings = splitString(strings, typeRef.getFieldRef().getComment());
+                    strings = GeneratorUtils.splitString(strings, typeRef.getFieldRef().getComment());
                 }
             }
         }
@@ -749,14 +762,14 @@ public class GeneratorDocx extends GeneratorDocument {
                 if (object instanceof ErrorDefinitionType) {
                     ErrorDefinitionType err = (ErrorDefinitionType) object;
 
-                    List<String> pcmts = splitString(null, err.getComment());
+                    List<String> pcmts = GeneratorUtils.splitString(null, err.getComment());
                     if (null != err.getExtraInformation()) {
-                        pcmts = splitString(pcmts, err.getExtraInformation().getComment());
+                        pcmts = GeneratorUtils.splitString(pcmts, err.getExtraInformation().getComment());
                     }
 
                     String ev = "Not Used";
                     if (null != err.getExtraInformation()) {
-                        ev = createFQTypeName(area, service, err.getExtraInformation().getType());
+                        ev = GeneratorUtils.createFQTypeName(area, service, err.getExtraInformation().getType());
                     }
 
                     List<Object[]> v;
@@ -773,9 +786,9 @@ public class GeneratorDocx extends GeneratorDocument {
                 } else if (object instanceof ErrorReferenceType) {
                     ErrorReferenceType err = (ErrorReferenceType) object;
 
-                    List<String> pcmts = splitString(null, err.getComment());
+                    List<String> pcmts = GeneratorUtils.splitString(null, err.getComment());
                     if (null != err.getExtraInformation()) {
-                        pcmts = splitString(pcmts, err.getExtraInformation().getComment());
+                        pcmts = GeneratorUtils.splitString(pcmts, err.getExtraInformation().getComment());
                     }
 
                     String en;
@@ -795,7 +808,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
                     String ev = "Not Used";
                     if (null != err.getExtraInformation()) {
-                        ev = createFQTypeName(area, service, err.getExtraInformation().getType());
+                        ev = GeneratorUtils.createFQTypeName(area, service, err.getExtraInformation().getType());
                     }
 
                     List<Object[]> v;
@@ -839,7 +852,7 @@ public class GeneratorDocx extends GeneratorDocument {
     }
 
     private void addErrorDefinitions(List<ErrorDefinitionType> errors, OperationErrorList errs) throws IOException {
-        if ((null != errs) && (null != errs.getErrorOrErrorRef()) && (0 < errs.getErrorOrErrorRef().size())) {
+        if (errs != null && errs.getErrorOrErrorRef() != null && (!errs.getErrorOrErrorRef().isEmpty())) {
             for (Object object : errs.getErrorOrErrorRef()) {
                 if (object instanceof ErrorDefinitionType) {
                     errors.add((ErrorDefinitionType) object);
@@ -1026,555 +1039,5 @@ public class GeneratorDocx extends GeneratorDocument {
         }
 
         return "Unknown";
-    }
-
-    private static String yesNoType(boolean bool) throws IOException {
-        if (bool) {
-            return "Yes";
-        }
-
-        return "No";
-    }
-
-    private static String createFQTypeName(AreaType area, ServiceType service, TypeReference type) {
-        return createFQTypeName(area, service, type, type.isList());
-    }
-
-    private static String createFQTypeName(AreaType area, ServiceType service, TypeReference type, boolean isList) {
-        String servicename = (null == service) ? "" : service.getName();
-        return createFQTypeName(area.getName(), servicename, type.getArea(), type.getService(), type.getName(), isList);
-    }
-
-    private static String createFQTypeName(AreaType area, ServiceType service, ObjectReference type) {
-        String servicename = (null == service) ? "" : service.getName();
-        return createFQTypeName(area.getName(), servicename, type.getArea(), type.getService(), String.valueOf(type.getNumber()), false);
-    }
-
-    private static String createFQTypeName(String myArea, String myService, String typeArea, String typeService, String typeName, boolean isList) {
-        StringBuilder buf = new StringBuilder();
-
-        if (!myArea.equalsIgnoreCase(typeArea)) {
-            buf.append(typeArea);
-            buf.append("::");
-        }
-
-        if ((null != typeService) && (0 < typeService.length() && !typeService.equalsIgnoreCase(myService))) {
-            buf.append(typeService);
-            buf.append("::");
-        }
-
-        buf.append(typeName);
-
-        if (isList) {
-            buf.insert(0, "List<");
-            buf.append(">");
-        }
-
-        return buf.toString();
-    }
-
-    private class DocxNumberingWriter extends AbstractWriter {
-
-        private int numberingInstance = 1;
-        private final Writer file;
-        private final StringBuffer buffer = new StringBuffer();
-
-        protected DocxNumberingWriter(String folder, String className, String ext) throws IOException {
-            file = StubUtils.createLowLevelWriter(folder, className, ext);
-            file.append(makeLine(0, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><w:numbering xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"><w:abstractNum w:abstractNumId=\"0\"><w:nsid w:val=\"0010107A\"/><w:multiLevelType w:val=\"hybridMultilevel\"/><w:tmpl w:val=\"2FAEA97C\"/><w:lvl w:ilvl=\"0\"><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"-\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"1080\"/></w:tabs><w:ind w:left=\"1080\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"1\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"o\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"1800\"/></w:tabs><w:ind w:left=\"1800\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"2\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"?\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"2520\"/></w:tabs><w:ind w:left=\"2520\" w:hanging=\"360\"/></w:pPr></w:lvl></w:abstractNum><w:abstractNum w:abstractNumId=\"1\"><w:nsid w:val=\"6805624A\"/><w:multiLevelType w:val=\"hybridMultilevel\"/><w:tmpl w:val=\"E1A8AF06\"/><w:lvl w:ilvl=\"0\" w:tplc=\"08090001\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"720\"/></w:tabs><w:ind w:left=\"720\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Symbol\" w:hAnsi=\"Symbol\" w:hint=\"default\"/></w:rPr></w:lvl><w:lvl w:ilvl=\"1\" w:tplc=\"607A8D92\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerLetter\"/><w:lvlText w:val=\"%2.\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"1440\"/></w:tabs><w:ind w:left=\"1440\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"2\" w:tplc=\"87184C80\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerRoman\"/><w:lvlText w:val=\"%3.\"/><w:lvlJc w:val=\"right\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"2160\"/></w:tabs><w:ind w:left=\"2160\" w:hanging=\"180\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"3\" w:tplc=\"277E9776\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%4.\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"2880\"/></w:tabs><w:ind w:left=\"2880\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"4\" w:tplc=\"3934DEFA\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerLetter\"/><w:lvlText w:val=\"%5.\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"3600\"/></w:tabs><w:ind w:left=\"3600\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"5\" w:tplc=\"B838E67C\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerRoman\"/><w:lvlText w:val=\"%6.\"/><w:lvlJc w:val=\"right\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"4320\"/></w:tabs><w:ind w:left=\"4320\" w:hanging=\"180\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"6\" w:tplc=\"AF3C1126\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%7.\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"5040\"/></w:tabs><w:ind w:left=\"5040\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"7\" w:tplc=\"2DE61552\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerLetter\"/><w:lvlText w:val=\"%8.\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"5760\"/></w:tabs><w:ind w:left=\"5760\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"8\" w:tplc=\"43546844\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerRoman\"/><w:lvlText w:val=\"%9.\"/><w:lvlJc w:val=\"right\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"6480\"/></w:tabs><w:ind w:left=\"6480\" w:hanging=\"180\"/></w:pPr></w:lvl></w:abstractNum>", false));
-            buffer.append(makeLine(2, "<w:num w:numId=\"1\"><w:abstractNumId w:val=\"1\"/></w:num>", false));
-
-            getLog().info("Creating file " + folder + " " + className + "." + ext);
-        }
-
-        protected int getNextNumberingInstance() throws IOException {
-            int instance = ++numberingInstance;
-            file.append(makeLine(0, "<w:abstractNum w:abstractNumId=\"" + instance + "\"><w:nsid w:val=\"" + instance + "\"/><w:multiLevelType w:val=\"hybridMultilevel\"/><w:tmpl w:val=\"FFFFFFFF\"/><w:lvl w:ilvl=\"0\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerLetter\"/><w:lvlText w:val=\"%1)\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"720\"/></w:tabs><w:ind w:left=\"720\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"1\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerLetter\"/><w:lvlText w:val=\"%2.\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"1440\"/></w:tabs><w:ind w:left=\"1440\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"2\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerRoman\"/><w:lvlText w:val=\"%3.\"/><w:lvlJc w:val=\"right\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"2160\"/></w:tabs><w:ind w:left=\"2160\" w:hanging=\"180\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"3\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%4.\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"2880\"/></w:tabs><w:ind w:left=\"2880\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"4\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerLetter\"/><w:lvlText w:val=\"%5.\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"3600\"/></w:tabs><w:ind w:left=\"3600\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"5\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerRoman\"/><w:lvlText w:val=\"%6.\"/><w:lvlJc w:val=\"right\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"4320\"/></w:tabs><w:ind w:left=\"4320\" w:hanging=\"180\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"6\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%7.\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"5040\"/></w:tabs><w:ind w:left=\"5040\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"7\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerLetter\"/><w:lvlText w:val=\"%8.\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"5760\"/></w:tabs><w:ind w:left=\"5760\" w:hanging=\"360\"/></w:pPr></w:lvl><w:lvl w:ilvl=\"8\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"lowerRoman\"/><w:lvlText w:val=\"%9.\"/><w:lvlJc w:val=\"right\"/><w:pPr><w:tabs><w:tab w:val=\"num\" w:pos=\"6480\"/></w:tabs><w:ind w:left=\"6480\" w:hanging=\"180\"/></w:pPr></w:lvl></w:abstractNum>", false));
-            buffer.append(makeLine(2, "<w:num w:numId=\"" + instance + "\"><w:abstractNumId w:val=\"" + instance + "\"/></w:num>", false));
-            return instance;
-        }
-
-        @Override
-        public void flush() throws IOException {
-            file.append(buffer.toString());
-            file.append(makeLine(0, "</w:numbering>", false));
-            file.flush();
-        }
-    }
-
-    private static class DocxBaseWriter extends AbstractWriter {
-
-        private final DocxNumberingWriter numberWriter;
-        private final StringBuffer buffer = new StringBuffer();
-
-        protected DocxBaseWriter() throws IOException {
-            super("\r\n");
-            numberWriter = null;
-        }
-
-        protected DocxBaseWriter(DocxNumberingWriter numberWriter) throws IOException {
-            super("\r\n");
-            this.numberWriter = numberWriter;
-        }
-
-        public DocxNumberingWriter getNumberWriter() {
-            return numberWriter;
-        }
-
-        protected void addFigureCaption(String caption) throws IOException {
-            if (null != caption) {
-                buffer.append(makeLine(2, "<w:p>", false));
-                buffer.append(makeLine(3, "<w:pPr><w:pStyle w:val=\"TableTitle\"/></w:pPr><w:r><w:t xml:space=\"preserve\">Figure </w:t></w:r>", false));
-                buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"0\" w:name=\"F_" + caption + "\"/>", false));
-                buffer.append(makeLine(3, "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> STYLEREF \"Heading 1\"\\l \\n \\t  \\* MERGEFORMAT </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:r><w:noBreakHyphen/></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Figure \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:bookmarkEnd w:id=\"0\"/><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText>tc  \\f T \"</w:instrText></w:r><w:fldSimple w:instr=\" STYLEREF &quot;Heading 1&quot;\\l \\n \\t  \\* MERGEFORMAT \">", false));
-                buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + caption + "\"/><w:r><w:instrText>1</w:instrText></w:r></w:fldSimple>", false));
-                buffer.append(makeLine(3, "<w:r><w:instrText>-</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Figure_TOC \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:instrText>1</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>", false));
-                buffer.append(makeLine(3, "<w:r><w:instrText>" + caption + "</w:instrText></w:r>", false));
-                buffer.append(makeLine(3, "<w:bookmarkEnd w:id=\"1\"/><w:r><w:instrText>\"</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>", false));
-                buffer.append(makeLine(3, "<w:r><w:t>:  " + caption + "</w:t></w:r>", false));
-                buffer.append(makeLine(2, "</w:p>", false));
-            }
-        }
-
-        protected void startTable(int[] widths) throws IOException {
-            startTable(widths, null);
-        }
-
-        protected void startTable(int[] widths, String caption) throws IOException {
-            if (null != caption) {
-                buffer.append(makeLine(2, "<w:p>", false));
-                buffer.append(makeLine(3, "<w:pPr><w:pStyle w:val=\"TableTitle\"/></w:pPr><w:r><w:t xml:space=\"preserve\">Table </w:t></w:r>", false));
-                buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"0\" w:name=\"T_" + caption + "\"/>", false));
-                buffer.append(makeLine(3, "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> STYLEREF \"Heading 1\"\\l \\n \\t  \\* MERGEFORMAT </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:r><w:noBreakHyphen/></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Table \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:bookmarkEnd w:id=\"0\"/><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText>tc  \\f T \"</w:instrText></w:r><w:fldSimple w:instr=\" STYLEREF &quot;Heading 1&quot;\\l \\n \\t  \\* MERGEFORMAT \">", false));
-                buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + caption + "\"/><w:r><w:instrText>1</w:instrText></w:r></w:fldSimple>", false));
-                buffer.append(makeLine(3, "<w:r><w:instrText>-</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Table_TOC \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:instrText>1</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>", false));
-                buffer.append(makeLine(3, "<w:r><w:instrText>" + caption + "</w:instrText></w:r>", false));
-                buffer.append(makeLine(3, "<w:bookmarkEnd w:id=\"1\"/><w:r><w:instrText>\"</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>", false));
-                buffer.append(makeLine(3, "<w:r><w:t>:  " + caption + "</w:t></w:r>", false));
-                buffer.append(makeLine(2, "</w:p>", false));
-
-            }
-            buffer.append(makeLine(2, "<w:tbl>", false));
-            buffer.append(makeLine(3, "<w:tblPr>", false));
-            buffer.append(makeLine(4, "<w:tblW w:w=\"00\" w:type=\"auto\"/>", false));
-            buffer.append(makeLine(4, "<w:tblBorders>", false));
-            buffer.append(makeLine(5, "<w:top w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-            buffer.append(makeLine(5, "<w:left w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-            buffer.append(makeLine(5, "<w:bottom w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-            buffer.append(makeLine(5, "<w:right w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-            buffer.append(makeLine(5, "<w:insideH w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-            buffer.append(makeLine(5, "<w:insideV w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-            buffer.append(makeLine(4, "</w:tblBorders>", false));
-            buffer.append(makeLine(3, "</w:tblPr>", false));
-
-            if (null != widths) {
-                buffer.append(makeLine(3, "<w:tblGrid>", false));
-                for (int i : widths) {
-                    buffer.append(makeLine(4, "<w:gridCol w:w=\"" + i + "\"/>", false));
-                }
-                buffer.append(makeLine(3, "</w:tblGrid>", false));
-            }
-        }
-
-        protected void startRow() throws IOException {
-            buffer.append(makeLine(3, "<w:tr>", false));
-        }
-
-        protected void addCell(int index, int[] widths, String text) throws IOException {
-            addCell(index, widths, text, null, true, 0, false, false);
-        }
-
-        protected void addCell(int index, int[] widths, String text, boolean vMerge, boolean vRestart) throws IOException {
-            addCell(index, widths, text, null, true, 0, vMerge, vRestart);
-        }
-
-        protected void addCell(int index, int[] widths, String text, String shade, boolean vMerge, boolean vRestart) throws IOException {
-            addCell(index, widths, text, shade, true, 0, vMerge, vRestart);
-        }
-
-        protected void addCell(int index, int[] widths, String text, boolean centered) throws IOException {
-            addCell(index, widths, text, null, centered, 0, false, false);
-        }
-
-        protected void addCell(int index, int[] widths, String text, String shade) throws IOException {
-            addCell(index, widths, text, shade, true, 0, false, false);
-        }
-
-        protected void addCell(int index, int[] widths, String text, String shade, String linkTo) throws IOException {
-            StringBuilder buf = createHyperLink(new StringBuilder(), "", text, "", linkTo, true);
-            actualAddCell(index, widths, buf.toString(), shade, true, 0, false, false);
-        }
-
-        protected void addCell(int index, int[] widths, String text, String shade, String linkTo, int span) throws IOException {
-            StringBuilder buf = createHyperLink(new StringBuilder(), "", text, "", linkTo, true);
-            actualAddCell(index, widths, buf.toString(), shade, true, span, false, false);
-        }
-
-        protected void addCell(int index, int[] widths, String text, String shade, boolean centered) throws IOException {
-            addCell(index, widths, text, shade, centered, 0, false, false);
-        }
-
-        protected void addCell(int index, int[] widths, String text, String shade, int span) throws IOException {
-            addCell(index, widths, text, shade, true, span, false, false);
-        }
-
-        protected void addCell(int index, int[] widths, boolean includeMessageFieldNames, boolean oldStyle, AreaType area, ServiceType service, TypeRef type, String shade, int span) throws IOException {
-            StringBuilder buf = createTypeHyperLink(new StringBuilder(), includeMessageFieldNames, oldStyle, area, service, type);
-            actualAddCell(index, widths, buf.toString(), shade, true, span, false, false);
-        }
-
-        protected void addCell(int index, int[] widths, boolean includeMessageFieldNames, boolean oldStyle, AreaType area, ServiceType service, List<TypeRef> types, String shade) throws IOException {
-            addCell(index, widths, includeMessageFieldNames, oldStyle, area, service, types, shade, 1);
-        }
-
-        protected void addCell(int index, int[] widths, boolean includeMessageFieldNames, boolean oldStyle, AreaType area, ServiceType service, List<TypeRef> types, String shade, int span) throws IOException {
-            StringBuilder buf = new StringBuilder();
-            for (int i = 0; i < types.size(); i++) {
-                createTypeHyperLink(buf, includeMessageFieldNames, oldStyle, area, service, types.get(i));
-
-                if ((i + 1) != types.size()) {
-                    buf.append("</w:p><w:p><w:pPr><w:jc w:val=\"center\"/></w:pPr>");
-                }
-            }
-
-            actualAddCell(index, widths, buf.toString(), shade, true, span, false, false);
-        }
-
-        protected void addCell(int index, int[] widths, String text, String shade, boolean centered, int span, boolean vMerge, boolean vRestart) throws IOException {
-            actualAddCell(index, widths, "<w:r><w:t>" + escape(text) + "</w:t></w:r>", shade, centered, span, vMerge, vRestart);
-        }
-
-        protected void actualAddCell(int index, int[] widths, String text, String shade, boolean centered, int span, boolean vMerge, boolean vRestart) throws IOException {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<w:tc><w:tcPr>");
-            if (null != widths) {
-                int width = 0;
-                if (1 < span) {
-                    for (int i = index; i < (index + span); i++) {
-                        width += widths[i];
-                    }
-                } else {
-                    width = widths[index];
-                }
-
-                buf.append("<w:tcW w:w=\"").append(width).append("\" w:type=\"dxa\"/>");
-            }
-            if (vMerge) {
-                if (vRestart) {
-                    buf.append("<w:vMerge w:val=\"restart\"/><w:vAlign w:val=\"center\"/>");
-                } else {
-                    buf.append("<w:vMerge/>");
-                }
-            }
-            if (1 < span) {
-                buf.append("<w:gridSpan w:val=\"");
-                buf.append(span);
-                buf.append("\"/>");
-            }
-            if (null != shade) {
-                buf.append("<w:shd w:val=\"clear\" w:color=\"auto\" w:fill=\"");
-                buf.append(shade);
-                buf.append("\"/></w:tcPr>");
-            } else {
-                buf.append("</w:tcPr>");
-            }
-            if ((!vMerge) || (vRestart)) {
-                buf.append("<w:p>");
-                if (centered) {
-                    buf.append("<w:pPr><w:jc w:val=\"center\"/></w:pPr>");
-                }
-                buf.append(text);
-                buf.append("</w:p>");
-            } else {
-                buf.append("<w:p/>");
-            }
-            buf.append("</w:tc>");
-
-            buffer.append(makeLine(4, buf.toString(), false));
-        }
-
-        protected void endRow() throws IOException {
-            buffer.append(makeLine(3, "</w:tr>", false));
-        }
-
-        protected void endTable() throws IOException {
-            buffer.append(makeLine(2, "</w:tbl>", false));
-        }
-
-        protected void addTitle(int level, String name) throws IOException {
-            addTitle(level, "", name, "", false);
-        }
-
-        protected void addTitle(int level, String section, String name, String bookmarkSection, boolean bookmark) throws IOException {
-            buffer.append(makeLine(2, "<w:p><w:pPr><w:pStyle w:val=\"Heading" + level + "\"/></w:pPr>", false));
-            if (bookmark) {
-                buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + bookmarkSection + "_" + name + "\"/><w:bookmarkEnd w:id=\"1\"/>", false));
-            }
-            buffer.append(makeLine(3, "<w:r><w:t>" + section + name + "</w:t></w:r>", false));
-            buffer.append(makeLine(2, "</w:p>", false));
-        }
-
-        protected void addNumberedComment(List<String> strings) throws IOException {
-            if ((null != strings) && (0 < strings.size())) {
-                if (1 == strings.size()) {
-                    addComment(strings.get(0));
-                } else {
-                    int instance = 0;
-                    if (null != this.numberWriter) {
-                        instance = this.numberWriter.getNextNumberingInstance();
-                    }
-
-                    addNumberedComment(instance, 0, strings.iterator());
-                }
-            }
-        }
-
-        protected void addNumberedComment(int instance, int level, Iterator<String> iterator) throws IOException {
-            while (iterator.hasNext()) {
-                String text = iterator.next();
-
-                if (null != text) {
-                    if ("<ol>".equalsIgnoreCase(text)) {
-                        addNumberedComment(instance, level + 1, iterator);
-                    } else if ("</ol>".equalsIgnoreCase(text)) {
-                        return;
-                    } else {
-                        addNumberedComment(instance, level, text);
-                    }
-                }
-            }
-        }
-
-        protected void addComment(String text) throws IOException {
-            List<String> strings = splitString(null, text);
-
-            if (0 < strings.size()) {
-
-                for (int i = 0; i < strings.size(); i++) {
-                    String string = strings.get(i);
-
-                    if (null != string) {
-                        if (string.contentEquals("<ul>") || string.contentEquals("</ul>")) {
-                            string = null;
-                        } else {
-                            if (string.contains("<li>")) {
-                                string = string.substring(string.indexOf("<li>") + 4, string.indexOf("</li>"));
-                                string = "<w:p><w:pPr><w:pStyle w:val=\"ListParagraph\"/><w:numPr><w:ilvl w:val=\"0\"/><w:numId w:val=\"1\"/></w:numPr></w:pPr><w:r><w:t>" + escape(string) + "</w:t></w:r></w:p>";
-                            } else {
-                                string = "<w:p><w:r><w:t>" + escape(string) + "</w:t></w:r></w:p>";
-                            }
-                        }
-
-                        strings.set(i, string);
-                    }
-                }
-
-                for (String str : strings) {
-                    if (null != str) {
-                        buffer.append(makeLine(2, str, false));
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void flush() throws IOException {
-        }
-
-        protected StringBuffer getBuffer() {
-            return buffer;
-        }
-
-        protected void appendBuffer(StringBuffer buf) {
-            buffer.append(buf);
-        }
-
-        private void addNumberedComment(int instance, int level, String text) throws IOException {
-            List<String> strings = splitString(null, text);
-            if (0 < strings.size()) {
-                if (1 < strings.size()) {
-                    for (String str : strings) {
-                        addNumberedComment(instance, level, str);
-                    }
-                } else {
-                    String str = strings.get(0);
-                    if ((null != str) && (0 < str.length())) {
-                        buffer.append(makeLine(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\"" + level + "\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr><w:r><w:t>" + escape(str) + "</w:t></w:r></w:p>", false));
-                    }
-                }
-            }
-        }
-
-        private StringBuilder createTypeHyperLink(StringBuilder buf,
-                boolean includeMessageFieldNames, boolean oldStyle, AreaType area,
-                ServiceType service, TypeRef ref) throws IOException {
-            String prefix = "";
-            String typeName;
-            String postfix = "";
-            boolean hyperlink;
-            TypeReference type;
-
-            if (includeMessageFieldNames && ref.isField()) {
-                NamedElementReferenceWithCommentType field = ref.getFieldRef();
-                type = field.getType();
-                hyperlink = area.getName().equalsIgnoreCase(type.getArea());
-
-                if (oldStyle) {
-                    if ((null != field.getName()) && (0 < field.getName().length())) {
-                        prefix = field.getName() + " : (";
-                    } else {
-                        prefix = "(";
-                    }
-
-                    postfix = ")";
-
-                    if (type.isList()) {
-                        prefix += "List<";
-                        postfix = ">" + postfix;
-                    }
-                } else {
-                    prefix = (type.isList()) ? "List<" : "";
-                    postfix = (type.isList()) ? "> " : " "; // Space html character
-                    postfix += field.getName();
-                }
-            } else {
-                type = ref.getTypeRef();
-                hyperlink = area.getName().equalsIgnoreCase(type.getArea());
-
-                if (type.isList()) {
-                    prefix = "List<";
-                    postfix = ">";
-                }
-            }
-
-            typeName = createFQTypeName(area, service, type, false);
-            // No need to append the MAL prefix as those types are very well known
-            if (typeName.startsWith("MAL::")) {
-                typeName = typeName.replace("MAL::", "");
-            }
-
-            return createHyperLink(buf, prefix, typeName, postfix, "DATATYPE_" + typeName, hyperlink);
-        }
-
-        private StringBuilder createHyperLink(StringBuilder buf, String prefix,
-                String typeName, String postfix, String linkTo, boolean hyperlink) throws IOException {
-            buf.append("<w:r><w:t>");
-            buf.append(escape(prefix));
-            buf.append("</w:t></w:r>");
-
-            if (hyperlink) {
-                buf.append("<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> HYPERLINK  \\l \"_");
-                buf.append(linkTo);
-                buf.append("\" </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r>");
-            }
-
-            buf.append("<w:r>");
-            if (hyperlink) {
-                buf.append("<w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr>");
-            }
-            buf.append("<w:t>").append(escape(typeName)).append("</w:t>");
-            buf.append("</w:r>");
-
-            if (hyperlink) {
-                buf.append("<w:r><w:fldChar w:fldCharType=\"end\"/></w:r>");
-            }
-
-            buf.append("<w:r><w:t xml:space=\"preserve\">");
-            buf.append(escape(postfix));
-            buf.append("</w:t></w:r>");
-
-            return buf;
-        }
-
-        private String escape(String t) {
-            if (t != null) {
-                t = t.replaceAll("<li>", "");
-                t = t.replaceAll("</li>", "");
-                t = t.replaceAll("&", "&amp;");
-                t = t.replaceAll("<", "&lt;");
-                t = t.replaceAll(">", "&gt;");
-
-                return t;
-            }
-
-            return "";
-        }
-    }
-
-    private class DocxWriter extends DocxBaseWriter {
-
-        private final String destinationFolder;
-        private final Writer file;
-        private final StringBuffer docxRelBuf;
-        private int imageIndex = 1;
-
-        protected DocxWriter(String folder, String className, String ext,
-                DocxNumberingWriter numberWriter) throws IOException {
-            super(numberWriter);
-
-            destinationFolder = folder;
-            file = StubUtils.createLowLevelWriter(folder, className, ext);
-
-            getLog().info("Creating file " + folder + " " + className + "." + ext);
-
-            file.append(makeLine(0, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>", false));
-            file.append(makeLine(0, "<w:document xmlns:wpc=\"http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas\" xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:wp14=\"http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing\" xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" xmlns:w14=\"http://schemas.microsoft.com/office/word/2010/wordml\" xmlns:wpg=\"http://schemas.microsoft.com/office/word/2010/wordprocessingGroup\" xmlns:wpi=\"http://schemas.microsoft.com/office/word/2010/wordprocessingInk\" xmlns:wne=\"http://schemas.microsoft.com/office/word/2006/wordml\" xmlns:wps=\"http://schemas.microsoft.com/office/word/2010/wordprocessingShape\" mc:Ignorable=\"w14 wp14\">", false));
-            file.append(makeLine(1, "<w:body>", false));
-
-            docxRelBuf = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/><Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering\" Target=\"numbering.xml\"/>");
-        }
-
-        protected void addDiagram(Object o) throws IOException {
-            if (o instanceof Element) {
-                int i = imageIndex++;
-
-                Element e = (Element) o;
-                int[] dims = rasterizeDiagram(e, destinationFolder + "/media", "image" + i);
-
-                docxRelBuf.append("<Relationship Id=\"image");
-                docxRelBuf.append(i);
-                docxRelBuf.append("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/image\" Target=\"media/");
-                docxRelBuf.append("image");
-                docxRelBuf.append(i);
-                docxRelBuf.append(".png\"/>");
-
-                int mx = 5722620 / dims[0];
-                int my = dims[1] * mx;
-                StringBuffer b = new StringBuffer("<w:p><w:r><w:drawing><wp:inline distT=\"0\" distB=\"0\" distL=\"0\" distR=\"0\"><wp:extent cx=\"5722620\" cy=\"");
-                b.append(my);
-                b.append("\"/><wp:effectExtent l=\"0\" t=\"0\" r=\"0\" b=\"0\"/>");
-                b.append("<wp:docPr id=\"");
-                b.append(i);
-                b.append("\" name=\"Picture ");
-                b.append(i);
-                b.append("\"/>");
-                b.append("<wp:cNvGraphicFramePr><a:graphicFrameLocks xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" noChangeAspect=\"1\"/></wp:cNvGraphicFramePr><a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"><a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/picture\"><pic:pic xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\"><pic:nvPicPr>");
-                b.append("<pic:cNvPr id=\"");
-                b.append(i);
-                b.append("\" name=\"Picture ");
-                b.append(i);
-                b.append("\"/>");
-                b.append("<pic:cNvPicPr><a:picLocks noChangeAspect=\"1\" noChangeArrowheads=\"1\"/></pic:cNvPicPr></pic:nvPicPr><pic:blipFill>");
-                b.append("<a:blip r:embed=\"image");
-                b.append(i);
-                b.append("\">");
-                b.append("</a:blip><a:srcRect/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr bwMode=\"auto\"><a:xfrm><a:off x=\"0\" y=\"0\"/><a:ext cx=\"5722620\" cy=\"");
-                b.append(my);
-                b.append("\"/></a:xfrm><a:prstGeom prst=\"rect\"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>");
-
-                appendBuffer(b);
-            }
-        }
-
-        @Override
-        public void flush() throws IOException {
-            file.append(getBuffer());
-            file.append(makeLine(1, "</w:body>", false));
-            file.append(makeLine(0, "</w:document>", false));
-            file.flush();
-
-            docxRelBuf.append("</Relationships>");
-            StubUtils.createResource(destinationFolder + "/_rels", "document.xml", "rels", docxRelBuf.toString());
-        }
     }
 }

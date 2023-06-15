@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 /**
  * Utility methods for types.
  */
-public abstract class TypeUtils {
+public class TypeUtils {
 
     /**
      * Converts a type reference from the XML format to the internal format.
@@ -226,7 +226,7 @@ public abstract class TypeUtils {
         if (null != any) {
             if (any instanceof List) {
                 List li = (List) any;
-                ArrayList<TypeRef> rv = new ArrayList<TypeRef>(li.size());
+                ArrayList<TypeRef> rv = new ArrayList<>(li.size());
                 for (Object e : li) {
                     rv.add(getTypeViaXSDAny(e));
                 }
@@ -352,15 +352,15 @@ public abstract class TypeUtils {
          * @return the encapsulated type reference.
          */
         public TypeReference getTypeRef() {
-            if (null != ref) {
-                if (field) {
-                    return ((NamedElementReferenceWithCommentType) ref).getType();
-                } else {
-                    return (TypeReference) ref;
-                }
+            if (ref == null) {
+                return null;
             }
-
-            return null;
+            
+            if (field) {
+                return ((NamedElementReferenceWithCommentType) ref).getType();
+            } else {
+                return (TypeReference) ref;
+            }
         }
     }
 

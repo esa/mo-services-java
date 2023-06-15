@@ -20,7 +20,7 @@
  */
 package esa.mo.tools.stubgen;
 
-import static esa.mo.tools.stubgen.GeneratorDocument.splitString;
+import esa.mo.tools.stubgen.docx.GeneratorUtils;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
@@ -372,7 +372,7 @@ public class GeneratorSvg extends GeneratorDocument {
     }
 
     private void drawOperationTypes(SvgBaseWriter svgFile, ServiceSummary summary, Integer number, String title, List<TypeInfo> types, String comment, String name, String phase) throws IOException {
-        if (0 < types.size()) {
+        if (!types.isEmpty()) {
             svgFile.addTitle(4, title, null, "", false);
         } else {
             svgFile.addTitle(4, title, null, " None", false);
@@ -385,7 +385,7 @@ public class GeneratorSvg extends GeneratorDocument {
         }
 
         if (includeCollapsedMessages) {
-            if (0 < types.size()) {
+            if (!types.isEmpty()) {
                 SvgBaseWriter svgOutput = getSvgOutputFile(summary, number, name, phase, svgFile);
                 svgOutput.startDrawing();
                 for (TypeInfo e : types) {
@@ -398,7 +398,7 @@ public class GeneratorSvg extends GeneratorDocument {
         }
 
         if (includeExpandedMessages) {
-            if (0 < types.size()) {
+            if (!types.isEmpty()) {
                 SvgBaseWriter svgOutput = getSvgOutputFile(summary, number, name, phase, svgFile);
                 TopContainer cnt = new TopContainer();
                 cnt.addOperationTypes(types);
@@ -934,7 +934,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
         protected void addComment(List<String> cmts) throws IOException {
             if (includeDescriptions) {
-                if (0 < cmts.size()) {
+                if (!cmts.isEmpty()) {
                     for (String str : cmts) {
                         addComment(str);
                     }
@@ -944,8 +944,8 @@ public class GeneratorSvg extends GeneratorDocument {
 
         protected void addComment(String text) throws IOException {
             if (includeDescriptions) {
-                List<String> strings = splitString(null, text);
-                if (0 < strings.size()) {
+                List<String> strings = GeneratorUtils.splitString(null, text);
+                if (!strings.isEmpty()) {
                     for (String str : strings) {
                         if (null != str) {
                             file.append(makeLine(2, "<p>" + escape(str) + "</p>", false));
@@ -957,8 +957,8 @@ public class GeneratorSvg extends GeneratorDocument {
 
         protected void addComment(String text, boolean override) throws IOException {
             if (override) {
-                List<String> strings = splitString(null, text);
-                if (0 < strings.size()) {
+                List<String> strings = GeneratorUtils.splitString(null, text);
+                if (!strings.isEmpty()) {
                     for (String str : strings) {
                         if (null != str) {
                             file.append(makeLine(2, "<p>" + escape(str) + "</p>", false));
