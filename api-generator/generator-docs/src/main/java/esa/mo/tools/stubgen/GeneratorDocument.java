@@ -67,18 +67,15 @@ public abstract class GeneratorDocument extends GeneratorBase {
     public CompositeField createCompositeElementsDetails(TargetWriter file,
             boolean checkType, String fieldName, TypeReference elementType,
             boolean isStructure, boolean canBeNull, String comment) {
-        CompositeField ele;
-        String typeName = elementType.getName();
         if (isAttributeType(elementType)) {
             AttributeTypeDetails details = getAttributeDetails(elementType);
-            ele = new CompositeField(details.getTargetType(), elementType,
+            return new CompositeField(details.getTargetType(), elementType,
                     fieldName, elementType.isList(), canBeNull, false,
                     StdStrings.MAL, "", "", false, "", comment);
         } else {
-            ele = new CompositeField(typeName, elementType, fieldName,
+            return new CompositeField(elementType.getName(), elementType, fieldName,
                     elementType.isList(), canBeNull, false, elementType.getArea(),
                     "", elementType.getService(), false, "", comment);
         }
-        return ele;
     }
 }

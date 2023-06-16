@@ -121,7 +121,7 @@ public class DocxWriter extends DocxBaseWriter {
      * @exception IOException if error.
      */
     protected int[] rasterizeDiagram(Element svg, String folder, String name) throws IOException, TranscoderException {
-        int[] rv = new int[2];
+        int[] dimensions = new int[2];
         // Create a Transcoder
         PNGTranscoder t = new PNGTranscoder();
         // Create a new document.
@@ -129,8 +129,8 @@ public class DocxWriter extends DocxBaseWriter {
         String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
         Document document = impl.createDocument(svgNS, "svg", null);
         Element root = document.getDocumentElement();
-        rv[0] = Integer.valueOf(svg.getAttribute("width"));
-        rv[1] = Integer.valueOf(svg.getAttribute("height"));
+        dimensions[0] = Integer.valueOf(svg.getAttribute("width"));
+        dimensions[1] = Integer.valueOf(svg.getAttribute("height"));
         root.setAttributeNS(null, "width", svg.getAttribute("width"));
         root.setAttributeNS(null, "height", svg.getAttribute("height"));
         // Create a duplicate node and transfer ownership of the
@@ -149,7 +149,7 @@ public class DocxWriter extends DocxBaseWriter {
         ostream.flush();
         ostream.close();
 
-        return rv;
+        return dimensions;
     }
 
 }

@@ -357,7 +357,9 @@ public class DocxBaseWriter extends AbstractWriter {
             } else {
                 String str = strings.get(0);
                 if (str != null && str.length() > 0) {
-                    buffer.append(makeLine(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\"" + level + "\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr><w:r><w:t>" + escape(str) + "</w:t></w:r></w:p>", false));
+                    buffer.append(makeLine(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\""
+                            + level + "\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr><w:r><w:t>"
+                            + escape(str) + "</w:t></w:r></w:p>", false));
                 }
             }
         }

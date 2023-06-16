@@ -45,15 +45,18 @@ public class GeneratorUtils {
 
     public static String createFQTypeName(AreaType area, ServiceType service, TypeReference type, boolean isList) {
         String servicename = (null == service) ? "" : service.getName();
-        return createFQTypeName(area.getName(), servicename, type.getArea(), type.getService(), type.getName(), isList);
+        return createFQTypeName(area.getName(), servicename, type.getArea(),
+                type.getService(), type.getName(), isList);
     }
 
     public static String createFQTypeName(AreaType area, ServiceType service, ObjectReference type) {
         String servicename = (null == service) ? "" : service.getName();
-        return createFQTypeName(area.getName(), servicename, type.getArea(), type.getService(), String.valueOf(type.getNumber()), false);
+        return createFQTypeName(area.getName(), servicename, type.getArea(),
+                type.getService(), String.valueOf(type.getNumber()), false);
     }
 
-    public static String createFQTypeName(String myArea, String myService, String typeArea, String typeService, String typeName, boolean isList) {
+    public static String createFQTypeName(String myArea, String myService,
+            String typeArea, String typeService, String typeName, boolean isList) {
         StringBuilder buf = new StringBuilder();
 
         if (!myArea.equalsIgnoreCase(typeArea)) {
