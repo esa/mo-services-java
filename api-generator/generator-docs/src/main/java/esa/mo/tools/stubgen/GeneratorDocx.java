@@ -653,9 +653,9 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.addCell(0, OPERATION_OVERVIEW_TABLE_WIDTHS, "Subscription Keys", HEADER_COLOUR);
 
         if (types == null || types.isEmpty()) {
-            docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, "Empty", FIXED_COLOUR, 2);
+            docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, "Empty", FIXED_COLOUR, 3);
         } else {
-            docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, includeMessageFieldNames, oldStyle, area, service, types, null, 2);
+            docxFile.addCell(1, OPERATION_OVERVIEW_TABLE_WIDTHS, includeMessageFieldNames, oldStyle, area, service, types, null, 3);
         }
 
         docxFile.endRow();
