@@ -20,6 +20,7 @@
  */
 package esa.mo.tools.stubgen.docx;
 
+import esa.mo.tools.stubgen.GeneratorBase;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.AbstractWriter;
 import esa.mo.xsd.AreaType;
@@ -417,14 +418,22 @@ public class DocxBaseWriter extends AbstractWriter {
 
     private String createHyperLink(String prefix, String typeName, String postfix,
             String linkTo, boolean withHyperlink) throws IOException {
+        boolean isObjectRef = GeneratorBase.isObjectRef(typeName);
         StringBuilder buf = new StringBuilder();
         buf.append("<w:r><w:t>");
         buf.append(escape(prefix));
+
+        if (isObjectRef) {
+            buf.append(escape("ObjectRef<"));
+        }
+        String temp = linkTo.replace("ObjectRef<", "");
+        String objectRefRemoved = temp.replace(">", "");
+
         buf.append("</w:t></w:r>");
 
         if (withHyperlink) {
             buf.append("<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> HYPERLINK  \\l \"_");
-            buf.append(linkTo);
+            buf.append(isObjectRef ? escape(objectRefRemoved) : escape(linkTo));
             buf.append("\" </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r>");
         }
 
@@ -432,6 +441,10 @@ public class DocxBaseWriter extends AbstractWriter {
         if (withHyperlink) {
             buf.append("<w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr>");
         }
+        if (isObjectRef) {
+            typeName = GeneratorBase.extractTypeFromObjectRef(typeName);
+        }
+
         buf.append("<w:t>").append(escape(typeName)).append("</w:t>");
         buf.append("</w:r>");
 
@@ -440,6 +453,9 @@ public class DocxBaseWriter extends AbstractWriter {
         }
 
         buf.append("<w:r><w:t xml:space=\"preserve\">");
+        if (isObjectRef) {
+            buf.append(escape(">"));
+        }
         buf.append(escape(postfix));
         buf.append("</w:t></w:r>");
         return buf.toString();

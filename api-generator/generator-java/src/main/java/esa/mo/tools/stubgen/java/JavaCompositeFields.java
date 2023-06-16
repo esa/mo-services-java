@@ -51,6 +51,7 @@ public class JavaCompositeFields {
 
         if (elementType.isList()) {
             String fqTypeName;
+            
             if (generator.isAttributeNativeType(elementType)) {
                 fqTypeName = generator.createElementType(file, StdStrings.MAL, null, typeName + "List");
             } else {

@@ -114,13 +114,12 @@ public class AreaTabbedPane extends JTabbedPane {
         panelMOSDL.add(buttonB, BorderLayout.NORTH);
         panelMOSDL.add(textEditorMOSDL, BorderLayout.CENTER);
 
-        JButton generateDocs = createButtonDocs(textEditorXML, panelDocs, true);
+        JButton generateDocs = createButtonDocs(textEditorXML, panelDocs);
         panelDocs.add(generateDocs);
 
         this.add("XML View", panelXML);
         this.add("MOSDL View", panelMOSDL);
         this.add("Generate Documents", panelDocs);
-
     }
 
     private JButton createButtonA(RTextScrollPane textEditorFrom, RTextScrollPane textEditorTo) {
@@ -132,11 +131,10 @@ public class AreaTabbedPane extends JTabbedPane {
     private JButton createButtonB(RTextScrollPane textEditorFrom, RTextScrollPane textEditorTo) {
         JButton buttonB = new JButton("Convert to XML");
         buttonB.addActionListener(new ConvertMOSDLToXML(textEditorFrom, textEditorTo));
-
         return buttonB;
     }
 
-    private JButton createButtonDocs(RTextScrollPane textEditorFrom, JPanel panel, boolean all) {
+    private JButton createButtonDocs(RTextScrollPane textEditorFrom, JPanel panel) {
         final JButton buttonB = new JButton("Generate Word document");
         buttonB.addActionListener(new ActionListener() {
             @Override
@@ -168,7 +166,8 @@ public class AreaTabbedPane extends JTabbedPane {
                     FileSupport.writeFile(tempFilePath, text);
 
                     File xmlRefDirectory = new File(sourFolder);
-                    List<Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification>> specs = XmlHelper.loadSpecifications(xmlRefDirectory);
+                    List<Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification>> specs;
+                    specs = XmlHelper.loadSpecifications(xmlRefDirectory);
 
                     // now generator from each specification
                     for (Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification> spec : specs) {
@@ -201,19 +200,20 @@ public class AreaTabbedPane extends JTabbedPane {
 
                     timestamp = System.currentTimeMillis() - timestamp;
                     Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.INFO,
-                            "Success! Generated the Book in " + timestamp + " miliseconds!", text);
+                            "Success! Generated the Book in " + timestamp + " miliseconds! "
+                            + "Location:\n >> " + destFolder, text);
                     buttonB.revalidate();
                     buttonB.repaint();
                 } catch (JAXBException ex) {
                     panel.remove(LABEL_GENERATING);
                     panel.add(LABEL_ERROR_GENERATION);
                     Logger.getLogger(AreaTabbedPane.class.getName()).log(
-                            Level.SEVERE, "Something went wrong...", ex);
+                            Level.SEVERE, "(1) Something went wrong...", ex);
                 } catch (Exception ex) {
                     panel.remove(LABEL_GENERATING);
                     panel.add(LABEL_ERROR_GENERATION);
                     Logger.getLogger(AreaTabbedPane.class.getName()).log(
-                            Level.SEVERE, "Something went wrong...", ex);
+                            Level.SEVERE, "(2) Something went wrong...", ex);
                 }
             }
         });

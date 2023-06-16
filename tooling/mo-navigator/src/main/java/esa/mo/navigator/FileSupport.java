@@ -78,7 +78,7 @@ public class FileSupport {
         File file = new File(filepath);
         file.createNewFile();
         FileOutputStream fos = new FileOutputStream(filepath);
-        fos.write(content.getBytes());
+        fos.write(content.getBytes("UTF-8"));
         fos.flush();
         fos.close();
     }

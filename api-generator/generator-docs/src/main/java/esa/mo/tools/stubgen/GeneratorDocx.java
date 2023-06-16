@@ -553,7 +553,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 docxFile.addFigureCaption(service.getName() + " Service " + str);
             }
 
-            if (null != features.getArchiveUsage()) {
+            if (features.getArchiveUsage() != null) {
                 DocxBaseWriter archiveUsage = new DocxBaseWriter(docxFile.getNumberWriter());
                 archiveUsage.addTitle(3, "COM Archive Service usage");
                 archiveUsage.addNumberedComment(GeneratorUtils.splitString(null, features.getArchiveUsage().getComment()));
@@ -561,7 +561,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 docxFile.appendBuffer(archiveUsage.getBuffer());
             }
 
-            if (null != features.getActivityUsage()) {
+            if (features.getActivityUsage() != null) {
                 DocxBaseWriter activityUsage = new DocxBaseWriter(docxFile.getNumberWriter());
                 activityUsage.addTitle(3, "COM Activity Service usage");
                 activityUsage.addNumberedComment(GeneratorUtils.splitString(null, features.getActivityUsage().getComment()));
