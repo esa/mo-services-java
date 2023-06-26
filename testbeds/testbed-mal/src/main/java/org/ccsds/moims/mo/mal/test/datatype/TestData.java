@@ -112,19 +112,19 @@ public abstract class TestData {
     public static Garage testGarage;
     // TODO find the type Identifier from the Element
     public static final ObjectRef<Lamborghini> testCourtesyCar =
-        new ObjectRef<>(testDomainAsString, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+        new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
             new Identifier("Lamborghini"), new Identifier("car0"), new UInteger(1));
     public static final ObjectRef<Lamborghini> testCarL1 =
-        new ObjectRef<>(testDomainAsString, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+        new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
             new Identifier("Lamborghini"), new Identifier("carL1"), new UInteger(1));
     public static final ObjectRef<Lamborghini> testCarL2 =
-        new ObjectRef<>(testDomainAsString, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+        new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
             new Identifier("Lamborghini"), new Identifier("carL2"), new UInteger(1));
     public static final ObjectRef<Porsche> testCarP1 =
-        new ObjectRef<>(testDomainAsString, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+        new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
             new Identifier("Porsche"), new Identifier("carP1"), new UInteger(1));
     public static final ObjectRef<Porsche> testCarP2 =
-        new ObjectRef<>(testDomainAsString, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+        new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
             new Identifier("Porsche"), new Identifier("carP2"), new UInteger(1));
     public static final ObjectRefList testCars = new ObjectRefList();
     public static final ObjectRefList testPorscheCars = new ObjectRefList();

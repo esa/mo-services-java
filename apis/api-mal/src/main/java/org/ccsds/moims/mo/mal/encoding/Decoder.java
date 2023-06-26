@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -141,7 +142,10 @@ public abstract class Decoder implements MALDecoder {
 
     @Override
     public ObjectRef decodeObjectRef() throws MALException {
-        return new ObjectRef(sourceBuffer.readString(),
+        IdentifierList decodedDomain = new IdentifierList();
+        decodedDomain.decode(this);
+
+        return new ObjectRef(decodedDomain,
                 new Identifier(sourceBuffer.readString()),
                 new Identifier(sourceBuffer.readString()),
                 new Identifier(sourceBuffer.readString()),

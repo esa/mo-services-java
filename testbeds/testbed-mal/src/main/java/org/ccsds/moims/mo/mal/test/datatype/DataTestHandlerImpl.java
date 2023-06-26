@@ -377,16 +377,8 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
 
         autoList.put(autoId0, auto);
         autoList.put(auto.getObjectIdentity(), auto);
-        // the domain is a List<Identifier> in ObjectIdentity, but it is a String in ObjectRef
-        String domain = auto.getObjectIdentity().getDomainId()
-                .stream().map(id -> String.valueOf(id))
-                .collect(Collectors.joining("."));
-        // use an untyped ObjectRef, unsure this code is correct
-        return new ObjectRef(domain,
-                auto.getObjectIdentity().getAreaId(),
-                auto.getObjectIdentity().getTypeId(),
-                auto.getObjectIdentity().getKeyId(),
-                auto.getObjectIdentity().getVersionId());
+
+        return auto.getObjectRef();
     }
 
     public ObjectRef<Auto> createObjectFromFields(Identifier autoType, Identifier key, Boolean update, String engine, String chassis, StringList windows, MALInteraction interaction) throws MALInteractionException, MALException {
@@ -421,9 +413,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     }
 
     public void deleteObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALInteractionException, MALException {
-        IdentifierList testDomain = new IdentifierList(Arrays.stream(autoRef.getDomain().split("."))
-                .map(s -> new Identifier(s))
-                .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
+        IdentifierList testDomain = autoRef.getDomain();
         ObjectIdentity autoId = new ObjectIdentity(testDomain,
                 autoRef.getArea(),
                 autoRef.getType(),
@@ -446,9 +436,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
      */
     @Override
     public Auto getObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALInteractionException, MALException {
-        IdentifierList testDomain = new IdentifierList(Arrays.stream(autoRef.getDomain().split("\\."))
-                .map(s -> new Identifier(s))
-                .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
+        IdentifierList testDomain = autoRef.getDomain();
         ObjectIdentity autoId = new ObjectIdentity(testDomain,
                 autoRef.getArea(),
                 autoRef.getType(),

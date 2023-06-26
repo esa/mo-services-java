@@ -693,13 +693,7 @@ public class DataTypeScenario extends LoggingBase {
     }
 
     public static final ObjectIdentity getObjectIdentityFromObjectRef(ObjectRef objRef) {
-        IdentifierList domainId = null;
-        if (objRef.getDomain() != null) {
-            domainId = new IdentifierList(Arrays.stream(objRef.getDomain().split("\\."))
-                    .map(s -> new Identifier(s))
-                    .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
-        }
-        return new ObjectIdentity(domainId,
+        return new ObjectIdentity(objRef.getDomain(),
                 objRef.getArea(),
                 objRef.getType(),
                 objRef.getKey(),
@@ -707,13 +701,7 @@ public class DataTypeScenario extends LoggingBase {
     }
 
     public static final ObjectRef getObjectRefFromObjectIdentity(ObjectIdentity objId) {
-        String domain = null;
-        if (objId.getDomainId() != null) {
-            domain = objId.getDomainId()
-                    .stream().map(id -> String.valueOf(id))
-                    .collect(Collectors.joining("."));
-        }
-        return new ObjectRef(domain,
+        return new ObjectRef(objId.getDomainId(),
                 objId.getAreaId(),
                 objId.getTypeId(),
                 objId.getKeyId(),

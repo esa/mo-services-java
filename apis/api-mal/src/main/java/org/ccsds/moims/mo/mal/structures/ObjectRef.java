@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class ObjectRef<T extends Element> implements Attribute {
 
-    private final String domain;
+    private final IdentifierList domain;
     private final Identifier area;
     private final Identifier type;
     private final Identifier key;
@@ -41,7 +41,7 @@ public class ObjectRef<T extends Element> implements Attribute {
      * Default constructor.
      */
     public ObjectRef() {
-        this.domain = "";
+        this.domain = new IdentifierList();
         this.area = new Identifier();
         this.type = new Identifier();
         this.key = new Identifier();
@@ -57,8 +57,8 @@ public class ObjectRef<T extends Element> implements Attribute {
      * @param key The key.
      * @param objectVersion The object version.
      */
-    public ObjectRef(final String domain, final Identifier area, final Identifier type,
-            final Identifier key, final UInteger objectVersion) {
+    public ObjectRef(final IdentifierList domain, final Identifier area,
+            final Identifier type, final Identifier key, final UInteger objectVersion) {
         this.domain = domain;
         this.area = area;
         this.type = type;
@@ -76,7 +76,7 @@ public class ObjectRef<T extends Element> implements Attribute {
      *
      * @return the domain.
      */
-    public String getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 

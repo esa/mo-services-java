@@ -53,6 +53,20 @@ public abstract class MOObject implements Composite {
     }
 
     /**
+     * Returns a reference to this MO Object.
+     *
+     * @return The Object reference to this MO Object.
+     */
+    public ObjectRef getObjectRef() {
+        return new ObjectRef(objectIdentity.getDomainId(),
+                objectIdentity.getAreaId(),
+                objectIdentity.getTypeId(),
+                objectIdentity.getKeyId(),
+                objectIdentity.getVersionId()
+        );
+    }
+
+    /**
      * Encodes the value of this object using the provided MALEncoder.
      *
      * @param encoder encoder - the encoder to use for encoding.
