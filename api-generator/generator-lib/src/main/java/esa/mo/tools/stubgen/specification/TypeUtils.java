@@ -55,47 +55,48 @@ public class TypeUtils {
      */
     public static TypeInfo convertTypeReference(TypeInformation tiSource,
             TypeReference tr, String fieldName, String fieldComment) {
-        if (tr != null) {
-            String argTypeStr = tiSource.createElementType(null, tr, true);
-            String argVersionStr = tiSource.getAreaPackage(tr.getArea())
-                    + tr.getArea().toLowerCase() + "." + tr.getArea()
-                    + "Helper." + tr.getArea().toUpperCase() + "_AREA_VERSION";
+        if (tr == null) {
+            return null;
+        }
 
-            if (tr.isList()) {
-                if (StdStrings.XML.equals(tr.getArea())) {
-                    // ToDo proper support for lists of XML types
-                    return new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
-                            argTypeStr, tiSource.isAttributeNativeType(tr),
-                            getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
-                } else {
-                    if (tiSource.isAttributeNativeType(tr)) {
-                        String fqName = tiSource.getAreaPackage(StdStrings.MAL)
-                                + "mal.structures." + tr.getName() + "List";
-                        return new TypeInfo(tr, fieldName, fieldComment,
-                                tr.getName() + "List", fqName, false,
-                                fqName + ".SHORT_FORM", argVersionStr);
-                    } else {
-                        if (GeneratorBase.isObjectRef(argTypeStr)) {
-                            argTypeStr = argTypeStr.substring(0, argTypeStr.length() - 1); // Strip the last '>'
-                            return new TypeInfo(tr, fieldName, fieldComment,
-                                    tr.getName() + "List", argTypeStr + "List>", false,
-                                    getTypeShortForm(tiSource, tr, argTypeStr + "List>"),
-                                    argVersionStr);
-                        }
+        String argTypeStr = tiSource.createElementType(null, tr, true);
+        String argVersionStr = tiSource.getAreaPackage(tr.getArea())
+                + tr.getArea().toLowerCase() + "." + tr.getArea()
+                + "Helper." + tr.getArea().toUpperCase() + "_AREA_VERSION";
 
-                        return new TypeInfo(tr, fieldName, fieldComment,
-                                tr.getName() + "List", argTypeStr + "List", false,
-                                getTypeShortForm(tiSource, tr, argTypeStr + "List"),
-                                argVersionStr);
-                    }
-                }
+        if (!tr.isList()) {
+            return new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
+                    argTypeStr, tiSource.isAttributeNativeType(tr),
+                    getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
+        }
+
+        if (StdStrings.XML.equals(tr.getArea())) {
+            // ToDo proper support for lists of XML types
+            return new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
+                    argTypeStr, tiSource.isAttributeNativeType(tr),
+                    getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
+        } else {
+            if (tiSource.isAttributeNativeType(tr)) {
+                String fqName = tiSource.getAreaPackage(StdStrings.MAL)
+                        + "mal.structures." + tr.getName() + "List";
+                return new TypeInfo(tr, fieldName, fieldComment,
+                        tr.getName() + "List", fqName, false,
+                        fqName + ".SHORT_FORM", argVersionStr);
             } else {
-                return new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
-                        argTypeStr, tiSource.isAttributeNativeType(tr),
-                        getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
+                if (GeneratorBase.isObjectRef(argTypeStr)) {
+                    argTypeStr = argTypeStr.substring(0, argTypeStr.length() - 1); // Strip the last '>'
+                    return new TypeInfo(tr, fieldName, fieldComment,
+                            tr.getName() + "List", argTypeStr + "List>", false,
+                            getTypeShortForm(tiSource, tr, argTypeStr + "List>"),
+                            argVersionStr);
+                }
+
+                return new TypeInfo(tr, fieldName, fieldComment,
+                        tr.getName() + "List", argTypeStr + "List", false,
+                        getTypeShortForm(tiSource, tr, argTypeStr + "List"),
+                        argVersionStr);
             }
         }
-        return null;
     }
 
     /**
@@ -106,18 +107,18 @@ public class TypeUtils {
      * @return the converted type information.
      */
     public static TypeInfo convertTypeReference(TypeInformation tiSource, TypeRef ttr) {
-        if (null != ttr) {
-            if (!ttr.isField()) {
-                return convertTypeReference(tiSource, ttr.getTypeRef(), null, null);
-            }
-
-            String fieldName = ttr.getFieldRef().getName();
-            String fieldComment = ttr.getFieldRef().getComment();
-            TypeReference tr = ttr.getFieldRef().getType();
-            return convertTypeReference(tiSource, tr, fieldName, fieldComment);
+        if (ttr == null) {
+            return null;
         }
 
-        return null;
+        if (!ttr.isField()) {
+            return convertTypeReference(tiSource, ttr.getTypeRef(), null, null);
+        }
+
+        String fieldName = ttr.getFieldRef().getName();
+        String fieldComment = ttr.getFieldRef().getComment();
+        TypeReference tr = ttr.getFieldRef().getType();
+        return convertTypeReference(tiSource, tr, fieldName, fieldComment);
     }
 
     /**
@@ -129,14 +130,15 @@ public class TypeUtils {
      * @return the converted type information.
      */
     public static List<TypeInfo> convertTypeReferences(TypeInformation tiSource, List<TypeRef> trList) {
-        if (null != trList) {
-            List<TypeInfo> tiList = new ArrayList<>(trList.size());
-            for (TypeRef tr : trList) {
-                tiList.add(convertTypeReference(tiSource, tr));
-            }
-            return tiList;
+        if (trList == null) {
+            return null;
         }
-        return null;
+
+        List<TypeInfo> tiList = new ArrayList<>(trList.size());
+        for (TypeRef tr : trList) {
+            tiList.add(convertTypeReference(tiSource, tr));
+        }
+        return tiList;
     }
 
     /**
@@ -166,16 +168,17 @@ public class TypeUtils {
      * @return the short name.
      */
     public static String shortTypeName(String nameSeparator, String longName) {
-        if (null != longName) {
-            if (longName.contains(nameSeparator)) {
-                longName = longName.substring(longName.lastIndexOf(nameSeparator) + nameSeparator.length());
-            }
-            if (longName.contains("*")) {
-                longName = longName.substring(0, longName.length() - 1);
-            }
-            return longName;
+        if (longName == null) {
+            return null;
         }
-        return null;
+
+        if (longName.contains(nameSeparator)) {
+            longName = longName.substring(longName.lastIndexOf(nameSeparator) + nameSeparator.length());
+        }
+        if (longName.contains("*")) {
+            longName = longName.substring(0, longName.length() - 1);
+        }
+        return longName;
     }
 
     /**
@@ -223,21 +226,21 @@ public class TypeUtils {
      * @return the convert type list.
      */
     public static List<TypeRef> getTypeListViaXSDAny(Object any) {
-        if (null != any) {
-            if (any instanceof List) {
-                List li = (List) any;
-                ArrayList<TypeRef> rv = new ArrayList<>(li.size());
-                for (Object e : li) {
-                    rv.add(getTypeViaXSDAny(e));
-                }
-                return rv;
-            } else {
-                throw new IllegalArgumentException(
-                        "Unexpected type in message body of : " + any.getClass().getSimpleName());
-            }
+        if (any == null) {
+            return null;
         }
 
-        return null;
+        if (any instanceof List) {
+            List li = (List) any;
+            ArrayList<TypeRef> rv = new ArrayList<>(li.size());
+            for (Object e : li) {
+                rv.add(getTypeViaXSDAny(e));
+            }
+            return rv;
+        } else {
+            throw new IllegalArgumentException(
+                    "Unexpected type in message body of : " + any.getClass().getSimpleName());
+        }
     }
 
     /**
@@ -355,15 +358,12 @@ public class TypeUtils {
             if (ref == null) {
                 return null;
             }
-            
+
             if (field) {
                 return ((NamedElementReferenceWithCommentType) ref).getType();
             } else {
                 return (TypeReference) ref;
             }
         }
-    }
-
-    private TypeUtils() {
     }
 }

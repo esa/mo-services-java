@@ -216,7 +216,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     }
                 }
 
-                // process service level types
+                // Process service level types
                 for (ServiceType service : area.getService()) {
                     DataTypeList dataTypes = service.getDataTypes();
                     // if service level types exist
