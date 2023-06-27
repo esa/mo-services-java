@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALStandardError;
@@ -43,11 +42,9 @@ import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
 import org.ccsds.moims.mo.malprototype.structures.Auto;
-import org.ccsds.moims.mo.malprototype.structures.AutoList;
 import org.ccsds.moims.mo.malprototype.structures.Garage;
 import org.ccsds.moims.mo.malprototype.structures.Lamborghini;
 import org.ccsds.moims.mo.malprototype.structures.Porsche;
-import org.ccsds.moims.mo.malprototype.structures.PorscheList;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -61,7 +58,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     public void setTestDataOffset(Integer _Integer, MALInteraction interaction) throws MALException {
         int newIndex = 0;
 
-        if ((null != _Integer) && (_Integer.intValue() > 0)) {
+        if (_Integer != null && _Integer > 0) {
             newIndex = _Integer.intValue();
         }
 
@@ -413,8 +410,8 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     }
 
     public void deleteObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALInteractionException, MALException {
-        IdentifierList testDomain = autoRef.getDomain();
-        ObjectIdentity autoId = new ObjectIdentity(testDomain,
+        ObjectIdentity autoId = new ObjectIdentity(
+                autoRef.getDomain(),
                 autoRef.getArea(),
                 autoRef.getType(),
                 autoRef.getKey(),
@@ -436,14 +433,13 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
      */
     @Override
     public Auto getObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALInteractionException, MALException {
-        IdentifierList testDomain = autoRef.getDomain();
-        ObjectIdentity autoId = new ObjectIdentity(testDomain,
+        ObjectIdentity autoId = new ObjectIdentity(autoRef.getDomain(),
                 autoRef.getArea(),
                 autoRef.getType(),
                 autoRef.getKey(),
                 autoRef.getObjectVersion());
-        Auto auto = autoList.get(autoId);
-        return auto;
+
+        return autoList.get(autoId);
     }
 
     @Override
@@ -467,11 +463,10 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     @Override
     public TestPolymorphicObjectRefTypesResponse testPolymorphicObjectRefTypes(
             Garage _Garage0,
-            ObjectRef<PorscheList> _Porsche_1,
-            ObjectRef<AutoList> _Auto_2,
-            ObjectRef<ElementList> _Element_3,
+            ObjectRefList _Porsche_1,
+            ObjectRefList _Auto_2,
+            ObjectRefList _Element_3,
             MALInteraction interaction) throws MALInteractionException, MALException {
-        // return new TestPolymorphicObjectRefTypesResponse(_Garage0, _Porsche_1, _Auto_2, _Element_3);
         return new TestPolymorphicObjectRefTypesResponse(_Garage0, _Porsche_1, _Auto_2, _Element_3);
     }
 }

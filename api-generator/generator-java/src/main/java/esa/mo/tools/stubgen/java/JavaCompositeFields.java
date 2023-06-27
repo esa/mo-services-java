@@ -56,9 +56,10 @@ public class JavaCompositeFields {
                 fqTypeName = generator.createElementType(file, StdStrings.MAL, null, typeName + "List");
             } else {
                 if (isObjectRef) {
-                    String temp = generator.createElementType(file, elementType, true);
-                    String lastCharRemoved = temp.substring(0, temp.length() - 1); // Strip the last '>'
-                    fqTypeName = lastCharRemoved + "List>";
+                    //String temp = generator.createElementType(file, elementType, true);
+                    // String lastCharRemoved = temp.substring(0, temp.length() - 1); // Strip the last '>'
+                    // fqTypeName = lastCharRemoved + "List>";
+                    fqTypeName = "org.ccsds.moims.mo.mal.structures.ObjectRefList";
                 } else {
                     fqTypeName = generator.createElementType(file, elementType, true) + "List";
                 }

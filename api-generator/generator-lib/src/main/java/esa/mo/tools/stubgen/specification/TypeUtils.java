@@ -75,28 +75,27 @@ public class TypeUtils {
             return new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
                     argTypeStr, tiSource.isAttributeNativeType(tr),
                     getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
-        } else {
-            if (tiSource.isAttributeNativeType(tr)) {
-                String fqName = tiSource.getAreaPackage(StdStrings.MAL)
-                        + "mal.structures." + tr.getName() + "List";
-                return new TypeInfo(tr, fieldName, fieldComment,
-                        tr.getName() + "List", fqName, false,
-                        fqName + ".SHORT_FORM", argVersionStr);
-            } else {
-                if (GeneratorBase.isObjectRef(argTypeStr)) {
-                    argTypeStr = argTypeStr.substring(0, argTypeStr.length() - 1); // Strip the last '>'
-                    return new TypeInfo(tr, fieldName, fieldComment,
-                            tr.getName() + "List", argTypeStr + "List>", false,
-                            getTypeShortForm(tiSource, tr, argTypeStr + "List>"),
-                            argVersionStr);
-                }
-
-                return new TypeInfo(tr, fieldName, fieldComment,
-                        tr.getName() + "List", argTypeStr + "List", false,
-                        getTypeShortForm(tiSource, tr, argTypeStr + "List"),
-                        argVersionStr);
-            }
         }
+
+        if (tiSource.isAttributeNativeType(tr)) {
+            String fqName = tiSource.getAreaPackage(StdStrings.MAL)
+                    + "mal.structures." + tr.getName() + "List";
+            return new TypeInfo(tr, fieldName, fieldComment,
+                    tr.getName() + "List", fqName, false,
+                    fqName + ".SHORT_FORM", argVersionStr);
+        }
+
+        if (GeneratorBase.isObjectRef(argTypeStr)) {
+            return new TypeInfo(tr, fieldName, fieldComment, tr.getName() + "List",
+                    "org.ccsds.moims.mo.mal.structures.ObjectRefList", false,
+                    getTypeShortForm(tiSource, tr, "ObjectRefList"),
+                    argVersionStr);
+        }
+
+        return new TypeInfo(tr, fieldName, fieldComment,
+                tr.getName() + "List", argTypeStr + "List", false,
+                getTypeShortForm(tiSource, tr, argTypeStr + "List"),
+                argVersionStr);
     }
 
     /**
@@ -191,32 +190,31 @@ public class TypeUtils {
      */
     public static String getTypeShortForm(TypeInformation tiSource,
             TypeReference type, String targetType) {
-        if (null != type) {
-            if (StdStrings.XML.equals(type.getArea())) {
-                return "\"" + type.getService() + ":" + type.getName() + "\"";
-            } else {
-                if (!type.isList() && tiSource.isAttributeType(type)) {
-                    return tiSource.convertToNamespace(
-                            tiSource.getAreaPackage(StdStrings.MAL)
-                            + tiSource.convertToNamespace("mal.structures.Attribute.")
-                            + type.getName().toUpperCase() + "_SHORT_FORM");
-                }
-
-                if (type.getName().contains("ObjectRef")) {
-                    return tiSource.convertToNamespace(
-                            tiSource.getAreaPackage(StdStrings.MAL)
-                            + "mal.structures.ObjectRef.OBJECTREF_SHORT_FORM");
-                }
-
-                if (tiSource.convertToNamespace("org.ccsds.moims.mo.mal.structures.Element").equals(targetType)) {
-                    return null;
-                }
-
-                return tiSource.convertToNamespace(targetType + ".SHORT_FORM");
-            }
+        if (type == null) {
+            return null;
         }
 
-        return null;
+        if (StdStrings.XML.equals(type.getArea())) {
+            return "\"" + type.getService() + ":" + type.getName() + "\"";
+        }
+
+        if (!type.isList() && tiSource.isAttributeType(type)) {
+            return tiSource.convertToNamespace(
+                    tiSource.getAreaPackage(StdStrings.MAL)
+                    + tiSource.convertToNamespace("mal.structures.Attribute.")
+                    + type.getName().toUpperCase() + "_SHORT_FORM");
+        }
+
+        if (type.getName().contains("ObjectRef")) {
+            return tiSource.convertToNamespace(tiSource.getAreaPackage(StdStrings.MAL)
+                    + "mal.structures.ObjectRef.OBJECTREF_SHORT_FORM");
+        }
+
+        if (tiSource.convertToNamespace("org.ccsds.moims.mo.mal.structures.Element").equals(targetType)) {
+            return null;
+        }
+
+        return tiSource.convertToNamespace(targetType + ".SHORT_FORM");
     }
 
     /**
@@ -250,56 +248,56 @@ public class TypeUtils {
      * @return the converted type.
      */
     public static TypeRef getTypeViaXSDAny(Object any) {
-        if (null != any) {
-            if (any instanceof JAXBElement) {
-                JAXBElement re = (JAXBElement) any;
-                if (re.getValue() instanceof TypeReference) {
-                    return new TypeRef((TypeReference) re.getValue());
-                } else if (re.getValue() instanceof NamedElementReferenceWithCommentType) {
-                    return new TypeRef((NamedElementReferenceWithCommentType) re.getValue());
-                } else {
-                    throw new IllegalArgumentException(
-                            "Unexpected type in message body of : " + re.getValue().getClass().getSimpleName());
-                }
-            } else if (any instanceof Element) {
-                Element re = (Element) any;
-                String stype = re.getAttribute("type");
-
-                if (!"".equals(stype)) {
-                    String uri = stype.substring(0, stype.indexOf(':'));
-                    String type = stype.substring(uri.length() + 1);
-                    boolean isList = false;
-                    String smaxOccurrs = re.getAttribute("maxOccurs");
-                    if (!"".equals(smaxOccurrs)) {
-                        int maxOccurrs = Integer.parseInt(smaxOccurrs);
-                        if (1 < maxOccurrs) {
-                            isList = true;
-                        }
-                    }
-                    TypeReference newTr = new TypeReference();
-                    newTr.setArea(StdStrings.XML);
-                    newTr.setService(re.lookupNamespaceURI(uri));
-                    newTr.setName(type);
-                    newTr.setList(isList);
-
-                    NamedElementReferenceWithCommentType newField
-                            = new NamedElementReferenceWithCommentType();
-                    newField.setName(re.getAttribute("name"));
-                    newField.setType(newTr);
-                    newField.setCanBeNull(true);
-
-                    return new TypeRef(newField);
-                } else {
-                    throw new IllegalArgumentException(
-                            "Unexpected XML type in message body of : " + re);
-                }
-            } else {
-                throw new IllegalArgumentException(
-                        "Unexpected type in message body of : " + any.getClass().getSimpleName());
-            }
+        if (any == null) {
+            return null;
         }
 
-        return null;
+        if (any instanceof JAXBElement) {
+            JAXBElement re = (JAXBElement) any;
+            if (re.getValue() instanceof TypeReference) {
+                return new TypeRef((TypeReference) re.getValue());
+            } else if (re.getValue() instanceof NamedElementReferenceWithCommentType) {
+                return new TypeRef((NamedElementReferenceWithCommentType) re.getValue());
+            } else {
+                throw new IllegalArgumentException(
+                        "Unexpected type in message body of : " + re.getValue().getClass().getSimpleName());
+            }
+        } else if (any instanceof Element) {
+            Element re = (Element) any;
+            String stype = re.getAttribute("type");
+
+            if (!"".equals(stype)) {
+                String uri = stype.substring(0, stype.indexOf(':'));
+                String type = stype.substring(uri.length() + 1);
+                boolean isList = false;
+                String smaxOccurrs = re.getAttribute("maxOccurs");
+                if (!"".equals(smaxOccurrs)) {
+                    int maxOccurrs = Integer.parseInt(smaxOccurrs);
+                    if (1 < maxOccurrs) {
+                        isList = true;
+                    }
+                }
+                TypeReference newTr = new TypeReference();
+                newTr.setArea(StdStrings.XML);
+                newTr.setService(re.lookupNamespaceURI(uri));
+                newTr.setName(type);
+                newTr.setList(isList);
+
+                NamedElementReferenceWithCommentType newField
+                        = new NamedElementReferenceWithCommentType();
+                newField.setName(re.getAttribute("name"));
+                newField.setType(newTr);
+                newField.setCanBeNull(true);
+
+                return new TypeRef(newField);
+            } else {
+                throw new IllegalArgumentException(
+                        "Unexpected XML type in message body of : " + re);
+            }
+        } else {
+            throw new IllegalArgumentException(
+                    "Unexpected type in message body of : " + any.getClass().getSimpleName());
+        }
     }
 
     /**

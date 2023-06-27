@@ -404,10 +404,12 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             internalType = createElementType(file, area, service, extraPackageLevel, internalType);
             return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRef<" + internalType + ">");
         }
+
         if (type.contains("ObjectRefList<") || type.contains("ObjectRefList(")) {
-            String internalType = extractTypeFromObjectRef(type);
-            internalType = createElementType(file, area, service, extraPackageLevel, internalType);
-            return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRefList<" + internalType + ">");
+            // String internalType = extractTypeFromObjectRef(type);
+            // internalType = createElementType(file, area, service, extraPackageLevel, internalType);
+            // return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRefList<" + internalType + ">");
+            return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRefList");
         }
 
         if (isAttributeType(TypeUtils.createTypeReference(area, service, type, false))) {
@@ -423,7 +425,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     retVal += service.toLowerCase() + config.getNamingSeparator();
                 }
 
-                if ((null != extraPackageLevel) && (0 < extraPackageLevel.length())) {
+                if (extraPackageLevel != null && extraPackageLevel.length() > 0) {
                     retVal += extraPackageLevel + config.getNamingSeparator();
                 }
 
@@ -473,9 +475,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param defaultValue An example of a default value.
      */
     protected void addAttributeType(final String area, final String name,
-            final boolean isNativeType,
-            final String targetType,
-            final String defaultValue) {
+            final boolean isNativeType, final String targetType, final String defaultValue) {
         attributeTypesMap.put(new TypeKey(area, null, name),
                 new AttributeTypeDetails(this, name, isNativeType, targetType, defaultValue));
     }
@@ -877,14 +877,9 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param comment The comment with the field.
      * @return the element details.
      */
-    public abstract CompositeField createCompositeElementsDetails(
-            TargetWriter file,
-            boolean checkType,
-            String fieldName,
-            TypeReference elementType,
-            boolean isStructure,
-            boolean canBeNull,
-            String comment);
+    public abstract CompositeField createCompositeElementsDetails(TargetWriter file,
+            boolean checkType, String fieldName, TypeReference elementType,
+            boolean isStructure, boolean canBeNull, String comment);
 
     /**
      * @return the configuration.
