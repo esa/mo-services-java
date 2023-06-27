@@ -2,7 +2,7 @@
 <!--
   Copyright European Space Agency, 2023
 
-  Generated from MPS Blue Book DraftH5 18/04/2023
+  Generated from MPS Blue Book DraftI 26/06/2023
 -->
 <mal:specification
   xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema"
@@ -39,12 +39,12 @@ In the context of a hierarchical or federated planning system, the Planning Requ
         <mal:requestIP name="submitRequest" number="1" supportInReplay="true" comment="The submitRequest operation sends a planning request to the provider, which then creates a corresponding RequestInstance object and returns its identity to the consumer.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "requestDetails" canBeNull = "false" comment = "">
+              <mal:field name = "requestDetails" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PlanningRequestDetails"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "requestResponse" canBeNull = "false" comment = "">
+              <mal:field name = "requestResponse" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PlanningRequestResponse"/>
               </mal:field>
             </mal:response>
@@ -71,17 +71,17 @@ Domain of the RequestInstance
 Instance ID (key and version) of the RequestInstance
 Creation date-time of the RequestInstance version (as a time range)
 Definition ID (key and version) of the RequestInstance (the RequestDefinition from which it was created)
-User ID of the User who initated the RequestInstance
+User ID of the PlanningUser who initated the RequestInstance
 User Reference supplied by the User when submitting the RequestInstance
 The response returns a list of RequestSummaryStatus structures containing the identity (key and version), descriptive header fields and status of the RequestInstances that match the filter.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "requestFilter" canBeNull = "false" comment = "">
+              <mal:field name = "requestFilter" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="RequestFilter"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "requestSummaries" canBeNull = "false" comment = "">
+              <mal:field name = "requestSummaries" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="RequestSummaryStatus"/>
               </mal:field>
             </mal:response>
@@ -100,19 +100,19 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:progressIP name="getRequestStatus" number="3" supportInReplay="true" comment="The getRequestStatus operation is used to obtain the current status of one or more known RequestInstances.  The operation uses the Progress interaction pattern, to allow the response to be spread across multiple messages.">
           <mal:messages>
             <mal:progress>
-              <mal:field name = "requestRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;RequestInstance&gt;"/>
+              <mal:field name = "requestRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(RequestInstance)"/>
               </mal:field>
             </mal:progress>
             <mal:acknowledgement>
             </mal:acknowledgement>
             <mal:update>
-              <mal:field name = "updateStatuses" canBeNull = "false" comment = "">
+              <mal:field name = "updateStatuses" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="RequestStatusUpdate"/>
               </mal:field>
             </mal:update>
             <mal:response>
-              <mal:field name = "responseStatuses" canBeNull = "false" comment = "">
+              <mal:field name = "responseStatuses" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="RequestStatusUpdate"/>
               </mal:field>
             </mal:response>
@@ -133,8 +133,8 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:submitIP name="cancelRequest" number="4" supportInReplay="true" comment="The cancelRequest operation is used by a consumer to cancel a previously submitted planning request.  The service provider acknowledges the cancellation of the RequestInstance or returns an error.">
           <mal:messages>
             <mal:submit>
-              <mal:field name = "requestRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;RequestInstance&gt;"/>
+              <mal:field name = "requestRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(RequestInstance)"/>
               </mal:field>
             </mal:submit>
           </mal:messages>
@@ -160,15 +160,15 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:requestIP name="updateRequest" number="5" supportInReplay="true" comment="The updateRequest operation may be used to modify the PlanningRequestDetails associated with a previously submitted planning request.  This results in the creation of a new version of the RequestInstance (with the same key) by the service provider, which returns the identity (key and version) of the new version to the consumer.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "requestRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;RequestInstance&gt;"/>
+              <mal:field name = "requestRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(RequestInstance)"/>
               </mal:field>
-              <mal:field name = "requestDetails" canBeNull = "false" comment = "">
+              <mal:field name = "requestDetails" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PlanningRequestDetails"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "requestResponse" canBeNull = "false" comment = "">
+              <mal:field name = "requestResponse" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PlanningRequestResponse"/>
               </mal:field>
             </mal:response>
@@ -201,27 +201,27 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:pubsubIP name="monitorRequestStatus" number="6" supportInReplay="true" comment="The monitorRequestStatus operation is used to subscribe to status updates for a filtered set of planning RequestInstances.  The operation uses the Publish-Subscribe interaction pattern, with the body of the notification message comprising a RequestStatusUpdate for a subscribed RequestInstance.">
           <mal:messages>
             <mal:subscriptionKeys>
-              <mal:field name = "instanceID" canBeNull = "false" comment = "">
+              <mal:field name = "instanceID" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "definitionID" canBeNull = "false" comment = "">
+              <mal:field name = "definitionID" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "userID" canBeNull = "false" comment = "">
+              <mal:field name = "userID" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "userReference" canBeNull = "false" comment = "">
+              <mal:field name = "userReference" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "status" canBeNull = "false" comment = "">
+              <mal:field name = "status" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="UInteger"/>
               </mal:field>
-              <mal:field name = "outputPlanID" canBeNull = "false" comment = "">
+              <mal:field name = "outputPlanID" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
             </mal:subscriptionKeys>
             <mal:publishNotify>
-              <mal:field name = "requestStatusUpdate" canBeNull = "false" comment = "">
+              <mal:field name = "requestStatusUpdate" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="RequestStatusUpdate"/>
               </mal:field>
             </mal:publishNotify>
@@ -242,19 +242,19 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:progressIP name="getRequest" number="7" supportInReplay="true" comment="The getRequest operation is used to obtain the full content of one or more known RequestInstances.  The operation uses the Progress interaction pattern, to allow the response to be spread across multiple messages.">
           <mal:messages>
             <mal:progress>
-              <mal:field name = "requestRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;RequestInstance&gt;"/>
+              <mal:field name = "requestRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(RequestInstance)"/>
               </mal:field>
             </mal:progress>
             <mal:acknowledgement>
             </mal:acknowledgement>
             <mal:update>
-              <mal:field name = "updateRequestInstances" canBeNull = "false" comment = "">
+              <mal:field name = "updateRequestInstances" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="RequestInstance"/>
               </mal:field>
             </mal:update>
             <mal:response>
-              <mal:field name = "responseRequestInstances" canBeNull = "false" comment = "">
+              <mal:field name = "responseRequestInstances" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="RequestInstance"/>
               </mal:field>
             </mal:response>
@@ -295,12 +295,12 @@ validity period of the Plan as a time window
 The response returns a list of PlanSummaryStatus structures containing the identity (key and version), descriptive header fields and status of the Plans that match the filter.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "planFilter" canBeNull = "false" comment = "">
+              <mal:field name = "planFilter" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PlanFilter"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "planSummaries" canBeNull = "false" comment = "">
+              <mal:field name = "planSummaries" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="PlanSummaryStatus"/>
               </mal:field>
             </mal:response>
@@ -319,19 +319,19 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:progressIP name="getPlan" number="2" supportInReplay="true" comment="The getPlan operation is used to obtain the full content of one or more known Plans.  The operation uses the Progress interaction pattern, to allow the response to be spread across multiple messages.">
           <mal:messages>
             <mal:progress>
-              <mal:field name = "planRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(Plan)"/>
               </mal:field>
             </mal:progress>
             <mal:acknowledgement>
             </mal:acknowledgement>
             <mal:update>
-              <mal:field name = "updatePlans" canBeNull = "false" comment = "">
+              <mal:field name = "updatePlans" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="Plan"/>
               </mal:field>
             </mal:update>
             <mal:response>
-              <mal:field name = "responsePlans" canBeNull = "false" comment = "">
+              <mal:field name = "responsePlans" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="Plan"/>
               </mal:field>
             </mal:response>
@@ -350,12 +350,12 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:requestIP name="getPlanStatus" number="3" supportInReplay="true" comment="The getPlanStatus operation is used to obtain the current status of one or more known Plans.  The operation uses the Request interaction pattern.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "planRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(Plan)"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "responsePlans" canBeNull = "false" comment = "">
+              <mal:field name = "responsePlans" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="PlanUpdate"/>
               </mal:field>
             </mal:response>
@@ -376,21 +376,21 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:pubsubIP name="monitorPlanStatus" number="4" supportInReplay="true" comment="The monitorPlanStatus operation is used to subscribe to status updates for a filtered set of Plans.  The operation uses the Publish-Subscribe interaction pattern, with the body of the notification message comprising a PlanUpdate for a subscribed Plan.">
           <mal:messages>
             <mal:subscriptionKeys>
-              <mal:field name = "planID" canBeNull = "false" comment = "">
+              <mal:field name = "planID" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "precursor" canBeNull = "false" comment = "">
+              <mal:field name = "precursor" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "status" canBeNull = "false" comment = "">
+              <mal:field name = "status" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="UInteger"/>
               </mal:field>
-              <mal:field name = "originator" canBeNull = "false" comment = "">
+              <mal:field name = "originator" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
             </mal:subscriptionKeys>
             <mal:publishNotify>
-              <mal:field name = "planUpdate" canBeNull = "false" comment = "">
+              <mal:field name = "planUpdate" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PlanUpdate"/>
               </mal:field>
             </mal:publishNotify>
@@ -411,21 +411,21 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:pubsubIP name="monitorPlan" number="5" supportInReplay="true" comment="The monitorPlan operation is used by a consumer to subscribe to receive new Plans, or new versions of Plans, as they published.  The operation uses the Publish-Subscribe interaction pattern, with the body of the notification message comprising a Plan.">
           <mal:messages>
             <mal:subscriptionKeys>
-              <mal:field name = "planID" canBeNull = "false" comment = "">
+              <mal:field name = "planID" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "precursor" canBeNull = "false" comment = "">
+              <mal:field name = "precursor" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "status" canBeNull = "false" comment = "">
+              <mal:field name = "status" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="UInteger"/>
               </mal:field>
-              <mal:field name = "originator" canBeNull = "false" comment = "">
+              <mal:field name = "originator" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
             </mal:subscriptionKeys>
             <mal:publishNotify>
-              <mal:field name = "plan" canBeNull = "false" comment = "">
+              <mal:field name = "plan" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="Plan"/>
               </mal:field>
             </mal:publishNotify>
@@ -446,19 +446,19 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:progressIP name="queryPlan" number="6" supportInReplay="true" comment="The queryPlan operation enables a consumer to retrieve a filtered set of plans, based on an extended set of filter criteria, including relevant fields of the plan information sections of the plan, as well as the type of planning activities and planning events contained within the plan.">
           <mal:messages>
             <mal:progress>
-              <mal:field name = "query" canBeNull = "false" comment = "">
+              <mal:field name = "query" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PlanQuery"/>
               </mal:field>
             </mal:progress>
             <mal:acknowledgement>
             </mal:acknowledgement>
             <mal:update>
-              <mal:field name = "updatePlans" canBeNull = "false" comment = "">
+              <mal:field name = "updatePlans" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="Plan"/>
               </mal:field>
             </mal:update>
             <mal:response>
-              <mal:field name = "responsePlans" canBeNull = "false" comment = "">
+              <mal:field name = "responsePlans" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="Plan"/>
               </mal:field>
             </mal:response>
@@ -482,12 +482,12 @@ A subset of contained ActivityInstances, based on their domain, associated SubPl
 The PartialPlan returned includes the filter criteria and a version of the plan containing only the ActivityInstances that match those criteria.  It is implementation dependent what is returned in terms of events and resources, but it may be assumed that any related events and resources would be included in the returned partial plan.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "partialPlanFilter" canBeNull = "false" comment = "">
+              <mal:field name = "partialPlanFilter" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PartialPlanFilter"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "partialPlan" canBeNull = "false" comment = "">
+              <mal:field name = "partialPlan" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PartialPlan"/>
               </mal:field>
             </mal:response>
@@ -512,7 +512,7 @@ It comprises the following operations, of which only those in capability set 1 a
 Note:  the submitted plan may be a full plan or a patch plan.">
           <mal:messages>
             <mal:submit>
-              <mal:field name = "plan" canBeNull = "false" comment = "">
+              <mal:field name = "plan" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="Plan"/>
               </mal:field>
             </mal:submit>
@@ -537,8 +537,8 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:submitIP name="revokePlan" number="2" supportInReplay="true" comment="The revokePlan operation is used to request a plan execution function to revoke a previously submitted Plan, making it unavailable for execution.  The service provider acknowledges the revocation of the Plan or returns an error.">
           <mal:messages>
             <mal:submit>
-              <mal:field name = "planRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
               </mal:field>
             </mal:submit>
           </mal:messages>
@@ -562,12 +562,12 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:requestIP name="getPlanStatus" number="3" supportInReplay="true" comment="The getPlanStatus operation is used to obtain the current status of one or more known Plans that have been previously submitted to a plan execution function.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "planRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(Plan)"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "planStatus" canBeNull = "false" comment = "">
+              <mal:field name = "planStatus" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="PlanUpdate"/>
               </mal:field>
             </mal:response>
@@ -590,12 +590,12 @@ Note:  Multiple plans with a common precursor may have been submitted to a plan 
 Note:  In order to activate a patch Plan, the precursor Plan on which it is based must also be activated.  It is recommended that the activatePlan operation references the target Plan (the result of merging the patch Plan with its precursor), rather than the patch Plan itself (although this is allowed).  It is implementation dependent how it is achieved (merge patch with precursor prior to activation, or activate precursor and then merge patch), but if the precursor Plan is not already activated, then activating a target or patch Plan implies that the precursor is also activated.  If the precursor plan has not previously been submitted to the service provider (or has been revoked), then it is not possible to activate the target or patch Plan.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "planRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(Plan)"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "activationStatus" canBeNull = "false" comment = "">
+              <mal:field name = "activationStatus" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="PlanActivationStatus"/>
               </mal:field>
             </mal:response>
@@ -629,15 +629,15 @@ If a Plan is deactivated after any of its constituent ActivityInstances have bee
 ">
           <mal:messages>
             <mal:request>
-              <mal:field name = "planRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "deactivationMode" canBeNull = "false" comment = "">
+              <mal:field name = "deactivationMode" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="String"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "activationStatus" canBeNull = "false" comment = "">
+              <mal:field name = "activationStatus" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="PlanActivationStatus"/>
               </mal:field>
             </mal:response>
@@ -659,21 +659,21 @@ A UInteger giving a secondary error code that details the reason for invalidity.
 The operation is equivalent to the monitorPlanStatus operation of the Plan Distribution Service, but only reports the status of plans currently being managed by a plan execution function.">
           <mal:messages>
             <mal:subscriptionKeys>
-              <mal:field name = "planID" canBeNull = "false" comment = "">
+              <mal:field name = "planID" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "precursor" canBeNull = "false" comment = "">
+              <mal:field name = "precursor" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "status" canBeNull = "false" comment = "">
+              <mal:field name = "status" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="UInteger"/>
               </mal:field>
-              <mal:field name = "originator" canBeNull = "false" comment = "">
+              <mal:field name = "originator" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
             </mal:subscriptionKeys>
             <mal:publishNotify>
-              <mal:field name = "planUpdate" canBeNull = "false" comment = "">
+              <mal:field name = "planUpdate" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PlanUpdate"/>
               </mal:field>
             </mal:publishNotify>
@@ -695,21 +695,21 @@ A UInteger giving a secondary error code that details the reason for invalidity.
 It is implementation dependent which details are reported on, but this may be any combination of planning activities, events and resources.  The notification message body comprises a single structure of the abstract class PlanDetailUpdate, which corresponds to one of the concrete classes ActivityUpdate, EventUpdate or ResourceUpdate.">
           <mal:messages>
             <mal:subscriptionKeys>
-              <mal:field name = "planID" canBeNull = "false" comment = "">
+              <mal:field name = "planID" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "subPlan" canBeNull = "false" comment = "">
+              <mal:field name = "subPlan" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
-              <mal:field name = "tags" canBeNull = "false" comment = "">
+              <mal:field name = "tags" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="String"/>
               </mal:field>
-              <mal:field name = "type" canBeNull = "false" comment = "">
+              <mal:field name = "type" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
             </mal:subscriptionKeys>
             <mal:publishNotify>
-              <mal:field name = "detailUpdate" canBeNull = "false" comment = "">
+              <mal:field name = "detailUpdate" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PlanDetailUpdate"/>
               </mal:field>
             </mal:publishNotify>
@@ -731,12 +731,12 @@ A UInteger giving a secondary error code that details the reason for invalidity.
 Note: it is implementation dependent whether SubPlans are initially ACTIVATED and therefore do not require activation unless previously deactivated.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "subPlanIDs" canBeNull = "false" comment = "">
+              <mal:field name = "subPlanIDs" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="Identifier"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "activationStatus" canBeNull = "false" comment = "">
+              <mal:field name = "activationStatus" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="SubPlanActivationStatus"/>
               </mal:field>
             </mal:response>
@@ -761,15 +761,15 @@ Note that it is dependent on the service provider implementation which deactivat
 The service provider returns a list of SubPlanActivationStatus data structures comprising sub-plan status and activationInfo as a String for each sub-plan in the deactivation list.  The activationInfo allows the return of deployment specific details on the deactivation, such as the deactivation mode applied or reasons for a failure to deactivate.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "subPlanIDs" canBeNull = "false" comment = "">
+              <mal:field name = "subPlanIDs" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="Identifier"/>
               </mal:field>
-              <mal:field name = "deactivationMode" canBeNull = "false" comment = "">
+              <mal:field name = "deactivationMode" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="String"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "activationStatus" canBeNull = "false" comment = "">
+              <mal:field name = "activationStatus" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="SubPlanActivationStatus"/>
               </mal:field>
             </mal:response>
@@ -788,12 +788,12 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:requestIP name="getSubPlanStatus" number="10" supportInReplay="true" comment="The getSubPlanStatus operation is used to obtain the current status of one or more SubPlans.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "subPlanIDs" canBeNull = "false" comment = "">
+              <mal:field name = "subPlanIDs" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="Identifier"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "subPlanStatus" canBeNull = "false" comment = "">
+              <mal:field name = "subPlanStatus" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="SubPlanUpdate"/>
               </mal:field>
             </mal:response>
@@ -814,12 +814,12 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:pubsubIP name="monitorSubPlanExecution" number="11" supportInReplay="true" comment="The monitorSubPlanExecution operation is used to subscribe to status updates for a filtered set of SubPlans.  The operation uses the Publish-Subscribe interaction pattern, with the body of the notification message comprising a SubPlanUpdate for a subscribed sub-plan.">
           <mal:messages>
             <mal:subscriptionKeys>
-              <mal:field name = "subPlan" canBeNull = "false" comment = "">
+              <mal:field name = "subPlan" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Identifier"/>
               </mal:field>
             </mal:subscriptionKeys>
             <mal:publishNotify>
-              <mal:field name = "subPlanUpdate" canBeNull = "false" comment = "">
+              <mal:field name = "subPlanUpdate" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="SubPlanUpdate"/>
               </mal:field>
             </mal:publishNotify>
@@ -847,21 +847,21 @@ The service provider responds with a list of ActivitySuspensionStatus data struc
 The suspensionInfo allows the return of deployment specific details on the suspension, such as the suspension mode applied or reasons for a failure to suspend.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "planRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "activityRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;ActivityInstance&gt;"/>
+              <mal:field name = "activityRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(ActivityInstance)"/>
               </mal:field>
-              <mal:field name = "tags" canBeNull = "false" comment = "">
+              <mal:field name = "tags" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="String"/>
               </mal:field>
-              <mal:field name = "suspensionMode" canBeNull = "false" comment = "">
+              <mal:field name = "suspensionMode" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="String"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "suspensionStatus" canBeNull = "false" comment = "">
+              <mal:field name = "suspensionStatus" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="ActivitySuspensionStatus"/>
               </mal:field>
             </mal:response>
@@ -882,18 +882,18 @@ The service provider responds with a list of ActivitySuspensionStatus data struc
 The suspensionInfo allows the return of deployment specific details on the resumption, such as the reasons for a failure to resume.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "planRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "activityRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;ActivityInstance&gt;"/>
+              <mal:field name = "activityRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(ActivityInstance)"/>
               </mal:field>
-              <mal:field name = "tags" canBeNull = "false" comment = "">
+              <mal:field name = "tags" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="String"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "suspensionStatus" canBeNull = "false" comment = "">
+              <mal:field name = "suspensionStatus" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="ActivitySuspensionStatus"/>
               </mal:field>
             </mal:response>
@@ -914,21 +914,21 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:requestIP name="getActivityStatus" number="14" supportInReplay="true" comment="The getActivityStatus operation is used to request a detailed report from the service provider on the current status of ActivityInstances, selected at activity, sub-plan or tag levels.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "planRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "activityRefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;ActivityInstance&gt;"/>
+              <mal:field name = "activityRefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(ActivityInstance)"/>
               </mal:field>
-              <mal:field name = "subPlans" canBeNull = "false" comment = "">
+              <mal:field name = "subPlans" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="Identifier"/>
               </mal:field>
-              <mal:field name = "tags" canBeNull = "false" comment = "">
+              <mal:field name = "tags" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="String"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "activityStatus" canBeNull = "false" comment = "">
+              <mal:field name = "activityStatus" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="ActivityUpdate"/>
               </mal:field>
             </mal:response>
@@ -962,22 +962,22 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:progressIP name="listRequestDefs" number="1" supportInReplay="true" comment="The listRequestDefs operation is used to obtain a list of available RequestDefinitions (key and version) together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.">
           <mal:messages>
             <mal:progress>
-              <mal:field name = "domains" canBeNull = "false" comment = "">
+              <mal:field name = "domains" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="Identifier"/>
               </mal:field>
-              <mal:field name = "requestDefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;RequestDefinition&gt;"/>
+              <mal:field name = "requestDefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(RequestDefinition)"/>
               </mal:field>
             </mal:progress>
             <mal:acknowledgement>
             </mal:acknowledgement>
             <mal:update>
-              <mal:field name = "updateRequestDefs" canBeNull = "false" comment = "">
+              <mal:field name = "updateRequestDefs" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="DefListEntry"/>
               </mal:field>
             </mal:update>
             <mal:response>
-              <mal:field name = "responseRequestDefs" canBeNull = "false" comment = "">
+              <mal:field name = "responseRequestDefs" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="DefListEntry"/>
               </mal:field>
             </mal:response>
@@ -996,12 +996,12 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:requestIP name="getRequestDefs" number="2" supportInReplay="true" comment="The getRequestDefs operation is used to retrieve one or more available RequestDefinitions, whose identity is known to the consumer.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "requestDefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;RequestDefinition&gt;"/>
+              <mal:field name = "requestDefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(RequestDefinition)"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "definitions" canBeNull = "false" comment = "">
+              <mal:field name = "definitions" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="RequestDefinition"/>
               </mal:field>
             </mal:response>
@@ -1022,22 +1022,22 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:progressIP name="listEventDefs" number="3" supportInReplay="true" comment="The listEventDefs operation is used to obtain a list of available EventDefinitions (key and version) together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.">
           <mal:messages>
             <mal:progress>
-              <mal:field name = "domains" canBeNull = "false" comment = "">
+              <mal:field name = "domains" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="Identifier"/>
               </mal:field>
-              <mal:field name = "eventDefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;EventDefinition&gt;"/>
+              <mal:field name = "eventDefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(EventDefinition)"/>
               </mal:field>
             </mal:progress>
             <mal:acknowledgement>
             </mal:acknowledgement>
             <mal:update>
-              <mal:field name = "updateEventDefs" canBeNull = "false" comment = "">
+              <mal:field name = "updateEventDefs" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="DefListEntry"/>
               </mal:field>
             </mal:update>
             <mal:response>
-              <mal:field name = "responseEventDefs" canBeNull = "false" comment = "">
+              <mal:field name = "responseEventDefs" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="DefListEntry"/>
               </mal:field>
             </mal:response>
@@ -1056,12 +1056,12 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:requestIP name="getEventDefs" number="4" supportInReplay="true" comment="The getEventDefs operation is used to retrieve one or more available EventDefinitions, whose identity is known to the consumer.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "eventDefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;EventDefinition&gt;"/>
+              <mal:field name = "eventDefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(EventDefinition)"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "definitions" canBeNull = "false" comment = "">
+              <mal:field name = "definitions" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="EventDefinition"/>
               </mal:field>
             </mal:response>
@@ -1082,25 +1082,25 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:progressIP name="listActivityDefs" number="5" supportInReplay="true" comment="The listActivityDefs operation is used to obtain a list of available ActivityDefinitions (key and version) together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.">
           <mal:messages>
             <mal:progress>
-              <mal:field name = "domains" canBeNull = "false" comment = "">
+              <mal:field name = "domains" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="Identifier"/>
               </mal:field>
-              <mal:field name = "activityDefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;ActivityDefinition&gt;"/>
+              <mal:field name = "activityDefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(ActivityDefinition)"/>
               </mal:field>
-              <mal:field name = "defaultTags" canBeNull = "false" comment = "">
+              <mal:field name = "defaultTags" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="String"/>
               </mal:field>
             </mal:progress>
             <mal:acknowledgement>
             </mal:acknowledgement>
             <mal:update>
-              <mal:field name = "updateActivitytDefs" canBeNull = "false" comment = "">
+              <mal:field name = "updateActivitytDefs" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="DefListEntry"/>
               </mal:field>
             </mal:update>
             <mal:response>
-              <mal:field name = "responseActivityDefs" canBeNull = "false" comment = "">
+              <mal:field name = "responseActivityDefs" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="DefListEntry"/>
               </mal:field>
             </mal:response>
@@ -1119,12 +1119,12 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:requestIP name="getActivityDefs" number="6" supportInReplay="true" comment="The getActivityDefs operation is used to retrieve one or more available ActivityDefinitions, whose identity is known to the consumer.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "activityDefs" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;ActivityDefinition&gt;"/>
+              <mal:field name = "activityDefs" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(ActivityDefinition)"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "definitions" canBeNull = "false" comment = "">
+              <mal:field name = "definitions" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="ActivityDefinition"/>
               </mal:field>
             </mal:response>
@@ -1145,22 +1145,22 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:progressIP name="listResourceDefs" number="7" supportInReplay="true" comment="The listResourceDefs operation is used to obtain a list of available Resources (key and version) together with their descriptions.  The list can be filtered by domain or restricted to data types.  All available versions are listed.">
           <mal:messages>
             <mal:progress>
-              <mal:field name = "domains" canBeNull = "false" comment = "">
+              <mal:field name = "domains" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="Identifier"/>
               </mal:field>
-              <mal:field name = "dataType" canBeNull = "false" comment = "">
+              <mal:field name = "dataType" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="AttributeType"/>
               </mal:field>
             </mal:progress>
             <mal:acknowledgement>
             </mal:acknowledgement>
             <mal:update>
-              <mal:field name = "updateResourceDefs" canBeNull = "false" comment = "">
+              <mal:field name = "updateResourceDefs" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="DefListEntry"/>
               </mal:field>
             </mal:update>
             <mal:response>
-              <mal:field name = "responseResourceDefs" canBeNull = "false" comment = "">
+              <mal:field name = "responseResourceDefs" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="DefListEntry"/>
               </mal:field>
             </mal:response>
@@ -1180,12 +1180,12 @@ A UInteger giving a secondary error code that details the reason for invalidity.
 Note that this operation is designed to retrieve the resource definition and not the current value of the resource (the value field may contain a default value for the resource).">
           <mal:messages>
             <mal:request>
-              <mal:field name = "resources" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="true" name="ObjectRef&lt;Resource&gt;"/>
+              <mal:field name = "resources" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="true" name="ObjectRef(Resource)"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "definitions" canBeNull = "false" comment = "">
+              <mal:field name = "definitions" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="true" name="Resource"/>
               </mal:field>
             </mal:response>
@@ -1206,12 +1206,12 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:requestIP name="getSystemConfig" number="9" supportInReplay="true" comment="The getSystemConfig operation is used to retrieve system configuration data relating to the MPS system.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "version" canBeNull = "false" comment = "">
+              <mal:field name = "version" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="UInteger"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "systemConfig" canBeNull = "false" comment = "">
+              <mal:field name = "systemConfig" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="MPSSystemConfigDetails"/>
               </mal:field>
             </mal:response>
@@ -1259,13 +1259,13 @@ It is implementation dependent what action the service provider takes in respons
 A set of Plans with a common precursor may be submitted to a plan execution function to cater for alternative or contingency scenarios.  All but one of these Plans should have the isAlternate flag set, to inform the plan execution function (and the mission operations team) which is the nominal Plan.  It is implementation dependent whether a plan execution control service provider will allow a Plan to be activated with the isAlternate flag set, but for operational safety reasons this may be blocked.  In a contingency scenario, the updatePlanStatus operation can be used to set the flag on the nominal Plan, and reset the flag on the required contingency Plan, making it operational.">
           <mal:messages>
             <mal:submit>
-              <mal:field name = "planRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "status" canBeNull = "false" comment = "">
+              <mal:field name = "status" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="PlanStatusEnum"/>
               </mal:field>
-              <mal:field name = "isAlternate" canBeNull = "false" comment = "">
+              <mal:field name = "isAlternate" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Boolean"/>
               </mal:field>
             </mal:submit>
@@ -1289,17 +1289,17 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         </mal:submitIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="2" comment="">
-        <mal:requestIP name="insertActivity" number="2" supportInReplay="true" comment="The insertActivity operation sends an InsertedActivityDetails structure (an ActivityDetails structure with Plan reference and start/end triggers) to the provider, which then creates a corresponding ActivityInstance object in the referenced Plan and returns its identity to the consumer.
+        <mal:requestIP name="insertActivity" number="2" supportInReplay="true" comment="The insertActivity operation sends an InsertedActivityDetails structure (an ActivityDetails structure with Plan reference and start/end triggers) to the provider, which then creates a corresponding ActivityInstance object in the referenced Plan and returns its identity to the consumer.  It is up to the planning system, how to manage concurrent access to the plan.
 Insertion may fail if the Plan is already in the TERMINATED state, in which case an INSERT_FAILED error is returned.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "activityDetails" canBeNull = "false" comment = "">
+              <mal:field name = "activityDetails" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="InsertedActivityDetails"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "activityRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;ActivityInstance&gt;"/>
+              <mal:field name = "activityRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(ActivityInstance)"/>
               </mal:field>
             </mal:response>
           </mal:messages>
@@ -1326,17 +1326,17 @@ A UInteger giving a secondary error code that details the reason for invalidity.
             </mal:errorRef>
           </mal:errors>
         </mal:requestIP>
-        <mal:requestIP name="insertEvent" number="3" supportInReplay="true" comment="The insertEvent operation sends an InsertedEventDetails structure, which includes a Plan reference, to the provider, which then creates a corresponding EventInstance object in the referenced Plan and returns its identity to the consumer.
+        <mal:requestIP name="insertEvent" number="3" supportInReplay="true" comment="The insertEvent operation sends an InsertedEventDetails structure, which includes a Plan reference, to the provider, which then creates a corresponding EventInstance object in the referenced Plan and returns its identity to the consumer.  It is up to the planning system, how to manage concurrent access to the plan.
 Insertion may fail if the Plan is already in the TERMINATED state, in which case an INSERT_FAILED error is returned.">
           <mal:messages>
             <mal:request>
-              <mal:field name = "eventDetails" canBeNull = "false" comment = "">
+              <mal:field name = "eventDetails" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="InsertedEventDetails"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name = "eventRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;EventInstance&gt;"/>
+              <mal:field name = "eventRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(EventInstance)"/>
               </mal:field>
             </mal:response>
           </mal:messages>
@@ -1357,15 +1357,15 @@ A UInteger giving a secondary error code that details the reason for invalidity.
             </mal:errorRef>
           </mal:errors>
         </mal:requestIP>
-        <mal:submitIP name="deleteActivity" number="4" supportInReplay="true" comment="The deleteActivity operation requests that a specified ActivityInstance within a Plan is deleted by the service provider.  In practice, the activity is not removed, but transitioned to the TERMINATED state with deletion indicated in the statusInfo field.  The ActivityInstance is not subsequently executed by the service provider, but it is implementation dependent what action is taken by the service provider if the ActivityInstance is in the EXECUTING state.
+        <mal:submitIP name="deleteActivity" number="4" supportInReplay="true" comment="The deleteActivity operation requests that a specified ActivityInstance within a Plan is deleted by the service provider.  In practice, the activity is not removed, but transitioned to the TERMINATED state with deletion indicated in the statusInfo field.  The ActivityInstance is not subsequently executed by the service provider, but it is implementation dependent what action is taken by the service provider if the ActivityInstance is in the EXECUTING state.  It is up to the planning system, how to manage concurrent access to the plan.
 Deletion may fail if the referenced Plan or ActivityInstance is already in the TERMINATED state, in which case the DELETE_FAILED error is returned.">
           <mal:messages>
             <mal:submit>
-              <mal:field name = "planRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "activityRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;ActivityInstance&gt;"/>
+              <mal:field name = "activityRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(ActivityInstance)"/>
               </mal:field>
             </mal:submit>
           </mal:messages>
@@ -1386,15 +1386,15 @@ A UInteger giving a secondary error code that details the reason for invalidity.
             </mal:errorRef>
           </mal:errors>
         </mal:submitIP>
-        <mal:submitIP name="deleteEvent" number="5" supportInReplay="true" comment="The deleteEvent operation requests that a specified EventInstance within a Plan is deleted by the service provider.  In practice, the event is not removed, but transitioned to the TERMINATED state with deletion indicated in the statusInfo field.  The EventInstance is not subsequently triggered by the service provider.
+        <mal:submitIP name="deleteEvent" number="5" supportInReplay="true" comment="The deleteEvent operation requests that a specified EventInstance within a Plan is deleted by the service provider.  In practice, the event is not removed, but transitioned to the TERMINATED state with deletion indicated in the statusInfo field.  The EventInstance is not subsequently triggered by the service provider.  It is up to the planning system, how to manage concurrent access to the plan.
 Deletion may fail if the referenced Plan or EventInstance is already in the TERMINATED state, in which case the DELETE_FAILED error is returned.">
           <mal:messages>
             <mal:submit>
-              <mal:field name = "planRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "eventRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;EventInstance&gt;"/>
+              <mal:field name = "eventRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(EventInstance)"/>
               </mal:field>
             </mal:submit>
           </mal:messages>
@@ -1417,14 +1417,14 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         </mal:submitIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="3" comment="">
-        <mal:submitIP name="updateActivity" number="6" supportInReplay="true" comment="The updateActivity operation may be used to modify an ActivityInstance in a Plan that has already been submitted to the service provider.  The consumer submits an ActivityUpdate structure which is applied by the service provider to the referenced ActivityInstance.
+        <mal:submitIP name="updateActivity" number="6" supportInReplay="true" comment="The updateActivity operation may be used to modify an ActivityInstance in a Plan that has already been submitted to the service provider.  The consumer submits an ActivityUpdate structure which is applied by the service provider to the referenced ActivityInstance.  It is up to the planning system, how to manage concurrent access to the plan.
 Update may fail if the referenced Plan or ActivityInstance is already in the TERMINATED state, in which case the UPDATE_FAILED error is returned.">
           <mal:messages>
             <mal:submit>
-              <mal:field name = "planRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "activityUpdate" canBeNull = "false" comment = "">
+              <mal:field name = "activityUpdate" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="ActivityUpdate"/>
               </mal:field>
             </mal:submit>
@@ -1446,14 +1446,14 @@ A UInteger giving a secondary error code that details the reason for invalidity.
             </mal:errorRef>
           </mal:errors>
         </mal:submitIP>
-        <mal:submitIP name="updateEvent" number="7" supportInReplay="true" comment="The updateEvent operation may be used to modify an EventInstance in a Plan that has already been submitted to the service provider.  The consumer submits an EventUpdate structure which is applied by the service provider to the referenced EventInstance.
+        <mal:submitIP name="updateEvent" number="7" supportInReplay="true" comment="The updateEvent operation may be used to modify an EventInstance in a Plan that has already been submitted to the service provider.  The consumer submits an EventUpdate structure which is applied by the service provider to the referenced EventInstance.  It is up to the planning system, how to manage concurrent access to the plan.
 Update may fail if the referenced Plan or EventInstance is already in the TERMINATED state, in which case the UPDATE_FAILED error is returned.">
           <mal:messages>
             <mal:submit>
-              <mal:field name = "planRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "eventUpdate" canBeNull = "false" comment = "">
+              <mal:field name = "eventUpdate" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="EventUpdate"/>
               </mal:field>
             </mal:submit>
@@ -1477,14 +1477,14 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         </mal:submitIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="4" comment="">
-        <mal:submitIP name="updateResource" number="8" supportInReplay="true" comment="The updateResource operation may be used to modify the value of a Resource at the specified point in time, in a Plan that has already been submitted to the service provider.  The consumer submits an ResourceUpdate structure which is applied by the service provider to the referenced Resource.
+        <mal:submitIP name="updateResource" number="8" supportInReplay="true" comment="The updateResource operation may be used to modify the value of a Resource at the specified point in time, in a Plan that has already been submitted to the service provider.  The consumer submits an ResourceUpdate structure which is applied by the service provider to the referenced Resource.  It is up to the planning system, how to manage concurrent access to the plan.
 Update may fail if the referenced Plan is already in the TERMINATED state, in which case the UPDATE_FAILED error is returned.">
           <mal:messages>
             <mal:submit>
-              <mal:field name = "planRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "resourceUpdate" canBeNull = "false" comment = "">
+              <mal:field name = "resourceUpdate" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="ResourceUpdate"/>
               </mal:field>
             </mal:submit>
@@ -1514,14 +1514,14 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         </mal:submitIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="5" comment="">
-        <mal:submitIP name="updateResourceProfile" number="9" supportInReplay="true" comment="The updateResourceProfile operation may be used to modify the value of a Resource over a period of time, in a Plan that has already been submitted to the service provider.  The consumer submits an ResourceProfile structure which is applied by the service provider to the referenced Resource.
+        <mal:submitIP name="updateResourceProfile" number="9" supportInReplay="true" comment="The updateResourceProfile operation may be used to modify the value of a Resource over a period of time, in a Plan that has already been submitted to the service provider.  The consumer submits an ResourceProfile structure which is applied by the service provider to the referenced Resource.  It is up to the planning system, how to manage concurrent access to the plan.
 Update may fail if the referenced Plan is already in the TERMINATED state, in which case the UPDATE_FAILED error is returned.">
           <mal:messages>
             <mal:submit>
-              <mal:field name = "planRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "resourceProfile" canBeNull = "false" comment = "">
+              <mal:field name = "resourceProfile" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="ResourceProfile"/>
               </mal:field>
             </mal:submit>
@@ -1557,16 +1557,16 @@ The operation is designed to support backward compatibility with simple time-bas
 Note: ActivityInstances have duration which means they may overlap the start or end of the specified TimeWindow for the applicability of the time shift.  It is implementation dependent how this is managed, but a reasonable assumption is that the start time of the ActivityInstances must be within the specified TimeWindow.  Given the potential to introduce inconsistencies into a Plan, it must be assumed that users of this service operation understand both its operational implications and its specific implementation.">
           <mal:messages>
             <mal:submit>
-              <mal:field name = "planRef" canBeNull = "false" comment = "">
-                <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+              <mal:field name = "planRef" canBeNull ="false" comment = "">
+                <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
               </mal:field>
-              <mal:field name = "subPlans" canBeNull = "false" comment = "">
+              <mal:field name = "subPlans" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="true" name="Identifier"/>
               </mal:field>
-              <mal:field name = "timePeriod" canBeNull = "false" comment = "">
+              <mal:field name = "timePeriod" canBeNull ="false" comment = "">
                 <mal:type area="MPS" list="false" name="TimeWindow"/>
               </mal:field>
-              <mal:field name = "offset" canBeNull = "false" comment = "">
+              <mal:field name = "offset" canBeNull ="false" comment = "">
                 <mal:type area="MAL" list="false" name="Duration"/>
               </mal:field>
             </mal:submit>
@@ -1600,13 +1600,13 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:field name="description" nullable="false" comment="Description of the Activity.">
           <mal:type area="MAL" list="false" name="String"/>
         </mal:field>
-        <mal:field name="argDefs" nullable="true" comment="List of Argument Definitions.">
+        <mal:field name="argDefs" nullable="false" comment="List of Argument Definitions.">
           <mal:type area="MPS" list="true" name="ArgDef"/>
         </mal:field>
         <mal:field name="constraints" nullable="true" comment="Set of Constraints applicable to all instances of the Activity.">
           <mal:type area="MPS" list="false" name="ConstraintNode"/>
         </mal:field>
-        <mal:field name="execDef" nullable="true" comment="Reference to the definition of an executable body for the Activity (procedure, action sequence, etc.) [external to the MPS Information Model].">
+        <mal:field name="executionDefinition" nullable="true" comment="Reference to the definition of an executable body for the Activity (procedure, action sequence, etc.) [external to the MPS Information Model].">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
         <mal:field name="durationSpec" nullable="true" comment="Supports calculation of an estimated duration of an Activity Instance.">
@@ -1618,7 +1618,7 @@ A UInteger giving a secondary error code that details the reason for invalidity.
         <mal:field name="activityType" nullable="true" comment="Enables a planning system to customise behavior for activities, such as their presentation in displays, based on the specified value.">
           <mal:type area="MAL" list="false" name="String"/>
         </mal:field>
-        <mal:field name="defaultTags" nullable="true" comment="Default set of Tags that may be used to associate the Activity with others, grouping activities by operational responsibility (controller/group/system) or other criteria.">
+        <mal:field name="defaultTags" nullable="false" comment="Default set of Tags that may be used to associate the Activity with others, grouping activities by operational responsibility (controller/group/system) or other criteria.">
           <mal:type area="MAL" list="true" name="String"/>
         </mal:field>
       </mal:composite>
@@ -1630,17 +1630,17 @@ Note: The start and end attributes specify the trigger conditions (including tim
           <mal:type area="MAL" list="false" name="Object"/>
         </mal:extends>
         <mal:field name="definition" nullable="false" comment="Reference to the ActivityDefinition ">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;ActivityDefinition&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(ActivityDefinition)"/>
         </mal:field>
-        <mal:field name="source" nullable="false" comment="Object Type: RequestInstance | ActivityInstance
-Reference to the source of the ActivityInstance, which is either its parent ActivityInstance or a RequestInstance if it is a root Activity.">
+        <mal:field name="source" nullable="false" comment="Object Type: RequestInstance | ActivityInstance | PlanningUser
+Reference to the source of the ActivityInstance, which is either its parent ActivityInstance, a RequestInstance if it is a root Activity, or a PlanningUser if directly inserted.">
           <mal:type area="MAL" list="false" name="ObjectRef"/>
         </mal:field>
         <mal:field name="relatedEvent" nullable="true" comment="Optional reference to an EventInstance that is specifically associated with this instance of the Activity.  Typically the Activity is placed in response to the Event.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;EventInstance&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(EventInstance)"/>
         </mal:field>
-        <mal:field name="children" nullable="true" comment="References to any child ActivityInstances.">
-          <mal:type area="MPS" list="true" name="ObjectRef&lt;ActivityInstance&gt;"/>
+        <mal:field name="children" nullable="false" comment="References to any child ActivityInstances.">
+          <mal:type area="MPS" list="true" name="ObjectRef(ActivityInstance)"/>
         </mal:field>
         <mal:field name="comments" nullable="true" comment="Any notes associated with this instance of the Activity.">
           <mal:type area="MAL" list="false" name="String"/>
@@ -1648,7 +1648,7 @@ Reference to the source of the ActivityInstance, which is either its parent Acti
         <mal:field name="constraints" nullable="true" comment="Set of Constraints applicable to this instance of the Activity.">
           <mal:type area="MPS" list="false" name="ConstraintNode"/>
         </mal:field>
-        <mal:field name="arguments" nullable="true" comment="Argument values for each Argument defined in the Activity Definition.">
+        <mal:field name="arguments" nullable="false" comment="Argument values for each Argument defined in the Activity Definition.">
           <mal:type area="MPS" list="true" name="Argument"/>
         </mal:field>
         <mal:field name="start" nullable="true" comment="Optionally specifies the trigger that initiates the Activity: may be Time, Position or Event based.">
@@ -1663,16 +1663,16 @@ Reference to the source of the ActivityInstance, which is either its parent Acti
         <mal:field name="subPlan" nullable="true" comment="Optional association of the Activity with a defined sub-plan.">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="tags" nullable="true" comment="Set of Tags that may be used to associate the Activity with others, grouping activities by operational responsibility (controller/group/system) or other criteria.">
+        <mal:field name="tags" nullable="false" comment="Set of Tags that may be used to associate the Activity with others, grouping activities by operational responsibility (controller/group/system) or other criteria.">
           <mal:type area="MAL" list="true" name="String"/>
         </mal:field>
         <mal:field name="status" nullable="false" comment="Current Status of the Activity Instance (see Activity State Model in §3.2.2.2)">
           <mal:type area="MPS" list="false" name="ActivityStatusEnum"/>
         </mal:field>
-        <mal:field name="execInst" nullable="true" comment="Reference to the instance of an executable body for the Activity (procedure, action sequence, etc.) [external to the MPS Information Model].">
+        <mal:field name="executionInstance" nullable="true" comment="Reference to the instance of an executable body for the Activity (procedure, action sequence, etc.) [external to the MPS Information Model].">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="returnData" nullable="true" comment="Optional return data from the planning process, provided as a list of ID-Value pairs.  This can be used to provide additional information required by the User to interpret the planned activity.">
+        <mal:field name="returnData" nullable="false" comment="Optional return data from the planning process, provided as a list of ID-Value pairs.  This can be used to provide additional information required by the User to interpret the planned activity.">
           <mal:type area="MAL" list="true" name="NamedValue"/>
         </mal:field>
         <mal:field name="statusInfo" nullable="true" comment="StatusInfo provides the reason for entering the Terminated State and is customisable, but if the following conditions exist then the specified text shall be used:
@@ -1704,11 +1704,11 @@ Events may be either Predicted or Potential.  Events that are predictable either
         <mal:field name="eventType" nullable="true" comment="Enables a planning system to customise behavior for events, such as their presentation in displays, based on the specified value.">
           <mal:type area="MAL" list="false" name="String"/>
         </mal:field>
-        <mal:field name="argDefs" nullable="true" comment="List of argument definitions.">
+        <mal:field name="argDefs" nullable="false" comment="List of argument definitions.">
           <mal:type area="MPS" list="true" name="ArgDef"/>
         </mal:field>
-        <mal:field name="eventDefinitions" nullable="true" comment="List of child event definitions.  For a single event, this list shall be empty; for a group event, the list shall be populated.">
-          <mal:type area="MPS" list="true" name="ObjectRef&lt;EventDefinition&gt;"/>
+        <mal:field name="eventDefinitions" nullable="false" comment="List of child event definitions.  For a single event, this list shall be empty; for a group event, the list shall be populated.">
+          <mal:type area="MPS" list="true" name="ObjectRef(EventDefinition)"/>
         </mal:field>
       </mal:composite>
 
@@ -1720,18 +1720,18 @@ EventInstances may be referenced as a related event by an ActivityInstance, so t
           <mal:type area="MAL" list="false" name="Object"/>
         </mal:extends>
         <mal:field name="definition" nullable="false" comment="Reference to the EventDefinition">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;EventDefinition&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(EventDefinition)"/>
         </mal:field>
         <mal:field name="sourceEvent" nullable="true" comment="Reference to an external source event (e.g. NAV predicted event, or CSS contact event)">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="events" nullable="true" comment="List of references to child EventInstances.  For a single event, this list is empty; for a group event, the list will be populated.">
-          <mal:type area="MPS" list="true" name="ObjectRef&lt;EventInstance&gt;"/>
+        <mal:field name="events" nullable="false" comment="List of references to child EventInstances.  For a single event, this list is empty; for a group event, the list will be populated.">
+          <mal:type area="MPS" list="true" name="ObjectRef(EventInstance)"/>
         </mal:field>
         <mal:field name="eventTime" nullable="true" comment="Predicted or actual time of the event.  EventTime is nullable: it can be predicted without an eventTime (e.g. if position based)">
           <mal:type area="MAL" list="false" name="FineTime"/>
         </mal:field>
-        <mal:field name="arguments" nullable="true" comment="Argument values for each argument defined in the EventDefinition.">
+        <mal:field name="arguments" nullable="false" comment="Argument values for each argument defined in the EventDefinition.">
           <mal:type area="MPS" list="true" name="Argument"/>
         </mal:field>
         <mal:field name="eventStatus" nullable="false" comment="Current status of the event instance (see event state model in §3.2.3.2)">
@@ -1775,7 +1775,7 @@ The value is only nullable in the context of a Resource definition (planning con
         <mal:field name="description" nullable="false" comment="Description of the re-usable RequestDefinition.">
           <mal:type area="MAL" list="false" name="String"/>
         </mal:field>
-        <mal:field name="argDefs" nullable="true" comment="List of argument definitions.  Arguments may be referenced in ActivityDetails and constraints.">
+        <mal:field name="argDefs" nullable="false" comment="List of argument definitions.  Arguments may be referenced in ActivityDetails and constraints.">
           <mal:type area="MPS" list="true" name="ArgDef"/>
         </mal:field>
         <mal:field name="standingOrder" nullable="false" comment="A flag that indicates whether the planning request is for a repetitive standing order (unbounded other than by the validity period), or is a one-off request.  If it is a standing order, then the ActivityNode must include specification of the repetition criteria.  Note that a one-off request can still include repetition.">
@@ -1802,16 +1802,16 @@ Note:  RequestInstances may be created from a RequestDefinition that has defined
           <mal:type area="MAL" list="false" name="Time"/>
         </mal:field>
         <mal:field name="definition" nullable="true" comment="Reference to the RequestDefinition from which the RequestInstance was created, if a planning request template was used.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;RequestDefinition&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(RequestDefinition)"/>
         </mal:field>
         <mal:field name="planningPeriod" nullable="false" comment="Specifies which planning period the planning request applies to.  Planning period IDs are mission specific, but can be used to indicate mission phase; planning cycle; or “semester” in observatory missions.">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="validityTimes" nullable="true" comment="Validity period for the planning request, expressed as one or more time windows.  The planning request must be satisfied within this period.
+        <mal:field name="validityTimes" nullable="false" comment="Validity period for the planning request, expressed as one or more time windows.  The planning request must be satisfied within this period.
 Only one of validityTime or validityEvent should be present in a planning request.">
           <mal:type area="MPS" list="true" name="TimeWindow"/>
         </mal:field>
-        <mal:field name="validityEvents" nullable="true" comment="Validity period for the planning request, expressed as one or more event windows.  The planning request must be satisfied within this period.
+        <mal:field name="validityEvents" nullable="false" comment="Validity period for the planning request, expressed as one or more event windows.  The planning request must be satisfied within this period.
 Only one of validityTime or validityEvent should be present in a planning request.">
           <mal:type area="MPS" list="true" name="EventWindow"/>
         </mal:field>
@@ -1820,12 +1820,12 @@ If null, the default time system is used (see 3.2.8).">
           <mal:type area="MAL" list="false" name="String"/>
         </mal:field>
         <mal:field name="user" nullable="false" comment="The User ID for the person or organisation raising the planning request.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;User&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(PlanningUser)"/>
         </mal:field>
         <mal:field name="description" nullable="false" comment="Description of the request.">
           <mal:type area="MAL" list="false" name="String"/>
         </mal:field>
-        <mal:field name="arguments" nullable="true" comment="List of named argument values.  If created from a template planning request , this will include the arguments defined in the RequestDefinition.">
+        <mal:field name="arguments" nullable="false" comment="List of named argument values.  If created from a template planning request , this will include the arguments defined in the RequestDefinition.">
           <mal:type area="MPS" list="true" name="Argument"/>
         </mal:field>
         <mal:field name="standingOrder" nullable="false" comment="A flag that indicates whether the planning request is for a repetitive standing order (unbounded other than by the validity period), or is a one-off request.  If it is a standing order, then the ActivityNode must include specification of the repetition criteria.  Note that a one-off request can still include repetition.">
@@ -1839,7 +1839,7 @@ If null, the default time system is used (see 3.2.8).">
         </mal:field>
         <mal:field name="inputPlanRef" nullable="true" comment="Reference to an existing Plan (output of one planning function) submitted as a planning request to another planning function in the context of a distributed or hierarchical planning system.
 Only one of inputPlanRef and inputPlan should be present within the planning request.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="inputPlan" nullable="true" comment="An existing Plan  (output of one planning function) submitted as a planning request to another planning function in the context of a distributed or hierarchical planning system.  The Plan is embedded within the planning request.
 Only one of inputPlanRef and inputPlan should be present within the planning request.">
@@ -1851,10 +1851,10 @@ Only one of inputPlanRef and inputPlan should be present within the planning req
         <mal:field name="status" nullable="false" comment="Current status of the ActivityInstance (see planning request state model in §3.2.5.2)">
           <mal:type area="MPS" list="false" name="RequestStatusEnum"/>
         </mal:field>
-        <mal:field name="outputPlanRef" nullable="true" comment="Reference to the output Plan(s) that contains the activities resulting from the planning request.  Where multiple alternate plans have been generated, these may be listed here.">
-          <mal:type area="MPS" list="true" name="ObjectRef&lt;Plan&gt;"/>
+        <mal:field name="outputPlanRef" nullable="false" comment="Reference to the output Plan(s) that contains the activities resulting from the planning request.  Where multiple alternate plans have been generated, these may be listed here.">
+          <mal:type area="MPS" list="true" name="ObjectRef(Plan)"/>
         </mal:field>
-        <mal:field name="returnData" nullable="true" comment="Optional return data from the planning process, provided as a list of ID-Value pairs.  This can be used to provide additional information required by the User to interpret the planned operations.">
+        <mal:field name="returnData" nullable="false" comment="Optional return data from the planning process, provided as a list of ID-Value pairs.  This can be used to provide additional information required by the User to interpret the planned operations.">
           <mal:type area="MAL" list="true" name="NamedValue"/>
         </mal:field>
         <mal:field name="statusInfo" nullable="true" comment="StatusInfo provides the reason for termination and is customisable, but if the following conditions exist then the specified text shall be used:
@@ -1883,10 +1883,10 @@ It may also be used to provide the reason for rejection.">
         </mal:field>
         <mal:field name="precursorPlan" nullable="true" comment="Reference to a precursor (or predecessor) Plan from which the changes are detailed in the Plan.  This may be used if there is an iterative re-planning cycle in which successive plans overlap, or where a previous Plan has been updated through re-planning.  If there is no precursor, then the Plan must be a self-standing full plan.
 If the Plan is a Patch Plan, then a precursor plan must be specified.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="targetPlan" nullable="true" comment="Applicable only for patch plans, this is a reference to the target Plan.  This target Plan is the result of applying the patch plan to the precursor Plan and is distinct from the identity of the patch plan itself.  Patch plans are not permitted in the context of a planning request.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="information" nullable="false" comment="Contains header information relating to the Plan, including its originator and validity period.">
           <mal:type area="MPS" list="false" name="PlanInformation"/>
@@ -1931,17 +1931,8 @@ The information held on planning users is outside the scope of this standard.  T
         <mal:field name="timeSystem" nullable="false" comment="Specifies the default time system used by the MPS system (see 3.1.3).">
           <mal:type area="MAL" list="false" name="String"/>
         </mal:field>
-        <mal:field name="customConfig" nullable="true" comment="Optional set of custom configuration parameters defined as a set of named values.">
+        <mal:field name="customConfig" nullable="false" comment="Optional set of custom configuration parameters defined as a set of named values.">
           <mal:type area="MAL" list="true" name="NamedValue"/>
-        </mal:field>
-      </mal:composite>
-
-      <mal:composite name="User" shortFormPart="702" comment="E1: ">
-        <mal:extends>
-          <mal:type area="MAL" list="false" name="Object"/>
-        </mal:extends>
-        <mal:field name="username" nullable="true" comment="The username.">
-          <mal:type area="MAL" list="true" name="String"/>
         </mal:field>
       </mal:composite>
 
@@ -1978,7 +1969,7 @@ Specifies a related Event (or Event Group) for the ActivityInstance.  Argument s
         <mal:field name="repetition" nullable="true" comment="Optional Repetition specification.">
           <mal:type area="MPS" list="false" name="Repetition"/>
         </mal:field>
-        <mal:field name="activities" nullable="true" comment="Set of ActivityDetails.">
+        <mal:field name="activities" nullable="false" comment="Set of ActivityDetails.">
           <mal:type area="MPS" list="true" name="ActivityDetails"/>
         </mal:field>
       </mal:composite>
@@ -1988,9 +1979,9 @@ Specifies a related Event (or Event Group) for the ActivityInstance.  Argument s
           <mal:type area="MPS" list="false" name="ActivityDetails"/>
         </mal:extends>
         <mal:field name="activityDefinition" nullable="false" comment="Reference to the ActivityDefinition.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;ActivityDefinition&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(ActivityDefinition)"/>
         </mal:field>
-        <mal:field name="argSpecs" nullable="true" comment="Set of argument specifications for each argument definition contained in the referenced activity definition.  These supply a value for each argument, or an expression to enable the value to be derived.">
+        <mal:field name="argSpecs" nullable="false" comment="Set of argument specifications for each argument definition contained in the referenced activity definition.  These supply a value for each argument, or an expression to enable the value to be derived.">
           <mal:type area="MPS" list="true" name="ArgSpec"/>
         </mal:field>
         <mal:field name="constraints" nullable="true" comment="Set of Constraints specific to the ActivityInstance to be created.">
@@ -1999,7 +1990,7 @@ Specifies a related Event (or Event Group) for the ActivityInstance.  Argument s
         <mal:field name="subPlan" nullable="true" comment="Optional association of the ActivityInstance with a defined sub-plan.">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="tags" nullable="true" comment="Set of tags that may be used to associate the Activity with an identified subset of the Plan, grouping activities by operational responsibility (controller/group/system) or other criteria.">
+        <mal:field name="tags" nullable="false" comment="Set of tags that may be used to associate the Activity with an identified subset of the Plan, grouping activities by operational responsibility (controller/group/system) or other criteria.">
           <mal:type area="MAL" list="true" name="String"/>
         </mal:field>
       </mal:composite>
@@ -2010,16 +2001,16 @@ ActivityUpdates may be distributed to subscribing applications, including status
           <mal:type area="MPS" list="false" name="PlanDetailUpdate"/>
         </mal:extends>
         <mal:field name="activityInstance" nullable="false" comment="Reference to the ActivityInstance to which the status update relates.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;ActivityInstance&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(ActivityInstance)"/>
         </mal:field>
         <mal:field name="timestamp" nullable="true" comment="Time of status update.
 Only nullable in the context of an updateActivity operation:  the timestamp must be provided when reporting ActivityInstance status.">
           <mal:type area="MAL" list="false" name="Time"/>
         </mal:field>
         <mal:field name="plan" nullable="true" comment="Optional reference to the Plan containing the ActivityInstance to which this update pertains.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
-        <mal:field name="arguments" nullable="true" comment="Argument values.">
+        <mal:field name="arguments" nullable="false" comment="Argument values.">
           <mal:type area="MPS" list="true" name="Argument"/>
         </mal:field>
         <mal:field name="start" nullable="true" comment="Optionally specifies the trigger that initiates the ActivityInstance: may be time, position or event based.">
@@ -2034,16 +2025,16 @@ Only nullable in the context of an updateActivity operation:  the timestamp must
         <mal:field name="subPlan" nullable="true" comment="Optional association of the ActivityInstance with a defined sub-plan.">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="tags" nullable="true" comment="Set of tags that may be used to associate the ActivityInstance with an identified subset of the Plan, grouping activities by operational responsibility (controller/group/system) or other criteria.">
+        <mal:field name="tags" nullable="false" comment="Set of tags that may be used to associate the ActivityInstance with an identified subset of the Plan, grouping activities by operational responsibility (controller/group/system) or other criteria.">
           <mal:type area="MAL" list="true" name="String"/>
         </mal:field>
         <mal:field name="status" nullable="false" comment="Current status of the ActivityInstance">
           <mal:type area="MPS" list="false" name="ActivityStatusEnum"/>
         </mal:field>
-        <mal:field name="execInst" nullable="true" comment="Reference to the instance of an executable body for the ActivityInstance (procedure, action sequence, etc.) [external to the MPS information model].">
+        <mal:field name="executionInstance" nullable="true" comment="Reference to the instance of an executable body for the ActivityInstance (procedure, action sequence, etc.) [external to the MPS information model].">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="returnData" nullable="true" comment="Optional return data from the planning process, provided as a list of ID-Value pairs.  This can be used to provide additional information required by the User to interpret the planned activity.">
+        <mal:field name="returnData" nullable="false" comment="Optional return data from the planning process, provided as a list of ID-Value pairs.  This can be used to provide additional information required by the User to interpret the planned activity.">
           <mal:type area="MAL" list="true" name="NamedValue"/>
         </mal:field>
         <mal:field name="statusInfo" nullable="true" comment="StatusInfo provides the reason for entering the Terminated State and is customisable, but if the following conditions exist then the specified text shall be used:
@@ -2066,7 +2057,7 @@ Only nullable in the context of an updateActivity operation:  the timestamp must
           <mal:type area="MPS" list="false" name="ActivityDetails"/>
         </mal:extends>
         <mal:field name="plan" nullable="false" comment="Reference to the Plan into which the ActivityInstance is to be inserted.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="start" nullable="true" comment="Optionally specifies the trigger that initiates the ActivityInstance: may be time, position or event based.">
           <mal:type area="MPS" list="false" name="Trigger"/>
@@ -2075,9 +2066,9 @@ Only nullable in the context of an updateActivity operation:  the timestamp must
           <mal:type area="MPS" list="false" name="Trigger"/>
         </mal:field>
         <mal:field name="activityDefinition" nullable="false" comment="Reference to the ActivityDefinition.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;ActivityDefinition&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(ActivityDefinition)"/>
         </mal:field>
-        <mal:field name="argSpecs" nullable="true" comment="Set of argument specifications for each argument definition contained in the referenced activity definition.  These supply a value for each argument, or an expression to enable the value to be derived.">
+        <mal:field name="argSpecs" nullable="false" comment="Set of argument specifications for each argument definition contained in the referenced activity definition.  These supply a value for each argument, or an expression to enable the value to be derived.">
           <mal:type area="MPS" list="true" name="ArgSpec"/>
         </mal:field>
         <mal:field name="constraints" nullable="true" comment="Set of Constraints specific to the ActivityInstance to be created.">
@@ -2086,7 +2077,7 @@ Only nullable in the context of an updateActivity operation:  the timestamp must
         <mal:field name="subPlan" nullable="true" comment="Optional association of the ActivityInstance with a defined sub-plan.">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="tags" nullable="true" comment="Set of tags that may be used to associate the Activity with a subset of the Plan, grouping activities by operational responsibility (controller/group/system) or other criteria.">
+        <mal:field name="tags" nullable="false" comment="Set of tags that may be used to associate the Activity with a subset of the Plan, grouping activities by operational responsibility (controller/group/system) or other criteria.">
           <mal:type area="MAL" list="true" name="String"/>
         </mal:field>
       </mal:composite>
@@ -2096,10 +2087,10 @@ Only nullable in the context of an updateActivity operation:  the timestamp must
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="activityInstance" nullable="false" comment="Reference to an ActivityInstance.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;ActivityInstance&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(ActivityInstance)"/>
         </mal:field>
         <mal:field name="plan" nullable="true" comment="Optional reference to the Plan containing the ActivityInstance.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="status" nullable="false" comment="Current Status of the ActivityInstance">
           <mal:type area="MPS" list="false" name="ActivityStatusEnum"/>
@@ -2116,7 +2107,7 @@ EventUpdates may be distributed to subscribing applications, including status di
           <mal:type area="MPS" list="false" name="PlanDetailUpdate"/>
         </mal:extends>
         <mal:field name="eventInstance" nullable="false" comment="Reference to the EventInstance to which the status update relates.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;EventInstance&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(EventInstance)"/>
         </mal:field>
         <mal:field name="timestamp" nullable="false" comment="Time of status update.">
           <mal:type area="MAL" list="false" name="Time"/>
@@ -2124,7 +2115,7 @@ EventUpdates may be distributed to subscribing applications, including status di
         <mal:field name="eventTime" nullable="false" comment="Predicted or actual time of the event.  EventTime is nullable: it can be predicted without an EventTime (e.g. if position based)">
           <mal:type area="MAL" list="false" name="FineTime"/>
         </mal:field>
-        <mal:field name="arguments" nullable="true" comment="Argument values.">
+        <mal:field name="arguments" nullable="false" comment="Argument values.">
           <mal:type area="MPS" list="true" name="Argument"/>
         </mal:field>
         <mal:field name="eventStatus" nullable="false" comment="Current status of the EventInstance.">
@@ -2143,15 +2134,15 @@ EventUpdates may be distributed to subscribing applications, including status di
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="plan" nullable="false" comment="Reference to the Plan into which the Event is to be inserted.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="eventDefinition" nullable="false" comment="Reference to the EventDefinition ">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;EventDefinition&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(EventDefinition)"/>
         </mal:field>
         <mal:field name="eventTime" nullable="false" comment="Specifies the predicted or actual time of the event.  For an inserted event this must be present.">
           <mal:type area="MAL" list="false" name="FineTime"/>
         </mal:field>
-        <mal:field name="arguments" nullable="true" comment="Argument values.">
+        <mal:field name="arguments" nullable="false" comment="Argument values.">
           <mal:type area="MPS" list="true" name="Argument"/>
         </mal:field>
       </mal:composite>
@@ -2174,7 +2165,7 @@ EventUpdates may be distributed to subscribing applications, including status di
         </mal:extends>
         <mal:field name="resource" nullable="false" comment="Object Type: Resource
 Reference to a Resource">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Resource&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Resource)"/>
         </mal:field>
         <mal:field name="profileSegments" nullable="false" comment="Set of Profile Segments">
           <mal:type area="MPS" list="true" name="ProfileSegment"/>
@@ -2227,7 +2218,7 @@ The data type of the value can be any valid MAL Attribute type, but must match t
         </mal:extends>
         <mal:field name="resource" nullable="false" comment="Object Type: Resource
 Reference to a Resource">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Resource&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Resource)"/>
         </mal:field>
         <mal:field name="profileSegments" nullable="false" comment="Set of RelativeProfileSegments">
           <mal:type area="MPS" list="true" name="RelativeProfileSegment"/>
@@ -2282,7 +2273,7 @@ Resource updates are also effectively contained within a Plan to describe the pr
         </mal:extends>
         <mal:field name="resource" nullable="false" comment="Object Type: Resource
 Reference to the Resource to which the value update relates.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Resource&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Resource)"/>
         </mal:field>
         <mal:field name="timestamp" nullable="false" comment="Time of Resource value update.">
           <mal:type area="MAL" list="false" name="Time"/>
@@ -2298,7 +2289,7 @@ Planning request status updates may be distributed to subscribing applications, 
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="requestInstance" nullable="false" comment="Reference to the planning request instance to which the status update relates.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;RequestInstance&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(RequestInstance)"/>
         </mal:field>
         <mal:field name="timestamp" nullable="false" comment="Time of status update.">
           <mal:type area="MAL" list="false" name="Time"/>
@@ -2306,10 +2297,10 @@ Planning request status updates may be distributed to subscribing applications, 
         <mal:field name="status" nullable="false" comment="Current status of the planning request.">
           <mal:type area="MPS" list="false" name="RequestStatusEnum"/>
         </mal:field>
-        <mal:field name="outputPlanRef" nullable="true" comment="Reference to the Plan that contains the planned activities resulting from the planning request.  Note that this is only available once the planning request has been processed and successfully planned.  The outputPlanRef may be updated following iterative planning cycles or re-planning.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+        <mal:field name="outputPlanRef" nullable="false" comment="Reference to the Plan that contains the planned activities resulting from the planning request.  Note that this is only available once the planning request has been processed and successfully planned.  The outputPlanRef may be updated following iterative planning cycles or re-planning.">
+          <mal:type area="MPS" list="true" name="ObjectRef(Plan)"/>
         </mal:field>
-        <mal:field name="returnData" nullable="true" comment="Optional return data from the planning process, provided as a list of ID-Value pairs.  This can be used to provide additional information required by the User to interpret the planned operations.">
+        <mal:field name="returnData" nullable="false" comment="Optional return data from the planning process, provided as a list of ID-Value pairs.  This can be used to provide additional information required by the User to interpret the planned operations.">
           <mal:type area="MAL" list="true" name="NamedValue"/>
         </mal:field>
         <mal:field name="statusInfo" nullable="true" comment="StatusInfo provides the reason for termination and is customisable, but if the following conditions exist then the specified text shall be used:
@@ -2338,16 +2329,16 @@ Its structure is equivalent to that of RequestInstance, but omitting the identit
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
         <mal:field name="definition" nullable="true" comment="Reference to the RequestDefinition from which the RequestInstance was created, if a planning request template was used.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;RequestDefinition&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(RequestDefinition)"/>
         </mal:field>
         <mal:field name="planningPeriod" nullable="false" comment="Specifies which planning period the planning request applies to.  Planning period IDs are mission specific, but can be used to indicate mission phase; planning cycle; or “semester” in observatory missions.">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="validityTimes" nullable="true" comment="Validity period for the planning request, expressed as one or more time windows.  The planning request must be satisfied within this period.
+        <mal:field name="validityTimes" nullable="false" comment="Validity period for the planning request, expressed as one or more time windows.  The planning request must be satisfied within this period.
 Only one of validityTime or validityEvent should be present in a planning request.">
           <mal:type area="MPS" list="true" name="TimeWindow"/>
         </mal:field>
-        <mal:field name="validityEvents" nullable="true" comment="Validity period for the planning request, expressed as one or more event windows.  The planning request must be satisfied within this period.
+        <mal:field name="validityEvents" nullable="false" comment="Validity period for the planning request, expressed as one or more event windows.  The planning request must be satisfied within this period.
 Only one of validityTime or validityEvent should be present in a planning request.">
           <mal:type area="MPS" list="true" name="EventWindow"/>
         </mal:field>
@@ -2356,12 +2347,12 @@ If null, the default time system for is used (see 3.2.8).">
           <mal:type area="MAL" list="false" name="String"/>
         </mal:field>
         <mal:field name="user" nullable="false" comment="The User ID for the person or organisation raising the planning request.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;User&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(PlanningUser)"/>
         </mal:field>
         <mal:field name="description" nullable="false" comment="Description of the request.">
           <mal:type area="MAL" list="false" name="String"/>
         </mal:field>
-        <mal:field name="arguments" nullable="true" comment="List of named argument values.  If created from a template planning request , this will include the arguments defined in the RequestDefinition.">
+        <mal:field name="arguments" nullable="false" comment="List of named argument values.  If created from a template planning request , this will include the arguments defined in the RequestDefinition.">
           <mal:type area="MPS" list="true" name="Argument"/>
         </mal:field>
         <mal:field name="standingOrder" nullable="false" comment="A flag that indicates whether the planning request is for a repetitive standing order (unbounded other than by the validity period), or is a one-off request.  If it is a standing order, then the ActivityNode must include specification of the repetition criteria.  Note that a one-off request can still include repetition.">
@@ -2375,7 +2366,7 @@ If null, the default time system for is used (see 3.2.8).">
         </mal:field>
         <mal:field name="inputPlanRef" nullable="true" comment="Reference to an existing Plan (output of one planning function) submitted as a planning request to another planning function in the context of a distributed or hierarchical planning system.
 Only one of inputPlanRef and inputPlan should be present within the planning request.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="inputPlan" nullable="true" comment="An existing Plan  (output of one planning function) submitted as a planning request to another planning function in the context of a distributed or hierarchical planning system.  The Plan is embedded within the planning request.
 Only one of inputPlanRef and inputPlan should be present within the planning request.">
@@ -2391,7 +2382,7 @@ Only one of inputPlanRef and inputPlan should be present within the planning req
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="instance" nullable="false" comment="Reference to the RequestInstance created in response to a SubmitRequest operation, or the updated version of the RequestInstance following an UpdateRequest operation.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;RequestInstance&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(RequestInstance)"/>
         </mal:field>
         <mal:field name="userReference" nullable="false" comment="User supplied reference for the planning request.  This is distinct from the instanceID of the RequestInstance that is assigned by the planning function.">
           <mal:type area="MAL" list="false" name="Identifier"/>
@@ -2403,7 +2394,7 @@ Only one of inputPlanRef and inputPlan should be present within the planning req
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="requestInstance" nullable="false" comment="Reference to the RequestInstance (key and version).">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;RequestInstance&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(RequestInstance)"/>
         </mal:field>
         <mal:field name="userReference" nullable="true" comment="Optional user supplied reference for the planning request.  This is distinct from the instancetID of the RequestInstance that is assigned by the planning function.">
           <mal:type area="MAL" list="false" name="Identifier"/>
@@ -2412,21 +2403,21 @@ Only one of inputPlanRef and inputPlan should be present within the planning req
           <mal:type area="MAL" list="false" name="Time"/>
         </mal:field>
         <mal:field name="definition" nullable="true" comment="Reference to the RequestDefinition from which the RequestInstance was created, if a planning request template was used.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;RequestDefinition&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(RequestDefinition)"/>
         </mal:field>
         <mal:field name="planningPeriod" nullable="false" comment="Specifies which planning period the planning request applies to.  Planning period IDs are mission specific, but can be used to indicate mission phase; planning cycle; or “semester” in observatory missions.">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="validityTime" nullable="true" comment="Validity period for the planning request, expressed as one or more time windows.  The planning request must be satisfied within this period.
+        <mal:field name="validityTime" nullable="false" comment="Validity period for the planning request, expressed as one or more time windows.  The planning request must be satisfied within this period.
 Only one of validityTime or validityEvent should be present in a planning request.">
           <mal:type area="MPS" list="true" name="TimeWindow"/>
         </mal:field>
-        <mal:field name="validityEvent" nullable="true" comment="Validity period for the planning request, expressed as one or more event windows.  The planning request must be satisfied within this period.
+        <mal:field name="validityEvent" nullable="false" comment="Validity period for the planning request, expressed as one or more event windows.  The planning request must be satisfied within this period.
 Only one of validityTime or validityEvent should be present in a planning request.">
           <mal:type area="MPS" list="true" name="EventWindow"/>
         </mal:field>
         <mal:field name="user" nullable="false" comment="The User ID for the person or organisation raising the planning request.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;User&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(PlanningUser)"/>
         </mal:field>
         <mal:field name="description" nullable="false" comment="Description of the request.">
           <mal:type area="MAL" list="false" name="String"/>
@@ -2441,7 +2432,7 @@ Only one of validityTime or validityEvent should be present in a planning reques
           <mal:type area="MPS" list="false" name="RequestStatusEnum"/>
         </mal:field>
         <mal:field name="outputPlanRef" nullable="true" comment="Reference to the output Plan that contains the activities resulting from the planning request.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="statusInfo" nullable="true" comment="StatusInfo provides the reason for termination and is customisable, but includes:
 - Completed (all constituent activities completed successfully)
@@ -2459,20 +2450,20 @@ Note: all attributes are nullable and it is valid to specify a RequestFilter wit
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="domain" nullable="true" comment="Domain of the RequestInstance">
-          <mal:type area="MAL" list="false" name="Identifier"/>
+        <mal:field name="domain" nullable="false" comment="Domain of the RequestInstance.  An ordered list representing a domain hierarchy, “*” can be used to represent a wildcard at that level.  An empty list corresponds to a null filter.">
+          <mal:type area="MAL" list="true" name="Identifier"/>
         </mal:field>
         <mal:field name="instanceID" nullable="true" comment="Identity (key and version) of the RequestInstance">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;RequestInstance&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(RequestInstance)"/>
         </mal:field>
         <mal:field name="creationDate" nullable="true" comment="Creation date-time of the RequestInstance version.">
           <mal:type area="MAL" list="false" name="Time"/>
         </mal:field>
         <mal:field name="definitionID" nullable="true" comment="Identity (key and version) of the RequestDefinition from which the RequestInstance was created.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;RequestDefinition&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(RequestDefinition)"/>
         </mal:field>
         <mal:field name="userID" nullable="true" comment="userID of the User who initiated the RequestInstance">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;User&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(PlanningUser)"/>
         </mal:field>
         <mal:field name="userReference" nullable="true" comment="Reference supplied by User when submitting the RequestInstance.">
           <mal:type area="MAL" list="false" name="Identifier"/>
@@ -2481,7 +2472,7 @@ Note: all attributes are nullable and it is valid to specify a RequestFilter wit
           <mal:type area="MPS" list="false" name="RequestStatusEnum"/>
         </mal:field>
         <mal:field name="outputPlanRef" nullable="true" comment="Reference to the output Plan generated in response to the RequestInstance">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
       </mal:composite>
 
@@ -2528,10 +2519,10 @@ If Null, the default time system is used (see 3.2.8).">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="plannedEvents" nullable="true" comment="List of planned events contained within the Plan.">
+        <mal:field name="plannedEvents" nullable="false" comment="List of planned events contained within the Plan.">
           <mal:type area="MPS" list="true" name="EventInstance"/>
         </mal:field>
-        <mal:field name="plannedActivities" nullable="true" comment="List of planned activities contained within the Plan.">
+        <mal:field name="plannedActivities" nullable="false" comment="List of planned activities contained within the Plan.">
           <mal:type area="MPS" list="true" name="ActivityInstance"/>
         </mal:field>
       </mal:composite>
@@ -2550,7 +2541,7 @@ If Null, the default time system is used (see 3.2.8).">
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="revisedPlan" nullable="false" comment="Reference to the Plan (key and version) with respect to which the plan revisions are detailed.  Typically this is the precursor Plan , but any other Plan can be used.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="revisionStart" nullable="false" comment="Start time of the earliest revision.">
           <mal:type area="MAL" list="false" name="Time"/>
@@ -2558,7 +2549,7 @@ If Null, the default time system is used (see 3.2.8).">
         <mal:field name="revisionEnd" nullable="false" comment="End time of the latest revision.">
           <mal:type area="MAL" list="false" name="Time"/>
         </mal:field>
-        <mal:field name="itemRevisions" nullable="true" comment="Ordered list (earliest to latest) of revisions to planned items (activity and event instances).">
+        <mal:field name="itemRevisions" nullable="false" comment="Ordered list (earliest to latest) of revisions to planned items (activity and event instances).">
           <mal:type area="MPS" list="true" name="ItemRevision"/>
         </mal:field>
       </mal:composite>
@@ -2591,7 +2582,7 @@ PlanUpdates may be distributed to subscribing applications, including status dis
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="plan" nullable="false" comment="Reference to the Plan (key and version) to which the status update relates.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="timestamp" nullable="false" comment="Time of status update.">
           <mal:type area="MAL" list="false" name="Time"/>
@@ -2617,17 +2608,17 @@ PlanUpdates may be distributed to subscribing applications, including status dis
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="plan" nullable="false" comment="Reference to the Plan (key and version) to which the summary status relates.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="isPatchPlan" nullable="false" comment="Flag indicating if the Plan is a patch plan that only contains details of the changes from the precursor Plan.  A patch plan must have a precursor.  It must also include a single PlanRevision relative to the precursor Plan.">
           <mal:type area="MAL" list="false" name="Boolean"/>
         </mal:field>
         <mal:field name="precursorPlan" nullable="true" comment="Reference to a precursor (or predecessor) Plan from which the changes are detailed in the Plan.  This may be used if there is an iterative re-planning cycle in which successive plans overlap, or where a previous Plan has been updated through re-planning.  If there is no precursor, then the Plan must be a self-standing full plan.
 If the Plan is a Patch Plan, then a precursor plan must be specified.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="targetPlan" nullable="true" comment="Applicable only for patch plans, this is a reference to the target Plan.  This target Plan is the result of applying the patch plan to the precursor Plan and is distinct from the identity of the patch plan itself.  Patch plans are not permitted in the context of a planning request.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="information" nullable="false" comment="Contains header information relating to the Plan, including its originator and validity period.">
           <mal:type area="MPS" list="false" name="PlanInformation"/>
@@ -2648,7 +2639,7 @@ If the Plan is a Patch Plan, then a precursor plan must be specified.">
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="plan" nullable="false" comment="Reference to the Plan (key and version) to which the status relates.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="status" nullable="false" comment="Current status of the Plan.">
           <mal:type area="MPS" list="false" name="PlanStatusEnum"/>
@@ -2703,10 +2694,10 @@ Sub-plans are not defined as objects within the MPS model.  Individual activitie
           <mal:type area="MAL" list="false" name="Boolean"/>
         </mal:field>
         <mal:field name="precursorPlan" nullable="true" comment="Query for Plans with the specified precursor Plan.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="targetPlan" nullable="true" comment="Applicable only for patch plans.  Query for patch plans that have the specified target Plan.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="originator" nullable="true" comment="Query for Plans with the specified originator.">
           <mal:type area="MAL" list="false" name="Identifier"/>
@@ -2720,14 +2711,14 @@ Sub-plans are not defined as objects within the MPS model.  Individual activitie
         <mal:field name="isAlternate" nullable="true" comment="Query for Plans that are or are not Alternate plans.">
           <mal:type area="MAL" list="false" name="Boolean"/>
         </mal:field>
-        <mal:field name="status" nullable="true" comment="Query for Plans that have a current status matching one of the specified list of Plan statuses.">
+        <mal:field name="status" nullable="false" comment="Query for Plans that have a current status matching one of the specified list of Plan statuses.">
           <mal:type area="MPS" list="true" name="PlanStatusEnum"/>
         </mal:field>
-        <mal:field name="containedEvents" nullable="true" comment="Query for Plans that contain EventInstances whose definition matches one of the specified list of EventDefinitions.">
-          <mal:type area="MPS" list="true" name="ObjectRef&lt;EventDefinition&gt;"/>
+        <mal:field name="containedEvents" nullable="false" comment="Query for Plans that contain EventInstances whose definition matches one of the specified list of EventDefinitions.">
+          <mal:type area="MPS" list="true" name="ObjectRef(EventDefinition)"/>
         </mal:field>
-        <mal:field name="containedActivities" nullable="true" comment="Query for Plans that contain ActivityInstances whose definition matches one of the specified list of ActivityDefinitions.">
-          <mal:type area="MPS" list="true" name="ObjectRef&lt;ActivityDefinition&gt;"/>
+        <mal:field name="containedActivities" nullable="false" comment="Query for Plans that contain ActivityInstances whose definition matches one of the specified list of ActivityDefinitions.">
+          <mal:type area="MPS" list="true" name="ObjectRef(ActivityDefinition)"/>
         </mal:field>
       </mal:composite>
 
@@ -2736,15 +2727,16 @@ Sub-plans are not defined as objects within the MPS model.  Individual activitie
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="sourcePlan" nullable="false" comment="Reference to the Plan of which the partial plan is a selected subset.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
-        <mal:field name="domain" nullable="true" comment="Selection criterion based on the domain of contained ActivityInstances.">
-          <mal:type area="MAL" list="false" name="Identifier"/>
+        <mal:field name="domain" nullable="false" comment="Selection criterion based on the domain of contained ActivityInstances.
+An ordered list representing a domain hierarchy, “*” can be used to represent a wildcard at that level.  An empty list corresponds to a null filter.">
+          <mal:type area="MAL" list="true" name="Identifier"/>
         </mal:field>
         <mal:field name="subPlan" nullable="true" comment="Selection criterion based on the subPlan of contained ActivityInstances.">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="tags" nullable="true" comment="Selection criterion based on tags associated with contained ActivityInstances">
+        <mal:field name="tags" nullable="false" comment="Selection criterion based on tags associated with contained ActivityInstances">
           <mal:type area="MAL" list="true" name="String"/>
         </mal:field>
         <mal:field name="partialPlanStart" nullable="true" comment="Selection criterion indicating the start of a range of time, position or events associated with contained ActivityInstances.">
@@ -2762,14 +2754,15 @@ Sub-plans are not defined as objects within the MPS model.  Individual activitie
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="domain" nullable="true" comment="Domain of the Plan">
-          <mal:type area="MAL" list="false" name="Identifier"/>
+        <mal:field name="domain" nullable="false" comment="Domain of the Plan
+An ordered list representing a domain hierarchy, “*” can be used to represent a wildcard at that level.  An empty list corresponds to a null filter.">
+          <mal:type area="MAL" list="true" name="Identifier"/>
         </mal:field>
         <mal:field name="planID" nullable="true" comment="Identity (key and version) of the Plan">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="precursorPlan" nullable="true" comment="Identity (key and version) of the precursor Plan">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
         <mal:field name="status" nullable="true" comment="Current status (enum) of the Plan">
           <mal:type area="MPS" list="false" name="PlanStatusEnum"/>
@@ -2787,15 +2780,16 @@ Sub-plans are not defined as objects within the MPS model.  Individual activitie
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="sourcePlan" nullable="false" comment="Reference to the Plan of which the partial plan is a selected subset.">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;Plan&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(Plan)"/>
         </mal:field>
-        <mal:field name="domain" nullable="true" comment="Selection criterion based on the domain of contained ActivityInstances.">
-          <mal:type area="MAL" list="false" name="Identifier"/>
+        <mal:field name="domain" nullable="false" comment="Selection criterion based on the domain of contained ActivityInstances.
+An ordered list representing a domain hierarchy, “*” can be used to represent a wildcard at that level.  An empty list corresponds to a null filter.">
+          <mal:type area="MAL" list="true" name="Identifier"/>
         </mal:field>
         <mal:field name="subPlan" nullable="true" comment="Selection criterion based on the subPlan of contained ActivityInstances.">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="tags" nullable="true" comment="Selection criterion based on tags associated with contained ActivityInstances">
+        <mal:field name="tags" nullable="false" comment="Selection criterion based on tags associated with contained ActivityInstances">
           <mal:type area="MAL" list="true" name="String"/>
         </mal:field>
         <mal:field name="partialPlanStart" nullable="true" comment="Selection criterion indicating the start of a range of time, position or events associated with contained ActivityInstances.">
@@ -2819,7 +2813,7 @@ Sub-plans are not defined as objects within the MPS model.  Individual activitie
         <mal:field name="description" nullable="false" comment="Description of the function.">
           <mal:type area="MAL" list="false" name="String"/>
         </mal:field>
-        <mal:field name="argDefs" nullable="true" comment="List of argument definitions.">
+        <mal:field name="argDefs" nullable="false" comment="List of argument definitions.">
           <mal:type area="MPS" list="true" name="ArgDef"/>
         </mal:field>
       </mal:composite>
@@ -2831,7 +2825,7 @@ Sub-plans are not defined as objects within the MPS model.  Individual activitie
         <mal:field name="function" nullable="false" comment="ID of a specific FunctionDefinition.">
           <mal:type area="MAL" list="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="argSpecs" nullable="true" comment="Set of argument specifications for each argument definition contained in the referenced function definition.  These supply a value for each argument, or an expression to enable the value to be derived.">
+        <mal:field name="argSpecs" nullable="false" comment="Set of argument specifications for each argument definition contained in the referenced function definition.  These supply a value for each argument, or an expression to enable the value to be derived.">
           <mal:type area="MPS" list="true" name="ArgSpec"/>
         </mal:field>
       </mal:composite>
@@ -3442,7 +3436,7 @@ The attributes of the complex resource constraint extend or modify those of the 
         <mal:field name="endOffset" nullable="false" comment="Offset from endRef that specifies the end of the constraint period.">
           <mal:type area="MPS" list="false" name="Expression"/>
         </mal:field>
-        <mal:field name="value" nullable="false" comment="ResourceProfile specifying an evolving value over time against which the value of the planning resource is to be compared.
+        <mal:field name="valueProfile" nullable="false" comment="ResourceProfile specifying an evolving value over time against which the value of the planning resource is to be compared.
 See §3.2.4.2">
           <mal:type area="MPS" list="false" name="RelativeResourceProfile"/>
         </mal:field>
@@ -3538,7 +3532,7 @@ Default = false">
         <mal:field name="pointingTemplate" nullable="false" comment="Corresponds to one of those defined in the NAV Pointing Request Message standard.  A MAL::String is used to represent the pointing template type to allow for future extension.">
           <mal:type area="MAL" list="false" name="String"/>
         </mal:field>
-        <mal:field name="pointingArguments" nullable="true" comment="The argument list is consistent with the referenced template by name.  Physical values are represented as a pair of arguments containing the value and units respectively.  Position and Direction type arguments are represented as strings containing the literal value.">
+        <mal:field name="pointingArguments" nullable="false" comment="The argument list is consistent with the referenced template by name.  Physical values are represented as a pair of arguments containing the value and units respectively.  Position and Direction type arguments are represented as strings containing the literal value.">
           <mal:type area="MAL" list="true" name="NamedValue"/>
         </mal:field>
       </mal:composite>
@@ -3733,7 +3727,7 @@ See §3.2.4.2">
           <mal:type area="MPS" list="false" name="Trigger"/>
         </mal:extends>
         <mal:field name="triggerEvent" nullable="false" comment="Reference to an EventInstance">
-          <mal:type area="MPS" list="false" name="ObjectRef&lt;EventInstance&gt;"/>
+          <mal:type area="MPS" list="false" name="ObjectRef(EventInstance)"/>
         </mal:field>
         <mal:field name="timeOffset" nullable="false" comment="Time offset from the EventInstance">
           <mal:type area="MAL" list="false" name="Duration"/>
