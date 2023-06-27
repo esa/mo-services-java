@@ -29,6 +29,7 @@ import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeInfo;
+import esa.mo.tools.stubgen.specification.TypeRef;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
@@ -121,10 +122,10 @@ public class JavaServiceInfo {
                 AnyTypeReference subsKeys = lop.getMessages().getSubscriptionKeys();
 
                 if (null != subsKeys) {
-                    List<TypeUtils.TypeRef> types = TypeUtils.getTypeListViaXSDAny(subsKeys.getAny());
+                    List<TypeRef> types = TypeUtils.getTypeListViaXSDAny(subsKeys.getAny());
                     if (null != types && !types.isEmpty()) {
                         String prefix = "";
-                        for (TypeUtils.TypeRef type : types) {
+                        for (TypeRef type : types) {
                             if (type.isField()) {
                                 NamedElementReferenceWithCommentType field = type.getFieldRef();
                                 arrayList.append(prefix);

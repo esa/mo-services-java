@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.docx;
 
 import esa.mo.tools.stubgen.GeneratorBase;
+import esa.mo.tools.stubgen.specification.TypeRef;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.AbstractWriter;
 import esa.mo.xsd.AreaType;
@@ -152,18 +153,18 @@ public class DocxBaseWriter extends AbstractWriter {
     }
 
     public void addCell(int index, int[] widths, boolean includeMessageFieldNames,
-            boolean oldStyle, AreaType area, ServiceType service, TypeUtils.TypeRef type, String shade, int span) throws IOException {
+            boolean oldStyle, AreaType area, ServiceType service, TypeRef type, String shade, int span) throws IOException {
         String str = createTypeHyperLink(includeMessageFieldNames, oldStyle, area, service, type);
         actualAddCell(index, widths, str, shade, true, span, false, false);
     }
 
     public void addCell(int index, int[] widths, boolean includeMessageFieldNames,
-            boolean oldStyle, AreaType area, ServiceType service, List<TypeUtils.TypeRef> types, String shade) throws IOException {
+            boolean oldStyle, AreaType area, ServiceType service, List<TypeRef> types, String shade) throws IOException {
         addCell(index, widths, includeMessageFieldNames, oldStyle, area, service, types, shade, 1);
     }
 
     public void addCell(int index, int[] widths, boolean includeMessageFieldNames,
-            boolean oldStyle, AreaType area, ServiceType service, List<TypeUtils.TypeRef> types, String shade, int span) throws IOException {
+            boolean oldStyle, AreaType area, ServiceType service, List<TypeRef> types, String shade, int span) throws IOException {
         StringBuilder buf = new StringBuilder();
 
         for (int i = 0; i < types.size(); i++) {
@@ -181,7 +182,7 @@ public class DocxBaseWriter extends AbstractWriter {
     }
 
     public void addCellNullability(int index, int[] widths,
-            List<TypeUtils.TypeRef> types, String shade, int span) throws IOException {
+            List<TypeRef> types, String shade, int span) throws IOException {
         StringBuilder buf = new StringBuilder();
 
         for (int i = 0; i < types.size(); i++) {
@@ -367,17 +368,14 @@ public class DocxBaseWriter extends AbstractWriter {
     }
 
     private String createTypeHyperLink(boolean includeMessageFieldNames, boolean oldStyle,
-            AreaType area, ServiceType service, TypeUtils.TypeRef ref) throws IOException {
+            AreaType area, ServiceType service, TypeRef ref) throws IOException {
         String prefix = "";
-        String typeName;
         String postfix = "";
-        boolean hyperlink;
         TypeReference type;
 
         if (includeMessageFieldNames && ref.isField()) {
             NamedElementReferenceWithCommentType field = ref.getFieldRef();
             type = field.getType();
-            hyperlink = area.getName().equalsIgnoreCase(type.getArea());
 
             if (oldStyle) {
                 if (field.getName() != null && field.getName().length() > 0) {
@@ -399,7 +397,6 @@ public class DocxBaseWriter extends AbstractWriter {
             }
         } else {
             type = ref.getTypeRef();
-            hyperlink = area.getName().equalsIgnoreCase(type.getArea());
 
             if (type.isList()) {
                 prefix = "List<";
@@ -407,7 +404,9 @@ public class DocxBaseWriter extends AbstractWriter {
             }
         }
 
-        typeName = GeneratorUtils.createFQTypeName(area, service, type, false);
+        boolean hyperlink = area.getName().equalsIgnoreCase(type.getArea());
+        String typeName = GeneratorUtils.createFQTypeName(area, service, type, false);
+
         // No need to append the MAL prefix as those types are very well known
         if (typeName.startsWith("MAL::")) {
             typeName = typeName.replace("MAL::", "");
@@ -426,8 +425,9 @@ public class DocxBaseWriter extends AbstractWriter {
         if (isObjectRef) {
             buf.append(escape("ObjectRef<"));
         }
-        String temp = linkTo.replace("ObjectRef<", "");
-        String objectRefRemoved = temp.replace(">", "");
+
+        String temp = linkTo.replace("ObjectRef<", "").replace(">", "");
+        String objectRefRemoved = temp.replace("ObjectRef(", "").replace(")", "");
 
         buf.append("</w:t></w:r>");
 

@@ -27,7 +27,7 @@ import esa.mo.tools.stubgen.docx.DocxWriter;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
-import esa.mo.tools.stubgen.specification.TypeUtils.TypeRef;
+import esa.mo.tools.stubgen.specification.TypeRef;
 import esa.mo.xsd.*;
 import esa.mo.xsd.EnumerationType.Item;
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class GeneratorDocx extends GeneratorDocument {
         2250, 1685, 2801, 1185, 1185
     };
     private static final int[] OPERATION_OVERVIEW_TABLE_WIDTHS = new int[]{
-        2300, 1700, 1000, 4000
+        2000, 1700, 800, 4500
     };
     private static final int[] OPERATION_ERROR_TABLE_WIDTHS = new int[]{
         2250, 2250, 4500
