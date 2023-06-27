@@ -491,7 +491,13 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeObjectRef(final ObjectRef value) throws IllegalArgumentException, MALException {
         try {
             checkForNull(value);
-            value.getDomain().encode(this);
+            int length = value.getDomain().size();
+            outputStream.writeUnsignedInt(length);
+
+            for (int i = 0; i < length; i++) {
+                outputStream.writeString(value.getDomain().get(i).getValue());
+            }
+
             outputStream.writeString(value.getArea().getValue());
             outputStream.writeString(value.getType().getValue());
             outputStream.writeString(value.getKey().getValue());

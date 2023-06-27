@@ -143,7 +143,11 @@ public abstract class Decoder implements MALDecoder {
     @Override
     public ObjectRef decodeObjectRef() throws MALException {
         IdentifierList decodedDomain = new IdentifierList();
-        decodedDomain.decode(this);
+        int length = sourceBuffer.readUnsignedInt();
+
+        for (int i = 0; i < length; i++) {
+            decodedDomain.add(new Identifier(sourceBuffer.readString()));
+        }
 
         return new ObjectRef(decodedDomain,
                 new Identifier(sourceBuffer.readString()),

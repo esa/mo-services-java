@@ -1951,7 +1951,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         file.addClassCloseStatement();
-
         file.flush();
     }
 
@@ -1960,10 +1959,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         long asf = ((long) area.getNumber()) << AREA_BIT_SHIFT;
         asf += ((long) area.getVersion()) << VERSION_BIT_SHIFT;
-        if (0 <= sf) {
+        if (sf >= 0) {
             asf += sf;
         } else {
             asf += Long.parseLong(Integer.toHexString((int) sf).toUpperCase().substring(2), 16);
+        }
+        if (service != null) {
+            asf += ((long) service.getNumber()) << SERVICE_BIT_SHIFT;
         }
 
         addShortForm(file, asf);
