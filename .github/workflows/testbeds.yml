@@ -11,7 +11,7 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
       - name: Run Maven install
-        run: mvn --batch-mode --update-snapshots -P ESA -DskipTests install
+        run: mvn --batch-mode --update-snapshots -P ESA -DskipTests clean install
       - name: Cache Maven local repository
         uses: actions/cache@v3
         with:
@@ -27,7 +27,7 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Run Maven install
-        run: mvn --batch-mode --update-snapshots -P ESA -DskipTests install
+        run: mvn --batch-mode --update-snapshots -P ESA -DskipTests clean install
       - name: Cache Maven local repository
         uses: actions/cache@v3
         with:
@@ -43,7 +43,7 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
       - name: Run Maven install
-        run: mvn --batch-mode --update-snapshots -P ESA -DskipTests install
+        run: mvn --batch-mode --update-snapshots -P ESA -DskipTests clean install
       - name: Cache Maven local repository
         uses: actions/cache@v3
         with:
@@ -81,7 +81,7 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-services-java-${{ hashFiles('**/pom.xml') }}
       - name: Run the testbeds install
-        run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests install # disable malspp for now
+        run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests clean install # disable malspp for now
         working-directory: testbeds
       - name: Cache Maven local repository
         uses: actions/cache@v3
@@ -104,7 +104,7 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-services-java-${{ hashFiles('**/pom.xml') }}
       - name: Run the testbeds install
-        run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests install # disable malspp for now
+        run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests clean install # disable malspp for now
         working-directory: testbeds
       - name: Cache Maven local repository
         uses: actions/cache@v3
@@ -127,7 +127,7 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-services-java-${{ hashFiles('**/pom.xml') }}
       - name: Run the testbeds install
-        run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests install # disable malspp for now
+        run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests clean install # disable malspp for now
         working-directory: testbeds
       - name: Cache Maven local repository
         uses: actions/cache@v3
