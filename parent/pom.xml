@@ -438,7 +438,7 @@
                     <version>3.0.0</version>
                     <executions>
                         <execution>
-                            <id>deploy</id>
+                            <id>default-deploy</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy</goal>
