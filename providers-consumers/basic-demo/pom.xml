@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>POM</artifactId>
-        <version>8.1</version>
+        <version>8.2</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>MAL_DEMO</artifactId>
     <packaging>jar</packaging>
-    <version>8.1</version>
+    <version>8.2</version>
 
     <name>ESA MAL Java Demo</name>
     <description>A Demo Java application for the CCSDS MAL</description>

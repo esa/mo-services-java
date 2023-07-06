@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>POM</artifactId>
-        <version>8.1</version>
+        <version>8.2</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>REACTOR_STUBGEN</artifactId>
-    <version>8.1</version>
+    <version>8.2</version>
     <packaging>pom</packaging>
     <name>ESA MO Stub Generator Reactor</name>
   
