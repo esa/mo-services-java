@@ -5,7 +5,15 @@
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-Version 8 (TBD)
+Version 8.2 (TBD)
+	- mal-impl: Protect the Interaction Timeout thread from crashing on exceptions unhandled by the application
+	- pom: Avoid uploading artifacts twice when using maven deploy plugin
+
+Version 8.1 (2022.11.15)
+	- tcpip: Decouple bind IP address with the hostname/alias presented in MAL URIs
+	- tcpip: Allow concurrent graceful shutdown of parallel connections
+
+Version 8.0 (2021.01.30)
 	- Merged multiple repos into a single one
 	- Increased the Java supported version from 1.6 to 1.8 (Java 8 has Long Term Support until 2030)
 	- Improvements in the TCP/IP implementation
