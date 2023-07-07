@@ -430,6 +430,9 @@
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <detectJavaApiLink>false</detectJavaApiLink>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <!-- explicitly define maven-deploy-plugin after other to force exec order -->
