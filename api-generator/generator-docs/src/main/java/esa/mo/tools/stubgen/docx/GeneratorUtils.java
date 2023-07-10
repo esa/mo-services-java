@@ -64,7 +64,7 @@ public class GeneratorUtils {
             buf.append("::");
         }
 
-        if ((null != typeService) && (0 < typeService.length() && !typeService.equalsIgnoreCase(myService))) {
+        if ((typeService != null) && (typeService.length() > 0 && !typeService.equalsIgnoreCase(myService))) {
             buf.append(typeService);
             buf.append("::");
         }

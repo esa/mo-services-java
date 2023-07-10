@@ -22,7 +22,6 @@ package esa.mo.tools.stubgen.docx;
 
 import esa.mo.tools.stubgen.GeneratorBase;
 import esa.mo.tools.stubgen.specification.TypeRef;
-import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.AbstractWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.NamedElementReferenceWithCommentType;
@@ -56,7 +55,7 @@ public class DocxBaseWriter extends AbstractWriter {
     }
 
     public void addFigureCaption(String caption) throws IOException {
-        if (null != caption) {
+        if (caption != null) {
             buffer.append(makeLine(2, "<w:p>", false));
             buffer.append(makeLine(3, "<w:pPr><w:pStyle w:val=\"TableTitle\"/></w:pPr><w:r><w:t xml:space=\"preserve\">Figure </w:t></w:r>", false));
             buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"0\" w:name=\"F_" + caption + "\"/>", false));
