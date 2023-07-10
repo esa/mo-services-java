@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.TypeId;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
@@ -333,9 +334,9 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
                 MALMessageHeader header = ctx.getHeader();
                 MALArea area = MALContextFactory
                         .lookupArea(header.getServiceArea(), header.getServiceVersion());
-                if (null != area) {
+                if (area != null) {
                     MALService service = area.getServiceByNumber(header.getService());
-                    if (null != service) {
+                    if (service != null) {
                         MALOperation op = service.getOperationByNumber(header.getOperation());
 
                         if (op != null) {
@@ -405,8 +406,11 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
                     try {
                         messageParts[i] = decodeBodyPart(benc, ctx, sf);
                     } catch (Exception ex) {
+                        TypeId typeId = new TypeId((Long) sf);
                         Logger.getLogger(GENMessageBody.class.getName()).log(Level.SEVERE,
-                                "Error decoding Body part with index: " + i, ex);
+                                "Error decoding Body part (with typeId: "
+                                + typeId.toString()
+                                + ") with index: " + i, ex);
                         throw ex;
                     }
                 }

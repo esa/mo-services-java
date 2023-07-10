@@ -283,12 +283,12 @@ public abstract class BaseBinaryDecoder extends Decoder {
                         LOGGER.log(Level.FINER, "Read from input stream: {0}", read);
                         if (read < 0) {
                             throw new MALException(
-                                    "Unable to read required amount from source stream: end of file.");
+                                    "(1) Unable to read required amount from source stream: end of file.");
                         }
                         this.contentLength += read;
                     } catch (IOException ex) {
                         throw new MALException(
-                                "Unable to read required amount from source stream", ex);
+                                "(2) Unable to read required amount from source stream", ex);
                     }
                 }
             }
