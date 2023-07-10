@@ -501,7 +501,7 @@ public abstract class Encoder implements MALListEncoder {
             outputStream.writeString(value.getArea().getValue());
             outputStream.writeString(value.getType().getValue());
             outputStream.writeString(value.getKey().getValue());
-            outputStream.writeUnsignedLong32(value.getObjectVersion().getValue());
+            outputStream.writeSignedLong(value.getObjectVersion().getValue());
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }

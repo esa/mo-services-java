@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2023      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -41,11 +41,18 @@ public class ObjectRef<T extends Element> implements Attribute {
      * Default constructor.
      */
     public ObjectRef() {
-        this.domain = new IdentifierList();
-        this.area = new Identifier();
-        this.type = new Identifier();
-        this.key = new Identifier();
-        this.objectVersion = new UInteger();
+        this(new IdentifierList(), new Identifier(), new Identifier(),
+                new Identifier(), new UInteger());
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param objectRef The object reference to be cloned.
+     */
+    public ObjectRef(final ObjectRef objectRef) {
+        this(objectRef.getDomain(), objectRef.getArea(), objectRef.getType(),
+                objectRef.getKey(), objectRef.getObjectVersion());
     }
 
     /**

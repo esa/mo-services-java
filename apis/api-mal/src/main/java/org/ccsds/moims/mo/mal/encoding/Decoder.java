@@ -153,7 +153,7 @@ public abstract class Decoder implements MALDecoder {
                 new Identifier(sourceBuffer.readString()),
                 new Identifier(sourceBuffer.readString()),
                 new Identifier(sourceBuffer.readString()),
-                new UInteger(sourceBuffer.readUnsignedLong32())
+                new UInteger(sourceBuffer.readSignedLong())
         );
     }
 
