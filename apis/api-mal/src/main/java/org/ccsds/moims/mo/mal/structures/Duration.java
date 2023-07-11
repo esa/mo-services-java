@@ -29,7 +29,10 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class Duration implements Attribute {
 
-    private double value;
+    private static final long serialVersionUID = Attribute.DURATION_SHORT_FORM;
+
+    // The duration in seconds
+    private final double value;
 
     /**
      * Default constructor.
@@ -39,12 +42,21 @@ public class Duration implements Attribute {
     }
 
     /**
-     * Initialiser constructor.
+     * Constructor.
      *
-     * @param value Value to initialise with.
+     * @param seconds The Duration in seconds.
      */
-    public Duration(final double value) {
-        this.value = value;
+    public Duration(final double seconds) {
+        this.value = seconds;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param nanoseconds The Duration in nanoseconds.
+     */
+    public Duration(final long nanoseconds) {
+        this.value = ((double) nanoseconds) / 1000000000;
     }
 
     @Override
@@ -53,19 +65,26 @@ public class Duration implements Attribute {
     }
 
     /**
-     * Returns the value of this type.
+     * Returns the duration in seconds. Deprecated because the Duration might be
+     * returned in different units. So, it is better to select the correct
+     * getter with the desired units.
      *
      * @return the value.
      */
+    @Deprecated
     public double getValue() {
+        return getInSeconds();
+    }
+
+    /**
+     * Returns the duration in seconds.
+     *
+     * @return the value.
+     */
+    public double getInSeconds() {
         return value;
     }
 
-//  This might be required for XML serialisation and technologies that use that.  
-//  public void setValue(int value)
-//  {
-//    this.value = value;
-//  }
     @Override
     public Long getShortForm() {
         return Attribute.DURATION_SHORT_FORM;
@@ -124,5 +143,4 @@ public class Duration implements Attribute {
     public String toString() {
         return String.valueOf(value);
     }
-    private static final long serialVersionUID = Attribute.DURATION_SHORT_FORM;
 }
