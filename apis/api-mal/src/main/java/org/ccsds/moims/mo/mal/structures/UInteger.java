@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class UInteger implements Attribute {
 
+    private static final long serialVersionUID = Attribute.UINTEGER_SHORT_FORM;
     private long value;
 
     /**
@@ -53,7 +54,7 @@ public class UInteger implements Attribute {
         if (value < 0) {
             throw new IllegalArgumentException("UInteger argument must not be negative");
         }
-        if (UInteger.MAX_VALUE < value) {
+        if (value > UInteger.MAX_VALUE) {
             throw new IllegalArgumentException(
                     "UInteger argument must not be greater than " + UInteger.MAX_VALUE);
         }
@@ -74,11 +75,6 @@ public class UInteger implements Attribute {
         return value;
     }
 
-//  This might be required for XML serialisation and technologies that use that.  
-//  public void setValue(long value)
-//  {
-//    this.value = value;
-//  }
     @Override
     public Long getShortForm() {
         return Attribute.UINTEGER_SHORT_FORM;
@@ -137,5 +133,4 @@ public class UInteger implements Attribute {
     public String toString() {
         return String.valueOf(value);
     }
-    private static final long serialVersionUID = Attribute.UINTEGER_SHORT_FORM;
 }
