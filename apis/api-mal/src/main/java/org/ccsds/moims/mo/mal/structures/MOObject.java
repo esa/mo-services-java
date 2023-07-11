@@ -20,6 +20,8 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import java.util.Objects;
+
 /**
  * The MOObject abstract class represents the MO Object type.
  */
@@ -88,5 +90,47 @@ public abstract class MOObject implements Composite {
     public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
         objectIdentity = (ObjectIdentity) decoder.decodeElement(new ObjectIdentity());
         return this;
+    }
+
+    /**
+     * Returns a String object representing this type's value.
+     *
+     * @return a string representation of the value of this object.
+     */
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append("objectIdentity=");
+        buf.append(objectIdentity);
+        return buf.toString();
+    }
+
+    /**
+     * Compares this object to the specified object. The result is true if and
+     * only if the argument is not null and is the same type that contains the
+     * same value as this object.
+     *
+     * @param obj The object to compare with.
+     * @return true if the objects are the same; false otherwise.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof MOObject)) {
+            return false;
+        }
+        return this.objectIdentity.equals(((MOObject) obj).getObjectIdentity());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + (objectIdentity == null ? 0 : objectIdentity.hashCode());
+        return hash;
     }
 }
