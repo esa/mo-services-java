@@ -34,6 +34,17 @@ public abstract class Enumeration implements Element {
     protected Integer ordinal;
 
     /**
+     * The ordinal constructor, takes as a parameter the index of the enumerated
+     * item, i.e. its position in the enumeration declaration starting from
+     * zero.
+     *
+     * @param ordinal The index of the enumerated item.
+     */
+    protected Enumeration(final int ordinal) {
+        this.ordinal = ordinal;
+    }
+
+    /**
      * Returns the index of the enumerated item.
      *
      * @return the index of the enumerated item.
@@ -55,40 +66,16 @@ public abstract class Enumeration implements Element {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (o == null) {
+    public boolean equals(final Object other) {
+        if (other == null) {
             return false;
         }
-
-        if (o == this) {
+        if (other == this) {
             return true;
         }
-
-        if (o instanceof Enumeration) {
-            return 0 == ordinal.compareTo(((Enumeration) o).ordinal);
+        if (other instanceof Enumeration) {
+            return 0 == ordinal.compareTo(((Enumeration) other).ordinal);
         }
         return false;
     }
-
-    /**
-     * The ordinal constructor, takes as a parameter the index of the enumerated
-     * item, i.e. its position in the enumeration declaration starting from
-     * zero.
-     *
-     * @param ordinal The index of the enumerated item.
-     */
-    protected Enumeration(final int ordinal) {
-        this.ordinal = ordinal;
-    }
-    
-//  This might be required for XML serialisation and technologies that use that.  
-//  public final void setOrdinal(int ordinal)
-//  {
-//    this.ordinal = ordinal;
-//  }
-//  This might be required for XML serialisation and technologies that use that.  
-//  protected Enumeration()
-//  {
-//    this.ordinal = 0;
-//  }
 }
