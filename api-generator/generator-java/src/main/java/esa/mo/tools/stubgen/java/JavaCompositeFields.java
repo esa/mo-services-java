@@ -44,14 +44,12 @@ public class JavaCompositeFields {
 
     public CompositeField createCompositeElementsDetails(LanguageWriter file, boolean checkType,
             String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
-        CompositeField ele;
-
         String typeName = elementType.getName();
         boolean isObjectRef = GeneratorBase.isObjectRef(typeName);
 
         if (elementType.isList()) {
             String fqTypeName;
-            
+
             if (generator.isAttributeNativeType(elementType)) {
                 fqTypeName = generator.createElementType(file, StdStrings.MAL, null, typeName + "List");
             } else {
@@ -72,14 +70,15 @@ public class JavaCompositeFields {
                 encCall = StdStrings.ELEMENT;
             }
 
-            ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
+            return new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
                     canBeNull, false, encCall, "(" + fqTypeName + ") ",
                     StdStrings.ELEMENT, true, newCall, comment);
         } else if (generator.isAttributeType(elementType)) {
             AttributeTypeDetails details = generator.getAttributeDetails(elementType);
             String fqTypeName = generator.createElementType(file, elementType, isStructure);
-            ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(),
-                    canBeNull, false, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
+            return new CompositeField(details.getTargetType(), elementType, fieldName,
+                    elementType.isList(), canBeNull, false, typeName, "",
+                    typeName, false, "new " + fqTypeName + "()", comment);
         } else {
             TypeReference elementTypeIndir = elementType;
 
@@ -94,24 +93,22 @@ public class JavaCompositeFields {
             if (generator.isEnum(elementType)) {
                 EnumerationType typ = generator.getEnum(elementType);
                 String firstEle = fqTypeName + "." + typ.getItem().get(0).getValue();
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
+                return new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
                         canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ",
                         StdStrings.ELEMENT, true, firstEle, comment);
             } else if (StdStrings.ATTRIBUTE.equals(typeName)) {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
+                return new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
                         canBeNull, false, StdStrings.ATTRIBUTE, "(" + fqTypeName + ") ",
                         StdStrings.ATTRIBUTE, false, "", comment);
             } else if (StdStrings.ELEMENT.equals(typeName)) {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
+                return new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
                         canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ",
                         StdStrings.ELEMENT, false, "", comment);
             } else {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
+                return new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
                         canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ",
                         StdStrings.ELEMENT, true, "new " + fqTypeName + "()", comment);
             }
         }
-
-        return ele;
     }
 }

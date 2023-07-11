@@ -397,8 +397,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             return type;
         }
 
-        String retVal = "";
-
         if (type.contains("ObjectRef<") || type.contains("ObjectRef(")) {
             String internalType = extractTypeFromObjectRef(type);
             internalType = createElementType(file, area, service, extraPackageLevel, internalType);
@@ -412,6 +410,8 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRefList");
         }
 
+        String retVal = "";
+
         if (isAttributeType(TypeUtils.createTypeReference(area, service, type, false))) {
             AttributeTypeDetails details = getAttributeDetails(area, type);
             retVal = details.getTargetType();
@@ -421,7 +421,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             } else {
                 retVal += config.getAreaPackage(area) + area.toLowerCase() + config.getNamingSeparator();
 
-                if (null != service) {
+                if (service != null) {
                     retVal += service.toLowerCase() + config.getNamingSeparator();
                 }
 
@@ -459,8 +459,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param name The name of the type.
      * @param details The new details.
      */
-    protected void addAttributeType(final String area, final String name,
-            AttributeTypeDetails details) {
+    protected void addAttributeType(final String area, final String name, AttributeTypeDetails details) {
         attributeTypesMap.put(new TypeKey(area, null, name), details);
     }
 
@@ -531,8 +530,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param type the composite to inspect.
      * @return a list of the element details to populate.
      */
-    protected List<CompositeField> createCompositeSuperElementsList(TargetWriter file,
-            TypeReference type) {
+    protected List<CompositeField> createCompositeSuperElementsList(TargetWriter file, TypeReference type) {
         List<CompositeField> lst = new LinkedList<>();
 
         if (type != null && !StdStrings.COMPOSITE.equals(type.getName())) {
@@ -586,10 +584,10 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * type Composite.
      */
     protected TypeReference getCompositeElementSuperType(TypeReference type) {
-        if ((null != type) && (!StdStrings.COMPOSITE.equals(type.getName()))) {
+        if ((type != null) && (!StdStrings.COMPOSITE.equals(type.getName()))) {
             CompositeType theType = compositeTypesMap.get(new TypeKey(type));
 
-            if ((null != theType) && (null != theType.getExtends())
+            if ((theType != null) && (theType.getExtends() != null)
                     && (!StdStrings.COMPOSITE.equals(theType.getExtends().getType().getName()))) {
                 return theType.getExtends().getType();
             }
@@ -611,7 +609,8 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         if (!summary.isComService()) {
             for (CapabilitySetType capabilitySet : service.getCapabilitySet()) {
                 for (OperationType op : capabilitySet.getSendIPOrSubmitIPOrRequestIP()) {
-                    createOperationSummary(op, capabilitySet.getNumber(), summary);
+                    OperationSummary ele = extractOperationSummary(op, capabilitySet.getNumber());
+                    summary.getOperations().add(ele);
                 }
             }
         }
@@ -627,13 +626,10 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         return logger;
     }
 
-    private OperationSummary createOperationSummary(OperationType op,
-            int capNum,
-            ServiceSummary summary) {
-        OperationSummary ele = null;
+    private OperationSummary extractOperationSummary(OperationType op, int capNum) {
         if (op instanceof SendOperationType) {
             SendOperationType lop = (SendOperationType) op;
-            ele = new OperationSummary(InteractionPatternEnum.SEND_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.SEND_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSend().getAny())),
                     lop.getMessages().getSend().getComment(),
@@ -642,7 +638,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     null, "");
         } else if (op instanceof SubmitOperationType) {
             SubmitOperationType lop = (SubmitOperationType) op;
-            ele = new OperationSummary(InteractionPatternEnum.SUBMIT_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.SUBMIT_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSubmit().getAny())),
                     lop.getMessages().getSubmit().getComment(),
@@ -651,7 +647,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     null, "");
         } else if (op instanceof RequestOperationType) {
             RequestOperationType lop = (RequestOperationType) op;
-            ele = new OperationSummary(InteractionPatternEnum.REQUEST_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.REQUEST_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaXSDAny(lop.getMessages().getRequest().getAny())),
                     lop.getMessages().getRequest().getComment(),
@@ -662,7 +658,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     lop.getMessages().getResponse().getComment());
         } else if (op instanceof InvokeOperationType) {
             InvokeOperationType lop = (InvokeOperationType) op;
-            ele = new OperationSummary(InteractionPatternEnum.INVOKE_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.INVOKE_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaXSDAny(lop.getMessages().getInvoke().getAny())),
                     lop.getMessages().getInvoke().getComment(),
@@ -675,7 +671,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     lop.getMessages().getResponse().getComment());
         } else if (op instanceof ProgressOperationType) {
             ProgressOperationType lop = (ProgressOperationType) op;
-            ele = new OperationSummary(InteractionPatternEnum.PROGRESS_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.PROGRESS_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaXSDAny(lop.getMessages().getProgress().getAny())),
                     lop.getMessages().getProgress().getComment(),
@@ -696,18 +692,14 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             List<TypeInfo> riList = TypeUtils.convertTypeReferences(this,
                     TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny()));
 
-            ele = new OperationSummary(InteractionPatternEnum.PUBSUB_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.PUBSUB_OP, op, capNum,
                     subKeysList, "",
                     null, "",
                     riList, "",
                     riList, lop.getMessages().getPublishNotify().getComment());
         }
 
-        if (null != summary) {
-            summary.getOperations().add(ele);
-        }
-
-        return ele;
+        return null;
     }
 
     private void loadTypesFromObjectList(String area, String service, List<Object> typeList) {

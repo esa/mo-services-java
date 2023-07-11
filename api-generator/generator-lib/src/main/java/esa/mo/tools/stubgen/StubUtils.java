@@ -230,7 +230,7 @@ public abstract class StubUtils {
      * @return the concatenated string or null.
      */
     public static String conditionalAdd(String prefix, String cond) {
-        if ((null != cond) && (0 < cond.length())) {
+        if ((cond != null) && (cond.length() > 0)) {
             return prefix + cond;
         }
 
@@ -248,8 +248,8 @@ public abstract class StubUtils {
         StringBuilder buf = new StringBuilder("");
 
         for (String str : args) {
-            if ((null != str) && !str.isEmpty()) {
-                if (preArgs || (0 < buf.length())) {
+            if ((str != null) && !str.isEmpty()) {
+                if (preArgs || (buf.length() > 0)) {
                     buf.append(", ");
                 }
                 buf.append(str);

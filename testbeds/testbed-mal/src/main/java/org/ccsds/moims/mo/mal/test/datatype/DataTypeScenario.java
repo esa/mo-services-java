@@ -24,11 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Vector;
-import java.util.stream.Collectors;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -37,14 +33,12 @@ import org.ccsds.moims.mo.mal.structures.CompositeList;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.StringList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
-import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
@@ -54,7 +48,6 @@ import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
 import org.ccsds.moims.mo.malprototype.structures.Auto;
 import org.ccsds.moims.mo.malprototype.structures.Lamborghini;
 import org.ccsds.moims.mo.malprototype.structures.Porsche;
-import org.ccsds.moims.mo.malprototype.structures.StructureWithAbstractFieldList;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -614,10 +607,10 @@ public class DataTypeScenario extends LoggingBase {
             res = getDataTestStub().testPolymorphicMalCompositeList(TestData.testAbstractCompositeMultipleTypedList);
              *
              * END OF COMPILING ERROR
-             */
             res = null;
             rv = subMultiTest(TestData.testAbstractCompositeMultipleTypedList,
                     res, rv, "testAbstractCompositeMultipleTypedList");
+             */
             logMessage("The current Java mapping prevents this test from compiling.");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "polymorphicMalCompositeListsWork");
@@ -647,7 +640,7 @@ public class DataTypeScenario extends LoggingBase {
             // heterogeneous concrete list type List<Element>
             res = getDataTestStub().testPolymorphicMalElementList(TestData.testAbstractCompositeMultipleTypedList);
             rv = subMultiTest(TestData.testAbstractCompositeMultipleTypedList,
-                    res, rv, "testAbstractCompositeMultipleTypedList");
+                    res, rv, "polymorphicMalElementListsWork");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "polymorphicMalElementListsWork");
         }
@@ -660,7 +653,7 @@ public class DataTypeScenario extends LoggingBase {
      */
     public String polymorphicObjectRefTypesWork() throws MALInteractionException, MALException {
         logMessage("Starting polymorphic ObjectRef types parameter test...");
-        String rv;
+        String rv = null;
         TestPolymorphicObjectRefTypesResponse res;
         try {
             res = getDataTestStub().testPolymorphicObjectRefTypes(
@@ -668,23 +661,24 @@ public class DataTypeScenario extends LoggingBase {
                     TestData.testGarage.getCarsAsPorsches(),
                     TestData.testGarage.getCarsAsAutos(),
                     TestData.testGarage.getCarsAsObjects());
+
             rv = subMultiTest(TestData.testGarage,
-                    res.get_Garage0(), null, "polymorphicObjectRefTypesWork param 1");
+                    res.get_Garage0(), rv, "polymorphicObjectRefTypesWork param 1");
             // temporarily removed tests
-//            rv = subMultiTest(TestData.testGarage.getCourtesyCarAsPorsche(),
-//                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 2");
-//            rv = subMultiTest(TestData.testGarage.getCourtesyCarAsAuto(),
-//                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 3");
-//            rv = subMultiTest(TestData.testGarage.getCourtesyCarAsObject(),
-//                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 4");
+            rv = subMultiTest(TestData.testGarage.getCarsAsPorsches(),
+                    res.get_ObjectRefList1(), rv, "polymorphicObjectRefTypesWork param 2");
+            rv = subMultiTest(TestData.testGarage.getCarsAsAutos(),
+                    res.get_ObjectRefList2(), rv, "polymorphicObjectRefTypesWork param 3");
+            rv = subMultiTest(TestData.testGarage.getCarsAsObjects(),
+                    res.get_ObjectRefList3(), rv, "polymorphicObjectRefTypesWork param 4");
 //            rv = subMultiTest(TestData.testGarage.getCarsAsPorsches(),
 //                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 5");
 //            rv = subMultiTest(TestData.testGarage.getCarsAsAutos(),
 //                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 6");
 //            rv = subMultiTest(TestData.testGarage.getCarsAsObjects(),
 //                    res.get_TODO(), rv, "polymorphicObjectRefTypesWork param 7");
-            rv = subMultiTest(null,
-                    "compilation errors", rv, "polymorphicObjectRefTypesWork compilation errors");
+//            rv = subMultiTest(null,
+//                    "compilation errors", rv, "polymorphicObjectRefTypesWork compilation errors");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "polymorphicObjectRefTypesWork");
         }
@@ -698,14 +692,6 @@ public class DataTypeScenario extends LoggingBase {
                 objRef.getType(),
                 objRef.getKey(),
                 objRef.getObjectVersion());
-    }
-
-    public static final ObjectRef getObjectRefFromObjectIdentity(ObjectIdentity objId) {
-        return new ObjectRef(objId.getDomainId(),
-                objId.getAreaId(),
-                objId.getTypeId(),
-                objId.getKeyId(),
-                objId.getVersionId());
     }
 
     public String objectAssertionsAreChecked() throws MALInteractionException, MALException {
@@ -799,14 +785,14 @@ public class DataTypeScenario extends LoggingBase {
             try {
                 Element rspnElement = stub.testData(testValue);
 
-                if (null != testValue) {
+                if (testValue != null) {
                     if (!testValue.equals(rspnElement)) {
                         String msg = "Test step failed in consumer: " + String.valueOf(reportingOffset);
                         logMessage(msg);
                         return msg;
                     }
                 } else {
-                    if (null != rspnElement) {
+                    if (rspnElement != null) {
                         String msg = "Test step failed in consumer: " + String.valueOf(reportingOffset);
                         logMessage(msg);
                         return msg;
@@ -814,7 +800,8 @@ public class DataTypeScenario extends LoggingBase {
                 }
             } catch (MALInteractionException ex) {
                 long errNum = ex.getStandardError().getErrorNumber().getValue();
-                if ((MALHelper.BAD_ENCODING_ERROR_NUMBER.getValue() == errNum) || (MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER.getValue() == errNum)) {
+                if ((MALHelper.BAD_ENCODING_ERROR_NUMBER.getValue() == errNum)
+                        || (MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER.getValue() == errNum)) {
                     String msg = "Test step failed in consumer: " + ex.toString();
                     logMessage(msg);
                     return msg;
@@ -830,15 +817,19 @@ public class DataTypeScenario extends LoggingBase {
     }
 
     protected String subSingleTest(Object testValue, Object rspnValue, String testMsg) throws MALException {
-        if (null != testValue) {
+        if (testValue != null) {
             if (!testValue.equals(rspnValue)) {
                 String msg = "Test " + testMsg + " failed in consumer, received value does not match expected";
+                msg += "\n Expected: " + testValue;
+                msg += "\n Received: " + rspnValue;
                 logMessage(msg);
                 return msg;
             }
         } else {
-            if (null != rspnValue) {
+            if (rspnValue != null) {
                 String msg = "Test " + testMsg + " failed in consumer, received value is not expected null value";
+                msg += "\n Expected: " + testValue;
+                msg += "\n Received: " + rspnValue;
                 logMessage(msg);
                 return msg;
             }
@@ -851,7 +842,7 @@ public class DataTypeScenario extends LoggingBase {
 
     protected String subMultiTest(Object testValue, Object rspnValue,
             String previousResult, String testMsg) throws MALException {
-        if ((null == previousResult) || ("OK".equals(previousResult))) {
+        if ((previousResult == null) || ("OK".equals(previousResult))) {
             previousResult = subSingleTest(testValue, rspnValue, testMsg);
         }
 
@@ -862,7 +853,7 @@ public class DataTypeScenario extends LoggingBase {
             String testMsg) throws MALInteractionException {
         long errNum = ex.getStandardError().getErrorNumber().getValue();
         if ((MALHelper.BAD_ENCODING_ERROR_NUMBER.getValue() == errNum) || (MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER.getValue() == errNum)) {
-            String msg = "Test " + testMsg + " failed in consumer, encoding error received: "
+            String msg = "Test " + testMsg + " failed in consumer, encoding error received:\n"
                     + ex.getStandardError().getExtraInformation().toString();
             logMessage(msg);
             return msg;

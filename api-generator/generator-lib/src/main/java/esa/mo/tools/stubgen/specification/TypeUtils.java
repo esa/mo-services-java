@@ -205,9 +205,14 @@ public class TypeUtils {
                     + type.getName().toUpperCase() + "_SHORT_FORM");
         }
 
-        if (type.getName().contains("ObjectRef")) {
+        if (!type.isList() && type.getName().contains("ObjectRef")) {
             return tiSource.convertToNamespace(tiSource.getAreaPackage(StdStrings.MAL)
                     + "mal.structures.ObjectRef.OBJECTREF_SHORT_FORM");
+        }
+
+        if (type.isList() && type.getName().contains("ObjectRef")) {
+            return tiSource.convertToNamespace(tiSource.getAreaPackage(StdStrings.MAL)
+                    + "mal.structures.ObjectRefList.SHORT_FORM");
         }
 
         if (tiSource.convertToNamespace("org.ccsds.moims.mo.mal.structures.Element").equals(targetType)) {

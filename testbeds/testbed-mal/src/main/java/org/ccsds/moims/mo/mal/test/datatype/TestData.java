@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 import java.util.stream.Collectors;
-
-import org.ccsds.moims.mo.mal.MALArea;
-import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
@@ -40,7 +37,6 @@ import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.malprototype.structures.BasicAbstractComposite;
 import org.ccsds.moims.mo.malprototype.structures.TestBody;
-import org.ccsds.moims.mo.malprototype.structures.AbstractComposite;
 import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
 import org.ccsds.moims.mo.malprototype.structures.ComplexStructure;
 import org.ccsds.moims.mo.malprototype.structures.Garage;
@@ -73,7 +69,7 @@ public abstract class TestData {
     public static final UOctet testUOctet = new UOctet((short) 255);
     public static final ULong testULong = new ULong(new BigInteger("18446744073709551615"));
     public static final UShort testUShort = new UShort(65535);
-    public static final ObjectRef testObjectRef = new ObjectRef();
+    public static final Identifier txt = new Identifier("Text");
 
     public static final Assertion testComposite = new Assertion("Test string", "Second test string", Boolean.FALSE);
     public static final SessionType testEnumeration = SessionType.SIMULATION;
@@ -103,35 +99,34 @@ public abstract class TestData {
     public static final StructureWithAbstractFieldList testStructureWithAbstractFieldSingleTypedList1 = new StructureWithAbstractFieldList();
     public static final StructureWithAbstractFieldList testStructureWithAbstractFieldSingleTypedList2 = new StructureWithAbstractFieldList();
     public static final AbstractCompositeList testAbstractCompositeMultipleTypedList = new AbstractCompositeList();
-    
+
     public static final String testDomainAsString = "CCSDS.MAL.prototype";
-    public static final IdentifierList testDomain = new IdentifierList
-        (Arrays.stream(testDomainAsString.split("."))
-         .map(s -> new Identifier(s))
-         .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
-    public static Garage testGarage;
+    public static final IdentifierList testDomain = new IdentifierList(Arrays.stream(testDomainAsString.split("."))
+            .map(s -> new Identifier(s))
+            .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
+    public static final ObjectRef testObjectRef = new ObjectRef(testDomain, txt, txt, txt, new UInteger(1));
+    public static final Garage testGarage;
     // TODO find the type Identifier from the Element
-    public static final ObjectRef<Lamborghini> testCourtesyCar =
-        new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-            new Identifier("Lamborghini"), new Identifier("car0"), new UInteger(1));
-    public static final ObjectRef<Lamborghini> testCarL1 =
-        new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-            new Identifier("Lamborghini"), new Identifier("carL1"), new UInteger(1));
-    public static final ObjectRef<Lamborghini> testCarL2 =
-        new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-            new Identifier("Lamborghini"), new Identifier("carL2"), new UInteger(1));
-    public static final ObjectRef<Porsche> testCarP1 =
-        new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-            new Identifier("Porsche"), new Identifier("carP1"), new UInteger(1));
-    public static final ObjectRef<Porsche> testCarP2 =
-        new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-            new Identifier("Porsche"), new Identifier("carP2"), new UInteger(1));
+    public static final ObjectRef<Lamborghini> testCourtesyCar
+            = new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+                    new Identifier("Lamborghini"), new Identifier("car0"), new UInteger(1));
+    public static final ObjectRef<Lamborghini> testCarL1
+            = new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+                    new Identifier("Lamborghini"), new Identifier("carL1"), new UInteger(1));
+    public static final ObjectRef<Lamborghini> testCarL2
+            = new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+                    new Identifier("Lamborghini"), new Identifier("carL2"), new UInteger(1));
+    public static final ObjectRef<Porsche> testCarP1
+            = new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+                    new Identifier("Porsche"), new Identifier("carP1"), new UInteger(1));
+    public static final ObjectRef<Porsche> testCarP2
+            = new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+                    new Identifier("Porsche"), new Identifier("carP2"), new UInteger(1));
     public static final ObjectRefList testCars = new ObjectRefList();
     public static final ObjectRefList testPorscheCars = new ObjectRefList();
     public static final int[] testIndexes;
 
     static {
-      
         // attribute types
         testAttributes.add(testObjectRef);
         testAttributes.add(testDuration);
@@ -165,7 +160,7 @@ public abstract class TestData {
         testEnumerations.add(SessionType.LIVE);
         testEnumerations.add(SessionType.REPLAY);
         testEnumerations.add(SessionType.SIMULATION);
-        
+
         testEnumerations.add(AreaNumber.MAL);
         testEnumerations.add(AreaNumber.COM);
         testEnumerations.add(AreaNumber.COMMON);
@@ -173,7 +168,7 @@ public abstract class TestData {
         testEnumerations.add(AreaNumber.MPS);
         testEnumerations.add(AreaNumber.SM);
         testEnumerations.add(AreaNumber.MDPD);
-        
+
         testEnumerations.add(AttributeType.BLOB);
         testEnumerations.add(AttributeType.BOOLEAN);
         testEnumerations.add(AttributeType.DURATION);
@@ -207,9 +202,15 @@ public abstract class TestData {
         AttributeList testKeyValues = new AttributeList();
         testKeyValues.add(new Identifier("TestValue"));
         testKeyValues.add(new String("TestValue"));
-        TestPublish a = new TestPublishRegister(QoSLevel.QUEUED, testUInteger, domId, testIdentifier, testEnumeration, testIdentifier, false, null, testUInteger);
-        TestPublish b = new TestPublishUpdate(QoSLevel.QUEUED, testUInteger, domId, testIdentifier, testEnumeration, testIdentifier, false, null, null, testKeyValues, testUInteger, testBoolean, (AttributeList) null);
-        TestPublish c = new TestPublishUpdate(QoSLevel.QUEUED, testUInteger, domId, testIdentifier, testEnumeration, testIdentifier, false, null, null, testKeyValues, testUInteger, testBoolean, (AttributeList) null);
+        TestPublish a = new TestPublishRegister(QoSLevel.QUEUED, testUInteger,
+                domId, testIdentifier, testEnumeration, testIdentifier,
+                false, null, testUInteger);
+        TestPublish b = new TestPublishUpdate(QoSLevel.QUEUED, testUInteger,
+                domId, testIdentifier, testEnumeration, testIdentifier,
+                false, null, null, testKeyValues, testUInteger, testBoolean, (AttributeList) null);
+        TestPublish c = new TestPublishUpdate(QoSLevel.QUEUED, testUInteger,
+                domId, testIdentifier, testEnumeration, testIdentifier,
+                false, null, null, testKeyValues, testUInteger, testBoolean, (AttributeList) null);
         testAbstracts.add(a);
         testAbstracts.add(b);
         testAbstracts.add(c);
@@ -240,7 +241,7 @@ public abstract class TestData {
         testAbstractCompositeMultipleTypedList.add(testStructureWithAbstractField1);
         testAbstractCompositeMultipleTypedList.add(testStructureWithAbstractField2);
         testAbstractCompositeMultipleTypedList.add(testStructureWithAbstractField3);
-        
+
         testPolymorphicTypes.add(testBody);
         testPolymorphicTypes.add(testComplexStructure);
         testPolymorphicTypes.add(testBasicAbstractComposite);
@@ -251,7 +252,7 @@ public abstract class TestData {
         testPolymorphicTypes.add(testStructureWithAbstractFieldSingleTypedList1);
         testPolymorphicTypes.add(testStructureWithAbstractFieldSingleTypedList2);
         testPolymorphicTypes.add(testAbstractCompositeMultipleTypedList);
-        
+
         // concatenate all together for simplicity in service provider
         testAll.addAll(testAttributes);
         testAll.addAll(testEnumerations);
@@ -270,7 +271,7 @@ public abstract class TestData {
         testIndexes[4] = testIndexes[3] + testAbstracts.size();
         testIndexes[5] = testIndexes[4] + testNulls.size();
         testIndexes[6] = testIndexes[5] + testCompositeWithNulls.size();
-        
+
         // finalize the definition of the test ObjectRef elements
         testCars.add(testCarL1);
         testCars.add(testCarL2);
@@ -279,19 +280,18 @@ public abstract class TestData {
         testPorscheCars.add(testCarP1);
         testPorscheCars.add(testCarP2);
         // TODO find the type Identifier more programmatically
-        ObjectIdentity garageId = new ObjectIdentity
-            (testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-             new Identifier("Garage"), new Identifier("garage"), new UInteger(1));
+        ObjectIdentity garageId = new ObjectIdentity(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
+                new Identifier("Garage"), new Identifier("garage"), new UInteger(1));
         testGarage = new Garage(garageId);
-        testGarage.setCourtesyCarAsPorsche(null);
+//        testGarage.setCourtesyCarAsPorsche(null);
         // TODO the next 2 lines do not compile
-//        testGarage.setCourtesyCarAsAuto(testCourtesyCar);
-//        testGarage.setCourtesyCarAsObject(testCourtesyCar);
-        testGarage.setCourtesyCarAsAuto(null);
-        testGarage.setCourtesyCarAsObject(null);
-        // TODO the stub generated code does not compile
-//        testGarage.setCarAsPorsche(testPorscheCars);
-//        testGarage.setCarAsAuto(testCars);
-//        testGarage.setCarAsObject(testCars);
+        testGarage.setCourtesyCarAsPorsche(new ObjectRef<>(testCourtesyCar));
+        testGarage.setCourtesyCarAsAuto(new ObjectRef<>(testCourtesyCar));
+        testGarage.setCourtesyCarAsObject(new ObjectRef<>(testCourtesyCar));
+
+        // Lists:
+        testGarage.setCarsAsPorsches(testPorscheCars);
+        testGarage.setCarsAsAutos(testCars);
+        testGarage.setCarsAsObjects(testCars);
     }
 }

@@ -259,12 +259,12 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
                 // decoding must have failed
                 throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                         new Union("Failed comparison in provider of " + exString
-                                + ", type " + testValue.getClass() + ", expected "
-                                + String.valueOf(testValue) + " but received "
+                                + ", type " + testValue.getClass() + ",\nexpected "
+                                + String.valueOf(testValue) + "\n received "
                                 + String.valueOf(rcvdValue))));
             }
         } else {
-            if (null != rcvdValue) {
+            if (rcvdValue != null) {
                 // decoding must have failed
                 throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                         new Union("Failed comparison in provider of " + exString
@@ -378,7 +378,9 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         return auto.getObjectRef();
     }
 
-    public ObjectRef<Auto> createObjectFromFields(Identifier autoType, Identifier key, Boolean update, String engine, String chassis, StringList windows, MALInteraction interaction) throws MALInteractionException, MALException {
+    public ObjectRef<Auto> createObjectFromFields(Identifier autoType, Identifier key,
+            Boolean update, String engine, String chassis, StringList windows,
+            MALInteraction interaction) throws MALInteractionException, MALException {
         ObjectIdentity autoId0 = new ObjectIdentity(testDomain,
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
                 autoType,
@@ -462,11 +464,8 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
 
     @Override
     public TestPolymorphicObjectRefTypesResponse testPolymorphicObjectRefTypes(
-            Garage _Garage0,
-            ObjectRefList _Porsche_1,
-            ObjectRefList _Auto_2,
-            ObjectRefList _Element_3,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            Garage _Garage0, ObjectRefList _Porsche_1, ObjectRefList _Auto_2,
+            ObjectRefList _Element_3, MALInteraction interaction) throws MALInteractionException, MALException {
         return new TestPolymorphicObjectRefTypesResponse(_Garage0, _Porsche_1, _Auto_2, _Element_3);
     }
 }
