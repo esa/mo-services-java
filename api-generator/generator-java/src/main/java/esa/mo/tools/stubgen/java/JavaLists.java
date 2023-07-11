@@ -239,7 +239,6 @@ public class JavaLists {
         srcType.setList(Boolean.TRUE);
         CompositeField listType = generator.createCompositeElementsDetails(file, false, null,
                 srcType, true, true, "List element.");
-        generator.createFactoryClass(folder, area, service, listName, listType, false, false);
     }
 
 }

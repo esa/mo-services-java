@@ -286,11 +286,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @return true if a known type.
      */
     public boolean isKnownType(TypeReference type) {
-        boolean knownType = false;
-        if (allTypesMap.containsKey(new TypeKey(type))) {
-            knownType = true;
-        }
-        return knownType;
+        return allTypesMap.containsKey(new TypeKey(type));
     }
 
     /**
@@ -314,10 +310,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @return the details if found, otherwise null.
      */
     public CompositeType getCompositeDetails(TypeReference type) {
-        if (null != type) {
-            return compositeTypesMap.get(new TypeKey(type));
+        if (type == null) {
+            return null;
         }
-        return null;
+
+        return compositeTypesMap.get(new TypeKey(type));
     }
 
     /**

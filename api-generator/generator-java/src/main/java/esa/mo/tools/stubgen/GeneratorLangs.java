@@ -23,6 +23,7 @@ package esa.mo.tools.stubgen;
 import esa.mo.tools.stubgen.java.JavaServiceInfo;
 import esa.mo.tools.stubgen.java.JavaExceptions;
 import esa.mo.tools.stubgen.java.JavaConsumer;
+import esa.mo.tools.stubgen.java.JavaEnumerations;
 import esa.mo.tools.stubgen.java.JavaHelpers;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
@@ -39,7 +40,6 @@ import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.*;
-import esa.mo.xsd.EnumerationType.Item;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -84,11 +84,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
     private final Map<String, MultiReturnType> multiReturnTypeMap = new HashMap<>();
     private final Map<String, String> reservedWordsMap = new HashMap<>();
     private final Map<String, RequiredPublisher> requiredPublishers = new HashMap<>();
-    private boolean supportsToString;
-    private boolean supportsEquals;
-    private boolean supportsToValue;
+
+    public boolean supportsToString;
+    public boolean supportsEquals;
+    public boolean requiresDefaultConstructors;
+    public boolean supportsToValue;
     private boolean supportsAsync;
-    private boolean requiresDefaultConstructors;
     private boolean generateStructures;
 
     /**
@@ -405,11 +406,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             CompositeField fld = createCompositeElementsDetails(null, false, "fld",
                                     TypeUtils.createTypeReference(area.getName(), null, aName, false),
                                     true, true, "cmt");
-                            createFactoryClass(structureFolder, area, null, aName, fld, true, false);
                         } else if (oType instanceof CompositeType) {
                             createCompositeClass(structureFolder, area, null, (CompositeType) oType);
                         } else if (oType instanceof EnumerationType) {
-                            createEnumerationClass(structureFolder, area, null, (EnumerationType) oType);
+                            JavaEnumerations enumerations = new JavaEnumerations(this);
+                            enumerations.createEnumerationClass(structureFolder, area, null, (EnumerationType) oType);
                         } else {
                             throw new IllegalArgumentException("Unexpected area (" + area.getName() + ") level datatype of " + oType.getClass().getName());
                         }
@@ -462,7 +463,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
             for (Object oType : service.getDataTypes().getCompositeOrEnumeration()) {
                 if (oType instanceof EnumerationType) {
-                    createEnumerationClass(structureFolder, area, service, (EnumerationType) oType);
+                    JavaEnumerations enumerations = new JavaEnumerations(this);
+                    enumerations.createEnumerationClass(structureFolder, area, service, (EnumerationType) oType);
                     name = ((EnumerationType) oType).getName();
                 } else if (oType instanceof CompositeType) {
                     createCompositeClass(structureFolder, area, service, (CompositeType) oType);
@@ -1324,214 +1326,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // is not the case for a particular language
     }
 
-    protected void createEnumerationClass(File folder, AreaType area, ServiceType service, EnumerationType enumeration) throws IOException {
-        String enumName = enumeration.getName();
-        long enumSize = enumeration.getItem().size();
-
-        getLog().info(" > Creating Enumeration class: " + enumName);
-
-        ClassWriter file = createClassFile(folder, enumName);
-
-        file.addPackageStatement(area, service, getConfig().getStructureFolder());
-
-        file.addClassOpenStatement(enumName, true, false,
-                createElementType(file, StdStrings.MAL, null, StdStrings.ENUMERATION),
-                null, "Enumeration class for " + enumName + ".");
-
-        String fqEnumName = createElementType(file, area, service, enumName);
-        CompositeField elementType = createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
-                true, true, null);
-        CompositeField uintType = createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
-                true, true, null);
-        CompositeField enumType = createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false),
-                true, true, null);
-
-        addTypeShortFormDetails(file, area, service, enumeration.getShortFormPart());
-
-        // create attributes
-        String highestIndex = "";
-        for (int i = 0; i < enumSize; i++) {
-            Item item = enumeration.getItem().get(i);
-            String value = item.getValue();
-
-            highestIndex = "_" + value + "_INDEX";
-            CompositeField _eNumberVar = createCompositeElementsDetails(file, false, highestIndex,
-                    TypeUtils.createTypeReference(null, null, "int", false), false, false,
-                    "Enumeration ordinal index for value " + value);
-            CompositeField eValueVar = createCompositeElementsDetails(file, false, value + "_NUM_VALUE",
-                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, false,
-                    "Enumeration numeric value for value " + value);
-            CompositeField eInstVar = createCompositeElementsDetails(file, false, value,
-                    TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false),
-                    true, false, "Enumeration singleton for value " + value);
-            file.addClassVariable(true, true, StdStrings.PUBLIC, _eNumberVar, false, String.valueOf(i));
-            file.addClassVariable(true, true, StdStrings.PUBLIC, eValueVar, false, "(" + item.getNvalue() + ")");
-            file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + convertToNamespace(convertClassName(fqEnumName) + "._" + value + "_INDEX)"));
-        }
-
-        // create arrays
-        List<String> opStr = new LinkedList<>();
-        List<String> stStr = new LinkedList<>();
-        List<String> vaStr = new LinkedList<>();
-        for (int i = 0; i < enumSize; i++) {
-            opStr.add(enumeration.getItem().get(i).getValue());
-            stStr.add("\"" + enumeration.getItem().get(i).getValue() + "\"");
-            vaStr.add(enumeration.getItem().get(i).getValue() + "_NUM_VALUE");
-        }
-        CompositeField eInstArrVar = createCompositeElementsDetails(file, false, "_ENUMERATIONS",
-                TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false),
-                true, true, "Set of enumeration instances.");
-        file.addClassVariable(true, true, StdStrings.PRIVATE, eInstArrVar, true, true, opStr);
-        if (supportsToString) {
-            CompositeField eStrArrVar = createCompositeElementsDetails(file, false, "_ENUMERATION_NAMES",
-                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.STRING, false),
-                    true, true, "Set of enumeration string values.");
-            file.addClassVariable(true, true, StdStrings.PRIVATE, eStrArrVar, true, true, stStr);
-        }
-        CompositeField eValueArrVar = createCompositeElementsDetails(file, false, "_ENUMERATION_NUMERIC_VALUES",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
-                true, false, "Set of enumeration values.");
-        file.addClassVariable(true, true, StdStrings.PRIVATE, eValueArrVar, true, true, vaStr);
-
-        // create private constructor
-        MethodWriter method = file.addConstructor(StdStrings.PRIVATE, enumName,
-                createCompositeElementsDetails(file, false, "ordinal",
-                        TypeUtils.createTypeReference(null, null, "int", false),
-                        false, false, null), true, null, null, null);
-        method.addMethodCloseStatement();
-
-        if (requiresDefaultConstructors) {
-            file.addConstructorDefault(enumName);
-        }
-
-        // add getters and setters
-        if (supportsToString) {
-            CompositeField strType = createCompositeElementsDetails(file, false, "s",
-                    TypeUtils.createTypeReference(null, null, "_String", false),
-                    false, true, "s The string to search for.");
-            method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                    false, true, strType, "toString", null, null,
-                    "Returns a String object representing this type's value.",
-                    "a string representation of the value of this object", null);
-            method.addLine("switch (getOrdinal()) {", false);
-
-            for (Item item : enumeration.getItem()) {
-                method.addLine("  case _" + item.getValue() + "_INDEX:", false);
-                method.addLine("    return \"" + item.getValue() + "\"");
-            }
-            method.addLine("  default:", false);
-            method.addLine("    throw new RuntimeException(\"Unknown ordinal!\")");
-            method.addLine("}", false);
-            method.addMethodCloseStatement();
-
-            method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC,
-                    false, true, enumType, "fromString", Arrays.asList(strType), null,
-                    "Returns the enumeration element represented by the supplied string, or null if not matched.",
-                    "The matched enumeration element, or null if not matched.", null);
-            method.addLine("for (int i = 0; i < _ENUMERATION_NAMES.length; i++) {", false);
-            method.addLine("  if (_ENUMERATION_NAMES[i].equals(s)) {", false);
-            method.addLine("    return _ENUMERATIONS[i]");
-            method.addLine("  }", false);
-            method.addLine("}", false);
-            method.addLine("return null");
-            method.addMethodCloseStatement();
-        }
-
-        // create getMALValue method
-        if (supportsToValue) {
-            method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                    false, false, elementType, "clone", null, null);
-            method.addLine("return this");
-            method.addMethodCloseStatement();
-        }
-
-        CompositeField ordType = createCompositeElementsDetails(file, false, "ordinal",
-                TypeUtils.createTypeReference(null, null, "int", false),
-                false, false, "ordinal The index of the enumeration element to return.");
-        method = file.addMethodOpenStatement(false, false, false, true, StdStrings.PUBLIC,
-                false, false, enumType, "fromOrdinal", Arrays.asList(ordType), null,
-                "Returns the nth element of the enumeration", "The matched enumeration element", null);
-        method.addArrayMethodStatement("_ENUMERATIONS", "ordinal", highestIndex);
-        method.addMethodCloseStatement();
-
-        CompositeField nvType = createCompositeElementsDetails(file, false, "value",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
-                true, false, "value The numeric value to search for.");
-        method = file.addMethodOpenStatement(false, false, false, true, StdStrings.PUBLIC,
-                false, false, enumType, "fromNumericValue", Arrays.asList(nvType), null,
-                "Returns the enumeration element represented by the supplied numeric value, or null if not matched.",
-                "The matched enumeration value, or null if not matched.", null);
-        method.addLine("for (int i = 0; i < _ENUMERATION_NUMERIC_VALUES.length; i++) {", false);
-        method.addLine("  if (" + getEnumValueCompare("_ENUMERATION_NUMERIC_VALUES[i]", "value") + ") {", false);
-        method.addLine("    return _ENUMERATIONS[i]");
-        method.addLine("  }", false);
-        method.addLine("}", false);
-        method.addLine("return " + getNullValue());
-        method.addMethodCloseStatement();
-
-        String enumOrdinalType = StdStrings.UINTEGER;
-        if (enumSize < 256) {
-            enumOrdinalType = StdStrings.UOCTET;
-        } else if (enumSize < 65536) {
-            enumOrdinalType = StdStrings.USHORT;
-        }
-
-        String enumEncoderValue = getEnumEncoderValue(enumSize);
-        String enumDecoderValue = getEnumDecoderValue(enumSize);
-
-        if (enumSize < 256) {
-            CompositeField encodedType = createCompositeElementsDetails(file, false, "return",
-                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
-                    true, true, null);
-            method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                    false, false, encodedType, "getOrdinalUOctet", null, null,
-                    "Returns the index of the enumerated item as a {@code UOctet}.",
-                    "the index of the enumerated item as a {@code UOctet}.", null);
-            method.addLine("return " + enumEncoderValue);
-            method.addMethodCloseStatement();
-        }
-
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, uintType, "getNumericValue", null, null,
-                "Returns the numeric value of the enumeration element.", "The numeric value", null);
-        method.addArrayMethodStatement("_ENUMERATION_NUMERIC_VALUES", "ordinal", highestIndex);
-        method.addMethodCloseStatement();
-
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, false, elementType, "createElement", null, null,
-                "Returns an instance of this type using the first element of the enumeration. "
-                + "It is a generic factory method but just returns an existing element of the "
-                + "enumeration as new values of enumerations cannot be created at runtime.",
-                "The first element of the enumeration.", null);
-        method.addLine("return _ENUMERATIONS[0]");
-        method.addMethodCloseStatement();
-
-        // create encode method
-        method = encodeMethodOpen(file);
-        method.addLine(createMethodCall("encoder.encode") + enumOrdinalType + "(" + enumEncoderValue + ")");
-        method.addMethodCloseStatement();
-
-        // create decode method
-        method = decodeMethodOpen(file, elementType);
-        method.addLine("return fromOrdinal(" + createMethodCall("decoder.decode" + enumOrdinalType + "()" + enumDecoderValue + ")"));
-        method.addMethodCloseStatement();
-
-        addShortFormMethods(file, area, service);
-
-        file.addClassCloseStatement();
-
-        file.flush();
-
-        createListClass(folder, area, service, enumName, false, enumeration.getShortFormPart());
-        CompositeField fld = createCompositeElementsDetails(file, false, "fld",
-                TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false),
-                true, true, "cmt");
-        createFactoryClass(folder, area, service, enumName, fld, false, true);
-    }
-
     protected void createCompositeClass(File folder, AreaType area, ServiceType service, CompositeType composite) throws IOException {
         String className = composite.getName();
         getLog().info(" > Creating Composite class: " + className);
@@ -1838,64 +1632,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         file.addClassCloseStatement();
-
         file.flush();
 
         createListClass(folder, area, service, className, abstractComposite, composite.getShortFormPart());
-
-        if (!abstractComposite) {
-            CompositeField fld = createCompositeElementsDetails(file, false, "fld",
-                    TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), className, false),
-                    true, true, "cmt");
-            createFactoryClass(folder, area, service, className, fld, false, false);
-        }
     }
 
-    protected abstract void createListClass(File folder, AreaType area, ServiceType service, String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException;
-
-    @Deprecated
-    public void createFactoryClass(File structureFolder, AreaType area, ServiceType service, String srcTypeName, CompositeField typeDetails, boolean isAttr, boolean isEnum) throws IOException {
-        /*
-        // create area structure folder
-        File folder = StubUtils.createFolder(structureFolder, getConfig().getFactoryFolder());
-        // create a comment for the structure factory folder if supported
-        createStructureFactoryFolderComment(folder, area, service);
-
-        String factoryName = srcTypeName + "Factory";
-
-        getLog().info(" > Creating factory class " + factoryName);
-
-        ClassWriter file = createClassFile(folder, factoryName);
-
-        file.addPackageStatement(area, service, getConfig().getStructureFolder() + "." + getConfig().getFactoryFolder());
-
-        file.addClassOpenStatement(factoryName, true, false, null, 
-        createElementType(file, StdStrings.MAL, null, null, "MALElementFactory"), 
-        "Factory class for " + srcTypeName + ".");
-
-        CompositeField elementType = createCompositeElementsDetails(file, false, "return", 
-        TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false), true, true, null);
-        MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, 
-        false, false, elementType, "createElement", null, null, 
-        "Creates an instance of the source type using the default constructor. It is a generic factory method.", 
-        "A new instance of the source type with default field values.", null);
-        if (isAttr) {
-            AttributeTypeDetails details = getAttributeDetails(area.getName(), srcTypeName);
-            if (details.isNativeType()) {
-                method.addLine("return new " + convertClassName(createElementType(file, StdStrings.MAL, null, StdStrings.UNION)) + "(" + details.getDefaultValue() + ")");
-            } else {
-                method.addLine("return new " + createElementType(file, area, service, srcTypeName) + "()");
-            }
-        } else {
-            file.addTypeDependency(typeDetails.getTypeName());
-            method.addLine("return " + typeDetails.getNewCall());
-        }
-
-        method.addMethodCloseStatement();
-        file.addClassCloseStatement();
-        file.flush();
-         */
-    }
+    public abstract void createListClass(File folder, AreaType area, ServiceType service, String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException;
 
     protected final void createMultiReturnType(String destinationFolderName, String returnTypeFqName, MultiReturnType returnTypeInfo) throws IOException {
         getLog().info(" > Creating multiple return class class " + returnTypeFqName);
@@ -2439,13 +2181,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     public abstract String getDeregisterMethodName();
 
-    protected abstract String getEnumValueCompare(String lhs, String rhs);
-
-    protected abstract String getEnumEncoderValue(long maxValue);
-
-    protected abstract String getEnumDecoderValue(long maxValue);
-
-    protected abstract String getNullValue();
+    public abstract String getNullValue();
 
     public abstract ClassWriterProposed createClassFile(File folder, String className) throws IOException;
 

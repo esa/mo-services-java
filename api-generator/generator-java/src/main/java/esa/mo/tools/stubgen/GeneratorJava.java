@@ -245,7 +245,7 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected void createListClass(File folder, AreaType area, ServiceType service,
+    public void createListClass(File folder, AreaType area, ServiceType service,
             String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException {
         JavaLists javaLists = new JavaLists(this);
 
@@ -408,29 +408,7 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected String getEnumValueCompare(String lhs, String rhs) {
-        return lhs + ".equals(" + rhs + ")";
-    }
-
-    @Override
-    protected String getEnumEncoderValue(long maxValue) {
-        String enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UInteger(ordinal.longValue())";
-        if (maxValue < 256) {
-            enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue())";
-        } else if (maxValue < 65536) {
-            enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UShort(ordinal.intValue())";
-        }
-
-        return enumEncoderValue;
-    }
-
-    @Override
-    protected String getEnumDecoderValue(long maxValue) {
-        return ".getValue()";
-    }
-
-    @Override
-    protected String getNullValue() {
+    public String getNullValue() {
         return "null";
     }
 
