@@ -38,6 +38,7 @@ import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.malprototype.structures.BasicAbstractComposite;
 import org.ccsds.moims.mo.malprototype.structures.TestBody;
 import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
+import org.ccsds.moims.mo.malprototype.structures.Auto;
 import org.ccsds.moims.mo.malprototype.structures.ComplexStructure;
 import org.ccsds.moims.mo.malprototype.structures.Garage;
 import org.ccsds.moims.mo.malprototype.structures.Lamborghini;
@@ -285,9 +286,9 @@ public abstract class TestData {
         testGarage = new Garage(garageId);
 //        testGarage.setCourtesyCarAsPorsche(null);
         // TODO the next 2 lines do not compile
-        testGarage.setCourtesyCarAsPorsche(new ObjectRef<>(testCourtesyCar));
-        testGarage.setCourtesyCarAsAuto(new ObjectRef<>(testCourtesyCar));
-        testGarage.setCourtesyCarAsObject(new ObjectRef<>(testCourtesyCar));
+        testGarage.setCourtesyCarAsPorsche(new ObjectRef<Porsche>(testCourtesyCar));
+        testGarage.setCourtesyCarAsAuto(new ObjectRef<Auto>(testCourtesyCar));
+        testGarage.setCourtesyCarAsObject(new ObjectRef<Element>(testCourtesyCar));
 
         // Lists:
         testGarage.setCarsAsPorsches(testPorscheCars);
