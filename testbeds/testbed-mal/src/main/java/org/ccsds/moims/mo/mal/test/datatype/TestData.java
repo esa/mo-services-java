@@ -286,9 +286,15 @@ public abstract class TestData {
         testGarage = new Garage(garageId);
 //        testGarage.setCourtesyCarAsPorsche(null);
         // TODO the next 2 lines do not compile
-        testGarage.setCourtesyCarAsPorsche(new ObjectRef<Porsche>(testCourtesyCar));
-        testGarage.setCourtesyCarAsAuto(new ObjectRef<Auto>(testCourtesyCar));
-        testGarage.setCourtesyCarAsObject(new ObjectRef<Element>(testCourtesyCar));
+        ObjectRef<Porsche> porscheCar = new ObjectRef(testCourtesyCar.getDomain(), testCourtesyCar.getArea(),
+                testCourtesyCar.getType(), testCourtesyCar.getKey(), testCourtesyCar.getObjectVersion());
+        ObjectRef<Auto> autoCar = new ObjectRef(testCourtesyCar.getDomain(), testCourtesyCar.getArea(),
+                testCourtesyCar.getType(), testCourtesyCar.getKey(), testCourtesyCar.getObjectVersion());
+        ObjectRef<Element> elementCar = new ObjectRef(testCourtesyCar.getDomain(), testCourtesyCar.getArea(),
+                testCourtesyCar.getType(), testCourtesyCar.getKey(), testCourtesyCar.getObjectVersion());
+        testGarage.setCourtesyCarAsPorsche(porscheCar);
+        testGarage.setCourtesyCarAsAuto(autoCar);
+        testGarage.setCourtesyCarAsObject(elementCar);
 
         // Lists:
         testGarage.setCarsAsPorsches(testPorscheCars);

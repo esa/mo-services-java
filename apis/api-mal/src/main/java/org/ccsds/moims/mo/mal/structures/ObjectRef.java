@@ -48,16 +48,6 @@ public class ObjectRef<T extends Element> implements Attribute {
     /**
      * Constructor.
      *
-     * @param objectRef The object reference to be cloned.
-     */
-    public ObjectRef(final ObjectRef objectRef) {
-        this(objectRef.getDomain(), objectRef.getArea(), objectRef.getType(),
-                objectRef.getKey(), objectRef.getObjectVersion());
-    }
-
-    /**
-     * Constructor.
-     *
      * @param domain The domain.
      * @param area The area.
      * @param type The type.
