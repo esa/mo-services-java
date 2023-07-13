@@ -50,15 +50,6 @@ public class Duration implements Attribute {
         this.value = seconds;
     }
 
-    /**
-     * Constructor.
-     *
-     * @param nanoseconds The Duration in nanoseconds.
-     */
-    public Duration(final long nanoseconds) {
-        this.value = ((double) nanoseconds) / 1000000000;
-    }
-
     @Override
     public Element createElement() {
         return new Duration();
