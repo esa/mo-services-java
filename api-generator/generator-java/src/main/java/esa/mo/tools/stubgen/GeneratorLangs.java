@@ -1310,14 +1310,16 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         ObjectReference any = oor.getObjectType();
-        TypeKey key = new TypeKey(any.getArea(), any.getService(), String.valueOf(any.getNumber()));
+        String service = any.getService();
+        TypeKey key = new TypeKey(any.getArea(), service, String.valueOf(any.getNumber()));
 
         if (!comObjectMap.containsKey(key)) {
             getLog().warn("Unknown COM object referenced: " + key);
+            return null;
         }
 
         ModelObjectType refObj = comObjectMap.get(key);
-        return convertToNamespace(createElementType(file, any.getArea(), any.getService(), null, any.getService() + JavaServiceInfo.SERVICE_INFO)
+        return convertToNamespace(createElementType(file, any.getArea(), service, null, service + JavaServiceInfo.SERVICE_INFO)
                 + "." + refObj.getName().toUpperCase() + "_OBJECT_TYPE");
     }
 
