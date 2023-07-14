@@ -77,9 +77,10 @@ public class MALElementsRegistry {
         Callable<Element> callable = ELEMENTS.get(absoluteSFP);
 
         if (callable == null) {
-            int area = (int) (absoluteSFP >> 48);
-            throw new NotFoundException("The element was not found: " + absoluteSFP
-                    + "\nArea: " + area);
+            TypeId typeId = new TypeId(absoluteSFP);
+
+            throw new NotFoundException("The element was not found: "
+                    + absoluteSFP + "\n" + typeId.toString());
         }
 
         return callable.call();
