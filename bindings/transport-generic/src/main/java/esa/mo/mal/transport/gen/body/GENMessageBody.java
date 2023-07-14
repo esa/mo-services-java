@@ -42,7 +42,7 @@ import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
-import org.ccsds.moims.mo.mal.structures.PolymorphicList;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
@@ -165,9 +165,9 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
         Object bodyPart = messageParts[index];
 
         // Up-cast the List if it is a polymorphic list!
-        if (element != null && bodyPart instanceof PolymorphicList) {
-            for (Element entry : (PolymorphicList) bodyPart) {
-                ((PolymorphicList) element).add(entry);
+        if (element != null && bodyPart instanceof HeterogeneousList) {
+            for (Element entry : (HeterogeneousList) bodyPart) {
+                ((HeterogeneousList) element).add(entry);
             }
             return element;
         }

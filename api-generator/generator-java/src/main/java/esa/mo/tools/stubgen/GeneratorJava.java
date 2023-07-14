@@ -250,9 +250,9 @@ public class GeneratorJava extends GeneratorLangs {
         JavaLists javaLists = new JavaLists(this);
 
         if (isAbstract) {
-            javaLists.createPolymorphicListClass(folder, area, service, srcTypeName);
+            javaLists.createHeterogeneousListClass(folder, area, service, srcTypeName);
         } else {
-            javaLists.createConcreteListClass(folder, area, service, srcTypeName, shortFormPart);
+            javaLists.createHomogeneousListClass(folder, area, service, srcTypeName, shortFormPart);
         }
     }
 

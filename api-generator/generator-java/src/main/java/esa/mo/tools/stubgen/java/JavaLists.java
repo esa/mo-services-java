@@ -54,7 +54,7 @@ public class JavaLists {
      * @param srcTypeName The name of the element in the list.
      * @throws IOException if there is a problem writing the file.
      */
-    public void createPolymorphicListClass(File folder, AreaType area,
+    public void createHeterogeneousListClass(File folder, AreaType area,
             ServiceType service, String srcTypeName) throws IOException {
         TypeReference srcType = new TypeReference();
         srcType.setArea(area.getName());
@@ -64,13 +64,13 @@ public class JavaLists {
 
         srcType.setName(srcTypeName);
         String listName = srcTypeName + "List";
-        generator.getLog().info(" > Creating PolymorphicList class: " + listName);
+        generator.getLog().info(" > Creating HeterogeneousList class: " + listName);
 
         JavaClassWriter file = (JavaClassWriter) generator.createClassFile(folder, listName);
         file.addPackageStatement(area, service, generator.getConfig().getStructureFolder());
 
         file.addClassOpenStatement(listName, true, false,
-                "org.ccsds.moims.mo.mal.structures.PolymorphicList",
+                "org.ccsds.moims.mo.mal.structures.HeterogeneousList",
                 null, "List class for " + srcTypeName + ".");
 
         file.addConstructorDefault(listName); // create blank constructor
@@ -111,7 +111,7 @@ public class JavaLists {
      * @param shortFormPart The short form part of the contained element.
      * @throws IOException if there is a problem writing the file.
      */
-    public void createConcreteListClass(File folder, AreaType area, ServiceType service,
+    public void createHomogeneousListClass(File folder, AreaType area, ServiceType service,
             String srcTypeName, Long shortFormPart) throws IOException {
         String listName = srcTypeName + "List";
 

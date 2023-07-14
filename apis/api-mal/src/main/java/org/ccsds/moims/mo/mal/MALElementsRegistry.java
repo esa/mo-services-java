@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.concurrent.Callable;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
-import org.ccsds.moims.mo.mal.structures.PolymorphicList;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 
 /**
  * Holds a map of MAL Elements indexed on the absolute short form part. Used to
@@ -71,7 +71,7 @@ public class MALElementsRegistry {
      */
     public Element createElement(Long absoluteSFP) throws Exception {
         if (absoluteSFP == 0) {
-            return new PolymorphicList();
+            return new HeterogeneousList();
         }
 
         Callable<Element> callable = ELEMENTS.get(absoluteSFP);

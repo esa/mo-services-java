@@ -31,14 +31,14 @@ import org.ccsds.moims.mo.mal.MALListEncoder;
  * The polymorphic list allows elements of different types to be added on the
  * same list.
  */
-public class PolymorphicList extends java.util.ArrayList<Element> implements ElementList<Element> {
+public class HeterogeneousList extends java.util.ArrayList<Element> implements ElementList<Element> {
 
     /**
      * Default constructor.
      *
      * @param element An element to be added to the list.
      */
-    public PolymorphicList(Element element) {
+    public HeterogeneousList(Element element) {
         super();
         super.add(element);
     }
@@ -46,13 +46,13 @@ public class PolymorphicList extends java.util.ArrayList<Element> implements Ele
     /**
      * Default constructor.
      */
-    public PolymorphicList() {
+    public HeterogeneousList() {
         super();
     }
 
     @Override
     public Element createElement() {
-        return new PolymorphicList();
+        return new HeterogeneousList();
     }
 
     @Override

@@ -2068,10 +2068,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     buf.append(", ");
                 }
 
-                String argName;
-                if (null != ti.getFieldName()) {
-                    argName = ti.getFieldName();
-                } else {
+                String argName = ti.getFieldName();
+
+                if (argName == null) {
                     argName = "_" + TypeUtils.shortTypeName(getConfig().getNamingSeparator(), ti.getTargetType()) + i;
                 }
 
@@ -2089,10 +2088,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     buf.append(argName);
                 }
             }
+
             String ret = buf.toString();
             ret = ret.replaceAll("<", "_");
             ret = ret.replaceAll(">", "_");
-
             return ret;
         }
 
