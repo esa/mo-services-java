@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
@@ -41,12 +40,6 @@ public class MALService {
     private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
     private final Map<String, MALOperation> operationsByName = new HashMap<>();
     private final Map<Integer, ArrayList<MALOperation>> operationsBySet = new HashMap<>();
-    private final ArrayList<MALSendOperation> sendOperations = new ArrayList();
-    private final ArrayList<MALSubmitOperation> submitOperations = new ArrayList();
-    private final ArrayList<MALRequestOperation> requestOperations = new ArrayList();
-    private final ArrayList<MALInvokeOperation> invokeOperations = new ArrayList();
-    private final ArrayList<MALProgressOperation> progressOperations = new ArrayList();
-    private final ArrayList<MALPubSubOperation> pubSubOperations = new ArrayList();
 
     private final ServiceKey serviceKey;
     private final Identifier serviceName;
@@ -101,10 +94,6 @@ public class MALService {
         }
     }
 
-    public Identifier getName() {
-        return serviceName;
-    }
-
     /**
      * Adds an operation to this service specification.
      *
@@ -112,35 +101,26 @@ public class MALService {
      * @throws java.lang.IllegalArgumentException If the argument is null.
      */
     private void addOperation(final MALOperation operation) throws java.lang.IllegalArgumentException {
-        if (null != operation) {
-            switch (operation.getInteractionType().getOrdinal()) {
-                case InteractionType._SEND_INDEX:
-                    sendOperations.add((MALSendOperation) operation);
-                    break;
-                case InteractionType._SUBMIT_INDEX:
-                    submitOperations.add((MALSubmitOperation) operation);
-                    break;
-                case InteractionType._REQUEST_INDEX:
-                    requestOperations.add((MALRequestOperation) operation);
-                    break;
-                case InteractionType._INVOKE_INDEX:
-                    invokeOperations.add((MALInvokeOperation) operation);
-                    break;
-                case InteractionType._PROGRESS_INDEX:
-                    progressOperations.add((MALProgressOperation) operation);
-                    break;
-                case InteractionType._PUBSUB_INDEX:
-                    pubSubOperations.add((MALPubSubOperation) operation);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown MAL interaction type of "
-                            + operation.getInteractionType().getOrdinal());
-            }
-
-            initOperation(operation);
-        } else {
+        if (operation == null) {
             throw new IllegalArgumentException("Operation argument must not be NULL");
         }
+
+        operation.setService(this);
+        operationsByName.put(operation.getName().getValue(), operation);
+        operationsByNumber.put(operation.getNumber().getValue(), operation);
+
+        ArrayList<MALOperation> opsSet = operationsBySet.get(operation.getCapabilitySet().getValue());
+
+        if (opsSet == null) {
+            opsSet = new ArrayList<>();
+        }
+
+        opsSet.add(operation);
+        operationsBySet.put(operation.getCapabilitySet().getValue(), opsSet);
+    }
+
+    public Identifier getName() {
+        return serviceName;
     }
 
     /**
@@ -208,75 +188,5 @@ public class MALService {
     public ArrayList<MALOperation> getOperationsByCapabilitySet(final int capabilitySet) {
         final ArrayList<MALOperation> operations = operationsBySet.get(capabilitySet);
         return (operations == null) ? new ArrayList<>() : operations;
-    }
-
-    /**
-     * Returns the set of SEND operations.
-     *
-     * @return The set of operations or an empty array if not found.
-     */
-    public MALSendOperation[] getSendOperations() {
-        return (MALSendOperation[]) sendOperations.toArray(new MALSendOperation[0]);
-    }
-
-    /**
-     * Returns the set of SUBMIT operations.
-     *
-     * @return The set of operations or an empty array if not found.
-     */
-    public MALSubmitOperation[] getSubmitOperations() {
-        return (MALSubmitOperation[]) submitOperations.toArray(new MALSubmitOperation[0]);
-    }
-
-    /**
-     * Returns the set of REQUEST operations.
-     *
-     * @return The set of operations or an empty array if not found.
-     */
-    public MALRequestOperation[] getRequestOperations() {
-        return (MALRequestOperation[]) requestOperations.toArray(new MALRequestOperation[0]);
-    }
-
-    /**
-     * Returns the set of INVOKE operations.
-     *
-     * @return The set of operations or an empty array if not found.
-     */
-    public MALInvokeOperation[] getInvokeOperations() {
-        return (MALInvokeOperation[]) invokeOperations.toArray(new MALInvokeOperation[0]);
-    }
-
-    /**
-     * Returns the set of PROGRESS operations.
-     *
-     * @return The set of operations or an empty array if not found.
-     */
-    public MALProgressOperation[] getProgressOperations() {
-        return (MALProgressOperation[]) progressOperations.toArray(new MALProgressOperation[0]);
-    }
-
-    /**
-     * Returns the set of PUBSUB operations.
-     *
-     * @return The set of operations or an empty array if not found.
-     */
-    public MALPubSubOperation[] getPubSubOperations() {
-        return (MALPubSubOperation[]) pubSubOperations.toArray(new MALPubSubOperation[0]);
-    }
-
-    private void initOperation(final MALOperation op) {
-        op.setService(this);
-
-        operationsByName.put(op.getName().getValue(), op);
-        operationsByNumber.put(op.getNumber().getValue(), op);
-
-        ArrayList<MALOperation> operations = operationsBySet.get(op.getCapabilitySet().getValue());
-
-        if (operations == null) {
-            operations = new ArrayList<>();
-        }
-
-        operations.add(op);
-        operationsBySet.put(op.getCapabilitySet().getValue(), operations);
     }
 }
