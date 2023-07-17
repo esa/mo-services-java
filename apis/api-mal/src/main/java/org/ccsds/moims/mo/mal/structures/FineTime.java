@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class FineTime implements Attribute {
 
+    private static final long serialVersionUID = Attribute.FINETIME_SHORT_FORM;
     private long value;
 
     /**
@@ -139,5 +140,4 @@ public class FineTime implements Attribute {
     public String toString() {
         return String.valueOf(value);
     }
-    private static final long serialVersionUID = Attribute.FINETIME_SHORT_FORM;
 }

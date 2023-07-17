@@ -20,8 +20,6 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
-import java.util.Objects;
-
 /**
  * The MOObject abstract class represents the MO Object type.
  */

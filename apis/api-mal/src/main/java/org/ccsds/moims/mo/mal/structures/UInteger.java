@@ -30,13 +30,14 @@ import org.ccsds.moims.mo.mal.MALException;
 public class UInteger implements Attribute {
 
     private static final long serialVersionUID = Attribute.UINTEGER_SHORT_FORM;
-    private long value;
 
     /**
      * A constant holding the maximum value a {@code UInteger} can have,
      * 2<sup>32</sup>-1.
      */
     public static final long MAX_VALUE = 4294967295L;
+
+    private long value;
 
     /**
      * Default constructor.

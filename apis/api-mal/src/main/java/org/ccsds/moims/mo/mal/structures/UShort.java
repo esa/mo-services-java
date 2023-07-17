@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class UShort implements Attribute {
 
+    private static final long serialVersionUID = Attribute.USHORT_SHORT_FORM;
     /**
      * The area number for all Attributes.
      */
@@ -59,10 +60,10 @@ public class UShort implements Attribute {
      * @param value Value to initialise with.
      */
     public UShort(final int value) {
-        if (0 > value) {
+        if (value < 0) {
             throw new IllegalArgumentException("UShort argument must not be negative");
         }
-        if (UShort.MAX_VALUE < value) {
+        if (value > UShort.MAX_VALUE) {
             throw new IllegalArgumentException("UShort argument must not be greater than " + UShort.MAX_VALUE);
         }
         this.value = value;
@@ -82,11 +83,6 @@ public class UShort implements Attribute {
         return value;
     }
 
-//  This might be required for XML serialisation and technologies that use that.  
-//  public void setValue(int value)
-//  {
-//    this.value = value;
-//  }
     @Override
     public Long getShortForm() {
         return Attribute.USHORT_SHORT_FORM;
@@ -145,5 +141,4 @@ public class UShort implements Attribute {
     public String toString() {
         return String.valueOf(value);
     }
-    private static final long serialVersionUID = Attribute.USHORT_SHORT_FORM;
 }

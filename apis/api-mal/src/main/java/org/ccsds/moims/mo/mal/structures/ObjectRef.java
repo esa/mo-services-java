@@ -31,6 +31,7 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class ObjectRef<T extends Element> implements Attribute {
 
+    private static final long serialVersionUID = Attribute.OBJECTREF_SHORT_FORM;
     private final IdentifierList domain;
     private final Identifier area;
     private final Identifier type;
@@ -190,5 +191,4 @@ public class ObjectRef<T extends Element> implements Attribute {
                 + String.valueOf(type) + ":" + String.valueOf(key) + ":"
                 + String.valueOf(objectVersion) + ":";
     }
-    private static final long serialVersionUID = Attribute.OBJECTREF_SHORT_FORM;
 }

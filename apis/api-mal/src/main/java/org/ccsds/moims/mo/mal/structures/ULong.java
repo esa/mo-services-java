@@ -30,13 +30,15 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class ULong implements Attribute {
 
-    private java.math.BigInteger value;
+    private static final long serialVersionUID = Attribute.ULONG_SHORT_FORM;
 
     /**
      * A constant holding the maximum value a {@code ULong} can have,
      * 2<sup>64</sup>-1.
      */
     public static final BigInteger MAX_VALUE = new BigInteger("18446744073709551615");
+
+    private java.math.BigInteger value;
 
     /**
      * Default constructor.
@@ -51,10 +53,10 @@ public class ULong implements Attribute {
      * @param value Value to initialise with.
      */
     public ULong(final java.math.BigInteger value) {
-        if (null == value) {
+        if (value == null) {
             throw new IllegalArgumentException("ULong argument must not be null");
         }
-        if (0 > value.signum()) {
+        if (value.signum() < 0) {
             throw new IllegalArgumentException("ULong argument must not be negative");
         }
         if (ULong.MAX_VALUE.compareTo(value) < 0) {
@@ -141,5 +143,4 @@ public class ULong implements Attribute {
     public String toString() {
         return String.valueOf(value);
     }
-    private static final long serialVersionUID = Attribute.ULONG_SHORT_FORM;
 }
