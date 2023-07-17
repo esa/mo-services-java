@@ -141,7 +141,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
         if (!decodedBody && (encBodyElements instanceof GENElementInputStream)) {
             byte[] rd = ((GENElementInputStream) encBodyElements).getRemainingEncodedData();
 
-            if ((null != encBodyBytes) && (0 < encBodyBytes.available())) {
+            if ((encBodyBytes != null) && (encBodyBytes.available() > 0)) {
                 byte[] c = new byte[rd.length + encBodyBytes.available()];
                 System.arraycopy(rd, 0, c, 0, rd.length);
                 encBodyBytes.mark(0);
@@ -187,12 +187,12 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
 
     @Override
     public MALEncodedElement getEncodedBodyElement(final int index) throws MALException {
-        if (index == -1) {
-            // want the complete message body
-            return new MALEncodedElement((Blob) encBodyElements.readElement(new Blob(), null));
-        } else {
+        if (index != -1) {
             return null;
         }
+
+        // want the complete message body
+        return new MALEncodedElement((Blob) encBodyElements.readElement(new Blob(), null));
     }
 
     /**
@@ -212,7 +212,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
             final UOctet stage,
             final MALEncodingContext ctx) throws MALException {
         // first check to see if we have an already encoded body
-        if ((null != messageParts)
+        if ((messageParts != null)
                 && (1 == messageParts.length)
                 && (messageParts[0] instanceof MALEncodedBody)) {
             enc.flush();
@@ -363,10 +363,11 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
                 }
             }
 
+            UOctet interactionStage = ctx.getHeader().getInteractionStage();
+
             if (ctx.getHeader().getIsErrorMessage()) {
                 bodyPartCount = 2;
             } else {
-                UOctet interactionStage = ctx.getHeader().getInteractionStage();
                 bodyPartCount = ctx.getOperation()
                         .getOperationStage(interactionStage)
                         .getElementShortForms().length;
@@ -375,8 +376,6 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
             GENTransport.LOGGER.log(Level.FINE,
                     "GEN Message decoding body! bodyPartCount: {0}", bodyPartCount);
             messageParts = new Object[bodyPartCount];
-
-            UOctet interactionStage = ctx.getHeader().getInteractionStage();
 
             if (bodyPartCount == 1) {
                 Object sf = ctx.getOperation()

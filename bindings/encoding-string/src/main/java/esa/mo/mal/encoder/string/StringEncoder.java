@@ -167,7 +167,7 @@ public class StringEncoder extends Encoder {
         }
 
         @Override
-        public void writeNotNull() throws IOException {
+        public void writeIsNotNull() throws IOException {
             // do nothing
         }
 

@@ -132,7 +132,7 @@ public abstract class BaseBinaryEncoder extends Encoder {
         }
 
         @Override
-        public void writeNotNull() throws IOException {
+        public void writeIsNotNull() throws IOException {
             write((byte) 1);
         }
 

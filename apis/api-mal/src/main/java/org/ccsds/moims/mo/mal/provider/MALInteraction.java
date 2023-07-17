@@ -25,7 +25,8 @@ import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * The MALInteraction interface represents a generic IP handling context.
+ * The MALInteraction interface represents a generic Interaction Pattern
+ * handling context.
  */
 public interface MALInteraction {
 

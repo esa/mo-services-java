@@ -336,21 +336,6 @@ public class TestEncoder {
         }
 
         @Override
-        public void setEndpointQosProperties(Map endpointQosProperties) {
-            super.setEndpointQosProperties(endpointQosProperties);
-        }
-
-        @Override
-        public void setHeader(MALMessageHeader header) {
-            super.setHeader(header);
-        }
-
-        @Override
-        public void setMessageQosProperties(Map messageQosProperties) {
-            super.setMessageQosProperties(messageQosProperties);
-        }
-
-        @Override
         public void setOperation(MALOperation operation) {
             super.setOperation(operation);
         }

@@ -31,12 +31,12 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public abstract class MALOperation {
 
-    private MALService service;
     private final Identifier name;
     private final UShort number;
     private final Boolean replayable;
     private final InteractionType interactionType;
     private final UShort capabilitySet;
+    private MALService service;
 
     /**
      * Initialises the internal variables with the supplied values.

@@ -120,10 +120,8 @@ public class MALArea {
      */
     public synchronized void addService(final MALService service) throws IllegalArgumentException, MALException {
         if (!serviceNumbers.containsKey(service.getServiceNumber().getValue())) {
-            //service.setArea(this);
             services.add(service);
             serviceNumbers.put(service.getServiceNumber().getValue(), service);
-            //serviceNames.put(service.getName().getValue(), service);
         } else {
             // throw new MALException("Service already included in area");
             // Just log a message instead of throwing an exception!

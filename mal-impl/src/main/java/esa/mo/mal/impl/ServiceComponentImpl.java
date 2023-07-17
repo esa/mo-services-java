@@ -195,15 +195,6 @@ public abstract class ServiceComponentImpl extends MALClose {
         return previous;
     }
 
-    /**
-     * Returns the Address structure used by this component.
-     *
-     * @return the Address structure.
-     */
-    public Address getMsgAddress() {
-        return msgAddress;
-    }
-
     @Override
     protected void thisObjectClose() throws MALException {
         super.thisObjectClose();

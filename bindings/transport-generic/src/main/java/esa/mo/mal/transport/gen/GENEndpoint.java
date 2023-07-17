@@ -296,7 +296,7 @@ public class GENEndpoint implements MALEndpoint {
      * @throws MALException on an error.
      */
     public void receiveMessage(final MALMessage msg) throws MALException {
-        if (active && (null != messageListener)) {
+        if (active && (messageListener != null)) {
             messageListener.onMessage(this, msg);
         } else {
             GENTransport.LOGGER.log(Level.WARNING,
@@ -314,7 +314,7 @@ public class GENEndpoint implements MALEndpoint {
      * @throws MALException on an error.
      */
     public void receiveMessages(final GENMessage[] msgs) throws MALException {
-        if (active && (null != messageListener)) {
+        if (active && (messageListener != null)) {
             messageListener.onMessages(this, msgs);
         } else {
             GENTransport.LOGGER.log(Level.WARNING,

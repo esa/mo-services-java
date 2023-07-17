@@ -452,12 +452,8 @@ public interface MALConsumer {
      * @throws MALInteractionException if a MAL standard error occurs during the
      * interaction
      */
-    void continueInteraction(
-            MALOperation op,
-            UOctet lastInteractionStage,
-            Time initiationTimestamp,
-            Long transactionId,
-            MALInteractionListener listener)
+    void continueInteraction(MALOperation op, UOctet lastInteractionStage,
+            Time initiationTimestamp, Long transactionId, MALInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**
