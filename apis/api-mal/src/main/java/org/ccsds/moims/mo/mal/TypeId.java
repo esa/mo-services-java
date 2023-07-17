@@ -64,7 +64,7 @@ public class TypeId {
      * @param typeId The TypeId of the type.
      */
     public TypeId(final Long typeId) {
-        long shortMask = 0xFF;
+        long shortMask = 0xFFFF;
         this.areaNumber = (short) ((typeId >> AREA_BIT_SHIFT) & shortMask);
         this.areaVersion = (short) ((typeId >> VERSION_BIT_SHIFT) & shortMask);
         this.serviceNumber = (short) ((typeId >> SERVICE_BIT_SHIFT) & shortMask);
