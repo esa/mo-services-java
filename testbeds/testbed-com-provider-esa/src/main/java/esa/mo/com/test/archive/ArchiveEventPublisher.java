@@ -172,7 +172,6 @@ public class ArchiveEventPublisher {
     updateHeader.setTimestamp(timestamp);
          */
 
-        UpdateHeader updateHeader = new UpdateHeader();
         AttributeList keyValues = new AttributeList();
         keyValues.add(new Identifier(eventObjectNumber.toString()));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
@@ -191,10 +190,8 @@ public class ArchiveEventPublisher {
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
 
-        updateHeader.setKeyValues(keyValues);
-        updateHeader.setDomain(domain);
-        updateHeader.setSource(new Identifier(EventServiceInfo.EVENT_SERVICE_NAME.getValue()));
-        return updateHeader;
+        return new UpdateHeader(new Identifier(EventServiceInfo.EVENT_SERVICE_NAME.getValue()),
+                domain, keyValues);
     }
 
     /**
@@ -205,13 +202,9 @@ public class ArchiveEventPublisher {
      * @param objectType
      * @param instanceId
      */
-    private void setObjectId(ObjectId objectId, IdentifierList domain, ObjectType objectType, Long instanceId) {
-        objectId.setType(objectType);
-
-        ObjectKey key = new ObjectKey();
-        key.setDomain(domain);
-        key.setInstId(instanceId);
-        objectId.setKey(key);
+    private ObjectId setObjectId(IdentifierList domain, ObjectType objectType, Long instanceId) {
+        ObjectKey key = new ObjectKey(domain, instanceId);
+        return new ObjectId(objectType, key);
     }
 
     /**
@@ -255,14 +248,10 @@ public class ArchiveEventPublisher {
 
         Iterator<Long> instIt = instIds.iterator();
         while (instIt.hasNext()) {
-            ObjectDetails objDetails = new ObjectDetails();
-            // Set source 
-            ObjectId source = new ObjectId();
-            setObjectId(source, eventDomainId, objectType, instIt.next());
-            objDetails.setSource(source);
+            ObjectId source = setObjectId(eventDomainId, objectType, instIt.next());
+            ObjectDetails objDetails = new ObjectDetails(null, source);
 
             UpdateHeader uh = setUpdateHeader(objectNumber, objectType);
-            // elementList.add(null);
             storeEvent(objectType, eventDomainId, eventInstCount, Time.now(), uh.getSource(), objDetails, objectNumber);
 
             monitorEventPublisher.publish(uh, objDetails, null);

@@ -398,16 +398,14 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
                 auto == null ? new UInteger(1) : new UInteger(auto.getObjectIdentity().getVersionId().getValue() + 1));
 
         if (new Identifier("Lamborghini").equals(autoType)) {
-            auto = new Lamborghini(autoId);
+            auto = new Lamborghini(autoId, engine, chassis, windows);
         } else if (new Identifier("Porsche").equals(autoType)) {
-            auto = new Porsche(autoId);
+            auto = new Porsche(autoId, engine, chassis, windows);
         } else {
             throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                     new Union("Unexpected Auto value.")));
         }
-        auto.setEngine(engine);
-        auto.setChassis(chassis);
-        auto.setWindows(windows);
+
         return createObject(auto, interaction);
     }
 
@@ -419,11 +417,18 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
                 autoRef.getKey(),
                 autoRef.getObjectVersion());
         Auto auto = autoList.remove(autoId);
+
         if (new UInteger(0).equals(autoRef.getObjectVersion())) {
             // remove all versions of the object
-            for (long ov = auto.getObjectIdentity().getVersionId().getValue(); --ov > 0;) {
-                autoId.setVersionId(new UInteger(ov));
-                autoList.remove(autoId);
+            for (long version = auto.getObjectIdentity().getVersionId().getValue(); --version > 0;) {
+                ObjectIdentity autoId2 = new ObjectIdentity(
+                        autoRef.getDomain(),
+                        autoRef.getArea(),
+                        autoRef.getType(),
+                        autoRef.getKey(),
+                        new UInteger(version));
+
+                autoList.remove(autoId2);
             }
         }
     }

@@ -1407,6 +1407,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
 
         try {
             checkStoreValidity(setInstId, objectType, domain, archiveDetailsList, elementList);
+
             for (int i = 0; i < archiveDetailsList.size(); i++) {
                 if (archiveDetailsList.get(i).getInstId() == 0) {
                     archiveDetailsList.get(i).setInstId((++lastInstanceId));

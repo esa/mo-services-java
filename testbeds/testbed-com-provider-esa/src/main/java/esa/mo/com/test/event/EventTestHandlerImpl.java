@@ -235,25 +235,14 @@ public class EventTestHandlerImpl implements EventTestHandler {
 
         // Produce ObjectCreationList
         ObjectCreationList ocl = new ObjectCreationList();
-        ObjectCreation oc = new ObjectCreation();
-        oc.setSuccess(success);
-        oc.setDescription(description);
+        ObjectCreation oc = new ObjectCreation(success, description);
         ocl.add(oc);
 
-        // Produce ObjectDetails 
-        ObjectDetails objDetails = new ObjectDetails();
-
-        // Set source 
         ObjectId source = setObjectId(sourceDomain, sourceObjectNumber, sourceInstId);
-        objDetails.setSource(source);
-        // Set related (if supplied)
-        if (relatedInstId != null) {
-            objDetails.setRelated(relatedInstId);
-        }
+        ObjectDetails objDetails = new ObjectDetails(relatedInstId, source);
 
         // Produce header
-        UpdateHeader uh = new UpdateHeader();
-        setUpdateHeader(uh, TEST_OBJECT_CREATION_NO, sourceInstId);
+        UpdateHeader uh = setUpdateHeader(TEST_OBJECT_CREATION_NO, sourceInstId);
 
         // We can now publish the event
         monitorEventPublisher.publish(uh, objDetails, oc);
@@ -269,22 +258,22 @@ public class EventTestHandlerImpl implements EventTestHandler {
 
         // Produce ObjectDeletionList
         ObjectDeletionList odl = new ObjectDeletionList();
-        ObjectDeletion od = new ObjectDeletion();
-        od.setDescription(testObjectDetailsList.get((int) (sourceInstId - 1)).description);
+        ObjectDeletion od = new ObjectDeletion(testObjectDetailsList.get((int) (sourceInstId - 1)).description);
         odl.add(od);
 
         // Produce ObjectDetails 
-        ObjectDetails objDetails = new ObjectDetails();
+        ObjectDetails objDetails;
         ObjectId source = setObjectId(sourceDomain, sourceObjectNumber, sourceInstId);
-        objDetails.setSource(source);
+
         // Set related (if supplied)
         if (testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId != null) {
-            objDetails.setRelated(testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId);
+            objDetails = new ObjectDetails(testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId, source);
+        } else {
+            objDetails = new ObjectDetails(null, source);
         }
 
         // Produce header
-        UpdateHeader uh = new UpdateHeader();
-        setUpdateHeader(uh, TEST_OBJECT_DELETION_NO, sourceInstId);
+        UpdateHeader uh = setUpdateHeader(TEST_OBJECT_DELETION_NO, sourceInstId);
 
         // We can now publish the event
         monitorEventPublisher.publish(uh, objDetails, od);
@@ -318,32 +307,32 @@ public class EventTestHandlerImpl implements EventTestHandler {
             MALInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + "publishTestObjectUpdate malInter = " + interaction);
 
+        UpdateComposite uComposite = null;
+        if (uOctetField != null || octetField != null || doubleField != null) {
+            uComposite = new UpdateComposite(uOctetField, octetField, doubleField);
+        }
+
+        ObjectUpdate ou = new ObjectUpdate(enumField, durationField, numericListField, uComposite);
+
         // Produce ObjectUpdateList
         ObjectUpdateList oul = new ObjectUpdateList();
-        ObjectUpdate ou = new ObjectUpdate();
-        ou.setDurationField(durationField);
-        ou.setEnumField(enumField);
-        ou.setNumericListField(numericListField);
-        if (uOctetField != null || octetField != null || doubleField != null) {
-            ou.setCompositeField(new UpdateComposite(uOctetField, octetField, doubleField));
-        }
         oul.add(ou);
 
         // Produce ObjectDetails 
         short sourceObjectNumber = testObjectDetailsList.get((int) (sourceInstId - 1)).objectNumber;
         String domain = testObjectDetailsList.get((int) (sourceInstId - 1)).domain;
-        ObjectDetails objDetails = new ObjectDetails();
-        // Set source 
         ObjectId source = setObjectId(domain, sourceObjectNumber, sourceInstId);
-        objDetails.setSource(source);
+        Long related = null;
+
         // Set related (if supplied)
         if (testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId != null) {
-            objDetails.setRelated(testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId);
+            related = testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId;
         }
 
+        ObjectDetails objDetails = new ObjectDetails(related, source);
+
         // Produce header
-        UpdateHeader uh = new UpdateHeader();
-        setUpdateHeader(uh, TEST_OBJECT_UPDATE_NO, sourceInstId);
+        UpdateHeader uh = setUpdateHeader(TEST_OBJECT_UPDATE_NO, sourceInstId);
 
         // We can now publish the event
         monitorEventPublisher.publish(uh, objDetails, ou);
@@ -353,22 +342,8 @@ public class EventTestHandlerImpl implements EventTestHandler {
 
     }
 
-    private void setUpdateHeader(UpdateHeader updateHeader, String eventObjectNumber, /* String domain, short objectNumber, */ long sourceInstId) {
+    private UpdateHeader setUpdateHeader(String eventObjectNumber, long sourceInstId) {
         short sourceObjectNumber = testObjectDetailsList.get((int) (sourceInstId - 1)).objectNumber;
-        /*
-    final EntityKey ekey = new EntityKey(
-            new Identifier(eventObjectNumber),
-            generateSubKey(COMPrototypeHelper._COMPROTOTYPE_AREA_NUMBER,
-                    EventTestHelper._EVENTTEST_SERVICE_NUMBER, COMPrototypeHelper._COMPROTOTYPE_AREA_VERSION, 0),
-            new Long(eventInstCount++),
-            generateSubKey(COMPrototypeHelper._COMPROTOTYPE_AREA_NUMBER, EventTestHelper._EVENTTEST_SERVICE_NUMBER,
-                    COMPrototypeHelper._COMPROTOTYPE_AREA_VERSION, sourceObjectNumber));
-    final Time timestamp = new Time(System.currentTimeMillis());
-    updateHeader.setKey(ekey);
-    updateHeader.setSourceURI(new URI(EventTestHelper.EVENTTEST_SERVICE_NAME.toString()));
-    updateHeader.setUpdateType(UpdateType.DELETION);
-    updateHeader.setTimestamp(timestamp);
-         */
 
         AttributeList keyValues = new AttributeList();
         keyValues.add(new Identifier(eventObjectNumber));
@@ -388,27 +363,23 @@ public class EventTestHandlerImpl implements EventTestHandler {
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
 
-        updateHeader.setKeyValues(keyValues);
-        updateHeader.setDomain(domain);
-        updateHeader.setSource(new Identifier(EventTestServiceInfo.EVENTTEST_SERVICE_NAME.getValue()));
+        UpdateHeader uh = new UpdateHeader(
+                new Identifier(EventTestServiceInfo.EVENTTEST_SERVICE_NAME.getValue()),
+                domain, keyValues);
+        return uh;
     }
 
     private ObjectId setObjectId(String domain, short objectNumber, long instanceId) {
-        ObjectId objectId = new ObjectId();
-        ObjectType type = new ObjectType();
-        type.setArea(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER);
-        type.setService(EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER);
-        type.setVersion(COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION);
-        type.setNumber(new UShort(objectNumber));
-        objectId.setType(type);
+        ObjectType type = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER,
+                EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
+                COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION,
+                new UShort(objectNumber));
 
-        ObjectKey key = new ObjectKey();
         final IdentifierList domainIdent = new IdentifierList();
         domainIdent.add(new Identifier(domain));
-        key.setDomain(domainIdent);
-        key.setInstId(instanceId);
-        objectId.setKey(key);
-        return objectId;
+
+        ObjectKey key = new ObjectKey(domainIdent, instanceId);
+        return new ObjectId(type, key);
     }
 
     public synchronized ArchiveStub archiveStub() throws MALException {

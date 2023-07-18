@@ -730,10 +730,13 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(null, autoRef2, rv, "Expecting object already exists error for Object identity is unique test");
 
             // create a valid Object identity
-            autoId2.setVersionId(new UInteger(autoId2.getVersionId().getValue() + 1));
+            ObjectIdentity autoId3 = new ObjectIdentity(autoId2.getDomainId(),
+                    autoId2.getAreaId(), autoId2.getTypeId(), autoId2.getKeyId(),
+                    new UInteger(autoId2.getVersionId().getValue() + 1));
+            //autoId2.setVersionId(new UInteger(autoId2.getVersionId().getValue() + 1));
             // use it for a wrong typed object
             // this could be detected by the Java mapping at object creation
-            Porsche porsche2 = new Porsche(autoId2,
+            Porsche porsche2 = new Porsche(autoId3,
                     "V12 LE3512 - 750 CV",
                     "Monocoque CFRP",
                     windows2);
@@ -749,8 +752,12 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(null, porscheRef2, rv, "Expecting wrong type error for Object identity type check");
 
             // create a revision of the first object
-            autoRef2 = getDataTestStub().createObject(auto2);
-            rv = subMultiTest(autoId2.getVersionId(), autoRef2.getObjectVersion(), rv,
+            Lamborghini auto3 = new Lamborghini(autoId3,
+                    "V12 LE3512 - 750 CV",
+                    "Monocoque CFRP",
+                    windows2);
+            ObjectRef<Auto> autoRef3 = getDataTestStub().createObject(auto3);
+            rv = subMultiTest(autoId3.getVersionId(), autoRef3.getObjectVersion(), rv,
                     "New version of first object created");
             // get the latest version of an object
             ObjectRef<Auto> autoRef0 = new ObjectRef<>(autoRef1.getDomain(),
@@ -759,13 +766,13 @@ public class DataTypeScenario extends LoggingBase {
                     autoRef1.getKey(),
                     new UInteger(0));
             Auto auto0 = getDataTestStub().getObject(autoRef0);
-            rv = subMultiTest(auto2.getObjectIdentity(), auto0.getObjectIdentity(), rv,
+            rv = subMultiTest(auto3.getObjectIdentity(), auto0.getObjectIdentity(), rv,
                     "Latest object version, field objectIdentity");
-            rv = subMultiTest(auto2.getEngine(), auto0.getEngine(), rv,
+            rv = subMultiTest(auto3.getEngine(), auto0.getEngine(), rv,
                     "Latest object version, field engine");
-            rv = subMultiTest(auto2.getChassis(), auto0.getChassis(), rv,
+            rv = subMultiTest(auto3.getChassis(), auto0.getChassis(), rv,
                     "Latest object version, field chassis");
-            rv = subMultiTest(auto2.getWindows(), auto0.getWindows(), rv,
+            rv = subMultiTest(auto3.getWindows(), auto0.getWindows(), rv,
                     "Latest object version, field windows");
 
         } catch (MALInteractionException ex) {

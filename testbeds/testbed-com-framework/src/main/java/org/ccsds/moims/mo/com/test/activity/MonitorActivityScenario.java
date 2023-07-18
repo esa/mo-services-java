@@ -512,20 +512,11 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         UpdateHeader uh = new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + "CONSUMER"), domain, keys);
 
         // Produce ActivityTransfer
-        ActivityTransfer activityTransferInstance = new ActivityTransfer();
-        activityTransferInstance.setSuccess(withSuccess);
+        ActivityTransfer activityTransferInstance = new ActivityTransfer(withSuccess);
 
-        // Produce ObjectDetails 
-        ObjectDetails objDetails = new ObjectDetails();
-        objDetails.setRelated(null);
-
-        ObjectId source = new ObjectId();
-        source.setType(COMTestHelper.getOperationActivityType());
-        ObjectKey key = new ObjectKey();
-        key.setDomain(domain);
-        key.setInstId(hdr.getTransactionId());
-        source.setKey(key);
-        objDetails.setSource(source);
+        ObjectKey key = new ObjectKey(domain, hdr.getTransactionId());
+        ObjectId source = new ObjectId(COMTestHelper.getOperationActivityType(), key);
+        ObjectDetails objDetails = new ObjectDetails(null, source);
 
         // We can now publish the event
         LocalMALInstance.instance().getMonitorEventPublisher(relay).publish(uh, objDetails, activityTransferInstance);

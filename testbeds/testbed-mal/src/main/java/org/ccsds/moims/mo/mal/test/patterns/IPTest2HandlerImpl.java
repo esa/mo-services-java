@@ -91,10 +91,11 @@ public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton {
                 _TestPublishUpdate.getPriority());
         UpdateHeader updateHeader = _TestPublishUpdate.getUpdateHeaders().get(0);
         TestUpdate testUpdate = _TestPublishUpdate.getUpdates().get(0);
-        updateHeader.setDomain(_TestPublishUpdate.getDomain());
-        updateHeader.setSource(new Identifier(""));
 
-        publisher.publish(updateHeader, testUpdate);
+        UpdateHeader publishHeader = new UpdateHeader(new Identifier(""),
+                _TestPublishUpdate.getDomain(), updateHeader.getKeyValues());
+
+        publisher.publish(publishHeader, testUpdate);
     }
 
     public void testMultipleNotify(TestPublishUpdate _TestPublishRegister, MALInteraction interaction)

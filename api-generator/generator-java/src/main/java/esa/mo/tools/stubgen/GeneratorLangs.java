@@ -1799,7 +1799,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
     protected static void addSetter(ClassWriter file, CompositeField element, String backwardCompatibility) throws IOException {
         String setOpPrefix = "set";
         String attributeName = element.getFieldName();
-        boolean isDeprecated = (backwardCompatibility != null);
+        //boolean isDeprecated = (backwardCompatibility != null);
+        boolean isDeprecated = true;
         String getOpName = (backwardCompatibility == null) ? StubUtils.preCap(attributeName) : backwardCompatibility;
 
         if (StdStrings.BOOLEAN.equals(element.getTypeName()) && getOpName.startsWith("Is")) {

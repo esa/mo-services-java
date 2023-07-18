@@ -283,7 +283,6 @@ public abstract class TestData {
         // TODO find the type Identifier more programmatically
         ObjectIdentity garageId = new ObjectIdentity(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
                 new Identifier("Garage"), new Identifier("garage"), new UInteger(1));
-        testGarage = new Garage(garageId);
 //        testGarage.setCourtesyCarAsPorsche(null);
         // TODO the next 2 lines do not compile
         ObjectRef<Porsche> porscheCar = new ObjectRef(testCourtesyCar.getDomain(), testCourtesyCar.getArea(),
@@ -292,13 +291,16 @@ public abstract class TestData {
                 testCourtesyCar.getType(), testCourtesyCar.getKey(), testCourtesyCar.getObjectVersion());
         ObjectRef<Element> elementCar = new ObjectRef(testCourtesyCar.getDomain(), testCourtesyCar.getArea(),
                 testCourtesyCar.getType(), testCourtesyCar.getKey(), testCourtesyCar.getObjectVersion());
-        testGarage.setCourtesyCarAsPorsche(porscheCar);
-        testGarage.setCourtesyCarAsAuto(autoCar);
-        testGarage.setCourtesyCarAsObject(elementCar);
+
+        testGarage = new Garage(garageId, porscheCar, autoCar, elementCar,
+                testPorscheCars, testCars, testCars);
+        //testGarage.setCourtesyCarAsPorsche(porscheCar);
+        //testGarage.setCourtesyCarAsAuto(autoCar);
+        //testGarage.setCourtesyCarAsObject(elementCar);
 
         // Lists:
-        testGarage.setCarsAsPorsches(testPorscheCars);
-        testGarage.setCarsAsAutos(testCars);
-        testGarage.setCarsAsObjects(testCars);
+        //testGarage.setCarsAsPorsches(testPorscheCars);
+        //testGarage.setCarsAsAutos(testCars);
+        //testGarage.setCarsAsObjects(testCars);
     }
 }

@@ -256,27 +256,20 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance malInter = " + interaction);
 
         // Produce ActivityTransfer
-        ActivityAcceptance aa = new ActivityAcceptance();
-        aa.setSuccess(success);
+        ActivityAcceptance aa = new ActivityAcceptance(success);
 
-        // Set source
-        ObjectId source = new ObjectId();
-        source.setType(COMTestHelper.getOperationActivityType());
-        LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance source = " + source);
+        ObjectKey key = new ObjectKey(new IdentifierList(),
+                new Long(interaction.getMessageHeader().getTransactionId()));
 
-        ObjectKey key = new ObjectKey();
-        key.setDomain(new IdentifierList());
-        key.setInstId(new Long(interaction.getMessageHeader().getTransactionId()));
         if (interaction.getMessageHeader().getTransactionId() == null) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:getTransactionId = NULL");
         }
         LoggingBase.logMessage("ActivityTestHandler:key = " + key);
-        source.setKey(key);
 
         // Produce ObjectDetails
-        ObjectDetails objDetails = new ObjectDetails();
-        objDetails.setRelated(null);
-        objDetails.setSource(source);
+        ObjectId source = new ObjectId(COMTestHelper.getOperationActivityType(), key);
+        ObjectDetails objDetails = new ObjectDetails(null, source);
+        LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance source = " + source);
 
         /*
         final EntityKey ekey = new EntityKey(
@@ -352,27 +345,18 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues);
 
         // Produce ActivityTransferList
-        ActivityExecution activityExecutionInstance = new ActivityExecution();
-        activityExecutionInstance.setExecutionStage(new UInteger(currentStageCount)); // TBD
-        activityExecutionInstance.setStageCount(new UInteger(totalStageCount));
-        activityExecutionInstance.setSuccess(success);
+        ActivityExecution activityExecutionInstance = new ActivityExecution(
+                success, new UInteger(currentStageCount), new UInteger(totalStageCount));
 
-        // Produce ObjectDetails 
-        ObjectDetails objDetails = new ObjectDetails();
-        objDetails.setRelated(null);
+        ObjectKey key = new ObjectKey(domain, interaction.getMessageHeader().getTransactionId());
 
-        ObjectId source = new ObjectId();
-
-        source.setType(COMTestHelper.getOperationActivityType());
-
-        ObjectKey key = new ObjectKey();
-        key.setDomain(domain);
-        key.setInstId(interaction.getMessageHeader().getTransactionId());
         if (interaction.getMessageHeader().getTransactionId() == null) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:getTransactionId = NULL");
         }
-        source.setKey(key);
-        objDetails.setSource(source);
+
+        // Produce ObjectDetails
+        ObjectId source = new ObjectId(COMTestHelper.getOperationActivityType(), key);
+        ObjectDetails objDetails = new ObjectDetails(null, source);
 
         // We can now publish the event
         monitorEventPublisher.publish(uh, objDetails, activityExecutionInstance);

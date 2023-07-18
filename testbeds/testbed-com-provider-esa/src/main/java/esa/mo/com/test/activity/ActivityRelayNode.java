@@ -279,26 +279,20 @@ public class ActivityRelayNode {
         UpdateHeader uh = new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName), domain, keyValues);
 
         // Produce ActivityTransfer
-        ActivityTransfer activityTransferInstance = new ActivityTransfer();
-        activityTransferInstance.setSuccess(withSuccess);
+        ActivityTransfer activityTransferInstance = new ActivityTransfer(withSuccess);
 
-        // Produce ObjectDetails 
-        ObjectDetails objDetails = new ObjectDetails();
-        objDetails.setRelated(null);
+        ObjectKey key;
 
-        ObjectId source = new ObjectId();
-        source.setType(COMTestHelper.getOperationActivityType());
-
-        ObjectKey key = new ObjectKey();
-        key.setDomain(domain);
         if (srcMessage.getTransactionId() == null) {
+            key = new ObjectKey(domain, null);
             LoggingBase.logMessage("ActivityRelayNode:getTransactionId = NULL");
         } else {
-            key.setInstId(srcMessage.getTransactionId());
+            key = new ObjectKey(domain, srcMessage.getTransactionId());
         }
         LoggingBase.logMessage("ActivityRelayNode:key = " + key);
-        source.setKey(key);
-        objDetails.setSource(source);
+
+        ObjectId source = new ObjectId(COMTestHelper.getOperationActivityType(), key);
+        ObjectDetails objDetails = new ObjectDetails(null, source);
 
         // We can now publish the event
         monitorEventPublisher.publish(uh, objDetails, activityTransferInstance);

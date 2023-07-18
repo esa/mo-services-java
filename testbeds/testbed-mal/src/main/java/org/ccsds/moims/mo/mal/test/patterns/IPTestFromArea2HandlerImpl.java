@@ -45,7 +45,6 @@ import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.structures.Auto;
-import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
@@ -124,11 +123,11 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
 
         UpdateHeader updateHeader = _TestPublishUpdate.getUpdateHeaders().get(0);
         TestUpdate testUpdate = _TestPublishUpdate.getUpdates().get(0);
-        updateHeader.setDomain(_TestPublishUpdate.getDomain());
-        updateHeader.setSource(new Identifier(""));
 
-        publisher.publish(updateHeader, testUpdate);
-        publisher2.publish(updateHeader, testUpdate);
+        UpdateHeader publishHeader = new UpdateHeader(new Identifier(""),
+                _TestPublishUpdate.getDomain(), updateHeader.getKeyValues());
+        publisher.publish(publishHeader, testUpdate);
+        publisher2.publish(publishHeader, testUpdate);
     }
 
     public void testMultipleNotify(TestPublishUpdate _TestPublishRegister,

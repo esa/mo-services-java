@@ -324,7 +324,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         addMultilineComment(1, false, comments, false);
 
         if (isDeprecated) {
-            file.append("  @Deprecated\n");
+            file.append("    @Deprecated\n");
         }
 
         String nStatic = isStatic ? "static " : "";

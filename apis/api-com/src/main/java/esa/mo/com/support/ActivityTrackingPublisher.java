@@ -114,21 +114,19 @@ public class ActivityTrackingPublisher {
      */
     public void publishAcceptanceEventOperation(final MALInteraction interaction,
             final boolean success) throws MALInteractionException, MALException {
-        // create source
-        ObjectId source = new ObjectId();
-        source.setType(OPERATION_ACTIVITY_OBJECT_TYPE);
-        BaseMalServer.LOGGER.log(Level.FINE,
-                "ActivityTracking:publishAcceptance source = {0}", source);
-
-        ObjectKey key = new ObjectKey();
+        ObjectKey key = new ObjectKey(new IdentifierList(),
+        interaction.getMessageHeader().getTransactionId());
         //key.setDomain(interaction.getMessageHeader().getDomain());
-        key.setDomain(new IdentifierList());
-        key.setInstId(interaction.getMessageHeader().getTransactionId());
+
         if (interaction.getMessageHeader().getTransactionId() == null) {
             BaseMalServer.LOGGER.fine("ActivityTracking:getTransactionId = NULL");
         }
         BaseMalServer.LOGGER.log(Level.FINE, "ActivityTracking:key = {0}", key);
-        source.setKey(key);
+        // create source
+        ObjectId source = new ObjectId(OPERATION_ACTIVITY_OBJECT_TYPE, key);
+
+        BaseMalServer.LOGGER.log(Level.FINE,
+                "ActivityTracking:publishAcceptance source = {0}", source);
 
         publishAcceptanceEvent(interaction, success, source);
     }
@@ -150,13 +148,10 @@ public class ActivityTrackingPublisher {
                 new Object[]{interaction, source});
 
         // Produce ActivityTransferList
-        ActivityAcceptance aa = new ActivityAcceptance();
-        aa.setSuccess(success);
+        ActivityAcceptance aa = new ActivityAcceptance(success);
 
         // Produce ObjectDetails
-        ObjectDetails objDetails = new ObjectDetails();
-        objDetails.setRelated(null);
-        objDetails.setSource(source);
+        ObjectDetails objDetails = new ObjectDetails(null, source);
 
         // Produce header
         AttributeList keys = new AttributeList();
@@ -328,15 +323,11 @@ public class ActivityTrackingPublisher {
         UpdateHeader uh = new UpdateHeader(eventSourceURI, null, keys);
 
         // Produce ActivityTransferList
-        ActivityExecution activityExecutionInstance = new ActivityExecution();
-        activityExecutionInstance.setExecutionStage(new UInteger(currentStageCount)); // TBD
-        activityExecutionInstance.setStageCount(new UInteger(totalStageCount));
-        activityExecutionInstance.setSuccess(success);
+        ActivityExecution activityExecutionInstance = new ActivityExecution(success,
+                new UInteger(currentStageCount), new UInteger(totalStageCount));
 
         // Produce ObjectDetails
-        ObjectDetails objDetails = new ObjectDetails();
-        objDetails.setRelated(null);
-        objDetails.setSource(source);
+        ObjectDetails objDetails = new ObjectDetails(null, source);
 
         // We can now publish the event
         eventProvider.publishSingleEvent(uh, objDetails, activityExecutionInstance);
