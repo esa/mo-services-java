@@ -40,7 +40,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -445,9 +445,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         TestEndPoint ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
 
-        MALMessage notifyMessage = ep.createTestMessage(
-                expectedMonitorNotifyErrorHeader,
-                new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), new Hashtable());
+        MALMessage notifyMessage = ep.createTestMessage(expectedMonitorNotifyErrorHeader,
+                new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null), new Hashtable());
 
         // Inject the Notify error message
         ep.receive(notifyMessage);
@@ -743,7 +742,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         AssertionHelper.checkHeader(procedureName, assertions,
                 monitorRegisterErrorHeader, expectedMonitorRegisterErrorHeader);
 
-        MALStandardError monitorRegisterError = listener.getMonitorRegisterError();
+        MOErrorException monitorRegisterError = listener.getMonitorRegisterError();
 
         assertions.add(new Assertion(procedureName,
                 "Error received", (monitorRegisterError != null)));
@@ -772,7 +771,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         private MALMessageHeader monitorRegisterErrorHeader;
 
-        private MALStandardError monitorRegisterError;
+        private MOErrorException monitorRegisterError;
 
         @Override
         public synchronized void monitorRegisterAckReceived(MALMessageHeader msgHeader, Map qosProperties) {
@@ -782,7 +781,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         @Override
         public synchronized void monitorRegisterErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             monitorRegisterErrorHeader = msgHeader;
             monitorRegisterError = error;
             monitorRegisterCond.set();
@@ -798,7 +797,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         @Override
         public synchronized void monitorNotifyErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             monitorNotifyErrorHeader = msgHeader;
             monitorNotifyErrorCond.set();
         }
@@ -827,11 +826,11 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             this.monitorRegisterErrorHeader = monitorRegisterErrorHeader;
         }
 
-        public MALStandardError getMonitorRegisterError() {
+        public MOErrorException getMonitorRegisterError() {
             return monitorRegisterError;
         }
 
-        public void setMonitorRegisterError(MALStandardError monitorRegisterError) {
+        public void setMonitorRegisterError(MOErrorException monitorRegisterError) {
             this.monitorRegisterError = monitorRegisterError;
         }
 

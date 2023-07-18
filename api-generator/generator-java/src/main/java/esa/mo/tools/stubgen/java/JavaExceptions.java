@@ -82,7 +82,7 @@ public class JavaExceptions {
         file.addPackageStatement(area, service, null);
 
         // Appends the class name
-        String extendsClass = "org.ccsds.moims.mo.mal.MALStandardError";
+        String extendsClass = "org.ccsds.moims.mo.mal.MOErrorException";
         file.addClassOpenStatement(className, true, false, extendsClass,
                 null, "The " + className + " exception. " + error.getComment());
 

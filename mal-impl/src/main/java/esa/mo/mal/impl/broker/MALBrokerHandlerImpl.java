@@ -35,7 +35,7 @@ import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
@@ -213,7 +213,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
             String msg = "Provider not registered! Please register the provider"
                     + " (with PUBLISH_REGISTER) before publishing!";
             MALBrokerImpl.LOGGER.warning(msg);
-            throw new MALInteractionException(new MALStandardError(
+            throw new MALInteractionException(new MOErrorException(
                     MALHelper.INCORRECT_STATE_ERROR_NUMBER, msg));
         }
 
@@ -233,7 +233,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                         + "\nkeyValues: " + keyValues.toString();
 
                 MALBrokerImpl.LOGGER.warning(txt);
-                throw new MALInteractionException(new MALStandardError(
+                throw new MALInteractionException(new MOErrorException(
                         MALHelper.UNKNOWN_ERROR_NUMBER, null));
             }
 
@@ -257,7 +257,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                     notifyMessages.addAll(list);
                 } catch (MALException ex) {
                     MALBrokerImpl.LOGGER.warning(ex.getMessage());
-                    throw new MALInteractionException(new MALStandardError(
+                    throw new MALInteractionException(new MOErrorException(
                             MALHelper.UNKNOWN_ERROR_NUMBER, null));
                 }
             }

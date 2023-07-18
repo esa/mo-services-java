@@ -21,7 +21,7 @@
 package org.ccsds.moims.mo.mal.transport;
 
 import java.util.Map;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 
 /**
  * The MALTransmitErrorListener interface enables the MAL layer to be notified
@@ -39,5 +39,5 @@ public interface MALTransmitErrorListener {
      * @param qosMap The QoS details of the message being sent.
      */
     void onTransmitError(MALEndpoint callingEndpoint, 
-            MALMessageHeader srcMessageHeader, MALStandardError err, Map qosMap);
+            MALMessageHeader srcMessageHeader, MOErrorException err, Map qosMap);
 }

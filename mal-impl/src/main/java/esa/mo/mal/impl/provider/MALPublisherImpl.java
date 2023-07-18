@@ -178,7 +178,7 @@ class MALPublisherImpl implements MALPublisher {
                     MALPubSubOperation.PUBLISH_STAGE, body);
         } else {
             // this means that we haven't successfully registered, need to throw an exception
-            throw new MALInteractionException(new MALStandardError(
+            throw new MALInteractionException(new MOErrorException(
                     MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
         }
     }

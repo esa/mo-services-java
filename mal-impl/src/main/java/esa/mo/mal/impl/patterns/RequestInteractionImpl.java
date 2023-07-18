@@ -25,7 +25,7 @@ import esa.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALRequest;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -61,7 +61,7 @@ public class RequestInteractionImpl extends BaseInteractionImpl implements MALRe
     }
 
     @Override
-    public MALMessage sendError(final MALStandardError error) throws MALException {
+    public MALMessage sendError(final MOErrorException error) throws MALException {
         return returnError(MALRequestOperation.REQUEST_RESPONSE_STAGE, error);
     }
 }

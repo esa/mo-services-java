@@ -33,7 +33,7 @@
 package org.ccsds.moims.mo.testbed.transport;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
@@ -74,8 +74,8 @@ public class TestErrorBody implements MALErrorBody {
         throw new MALException("Invalid call");
     }
 
-    public MALStandardError getError() throws MALException {
-        return new MALStandardError(errorNumber, extraInformation);
+    public MOErrorException getError() throws MALException {
+        return new MOErrorException(errorNumber, extraInformation);
     }
 
     @Override

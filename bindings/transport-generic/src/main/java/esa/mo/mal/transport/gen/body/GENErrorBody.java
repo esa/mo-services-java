@@ -22,7 +22,7 @@ package esa.mo.mal.transport.gen.body;
 
 import java.io.ByteArrayInputStream;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
@@ -69,9 +69,9 @@ public class GENErrorBody extends GENMessageBody implements MALErrorBody {
     }
 
     @Override
-    public MALStandardError getError() throws MALException {
+    public MOErrorException getError() throws MALException {
         decodeMessageBody();
         Object extraInfo = (messageParts.length > 1) ? messageParts[1] : null;
-        return new MALStandardError((UInteger) messageParts[0], extraInfo);
+        return new MOErrorException((UInteger) messageParts[0], extraInfo);
     }
 }

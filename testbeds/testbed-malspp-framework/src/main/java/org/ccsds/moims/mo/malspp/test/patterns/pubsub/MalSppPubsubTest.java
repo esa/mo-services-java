@@ -39,7 +39,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.ElementList;
@@ -714,7 +714,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 
     public String receivedMessageBodyContainsError() throws Exception {
         if (rcvdMsg.getBody() instanceof MALErrorBody) {
-            MALStandardError error = ((MALErrorBody) rcvdMsg.getBody()).getError();
+            MOErrorException error = ((MALErrorBody) rcvdMsg.getBody()).getError();
             if (error.getErrorNumber().equals(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER)) {
                 return "destination unknown";
             } else {
@@ -887,7 +887,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 
         @Override
         public synchronized void monitorNotifyErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             System.out.println("monitorNotifyErrorReceived: " + error);
             notifyErrorReceived = true;
             notify();

@@ -34,7 +34,7 @@ import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.comprototype.activitytest.consumer.ActivityTestAdapter;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -541,7 +541,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void testSubmitErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testSubmitErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:testSubmitErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -564,7 +564,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void requestErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void requestErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:requestErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -573,7 +573,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void invokeAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void invokeAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:invokeAckErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -591,7 +591,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void invokeResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void invokeResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:invokeResponseErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -600,7 +600,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void progressAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:progressAckErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -617,7 +617,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void progressUpdateErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressUpdateErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:progressUpdateErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -626,7 +626,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void progressResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:progressResponseErrorReceived");
             synchronized (cond) {
                 isError = true;

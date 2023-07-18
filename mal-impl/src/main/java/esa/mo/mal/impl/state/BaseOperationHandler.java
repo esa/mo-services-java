@@ -24,7 +24,7 @@ import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -47,7 +47,7 @@ public abstract class BaseOperationHandler {
 
     public abstract void processStage(final MessageHandlerDetails details) throws MALInteractionException;
 
-    public abstract void handleError(final MALMessageHeader hdr, final MALStandardError err, final Map qosMap);
+    public abstract void handleError(final MALMessageHeader hdr, final MOErrorException err, final Map qosMap);
 
     public abstract boolean finished();
 

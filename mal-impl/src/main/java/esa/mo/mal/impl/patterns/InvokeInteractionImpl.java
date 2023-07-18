@@ -25,7 +25,7 @@ import esa.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALInvoke;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
@@ -80,7 +80,7 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
     }
 
     @Override
-    public MALMessage sendError(final MALStandardError error)
+    public MALMessage sendError(final MOErrorException error)
             throws MALException {
         UOctet stage = MALInvokeOperation.INVOKE_ACK_STAGE;
 

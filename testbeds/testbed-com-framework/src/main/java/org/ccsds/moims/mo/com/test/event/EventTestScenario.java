@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
@@ -657,7 +657,7 @@ public class EventTestScenario extends LoggingBase {
 
         @Override
         public void retrieveResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             countDownLatch.countDown();
         }
 

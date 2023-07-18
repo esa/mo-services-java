@@ -27,7 +27,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
@@ -162,7 +162,7 @@ public final class ProgressOperationHandler extends BaseOperationHandler {
 
     @Override
     public synchronized void handleError(final MALMessageHeader hdr,
-            final MALStandardError err, final Map qosMap) {
+            final MOErrorException err, final Map qosMap) {
         if (isSynchronous) {
             DummyErrorBody errBody = new DummyErrorBody(err);
             responseHolder.signalResponse(true, new DummyMessage(hdr, errBody, qosMap));

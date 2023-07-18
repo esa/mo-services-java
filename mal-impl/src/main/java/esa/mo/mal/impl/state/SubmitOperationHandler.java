@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
@@ -108,14 +108,14 @@ public class SubmitOperationHandler extends BaseOperationHandler {
             }
         } else {
             logUnexpectedTransitionError(interactionType, interactionStage);
-            throw new MALInteractionException(new MALStandardError(
+            throw new MALInteractionException(new MOErrorException(
                     MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
         }
     }
 
     @Override
     public synchronized void handleError(final MALMessageHeader hdr,
-            final MALStandardError err, final Map qosMap) {
+            final MOErrorException err, final Map qosMap) {
         if (isSynchronous) {
             responseHolder.signalResponse(true,
                     new DummyMessage(hdr, new DummyErrorBody(err), qosMap));

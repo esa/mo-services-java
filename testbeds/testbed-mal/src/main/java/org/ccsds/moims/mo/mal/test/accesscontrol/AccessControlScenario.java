@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -216,7 +216,7 @@ public class AccessControlScenario extends LoggingBase {
 
         @Override
         public void invokeResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             cond.set();
         }
 
@@ -229,7 +229,7 @@ public class AccessControlScenario extends LoggingBase {
 
         @Override
         public void progressResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             cond.set();
         }
 

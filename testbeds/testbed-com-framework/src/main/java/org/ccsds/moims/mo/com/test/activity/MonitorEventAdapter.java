@@ -114,7 +114,7 @@ class MonitorEventAdapter extends EventAdapter {
      * @param qosProperties The QoS properties associated with the message.
      */
     public void monitorEventRegisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
+            org.ccsds.moims.mo.mal.MOErrorException error, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterErrorReceived - ERROR");
     }
 
@@ -138,7 +138,7 @@ class MonitorEventAdapter extends EventAdapter {
      * @param qosProperties The QoS properties associated with the message.
      */
     public void monitorEventNotifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
+            org.ccsds.moims.mo.mal.MOErrorException error, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorEventDeregisterAckReceived - ERROR");
     }
 

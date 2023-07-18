@@ -71,7 +71,7 @@ public class MessageReceive implements MALMessageListener {
     @Override
     public void onTransmitError(final MALEndpoint callingEndpoint,
             final MALMessageHeader srcMessageHeader,
-            final MALStandardError err,
+            final MOErrorException err,
             final Map qosMap) {
         MALContextFactoryImpl.LOGGER.severe("MAL Receiving Transmission ERROR!");
 
@@ -335,7 +335,7 @@ public class MessageReceive implements MALMessageListener {
             }
         } catch (MALException ex) {
             try {
-                interaction.sendError(new MALStandardError(
+                interaction.sendError(new MOErrorException(
                         MALHelper.INTERNAL_ERROR_NUMBER,
                         new Union(ex.getLocalizedMessage())
                 ));
@@ -363,7 +363,7 @@ public class MessageReceive implements MALMessageListener {
             }
         } catch (MALException ex) {
             try {
-                interaction.sendError(new MALStandardError(
+                interaction.sendError(new MOErrorException(
                         MALHelper.INTERNAL_ERROR_NUMBER,
                         new Union(ex.getLocalizedMessage())
                 ));
@@ -398,7 +398,7 @@ public class MessageReceive implements MALMessageListener {
                 sender.returnError(address,
                         msg.getHeader(),
                         MALPubSubOperation.REGISTER_ACK_STAGE,
-                        new MALStandardError(
+                        new MOErrorException(
                                 MALHelper.BAD_ENCODING_ERROR_NUMBER,
                                 new Union("Body of register message must be of type Subscription")
                         ));
@@ -407,7 +407,7 @@ public class MessageReceive implements MALMessageListener {
             sender.returnError(address,
                     msg.getHeader(),
                     MALPubSubOperation.REGISTER_ACK_STAGE,
-                    new MALStandardError(
+                    new MOErrorException(
                             MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                             new Union("Broker unknown at this address")
                     ));
@@ -437,7 +437,7 @@ public class MessageReceive implements MALMessageListener {
                 sender.returnError(address,
                         msg.getHeader(),
                         MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE,
-                        new MALStandardError(
+                        new MOErrorException(
                                 MALHelper.BAD_ENCODING_ERROR_NUMBER,
                                 new Union("Body of publish register message must be of type EntityKeyList")
                         ));
@@ -446,7 +446,7 @@ public class MessageReceive implements MALMessageListener {
             sender.returnError(address,
                     msg.getHeader(),
                     MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE,
-                    new MALStandardError(
+                    new MOErrorException(
                             MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                             new Union("Broker unknown at this address")
                     ));
@@ -501,7 +501,7 @@ public class MessageReceive implements MALMessageListener {
                     sender.returnError(address,
                             msg.getHeader(),
                             MALPubSubOperation.PUBLISH_STAGE,
-                            new MALStandardError(
+                            new MOErrorException(
                                     MALHelper.BAD_ENCODING_ERROR_NUMBER,
                                     new Union("Body of publish message must be of type UpdateList")
                             ));
@@ -510,7 +510,7 @@ public class MessageReceive implements MALMessageListener {
                 sender.returnError(address,
                         msg.getHeader(),
                         MALPubSubOperation.PUBLISH_STAGE,
-                        new MALStandardError(
+                        new MOErrorException(
                                 MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                                 new Union("Broker unknown at this address")
                         ));
@@ -587,7 +587,7 @@ public class MessageReceive implements MALMessageListener {
             sender.returnError(address,
                     msg.getHeader(),
                     MALPubSubOperation.DEREGISTER_ACK_STAGE,
-                    new MALStandardError(
+                    new MOErrorException(
                             MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                             new Union("Broker unknown at this address")
                     ));
@@ -616,7 +616,7 @@ public class MessageReceive implements MALMessageListener {
             sender.returnError(address,
                     msg.getHeader(),
                     MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE,
-                    new MALStandardError(
+                    new MOErrorException(
                             MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                             new Union("Broker unknown at this address")
                     ));

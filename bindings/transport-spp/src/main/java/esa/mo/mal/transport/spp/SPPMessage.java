@@ -35,7 +35,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
@@ -179,7 +179,7 @@ public class SPPMessage extends GENMessage {
                             + " is too small for encoded MAL Message header or size "
                             + (hdrBuf.length - 6),
                             new MALInteractionException(
-                                    new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null)));
+                                    new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null)));
                 }
 
                 // segment data

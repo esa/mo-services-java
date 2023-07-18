@@ -22,7 +22,7 @@ package org.ccsds.moims.mo.mal.transport;
 
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 
 /**
  * The MALTransmitErrorException class represents a TRANSMIT ERROR as an
@@ -42,7 +42,7 @@ public class MALTransmitErrorException extends MALInteractionException {
      * transmitted
      */
     public MALTransmitErrorException(final MALMessageHeader header,
-            final MALStandardError standardError, final Map qosProperties) {
+            final MOErrorException standardError, final Map qosProperties) {
         super(standardError);
         this.header = header;
         this.qosProperties = qosProperties;

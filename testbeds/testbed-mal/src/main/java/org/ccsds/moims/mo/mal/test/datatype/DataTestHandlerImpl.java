@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
@@ -257,7 +257,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         if (null != testValue) {
             if (!testValue.equals(rcvdValue)) {
                 // decoding must have failed
-                throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                         new Union("Failed comparison in provider of " + exString
                                 + ", type " + testValue.getClass() + ",\nexpected "
                                 + String.valueOf(testValue) + "\n received "
@@ -266,7 +266,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         } else {
             if (rcvdValue != null) {
                 // decoding must have failed
-                throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                         new Union("Failed comparison in provider of " + exString
                                 + ", type should be null but is " + rcvdValue.getClass())));
             }
@@ -330,7 +330,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     @Override
     public ObjectRef<Auto> createObject(Auto auto, MALInteraction interaction) throws MALInteractionException, MALException {
         if (auto == null) {
-            throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.TEST_ERROR_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.TEST_ERROR_ERROR_NUMBER,
                     new Union("Unexpected exception - null object value.")));
         }
         // MO Objects have a unique and an immutable identity
@@ -343,16 +343,16 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         long versionUpdate = auto.getObjectIdentity().getVersionId().getValue();
         if (lastAuto == null) {
             if (versionUpdate != 1) {
-                throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                         new Union("Wrong version for new object.")));
             }
         } else {
             versionUpdate -= lastAuto.getObjectIdentity().getVersionId().getValue();
             if (versionUpdate == 0) {
-                throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.TEST_OBJECT_EXISTS_ERROR_NUMBER,
+                throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.TEST_OBJECT_EXISTS_ERROR_NUMBER,
                         new Union("Object already exists.")));
             } else if (versionUpdate != 1) {
-                throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                         new Union("Wrong version for updated object.")));
             }
         }
@@ -364,11 +364,11 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         } else if (auto instanceof Porsche) {
             expectedAutoType = "Porsche";
         } else {
-            throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                     new Union("Unexpected Auto value.")));
         }
         if (!expectedAutoType.equals(auto.getObjectIdentity().getTypeId().getValue())) {
-            throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                     new Union("Illegal type field value.")));
         }
 
@@ -388,7 +388,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
                 new UInteger(0));
         Auto auto = autoList.get(autoId0);
         if (auto != null && !update.booleanValue()) {
-            throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                     new Union("Object already exists.")));
         }
         ObjectIdentity autoId = new ObjectIdentity(autoId0.getDomainId(),
@@ -402,7 +402,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         } else if (new Identifier("Porsche").equals(autoType)) {
             auto = new Porsche(autoId, engine, chassis, windows);
         } else {
-            throw new MALInteractionException(new MALStandardError(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                     new Union("Unexpected Auto value.")));
         }
 

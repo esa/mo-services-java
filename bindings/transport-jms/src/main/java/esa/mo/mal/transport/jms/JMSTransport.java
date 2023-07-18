@@ -41,7 +41,7 @@ import java.io.IOException;
 import javax.naming.NameNotFoundException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 
 /**
@@ -225,7 +225,7 @@ public class JMSTransport extends GENTransport<byte[], byte[]> implements MALTra
                     RLOGGER.log(Level.SEVERE,
                             "Remote JMS queue name not found {0}", sendRoutingKey);
 
-                    throw new MALInteractionException(new MALStandardError(
+                    throw new MALInteractionException(new MOErrorException(
                             MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
                 }
 
@@ -261,7 +261,7 @@ public class JMSTransport extends GENTransport<byte[], byte[]> implements MALTra
                             "Remote JMS queue name resolved to NULL {0}",
                             sendRoutingKey);
 
-                    throw new MALInteractionException(new MALStandardError(
+                    throw new MALInteractionException(new MOErrorException(
                             MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
                 }
             } catch (Throwable e) {

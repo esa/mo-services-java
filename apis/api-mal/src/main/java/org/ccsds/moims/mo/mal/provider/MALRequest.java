@@ -22,7 +22,7 @@ package org.ccsds.moims.mo.mal.provider;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 
 /**
@@ -65,6 +65,6 @@ public interface MALRequest extends MALInteraction {
      * state.
      * @throws MALException If an error occurs
      */
-    org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error)
+    org.ccsds.moims.mo.mal.transport.MALMessage sendError(MOErrorException error)
             throws IllegalArgumentException, MALInteractionException, MALException;
 }

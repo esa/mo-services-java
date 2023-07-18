@@ -27,7 +27,7 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 /**
  * Represents a MAL error.
  */
-public class MALStandardError extends Exception implements Serializable {
+public class MOErrorException extends Exception implements Serializable {
 
     private final UInteger errorNumber;
     private final Object extraInformation;
@@ -42,7 +42,7 @@ public class MALStandardError extends Exception implements Serializable {
      * @throws java.lang.IllegalArgumentException Thrown if supplied error
      * number is null.
      */
-    public MALStandardError(final UInteger errorNumber, final Object extraInformation)
+    public MOErrorException(final UInteger errorNumber, final Object extraInformation)
             throws java.lang.IllegalArgumentException {
         super();
 

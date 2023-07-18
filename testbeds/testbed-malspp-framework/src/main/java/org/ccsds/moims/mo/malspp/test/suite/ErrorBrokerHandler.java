@@ -37,7 +37,7 @@ import java.util.HashMap;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
@@ -83,7 +83,7 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
                 interaction.getMessageHeader().getSessionName(),
                 interaction.getMessageHeader().getQoSlevel(), new HashMap(0),
                 interaction.getMessageHeader().getPriority(),
-                new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null));
+                new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null));
     }
 
     public void handlePublishDeregister(MALInteraction interaction)
@@ -94,14 +94,14 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
 
     public void handlePublishRegister(MALInteraction interaction,
             MALPublishRegisterBody body) throws MALInteractionException, MALException {
-        throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null));
+        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null));
     }
 
     public void handleRegister(MALInteraction interaction, MALRegisterBody body)
             throws MALInteractionException, MALException {
         LoggingBase.logMessage("ErrorBrokerHandler.handleRegister(" + interaction.getMessageHeader() + ')');
         if (body.getSubscription().getSubscriptionId().getValue().equals(SUBSCRIPTION_RAISING_ERROR)) {
-            throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null));
+            throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null));
         } else {
             subscriberUri = interaction.getMessageHeader().getURIFrom();
             transactionId = interaction.getMessageHeader().getTransactionId();

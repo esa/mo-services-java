@@ -27,7 +27,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
@@ -138,7 +138,7 @@ public final class InvokeOperationHandler extends BaseOperationHandler {
 
     @Override
     public synchronized void handleError(final MALMessageHeader hdr,
-            final MALStandardError err, final Map qosMap) {
+            final MOErrorException err, final Map qosMap) {
         if (isSynchronous) {
             responseHolder.signalResponse(true, new DummyMessage(hdr, new DummyErrorBody(err), qosMap));
         } else {

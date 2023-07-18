@@ -91,7 +91,7 @@ public class JavaConsumer {
                 TypeUtils.createTypeReference(null, null, "Map<_String;_String>", false),
                 false, true, "qosProperties The QoS properties associated with the message");
         CompositeField stdErrorArg = generator.createCompositeElementsDetails(file, false, "error",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALStandardError", false),
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "MOErrorException", false),
                 false, true, "error The received error message");
         List<CompositeField> stdNoBodyArgs = StubUtils.concatenateArguments(stdHeaderArg, stdQosArg);
         List<CompositeField> stdBodyArgs = StubUtils.concatenateArguments(stdHeaderArg, stdBodyArg, stdQosArg);

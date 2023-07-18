@@ -55,7 +55,7 @@ public abstract class BaseInteractionImpl implements MALInteraction {
                 .getOperationByNumber(header.getOperation());
 
         if (this.operation == null) {
-            throw new MALInteractionException(new MALStandardError(
+            throw new MALInteractionException(new MOErrorException(
                     MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER,
                     new Union(header.getServiceArea()
                             + "::" + header.getService()
@@ -132,7 +132,7 @@ public abstract class BaseInteractionImpl implements MALInteraction {
      * @return the sent message.
      * @throws MALException On error.
      */
-    protected MALMessage returnError(final UOctet stage, final MALStandardError error) throws MALException {
+    protected MALMessage returnError(final UOctet stage, final MOErrorException error) throws MALException {
         return sender.returnError(address, msg.getHeader(), stage, error);
     }
 }

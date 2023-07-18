@@ -738,7 +738,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false),
                 false, false, null);
         CompositeField errType = createCompositeElementsDetails(file, false, "error",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALStandardError", false),
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "MOErrorException", false),
                 false, true, "The MAL error to send to the consumer.");
 
         file.addClassOpenStatement(className, false, false, null, null,
@@ -808,7 +808,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false),
                 false, false, null);
         CompositeField errType = createCompositeElementsDetails(file, false, "error",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALStandardError", false),
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "MOErrorException", false),
                 false, true, "error The MAL error to send to the consumer.");
 
         file.addClassOpenStatement(className, false, false, null, null,
@@ -965,7 +965,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String serviceInfoName = createElementType(file, area.getName(), service.getName(), null, service.getName() + JavaServiceInfo.SERVICE_INFO);
         String malString = malStringAsElement(file);
         String malInteger = createElementType(file, StdStrings.MAL, null, StdStrings.INTEGER);
-        String stdError = createElementType(file, StdStrings.MAL, null, null, "MALStandardError");
+        String stdError = createElementType(file, StdStrings.MAL, null, null, "MOErrorException");
         CompositeField stdBodyArg = createCompositeElementsDetails(file, false, "body",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageBody", false),
                 false, true, "The message body");

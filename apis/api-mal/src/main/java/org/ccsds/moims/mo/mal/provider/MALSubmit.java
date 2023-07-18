@@ -22,7 +22,7 @@ package org.ccsds.moims.mo.mal.provider;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 
 /**
  * The MALSubmit interface represents a SUBMIT interaction handling context.
@@ -50,6 +50,6 @@ public interface MALSubmit extends MALInteraction {
      * state.
      * @throws MALException If an error occurs
      */
-    org.ccsds.moims.mo.mal.transport.MALMessage sendError(MALStandardError error)
+    org.ccsds.moims.mo.mal.transport.MALMessage sendError(MOErrorException error)
             throws IllegalArgumentException, MALInteractionException, MALException;
 }

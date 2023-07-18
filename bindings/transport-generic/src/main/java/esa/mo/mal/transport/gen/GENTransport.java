@@ -406,7 +406,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
         if (header.getTo() == null || header.getTo().getValue() == null) {
             throw new MALTransmitErrorException(header,
-                    new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
+                    new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                             "URI To field must not be null"), qosProperties);
         }
 
@@ -447,7 +447,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                     // higher MAL layers
                     throw new MALTransmitErrorException(
                             header,
-                            new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null),
+                            new MOErrorException(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null),
                             null);
                 }
 
@@ -460,13 +460,13 @@ public abstract class GENTransport<I, O> implements MALTransport {
                 LOGGER.log(Level.SEVERE, "Interrupted while waiting for data reply", e);
                 throw new MALTransmitErrorException(
                         header,
-                        new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null),
+                        new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null),
                         null);
             } catch (Exception t) {
                 LOGGER.log(Level.SEVERE, "Could not send message!", t);
                 throw new MALTransmitErrorException(
                         header,
-                        new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null),
+                        new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null),
                         null);
             }
         }
@@ -854,14 +854,14 @@ public abstract class GENTransport<I, O> implements MALTransport {
                             "Could not connect to: " + remoteRootURI, e);
 
                     throw new MALTransmitErrorException(msg.getHeader(),
-                            new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
+                            new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
                             null);
                 }
             } else if (null == sender && !connectWhenConsumerOffline) {
                 LOGGER.log(Level.FINE, "Could not locate an outgoing data channel and "
                         + "the connectWhenConsumerOffline property prevents establishing a new one");
                 throw new MALTransmitErrorException(msg.getHeader(),
-                        new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
+                        new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
                         null);
             }
         }
@@ -968,7 +968,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
         } catch (MALException ex) {
             LOGGER.log(Level.SEVERE, "Could not encode message!", ex);
             throw new MALTransmitErrorException(msg.getHeader(),
-                    new MALStandardError(MALHelper.BAD_ENCODING_ERROR_NUMBER, null),
+                    new MOErrorException(MALHelper.BAD_ENCODING_ERROR_NUMBER, null),
                     null);
         }
     }

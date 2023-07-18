@@ -37,7 +37,7 @@ import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -418,7 +418,7 @@ public class MalSppPatternTest extends PatternTest {
 
     public String receivedMessageBodyContainsError() throws Exception {
         if (rcvdMsg.getBody() instanceof MALErrorBody) {
-            MALStandardError error = ((MALErrorBody) rcvdMsg.getBody()).getError();
+            MOErrorException error = ((MALErrorBody) rcvdMsg.getBody()).getError();
             if (error.getErrorNumber().equals(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER)) {
                 return "destination unknown";
             } else {

@@ -24,7 +24,7 @@ import esa.mo.mal.impl.Address;
 import esa.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.provider.MALSubmit;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -54,7 +54,7 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
     }
 
     @Override
-    public MALMessage sendError(final MALStandardError error) throws MALException {
+    public MALMessage sendError(final MOErrorException error) throws MALException {
         return returnError(MALSubmitOperation.SUBMIT_ACK_STAGE, error);
     }
 }

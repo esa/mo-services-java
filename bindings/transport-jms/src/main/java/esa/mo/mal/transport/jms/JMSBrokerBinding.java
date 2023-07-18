@@ -24,7 +24,7 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -101,7 +101,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
     public MALMessage sendNotifyError(UShort area, UShort service, UShort operation, UOctet version,
             URI subscriber, Long transactionId, IdentifierList domainId, Identifier networkZone,
             SessionType sessionType, Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps,
-            UInteger notifyPriority, MALStandardError error) throws IllegalArgumentException,
+            UInteger notifyPriority, MOErrorException error) throws IllegalArgumentException,
             MALInteractionException, MALException {
         JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendNotifyError1");
         return null;
@@ -111,7 +111,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
     public MALMessage sendNotifyError(MALOperation op, URI subscriber, Long transactionId,
             IdentifierList domainId, Identifier networkZone, SessionType sessionType,
             Identifier sessionName, QoSLevel notifyQos, Map notifyQosProps, UInteger notifyPriority,
-            MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException {
+            MOErrorException error) throws IllegalArgumentException, MALInteractionException, MALException {
         JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendNotifyError2");
         return null;
     }
@@ -120,7 +120,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
     public MALMessage sendPublishError(UShort area, UShort service, UShort operation, UOctet version,
             URI publisher, Long transactionId, IdentifierList domainId, Identifier networkZone,
             SessionType sessionType, Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority,
-            MALStandardError error) throws IllegalArgumentException, MALInteractionException, MALException {
+            MOErrorException error) throws IllegalArgumentException, MALInteractionException, MALException {
         JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendPublishError1");
         return null;
     }
@@ -128,7 +128,7 @@ public class JMSBrokerBinding implements MALBrokerBinding {
     @Override
     public MALMessage sendPublishError(MALOperation op, URI publisher, Long transactionId,
             IdentifierList domainId, Identifier networkZone, SessionType sessionType,
-            Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority, MALStandardError error)
+            Identifier sessionName, QoSLevel qos, Map qosProps, UInteger priority, MOErrorException error)
             throws IllegalArgumentException, MALInteractionException, MALException {
         JMSTransport.RLOGGER.warning("JMSBrokerBinding::sendPublishError2");
         return null;

@@ -25,7 +25,7 @@ import esa.mo.mal.impl.MessageSend;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALProgress;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
@@ -91,7 +91,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
     }
 
     @Override
-    public MALMessage sendError(final MALStandardError error) throws MALException {
+    public MALMessage sendError(final MOErrorException error) throws MALException {
         UOctet stage = MALProgressOperation.PROGRESS_ACK_STAGE;
 
         if (ackSent) {
@@ -102,7 +102,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
     }
 
     @Override
-    public MALMessage sendUpdateError(final MALStandardError error) throws MALException {
+    public MALMessage sendUpdateError(final MOErrorException error) throws MALException {
         return returnError(MALProgressOperation.PROGRESS_UPDATE_STAGE, error);
     }
 }

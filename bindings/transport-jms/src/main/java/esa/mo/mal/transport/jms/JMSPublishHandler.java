@@ -20,16 +20,14 @@
  */
 package esa.mo.mal.transport.jms;
 
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.logging.Level;
 import javax.jms.*;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
@@ -37,7 +35,6 @@ import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.body.GENPublishBody;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import esa.mo.mal.transport.jms.JMSEndpoint.PublishEntry;
-import esa.mo.mal.transport.jms.util.StructureHelper;
 
 /**
  *
@@ -168,12 +165,12 @@ public class JMSPublishHandler {
             if (0 < lst.size()) {
                 JMSTransport.RLOGGER.warning("ERR : Provider not allowed to publish some keys");
                 throw new MALTransmitErrorException(hdr,
-                        new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, lst), null);
+                        new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, lst), null);
             }
         } else {
             JMSTransport.RLOGGER.warning("ERR : Provider not allowed to publish to the domain");
             throw new MALTransmitErrorException(hdr,
-                    new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null),
+                    new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null),
                     null);
         }
                 */

@@ -42,7 +42,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -480,7 +480,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
                     destinationURI, multiSendHandle, lastForHandle, msg, data);
         } catch (MALException ex) {
             LOGGER.log(Level.SEVERE, "GEN could not encode message!", ex);
-            throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
+            throw new MALTransmitErrorException(msg.getHeader(), new MOErrorException(
                     MALHelper.BAD_ENCODING_ERROR_NUMBER, null), null);
         }
     }
@@ -637,13 +637,13 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             LOGGER.log(Level.WARNING, "TCPIP could not find host: {0}", remoteRootURI);
             LOGGER.log(Level.FINE, "TCPIP could not find host: " + remoteRootURI, e);
             throw new MALTransmitErrorException(msg.getHeader(),
-                    new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
+                    new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
         } catch (java.net.ConnectException e) {
             LOGGER.log(Level.WARNING, "TCPIP could not reach: {0}", remoteRootURI);
             LOGGER.log(Level.FINE, "TCPIP could not reach: " + remoteRootURI, e);
             throw new MALTransmitErrorException(
                     msg.getHeader(),
-                    new MALStandardError(
+                    new MOErrorException(
                             MALHelper.DESTINATION_TRANSIENT_ERROR_NUMBER, null), null);
         } catch (IOException e) {
             // there was a communication problem, we need to clean up the
@@ -652,7 +652,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             communicationError(remoteRootURI, null);
 
             // rethrow for higher MAL leyers
-            throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
+            throw new MALTransmitErrorException(msg.getHeader(), new MOErrorException(
                     MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
         }
     }

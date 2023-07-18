@@ -564,7 +564,7 @@ public class MessageSend {
         return initiateReturnError(msgAddress,
                 srcHdr,
                 rspnInteractionStage,
-                new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, wrap));
+                new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, wrap));
     }
 
     /**
@@ -580,7 +580,7 @@ public class MessageSend {
     public MALMessage returnError(final Address msgAddress,
             final MALMessageHeader srcHdr,
             final UOctet rspnInteractionStage,
-            final MALStandardError error) {
+            final MOErrorException error) {
         return initiateReturnError(msgAddress,
                 srcHdr,
                 rspnInteractionStage,
@@ -648,13 +648,13 @@ public class MessageSend {
             // handle possible return error
             if (rtn.getHeader().getIsErrorMessage()) {
                 if (rtn.getBody() instanceof MALErrorBody) {
-                    MALStandardError error = ((MALErrorBody) rtn.getBody()).getError();
+                    MOErrorException error = ((MALErrorBody) rtn.getBody()).getError();
                     MALContextFactoryImpl.LOGGER.log(Level.SEVERE,
                             "Something went wrong! {0}", error);
                     throw new MALInteractionException(error);
                 }
 
-                throw new MALInteractionException(new MALStandardError(
+                throw new MALInteractionException(new MOErrorException(
                         MALHelper.BAD_ENCODING_ERROR_NUMBER,
                         new Union("Return message marked as error but did not contain a MALException")));
             }
@@ -687,7 +687,7 @@ public class MessageSend {
 
     private MALMessage initiateReturnError(final Address msgAddress,
             final MALMessageHeader srcHdr, final UOctet rspnInteractionStage,
-            final MALStandardError error) {
+            final MOErrorException error) {
         MALMessage msg = null;
         URI destination = srcHdr.getFromURI();
 

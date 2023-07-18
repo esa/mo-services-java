@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -50,7 +50,7 @@ public class MonitorPublishInteractionListener implements MALPublishInteractionL
     private final HashMap<String, Long> publishRegisterTransactionIds = new HashMap<>();
     private String key = "default";
     private MALMessageHeader header;
-    private MALStandardError error;
+    private MOErrorException error;
 
     @Override
     public synchronized void publishRegisterAckReceived(MALMessageHeader header, Map props) throws MALException {
@@ -87,7 +87,7 @@ public class MonitorPublishInteractionListener implements MALPublishInteractionL
     }
 
     private synchronized void errorReceived(MALMessageHeader header,
-            MALStandardError error) throws MALException {
+            MOErrorException error) throws MALException {
         LoggingBase.logMessage("MonitorPublishInteractionListener.errorReceived:"
                 + "\nHeader: " + header + "\nError: " + error + ')');
         this.header = header;
@@ -99,7 +99,7 @@ public class MonitorPublishInteractionListener implements MALPublishInteractionL
         return header;
     }
 
-    public MALStandardError getError() {
+    public MOErrorException getError() {
         return error;
     }
 
@@ -107,7 +107,7 @@ public class MonitorPublishInteractionListener implements MALPublishInteractionL
         this.header = header;
     }
 
-    public void setError(MALStandardError error) {
+    public void setError(MOErrorException error) {
         this.error = error;
     }
 

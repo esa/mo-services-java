@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.*;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
@@ -150,7 +150,7 @@ public class TestEndPoint implements MALEndpoint {
         return new TestMessage(header, new TestNotifyBody(id, updateHeader, updateObjects), props);
     }
 
-    public MALMessage createTestMessage(MALMessageHeader header, MALStandardError error, Map props) {
+    public MALMessage createTestMessage(MALMessageHeader header, MOErrorException error, Map props) {
         return new TestMessage(header, new TestErrorBody(error.getErrorNumber(), error.getExtraInformation()), props);
     }
 
@@ -216,7 +216,7 @@ public class TestEndPoint implements MALEndpoint {
             error.printStackTrace();
         }
 
-        public void onTransmitError(MALEndpoint callingEndpoint, MALMessageHeader srcMessageHeader, MALStandardError err, Map qosMap) {
+        public void onTransmitError(MALEndpoint callingEndpoint, MALMessageHeader srcMessageHeader, MOErrorException err, Map qosMap) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

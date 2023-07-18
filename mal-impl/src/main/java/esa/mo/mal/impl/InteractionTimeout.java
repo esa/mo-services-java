@@ -26,7 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 
 /**
  * The InteractionTimeout class is responsible for maintaining a queue of
@@ -137,7 +137,7 @@ public class InteractionTimeout {
                         try {
                             handler.handleError(
                                     null,
-                                    new MALStandardError(
+                                    new MOErrorException(
                                             MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER,
                                             msg),
                                     null);

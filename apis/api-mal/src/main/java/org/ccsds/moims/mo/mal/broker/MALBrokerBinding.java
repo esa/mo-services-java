@@ -24,7 +24,7 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
@@ -186,7 +186,7 @@ public interface MALBrokerBinding {
             QoSLevel notifyQos,
             Map notifyQosProps,
             UInteger notifyPriority,
-            MALStandardError error)
+            MOErrorException error)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**
@@ -225,7 +225,7 @@ public interface MALBrokerBinding {
             QoSLevel notifyQos,
             Map notifyQosProps,
             UInteger notifyPriority,
-            MALStandardError error)
+            MOErrorException error)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**
@@ -270,7 +270,7 @@ public interface MALBrokerBinding {
             QoSLevel qos,
             Map qosProps,
             UInteger priority,
-            MALStandardError error)
+            MOErrorException error)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**
@@ -309,7 +309,7 @@ public interface MALBrokerBinding {
             QoSLevel qos,
             Map qosProps,
             UInteger priority,
-            MALStandardError error)
+            MOErrorException error)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**

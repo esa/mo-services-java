@@ -68,7 +68,7 @@ import org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayloadL
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.BlobList;
@@ -121,7 +121,7 @@ public class ArchiveScenario {
 
     private TestArchiveAdapter archiveAdapter;
 
-    private MALStandardError returnedError;
+    private MOErrorException returnedError;
 
     private UIntegerList invalidQueryIndexes;
 
@@ -652,7 +652,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onStoreError(MALStandardError error) {
+    private void onStoreError(MOErrorException error) {
         returnedError = error;
         if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -689,7 +689,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onUpdateError(MALStandardError error) {
+    private void onUpdateError(MOErrorException error) {
         returnedError = error;
         if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -730,7 +730,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onDeleteError(MALStandardError error) {
+    private void onDeleteError(MOErrorException error) {
         returnedError = error;
         if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -811,7 +811,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onRetrieveError(MALStandardError error) {
+    private void onRetrieveError(MOErrorException error) {
         returnedError = error;
         if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -1138,7 +1138,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onQueryError(MALStandardError error) {
+    private void onQueryError(MOErrorException error) {
         returnedError = error;
         if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -1175,7 +1175,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onCountError(MALStandardError error) {
+    private void onCountError(MOErrorException error) {
         returnedError = error;
         if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -1269,7 +1269,7 @@ public class ArchiveScenario {
 
         @Override
         public void retrieveResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             onRetrieveError(error);
             countDownLatch.countDown();
         }
@@ -1306,21 +1306,21 @@ public class ArchiveScenario {
 
         @Override
         public void queryResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             onQueryError(error);
             countDownLatch.countDown();
         }
 
         @Override
         public void queryUpdateErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             onQueryError(error);
             countDownLatch.countDown();
         }
 
         @Override
         public void countResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             onCountError(error);
             countDownLatch.countDown();
         }
@@ -1346,7 +1346,7 @@ public class ArchiveScenario {
 
         @Override
         public void monitorEventNotifyErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             // TODO Auto-generated method stub
             super.monitorEventNotifyErrorReceived(msgHeader, error, qosProperties);
         }

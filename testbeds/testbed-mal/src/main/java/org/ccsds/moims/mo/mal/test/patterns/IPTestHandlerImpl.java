@@ -94,14 +94,14 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     // do nothing, should just ack for us
                     break;
                 case 2:
-                    throw new MALInteractionException(new MALStandardError(new UInteger(999), new Union("No error")));
+                    throw new MALInteractionException(new MOErrorException(new UInteger(999), new Union("No error")));
                 case 3:
                     // do nothing, should just ack for us
                     break;
                 case 4:
-                    throw new MALInteractionException(new MALStandardError(new UInteger(999), new Union("No error")));
+                    throw new MALInteractionException(new MOErrorException(new UInteger(999), new Union("No error")));
                 default:
-                    throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
+                    throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
                             new Union("Unexpected procedure number of " + transId)));
             }
         }
@@ -124,14 +124,14 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         // do nothing, should just ack for us
                         break;
                     case 2:
-                        throw new MALInteractionException(new MALStandardError(new UInteger(999), new Union("No error")));
+                        throw new MALInteractionException(new MOErrorException(new UInteger(999), new Union("No error")));
                     case 3:
                         // do nothing, should just ack for us
                         break;
                     case 4:
-                        throw new MALInteractionException(new MALStandardError(new UInteger(999), new Union("No error")));
+                        throw new MALInteractionException(new MOErrorException(new UInteger(999), new Union("No error")));
                     default:
-                        throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
+                        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
                                 new Union("Unexpected procedure number of " + transId)));
                 }
             } catch (NumberFormatException ex) {
@@ -181,10 +181,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 2:
                         interaction.sendAcknowledgement("");
                         Thread.sleep(PERIOD);
-                        interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 3:
-                        interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 4:
                         interaction.sendAcknowledgement("");
@@ -194,10 +194,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 5:
                         interaction.sendAcknowledgement("");
                         Thread.sleep(PERIOD);
-                        interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 6:
-                        interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 7:
                         interaction.sendAcknowledgement("");
@@ -205,7 +205,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendResponse("");
                         break;
                     default:
-                        throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
+                        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
                                 new Union("Unexpected procedure number of " + transId)));
                 }
             } catch (Exception ex) {
@@ -263,10 +263,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 2:
                         interaction.sendAcknowledgement("");
                         Thread.sleep(PERIOD);
-                        interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 3:
-                        interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 4:
                         interaction.sendAcknowledgement("");
@@ -282,7 +282,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
                         Thread.sleep(PERIOD);
-                        interaction.sendUpdateError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendUpdateError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 6:
                         interaction.sendAcknowledgement("");
@@ -290,7 +290,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
                         Thread.sleep(PERIOD);
-                        interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 7:
                         interaction.sendAcknowledgement("");
@@ -300,10 +300,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 8:
                         interaction.sendAcknowledgement("");
                         Thread.sleep(PERIOD);
-                        interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 9:
-                        interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 10:
                         interaction.sendAcknowledgement("");
@@ -327,7 +327,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
                         Thread.sleep(PERIOD);
-                        interaction.sendUpdateError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendUpdateError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 13:
                         interaction.sendAcknowledgement("");
@@ -335,7 +335,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
                         Thread.sleep(PERIOD);
-                        interaction.sendUpdateError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendUpdateError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 14:
                         interaction.sendAcknowledgement("");
@@ -343,10 +343,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
                         Thread.sleep(PERIOD);
-                        interaction.sendError(new MALStandardError(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     default:
-                        throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
+                        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
                                 new Union("Unexpected procedure number of " + transId)));
                 }
             } catch (Exception ex) {
@@ -447,7 +447,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         listener.setError(null);
         listener.cond.reset();
 
-        MALStandardError raisedPublishError = null;
+        MOErrorException raisedPublishError = null;
 
         // Set time stamp and Source URI
         UpdateHeaderList updateHeaderList = publishUpdate.getUpdateHeaders();
@@ -498,7 +498,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         listener.cond.reset();
 
         if (publishUpdate.getErrorCode().getValue() != 999) {
-            MALStandardError error;
+            MOErrorException error;
             UInteger expectedErrorCode;
             Object expectedExtraInfo;
 
@@ -772,7 +772,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
 
         @Override
-        public MALMessage sendError(MALStandardError error) throws MALInteractionException, MALException {
+        public MALMessage sendError(MOErrorException error) throws MALInteractionException, MALException {
             return interaction.sendError(error);
         }
     }
@@ -798,7 +798,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
 
         @Override
-        public MALMessage sendError(MALStandardError error) throws MALInteractionException, MALException {
+        public MALMessage sendError(MOErrorException error) throws MALInteractionException, MALException {
             return interaction.sendError(error);
         }
     }
@@ -829,12 +829,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
 
         @Override
-        public MALMessage sendError(MALStandardError error) throws MALInteractionException, MALException {
+        public MALMessage sendError(MOErrorException error) throws MALInteractionException, MALException {
             return interaction.sendError(error);
         }
 
         @Override
-        public MALMessage sendUpdateError(MALStandardError error) throws MALInteractionException, MALException {
+        public MALMessage sendUpdateError(MOErrorException error) throws MALInteractionException, MALException {
             return interaction.sendUpdateError(error);
         }
     }
@@ -865,12 +865,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
 
         @Override
-        public MALMessage sendError(MALStandardError error) throws MALInteractionException, MALException {
+        public MALMessage sendError(MOErrorException error) throws MALInteractionException, MALException {
             return interaction.sendError(error);
         }
 
         @Override
-        public MALMessage sendUpdateError(MALStandardError error) throws MALInteractionException, MALException {
+        public MALMessage sendUpdateError(MOErrorException error) throws MALInteractionException, MALException {
             return interaction.sendUpdateError(error);
         }
     }

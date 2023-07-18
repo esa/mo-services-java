@@ -39,7 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -196,13 +196,13 @@ public class RMITransport extends GENTransport<byte[], byte[]> {
         } catch (NotBoundException e) {
             RLOGGER.log(Level.WARNING, "RMI could not connect to: " + remoteRootURI, e);
             throw new MALTransmitErrorException(msg.getHeader(),
-                    new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
+                    new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
                     null);
 
         } catch (IOException e) {
             RLOGGER.log(Level.WARNING, "RMI could not connect to: " + remoteRootURI, e);
             throw new MALTransmitErrorException(msg.getHeader(),
-                    new MALStandardError(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null),
+                    new MOErrorException(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null),
                     null);
         }
     }

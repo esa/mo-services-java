@@ -21,7 +21,7 @@
 package org.ccsds.moims.mo.mal.transport;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 
 /**
  * The MALErrorBody interface gives access to the body of an ERROR message,
@@ -35,5 +35,5 @@ public interface MALErrorBody extends MALMessageBody {
      * @return The decoded standard error.
      * @throws MALException If an error occurs
      */
-    MALStandardError getError() throws MALException;
+    MOErrorException getError() throws MALException;
 }

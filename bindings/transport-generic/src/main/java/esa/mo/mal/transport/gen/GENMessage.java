@@ -38,7 +38,7 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALService;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
@@ -86,19 +86,19 @@ public class GENMessage implements MALMessage, java.io.Serializable {
             MALArea area = MALContextFactory.lookupArea(
                     this.header.getServiceArea(), this.header.getServiceVersion());
             if (null == area) {
-                throw new MALInteractionException(new MALStandardError(
+                throw new MALInteractionException(new MOErrorException(
                         MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER, null));
             }
 
             MALService service = area.getServiceByNumber(this.header.getService());
             if (null == service) {
-                throw new MALInteractionException(new MALStandardError(
+                throw new MALInteractionException(new MOErrorException(
                         MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
             }
 
             this.operation = service.getOperationByNumber(this.header.getOperation());
             if (null == this.operation) {
-                throw new MALInteractionException(new MALStandardError(
+                throw new MALInteractionException(new MOErrorException(
                         MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
             }
         } else {

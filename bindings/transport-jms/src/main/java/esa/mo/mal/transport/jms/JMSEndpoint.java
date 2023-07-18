@@ -219,7 +219,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         } catch (Exception e) {
             JMSTransport.RLOGGER.log(Level.WARNING, "JMS Error occurred {0}", e);
 
-            throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
+            throw new MALTransmitErrorException(msg.getHeader(), new MOErrorException(
                     MALHelper.INTERNAL_ERROR_NUMBER, new Union(e.getMessage())), null);
         }
     }
@@ -300,7 +300,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         if (null == details) {
             JMSTransport.RLOGGER.warning("JMS : ERR Provider not known");
             throw new MALInteractionException(
-                    new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null)
+                    new MOErrorException(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null)
             );
         }
 

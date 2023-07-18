@@ -38,7 +38,7 @@ import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
@@ -81,11 +81,11 @@ public class ActivityRelayNode {
     public void relayMessage(StringList _String, MALInteraction interaction) throws MALInteractionException, MALException {
         if (containsStage("RECEPTION_ERROR", relayName, _String)) {
             publishReceptionOrForward(false, COMTestHelper.OBJ_NO_ASE_RECEPTION_STR, interaction);
-            throw new MALInteractionException(new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
+            throw new MALInteractionException(new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
         } else if (containsStage("FORWARD_ERROR", relayName, _String)) {
             publishReceptionOrForward(true, COMTestHelper.OBJ_NO_ASE_RECEPTION_STR, interaction);
             publishReceptionOrForward(false, COMTestHelper.OBJ_NO_ASE_FORWARD_STR, interaction);
-            throw new MALInteractionException(new MALStandardError(MALHelper.DESTINATION_LOST_ERROR_NUMBER, null));
+            throw new MALInteractionException(new MOErrorException(MALHelper.DESTINATION_LOST_ERROR_NUMBER, null));
         } else {
             publishReceptionOrForward(true, COMTestHelper.OBJ_NO_ASE_RECEPTION_STR, interaction);
             publishReceptionOrForward(true, COMTestHelper.OBJ_NO_ASE_FORWARD_STR, interaction);
@@ -374,7 +374,7 @@ public class ActivityRelayNode {
          * @param qosProperties The QoS properties associated with the message.
          */
         @Override
-        public void monitorEventRegisterErrorReceived(MALMessageHeader msgHeader, MALStandardError error,
+        public void monitorEventRegisterErrorReceived(MALMessageHeader msgHeader, MOErrorException error,
                 java.util.Map qosProperties) {
             LoggingBase.logMessage("ActivityRelayNode:monitorEventRegisterErrorReceived - ERROR");
         }
@@ -400,7 +400,7 @@ public class ActivityRelayNode {
          * @param qosProperties The QoS properties associated with the message.
          */
         @Override
-        public void monitorEventNotifyErrorReceived(MALMessageHeader msgHeader, MALStandardError error, java.util.Map qosProperties) {
+        public void monitorEventNotifyErrorReceived(MALMessageHeader msgHeader, MOErrorException error, java.util.Map qosProperties) {
             LoggingBase.logMessage("ActivityRelayNode:monitorEventDeregisterAckReceived - ERROR");
         }
     }

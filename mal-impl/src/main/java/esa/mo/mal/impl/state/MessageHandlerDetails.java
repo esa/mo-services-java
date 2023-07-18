@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.impl.state;
 
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
@@ -58,7 +58,7 @@ public final class MessageHandlerDetails {
         msg.getHeader().setIsErrorMessage(true);
         this.message = new DummyMessage(
                 msg.getHeader(),
-                new DummyErrorBody(new MALStandardError(errNum, null)),
+                new DummyErrorBody(new MOErrorException(errNum, null)),
                 msg.getQoSProperties());
         this.needToReturnAnException = true;
     }

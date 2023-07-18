@@ -89,7 +89,7 @@ public class InteractionConsumerMap {
                     break;
                 default:
                     throw new MALInteractionException(
-                            new MALStandardError(
+                            new MOErrorException(
                                     MALHelper.INTERNAL_ERROR_NUMBER,
                                     new Union("Pattern not supported")
                             )
@@ -158,7 +158,7 @@ public class InteractionConsumerMap {
                     break;
                 default:
                     throw new MALInteractionException(
-                            new MALStandardError(
+                            new MOErrorException(
                                     MALHelper.INTERNAL_ERROR_NUMBER,
                                     new Union("Pattern not supported")
                             )
@@ -234,7 +234,7 @@ public class InteractionConsumerMap {
         }
     }
 
-    public void handleError(final MALMessageHeader hdr, final MALStandardError err, final Map qosMap) {
+    public void handleError(final MALMessageHeader hdr, final MOErrorException err, final Map qosMap) {
         final Long id = hdr.getTransactionId();
         BaseOperationHandler handler = null;
 

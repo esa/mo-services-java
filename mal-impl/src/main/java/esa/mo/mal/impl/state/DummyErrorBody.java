@@ -21,7 +21,7 @@
 package esa.mo.mal.impl.state;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
@@ -31,19 +31,19 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
  */
 public final class DummyErrorBody implements MALErrorBody {
 
-    private final MALStandardError error;
+    private final MOErrorException error;
 
     /**
      * Constructor.
      *
      * @param error Error.
      */
-    protected DummyErrorBody(MALStandardError error) {
+    protected DummyErrorBody(MOErrorException error) {
         this.error = error;
     }
 
     @Override
-    public MALStandardError getError() throws MALException {
+    public MOErrorException getError() throws MALException {
         return error;
     }
 

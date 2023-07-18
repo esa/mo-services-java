@@ -28,7 +28,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.*;
 
@@ -266,7 +266,7 @@ public class GENEndpoint implements MALEndpoint {
             internalCloseMultiSendHandle(multiSendHandle, msgList);
         } catch (Exception ex) {
             exceptions.add(new MALTransmitErrorException(null,
-                    new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, new Union(ex.getMessage())),
+                    new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, new Union(ex.getMessage())),
                     null));
         }
 

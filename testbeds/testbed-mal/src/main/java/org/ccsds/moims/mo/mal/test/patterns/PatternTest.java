@@ -547,7 +547,7 @@ public class PatternTest {
         MALMessage brokenMessage;
         if (isError) {
             brokenMessage = ep.createTestMessage(brokenHeader,
-                    new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), new HashMap());
+                    new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null), new HashMap());
         } else {
             brokenMessage = ep.createTestMessage(brokenHeader, (Element) null, new HashMap());
         }
@@ -627,19 +627,19 @@ public class PatternTest {
         public MALMessageHeader progressUpdate2ReceivedMsgHeader = null;
         public MALMessageHeader progressResponseReceivedMsgHeader = null;
         public MALMessageHeader submitErrorReceivedMsgHeader = null;
-        public MALStandardError submitErrorReceivedError = null;
+        public MOErrorException submitErrorReceivedError = null;
         public MALMessageHeader requestErrorReceivedMsgHeader = null;
-        public MALStandardError requestErrorReceivedError = null;
+        public MOErrorException requestErrorReceivedError = null;
         public MALMessageHeader invokeAckErrorReceivedMsgHeader = null;
-        public MALStandardError invokeAckErrorReceivedError = null;
+        public MOErrorException invokeAckErrorReceivedError = null;
         public MALMessageHeader invokeResponseErrorReceivedMsgHeader = null;
-        public MALStandardError invokeResponseErrorReceivedError = null;
+        public MOErrorException invokeResponseErrorReceivedError = null;
         public MALMessageHeader progressAckErrorReceivedMsgHeader = null;
-        public MALStandardError progressAckErrorReceivedError = null;
+        public MOErrorException progressAckErrorReceivedError = null;
         public MALMessageHeader progressUpdateErrorReceivedMsgHeader = null;
-        public MALStandardError progressUpdateErrorReceivedError = null;
+        public MOErrorException progressUpdateErrorReceivedError = null;
         public MALMessageHeader progressResponseErrorReceivedMsgHeader = null;
-        public MALStandardError progressResponseErrorReceivedError = null;
+        public MOErrorException progressResponseErrorReceivedError = null;
         int receivedMessages = 0;
         final String loggingName;
         final int expectedMessages;
@@ -676,7 +676,7 @@ public class PatternTest {
 
         @Override
         public synchronized void testSubmitErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -686,7 +686,7 @@ public class PatternTest {
         }
 
         @Override
-        public void submitMultiErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void submitMultiErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             testSubmitErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -711,7 +711,7 @@ public class PatternTest {
 
         @Override
         public synchronized void requestErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -721,12 +721,12 @@ public class PatternTest {
         }
 
         @Override
-        public void requestMultiErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void requestMultiErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             requestErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testRequestEmptyBodyErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testRequestEmptyBodyErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             requestErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -751,7 +751,7 @@ public class PatternTest {
 
         @Override
         public synchronized void invokeAckErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -761,12 +761,12 @@ public class PatternTest {
         }
 
         @Override
-        public void invokeMultiAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void invokeMultiAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             invokeAckErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testInvokeEmptyBodyAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testInvokeEmptyBodyAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             invokeAckErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -791,7 +791,7 @@ public class PatternTest {
 
         @Override
         public synchronized void invokeResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -801,12 +801,12 @@ public class PatternTest {
         }
 
         @Override
-        public void invokeMultiResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void invokeMultiResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             invokeResponseErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testInvokeEmptyBodyResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testInvokeEmptyBodyResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             invokeResponseErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -831,7 +831,7 @@ public class PatternTest {
 
         @Override
         public synchronized void progressAckErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -841,12 +841,12 @@ public class PatternTest {
         }
 
         @Override
-        public void progressMultiAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressMultiAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressAckErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testProgressEmptyBodyAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testProgressEmptyBodyAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressAckErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -875,7 +875,7 @@ public class PatternTest {
 
         @Override
         public synchronized void progressUpdateErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -885,12 +885,12 @@ public class PatternTest {
         }
 
         @Override
-        public void progressMultiUpdateErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressMultiUpdateErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressUpdateErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testProgressEmptyBodyUpdateErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testProgressEmptyBodyUpdateErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressUpdateErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -915,7 +915,7 @@ public class PatternTest {
 
         @Override
         public synchronized void progressResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -925,12 +925,12 @@ public class PatternTest {
         }
 
         @Override
-        public void progressMultiResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressMultiResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressResponseErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testProgressEmptyBodyResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testProgressEmptyBodyResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressResponseErrorReceived(msgHeader, error, qosProperties);
         }
 

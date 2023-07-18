@@ -22,7 +22,7 @@ package org.ccsds.moims.mo.mal.accesscontrol;
 
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 
 /**
  * The MALCheckErrorException class represents a CHECK ERROR as an exception.
@@ -38,7 +38,7 @@ public class MALCheckErrorException extends MALInteractionException {
      * @param qosProperties QoS properties of the MALMessage which cannot be
      * transmitted
      */
-    public MALCheckErrorException(final MALStandardError standardError, final Map qosProperties) {
+    public MALCheckErrorException(final MOErrorException standardError, final Map qosProperties) {
         super(standardError);
         this.qosProperties = qosProperties;
     }

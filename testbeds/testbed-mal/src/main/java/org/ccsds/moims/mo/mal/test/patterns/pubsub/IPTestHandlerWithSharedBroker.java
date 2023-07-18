@@ -174,7 +174,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                 publishRegisterAck, expectedPublishRegisterAckHeader);
 
         if (publishRegister.getErrorCode().getValue() != 999) {
-            MALStandardError error = listener.getError();
+            MOErrorException error = listener.getError();
             assertions.add(new Assertion(procedureName,
                     "Error received", (error != null)));
             if (error != null) {
@@ -318,7 +318,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
 
     @Override
     public void testMultipleNotify(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER,
+        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
                 new Union("The transmit multiple is not supported with a shared broker")));
     }
 

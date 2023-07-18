@@ -25,7 +25,7 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -135,7 +135,7 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final QoSLevel notifyQos,
             final Map notifyQosProps,
             final UInteger notifyPriority,
-            final MALStandardError error) 
+            final MOErrorException error)
             throws IllegalArgumentException, MALInteractionException, MALException {
         return transportDelegate.sendNotifyError(area,
                 service,
@@ -164,7 +164,7 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final QoSLevel notifyQos,
             final Map notifyQosProps,
             final UInteger notifyPriority,
-            final MALStandardError error)
+            final MOErrorException error)
             throws IllegalArgumentException, MALInteractionException, MALException {
         return transportDelegate.sendNotifyError(op,
                 subscriber,
@@ -193,7 +193,7 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final QoSLevel qos,
             final Map qosProps,
             final UInteger priority,
-            final MALStandardError error)
+            final MOErrorException error)
             throws IllegalArgumentException, MALInteractionException, MALException {
         return transportDelegate.sendPublishError(area,
                 service,
@@ -222,7 +222,7 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final QoSLevel qos,
             final Map qosProps,
             final UInteger priority,
-            final MALStandardError error)
+            final MOErrorException error)
             throws IllegalArgumentException, MALInteractionException, MALException {
         return transportDelegate.sendPublishError(op,
                 publisher,
