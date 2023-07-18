@@ -37,8 +37,7 @@ public abstract class BaseOperationHandler {
     protected final boolean isSynchronous;
     protected final OperationResponseHolder responseHolder;
 
-    protected BaseOperationHandler(final boolean isSynchronous,
-            final OperationResponseHolder responseHolder) {
+    protected BaseOperationHandler(final boolean isSynchronous, final OperationResponseHolder responseHolder) {
         this.isSynchronous = isSynchronous;
         this.responseHolder = responseHolder;
     }

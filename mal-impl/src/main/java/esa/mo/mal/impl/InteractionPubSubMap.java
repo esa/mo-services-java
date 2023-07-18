@@ -35,7 +35,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  * The interaction map is responsible for maintaining the information pertaining
  * to PubSub interactions for a MAL instance.
  */
-class InteractionPubSubMap {
+public class InteractionPubSubMap {
 
     private final Map<String, MALPublishInteractionListener> publisherMap = new HashMap<>();
     private final Map<String, Map<String, MALInteractionListener>> errorMap = new HashMap<>();
@@ -100,7 +100,7 @@ class InteractionPubSubMap {
             list = publisherMap.remove(id);
         }
 
-        if (null != list) {
+        if (list != null) {
             MALContextFactoryImpl.LOGGER.log(Level.FINE, "Removing publisher: {0}", id);
         }
 
@@ -117,7 +117,7 @@ class InteractionPubSubMap {
             notifyMap.put(id, list);
             Map<String, MALInteractionListener> ent = errorMap.get(uri);
 
-            if (null == ent) {
+            if (ent == null) {
                 ent = new HashMap<>();
                 errorMap.put(uri, ent);
             }
@@ -189,7 +189,7 @@ class InteractionPubSubMap {
                     notifyMap.remove(id);
 
                     final Map<String, MALInteractionListener> ent = errorMap.get(uri);
-                    if (null != ent) {
+                    if (ent != null) {
                         ent.remove(unsubId);
 
                         if (ent.isEmpty()) {

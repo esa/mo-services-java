@@ -59,9 +59,9 @@ public final class TransportSingleton {
      */
     public static void init() {
         synchronized (TRANSPORT_MAP) {
-            if (null == defaultProtocol) {
+            if (defaultProtocol == null) {
                 String dp = System.getProperty("org.ccsds.moims.mo.mal.transport.default.protocol");
-                if (null == dp) {
+                if (dp == null) {
                     dp = "rmi://";
                 }
 

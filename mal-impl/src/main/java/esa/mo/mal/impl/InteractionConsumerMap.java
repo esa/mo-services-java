@@ -59,8 +59,7 @@ public class InteractionConsumerMap {
     // This object will be shared across. It is thread-safe, so can be static!
     private final static InteractionTimeout INTERACTION_TIMEOUT = new InteractionTimeout();
 
-    public Long createTransaction(final int interactionType,
-            final boolean syncOperation,
+    public Long createTransaction(final int interactionType, final boolean syncOperation,
             final MALInteractionListener listener) throws MALInteractionException {
         synchronized (transactions) {
             final Long oTransId = TransactionIdCounter.nextTransactionId();
@@ -129,8 +128,7 @@ public class InteractionConsumerMap {
     }
 
     public void continueTransaction(final int interactionType,
-            final UOctet lastInteractionStage,
-            final Long oTransId,
+            final UOctet lastInteractionStage, final Long oTransId,
             final MALInteractionListener listener) throws MALException, MALInteractionException {
         synchronized (transactions) {
             if (transactions.containsKey(oTransId)) {
@@ -181,22 +179,23 @@ public class InteractionConsumerMap {
             }
         }
 
-        if (holder != null) { // Wait until ready...
-            holder.waitForResponseSignal();
-
-            // delete entry from trans map
-            synchronized (syncOpResponseMap) {
-                MALContextFactoryImpl.LOGGER.log(Level.FINE,
-                        "Removing handler from sync service map: {0}", id);
-                syncOpResponseMap.remove(id);
-            }
-
-            synchronized (holder) {
-                return holder.getResult(); // must have value now
-            }
+        if (holder == null) {
+            return null;
         }
 
-        return null;
+        // Wait until ready...
+        holder.waitForResponseSignal();
+
+        // delete entry from trans map
+        synchronized (syncOpResponseMap) {
+            MALContextFactoryImpl.LOGGER.log(Level.FINE,
+                    "Removing handler from sync service map: {0}", id);
+            syncOpResponseMap.remove(id);
+        }
+
+        synchronized (holder) {
+            return holder.getResult(); // must have value now
+        }
     }
 
     public void handleStage(final MALMessage msg) throws MALInteractionException, MALException {

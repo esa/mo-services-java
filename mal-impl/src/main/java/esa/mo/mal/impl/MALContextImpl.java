@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.impl;
 
+import esa.mo.mal.impl.accesscontrol.NullSecurityManager;
 import esa.mo.mal.impl.broker.MALBrokerBindingImpl;
 import esa.mo.mal.impl.broker.MALBrokerManagerImpl;
 import esa.mo.mal.impl.consumer.MALConsumerManagerImpl;
@@ -32,12 +33,10 @@ import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControlFactory;
-import org.ccsds.moims.mo.mal.accesscontrol.MALCheckErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
@@ -145,13 +144,5 @@ public class MALContextImpl extends MALClose implements MALContext {
      */
     public MALAccessControl getSecurityManager() {
         return securityManager;
-    }
-
-    private static final class NullSecurityManager implements MALAccessControl {
-
-        @Override
-        public MALMessage check(final MALMessage msg) throws IllegalArgumentException, MALCheckErrorException {
-            return msg;
-        }
     }
 }

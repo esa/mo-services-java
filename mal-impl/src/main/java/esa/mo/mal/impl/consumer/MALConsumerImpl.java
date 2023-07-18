@@ -45,6 +45,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
     private final MessageSend sender;
     private final MessageDetails details;
     private MALTransmitErrorListener transmissionListener;
+    public Blob authenticationId;
 
     MALConsumerImpl(final MALContextImpl impl,
             final MALConsumerManagerImpl parent,
@@ -62,7 +63,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final UInteger priority) throws MALException {
         super(parent);
 
-        if (null == domain) {
+        if (domain == null) {
             throw new IllegalArgumentException("Domain argument must not be null");
         }
 
@@ -71,7 +72,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
         final MALEndpoint ep = TransportSingleton.instance(uriTo, impl.getInitialProperties())
                 .createEndpoint(localName, qosProps);
 
-        if (null == ep) {
+        if (ep == null) {
             // transport was unable to create the end point for us, need to throw an exception
             throw new MALException("Unable to create transport endpoint for URI: " + uriTo);
         }
@@ -82,15 +83,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
                 ep.getURI(),
                 uriTo,
                 brokerUri,
-                service,
                 authenticationId,
-                domain,
-                networkZone,
-                sessionType,
-                sessionName,
-                qosLevel,
-                qosProps,
-                priority);
+                qosProps);
 
         ep.startMessageDelivery();
     }
@@ -111,7 +105,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final UInteger priority) throws MALException {
         super(parent);
 
-        if (null == domain) {
+        if (domain == null) {
             throw new IllegalArgumentException("Domain argument must not be null");
         }
 
@@ -123,15 +117,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
                 endPoint.getURI(),
                 uriTo,
                 brokerUri,
-                service,
                 authenticationId,
-                domain,
-                networkZone,
-                sessionType,
-                sessionName,
-                qosLevel,
-                qosProps,
-                priority);
+                qosProps);
     }
 
     @Override

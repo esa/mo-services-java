@@ -95,15 +95,8 @@ class MALPublisherImpl implements MALPublisher {
                 parent.getURI(),
                 null,
                 parent.getBrokerURI(),
-                operation.getService(),
                 parent.getAuthenticationId(),
-                domain,
-                networkZone,
-                sessionType,
-                sessionName,
-                remotePublisherQos,
-                remotePublisherQosProps,
-                remotePublisherPriority);
+                remotePublisherQosProps);
 
         setTransId(parent.getBrokerURI(),
                 domain,
@@ -117,19 +110,13 @@ class MALPublisherImpl implements MALPublisher {
     public MALMessage asyncRegister(final IdentifierList keys,
             final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final MessageDetails details = new MessageDetails(parent.getEndpoint(),
+        final MessageDetails details = new MessageDetails(
+                parent.getEndpoint(),
                 parent.getURI(),
                 null,
                 parent.getBrokerURI(),
-                operation.getService(),
                 parent.getAuthenticationId(),
-                domain,
-                networkZone,
-                sessionType,
-                sessionName,
-                remotePublisherQos,
-                remotePublisherQosProps,
-                remotePublisherPriority);
+                remotePublisherQosProps);
 
         final MALMessage msg = handler.publishRegisterAsync(details,
                 operation, keys, listener);
@@ -147,19 +134,13 @@ class MALPublisherImpl implements MALPublisher {
     @Override
     public MALMessage publish(final UpdateHeader updateHeader, final Object... updateValues)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final MessageDetails details = new MessageDetails(parent.getEndpoint(),
+        final MessageDetails details = new MessageDetails(
+                parent.getEndpoint(),
                 parent.getURI(),
                 null,
                 parent.getBrokerURI(),
-                operation.getService(),
                 parent.getAuthenticationId(),
-                domain,
-                networkZone,
-                sessionType,
-                sessionName,
-                remotePublisherQos,
-                remotePublisherQosProps,
-                remotePublisherPriority);
+                remotePublisherQosProps);
 
         final Long tid = getTransId(parent.getBrokerURI(),
                 domain,
@@ -190,15 +171,8 @@ class MALPublisherImpl implements MALPublisher {
                 parent.getURI(),
                 null,
                 parent.getBrokerURI(),
-                operation.getService(),
                 parent.getAuthenticationId(),
-                domain,
-                networkZone,
-                sessionType,
-                sessionName,
-                remotePublisherQos,
-                remotePublisherQosProps,
-                remotePublisherPriority);
+                remotePublisherQosProps);
 
         handler.publishDeregister(details, operation);
 
@@ -216,15 +190,8 @@ class MALPublisherImpl implements MALPublisher {
                 parent.getURI(),
                 null,
                 parent.getBrokerURI(),
-                operation.getService(),
                 parent.getAuthenticationId(),
-                domain,
-                networkZone,
-                sessionType,
-                sessionName,
-                remotePublisherQos,
-                remotePublisherQosProps,
-                remotePublisherPriority);
+                remotePublisherQosProps);
 
         final MALMessage msg = handler.publishDeregisterAsync(details, operation, listener);
 

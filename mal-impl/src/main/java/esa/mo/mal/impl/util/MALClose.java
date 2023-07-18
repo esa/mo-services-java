@@ -55,7 +55,7 @@ public class MALClose {
         synchronized (children) {
             parentClose();
 
-            if (null != parent) {
+            if (parent != null) {
                 parent.childClose(this);
             }
         }

@@ -646,7 +646,7 @@ public class MessageReceive implements MALMessageListener {
 
         protected EndPointPair(final String localURI, final MALService service) {
             first = localURI;
-            if (null != service) {
+            if (service != null) {
                 second = (((long) service.getAreaNumber().getValue()) << 32) + ((long) service.getServiceNumber().getValue());
             } else {
                 second = null;
@@ -656,7 +656,7 @@ public class MessageReceive implements MALMessageListener {
         protected EndPointPair(final String localURI, final MALMessage msg) {
             first = localURI;
 
-            if (null != msg) {
+            if (msg != null) {
                 second = (((long) msg.getHeader().getServiceArea().getValue()) << 32) + ((long) msg.getHeader().getService().getValue());
             } else {
                 second = null;

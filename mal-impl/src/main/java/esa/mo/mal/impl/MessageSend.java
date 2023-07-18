@@ -577,14 +577,9 @@ public class MessageSend {
      * @param error Response message error.
      * @return The sent MAL message.
      */
-    public MALMessage returnError(final Address msgAddress,
-            final MALMessageHeader srcHdr,
-            final UOctet rspnInteractionStage,
-            final MOErrorException error) {
-        return initiateReturnError(msgAddress,
-                srcHdr,
-                rspnInteractionStage,
-                error);
+    public MALMessage returnError(final Address msgAddress, final MALMessageHeader srcHdr,
+            final UOctet rspnInteractionStage, final MOErrorException error) {
+        return initiateReturnError(msgAddress, srcHdr, rspnInteractionStage, error);
     }
 
     private MALMessage initiateOnewayInteraction(final MessageDetails details,
