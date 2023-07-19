@@ -27,9 +27,7 @@ import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.ccsds.moims.mo.mal.MALContextFactory;
-import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
@@ -107,7 +105,7 @@ public class TestEncoder {
         domain.add(new Identifier("mission"));
         domain.add(null);
         Identifier nz = new Identifier("network");
-        MALEncodingContext ctx = new MyMALContext(new MALMessageHeader(
+        MALEncodingContext ctx = new MALEncodingContext(new MALMessageHeader(
                 new Identifier("from"),
                 new Blob("".getBytes()),
                 new Identifier("to"),
@@ -120,7 +118,7 @@ public class TestEncoder {
                 PerfTestHelper.PERFTEST_SERVICE.SEND_OP_NUMBER,
                 PerfTestHelper.PERFTEST_SERVICE.getServiceVersion(),
                 Boolean.FALSE, new NamedValueList()), 
-                PerfTestHelper.PERFTEST_SERVICE.SEND_OP, 0, null, null);
+                PerfTestHelper.PERFTEST_SERVICE.SEND_OP, 0);
 
         System.out.println("Running tests");
         for (Results result : results) {
@@ -295,49 +293,6 @@ public class TestEncoder {
             this.objectToEncode = TestStructureBuilder.createTestMALComposite(timestamp, pktsPerReport, paramsPerPkt);
             this.blankToEncode = new Report();
             this.compareable = true;
-        }
-    }
-
-    protected static class MyMALContext extends MALEncodingContext {
-
-        public MyMALContext(MALMessageHeader header, MALOperation operation,
-                int bodyElementIndex, Map endpointQosProperties, Map messageQosProperties) {
-            super(header, operation, bodyElementIndex, endpointQosProperties, messageQosProperties);
-        }
-
-        @Override
-        public int getBodyElementIndex() {
-            return super.getBodyElementIndex();
-        }
-
-        @Override
-        public Map getEndpointQosProperties() {
-            return super.getEndpointQosProperties();
-        }
-
-        @Override
-        public MALMessageHeader getHeader() {
-            return super.getHeader();
-        }
-
-        @Override
-        public Map getMessageQosProperties() {
-            return super.getMessageQosProperties();
-        }
-
-        @Override
-        public MALOperation getOperation() {
-            return super.getOperation();
-        }
-
-        @Override
-        public void setBodyElementIndex(int bodyElementIndex) {
-            super.setBodyElementIndex(bodyElementIndex);
-        }
-
-        @Override
-        public void setOperation(MALOperation operation) {
-            super.setOperation(operation);
         }
     }
 }

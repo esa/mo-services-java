@@ -35,8 +35,6 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class MALEncodingContext {
 
-    private final Map endpointQosProperties;
-    private final Map messageQosProperties;
     private final MALMessageHeader header;
     private MALOperation operation;
     private int bodyElementIndex;
@@ -47,21 +45,13 @@ public class MALEncodingContext {
      * @param header The MAL message header.
      * @param operation The MAL operation
      * @param bodyElementIndex the index of the body element
-     * @param endpointQosProperties the QoS properties owned by the MALEndpoint
-     * that sends or receives the Element
-     * @param messageQosProperties the QoS properties owned by the MALMessage
-     * that contains the Element to encode or decode
      */
     public MALEncodingContext(final MALMessageHeader header,
             final MALOperation operation,
-            final int bodyElementIndex,
-            final Map endpointQosProperties,
-            final Map messageQosProperties) {
+            final int bodyElementIndex) {
         this.header = header;
         this.operation = operation;
         this.bodyElementIndex = bodyElementIndex;
-        this.endpointQosProperties = endpointQosProperties;
-        this.messageQosProperties = messageQosProperties;
     }
 
     /**
@@ -109,21 +99,4 @@ public class MALEncodingContext {
         this.bodyElementIndex = bodyElementIndex;
     }
 
-    /**
-     * Returns the endpoint QoS properties.
-     *
-     * @return the endpointQosProperties
-     */
-    public java.util.Map getEndpointQosProperties() {
-        return endpointQosProperties;
-    }
-
-    /**
-     * Returns the message QoS properties.
-     *
-     * @return the messageQosProperties
-     */
-    public java.util.Map getMessageQosProperties() {
-        return messageQosProperties;
-    }
 }
