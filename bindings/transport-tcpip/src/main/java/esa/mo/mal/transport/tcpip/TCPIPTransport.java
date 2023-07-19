@@ -593,8 +593,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      */
     @Override
     protected GENMessageSender<byte[]> createMessageSender(GENMessage msg,
-            String remoteRootURI) throws MALException,
-            MALTransmitErrorException {
+            String remoteRootURI) throws MALException, MALTransmitErrorException {
         RLOGGER.fine("TCPIPTransport.createMessageSender()");
         try {
             // create a message sender and receiver for the socket

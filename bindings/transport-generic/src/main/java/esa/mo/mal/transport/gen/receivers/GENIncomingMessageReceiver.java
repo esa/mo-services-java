@@ -64,7 +64,7 @@ public class GENIncomingMessageReceiver implements Runnable {
             GENIncomingMessageHolder msg = decoder.decodeAndCreateMessage();
 
             // the decoder may return null for transports that support fragmentation
-            if (null != msg) {
+            if (msg != null) {
                 GENTransport.LOGGER.log(Level.FINE,
                         "Receving message : {0} : {1}",
                         new Object[]{msg.malMsg.getHeader().getTransactionId(), msg.smsg});
