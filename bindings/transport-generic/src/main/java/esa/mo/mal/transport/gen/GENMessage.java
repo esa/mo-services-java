@@ -217,7 +217,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
                     operation, 0, qosProperties, qosProperties);
 
             // if we have a header encode it
-            if (writeHeader && (null != header)) {
+            if (writeHeader && (header != null)) {
                 enc.writeElement(header, ctx);
             }
 

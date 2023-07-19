@@ -329,8 +329,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
     }
 
     @Override
-    public MALEndpoint createEndpoint(final String localName,
-            final Map qosProperties) throws MALException {
+    public MALEndpoint createEndpoint(final String localName, final Map qosProperties) throws MALException {
         final Map localProperties = new HashMap();
 
         if (null != this.qosProperties) {
@@ -387,8 +386,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      */
     public void receive(final GENReceptionHandler receptionHandler,
             final GENIncomingMessageDecoder decoder) {
-        decoderExecutor.submit(
-                new GENIncomingMessageReceiver(this, receptionHandler, decoder));
+        decoderExecutor.submit(new GENIncomingMessageReceiver(this, receptionHandler, decoder));
     }
 
     /**
@@ -508,7 +506,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             }
         }
 
-        if (null != receptionHandler) {
+        if (receptionHandler != null) {
             receptionHandler.close();
         }
     }
@@ -540,8 +538,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
     @Override
     public void close() throws MALException {
-        for (Map.Entry<String, GENEndpoint> entry : endpointMalMap.entrySet()) {
-            entry.getValue().close();
+        for (GENEndpoint entry : endpointMalMap.values()) {
+            entry.close();
         }
 
         endpointMalMap.clear();
@@ -552,9 +550,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
         LOGGER.fine("Closing outgoing channels");
         synchronized (this) {
-            for (Map.Entry<String, GENConcurrentMessageSender> entry : outgoingDataChannels.entrySet()) {
-                final GENConcurrentMessageSender sender = entry.getValue();
-
+            for (GENConcurrentMessageSender sender : outgoingDataChannels.values()) {
                 sender.terminate();
             }
 
@@ -674,10 +670,8 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param errorMsg The error message.
      * @throws MALException if cannot encode a response message
      */
-    protected void returnErrorMessage(GENEndpoint ep,
-            final GENMessage oriMsg,
-            final UInteger errorNumber,
-            final String errorMsg) throws MALException {
+    protected void returnErrorMessage(GENEndpoint ep, final GENMessage oriMsg,
+            final UInteger errorNumber, final String errorMsg) throws MALException {
         try {
             final MALMessageHeader srcHdr = oriMsg.getHeader();
             final int type = srcHdr.getInteractionType().getOrdinal();
@@ -793,20 +787,19 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * creates and registers it.
      *
      * @param msg The message received or to be sent
-     * @param isIncomingMsgDirection the message direction
+     * @param isIncomingMsg the message direction
      * @param receptionHandler the message reception handler, null if the
      * message is an outgoing message
      * @return returns an existing or newly created message sender
      * @throws MALTransmitErrorException in case of communication problems
      */
-    public synchronized GENConcurrentMessageSender manageCommunicationChannel(
-            GENMessage msg, boolean isIncomingMsgDirection,
-            GENReceptionHandler receptionHandler) throws MALTransmitErrorException {
+    public synchronized GENConcurrentMessageSender manageCommunicationChannel(GENMessage msg,
+            boolean isIncomingMsg, GENReceptionHandler receptionHandler) throws MALTransmitErrorException {
         GENConcurrentMessageSender sender = null;
 
-        if (isIncomingMsgDirection) {
+        if (isIncomingMsg) {
             // incoming msg
-            if ((null != receptionHandler) && (null == receptionHandler.getRemoteURI())) {
+            if ((receptionHandler != null) && (receptionHandler.getRemoteURI() == null)) {
                 // transport supports bi-directional communication
                 // this is the first message received form this reception handler
                 // add the remote base URI it is receiving messages from
@@ -831,23 +824,22 @@ public abstract class GENTransport<I, O> implements MALTransport {
                 connectionAttempts.add(remoteRootURI);
             }
 
-            if (null == sender && (connectWhenConsumerOffline || firstTime)) {
+            if (sender == null && (connectWhenConsumerOffline || firstTime)) {
                 // we do not have any channel for this URI
                 // try to create a set of connections to this URI 
                 LOGGER.log(Level.INFO, "Establishing connection to: {0}", remoteRootURI);
 
                 try {
                     // create new sender for this URI
-                    sender = registerMessageSender(
-                            createMessageSender(msg, remoteRootURI),
-                            remoteRootURI
-                    );
+                    GENMessageSender transmitter = createMessageSender(msg, remoteRootURI);
+                    sender = registerMessageSender(transmitter, remoteRootURI);
 
                     LOGGER.log(Level.FINE, "Opening {0}", numConnections);
 
                     for (int i = 1; i < numConnections; i++) {
                         // insert new processor (message sender) to root data sender for the URI
-                        sender.addProcessor(createMessageSender(msg, remoteRootURI), remoteRootURI);
+                        GENMessageSender anotherTransmitter = createMessageSender(msg, remoteRootURI);
+                        sender.addProcessor(anotherTransmitter, remoteRootURI);
                     }
                 } catch (MALException e) {
                     LOGGER.log(Level.WARNING,
@@ -857,7 +849,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                             new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
                             null);
                 }
-            } else if (null == sender && !connectWhenConsumerOffline) {
+            } else if (sender == null && !connectWhenConsumerOffline) {
                 LOGGER.log(Level.FINE, "Could not locate an outgoing data channel and "
                         + "the connectWhenConsumerOffline property prevents establishing a new one");
                 throw new MALTransmitErrorException(msg.getHeader(),
