@@ -43,6 +43,7 @@ class MALPublisherImpl implements MALPublisher {
      * Logger
      */
     public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl.provider");
+    private final Map<AddressKey, Long> transIdMap = new HashMap<>();
     private final MALProviderImpl parent;
     private final MessageSend handler;
     private final MALPubSubOperation operation;
@@ -53,7 +54,6 @@ class MALPublisherImpl implements MALPublisher {
     private final QoSLevel remotePublisherQos;
     private final Map remotePublisherQosProps;
     private final UInteger remotePublisherPriority;
-    private final Map<AddressKey, Long> transIdMap = new HashMap<>();
 
     MALPublisherImpl(final MALProviderImpl parent,
             final MessageSend handler,
@@ -100,9 +100,6 @@ class MALPublisherImpl implements MALPublisher {
 
         setTransId(parent.getBrokerURI(),
                 domain,
-                networkZone.getValue(),
-                sessionType,
-                sessionName.getValue(),
                 handler.publishRegister(details, operation, keys, listener));
     }
 
@@ -121,12 +118,7 @@ class MALPublisherImpl implements MALPublisher {
         final MALMessage msg = handler.publishRegisterAsync(details,
                 operation, keys, listener);
 
-        setTransId(parent.getBrokerURI(),
-                domain,
-                networkZone.getValue(),
-                sessionType,
-                sessionName.getValue(),
-                msg.getHeader().getTransactionId());
+        setTransId(parent.getBrokerURI(), domain, msg.getHeader().getTransactionId());
 
         return msg;
     }
@@ -142,13 +134,9 @@ class MALPublisherImpl implements MALPublisher {
                 parent.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        final Long tid = getTransId(parent.getBrokerURI(),
-                domain,
-                networkZone.getValue(),
-                sessionType,
-                sessionName.getValue());
+        final Long tid = getTransId(parent.getBrokerURI(), domain);
 
-        if (null != tid) {
+        if (tid != null) {
             LOGGER.log(Level.FINE, "Publisher using transaction Id of: {0}", tid);
 
             final Object[] body = new Object[updateValues.length + 1];
@@ -175,18 +163,14 @@ class MALPublisherImpl implements MALPublisher {
                 remotePublisherQosProps);
 
         handler.publishDeregister(details, operation);
-
-        clearTransId(parent.getBrokerURI(),
-                domain,
-                networkZone.getValue(),
-                sessionType,
-                sessionName.getValue());
+        clearTransId(parent.getBrokerURI(), domain);
     }
 
     @Override
     public MALMessage asyncDeregister(final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final MessageDetails details = new MessageDetails(parent.getEndpoint(),
+        final MessageDetails details = new MessageDetails(
+                parent.getEndpoint(),
                 parent.getURI(),
                 null,
                 parent.getBrokerURI(),
@@ -194,24 +178,12 @@ class MALPublisherImpl implements MALPublisher {
                 remotePublisherQosProps);
 
         final MALMessage msg = handler.publishDeregisterAsync(details, operation, listener);
-
-        clearTransId(parent.getBrokerURI(),
-                domain,
-                networkZone.getValue(),
-                sessionType,
-                sessionName.getValue());
-
+        clearTransId(parent.getBrokerURI(), domain);
         return msg;
     }
 
-    private synchronized void setTransId(final URI lbrokerUri,
-            final IdentifierList ldomain,
-            final String lnetworkZone,
-            final SessionType lsession,
-            final String lsessionName,
-            final Long lid) {
-        final AddressKey key = new AddressKey(lbrokerUri, ldomain,
-                lnetworkZone, lsession, lsessionName);
+    private synchronized void setTransId(final URI lbrokerUri, final IdentifierList ldomain, final Long lid) {
+        final AddressKey key = new AddressKey(lbrokerUri, ldomain);
 
         if (!transIdMap.containsKey(key)) {
             LOGGER.log(Level.FINE, "Publisher setting transaction Id to: {0}", lid);
@@ -219,28 +191,18 @@ class MALPublisherImpl implements MALPublisher {
         }
     }
 
-    private synchronized void clearTransId(final URI lbrokerUri,
-            final IdentifierList ldomain,
-            final String lnetworkZone,
-            final SessionType lsession,
-            final String lsessionName) {
-        final AddressKey key = new AddressKey(lbrokerUri, ldomain,
-                lnetworkZone, lsession, lsessionName);
-
+    private synchronized void clearTransId(final URI lbrokerUri, final IdentifierList ldomain) {
+        final AddressKey key = new AddressKey(lbrokerUri, ldomain);
         final Long id = transIdMap.get(key);
-        if (null != id) {
+
+        if (id != null) {
             LOGGER.log(Level.FINE, "Publisher removing transaction Id of: {0}", id);
             transIdMap.remove(key);
         }
     }
 
-    private synchronized Long getTransId(final URI lbrokerUri,
-            final IdentifierList ldomain,
-            final String lnetworkZone,
-            final SessionType lsession,
-            final String lsessionName) {
-        return transIdMap.get(new AddressKey(lbrokerUri, ldomain,
-                lnetworkZone, lsession, lsessionName));
+    private synchronized Long getTransId(final URI lbrokerUri, final IdentifierList ldomain) {
+        return transIdMap.get(new AddressKey(lbrokerUri, ldomain));
     }
 
     private static class AddressKey implements Comparable {
@@ -257,11 +219,7 @@ class MALPublisherImpl implements MALPublisher {
          * @param session Session type.
          * @param sessionName Session name.
          */
-        public AddressKey(final URI uri,
-                final IdentifierList domain,
-                final String networkZone,
-                final SessionType session,
-                final String sessionName) {
+        public AddressKey(final URI uri, final IdentifierList domain) {
             this.uri = uri.getValue();
             this.domain = domain;
         }

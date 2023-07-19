@@ -22,8 +22,8 @@ package esa.mo.mal.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.ccsds.moims.mo.mal.MALService;
-import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
 /**
@@ -66,12 +66,8 @@ public final class MessageDetails {
      * @param authenticationId Authentication Identifier.
      * @param qosProps QOS properties.
      */
-    public MessageDetails(final MALEndpoint endpoint,
-            final URI uriFrom,
-            final URI uriTo,
-            final URI brokerUri,
-            final Blob authenticationId,
-            final Map qosProps) {
+    public MessageDetails(final MALEndpoint endpoint, final URI uriFrom, final URI uriTo,
+            final URI brokerUri, final Blob authenticationId, final Map qosProps) {
         this.endpoint = endpoint;
         this.uriFrom = uriFrom;
         this.uriTo = uriTo;

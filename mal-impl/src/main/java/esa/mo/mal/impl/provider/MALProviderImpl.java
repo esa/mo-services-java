@@ -171,10 +171,11 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 remotePublisherPriority);
         MALPublisher pub = pubsubPublishers.get(key);
 
-        if (null == pub) {
+        if (pub == null) {
             pub = new MALPublisherImpl(this,
                     sendHandler,
-                    op, domain,
+                    op,
+                    domain,
                     networkZone,
                     sessionType,
                     sessionName,
