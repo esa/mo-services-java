@@ -43,7 +43,6 @@ public abstract class ServiceComponentImpl extends MALClose {
     protected final MALInteractionHandler handler;
     protected final String localName;
     protected final MALService service;
-    protected Blob authenticationId;
     protected final QoSLevel[] expectedQos;
     protected final UInteger priorityLevelNumber;
     protected final Map defaultQoSProperties;
@@ -51,6 +50,7 @@ public abstract class ServiceComponentImpl extends MALClose {
     protected final MALTransport transport;
     protected final MALEndpoint endpoint;
     protected final Address msgAddress;
+    protected Blob authenticationId;
 
     /**
      * Constructor.

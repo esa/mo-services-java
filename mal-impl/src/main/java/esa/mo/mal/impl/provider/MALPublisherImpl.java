@@ -22,7 +22,6 @@ package esa.mo.mal.impl.provider;
 
 import esa.mo.mal.impl.MessageDetails;
 import esa.mo.mal.impl.MessageSend;
-import esa.mo.mal.impl.util.StructureHelper;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -31,50 +30,32 @@ import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublisher;
-import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
  * Implementation of the MALPublisher interface.
  */
-class MALPublisherImpl implements MALPublisher {
+public class MALPublisherImpl implements MALPublisher {
 
     /**
      * Logger
      */
     public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl.provider");
-    private final Map<AddressKey, Long> transIdMap = new HashMap<>();
-    private final MALProviderImpl parent;
+    private final Map<String, Long> transIdMap = new HashMap<>();
+    private final MALProviderImpl provider;
     private final MessageSend handler;
     private final MALPubSubOperation operation;
-    private final IdentifierList domain;
-    private final Identifier networkZone;
-    private final SessionType sessionType;
-    private final Identifier sessionName;
-    private final QoSLevel remotePublisherQos;
     private final Map remotePublisherQosProps;
-    private final UInteger remotePublisherPriority;
 
-    MALPublisherImpl(final MALProviderImpl parent,
-            final MessageSend handler,
-            final MALPubSubOperation operation,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType sessionType,
-            final Identifier sessionName,
-            final QoSLevel remotePublisherQos,
-            final Map remotePublisherQosProps,
-            final UInteger remotePublisherPriority) {
-        this.parent = parent;
+    MALPublisherImpl(final MALProviderImpl provider, final MessageSend handler,
+            final MALPubSubOperation operation, final Map remotePublisherQosProps) {
+        this.provider = provider;
         this.handler = handler;
         this.operation = operation;
-        this.domain = domain;
-        this.networkZone = networkZone;
-        this.sessionType = sessionType;
-        this.sessionName = sessionName;
-        this.remotePublisherQos = remotePublisherQos;
         this.remotePublisherQosProps = remotePublisherQosProps;
-        this.remotePublisherPriority = remotePublisherPriority;
     }
 
     @Override
@@ -84,42 +65,37 @@ class MALPublisherImpl implements MALPublisher {
 
     @Override
     public MALProvider getProvider() {
-        return parent;
+        return provider;
     }
 
     @Override
     public void register(final IdentifierList keys, final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(
-                parent.getEndpoint(),
-                parent.getURI(),
+                provider.getEndpoint(),
+                provider.getURI(),
                 null,
-                parent.getBrokerURI(),
-                parent.getAuthenticationId(),
+                provider.getBrokerURI(),
+                provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        setTransId(parent.getBrokerURI(),
-                domain,
-                handler.publishRegister(details, operation, keys, listener));
+        Long transactionId = handler.publishRegister(details, operation, keys, listener);
+        this.putTransId(provider.getBrokerURI(), transactionId);
     }
 
     @Override
-    public MALMessage asyncRegister(final IdentifierList keys,
-            final MALPublishInteractionListener listener)
+    public MALMessage asyncRegister(final IdentifierList keys,final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(
-                parent.getEndpoint(),
-                parent.getURI(),
+                provider.getEndpoint(),
+                provider.getURI(),
                 null,
-                parent.getBrokerURI(),
-                parent.getAuthenticationId(),
+                provider.getBrokerURI(),
+                provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        final MALMessage msg = handler.publishRegisterAsync(details,
-                operation, keys, listener);
-
-        setTransId(parent.getBrokerURI(), domain, msg.getHeader().getTransactionId());
-
+        MALMessage msg = handler.publishRegisterAsync(details, operation, keys, listener);
+        this.putTransId(provider.getBrokerURI(), msg.getHeader().getTransactionId());
         return msg;
     }
 
@@ -127,14 +103,14 @@ class MALPublisherImpl implements MALPublisher {
     public MALMessage publish(final UpdateHeader updateHeader, final Object... updateValues)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(
-                parent.getEndpoint(),
-                parent.getURI(),
+                provider.getEndpoint(),
+                provider.getURI(),
                 null,
-                parent.getBrokerURI(),
-                parent.getAuthenticationId(),
+                provider.getBrokerURI(),
+                provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        final Long tid = getTransId(parent.getBrokerURI(), domain);
+        final Long tid = this.getTransId(provider.getBrokerURI());
 
         if (tid != null) {
             LOGGER.log(Level.FINE, "Publisher using transaction Id of: {0}", tid);
@@ -155,120 +131,50 @@ class MALPublisherImpl implements MALPublisher {
     @Override
     public void deregister() throws MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(
-                parent.getEndpoint(),
-                parent.getURI(),
+                provider.getEndpoint(),
+                provider.getURI(),
                 null,
-                parent.getBrokerURI(),
-                parent.getAuthenticationId(),
+                provider.getBrokerURI(),
+                provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
         handler.publishDeregister(details, operation);
-        clearTransId(parent.getBrokerURI(), domain);
+        this.removeTransId(provider.getBrokerURI());
     }
 
     @Override
     public MALMessage asyncDeregister(final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(
-                parent.getEndpoint(),
-                parent.getURI(),
+                provider.getEndpoint(),
+                provider.getURI(),
                 null,
-                parent.getBrokerURI(),
-                parent.getAuthenticationId(),
+                provider.getBrokerURI(),
+                provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
         final MALMessage msg = handler.publishDeregisterAsync(details, operation, listener);
-        clearTransId(parent.getBrokerURI(), domain);
+        this.removeTransId(provider.getBrokerURI());
         return msg;
     }
 
-    private synchronized void setTransId(final URI lbrokerUri, final IdentifierList ldomain, final Long lid) {
-        final AddressKey key = new AddressKey(lbrokerUri, ldomain);
+    private synchronized Long getTransId(final URI lbrokerUri) {
+        return transIdMap.get(lbrokerUri.getValue());
+    }
 
-        if (!transIdMap.containsKey(key)) {
-            LOGGER.log(Level.FINE, "Publisher setting transaction Id to: {0}", lid);
-            transIdMap.put(key, lid);
+    private synchronized void putTransId(final URI lbrokerUri, final Long transactionId) {
+        if (!transIdMap.containsKey(lbrokerUri.getValue())) {
+            LOGGER.log(Level.FINE, "Publisher setting transaction Id to: {0}", transactionId);
+            transIdMap.put(lbrokerUri.getValue(), transactionId);
         }
     }
 
-    private synchronized void clearTransId(final URI lbrokerUri, final IdentifierList ldomain) {
-        final AddressKey key = new AddressKey(lbrokerUri, ldomain);
-        final Long id = transIdMap.get(key);
+    private synchronized void removeTransId(final URI lbrokerUri) {
+        final Long id = transIdMap.get(lbrokerUri.getValue());
 
         if (id != null) {
             LOGGER.log(Level.FINE, "Publisher removing transaction Id of: {0}", id);
-            transIdMap.remove(key);
-        }
-    }
-
-    private synchronized Long getTransId(final URI lbrokerUri, final IdentifierList ldomain) {
-        return transIdMap.get(new AddressKey(lbrokerUri, ldomain));
-    }
-
-    private static class AddressKey implements Comparable {
-
-        private final String uri;
-        private final IdentifierList domain;
-
-        /**
-         * Constructor.
-         *
-         * @param uri URI.
-         * @param domain Domain.
-         * @param networkZone Network zone.
-         * @param session Session type.
-         * @param sessionName Session name.
-         */
-        public AddressKey(final URI uri, final IdentifierList domain) {
-            this.uri = uri.getValue();
-            this.domain = domain;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (obj instanceof AddressKey) {
-                final AddressKey other = (AddressKey) obj;
-                if (uri == null) {
-                    if (other.uri != null) {
-                        return false;
-                    }
-                } else {
-                    if (!uri.equals(other.uri)) {
-                        return false;
-                    }
-                }
-                if (domain == null) {
-                    if (other.domain != null) {
-                        return false;
-                    }
-                } else {
-                    if (!domain.equals(other.domain)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 53 * hash + (this.uri != null ? this.uri.hashCode() : 0);
-            hash = 53 * hash + (this.domain != null ? this.domain.hashCode() : 0);
-            return hash;
-        }
-
-        @Override
-        public int compareTo(final Object o) {
-            final AddressKey other = (AddressKey) o;
-
-            if (uri.equals(other.uri)) {
-                return (StructureHelper.domainToString(domain))
-                        .compareTo(StructureHelper.domainToString(other.domain));
-            } else {
-                return uri.compareTo(other.uri);
-            }
+            transIdMap.remove(lbrokerUri.getValue());
         }
     }
 }

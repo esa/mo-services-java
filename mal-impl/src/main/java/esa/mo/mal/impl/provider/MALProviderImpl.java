@@ -172,16 +172,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
         MALPublisher pub = pubsubPublishers.get(key);
 
         if (pub == null) {
-            pub = new MALPublisherImpl(this,
-                    sendHandler,
-                    op,
-                    domain,
-                    networkZone,
-                    sessionType,
-                    sessionName,
-                    remotePublisherQos,
-                    remotePublisherQosProps,
-                    remotePublisherPriority);
+            pub = new MALPublisherImpl(this, sendHandler, op, remotePublisherQosProps);
             pubsubPublishers.put(key, pub);
         }
 
@@ -208,7 +199,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
     @Override
     public Blob setBrokerAuthenticationId(Blob newAuthenticationId) {
-        if (isPublisher() && (null == sharedBrokerUri)) {
+        if (isPublisher() && (sharedBrokerUri == null)) {
             return this.localBrokerBinding.setAuthenticationId(newAuthenticationId);
         }
 
