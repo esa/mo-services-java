@@ -134,8 +134,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         final MALElementInputStream enc = encFactory.createInputStream(bais);
 
         if (readHeader) {
-            MALEncodingContext ctx = new MALEncodingContext(header,
-                    null, 0, qosProperties, qosProperties);
+            MALEncodingContext ctx = new MALEncodingContext(header, null, 0);
             this.header = (GENMessageHeader) enc.readElement(header, ctx);
         } else {
             this.header = header;
@@ -168,8 +167,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         final MALElementInputStream enc = encFactory.createInputStream(ios);
 
         if (readHeader) {
-            MALEncodingContext ctx = new MALEncodingContext(header,
-                    null, 0, qosProperties, qosProperties);
+            MALEncodingContext ctx = new MALEncodingContext(header, null, 0);
             this.header = (GENMessageHeader) enc.readElement(header, ctx);
         } else {
             this.header = header;
@@ -213,8 +211,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
             final OutputStream lowLevelOutputStream,
             final boolean writeHeader) throws MALException {
         try {
-            MALEncodingContext ctx = new MALEncodingContext(header,
-                    operation, 0, qosProperties, qosProperties);
+            MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
 
             // if we have a header encode it
             if (writeHeader && (header != null)) {
@@ -234,8 +231,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
 
     private GENMessageBody createMessageBody(final MALElementStreamFactory encFactory,
             final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements) {
-        MALEncodingContext ctx = new MALEncodingContext(header,
-                operation, 0, qosProperties, qosProperties);
+        MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
 
         if (header.getIsErrorMessage()) {
             return new GENErrorBody(ctx, wrapBodyParts,
@@ -271,10 +267,8 @@ public class GENMessage implements MALMessage, java.io.Serializable {
                 encFactory, encBodyBytes, encBodyElements);
     }
 
-    private GENMessageBody createMessageBody(final MALElementStreamFactory encFactory,
-            final Object[] bodyElements) {
-        MALEncodingContext ctx = new MALEncodingContext(header, operation,
-                0, qosProperties, qosProperties);
+    private GENMessageBody createMessageBody(final MALElementStreamFactory encFactory, final Object[] bodyElements) {
+        MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
 
         if (header.getIsErrorMessage()) {
             return new GENErrorBody(ctx, encFactory, bodyElements);
