@@ -48,7 +48,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
     }
 
     @Override
-    public void writeHeader(final Object header, final MALEncodingContext ctx) throws MALException {
+    public void writeHeader(final Object header) throws MALException {
         if (enc == null) {
             this.enc = createEncoder(dos);
         }

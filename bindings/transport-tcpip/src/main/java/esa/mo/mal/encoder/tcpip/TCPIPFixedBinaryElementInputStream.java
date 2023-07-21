@@ -58,7 +58,7 @@ public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputS
     }
 
     @Override
-    public MALMessageHeader readHeader(final Object header, final MALEncodingContext ctx)
+    public MALMessageHeader readHeader(final Object header)
             throws IllegalArgumentException, MALException {
         // header is decoded using custom tcpip decoder
         return decodeHeader(header);

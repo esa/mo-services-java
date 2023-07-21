@@ -22,14 +22,12 @@ package esa.mo.mal.encoder.tcpip;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
+import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
 import java.io.OutputStream;
 import java.util.logging.Logger;
-
 import org.ccsds.moims.mo.mal.encoding.Encoder;
-import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
-
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
+import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 
 /**
@@ -60,8 +58,7 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
     }
 
     @Override
-    public void writeHeader(final Object header, final MALEncodingContext ctx)
-            throws MALException {
+    public void writeHeader(final Object header) throws MALException {
         if (enc == null) {
             enc = createEncoder(this.dos);
         }
@@ -71,8 +68,7 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
     }
 
     @Override
-    public void writeElement(final Object element, final MALEncodingContext ctx)
-            throws MALException {
+    public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException {
         if (enc == null) {
             enc = createEncoder(this.dos);
         }
@@ -118,7 +114,7 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
                 | 1);
 
         enc.encodeUOctet(new UOctet(parts));
-        ((TCPIPFixedBinaryEncoder) enc).encodeMALLong(header.getTransactionId());
+        ((TCPIPFixedBinaryEncoder) enc).encodeLong(header.getTransactionId());
 
         // set flags
         enc.encodeUOctet(getFlags(header));

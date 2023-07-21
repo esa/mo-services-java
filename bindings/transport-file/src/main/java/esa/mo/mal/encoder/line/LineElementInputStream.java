@@ -43,7 +43,7 @@ public class LineElementInputStream implements MALElementInputStream {
     }
 
     @Override
-    public Object readHeader(Object header, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+    public Object readHeader(Object header) throws IllegalArgumentException, MALException {
         return dec.decodeNullableElement((Element) header);
     }
 
