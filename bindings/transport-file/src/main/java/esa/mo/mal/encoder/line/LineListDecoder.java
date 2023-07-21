@@ -41,8 +41,7 @@ public class LineListDecoder extends LineDecoder implements MALListDecoder {
      * @throws MALException If cannot decode size of list.
      */
     public LineListDecoder(final List list, final java.io.InputStream inputStream,
-            final BufferHolder srcBuffer)
-            throws MALException {
+            final BufferHolder srcBuffer) throws MALException {
         super(inputStream, srcBuffer);
 
         this.list = list;

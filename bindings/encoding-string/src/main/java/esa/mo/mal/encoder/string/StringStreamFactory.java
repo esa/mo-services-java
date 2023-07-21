@@ -36,14 +36,14 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 public class StringStreamFactory extends MALElementStreamFactory {
 
     @Override
-    protected void init(final String protocol, final Map properties) 
+    protected void init(final String protocol, final Map properties)
             throws IllegalArgumentException, MALException {
     }
 
     @Override
     public MALElementInputStream createInputStream(final byte[] bytes, final int offset) {
-        return new StringElementInputStream(
-                new ByteArrayInputStream(bytes, offset, bytes.length - offset));
+        int length = bytes.length - offset;
+        return new StringElementInputStream(new ByteArrayInputStream(bytes, offset, length));
     }
 
     @Override
@@ -59,15 +59,13 @@ public class StringStreamFactory extends MALElementStreamFactory {
     @Override
     public Blob encode(final Object[] elements, final MALEncodingContext ctx) throws MALException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
         final MALElementOutputStream os = createOutputStream(baos);
 
-        for (int i = 0; i < elements.length; i++) {
-            os.writeElement(elements[i], ctx);
+        for (Object element : elements) {
+            os.writeElement(element, ctx);
         }
 
         os.flush();
-
         return new Blob(baos.toByteArray());
     }
 }

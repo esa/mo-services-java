@@ -51,8 +51,8 @@ public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory {
      * @param outputStreamImpl The class of the output stream
      * @param timeHandler The time handler to use.
      */
-    protected BaseBinaryStreamFactory(final Class inputStreamImpl, final Class outputStreamImpl,
-            final BinaryTimeHandler timeHandler) {
+    protected BaseBinaryStreamFactory(final Class inputStreamImpl,
+            final Class outputStreamImpl, final BinaryTimeHandler timeHandler) {
         this.inputStreamImpl = inputStreamImpl;
         this.outputStreamImpl = outputStreamImpl;
         this.timeHandler = timeHandler;
@@ -119,7 +119,6 @@ public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory {
         }
 
         os.flush();
-
         return new Blob(baos.toByteArray());
     }
 }

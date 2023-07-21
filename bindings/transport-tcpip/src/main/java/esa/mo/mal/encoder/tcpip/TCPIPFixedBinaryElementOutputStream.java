@@ -59,11 +59,17 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         return new TCPIPFixedBinaryEncoder(os, timeHandler);
     }
 
-    /**
-     * Encode an element. Only encode the header, the body is encoded
-     * automatically by the MAL framework using the body encoder provided by
-     * this class.
-     */
+    @Override
+    public void writeHeader(final Object header, final MALEncodingContext ctx)
+            throws MALException {
+        if (enc == null) {
+            enc = createEncoder(this.dos);
+        }
+
+        // header is encoded using tcpip custom encoder
+        encodeHeader(header);
+    }
+
     @Override
     public void writeElement(final Object element, final MALEncodingContext ctx)
             throws MALException {
@@ -72,8 +78,7 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         }
 
         if (element == ctx.getHeader()) {
-            // header is encoded using tcpip custom encoder
-            encodeHeader(element);
+            throw new MALException("The header is no longer read here! Use: writeHeader()");
         }
 
         // body is not encoded
@@ -107,11 +112,11 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         short parts = (short) (((header.getIsErrorMessage() ? 0x1 : 0x0) << 7)
                 | (header.getQoSlevel().getOrdinal() << 4)
                 | header.getSession().getOrdinal());
-        */
+         */
         short parts = (short) (((header.getIsErrorMessage() ? 0x1 : 0x0) << 7)
                 | (1 << 4)
                 | 1);
-        
+
         enc.encodeUOctet(new UOctet(parts));
         ((TCPIPFixedBinaryEncoder) enc).encodeMALLong(header.getTransactionId());
 
@@ -134,7 +139,7 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         if (header.getPriority() != null) {
             enc.encodeUInteger(header.getPriority());
         }
-        */
+         */
         if (header.getTimestamp() != null) {
             enc.encodeTime(header.getTimestamp());
         }
@@ -148,7 +153,7 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         if (header.getDomain() != null && header.getDomain().size() > 0) {
             header.getDomain().encode(enc);
         }
-        */
+         */
         if (header.getAuthenticationId() != null && header.getAuthenticationId().getLength() > 0) {
             enc.encodeBlob(header.getAuthenticationId());
         }
@@ -156,7 +161,7 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         if (header.getSupplements() != null) {
             header.getSupplements().encode(enc);
         }
-        */
+         */
     }
 
     /**
@@ -178,7 +183,7 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         if (header.getPriority() != null) {
             result |= (0x1 << 5);
         }
-        */
+         */
         if (header.getTimestamp() != null) {
             result |= (0x1 << 4);
         }
@@ -192,8 +197,8 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         if (header.getDomain() != null && header.getDomain().size() > 0) {
             result |= (0x1 << 1);
         }
-        */
-            
+         */
+
         if (header.getAuthenticationId() != null && header.getAuthenticationId().getLength() > 0) {
             result |= 0x1;
         }

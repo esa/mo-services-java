@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.mal.encoding;
 
-import java.util.Map;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -47,8 +46,7 @@ public class MALEncodingContext {
      * @param bodyElementIndex the index of the body element
      */
     public MALEncodingContext(final MALMessageHeader header,
-            final MALOperation operation,
-            final int bodyElementIndex) {
+            final MALOperation operation, final int bodyElementIndex) {
         this.header = header;
         this.operation = operation;
         this.bodyElementIndex = bodyElementIndex;

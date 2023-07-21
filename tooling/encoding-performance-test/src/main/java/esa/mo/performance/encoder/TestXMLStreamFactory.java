@@ -72,6 +72,19 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         }
 
         @Override
+        public void writeHeader(Object header, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+            try {
+                String schemaURN = "http://www.ccsds.org/schema/PerfTestServiceSchema";
+                String schemaEle = "report";
+                JAXBContext jc = JAXBContext.newInstance(header.getClass().getPackage().getName());
+                Marshaller marshaller = jc.createMarshaller();
+                marshaller.marshal(new JAXBElement(new QName(schemaURN, schemaEle), header.getClass(), null, header), os);
+            } catch (JAXBException ex) {
+                throw new MALException("XML Encoding error", ex);
+            }
+        }
+
+        @Override
         public void writeElement(Object o, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
             try {
                 String schemaURN = "http://www.ccsds.org/schema/PerfTestServiceSchema";
@@ -109,6 +122,18 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
 
         public TestXMLInputStream(InputStream is) {
             this.is = is;
+        }
+
+        @Override
+        public Object readHeader(Object header, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+            try {
+                JAXBContext jc = JAXBContext.newInstance(header.getClass().getPackage().getName());
+                Unmarshaller unmarshaller = jc.createUnmarshaller();
+                JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
+                return rootElement.getValue();
+            } catch (JAXBException ex) {
+                throw new MALException("XML Decoding error", ex);
+            }
         }
 
         @Override
