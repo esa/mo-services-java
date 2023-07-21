@@ -152,7 +152,7 @@ public class SPPMessage extends GENMessage {
             super.encodeMessage(localBodyStreamFactory, bodyEnc, bodyBaos, false);
 
             MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
-            hdrEnc.writeElement(header, ctx);
+            hdrEnc.writeHeader(header);
             byte[] hdrBuf = hdrBaos.toByteArray();
             byte[] bodyBuf = bodyBaos.toByteArray();
 
@@ -166,7 +166,7 @@ public class SPPMessage extends GENMessage {
                 ((SPPMessageHeader) header).setSegmentFlags((byte) 0x40);
                 hdrBaos.reset();
                 hdrEnc = (FixedBinaryElementOutputStream) hdrStreamFactory.createOutputStream(hdrBaos);
-                hdrEnc.writeElement(header, ctx);
+                hdrEnc.writeHeader(header);
                 hdrBuf = hdrBaos.toByteArray();
 
                 final int adjustedSegmentSize = configuration.getSegmentSize() - (hdrBuf.length - 6);
